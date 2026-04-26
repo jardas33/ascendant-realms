@@ -5,6 +5,7 @@ import { requireUnit } from "../data/contentIndex";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { checkPrerequisites, type TechState } from "./PrerequisiteSystem";
+import { applyRallyPointToTrainedUnit } from "./RallyPointSystem";
 
 interface TrainingSystemOptions {
   scene: Phaser.Scene;
@@ -105,6 +106,7 @@ export class TrainingSystem {
       building.position.x + Math.cos(angle) * distanceFromBuilding,
       building.position.y + Math.sin(angle) * distanceFromBuilding
     );
+    applyRallyPointToTrainedUnit(building, unit);
     this.options.addUnit(unit);
     this.options.onUnitTrained?.(unit);
     if (announce) {

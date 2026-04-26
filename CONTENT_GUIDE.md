@@ -110,8 +110,16 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 6. Add 4 capture sites for the current skirmish setup. Each site must use a resource ID from `resources.ts`.
 7. Add neutral camps with valid unit IDs. Use stronger central camps when the center should feel risky.
 8. Fill the `scenario` block with starting resources, hero spawn, player/enemy buildings, player/enemy unit spawns, objectives, enemy AI config, and reward table.
+   - Primary objectives use `playerBaseBuildingId` and `enemyBaseBuildingId`.
+   - Optional `secondaryObjectives` can track `capture_site`, `destroy_building`, or `defeat_unit` targets for milestone maps and ResultsScene display.
 9. Add a reward table in `rewards.ts` and point the map's `scenario.rewardTableId` at it.
 10. Run `npm run test` and `npm run build`. The setup screen automatically lists maps from `MAPS`.
+
+Current map examples:
+
+- `first_claim`: tutorial skirmish with the safest opening economy.
+- `broken_ford`: contested two-lane river map with a risky center.
+- `ashen_outpost`: campaign milestone fortress assault with a central Burned Shrine, enemy defensive towers, side resource paths, and secondary objectives for shrine capture, enemy Barracks destruction, and commander defeat.
 
 ## Add A New Campaign Node
 
@@ -119,22 +127,50 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 2. Copy an existing node entry.
 3. Give it a unique `id`, display `name`, and `description`.
 4. Choose `nodeType`: `battle`, `shrine`, `town`, `ruin`, `fortress`, or `event`.
-5. Set `difficulty`, `mapId`, and `enemyFactionId`.
+5. Set `difficulty`, `mapId`, `enemyFactionId`, and optional `aiPersonalityId`.
 6. Add prerequisite node IDs to `prerequisites`.
 7. Add future node IDs to `unlocks`.
-8. Add node rewards with optional `xp`, `itemIds`, and `resources`.
-9. Set `x` and `y` as percentages for the campaign map UI position.
-10. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes can be resolved directly from the campaign map for now.
-11. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, reward item IDs, and resource IDs.
+8. Add node rewards with optional `xp`, `itemIds`, and `resources`. Node resource rewards are added to the persistent campaign bank, not to the temporary battle economy.
+9. For `event`, `town`, `shrine`, or other non-battle nodes, add optional `eventText` and `choices` when the node should ask the player to choose an outcome.
+10. Set `x` and `y` as percentages for the campaign map UI position.
+11. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes either resolve direct rewards or show data-driven choices from the campaign map.
+12. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, AI personality IDs, reward item IDs, resource IDs, and choice references.
+
+Campaign choices support:
+
+- `id`, `label`, and `description` for display.
+- `requirements` for campaign resources, hero level, completed nodes, owned items, or faction reputation.
+- `costs` paid from the persistent campaign resource bank.
+- `rewards` for XP, item IDs, campaign resources, node unlocks, reputation changes, and a `recoverHero` placeholder.
+- `reputationChanges` and `unlockNodeIds` as direct choice effects when that reads cleaner than nesting under `rewards`.
+- `onceOnly` to save a claim ID in `choiceIdsClaimed`.
+- `completesNode: false` when the choice should leave the node open for a later choice.
 
 ## Add A New Faction
 
 1. Open `src/game/data/factions.ts`.
 2. Copy an existing faction.
 3. Give it a unique `id`.
-4. Add faction units in `units.ts`.
-5. Add faction buildings in `buildings.ts`.
-6. Create faction-specific AI and balance notes later.
+4. Write `name`, `fantasy`, and a readable `color`.
+5. Fill the `mechanics` block:
+   - `economyStyle`, `militaryStyle`, and `magicStyle` are shown in setup/campaign UI.
+   - `availableUnitIds`, `availableBuildingIds`, and `availableUpgradeIds` must reference valid data IDs.
+   - `aiPersonalityPreferences` must reference valid AI personality IDs.
+   - `campaignReputationHooks` should list factions whose reputation can be affected by this faction.
+   - `factionModifiers` can currently use `burn-on-hit`, `low-health-damage`, or `wave-speed`.
+6. Add faction units in `units.ts`.
+7. Add faction buildings in `buildings.ts`.
+8. Add faction upgrades or trait placeholders in `upgrades.ts` when needed.
+9. Assign the faction to campaign nodes with `enemyFactionId` and pair it with a fitting `aiPersonalityId`.
+10. Run `npm run test` so validation checks faction unit, building, upgrade, AI, and reputation references.
+
+Current faction modifier support:
+
+- `burn-on-hit`: applies a damage-over-time status when matching units or buildings hit.
+- `low-health-damage`: multiplies damage when matching units are below an HP threshold.
+- `wave-speed`: increases movement speed for matching units when an AI attack wave launches.
+
+New modifier types require code in combat or battle systems plus validation in `contentValidation.ts`.
 
 ## Add A New Manual Art Asset
 
@@ -178,6 +214,18 @@ Important UI-kit rules:
 4. To change enemy pressure, edit `scenario.enemyAI.attackInterval`, `minAttackArmySize`, `attackWaveSize`, and `unitPlan`.
 5. To change victory rewards, edit `scenario.rewardTableId`.
 6. Run `npm run test` after edits. The content validation test catches missing IDs before the game opens.
+
+## Add Or Tune An AI Personality
+
+1. Open `src/game/data/aiPersonalities.ts`.
+2. Copy one of the four existing personalities: Balanced Warlord, Raider Rush, Fortress Keeper, or Hexfire Cult.
+3. Give it a unique `id`, `name`, `shortDescription`, and `description`.
+4. Set `preferredUnitIds` and `unitPlan` using valid unit IDs.
+5. Tune timing multipliers for first attack delay, attack interval, expansion interval, training interval, and commander join delay.
+6. Tune wave behavior through `attackWaveSizeMultiplier`, `minAttackArmySizeDelta`, and per-phase overrides for allowed, preferred, and capped units.
+7. Tune defense through `defendRadiusMultiplier`, `defenseSquadSizeDelta`, `reserveDefenseUnits`, and `protectCaptureSites`.
+8. Assign the personality to a campaign battle node with `aiPersonalityId`, or select it in Skirmish Setup.
+9. Run `npm run test` so validation catches missing units or invalid campaign references.
 
 ## Safe Editing Tips
 

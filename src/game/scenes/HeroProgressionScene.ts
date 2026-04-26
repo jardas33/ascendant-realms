@@ -3,6 +3,7 @@ import { ASSET_IDS, heroPortraitAssetId } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
 import type { BattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import { LEVEL_XP_THRESHOLDS } from "../core/Constants";
+import { getHeroProgressionGuidance } from "../core/FirstExperienceGuidance";
 import type {
   BattleRewardResult,
   BattleStats,
@@ -37,6 +38,7 @@ interface HeroProgressionData {
   reward?: BattleRewardResult;
   rewardLevelUp?: RewardLevelUpSummary;
   launchRequest?: BattleLaunchRequest;
+  returnMode?: "campaign" | "skirmish";
 }
 
 export class HeroProgressionScene extends Phaser.Scene {
@@ -48,6 +50,7 @@ export class HeroProgressionScene extends Phaser.Scene {
   private reward?: BattleRewardResult;
   private rewardLevelUp?: RewardLevelUpSummary;
   private launchRequest?: BattleLaunchRequest;
+  private returnMode: "campaign" | "skirmish" = "skirmish";
   private status = "Spend skill points, equip rewards, or continue into another skirmish.";
 
   constructor() {
@@ -61,7 +64,9 @@ export class HeroProgressionScene extends Phaser.Scene {
     this.reward = data.reward ?? (data.rewardItemIds ? { itemIds: data.rewardItemIds, resources: {}, xp: 0 } : undefined);
     this.rewardLevelUp = data.rewardLevelUp;
     this.launchRequest = data.launchRequest;
+    this.returnMode = data.returnMode ?? (data.launchRequest?.mode === "campaign_node" ? "campaign" : "skirmish");
     this.heroSave = this.finalizeHeroSave(this.heroSave);
+    this.status = this.initialStatus();
   }
 
   create(): void {
@@ -98,6 +103,16 @@ export class HeroProgressionScene extends Phaser.Scene {
           heroSave: this.heroSave,
           launchRequest: this.launchRequest
         });
+      }
+      if (action === "campaign") {
+        const save = SaveSystem.load();
+        if (save) {
+          this.scene.start(SCENE_KEYS.campaignMap, {
+            heroSave: save.hero,
+            campaignSave: save.campaign,
+            stats: this.stats
+          });
+        }
       }
       if (action === "menu") {
         this.scene.start(SCENE_KEYS.mainMenu);
@@ -154,6 +169,7 @@ export class HeroProgressionScene extends Phaser.Scene {
             </div>
           </div>
           ${this.renderBattleResults()}
+          ${this.renderGuidancePanel()}
           <div class="status-box">${escapeHtml(this.status)}</div>
           <div class="progression-grid">
             <section>
@@ -176,11 +192,31 @@ export class HeroProgressionScene extends Phaser.Scene {
             ${SKILL_TREES.map((tree) => this.renderSkillTree(tree.id, tree.name, tree.description)).join("")}
           </div>
           <div class="menu-actions row">
-            <button data-progression-action="skirmish">Continue Skirmish</button>
+            <button data-progression-action="${this.returnMode === "campaign" ? "campaign" : "skirmish"}">
+              ${this.returnMode === "campaign" ? "Campaign Map" : "Continue Skirmish"}
+            </button>
             <button data-progression-action="menu">Main Menu</button>
           </div>
         </section>
       </main>
+    `;
+  }
+
+  private renderGuidancePanel(): string {
+    const guidance = getHeroProgressionGuidance({
+      hero: this.heroSave,
+      recentRewardItemCount: this.rewardItemIds.length,
+      skillPointsGained: this.rewardLevelUp?.skillPointsGained,
+      inCampaign: this.returnMode === "campaign"
+    });
+    return `
+      <div class="guidance-card">
+        <strong>${escapeHtml(guidance.title)}</strong>
+        <p>${escapeHtml(guidance.body)}</p>
+        <div class="tag-row">
+          ${guidance.actions.map((action) => `<span class="tag">${escapeHtml(action)}</span>`).join("")}
+        </div>
+      </div>
     `;
   }
 
@@ -373,6 +409,21 @@ export class HeroProgressionScene extends Phaser.Scene {
 
   private formatTags(tags: string[]): string {
     return tags.length > 0 ? `Tags: ${tags.map(titleCase).join(", ")}` : "No tags";
+  }
+
+  private initialStatus(): string {
+    if (this.heroSave.skillPoints > 0 && this.rewardItemIds.length > 0) {
+      return "You received an item and have a skill point waiting. Equip the item, then spend the point before your next node.";
+    }
+    if (this.heroSave.skillPoints > 0) {
+      return "You gained a skill point. Spend it in a skill tree to unlock abilities or improve stats.";
+    }
+    if (this.rewardItemIds.length > 0) {
+      return "You received an item. Equip it to improve your hero before the next battle.";
+    }
+    return this.returnMode === "campaign"
+      ? "Review your hero, then return to the campaign map."
+      : "Spend skill points, equip rewards, or continue into another skirmish.";
   }
 
   private toCssColor(value: number): string {

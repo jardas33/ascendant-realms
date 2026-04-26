@@ -1,5 +1,6 @@
 import { SAVE_KEY } from "./Constants";
-import type { BattleDifficulty } from "./GameTypes";
+import type { BattleDifficulty, ResourceBag, ResourceKey } from "./GameTypes";
+import { isCampaignModifierId } from "../data/campaignModifiers";
 import type { AllocatedSkills, CampaignSaveData, EquipmentSlots, HeroSaveData, StoredGameSave } from "../save/SaveTypes";
 
 export class SaveSystem {
@@ -96,8 +97,6 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
     Array.isArray(value.unlockedAbilities) &&
     value.unlockedAbilities.every((entry) => typeof entry === "string") &&
     isFiniteNumber(value.completedBattles) &&
-    isRecord(value.factionReputation) &&
-    Object.values(value.factionReputation).every(isFiniteNumber) &&
     isRecord(value.stats) &&
     isFiniteNumber(value.stats.might) &&
     isFiniteNumber(value.stats.command) &&
@@ -109,7 +108,10 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
   }
 
   const stats = value.stats as { might: number; command: number; arcana: number; faith: number };
-  const factionReputation = value.factionReputation as Record<string, number>;
+  const factionReputationSource = isRecord(value.factionReputation) ? value.factionReputation : {};
+  if (!Object.values(factionReputationSource).every(isFiniteNumber)) {
+    return null;
+  }
   const unlockedAbilities = value.unlockedAbilities as string[];
   const inventory = arrayOfStrings(value.inventory) ? value.inventory : arrayOfStrings(value.items) ? value.items : [];
   const clearedMapIds = arrayOfStrings(value.clearedMapIds) ? value.clearedMapIds : [];
@@ -143,7 +145,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
     inventory: [...new Set(inventory)],
     equipment,
     allocatedSkills,
-    factionReputation: { ...factionReputation },
+    factionReputation: normalizeFactionReputation(factionReputationSource as Record<string, number>),
     stats: {
       might: clampNumber(stats.might, 0),
       command: clampNumber(stats.command, 0),
@@ -166,13 +168,20 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
   const difficulty = value.difficulty as BattleDifficulty;
   const completedNodeIds = arrayOfStrings(value.completedNodeIds) ? value.completedNodeIds : [];
   const unlockedNodeIds = arrayOfStrings(value.unlockedNodeIds) ? value.unlockedNodeIds : [];
+  const lockedNodeIds = arrayOfStrings(value.lockedNodeIds) ? value.lockedNodeIds : [];
   const nodeRewardsClaimedIds = arrayOfStrings(value.nodeRewardsClaimedIds) ? value.nodeRewardsClaimedIds : [];
+  const choiceIdsClaimed = arrayOfStrings(value.choiceIdsClaimed) ? value.choiceIdsClaimed : [];
+  const activeModifierIds = arrayOfStrings(value.activeModifierIds) ? value.activeModifierIds.filter(isCampaignModifierId) : [];
   return {
     started: value.started,
     difficulty,
+    resources: normalizeResourceBag(value.resources),
     completedNodeIds: [...new Set(completedNodeIds)],
     unlockedNodeIds: [...new Set(unlockedNodeIds)],
+    lockedNodeIds: [...new Set(lockedNodeIds)],
     nodeRewardsClaimedIds: [...new Set(nodeRewardsClaimedIds)],
+    choiceIdsClaimed: [...new Set(choiceIdsClaimed)],
+    activeModifierIds: [...new Set(activeModifierIds)],
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }
@@ -220,8 +229,36 @@ function clampNumber(value: unknown, min: number): number {
   return Math.max(min, isFiniteNumber(value) ? value : min);
 }
 
+function clampNumberRange(value: unknown, min: number, max: number): number {
+  return Math.min(max, Math.max(min, isFiniteNumber(value) ? value : min));
+}
+
 function arrayOfStrings(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === "string");
+}
+
+const RESOURCE_KEYS: ResourceKey[] = ["crowns", "stone", "iron", "aether"];
+const DEFAULT_FACTION_REPUTATION: Record<string, number> = {
+  free_marches: 10,
+  ashen_covenant: -10,
+  sylvan_concord: 0,
+  common_folk: 0,
+  old_faith: 0
+};
+
+function normalizeResourceBag(value: unknown): ResourceBag {
+  const source = isRecord(value) ? value : {};
+  return Object.fromEntries(
+    RESOURCE_KEYS.map((resource) => [resource, clampInteger(source[resource], 0)])
+  ) as ResourceBag;
+}
+
+function normalizeFactionReputation(value: Record<string, number>): Record<string, number> {
+  const reputation = { ...DEFAULT_FACTION_REPUTATION };
+  Object.entries(value).forEach(([factionId, amount]) => {
+    reputation[factionId] = Math.round(clampNumberRange(amount, -100, 100));
+  });
+  return reputation;
 }
 
 export function createFallbackHeroSave(): HeroSaveData {
@@ -238,9 +275,7 @@ export function createFallbackHeroSave(): HeroSaveData {
     inventory: [],
     equipment: {},
     allocatedSkills: {},
-    factionReputation: {
-      free_marches: 10
-    },
+    factionReputation: { ...DEFAULT_FACTION_REPUTATION },
     stats: {
       might: 8,
       command: 8,
@@ -254,8 +289,17 @@ export function createFallbackCampaignSave(): CampaignSaveData {
   return {
     started: false,
     difficulty: "easy",
+    resources: {
+      crowns: 0,
+      stone: 0,
+      iron: 0,
+      aether: 0
+    },
     completedNodeIds: [],
     unlockedNodeIds: [],
-    nodeRewardsClaimedIds: []
+    lockedNodeIds: [],
+    nodeRewardsClaimedIds: [],
+    choiceIdsClaimed: [],
+    activeModifierIds: []
   };
 }

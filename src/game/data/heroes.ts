@@ -25,7 +25,10 @@ export function createNewHeroSave(heroName: string, classId: string, originId: s
     allocatedSkills: {},
     factionReputation: {
       free_marches: 10,
-      ashen_covenant: -10
+      ashen_covenant: -10,
+      sylvan_concord: 0,
+      common_folk: 0,
+      old_faith: 0
     },
     stats: {
       might: stats.might,

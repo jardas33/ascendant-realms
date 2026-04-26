@@ -10,11 +10,15 @@ import type {
   RewardTableDefinition,
   SkillNodeDefinition,
   UnitDefinition,
-  UpgradeDefinition
+  UpgradeDefinition,
+  EnemyAIPersonalityDefinition,
+  CampaignModifierDefinition
 } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
+import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BUILDINGS } from "./buildings";
 import { CAMPAIGN_NODES } from "./campaignNodes";
+import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
 import { ITEMS } from "./items";
@@ -41,6 +45,8 @@ export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
 export const SKILL_NODE_BY_ID: Record<string, SkillNodeDefinition> = toIndex(SKILL_NODES);
 export const REWARD_TABLE_BY_ID: Record<string, RewardTableDefinition> = toIndex(REWARD_TABLES);
 export const UPGRADE_BY_ID: Record<string, UpgradeDefinition> = toIndex(UPGRADES);
+export const AI_PERSONALITY_BY_ID: Record<string, EnemyAIPersonalityDefinition> = toIndex(AI_PERSONALITIES);
+export const CAMPAIGN_MODIFIER_BY_ID: Record<string, CampaignModifierDefinition> = toIndex(CAMPAIGN_MODIFIERS);
 
 export function requireUnit(id: string): UnitDefinition {
   const definition = UNIT_BY_ID[id];
@@ -110,6 +116,22 @@ export function requireUpgrade(id: string): UpgradeDefinition {
   const definition = UPGRADE_BY_ID[id];
   if (!definition) {
     throw new Error(`Unknown upgrade id: ${id}`);
+  }
+  return definition;
+}
+
+export function requireAIPersonality(id: string): EnemyAIPersonalityDefinition {
+  const definition = AI_PERSONALITY_BY_ID[id];
+  if (!definition) {
+    throw new Error(`Unknown AI personality id: ${id}`);
+  }
+  return definition;
+}
+
+export function requireCampaignModifier(id: string): CampaignModifierDefinition {
+  const definition = CAMPAIGN_MODIFIER_BY_ID[id];
+  if (!definition) {
+    throw new Error(`Unknown campaign modifier id: ${id}`);
   }
   return definition;
 }

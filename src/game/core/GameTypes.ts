@@ -21,8 +21,14 @@ export type EquipmentSlot = "weapon" | "armor" | "trinket" | "relic";
 export type ItemRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 export type BattleDifficulty = "story" | "easy" | "normal" | "hard";
 export type BattlePhaseId = "opening" | "expansion" | "pressure" | "assault";
+export type EnemyAIPersonalityId = "balanced_warlord" | "raider_rush" | "fortress_keeper" | "hexfire_cult";
+export type CampaignModifierId = "inspired_militia" | "blessed_road" | "angered_raiders" | "local_support";
+export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "next_node_resource_reward";
 export type BuildingConstructionState = "planned" | "underConstruction" | "completed";
 export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
+export type VisibilityState = "unseen" | "explored" | "visible";
+export type StatusEffectType = "burn";
+export type FactionModifierType = "burn-on-hit" | "low-health-damage" | "wave-speed";
 
 export interface Position {
   x: number;
@@ -75,6 +81,7 @@ export interface UnitDefinition {
   trainTime: number;
   radius: number;
   color: number;
+  visionRadius: number;
   projectileColor?: number;
   stats: CombatStats;
   xpValue: number;
@@ -91,6 +98,7 @@ export interface BuildingDefinition {
   armor: number;
   size: Size;
   color: number;
+  visionRadius: number;
   constructionTimeSeconds: number;
   buildOptions: string[];
   trainOptions: string[];
@@ -126,6 +134,7 @@ export interface HeroClassDefinition {
   name: string;
   description: string;
   baseStats: HeroBaseStats;
+  visionRadius: number;
   primaryAbilityId: string;
   abilityIds: string[];
   color: number;
@@ -234,6 +243,48 @@ export interface FactionDefinition {
   name: string;
   fantasy: string;
   color: number;
+  mechanics: FactionMechanicsDefinition;
+}
+
+export interface FactionModifierDefinition {
+  id: string;
+  name: string;
+  description: string;
+  type: FactionModifierType;
+  unitIds?: string[];
+  hpThreshold?: number;
+  damageMultiplier?: number;
+  burn?: {
+    damagePerSecond: number;
+    durationSeconds: number;
+    tickInterval: number;
+  };
+  speedMultiplier?: number;
+}
+
+export interface FactionMechanicsDefinition {
+  economyStyle: string;
+  militaryStyle: string;
+  magicStyle: string;
+  availableUnitIds: string[];
+  availableBuildingIds: string[];
+  availableUpgradeIds: string[];
+  aiPersonalityPreferences: EnemyAIPersonalityId[];
+  campaignReputationHooks: string[];
+  factionModifiers: FactionModifierDefinition[];
+}
+
+export interface ActiveStatusEffect {
+  id: string;
+  name: string;
+  type: StatusEffectType;
+  remainingSeconds: number;
+  durationSeconds: number;
+  tickInterval: number;
+  tickTimer: number;
+  damagePerSecond: number;
+  sourceId?: string;
+  sourceTeam?: Team;
 }
 
 export interface ResourceDefinition {
@@ -289,6 +340,57 @@ export interface BattlePhaseDefinition {
   };
 }
 
+export type EnemyAIPhaseOverride = Partial<BattlePhaseDefinition["enemy"]>;
+
+export interface EnemyAIPersonalityDefinition {
+  id: EnemyAIPersonalityId;
+  name: string;
+  shortDescription: string;
+  description: string;
+  aggressionLevel: number;
+  preferredUnitIds: string[];
+  unitPlan: string[];
+  timing: {
+    firstAttackDelayMultiplier: number;
+    attackIntervalMultiplier: number;
+    expandIntervalMultiplier: number;
+    trainIntervalMultiplier: number;
+    commanderJoinDelayMultiplier: number;
+  };
+  economy: {
+    incomeMultiplier: number;
+  };
+  waves: {
+    attackWaveSizeMultiplier: number;
+    minAttackArmySizeDelta: number;
+    phaseOverrides: Partial<Record<BattlePhaseId, EnemyAIPhaseOverride>>;
+  };
+  defense: {
+    defendRadiusMultiplier: number;
+    defenseSquadSizeDelta: number;
+    reserveDefenseUnits: number;
+    protectCaptureSites: boolean;
+  };
+  commander: {
+    joinsFirstAttack: boolean;
+  };
+  behaviorNotes: string[];
+}
+
+export interface CampaignModifierDefinition {
+  id: CampaignModifierId;
+  name: string;
+  description: string;
+  trigger: CampaignModifierTrigger;
+  durationLabel: string;
+  effects: {
+    extraPlayerUnitIds?: string[];
+    extraEnemyUnitIds?: string[];
+    heroManaMultiplier?: number;
+    campaignResourceRewardMultiplier?: number;
+  };
+}
+
 export interface BattleDifficultyDefinition {
   id: BattleDifficulty;
   name: string;
@@ -303,6 +405,7 @@ export interface BattleDifficultyDefinition {
   minAttackArmySize: number;
   expandSquadSize: number;
   commanderJoinDelay: number;
+  fogOfWarEnabled: boolean;
 }
 
 export interface FirstMatchTutorialProtectionDefinition {
@@ -356,9 +459,20 @@ export interface BuildingSpawnDefinition {
   y: number;
 }
 
+export type BattleSecondaryObjectiveType = "capture_site" | "destroy_building" | "defeat_unit";
+
+export interface BattleSecondaryObjectiveDefinition {
+  id: string;
+  name: string;
+  description: string;
+  type: BattleSecondaryObjectiveType;
+  targetId: string;
+}
+
 export interface BattleObjectiveDefinition {
   playerBaseBuildingId: string;
   enemyBaseBuildingId: string;
+  secondaryObjectives?: BattleSecondaryObjectiveDefinition[];
 }
 
 export interface BattleMapPathDefinition {
@@ -419,10 +533,13 @@ export interface BattleStats {
   resourcesCaptured: number;
   firstSiteCaptured?: string;
   buildingsBuilt: number;
+  builtBuildingIds: string[];
   unitsTrained: number;
+  trainedUnitIds: string[];
   enemyWavesSurvived: number;
   xpGained: number;
   timeSeconds: number;
+  completedObjectiveIds: string[];
   outcome: "victory" | "defeat";
 }
 
@@ -430,6 +547,39 @@ export interface CampaignNodeRewardDefinition {
   itemIds?: string[];
   resources?: Partial<ResourceBag>;
   xp?: number;
+}
+
+export interface CampaignChoiceRequirements {
+  resources?: Partial<ResourceBag>;
+  heroLevel?: number;
+  completedNodeIds?: string[];
+  itemIds?: string[];
+  factionReputation?: Record<string, number>;
+}
+
+export interface CampaignChoiceRewardDefinition extends CampaignNodeRewardDefinition {
+  unlockNodeIds?: string[];
+  lockNodeIds?: string[];
+  modifierIds?: CampaignModifierId[];
+  removeModifierIds?: CampaignModifierId[];
+  reputationChanges?: Record<string, number>;
+  recoverHero?: boolean;
+}
+
+export interface CampaignNodeChoiceDefinition {
+  id: string;
+  label: string;
+  description: string;
+  requirements?: CampaignChoiceRequirements;
+  costs?: Partial<ResourceBag>;
+  rewards?: CampaignChoiceRewardDefinition;
+  reputationChanges?: Record<string, number>;
+  unlockNodeIds?: string[];
+  lockNodeIds?: string[];
+  modifierIds?: CampaignModifierId[];
+  removeModifierIds?: CampaignModifierId[];
+  onceOnly: boolean;
+  completesNode?: boolean;
 }
 
 export interface CampaignNodeDefinition {
@@ -440,8 +590,11 @@ export interface CampaignNodeDefinition {
   difficulty: BattleDifficulty;
   mapId: string;
   enemyFactionId: string;
+  aiPersonalityId?: EnemyAIPersonalityId;
   prerequisites: string[];
   rewards: CampaignNodeRewardDefinition;
+  eventText?: string;
+  choices?: CampaignNodeChoiceDefinition[];
   unlocks: string[];
   x: number;
   y: number;

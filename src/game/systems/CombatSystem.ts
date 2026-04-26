@@ -1,12 +1,14 @@
 import Phaser from "phaser";
 import { ATTACK_MOVE_SEARCH_RADIUS, DEFAULT_AGGRO_RADIUS } from "../core/Constants";
-import type { Position } from "../core/GameTypes";
+import type { FactionModifierDefinition, Position } from "../core/GameTypes";
 import { distance, normalizeVector } from "../core/MathUtils";
+import { FACTION_BY_ID } from "../data/contentIndex";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import { CollisionSystem } from "./CollisionSystem";
+import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
@@ -18,6 +20,7 @@ interface CombatSystemOptions {
   addProjectile: (projectile: Projectile) => void;
   onDamage: (target: BaseEntity, amount: number) => void;
   onKill: (killer: Combatant | Projectile, target: BaseEntity) => void;
+  onStatusApplied?: (target: BaseEntity, statusName: string) => void;
 }
 
 export class CombatSystem {
@@ -50,6 +53,10 @@ export class CombatSystem {
         return;
       }
 
+      if (attacker instanceof Unit && (attacker.attackTargetId || attacker.attackMove || attacker.team !== "player")) {
+        attacker.moveTarget = undefined;
+      }
+
       if (this.getCooldown(attacker) > 0) {
         return;
       }
@@ -69,7 +76,8 @@ export class CombatSystem {
         continue;
       }
       if (projectile.moveToward(target.position, deltaSeconds)) {
-        this.applyDamage(projectile, target, projectile.damage);
+        const source = this.findEntityById(projectile.sourceId);
+        this.applyDamage(source instanceof Unit || source instanceof Building ? source : projectile, target, projectile.damage);
         projectile.destroyView();
         projectiles.splice(i, 1);
       }
@@ -136,6 +144,9 @@ export class CombatSystem {
     const wasAlive = target.alive;
     const actual = target.takeDamage(amount);
     this.options.onDamage(target, actual);
+    if (actual > 0 && target.alive) {
+      this.applyOnHitEffects(source, target);
+    }
     if (wasAlive && !target.alive) {
       this.options.onKill(source, target);
       target.destroyView();
@@ -144,9 +155,55 @@ export class CombatSystem {
 
   private getDamage(attacker: Combatant): number {
     if (attacker instanceof Unit) {
-      return attacker.damage;
+      return this.applyLowHealthDamageModifiers(attacker, attacker.damage);
     }
     return attacker.definition.attack?.damage ?? 0;
+  }
+
+  private applyLowHealthDamageModifiers(attacker: Unit, damage: number): number {
+    return this.factionModifiersFor(attacker)
+      .filter((modifier) => modifier.type === "low-health-damage" && this.modifierAppliesToSource(modifier, attacker))
+      .reduce((currentDamage, modifier) => {
+        const threshold = modifier.hpThreshold ?? 0.5;
+        if (attacker.hp / attacker.maxHp > threshold) {
+          return currentDamage;
+        }
+        return currentDamage * (modifier.damageMultiplier ?? 1);
+      }, damage);
+  }
+
+  private applyOnHitEffects(source: Combatant | Projectile, target: BaseEntity): void {
+    if (!(source instanceof Unit) && !(source instanceof Building)) {
+      return;
+    }
+    this.factionModifiersFor(source)
+      .filter((modifier) => modifier.type === "burn-on-hit" && this.modifierAppliesToSource(modifier, source))
+      .forEach((modifier) => {
+        if (!modifier.burn) {
+          return;
+        }
+        applyStatusEffect(
+          target,
+          createBurnStatus({
+            id: `${modifier.id}:${source.definition.id}`,
+            name: "Burn",
+            damagePerSecond: modifier.burn.damagePerSecond,
+            durationSeconds: modifier.burn.durationSeconds,
+            tickInterval: modifier.burn.tickInterval,
+            sourceId: source.id,
+            sourceTeam: source.team
+          })
+        );
+        this.options.onStatusApplied?.(target, "Burn");
+      });
+  }
+
+  private factionModifiersFor(source: Unit | Building): FactionModifierDefinition[] {
+    return FACTION_BY_ID[source.definition.factionId]?.mechanics.factionModifiers ?? [];
+  }
+
+  private modifierAppliesToSource(modifier: FactionModifierDefinition, source: Unit | Building): boolean {
+    return !modifier.unitIds || modifier.unitIds.includes(source.definition.id);
   }
 
   private getRange(attacker: Combatant): number {

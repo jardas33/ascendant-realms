@@ -83,6 +83,14 @@ export class HeroCreationScene extends Phaser.Scene {
         <section class="menu-panel wide">
           <p class="eyebrow">${this.nextMode === "campaign" ? "New Campaign" : "Hero Creation"}</p>
           <h1>Choose Your Ascendant</h1>
+          <div class="guidance-card compact">
+            <strong>${this.nextMode === "campaign" ? "Campaign Begins At Border Village" : "Build A Persistent Hero"}</strong>
+            <p>${
+              this.nextMode === "campaign"
+                ? "Choose a hero style you like. The first battle teaches the RTS loop, then rewards feed into inventory and skill progression."
+                : "Your hero keeps XP, items, equipment, and skill choices between battles."
+            }</p>
+          </div>
           <label class="field-label" for="hero-name">Hero Name</label>
           <input id="hero-name" value="${escapeHtml(this.heroName)}" maxlength="24" />
           <div class="choice-columns">

@@ -50,6 +50,7 @@ export class Hero extends Unit {
       trainTime: 0,
       radius: 19,
       color: heroClass.color,
+      visionRadius: heroClass.visionRadius,
       projectileColor: heroClass.id === "arcanist" ? 0xff8b3d : undefined,
       stats: {
         maxHp: stats.maxHp,

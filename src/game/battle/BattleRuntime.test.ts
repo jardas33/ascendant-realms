@@ -24,11 +24,13 @@ describe("BattleRuntime", () => {
     expect(setup.requestId).toBe("skirmish:runtime_test:first_claim");
     expect(setup.mode).toBe("skirmish");
     expect(setup.mapId).toBe(testMap.id);
+    expect(setup.aiPersonalityId).toBe("balanced_warlord");
     expect(setup.heroSpawn).toEqual(testMap.scenario.heroSpawn);
     expect(setup.buildingSpawnCount).toBe(testMap.scenario.buildingSpawns.length);
     expect(setup.unitSpawnCount).toBe(testMap.scenario.unitSpawns.length);
     expect(setup.captureSiteCount).toBe(testMap.captureSites.length);
     expect(setup.neutralUnitCount).toBe(8);
+    expect(setup.secondaryObjectiveIds).toEqual([]);
     expect(setup.objectiveBuildingIds).toEqual({
       playerBase: "command_hall",
       enemyBase: "enemy_stronghold"
@@ -57,10 +59,12 @@ describe("BattleRuntime", () => {
     runtime.recordUnitKilled();
     runtime.recordBuildingDestroyed();
     runtime.recordResourceCaptured("crown_shrine");
-    runtime.recordBuildingBuilt();
-    runtime.recordUnitTrained();
+    runtime.recordBuildingBuilt("barracks");
+    runtime.recordUnitTrained("militia");
     runtime.recordEnemyWaveSurvived();
     runtime.recordXpGained(30);
+    expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(true);
+    expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(false);
 
     expect(runtime.stats).toMatchObject({
       unitsKilled: 1,
@@ -68,9 +72,12 @@ describe("BattleRuntime", () => {
       resourcesCaptured: 1,
       firstSiteCaptured: "crown_shrine",
       buildingsBuilt: 1,
+      builtBuildingIds: ["barracks"],
       unitsTrained: 1,
+      trainedUnitIds: ["militia"],
       enemyWavesSurvived: 1,
       xpGained: 30,
+      completedObjectiveIds: ["capture_burned_shrine"],
       timeSeconds: 2.5
     });
   });
@@ -86,10 +93,13 @@ describe("BattleRuntime", () => {
         resourcesCaptured: 2,
         firstSiteCaptured: "crown_shrine",
         buildingsBuilt: 1,
+        builtBuildingIds: ["barracks"],
         unitsTrained: 2,
+        trainedUnitIds: ["militia", "ranger"],
         enemyWavesSurvived: 1,
         xpGained: 80,
         timeSeconds: 120,
+        completedObjectiveIds: ["capture_burned_shrine"],
         outcome: "victory"
       },
       heroSave,
@@ -119,10 +129,13 @@ describe("BattleRuntime", () => {
         buildingsDestroyed: 0,
         resourcesCaptured: 0,
         buildingsBuilt: 0,
+        builtBuildingIds: [],
         unitsTrained: 0,
+        trainedUnitIds: [],
         enemyWavesSurvived: 0,
         xpGained: 0,
         timeSeconds: 44,
+        completedObjectiveIds: [],
         outcome: "defeat"
       },
       heroSave,
@@ -133,6 +146,8 @@ describe("BattleRuntime", () => {
     expect(result.rewardItemIds).toEqual([]);
     expect(result.reward).toEqual({ itemIds: [], resources: {}, xp: 0 });
     expect(result.heroSave).toBe(heroSave);
+    expect(result.heroSave.inventory).toEqual(heroSave.inventory);
+    expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles);
   });
 
   it("allows the runtime to complete only once", () => {

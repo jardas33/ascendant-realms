@@ -2,9 +2,10 @@ import Phaser from "phaser";
 import { ASSET_IDS, heroPortraitAssetId } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
 import { createSkirmishBattleLaunchRequest, type BattleLaunchRequest } from "../battle/BattleLaunchRequest";
-import type { BattleDifficulty } from "../core/GameTypes";
+import type { BattleDifficulty, EnemyAIPersonalityId } from "../core/GameTypes";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
+import { AI_PERSONALITIES, DEFAULT_AI_PERSONALITY_ID } from "../data/aiPersonalities";
 import { BATTLE_DIFFICULTIES, DEFAULT_BATTLE_DIFFICULTY } from "../data/battlePacing";
 import { FACTIONS } from "../data/factions";
 import { HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
@@ -26,6 +27,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private selectedMapId = DEFAULT_MAP_ID;
   private selectedDifficulty: BattleDifficulty = DEFAULT_BATTLE_DIFFICULTY;
   private selectedEnemyFactionId = DEFAULT_ENEMY_FACTION_ID;
+  private selectedAiPersonalityId: EnemyAIPersonalityId = DEFAULT_AI_PERSONALITY_ID;
 
   constructor() {
     super(SCENE_KEYS.skirmishSetup);
@@ -36,6 +38,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
     this.selectedMapId = data.launchRequest?.mapId ?? DEFAULT_MAP_ID;
     this.selectedDifficulty = data.launchRequest?.difficulty ?? DEFAULT_BATTLE_DIFFICULTY;
     this.selectedEnemyFactionId = data.launchRequest?.enemyProfileId ?? DEFAULT_ENEMY_FACTION_ID;
+    this.selectedAiPersonalityId = data.launchRequest?.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID;
   }
 
   create(): void {
@@ -63,6 +66,9 @@ export class SkirmishSetupScene extends Phaser.Scene {
         if (option.dataset.setupKind === "enemy" && SELECTABLE_ENEMY_FACTION_IDS.has(id)) {
           this.selectedEnemyFactionId = id;
         }
+        if (option.dataset.setupKind === "personality" && AI_PERSONALITIES.some((personality) => personality.id === id)) {
+          this.selectedAiPersonalityId = id as EnemyAIPersonalityId;
+        }
         this.render();
         return;
       }
@@ -74,6 +80,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
             mapId: this.selectedMapId,
             difficulty: this.selectedDifficulty,
             enemyProfileId: this.selectedEnemyFactionId,
+            aiPersonalityId: this.selectedAiPersonalityId,
             sourceId: "skirmish_setup"
           })
         });
@@ -111,6 +118,8 @@ export class SkirmishSetupScene extends Phaser.Scene {
               <div class="map-grid">${this.renderMapChoices()}</div>
               <h2>Difficulty</h2>
               <div class="difficulty-grid">${this.renderDifficultyChoices()}</div>
+              <h2>AI Personality</h2>
+              <div class="difficulty-grid">${this.renderPersonalityChoices()}</div>
             </section>
           </div>
           <div class="menu-actions row">
@@ -149,7 +158,8 @@ export class SkirmishSetupScene extends Phaser.Scene {
         return `
           <button class="choice compact-choice ${faction.id === this.selectedEnemyFactionId ? "selected" : ""}" data-setup-kind="enemy" data-id="${faction.id}" ${locked ? "disabled" : ""}>
             <strong>${escapeHtml(faction.name)}</strong>
-            <span>${escapeHtml(locked ? `${faction.fantasy} Future AI profile.` : `${faction.fantasy} Current AI profile.`)}</span>
+            <span>${escapeHtml(locked ? `${faction.fantasy} Future AI profile.` : faction.mechanics.militaryStyle)}</span>
+            <small>${escapeHtml(locked ? "Locked for now" : faction.mechanics.magicStyle)}</small>
           </button>
         `;
       })
@@ -175,6 +185,17 @@ export class SkirmishSetupScene extends Phaser.Scene {
         <button class="choice compact-choice ${difficulty.id === this.selectedDifficulty ? "selected" : ""}" data-setup-kind="difficulty" data-id="${difficulty.id}">
           <strong>${difficulty.name}</strong>
           <span>${difficulty.description}</span>
+        </button>
+      `
+    ).join("");
+  }
+
+  private renderPersonalityChoices(): string {
+    return AI_PERSONALITIES.map(
+      (personality) => `
+        <button class="choice compact-choice ${personality.id === this.selectedAiPersonalityId ? "selected" : ""}" data-setup-kind="personality" data-id="${personality.id}">
+          <strong>${escapeHtml(personality.name)}</strong>
+          <span>${escapeHtml(personality.shortDescription)}</span>
         </button>
       `
     ).join("");

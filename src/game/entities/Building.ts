@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { buildingBattleAssetIds } from "../assets/AssetKeys";
 import { clamp } from "../core/MathUtils";
-import type { BuildingConstructionState, BuildingDefinition, Cost, Team } from "../core/GameTypes";
+import type { BuildingConstructionState, BuildingDefinition, Cost, Position, Team } from "../core/GameTypes";
 import { BaseEntity } from "./BaseEntity";
 
 export interface TrainingQueueItem {
@@ -28,6 +28,8 @@ export class Building extends BaseEntity {
   constructionState: BuildingConstructionState;
   constructionProgress: number;
   constructionTimeSeconds: number;
+  rallyPoint?: Position;
+  rallyTargetId?: string;
 
   private constructionBarBack?: Phaser.GameObjects.Rectangle;
   private constructionBarFill?: Phaser.GameObjects.Rectangle;

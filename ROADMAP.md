@@ -27,6 +27,8 @@ Every phase should protect these long-term pillars:
 - Basic buildings.
 - Enemy AI.
 - Win/loss.
+- Three authored battlefields now prove the map pipeline: First Claim, Broken Ford, and Ashen Outpost.
+- Ashen Outpost serves as the first campaign milestone/boss-style fortress assault, with secondary objective tracking for map-specific goals.
 
 ## Phase 2: Hero RPG Depth
 
@@ -55,9 +57,11 @@ Every phase should protect these long-term pillars:
 
 ## Phase 4: Campaign Map
 
-- Node-based overworld. Skeleton implemented with six Border Marches nodes.
-- Locations. First pass includes battle and shrine-style node handling.
-- Save-backed node completion, unlocks, selected node, and one-time node rewards.
+- Node-based overworld. Skeleton implemented with seven Border Marches nodes.
+- Locations. First pass includes battle, shrine, and event node handling.
+- Ashen Outpost now uses a dedicated fortress map as the current mini-campaign finale.
+- Simple data-driven event choices with requirements, costs, rewards, reputation changes, and node unlocks.
+- Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.
 - Shops.
@@ -70,7 +74,7 @@ Every phase should protect these long-term pillars:
 - Faction reputation.
 - Alliances and betrayals.
 - Invasions.
-- Random events.
+- Deeper random events and multi-step dialogue.
 - Persistent consequences.
 
 ## Phase 5: Procedural Maps

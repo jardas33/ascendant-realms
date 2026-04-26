@@ -19,6 +19,7 @@ describe("BattleLaunchRequest", () => {
       mapId: "first_claim",
       sourceId: "main_menu_continue",
       difficulty: "normal",
+      aiPersonalityId: "balanced_warlord",
       modifiers: []
     });
     expect(request.heroSave).toBe(heroSave);
@@ -42,6 +43,7 @@ describe("BattleLaunchRequest", () => {
       mapId: "broken_ford",
       difficulty: "easy",
       enemyProfileId: "ashen_covenant",
+      aiPersonalityId: "raider_rush",
       sourceId: "skirmish_setup"
     });
     const resolved = resolveBattleLaunchRequest(request);
@@ -52,6 +54,7 @@ describe("BattleLaunchRequest", () => {
       expect(resolved.launch.rewardTable.id).toBe("broken_ford_rewards");
       expect(resolved.launch.request.difficulty).toBe("easy");
       expect(resolved.launch.request.enemyProfileId).toBe("ashen_covenant");
+      expect(resolved.launch.request.aiPersonalityId).toBe("raider_rush");
     }
   });
 
@@ -63,7 +66,8 @@ describe("BattleLaunchRequest", () => {
     const resolved = resolveBattleLaunchRequest({
       ...request,
       heroSave: { ...request.heroSave, level: "bad" } as never,
-      difficulty: "nightmare" as never
+      difficulty: "nightmare" as never,
+      aiPersonalityId: "missing_personality" as never
     });
 
     expect(resolved.ok).toBe(false);
@@ -73,6 +77,7 @@ describe("BattleLaunchRequest", () => {
           "Battle launch request references missing map missing_map.",
           "Battle launch request references missing reward table missing_rewards.",
           "Battle launch request references missing difficulty nightmare.",
+          "Battle launch request references missing AI personality missing_personality.",
           "Battle launch request includes invalid hero save data."
         ])
       );
@@ -95,6 +100,7 @@ describe("BattleLaunchRequest", () => {
   it("creates a campaign battle launch from node data", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "border_village");
+    const roadRequest = createCampaignBattleLaunchRequest(heroSave, "old_stone_road");
     const resolved = resolveBattleLaunchRequest(request);
 
     expect(request).toMatchObject({
@@ -102,13 +108,15 @@ describe("BattleLaunchRequest", () => {
       campaignNodeId: "border_village",
       mapId: "first_claim",
       difficulty: "easy",
-      enemyProfileId: "ashen_covenant"
+      enemyProfileId: "ashen_covenant",
+      aiPersonalityId: "balanced_warlord"
     });
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
       expect(resolved.launch.request.campaignNodeId).toBe("border_village");
       expect(resolved.launch.map.id).toBe("first_claim");
     }
+    expect(roadRequest.aiPersonalityId).toBe("raider_rush");
   });
 
   it("clones an existing request with updated hero progress", () => {

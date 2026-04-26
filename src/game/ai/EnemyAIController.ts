@@ -2,10 +2,19 @@ import type {
   BattleDifficulty,
   BattleDifficultyDefinition,
   BattlePhaseDefinition,
+  EnemyAIPersonalityDefinition,
+  EnemyAIPersonalityId,
   EnemyAIConfig,
+  Position,
   ResourceBag
 } from "../core/GameTypes";
 import { addResources, distance } from "../core/MathUtils";
+import {
+  applyAIPersonalityToConfig,
+  applyAIPersonalityToDifficulty,
+  applyAIPersonalityToPhase,
+  getAIPersonality
+} from "../data/aiPersonalities";
 import {
   FIRST_MATCH_TUTORIAL_PROTECTION,
   getBattleDifficulty,
@@ -37,6 +46,7 @@ interface EnemyAIOptions {
   onWaveLaunched: (units: Unit[]) => void;
   difficulty: BattleDifficulty;
   config: EnemyAIConfig;
+  aiPersonalityId?: EnemyAIPersonalityId;
 }
 
 export class EnemyAIController {
@@ -49,9 +59,13 @@ export class EnemyAIController {
   private attacksLaunched = 0;
   private readonly alerted = new Set<string>();
   private readonly difficulty: BattleDifficultyDefinition;
+  private readonly config: EnemyAIConfig;
+  private readonly personality: EnemyAIPersonalityDefinition;
 
   constructor(private readonly options: EnemyAIOptions) {
-    this.difficulty = getBattleDifficulty(options.difficulty);
+    this.personality = getAIPersonality(options.aiPersonalityId);
+    this.difficulty = applyAIPersonalityToDifficulty(getBattleDifficulty(options.difficulty), this.personality);
+    this.config = applyAIPersonalityToConfig(options.config, this.personality);
     this.expandTimer = 0;
     this.attackTimer = 0;
   }
@@ -63,15 +77,15 @@ export class EnemyAIController {
     }
 
     const elapsedSeconds = this.options.getElapsedSeconds();
-    const phase = getBattlePhase(elapsedSeconds);
+    const phase = applyAIPersonalityToPhase(getBattlePhase(elapsedSeconds), this.personality);
     this.incomeTimer += deltaSeconds;
     this.trainTimer += deltaSeconds;
     this.expandTimer += deltaSeconds;
     this.attackTimer += deltaSeconds;
 
-    if (this.incomeTimer >= this.options.config.incomeInterval) {
+    if (this.incomeTimer >= this.config.incomeInterval) {
       this.incomeTimer = 0;
-      addResources(this.options.resources, scaledEnemyIncome(this.options.config.incomePerTick, this.difficulty.enemyIncomeMultiplier));
+      addResources(this.options.resources, scaledEnemyIncome(this.config.incomePerTick, this.difficulty.enemyIncomeMultiplier));
     }
 
     if (this.trainTimer >= this.difficulty.trainInterval) {
@@ -119,14 +133,14 @@ export class EnemyAIController {
           building.alive &&
           building.team === "enemy" &&
           building.isCompleted() &&
-          building.definition.id === this.options.config.productionBuildingId &&
+          building.definition.id === this.config.productionBuildingId &&
           building.definition.trainOptions.length > 0
       );
     if (!production) {
       return;
     }
 
-    if (this.options.config.unitPlan.length === 0) {
+    if (this.config.unitPlan.length === 0) {
       return;
     }
     const unitId = this.nextTrainUnitId(phase);
@@ -137,8 +151,8 @@ export class EnemyAIController {
   }
 
   private nextTrainUnitId(phase: BattlePhaseDefinition): string | undefined {
-    for (let attempt = 0; attempt < this.options.config.unitPlan.length; attempt += 1) {
-      const unitId = this.options.config.unitPlan[this.trainPlanIndex % this.options.config.unitPlan.length];
+    for (let attempt = 0; attempt < this.config.unitPlan.length; attempt += 1) {
+      const unitId = this.config.unitPlan[this.trainPlanIndex % this.config.unitPlan.length];
       this.trainPlanIndex += 1;
       if (phase.enemy.trainUnitIds.includes(unitId)) {
         return unitId;
@@ -206,7 +220,7 @@ export class EnemyAIController {
       return [];
     }
 
-    const candidates = army.filter((unit) => this.canJoinAttack(unit, phase));
+    const candidates = this.attackCandidates(army, phase);
     const selected: Unit[] = [];
     const counts: Record<string, number> = {};
 
@@ -257,7 +271,8 @@ export class EnemyAIController {
       return false;
     }
     if (unitId === "enemy_commander") {
-      return this.attacksLaunched > 0 && phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
+      const canJoinFirstAttack = this.personality.commander.joinsFirstAttack || this.attacksLaunched > 0;
+      return canJoinFirstAttack && phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
     }
     return true;
   }
@@ -275,39 +290,60 @@ export class EnemyAIController {
     this.options.onAlert(message);
   }
 
+  private attackCandidates(army: Unit[], phase: BattlePhaseDefinition): Unit[] {
+    const candidates = army.filter((unit) => this.canJoinAttack(unit, phase));
+    const reserveCount = Math.min(this.personality.defense.reserveDefenseUnits, Math.max(0, candidates.length - 1));
+    if (reserveCount <= 0) {
+      return candidates;
+    }
+    return candidates.slice(0, Math.max(1, candidates.length - reserveCount));
+  }
+
   private defendBase(): void {
-    const enemyBase = this.options
-      .getBuildings()
-      .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.options.config.baseBuildingId);
-    if (!enemyBase) {
+    const threat = this.findDefenseThreat();
+    if (!threat) {
       return;
     }
-    const threat = this.options
+    this.enemyArmy()
+      .slice(0, this.config.defenseSquadSize)
+      .forEach((unit) => unit.commandAttack(threat.id));
+  }
+
+  private findDefenseThreat(): Unit | undefined {
+    const enemyBase = this.options
+      .getBuildings()
+      .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.config.baseBuildingId);
+    if (!enemyBase) {
+      return undefined;
+    }
+    const baseThreat = this.options
       .getUnits()
       .find(
         (unit) =>
           unit.alive &&
           unit.team === "player" &&
-          distance(unit.position, enemyBase.position) <= this.options.config.defendRadius
+          distance(unit.position, enemyBase.position) <= this.config.defendRadius
       );
-    if (!threat) {
-      return;
+    if (baseThreat) {
+      return baseThreat;
     }
-    this.enemyArmy()
-      .slice(0, this.options.config.defenseSquadSize)
-      .forEach((unit) => unit.commandAttack(threat.id));
+
+    if (!this.personality.defense.protectCaptureSites) {
+      return undefined;
+    }
+    const defendedSites = this.options.getCaptureSites().filter((site) => site.owner === "enemy");
+    return this.options
+      .getUnits()
+      .find(
+        (unit) =>
+          unit.alive &&
+          unit.team === "player" &&
+          defendedSites.some((site) => distance(unit.position, site.position as Position) <= this.config.defendRadius * 0.72)
+      );
   }
 
   private shouldDefend(): boolean {
-    const enemyBase = this.options
-      .getBuildings()
-      .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.options.config.baseBuildingId);
-    if (!enemyBase) {
-      return false;
-    }
-    return this.options
-      .getUnits()
-      .some((unit) => unit.alive && unit.team === "player" && distance(unit.position, enemyBase.position) <= this.options.config.defendRadius);
+    return Boolean(this.findDefenseThreat());
   }
 
   private enemyArmy(): Unit[] {

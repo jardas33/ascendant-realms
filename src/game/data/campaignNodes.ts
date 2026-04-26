@@ -4,11 +4,12 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
   {
     id: "border_village",
     name: "Border Village",
-    description: "A Free Marches village is holding against Ashen raiders. Secure the settlement and prove your banner can protect the frontier.",
+    description: "Tutorial battle. Secure a Free Marches village by learning the core loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
     nodeType: "battle",
     difficulty: "easy",
     mapId: "first_claim",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "balanced_warlord",
     prerequisites: [],
     rewards: {
       xp: 35,
@@ -22,28 +23,30 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
   {
     id: "old_stone_road",
     name: "Old Stone Road",
-    description: "The old trade road links every nearby claim. Clear the patrol route before the enemy turns it into an invasion lane.",
+    description: "First real battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner expansion and better use of your hero rewards.",
     nodeType: "battle",
     difficulty: "easy",
     mapId: "first_claim",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "raider_rush",
     prerequisites: ["border_village"],
     rewards: {
       xp: 40,
       resources: { crowns: 45, stone: 35 }
     },
-    unlocks: ["aether_well_ruins", "bandit_hillfort"],
+    unlocks: ["aether_well_ruins", "bandit_hillfort", "refugee_caravan"],
     x: 30,
     y: 52
   },
   {
     id: "aether_well_ruins",
     name: "Aether Well Ruins",
-    description: "A broken well still leaks power under the stones. Claim it before Ashen hexers bind the site for war.",
+    description: "Harder battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero before taking the well.",
     nodeType: "battle",
     difficulty: "normal",
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "hexfire_cult",
     prerequisites: ["old_stone_road"],
     rewards: {
       xp: 50,
@@ -57,11 +60,12 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
   {
     id: "bandit_hillfort",
     name: "Bandit Hillfort",
-    description: "A raider-backed hillfort taxes the valley by threat of blade. Break its outer guard and deny the Ashen Covenant a staging point.",
+    description: "Harder battle. A raider-backed hillfort checks whether you can build a stable army while holding resources under pressure.",
     nodeType: "battle",
     difficulty: "normal",
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "fortress_keeper",
     prerequisites: ["old_stone_road"],
     rewards: {
       xp: 55,
@@ -75,34 +79,139 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
   {
     id: "chapel_of_the_marches",
     name: "Chapel of the Marches",
-    description: "A roadside chapel shelters wounded scouts and old oaths. Restore its signal fire to strengthen the march.",
+    description: "Campaign choice node. A roadside chapel shelters wounded scouts and old oaths. Choose a blessing, spend campaign resources, or ask for guidance before the next fight.",
     nodeType: "shrine",
     difficulty: "story",
     mapId: "first_claim",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "balanced_warlord",
     prerequisites: ["aether_well_ruins"],
-    rewards: {
-      xp: 30,
-      resources: { aether: 30 },
-      itemIds: ["green_chapel_icon"]
-    },
+    rewards: {},
+    eventText:
+      "Green candles still burn in the chapel crypt. The keeper offers one blessing freely, but deeper repairs will need stone, crowns, and a banner willing to be seen helping.",
+    choices: [
+      {
+        id: "pray_for_strength",
+        label: "Pray for Strength",
+        description: "Take a quiet vigil with the wounded scouts. The chapel blesses the next road you march.",
+        rewards: {
+          xp: 30,
+          resources: { aether: 15 },
+          modifierIds: ["blessed_road"],
+          reputationChanges: { old_faith: 3, common_folk: 1 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "repair_chapel",
+        label: "Repair the Chapel",
+        description: "Spend campaign supplies to restore the signal fire. The Marches remember visible acts of stewardship.",
+        costs: { crowns: 60, stone: 70 },
+        rewards: {
+          resources: { aether: 35 },
+          itemIds: ["green_chapel_icon"],
+          unlockNodeIds: ["ashen_outpost"],
+          modifierIds: ["local_support"],
+          removeModifierIds: ["angered_raiders"],
+          reputationChanges: { free_marches: 2, old_faith: 6, common_folk: 2 },
+          recoverHero: true
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "ask_for_guidance",
+        label: "Ask for Guidance",
+        description: "The keeper points to smoke from the Ashen Outpost and warns that its hexers mass near the ford.",
+        rewards: {
+          xp: 10,
+          unlockNodeIds: ["refugee_caravan", "ashen_outpost"],
+          reputationChanges: { old_faith: 1 }
+        },
+        onceOnly: true,
+        completesNode: false
+      }
+    ],
     unlocks: ["ashen_outpost"],
     x: 74,
     y: 38
   },
   {
+    id: "refugee_caravan",
+    name: "Refugee Caravan",
+    description: "Campaign choice node. A weary caravan carries news, hungry families, and a few hands still able to hold a spear. Your decision trades resources, reputation, and rewards.",
+    nodeType: "event",
+    difficulty: "story",
+    mapId: "first_claim",
+    enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "balanced_warlord",
+    prerequisites: ["old_stone_road"],
+    rewards: {},
+    eventText:
+      "The caravan asks for protection before crossing open country. Your answer will travel faster than your army.",
+    choices: [
+      {
+        id: "protect_them",
+        label: "Protect Them",
+        description: "Assign supplies and outriders to escort the families. It is costly, but the Marches will know who stood guard.",
+        costs: { crowns: 35, iron: 15 },
+        rewards: {
+          xp: 25,
+          itemIds: ["scouts_bow"],
+          modifierIds: ["inspired_militia"],
+          reputationChanges: { common_folk: 6, free_marches: 2 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "recruit_volunteers",
+        label: "Recruit Volunteers",
+        description: "Offer food, order, and a banner. A few caravan guards become the seed of a stronger militia.",
+        requirements: { heroLevel: 2 },
+        rewards: {
+          xp: 20,
+          resources: { iron: 25 },
+          itemIds: ["marcher_plate"],
+          modifierIds: ["inspired_militia"],
+          reputationChanges: { common_folk: -2, free_marches: 2 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "demand_tribute",
+        label: "Demand Tribute",
+        description: "Take coin for passage and leave the caravan to fend for itself. The purse grows; so does resentment.",
+        rewards: {
+          resources: { crowns: 90 },
+          modifierIds: ["angered_raiders"],
+          reputationChanges: { common_folk: -8, free_marches: -2, ashen_covenant: -3 }
+        },
+        onceOnly: true,
+        completesNode: true
+      }
+    ],
+    unlocks: [],
+    x: 42,
+    y: 80
+  },
+  {
     id: "ashen_outpost",
     name: "Ashen Outpost",
-    description: "The first Ashen forward camp anchors the enemy push. Destroy the outpost and the border breathes again.",
+    description:
+      "Milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, break enemy production, and destroy the fortified Stronghold.",
     nodeType: "battle",
     difficulty: "normal",
-    mapId: "broken_ford",
+    mapId: "ashen_outpost",
     enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "hexfire_cult",
     prerequisites: ["bandit_hillfort", "chapel_of_the_marches"],
     rewards: {
-      xp: 75,
-      resources: { crowns: 100, iron: 55, aether: 35 },
-      itemIds: ["ashbound_censer"]
+      xp: 90,
+      resources: { crowns: 125, stone: 65, iron: 75, aether: 50 },
+      itemIds: ["oathbound_aegis"]
     },
     unlocks: [],
     x: 88,

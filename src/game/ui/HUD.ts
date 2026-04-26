@@ -156,10 +156,17 @@ export class HUD {
   private renderSelection(selectedOne: Unit | Building | undefined, selected: Array<Unit | Building>): string {
     if (!selectedOne) {
       if (selected.length > 1) {
+        const productionBuildings = selected.filter(
+          (entity): entity is Building => entity instanceof Building && entity.isCompleted() && entity.definition.trainOptions.length > 0
+        );
         return `<div class="selection-grid">${selected
           .slice(0, 12)
           .map((entity) => `<span>${escapeHtml(entity.definition.name)}</span>`)
-          .join("")}</div>`;
+          .join("")}</div>${
+          productionBuildings.length > 0
+            ? `<p class="quiet">Rally Point: ${productionBuildings.some((building) => building.rallyPoint) ? "Set" : "None"}. Right-click ground to set rally point.</p>`
+            : ""
+        }`;
       }
       return `<p class="quiet">Select your hero, troops, or buildings.</p>`;
     }
@@ -176,6 +183,7 @@ export class HUD {
     }
 
     const training = selectedOne.trainingQueue[0];
+    const showRally = selectedOne.isCompleted() && selectedOne.definition.trainOptions.length > 0;
     return `
       <div class="stat-list">
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
@@ -192,7 +200,9 @@ export class HUD {
             ? `<span>Research ${escapeHtml(this.upgradeName(selectedOne.upgradeQueue[0].upgradeId))}</span>`
             : "<span>Research idle</span>"
         }
+        ${showRally ? `<span>Rally Point: ${selectedOne.rallyPoint ? "Set" : "None"}</span>` : ""}
       </div>
+      ${showRally ? `<p class="quiet">Right-click ground to set rally point.</p>` : ""}
       ${selectedOne.isUnderConstruction() ? this.renderProgress("Construction", selectedOne.constructionProgress) : ""}
       ${this.renderProductionQueue(selectedOne)}
       ${this.renderUpgradeQueue(selectedOne)}

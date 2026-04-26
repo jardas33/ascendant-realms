@@ -1,6 +1,6 @@
-import type { ResourceKey, Team } from "../core/GameTypes";
+import type { ResourceKey, Team, VisibilityState } from "../core/GameTypes";
 
-export type MinimapMarkerKind = "unit" | "building" | "capture-site" | "camp";
+export type MinimapMarkerKind = "unit" | "building" | "capture-site" | "camp" | "rally";
 
 export interface MinimapMarker {
   id: string;
@@ -32,6 +32,15 @@ export interface MinimapPing {
 
 export interface MinimapFogState {
   enabled: boolean;
+  cells?: MinimapFogCell[];
+}
+
+export interface MinimapFogCell {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  state: VisibilityState;
 }
 
 export interface MinimapSnapshot {
@@ -62,12 +71,30 @@ export function renderMinimap(snapshot: MinimapSnapshot): string {
       <svg class="minimap-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <rect class="minimap-terrain" x="0" y="0" width="100" height="100"></rect>
         <rect class="minimap-bounds" x="0.5" y="0.5" width="99" height="99"></rect>
+        ${renderFog(snapshot)}
         ${markers.map((marker) => renderMarker(snapshot, marker)).join("")}
         ${snapshot.pings.map((ping) => renderPing(snapshot, ping)).join("")}
         ${renderCamera(snapshot)}
       </svg>
     </div>
   `;
+}
+
+function renderFog(snapshot: MinimapSnapshot): string {
+  if (!snapshot.fog.enabled || !snapshot.fog.cells) {
+    return "";
+  }
+  return snapshot.fog.cells
+    .filter((cell) => cell.state !== "visible")
+    .map((cell) => {
+      const x = worldToMinimapX(snapshot, cell.x);
+      const y = worldToMinimapY(snapshot, cell.y);
+      const width = formatNumber(clamp((cell.width / snapshot.mapWidth) * 100, 0, 100));
+      const height = formatNumber(clamp((cell.height / snapshot.mapHeight) * 100, 0, 100));
+      const opacity = cell.state === "unseen" ? 0.78 : 0.34;
+      return `<rect class="minimap-fog ${cell.state}" x="${x}" y="${y}" width="${width}" height="${height}" fill="#020503" opacity="${formatNumber(opacity)}"></rect>`;
+    })
+    .join("");
 }
 
 function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string {
@@ -95,6 +122,15 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
       `${formatNumber(Number(x) - radius)},${y}`
     ].join(" ");
     return `<polygon class="minimap-camp" points="${points}" fill="#a8733b" stroke="#f0d978" stroke-width="0.55"></polygon>`;
+  }
+
+  if (marker.kind === "rally") {
+    return `
+      <g class="minimap-rally">
+        <circle cx="${x}" cy="${y}" r="2.2" fill="#11351f" stroke="#9cf7b1" stroke-width="0.65"></circle>
+        <path d="M ${x} ${formatNumber(Number(y) + 2.8)} L ${x} ${formatNumber(Number(y) - 4)} L ${formatNumber(Number(x) + 4.2)} ${formatNumber(Number(y) - 2.5)} L ${x} ${formatNumber(Number(y) - 1)} Z" fill="#78dc7b" stroke="#f5efc2" stroke-width="0.45"></path>
+      </g>
+    `;
   }
 
   return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.35)}" fill="${teamColor(marker.team)}" stroke="${teamStroke(marker.team)}" stroke-width="0.45"></circle>`;
@@ -130,7 +166,10 @@ function markerSortOrder(marker: MinimapMarker): number {
   if (marker.kind === "building") {
     return 2;
   }
-  return 3;
+  if (marker.kind === "rally") {
+    return 3;
+  }
+  return 4;
 }
 
 function worldToMinimapX(snapshot: MinimapSnapshot, x: number): string {

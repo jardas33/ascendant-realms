@@ -3,6 +3,7 @@ import { FORMATION_SPACING } from "../core/Constants";
 import type { Position } from "../core/GameTypes";
 import { formationOffset } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
+import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { SelectionSystem } from "./SelectionSystem";
 
@@ -15,9 +16,12 @@ interface InputSystemOptions {
   placeBuilding: (point: Position) => boolean;
   cancelPlacement: () => void;
   getSelectedUnits: () => Unit[];
+  getSelectedRallyBuildings: () => Building[];
+  setRallyPoint: (point: Position, buildings: Building[]) => boolean;
   selectHero: () => void;
   centerOnHero: () => void;
   castAbilitySlot: (slot: number) => void;
+  toggleFogDebug?: () => void;
   showMessage: (message: string) => void;
 }
 
@@ -115,6 +119,7 @@ export class InputSystem {
     this.addKeyHandler("keydown-NUMPAD_TWO", () => this.options.castAbilitySlot(1));
     this.addKeyHandler("keydown-THREE", () => this.options.castAbilitySlot(2));
     this.addKeyHandler("keydown-NUMPAD_THREE", () => this.options.castAbilitySlot(2));
+    this.addKeyHandler("keydown-F", () => this.options.toggleFogDebug?.());
     this.addKeyHandler("keydown-ESC", () => {
       if (this.options.isPlacingBuilding()) {
         this.options.cancelPlacement();
@@ -151,14 +156,16 @@ export class InputSystem {
       return;
     }
 
+    const target = this.options.findWorldEntityAt(point);
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
-    if (selectedUnits.length === 0) {
+    if (target && target.alive && target.team !== "player") {
+      selectedUnits.forEach((unit) => unit.commandAttack(target.id));
+      this.attackMoveMode = false;
       return;
     }
 
-    const target = this.options.findWorldEntityAt(point);
-    if (target && target.alive && target.team !== "player") {
-      selectedUnits.forEach((unit) => unit.commandAttack(target.id));
+    if (selectedUnits.length === 0) {
+      this.options.setRallyPoint(point, this.options.getSelectedRallyBuildings());
       this.attackMoveMode = false;
       return;
     }

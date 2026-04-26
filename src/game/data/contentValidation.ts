@@ -1,8 +1,10 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
+import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BATTLE_DIFFICULTIES } from "./battlePacing";
 import { BUILDINGS } from "./buildings";
 import { CAMPAIGN_NODES } from "./campaignNodes";
+import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
 import { ITEMS } from "./items";
@@ -28,6 +30,8 @@ interface ValidationContext {
   rewardTableIds: Set<string>;
   upgradeIds: Set<string>;
   campaignNodeIds: Set<string>;
+  aiPersonalityIds: Set<string>;
+  campaignModifierIds: Set<string>;
 }
 
 export function validateContent(): string[] {
@@ -45,7 +49,9 @@ export function validateContent(): string[] {
     skillNodeIds: idsFor(SKILL_NODES, "skill node", errors),
     rewardTableIds: idsFor(REWARD_TABLES, "reward table", errors),
     upgradeIds: idsFor(UPGRADES, "upgrade", errors),
-    campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors)
+    campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors),
+    aiPersonalityIds: idsFor(AI_PERSONALITIES, "AI personality", errors),
+    campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors)
   };
 
   validateUnits(errors, context);
@@ -55,11 +61,14 @@ export function validateContent(): string[] {
   validateItems(errors, context);
   validateOrigins(errors);
   validateResources(errors);
+  validateFactions(errors, context);
   validateSkillNodes(errors, context);
   validateRewardTables(errors, context);
   validateCampaignNodes(errors, context);
   validateUpgrades(errors, context);
   validateDifficulties(errors);
+  validateAIPersonalities(errors, context);
+  validateCampaignModifiers(errors, context);
   MAPS.forEach((map) => validateMap(map, errors, context));
   return errors;
 }
@@ -80,6 +89,9 @@ function validateCampaignNodes(errors: string[], context: ValidationContext): vo
     }
     if (!BATTLE_DIFFICULTIES.some((difficulty) => difficulty.id === node.difficulty)) {
       errors.push(`Campaign node ${node.id} references missing difficulty ${node.difficulty}.`);
+    }
+    if (node.aiPersonalityId && !context.aiPersonalityIds.has(node.aiPersonalityId)) {
+      errors.push(`Campaign node ${node.id} references missing AI personality ${node.aiPersonalityId}.`);
     }
     node.prerequisites.forEach((nodeId) => {
       if (!context.campaignNodeIds.has(nodeId)) {
@@ -107,10 +119,205 @@ function validateCampaignNodes(errors: string[], context: ValidationContext): vo
     if ((node.rewards.xp ?? 0) < 0) {
       errors.push(`Campaign node ${node.id} has negative XP reward.`);
     }
+    assertUniqueIds(node.choices ?? [], `Campaign node ${node.id} choice`, errors);
+    node.choices?.forEach((choice) => validateCampaignChoice(node.id, choice, errors, context));
   });
   if (!CAMPAIGN_NODES.some((node) => node.prerequisites.length === 0)) {
     errors.push("Campaign needs at least one starting node.");
   }
+}
+
+function validateAIPersonalities(errors: string[], context: ValidationContext): void {
+  AI_PERSONALITIES.forEach((personality) => {
+    if (!personality.name.trim() || !personality.shortDescription.trim() || !personality.description.trim()) {
+      errors.push(`AI personality ${personality.id} needs name, shortDescription, and description.`);
+    }
+    if (personality.aggressionLevel < 0 || personality.aggressionLevel > 1) {
+      errors.push(`AI personality ${personality.id} aggressionLevel must be between 0 and 1.`);
+    }
+    personality.preferredUnitIds.forEach((unitId) => {
+      if (!context.unitIds.has(unitId)) {
+        errors.push(`AI personality ${personality.id} prefers missing unit ${unitId}.`);
+      }
+    });
+    personality.unitPlan.forEach((unitId) => {
+      if (!context.unitIds.has(unitId)) {
+        errors.push(`AI personality ${personality.id} trains missing unit ${unitId}.`);
+      }
+    });
+    if (personality.unitPlan.length === 0) {
+      errors.push(`AI personality ${personality.id} must include a unit plan.`);
+    }
+    Object.entries(personality.timing).forEach(([field, multiplier]) => {
+      if (multiplier <= 0) {
+        errors.push(`AI personality ${personality.id} has invalid timing multiplier ${field}.`);
+      }
+    });
+    if (personality.economy.incomeMultiplier < 0) {
+      errors.push(`AI personality ${personality.id} cannot have negative income multiplier.`);
+    }
+    if (personality.waves.attackWaveSizeMultiplier <= 0) {
+      errors.push(`AI personality ${personality.id} has invalid attack wave multiplier.`);
+    }
+    Object.entries(personality.waves.phaseOverrides).forEach(([phaseId, override]) => {
+      if (!["opening", "expansion", "pressure", "assault"].includes(phaseId)) {
+        errors.push(`AI personality ${personality.id} has invalid phase override ${phaseId}.`);
+      }
+      override.allowedAttackUnitIds?.forEach((unitId) => {
+        if (!context.unitIds.has(unitId)) {
+          errors.push(`AI personality ${personality.id} phase ${phaseId} allows missing unit ${unitId}.`);
+        }
+      });
+      override.preferredAttackUnitIds?.forEach((unitId) => {
+        if (!context.unitIds.has(unitId)) {
+          errors.push(`AI personality ${personality.id} phase ${phaseId} prefers missing unit ${unitId}.`);
+        }
+      });
+      override.trainUnitIds?.forEach((unitId) => {
+        if (!context.unitIds.has(unitId)) {
+          errors.push(`AI personality ${personality.id} phase ${phaseId} trains missing unit ${unitId}.`);
+        }
+      });
+      Object.keys(override.maxAttackByUnitId ?? {}).forEach((unitId) => {
+        if (!context.unitIds.has(unitId)) {
+          errors.push(`AI personality ${personality.id} phase ${phaseId} caps missing unit ${unitId}.`);
+        }
+      });
+    });
+    if (personality.defense.defendRadiusMultiplier <= 0 || personality.defense.reserveDefenseUnits < 0) {
+      errors.push(`AI personality ${personality.id} has invalid defense tuning.`);
+    }
+  });
+}
+
+function validateCampaignModifiers(errors: string[], context: ValidationContext): void {
+  CAMPAIGN_MODIFIERS.forEach((modifier) => {
+    if (!modifier.name.trim() || !modifier.description.trim() || !modifier.durationLabel.trim()) {
+      errors.push(`Campaign modifier ${modifier.id} needs name, description, and durationLabel.`);
+    }
+    if (!["next_battle", "next_ashen_battle", "next_node_resource_reward"].includes(modifier.trigger)) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid trigger ${modifier.trigger}.`);
+    }
+    [...(modifier.effects.extraPlayerUnitIds ?? []), ...(modifier.effects.extraEnemyUnitIds ?? [])].forEach((unitId) => {
+      if (!context.unitIds.has(unitId)) {
+        errors.push(`Campaign modifier ${modifier.id} references missing unit ${unitId}.`);
+      }
+    });
+    if (modifier.effects.heroManaMultiplier !== undefined && modifier.effects.heroManaMultiplier <= 0) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid hero mana multiplier.`);
+    }
+    if (modifier.effects.campaignResourceRewardMultiplier !== undefined && modifier.effects.campaignResourceRewardMultiplier <= 0) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid resource reward multiplier.`);
+    }
+  });
+}
+
+function validateCampaignChoice(
+  nodeId: string,
+  choice: {
+    id: string;
+    label: string;
+    description: string;
+    requirements?: {
+      resources?: Partial<Record<string, number>>;
+      heroLevel?: number;
+      completedNodeIds?: string[];
+      itemIds?: string[];
+      factionReputation?: Record<string, number>;
+    };
+    costs?: Partial<Record<string, number>>;
+    rewards?: {
+      itemIds?: string[];
+      resources?: Partial<Record<string, number>>;
+      xp?: number;
+      unlockNodeIds?: string[];
+      lockNodeIds?: string[];
+      modifierIds?: string[];
+      removeModifierIds?: string[];
+      reputationChanges?: Record<string, number>;
+    };
+    reputationChanges?: Record<string, number>;
+    unlockNodeIds?: string[];
+    lockNodeIds?: string[];
+    modifierIds?: string[];
+    removeModifierIds?: string[];
+  },
+  errors: string[],
+  context: ValidationContext
+): void {
+  if (!choice.id.trim() || !choice.label.trim() || !choice.description.trim()) {
+    errors.push(`Campaign node ${nodeId} has a choice missing id, label, or description.`);
+  }
+  validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} cost`, choice.costs, errors, context);
+  validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} resource requirement`, choice.requirements?.resources, errors, context);
+  validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} reward`, choice.rewards?.resources, errors, context);
+  if (choice.requirements?.heroLevel !== undefined && choice.requirements.heroLevel <= 0) {
+    errors.push(`Campaign choice ${nodeId}:${choice.id} has invalid hero level requirement.`);
+  }
+  choice.requirements?.completedNodeIds?.forEach((requiredNodeId) => {
+    if (!context.campaignNodeIds.has(requiredNodeId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} requires missing node ${requiredNodeId}.`);
+    }
+  });
+  choice.requirements?.itemIds?.forEach((itemId) => {
+    if (!context.itemIds.has(itemId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} requires missing item ${itemId}.`);
+    }
+  });
+  Object.keys(choice.requirements?.factionReputation ?? {}).forEach((factionId) => {
+    if (!context.factionIds.has(factionId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} requires missing faction reputation ${factionId}.`);
+    }
+  });
+  choice.rewards?.itemIds?.forEach((itemId) => {
+    if (!context.itemIds.has(itemId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} rewards missing item ${itemId}.`);
+    }
+  });
+  if ((choice.rewards?.xp ?? 0) < 0) {
+    errors.push(`Campaign choice ${nodeId}:${choice.id} has negative XP reward.`);
+  }
+  [...(choice.unlockNodeIds ?? []), ...(choice.rewards?.unlockNodeIds ?? [])].forEach((unlockNodeId) => {
+    if (!context.campaignNodeIds.has(unlockNodeId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} unlocks missing node ${unlockNodeId}.`);
+    }
+  });
+  [...(choice.lockNodeIds ?? []), ...(choice.rewards?.lockNodeIds ?? [])].forEach((lockNodeId) => {
+    if (!context.campaignNodeIds.has(lockNodeId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} locks missing node ${lockNodeId}.`);
+    }
+  });
+  [...(choice.modifierIds ?? []), ...(choice.rewards?.modifierIds ?? [])].forEach((modifierId) => {
+    if (!context.campaignModifierIds.has(modifierId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} grants missing modifier ${modifierId}.`);
+    }
+  });
+  [...(choice.removeModifierIds ?? []), ...(choice.rewards?.removeModifierIds ?? [])].forEach((modifierId) => {
+    if (!context.campaignModifierIds.has(modifierId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} removes missing modifier ${modifierId}.`);
+    }
+  });
+  Object.keys({ ...(choice.reputationChanges ?? {}), ...(choice.rewards?.reputationChanges ?? {}) }).forEach((factionId) => {
+    if (!context.factionIds.has(factionId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} changes missing faction reputation ${factionId}.`);
+    }
+  });
+}
+
+function validateCampaignResourceBag(
+  label: string,
+  resources: Partial<Record<string, number>> | undefined,
+  errors: string[],
+  context: ValidationContext
+): void {
+  Object.entries(resources ?? {}).forEach(([resource, amount]) => {
+    if (!context.resourceIds.has(resource)) {
+      errors.push(`${label} references missing resource ${resource}.`);
+    }
+    if ((amount ?? 0) < 0) {
+      errors.push(`${label} has negative ${resource}.`);
+    }
+  });
 }
 
 function validateItems(errors: string[], context: ValidationContext): void {
@@ -175,6 +382,9 @@ function validateUnits(errors: string[], context: ValidationContext): void {
     if (unit.radius <= 0) {
       errors.push(`Unit ${unit.id} must have a positive radius.`);
     }
+    if (unit.visionRadius <= 0) {
+      errors.push(`Unit ${unit.id} must have a positive vision radius.`);
+    }
     validatePrerequisites(`Unit ${unit.id}`, unit.prerequisites, errors, context);
     validateCombatStats(`Unit ${unit.id}`, unit.stats, errors);
   });
@@ -190,6 +400,9 @@ function validateBuildings(errors: string[], context: ValidationContext): void {
     }
     if (building.size.width <= 0 || building.size.height <= 0) {
       errors.push(`Building ${building.id} must have a positive footprint size.`);
+    }
+    if (building.visionRadius <= 0) {
+      errors.push(`Building ${building.id} must have a positive vision radius.`);
     }
     if (building.constructionTimeSeconds < 0) {
       errors.push(`Building ${building.id} cannot have negative construction time.`);
@@ -258,6 +471,9 @@ function validateHeroClasses(errors: string[], context: ValidationContext): void
     if (!heroClass.abilityIds.includes(heroClass.primaryAbilityId)) {
       errors.push(`Hero class ${heroClass.id} must include its primary ability in abilityIds.`);
     }
+    if (heroClass.visionRadius <= 0) {
+      errors.push(`Hero class ${heroClass.id} must have a positive vision radius.`);
+    }
     validateCombatStats(`Hero class ${heroClass.id}`, heroClass.baseStats, errors);
     if (heroClass.baseStats.maxMana < 0) {
       errors.push(`Hero class ${heroClass.id} cannot have negative max mana.`);
@@ -280,6 +496,80 @@ function validateResources(errors: string[]): void {
     if (!resource.name.trim()) {
       errors.push(`Resource ${resource.id} needs a display name.`);
     }
+  });
+}
+
+function validateFactions(errors: string[], context: ValidationContext): void {
+  FACTIONS.forEach((faction) => {
+    if (!faction.name.trim() || !faction.fantasy.trim()) {
+      errors.push(`Faction ${faction.id} needs name and fantasy text.`);
+    }
+    if (!faction.mechanics) {
+      errors.push(`Faction ${faction.id} needs mechanics.`);
+      return;
+    }
+    if (!faction.mechanics.economyStyle.trim() || !faction.mechanics.militaryStyle.trim() || !faction.mechanics.magicStyle.trim()) {
+      errors.push(`Faction ${faction.id} needs economy, military, and magic style text.`);
+    }
+    faction.mechanics.availableUnitIds.forEach((unitId) => {
+      if (!context.unitIds.has(unitId)) {
+        errors.push(`Faction ${faction.id} references missing available unit ${unitId}.`);
+      }
+    });
+    faction.mechanics.availableBuildingIds.forEach((buildingId) => {
+      if (!context.buildingIds.has(buildingId)) {
+        errors.push(`Faction ${faction.id} references missing available building ${buildingId}.`);
+      }
+    });
+    faction.mechanics.availableUpgradeIds.forEach((upgradeId) => {
+      if (!context.upgradeIds.has(upgradeId)) {
+        errors.push(`Faction ${faction.id} references missing available upgrade ${upgradeId}.`);
+      }
+    });
+    faction.mechanics.aiPersonalityPreferences.forEach((personalityId) => {
+      if (!context.aiPersonalityIds.has(personalityId)) {
+        errors.push(`Faction ${faction.id} prefers missing AI personality ${personalityId}.`);
+      }
+    });
+    faction.mechanics.campaignReputationHooks.forEach((factionId) => {
+      if (!context.factionIds.has(factionId)) {
+        errors.push(`Faction ${faction.id} references missing reputation hook ${factionId}.`);
+      }
+    });
+    assertUniqueIds(faction.mechanics.factionModifiers, `Faction ${faction.id} modifier`, errors);
+    faction.mechanics.factionModifiers.forEach((modifier) => {
+      if (!modifier.name.trim() || !modifier.description.trim()) {
+        errors.push(`Faction ${faction.id} modifier ${modifier.id} needs name and description.`);
+      }
+      if (!["burn-on-hit", "low-health-damage", "wave-speed"].includes(modifier.type)) {
+        errors.push(`Faction ${faction.id} modifier ${modifier.id} has invalid type ${modifier.type}.`);
+      }
+      modifier.unitIds?.forEach((unitId) => {
+        if (!context.unitIds.has(unitId)) {
+          errors.push(`Faction ${faction.id} modifier ${modifier.id} references missing unit ${unitId}.`);
+        }
+      });
+      if (modifier.type === "burn-on-hit") {
+        if (!modifier.burn) {
+          errors.push(`Faction ${faction.id} modifier ${modifier.id} needs burn tuning.`);
+        } else {
+          if (modifier.burn.damagePerSecond <= 0 || modifier.burn.durationSeconds <= 0 || modifier.burn.tickInterval <= 0) {
+            errors.push(`Faction ${faction.id} modifier ${modifier.id} has invalid burn tuning.`);
+          }
+        }
+      }
+      if (modifier.type === "low-health-damage") {
+        if ((modifier.hpThreshold ?? 0) <= 0 || (modifier.hpThreshold ?? 0) >= 1) {
+          errors.push(`Faction ${faction.id} modifier ${modifier.id} has invalid HP threshold.`);
+        }
+        if ((modifier.damageMultiplier ?? 0) <= 0) {
+          errors.push(`Faction ${faction.id} modifier ${modifier.id} has invalid damage multiplier.`);
+        }
+      }
+      if (modifier.type === "wave-speed" && (modifier.speedMultiplier ?? 0) <= 0) {
+        errors.push(`Faction ${faction.id} modifier ${modifier.id} has invalid speed multiplier.`);
+      }
+    });
   });
 }
 
@@ -542,6 +832,38 @@ function validateMap(map: BattleMapDefinition, errors: string[], context: Valida
   [scenario.objectives.playerBaseBuildingId, scenario.objectives.enemyBaseBuildingId].forEach((buildingId) => {
     if (!context.buildingIds.has(buildingId)) {
       errors.push(`Map ${map.id} objective references missing building ${buildingId}.`);
+    }
+  });
+  assertUniqueIds(scenario.objectives.secondaryObjectives ?? [], `Map ${map.id} secondary objective`, errors);
+  scenario.objectives.secondaryObjectives?.forEach((objective) => {
+    if (!objective.name.trim() || !objective.description.trim()) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} needs name and description.`);
+    }
+    if (!["capture_site", "destroy_building", "defeat_unit"].includes(objective.type)) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} has invalid type ${objective.type}.`);
+    }
+    if (objective.type === "capture_site" && !map.captureSites.some((site) => site.id === objective.targetId)) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} references missing capture site ${objective.targetId}.`);
+    }
+    if (objective.type === "destroy_building" && !context.buildingIds.has(objective.targetId)) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} references missing building ${objective.targetId}.`);
+    }
+    if (
+      objective.type === "destroy_building" &&
+      context.buildingIds.has(objective.targetId) &&
+      !map.scenario.buildingSpawns.some((spawn) => spawn.buildingId === objective.targetId)
+    ) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} targets a building not spawned on this map.`);
+    }
+    if (objective.type === "defeat_unit" && !context.unitIds.has(objective.targetId)) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} references missing unit ${objective.targetId}.`);
+    }
+    if (
+      objective.type === "defeat_unit" &&
+      context.unitIds.has(objective.targetId) &&
+      !map.scenario.unitSpawns.some((spawn) => spawn.unitId === objective.targetId)
+    ) {
+      errors.push(`Map ${map.id} secondary objective ${objective.id} targets a unit not spawned on this map.`);
     }
   });
   scenario.enemyAI.unitPlan.forEach((unitId) => {

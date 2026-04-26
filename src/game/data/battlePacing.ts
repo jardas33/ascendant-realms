@@ -84,7 +84,8 @@ export const BATTLE_DIFFICULTIES: BattleDifficultyDefinition[] = [
     trainInterval: 7.5,
     minAttackArmySize: 2,
     expandSquadSize: 1,
-    commanderJoinDelay: 720
+    commanderJoinDelay: 720,
+    fogOfWarEnabled: false
   },
   {
     id: "easy",
@@ -99,7 +100,8 @@ export const BATTLE_DIFFICULTIES: BattleDifficultyDefinition[] = [
     trainInterval: 6.2,
     minAttackArmySize: 2,
     expandSquadSize: 2,
-    commanderJoinDelay: 660
+    commanderJoinDelay: 660,
+    fogOfWarEnabled: true
   },
   {
     id: "normal",
@@ -114,7 +116,8 @@ export const BATTLE_DIFFICULTIES: BattleDifficultyDefinition[] = [
     trainInterval: 5.4,
     minAttackArmySize: 2,
     expandSquadSize: 2,
-    commanderJoinDelay: 540
+    commanderJoinDelay: 540,
+    fogOfWarEnabled: true
   },
   {
     id: "hard",
@@ -135,7 +138,8 @@ export const BATTLE_DIFFICULTIES: BattleDifficultyDefinition[] = [
     trainInterval: 3.8,
     minAttackArmySize: 3,
     expandSquadSize: 3,
-    commanderJoinDelay: 480
+    commanderJoinDelay: 480,
+    fogOfWarEnabled: true
   }
 ];
 

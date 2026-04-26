@@ -1,10 +1,29 @@
 import Phaser from "phaser";
-import type { Position, ResourceBag, ResourceKey, Team, UpgradeDefinition } from "../core/GameTypes";
+import type {
+  BattleSecondaryObjectiveType,
+  FactionModifierDefinition,
+  Position,
+  ResourceBag,
+  ResourceKey,
+  Team,
+  UpgradeDefinition
+} from "../core/GameTypes";
 import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
 import { formatTime } from "../core/MathUtils";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
-import { BUILDING_BY_ID, UPGRADE_BY_ID, requireBuilding, requireCampaignNode, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
+import {
+  BUILDING_BY_ID,
+  AI_PERSONALITY_BY_ID,
+  CAMPAIGN_MODIFIER_BY_ID,
+  FACTION_BY_ID,
+  UPGRADE_BY_ID,
+  requireBuilding,
+  requireCampaignNode,
+  requireHeroClass,
+  requireOrigin,
+  requireUnit
+} from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
@@ -34,11 +53,14 @@ import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { CombatSystem } from "../systems/CombatSystem";
+import { FogOfWarSystem, isEntityVisibleToPlayer, type VisionSource } from "../systems/FogOfWarSystem";
 import { InputSystem } from "../systems/InputSystem";
 import { MovementSystem } from "../systems/MovementSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { SelectionSystem } from "../systems/SelectionSystem";
 import { TrainingSystem } from "../systems/TrainingSystem";
+import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
+import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { UISystem } from "../systems/UISystem";
 import { applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import { UpgradeSystem } from "../systems/UpgradeSystem";
@@ -89,6 +111,11 @@ export class BattleScene extends Phaser.Scene {
   private commandHallWarningCooldown = 0;
   private minimapPings: MinimapPing[] = [];
   private nextMinimapPingId = 1;
+  private rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
+  private fogOfWar?: FogOfWarSystem;
+  private fogOverlay?: Phaser.GameObjects.Graphics;
+  private fogUpdateTimer = 0;
+  private fogDebugDisabled = false;
   private resourceSiteWarningCooldowns = new Map<string, number>();
   private trackedEnemyWaves: TrackedEnemyWave[] = [];
   private nextEnemyWaveId = 1;
@@ -116,7 +143,9 @@ export class BattleScene extends Phaser.Scene {
     this.resetRuntimeState();
     this.drawMap();
     this.spawnScenario();
+    this.createFogOverlay();
     this.createSystems();
+    this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection([this.hero]);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
@@ -140,8 +169,9 @@ export class BattleScene extends Phaser.Scene {
 
     this.cameraSystem.update(deltaSeconds);
     this.abilitySystem.update(deltaSeconds, this.hero);
-    this.movementSystem.update(deltaSeconds, this.units, this.activeMap);
+    this.movementSystem.update(deltaSeconds, this.units, this.activeMap, this.buildings);
     this.combatSystem.update(deltaSeconds);
+    this.updateStatusEffects(deltaSeconds);
     this.buildingSystem.update(deltaSeconds);
     this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
     this.updateResourceSiteWarnings(deltaSeconds);
@@ -151,6 +181,7 @@ export class BattleScene extends Phaser.Scene {
     this.cleanupDeadEntities();
     this.updateTrackedEnemyWaves();
     this.updateTutorialHint();
+    this.updateFogOfWar(deltaSeconds);
     this.uiSystem.update(deltaSeconds, {
       resources: this.resources.player,
       hero: this.hero,
@@ -172,6 +203,11 @@ export class BattleScene extends Phaser.Scene {
     this.launch = this.resolveLaunchOrFallback();
     this.heroSave = this.launch.request.heroSave;
     this.activeMap = this.launch.map;
+    this.fogOverlay?.destroy();
+    this.fogOverlay = undefined;
+    this.fogOfWar = new FogOfWarSystem(this.activeMap.width, this.activeMap.height);
+    this.fogUpdateTimer = 0;
+    this.fogDebugDisabled = false;
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.resources = this.runtime.resources;
     this.units = [];
@@ -184,6 +220,8 @@ export class BattleScene extends Phaser.Scene {
     this.commandHallWarningCooldown = 0;
     this.minimapPings = [];
     this.nextMinimapPingId = 1;
+    this.rallyMarkers.forEach((marker) => marker.destroy(true));
+    this.rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
     this.resourceSiteWarningCooldowns = new Map<string, number>();
     this.trackedEnemyWaves = [];
     this.nextEnemyWaveId = 1;
@@ -401,6 +439,7 @@ export class BattleScene extends Phaser.Scene {
     const origin = requireOrigin(this.heroSave.originId);
     this.hero = new Hero(this, this.heroSave, heroClass, origin, scenario.heroSpawn.x, scenario.heroSpawn.y);
     this.addUnit(this.hero);
+    this.applyHeroLaunchModifiers();
 
     const difficulty = getBattleDifficulty(this.launch.request.difficulty);
     const enemyStartingSpawns = new Set(difficulty.enemyStartingUnitSpawnIds);
@@ -410,6 +449,7 @@ export class BattleScene extends Phaser.Scene {
       }
       this.spawnUnit(spawn.unitId, spawn.team, spawn.x, spawn.y);
     });
+    this.spawnLaunchModifierUnits();
 
     this.activeMap.captureSites.forEach((siteDefinition) => {
       this.captureSites.push(new CaptureSite(this, siteDefinition));
@@ -439,14 +479,20 @@ export class BattleScene extends Phaser.Scene {
       ...this.buildings.filter((building) => building.team === "player")
     ]);
 
-    this.movementSystem = new MovementSystem();
+    this.movementSystem = new MovementSystem({
+      onPathFailed: (unit, target) => {
+        if (unit.team === "player") {
+          this.showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978");
+        }
+      }
+    });
     this.trainingSystem = new TrainingSystem({
       scene: this,
       addUnit: (unit) => this.addUnit(unit),
       onMessage: (message, x, y) => this.showMessage(message, x, y),
       onUnitTrained: (unit) => {
         if (unit.team === "player") {
-          this.runtime.recordUnitTrained();
+          this.runtime.recordUnitTrained(unit.definition.id);
         }
       },
       getTechState: (team) => this.getTechState(team)
@@ -465,7 +511,7 @@ export class BattleScene extends Phaser.Scene {
       },
       onBuilt: (building) => {
         if (building.team === "player") {
-          this.runtime.recordBuildingBuilt();
+          this.runtime.recordBuildingBuilt(building.definition.id);
         }
       }
     });
@@ -492,6 +538,9 @@ export class BattleScene extends Phaser.Scene {
         }
         this.warnIfCommandHallUnderAttack(target);
       },
+      onStatusApplied: (target, statusName) => {
+        FloatingText.show(this, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
+      },
       onKill: (killer, target) => this.handleKill(killer, target)
     });
     this.resourceSystem = new ResourceSystem({
@@ -500,6 +549,7 @@ export class BattleScene extends Phaser.Scene {
         if (owner === "player") {
           this.runtime.recordResourceCaptured(site.definition.id);
           this.showMessage(`${site.definition.name} captured`, site.position.x, site.position.y - 70, "#aef7b7");
+          this.completeSecondaryObjective("capture_site", site.definition.id, site.position);
           return;
         }
         if (owner === "enemy") {
@@ -573,6 +623,8 @@ export class BattleScene extends Phaser.Scene {
       placeBuilding: (point) => this.buildingSystem.tryPlace(point.x, point.y, this.resources.player),
       cancelPlacement: () => this.buildingSystem.cancelPlacement(),
       getSelectedUnits: () => this.selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
+      getSelectedRallyBuildings: () => this.selectedRallyBuildings(),
+      setRallyPoint: (point, buildings) => this.setRallyPoint(point, buildings),
       selectHero: () => {
         if (this.hero.alive) {
           this.selectionSystem.setSelection([this.hero]);
@@ -580,8 +632,10 @@ export class BattleScene extends Phaser.Scene {
       },
       centerOnHero: () => this.cameraSystem.centerOn(this.hero.position),
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
+      toggleFogDebug: () => this.toggleFogDebug(),
       showMessage: (message) => this.showMessage(message)
     });
+    this.showBattleStartSummary();
 
     const aiController = new EnemyAIController({
       resources: this.resources.enemy,
@@ -599,7 +653,8 @@ export class BattleScene extends Phaser.Scene {
       onAlert: (message, x, y) => this.showMessage(message, x, y, "#f6e27d"),
       onWaveLaunched: (units) => this.trackEnemyWave(units),
       difficulty: this.launch.request.difficulty,
-      config: this.activeMap.scenario.enemyAI
+      config: this.activeMap.scenario.enemyAI,
+      aiPersonalityId: this.launch.request.aiPersonalityId
     });
     this.aiSystem = new AISystem(aiController);
   }
@@ -608,6 +663,52 @@ export class BattleScene extends Phaser.Scene {
     const unit = new Unit(this, requireUnit(unitId), team, x, y);
     this.addUnit(unit);
     return unit;
+  }
+
+  private applyHeroLaunchModifiers(): void {
+    const manaMultiplier = this.launch.request.modifiers.reduce((multiplier, modifier) => {
+      const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
+      return Math.max(multiplier, definition?.effects.heroManaMultiplier ?? multiplier);
+    }, 1);
+    if (manaMultiplier <= 1) {
+      return;
+    }
+    this.hero.maxMana = Math.round(this.hero.maxMana * manaMultiplier);
+    this.hero.mana = this.hero.maxMana;
+  }
+
+  private spawnLaunchModifierUnits(): void {
+    this.launch.request.modifiers.forEach((modifier, modifierIndex) => {
+      const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
+      if (!definition) {
+        return;
+      }
+      definition.effects.extraPlayerUnitIds?.forEach((unitId, index) => {
+        this.spawnUnit(unitId, "player", this.activeMap.playerStart.x + 92 + index * 34, this.activeMap.playerStart.y + 72 + modifierIndex * 24);
+      });
+      definition.effects.extraEnemyUnitIds?.forEach((unitId, index) => {
+        this.spawnUnit(unitId, "enemy", this.activeMap.enemyStart.x - 92 - index * 34, this.activeMap.enemyStart.y + 72 + modifierIndex * 24);
+      });
+    });
+  }
+
+  private showBattleStartSummary(): void {
+    const faction = FACTION_BY_ID[this.launch.request.enemyProfileId ?? "ashen_covenant"];
+    const personality = AI_PERSONALITY_BY_ID[this.launch.request.aiPersonalityId ?? "balanced_warlord"];
+    const difficulty = getBattleDifficulty(this.launch.request.difficulty);
+    const names = this.launch.request.modifiers
+      .map((modifier) => CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name)
+      .filter((name): name is string => Boolean(name));
+    const modifierText = names.length > 0 ? ` Modifiers: ${names.join(", ")}.` : "";
+    const enemyText = faction
+      ? `${faction.name} (${personality?.name ?? "Balanced Warlord"})`
+      : personality?.name ?? "Unknown enemy";
+    this.showMessage(
+      `${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${modifierText}`,
+      this.hero.position.x,
+      this.hero.position.y - 96,
+      "#f6e27d"
+    );
   }
 
   private addUnit(unit: Unit): void {
@@ -619,8 +720,165 @@ export class BattleScene extends Phaser.Scene {
     this.buildings.push(building);
   }
 
+  private createFogOverlay(): void {
+    this.fogOverlay?.destroy();
+    this.fogOverlay = this.add.graphics().setDepth(21);
+  }
+
+  private updateFogOfWar(deltaSeconds: number, force = false): void {
+    const fog = this.fogOfWar;
+    if (!fog) {
+      return;
+    }
+
+    if (!this.isFogActive()) {
+      this.fogOverlay?.clear().setVisible(false);
+      this.applyFogEntityVisibility(false);
+      return;
+    }
+
+    this.fogUpdateTimer = Math.max(0, this.fogUpdateTimer - deltaSeconds);
+    if (!force && this.fogUpdateTimer > 0) {
+      return;
+    }
+
+    this.fogUpdateTimer = 0.24;
+    fog.update(this.createVisionSources());
+    this.renderFogOverlay();
+    this.applyFogEntityVisibility(true);
+  }
+
+  private createVisionSources(): VisionSource[] {
+    const unitSources = this.units
+      .filter((unit) => unit.alive && unit.team === "player")
+      .map((unit) => ({
+        x: unit.position.x,
+        y: unit.position.y,
+        radius: unit.definition.visionRadius
+      }));
+    const buildingSources = this.buildings
+      .filter((building) => building.alive && building.team === "player")
+      .map((building) => ({
+        x: building.position.x,
+        y: building.position.y,
+        radius: building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65
+      }));
+    return [...unitSources, ...buildingSources];
+  }
+
+  private renderFogOverlay(): void {
+    if (!this.fogOverlay || !this.fogOfWar) {
+      return;
+    }
+
+    this.fogOverlay.clear().setVisible(true);
+    this.fogOfWar.cells().forEach((cell) => {
+      if (cell.state === "visible") {
+        return;
+      }
+      const alpha = cell.state === "unseen" ? 0.86 : 0.48;
+      this.fogOverlay?.fillStyle(0x020503, alpha);
+      this.fogOverlay?.fillRect(cell.x, cell.y, cell.width, cell.height);
+    });
+  }
+
+  private applyFogEntityVisibility(fogEnabled: boolean): void {
+    const fog = this.fogOfWar;
+    if (!fog || !fogEnabled) {
+      [...this.units, ...this.buildings, ...this.captureSites, ...this.projectiles].forEach((entity) => entity.view?.setVisible(true));
+      return;
+    }
+
+    this.units.forEach((unit) => unit.view?.setVisible(isEntityVisibleToPlayer(unit, fog, true)));
+    this.buildings.forEach((building) => building.view?.setVisible(isEntityVisibleToPlayer(building, fog, true)));
+    this.projectiles.forEach((projectile) => projectile.view?.setVisible(projectile.team === "player" || fog.isVisible(projectile.position)));
+    this.captureSites.forEach((site) => site.view?.setVisible(fog.isExplored(site.position)));
+  }
+
+  private isFogActive(): boolean {
+    return getBattleDifficulty(this.launch.request.difficulty).fogOfWarEnabled && !this.fogDebugDisabled;
+  }
+
+  private isPointVisibleToPlayer(point: Position): boolean {
+    return !this.isFogActive() || !this.fogOfWar || this.fogOfWar.isVisible(point);
+  }
+
+  private isPointExploredByPlayer(point: Position): boolean {
+    return !this.isFogActive() || !this.fogOfWar || this.fogOfWar.isExplored(point);
+  }
+
+  private toggleFogDebug(): void {
+    const difficulty = getBattleDifficulty(this.launch.request.difficulty);
+    if (!difficulty.fogOfWarEnabled) {
+      this.showMessage("Fog is disabled for this difficulty.");
+      return;
+    }
+    this.fogDebugDisabled = !this.fogDebugDisabled;
+    this.showMessage(this.fogDebugDisabled ? "Fog debug: revealed" : "Fog debug: enabled");
+    this.updateFogOfWar(0, true);
+  }
+
+  private selectedRallyBuildings(): Building[] {
+    return this.selectionSystem
+      .getSelected()
+      .filter((entity): entity is Building => entity instanceof Building && canUseRallyPoint(entity));
+  }
+
+  private setRallyPoint(point: Position, buildings: Building[]): boolean {
+    const assignment = setRallyPointForBuildings(buildings, point);
+    if (assignment.updatedCount === 0) {
+      return false;
+    }
+
+    buildings.filter((building) => canUseRallyPoint(building)).forEach((building) => {
+      this.updateRallyMarker(building);
+      this.showRallyLine(building, assignment.rallyPoint);
+    });
+    this.addMinimapPing(assignment.rallyPoint.x, assignment.rallyPoint.y, "#9cf7b1", "Rally point set");
+    this.showMessage(
+      assignment.updatedCount === 1 ? "Rally point set" : `Rally point set for ${assignment.updatedCount} buildings`,
+      assignment.rallyPoint.x,
+      assignment.rallyPoint.y - 28,
+      "#b9f7c7"
+    );
+    return true;
+  }
+
+  private updateRallyMarker(building: Building): void {
+    this.rallyMarkers.get(building.id)?.destroy(true);
+    if (!building.alive || !building.rallyPoint) {
+      this.rallyMarkers.delete(building.id);
+      return;
+    }
+
+    const marker = this.add.container(building.rallyPoint.x, building.rallyPoint.y).setDepth(26);
+    const base = this.add.circle(0, 0, 7, 0x14351f, 0.8).setStrokeStyle(2, 0x9cf7b1, 0.92);
+    const pole = this.add.rectangle(0, -13, 3, 28, 0xf5efc2, 0.92).setOrigin(0.5, 1);
+    const flag = this.add
+      .triangle(7, -30, 0, 0, 22, 7, 0, 14, 0x78dc7b, 0.95)
+      .setStrokeStyle(1, 0xf5efc2, 0.85);
+    marker.add([base, pole, flag]);
+    this.rallyMarkers.set(building.id, marker);
+  }
+
+  private showRallyLine(building: Building, point: Position): void {
+    const line = this.add.graphics().setDepth(25);
+    line.lineStyle(2, 0x9cf7b1, 0.82);
+    line.lineBetween(building.position.x, building.position.y, point.x, point.y);
+    this.tweens.add({
+      targets: line,
+      alpha: 0,
+      duration: 850,
+      onComplete: () => line.destroy()
+    });
+  }
+
   private findWorldEntityAt(point: Position): BaseEntity | undefined {
-    return CollisionSystem.findEntityAt(point.x, point.y, [...this.units, ...this.buildings]);
+    return CollisionSystem.findEntityAt(
+      point.x,
+      point.y,
+      [...this.units, ...this.buildings].filter((entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position))
+    );
   }
 
   private centerCameraFromMinimap(normalizedX: number, normalizedY: number): void {
@@ -634,18 +892,22 @@ export class BattleScene extends Phaser.Scene {
     const camera = this.cameras.main;
     const cameraWidth = Math.min(this.activeMap.width, camera.width / camera.zoom);
     const cameraHeight = Math.min(this.activeMap.height, camera.height / camera.zoom);
+    const fogEnabled = this.isFogActive();
     const markers: MinimapSnapshot["markers"] = [
-      ...this.captureSites.map((site) => ({
-        id: site.id,
-        kind: "capture-site" as const,
-        team: site.owner,
-        x: site.position.x,
-        y: site.position.y,
-        resource: site.definition.resource,
-        resourceColor: this.resourceColor(site.definition.resource)
-      })),
+      ...this.captureSites
+        .filter((site) => this.isPointExploredByPlayer(site.position))
+        .map((site) => ({
+          id: site.id,
+          kind: "capture-site" as const,
+          team: site.owner,
+          x: site.position.x,
+          y: site.position.y,
+          resource: site.definition.resource,
+          resourceColor: this.resourceColor(site.definition.resource)
+        })),
       ...this.activeMap.neutralCamps
         .filter((camp) =>
+          this.isPointExploredByPlayer(camp) &&
           this.units.some(
             (unit) =>
               unit.alive &&
@@ -662,7 +924,7 @@ export class BattleScene extends Phaser.Scene {
           size: 2.5
         })),
       ...this.buildings
-        .filter((building) => building.alive)
+        .filter((building) => building.alive && isEntityVisibleToPlayer(building, this.fogOfWar!, fogEnabled))
         .map((building) => ({
           id: building.id,
           kind: "building" as const,
@@ -672,7 +934,7 @@ export class BattleScene extends Phaser.Scene {
           size: Math.max(2.8, Math.min(5, Math.max(building.definition.size.width, building.definition.size.height) / 38))
         })),
       ...this.units
-        .filter((unit) => unit.alive)
+        .filter((unit) => unit.alive && isEntityVisibleToPlayer(unit, this.fogOfWar!, fogEnabled))
         .map((unit) => ({
           id: unit.id,
           kind: "unit" as const,
@@ -680,6 +942,16 @@ export class BattleScene extends Phaser.Scene {
           x: unit.position.x,
           y: unit.position.y,
           size: unit === this.hero ? 2.1 : 1.35
+        })),
+      ...this.selectedRallyBuildings()
+        .filter((building) => building.rallyPoint)
+        .map((building) => ({
+          id: `rally-${building.id}`,
+          kind: "rally" as const,
+          team: "player" as const,
+          x: building.rallyPoint?.x ?? building.position.x,
+          y: building.rallyPoint?.y ?? building.position.y,
+          size: 2.3
         }))
     ];
 
@@ -694,7 +966,10 @@ export class BattleScene extends Phaser.Scene {
         height: cameraHeight
       },
       pings: this.minimapPings,
-      fog: { enabled: false }
+      fog: {
+        enabled: fogEnabled,
+        cells: fogEnabled ? this.fogOfWar?.cells() : undefined
+      }
     };
   }
 
@@ -704,20 +979,70 @@ export class BattleScene extends Phaser.Scene {
       .filter((entity): entity is Unit | Building => entity instanceof Unit || entity instanceof Building);
   }
 
+  private updateStatusEffects(deltaSeconds: number): void {
+    [...this.units, ...this.buildings].forEach((entity) => {
+      if (!entity.alive) {
+        return;
+      }
+      const ticks = tickStatusEffects(entity, deltaSeconds);
+      ticks.forEach((tick) => {
+        if (!entity.alive) {
+          return;
+        }
+        const wasAlive = entity.alive;
+        const actual = entity.takeDamage(tick.damage);
+        if (actual > 0) {
+          FloatingText.show(this, `-${Math.round(actual)}`, entity.position.x, entity.position.y - entity.radius - 8, "#ff9a64");
+          this.warnIfCommandHallUnderAttack(entity);
+        }
+        if (wasAlive && !entity.alive) {
+          const source = tick.sourceId ? this.findEntityById(tick.sourceId) : undefined;
+          if (source) {
+            this.handleKill(source, entity);
+          }
+          entity.destroyView();
+        }
+      });
+    });
+  }
+
   private handleKill(killer: Unit | Building | Projectile, target: BaseEntity): void {
     if (target.team !== "player") {
       if (target instanceof Building) {
         this.runtime.recordBuildingDestroyed();
+        this.completeSecondaryObjective("destroy_building", target.definition.id, target.position);
       } else if (target instanceof Unit) {
         this.runtime.recordUnitKilled();
+        this.completeSecondaryObjective("defeat_unit", target.definition.id, target.position);
       }
     }
     this.xpSystem.awardForKill(killer, target);
   }
 
+  private completeSecondaryObjective(type: BattleSecondaryObjectiveType, targetId: string, point?: Position): void {
+    const objective = this.activeMap.scenario.objectives.secondaryObjectives?.find(
+      (entry) => entry.type === type && entry.targetId === targetId
+    );
+    if (!objective || !this.runtime.recordSecondaryObjective(objective.id)) {
+      return;
+    }
+    this.showMessage(`Objective complete: ${objective.name}`, point?.x, point ? point.y - 78 : undefined, "#f6e27d");
+  }
+
   private cleanupDeadEntities(): void {
+    this.cleanupRallyMarkers();
     this.units = this.units.filter((unit) => unit.alive);
     this.buildings = this.buildings.filter((building) => building.alive);
+  }
+
+  private cleanupRallyMarkers(): void {
+    this.rallyMarkers.forEach((marker, buildingId) => {
+      const building = this.buildings.find((entry) => entry.id === buildingId);
+      if (!building?.alive || !building.rallyPoint) {
+        marker.destroy(true);
+        this.rallyMarkers.delete(buildingId);
+      }
+    });
   }
 
   private checkEndConditions(): void {
@@ -731,6 +1056,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private endBattle(outcome: "victory" | "defeat"): void {
+    const startingHeroSave = this.launch.request.heroSave;
     const completion = this.runtime.completeBattle({
       outcome,
       heroSave: this.hero.toSaveData()
@@ -738,13 +1064,14 @@ export class BattleScene extends Phaser.Scene {
     if (!completion) {
       return;
     }
-    if (completion.shouldSaveHero) {
+    if (completion.shouldSaveHero && this.launch.request.mode !== "campaign_node") {
       SaveSystem.saveHero(completion.heroSave);
     }
 
     if (outcome === "victory" && this.launch.request.mode === "campaign_node" && this.launch.request.campaignNodeId) {
       const node = requireCampaignNode(this.launch.request.campaignNodeId);
       const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
+      const unlockedBefore = new Set(storedCampaign.unlockedNodeIds);
       const campaignCompletion = completeCampaignNodeWithRewards({
         campaign: storedCampaign,
         hero: completion.heroSave,
@@ -755,22 +1082,37 @@ export class BattleScene extends Phaser.Scene {
         xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp
       };
       SaveSystem.saveGame(campaignCompletion.hero, campaignCompletion.campaign);
-      this.scene.start(SCENE_KEYS.campaignMap, {
+      this.scene.start(SCENE_KEYS.results, {
         stats,
         heroSave: campaignCompletion.hero,
-        campaignSave: campaignCompletion.campaign,
-        completedNodeId: node.id
+        startingHeroSave,
+        rewardItemIds: completion.rewardItemIds,
+        reward: completion.reward,
+        rewardLevelUp: completion.rewardLevelUp,
+        launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, campaignCompletion.hero),
+        campaignResult: {
+          completedNodeId: node.id,
+          completedNodeName: node.name,
+          unlockedNodeIds: campaignCompletion.campaign.unlockedNodeIds.filter((nodeId) => !unlockedBefore.has(nodeId) && nodeId !== node.id),
+          unlockedNodeNames: campaignCompletion.campaign.unlockedNodeIds
+            .filter((nodeId) => !unlockedBefore.has(nodeId) && nodeId !== node.id)
+            .map((nodeId) => requireCampaignNode(nodeId).name),
+          nodeReward: campaignCompletion.nodeReward,
+          nodeLevelUp: campaignCompletion.nodeLevelUp,
+          campaignResources: campaignCompletion.campaign.resources
+        }
       });
       return;
     }
 
-    this.scene.start(outcome === "victory" ? SCENE_KEYS.heroProgression : SCENE_KEYS.results, {
+    this.scene.start(SCENE_KEYS.results, {
       stats: completion.stats,
       heroSave: completion.heroSave,
+      startingHeroSave,
       rewardItemIds: completion.rewardItemIds,
       reward: completion.reward,
       rewardLevelUp: completion.rewardLevelUp,
-      launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, completion.heroSave)
+      launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, outcome === "victory" ? completion.heroSave : startingHeroSave)
     });
   }
 
@@ -785,6 +1127,10 @@ export class BattleScene extends Phaser.Scene {
 
   private findBuilding(id: string, team: "player" | "enemy"): Building | undefined {
     return this.buildings.find((building) => building.alive && building.team === team && building.definition.id === id);
+  }
+
+  private findEntityById(id: string): Unit | Building | undefined {
+    return [...this.units, ...this.buildings].find((entity) => entity.id === id);
   }
 
   private isFirstBattle(): boolean {
@@ -899,6 +1245,7 @@ export class BattleScene extends Phaser.Scene {
     if (units.length === 0) {
       return;
     }
+    this.applyFactionWaveModifiers(units);
     const waveId = this.nextEnemyWaveId;
     const center = units.reduce(
       (sum, unit) => ({
@@ -913,6 +1260,24 @@ export class BattleScene extends Phaser.Scene {
       unitIds: units.map((unit) => unit.id)
     });
     this.nextEnemyWaveId += 1;
+  }
+
+  private applyFactionWaveModifiers(units: Unit[]): void {
+    units.forEach((unit) => {
+      this.factionModifiersFor(unit)
+        .filter((modifier) => modifier.type === "wave-speed" && this.modifierAppliesToUnit(modifier, unit))
+        .forEach((modifier) => {
+          unit.factionSpeedMultiplier = Math.max(unit.factionSpeedMultiplier, modifier.speedMultiplier ?? 1);
+        });
+    });
+  }
+
+  private factionModifiersFor(unit: Unit): FactionModifierDefinition[] {
+    return FACTION_BY_ID[unit.definition.factionId]?.mechanics.factionModifiers ?? [];
+  }
+
+  private modifierAppliesToUnit(modifier: FactionModifierDefinition, unit: Unit): boolean {
+    return !modifier.unitIds || modifier.unitIds.includes(unit.definition.id);
   }
 
   private updateTrackedEnemyWaves(): void {
@@ -1006,6 +1371,10 @@ export class BattleScene extends Phaser.Scene {
     this.inputSystem?.destroy();
     this.uiSystem?.destroy();
     this.buildingSystem?.cancelPlacement();
+    this.rallyMarkers.forEach((marker) => marker.destroy(true));
+    this.rallyMarkers.clear();
+    this.fogOverlay?.destroy();
+    this.fogOverlay = undefined;
   }
 
   private resolveLaunchOrFallback(): ResolvedBattleLaunch {

@@ -14,6 +14,7 @@ export class Unit extends BaseEntity {
   upgradeDamageMultiplier = 1;
   upgradeRangeMultiplier = 1;
   upgradeAttackCooldownMultiplier = 1;
+  factionSpeedMultiplier = 1;
   readonly appliedUpgradeIds = new Set<string>();
 
   private body?: Phaser.GameObjects.Arc;
@@ -50,7 +51,7 @@ export class Unit extends BaseEntity {
   }
 
   get speed(): number {
-    return this.definition.stats.speed;
+    return this.definition.stats.speed * this.factionSpeedMultiplier;
   }
 
   get damage(): number {

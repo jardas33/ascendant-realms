@@ -1,4 +1,4 @@
-import type { BattleDifficulty, EquipmentSlot, HeroPrimaryStats } from "../core/GameTypes";
+import type { BattleDifficulty, EquipmentSlot, HeroPrimaryStats, ResourceBag } from "../core/GameTypes";
 
 export type EquipmentSlots = Partial<Record<EquipmentSlot, string>>;
 export type AllocatedSkills = Record<string, number>;
@@ -35,8 +35,12 @@ export interface StoredGameSave {
 export interface CampaignSaveData {
   started: boolean;
   difficulty: BattleDifficulty;
+  resources: ResourceBag;
   completedNodeIds: string[];
   unlockedNodeIds: string[];
+  lockedNodeIds: string[];
   nodeRewardsClaimedIds: string[];
+  choiceIdsClaimed: string[];
+  activeModifierIds: string[];
   selectedNodeId?: string;
 }

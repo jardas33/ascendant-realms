@@ -8,6 +8,7 @@ export const HERO_CLASSES: HeroClassDefinition[] = [
     primaryAbilityId: "rally_banner",
     abilityIds: ["rally_banner", "cleave", "war_cry"],
     color: 0xe2b34b,
+    visionRadius: 540,
     baseStats: {
       maxHp: 260,
       maxMana: 60,
@@ -29,6 +30,7 @@ export const HERO_CLASSES: HeroClassDefinition[] = [
     primaryAbilityId: "firebolt",
     abilityIds: ["firebolt", "arcane_burst", "blink"],
     color: 0xf07d3c,
+    visionRadius: 560,
     baseStats: {
       maxHp: 160,
       maxMana: 180,
@@ -50,6 +52,7 @@ export const HERO_CLASSES: HeroClassDefinition[] = [
     primaryAbilityId: "heal",
     abilityIds: ["heal", "blessing", "sanctify_ground"],
     color: 0x8ed98f,
+    visionRadius: 540,
     baseStats: {
       maxHp: 200,
       maxMana: 130,

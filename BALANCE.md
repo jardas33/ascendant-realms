@@ -25,11 +25,19 @@ Broken Ford:
 - South Iron Cache: +18 Iron every 6 seconds.
 - North Aether Spring: +14 Aether every 6 seconds.
 
+Ashen Outpost:
+
+- Burned Shrine: +26 Aether every 5 seconds.
+- West Supply Pyre: +30 Crowns every 6 seconds.
+- South Iron Pit: +22 Iron every 6 seconds.
+- North Stone Scar: +26 Stone every 6 seconds.
+
 ## Map Notes
 
 - First Claim is the balanced tutorial skirmish. Its first Crown site is close, the side camps are readable, and the direct lane keeps the first attack easy to understand.
 - Broken Ford is wider at 2600x1700 and has more blocked terrain. The center pays better but is guarded and exposed, while side resources are safer but slower.
-- Both maps use the same global difficulty presets. Map-level `scenario.enemyAI` values can nudge expand and attack rhythm, but difficulty still controls income multiplier, attack delay, wave size, training speed, and commander timing.
+- Ashen Outpost is the current mini-campaign milestone map at 2600x1800. It gives the player a stronger starting economy and one extra Militia, but the enemy fortress has two defensive towers, tighter upper-right terrain, Hexfire Cult pressure, and a central Burned Shrine that is valuable but dangerous.
+- All maps use the same global difficulty presets. Map-level `scenario.enemyAI` values can nudge expand and attack rhythm, but difficulty still controls income multiplier, attack delay, wave size, training speed, and commander timing.
 
 ## Construction Times
 
@@ -52,8 +60,30 @@ Research also pays up front and completes after its `researchTimeSeconds`. Curre
 - Ranger Training I: 20 seconds, +10% Ranger range and 10% faster Ranger attacks.
 - Reinforced Armor I: 22 seconds, +1 armor for Militia, Ranger, and Acolyte.
 - Aether Study I: 24 seconds, +10% Acolyte damage and +25% hero mana regeneration.
+- Ember Blades: Ashen Covenant data trait placeholder; Raiders gain a small damage bump in data, while live burn pressure currently comes from Hexers through faction modifiers.
 
 Upgrade costs and effects live in `src/game/data/upgrades.ts`.
+
+## Faction Asymmetry
+
+Faction style and trait data lives in `src/game/data/factions.ts`.
+
+Free Marches are the player baseline:
+
+- Balanced economy and training costs.
+- Reliable Militia, Rangers, Acolytes, and defensive Watchtowers.
+- Better long-term scaling through hero leadership, campaign reputation, and equipment.
+
+Ashen Covenant is tuned for pressure:
+
+- Raiders are cheaper and hit harder than before, but have lower HP.
+- Hexers have lower HP but higher damage and apply `hexfire_burn`.
+- Brutes remain the durable Ashen exception and anchor late waves.
+- `hexfire_burn`: 3 damage per second for 4 seconds, ticking once per second.
+- `ashen_fury`: Raiders, Hexers, Brutes, and the enemy commander deal 15% more damage below 50% HP.
+- `smoke_march`: Raiders and Hexers in launched AI waves move 6% faster.
+
+Ashen should feel more dangerous when the player lets waves reach the base, but still fair because their lighter units can be picked off with hero abilities, Watchtowers, and focused army control. If burn becomes frustrating, reduce duration before reducing DPS so the effect remains readable but less punishing.
 
 ## How To Tune Costs
 
@@ -100,6 +130,7 @@ Current reward pacing:
 
 - First Claim grants one weighted item roll, modest resources, 35 base victory XP, and a first-clear bonus of 45 XP plus starter resources.
 - Broken Ford grants one weighted item roll, stronger resource payouts, 55 base victory XP, and a first-clear Fordbreaker Halberd plus 65 bonus XP.
+- Ashen Outpost grants one weighted item roll, high milestone resources, 85 base victory XP, and a first-clear Ashbound Censer plus 95 bonus XP. The Ashen Outpost campaign node also grants a larger campaign-bank payout and an Oathbound Aegis for the milestone clear.
 - Duplicate items are skipped for now instead of converted into currency. When most pool items are already owned, a victory can produce resources and XP without a new item.
 
 Rarity philosophy:
@@ -123,10 +154,50 @@ The first skirmish is paced around four battle phases:
 
 Difficulty presets:
 
-- Story: 1 starting Raider, 0.55x income, first attack at 4:00, 82s interval, 2-unit waves, commander after 12:00.
-- Easy: 2 starting Raiders, 0.72x income, first attack at 3:30, 72s interval, 3-unit waves, commander after 11:00.
-- Normal: 2 Raiders, 1 Hexer, commander at base, 0.9x income, first attack at 3:00, 62s interval, phase-capped waves, commander after 9:00.
-- Hard: Raiders, Hexer, Brute, commander, 1.15x income, first attack at 2:30, 48s interval, larger waves, commander after 8:00.
+- Story: 1 starting Raider, 0.55x income, first attack at 4:00, 82s interval, 2-unit waves, commander after 12:00, fog disabled.
+- Easy: 2 starting Raiders, 0.72x income, first attack at 3:30, 72s interval, 3-unit waves, commander after 11:00, fog enabled.
+- Normal: 2 Raiders, 1 Hexer, commander at base, 0.9x income, first attack at 3:00, 62s interval, phase-capped waves, commander after 9:00, fog enabled.
+- Hard: Raiders, Hexer, Brute, commander, 1.15x income, first attack at 2:30, 48s interval, larger waves, commander after 8:00, fog enabled.
+
+AI personalities live in `src/game/data/aiPersonalities.ts` and modify the base difficulty/map pacing:
+
+- Balanced Warlord: 1.0x baseline timing, mixed Raider/Hexer/Brute training, default for Border Village.
+- Raider Rush: 0.8x first-attack delay, 0.82x attack interval, faster expansion, mostly Raiders and Hexers, smaller late waves.
+- Fortress Keeper: 1.22x first-attack delay, 1.18x attack interval, larger defense radius, defensive reserves, Brute-heavy late waves.
+- Hexfire Cult: slightly slower first attack, more Hexers, aether-heavy income pressure, dangerous caster bursts with fewer melee bodies.
+
+Campaign assignments:
+
+- Border Village: Balanced Warlord on Easy.
+- Old Stone Road: Raider Rush on Easy.
+- Aether Well Ruins: Hexfire Cult on Normal.
+- Bandit Hillfort: Fortress Keeper on Normal.
+- Ashen Outpost: Hexfire Cult on Normal using the dedicated Ashen Outpost fortress map.
+
+Ashen Outpost special objectives:
+
+- Primary: destroy the Ashen Stronghold.
+- Secondary: capture the Burned Shrine.
+- Secondary: destroy the Enemy Barracks.
+- Secondary: defeat the Outpost Captain.
+
+## Fog Of War
+
+Fog tuning lives in three places:
+
+- Difficulty presets in `src/game/data/battlePacing.ts` set `fogOfWarEnabled`.
+- Unit, hero class, and building definitions set `visionRadius`.
+- `FogOfWarSystem` uses a 160px grid cell size by default for stable, inexpensive updates.
+
+Current prototype vision ranges:
+
+- Hero classes: 540 to 560.
+- Basic units: 300 to 430.
+- Command Hall and enemy stronghold: 560.
+- Barracks and Mystic Lodge: 430.
+- Watchtower: 720.
+
+Story disables fog for accessibility and onboarding. Easy, Normal, and Hard enable it. Capture sites are hidden until explored, then remain known; ownership is shown live after discovery for prototype readability rather than using last-known ownership.
 
 First-match protection:
 
@@ -161,5 +232,6 @@ The key knobs are:
 - Difficulty and phase `attackWaveSize`.
 - Phase `allowedAttackUnitIds`, `preferredAttackUnitIds`, and `maxAttackByUnitId`.
 - Map `unitPlan`.
+- Personality timing multipliers, unit plan, phase overrides, defense radius, defensive reserves, and commander rules.
 
 Shorter wave timing creates more pressure. Longer timing gives the player more room to learn controls.

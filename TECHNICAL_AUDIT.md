@@ -7,6 +7,7 @@ This audit focuses on the current browser prototype foundation, not on adding ne
 - The project already has a clean Phaser 3, TypeScript, and Vite foundation.
 - Core content is mostly data-driven through files such as `units.ts`, `buildings.ts`, `abilities.ts`, `heroClasses.ts`, `skillTrees.ts`, `items.ts`, and `maps.ts`.
 - Gameplay logic is split into systems for input, movement, combat, resources, abilities, training, building placement, AI, UI, and XP.
+- Movement now has a pure, tested grid/A* pathfinding layer for blocked terrain, water, and building footprints while preserving the existing command and local separation flow.
 - Battle setup, objective checks, battle statistics, reward decisions, and save-output decisions now have a pure `BattleRuntime` layer with tests.
 - Battle launches now flow through a `BattleLaunchRequest` contract, so skirmish is no longer hardwired as the only possible battle source.
 - Persistent hero progression exists with class, origin, level, XP, skill points, unlocked abilities, inventory, equipment, and local save data.
@@ -22,11 +23,12 @@ This audit focuses on the current browser prototype foundation, not on adding ne
 - Ability behavior is still hardcoded in a switch statement. Ability data defines costs and numbers, but new effect types still require engine code.
 - The HUD and progression screens use large DOM string rendering. This is fine for quick iteration, but larger UI surfaces should move toward smaller view helpers/components.
 - Input mappings are hardcoded in `InputSystem`. Future rebinding, tutorials, controller support, and accessibility will need an input action layer.
+- Pathfinding is intentionally coarse. `PathfindingGrid` uses 80px cells and A* over blocked terrain, water, and static building footprints, then `MovementSystem` layers local separation on top. This is much better than direct steering, but it is not yet a tile-accurate navmesh, flow-field system, or formation-aware RTS pathing solution.
 - The CSS file is large and covers many UI surfaces. It should eventually be split by menu, HUD, progression, and asset gallery areas.
 - The production JavaScript bundle is currently large because Phaser and the whole prototype ship together. It builds correctly, but later releases should consider code splitting and asset loading discipline.
 - Save data is local only and versioned simply. More save migrations will be needed before campaign, multiple heroes, save slots, or modded content.
 - There is a setup snapshot in `BattleRuntime`, but not yet a full serializable battle snapshot for every live entity.
-- Fog of war, workers, construction time, tile/pathfinding integration, campaign map, diplomacy, and retinue persistence are intentionally postponed.
+- Workers, tile-accurate pathfinding, formation movement, diplomacy, and retinue persistence are intentionally postponed.
 
 ## What Was Fixed In This Pass
 
@@ -56,6 +58,7 @@ This audit focuses on the current browser prototype foundation, not on adding ne
 - Add a content error checklist to documentation for non-coders who edit data files.
 - Add save slots and explicit save migration tests before campaign mode.
 - Add map validation for buildable placement, blocked zones, and future pathfinding grids.
+- Add pathfinding debug visualization, route profiling, and chokepoint tests for every map.
 - Add a lightweight logging/debug overlay for AI state, resource flow, and combat events.
 - Add repeatable browser smoke tests for create-hero, start-skirmish, asset gallery, and progression screens.
 - Add a performance budget and revisit Vite/Rollup chunking before adding large campaign systems or heavier assets.

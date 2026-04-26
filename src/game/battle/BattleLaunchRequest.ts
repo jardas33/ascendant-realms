@@ -1,7 +1,14 @@
-import type { BattleDifficulty, BattleMapDefinition, CampaignNodeDefinition, RewardTableDefinition } from "../core/GameTypes";
+import type {
+  BattleDifficulty,
+  BattleMapDefinition,
+  CampaignNodeDefinition,
+  EnemyAIPersonalityId,
+  RewardTableDefinition
+} from "../core/GameTypes";
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
+import { DEFAULT_AI_PERSONALITY_ID, isAIPersonalityId } from "../data/aiPersonalities";
 import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePacing";
-import { CAMPAIGN_NODE_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_NODE_BY_ID, FACTION_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
 import { DEFAULT_MAP_ID } from "../data/maps";
 import type { HeroSaveData } from "../save/SaveTypes";
 
@@ -22,6 +29,7 @@ export interface BattleLaunchRequest {
   difficulty: BattleDifficulty;
   modifiers: BattleLaunchModifier[];
   enemyProfileId?: string;
+  aiPersonalityId?: EnemyAIPersonalityId;
   campaignNodeId?: string;
   scenarioMissionId?: string;
 }
@@ -51,6 +59,7 @@ export interface CreateBattleLaunchRequestOptions {
   difficulty?: BattleDifficulty;
   modifiers?: BattleLaunchModifier[];
   enemyProfileId?: string;
+  aiPersonalityId?: EnemyAIPersonalityId;
   campaignNodeId?: string;
   scenarioMissionId?: string;
 }
@@ -87,6 +96,7 @@ export function createCampaignBattleLaunchRequest(
     mapId: definition.mapId,
     difficulty: options.difficulty ?? definition.difficulty,
     enemyProfileId: options.enemyProfileId ?? definition.enemyFactionId,
+    aiPersonalityId: options.aiPersonalityId ?? definition.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     campaignNodeId: definition.id,
     sourceId: options.sourceId ?? `campaign_${definition.id}`
   });
@@ -109,6 +119,7 @@ export function createBattleLaunchRequest(
     difficulty: options.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
     modifiers: options.modifiers ?? [],
     enemyProfileId: options.enemyProfileId,
+    aiPersonalityId: options.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     campaignNodeId: options.campaignNodeId,
     scenarioMissionId: options.scenarioMissionId
   };
@@ -166,6 +177,12 @@ export function resolveBattleLaunchRequest(
   if (!isBattleDifficulty(request.difficulty)) {
     errors.push(`Battle launch request references missing difficulty ${request.difficulty}.`);
   }
+  if (request.aiPersonalityId && !isAIPersonalityId(request.aiPersonalityId)) {
+    errors.push(`Battle launch request references missing AI personality ${request.aiPersonalityId}.`);
+  }
+  if (request.enemyProfileId && !FACTION_BY_ID[request.enemyProfileId]) {
+    errors.push(`Battle launch request references missing enemy faction ${request.enemyProfileId}.`);
+  }
 
   if (errors.length > 0 || !map || !rewardTable || !heroSave) {
     return { ok: false, errors };
@@ -179,7 +196,8 @@ export function resolveBattleLaunchRequest(
         heroSave,
         rewardTableId,
         difficulty: request.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
-        modifiers: request.modifiers ?? []
+        modifiers: request.modifiers ?? [],
+        aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID
       },
       map,
       rewardTable,

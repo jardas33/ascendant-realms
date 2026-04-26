@@ -95,13 +95,51 @@ describe("calculateLevelFromXp", () => {
       difficulty: "normal",
       completedNodeIds: ["border_village", "border_village"],
       unlockedNodeIds: ["border_village", "old_stone_road"],
+      lockedNodeIds: ["refugee_caravan", "refugee_caravan"],
       nodeRewardsClaimedIds: ["border_village"],
+      choiceIdsClaimed: ["chapel_of_the_marches:ask_for_guidance", "chapel_of_the_marches:ask_for_guidance"],
+      activeModifierIds: ["inspired_militia", "missing_modifier", "inspired_militia"],
+      resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       selectedNodeId: "old_stone_road"
     });
 
     expect(isCampaignSaveData(normalized)).toBe(true);
+    expect(normalized?.resources).toEqual({ crowns: 25, stone: 0, iron: 12, aether: 3 });
     expect(normalized?.completedNodeIds).toEqual(["border_village"]);
     expect(normalized?.unlockedNodeIds).toEqual(["border_village", "old_stone_road"]);
+    expect(normalized?.lockedNodeIds).toEqual(["refugee_caravan"]);
+    expect(normalized?.choiceIdsClaimed).toEqual(["chapel_of_the_marches:ask_for_guidance"]);
+    expect(normalized?.activeModifierIds).toEqual(["inspired_militia"]);
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
+  });
+
+  it("migrates older campaign saves without a resource bank", () => {
+    const normalized = normalizeCampaignSaveData({
+      started: true,
+      difficulty: "easy",
+      completedNodeIds: ["border_village"],
+      unlockedNodeIds: ["border_village", "old_stone_road"],
+      nodeRewardsClaimedIds: ["border_village"]
+    });
+
+    expect(normalized?.resources).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 0 });
+    expect(normalized?.choiceIdsClaimed).toEqual([]);
+    expect(normalized?.lockedNodeIds).toEqual([]);
+    expect(normalized?.activeModifierIds).toEqual([]);
+  });
+
+  it("normalizes reputation defaults and clamps reputation values", () => {
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      factionReputation: {
+        free_marches: 150,
+        common_folk: -120
+      }
+    });
+
+    expect(normalized?.factionReputation.free_marches).toBe(100);
+    expect(normalized?.factionReputation.common_folk).toBe(-100);
+    expect(normalized?.factionReputation.ashen_covenant).toBe(-10);
+    expect(normalized?.factionReputation.old_faith).toBe(0);
   });
 });

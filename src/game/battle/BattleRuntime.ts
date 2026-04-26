@@ -2,6 +2,7 @@ import type {
   BattleDifficulty,
   BattleRewardResult,
   BattleStats,
+  EnemyAIPersonalityId,
   Position,
   ResourceBag,
   RewardLevelUpSummary,
@@ -24,6 +25,7 @@ export interface BattleSetupSnapshot {
   mode: BattleLaunchMode;
   sourceId: string;
   difficulty: BattleDifficulty;
+  aiPersonalityId?: EnemyAIPersonalityId;
   modifiers: string[];
   mapId: string;
   mapName: string;
@@ -37,6 +39,7 @@ export interface BattleSetupSnapshot {
   captureSiteCount: number;
   startingResources: Record<"player" | "enemy", ResourceBag>;
   rewardTableId: string;
+  secondaryObjectiveIds: string[];
   objectiveBuildingIds: {
     playerBase: string;
     enemyBase: string;
@@ -98,12 +101,18 @@ export class BattleRuntime {
     this.stats.firstSiteCaptured ??= siteId;
   }
 
-  recordBuildingBuilt(): void {
+  recordBuildingBuilt(buildingId?: string): void {
     this.stats.buildingsBuilt += 1;
+    if (buildingId) {
+      this.stats.builtBuildingIds.push(buildingId);
+    }
   }
 
-  recordUnitTrained(): void {
+  recordUnitTrained(unitId?: string): void {
     this.stats.unitsTrained += 1;
+    if (unitId) {
+      this.stats.trainedUnitIds.push(unitId);
+    }
   }
 
   recordEnemyWaveSurvived(): void {
@@ -112,6 +121,14 @@ export class BattleRuntime {
 
   recordXpGained(amount: number): void {
     this.stats.xpGained += Math.max(0, amount);
+  }
+
+  recordSecondaryObjective(objectiveId: string): boolean {
+    if (this.stats.completedObjectiveIds.includes(objectiveId)) {
+      return false;
+    }
+    this.stats.completedObjectiveIds.push(objectiveId);
+    return true;
   }
 
   evaluateObjectives(presence: BattleObjectivePresence): BattleOutcome | undefined {
@@ -145,10 +162,13 @@ export function createInitialBattleStats(): BattleStats {
     buildingsDestroyed: 0,
     resourcesCaptured: 0,
     buildingsBuilt: 0,
+    builtBuildingIds: [],
     unitsTrained: 0,
+    trainedUnitIds: [],
     enemyWavesSurvived: 0,
     xpGained: 0,
     timeSeconds: 0,
+    completedObjectiveIds: [],
     outcome: "defeat"
   };
 }
@@ -167,6 +187,7 @@ export function createBattleSetupSnapshot(launch: ResolvedBattleLaunch): BattleS
     mode: request.mode,
     sourceId: request.sourceId,
     difficulty: request.difficulty,
+    aiPersonalityId: request.aiPersonalityId,
     modifiers: request.modifiers.map((modifier) => modifier.id),
     mapId: map.id,
     mapName: map.name,
@@ -180,6 +201,7 @@ export function createBattleSetupSnapshot(launch: ResolvedBattleLaunch): BattleS
     captureSiteCount: map.captureSites.length,
     startingResources: createInitialBattleResources(launch),
     rewardTableId,
+    secondaryObjectiveIds: map.scenario.objectives.secondaryObjectives?.map((objective) => objective.id) ?? [],
     objectiveBuildingIds: {
       playerBase: map.scenario.objectives.playerBaseBuildingId,
       enemyBase: map.scenario.objectives.enemyBaseBuildingId
@@ -200,7 +222,11 @@ export function evaluateBattleObjectives(presence: BattleObjectivePresence): Bat
 export function completeBattle(
   input: BattleCompletionInput & { rewardTable: RewardTableDefinition; stats: BattleStats; mapId?: string }
 ): BattleCompletionResult {
-  const stats = { ...input.stats, outcome: input.outcome };
+  const stats = {
+    ...input.stats,
+    completedObjectiveIds: [...input.stats.completedObjectiveIds],
+    outcome: input.outcome
+  };
   const emptyReward: BattleRewardResult = {
     itemIds: [],
     resources: {},

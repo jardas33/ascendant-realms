@@ -119,37 +119,51 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 
 ## Campaign
 
-Use `New Campaign` from the main menu to create or reuse a hero and open the Border Marches campaign map. Select an available node, read its details, then start the battle or resolve the non-battle node. Victories complete nodes, claim node rewards once, save progress, and unlock connected nodes. Defeats can be retried or returned to the campaign map.
+Use `New Campaign` from the main menu to create or reuse a hero and open the Border Marches campaign map. Select an available node, read its details, then start the battle or choose an event outcome. Victories complete battle nodes, claim node rewards once, add node resource rewards to the persistent campaign bank, save progress, and unlock connected nodes. Defeats can be retried or returned to the campaign map.
 
-The first skeleton campaign has six nodes:
+The first skeleton campaign has seven nodes:
 
 - Border Village.
 - Old Stone Road.
 - Aether Well Ruins.
 - Bandit Hillfort.
 - Chapel of the Marches.
+- Refugee Caravan.
 - Ashen Outpost.
 
+Chapel of the Marches and Refugee Caravan use simple data-driven choices. Choices can be locked by resource costs or hero level, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
+
 Skirmish mode remains separate through the `Skirmish` button.
+
+## Post-Battle Rewards
+
+After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, and campaign node rewards when applicable. Earned equipment is added to inventory immediately. Equippable rewards show rarity, slot, stat modifiers, the currently equipped item in that slot, and an Equip Now comparison.
+
+Using Equip Now saves the updated hero equipment and recalculated stats. Leaving the screen without equipping keeps the item in inventory. Campaign node item rewards are claimed once; if a campaign node repeats an item already earned from the battle reward, the screen labels it as a duplicate and keeps a single inventory copy.
+
+Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Event choices can already spend it; shops, mercenaries, repairs, upgrades, and stronghold development are future systems that should use the same bank.
 
 ## Controls
 
 - Left click: select a friendly unit or building.
 - Drag with left mouse: box-select friendly units.
 - Right click ground: move selected units.
+- Right click ground with a completed Barracks or Mystic Lodge selected: set its rally point.
 - Right click enemy: attack selected enemy.
 - `Shift+A`, then right click: attack-move selected units.
 - `H`: select hero.
 - `1`, `2`, `3`: use unlocked hero abilities.
 - `Space`: center camera on hero.
 - Click minimap: center camera on that map location.
+- `F`: debug-toggle fog of war on difficulties where fog is enabled.
 - `Esc`: clear selection or cancel building placement.
 - `WASD` or arrow keys: pan camera.
 
 ## Current Features
 
 - Main menu, hero creation, campaign map, skirmish setup, reset save, credits/info.
-- Six-node campaign skeleton with locked, available, and completed node states.
+- Seven-node campaign skeleton with locked, available, completed, and choice-driven node states.
+- Persistent campaign resource bank for node rewards and event choice costs.
 - Hero inventory screen from the main menu.
 - Asset gallery for checking manual/final/placeholder art.
 - Three hero classes: Warlord, Arcanist, Shepherd.
@@ -165,11 +179,13 @@ Skirmish mode remains separate through the `Skirmish` button.
 - Building placement for Barracks, Mystic Lodge, and Watchtower with valid/invalid previews.
 - Automatic construction with under-construction visuals and disabled production until complete.
 - Unit training queues from Barracks and Mystic Lodge, with visible progress and cancel/refund.
+- Rally points for completed production buildings, with world markers and selected-building minimap markers.
 - Data-driven tech prerequisites and basic upgrades.
 - Live RTS minimap with units, buildings, capture sites, camera viewport, click-to-pan, and alert pings.
+- Lightweight grid fog of war with unseen, explored, and visible states. Enemy and neutral units/buildings are hidden outside current vision.
 - Simple RTS selection, movement, combat, projectiles, XP, level-up, and ability use.
-- Simple enemy AI that expands, trains, and sends attack waves.
-- Victory progression screen, defeat results screen, and local hero save.
+- Simple enemy AI that expands, trains, defends, sends attack waves, and uses selectable/campaign-assigned personalities.
+- Shared victory/defeat Results screen with XP summary, item rewards, Equip Now, campaign node completion details, retry/return flow, and local hero save.
 - Pure `BattleRuntime` tests for setup, objectives, battle results, rewards, and save-output decisions.
 - `BattleLaunchRequest` contract so skirmish, campaign nodes, and future scenario missions can all start battles through one clean pathway.
 - Clean procedural UI skin for menus, result panels, HUD panels, and info boxes.
@@ -179,10 +195,11 @@ Skirmish mode remains separate through the `Skirmish` button.
 
 - Gameplay units and buildings use dedicated battle sprites when available, then fall back to concept art or simple Phaser shapes if art is missing.
 - Movement uses direct steering with light separation, not full A* pathfinding yet.
-- Fog of war, workers, retinue persistence, shops, and diplomacy are postponed. The minimap is snapshot-driven so fog can mask markers later without changing HUD controls.
-- Campaign is a skeleton only: no diplomacy, shops, random events, invasions, or world simulation yet.
+- Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
+- Workers, retinue persistence, shops, and diplomacy are postponed.
+- Campaign is a skeleton only: no diplomacy, shops, procedural random events, invasions, or world simulation yet.
 - Skill choices do not support respec yet.
-- AI is intentionally simple and predictable.
+- AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
 - Balance is prototype-only and expected to change often.
 - Some engine classes still combine simulation data with Phaser visuals. That is acceptable for this slice, but should be split before multiplayer or replay work.
 - `BattleScene` still owns Phaser spawning, rendering, input, and system wiring. `BattleRuntime` now owns the first pure battle state/results boundary, but live entity state is not fully serializable yet.

@@ -65,5 +65,20 @@ export const UPGRADES: UpgradeDefinition[] = [
         multiplier: 1.25
       }
     ]
+  },
+  {
+    id: "ember_blades_trait",
+    name: "Ember Blades",
+    description: "Ashen raiders carry ember-treated weapons. This is currently represented by faction traits rather than player research.",
+    cost: {},
+    researchTimeSeconds: 0,
+    prerequisites: { buildingIds: ["enemy_barracks"] },
+    effects: [
+      {
+        type: "unit-stat-mod",
+        unitIds: ["raider"],
+        damageMultiplier: 1.05
+      }
+    ]
   }
 ];

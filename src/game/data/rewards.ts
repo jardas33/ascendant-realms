@@ -101,5 +101,54 @@ export const REWARD_TABLES: RewardTableDefinition[] = [
       },
       xp: 25
     }
+  },
+  {
+    id: "ashen_outpost_rewards",
+    name: "Ashen Outpost Spoils",
+    guaranteedItemIds: [],
+    deterministicItemIds: [
+      "ashbound_censer",
+      "starfall_prism",
+      "captains_seal",
+      "aether_lens",
+      "oathbound_aegis",
+      "ascendant_signet"
+    ],
+    rolls: 1,
+    weightedItemPool: [
+      { itemId: "ashbound_censer", weight: 22, mapIds: ["ashen_outpost"] },
+      { itemId: "captains_seal", weight: 15, mapIds: ["ashen_outpost"] },
+      { itemId: "aether_lens", weight: 15, mapIds: ["ashen_outpost"] },
+      { itemId: "green_chapel_icon", weight: 12, mapIds: ["ashen_outpost"] },
+      { itemId: "fordbreaker_halberd", weight: 11, mapIds: ["ashen_outpost"] },
+      { itemId: "oathbound_aegis", weight: 7, mapIds: ["ashen_outpost"] },
+      { itemId: "starfall_prism", weight: 5, mapIds: ["ashen_outpost"] },
+      { itemId: "ascendant_signet", weight: 1, mapIds: ["ashen_outpost"], repeatClearOnly: true }
+    ],
+    resourceRewards: [
+      { resource: "crowns", amount: 90 },
+      { resource: "stone", amount: 35 },
+      { resource: "iron", amount: 60 },
+      { resource: "aether", amount: 45 }
+    ],
+    xpRewards: [{ amount: 85 }],
+    firstClearBonus: {
+      itemIds: ["ashbound_censer"],
+      resources: {
+        crowns: 150,
+        stone: 80,
+        iron: 70,
+        aether: 55
+      },
+      xp: 95
+    },
+    repeatClearReward: {
+      resources: {
+        crowns: 65,
+        iron: 35,
+        aether: 25
+      },
+      xp: 35
+    }
   }
 ];

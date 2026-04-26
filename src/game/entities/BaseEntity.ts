@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import type { EntityKind, Position, Team } from "../core/GameTypes";
+import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/GameTypes";
 import { clamp } from "../core/MathUtils";
 
 let nextEntityNumber = 1;
@@ -25,6 +25,7 @@ export abstract class BaseEntity {
   armor: number;
   alive = true;
   selected = false;
+  statusEffects: ActiveStatusEffect[] = [];
   // TODO: Split saveable simulation state from Phaser view objects before replay, persistent retinues, or multiplayer research.
   view?: Phaser.GameObjects.Container;
 
@@ -32,6 +33,7 @@ export abstract class BaseEntity {
   protected healthBack?: Phaser.GameObjects.Rectangle;
   protected healthFill?: Phaser.GameObjects.Rectangle;
   protected label?: Phaser.GameObjects.Text;
+  private statusBadge?: Phaser.GameObjects.Arc;
   private healthBarWidth = 0;
   private healthBarHeight = 0;
 
@@ -74,6 +76,9 @@ export abstract class BaseEntity {
       this.healthFill = scene.add.rectangle(-width / 2, y, width, height, healthColor, 0.96).setOrigin(0, 0.5);
       this.view.add([this.healthBack, this.healthFill]);
     }
+
+    this.statusBadge = scene.add.circle(this.radius + 6, -this.radius - 10, 4, 0xff743d, 0.95).setVisible(false);
+    this.view.add(this.statusBadge);
 
     this.label = scene.add
       .text(0, this.radius + 11, label, {
@@ -144,6 +149,30 @@ export abstract class BaseEntity {
     this.hp = clamp(this.hp + amount, 0, this.maxHp);
     this.updateHealthBar();
     return this.hp - before;
+  }
+
+  applyStatusEffect(effect: ActiveStatusEffect): void {
+    const existing = this.statusEffects.find((entry) => entry.id === effect.id && entry.sourceId === effect.sourceId);
+    if (existing) {
+      existing.remainingSeconds = Math.max(existing.remainingSeconds, effect.remainingSeconds);
+      existing.durationSeconds = Math.max(existing.durationSeconds, effect.durationSeconds);
+      existing.damagePerSecond = Math.max(existing.damagePerSecond, effect.damagePerSecond);
+      existing.tickInterval = effect.tickInterval;
+      this.updateStatusVisual();
+      return;
+    }
+    this.statusEffects.push({ ...effect });
+    this.updateStatusVisual();
+  }
+
+  updateStatusVisual(): void {
+    const burning = this.statusEffects.some((effect) => effect.type === "burn" && effect.remainingSeconds > 0);
+    this.statusBadge?.setVisible(burning);
+    if (burning) {
+      this.label?.setColor("#ffb187");
+      return;
+    }
+    this.label?.setColor("#e9ecd8");
   }
 
   setSelected(selected: boolean): void {

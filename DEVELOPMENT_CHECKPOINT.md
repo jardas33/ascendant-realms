@@ -1,165 +1,228 @@
 # Development Checkpoint
 
-Date/time: 2026-04-26 10:58 -04:00 (America/Toronto)
+Updated: 2026-04-26 13:01 -04:00
 
-Purpose: stabilize and checkpoint Ascendant Realms before adding any new gameplay feature.
+## Current Health
 
-No new gameplay features were added during this pass.
+The project is safe to checkpoint from an automated verification standpoint: tests pass, production build passes, and the local dev URL responds. Full click-through browser QA is still blocked because Browser Use cannot attach to an active Codex browser pane, so the manual checklist remains guided rather than fully executed by automation.
 
-## Git Status
+## Latest Commit
 
-- Feature checkpoint commit created: `9a1293c`
-- Feature checkpoint commit message: `Add campaign skeleton, pacing, construction, minimap, loot, and skirmish setup`
-- Repository remote: `https://github.com/jardas33/ascendant-realms.git`
-- Branch after feature commit: `main`
-- Branch state after feature commit: ahead of `origin/main` by 1 commit
-- This checkpoint document is written after the feature commit so it can record that hash accurately.
+```text
+18af42d9520b689ae958f49b41ba9c21346f8e9b
+```
 
-## Verification
+Branch status:
 
-### Handoff Review
+```text
+main...origin/main [ahead 2]
+```
 
-- `LLM_GAME_HANDOFF.md` was read fully before verification.
-- The handoff confirmed the dirty worktree was expected and that this pass should only fix failing tests, TypeScript errors, broken imports, broken asset paths, or obvious runtime crashes.
+This hash is the commit before the checkpoint commit. After committing this file and the current worktree, use `git rev-parse HEAD` for the checkpoint commit hash.
 
-### Tests
-
-Status: passed
+## Test Status
 
 Command:
 
-```powershell
+```bash
 npm test
 ```
 
 Result:
 
-- 13 test files passed.
-- 47 tests passed.
-- No test failures.
+```text
+PASS
+21 test files passed
+89 tests passed
+```
 
-### Build
-
-Status: passed
+## Build Status
 
 Command:
 
-```powershell
+```bash
 npm run build
 ```
 
 Result:
 
-- TypeScript compilation passed.
-- Vite production build passed.
-- Existing expected warning remains: the Phaser application chunk is larger than 500 kB after minification.
-
-### Assets
-
-Status: not rerun
-
-Reason:
-
-- `npm run assets:refresh` was not needed during this pass because no new art, generated asset source, manifest source, or asset path changes were made.
-- Build did not report missing assets or broken asset imports.
-
-### Git Whitespace Check
-
-Status: passed
-
-Command:
-
-```powershell
-git diff --check
+```text
+PASS
+TypeScript compile passed
+Vite production build passed
 ```
 
-Result:
+Known build warning:
 
-- No whitespace errors were reported before the feature commit.
+```text
+Some chunks are larger than 500 kB after minification.
+Main JS bundle is approximately 1.7 MB minified / 400 KB gzip.
+```
 
-## Browser Smoke Test
+## Asset Refresh Status
 
-Status: blocked by browser automation availability
+`npm run assets:refresh` was not run because `git status --short` showed no asset registry, public asset, generated sprite, or manifest input files requiring refresh in this pass.
 
-What worked:
+Run `npm run assets:refresh` before the next checkpoint if any of these change:
 
-- Local dev server responded successfully at `http://127.0.0.1:5173/`.
-- HTTP health check returned status `200`.
+- `tools/manual-asset-pipeline/*`
+- `public/assets/manual/*`
+- generated battle sprites
+- asset manifests
 
-What failed:
+## Smoke Test Status
 
-- Browser Use could not attach to an active Codex browser pane.
-- A fresh Browser Use runtime reset did not resolve the issue.
-- The connector reported no active Codex browser pane during setup.
-- A retry with a newly requested tab reported stale session/tab state.
-- Local Playwright fallback was checked but Playwright is not installed in this project or available in the Node REPL environment.
+Local HTTP boot check:
 
-What was not verified because of the browser blocker:
+```text
+PASS
+http://127.0.0.1:5173/ returned 200 OK
+```
 
-1. Main menu from a clean save.
-2. New Campaign.
-3. Hero creation.
-4. CampaignMapScene opening.
-5. Border Village launch.
-6. First Claim battle start.
-7. Barracks placement.
-8. Barracks construction completion.
-9. Militia training.
-10. Capture site flow.
-11. First enemy attack survival.
-12. Victory or intentional defeat.
-13. ResultsScene.
-14. Retry and campaign return.
-15. Continue Campaign.
-16. Skirmish Setup.
-17. Broken Ford launch.
-18. Inventory opening.
-19. Equipment stat changes.
-20. Reset Save.
+Browser Use / in-app browser smoke:
 
-Exact browser/tooling bugs found:
+```text
+BLOCKED
+The Browser Use runtime could not attach to an active Codex browser pane.
+```
 
-- Browser Use connector could not access an active in-app browser pane even though the local app URL was expected to be open.
-- Browser Use retry after reset still failed before page interaction.
-- Playwright is not installed locally, so a fallback browser automation pass would require installing new tooling. That was not done during this stabilization pass.
+Because Browser Use could not attach, the full manual smoke path was not completed by automation in this pass. Use the checklist in `LLM_GAME_HANDOFF.md` for guided manual QA, with special focus on campaign start, First Claim battle launch, construction/training/rally flow, fog/minimap, Results rewards, event choices, Skirmish Setup, Broken Ford, Ashen Outpost, inventory, and reset save.
 
-Exact app bugs found:
+Known failed or blocked checklist items:
 
-- None from tests or build.
-- No browser-level gameplay bugs were confirmed because the smoke path could not be executed.
+- Items 1-2: local HTTP boot passed, but visual browser confirmation was blocked by Browser Use.
+- Items 3-53: not executed by Browser Use in this pass because the in-app browser bridge was unavailable.
+- No gameplay failure was observed by automated tests or build.
+
+## Current Git Status
+
+Modified files:
+
+```text
+BALANCE.md
+CONTENT_GUIDE.md
+DESIGN.md
+DEVELOPMENT_CHECKPOINT.md
+LLM_GAME_HANDOFF.md
+README.md
+ROADMAP.md
+TECHNICAL_AUDIT.md
+src/game/ai/EnemyAIController.ts
+src/game/battle/BattleLaunchRequest.test.ts
+src/game/battle/BattleLaunchRequest.ts
+src/game/battle/BattleRuntime.test.ts
+src/game/battle/BattleRuntime.ts
+src/game/core/CampaignRules.test.ts
+src/game/core/CampaignRules.ts
+src/game/core/GameTypes.ts
+src/game/core/SaveSystem.test.ts
+src/game/core/SaveSystem.ts
+src/game/data/battlePacing.ts
+src/game/data/buildings.ts
+src/game/data/campaignNodes.ts
+src/game/data/contentIndex.ts
+src/game/data/contentValidation.test.ts
+src/game/data/contentValidation.ts
+src/game/data/factions.ts
+src/game/data/heroClasses.ts
+src/game/data/heroes.ts
+src/game/data/maps.ts
+src/game/data/rewards.ts
+src/game/data/units.ts
+src/game/data/upgrades.ts
+src/game/entities/BaseEntity.ts
+src/game/entities/Building.ts
+src/game/entities/Hero.ts
+src/game/entities/Unit.ts
+src/game/save/SaveTypes.ts
+src/game/scenes/BattleScene.ts
+src/game/scenes/CampaignMapScene.ts
+src/game/scenes/HeroCreationScene.ts
+src/game/scenes/HeroProgressionScene.ts
+src/game/scenes/ResultsScene.ts
+src/game/scenes/SkirmishSetupScene.ts
+src/game/styles/ui.css
+src/game/systems/CombatSystem.ts
+src/game/systems/InputSystem.ts
+src/game/systems/MovementSystem.ts
+src/game/systems/TrainingSystem.ts
+src/game/ui/HUD.ts
+src/game/ui/MinimapView.ts
+```
+
+Untracked files:
+
+```text
+src/game/core/FirstExperienceGuidance.test.ts
+src/game/core/FirstExperienceGuidance.ts
+src/game/core/ResultsFlow.test.ts
+src/game/core/ResultsFlow.ts
+src/game/data/aiPersonalities.test.ts
+src/game/data/aiPersonalities.ts
+src/game/data/campaignModifiers.test.ts
+src/game/data/campaignModifiers.ts
+src/game/systems/FogOfWarSystem.test.ts
+src/game/systems/FogOfWarSystem.ts
+src/game/systems/PathfindingGrid.test.ts
+src/game/systems/PathfindingGrid.ts
+src/game/systems/RallyPointSystem.test.ts
+src/game/systems/RallyPointSystem.ts
+src/game/systems/StatusEffectSystem.test.ts
+src/game/systems/StatusEffectSystem.ts
+```
 
 ## What Worked
 
-- `LLM_GAME_HANDOFF.md` is current enough to orient future work.
-- Unit tests passed with the campaign, save, loot, construction, upgrade, minimap, AI pacing, and validation systems included.
-- Production build passed.
-- TypeScript imports and scene registration compiled.
-- The dev server was reachable on port 5173.
-- The feature set was committed locally.
+- Automated tests pass across battle runtime, launch requests, campaign rules, save normalization, rewards/equipment, AI personalities, campaign modifiers, pathfinding, fog, rally points, status effects, upgrades, placement, minimap, and content validation.
+- Production build passes.
+- Local dev URL is reachable.
+- Current handoff is refreshed with current systems, risks, git status, manual QA, Ashen Outpost, and next priorities.
+- Campaign event choices are documented as current behavior.
+- Campaign resource bank and choice claims are documented as saved state.
 
-## What Failed
+## What Failed Or Could Not Be Completed
 
-- Requested in-app browser smoke test could not be completed due Browser Use connector/session availability.
-- No interactive manual gameplay path was verified in this pass.
+- Browser Use could not attach to the in-app browser pane, so no screenshot-based or click-through smoke test was completed.
+- `rg --files` previously failed with Windows access denied, so PowerShell enumeration was used for codebase/status inspection.
+- Full manual QA remains guided rather than executed through the browser bridge.
 
-## Safety Assessment
+## Files Becoming Too Large Or Risky
 
-Project status: safe to continue from a code/test/build checkpoint.
+Most important size/risk hotspots:
 
-Important caveat: the project still needs an actual browser gameplay smoke test before treating the current feature set as playtested.
+- `src/game/styles/ui.css`: 1556 lines.
+- `tools/manual-asset-pipeline/assetRegistry.ts`: 1343 lines.
+- `src/game/scenes/BattleScene.ts`: 1285 lines.
+- `src/game/data/contentValidation.ts`: 929 lines.
+- `src/game/data/maps.ts`: 592 lines.
+- `src/game/scenes/ResultsScene.ts`: 557 lines.
+- `src/game/core/GameTypes.ts`: 542 lines.
+- `src/game/scenes/CampaignMapScene.ts`: 485 lines.
+- `src/game/scenes/HeroProgressionScene.ts`: 441 lines.
+- `src/game/core/HeroProgressionRules.ts`: 420 lines.
+- `src/game/ui/HUD.ts`: 366 lines.
 
-The next LLM or developer can safely continue if they first:
+## What Should Be Committed Next
 
-1. Confirm the working tree is clean or understand any new local changes.
-2. Run `npm test`.
-3. Run `npm run build`.
-4. Run the manual browser smoke test once Browser Use or another approved browser automation surface is available.
+This checkpoint pass should commit the current feature set together:
 
-## Next Recommended Fixes
+```text
+Checkpoint core campaign RTS prototype
+```
 
-1. Restore Browser Use access or add an approved browser automation setup, then run the full smoke path.
-2. If smoke fails, fix only runtime crashes, broken scene transitions, save/load errors, or unusable UI blockers before adding features.
-3. Push the local checkpoint commits to GitHub when ready.
-4. Verify campaign victory and defeat return paths specifically.
-5. Verify item equip and stat preview behavior after earning a reward.
-6. Verify Broken Ford launches from Skirmish Setup and renders its map/camera/minimap correctly.
+Include all modified and untracked files listed above. Do not split or discard any of the current uncommitted files unless the user explicitly requests a different commit strategy.
+
+## Next Manual QA Priority
+
+Run the checklist from `LLM_GAME_HANDOFF.md`, with special focus on:
+
+1. New Campaign -> hero creation -> campaign map.
+2. Border Village battle launch.
+3. Construction, training queue, upgrades, rally points.
+4. Fog and minimap correctness.
+5. Victory/defeat Results flow.
+6. Equip Now persistence.
+7. Campaign node completion and reward claiming.
+8. Chapel of the Marches and Refugee Caravan choices.
+9. Skirmish Setup, Broken Ford launch, and Ashen Outpost launch.
+10. Reset Save and Continue Campaign.

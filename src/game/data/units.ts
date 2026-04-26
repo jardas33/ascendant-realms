@@ -11,6 +11,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 4,
     radius: 13,
     color: 0x8fcf91,
+    visionRadius: 360,
     stats: {
       maxHp: 90,
       damage: 9,
@@ -31,6 +32,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 5,
     radius: 12,
     color: 0x6eb5d8,
+    visionRadius: 430,
     projectileColor: 0xc7e8a2,
     stats: {
       maxHp: 65,
@@ -53,6 +55,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 6,
     radius: 12,
     color: 0xb6e6d3,
+    visionRadius: 400,
     projectileColor: 0x8ff7ff,
     stats: {
       maxHp: 55,
@@ -71,13 +74,14 @@ export const UNITS: UnitDefinition[] = [
     factionId: "ashen_covenant",
     role: "Enemy melee attacker",
     description: "Fast enemy infantry that pressures resource sites.",
-    cost: { crowns: 55, iron: 20 },
+    cost: { crowns: 45, iron: 15 },
     trainTime: 4,
     radius: 13,
     color: 0xc75f4e,
+    visionRadius: 360,
     stats: {
-      maxHp: 85,
-      damage: 9,
+      maxHp: 76,
+      damage: 10,
       range: 28,
       attackCooldown: 1,
       speed: 98,
@@ -95,10 +99,11 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 5,
     radius: 12,
     color: 0xb36ee2,
+    visionRadius: 400,
     projectileColor: 0xdd8cff,
     stats: {
-      maxHp: 60,
-      damage: 8,
+      maxHp: 52,
+      damage: 9,
       range: 150,
       attackCooldown: 1.25,
       speed: 88,
@@ -116,8 +121,9 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 7,
     radius: 16,
     color: 0x9f4a36,
+    visionRadius: 340,
     stats: {
-      maxHp: 160,
+      maxHp: 170,
       damage: 13,
       range: 30,
       attackCooldown: 1.25,
@@ -136,6 +142,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 0,
     radius: 18,
     color: 0xf06a43,
+    visionRadius: 500,
     stats: {
       maxHp: 260,
       damage: 16,
@@ -156,6 +163,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 0,
     radius: 12,
     color: 0x8f7a54,
+    visionRadius: 320,
     stats: {
       maxHp: 55,
       damage: 7,
@@ -176,6 +184,7 @@ export const UNITS: UnitDefinition[] = [
     trainTime: 0,
     radius: 14,
     color: 0x948a7a,
+    visionRadius: 300,
     stats: {
       maxHp: 85,
       damage: 8,
