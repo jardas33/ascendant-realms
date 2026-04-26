@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { ASSET_IDS } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
+import { createStartedCampaignSave } from "../core/CampaignRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 
@@ -25,14 +26,29 @@ export class MainMenuScene extends Phaser.Scene {
         return;
       }
       const action = button.dataset.menuAction;
-      if (action === "new") {
-        this.scene.start(SCENE_KEYS.heroCreation);
+      if (action === "campaign-new") {
+        const save = SaveSystem.load();
+        if (!save) {
+          this.scene.start(SCENE_KEYS.heroCreation, { nextMode: "campaign" });
+          return;
+        }
+        const campaign = createStartedCampaignSave();
+        SaveSystem.saveGame(save.hero, campaign);
+        this.scene.start(SCENE_KEYS.campaignMap, { heroSave: save.hero, campaignSave: campaign });
       }
-      if (action === "continue") {
+      if (action === "campaign-continue") {
+        const save = SaveSystem.load();
+        if (save) {
+          this.scene.start(SCENE_KEYS.campaignMap, { heroSave: save.hero, campaignSave: save.campaign });
+        }
+      }
+      if (action === "skirmish") {
         const save = SaveSystem.load();
         if (save) {
           this.scene.start(SCENE_KEYS.skirmishSetup, { heroSave: save.hero });
+          return;
         }
+        this.scene.start(SCENE_KEYS.heroCreation, { nextMode: "skirmish" });
       }
       if (action === "inventory") {
         const save = SaveSystem.load();
@@ -57,7 +73,9 @@ export class MainMenuScene extends Phaser.Scene {
   }
 
   private render(showInfo = false): void {
-    const hasSave = SaveSystem.hasSave();
+    const save = SaveSystem.load();
+    const hasSave = Boolean(save);
+    const hasCampaign = Boolean(save?.campaign.started);
     if (!this.root) {
       return;
     }
@@ -71,8 +89,9 @@ export class MainMenuScene extends Phaser.Scene {
           <h1>Ascendant Realms</h1>
           <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
           <div class="menu-actions">
-            <button data-menu-action="new">Start Skirmish</button>
-            <button data-menu-action="continue" ${hasSave ? "" : "disabled"}>Continue Hero</button>
+            <button data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
+            <button data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
+            <button data-menu-action="skirmish">Skirmish</button>
             <button data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
             <button data-menu-action="assets">Asset Gallery</button>
             <button data-menu-action="reset" ${hasSave ? "" : "disabled"}>Reset Save</button>

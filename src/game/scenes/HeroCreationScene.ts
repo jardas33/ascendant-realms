@@ -1,11 +1,16 @@
 import Phaser from "phaser";
 import { ASSET_IDS, heroPortraitAssetId } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
+import { createStartedCampaignSave } from "../core/CampaignRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { createNewHeroSave } from "../data/heroes";
 import { HERO_CLASSES } from "../data/heroClasses";
 import { ORIGINS } from "../data/origins";
+
+interface HeroCreationData {
+  nextMode?: "campaign" | "skirmish";
+}
 
 export class HeroCreationScene extends Phaser.Scene {
   private root?: HTMLElement;
@@ -13,9 +18,14 @@ export class HeroCreationScene extends Phaser.Scene {
   private selectedClassId = HERO_CLASSES[0].id;
   private selectedOriginId = ORIGINS[0].id;
   private heroName = "Aster";
+  private nextMode: "campaign" | "skirmish" = "skirmish";
 
   constructor() {
     super(SCENE_KEYS.heroCreation);
+  }
+
+  init(data: HeroCreationData): void {
+    this.nextMode = data.nextMode ?? "skirmish";
   }
 
   create(): void {
@@ -47,6 +57,12 @@ export class HeroCreationScene extends Phaser.Scene {
         const input = this.root?.querySelector<HTMLInputElement>("#hero-name");
         this.heroName = input?.value ?? this.heroName;
         const save = createNewHeroSave(this.heroName, this.selectedClassId, this.selectedOriginId);
+        if (this.nextMode === "campaign") {
+          const campaign = createStartedCampaignSave();
+          SaveSystem.saveGame(save, campaign);
+          this.scene.start(SCENE_KEYS.campaignMap, { heroSave: save, campaignSave: campaign });
+          return;
+        }
         SaveSystem.saveHero(save);
         this.scene.start(SCENE_KEYS.skirmishSetup, { heroSave: save });
       }
@@ -65,7 +81,7 @@ export class HeroCreationScene extends Phaser.Scene {
     this.root.innerHTML = `
       <main class="menu-shell creation asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel wide">
-          <p class="eyebrow">Hero Creation</p>
+          <p class="eyebrow">${this.nextMode === "campaign" ? "New Campaign" : "Hero Creation"}</p>
           <h1>Choose Your Ascendant</h1>
           <label class="field-label" for="hero-name">Hero Name</label>
           <input id="hero-name" value="${escapeHtml(this.heroName)}" maxlength="24" />
@@ -103,7 +119,7 @@ export class HeroCreationScene extends Phaser.Scene {
             </div>
           </div>
           <div class="menu-actions row">
-            <button data-hero-action="start">Continue To Setup</button>
+            <button data-hero-action="start">${this.nextMode === "campaign" ? "Begin Campaign" : "Continue To Setup"}</button>
             <button data-hero-action="back">Back</button>
           </div>
         </section>

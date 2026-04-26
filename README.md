@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a small first playable prototype for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter a skirmish, capture magical resource sites, build a small army, fight enemies, level up, and save hero progress locally.
+Ascendant Realms is a small first playable prototype for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies, level up, earn loot, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -117,6 +117,21 @@ This writes original procedural PNG frames into `public/assets/manual/ui`. They 
 
 Use the `Reset Save` button on the main menu. You can also clear the browser's local storage for this site.
 
+## Campaign
+
+Use `New Campaign` from the main menu to create or reuse a hero and open the Border Marches campaign map. Select an available node, read its details, then start the battle or resolve the non-battle node. Victories complete nodes, claim node rewards once, save progress, and unlock connected nodes. Defeats can be retried or returned to the campaign map.
+
+The first skeleton campaign has six nodes:
+
+- Border Village.
+- Old Stone Road.
+- Aether Well Ruins.
+- Bandit Hillfort.
+- Chapel of the Marches.
+- Ashen Outpost.
+
+Skirmish mode remains separate through the `Skirmish` button.
+
 ## Controls
 
 - Left click: select a friendly unit or building.
@@ -133,7 +148,8 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 
 ## Current Features
 
-- Main menu, hero creation, skirmish setup, continue hero, reset save, credits/info.
+- Main menu, hero creation, campaign map, skirmish setup, reset save, credits/info.
+- Six-node campaign skeleton with locked, available, and completed node states.
 - Hero inventory screen from the main menu.
 - Asset gallery for checking manual/final/placeholder art.
 - Three hero classes: Warlord, Arcanist, Shepherd.
@@ -141,7 +157,7 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 - Three skill trees: Combat, Magic, Leadership.
 - Three data-defined abilities per class.
 - Skill point allocation after level-up.
-- Item rewards after victory.
+- Rarity-weighted item rewards after victory.
 - Equipment slots: weapon, armor, trinket.
 - Two playable skirmish maps: First Claim and Broken Ford.
 - Player base, enemy base, neutral camps, and capturable resource sites.
@@ -155,7 +171,7 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 - Simple enemy AI that expands, trains, and sends attack waves.
 - Victory progression screen, defeat results screen, and local hero save.
 - Pure `BattleRuntime` tests for setup, objectives, battle results, rewards, and save-output decisions.
-- `BattleLaunchRequest` contract so skirmish, future campaign nodes, and future scenario missions can all start battles through one clean pathway.
+- `BattleLaunchRequest` contract so skirmish, campaign nodes, and future scenario missions can all start battles through one clean pathway.
 - Clean procedural UI skin for menus, result panels, HUD panels, and info boxes.
 - Optional dedicated UI-kit assets for panel frames, button states, resource frames, dividers, tooltip frames, minimap frame, ability slot frame, inventory slot frame, victory panel, and defeat panel.
 
@@ -163,8 +179,8 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 
 - Gameplay units and buildings use dedicated battle sprites when available, then fall back to concept art or simple Phaser shapes if art is missing.
 - Movement uses direct steering with light separation, not full A* pathfinding yet.
-- Fog of war, workers, campaign nodes, retinue persistence, shops, and diplomacy are postponed. The minimap is snapshot-driven so fog can mask markers later without changing HUD controls.
-- Item rewards are deterministic for testing and do not have rarity rolls yet.
+- Fog of war, workers, retinue persistence, shops, and diplomacy are postponed. The minimap is snapshot-driven so fog can mask markers later without changing HUD controls.
+- Campaign is a skeleton only: no diplomacy, shops, random events, invasions, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI is intentionally simple and predictable.
 - Balance is prototype-only and expected to change often.
@@ -189,4 +205,5 @@ Good next prompts are specific and small. Examples:
 - If `npm install` fails, check that Node.js is installed and restart the terminal.
 - If the browser page is blank, run `npm run build` and look for TypeScript errors.
 - If the game feels stuck after edits, stop the dev server with `Ctrl+C`, run `npm install`, and start it again.
-- If Continue Hero is missing, win a skirmish first or create a new hero.
+- If `Continue Campaign` is disabled, start a new campaign first.
+- If `Hero Inventory` is disabled, create a hero first.

@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { LEVEL_XP_THRESHOLDS } from "./Constants";
 import { calculateLevelFromXp, xpProgressForLevel } from "./Progression";
-import { createFallbackHeroSave, isHeroSaveData, normalizeHeroSaveData } from "./SaveSystem";
+import {
+  createFallbackCampaignSave,
+  createFallbackHeroSave,
+  isCampaignSaveData,
+  isHeroSaveData,
+  normalizeCampaignSaveData,
+  normalizeHeroSaveData
+} from "./SaveSystem";
 
 describe("calculateLevelFromXp", () => {
   it("keeps a fresh hero at level 1", () => {
@@ -36,6 +43,23 @@ describe("calculateLevelFromXp", () => {
     expect(migrated?.inventory).toEqual(["founders_promise"]);
     expect(migrated?.equipment).toEqual({});
     expect(migrated?.allocatedSkills).toEqual({});
+    expect(migrated?.clearedMapIds).toEqual([]);
+  });
+
+  it("persists valid inventory equipment and cleared map history", () => {
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      inventory: ["captains_seal"],
+      equipment: {
+        trinket: "captains_seal",
+        weapon: "missing_item"
+      },
+      clearedMapIds: ["first_claim", "first_claim", "broken_ford"]
+    });
+
+    expect(normalized?.inventory).toEqual(["captains_seal"]);
+    expect(normalized?.equipment).toEqual({ trinket: "captains_seal" });
+    expect(normalized?.clearedMapIds).toEqual(["first_claim", "broken_ford"]);
   });
 
   it("normalizes numeric progression fields into safe ranges", () => {
@@ -62,5 +86,22 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.completedBattles).toBe(0);
     expect(normalized?.allocatedSkills.combat_drill).toBe(1);
     expect(normalized?.stats.might).toBe(0);
+  });
+
+  it("normalizes campaign save progress", () => {
+    const normalized = normalizeCampaignSaveData({
+      ...createFallbackCampaignSave(),
+      started: true,
+      difficulty: "normal",
+      completedNodeIds: ["border_village", "border_village"],
+      unlockedNodeIds: ["border_village", "old_stone_road"],
+      nodeRewardsClaimedIds: ["border_village"],
+      selectedNodeId: "old_stone_road"
+    });
+
+    expect(isCampaignSaveData(normalized)).toBe(true);
+    expect(normalized?.completedNodeIds).toEqual(["border_village"]);
+    expect(normalized?.unlockedNodeIds).toEqual(["border_village", "old_stone_road"]);
+    expect(normalized?.selectedNodeId).toBe("old_stone_road");
   });
 });

@@ -1,7 +1,7 @@
-import type { BattleDifficulty, BattleMapDefinition, RewardTableDefinition } from "../core/GameTypes";
+import type { BattleDifficulty, BattleMapDefinition, CampaignNodeDefinition, RewardTableDefinition } from "../core/GameTypes";
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
 import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePacing";
-import { MAP_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_NODE_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
 import { DEFAULT_MAP_ID } from "../data/maps";
 import type { HeroSaveData } from "../save/SaveTypes";
 
@@ -65,6 +65,31 @@ export function createSkirmishBattleLaunchRequest(
   options: CreateBattleLaunchRequestOptions = {}
 ): BattleLaunchRequest {
   return createBattleLaunchRequest(heroSave, { ...options, mode: options.mode ?? "skirmish" });
+}
+
+export function createCampaignBattleLaunchRequest(
+  heroSave: HeroSaveData,
+  node: CampaignNodeDefinition | string,
+  options: CreateBattleLaunchRequestOptions = {}
+): BattleLaunchRequest {
+  const definition = typeof node === "string" ? CAMPAIGN_NODE_BY_ID[node] : node;
+  if (!definition) {
+    return createBattleLaunchRequest(heroSave, {
+      ...options,
+      mode: "campaign_node",
+      campaignNodeId: typeof node === "string" ? node : undefined,
+      sourceId: options.sourceId ?? "campaign_missing_node"
+    });
+  }
+  return createBattleLaunchRequest(heroSave, {
+    ...options,
+    mode: "campaign_node",
+    mapId: definition.mapId,
+    difficulty: options.difficulty ?? definition.difficulty,
+    enemyProfileId: options.enemyProfileId ?? definition.enemyFactionId,
+    campaignNodeId: definition.id,
+    sourceId: options.sourceId ?? `campaign_${definition.id}`
+  });
 }
 
 export function createBattleLaunchRequest(
@@ -131,6 +156,9 @@ export function resolveBattleLaunchRequest(
 
   if (request.mode === "campaign_node" && !request.campaignNodeId) {
     errors.push("Campaign battle launch requests must include campaignNodeId.");
+  }
+  if (request.campaignNodeId && !CAMPAIGN_NODE_BY_ID[request.campaignNodeId]) {
+    errors.push(`Battle launch request references missing campaign node ${request.campaignNodeId}.`);
   }
   if (request.mode === "scenario_mission" && !request.scenarioMissionId) {
     errors.push("Scenario mission battle launch requests must include scenarioMissionId.");

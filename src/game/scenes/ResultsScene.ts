@@ -51,6 +51,16 @@ export class ResultsScene extends Phaser.Scene {
       if (action === "menu") {
         this.scene.start(SCENE_KEYS.mainMenu);
       }
+      if (action === "campaign") {
+        const save = SaveSystem.load();
+        if (save) {
+          this.scene.start(SCENE_KEYS.campaignMap, {
+            heroSave: save.hero,
+            campaignSave: save.campaign,
+            stats: this.dataSnapshot?.stats
+          });
+        }
+      }
     };
     this.root.addEventListener("click", this.handler);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
@@ -64,6 +74,7 @@ export class ResultsScene extends Phaser.Scene {
     const { stats, heroSave } = this.dataSnapshot;
     const map = this.dataSnapshot.launchRequest ? MAP_BY_ID[this.dataSnapshot.launchRequest.mapId] : undefined;
     const difficulty = this.dataSnapshot.launchRequest ? getBattleDifficulty(this.dataSnapshot.launchRequest.difficulty) : undefined;
+    const isCampaign = this.dataSnapshot.launchRequest?.mode === "campaign_node";
     const title = stats.outcome === "victory" ? "Victory" : "Defeat";
     const backgroundId = stats.outcome === "victory" ? ASSET_IDS.ui.victoryScreenBackground : ASSET_IDS.ui.defeatScreenBackground;
     this.root.className = "ui-root menu-ui";
@@ -89,7 +100,7 @@ export class ResultsScene extends Phaser.Scene {
           ${stats.outcome === "defeat" ? `<div class="info-box">${escapeHtml(defeatTip(stats))}</div>` : ""}
           <div class="menu-actions row">
             <button data-results-action="retry">${stats.outcome === "victory" ? "Continue Hero" : "Retry"}</button>
-            <button data-results-action="menu">Main Menu</button>
+            <button data-results-action="${isCampaign ? "campaign" : "menu"}">${isCampaign ? "Campaign Map" : "Main Menu"}</button>
           </div>
         </section>
       </main>

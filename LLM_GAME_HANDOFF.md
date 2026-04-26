@@ -1,683 +1,1567 @@
 # Ascendant Realms LLM Handoff
 
-This file is a complete practical handoff for another LLM or developer to understand what exists in the Ascendant Realms prototype as of this workspace state. Source files remain the authority, but this document gathers the architecture, gameplay rules, content data, asset workflow, UI behavior, recent visual changes, and known limitations in one place.
+Last updated: 2026-04-26
+
+Workspace: `D:\Code for projects\WB game like\ascendant-realms`
+
+Git repository: `https://github.com/jardas33/ascendant-realms.git`
+
+Current branch: `main`, tracking `origin/main`
+
+Initial GitHub commit: `8762c11 Initial Ascendant Realms prototype`
+
+Important state note: the repository is initialized and pushed, but the local worktree currently contains many uncommitted changes from the recent pacing, construction, minimap, skirmish-map, loot, and campaign-skeleton work. Do not assume `origin/main` has those systems yet unless they have been committed after this handoff.
 
 ## Project Identity
 
-- Name: Ascendant Realms.
-- Genre: Small first-playable fantasy RTS/RPG hybrid.
-- Runtime: Browser game using Phaser 3, TypeScript, and Vite.
-- Core fantasy: Create a persistent hero, enter a skirmish, capture magical resource sites, build a small army, defeat enemies, gain XP, receive item rewards, and save hero progress locally.
-- Current scope: Engine-first playable prototype, not a full game.
-- Long-term pillars:
-  - Persistent hero fantasy.
-  - Faction asymmetry.
-  - Living campaign map.
-  - Data-driven and mod-friendly content.
+Ascendant Realms is a browser-based RTS/RPG hybrid built with Phaser, TypeScript, and Vite. The current game loop is:
 
-## Repository Shape
+1. Create or load a persistent hero.
+2. Enter campaign or skirmish mode.
+3. Launch a real-time battle on a data-driven map.
+4. Select the hero and command units.
+5. Capture resource sites.
+6. Build production structures.
+7. Train troops and research basic upgrades.
+8. Fight AI waves.
+9. Destroy the enemy stronghold.
+10. Earn XP, items, and progression.
+11. Save hero, inventory, equipment, and campaign progress.
 
-- Outer launcher folder: `D:\Code for projects\WB game like`.
-- Real project folder: `D:\Code for projects\WB game like\ascendant-realms`.
-- Main package: `ascendant-realms/package.json`.
-- Convenience package: outer `package.json` forwards common npm scripts into `ascendant-realms`.
-- There is no `.git` folder visible in this workspace snapshot.
+The project is still a prototype, but it now has enough structure for campaign nodes, multiple skirmish maps, live minimap support, post-battle loot, equipment, construction, training queues, and RTS battle pacing.
 
-## Commands
+## Current Verification Status
 
-Run from `ascendant-realms`:
+Most recent full verification before this handoff update:
 
-```bash
-npm run dev
+- `npm test` passed.
+- `npm run build` passed.
+- Browser smoke testing could not be completed because the Browser Use connector reported no active or reachable Codex browser pane during the prior run.
+
+This handoff update is documentation-only. If you continue implementation work, rerun:
+
+```powershell
 npm test
 npm run build
+```
+
+Use `npm run dev` to run the game locally. The app has been opened at `http://127.0.0.1:5173/` in the in-app browser in recent sessions.
+
+## Common Commands
+
+Run all commands from:
+
+```powershell
+D:\Code for projects\WB game like\ascendant-realms
+```
+
+Development server:
+
+```powershell
+npm run dev
+```
+
+Unit tests:
+
+```powershell
+npm test
+```
+
+Production build:
+
+```powershell
+npm run build
+```
+
+Refresh generated asset documentation:
+
+```powershell
 npm run assets:refresh
 ```
 
-Outer-folder equivalents are also available:
+The Vite production build may warn about a large Phaser chunk. That warning is currently expected.
 
-```bash
-npm run dev
-npm test
-npm run build
-npm run assets:refresh
+## Technology Stack
+
+- Phaser for 2D rendering and gameplay scenes.
+- TypeScript for game logic.
+- Vite for dev/build tooling.
+- Vitest for tests.
+- DOM overlays for menus, HUD panels, selected building UI, campaign UI, inventory UI, and results UI.
+- Local storage save system under the key `ascendant-realms-save-v1`.
+
+## High-Level Architecture
+
+Important source directories:
+
+- `src/game/core`: shared types, save system, campaign rules, hero progression rules.
+- `src/game/battle`: battle launch validation and runtime state helpers.
+- `src/game/data`: data-driven content such as maps, units, buildings, heroes, items, rewards, upgrades, campaign nodes, pacing, and validation.
+- `src/game/entities`: Phaser entities such as hero and units.
+- `src/game/scenes`: Phaser scenes and DOM screen orchestration.
+- `src/game/systems`: battle systems such as building, training, upgrades, combat, capture, resources, and enemy AI.
+- `src/game/ui`: HUD and minimap UI pieces.
+- `src/game/styles`: DOM overlay CSS.
+
+The intended direction is data-driven content with thin scene orchestration. Avoid hardcoding First Claim, fixed rewards, or one-off UI assumptions where data already exists.
+
+## Scene Registry
+
+Scene keys are defined in `src/game/core/SceneKeys.ts` and registered in `src/game/config.ts`.
+
+Current scenes:
+
+- `BootScene`
+- `MainMenuScene`
+- `AssetGalleryScene`
+- `HeroCreationScene`
+- `CampaignMapScene`
+- `SkirmishSetupScene`
+- `BattleScene`
+- `ResultsScene`
+- `HeroProgressionScene`
+
+## Main Menu Flow
+
+`src/game/scenes/MainMenuScene.ts` currently exposes:
+
+- New Campaign
+- Continue Campaign
+- Skirmish
+- Hero Inventory
+- Asset Gallery
+- Reset Save
+- Credits / Info
+
+Behavior:
+
+- New Campaign with no hero save starts `HeroCreationScene` with `{ nextMode: "campaign" }`.
+- New Campaign with an existing hero creates a fresh started campaign save and opens `CampaignMapScene`.
+- Continue Campaign loads campaign state and opens `CampaignMapScene`.
+- Skirmish with no hero save starts `HeroCreationScene` with `{ nextMode: "skirmish" }`.
+- Skirmish with a hero save opens `SkirmishSetupScene`.
+- Hero Inventory opens `HeroProgressionScene`.
+
+## Hero Creation Flow
+
+`src/game/scenes/HeroCreationScene.ts` accepts:
+
+```ts
+{ nextMode?: "campaign" | "skirmish" }
 ```
 
-Script meanings:
-
-- `dev`: starts Vite on `0.0.0.0`.
-- `build`: runs TypeScript with `tsc -p tsconfig.json`, then Vite build.
-- `preview`: serves the production build.
-- `test`: runs Vitest.
-- `assets:prompts`: generates manual image prompt book.
-- `assets:ui-kit`: generates a free procedural starter UI kit.
-- `assets:process-battle-sprites`: converts manually supplied battle sprites into game-ready PNGs.
-- `assets:manifest`: rebuilds the runtime asset manifest.
-- `assets:validate`: validates asset paths.
-- `assets:refresh`: processes battle sprites, rebuilds the manifest, and validates everything.
-
-Known build note: Vite may warn that the Phaser bundle is large. The build still succeeds.
-
-## Entry Points
-
-- `index.html`: provides `#game-root` for Phaser and `#ui-root` for DOM UI.
-- `src/main.ts`: imports global CSS, disables context menu, starts `new Phaser.Game(gameConfig)`, and stores it on `window.ascendantRealmsGame`.
-- `src/game/config.ts`: Phaser config and scene registration.
-- `src/game/styles/ui.css`: all DOM UI styling.
-
-## Scene Flow
-
-Scene keys live in `src/game/core/SceneKeys.ts`.
-
-Main flow:
-
-1. `BootScene`
-   - Loads the asset manifest.
-   - Queues available images.
-   - Applies UI-kit CSS variables.
-2. `MainMenuScene`
-   - Shows new hero, continue, reset, asset gallery, and supporting options.
-3. `HeroCreationScene`
-   - Lets the player enter a name, choose hero class, choose origin, and start a skirmish.
-4. `BattleScene`
-   - Main RTS skirmish scene.
-   - Spawns bases, hero, starting units, neutral camps, capture sites, enemy army, systems, and DOM HUD.
-5. `HeroProgressionScene`
-   - Victory progression, skill allocation, item display, and follow-up battle launch.
-6. `ResultsScene`
-   - Defeat or result state.
-7. `AssetGalleryScene`
-   - Shows asset manifest status and whether browser-loaded images are available.
-
-## Core Gameplay Loop
-
-- Player starts with a hero, a Command Hall, two Militia, and one Ranger.
-- Enemy starts with an Enemy Stronghold, Enemy Barracks, several enemy units, and an Ashen Commander.
-- Player captures resource sites by standing nearby for `CAPTURE_TIME_SECONDS = 4`.
-- Captured sites periodically add resources.
-- Player selects units and buildings with RTS-style click/drag.
-- Player right-clicks ground to move or right-clicks enemies to attack.
-- Player builds production/defense buildings from the Command Hall.
-- Player trains units from Barracks or Mystic Lodge.
-- Enemy AI gains income, trains units, expands to capture sites, defends, and sends attack waves.
-- Victory occurs when the enemy objective building is dead.
-- Defeat occurs when the player objective building is dead.
-- On victory, hero progress is saved and item rewards are granted.
-- On defeat, hero progress is not saved.
-
-## Controls
-
-- Left click: select a friendly unit or building.
-- Drag with left mouse: box-select friendly units.
-- Shift plus selection: additive selection.
-- Right click ground: move selected units.
-- Right click enemy: attack selected enemy.
-- `Shift+A`, then right click: attack-move selected units.
-- `H`: select hero.
-- `1`, `2`, `3`: cast unlocked hero ability slots.
-- `Space`: center camera on hero.
-- `Esc`: clear selection or cancel building placement.
-- `WASD` or arrow keys: pan camera.
-
-## Save System
-
-- Save key: `ascendant-realms-save-v1`.
-- Storage: browser local storage.
-- Save file includes hero name, class, origin, level, XP, skill points, unlocked abilities, completed battle count, inventory, equipment, allocated skills, faction reputation, and stats.
-- `SaveSystem.load()` returns the active save.
-- `SaveSystem.saveHero()` persists hero state after victory.
-- `createFallbackHeroSave()` gives the game a safe default if no save exists.
-
-## Pure Battle Boundary
-
-`src/game/battle/BattleLaunchRequest.ts` and `src/game/battle/BattleRuntime.ts` define the clean battle contract.
-
-`BattleLaunchRequest` exists so skirmish, future campaign nodes, and future scenario missions can all launch battles through the same pathway.
-
-`BattleRuntime` owns:
-
-- Request metadata.
-- Initial resource cloning.
-- Battle elapsed time.
-- Battle stats.
-- Objective evaluation.
-- Completion result.
-- Victory reward decisions.
-- Whether the hero should be saved.
+Campaign mode:
 
-`BattleScene` still owns live Phaser entities, input, rendering, systems, spawning, and most moment-to-moment gameplay.
+- Creates and saves the hero.
+- Creates a started campaign save.
+- Opens `CampaignMapScene`.
 
-## Core Constants
+Skirmish mode:
 
-From `src/game/core/Constants.ts`:
+- Creates and saves the hero.
+- Opens `SkirmishSetupScene`.
 
-- Starting player resources: Crowns 300, Stone 200, Iron 100, Aether 50.
-- Starting enemy resources: Crowns 220, Stone 160, Iron 120, Aether 80.
-- Level XP thresholds: level 2 at 100 XP, level 3 at 250, level 4 at 450, level 5 at 700.
-- Hero HP per level: 18.
-- Hero Mana per level: 10.
-- Camera pan speed: 520.
-- Capture time: 4 seconds.
-- Hero XP share radius: 460.
-- Attack-move search radius: 260.
-- Default aggro radius: 260.
-- Formation spacing: 34.
-- Resource tick floating text time: 1300 ms.
-- Build radius from owned building: 560.
+## Campaign Skeleton
 
-## Resources
+The campaign is intentionally small. It is a node-based foundation, not a full campaign simulation.
 
-Resources live in `src/game/data/resources.ts`.
+Data file:
 
-- Crowns: color `0xf2c14e`; used for units, buildings, campaign payments.
-- Stone: color `0x9da3a4`; used for halls, towers, lodges.
-- Iron: color `0xc96f53`; used for weapons and armored troops.
-- Aether: color `0x74d3f2`; used for spells, rituals, and arcane units.
+- `src/game/data/campaignNodes.ts`
 
-## Factions
+Main rules file:
 
-Factions live in `src/game/data/factions.ts`.
+- `src/game/core/CampaignRules.ts`
 
-- The Free Marches, `free_marches`, color `0x4f8f68`: border-town militias, scouts, oathbound mystics fighting for self-rule.
-- Ashen Covenant, `ashen_covenant`, color `0xb64b42`: raiders, hex-magic, brutal champions.
-- Sylvan Concord, `sylvan_concord`, color `0x6ab06e`: future faction with forest spirits, wardens, beasts, living sanctuaries.
-- Untamed Wilds, `wilds`, color `0x8b6f43`: neutral beasts and monsters guarding old places of power.
+Main UI scene:
 
-## Hero Classes
+- `src/game/scenes/CampaignMapScene.ts`
 
-Hero classes live in `src/game/data/heroClasses.ts`.
+Battle launch helper:
 
-Warlord:
+- `createCampaignBattleLaunchRequest` in `src/game/battle/BattleLaunchRequest.ts`
 
-- Description: strong melee commander who makes nearby soldiers hit harder.
-- Primary ability: `rally_banner`.
-- Ability list: `rally_banner`, `cleave`, `war_cry`.
-- Color: `0xe2b34b`.
-- Stats: HP 260, Mana 60, Damage 18, Armor 4, Speed 110, Range 34, Attack Cooldown 1.1, Might 8, Command 8, Arcana 2, Faith 3.
+Save data:
 
-Arcanist:
+- `CampaignSaveData` in `src/game/save/SaveTypes.ts`
 
-- Description: magic damage specialist who burns priority targets.
-- Primary ability: `firebolt`.
-- Ability list: `firebolt`, `arcane_burst`, `blink`.
-- Color: `0xf07d3c`.
-- Stats: HP 160, Mana 180, Damage 10, Armor 1, Speed 105, Range 150, Attack Cooldown 1.25, Might 2, Command 4, Arcana 10, Faith 4.
+### Campaign Node Types
 
-Shepherd:
+Defined type:
 
-- Description: healer and holy commander who keeps a small force alive.
-- Primary ability: `heal`.
-- Ability list: `heal`, `blessing`, `sanctify_ground`.
-- Color: `0x8ed98f`.
-- Stats: HP 200, Mana 130, Damage 12, Armor 2, Speed 105, Range 120, Attack Cooldown 1.2, Might 3, Command 6, Arcana 4, Faith 10.
+```ts
+type CampaignNodeType =
+  | "battle"
+  | "shrine"
+  | "town"
+  | "ruin"
+  | "fortress"
+  | "event";
+```
 
-## Origins
+Only battle nodes launch combat right now. Non-battle nodes can resolve directly and grant their one-time rewards.
 
-Origins live in `src/game/data/origins.ts`.
+### Campaign Node Definition
 
-- Exiled Noble: command +2, max HP +10.
-- Temple Orphan: faith +2, max mana +15.
-- Wildland Raider: might +1, speed +8, damage +2.
+Each node can define:
 
-## Hero Abilities
+- `id`
+- `name`
+- `description`
+- `nodeType`
+- `difficulty`
+- `mapId`
+- `enemyFactionId`
+- `prerequisiteNodeIds`
+- `reward`
+- `unlockNodeIds`
+- `position`
 
-Abilities live in `src/game/data/abilities.ts`.
+Campaign save state determines whether each node is:
 
-Warlord:
+- `locked`
+- `available`
+- `completed`
 
-- Rally Banner, hotkey 1: nearby allied units gain +25 percent damage for 8 seconds. Mana 25, cooldown 18, radius 160.
-- Cleave, hotkey 2: strike nearby enemies for 38 damage. Mana 20, cooldown 7, radius 82.
-- War Cry, hotkey 3: nearby enemies take 24 damage and allies rally briefly. Mana 35, cooldown 16, radius 150, duration 5.
+### Current Campaign Nodes
 
-Arcanist:
+The mini-campaign has six nodes.
 
-- Firebolt, hotkey 1: projectile at nearest enemy for 55 damage. Mana 30, cooldown 6, range 520.
-- Arcane Burst, hotkey 2: area damage around nearest enemy for 42. Mana 45, cooldown 10, range 440, radius 110.
-- Blink, hotkey 3: short teleport toward nearest enemy, or forward if none are near. Mana 30, cooldown 12, range 190.
+`border_village`
 
-Shepherd:
+- Name: Border Village
+- Type: battle
+- Difficulty: easy
+- Map: First Claim
+- Enemy faction: Ashen Covenant
+- Available at start
+- Rewards: XP, crowns, Weathered Command Sword
+- Unlocks: Old Stone Road
 
-- Heal, hotkey 1: restore 60 HP to selected wounded ally or hero. Mana 25, cooldown 8, range 420.
-- Blessing, hotkey 2: heal nearby allies for 24 and grant +15 percent damage for 7 seconds. Mana 35, cooldown 14, radius 150.
-- Sanctify Ground, hotkey 3: holy pulse heals allies and damages enemies around hero for 32. Mana 50, cooldown 18, radius 150.
+`old_stone_road`
 
-## Skill Trees
+- Name: Old Stone Road
+- Type: battle
+- Difficulty: easy
+- Map: First Claim
+- Prerequisite: Border Village
+- Rewards: XP, crowns, stone
+- Unlocks: Aether Well Ruins and Bandit Hillfort
 
-Skill data lives in `src/game/data/skillTrees.ts`.
+`aether_well_ruins`
 
-Trees:
+- Name: Aether Well Ruins
+- Type: battle
+- Difficulty: normal
+- Map: Broken Ford
+- Prerequisite: Old Stone Road
+- Rewards: XP, aether, Aether Lens
+- Unlocks: Chapel of the Marches
 
-- Combat: personal damage, toughness, front-line presence.
-- Magic: mana, spell power, battlefield control.
-- Leadership: command, army support, force multiplication.
+`bandit_hillfort`
 
-Nodes:
+- Name: Bandit Hillfort
+- Type: battle
+- Difficulty: normal
+- Map: Broken Ford
+- Prerequisite: Old Stone Road
+- Rewards: XP, crowns, iron, Captain's Seal
+- Unlocks: Ashen Outpost
 
-- `combat_drill`: Battle Drill, Combat, max rank 3, cost 1 per rank, damage +2 and might +1 per rank.
-- `combat_endurance`: Endurance, Combat, max rank 3, cost 1 per rank, max HP +24 per rank.
-- `warlord_cleave`: Cleave, Combat, Warlord only, max rank 1, unlocks `cleave`, requires `combat_drill` rank 1.
-- `magic_focus`: Aether Focus, Magic, max rank 3, cost 1 per rank, max Mana +18 and arcana +1 per rank.
-- `magic_warding`: Warding, Magic, max rank 2, cost 1 per rank, armor +1 per rank.
-- `arcanist_arcane_burst`: Arcane Burst, Magic, Arcanist only, max rank 1, unlocks `arcane_burst`, requires `magic_focus` rank 1.
-- `arcanist_blink`: Blink, Magic, Arcanist only, max rank 1, unlocks `blink`, requires `magic_focus` rank 2.
-- `leadership_presence`: Command Presence, Leadership, max rank 3, cost 1 per rank, command +1 and max HP +8 per rank.
-- `leadership_field_rites`: Field Rites, Leadership, max rank 3, cost 1 per rank, faith +1 and max Mana +10 per rank.
-- `warlord_war_cry`: War Cry, Leadership, Warlord only, max rank 1, unlocks `war_cry`, requires `leadership_presence` rank 2.
-- `shepherd_blessing`: Blessing, Leadership, Shepherd only, max rank 1, unlocks `blessing`, requires `leadership_field_rites` rank 1.
-- `shepherd_sanctify_ground`: Sanctify Ground, Magic, Shepherd only, max rank 1, unlocks `sanctify_ground`, requires `leadership_field_rites` rank 2.
+`chapel_of_the_marches`
 
-## Units
+- Name: Chapel of the Marches
+- Type: shrine
+- Difficulty: story
+- Map: First Claim
+- Prerequisite: Aether Well Ruins
+- Resolves directly for now.
+- Rewards: XP, aether, Green Chapel Icon
+- Unlocks: Ashen Outpost
 
-Units live in `src/game/data/units.ts`.
+`ashen_outpost`
 
-Player units:
+- Name: Ashen Outpost
+- Type: battle
+- Difficulty: normal
+- Map: Broken Ford
+- Prerequisites: Bandit Hillfort and Chapel of the Marches
+- Rewards: XP, crowns, iron, aether, Ashbound Censer
+- Final current node.
 
-- Militia: Free Marches, cheap melee infantry. Cost Crowns 60, Iron 20. Train 4s. Radius 13. Color `0x8fcf91`. HP 90, Damage 9, Range 28, Cooldown 1, Speed 90, Armor 1, XP value 15.
-- Ranger: Free Marches, ranged skirmisher. Cost Crowns 80, Iron 30. Train 5s. Radius 12. Color `0x6eb5d8`. Projectile `0xc7e8a2`. HP 65, Damage 8, Range 160, Cooldown 1.35, Speed 95, Armor 0, XP value 20.
-- Acolyte: Free Marches, magic support. Cost Crowns 70, Aether 40. Train 6s. Radius 12. Color `0xb6e6d3`. Projectile `0x8ff7ff`. HP 55, Damage 6, Range 140, Cooldown 1.2, Speed 85, Armor 0, XP value 20.
+### Campaign Rules
 
-Enemy units:
+`src/game/core/CampaignRules.ts` handles:
 
-- Raider: Ashen Covenant, melee attacker. Cost Crowns 55, Iron 20. Train 4s. Radius 13. Color `0xc75f4e`. HP 85, Damage 9, Range 28, Cooldown 1, Speed 98, Armor 1, XP value 15.
-- Hexer: Ashen Covenant, ranged magic. Cost Crowns 75, Aether 35. Train 5s. Radius 12. Color `0xb36ee2`. Projectile `0xdd8cff`. HP 60, Damage 8, Range 150, Cooldown 1.25, Speed 88, Armor 0, XP value 20.
-- Brute: Ashen Covenant, tank. Cost Crowns 110, Iron 50. Train 7s. Radius 16. Color `0x9f4a36`. HP 160, Damage 13, Range 30, Cooldown 1.25, Speed 72, Armor 3, XP value 30.
-- Ashen Commander: enemy hero placeholder. No cost. Radius 18. Color `0xf06a43`. HP 260, Damage 16, Range 34, Cooldown 1.1, Speed 92, Armor 3, XP value 150.
+- `createStartedCampaignSave`
+- `arePrerequisitesMet`
+- `getCampaignNodeStatus`
+- `refreshCampaignUnlocks`
+- `completeCampaignNode`
+- `completeCampaignNodeWithRewards`
+- `getCampaignProgressSummary`
 
-Neutral units:
+Campaign rewards are claimed once using `nodeRewardsClaimedIds`.
 
-- Wild Hound: Wilds, fast monster. No cost. Radius 12. Color `0x8f7a54`. HP 55, Damage 7, Range 24, Cooldown 0.9, Speed 105, Armor 0, XP value 12.
-- Stone Imp: Wilds, tough monster. No cost. Radius 14. Color `0x948a7a`. HP 85, Damage 8, Range 26, Cooldown 1.2, Speed 72, Armor 2, XP value 18.
+### Campaign Battle Integration
 
-## Buildings
+When a campaign battle starts:
 
-Buildings live in `src/game/data/buildings.ts`.
+- `CampaignMapScene` creates a campaign battle launch request.
+- `BattleScene` receives mode `campaign_node`.
+- The battle uses the node map, difficulty, enemy faction, and hero save.
 
-Player:
+On victory:
 
-- Command Hall: Free Marches. Losing it means defeat. Cost none. HP 1200, Armor 4, Size 96x82, Color `0x5f8c6f`. Build options: Barracks, Mystic Lodge, Watchtower. Trains nothing. XP value 80.
-- Barracks: Free Marches. Trains Militia and Ranger. Cost Crowns 180, Stone 120. HP 600, Armor 3, Size 82x64, Color `0x7a9d73`. XP value 80.
-- Mystic Lodge: Free Marches. Trains Acolytes. Cost Crowns 160, Stone 100, Aether 80. HP 450, Armor 2, Size 72x62, Color `0x6097a8`. XP value 80.
-- Watchtower: Free Marches. Defensive long-range attack. Cost Crowns 120, Stone 100, Iron 40. HP 350, Armor 2, Size 48x72, Color `0xb2a15e`. Attack: Damage 14, Range 220, Cooldown 1.1, Projectile `0xffdf75`. XP value 80.
+- `BattleRuntime` grants battle rewards.
+- Campaign node completion grants node rewards.
+- Hero and campaign are saved through `SaveSystem.saveGame`.
+- The player returns to `CampaignMapScene`.
 
-Enemy:
+On defeat:
 
-- Enemy Stronghold: Ashen Covenant. Destroy this to win. Cost none. HP 1000, Armor 4, Size 104x88, Color `0x8f443b`. XP value 80.
-- Enemy Barracks: Ashen Covenant. Trains Raider, Hexer, Brute. Cost none. HP 550, Armor 3, Size 82x64, Color `0x93483e`. XP value 80.
+- `ResultsScene` shows campaign-aware options.
+- The player can retry or return to the campaign map.
 
-## Current Map
+### Campaign Limitations
 
-Map data lives in `src/game/data/maps.ts`.
+Current placeholders:
+
+- No world map art beyond DOM node layout.
+- No shops.
+- No dialogue system.
+- No diplomacy.
+- No branching consequences.
+- No procedural generation.
+- No campaign resource bank yet.
+- Resource rewards are defined and displayed, but they do not currently feed a persistent spendable campaign economy.
+- Non-battle nodes resolve instantly.
+
+## Skirmish Setup
+
+`src/game/scenes/SkirmishSetupScene.ts` lets the player choose:
+
+- Map
+- Difficulty
+- Enemy faction placeholder
+- Start battle
+
+It also shows a hero summary.
+
+Skirmish mode remains separate from campaign mode.
+
+## Battle Launch Requests
+
+`src/game/battle/BattleLaunchRequest.ts` supports:
+
+- `skirmish`
+- `campaign_node`
+- `scenario_mission`
+
+Helpers:
+
+- `createSkirmishBattleLaunchRequest`
+- `createCampaignBattleLaunchRequest`
+
+Validation checks include:
+
+- Map ID exists.
+- Reward table exists.
+- Difficulty is valid.
+- Hero save is valid.
+- Campaign node ID exists for campaign-node launches.
+
+Do not hardcode First Claim in new launch paths. Use map IDs.
+
+## Skirmish Maps
+
+Maps live in:
+
+- `src/game/data/maps.ts`
 
 Default map:
 
-- ID: `first_claim`.
-- Name: First Claim.
-- Size: 2400x1600.
-- Player start: x 260, y 800.
-- Enemy start: x 2140, y 800.
+- `first_claim`
 
-Terrain zones:
+Current maps:
 
-- `central_grass`: grass, x 0, y 0, w 2400, h 1600.
-- `player_build`: buildable, x 70, y 590, w 520, h 440.
-- `enemy_build`: buildable, x 1800, y 560, w 520, h 480.
-- `north_water`: water, x 720, y 160, w 380, h 140.
-- `south_water`: water, x 1280, y 1250, w 420, h 130.
-- `broken_ridge`: blocked, x 1060, y 660, w 260, h 100.
-- `old_ruins`: blocked, x 820, y 1030, w 160, h 140.
+- First Claim
+- Broken Ford
+
+### First Claim
+
+Role:
+
+- Balanced tutorial skirmish.
+- Teaches capture, building, training, defense, hero abilities, and final base assault.
+
+Size:
+
+- `2400x1600`
+
+Starts:
+
+- Player base: west side, around `x260 y800`
+- Enemy base: east side, around `x2140 y800`
 
 Capture sites:
 
-- Crown Shrine: `crown_shrine`, crowns, x 850, y 780, radius 76, income 30 every 5s.
-- Stone Quarry: `stone_quarry`, stone, x 1180, y 390, radius 76, income 25 every 5s.
-- Iron Vein: `iron_vein`, iron, x 1390, y 1010, radius 76, income 20 every 5s.
-- Aether Well: `aether_well`, aether, x 1580, y 610, radius 76, income 15 every 5s.
+- Crown Shrine
+- Stone Quarry
+- Iron Vein
+- Aether Well
 
 Neutral camps:
 
-- Sunken Road Pack: x 710, y 1110, units Wild Hound, Wild Hound, Stone Imp.
-- Quarry Imps: x 1160, y 520, units Stone Imp, Stone Imp.
-- Old Well Guard: x 1650, y 760, units Wild Hound, Stone Imp, Wild Hound.
+- Sunken Road Pack
+- Quarry Imps
+- Old Well Guard
 
-Scenario spawns:
+Reward table:
 
-- Player Command Hall: `command_hall`, player, x 260, y 800.
-- Enemy Stronghold: `enemy_stronghold`, enemy, x 2140, y 800.
-- Enemy Barracks: `enemy_barracks`, enemy, x 2010, y 890.
-- Hero: x 340, y 760.
-- Player Militia 1: x 350, y 845.
-- Player Militia 2: x 390, y 835.
-- Player Ranger 1: x 370, y 715.
-- Enemy Raider 1: x 2050, y 740.
-- Enemy Raider 2: x 2010, y 760.
-- Enemy Hexer 1: x 2045, y 825.
-- Enemy Brute 1: x 2100, y 870.
-- Enemy Commander 1: x 2110, y 705.
+- `first_claim_rewards`
 
-Objectives:
+Current enemy AI config is paced for a slower first match:
 
-- Player base building ID: `command_hall`.
-- Enemy base building ID: `enemy_stronghold`.
+- Income interval: 5 seconds
+- Training interval: 5.4 seconds before difficulty scaling
+- Expand interval: 21 seconds before difficulty scaling
+- Initial expansion delay: 18 seconds
+- Attack interval: 62 seconds before difficulty scaling
+- Initial attack delay: 180 seconds before tutorial gating
+- Minimum attack army size: 2
+- Attack wave size: 7 before phase and difficulty limits
+- Expansion squad size: 2
+- Defense radius: 400
+- Defense unit count: 6
+- Unit plan: raider, raider, hexer, raider, brute
+
+### Broken Ford
+
+Role:
+
+- Second playable skirmish map.
+- A ruined river crossing with more blocked terrain and a different strategic rhythm.
+- Center is more dangerous but valuable.
+- Side resources are safer but slower.
+
+Size:
+
+- `2600x1700`
+
+Starts:
+
+- Player base: bottom-left/west, around `x290 y1320`
+- Enemy base: top-right/east, around `x2320 y330`
+
+Capture sites:
+
+- Ford Toll
+- West Stone Cut
+- South Iron Cache
+- North Aether Spring
+
+Neutral camps:
+
+- West Bank Pack
+- East Bank Imps
+- Ford Guardians
+
+Reward table:
+
+- `broken_ford_rewards`
 
 Enemy AI config:
 
-- Income interval: 5s.
-- Income per tick: Crowns 90, Stone 45, Iron 45, Aether 35.
-- Train interval: 3.5s.
-- Expand interval: 7s.
-- Initial expand delay: 5s.
-- Attack interval: 36s.
-- Initial attack delay: 12s.
-- Minimum attack army size: 4.
-- Attack wave size: 8.
-- Expand squad size: 3.
-- Defense squad size: 6.
-- Defend radius: 400.
-- Base building ID: `enemy_stronghold`.
-- Production building ID: `enemy_barracks`.
-- Attack target building ID: `command_hall`.
-- Unit plan: Raider, Raider, Hexer, Raider, Brute.
+- Training interval: 5.7 seconds before difficulty scaling
+- Expand interval: 24 seconds before difficulty scaling
+- Initial expansion delay: 20 seconds
+- Attack interval: 66 seconds before difficulty scaling
+- Initial attack delay: 190 seconds before tutorial gating
+- Defense radius: 430
+- Intended to feel more positional and lane-driven than First Claim.
 
-Reward table: `first_claim_rewards`.
+## Battle Pacing Model
 
-## Items And Rewards
+Data file:
 
-Items live in `src/game/data/items.ts`.
+- `src/game/data/battlePacing.ts`
 
-Weapons:
+Default difficulty:
 
-- Weathered Command Sword, common weapon: damage +4, might +1, command +1.
-- Emberglass Wand, common weapon: damage +2, max Mana +20, arcana +2.
-- Pilgrim Crook, common weapon: damage +2, max Mana +12, faith +2.
+- `normal`
 
-Armor:
+Battle phases:
 
-- Marcher Plate, uncommon armor: max HP +36, armor +2, speed -4.
-- Runewoven Robes, uncommon armor: max HP +18, max Mana +28, armor +1, arcana +1.
-- Dawnward Vestments, uncommon armor: max HP +24, armor +1, faith +2.
+1. Opening, 0:00 to 2:00
+2. Expansion, 2:00 to 5:00
+3. Pressure, 5:00 to 8:00
+4. Assault, 8:00+
 
-Trinkets:
+The enemy AI reads phase data to control:
 
-- Captain's Seal, rare trinket: command +3, max HP +16.
-- Aether Lens, rare trinket: arcana +3, max Mana +30.
-- Green Chapel Icon, rare trinket: faith +3, command +1, max Mana +16.
+- Whether base attacks are allowed.
+- Maximum attack wave size.
+- Whether commander participation is allowed.
+- Allowed attack unit IDs.
+- Preferred attack composition.
+- Training unit IDs.
+- Unit-specific caps in attack waves.
 
-Reward table `first_claim_rewards` includes all nine current items.
+### Opening Phase
 
-## Entity Rendering
+Time:
 
-Base entity behavior lives in `src/game/entities/BaseEntity.ts`.
+- `0` to `120` seconds
 
-Common entity state:
+Behavior:
 
-- ID.
-- Kind.
-- Team.
-- Position.
-- Radius.
-- Max HP.
-- Current HP.
-- Armor.
-- Alive flag.
-- Selected flag.
-- Optional Phaser container.
-- Selection ring.
-- Health back/fill rectangles.
-- Text label.
+- Base attacks disabled.
+- Commander disabled.
+- Wave size capped at 0.
+- Enemy can still scout, capture, or fight neutrals through non-base-attack behavior.
 
-Recent health-bar UI update:
+### Expansion Phase
 
-- Health bars are framed dark strips with light trim.
-- Bar widths and heights can be configured per entity type.
-- Bars are positioned relative to actual sprite visual bounds, not collision radius.
-- Unit and hero bars now sit above the visible sprite art.
-- Building bars now sit above the visible building art and are wider.
-- Labels are positioned below visible art and shadows.
-- This avoids health bars cutting across the new 512x512 unit sprites or 768x768 building sprites.
+Time:
 
-Unit rendering:
+- `120` to `300` seconds
 
-- `Unit.ts` looks for battle sprite assets via `unitBattleAssetIds`.
-- If an asset exists, it renders a scaled Phaser image with an ellipse shadow.
-- If no asset exists, it falls back to a colored circle.
-- Hero sprites are slightly taller than normal unit sprites.
-- Damage buffs tint the sprite and stroke fallback bodies.
+Behavior:
 
-Building rendering:
+- Base attacks allowed after difficulty and tutorial gates.
+- Wave size capped at 3.
+- Commander disabled.
+- Early composition is raider-heavy with at most one hexer.
 
-- `Building.ts` looks for battle sprite assets via `buildingBattleAssetIds`.
-- If an asset exists, it renders a scaled building image with an ellipse shadow.
-- Enemy buildings are tinted slightly red.
-- If no asset exists, it falls back to a colored rectangle.
+### Pressure Phase
 
-Capture site rendering:
+Time:
 
-- `CaptureSite.ts` extends `BaseEntity` but hides health.
-- It draws a colored capture ring, a progress ring, and a resource icon if available.
-- Ownership recolors the ring.
+- `300` to `480` seconds
 
-## Battle Background Rendering
+Behavior:
 
-`BattleScene.drawMap()` now paints a more finished battlefield instead of a flat rectangle.
+- Attacks become real pressure.
+- Wave size capped at 5.
+- Commander disabled.
+- Brutes can appear.
 
-Current visual layers:
+### Assault Phase
 
-- Deep green base terrain.
-- Large soft biome patches.
-- Deterministic grass, dirt, and fleck texture.
-- Dirt roads connecting player base, center, capture points, and enemy base.
-- Buildable encampment grounds with tinted ground panels, faint planning lines, and corner stakes.
-- Water rendered as oval ponds with shadow, highlights, shore rings, and ripple strokes.
-- Blocked areas rendered as rocky mounds with layered stone shapes.
-- Capture-site ground halos under each site.
-- Grass tuft strokes and small stone flecks.
-- Dark map-edge vignette and border.
+Time:
 
-This is all runtime Phaser graphics. There is not yet a single painted battle-background bitmap file.
+- `480` seconds and later
 
-## DOM HUD
+Behavior:
 
-`src/game/ui/HUD.ts` builds the battle HUD as HTML inside `#ui-root`. `src/game/styles/ui.css` styles it.
+- Full attacks allowed.
+- Wave size capped at 8.
+- Commander allowed.
+- Mixed raider, hexer, brute, and commander support can appear.
 
-HUD surfaces:
+## Difficulty Presets
 
-- Top resource row: Crowns, Stone, Iron, Aether.
-- Menu button.
-- Hero panel in lower-left: portrait, name, level, HP, mana, HP meter, XP meter, XP, skill points.
-- Side panel in lower-right: selected entity title, stats, build buttons, train buttons, hero abilities.
-- Minimap shell in upper-right with simple dots for player, enemy, and site.
-- Status line near the top center.
+Difficulties live in:
 
-Recent HUD polish:
+- `src/game/data/battlePacing.ts`
 
-- Battle UI now has a subtle edge vignette so the playfield reads more like a game scene.
-- Resource pills and panels use blur-backed game panels.
-- Meters have subtle borders.
-- Selection grid text truncates cleanly.
-- Top resource row is constrained so it leaves room for the menu button.
+Current presets:
 
-## Systems
+### Story
 
-Important systems live in `src/game/systems`.
+- Enemy starting units: `enemy_raider_1`
+- Enemy income multiplier: `0.55`
+- First attack delay: `240`
+- Attack interval: `82`
+- Attack wave size: `2`
+- Expansion interval: `30`
+- Training interval: `7.5`
+- Minimum attack army size: `2`
+- Expansion squad size: `1`
+- Commander join delay: `720`
 
-- `InputSystem`: pointer selection, drag box, right-click movement/attack, keyboard hotkeys, attack-move, building placement input.
-- `SelectionSystem`: selects player units/buildings by point or box.
-- `CameraSystem`: camera bounds and WASD/arrow panning.
-- `MovementSystem`: direct steering, light separation, map blocking.
-- `CollisionSystem`: entity picking and overlap helpers.
-- `CombatSystem`: target acquisition, cooldowns, projectiles, damage, kills.
-- `AbilitySystem`: hero ability effects, projectiles, buffs, heals, blink.
-- `ResourceSystem`: capture progress, site ownership, income ticks.
-- `BuildingSystem`: building placement rules, ghost preview, cost payment.
-- `TrainingSystem`: building training queues and unit spawn.
-- `AISystem`: wraps enemy AI controller updates.
-- `XPSystem`: awards hero XP for kills within share range and handles level-ups.
-- `UISystem`: updates/destroys HUD.
+### Easy
 
-## AI
+- Enemy starting units: `enemy_raider_1`, `enemy_raider_2`
+- Enemy income multiplier: `0.72`
+- First attack delay: `210`
+- Attack interval: `72`
+- Attack wave size: `3`
+- Expansion interval: `25`
+- Training interval: `6.2`
+- Minimum attack army size: `2`
+- Expansion squad size: `2`
+- Commander join delay: `660`
 
-Enemy behavior is split between `src/game/ai/AIStateMachine.ts`, `EnemyAIController.ts`, and `systems/AISystem.ts`.
+### Normal
 
-The current enemy AI:
+- Enemy starting units: `enemy_raider_1`, `enemy_raider_2`, `enemy_hexer_1`, `enemy_commander_1`
+- Enemy income multiplier: `0.9`
+- First attack delay: `180`
+- Attack interval: `62`
+- Attack wave size: `7`
+- Expansion interval: `21`
+- Training interval: `5.4`
+- Minimum attack army size: `2`
+- Expansion squad size: `2`
+- Commander join delay: `540`
 
-- Receives periodic resource income.
-- Trains units from Enemy Barracks according to the configured unit plan.
+Normal should no longer defeat a new player around 1:15. Serious base pressure should not happen before roughly 2:30 to 3:00, and phase rules plus first-match protection keep the first wave survivable.
+
+### Hard
+
+- Enemy starting units: `enemy_raider_1`, `enemy_raider_2`, `enemy_hexer_1`, `enemy_brute_1`, `enemy_commander_1`
+- Enemy income multiplier: `1.15`
+- First attack delay: `150`
+- Attack interval: `48`
+- Attack wave size: `8`
+- Expansion interval: `15`
+- Training interval: `3.8`
+- Minimum attack army size: `3`
+- Expansion squad size: `3`
+- Commander join delay: `480`
+
+Hard is intended for players who already know the early build order.
+
+## First-Match Tutorial Protection
+
+Data:
+
+- `FIRST_MATCH_TUTORIAL_PROTECTION` in `src/game/data/battlePacing.ts`
+
+Current values:
+
+- First attack allowed after: `150` seconds
+- First attack forced after: `180` seconds
+- Large attacks allowed after: `240` seconds
+- Early attack max wave size: `2`
+
+Protection intent:
+
+- Allow scouting, capture pressure, and neutral fights before the first serious base attack.
+- Delay large attacks until the player has had enough time to capture a site, build a Barracks, or survive at least the first few minutes.
+- Keep the logic framed as scenario pacing rather than a visible invulnerability rule.
+
+## Enemy AI
+
+Main file:
+
+- `src/game/systems/EnemyAIController.ts`
+
+The AI remains simple and has not been rewritten. It now consumes map config, battle phase data, difficulty presets, and tutorial protection.
+
+Current behavior categories:
+
+- Gains scaled income on an interval.
+- Trains units from enemy barracks.
 - Expands toward capture sites.
-- Keeps a defense force around its base.
-- Sends attack waves toward the player Command Hall.
-- Is intentionally simple and predictable.
+- Defends owned buildings.
+- Forms attack waves.
+- Gates commander participation until later.
+- Emits battle alerts and minimap pings for incoming attacks.
+
+Known AI limits:
+
+- No strategic build orders.
+- Enemy buildings are prebuilt.
+- Enemy does not use the player-style construction system yet.
+- No fog of war.
+- No long-term adaptive planning.
+
+## Player Starting Situation
+
+Core constants live in:
+
+- `src/game/data/Constants.ts`
+
+Current starting player resources:
+
+- Crowns: `360`
+- Stone: `240`
+- Iron: `130`
+- Aether: `70`
+
+Player Command Hall:
+
+- HP: `1450`
+- Armor: `4`
+
+The player is expected to have enough resources to place at least one production building and begin training without waiting for a perfect economy opening.
+
+## Resources
+
+Resource IDs:
+
+- `crowns`
+- `stone`
+- `iron`
+- `aether`
+
+Capture sites generate resources over time. Resource site definitions live in map data. Content validation checks that capture site resource IDs are valid.
+
+## Buildings
+
+Building definitions live in:
+
+- `src/game/data/buildings.ts`
+
+Current building IDs:
+
+- `command_hall`
+- `barracks`
+- `mystic_lodge`
+- `watchtower`
+- `enemy_stronghold`
+- `enemy_barracks`
+
+### Command Hall
+
+- Faction: Free Marches
+- HP: `1450`
+- Armor: `4`
+- Construction time: `0`
+- Build options: Barracks, Mystic Lodge, Watchtower
+- Upgrade options: Infantry Weapons I, Reinforced Armor I
+- Losing it causes defeat.
+
+### Barracks
+
+- Cost: `180 crowns`, `120 stone`
+- HP: `600`
+- Armor: `3`
+- Construction time: `25` seconds
+- Trains: Militia, Ranger
+- Upgrade options: Ranger Training I
+
+### Mystic Lodge
+
+- Cost: `160 crowns`, `100 stone`, `80 aether`
+- HP: `450`
+- Armor: `2`
+- Construction time: `30` seconds
+- Trains: Acolyte
+- Upgrade options: Aether Study I
+
+### Watchtower
+
+- Cost: `120 crowns`, `100 stone`, `40 iron`
+- HP: `350`
+- Armor: `2`
+- Construction time: `20` seconds
+- Static attack:
+  - Damage: `14`
+  - Range: `220`
+  - Cooldown: `1.1`
+
+### Enemy Stronghold
+
+- HP: `1000`
+- Armor: `4`
+- Construction time: `0`
+- Destroying it wins the battle.
+
+### Enemy Barracks
+
+- HP: `550`
+- Armor: `3`
+- Construction time: `0`
+- Trains enemy units: Raider, Hexer, Brute
+
+## Construction System
+
+Construction state was added to make base building feel like an RTS rather than instant placement.
+
+Relevant types:
+
+- `BuildingConstructionState`
+- `constructionState`
+- `constructionProgress`
+- `constructionTimeSeconds`
+
+States:
+
+- `planned`
+- `underConstruction`
+- `completed`
+
+Current behavior:
+
+- Player places a preview first.
+- If valid, resources are paid and a building entity is created under construction.
+- Under-construction buildings are visually tinted/transparent.
+- Under-construction buildings have reduced or unavailable functionality.
+- Training, research, attacks, and build options are disabled until completion.
+- Construction progresses automatically over time.
+- Buildings become fully functional when complete.
+
+Construction times:
+
+- Barracks: `25` seconds
+- Mystic Lodge: `30` seconds
+- Watchtower: `20` seconds
+- Command Hall and enemy scenario buildings: `0` seconds
+
+Worker units have not been added. Construction is automatic by design for now.
+
+## Building Placement UX
+
+Placement behavior:
+
+- Valid placement preview.
+- Invalid placement preview.
+- Esc cancels placement.
+- Placement checks resource cost before committing.
+- Placement checks terrain and collision constraints.
+- Placement checks distance from owned buildings.
+
+Invalid reasons shown to the player include:
+
+- Insufficient resources
+- Blocked terrain
+- Too far from owned building
+- Overlaps another structure
+- Not buildable terrain
+
+Current build radius from owned buildings:
+
+- `560`
+
+## Training Queues
+
+Training system file:
+
+- `src/game/systems/TrainingSystem.ts`
+
+Current behavior:
+
+- Barracks and Mystic Lodge support production queues.
+- Unit costs are paid when queued.
+- Queue progress is visible in the selected building panel.
+- Units spawn when training completes.
+- Queue cancellation is supported where simple.
+- Cancellation refunds the queued cost.
+- Unfinished buildings cannot train.
+
+Known limits:
+
+- Queue UI is functional but still utilitarian.
+- No rally points yet.
+- No multi-building production overview yet.
+
+## Tech Prerequisites
+
+Prerequisite foundation exists for:
+
+- Units
+- Buildings
+- Upgrades
+- Future abilities
+
+Current prerequisite fields can include:
+
+- Required building IDs
+- Required upgrade IDs
+- Required hero level
+
+Current use:
+
+- Acolyte requires Mystic Lodge.
+- Ranger is tied to Barracks availability.
+- Upgrades require appropriate buildings.
+- Future abilities can use hero level or structure requirements.
+
+Locked buttons should show reasons when prerequisites are unmet.
+
+## Upgrade System
+
+Upgrade definitions live in:
+
+- `src/game/data/upgrades.ts`
+
+Upgrade queue/research system:
+
+- `src/game/systems/UpgradeSystem.ts`
+
+Upgrade effects helper:
+
+- `src/game/systems/UpgradeEffects.ts`
+
+Current upgrades:
+
+### Infantry Weapons I
+
+- Cost: `120 crowns`, `70 iron`
+- Research time: `18` seconds
+- Prerequisite: Command Hall
+- Effect: Militia and Raider-style melee units gain `+10%` damage.
+
+### Ranger Training I
+
+- Cost: `120 crowns`, `60 iron`
+- Research time: `20` seconds
+- Prerequisite: Barracks
+- Effect: Ranger gains `+10%` range and faster attack cooldown through a `0.9` cooldown multiplier.
+
+### Reinforced Armor I
+
+- Cost: `130 crowns`, `70 stone`, `50 iron`
+- Research time: `22` seconds
+- Prerequisite: Command Hall
+- Effect: Militia, Ranger, and Acolyte gain `+1` armor.
+
+### Aether Study I
+
+- Cost: `100 crowns`, `90 aether`
+- Research time: `24` seconds
+- Prerequisite: Mystic Lodge
+- Effects:
+  - Acolyte gains `+10%` damage.
+  - Hero mana regen is multiplied by `1.25`.
+
+Upgrade limitations:
+
+- Upgrade UI is basic.
+- No upgrade icons yet.
+- No multi-tier upgrade chains yet.
+- Enemy upgrades are not a focus yet.
+
+## Units
+
+Unit definitions live in:
+
+- `src/game/data/units.ts`
+
+Current player-side trainable units:
+
+- Militia
+- Ranger
+- Acolyte
+
+Current enemy units:
+
+- Raider
+- Hexer
+- Brute
+- Enemy Commander
+
+Neutral units/camps exist in map data and unit data. Content validation checks referenced unit IDs.
+
+Training and combat stats are data-driven. Upgrade and item systems can modify effective stats in battle.
+
+## Heroes
+
+Hero data lives in:
+
+- `src/game/data/heroes.ts`
+
+The current hero save supports:
+
+- Hero name
+- Class ID
+- Origin ID
+- Level
+- XP
+- Skill points
+- Unlocked abilities
+- Completed battles
+- Cleared map IDs
+- Inventory
+- Equipment
+- Allocated skills
+- Faction reputation
+- Stats
+
+Hero battle entity:
+
+- `src/game/entities/Hero.ts`
+
+Equipment effects are applied to hero battle stats when the hero enters combat.
+
+## Hero Progression
+
+Progression rules live in:
+
+- `src/game/core/HeroProgressionRules.ts`
+
+Responsibilities include:
+
+- XP gain.
+- Level-up thresholds.
+- Skill point gain.
+- Item reward grants.
+- Equipment stat calculations.
+- Battle reward rolling.
+- Legacy deterministic reward helper support.
+
+The system still aims to be simple enough for deterministic tests.
+
+## Items and Loot
+
+Item data lives in:
+
+- `src/game/data/items.ts`
+
+Reward tables live in:
+
+- `src/game/data/rewards.ts`
+
+Item types support:
+
+- `id`
+- `name`
+- `rarity`
+- `slot`
+- `description`
+- `statMods`
+- `classAffinity`
+- `factionOrigin`
+- `iconAssetKey`
+- `flavorText`
+- `tags`
+
+Equipment slots:
+
+- `weapon`
+- `armor`
+- `trinket`
+- `relic`
+
+Rarities:
+
+- `common`
+- `uncommon`
+- `rare`
+- `epic`
+- `legendary`
+
+Current item catalog contains 15 items:
+
+- Weathered Command Sword
+- Emberglass Wand
+- Pilgrim Crook
+- Scout's Bow
+- Marcher Plate
+- Runewoven Robes
+- Dawnward Vestments
+- Captain's Seal
+- Aether Lens
+- Green Chapel Icon
+- Fordbreaker Halberd
+- Ashbound Censer
+- Oathbound Aegis
+- Starfall Prism
+- Ascendant Signet
+
+Reward tables support:
+
+- Guaranteed item IDs
+- Weighted item pools
+- Resource rewards
+- XP rewards
+- Map-specific rewards
+- First-clear bonuses
+- Repeat-clear rewards
+- Deterministic item IDs for tests and compatibility
+
+Current reward behavior:
+
+- Victory rolls rewards using the battle's reward table.
+- First clears use first-clear bonus logic.
+- Repeat clears use repeat-clear reward logic.
+- Earned items are added to inventory.
+- XP rewards feed hero progression.
+- Result data includes XP progress and level-up information.
+
+Known loot limitations:
+
+- No item instance IDs yet.
+- No randomized affixes.
+- No duplicate conversion.
+- No item icons are displayed yet.
+- Resource rewards are displayed but are not yet part of a persistent campaign resource bank.
+
+## Inventory and Equipment UI
+
+Main file:
+
+- `src/game/scenes/HeroProgressionScene.ts`
+
+The Hero Inventory screen now shows:
+
+- Hero summary.
+- Hero stats.
+- Equipped weapon, armor, and trinket.
+- Inventory list.
+- Item rarity.
+- Item description.
+- Flavor text.
+- Tags.
+- Stat preview.
+- Equip and unequip actions.
+
+Equipped items affect battle hero stats, including supported modifiers such as:
+
+- Damage
+- Armor
+- HP
+- Mana
+- Might
+- Arcana
+- Command
+- Faith
+- Speed where relevant
+
+## Results Screen
+
+Main file:
+
+- `src/game/scenes/ResultsScene.ts`
+
+The results screen now supports:
+
+- Victory and defeat states.
+- Survival time.
+- Map name.
+- Difficulty.
+- First captured site status.
+- Buildings built.
+- Units trained.
+- Enemy waves survived.
+- XP gained.
+- Reward items.
+- Rarity display.
+- XP progress.
+- Skill points gained on level-up.
+- Defeat tips.
+- Campaign-aware retry and campaign-map return flow.
+
+The victory reward screen offers item reward visibility. Equipping directly from results was started as a UX direction, but verify exact current behavior before promising a polished final flow.
+
+## Save System
+
+Save system file:
+
+- `src/game/core/SaveSystem.ts`
+
+Save type file:
+
+- `src/game/save/SaveTypes.ts`
+
+Local storage key:
+
+- `ascendant-realms-save-v1`
+
+Current `StoredGameSave` shape:
+
+```ts
+{
+  version: 1;
+  hero: HeroSaveData;
+  campaign: CampaignSaveData;
+  updatedAt: number;
+}
+```
+
+Hero save includes:
+
+- `heroName`
+- `classId`
+- `originId`
+- `level`
+- `xp`
+- `skillPoints`
+- `unlockedAbilities`
+- `completedBattles`
+- `clearedMapIds`
+- `inventory`
+- `equipment`
+- `allocatedSkills`
+- `items` as a legacy compatibility field
+- `factionReputation`
+- `stats`
+
+Campaign save includes:
+
+- `started`
+- `difficulty`
+- `completedNodeIds`
+- `unlockedNodeIds`
+- `nodeRewardsClaimedIds`
+- `selectedNodeId`
+
+SaveSystem helpers include:
+
+- `load`
+- `saveHero`
+- `saveCampaign`
+- `saveGame`
+- `clear`
+- `createFallbackHeroSave`
+- `createFallbackCampaignSave`
+- normalization helpers for older saves
+
+Compatibility behavior:
+
+- Older hero saves with legacy `items` are normalized into inventory.
+- Missing campaign data is normalized into a fallback campaign save.
+- `saveHero` preserves existing campaign data.
+
+## Battle Runtime
+
+Main files:
+
+- `src/game/battle/BattleRuntime.ts`
+- `src/game/battle/BattleRuntime.test.ts`
+
+Battle runtime tracks:
+
+- Hero save.
+- Map definition.
+- Difficulty.
+- Result stats.
+- Resource and production state.
+- Reward table result on victory.
+- Campaign node context when applicable.
+
+Tracked result details include:
+
+- Survival time.
+- First site captured.
+- Buildings built.
+- Units trained.
+- Enemy waves survived.
+- XP gained.
+- Reward items.
+- Level-up summary.
+
+## Battle Scene
+
+Main file:
+
+- `src/game/scenes/BattleScene.ts`
+
+BattleScene responsibilities:
+
+- Load a battle launch request.
+- Create map terrain, buildings, units, hero, capture sites, and neutral camps.
+- Wire systems together.
+- Run the simulation update loop.
+- Handle battle alerts.
+- Handle victory/defeat.
+- Save hero and campaign state when needed.
+- Open ResultsScene.
+
+Recent systems integrated here:
+
+- Data-driven battle difficulty.
+- Data-driven maps.
+- Construction and building placement.
+- Training queues.
+- Upgrade queue/research.
+- Live minimap pings.
+- Tutorial hints and alerts.
+- Campaign victory/defeat flow.
+- Reward table results.
+
+This file is large and should not absorb every future feature. Prefer adding focused helpers or systems when new behavior becomes self-contained.
+
+## Battle Feedback and Tutorial Hints
+
+Current battle alerts include messages such as:
+
+- Enemy scouts are moving.
+- Enemy forces are gathering.
+- Enemy attack incoming.
+- Your Command Hall is under attack.
+- Capture resource sites to grow your army.
+- Build a Barracks to train troops.
+
+First-match hint sequence exists to guide:
+
+- Select your hero.
+- Move to the Crown Shrine.
+- Capture the Crown Shrine.
+- Select Command Hall.
+- Build Barracks.
+- Train Militia.
+- Defend against the first attack.
+- Destroy the enemy Stronghold.
+
+The hints are meant to be non-intrusive and scenario-flavored.
+
+## HUD and Selected Building UI
+
+HUD file:
+
+- `src/game/ui/HUD.ts`
+
+CSS:
+
+- `src/game/styles/ui.css`
+
+Selected building panel should show:
+
+- Construction progress if incomplete.
+- Available train buttons if complete.
+- Queue.
+- Upgrade options if available.
+- Locked items with reasons.
+
+The panel is functional, but it is still a prototype UI. Keep future changes readable and compact because the player is managing real-time combat while using it.
+
+## Minimap
+
+Main minimap view:
+
+- `src/game/ui/MinimapView.ts`
+
+HUD integration:
+
+- `src/game/ui/HUD.ts`
+
+The minimap is now a live RTS minimap rather than static symbolic art.
+
+Current minimap features:
+
+- Player units.
+- Enemy units.
+- Neutral units and camps.
+- Player buildings.
+- Enemy buildings.
+- Capture sites.
+- Camera viewport rectangle.
+- Map bounds.
+- Alert pings.
+- Click-to-center camera.
+
+Color conventions:
+
+- Player: green/blue.
+- Enemy: red.
+- Neutral: yellow/brown.
+- Capture sites: resource-colored or pale outline.
+- Camera viewport: pale frame.
+
+Alert pings:
+
+- Player base under attack.
+- Resource site attacked.
+- Enemy wave incoming.
+
+Fog compatibility:
+
+- Fog of war is not implemented.
+- The minimap has been structured so a future visibility/fog layer can filter or dim entities without rewriting the whole HUD.
+
+Performance:
+
+- Minimap updates are throttled rather than fully redrawn every possible moment.
+
+## Content Validation
+
+Content validation file:
+
+- `src/game/data/contentValidation.ts`
+
+Tests:
+
+- `src/game/data/contentValidation.test.ts`
+
+Validation covers:
+
+- Map-referenced unit IDs.
+- Map-referenced building IDs.
+- Capture resource IDs.
+- AI config unit references.
+- Objective building references.
+- Reward table item references.
+- Campaign node map IDs.
+- Campaign node enemy faction IDs.
+- Campaign node prerequisites and unlocks.
+- Campaign node reward item IDs.
+
+Keep adding validation when new content types are made data-driven.
+
+## Documentation Files
+
+Primary documentation:
+
+- `README.md`
+- `DESIGN.md`
+- `BALANCE.md`
+- `CONTENT_GUIDE.md`
+- `ROADMAP.md`
+- `TECHNICAL_AUDIT.md`
+- `LLM_GAME_HANDOFF.md`
+
+Recent docs were updated for:
+
+- First battle pacing and difficulty.
+- Construction and RTS base building.
+- Minimap controls.
+- Multiple skirmish maps.
+- Item rewards and loot philosophy.
+- Campaign skeleton and node authoring.
+
+This handoff should be treated as the highest-level orientation doc, not a replacement for the source or detailed design docs.
 
 ## Assets
 
-Asset code:
+Asset policy:
 
-- `src/game/assets/AssetKeys.ts`: canonical asset IDs and helpers.
-- `src/game/assets/AssetLoader.ts`: manifest loading, CSS URL helpers, image tag helpers, texture queueing, UI-kit CSS variable application.
-- `src/game/assets/AssetManifestTypes.ts`: manifest types.
+- Do not add new art unless explicitly requested.
+- Current work has focused on systems and DOM/Phaser visuals.
+- Use the existing generated/available assets where possible.
 
-Asset locations:
+Relevant command:
 
-- Manual source art: `public/assets/manual`.
-- Cleaned game-ready art: `public/assets/final`.
-- Runtime manifest: `public/assets/manifests/assetManifest.json`.
-
-Asset priority:
-
-1. `final`
-2. `manual`
-3. `placeholder`
-4. Runtime fallback shapes if needed.
-
-Important recent asset state from the prior pass:
-
-- Manifest had 62/62 file-backed assets.
-- Unit final battle sprites were processed as 512x512 PNGs with alpha.
-- Building final battle sprites were processed as 768x768 PNGs with alpha.
-- Missing battle assets were 0.
-- Original manual files remain untouched in `public/assets/manual`.
-- Cleaned copies live in `public/assets/final`.
-- `npm run assets:refresh` now processes sprites, rebuilds the manifest, and validates assets.
-
-Battle texture asset IDs include:
-
-- Hero portraits: Warlord, Arcanist, Shepherd, Enemy Commander.
-- Hero battle sprites: Warlord, Arcanist, Shepherd.
-- Resource icons: Crown Shrine, Stone Quarry, Iron Vein, Aether Well.
-- Unit sprites: Militia, Ranger, Acolyte, Raider, Hexer, Brute, Enemy Commander, Wild Hound, Stone Imp.
-- Unit concepts: Militia, Ranger, Acolyte.
-- Building sprites: Command Hall, Barracks, Mystic Lodge, Watchtower, Enemy Stronghold, Enemy Barracks.
-- Building concepts: Command Hall, Barracks, Mystic Lodge, Watchtower.
-
-UI-kit asset IDs:
-
-- `ui_panel_frame`
-- `ui_button_idle`
-- `ui_button_hover`
-- `ui_button_pressed`
-- `ui_resource_frame`
-- `ui_divider_ornament`
-- `ui_tooltip_frame`
-- `ui_minimap_frame`
-- `ui_ability_slot_frame`
-- `ui_inventory_slot_frame`
-- `ui_victory_panel_frame`
-- `ui_defeat_panel_frame`
-- `battle_hud_panel`
-
-Other UI/background assets:
-
-- Main menu background.
-- Victory screen background.
-- Defeat screen background.
-- Ascendant Realms key art.
-
-## Manual Art Workflow
-
-The project intentionally avoids paid image APIs.
-
-Manual workflow:
-
-1. Run `npm run assets:prompts`.
-2. Open `public/assets/manual/ASSET_PROMPT_BOOK.md`.
-3. Generate images manually in ChatGPT or another tool.
-4. Save them to the specified `public/assets/manual` subfolders.
-5. Exact snake_case filenames are best, but human-readable names are accepted.
-6. Run `npm run assets:refresh`.
-7. Refresh the browser.
-8. Use Asset Gallery to confirm `Image loaded`.
-
-For free prototype UI kit:
-
-```bash
-npm run assets:ui-kit
+```powershell
 npm run assets:refresh
 ```
 
-## Tests
+The asset gallery is available from the main menu.
 
-Current test areas:
+## Current Tests
 
-- Battle launch request contract.
-- Battle runtime setup, objectives, results, rewards, save decisions.
-- Content validation for referenced IDs.
-- Hero progression rules.
-- Save system.
-- Building placement rules.
+Known tests after the recent systems:
 
-Run all tests:
+- Battle launch request tests.
+- Battle runtime tests.
+- Battle pacing tests.
+- Campaign rules tests.
+- Content validation tests.
+- Hero progression rules tests.
+- Save system tests.
 
-```bash
-npm test
-```
+Recent passing count from the prior full run:
+
+- 13 test files.
+- 47 tests.
+
+Run `npm test` after any implementation change.
+
+## Git State and Caution
+
+The repository is connected to GitHub, but the current local worktree is dirty.
+
+At the time of this handoff, modified files included:
+
+- `BALANCE.md`
+- `CONTENT_GUIDE.md`
+- `DESIGN.md`
+- `README.md`
+- `ROADMAP.md`
+- `src/game/battle/BattleLaunchRequest.test.ts`
+- `src/game/battle/BattleLaunchRequest.ts`
+- `src/game/battle/BattleRuntime.test.ts`
+- `src/game/battle/BattleRuntime.ts`
+- `src/game/config.ts`
+- `src/game/core/GameTypes.ts`
+- `src/game/core/HeroProgressionRules.test.ts`
+- `src/game/core/HeroProgressionRules.ts`
+- `src/game/core/SaveSystem.test.ts`
+- `src/game/core/SaveSystem.ts`
+- `src/game/core/SceneKeys.ts`
+- `src/game/data/campaignNodes.ts`
+- `src/game/data/contentIndex.ts`
+- `src/game/data/contentValidation.test.ts`
+- `src/game/data/contentValidation.ts`
+- `src/game/data/heroes.ts`
+- `src/game/data/items.ts`
+- `src/game/data/rewards.ts`
+- `src/game/entities/Hero.ts`
+- `src/game/save/SaveTypes.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/scenes/HeroCreationScene.ts`
+- `src/game/scenes/HeroProgressionScene.ts`
+- `src/game/scenes/MainMenuScene.ts`
+- `src/game/scenes/ResultsScene.ts`
+- `src/game/styles/ui.css`
+
+Untracked files included:
+
+- `src/game/core/CampaignRules.test.ts`
+- `src/game/core/CampaignRules.ts`
+- `src/game/scenes/CampaignMapScene.ts`
+
+This handoff file itself is also modified by this update.
+
+Do not run destructive git commands. Do not reset or checkout over these changes unless the user explicitly asks.
 
 ## Current Known Limitations
 
-- There is only one playable skirmish map.
-- The battle background is procedural Phaser graphics, not a dedicated painted bitmap.
-- Movement uses direct steering with light separation, not full A* pathfinding.
-- Fog of war is not implemented.
-- Workers, construction time, shops, diplomacy, campaign nodes, retinue persistence, and respec are not implemented.
-- Item rewards are deterministic for testability and do not have rarity-weighted rolls yet.
-- Enemy AI is simple and predictable.
-- Balance is prototype-only.
-- `BattleScene` still owns spawning, rendering, input, and system wiring.
-- `BattleRuntime` is the first pure battle-state/results boundary, but live entity state is not fully serializable.
-- Some engine classes still combine simulation data with Phaser visuals.
-- The minimap is symbolic/static rather than a live scaled map.
-- UI and gameplay are designed for prototype readability, not final art direction.
+Major known limitations:
+
+- Campaign is a skeleton, not a full strategic layer.
+- Non-battle campaign nodes resolve instantly.
+- No campaign resource bank.
+- No shops or vendors.
+- No campaign dialogue.
+- No fog of war.
+- No rally points.
+- No workers.
+- Enemy does not construct buildings.
+- Enemy AI is paced but still simple.
+- Item system has no instance IDs, affixes, duplicate handling, or icon UI.
+- Results equip-now flow should be verified before relying on it.
+- Minimap does not hide unknown information because fog is not implemented.
+- Browser smoke testing was blocked by Browser Use availability in the prior run.
+
+## Manual QA Checklist
+
+After the next implementation pass, manually verify:
+
+1. Main menu opens without save.
+2. New Campaign creates a hero and opens the campaign map.
+3. Border Village is available at campaign start.
+4. Locked campaign nodes cannot be launched.
+5. Border Village launches a battle on First Claim.
+6. Victory completes Border Village and unlocks Old Stone Road.
+7. Defeat allows retry or return to campaign map.
+8. Continue Campaign returns to saved campaign progress.
+9. Skirmish opens setup instead of campaign.
+10. First Claim and Broken Ford both launch from skirmish setup.
+11. Difficulty selection affects enemy pacing.
+12. Player can place Barracks, Mystic Lodge, and Watchtower.
+13. Unfinished buildings cannot train units.
+14. Completed Barracks can queue Militia and Ranger.
+15. Completed Mystic Lodge can queue Acolyte.
+16. Queue cancellation refunds cost.
+17. Upgrades can be researched from eligible buildings.
+18. Locked buttons show sensible reasons.
+19. Minimap shows live units, buildings, sites, and camera viewport.
+20. Clicking the minimap recenters the camera.
+21. Base attack and enemy wave alerts create minimap pings.
+22. Victory grants XP and item rewards.
+23. Inventory displays earned items.
+24. Equipping items changes hero stats.
+25. Equipped item stats apply in battle.
+26. Reset Save returns the game to a clean state.
 
 ## Suggested Next Work
 
-Good next requests:
+Best next steps, in priority order:
 
-- Add construction time and worker builders.
-- Add a second skirmish map.
-- Add rarity-weighted item rewards.
-- Improve enemy AI wave timing and document balance knobs.
-- Split simulation state from Phaser view objects.
-- Add fog of war.
-- Replace procedural battle terrain with a dedicated painted battlefield bitmap plus collision overlays.
-- Make the minimap live.
-- Add build previews and placement affordances for exact blocked/buildable terrain.
-- Add a respec button to hero progression.
+1. Commit the current local feature set after rerunning `npm test` and `npm run build`.
+2. Browser-smoke the menu to campaign to battle to results loop once Browser Use is available.
+3. Polish ResultsScene reward actions and verify equip-now behavior.
+4. Add a persistent campaign resource bank or explicitly remove displayed campaign resource reward ambiguity.
+5. Add rally points for production buildings.
+6. Add lightweight fog of war using the minimap-compatible visibility layer.
+7. Improve campaign node presentation with event text and small choices.
+8. Add item instance IDs before randomized affixes or duplicate item rewards become important.
+9. Make enemy construction a future AI milestone only after player construction is stable.
 
-## Files Most Likely To Change For Common Tasks
+## Principle for Future LLMs
 
-- New unit: `data/units.ts`, `AssetKeys.ts`, prompt book tooling if art is needed, tests through content validation.
-- New building: `data/buildings.ts`, `systems/BuildingSystem.ts` if behavior changes, `AssetKeys.ts`, map/build options.
-- New map: `data/maps.ts`, content validation tests, maybe background drawing in `BattleScene`.
-- New ability: `data/abilities.ts`, `systems/AbilitySystem.ts`, `AssetKeys.ts`, ability icon asset/prompt.
-- New hero class: `data/heroClasses.ts`, hero asset IDs, portraits, battle sprite IDs, creation UI.
-- HUD change: `ui/HUD.ts`, `styles/ui.css`, sometimes `ui/AbilityBar.ts`, `ui/BuildMenu.ts`, `ui/SelectionPanel.ts`.
-- Battle rendering change: `entities/BaseEntity.ts`, `entities/Unit.ts`, `entities/Building.ts`, `entities/CaptureSite.ts`, `scenes/BattleScene.ts`.
-- Save/progression change: `core/SaveSystem.ts`, `save/SaveTypes.ts`, `core/HeroProgressionRules.ts`, `core/Progression.ts`, tests.
+Preserve the current direction:
 
-## Recent Work In This Handoff Pass
-
-- Repositioned in-world health bars above actual visual sprite bounds rather than collision radius.
-- Added framed health-bar treatment.
-- Reduced unit and building sprite display height slightly to leave clean UI space.
-- Moved building health bars further above roofs.
-- Added a procedural battlefield background with roads, ponds, build grounds, rocky blockers, texture, capture-site halos, and a border.
-- Added subtle battle HUD polish in CSS.
-- Created this handoff document.
+- Keep content data-driven.
+- Keep campaign and skirmish separate.
+- Keep the first battle readable and fair.
+- Prefer small systems over expanding `BattleScene` forever.
+- Do not add campaign complexity before the skeleton is stable.
+- Do not add new art unless the user asks.
+- Verify with tests and build after code changes.
+- Respect the dirty worktree and never revert user or prior-agent changes without explicit instruction.

@@ -1,5 +1,6 @@
 import { SAVE_KEY } from "./Constants";
-import type { AllocatedSkills, EquipmentSlots, HeroSaveData, StoredGameSave } from "../save/SaveTypes";
+import type { BattleDifficulty } from "./GameTypes";
+import type { AllocatedSkills, CampaignSaveData, EquipmentSlots, HeroSaveData, StoredGameSave } from "../save/SaveTypes";
 
 export class SaveSystem {
   static hasSave(): boolean {
@@ -20,7 +21,8 @@ export class SaveSystem {
       }
       return {
         ...parsed,
-        hero
+        hero,
+        campaign: normalizeCampaignSaveData(parsed.campaign) ?? createFallbackCampaignSave()
       };
     } catch {
       return null;
@@ -36,9 +38,35 @@ export class SaveSystem {
     const save: StoredGameSave = {
       version: 1,
       hero: normalizedHero,
+      campaign: SaveSystem.load()?.campaign ?? createFallbackCampaignSave(),
       updatedAt: new Date().toISOString()
     };
     return writeRawSave(JSON.stringify(save));
+  }
+
+  static saveGame(hero: HeroSaveData, campaign: CampaignSaveData): boolean {
+    const normalizedHero = normalizeHeroSaveData(hero);
+    const normalizedCampaign = normalizeCampaignSaveData(campaign);
+    if (!normalizedHero || !normalizedCampaign) {
+      console.warn("Ascendant Realms save skipped because game data was invalid.");
+      return false;
+    }
+    const save: StoredGameSave = {
+      version: 1,
+      hero: normalizedHero,
+      campaign: normalizedCampaign,
+      updatedAt: new Date().toISOString()
+    };
+    return writeRawSave(JSON.stringify(save));
+  }
+
+  static saveCampaign(campaign: CampaignSaveData, heroOverride?: HeroSaveData): boolean {
+    const existing = SaveSystem.load();
+    const hero = heroOverride ?? existing?.hero;
+    if (!hero) {
+      return false;
+    }
+    return SaveSystem.saveGame(hero, campaign);
   }
 
   static reset(): void {
@@ -48,6 +76,10 @@ export class SaveSystem {
 
 export function isHeroSaveData(value: unknown): value is HeroSaveData {
   return normalizeHeroSaveData(value) !== null;
+}
+
+export function isCampaignSaveData(value: unknown): value is CampaignSaveData {
+  return normalizeCampaignSaveData(value) !== null;
 }
 
 export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
@@ -80,6 +112,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
   const factionReputation = value.factionReputation as Record<string, number>;
   const unlockedAbilities = value.unlockedAbilities as string[];
   const inventory = arrayOfStrings(value.inventory) ? value.inventory : arrayOfStrings(value.items) ? value.items : [];
+  const clearedMapIds = arrayOfStrings(value.clearedMapIds) ? value.clearedMapIds : [];
   const allocatedSkills: AllocatedSkills = {};
   if (isRecord(value.allocatedSkills)) {
     Object.entries(value.allocatedSkills).forEach(([skillId, rank]) => {
@@ -91,7 +124,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
   const equipment: EquipmentSlots = {};
   if (isRecord(value.equipment)) {
     Object.entries(value.equipment).forEach(([slot, itemId]) => {
-      if ((slot === "weapon" || slot === "armor" || slot === "trinket") && typeof itemId === "string" && inventory.includes(itemId)) {
+      if ((slot === "weapon" || slot === "armor" || slot === "trinket" || slot === "relic") && typeof itemId === "string" && inventory.includes(itemId)) {
         equipment[slot] = itemId;
       }
     });
@@ -106,6 +139,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
     skillPoints: clampInteger(value.skillPoints, 0),
     unlockedAbilities: [...new Set(unlockedAbilities)],
     completedBattles: clampInteger(value.completedBattles, 0),
+    clearedMapIds: [...new Set(clearedMapIds)],
     inventory: [...new Set(inventory)],
     equipment,
     allocatedSkills,
@@ -116,6 +150,30 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
       arcana: clampNumber(stats.arcana, 0),
       faith: clampNumber(stats.faith, 0)
     }
+  };
+}
+
+export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | null {
+  if (!isRecord(value)) {
+    return null;
+  }
+  if (typeof value.started !== "boolean" || typeof value.difficulty !== "string") {
+    return null;
+  }
+  if (!["story", "easy", "normal", "hard"].includes(value.difficulty)) {
+    return null;
+  }
+  const difficulty = value.difficulty as BattleDifficulty;
+  const completedNodeIds = arrayOfStrings(value.completedNodeIds) ? value.completedNodeIds : [];
+  const unlockedNodeIds = arrayOfStrings(value.unlockedNodeIds) ? value.unlockedNodeIds : [];
+  const nodeRewardsClaimedIds = arrayOfStrings(value.nodeRewardsClaimedIds) ? value.nodeRewardsClaimedIds : [];
+  return {
+    started: value.started,
+    difficulty,
+    completedNodeIds: [...new Set(completedNodeIds)],
+    unlockedNodeIds: [...new Set(unlockedNodeIds)],
+    nodeRewardsClaimedIds: [...new Set(nodeRewardsClaimedIds)],
+    selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }
 
@@ -176,6 +234,7 @@ export function createFallbackHeroSave(): HeroSaveData {
     skillPoints: 0,
     unlockedAbilities: ["rally_banner"],
     completedBattles: 0,
+    clearedMapIds: [],
     inventory: [],
     equipment: {},
     allocatedSkills: {},
@@ -188,5 +247,15 @@ export function createFallbackHeroSave(): HeroSaveData {
       arcana: 2,
       faith: 3
     }
+  };
+}
+
+export function createFallbackCampaignSave(): CampaignSaveData {
+  return {
+    started: false,
+    difficulty: "easy",
+    completedNodeIds: [],
+    unlockedNodeIds: [],
+    nodeRewardsClaimedIds: []
   };
 }

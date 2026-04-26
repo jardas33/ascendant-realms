@@ -55,8 +55,10 @@ Every phase should protect these long-term pillars:
 
 ## Phase 4: Campaign Map
 
-- Node-based overworld.
-- Locations.
+- Node-based overworld. Skeleton implemented with six Border Marches nodes.
+- Locations. First pass includes battle and shrine-style node handling.
+- Save-backed node completion, unlocks, selected node, and one-time node rewards.
+- Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.
 - Shops.
 - Temples.

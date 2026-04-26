@@ -17,11 +17,12 @@ export type AbilityEffectType =
 
 export type TerrainType = "grass" | "buildable" | "blocked" | "water";
 export type SkillTreeId = "combat" | "magic" | "leadership";
-export type EquipmentSlot = "weapon" | "armor" | "trinket";
-export type ItemRarity = "common" | "uncommon" | "rare";
+export type EquipmentSlot = "weapon" | "armor" | "trinket" | "relic";
+export type ItemRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 export type BattleDifficulty = "story" | "easy" | "normal" | "hard";
 export type BattlePhaseId = "opening" | "expansion" | "pressure" | "assault";
 export type BuildingConstructionState = "planned" | "underConstruction" | "completed";
+export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
 
 export interface Position {
   x: number;
@@ -161,12 +162,64 @@ export interface ItemDefinition {
   rarity: ItemRarity;
   description: string;
   statMods: HeroStatMods;
+  classAffinity?: string[];
+  factionOrigin?: string;
+  iconAssetKey?: string;
+  flavorText: string;
+  tags: string[];
 }
 
 export interface RewardTableDefinition {
   id: string;
   name: string;
+  guaranteedItemIds: string[];
+  weightedItemPool: WeightedRewardEntry[];
+  resourceRewards: RewardResourceDefinition[];
+  xpRewards: RewardXpDefinition[];
+  firstClearBonus?: RewardBonusDefinition;
+  repeatClearReward?: RewardBonusDefinition;
+  rolls: number;
+  deterministicItemIds?: string[];
+}
+
+export interface WeightedRewardEntry {
+  itemId: string;
+  weight: number;
+  mapIds?: string[];
+  firstClearOnly?: boolean;
+  repeatClearOnly?: boolean;
+}
+
+export interface RewardResourceDefinition {
+  resource: ResourceKey;
+  amount: number;
+  firstClearOnly?: boolean;
+  repeatClearOnly?: boolean;
+}
+
+export interface RewardXpDefinition {
+  amount: number;
+  firstClearOnly?: boolean;
+  repeatClearOnly?: boolean;
+}
+
+export interface RewardBonusDefinition {
+  itemIds?: string[];
+  resources?: Partial<ResourceBag>;
+  xp?: number;
+}
+
+export interface BattleRewardResult {
   itemIds: string[];
+  resources: Partial<ResourceBag>;
+  xp: number;
+}
+
+export interface RewardLevelUpSummary {
+  previousLevel: number;
+  newLevel: number;
+  levelsGained: number;
+  skillPointsGained: number;
 }
 
 export interface OriginDefinition {
@@ -372,3 +425,26 @@ export interface BattleStats {
   timeSeconds: number;
   outcome: "victory" | "defeat";
 }
+
+export interface CampaignNodeRewardDefinition {
+  itemIds?: string[];
+  resources?: Partial<ResourceBag>;
+  xp?: number;
+}
+
+export interface CampaignNodeDefinition {
+  id: string;
+  name: string;
+  description: string;
+  nodeType: CampaignNodeType;
+  difficulty: BattleDifficulty;
+  mapId: string;
+  enemyFactionId: string;
+  prerequisites: string[];
+  rewards: CampaignNodeRewardDefinition;
+  unlocks: string[];
+  x: number;
+  y: number;
+}
+
+export type CampaignNodeStatus = "locked" | "available" | "completed";

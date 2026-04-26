@@ -88,11 +88,27 @@ Items live in `src/game/data/items.ts`. Battle reward tables live in `src/game/d
 
 Use small equipment bonuses while the roster is tiny:
 
-- Weapons should usually add 2 to 4 damage or primary stats.
-- Armor should usually add HP and 1 to 2 armor, with speed penalties only when meaningful.
-- Trinkets should mostly add primary stats or mana.
+- Common weapons should usually add 2 to 4 damage or 1 to 2 primary stats.
+- Uncommon armor should usually add 18 to 40 HP and 1 to 2 armor, with speed penalties only when meaningful.
+- Rare trinkets should mostly add 3 primary stats, mana, or small hybrid bonuses.
+- Epic items can combine a strong defensive or caster bonus with 1 to 2 secondary stats.
+- Legendary items should feel broad and special, but not invalidate skill trees or army control.
 
-The current reward picker is deterministic and gives one new item after a victory when possible. This is useful for testing, but later campaign rewards should support rarity weights, shops, quest rewards, and duplicate handling.
+Reward tables now use weighted pools, fixed rewards, resource payouts, XP payouts, first-clear bonuses, and repeat-clear rewards. Deterministic item order remains available for tests.
+
+Current reward pacing:
+
+- First Claim grants one weighted item roll, modest resources, 35 base victory XP, and a first-clear bonus of 45 XP plus starter resources.
+- Broken Ford grants one weighted item roll, stronger resource payouts, 55 base victory XP, and a first-clear Fordbreaker Halberd plus 65 bonus XP.
+- Duplicate items are skipped for now instead of converted into currency. When most pool items are already owned, a victory can produce resources and XP without a new item.
+
+Rarity philosophy:
+
+- Common: early identity and starter class support.
+- Uncommon: practical build-shaping stats.
+- Rare: noticeable hero specialization.
+- Epic: map-defining or class-defining rewards.
+- Legendary: very rare repeat-clear chase items.
 
 ## How To Tune AI Wave Timing
 

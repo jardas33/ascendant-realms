@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createFallbackHeroSave } from "../core/SaveSystem";
 import {
   cloneBattleLaunchRequestWithHero,
+  createCampaignBattleLaunchRequest,
   createBattleLaunchRequest,
   createSkirmishBattleLaunchRequest,
   resolveBattleLaunchRequest
@@ -89,6 +90,25 @@ describe("BattleLaunchRequest", () => {
 
     expect(campaign.ok).toBe(false);
     expect(scenario.ok).toBe(false);
+  });
+
+  it("creates a campaign battle launch from node data", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "border_village");
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request).toMatchObject({
+      mode: "campaign_node",
+      campaignNodeId: "border_village",
+      mapId: "first_claim",
+      difficulty: "easy",
+      enemyProfileId: "ashen_covenant"
+    });
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.request.campaignNodeId).toBe("border_village");
+      expect(resolved.launch.map.id).toBe("first_claim");
+    }
   });
 
   it("clones an existing request with updated hero progress", () => {

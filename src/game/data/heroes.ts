@@ -19,6 +19,7 @@ export function createNewHeroSave(heroName: string, classId: string, originId: s
     skillPoints: 0,
     unlockedAbilities: ability ? [ability.id] : [],
     completedBattles: 0,
+    clearedMapIds: [],
     inventory: [],
     equipment: {},
     allocatedSkills: {},

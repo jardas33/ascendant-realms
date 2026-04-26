@@ -23,6 +23,7 @@ export class Hero extends Unit {
   faith: number;
   unlockedAbilities: string[];
   completedBattles: number;
+  clearedMapIds: string[];
   manaRegenMultiplier = 1;
   inventory: string[];
   equipment: HeroSaveData["equipment"];
@@ -77,6 +78,7 @@ export class Hero extends Unit {
     this.faith = stats.faith;
     this.unlockedAbilities = getUnlockedAbilityIds(save, heroClass, SKILL_NODE_BY_ID);
     this.completedBattles = save.completedBattles;
+    this.clearedMapIds = [...save.clearedMapIds];
     this.inventory = [...save.inventory];
     this.equipment = { ...save.equipment };
     this.allocatedSkills = { ...save.allocatedSkills };
@@ -135,6 +137,7 @@ export class Hero extends Unit {
       skillPoints: this.skillPoints,
       unlockedAbilities: [...unlocked],
       completedBattles: this.completedBattles,
+      clearedMapIds: [...this.clearedMapIds],
       inventory: [...this.inventory],
       equipment: { ...this.equipment },
       allocatedSkills: { ...this.allocatedSkills },

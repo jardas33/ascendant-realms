@@ -3,6 +3,7 @@ export const SCENE_KEYS = {
   mainMenu: "MainMenuScene",
   assetGallery: "AssetGalleryScene",
   heroCreation: "HeroCreationScene",
+  campaignMap: "CampaignMapScene",
   skirmishSetup: "SkirmishSetupScene",
   battle: "BattleScene",
   results: "ResultsScene",

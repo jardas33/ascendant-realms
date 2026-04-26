@@ -499,12 +499,18 @@ h2::after,
   line-height: 1.35;
 }
 
+.equipment-row p,
 .inventory-row p,
 .skill-tree p {
   margin: 5px 0 0;
   color: #c8d0bd;
   font-size: 12px;
   line-height: 1.35;
+}
+
+.equipment-row small,
+.inventory-row small.stat-preview {
+  color: #f1df9d;
 }
 
 .inventory-row.new {
@@ -523,6 +529,57 @@ h2::after,
   color: #f0d978;
   font-size: 11px;
   text-transform: uppercase;
+}
+
+.rarity-pill {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.rarity-common .rarity-pill {
+  color: #d7d0bd;
+}
+
+.rarity-uncommon .rarity-pill {
+  color: #8fd89b;
+}
+
+.rarity-rare .rarity-pill {
+  color: #8ec8ff;
+}
+
+.rarity-epic .rarity-pill {
+  color: #caa2ff;
+}
+
+.rarity-legendary .rarity-pill {
+  color: #f3b25f;
+}
+
+.inventory-row.rarity-uncommon,
+.equipment-row.rarity-uncommon {
+  border-color: rgba(143, 216, 155, 0.5);
+}
+
+.inventory-row.rarity-rare,
+.equipment-row.rarity-rare {
+  border-color: rgba(142, 200, 255, 0.55);
+}
+
+.inventory-row.rarity-epic,
+.equipment-row.rarity-epic {
+  border-color: rgba(202, 162, 255, 0.62);
+}
+
+.inventory-row.rarity-legendary,
+.equipment-row.rarity-legendary {
+  border-color: rgba(243, 178, 95, 0.72);
 }
 
 .skill-tree-grid {
@@ -732,6 +789,114 @@ input {
 .hero-summary-card span {
   color: #c8d0bd;
   font-size: 14px;
+}
+
+.campaign-shell {
+  place-items: stretch center;
+  overflow: auto;
+}
+
+.campaign-panel {
+  align-self: start;
+}
+
+.campaign-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(300px, 1.1fr);
+  gap: 18px;
+}
+
+.campaign-map-grid {
+  position: relative;
+  min-height: 430px;
+  border: 1px solid rgba(246, 237, 180, 0.18);
+  border-style: solid;
+  border-image-source: var(--ui-panel-frame);
+  border-image-slice: 72;
+  border-image-width: 12px;
+  border-image-repeat: stretch;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 25% 62%, rgba(116, 211, 242, 0.11), transparent 28%),
+    radial-gradient(circle at 72% 36%, rgba(240, 217, 120, 0.1), transparent 30%),
+    linear-gradient(135deg, rgba(54, 75, 58, 0.35), rgba(12, 16, 14, 0.82)),
+    var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+  overflow: hidden;
+}
+
+.campaign-map-grid::before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 8%;
+  top: 52%;
+  height: 2px;
+  transform: rotate(-8deg);
+  background: linear-gradient(90deg, rgba(240, 217, 120, 0.12), rgba(240, 217, 120, 0.42), rgba(116, 211, 242, 0.2));
+}
+
+.campaign-node {
+  position: absolute;
+  left: var(--node-x);
+  top: var(--node-y);
+  width: 142px;
+  min-height: 70px;
+  padding: 9px 10px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.campaign-node span {
+  display: block;
+  margin-top: 4px;
+  color: #c8d0bd;
+  font-size: 11px;
+}
+
+.campaign-node.locked {
+  filter: grayscale(0.55);
+}
+
+.campaign-node.available {
+  border-color: rgba(116, 211, 242, 0.62);
+}
+
+.campaign-node.completed {
+  border-color: rgba(143, 216, 155, 0.64);
+}
+
+.campaign-node.selected {
+  border-color: #f0d978;
+  box-shadow:
+    0 0 0 1px rgba(240, 217, 120, 0.18),
+    0 0 24px rgba(240, 217, 120, 0.14),
+    var(--plate-shadow);
+}
+
+.campaign-node-details {
+  min-height: 430px;
+  padding: 16px;
+  border: 1px solid var(--plate-edge);
+  border-style: solid;
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 8px;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+}
+
+.campaign-node-details h3 {
+  margin: 0 0 10px;
+  color: #f6edb4;
+  font-size: 24px;
+}
+
+.campaign-node-details p {
+  color: #c8d0bd;
+  line-height: 1.45;
 }
 
 .choice.selected {
@@ -1250,6 +1415,7 @@ input {
   .difficulty-grid,
   .setup-grid,
   .map-grid,
+  .campaign-layout,
   .menu-actions.row,
   .progression-grid,
   .skill-tree-grid {

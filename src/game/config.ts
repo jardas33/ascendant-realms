@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { AssetGalleryScene } from "./scenes/AssetGalleryScene";
 import { BattleScene } from "./scenes/BattleScene";
 import { BootScene } from "./scenes/BootScene";
+import { CampaignMapScene } from "./scenes/CampaignMapScene";
 import { HeroCreationScene } from "./scenes/HeroCreationScene";
 import { HeroProgressionScene } from "./scenes/HeroProgressionScene";
 import { MainMenuScene } from "./scenes/MainMenuScene";
@@ -27,6 +28,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     MainMenuScene,
     AssetGalleryScene,
     HeroCreationScene,
+    CampaignMapScene,
     SkirmishSetupScene,
     BattleScene,
     ResultsScene,

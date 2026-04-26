@@ -1,9 +1,10 @@
 import Phaser from "phaser";
 import type { Position, ResourceBag, ResourceKey, Team, UpgradeDefinition } from "../core/GameTypes";
+import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
 import { formatTime } from "../core/MathUtils";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
-import { BUILDING_BY_ID, UPGRADE_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
+import { BUILDING_BY_ID, UPGRADE_BY_ID, requireBuilding, requireCampaignNode, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
@@ -741,10 +742,34 @@ export class BattleScene extends Phaser.Scene {
       SaveSystem.saveHero(completion.heroSave);
     }
 
+    if (outcome === "victory" && this.launch.request.mode === "campaign_node" && this.launch.request.campaignNodeId) {
+      const node = requireCampaignNode(this.launch.request.campaignNodeId);
+      const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
+      const campaignCompletion = completeCampaignNodeWithRewards({
+        campaign: storedCampaign,
+        hero: completion.heroSave,
+        node
+      });
+      const stats = {
+        ...completion.stats,
+        xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp
+      };
+      SaveSystem.saveGame(campaignCompletion.hero, campaignCompletion.campaign);
+      this.scene.start(SCENE_KEYS.campaignMap, {
+        stats,
+        heroSave: campaignCompletion.hero,
+        campaignSave: campaignCompletion.campaign,
+        completedNodeId: node.id
+      });
+      return;
+    }
+
     this.scene.start(outcome === "victory" ? SCENE_KEYS.heroProgression : SCENE_KEYS.results, {
       stats: completion.stats,
       heroSave: completion.heroSave,
       rewardItemIds: completion.rewardItemIds,
+      reward: completion.reward,
+      rewardLevelUp: completion.rewardLevelUp,
       launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, completion.heroSave)
     });
   }

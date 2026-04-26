@@ -2,7 +2,16 @@ import Phaser from "phaser";
 import { ASSET_IDS, heroPortraitAssetId } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
 import type { BattleLaunchRequest } from "../battle/BattleLaunchRequest";
-import type { BattleStats, HeroBaseStats, HeroStatMods, ItemDefinition, SkillNodeDefinition } from "../core/GameTypes";
+import { LEVEL_XP_THRESHOLDS } from "../core/Constants";
+import type {
+  BattleRewardResult,
+  BattleStats,
+  HeroBaseStats,
+  HeroStatMods,
+  ItemDefinition,
+  RewardLevelUpSummary,
+  SkillNodeDefinition
+} from "../core/GameTypes";
 import {
   EQUIPMENT_SLOTS,
   allocateSkillPoint,
@@ -13,6 +22,7 @@ import {
   unequipItem
 } from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
+import { xpProgressForLevel } from "../core/Progression";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { getBattleDifficulty } from "../data/battlePacing";
@@ -24,6 +34,8 @@ interface HeroProgressionData {
   stats?: BattleStats;
   heroSave?: HeroSaveData;
   rewardItemIds?: string[];
+  reward?: BattleRewardResult;
+  rewardLevelUp?: RewardLevelUpSummary;
   launchRequest?: BattleLaunchRequest;
 }
 
@@ -33,6 +45,8 @@ export class HeroProgressionScene extends Phaser.Scene {
   private heroSave: HeroSaveData = createFallbackHeroSave();
   private stats?: BattleStats;
   private rewardItemIds: string[] = [];
+  private reward?: BattleRewardResult;
+  private rewardLevelUp?: RewardLevelUpSummary;
   private launchRequest?: BattleLaunchRequest;
   private status = "Spend skill points, equip rewards, or continue into another skirmish.";
 
@@ -44,6 +58,8 @@ export class HeroProgressionScene extends Phaser.Scene {
     this.heroSave = data.heroSave ?? SaveSystem.load()?.hero ?? createFallbackHeroSave();
     this.stats = data.stats;
     this.rewardItemIds = data.rewardItemIds ?? [];
+    this.reward = data.reward ?? (data.rewardItemIds ? { itemIds: data.rewardItemIds, resources: {}, xp: 0 } : undefined);
+    this.rewardLevelUp = data.rewardLevelUp;
     this.launchRequest = data.launchRequest;
     this.heroSave = this.finalizeHeroSave(this.heroSave);
   }
@@ -172,16 +188,25 @@ export class HeroProgressionScene extends Phaser.Scene {
     if (!this.stats) {
       return "";
     }
-    const rewards = this.rewardItemIds
+    const reward = this.reward ?? { itemIds: this.rewardItemIds, resources: {}, xp: 0 };
+    const rewards = reward.itemIds
       .map((itemId) => ITEM_BY_ID[itemId])
       .filter((item): item is ItemDefinition => item !== undefined);
     const map = this.launchRequest ? MAP_BY_ID[this.launchRequest.mapId] : undefined;
     const difficulty = this.launchRequest ? getBattleDifficulty(this.launchRequest.difficulty) : undefined;
+    const progress = xpProgressForLevel(this.heroSave.xp, this.heroSave.level, LEVEL_XP_THRESHOLDS);
+    const xpProgressText =
+      progress.nextLevelXp > progress.currentLevelXp
+        ? `${Math.max(0, this.heroSave.xp - progress.currentLevelXp)} / ${progress.nextLevelXp - progress.currentLevelXp}`
+        : "Level cap reached";
+    const skillPointsGained = this.rewardLevelUp?.skillPointsGained ?? 0;
     return `
       <div class="results-grid compact">
         <span>Map</span><strong>${escapeHtml(map?.name ?? "Unknown")}</strong>
         <span>Difficulty</span><strong>${escapeHtml(difficulty?.name ?? "Unknown")}</strong>
-        <span>XP gained</span><strong>${this.stats.xpGained}</strong>
+        <span>XP gained</span><strong>${this.stats.xpGained}${reward.xp > 0 ? ` (${reward.xp} victory bonus)` : ""}</strong>
+        <span>XP progress</span><strong>${escapeHtml(xpProgressText)} - ${Math.round(progress.percent)}%</strong>
+        <span>Skill points gained</span><strong>${skillPointsGained}</strong>
         <span>Survival time</span><strong>${formatTime(this.stats.timeSeconds)}</strong>
         <span>First site captured</span><strong>${this.stats.firstSiteCaptured ? titleCase(this.stats.firstSiteCaptured) : "None"}</strong>
         <span>Buildings built</span><strong>${this.stats.buildingsBuilt}</strong>
@@ -190,7 +215,8 @@ export class HeroProgressionScene extends Phaser.Scene {
         <span>Units killed</span><strong>${this.stats.unitsKilled}</strong>
         <span>Buildings destroyed</span><strong>${this.stats.buildingsDestroyed}</strong>
         <span>Sites captured</span><strong>${this.stats.resourcesCaptured}</strong>
-        <span>Reward</span><strong>${rewards.length > 0 ? rewards.map((item) => escapeHtml(item.name)).join(", ") : "No new item"}</strong>
+        <span>Item rewards</span><strong>${rewards.length > 0 ? rewards.map((item) => this.renderItemName(item)).join(", ") : "No new item"}</strong>
+        <span>Resource rewards</span><strong>${escapeHtml(this.formatResourceRewards(reward.resources))}</strong>
       </div>
     `;
   }
@@ -221,10 +247,16 @@ export class HeroProgressionScene extends Phaser.Scene {
           const itemId = this.heroSave.equipment[slot];
           const item = itemId ? ITEM_BY_ID[itemId] : undefined;
           return `
-            <div class="equipment-row">
+            <div class="equipment-row ${item ? this.rarityClass(item.rarity) : ""}">
               <div>
                 <strong>${titleCase(slot)}</strong>
-                <span>${item ? `${escapeHtml(item.name)} - ${escapeHtml(this.formatStatMods(item.statMods))}` : "Empty"}</span>
+                ${
+                  item
+                    ? `<span>${this.renderItemName(item)} - ${escapeHtml(this.formatStatMods(item.statMods))}</span>
+                      <p>${escapeHtml(item.description)}</p>
+                      <small>${escapeHtml(item.flavorText)}</small>`
+                    : "<span>Empty</span>"
+                }
               </div>
               <button data-progression-action="unequip" data-slot="${slot}" ${item ? "" : "disabled"}>Unequip</button>
             </div>
@@ -247,14 +279,18 @@ export class HeroProgressionScene extends Phaser.Scene {
           .map((item) => {
             const equipped = this.heroSave.equipment[item.slot] === item.id;
             const rewarded = this.rewardItemIds.includes(item.id);
+            const equipText = rewarded && !equipped ? "Equip Now" : equipped ? "Equipped" : "Equip";
             return `
-              <div class="inventory-row ${rewarded ? "new" : ""}">
+              <div class="inventory-row ${rewarded ? "new" : ""} ${this.rarityClass(item.rarity)}">
                 <div>
-                  <strong>${escapeHtml(item.name)} ${rewarded ? "<span>New</span>" : ""}</strong>
-                  <small>${titleCase(item.slot)} - ${titleCase(item.rarity)} - ${escapeHtml(this.formatStatMods(item.statMods))}</small>
+                  <strong>${this.renderItemName(item)} ${rewarded ? "<span>New</span>" : ""}</strong>
+                  <small>${titleCase(item.slot)} - ${escapeHtml(this.formatStatMods(item.statMods))}</small>
                   <p>${escapeHtml(item.description)}</p>
+                  <small>${escapeHtml(item.flavorText)}</small>
+                  <small>${escapeHtml(this.formatTags(item.tags))}</small>
+                  <small class="stat-preview">${escapeHtml(this.previewEquipDelta(item, equipped))}</small>
                 </div>
-                <button data-progression-action="equip" data-id="${item.id}" ${equipped ? "disabled" : ""}>${equipped ? "Equipped" : "Equip"}</button>
+                <button data-progression-action="equip" data-id="${item.id}" ${equipped ? "disabled" : ""}>${equipText}</button>
               </div>
             `;
           })
@@ -292,9 +328,51 @@ export class HeroProgressionScene extends Phaser.Scene {
   }
 
   private formatStatMods(mods: HeroStatMods): string {
-    return Object.entries(mods)
+    const formatted = Object.entries(mods)
       .map(([key, value]) => `${value && value > 0 ? "+" : ""}${value} ${statLabel(key)}`)
       .join(", ");
+    return formatted || "No stat modifiers";
+  }
+
+  private previewEquipDelta(item: ItemDefinition, equipped: boolean): string {
+    if (equipped) {
+      return "Currently equipped.";
+    }
+    const result = equipItem(this.heroSave, item.id, ITEM_BY_ID);
+    if (!result.ok) {
+      return result.message;
+    }
+    const current = this.liveStatsFor(this.heroSave);
+    const next = this.liveStatsFor(result.hero);
+    const deltas = STAT_PREVIEW_KEYS.map((key) => [key, Math.round((next[key] - current[key]) * 100) / 100] as const)
+      .filter(([, delta]) => delta !== 0)
+      .map(([key, delta]) => `${delta > 0 ? "+" : ""}${delta} ${statLabel(key)}`);
+    return deltas.length > 0 ? `Preview: ${deltas.join(", ")}` : "Preview: no stat change.";
+  }
+
+  private liveStatsFor(save: HeroSaveData): HeroBaseStats {
+    const heroClass = HERO_CLASS_BY_ID[save.classId] ?? Object.values(HERO_CLASS_BY_ID)[0];
+    const origin = ORIGIN_BY_ID[save.originId] ?? Object.values(ORIGIN_BY_ID)[0];
+    return calculateLiveHeroStats(save, heroClass, origin, SKILL_NODE_BY_ID, ITEM_BY_ID);
+  }
+
+  private renderItemName(item: ItemDefinition): string {
+    return `${escapeHtml(item.name)} <span class="rarity-pill ${this.rarityClass(item.rarity)}">${titleCase(item.rarity)}</span>`;
+  }
+
+  private rarityClass(rarity: ItemDefinition["rarity"]): string {
+    return `rarity-${rarity}`;
+  }
+
+  private formatResourceRewards(resources: BattleRewardResult["resources"]): string {
+    const rewards = Object.entries(resources)
+      .filter(([, amount]) => typeof amount === "number" && amount > 0)
+      .map(([resource, amount]) => `${amount} ${titleCase(resource)}`);
+    return rewards.length > 0 ? rewards.join(", ") : "None";
+  }
+
+  private formatTags(tags: string[]): string {
+    return tags.length > 0 ? `Tags: ${tags.map(titleCase).join(", ")}` : "No tags";
   }
 
   private toCssColor(value: number): string {
@@ -307,6 +385,20 @@ export class HeroProgressionScene extends Phaser.Scene {
     }
   }
 }
+
+const STAT_PREVIEW_KEYS: Array<keyof HeroBaseStats> = [
+  "maxHp",
+  "maxMana",
+  "damage",
+  "armor",
+  "range",
+  "attackCooldown",
+  "speed",
+  "might",
+  "command",
+  "arcana",
+  "faith"
+];
 
 function statLabel(key: string): string {
   const labels: Record<string, string> = {

@@ -1,15 +1,18 @@
-import { HERO_HP_PER_LEVEL, HERO_MANA_PER_LEVEL } from "./Constants";
+import { HERO_HP_PER_LEVEL, HERO_MANA_PER_LEVEL, LEVEL_XP_THRESHOLDS } from "./Constants";
 import type {
+  BattleRewardResult,
   EquipmentSlot,
   HeroBaseStats,
   HeroClassDefinition,
   HeroStatMods,
   ItemDefinition,
   OriginDefinition,
+  ResourceKey,
   RewardTableDefinition,
+  RewardLevelUpSummary,
   SkillNodeDefinition
 } from "./GameTypes";
-import { applyOriginMods } from "./Progression";
+import { applyOriginMods, calculateLevelFromXp } from "./Progression";
 import type { EquipmentSlots, HeroSaveData } from "../save/SaveTypes";
 
 export const EQUIPMENT_SLOTS: EquipmentSlot[] = ["weapon", "armor", "trinket"];
@@ -33,6 +36,22 @@ export interface ProgressionActionResult {
   hero: HeroSaveData;
   message: string;
   unlockedAbilityId?: string;
+}
+
+export interface RollBattleRewardOptions {
+  table: RewardTableDefinition;
+  completedBattlesBeforeVictory: number;
+  inventory: string[];
+  count?: number;
+  deterministic?: boolean;
+  isFirstClear?: boolean;
+  mapId?: string;
+  rng?: () => number;
+}
+
+export interface GrantBattleRewardsResult {
+  hero: HeroSaveData;
+  levelUp: RewardLevelUpSummary;
 }
 
 export function calculateLiveHeroStats(
@@ -228,15 +247,67 @@ export function pickBattleRewardItemIds(
   inventory: string[],
   count = 1
 ): string[] {
-  const owned = new Set(inventory);
-  const picked: string[] = [];
-  for (let offset = 0; offset < table.itemIds.length && picked.length < count; offset += 1) {
-    const itemId = table.itemIds[(completedBattlesBeforeVictory + offset) % table.itemIds.length];
-    if (!owned.has(itemId) && !picked.includes(itemId)) {
-      picked.push(itemId);
+  return rollBattleRewards({
+    table,
+    completedBattlesBeforeVictory,
+    inventory,
+    count,
+    deterministic: true
+  }).itemIds;
+}
+
+export function rollBattleRewards(options: RollBattleRewardOptions): BattleRewardResult {
+  const isFirstClear = options.isFirstClear ?? options.completedBattlesBeforeVictory === 0;
+  const count = Math.max(0, Math.floor(options.count ?? options.table.rolls));
+  const reward: BattleRewardResult = {
+    itemIds: [],
+    resources: {},
+    xp: 0
+  };
+  const owned = new Set(options.inventory);
+  const picked = new Set<string>();
+  const addItem = (itemId: string): boolean => {
+    if (!owned.has(itemId) && !picked.has(itemId)) {
+      picked.add(itemId);
+      reward.itemIds.push(itemId);
+      return true;
     }
+    return false;
+  };
+
+  options.table.guaranteedItemIds.forEach(addItem);
+  applyRewardBonus(reward, isFirstClear ? options.table.firstClearBonus : options.table.repeatClearReward, addItem);
+
+  options.table.resourceRewards
+    .filter((entry) => rewardEntryApplies(entry, isFirstClear))
+    .forEach((entry) => addRewardResource(reward.resources, entry.resource, entry.amount));
+  options.table.xpRewards
+    .filter((entry) => rewardEntryApplies(entry, isFirstClear))
+    .forEach((entry) => {
+      reward.xp += Math.max(0, entry.amount);
+    });
+
+  if (options.deterministic) {
+    pickDeterministicRewards(options, count, addItem);
+    return reward;
   }
-  return picked;
+
+  for (let roll = 0; roll < count; roll += 1) {
+    const candidates = options.table.weightedItemPool.filter(
+      (entry) =>
+        rewardPoolEntryApplies(entry, isFirstClear, options.mapId) &&
+        !owned.has(entry.itemId) &&
+        !picked.has(entry.itemId) &&
+        entry.weight > 0
+    );
+    const pickedEntry = pickWeightedReward(candidates, options.rng ?? Math.random);
+    if (!pickedEntry) {
+      break;
+    }
+    addItem(pickedEntry.itemId);
+  }
+
+  return reward;
 }
 
 export function grantItemRewards(save: HeroSaveData, rewardItemIds: string[]): HeroSaveData {
@@ -249,6 +320,38 @@ export function grantItemRewards(save: HeroSaveData, rewardItemIds: string[]): H
   return {
     ...save,
     inventory
+  };
+}
+
+export function grantBattleRewards(save: HeroSaveData, reward: BattleRewardResult, mapId?: string): GrantBattleRewardsResult {
+  const inventory = [...save.inventory];
+  reward.itemIds.forEach((itemId) => {
+    if (!inventory.includes(itemId)) {
+      inventory.push(itemId);
+    }
+  });
+
+  const previousLevel = save.level;
+  const nextXp = Math.max(0, save.xp + Math.max(0, reward.xp));
+  const newLevel = Math.max(previousLevel, calculateLevelFromXp(nextXp, LEVEL_XP_THRESHOLDS));
+  const levelsGained = Math.max(0, newLevel - previousLevel);
+  const clearedMapIds = mapId ? [...new Set([...(save.clearedMapIds ?? []), mapId])] : save.clearedMapIds;
+
+  return {
+    hero: {
+      ...save,
+      xp: nextXp,
+      level: newLevel,
+      skillPoints: save.skillPoints + levelsGained,
+      inventory,
+      clearedMapIds
+    },
+    levelUp: {
+      previousLevel,
+      newLevel,
+      levelsGained,
+      skillPointsGained: levelsGained
+    }
   };
 }
 
@@ -291,4 +394,66 @@ export function multiplyHeroStatMods(mods: HeroStatMods, multiplier: number): He
     }
   });
   return multiplied;
+}
+
+function pickDeterministicRewards(options: RollBattleRewardOptions, count: number, addItem: (itemId: string) => boolean): void {
+  const orderedIds = options.table.deterministicItemIds ?? options.table.weightedItemPool.map((entry) => entry.itemId);
+  if (orderedIds.length === 0 || count <= 0) {
+    return;
+  }
+  let added = 0;
+  for (let offset = 0; offset < orderedIds.length && added < count; offset += 1) {
+    const itemId = orderedIds[(options.completedBattlesBeforeVictory + offset) % orderedIds.length];
+    if (addItem(itemId)) {
+      added += 1;
+    }
+  }
+}
+
+function rewardEntryApplies(entry: { firstClearOnly?: boolean; repeatClearOnly?: boolean }, isFirstClear: boolean): boolean {
+  if (entry.firstClearOnly && !isFirstClear) {
+    return false;
+  }
+  if (entry.repeatClearOnly && isFirstClear) {
+    return false;
+  }
+  return true;
+}
+
+function rewardPoolEntryApplies(
+  entry: { firstClearOnly?: boolean; repeatClearOnly?: boolean; mapIds?: string[] },
+  isFirstClear: boolean,
+  mapId?: string
+): boolean {
+  if (!rewardEntryApplies(entry, isFirstClear)) {
+    return false;
+  }
+  return !entry.mapIds || !mapId || entry.mapIds.includes(mapId);
+}
+
+function pickWeightedReward<T extends { weight: number }>(entries: T[], rng: () => number): T | undefined {
+  const totalWeight = entries.reduce((total, entry) => total + Math.max(0, entry.weight), 0);
+  if (totalWeight <= 0) {
+    return undefined;
+  }
+  let roll = Math.max(0, Math.min(0.999999, rng())) * totalWeight;
+  for (const entry of entries) {
+    roll -= Math.max(0, entry.weight);
+    if (roll <= 0) {
+      return entry;
+    }
+  }
+  return entries.at(-1);
+}
+
+function applyRewardBonus(reward: BattleRewardResult, bonus: RewardTableDefinition["firstClearBonus"], addItem: (itemId: string) => void): void {
+  bonus?.itemIds?.forEach(addItem);
+  Object.entries(bonus?.resources ?? {}).forEach(([resource, amount]) => {
+    addRewardResource(reward.resources, resource as ResourceKey, amount ?? 0);
+  });
+  reward.xp += Math.max(0, bonus?.xp ?? 0);
+}
+
+function addRewardResource(resources: BattleRewardResult["resources"], resource: ResourceKey, amount: number): void {
+  resources[resource] = (resources[resource] ?? 0) + Math.max(0, amount);
 }

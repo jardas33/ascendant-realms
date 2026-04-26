@@ -2,6 +2,7 @@ import type { BattleMapDefinition } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
 import { BATTLE_DIFFICULTIES } from "./battlePacing";
 import { BUILDINGS } from "./buildings";
+import { CAMPAIGN_NODES } from "./campaignNodes";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
 import { ITEMS } from "./items";
@@ -26,6 +27,7 @@ interface ValidationContext {
   skillNodeIds: Set<string>;
   rewardTableIds: Set<string>;
   upgradeIds: Set<string>;
+  campaignNodeIds: Set<string>;
 }
 
 export function validateContent(): string[] {
@@ -42,32 +44,102 @@ export function validateContent(): string[] {
     skillTreeIds: idsFor(SKILL_TREES, "skill tree", errors),
     skillNodeIds: idsFor(SKILL_NODES, "skill node", errors),
     rewardTableIds: idsFor(REWARD_TABLES, "reward table", errors),
-    upgradeIds: idsFor(UPGRADES, "upgrade", errors)
+    upgradeIds: idsFor(UPGRADES, "upgrade", errors),
+    campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors)
   };
 
   validateUnits(errors, context);
   validateBuildings(errors, context);
   validateAbilities(errors, context);
   validateHeroClasses(errors, context);
-  validateItems(errors);
+  validateItems(errors, context);
   validateOrigins(errors);
   validateResources(errors);
   validateSkillNodes(errors, context);
   validateRewardTables(errors, context);
+  validateCampaignNodes(errors, context);
   validateUpgrades(errors, context);
   validateDifficulties(errors);
   MAPS.forEach((map) => validateMap(map, errors, context));
   return errors;
 }
 
-function validateItems(errors: string[]): void {
+function validateCampaignNodes(errors: string[], context: ValidationContext): void {
+  CAMPAIGN_NODES.forEach((node) => {
+    if (!["battle", "shrine", "town", "ruin", "fortress", "event"].includes(node.nodeType)) {
+      errors.push(`Campaign node ${node.id} has invalid node type ${node.nodeType}.`);
+    }
+    if (!node.name.trim() || !node.description.trim()) {
+      errors.push(`Campaign node ${node.id} needs name and description.`);
+    }
+    if (!MAPS.some((map) => map.id === node.mapId)) {
+      errors.push(`Campaign node ${node.id} references missing map ${node.mapId}.`);
+    }
+    if (!context.factionIds.has(node.enemyFactionId)) {
+      errors.push(`Campaign node ${node.id} references missing enemy faction ${node.enemyFactionId}.`);
+    }
+    if (!BATTLE_DIFFICULTIES.some((difficulty) => difficulty.id === node.difficulty)) {
+      errors.push(`Campaign node ${node.id} references missing difficulty ${node.difficulty}.`);
+    }
+    node.prerequisites.forEach((nodeId) => {
+      if (!context.campaignNodeIds.has(nodeId)) {
+        errors.push(`Campaign node ${node.id} requires missing node ${nodeId}.`);
+      }
+    });
+    node.unlocks.forEach((nodeId) => {
+      if (!context.campaignNodeIds.has(nodeId)) {
+        errors.push(`Campaign node ${node.id} unlocks missing node ${nodeId}.`);
+      }
+    });
+    node.rewards.itemIds?.forEach((itemId) => {
+      if (!context.itemIds.has(itemId)) {
+        errors.push(`Campaign node ${node.id} rewards missing item ${itemId}.`);
+      }
+    });
+    Object.entries(node.rewards.resources ?? {}).forEach(([resource, amount]) => {
+      if (!context.resourceIds.has(resource)) {
+        errors.push(`Campaign node ${node.id} rewards missing resource ${resource}.`);
+      }
+      if ((amount ?? 0) < 0) {
+        errors.push(`Campaign node ${node.id} has negative ${resource} reward.`);
+      }
+    });
+    if ((node.rewards.xp ?? 0) < 0) {
+      errors.push(`Campaign node ${node.id} has negative XP reward.`);
+    }
+  });
+  if (!CAMPAIGN_NODES.some((node) => node.prerequisites.length === 0)) {
+    errors.push("Campaign needs at least one starting node.");
+  }
+}
+
+function validateItems(errors: string[], context: ValidationContext): void {
   ITEMS.forEach((item) => {
-    if (!["weapon", "armor", "trinket"].includes(item.slot)) {
+    if (!["weapon", "armor", "trinket", "relic"].includes(item.slot)) {
       errors.push(`Item ${item.id} has invalid equipment slot ${item.slot}.`);
     }
-    if (!["common", "uncommon", "rare"].includes(item.rarity)) {
+    if (!["common", "uncommon", "rare", "epic", "legendary"].includes(item.rarity)) {
       errors.push(`Item ${item.id} has invalid rarity ${item.rarity}.`);
     }
+    if (!item.name.trim() || !item.description.trim() || !item.flavorText.trim()) {
+      errors.push(`Item ${item.id} needs name, description, and flavor text.`);
+    }
+    if (!Array.isArray(item.tags) || item.tags.length === 0) {
+      errors.push(`Item ${item.id} should include at least one tag.`);
+    }
+    item.classAffinity?.forEach((classId) => {
+      if (!context.heroClassIds.has(classId)) {
+        errors.push(`Item ${item.id} references missing hero class affinity ${classId}.`);
+      }
+    });
+    if (item.factionOrigin && !context.factionIds.has(item.factionOrigin)) {
+      errors.push(`Item ${item.id} references missing faction origin ${item.factionOrigin}.`);
+    }
+    Object.entries(item.statMods).forEach(([stat, value]) => {
+      if (value !== undefined && !Number.isFinite(value)) {
+        errors.push(`Item ${item.id} has a non-finite ${stat} modifier.`);
+      }
+    });
   });
 }
 
@@ -241,15 +313,77 @@ function validateSkillNodes(errors: string[], context: ValidationContext): void 
 
 function validateRewardTables(errors: string[], context: ValidationContext): void {
   REWARD_TABLES.forEach((table) => {
-    if (table.itemIds.length === 0) {
-      errors.push(`Reward table ${table.id} must include at least one item.`);
+    const guaranteedItemIds = table.guaranteedItemIds ?? [];
+    const weightedItemPool = table.weightedItemPool ?? [];
+    const resourceRewards = table.resourceRewards ?? [];
+    const xpRewards = table.xpRewards ?? [];
+    if (table.rolls < 0) {
+      errors.push(`Reward table ${table.id} cannot have negative rolls.`);
     }
-    table.itemIds.forEach((itemId) => {
-      if (!context.itemIds.has(itemId)) {
-        errors.push(`Reward table ${table.id} references missing item ${itemId}.`);
+    if (guaranteedItemIds.length === 0 && weightedItemPool.length === 0) {
+      errors.push(`Reward table ${table.id} must include guaranteed items or a weighted item pool.`);
+    }
+    guaranteedItemIds.forEach((itemId) => validateRewardItemReference(table.id, itemId, errors, context));
+    table.deterministicItemIds?.forEach((itemId) => validateRewardItemReference(table.id, itemId, errors, context));
+    weightedItemPool.forEach((entry) => {
+      validateRewardItemReference(table.id, entry.itemId, errors, context);
+      if (entry.weight <= 0) {
+        errors.push(`Reward table ${table.id} has non-positive weight for ${entry.itemId}.`);
+      }
+      entry.mapIds?.forEach((mapId) => {
+        if (!MAPS.some((map) => map.id === mapId)) {
+          errors.push(`Reward table ${table.id} references missing map ${mapId}.`);
+        }
+      });
+    });
+    resourceRewards.forEach((entry) => {
+      if (!context.resourceIds.has(entry.resource)) {
+        errors.push(`Reward table ${table.id} gives missing resource ${entry.resource}.`);
+      }
+      if (entry.amount < 0) {
+        errors.push(`Reward table ${table.id} has negative resource reward ${entry.resource}.`);
       }
     });
+    xpRewards.forEach((entry) => {
+      if (entry.amount < 0) {
+        errors.push(`Reward table ${table.id} has negative XP reward.`);
+      }
+    });
+    validateRewardBonus(table.id, "first-clear bonus", table.firstClearBonus, errors, context);
+    validateRewardBonus(table.id, "repeat-clear reward", table.repeatClearReward, errors, context);
   });
+}
+
+function validateRewardItemReference(
+  tableId: string,
+  itemId: string,
+  errors: string[],
+  context: ValidationContext
+): void {
+  if (!context.itemIds.has(itemId)) {
+    errors.push(`Reward table ${tableId} references missing item ${itemId}.`);
+  }
+}
+
+function validateRewardBonus(
+  tableId: string,
+  label: string,
+  bonus: { itemIds?: string[]; resources?: Partial<Record<string, number>>; xp?: number } | undefined,
+  errors: string[],
+  context: ValidationContext
+): void {
+  bonus?.itemIds?.forEach((itemId) => validateRewardItemReference(tableId, itemId, errors, context));
+  Object.entries(bonus?.resources ?? {}).forEach(([resource, amount]) => {
+    if (!context.resourceIds.has(resource)) {
+      errors.push(`Reward table ${tableId} ${label} gives missing resource ${resource}.`);
+    }
+    if ((amount ?? 0) < 0) {
+      errors.push(`Reward table ${tableId} ${label} has negative resource reward ${resource}.`);
+    }
+  });
+  if ((bonus?.xp ?? 0) < 0) {
+    errors.push(`Reward table ${tableId} ${label} has negative XP reward.`);
+  }
 }
 
 function validateUpgrades(errors: string[], context: ValidationContext): void {

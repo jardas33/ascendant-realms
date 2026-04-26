@@ -1,11 +1,13 @@
 import type {
   BattleDifficulty,
+  BattleRewardResult,
   BattleStats,
   Position,
   ResourceBag,
+  RewardLevelUpSummary,
   RewardTableDefinition
 } from "../core/GameTypes";
-import { grantItemRewards, pickBattleRewardItemIds } from "../core/HeroProgressionRules";
+import { grantBattleRewards, rollBattleRewards } from "../core/HeroProgressionRules";
 import { cloneResources } from "../core/MathUtils";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { BattleLaunchMode, ResolvedBattleLaunch } from "./BattleLaunchRequest";
@@ -44,6 +46,9 @@ export interface BattleSetupSnapshot {
 export interface BattleCompletionInput {
   outcome: BattleOutcome;
   heroSave: HeroSaveData;
+  startingHeroSave?: HeroSaveData;
+  deterministicRewards?: boolean;
+  rng?: () => number;
 }
 
 export interface BattleCompletionResult {
@@ -51,6 +56,8 @@ export interface BattleCompletionResult {
   stats: BattleStats;
   heroSave: HeroSaveData;
   rewardItemIds: string[];
+  reward: BattleRewardResult;
+  rewardLevelUp: RewardLevelUpSummary;
   shouldSaveHero: boolean;
 }
 
@@ -120,8 +127,10 @@ export class BattleRuntime {
     this.stats.timeSeconds = this.elapsedSeconds;
     return completeBattle({
       ...input,
+      startingHeroSave: this.launch.request.heroSave,
       rewardTable: this.launch.rewardTable,
-      stats: this.stats
+      stats: this.stats,
+      mapId: this.launch.map.id
     });
   }
 }
@@ -189,34 +198,62 @@ export function evaluateBattleObjectives(presence: BattleObjectivePresence): Bat
 }
 
 export function completeBattle(
-  input: BattleCompletionInput & { rewardTable: RewardTableDefinition; stats: BattleStats }
+  input: BattleCompletionInput & { rewardTable: RewardTableDefinition; stats: BattleStats; mapId?: string }
 ): BattleCompletionResult {
   const stats = { ...input.stats, outcome: input.outcome };
+  const emptyReward: BattleRewardResult = {
+    itemIds: [],
+    resources: {},
+    xp: 0
+  };
+  const emptyLevelUp: RewardLevelUpSummary = {
+    previousLevel: input.heroSave.level,
+    newLevel: input.heroSave.level,
+    levelsGained: 0,
+    skillPointsGained: 0
+  };
   if (input.outcome !== "victory") {
     return {
       outcome: input.outcome,
       stats,
       heroSave: input.heroSave,
       rewardItemIds: [],
+      reward: emptyReward,
+      rewardLevelUp: emptyLevelUp,
       shouldSaveHero: false
     };
   }
 
-  const rewardItemIds = pickBattleRewardItemIds(
-    input.rewardTable,
-    input.heroSave.completedBattles,
-    input.heroSave.inventory
-  );
+  const reward = rollBattleRewards({
+    table: input.rewardTable,
+    completedBattlesBeforeVictory: input.heroSave.completedBattles,
+    inventory: input.heroSave.inventory,
+    deterministic: input.deterministicRewards,
+    isFirstClear: input.mapId ? !input.heroSave.clearedMapIds.includes(input.mapId) : undefined,
+    mapId: input.mapId,
+    rng: input.rng
+  });
+  stats.xpGained += reward.xp;
   const heroWithBattleCount = {
     ...input.heroSave,
     completedBattles: input.heroSave.completedBattles + 1
+  };
+  const granted = grantBattleRewards(heroWithBattleCount, reward, input.mapId);
+  const baselineHero = input.startingHeroSave ?? input.heroSave;
+  const levelUp: RewardLevelUpSummary = {
+    previousLevel: baselineHero.level,
+    newLevel: granted.hero.level,
+    levelsGained: Math.max(0, granted.hero.level - baselineHero.level),
+    skillPointsGained: Math.max(0, granted.hero.skillPoints - baselineHero.skillPoints)
   };
 
   return {
     outcome: "victory",
     stats,
-    heroSave: grantItemRewards(heroWithBattleCount, rewardItemIds),
-    rewardItemIds,
+    heroSave: granted.hero,
+    rewardItemIds: reward.itemIds,
+    reward,
+    rewardLevelUp: levelUp,
     shouldSaveHero: true
   };
 }

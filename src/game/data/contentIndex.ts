@@ -2,6 +2,7 @@ import type {
   AbilityDefinition,
   BattleMapDefinition,
   BuildingDefinition,
+  CampaignNodeDefinition,
   FactionDefinition,
   HeroClassDefinition,
   ItemDefinition,
@@ -13,6 +14,7 @@ import type {
 } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
 import { BUILDINGS } from "./buildings";
+import { CAMPAIGN_NODES } from "./campaignNodes";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
 import { ITEMS } from "./items";
@@ -33,6 +35,7 @@ export const ABILITY_BY_ID: Record<string, AbilityDefinition> = toIndex(ABILITIE
 export const HERO_CLASS_BY_ID: Record<string, HeroClassDefinition> = toIndex(HERO_CLASSES);
 export const ORIGIN_BY_ID: Record<string, OriginDefinition> = toIndex(ORIGINS);
 export const MAP_BY_ID: Record<string, BattleMapDefinition> = toIndex(MAPS);
+export const CAMPAIGN_NODE_BY_ID: Record<string, CampaignNodeDefinition> = toIndex(CAMPAIGN_NODES);
 export const FACTION_BY_ID: Record<string, FactionDefinition> = toIndex(FACTIONS);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
 export const SKILL_NODE_BY_ID: Record<string, SkillNodeDefinition> = toIndex(SKILL_NODES);
@@ -91,6 +94,14 @@ export function requireRewardTable(id: string): RewardTableDefinition {
   const definition = REWARD_TABLE_BY_ID[id];
   if (!definition) {
     throw new Error(`Unknown reward table id: ${id}`);
+  }
+  return definition;
+}
+
+export function requireCampaignNode(id: string): CampaignNodeDefinition {
+  const definition = CAMPAIGN_NODE_BY_ID[id];
+  if (!definition) {
+    throw new Error(`Unknown campaign node id: ${id}`);
   }
   return definition;
 }

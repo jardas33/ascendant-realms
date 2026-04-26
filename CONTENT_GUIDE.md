@@ -73,20 +73,32 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 1. Open `src/game/data/items.ts`.
 2. Copy an existing item.
 3. Give it a unique `id`.
-4. Choose a slot: `weapon`, `armor`, or `trinket`.
-5. Choose a rarity: `common`, `uncommon`, or `rare`.
-6. Add passive bonuses in `statMods`.
-7. Add the item ID to a reward table in `src/game/data/rewards.ts`.
-8. Run `npm run test`.
+4. Choose a slot: `weapon`, `armor`, `trinket`, or future `relic`.
+5. Choose a rarity: `common`, `uncommon`, `rare`, `epic`, or `legendary`.
+6. Write `description`, `flavorText`, and `tags`.
+7. Add passive bonuses in `statMods`. Supported hero stats are HP, mana, damage, range, attack cooldown, speed, armor, Might, Command, Arcana, and Faith.
+8. Optional fields:
+   - `classAffinity`: hero class IDs that thematically fit the item.
+   - `factionOrigin`: faction ID for where the item came from.
+   - `iconAssetKey`: future item icon asset key.
+9. Add the item ID to a reward table in `src/game/data/rewards.ts`.
+10. Run `npm run test`.
 
 ## Add A New Reward Table
 
 1. Open `src/game/data/rewards.ts`.
 2. Copy the existing reward table.
 3. Give it a unique `id`.
-4. Add item IDs to `itemIds`.
-5. Open `src/game/data/maps.ts` and set the map scenario's `rewardTableId`.
-6. Run `npm run test`.
+4. Add fixed items to `guaranteedItemIds` if every victory should grant them.
+5. Add weighted drops to `weightedItemPool`. Each entry needs an `itemId` and positive `weight`.
+6. Use `mapIds` when a drop should only appear on specific maps.
+7. Use `firstClearOnly` or `repeatClearOnly` for table entries that should only appear before or after the first win on that map.
+8. Set `rolls` to the number of weighted item attempts per victory.
+9. Add `resourceRewards` and `xpRewards` for normal victory payouts.
+10. Add `firstClearBonus` and `repeatClearReward` for map-clear pacing.
+11. Keep `deterministicItemIds` when tests or scripted flows need predictable item selection.
+12. Open `src/game/data/maps.ts` and set the map scenario's `rewardTableId`.
+13. Run `npm run test`.
 
 ## Add A New Skirmish Map
 
@@ -100,6 +112,20 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 8. Fill the `scenario` block with starting resources, hero spawn, player/enemy buildings, player/enemy unit spawns, objectives, enemy AI config, and reward table.
 9. Add a reward table in `rewards.ts` and point the map's `scenario.rewardTableId` at it.
 10. Run `npm run test` and `npm run build`. The setup screen automatically lists maps from `MAPS`.
+
+## Add A New Campaign Node
+
+1. Open `src/game/data/campaignNodes.ts`.
+2. Copy an existing node entry.
+3. Give it a unique `id`, display `name`, and `description`.
+4. Choose `nodeType`: `battle`, `shrine`, `town`, `ruin`, `fortress`, or `event`.
+5. Set `difficulty`, `mapId`, and `enemyFactionId`.
+6. Add prerequisite node IDs to `prerequisites`.
+7. Add future node IDs to `unlocks`.
+8. Add node rewards with optional `xp`, `itemIds`, and `resources`.
+9. Set `x` and `y` as percentages for the campaign map UI position.
+10. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes can be resolved directly from the campaign map for now.
+11. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, reward item IDs, and resource IDs.
 
 ## Add A New Faction
 
@@ -143,13 +169,6 @@ Important UI-kit rules:
 - Dividers should be thin and quiet.
 - Do not use one big screenshot as UI art.
 - If a UI asset looks stretched, ask Codex to tune the CSS `border-image-slice` value for that asset.
-
-## Add A New Map Node
-
-1. Open `src/game/data/campaignNodes.ts`.
-2. Copy the placeholder node.
-3. Give it a unique `id`.
-4. Add rewards, faction reputation changes, and battle map links when the campaign system exists.
 
 ## Edit A Skirmish Map
 

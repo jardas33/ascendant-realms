@@ -93,13 +93,19 @@ describe("BattleRuntime", () => {
         outcome: "victory"
       },
       heroSave,
-      rewardTable
+      rewardTable,
+      mapId: testMap.id,
+      deterministicRewards: true
     });
 
     expect(result.shouldSaveHero).toBe(true);
     expect(result.rewardItemIds).toEqual(["weathered_command_sword"]);
+    expect(result.reward.xp).toBe(80);
     expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles + 1);
+    expect(result.heroSave.clearedMapIds).toContain(testMap.id);
     expect(result.heroSave.inventory).toContain("weathered_command_sword");
+    expect(result.heroSave.xp).toBe(80);
+    expect(result.stats.xpGained).toBe(160);
     expect(result.stats.outcome).toBe("victory");
   });
 
@@ -125,6 +131,7 @@ describe("BattleRuntime", () => {
 
     expect(result.shouldSaveHero).toBe(false);
     expect(result.rewardItemIds).toEqual([]);
+    expect(result.reward).toEqual({ itemIds: [], resources: {}, xp: 0 });
     expect(result.heroSave).toBe(heroSave);
   });
 
