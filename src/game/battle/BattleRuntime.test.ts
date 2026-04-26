@@ -42,7 +42,7 @@ describe("BattleRuntime", () => {
 
     expect(runtime.resources.player).toEqual(testMap.scenario.startingResources.player);
     runtime.resources.player.crowns = 9999;
-    expect(testMap.scenario.startingResources.player.crowns).toBe(360);
+    expect(testMap.scenario.startingResources.player.crowns).toBe(380);
   });
 
   it("keeps objective resolution compatible with current skirmish rules", () => {
@@ -110,12 +110,12 @@ describe("BattleRuntime", () => {
 
     expect(result.shouldSaveHero).toBe(true);
     expect(result.rewardItemIds).toEqual(["weathered_command_sword"]);
-    expect(result.reward.xp).toBe(80);
+    expect(result.reward.xp).toBe(75);
     expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles + 1);
     expect(result.heroSave.clearedMapIds).toContain(testMap.id);
     expect(result.heroSave.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
-    expect(result.heroSave.xp).toBe(80);
-    expect(result.stats.xpGained).toBe(160);
+    expect(result.heroSave.xp).toBe(75);
+    expect(result.stats.xpGained).toBe(155);
     expect(result.stats.outcome).toBe("victory");
   });
 

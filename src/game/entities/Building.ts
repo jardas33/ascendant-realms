@@ -61,13 +61,18 @@ export class Building extends BaseEntity {
     this.constructionBarWidth = Math.max(58, definition.size.width * 0.95);
     this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true);
     const layout = this.addBattleView(scene, definition, team);
+    const selectionRadius = Math.max(this.radius + 7, Math.max(definition.size.width, definition.size.height) * 0.64);
     this.configureCommonViewLayout({
       healthBarY: layout.visualTop - 14,
       healthBarWidth: Math.max(64, definition.size.width * 1.08),
       healthBarHeight: 7,
       labelY: layout.visualBottom + 8,
-      selectionRadius: Math.max(this.radius + 7, Math.max(definition.size.width, definition.size.height) * 0.64)
+      selectionRadius,
+      selectionWidth: Math.max(definition.size.width * 1.16, selectionRadius * 2.05),
+      selectionHeight: Math.max(18, definition.size.height * 0.38),
+      selectionY: layout.visualBottom - 2
     });
+    this.setSelectionRingLayer(1);
     this.addConstructionProgressView(scene, layout.visualBottom + 23);
     this.applyInitialConstructionHealth();
     this.updateConstructionVisuals();

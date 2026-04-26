@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 16:03 -04:00
+Last updated: 2026-04-26 19:34 -04:00
 
 ## Current Project Identity
 
@@ -44,11 +44,12 @@ Notes:
 
 ## Latest Verified Status
 
-Latest verification from the audio/settings/accessibility pass:
+Latest verification from the battle selection indicator polish:
 
-- `npm test`: passed, 23 test files, 111 tests.
+- `npm test`: passed, 25 test files, 117 tests.
 - `npm run build`: passed.
 - `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests.
+- Playwright screenshot check: selected units in Border Village now use flat ground-footprint ellipses instead of upright circles; screenshot saved at `test-results/ui-audit/selection-rings-after.png`.
 
 Build warning:
 
@@ -57,6 +58,7 @@ Build warning:
 Tool note:
 
 - A plain `npm run test:e2e` command once hit a 5-minute shell-tool timeout without returning output. The suite was then rerun with a longer timeout and passed.
+- Browser Use was requested during recent UI/playtest turns, but the required Node REPL bridge was not exposed by tool discovery in this session. Playwright against `http://127.0.0.1:5173/` was used for screenshot and pointer-click verification instead.
 
 ## Current Scenes
 
@@ -492,6 +494,15 @@ Placement validates:
 - overlaps with structures
 - overlaps with capture sites
 
+Recent building-command feedback fix:
+
+- Build buttons now carry the source building ID through the HUD callback path.
+- Clicking a build command starts placement with the source building as the anchor.
+- The placement ghost immediately appears near the source building on a valid nearby site when one is found, instead of starting off-screen at `(0, 0)`.
+- The status line immediately shows `Placing <building> - click a highlighted site or choose another location.`
+- Pointer-hovering the battlefield still updates valid/invalid placement reasons from `BuildingPlacementRules`.
+- E2E now verifies Build Barracks creates a visible placement ghost near the Command Hall before cancellation.
+
 Training lives in `src/game/systems/TrainingSystem.ts`.
 
 Training behavior:
@@ -779,6 +790,69 @@ Behavior intentionally unchanged:
 - Defeat does not grant rewards.
 - Retry, campaign return, skirmish return, inventory, and main menu actions still work.
 
+## Current CampaignMapScene Helper Architecture
+
+`CampaignMapScene` has been reduced and now delegates view-model creation and panel rendering to helpers in `src/game/campaign/`.
+
+Current campaign helper files:
+
+- `CampaignChoicePanel.ts`
+- `CampaignMapViewModel.ts`
+- `CampaignMapViewModel.test.ts`
+- `CampaignNavigation.ts`
+- `CampaignNodePanel.ts`
+- `CampaignPresentationTypes.ts`
+- `CampaignResourcePanel.ts`
+- `CampaignTownServicesPanel.ts`
+
+`CampaignMapScene` still owns:
+
+- Phaser scene lifecycle
+- DOM root binding
+- click routing
+- selected node state
+- applying choices/services through campaign rules
+- save calls
+- navigation to battle, inventory, and main menu
+
+Behavior intentionally unchanged:
+
+- Marcher Camp services and one-time purchases still work.
+- Event choices still apply costs, rewards, reputation, modifiers, and completion state.
+- Campaign battle launch still uses the shared `BattleLaunchRequest` path.
+- Campaign bank, reputation, active modifiers, and selected node details still render through the same DOM surface.
+
+## Current HeroProgressionScene Helper Architecture
+
+`HeroProgressionScene` has been reduced and now delegates inventory, equipment, skill tree, comparison, and stat presentation to helpers in `src/game/progression/`.
+
+Current progression helper files:
+
+- `EquipmentPanel.ts`
+- `HeroProgressionViewModel.ts`
+- `HeroStatsPanel.ts`
+- `InventoryPanel.ts`
+- `ItemComparison.ts`
+- `ItemComparison.test.ts`
+- `SkillTreePanel.ts`
+
+`HeroProgressionScene` still owns:
+
+- Phaser scene lifecycle
+- DOM root binding
+- click routing
+- equip/unequip actions
+- skill allocation actions
+- save persistence after progression changes
+- navigation back to campaign/main menu
+
+Behavior intentionally unchanged:
+
+- Inventory still displays item instances.
+- Equipment still references item instance IDs.
+- Skill point spending persists.
+- Item stat comparison formatting is covered by pure tests.
+
 ## Current BattleScene Helper Architecture
 
 `BattleScene` remains the live Phaser coordinator, but helper modules live in `src/game/battle/`.
@@ -826,11 +900,19 @@ Next safe refactor target here is system construction/wiring, which is still bul
 
 UI scale is handled through `--ui-scale` on `:root`; reduced-motion mode disables transitions/animations through a root dataset flag.
 
+Recent battle HUD polish:
+
+- Battle resource chips, hero card, selected-entity panel, minimap frame, status chip, and hint chip were visually lightened and tightened.
+- Hero-selected state now uses a compact command panel for Damage, Range, Armor, and abilities; HP, mana, XP, and skill points remain in the persistent hero card.
+- Building command buttons were simplified to clearer command rows.
+- Mobile/tablet responsive rules were updated so hero-selected and building-selected panels remain inside the viewport.
+- Screenshots from before/after battle HUD checks live under `test-results/ui-audit/`.
+
 ## Current Tests
 
 Latest verified suite status:
 
-- `npm test`: passed, 23 test files, 111 tests.
+- `npm test`: passed, 25 test files, 117 tests.
 - `npm run build`: passed.
 - `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests.
 
@@ -839,6 +921,7 @@ Current pure/unit test files:
 - `src/game/ai/EnemyAIController.test.ts`
 - `src/game/battle/BattleLaunchRequest.test.ts`
 - `src/game/battle/BattleRuntime.test.ts`
+- `src/game/campaign/CampaignMapViewModel.test.ts`
 - `src/game/core/CampaignRules.test.ts`
 - `src/game/core/FirstExperienceGuidance.test.ts`
 - `src/game/core/HeroProgressionRules.test.ts`
@@ -848,6 +931,7 @@ Current pure/unit test files:
 - `src/game/data/battlePacing.test.ts`
 - `src/game/data/campaignModifiers.test.ts`
 - `src/game/data/contentValidation.test.ts`
+- `src/game/progression/ItemComparison.test.ts`
 - `src/game/results/ResultsViewModel.test.ts`
 - `src/game/systems/AudioManager.test.ts`
 - `src/game/systems/BuildingPlacementRules.test.ts`
@@ -884,6 +968,7 @@ Browser-level tests currently verify:
 - minimap click handling
 - fog toggle
 - building placement cancellation feedback
+- Build Barracks creates a visible placement ghost near the Command Hall before cancellation
 - first-battle RTS loop with capture, Barracks construction, Militia training, rally point, and accelerated result
 - live BattleScene victory/defeat objective resolution into Results
 - responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports
@@ -913,6 +998,10 @@ Known current issues:
 - Full battle win/loss through normal human input is still manual; automated tests cover accelerated and live objective-resolution paths.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
 
+Recently fixed:
+
+- User-reported building commands feeling nonresponsive. The build click path worked internally, but the placement ghost started off-screen and the status line could appear unchanged until pointer movement. Build commands now immediately show a nearby placement ghost and clear status instruction.
+
 ## Current Known Limitations
 
 - Campaign is still a skeleton, not a full strategic layer.
@@ -937,20 +1026,23 @@ Current rough line counts:
 
 - `tools/manual-asset-pipeline/assetRegistry.ts`: 1343 lines. Risk: large asset metadata file, easy conflict point.
 - `src/game/data/contentValidation.ts`: 939 lines. Risk: validation logic keeps growing with each data system.
-- `src/game/scenes/BattleScene.ts`: 903 lines. Risk: still coordinates live scene input, systems, fog overlay, audio/settings, and entity arrays.
+- `src/game/scenes/BattleScene.ts`: 904 lines. Risk: still coordinates live scene input, systems, fog overlay, audio/settings, and entity arrays.
 - `src/game/core/GameTypes.ts`: 561 lines. Risk: central type file is accumulating every domain.
-- `src/game/scenes/CampaignMapScene.ts`: 496 lines. Risk: campaign UI, choice application, save calls, and node rendering are coupled.
 - `src/game/core/HeroProgressionRules.ts`: 484 lines. Risk: skills, equipment, rewards, XP, duplicate conversion, and stat math share one rules module.
 - `src/game/core/SaveSystem.ts`: 468 lines. Risk: permissive migration and normalization must keep old localStorage saves safe.
-- `src/game/scenes/HeroProgressionScene.ts`: 447 lines. Risk: inventory/equipment/skill UI in one DOM scene.
 - `src/game/core/CampaignRules.ts`: 404 lines. Risk: node completion, choice costs/rewards, town services, modifiers, and reward claims converge here.
-- `src/game/ui/HUD.ts`: 366 lines. Risk: battle panel, selected entity UI, training, upgrades, alerts, and minimap container are concentrated.
+- `src/game/ui/HUD.ts`: 376 lines. Risk: battle panel, selected entity UI, training, upgrades, alerts, and minimap container are concentrated.
+- `src/game/scenes/CampaignMapScene.ts`: 267 lines. Risk reduced by helper extraction; still owns save calls and navigation.
+- `src/game/scenes/HeroProgressionScene.ts`: 268 lines. Risk reduced by helper extraction; still owns equip/skill actions and persistence.
 
 Recently improved:
 
 - `src/game/scenes/ResultsScene.ts` is now about 162 lines after helper extraction.
+- `src/game/scenes/CampaignMapScene.ts` is now about 267 lines after campaign helper extraction.
+- `src/game/scenes/HeroProgressionScene.ts` is now about 268 lines after progression helper extraction.
 - `src/game/data/maps.ts` is now a barrel export; authored maps are split into per-map modules.
 - CSS is split by UI domain with `ui.css` as the import hub.
+- Battle HUD visual weight was reduced, and building placement now gives immediate ghost/status feedback.
 
 ## Most Fragile Systems
 
@@ -970,7 +1062,7 @@ Recently improved:
 Current HEAD at handoff update time:
 
 ```text
-e39d6cc44e81e845b15f0b54b44ea7c53cb5239f
+ee4e29de30ca1ea969e7deabaaff08d53b24c26f
 ```
 
 Current branch tracking line:
@@ -984,38 +1076,34 @@ Current worktree is dirty with uncommitted changes. Do not reset, checkout, dele
 Current modified files:
 
 ```text
-CONTENT_GUIDE.md
+BALANCE.md
+DEVELOPMENT_CHECKPOINT.md
 LLM_GAME_HANDOFF.md
-README.md
-playwright.config.ts
-src/game/battle/BattleSceneSnapshots.ts
-src/game/config.ts
-src/game/core/SaveSystem.test.ts
-src/game/core/SaveSystem.ts
-src/game/core/SceneKeys.ts
-src/game/data/maps.ts
-src/game/save/SaveTypes.ts
+src/game/battle/BattleRuntime.test.ts
+src/game/core/CampaignRules.test.ts
+src/game/core/Constants.ts
+src/game/data/battlePacing.ts
+src/game/data/campaignNodes.ts
+src/game/data/maps/ashenOutpost.ts
+src/game/data/rewards.ts
 src/game/scenes/BattleScene.ts
-src/game/scenes/MainMenuScene.ts
-src/game/scenes/ResultsScene.ts
-src/game/styles/base.css
-src/game/styles/ui.css
-src/game/ui/FloatingText.ts
-src/game/ui/MinimapView.ts
+src/game/scenes/CampaignMapScene.ts
+src/game/scenes/HeroProgressionScene.ts
+src/game/styles/battle-feedback.css
+src/game/styles/battle-hud.css
+src/game/styles/minimap.css
+src/game/styles/responsive.css
+src/game/systems/BuildingSystem.ts
+src/game/ui/HUD.ts
 tests/e2e/deep-flow.spec.ts
-tests/e2e/smoke.spec.ts
 ```
 
 Current untracked paths:
 
 ```text
-src/game/core/Settings.ts
-src/game/data/maps/
-src/game/results/
-src/game/scenes/SettingsScene.ts
-src/game/styles/settings.css
-src/game/systems/AudioManager.test.ts
-src/game/systems/AudioManager.ts
+QA_RUN.md
+src/game/campaign/
+src/game/progression/
 ```
 
 Before starting another large feature, make a clean checkpoint commit if the user agrees.
@@ -1093,10 +1181,10 @@ Run this before starting another large feature pass and after any checkpoint com
 ## Recommended Next 10 Development Priorities
 
 1. Checkpoint the current dirty worktree after confirming the user wants a commit.
-2. Run one full manual browser QA pass through the checklist above, especially audio/settings persistence and human-paced battle play.
-3. Split `BattleScene` system construction/wiring into a helper; it is now the largest live-scene risk.
-4. Split `CampaignMapScene` into view helpers and pure presenter functions.
-5. Split `HeroProgressionScene` into inventory/equipment/skills helpers.
+2. Run a targeted manual browser QA pass on building commands, placement, train/cancel/refund, rally, and mobile command-panel usability.
+3. Run one fuller human-paced campaign QA pass through the checklist above, especially audible audio behavior and normal-play victory/defeat.
+4. Split `BattleScene` system construction/wiring into a helper; it is still the largest live-scene risk.
+5. Improve the building command panel on mobile so build/train/research actions feel like a command tray rather than a scrolling form.
 6. Split `SaveSystem` migration/normalization into focused modules before adding more persistent systems.
 7. Add randomized item affixes only after instance-based inventory has more browser QA coverage.
 8. Improve formation/pathing behavior and dynamic blockers before building larger maps.

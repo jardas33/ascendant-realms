@@ -3,10 +3,10 @@ import type { ResourceBag } from "./GameTypes";
 export const SAVE_KEY = "ascendant-realms-save-v1";
 
 export const STARTING_PLAYER_RESOURCES: ResourceBag = {
-  crowns: 360,
-  stone: 240,
-  iron: 130,
-  aether: 70
+  crowns: 380,
+  stone: 255,
+  iron: 140,
+  aether: 75
 };
 
 export const STARTING_ENEMY_RESOURCES: ResourceBag = {

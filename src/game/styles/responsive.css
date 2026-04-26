@@ -49,20 +49,25 @@
   }
 
   .resource-pill {
-    min-width: 92px;
+    min-width: 88px;
     font-size: 12px;
   }
 
   .resource-row {
-    max-width: calc(100% - 82px);
+    max-width: calc(100% - 78px);
   }
 
   .side-panel {
     right: 8px;
     left: 8px;
-    bottom: 118px;
+    bottom: 110px;
     width: auto;
-    max-height: 240px;
+    max-height: 236px;
+  }
+
+  .side-panel.hero-selected {
+    width: auto;
+    max-height: 190px;
   }
 
   .hero-panel {
@@ -72,18 +77,18 @@
 
   .minimap-shell {
     right: 8px;
-    top: 214px;
+    top: 202px;
     width: 112px;
     height: 78px;
     padding: 6px;
   }
 
   .status-line {
-    top: 116px;
+    top: 106px;
   }
 
   .hint-line {
-    top: 166px;
+    top: 152px;
   }
 
   .campaign-map-grid {
@@ -131,8 +136,8 @@
 
   .hero-panel {
     grid-template-columns: 52px minmax(0, 1fr);
-    gap: 9px;
-    padding: 10px 11px 12px;
+    gap: 8px;
+    padding: 9px 10px 11px;
   }
 
   .portrait {
@@ -146,17 +151,36 @@
   }
 
   .side-panel {
-    bottom: 104px;
-    max-height: min(220px, calc(100vh - 300px));
+    bottom: 100px;
+    max-height: min(232px, calc(100vh - 288px));
+  }
+
+  .side-panel.hero-selected {
+    max-height: min(180px, calc(100vh - 288px));
   }
 
   .resource-pill {
-    min-width: 82px;
-    padding: 6px 8px;
+    min-width: 78px;
+    padding: 5px 7px;
   }
 
   .minimap-shell {
     width: 104px;
     height: 72px;
+  }
+
+  .status-line,
+  .hint-line {
+    max-width: calc(100vw - 160px);
+  }
+}
+
+@media (max-width: 520px) and (min-height: 760px) {
+  .side-panel {
+    max-height: 268px;
+  }
+
+  .side-panel.hero-selected {
+    max-height: 202px;
   }
 }

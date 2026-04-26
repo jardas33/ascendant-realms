@@ -17,7 +17,7 @@ import { renderMinimap, type MinimapSnapshot } from "./MinimapView";
 import { selectionTitle } from "./SelectionPanel";
 
 interface HUDCallbacks {
-  onBuild: (buildingId: string) => void;
+  onBuild: (buildingId: string, sourceBuildingId: string) => void;
   onTrain: (unitId: string, sourceBuildingId: string) => void;
   onCancelTrain: (sourceBuildingId: string, queueIndex: number) => void;
   onUpgrade: (upgradeId: string, sourceBuildingId: string) => void;
@@ -71,7 +71,7 @@ export class HUD {
       const action = button.dataset.action;
       const id = button.dataset.id ?? "";
       if (action === "build") {
-        callbacks.onBuild(id);
+        callbacks.onBuild(id, button.dataset.sourceId ?? "");
       }
       if (action === "train") {
         callbacks.onTrain(id, button.dataset.sourceId ?? "");
@@ -104,6 +104,7 @@ export class HUD {
       .slice(0, 3);
     const portraitId = heroPortraitAssetId(snapshot.hero.classId);
     const hasPortrait = AssetLoader.hasAsset(portraitId);
+    const sidePanelClass = selectedOne instanceof Hero ? "side-panel hero-selected" : "side-panel";
     const markup = `
       <div class="top-bar" data-testid="battle-hud">
         <div class="resource-row" data-testid="battle-resources">${this.renderResources(snapshot.resources)}</div>
@@ -119,7 +120,7 @@ export class HUD {
           <small>XP ${snapshot.hero.xp} - Skill ${snapshot.hero.skillPoints}</small>
         </div>
       </div>
-      <div class="side-panel">
+      <div class="${sidePanelClass}">
         <div class="panel-title">${escapeHtml(selectionTitle(selected))}</div>
         ${this.renderSelection(selectedOne, selected)}
         ${this.renderActions(selectedOne, snapshot)}
@@ -169,6 +170,16 @@ export class HUD {
         }`;
       }
       return `<p class="quiet">Select your hero, troops, or buildings.</p>`;
+    }
+
+    if (selectedOne instanceof Hero) {
+      return `
+        <div class="hero-command-summary">
+          <span><strong>Damage</strong>${Math.round(selectedOne.damage)}</span>
+          <span><strong>Range</strong>${selectedOne.range}</span>
+          <span><strong>Armor</strong>${selectedOne.armor}</span>
+        </div>
+      `;
     }
 
     if (selectedOne instanceof Unit) {
@@ -228,7 +239,7 @@ export class HUD {
           : canAfford(snapshot.resources, definition.cost)
             ? undefined
             : "Insufficient resources";
-        return `<button class="hud-button ${lockReason ? "locked" : ""}" data-action="build" data-id="${definition.id}" ${lockReason ? "disabled" : ""}>Build ${escapeHtml(definition.name)}<small>${escapeHtml(lockReason ?? formatCost(definition.cost))}</small></button>`;
+        return `<button class="hud-button ${lockReason ? "locked" : ""}" data-action="build" data-id="${definition.id}" data-source-id="${selectedOne.id}" ${lockReason ? "disabled" : ""}>Build ${escapeHtml(definition.name)}<small>${escapeHtml(lockReason ?? formatCost(definition.cost))}</small></button>`;
       })
       .join("");
 

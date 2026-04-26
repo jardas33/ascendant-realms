@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import type { BattleMapDefinition, ResourceBag } from "../core/GameTypes";
+import type { BattleMapDefinition, Position, ResourceBag } from "../core/GameTypes";
 import { payCost } from "../core/MathUtils";
 import { requireBuilding } from "../data/contentIndex";
 import { Building } from "../entities/Building";
@@ -25,7 +25,7 @@ export class BuildingSystem {
 
   constructor(private readonly options: BuildingSystemOptions) {}
 
-  startPlacement(buildingId: string): void {
+  startPlacement(buildingId: string, preview?: { anchor?: Position; resources?: ResourceBag }): void {
     const definition = requireBuilding(buildingId);
     this.pendingBuildingId = buildingId;
     this.ghost?.destroy();
@@ -44,6 +44,11 @@ export class BuildingSystem {
       .setOrigin(0.5)
       .setDepth(31);
     this.placementMessage = "Choose a buildable site near your base.";
+
+    if (preview?.anchor && preview.resources) {
+      const point = this.findInitialPreviewPoint(preview.anchor, buildingId, preview.resources);
+      this.updateGhost(point.x, point.y, preview.resources);
+    }
   }
 
   cancelPlacement(): void {
@@ -125,5 +130,37 @@ export class BuildingSystem {
       captureSites: this.options.getCaptureSites(),
       team: "player"
     });
+  }
+
+  private findInitialPreviewPoint(anchor: Position, buildingId: string, resources: ResourceBag): Position {
+    const definition = requireBuilding(buildingId);
+    const baseDistance = Math.max(definition.size.width, definition.size.height) + 64;
+    const directions = [
+      { x: 1, y: 0 },
+      { x: 0, y: 1 },
+      { x: -1, y: 0 },
+      { x: 0, y: -1 },
+      { x: 0.72, y: 0.72 },
+      { x: -0.72, y: 0.72 },
+      { x: 0.72, y: -0.72 },
+      { x: -0.72, y: -0.72 }
+    ];
+
+    for (const distance of [baseDistance, baseDistance + 40, baseDistance + 80]) {
+      for (const direction of directions) {
+        const point = {
+          x: anchor.x + direction.x * distance,
+          y: anchor.y + direction.y * distance
+        };
+        if (this.getPlacementResult(point.x, point.y, buildingId, resources).ok) {
+          return point;
+        }
+      }
+    }
+
+    return {
+      x: anchor.x + baseDistance,
+      y: anchor.y
+    };
   }
 }

@@ -29,7 +29,7 @@ export abstract class BaseEntity {
   // TODO: Split saveable simulation state from Phaser view objects before replay, persistent retinues, or multiplayer research.
   view?: Phaser.GameObjects.Container;
 
-  protected selectionRing?: Phaser.GameObjects.Arc;
+  protected selectionRing?: Phaser.GameObjects.Ellipse;
   protected healthBack?: Phaser.GameObjects.Rectangle;
   protected healthFill?: Phaser.GameObjects.Rectangle;
   protected label?: Phaser.GameObjects.Text;
@@ -59,7 +59,12 @@ export abstract class BaseEntity {
 
   protected createCommonView(scene: Phaser.Scene, label: string, healthColor: number, showHealth = true): void {
     this.view = scene.add.container(this.position.x, this.position.y);
-    this.selectionRing = scene.add.circle(0, 0, this.radius + 7).setStrokeStyle(2, 0xf5f3d1, 0.95);
+    const selectionRadius = this.radius + 7;
+    // Entity-specific sprite layout decides the final footprint position; keep selected state as a ground marker.
+    this.selectionRing = scene.add
+      .ellipse(0, 0, selectionRadius * 2.1, Math.max(8, selectionRadius * 0.62), 0xf5f3d1, 0.08)
+      .setStrokeStyle(2, 0xf5f3d1, 0.86)
+      .setSmoothness(48);
     this.selectionRing.setVisible(false);
     this.view.add(this.selectionRing);
 
@@ -100,9 +105,23 @@ export abstract class BaseEntity {
     healthBarHeight?: number;
     labelY?: number;
     selectionRadius?: number;
+    selectionWidth?: number;
+    selectionHeight?: number;
+    selectionY?: number;
   }): void {
-    if (options.selectionRadius !== undefined) {
-      this.selectionRing?.setRadius(options.selectionRadius);
+    if (this.selectionRing) {
+      const selectionWidth =
+        options.selectionWidth ??
+        (options.selectionRadius !== undefined ? options.selectionRadius * 2.1 : undefined);
+      const selectionHeight =
+        options.selectionHeight ??
+        (options.selectionRadius !== undefined ? Math.max(8, options.selectionRadius * 0.62) : undefined);
+      if (selectionWidth !== undefined && selectionHeight !== undefined) {
+        this.selectionRing.setSize(selectionWidth, selectionHeight);
+      }
+      if (options.selectionY !== undefined) {
+        this.selectionRing.setY(options.selectionY);
+      }
     }
 
     if (this.healthBack && this.healthFill) {
@@ -119,6 +138,13 @@ export abstract class BaseEntity {
     if (options.labelY !== undefined) {
       this.label?.setY(options.labelY);
     }
+  }
+
+  protected setSelectionRingLayer(index: number): void {
+    if (!this.view || !this.selectionRing) {
+      return;
+    }
+    this.view.moveTo(this.selectionRing, index);
   }
 
   setPosition(x: number, y: number): void {

@@ -378,7 +378,7 @@ async function startSyntheticResults(page: Page, outcome: "victory" | "defeat"):
               itemIds: [],
               itemInstances: [],
               resources: { crowns: 50 },
-              xp: 35,
+              xp: 30,
               duplicateConversions: []
             },
             nodeLevelUp: { previousLevel: 2, newLevel: 2, levelsGained: 0, skillPointsGained: 0 },
@@ -502,7 +502,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-status")).toContainText("Demand Tribute chosen");
     let save = await readSave(page);
     expect(save.campaign.completedNodeIds).toContain("refugee_caravan");
-    expect(save.campaign.resources.crowns).toBe(350);
+    expect(save.campaign.resources.crowns).toBe(340);
     expect(save.campaign.activeModifierIds).toContain("angered_raiders");
     expect(save.hero.factionReputation.common_folk).toBe(-8);
 
@@ -629,6 +629,19 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Build");
     await page.locator("button[data-action='build'][data-id='barracks']").click();
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const commandHall = scene?.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      const ghost = scene?.buildingSystem?.ghost;
+      return (
+        scene?.buildingSystem?.pendingBuildingId === "barracks" &&
+        ghost?.visible &&
+        commandHall &&
+        Math.hypot(ghost.x - commandHall.position.x, ghost.y - commandHall.position.y) > 40
+      );
+    });
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
   });

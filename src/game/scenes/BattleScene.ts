@@ -371,11 +371,12 @@ export class BattleScene extends Phaser.Scene {
     this.cameraSystem = new CameraSystem(this, this.activeMap);
 
     const hud = new HUD({
-      onBuild: (buildingId) => {
-        this.buildingSystem.startPlacement(buildingId);
+      onBuild: (buildingId, sourceBuildingId) => {
+        const source = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        this.buildingSystem.startPlacement(buildingId, { anchor: source?.position, resources: this.resources.player });
         AudioManager.play("ui_click");
         const definition = BUILDING_BY_ID[buildingId];
-        this.showMessage(`Placing ${definition?.name ?? "building"}`);
+        this.showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`);
       },
       onTrain: (unitId, sourceBuildingId) => {
         const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");

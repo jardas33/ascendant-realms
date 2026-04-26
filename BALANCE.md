@@ -2,12 +2,25 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
+## First-30-Minute Audit - 2026-04-26
+
+Goal: make the current mini-campaign feel better before adding systems. This pass only changes numbers: starting resources, AI pacing, campaign rewards, and town/event prices.
+
+- Border Village should be the clearest onboarding battle. The player now starts with a little more Stone/Iron, Easy attacks arrive later, and the node still grants the Weathered Command Sword plus enough XP to make the first level-up happen without overpaying the campaign bank.
+- Old Stone Road remains the second Easy battle, but Raider Rush now lands closer to a readable first defense instead of feeling like a surprise punishment. Its campaign reward is slightly better than Border Village because it unlocks the first real branch.
+- Marcher Camp prices were raised modestly so the player can buy one or two meaningful boosts, not empty the shop immediately after two clears. Buy Supplies gives a slightly better material bundle so it remains a real alternative to direct power.
+- Refugee Caravan choices were tightened: Protect Them is less punishing, Recruit Volunteers pays a little more Iron/XP, and Demand Tribute pays fewer Crowns so the selfish option is not the obvious economy answer.
+- Aether Well Ruins and Bandit Hillfort now pay more XP and key resources because they are the first Normal battles and should feel like a step up in both danger and reward.
+- Chapel of the Marches is slightly more generous with XP, and Repair the Chapel is a touch easier to afford so it can be a viable pre-Outpost preparation path rather than a trap for players who spent at Marcher Camp.
+- Ashen Outpost keeps the fortress/tower/Hexfire identity, but its enemy starting bank and income were trimmed while player starting resources rose. The fight should feel like a milestone, not an early wall.
+- Story is now more useful as a test/new-player mode: slower income, slower training, later first attack, longer intervals, commander later, and fog still disabled. Easy now has a clearer gap from Normal.
+
 ## Starting Resources
 
-- Crowns: 360
-- Stone: 240
-- Iron: 130
-- Aether: 70
+- Crowns: 380
+- Stone: 255
+- Iron: 140
+- Aether: 75
 
 ## Site Income
 
@@ -36,7 +49,7 @@ Ashen Outpost:
 
 - First Claim is the balanced tutorial skirmish. Its first Crown site is close, the side camps are readable, and the direct lane keeps the first attack easy to understand.
 - Broken Ford is wider at 2600x1700 and has more blocked terrain. The center pays better but is guarded and exposed, while side resources are safer but slower.
-- Ashen Outpost is the current mini-campaign milestone map at 2600x1800. It gives the player a stronger starting economy and one extra Militia, but the enemy fortress has two defensive towers, tighter upper-right terrain, Hexfire Cult pressure, and a central Burned Shrine that is valuable but dangerous.
+- Ashen Outpost is the current mini-campaign milestone map at 2600x1800. It gives the player a stronger starting economy and one extra Militia, but the enemy fortress has two defensive towers, tighter upper-right terrain, Hexfire Cult pressure, and a central Burned Shrine that is valuable but dangerous. The enemy's starting bank and income are intentionally below the first fortress draft so the challenge comes from position, towers, and wave composition rather than raw economy alone.
 - All maps use the same global difficulty presets. Map-level `scenario.enemyAI` values can nudge expand and attack rhythm, but difficulty still controls income multiplier, attack delay, wave size, training speed, and commander timing.
 
 ## Construction Times
@@ -128,7 +141,7 @@ Reward tables now use weighted pools, fixed rewards, resource payouts, XP payout
 
 Current reward pacing:
 
-- First Claim grants one weighted item roll, modest resources, 35 base victory XP, and a first-clear bonus of 45 XP plus starter resources.
+- First Claim grants one weighted item roll, modest resources, 35 base victory XP, and a first-clear bonus of 40 XP plus starter resources.
 - Broken Ford grants one weighted item roll, stronger resource payouts, 55 base victory XP, and a first-clear Fordbreaker Halberd plus 65 bonus XP.
 - Ashen Outpost grants one weighted item roll, high milestone resources, 85 base victory XP, and a first-clear Ashbound Censer plus 95 bonus XP. The Ashen Outpost campaign node also grants a larger campaign-bank payout and an Oathbound Aegis for the milestone clear.
 - Weighted item rolls prefer unowned catalog items when possible. Non-unique duplicate rewards remain separate instances. Unique duplicate rewards convert into campaign resources: common/uncommon items convert to Crowns, while rare/epic/legendary items convert to Aether.
@@ -139,14 +152,14 @@ Marcher Camp is the first campaign-bank sink and unlocks after Old Stone Road. I
 
 Current Marcher Camp costs:
 
-- Rest and Recovery: 30 Crowns for Well Rested, a next-battle +10% hero maximum HP modifier.
-- Hire Volunteers: 45 Crowns for Inspired Militia, a next-battle extra Militia.
-- Buy Supplies: 35 Crowns for 25 Stone, 12 Iron, and 6 Aether.
-- Emberglass Wand: 55 Crowns, one-time common weapon purchase.
-- Marcher Plate: 75 Crowns and 15 Iron, one-time uncommon armor purchase.
-- Green Chapel Icon: 90 Crowns and 15 Aether, one-time trinket purchase.
+- Rest and Recovery: 35 Crowns for Well Rested, a next-battle +10% hero maximum HP modifier.
+- Hire Volunteers: 50 Crowns for Inspired Militia, a next-battle extra Militia.
+- Buy Supplies: 40 Crowns for 30 Stone, 14 Iron, and 6 Aether.
+- Emberglass Wand: 60 Crowns, one-time common weapon purchase.
+- Marcher Plate: 85 Crowns and 20 Iron, one-time uncommon armor purchase.
+- Green Chapel Icon: 100 Crowns and 20 Aether, one-time trinket purchase.
 
-These costs are tuned so Border Village plus Old Stone Road rewards let the player buy one meaningful service or early item immediately, but not clear the whole stock. Future economy passes should add more sinks before raising reward payouts.
+These costs are tuned so Border Village plus Old Stone Road rewards let the player buy one or two meaningful services or an early item immediately, but not clear the whole stock. Future economy passes should add more sinks before raising reward payouts.
 
 Rarity philosophy:
 
@@ -169,8 +182,8 @@ The first skirmish is paced around four battle phases:
 
 Difficulty presets:
 
-- Story: 1 starting Raider, 0.55x income, first attack at 4:00, 82s interval, 2-unit waves, commander after 12:00, fog disabled.
-- Easy: 2 starting Raiders, 0.72x income, first attack at 3:30, 72s interval, 3-unit waves, commander after 11:00, fog enabled.
+- Story: 1 starting Raider, 0.50x income, first attack at 4:20, 90s interval, 2-unit waves, commander after 13:00, fog disabled.
+- Easy: 2 starting Raiders, 0.68x income, first attack at 3:45, 78s interval, 3-unit waves, commander after 12:00, fog enabled.
 - Normal: 2 Raiders, 1 Hexer, commander at base, 0.9x income, first attack at 3:00, 62s interval, phase-capped waves, commander after 9:00, fog enabled.
 - Hard: Raiders, Hexer, Brute, commander, 1.15x income, first attack at 2:30, 48s interval, larger waves, commander after 8:00, fog enabled.
 

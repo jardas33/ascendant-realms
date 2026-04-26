@@ -37,15 +37,15 @@ export const REWARD_TABLES: RewardTableDefinition[] = [
     xpRewards: [{ amount: 35 }],
     firstClearBonus: {
       resources: {
-        crowns: 85,
-        stone: 45,
-        aether: 20
+        crowns: 75,
+        stone: 40,
+        aether: 15
       },
-      xp: 45
+      xp: 40
     },
     repeatClearReward: {
       resources: {
-        crowns: 35,
+        crowns: 30,
         stone: 20
       },
       xp: 15

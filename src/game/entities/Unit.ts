@@ -39,15 +39,21 @@ export class Unit extends BaseEntity {
       armor: definition.stats.armor
     });
     this.definition = definition;
+    const isHero = options.kind === "hero";
     this.createCommonView(scene, definition.name, this.healthColorForTeam(), true);
     const layout = this.addBattleView(scene, options.kind ?? "unit");
+    const selectionRadius = Math.max(this.radius + 7, isHero ? 23 : 20);
     this.configureCommonViewLayout({
-      healthBarY: layout.visualTop - (options.kind === "hero" ? 13 : 11),
-      healthBarWidth: options.kind === "hero" ? 56 : 42,
-      healthBarHeight: options.kind === "hero" ? 6 : 5,
+      healthBarY: layout.visualTop - (isHero ? 13 : 11),
+      healthBarWidth: isHero ? 56 : 42,
+      healthBarHeight: isHero ? 6 : 5,
       labelY: layout.visualBottom + 7,
-      selectionRadius: Math.max(this.radius + 7, 20)
+      selectionRadius,
+      selectionWidth: selectionRadius * (isHero ? 2.35 : 2.15),
+      selectionHeight: Math.max(9, selectionRadius * (isHero ? 0.62 : 0.56)),
+      selectionY: layout.visualBottom + 0.5
     });
+    this.setSelectionRingLayer(1);
   }
 
   get speed(): number {

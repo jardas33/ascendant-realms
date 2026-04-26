@@ -3,26 +3,30 @@
 .status-line {
   position: absolute;
   left: 50%;
-  top: 62px;
-  max-width: min(520px, calc(100vw - 32px));
+  top: 64px;
+  max-width: min(500px, calc(100vw - 32px));
   transform: translateX(-50%);
-  padding: 9px 12px;
-  border: 1px solid rgba(246, 237, 180, 0.18);
+  padding: 7px 11px;
+  border: 1px solid rgba(246, 237, 180, 0.16);
   border-style: solid;
   border-image-source: var(--ui-battle-hud-panel, var(--ui-tooltip-frame));
   border-image-slice: 110 150 110 150;
-  border-image-width: 12px;
+  border-image-width: 9px;
   border-image-repeat: stretch;
-  border-radius: 6px;
+  border-radius: 5px;
   background:
-    linear-gradient(90deg, transparent, rgba(116, 211, 242, 0.1) 24%, rgba(222, 190, 94, 0.12) 50%, rgba(116, 211, 242, 0.1) 76%, transparent),
-    linear-gradient(180deg, rgba(255, 246, 200, 0.085), rgba(5, 8, 8, 0.6)),
-    rgba(12, 15, 15, 0.84);
+    linear-gradient(90deg, transparent, rgba(116, 211, 242, 0.08) 24%, rgba(222, 190, 94, 0.1) 50%, rgba(116, 211, 242, 0.08) 76%, transparent),
+    linear-gradient(180deg, rgba(255, 246, 200, 0.07), rgba(5, 8, 8, 0.5)),
+    rgba(12, 15, 15, 0.76);
   color: #f3efd4;
   text-align: center;
-  box-shadow: var(--plate-shadow);
+  font-size: 14px;
+  line-height: 1.18;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.1),
+    0 8px 22px rgba(0, 0, 0, 0.24);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(5px);
 }
 
 .status-line.active {
@@ -32,20 +36,22 @@
 .hint-line {
   position: absolute;
   left: 50%;
-  top: 116px;
-  max-width: min(520px, calc(100vw - 32px));
+  top: 112px;
+  max-width: min(500px, calc(100vw - 32px));
   transform: translateX(-50%);
-  padding: 7px 11px;
-  border: 1px solid rgba(116, 211, 242, 0.26);
-  border-radius: 6px;
+  padding: 6px 10px;
+  border: 1px solid rgba(116, 211, 242, 0.22);
+  border-radius: 5px;
   background:
-    linear-gradient(90deg, rgba(116, 211, 242, 0.1), rgba(6, 9, 9, 0.74), rgba(240, 217, 120, 0.08)),
-    rgba(12, 15, 15, 0.84);
+    linear-gradient(90deg, rgba(116, 211, 242, 0.08), rgba(6, 9, 9, 0.62), rgba(240, 217, 120, 0.06)),
+    rgba(12, 15, 15, 0.76);
   color: #d9eee8;
   text-align: center;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.25;
-  box-shadow: var(--plate-shadow);
-  backdrop-filter: blur(6px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.08),
+    0 7px 18px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(5px);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }

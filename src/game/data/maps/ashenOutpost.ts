@@ -148,16 +148,16 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
     scenario: {
       startingResources: {
         player: {
-          crowns: 420,
-          stone: 280,
-          iron: 150,
-          aether: 90
+          crowns: 440,
+          stone: 300,
+          iron: 165,
+          aether: 95
         },
         enemy: {
-          crowns: 320,
-          stone: 230,
-          iron: 190,
-          aether: 150
+          crowns: 300,
+          stone: 220,
+          iron: 175,
+          aether: 140
         }
       },
       heroSpawn: { x: 370, y: 1445 },
@@ -208,7 +208,7 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
       },
       enemyAI: {
         incomeInterval: 5,
-        incomePerTick: { crowns: 110, stone: 55, iron: 55, aether: 45 },
+        incomePerTick: { crowns: 105, stone: 52, iron: 52, aether: 42 },
         trainInterval: 5.2,
         expandInterval: 22,
         initialExpandDelay: 22,
