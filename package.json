@@ -1,0 +1,29 @@
+{
+  "name": "ascendant-realms",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A tiny, expandable RTS/RPG hybrid prototype built with Phaser 3, TypeScript, and Vite.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -p tsconfig.json && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "vitest run",
+    "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
+    "assets:ui-kit": "tsx tools/manual-asset-pipeline/generateProceduralUiKit.ts",
+    "assets:process-battle-sprites": "tsx tools/manual-asset-pipeline/processBattleSprites.ts",
+    "assets:manifest": "tsx tools/manual-asset-pipeline/buildAssetManifest.ts",
+    "assets:validate": "tsx tools/manual-asset-pipeline/validateAssets.ts",
+    "assets:refresh": "npm run assets:process-battle-sprites && npm run assets:manifest && npm run assets:validate"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}

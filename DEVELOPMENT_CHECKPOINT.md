@@ -1,0 +1,140 @@
+# Development Checkpoint
+
+Date/time: 2026-04-26 01:02:03 -04:00 (America/Toronto)
+
+## Purpose
+
+This checkpoint records the current safe baseline before adding new Ascendant Realms features. No feature work was added during this pass.
+
+## Repository State
+
+- Project root inspected: `D:\Code for projects\WB game like\ascendant-realms`
+- Git status: no git repository found at this project path or parent paths.
+- Because no git repository exists, no commit was created.
+- Only checkpoint documentation should be treated as newly added in this pass.
+
+## Current Working Features
+
+- Phaser 3 + TypeScript + Vite browser runtime.
+- DOM menu and HUD layer over Phaser canvas.
+- Main menu, hero creation, hero inventory access, asset gallery, victory/progression flow, and defeat results flow.
+- Persistent hero save through local storage.
+- Three hero classes: Warlord, Arcanist, Shepherd.
+- Three origins with stat modifiers.
+- Hero ability system with class abilities, mana, cooldowns, projectiles, heals, buffs, and blink.
+- Combat, Magic, and Leadership skill trees.
+- Item reward table and deterministic victory rewards.
+- One playable skirmish map: First Claim.
+- Player and enemy bases, neutral camps, capture sites, resources, and enemy AI attack/expand/training behavior.
+- Player building placement for Barracks, Mystic Lodge, and Watchtower.
+- Unit training from Barracks and Mystic Lodge.
+- RTS selection, drag select, move, attack, attack-move, camera movement, and ability hotkeys.
+- Processed battle sprites for units, heroes, and buildings.
+- Manual/final asset manifest pipeline and runtime fallback coverage.
+- Procedural battlefield terrain treatment and adjusted in-world health bars.
+- `LLM_GAME_HANDOFF.md` exists and documents the project state in detail.
+
+## Verification Status
+
+- `npm run assets:validate`: passed.
+  - Registry assets: 62.
+  - File-backed assets found: 62.
+  - Runtime fallback coverage: ok.
+  - Notes remain for human-readable filenames that work but are not exact recommended snake_case names.
+- `npm run assets:refresh`: not rerun in this checkpoint because asset validation passed and no asset source/path changes were made in this step.
+- `npm test`: passed.
+  - 6 test files passed.
+  - 25 tests passed.
+- `npm run build`: passed.
+  - TypeScript compilation passed.
+  - Vite build passed.
+  - Existing warning remains: Phaser bundle chunk is larger than 500 kB after minification.
+- Browser smoke test: passed.
+  - Local app loaded at `http://localhost:5173/`.
+  - Main menu appeared.
+  - Start Skirmish -> Begin Skirmish reached the battle scene.
+  - No in-app browser warning/error logs were reported during the smoke test.
+
+## Current Known Issues
+
+- No git repository exists, so there is no durable commit checkpoint yet.
+- Only one playable skirmish map exists.
+- Battle terrain is procedural Phaser graphics, not a dedicated painted battle-background bitmap.
+- Movement uses direct steering with light separation, not full A* pathfinding.
+- Fog of war is not implemented.
+- Workers, construction time, campaign nodes, shops, diplomacy, retinue persistence, and skill respec are not implemented.
+- Item rewards are deterministic for testing and do not yet use rarity-weighted rolls.
+- Enemy AI is intentionally simple and predictable.
+- Balance is prototype-only and expected to change.
+- `BattleScene` still owns spawning, rendering, input, and system wiring.
+- Live entity state is not fully serializable yet.
+- Some engine classes still combine simulation data with Phaser view objects.
+- Minimap is symbolic/static rather than a live scaled map.
+- Vite build emits the known large Phaser chunk warning.
+- Several manual assets use human-readable filenames; validation confirms they work, but exact snake_case filenames remain recommended.
+
+## Recommended Next Milestone
+
+Create a real git repository and commit this baseline first. After that, the next gameplay milestone should be construction time plus worker/building workflow, because it strengthens the RTS core without requiring campaign scope, new art, or broad rebalance.
+
+## Files Most Likely To Break If Modified
+
+- `src/game/scenes/BattleScene.ts`
+  - Owns battle spawning, map drawing, systems wiring, runtime completion, and scene transitions.
+- `src/game/entities/BaseEntity.ts`
+  - Shared visual and HP/selection behavior for units, buildings, and capture sites.
+- `src/game/entities/Unit.ts`
+  - Unit/hero battle sprite setup, fallback body, buffs, combat state, movement commands.
+- `src/game/entities/Building.ts`
+  - Building sprite setup, fallback body, health-bar layout, training queue state.
+- `src/game/assets/AssetKeys.ts`
+  - Canonical asset IDs and mapping helpers used by loaders and renderers.
+- `src/game/assets/AssetLoader.ts`
+  - Manifest reading, runtime image lookup, CSS URL generation, and texture queueing.
+- `public/assets/manifests/assetManifest.json`
+  - Runtime asset lookup file generated by the manual asset pipeline.
+- `tools/manual-asset-pipeline/*`
+  - Manual/final asset processing, manifest generation, prompt generation, and validation.
+- `src/game/data/contentIndex.ts`
+  - Lookup and require helpers used by scenes and systems.
+- `src/game/data/maps.ts`
+  - Map geometry, spawns, capture sites, objectives, enemy AI config, and reward table link.
+- `src/game/data/units.ts`
+  - Unit stats, costs, radii, training times, and XP values.
+- `src/game/data/buildings.ts`
+  - Building stats, footprints, build/train options, and tower attack data.
+- `src/game/data/abilities.ts`
+  - Ability IDs and effect definitions used by hero classes, skill unlocks, UI, and casting.
+- `src/game/systems/AbilitySystem.ts`
+  - Runtime ability implementation; easy to desync from ability data.
+- `src/game/systems/BuildingSystem.ts`
+  - Placement rules, costs, build ghost, and building creation.
+- `src/game/systems/CombatSystem.ts`
+  - Targeting, cooldowns, projectile creation, damage, and kill callbacks.
+- `src/game/systems/MovementSystem.ts`
+  - Steering, separation, attack movement, and terrain blocking behavior.
+- `src/game/systems/InputSystem.ts`
+  - Pointer and keyboard controls for selection, movement, attack-move, and placement.
+- `src/game/ui/HUD.ts`
+  - DOM HUD markup, action dispatch, resources, selection, build/train buttons, and abilities.
+- `src/game/styles/ui.css`
+  - All menu/HUD layout and responsive styling; small changes can affect playfield readability.
+- `src/game/core/SaveSystem.ts`
+  - Local storage save/load and fallback hero behavior.
+- `src/game/save/SaveTypes.ts`
+  - Persisted hero schema.
+- `src/game/core/HeroProgressionRules.ts`
+  - Hero stats, skill unlocks, item rewards, and progression math.
+- `src/game/battle/BattleRuntime.ts`
+  - Pure battle stats/objective/reward/save boundary.
+- `src/game/battle/BattleLaunchRequest.ts`
+  - Launch contract shared by skirmish and future campaign/scenario entry points.
+- `src/game/data/contentValidation.ts`
+  - Cross-data validation; keep this aligned when adding new data references.
+
+## Safe Next-Step Checklist
+
+1. Initialize git in the project root.
+2. Commit the current baseline including this checkpoint.
+3. Pick one narrow milestone.
+4. Run `npm run assets:validate`, `npm test`, `npm run build`, and a browser smoke test after each milestone.

@@ -1,0 +1,128 @@
+# Ascendant Realms Roadmap
+
+## Product Pillars
+
+Every phase should protect these long-term pillars:
+
+1. Persistent hero fantasy: race, class, origin, items, scars, titles, retinue, reputation, and choices should make the hero feel personal.
+2. Faction asymmetry: factions need different economies, rhythms, combat identities, and strategic weaknesses.
+3. Living campaign map: the world should react with alliances, betrayals, invasions, shops, temples, ruins, contracts, holy orders, cursed lands, and ancient threats.
+4. Data-driven and mod-friendly content: future expansion should mostly mean adding data and assets, not rewriting engine code.
+
+## Phase 0: Project Foundation
+
+- Phaser/Vite/TypeScript setup.
+- Scene management.
+- Data architecture.
+- Save system shell.
+
+## Phase 1: Playable Skirmish Prototype
+
+- Hero.
+- Units.
+- Movement.
+- Selection.
+- Combat.
+- Capture resources.
+- Basic buildings.
+- Enemy AI.
+- Win/loss.
+
+## Phase 2: Hero RPG Depth
+
+- Full stats.
+- Multiple abilities.
+- Skill trees.
+- Items.
+- Equipment.
+- Hero portraits.
+- Level-up choices.
+- Scars and titles.
+- Reputation hooks.
+- Retinue units.
+
+## Phase 3: Faction Expansion
+
+- 3 complete factions:
+- Free Marches.
+- Ashen Covenant.
+- Sylvan Concord.
+- Unique units.
+- Unique buildings.
+- Unique economy twist.
+- Unique faction spell/technology.
+- Explicit faction identity documents covering economy, combat rhythm, strengths, and weaknesses.
+
+## Phase 4: Campaign Map
+
+- Node-based overworld.
+- Locations.
+- Quests.
+- Shops.
+- Temples.
+- Ruins.
+- Mercenary contracts.
+- Holy orders.
+- Cursed lands.
+- Ancient threat encounters.
+- Faction reputation.
+- Alliances and betrayals.
+- Invasions.
+- Random events.
+- Persistent consequences.
+
+## Phase 5: Procedural Maps
+
+- Random map generator.
+- Biomes.
+- Resource placement.
+- Neutral camps.
+- Enemy start positions.
+- Difficulty scaling.
+
+## Phase 6: Advanced AI
+
+- AI personalities.
+- Rush/economy/turtle/magic styles.
+- Scouting.
+- Counter-unit logic.
+- Retreat logic.
+- Hero build logic.
+
+## Phase 7: Content Tools
+
+- Map editor.
+- Faction editor.
+- Unit editor.
+- Scenario editor.
+- Mod loading.
+- Data validation for mod packs.
+- Non-coder content templates.
+
+## Phase 8: Presentation
+
+- Real art.
+- Animation.
+- Sound effects.
+- Music.
+- Better UI.
+- Dedicated UI art kit with panel frames, button states, resource frames, dividers, tooltip frames, minimap frame, ability slots, inventory slots, victory panel, and defeat panel.
+- Better UX.
+- Tutorial.
+
+## Phase 9: Steam-Ready Single-Player
+
+- Achievements.
+- Settings.
+- Save slots.
+- Campaign polish.
+- Balance pass.
+- Performance optimization.
+- Packaging.
+
+## Phase 10: Multiplayer Exploration
+
+- Local network prototype.
+- Deterministic simulation research.
+- Lockstep or server-authoritative decision.
+- Multiplayer only after single-player is strong.

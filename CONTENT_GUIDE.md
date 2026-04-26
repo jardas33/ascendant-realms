@@ -1,0 +1,170 @@
+# Content Guide
+
+Most prototype content lives in `src/game/data`. Change one small thing at a time, run the game, and keep a backup before large balance edits.
+
+## Add A New Unit
+
+1. Open `src/game/data/units.ts`.
+2. Copy an existing unit entry.
+3. Give it a unique `id`.
+4. Edit name, cost, HP, damage, range, speed, armor, train time, color, and XP value.
+5. To train it from a building, add the unit `id` to that building's `trainOptions` in `src/game/data/buildings.ts`.
+6. Add `prerequisites` if it should require a completed building or researched upgrade.
+7. Run `npm run test` to make sure the new ID is valid everywhere.
+
+## Add A New Building
+
+1. Open `src/game/data/buildings.ts`.
+2. Copy an existing building entry.
+3. Give it a unique `id`.
+4. Edit cost, HP, size, build options, train options, or attack values.
+5. Set `constructionTimeSeconds`. Use `0` only for prebuilt scenario structures.
+6. Add `upgradeOptions` if the building should research upgrades.
+7. Add `prerequisites` if it should require another completed building or researched upgrade.
+8. To build it from the Command Hall, add its `id` to the Command Hall's `buildOptions`.
+9. To place it at battle start, add it to a map `scenario.buildingSpawns` entry in `src/game/data/maps.ts`.
+
+## Add A New Upgrade
+
+1. Open `src/game/data/upgrades.ts`.
+2. Copy an existing upgrade entry.
+3. Give it a unique `id`.
+4. Set name, description, cost, `researchTimeSeconds`, prerequisites, and effects.
+5. Add the upgrade `id` to a building's `upgradeOptions` in `src/game/data/buildings.ts`.
+6. Supported effect types currently modify unit stats or hero mana regeneration. New effect types need code in the battle systems.
+7. Run `npm run test`.
+
+## Add A New Hero Class
+
+1. Open `src/game/data/heroClasses.ts`.
+2. Copy an existing class.
+3. Give it a unique `id`.
+4. Edit starting stats and the `primaryAbilityId`.
+5. Add all class ability IDs to `abilityIds`.
+6. Add matching abilities in `src/game/data/abilities.ts`.
+7. Add class-specific skill nodes in `src/game/data/skillTrees.ts` if the class should unlock abilities through progression.
+
+## Add A New Ability
+
+1. Open `src/game/data/abilities.ts`.
+2. Copy an existing ability.
+3. Give it a unique `id`.
+4. Edit mana cost, cooldown, range, radius, duration, and amount.
+5. Engine behavior for brand-new effect types must be added in `AbilitySystem.ts`.
+6. Add the ability ID to the correct hero class `abilityIds`.
+7. If it should be unlocked later, add a skill node with `unlockAbilityId`.
+8. Add `prerequisites` only if the ability should later require tech or hero level gates.
+9. Run `npm run test` to confirm the hero class and ability links are valid.
+
+## Add A New Skill Node
+
+1. Open `src/game/data/skillTrees.ts`.
+2. Copy an existing skill node.
+3. Give it a unique `id`.
+4. Choose `treeId`: `combat`, `magic`, or `leadership`.
+5. Use `statModsPerRank` for passive bonuses.
+6. Use `unlockAbilityId` to unlock an ability.
+7. Use `classId` only if the skill belongs to one class.
+8. Use `requires` if another skill must be learned first.
+9. Run `npm run test`.
+
+## Add A New Item
+
+1. Open `src/game/data/items.ts`.
+2. Copy an existing item.
+3. Give it a unique `id`.
+4. Choose a slot: `weapon`, `armor`, or `trinket`.
+5. Choose a rarity: `common`, `uncommon`, or `rare`.
+6. Add passive bonuses in `statMods`.
+7. Add the item ID to a reward table in `src/game/data/rewards.ts`.
+8. Run `npm run test`.
+
+## Add A New Reward Table
+
+1. Open `src/game/data/rewards.ts`.
+2. Copy the existing reward table.
+3. Give it a unique `id`.
+4. Add item IDs to `itemIds`.
+5. Open `src/game/data/maps.ts` and set the map scenario's `rewardTableId`.
+6. Run `npm run test`.
+
+## Add A New Skirmish Map
+
+1. Open `src/game/data/maps.ts`.
+2. Copy an existing `BattleMapDefinition`.
+3. Give the map a unique `id`, display `name`, `role`, `description`, and `strategicNotes`.
+4. Set `width`, `height`, `playerStart`, `enemyStart`, and `visualPaths`. Visual paths draw roads and lanes; keep every path point inside the map.
+5. Add terrain zones. Include one full-map grass zone, buildable zones for each base, and blocked or water zones that shape building placement.
+6. Add 4 capture sites for the current skirmish setup. Each site must use a resource ID from `resources.ts`.
+7. Add neutral camps with valid unit IDs. Use stronger central camps when the center should feel risky.
+8. Fill the `scenario` block with starting resources, hero spawn, player/enemy buildings, player/enemy unit spawns, objectives, enemy AI config, and reward table.
+9. Add a reward table in `rewards.ts` and point the map's `scenario.rewardTableId` at it.
+10. Run `npm run test` and `npm run build`. The setup screen automatically lists maps from `MAPS`.
+
+## Add A New Faction
+
+1. Open `src/game/data/factions.ts`.
+2. Copy an existing faction.
+3. Give it a unique `id`.
+4. Add faction units in `units.ts`.
+5. Add faction buildings in `buildings.ts`.
+6. Create faction-specific AI and balance notes later.
+
+## Add A New Manual Art Asset
+
+1. Open `tools/manual-asset-pipeline/assetRegistry.ts`.
+2. Copy an existing asset entry from the same category.
+3. Give it a unique `id`, clear `displayName`, target folder, filename, size, usage, and notes.
+4. Run `npm run assets:prompts`.
+5. Open `public/assets/manual/ASSET_PROMPT_BOOK.md`.
+6. Generate the image manually in ChatGPT.
+7. Put the image in the listed `public/assets/manual/...` folder.
+8. Exact snake_case filenames are best, but friendly display names also work.
+9. Run `npm run assets:refresh`.
+
+## Add Or Replace UI Art Kit Images
+
+UI-kit images are reusable frames and slots, not full menu screenshots.
+
+1. Run `npm run assets:prompts`.
+2. Open `public/assets/manual/ASSET_PROMPT_BOOK.md`.
+3. Search for `Reusable Panel Frame` or any asset ID starting with `ui_`.
+4. Generate one image at a time in ChatGPT.
+5. Save the image in `public/assets/manual/ui`.
+6. Use the exact filename from the prompt book, such as `ui_panel_frame.png`.
+7. Run `npm run assets:refresh`.
+8. Refresh the browser and check the main menu, battle HUD, results screen, and Asset Gallery.
+
+Important UI-kit rules:
+
+- Frames should have transparent centers.
+- Button states should not contain words.
+- Slots should not contain ability or item icons.
+- Dividers should be thin and quiet.
+- Do not use one big screenshot as UI art.
+- If a UI asset looks stretched, ask Codex to tune the CSS `border-image-slice` value for that asset.
+
+## Add A New Map Node
+
+1. Open `src/game/data/campaignNodes.ts`.
+2. Copy the placeholder node.
+3. Give it a unique `id`.
+4. Add rewards, faction reputation changes, and battle map links when the campaign system exists.
+
+## Edit A Skirmish Map
+
+1. Open `src/game/data/maps.ts`.
+2. Setup metadata, terrain, visual paths, capture sites, and neutral camps are near the top of each map entry.
+3. Starting buildings, starting units, hero spawn, objectives, starting resources, and enemy AI settings live in the map's `scenario` block.
+4. To change enemy pressure, edit `scenario.enemyAI.attackInterval`, `minAttackArmySize`, `attackWaveSize`, and `unitPlan`.
+5. To change victory rewards, edit `scenario.rewardTableId`.
+6. Run `npm run test` after edits. The content validation test catches missing IDs before the game opens.
+
+## Safe Editing Tips
+
+- Keep IDs lowercase and use hyphens or underscores consistently.
+- Do not reuse IDs.
+- Change numbers gradually.
+- Completed-building prerequisites only count finished construction, not structures still under construction.
+- If the game stops building, undo the last data edit and run `npm run build` again.
+- If tests fail with "references missing", check for a typo in an ID.
