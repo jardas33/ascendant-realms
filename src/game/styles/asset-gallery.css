@@ -1,0 +1,97 @@
+/* Asset Gallery screen grid, cards, previews, and asset state styling. */
+
+.asset-gallery-shell {
+  height: 100%;
+  overflow: auto;
+  place-items: start center;
+}
+
+.asset-gallery-panel {
+  margin: 18px 0;
+}
+
+.asset-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.asset-gallery-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(216, 222, 199, 0.14);
+  border-style: solid;
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 8px;
+  border-image-repeat: stretch;
+  border-radius: 6px;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+}
+
+.asset-gallery-card.available {
+  border-color: rgba(116, 211, 242, 0.28);
+}
+
+.asset-gallery-card.loaded {
+  border-color: rgba(126, 224, 136, 0.36);
+}
+
+.asset-gallery-card.checking {
+  border-color: rgba(240, 217, 120, 0.36);
+}
+
+.asset-gallery-card.missing {
+  border-color: rgba(225, 94, 85, 0.4);
+}
+
+.asset-gallery-card.broken {
+  border-color: rgba(255, 111, 96, 0.74);
+  background: rgba(112, 36, 31, 0.16);
+}
+
+.asset-gallery-preview {
+  height: 132px;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  background:
+    radial-gradient(circle at center, rgba(116, 211, 242, 0.08), transparent 58%),
+    rgba(5, 9, 7, 0.42);
+}
+
+.asset-gallery-image {
+  max-width: 100%;
+  max-height: 116px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.asset-gallery-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: #c8d0bd;
+  font-size: 12px;
+  background: linear-gradient(135deg, #29392f, #101812);
+}
+
+.asset-gallery-copy {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+}
+
+.asset-gallery-copy span,
+.asset-gallery-copy small {
+  color: #c8d0bd;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.asset-gallery-copy small {
+  word-break: break-word;
+}

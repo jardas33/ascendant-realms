@@ -5,7 +5,7 @@ import {
   equipRewardItemNow
 } from "./ResultsFlow";
 import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "./CampaignRules";
-import { calculateLiveHeroStats } from "./HeroProgressionRules";
+import { calculateLiveHeroStats, createItemInstance } from "./HeroProgressionRules";
 import { SaveSystem } from "./SaveSystem";
 import type { BattleStats } from "./GameTypes";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -34,7 +34,7 @@ describe("results reward flow", () => {
     const rewards = buildRewardItemPresentations({
       itemIds: ["weathered_command_sword", "weathered_command_sword", "captains_seal"],
       itemById: ITEM_BY_ID,
-      startingInventory: ["captains_seal"]
+      startingInventory: [createItemInstance("captains_seal", "test")]
     });
 
     expect(rewards.map((entry) => entry.state)).toEqual(["new", "duplicate", "already_owned"]);
@@ -43,13 +43,14 @@ describe("results reward flow", () => {
   it("equips a reward item, recalculates stats, and persists the equipped slot", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
-      inventory: ["weathered_command_sword"]
+      inventory: [createItemInstance("weathered_command_sword", "test")]
     };
+    const itemInstanceId = hero.inventory[0].instanceId;
     const beforeStats = calculateLiveHeroStats(hero, HERO_CLASS_BY_ID.warlord, ORIGIN_BY_ID.exiled_noble, SKILL_NODE_BY_ID, ITEM_BY_ID);
 
     const result = equipRewardItemNow({
       hero,
-      itemId: "weathered_command_sword",
+      itemInstanceId,
       itemById: ITEM_BY_ID,
       heroClass: HERO_CLASS_BY_ID.warlord,
       origin: ORIGIN_BY_ID.exiled_noble,
@@ -57,13 +58,13 @@ describe("results reward flow", () => {
     });
 
     expect(result.ok).toBe(true);
-    expect(result.hero.equipment.weapon).toBe("weathered_command_sword");
-    expect(result.hero.inventory).toContain("weathered_command_sword");
+    expect(result.hero.equipment.weapon).toBe(itemInstanceId);
+    expect(result.hero.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
     expect(result.deltas.some((delta) => delta.key === "damage" && delta.delta > 0)).toBe(true);
 
     SaveSystem.saveHero(result.hero);
     const loaded = SaveSystem.load();
-    expect(loaded?.hero.equipment.weapon).toBe("weathered_command_sword");
+    expect(loaded?.hero.equipment.weapon).toBe(itemInstanceId);
     const afterStats = calculateLiveHeroStats(loaded!.hero, HERO_CLASS_BY_ID.warlord, ORIGIN_BY_ID.exiled_noble, SKILL_NODE_BY_ID, ITEM_BY_ID);
     expect(afterStats.damage).toBeGreaterThan(beforeStats.damage);
   });
@@ -109,7 +110,7 @@ describe("results reward flow", () => {
     };
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
-      inventory: ["weathered_command_sword"],
+      inventory: [createItemInstance("weathered_command_sword", "test")],
       equipment: {}
     };
 
@@ -135,11 +136,11 @@ describe("results reward flow", () => {
     expect(loaded?.campaign.completedNodeIds).toContain(node.id);
     expect(loaded?.campaign.nodeRewardsClaimedIds).toContain(node.id);
     expect(loaded?.campaign.resources.crowns).toBe(50);
-    expect(loaded?.hero.inventory).toContain("weathered_command_sword");
+    expect(loaded?.hero.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
     expect(repeated.nodeReward.itemIds).toEqual([]);
     expect(repeated.nodeReward.resources).toEqual({});
     expect(repeated.campaign.resources.crowns).toBe(50);
-    expect(repeated.hero.inventory.filter((itemId) => itemId === "weathered_command_sword")).toHaveLength(1);
+    expect(repeated.hero.inventory.filter((instance) => instance.itemId === "weathered_command_sword")).toHaveLength(1);
   });
 });
 

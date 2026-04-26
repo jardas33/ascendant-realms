@@ -1,0 +1,51 @@
+/* In-battle status and tutorial hint overlays. */
+
+.status-line {
+  position: absolute;
+  left: 50%;
+  top: 62px;
+  max-width: min(520px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 9px 12px;
+  border: 1px solid rgba(246, 237, 180, 0.18);
+  border-style: solid;
+  border-image-source: var(--ui-battle-hud-panel, var(--ui-tooltip-frame));
+  border-image-slice: 110 150 110 150;
+  border-image-width: 12px;
+  border-image-repeat: stretch;
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, transparent, rgba(116, 211, 242, 0.1) 24%, rgba(222, 190, 94, 0.12) 50%, rgba(116, 211, 242, 0.1) 76%, transparent),
+    linear-gradient(180deg, rgba(255, 246, 200, 0.085), rgba(5, 8, 8, 0.6)),
+    rgba(12, 15, 15, 0.84);
+  color: #f3efd4;
+  text-align: center;
+  box-shadow: var(--plate-shadow);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.status-line.active {
+  border-color: #f0d978;
+}
+
+.hint-line {
+  position: absolute;
+  left: 50%;
+  top: 116px;
+  max-width: min(520px, calc(100vw - 32px));
+  transform: translateX(-50%);
+  padding: 7px 11px;
+  border: 1px solid rgba(116, 211, 242, 0.26);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.1), rgba(6, 9, 9, 0.74), rgba(240, 217, 120, 0.08)),
+    rgba(12, 15, 15, 0.84);
+  color: #d9eee8;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.25;
+  box-shadow: var(--plate-shadow);
+  backdrop-filter: blur(6px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+}

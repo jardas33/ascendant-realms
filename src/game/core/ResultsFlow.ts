@@ -7,8 +7,9 @@ import type {
   OriginDefinition,
   SkillNodeDefinition
 } from "./GameTypes";
-import { calculateLiveHeroStats, equipItem, saveWithRecalculatedStats } from "./HeroProgressionRules";
+import { calculateLiveHeroStats, equipItem, findItemInstance, saveWithRecalculatedStats } from "./HeroProgressionRules";
 import type { HeroSaveData } from "../save/SaveTypes";
+import type { ItemInstance } from "./GameTypes";
 
 export const RESULT_STAT_COMPARE_KEYS: Array<keyof HeroBaseStats> = [
   "maxHp",
@@ -28,6 +29,7 @@ export type RewardItemState = "new" | "duplicate" | "already_owned";
 
 export interface RewardItemPresentation {
   item: ItemDefinition;
+  instance?: ItemInstance;
   state: RewardItemState;
   occurrence: number;
 }
@@ -51,39 +53,47 @@ export interface EquipRewardItemResult {
 
 export function buildRewardItemPresentations(options: {
   itemIds: string[];
+  itemInstances?: ItemInstance[];
   itemById: Record<string, ItemDefinition>;
-  startingInventory: string[];
+  startingInventory: ItemInstance[];
   alreadyPresentedIds?: string[];
 }): RewardItemPresentation[] {
   const seen = new Set(options.alreadyPresentedIds ?? []);
-  const startingInventory = new Set(options.startingInventory);
+  const startingCatalogIds = new Set(options.startingInventory.map((instance) => instance.itemId));
+  const instancesByItemId = new Map<string, ItemInstance[]>();
+  (options.itemInstances ?? []).forEach((instance) => {
+    instancesByItemId.set(instance.itemId, [...(instancesByItemId.get(instance.itemId) ?? []), instance]);
+  });
   return options.itemIds
-    .map((itemId, index) => {
+    .reduce<RewardItemPresentation[]>((presentations, itemId, index) => {
       const item = options.itemById[itemId];
       if (!item) {
-        return undefined;
+        return presentations;
       }
       const duplicate = seen.has(itemId);
       seen.add(itemId);
-      return {
+      const instance = instancesByItemId.get(itemId)?.shift();
+      presentations.push({
         item,
+        instance,
         occurrence: index + 1,
-        state: duplicate ? "duplicate" : startingInventory.has(itemId) ? "already_owned" : "new"
-      } satisfies RewardItemPresentation;
-    })
-    .filter((entry): entry is RewardItemPresentation => entry !== undefined);
+        state: duplicate ? "duplicate" : startingCatalogIds.has(itemId) && !instance ? "already_owned" : "new"
+      });
+      return presentations;
+    }, []);
 }
 
 export function equipRewardItemNow(options: {
   hero: HeroSaveData;
-  itemId: string;
+  itemInstanceId: string;
   itemById: Record<string, ItemDefinition>;
   heroClass: HeroClassDefinition;
   origin: OriginDefinition;
   skillById: Record<string, SkillNodeDefinition>;
 }): EquipRewardItemResult {
-  const item = options.itemById[options.itemId];
-  if (!item) {
+  const instance = findItemInstance(options.hero.inventory, options.itemInstanceId);
+  const item = instance ? options.itemById[instance.itemId] : undefined;
+  if (!instance || !item) {
     return {
       ok: false,
       hero: options.hero,
@@ -93,8 +103,9 @@ export function equipRewardItemNow(options: {
   }
 
   const beforeStats = calculateLiveHeroStats(options.hero, options.heroClass, options.origin, options.skillById, options.itemById);
-  const previousItem = options.hero.equipment[item.slot] ? options.itemById[options.hero.equipment[item.slot]!] : undefined;
-  const equipped = equipItem(options.hero, item.id, options.itemById);
+  const previousInstance = options.hero.equipment[item.slot] ? findItemInstance(options.hero.inventory, options.hero.equipment[item.slot]!) : undefined;
+  const previousItem = previousInstance ? options.itemById[previousInstance.itemId] : undefined;
+  const equipped = equipItem(options.hero, instance.instanceId, options.itemById);
   if (!equipped.ok) {
     return {
       ok: false,
@@ -166,6 +177,6 @@ function roundStat(value: number): number {
 }
 
 function hasUnequippedItems(hero: HeroSaveData): boolean {
-  const equipped = new Set(Object.values(hero.equipment).filter((itemId): itemId is string => typeof itemId === "string"));
-  return hero.inventory.some((itemId) => !equipped.has(itemId));
+  const equipped = new Set(Object.values(hero.equipment).filter((instanceId): instanceId is string => typeof instanceId === "string"));
+  return hero.inventory.some((instance) => !equipped.has(instance.instanceId));
 }

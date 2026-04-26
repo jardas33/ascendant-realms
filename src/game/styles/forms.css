@@ -1,0 +1,167 @@
+/* Hero creation, skirmish setup, form fields, selectable choices, and map/difficulty cards. */
+
+.field-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #d8dec7;
+  font-size: 13px;
+}
+
+input {
+  width: 100%;
+  height: 44px;
+  margin-bottom: 18px;
+  padding: 0 12px;
+  border: 1px solid rgba(246, 237, 180, 0.32);
+  border-radius: 6px;
+  background: #101812;
+  color: #f6f1dd;
+}
+
+.choice-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.difficulty-panel {
+  margin-top: 8px;
+}
+
+.difficulty-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.setup-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+  gap: 18px;
+}
+
+.setup-section {
+  min-width: 0;
+}
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.enemy-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.choice {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  border-color: var(--plate-edge);
+  border-image-source: var(--ui-button-idle);
+  border-image-slice: 42;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+}
+
+.choice::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(246, 237, 180, 0.08);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.choice::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(240, 217, 120, 0.1), var(--aether-line), rgba(240, 217, 120, 0.16));
+  opacity: 0.72;
+  pointer-events: none;
+}
+
+.choice:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.choice > * {
+  position: relative;
+  z-index: 1;
+}
+
+.choice-content {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.choice-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.choice-portrait {
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(246, 237, 180, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, var(--hero-color), #101812 76%),
+    #2c3a2f;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 246, 200, 0.08),
+    0 8px 16px rgba(0, 0, 0, 0.32);
+}
+
+.choice-portrait.has-asset,
+.portrait.has-asset {
+  background-image: var(--portrait-url);
+  background-position: center;
+  background-size: cover;
+}
+
+.choice span {
+  color: #c8d0bd;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.compact-choice {
+  align-content: start;
+  min-height: 86px;
+  margin-bottom: 0;
+}
+
+.map-choice {
+  min-height: 178px;
+  align-content: start;
+}
+
+.map-choice small,
+.hero-summary-card small {
+  color: #f0d978;
+}
+
+.map-choice p {
+  position: relative;
+  z-index: 1;
+  margin: 2px 0 0;
+  color: #c8d0bd;
+  font-size: 13px;
+  line-height: 1.35;
+}

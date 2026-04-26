@@ -51,6 +51,20 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
+## Browser Smoke Tests
+
+```bash
+npm run test:e2e
+```
+
+The browser smoke suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, Broken Ford launches, and Hero Inventory opens without crashing.
+
+For a visible browser run:
+
+```bash
+npm run test:e2e:headed
+```
+
 ## Preview A Build
 
 ```bash
@@ -117,31 +131,38 @@ This writes original procedural PNG frames into `public/assets/manual/ui`. They 
 
 Use the `Reset Save` button on the main menu. You can also clear the browser's local storage for this site.
 
+## Save Data
+
+The game stores one local save under the browser localStorage key defined in `src/game/core/Constants.ts`. Current saves write `version: 2` and include `createdAt`, `updatedAt`, `hero`, `campaign`, plus placeholder `settings` and `statistics` objects for future systems.
+
+Older `version: 1` saves are migrated in memory when loaded. Invalid JSON or invalid save shapes are rejected safely and do not clear or overwrite the existing localStorage value. New writes always use the current version 2 shape.
+
 ## Campaign
 
 Use `New Campaign` from the main menu to create or reuse a hero and open the Border Marches campaign map. Select an available node, read its details, then start the battle or choose an event outcome. Victories complete battle nodes, claim node rewards once, add node resource rewards to the persistent campaign bank, save progress, and unlock connected nodes. Defeats can be retried or returned to the campaign map.
 
-The first skeleton campaign has seven nodes:
+The first skeleton campaign has eight nodes:
 
 - Border Village.
 - Old Stone Road.
+- Marcher Camp.
 - Aether Well Ruins.
 - Bandit Hillfort.
 - Chapel of the Marches.
 - Refugee Caravan.
 - Ashen Outpost.
 
-Chapel of the Marches and Refugee Caravan use simple data-driven choices. Choices can be locked by resource costs or hero level, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
+Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. Choices can be locked by resource costs, hero level, ownership, or previous purchase, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
 
 Skirmish mode remains separate through the `Skirmish` button.
 
 ## Post-Battle Rewards
 
-After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, and campaign node rewards when applicable. Earned equipment is added to inventory immediately. Equippable rewards show rarity, slot, stat modifiers, the currently equipped item in that slot, and an Equip Now comparison.
+After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, and campaign node rewards when applicable. Earned equipment creates an inventory instance immediately. Equippable rewards show rarity, slot, stat modifiers, source details, the currently equipped item in that slot, and an Equip Now comparison.
 
-Using Equip Now saves the updated hero equipment and recalculated stats. Leaving the screen without equipping keeps the item in inventory. Campaign node item rewards are claimed once; if a campaign node repeats an item already earned from the battle reward, the screen labels it as a duplicate and keeps a single inventory copy.
+Using Equip Now equips the earned item instance, saves the updated hero equipment, and recalculates stats. Leaving the screen without equipping keeps the instance in inventory. Campaign node item rewards are claimed once. If a unique reward is already owned, the reward converts into campaign Crowns or Aether and the Results screen shows the conversion.
 
-Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Event choices can already spend it; shops, mercenaries, repairs, upgrades, and stronghold development are future systems that should use the same bank.
+Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Marcher Camp spends from it now; later shops, mercenaries, repairs, upgrades, and stronghold development should use the same bank.
 
 ## Controls
 
@@ -162,8 +183,8 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 ## Current Features
 
 - Main menu, hero creation, campaign map, skirmish setup, reset save, credits/info.
-- Seven-node campaign skeleton with locked, available, completed, and choice-driven node states.
-- Persistent campaign resource bank for node rewards and event choice costs.
+- Eight-node campaign skeleton with locked, available, completed, town-service, and choice-driven node states.
+- Persistent campaign resource bank for node rewards, event choice costs, and Marcher Camp services.
 - Hero inventory screen from the main menu.
 - Asset gallery for checking manual/final/placeholder art.
 - Three hero classes: Warlord, Arcanist, Shepherd.
@@ -173,7 +194,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Skill point allocation after level-up.
 - Rarity-weighted item rewards after victory.
 - Equipment slots: weapon, armor, trinket.
-- Two playable skirmish maps: First Claim and Broken Ford.
+- Three playable skirmish maps: First Claim, Broken Ford, and Ashen Outpost.
 - Player base, enemy base, neutral camps, and capturable resource sites.
 - Four resources: Crowns, Stone, Iron, Aether.
 - Building placement for Barracks, Mystic Lodge, and Watchtower with valid/invalid previews.
@@ -194,28 +215,28 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 ## Known Limitations
 
 - Gameplay units and buildings use dedicated battle sprites when available, then fall back to concept art or simple Phaser shapes if art is missing.
-- Movement uses direct steering with light separation, not full A* pathfinding yet.
+- Movement uses a coarse A* pathfinding grid plus local separation. It is not formation-aware or flow-field based yet.
 - Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
-- Workers, retinue persistence, shops, and diplomacy are postponed.
-- Campaign is a skeleton only: no diplomacy, shops, procedural random events, invasions, or world simulation yet.
+- Workers, retinue persistence, broad vendors, and diplomacy are postponed.
+- Campaign is a skeleton only: Marcher Camp proves one tiny town/shop sink, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
 - Balance is prototype-only and expected to change often.
 - Some engine classes still combine simulation data with Phaser visuals. That is acceptable for this slice, but should be split before multiplayer or replay work.
-- `BattleScene` still owns Phaser spawning, rendering, input, and system wiring. `BattleRuntime` now owns the first pure battle state/results boundary, but live entity state is not fully serializable yet.
+- `BattleScene` is partly split into helper modules for spawning, map rendering, alerts, snapshots, objectives, and results. It still owns live Phaser orchestration and input, and live entity state is not fully serializable yet.
 - The UI-kit assets are optional and currently missing until generated manually. The game falls back to CSS styling when they are not present.
 
 ## How To Ask Codex For The Next Feature
 
 Good next prompts are specific and small. Examples:
 
+- "Add e2e coverage for Equip Now, Marcher Camp services, and campaign choice outcomes."
+- "Split ResultsScene into smaller reward, campaign-return, and item-comparison helpers."
+- "Split maps.ts into one file per map without changing map behavior."
+- "Add randomized item affixes on top of the item instance model."
+- "Improve formation movement and dynamic path blockers without changing combat balance."
 - "Add worker builders on top of the automatic construction system."
 - "Add a respec button to the hero progression screen."
-- "Add rarity-weighted item rewards after victory."
-- "Create a second skirmish map and explain how I can tune it."
-- "Improve enemy AI wave timing and document the knobs in BALANCE.md."
-- "Split entity simulation state from Phaser view objects without changing gameplay."
-- "Generate the 12 UI-kit images from the prompt book, then ask Codex to verify the HUD and tune the frame slices."
 
 ## Troubleshooting
 

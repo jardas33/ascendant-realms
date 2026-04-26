@@ -30,7 +30,7 @@ import { getBattleDifficulty } from "../data/battlePacing";
 import { HERO_CLASS_BY_ID, ITEM_BY_ID, MAP_BY_ID, ORIGIN_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import type { HeroSaveData } from "../save/SaveTypes";
-import { calculateLiveHeroStats } from "../core/HeroProgressionRules";
+import { calculateLiveHeroStats, findItemInstance } from "../core/HeroProgressionRules";
 
 interface CampaignResultsData {
   completedNodeId: string;
@@ -153,7 +153,7 @@ export class ResultsScene extends Phaser.Scene {
     const origin = ORIGIN_BY_ID[this.dataSnapshot.heroSave.originId] ?? Object.values(ORIGIN_BY_ID)[0];
     const result = equipRewardItemNow({
       hero: this.dataSnapshot.heroSave,
-      itemId,
+      itemInstanceId: itemId,
       itemById: ITEM_BY_ID,
       heroClass,
       origin,
@@ -333,6 +333,7 @@ export class ResultsScene extends Phaser.Scene {
     const startingInventory = this.dataSnapshot.startingHeroSave?.inventory ?? [];
     const battleItems = buildRewardItemPresentations({
       itemIds: reward.itemIds,
+      itemInstances: reward.itemInstances,
       itemById: ITEM_BY_ID,
       startingInventory
     });
@@ -343,6 +344,7 @@ export class ResultsScene extends Phaser.Scene {
           <div class="results-grid compact">
             <span>Reward XP</span><strong>${reward.xp}</strong>
             <span>Resource awards</span><strong>${escapeHtml(this.formatResourceRewards(reward.resources))}</strong>
+            <span>Duplicate conversion</span><strong>${escapeHtml(this.formatDuplicateConversions(reward.duplicateConversions ?? []))}</strong>
           </div>
           ${this.renderRewardItems(battleItems)}
         </section>
@@ -359,6 +361,7 @@ export class ResultsScene extends Phaser.Scene {
     const startingInventory = this.dataSnapshot.startingHeroSave?.inventory ?? [];
     const items = buildRewardItemPresentations({
       itemIds: campaign.nodeReward.itemIds,
+      itemInstances: campaign.nodeReward.itemInstances,
       itemById: ITEM_BY_ID,
       startingInventory,
       alreadyPresentedIds: alreadyPresentedItemIds
@@ -371,6 +374,7 @@ export class ResultsScene extends Phaser.Scene {
           <span>Unlocked</span><strong>${campaign.unlockedNodeNames.length > 0 ? escapeHtml(campaign.unlockedNodeNames.join(", ")) : "No new nodes"}</strong>
           <span>Node XP</span><strong>${campaign.nodeReward.xp}</strong>
           <span>Node resources added</span><strong>${escapeHtml(this.formatResourceRewards(campaign.nodeReward.resources))}</strong>
+          <span>Duplicate conversion</span><strong>${escapeHtml(this.formatDuplicateConversions(campaign.nodeReward.duplicateConversions ?? []))}</strong>
           <span>Campaign bank</span><strong>${escapeHtml(this.formatResourceRewards(campaign.campaignResources))}</strong>
         </div>
         <p class="quiet reward-note">Node resources were added to the persistent campaign bank. Shops, mercenaries, repairs, upgrades, node choices, and stronghold development can spend this bank in future systems.</p>
@@ -392,15 +396,16 @@ export class ResultsScene extends Phaser.Scene {
 
   private renderRewardItem(entry: RewardItemPresentation): string {
     const item = entry.item;
-    const equipped = this.dataSnapshot?.heroSave.equipment[item.slot] === item.id;
+    const equipped = entry.instance ? this.dataSnapshot?.heroSave.equipment[item.slot] === entry.instance.instanceId : false;
     const canEquip = EQUIPPABLE_SLOTS.includes(item.slot);
     const currentItem = this.currentItemInSlot(item.slot);
-    const deltas = this.previewEquipDeltas(item);
+    const deltas = entry.instance ? this.previewEquipDeltas(entry.instance.instanceId) : [];
     return `
       <article class="reward-card ${this.rarityClass(item.rarity)} ${entry.state}">
         <div class="reward-card-main">
           <div>
             <strong>${this.renderItemName(item)} <span class="reward-state">${escapeHtml(rewardStateLabel(entry.state))}</span></strong>
+            ${entry.instance ? `<small>Instance: ${escapeHtml(entry.instance.instanceId)} - Source: ${escapeHtml(entry.instance.source)}</small>` : ""}
             <small>${titleCase(item.slot)} - ${escapeHtml(this.formatStatMods(item.statMods))}</small>
             <p>${escapeHtml(item.description)}</p>
             <small>${escapeHtml(item.flavorText)}</small>
@@ -412,7 +417,7 @@ export class ResultsScene extends Phaser.Scene {
             <small class="stat-preview">${escapeHtml(this.formatDeltas(deltas))}</small>
             ${
               canEquip
-                ? `<button data-results-action="equip" data-item-id="${item.id}" ${equipped ? "disabled" : ""}>${equipped ? "Equipped" : "Equip Now"}</button>`
+                ? `<button data-results-action="equip" data-item-id="${entry.instance?.instanceId ?? ""}" ${equipped || !entry.instance ? "disabled" : ""}>${equipped ? "Equipped" : entry.instance ? "Equip Now" : "Sent to Inventory"}</button>`
                 : ""
             }
           </div>
@@ -483,11 +488,12 @@ export class ResultsScene extends Phaser.Scene {
   }
 
   private currentItemInSlot(slot: EquipmentSlot): ItemDefinition | undefined {
-    const itemId = this.dataSnapshot?.heroSave.equipment[slot];
-    return itemId ? ITEM_BY_ID[itemId] : undefined;
+    const instanceId = this.dataSnapshot?.heroSave.equipment[slot];
+    const instance = instanceId && this.dataSnapshot ? findItemInstance(this.dataSnapshot.heroSave.inventory, instanceId) : undefined;
+    return instance ? ITEM_BY_ID[instance.itemId] : undefined;
   }
 
-  private previewEquipDeltas(item: ItemDefinition): StatDelta[] {
+  private previewEquipDeltas(itemInstanceId: string): StatDelta[] {
     if (!this.dataSnapshot) {
       return [];
     }
@@ -495,7 +501,7 @@ export class ResultsScene extends Phaser.Scene {
     const origin = ORIGIN_BY_ID[this.dataSnapshot.heroSave.originId] ?? Object.values(ORIGIN_BY_ID)[0];
     return equipRewardItemNow({
       hero: this.dataSnapshot.heroSave,
-      itemId: item.id,
+      itemInstanceId,
       itemById: ITEM_BY_ID,
       heroClass,
       origin,
@@ -547,6 +553,18 @@ export class ResultsScene extends Phaser.Scene {
 
   private formatTags(tags: string[]): string {
     return tags.length > 0 ? `Tags: ${tags.map(titleCase).join(", ")}` : "No tags";
+  }
+
+  private formatDuplicateConversions(conversions: NonNullable<BattleRewardResult["duplicateConversions"]>): string {
+    if (conversions.length === 0) {
+      return "None";
+    }
+    return conversions
+      .map((conversion) => {
+        const item = ITEM_BY_ID[conversion.itemId];
+        return `${item?.name ?? conversion.itemId} converted to ${this.formatResourceRewards(conversion.resources)}`;
+      })
+      .join(", ");
   }
 
   private initialStatus(data: ResultsData): string {

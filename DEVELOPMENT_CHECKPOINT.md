@@ -1,24 +1,24 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 13:01 -04:00
+Updated: 2026-04-26 13:55 -04:00
 
 ## Current Health
 
-The project is safe to checkpoint from an automated verification standpoint: tests pass, production build passes, and the local dev URL responds. Full click-through browser QA is still blocked because Browser Use cannot attach to an active Codex browser pane, so the manual checklist remains guided rather than fully executed by automation.
+The project is safe to checkpoint from automated verification: unit tests pass, production build passes, and the Playwright browser smoke suite passes. The remaining risk is manual gameplay QA, especially full battle win/loss paths, construction timing feel, ResultsScene reward persistence, and campaign choice/town-service flows beyond the smoke coverage.
 
-## Latest Commit
-
-```text
-18af42d9520b689ae958f49b41ba9c21346f8e9b
-```
-
-Branch status:
+## Latest Commit Before This Checkpoint
 
 ```text
-main...origin/main [ahead 2]
+3449c58d6764fc0b63ee06ad0d5555a0577623e1
 ```
 
-This hash is the commit before the checkpoint commit. After committing this file and the current worktree, use `git rev-parse HEAD` for the checkpoint commit hash.
+Branch status before committing this checkpoint:
+
+```text
+main...origin/main [ahead 3]
+```
+
+This file is intended to be included in the next local checkpoint commit. After the commit, run `git rev-parse HEAD` for the exact checkpoint hash; expected branch status is `main...origin/main [ahead 4]` with a clean working tree unless new edits are made.
 
 ## Test Status
 
@@ -33,7 +33,7 @@ Result:
 ```text
 PASS
 21 test files passed
-89 tests passed
+105 tests passed
 ```
 
 ## Build Status
@@ -56,12 +56,46 @@ Known build warning:
 
 ```text
 Some chunks are larger than 500 kB after minification.
-Main JS bundle is approximately 1.7 MB minified / 400 KB gzip.
+Main JS bundle is approximately 1.78 MB minified / 420 KB gzip.
 ```
+
+## Browser Smoke Status
+
+Command:
+
+```bash
+npm run test:e2e
+```
+
+Result:
+
+```text
+PASS
+5 Playwright smoke tests passed
+```
+
+Covered flows:
+
+- Main menu boots.
+- New Campaign reaches CampaignMapScene and locked nodes cannot launch.
+- Border Village launches a battle scene.
+- Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost; Broken Ford launches.
+- Hero Inventory opens without crashing.
+
+Manual full-play smoke remains recommended with the checklist in `LLM_GAME_HANDOFF.md`.
+
+In-app Browser Use attach attempt:
+
+```text
+BLOCKED
+No active Codex browser pane was available to the Browser Use runtime.
+```
+
+This appears to be a tool/session attachment issue rather than an app failure; the Playwright suite above completed successfully against the local app.
 
 ## Asset Refresh Status
 
-`npm run assets:refresh` was not run because `git status --short` showed no asset registry, public asset, generated sprite, or manifest input files requiring refresh in this pass.
+`npm run assets:refresh` was not run because no asset registry, manual source-art, generated sprite, or manifest input files changed in this checkpoint.
 
 Run `npm run assets:refresh` before the next checkpoint if any of these change:
 
@@ -70,159 +104,32 @@ Run `npm run assets:refresh` before the next checkpoint if any of these change:
 - generated battle sprites
 - asset manifests
 
-## Smoke Test Status
+## Current Worktree Scope
 
-Local HTTP boot check:
+The current checkpoint groups these related stabilization changes:
 
-```text
-PASS
-http://127.0.0.1:5173/ returned 200 OK
-```
+- Item instance inventory/equipment migration and unique duplicate conversion.
+- Reward, ResultsScene, Hero Inventory, campaign reward, and Marcher Camp purchase updates for item instances.
+- Save V2 migration discipline and older-save normalization.
+- Playwright e2e setup and smoke tests.
+- BattleScene helper extraction.
+- CSS split into domain files with `ui.css` as import hub.
+- Documentation refresh, including `LLM_GAME_HANDOFF.md`.
 
-Browser Use / in-app browser smoke:
+## Known Risks
 
-```text
-BLOCKED
-The Browser Use runtime could not attach to an active Codex browser pane.
-```
-
-Because Browser Use could not attach, the full manual smoke path was not completed by automation in this pass. Use the checklist in `LLM_GAME_HANDOFF.md` for guided manual QA, with special focus on campaign start, First Claim battle launch, construction/training/rally flow, fog/minimap, Results rewards, event choices, Skirmish Setup, Broken Ford, Ashen Outpost, inventory, and reset save.
-
-Known failed or blocked checklist items:
-
-- Items 1-2: local HTTP boot passed, but visual browser confirmation was blocked by Browser Use.
-- Items 3-53: not executed by Browser Use in this pass because the in-app browser bridge was unavailable.
-- No gameplay failure was observed by automated tests or build.
-
-## Current Git Status
-
-Modified files:
-
-```text
-BALANCE.md
-CONTENT_GUIDE.md
-DESIGN.md
-DEVELOPMENT_CHECKPOINT.md
-LLM_GAME_HANDOFF.md
-README.md
-ROADMAP.md
-TECHNICAL_AUDIT.md
-src/game/ai/EnemyAIController.ts
-src/game/battle/BattleLaunchRequest.test.ts
-src/game/battle/BattleLaunchRequest.ts
-src/game/battle/BattleRuntime.test.ts
-src/game/battle/BattleRuntime.ts
-src/game/core/CampaignRules.test.ts
-src/game/core/CampaignRules.ts
-src/game/core/GameTypes.ts
-src/game/core/SaveSystem.test.ts
-src/game/core/SaveSystem.ts
-src/game/data/battlePacing.ts
-src/game/data/buildings.ts
-src/game/data/campaignNodes.ts
-src/game/data/contentIndex.ts
-src/game/data/contentValidation.test.ts
-src/game/data/contentValidation.ts
-src/game/data/factions.ts
-src/game/data/heroClasses.ts
-src/game/data/heroes.ts
-src/game/data/maps.ts
-src/game/data/rewards.ts
-src/game/data/units.ts
-src/game/data/upgrades.ts
-src/game/entities/BaseEntity.ts
-src/game/entities/Building.ts
-src/game/entities/Hero.ts
-src/game/entities/Unit.ts
-src/game/save/SaveTypes.ts
-src/game/scenes/BattleScene.ts
-src/game/scenes/CampaignMapScene.ts
-src/game/scenes/HeroCreationScene.ts
-src/game/scenes/HeroProgressionScene.ts
-src/game/scenes/ResultsScene.ts
-src/game/scenes/SkirmishSetupScene.ts
-src/game/styles/ui.css
-src/game/systems/CombatSystem.ts
-src/game/systems/InputSystem.ts
-src/game/systems/MovementSystem.ts
-src/game/systems/TrainingSystem.ts
-src/game/ui/HUD.ts
-src/game/ui/MinimapView.ts
-```
-
-Untracked files:
-
-```text
-src/game/core/FirstExperienceGuidance.test.ts
-src/game/core/FirstExperienceGuidance.ts
-src/game/core/ResultsFlow.test.ts
-src/game/core/ResultsFlow.ts
-src/game/data/aiPersonalities.test.ts
-src/game/data/aiPersonalities.ts
-src/game/data/campaignModifiers.test.ts
-src/game/data/campaignModifiers.ts
-src/game/systems/FogOfWarSystem.test.ts
-src/game/systems/FogOfWarSystem.ts
-src/game/systems/PathfindingGrid.test.ts
-src/game/systems/PathfindingGrid.ts
-src/game/systems/RallyPointSystem.test.ts
-src/game/systems/RallyPointSystem.ts
-src/game/systems/StatusEffectSystem.test.ts
-src/game/systems/StatusEffectSystem.ts
-```
-
-## What Worked
-
-- Automated tests pass across battle runtime, launch requests, campaign rules, save normalization, rewards/equipment, AI personalities, campaign modifiers, pathfinding, fog, rally points, status effects, upgrades, placement, minimap, and content validation.
-- Production build passes.
-- Local dev URL is reachable.
-- Current handoff is refreshed with current systems, risks, git status, manual QA, Ashen Outpost, and next priorities.
-- Campaign event choices are documented as current behavior.
-- Campaign resource bank and choice claims are documented as saved state.
-
-## What Failed Or Could Not Be Completed
-
-- Browser Use could not attach to the in-app browser pane, so no screenshot-based or click-through smoke test was completed.
-- `rg --files` previously failed with Windows access denied, so PowerShell enumeration was used for codebase/status inspection.
-- Full manual QA remains guided rather than executed through the browser bridge.
-
-## Files Becoming Too Large Or Risky
-
-Most important size/risk hotspots:
-
-- `src/game/styles/ui.css`: 1556 lines.
-- `tools/manual-asset-pipeline/assetRegistry.ts`: 1343 lines.
-- `src/game/scenes/BattleScene.ts`: 1285 lines.
-- `src/game/data/contentValidation.ts`: 929 lines.
-- `src/game/data/maps.ts`: 592 lines.
-- `src/game/scenes/ResultsScene.ts`: 557 lines.
-- `src/game/core/GameTypes.ts`: 542 lines.
-- `src/game/scenes/CampaignMapScene.ts`: 485 lines.
-- `src/game/scenes/HeroProgressionScene.ts`: 441 lines.
-- `src/game/core/HeroProgressionRules.ts`: 420 lines.
-- `src/game/ui/HUD.ts`: 366 lines.
+- Full battle victory/defeat and reward persistence are still primarily manual QA.
+- ResultsScene, CampaignMapScene, HeroProgressionScene, SaveSystem, and HeroProgressionRules are now the highest-risk files for future edits.
+- Bundle size warning remains.
+- Item affixes, crafting, durability, broad shops, and full equipment art are not implemented.
+- Campaign balance needs human Easy/Normal playthroughs.
 
 ## What Should Be Committed Next
 
-This checkpoint pass should commit the current feature set together:
+Commit the entire current worktree together:
 
 ```text
-Checkpoint core campaign RTS prototype
+Checkpoint item instances and prototype stabilization
 ```
 
-Include all modified and untracked files listed above. Do not split or discard any of the current uncommitted files unless the user explicitly requests a different commit strategy.
-
-## Next Manual QA Priority
-
-Run the checklist from `LLM_GAME_HANDOFF.md`, with special focus on:
-
-1. New Campaign -> hero creation -> campaign map.
-2. Border Village battle launch.
-3. Construction, training queue, upgrades, rally points.
-4. Fog and minimap correctness.
-5. Victory/defeat Results flow.
-6. Equip Now persistence.
-7. Campaign node completion and reward claiming.
-8. Chapel of the Marches and Refugee Caravan choices.
-9. Skirmish Setup, Broken Ford launch, and Ashen Outpost launch.
-10. Reset Save and Continue Campaign.
+Do not split, reset, checkout, or discard any current changes unless the user explicitly asks for a different commit strategy.

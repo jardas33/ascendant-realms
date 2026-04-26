@@ -82,19 +82,19 @@ export class MainMenuScene extends Phaser.Scene {
     const emblem = AssetLoader.imageHtml(ASSET_IDS.factions.freeMarches, "Free Marches emblem", "menu-emblem");
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
-      <main class="menu-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
+      <main class="menu-shell asset-screen-bg" data-testid="main-menu" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel">
           ${emblem}
           <p class="eyebrow">Prototype v0.1</p>
           <h1>Ascendant Realms</h1>
           <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
           <div class="menu-actions">
-            <button data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
-            <button data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
-            <button data-menu-action="skirmish">Skirmish</button>
-            <button data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
-            <button data-menu-action="assets">Asset Gallery</button>
-            <button data-menu-action="reset" ${hasSave ? "" : "disabled"}>Reset Save</button>
+            <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
+            <button data-testid="menu-continue-campaign" data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
+            <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
+            <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
+            <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
+            <button data-testid="menu-reset-save" data-menu-action="reset" ${hasSave ? "" : "disabled"}>Reset Save</button>
             <button data-menu-action="credits">Credits / Info</button>
           </div>
           ${

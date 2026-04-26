@@ -124,14 +124,29 @@ Use small equipment bonuses while the roster is tiny:
 - Epic items can combine a strong defensive or caster bonus with 1 to 2 secondary stats.
 - Legendary items should feel broad and special, but not invalidate skill trees or army control.
 
-Reward tables now use weighted pools, fixed rewards, resource payouts, XP payouts, first-clear bonuses, and repeat-clear rewards. Deterministic item order remains available for tests.
+Reward tables now use weighted pools, fixed rewards, resource payouts, XP payouts, first-clear bonuses, and repeat-clear rewards. Deterministic item order remains available for tests. Each item reward creates an inventory instance so future affixes and provenance can attach to individual copies.
 
 Current reward pacing:
 
 - First Claim grants one weighted item roll, modest resources, 35 base victory XP, and a first-clear bonus of 45 XP plus starter resources.
 - Broken Ford grants one weighted item roll, stronger resource payouts, 55 base victory XP, and a first-clear Fordbreaker Halberd plus 65 bonus XP.
 - Ashen Outpost grants one weighted item roll, high milestone resources, 85 base victory XP, and a first-clear Ashbound Censer plus 95 bonus XP. The Ashen Outpost campaign node also grants a larger campaign-bank payout and an Oathbound Aegis for the milestone clear.
-- Duplicate items are skipped for now instead of converted into currency. When most pool items are already owned, a victory can produce resources and XP without a new item.
+- Weighted item rolls prefer unowned catalog items when possible. Non-unique duplicate rewards remain separate instances. Unique duplicate rewards convert into campaign resources: common/uncommon items convert to Crowns, while rare/epic/legendary items convert to Aether.
+
+## Campaign Resource Spending
+
+Marcher Camp is the first campaign-bank sink and unlocks after Old Stone Road. It is intentionally small: one town node, repeatable services, and three one-time item purchases.
+
+Current Marcher Camp costs:
+
+- Rest and Recovery: 30 Crowns for Well Rested, a next-battle +10% hero maximum HP modifier.
+- Hire Volunteers: 45 Crowns for Inspired Militia, a next-battle extra Militia.
+- Buy Supplies: 35 Crowns for 25 Stone, 12 Iron, and 6 Aether.
+- Emberglass Wand: 55 Crowns, one-time common weapon purchase.
+- Marcher Plate: 75 Crowns and 15 Iron, one-time uncommon armor purchase.
+- Green Chapel Icon: 90 Crowns and 15 Aether, one-time trinket purchase.
+
+These costs are tuned so Border Village plus Old Stone Road rewards let the player buy one meaningful service or early item immediately, but not clear the whole stock. Future economy passes should add more sinks before raising reward payouts.
 
 Rarity philosophy:
 

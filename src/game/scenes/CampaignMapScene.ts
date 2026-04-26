@@ -13,6 +13,7 @@ import {
   getCampaignProgressSummary,
   refreshCampaignUnlocks
 } from "../core/CampaignRules";
+import { heroOwnsCatalogItem } from "../core/HeroProgressionRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -171,10 +172,12 @@ export class CampaignMapScene extends Phaser.Scene {
     this.heroSave = result.hero;
     this.campaignSave = result.campaign;
     const rewards = this.formatChoiceRewardSummary(choice);
+    const costs = this.formatResourceRewards(choice.costs ?? {});
     const unlocked = result.unlockedNodeIds.map((nodeId) => CAMPAIGN_NODES.find((entry) => entry.id === nodeId)?.name ?? nodeId);
     const locked = result.lockedNodeIds.map((nodeId) => CAMPAIGN_NODES.find((entry) => entry.id === nodeId)?.name ?? nodeId);
     const modifiers = result.grantedModifierIds.map((modifierId) => CAMPAIGN_MODIFIER_BY_ID[modifierId]?.name ?? modifierId);
-    this.message = `${choice.label} chosen.${rewards ? ` ${rewards}.` : ""}${modifiers.length > 0 ? ` Modifier gained: ${modifiers.join(", ")}.` : ""}${unlocked.length > 0 ? ` New path: ${unlocked.join(", ")}.` : ""}${locked.length > 0 ? ` Path closed: ${locked.join(", ")}.` : ""}`;
+    const verb = node.nodeType === "town" ? "used" : "chosen";
+    this.message = `${choice.label} ${verb}.${costs.length > 0 ? ` Spent ${costs.join(", ")}.` : ""}${rewards ? ` ${rewards}.` : ""}${modifiers.length > 0 ? ` Modifier gained: ${modifiers.join(", ")}.` : ""}${unlocked.length > 0 ? ` New path: ${unlocked.join(", ")}.` : ""}${locked.length > 0 ? ` Path closed: ${locked.join(", ")}.` : ""}`;
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }
@@ -187,7 +190,7 @@ export class CampaignMapScene extends Phaser.Scene {
     const selectedNode = this.selectedNode();
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
-      <main class="menu-shell campaign-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
+      <main class="menu-shell campaign-shell asset-screen-bg" data-testid="campaign-map" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel extra-wide campaign-panel">
           <div class="progression-header">
             <div>
@@ -200,7 +203,7 @@ export class CampaignMapScene extends Phaser.Scene {
               <strong>${this.campaignSave.started ? "Live" : "New"}</strong>
             </div>
           </div>
-          <div class="status-box">${escapeHtml(this.message)}</div>
+          <div class="status-box" data-testid="campaign-status">${escapeHtml(this.message)}</div>
           ${this.renderNextActionPanel()}
           <div class="campaign-layout">
             <section>
@@ -234,9 +237,9 @@ export class CampaignMapScene extends Phaser.Scene {
     const primaryLabel = node?.nodeType === "battle" ? "Start Battle" : "Resolve Node";
     return `
       <div class="menu-actions row">
-        ${hasChoices ? "" : `<button data-campaign-action="start" ${this.canStartSelectedNode() ? "" : "disabled"}>${primaryLabel}</button>`}
-        <button data-campaign-action="inventory">Hero Inventory</button>
-        <button data-campaign-action="menu">Main Menu</button>
+        ${hasChoices ? "" : `<button data-testid="campaign-start-node" data-campaign-action="start" ${this.canStartSelectedNode() ? "" : "disabled"}>${primaryLabel}</button>`}
+        <button data-testid="campaign-inventory" data-campaign-action="inventory">Hero Inventory</button>
+        <button data-testid="campaign-main-menu" data-campaign-action="menu">Main Menu</button>
       </div>
     `;
   }
@@ -248,7 +251,7 @@ export class CampaignMapScene extends Phaser.Scene {
 
   private renderCampaignResourceBank(): string {
     return `
-      <div class="campaign-bank">
+      <div class="campaign-bank" data-testid="campaign-bank">
         ${RESOURCE_DEFINITIONS.map(
           (resource) => `
             <div class="resource-pill campaign-bank-pill" style="--resource-color: #${resource.color.toString(16).padStart(6, "0")}">
@@ -258,7 +261,7 @@ export class CampaignMapScene extends Phaser.Scene {
           `
         ).join("")}
       </div>
-      <p class="quiet campaign-bank-note">Campaign resources are saved between nodes. Event choices can spend them now; future shops, mercenaries, repairs, upgrades, and stronghold development will use this bank too.</p>
+      <p class="quiet campaign-bank-note">Campaign resources are saved between nodes. Spent so far: ${escapeHtml(this.formatResourceRewards(this.campaignSave.resourcesSpent).join(", ") || "None")}.</p>
     `;
   }
 
@@ -329,6 +332,7 @@ export class CampaignMapScene extends Phaser.Scene {
     return `
       <button
         class="campaign-node ${status} ${selected ? "selected" : ""}"
+        data-testid="campaign-node-${node.id}"
         data-campaign-node="${node.id}"
         style="--node-x: ${node.x}%; --node-y: ${node.y}%"
       >
@@ -390,9 +394,10 @@ export class CampaignMapScene extends Phaser.Scene {
   }
 
   private renderEventChoices(node: CampaignNodeDefinition, status: CampaignNodeStatus): string {
+    const isTown = node.nodeType === "town";
     return `
-      <div class="event-choice-list">
-        <h4>Choices</h4>
+      <div class="event-choice-list ${isTown ? "town-service-list" : ""}">
+        <h4>${isTown ? "Town Services" : "Choices"}</h4>
         ${node.choices
           ?.map((choice) => {
             const availability = getCampaignChoiceAvailability({
@@ -403,13 +408,16 @@ export class CampaignMapScene extends Phaser.Scene {
             });
             const locked = status === "locked" || !availability.ok;
             const reason = availability.reasons.join(", ");
+            const stock = choice.stockItemId ? ITEM_BY_ID[choice.stockItemId] : undefined;
             return `
               <button class="choice event-choice ${locked ? "locked" : ""}" data-campaign-choice="${choice.id}" ${locked ? "disabled" : ""}>
                 <strong>${escapeHtml(choice.label)}</strong>
                 <span>${escapeHtml(choice.description)}</span>
+                ${stock ? `<small>Stock: ${escapeHtml(stock.name)} - ${titleCase(stock.rarity)} ${titleCase(stock.slot)}</small>` : ""}
                 <small>Cost: ${escapeHtml(this.formatResourceRewards(choice.costs ?? {}).join(", ") || "None")}</small>
                 <small>Reward: ${escapeHtml(this.formatChoiceRewardSummary(choice) || "None")}</small>
-                <small>${locked ? escapeHtml(reason || "Locked") : choice.completesNode === false ? "Keeps this node open." : "Completes this node."}</small>
+                <small>${locked ? escapeHtml(reason || "Locked") : isTown ? choice.onceOnly ? "Purchase once." : "Repeatable service." : choice.completesNode === false ? "Keeps this node open." : "Completes this node."}</small>
+                <span class="choice-cta">${isTown ? stock ? "Purchase" : "Use Service" : "Choose"}</span>
               </button>
             `;
           })
@@ -469,6 +477,9 @@ export class CampaignMapScene extends Phaser.Scene {
     });
     if (choice.rewards?.recoverHero) {
       rewards.push("Recover hero");
+    }
+    if (choice.stockItemId && heroOwnsCatalogItem(this.heroSave, choice.stockItemId)) {
+      rewards.push("Already in inventory");
     }
     return rewards.join(", ");
   }

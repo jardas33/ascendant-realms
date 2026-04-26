@@ -105,11 +105,11 @@ export class HUD {
     const portraitId = heroPortraitAssetId(snapshot.hero.classId);
     const hasPortrait = AssetLoader.hasAsset(portraitId);
     const markup = `
-      <div class="top-bar">
-        <div class="resource-row">${this.renderResources(snapshot.resources)}</div>
+      <div class="top-bar" data-testid="battle-hud">
+        <div class="resource-row" data-testid="battle-resources">${this.renderResources(snapshot.resources)}</div>
         <button class="hud-button compact" data-action="menu">Menu</button>
       </div>
-      <div class="hero-panel">
+      <div class="hero-panel" data-testid="battle-hero-panel">
         <div class="portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, this.toCssColor(snapshot.hero.definition.color))}></div>
         <div class="hero-lines">
           <strong>${escapeHtml(snapshot.hero.heroName)} L${snapshot.hero.level}</strong>
@@ -125,10 +125,10 @@ export class HUD {
         ${this.renderActions(selectedOne, snapshot)}
         ${this.renderAbilities(abilities, snapshot.hero)}
       </div>
-      <div class="minimap-shell">
+      <div class="minimap-shell" data-testid="battle-minimap">
         ${renderMinimap(snapshot.minimap)}
       </div>
-      <div class="status-line ${snapshot.isPlacing ? "active" : ""}">${escapeHtml(snapshot.status)}</div>
+      <div class="status-line ${snapshot.isPlacing ? "active" : ""}" data-testid="battle-status">${escapeHtml(snapshot.status)}</div>
       ${snapshot.hint ? `<div class="hint-line">${escapeHtml(snapshot.hint)}</div>` : ""}
     `;
 

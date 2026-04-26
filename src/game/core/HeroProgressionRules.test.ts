@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   allocateSkillPoint,
   calculateLiveHeroStats,
+  createItemInstance,
   equipItem,
   grantBattleRewards,
   grantItemRewards,
@@ -31,10 +32,10 @@ describe("hero RPG progression rules", () => {
   it("applies skill and equipment stat modifiers without mutating base data", () => {
     const hero = {
       ...createNewHeroSave("Ilya", "arcanist", "temple_orphan"),
-      inventory: ["emberglass_wand"],
-      equipment: { weapon: "emberglass_wand" },
+      inventory: [createItemInstance("emberglass_wand", "test")],
       allocatedSkills: { magic_focus: 2 }
     };
+    hero.equipment = { weapon: hero.inventory[0].instanceId };
 
     const stats = calculateLiveHeroStats(
       hero,
@@ -57,10 +58,11 @@ describe("hero RPG progression rules", () => {
 
     const rewardIds = pickBattleRewardItemIds(REWARD_TABLE_BY_ID.first_claim_rewards, 0, hero.inventory);
     const rewarded = grantItemRewards(hero, rewardIds);
-    const equipped = equipItem(rewarded, rewardIds[0], ITEM_BY_ID);
+    const rewardInstance = rewarded.inventory.find((instance) => instance.itemId === rewardIds[0]);
+    const equipped = equipItem(rewarded, rewardInstance?.instanceId ?? "", ITEM_BY_ID);
 
     expect(rewardIds).toHaveLength(1);
-    expect(rewarded.inventory).toContain(rewardIds[0]);
+    expect(rewarded.inventory.some((instance) => instance.itemId === rewardIds[0])).toBe(true);
     expect(equipped.ok).toBe(true);
   });
 
@@ -91,7 +93,7 @@ describe("hero RPG progression rules", () => {
     expect(reward.xp).toBe(10);
   });
 
-  it("grants reward XP, inventory, and per-map first-clear history", () => {
+  it("grants reward XP, item instances, and per-map first-clear history", () => {
     const hero = {
       ...createNewHeroSave("Vale", "warlord", "exiled_noble"),
       xp: 90
@@ -106,10 +108,62 @@ describe("hero RPG progression rules", () => {
       "first_claim"
     );
 
-    expect(granted.hero.inventory).toContain("captains_seal");
+    expect(granted.hero.inventory.some((instance) => instance.itemId === "captains_seal")).toBe(true);
+    expect(granted.grantedItemInstances).toHaveLength(1);
+    expect(granted.grantedItemInstances[0]).toMatchObject({
+      itemId: "captains_seal",
+      source: "battle_reward",
+      affixes: []
+    });
     expect(granted.hero.clearedMapIds).toContain("first_claim");
     expect(granted.hero.level).toBe(2);
     expect(granted.hero.skillPoints).toBe(1);
     expect(granted.levelUp.skillPointsGained).toBe(1);
+  });
+
+  it("keeps non-unique duplicate rewards as separate instances", () => {
+    const hero = {
+      ...createNewHeroSave("Vale", "warlord", "exiled_noble"),
+      inventory: [createItemInstance("emberglass_wand", "test")]
+    };
+
+    const granted = grantBattleRewards(
+      hero,
+      {
+        itemIds: ["emberglass_wand"],
+        resources: {},
+        xp: 0
+      },
+      undefined,
+      { itemById: ITEM_BY_ID }
+    );
+
+    expect(granted.hero.inventory.filter((instance) => instance.itemId === "emberglass_wand")).toHaveLength(2);
+    expect(granted.duplicateConversions).toEqual([]);
+  });
+
+  it("converts unique duplicate rewards into resources", () => {
+    const hero = {
+      ...createNewHeroSave("Vale", "warlord", "exiled_noble"),
+      inventory: [createItemInstance("weathered_command_sword", "test")]
+    };
+
+    const granted = grantBattleRewards(
+      hero,
+      {
+        itemIds: ["weathered_command_sword"],
+        resources: {},
+        xp: 0
+      },
+      undefined,
+      { itemById: ITEM_BY_ID }
+    );
+
+    expect(granted.hero.inventory.filter((instance) => instance.itemId === "weathered_command_sword")).toHaveLength(1);
+    expect(granted.grantedItemInstances).toEqual([]);
+    expect(granted.duplicateConversions).toEqual([
+      { itemId: "weathered_command_sword", reason: "unique_duplicate", resources: { crowns: 40 } }
+    ]);
+    expect(granted.reward.resources.crowns).toBe(40);
   });
 });

@@ -10,6 +10,7 @@ import type {
   HeroBaseStats,
   HeroStatMods,
   ItemDefinition,
+  ItemInstance,
   RewardLevelUpSummary,
   SkillNodeDefinition
 } from "../core/GameTypes";
@@ -19,6 +20,7 @@ import {
   calculateLiveHeroStats,
   canAllocateSkill,
   equipItem,
+  findItemInstance,
   saveWithRecalculatedStats,
   unequipItem
 } from "../core/HeroProgressionRules";
@@ -152,7 +154,7 @@ export class HeroProgressionScene extends Phaser.Scene {
 
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
-      <main class="menu-shell progression-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: backgroundId })}>
+      <main class="menu-shell progression-shell asset-screen-bg" data-testid="hero-inventory" ${AssetLoader.screenStyle({ backgroundAssetId: backgroundId })}>
         <section class="menu-panel extra-wide progression-panel ${this.stats?.outcome === "victory" ? "results-panel victory" : ""}">
           <div class="progression-header">
             <div class="progression-title-row">
@@ -174,7 +176,7 @@ export class HeroProgressionScene extends Phaser.Scene {
           <div class="progression-grid">
             <section>
               <h2>Hero Stats</h2>
-              ${this.renderStats(stats)}
+              <div data-testid="hero-stats">${this.renderStats(stats)}</div>
               <h2>Abilities</h2>
               <div class="tag-row">${this.heroSave.unlockedAbilities
                 .map((abilityId) => `<span class="tag">${escapeHtml(abilityId.replaceAll("_", " "))}</span>`)
@@ -182,9 +184,9 @@ export class HeroProgressionScene extends Phaser.Scene {
             </section>
             <section>
               <h2>Equipment</h2>
-              ${this.renderEquipment()}
+              <div data-testid="equipment-panel">${this.renderEquipment()}</div>
               <h2>Inventory</h2>
-              ${this.renderInventory()}
+              <div data-testid="inventory-list">${this.renderInventory()}</div>
             </section>
           </div>
           <h2>Skill Trees</h2>
@@ -281,7 +283,8 @@ export class HeroProgressionScene extends Phaser.Scene {
       <div class="equipment-list">
         ${EQUIPMENT_SLOTS.map((slot) => {
           const itemId = this.heroSave.equipment[slot];
-          const item = itemId ? ITEM_BY_ID[itemId] : undefined;
+          const instance = itemId ? findItemInstance(this.heroSave.inventory, itemId) : undefined;
+          const item = instance ? ITEM_BY_ID[instance.itemId] : undefined;
           return `
             <div class="equipment-row ${item ? this.rarityClass(item.rarity) : ""}">
               <div>
@@ -289,6 +292,7 @@ export class HeroProgressionScene extends Phaser.Scene {
                 ${
                   item
                     ? `<span>${this.renderItemName(item)} - ${escapeHtml(this.formatStatMods(item.statMods))}</span>
+                      <small>Instance: ${escapeHtml(instance?.instanceId ?? "")}</small>
                       <p>${escapeHtml(item.description)}</p>
                       <small>${escapeHtml(item.flavorText)}</small>`
                     : "<span>Empty</span>"
@@ -304,29 +308,30 @@ export class HeroProgressionScene extends Phaser.Scene {
 
   private renderInventory(): string {
     const items = this.heroSave.inventory
-      .map((itemId) => ITEM_BY_ID[itemId])
-      .filter((item): item is ItemDefinition => item !== undefined);
+      .map((instance) => ({ instance, item: ITEM_BY_ID[instance.itemId] }))
+      .filter((entry): entry is { instance: ItemInstance; item: ItemDefinition } => entry.item !== undefined);
     if (items.length === 0) {
       return `<p class="quiet">Win battles to earn equipment rewards.</p>`;
     }
     return `
       <div class="inventory-list">
         ${items
-          .map((item) => {
-            const equipped = this.heroSave.equipment[item.slot] === item.id;
-            const rewarded = this.rewardItemIds.includes(item.id);
+          .map(({ instance, item }) => {
+            const equipped = this.heroSave.equipment[item.slot] === instance.instanceId;
+            const rewarded = this.rewardItemIds.includes(item.id) || (this.reward?.itemInstances ?? []).some((rewardInstance) => rewardInstance.instanceId === instance.instanceId);
             const equipText = rewarded && !equipped ? "Equip Now" : equipped ? "Equipped" : "Equip";
             return `
               <div class="inventory-row ${rewarded ? "new" : ""} ${this.rarityClass(item.rarity)}">
                 <div>
                   <strong>${this.renderItemName(item)} ${rewarded ? "<span>New</span>" : ""}</strong>
+                  <small>Instance: ${escapeHtml(instance.instanceId)} - Source: ${escapeHtml(instance.source)}</small>
                   <small>${titleCase(item.slot)} - ${escapeHtml(this.formatStatMods(item.statMods))}</small>
                   <p>${escapeHtml(item.description)}</p>
                   <small>${escapeHtml(item.flavorText)}</small>
                   <small>${escapeHtml(this.formatTags(item.tags))}</small>
                   <small class="stat-preview">${escapeHtml(this.previewEquipDelta(item, equipped))}</small>
                 </div>
-                <button data-progression-action="equip" data-id="${item.id}" ${equipped ? "disabled" : ""}>${equipText}</button>
+                <button data-progression-action="equip" data-id="${instance.instanceId}" ${equipped ? "disabled" : ""}>${equipText}</button>
               </div>
             `;
           })
@@ -374,7 +379,8 @@ export class HeroProgressionScene extends Phaser.Scene {
     if (equipped) {
       return "Currently equipped.";
     }
-    const result = equipItem(this.heroSave, item.id, ITEM_BY_ID);
+    const instance = this.heroSave.inventory.find((entry) => entry.itemId === item.id);
+    const result = instance ? equipItem(this.heroSave, instance.instanceId, ITEM_BY_ID) : { ok: false, hero: this.heroSave, message: "Item is not in this hero's inventory." };
     if (!result.ok) {
       return result.message;
     }

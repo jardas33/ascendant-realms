@@ -102,7 +102,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
 
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
-      <main class="menu-shell setup-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
+      <main class="menu-shell setup-shell asset-screen-bg" data-testid="skirmish-setup" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel extra-wide">
           <p class="eyebrow">Skirmish Setup</p>
           <h1>Choose The Battlefield</h1>
@@ -123,8 +123,8 @@ export class SkirmishSetupScene extends Phaser.Scene {
             </section>
           </div>
           <div class="menu-actions row">
-            <button data-setup-action="start">Start Battle</button>
-            <button data-setup-action="back">Back</button>
+            <button data-testid="setup-start-battle" data-setup-action="start">Start Battle</button>
+            <button data-testid="setup-back" data-setup-action="back">Back</button>
           </div>
         </section>
       </main>
@@ -156,7 +156,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
       .map((faction) => {
         const locked = !SELECTABLE_ENEMY_FACTION_IDS.has(faction.id);
         return `
-          <button class="choice compact-choice ${faction.id === this.selectedEnemyFactionId ? "selected" : ""}" data-setup-kind="enemy" data-id="${faction.id}" ${locked ? "disabled" : ""}>
+          <button class="choice compact-choice ${faction.id === this.selectedEnemyFactionId ? "selected" : ""}" data-testid="setup-enemy-${faction.id}" data-setup-kind="enemy" data-id="${faction.id}" ${locked ? "disabled" : ""}>
             <strong>${escapeHtml(faction.name)}</strong>
             <span>${escapeHtml(locked ? `${faction.fantasy} Future AI profile.` : faction.mechanics.militaryStyle)}</span>
             <small>${escapeHtml(locked ? "Locked for now" : faction.mechanics.magicStyle)}</small>
@@ -169,7 +169,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderMapChoices(): string {
     return MAPS.map(
       (map) => `
-        <button class="choice map-choice ${map.id === this.selectedMapId ? "selected" : ""}" data-setup-kind="map" data-id="${map.id}">
+        <button class="choice map-choice ${map.id === this.selectedMapId ? "selected" : ""}" data-testid="setup-map-${map.id}" data-setup-kind="map" data-id="${map.id}">
           <strong>${escapeHtml(map.name)}</strong>
           <span>${escapeHtml(map.role)}</span>
           <small>${map.width}x${map.height} - ${map.captureSites.length} sites - ${map.neutralCamps.length} camps</small>
@@ -182,7 +182,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderDifficultyChoices(): string {
     return BATTLE_DIFFICULTIES.map(
       (difficulty) => `
-        <button class="choice compact-choice ${difficulty.id === this.selectedDifficulty ? "selected" : ""}" data-setup-kind="difficulty" data-id="${difficulty.id}">
+        <button class="choice compact-choice ${difficulty.id === this.selectedDifficulty ? "selected" : ""}" data-testid="setup-difficulty-${difficulty.id}" data-setup-kind="difficulty" data-id="${difficulty.id}">
           <strong>${difficulty.name}</strong>
           <span>${difficulty.description}</span>
         </button>
@@ -193,7 +193,7 @@ export class SkirmishSetupScene extends Phaser.Scene {
   private renderPersonalityChoices(): string {
     return AI_PERSONALITIES.map(
       (personality) => `
-        <button class="choice compact-choice ${personality.id === this.selectedAiPersonalityId ? "selected" : ""}" data-setup-kind="personality" data-id="${personality.id}">
+        <button class="choice compact-choice ${personality.id === this.selectedAiPersonalityId ? "selected" : ""}" data-testid="setup-personality-${personality.id}" data-setup-kind="personality" data-id="${personality.id}">
           <strong>${escapeHtml(personality.name)}</strong>
           <span>${escapeHtml(personality.shortDescription)}</span>
         </button>

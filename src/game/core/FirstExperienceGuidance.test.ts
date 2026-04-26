@@ -8,6 +8,7 @@ import {
 } from "./FirstExperienceGuidance";
 import { createStartedCampaignSave } from "./CampaignRules";
 import { createFallbackCampaignSave } from "./SaveSystem";
+import { createItemInstance } from "./HeroProgressionRules";
 import { createNewHeroSave } from "../data/heroes";
 
 describe("first experience guidance", () => {
@@ -25,7 +26,7 @@ describe("first experience guidance", () => {
   it("points post-Border Village players to inventory before Old Stone Road when progression is waiting", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
-      inventory: ["weathered_command_sword"],
+      inventory: [createItemInstance("weathered_command_sword", "test")],
       skillPoints: 1
     };
     const campaign = {
@@ -75,7 +76,7 @@ describe("first experience guidance", () => {
   it("prompts inventory and skill spending when both are available", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
-      inventory: ["weathered_command_sword"],
+      inventory: [createItemInstance("weathered_command_sword", "test")],
       skillPoints: 1
     };
 

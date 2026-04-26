@@ -206,6 +206,9 @@ function validateCampaignModifiers(errors: string[], context: ValidationContext)
     if (modifier.effects.heroManaMultiplier !== undefined && modifier.effects.heroManaMultiplier <= 0) {
       errors.push(`Campaign modifier ${modifier.id} has invalid hero mana multiplier.`);
     }
+    if (modifier.effects.heroMaxHpMultiplier !== undefined && modifier.effects.heroMaxHpMultiplier <= 0) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid hero HP multiplier.`);
+    }
     if (modifier.effects.campaignResourceRewardMultiplier !== undefined && modifier.effects.campaignResourceRewardMultiplier <= 0) {
       errors.push(`Campaign modifier ${modifier.id} has invalid resource reward multiplier.`);
     }
@@ -236,6 +239,7 @@ function validateCampaignChoice(
       removeModifierIds?: string[];
       reputationChanges?: Record<string, number>;
     };
+    stockItemId?: string;
     reputationChanges?: Record<string, number>;
     unlockNodeIds?: string[];
     lockNodeIds?: string[];
@@ -274,6 +278,9 @@ function validateCampaignChoice(
       errors.push(`Campaign choice ${nodeId}:${choice.id} rewards missing item ${itemId}.`);
     }
   });
+  if (choice.stockItemId && !context.itemIds.has(choice.stockItemId)) {
+    errors.push(`Campaign choice ${nodeId}:${choice.id} stocks missing item ${choice.stockItemId}.`);
+  }
   if ((choice.rewards?.xp ?? 0) < 0) {
     errors.push(`Campaign choice ${nodeId}:${choice.id} has negative XP reward.`);
   }
@@ -327,6 +334,9 @@ function validateItems(errors: string[], context: ValidationContext): void {
     }
     if (!["common", "uncommon", "rare", "epic", "legendary"].includes(item.rarity)) {
       errors.push(`Item ${item.id} has invalid rarity ${item.rarity}.`);
+    }
+    if (item.unique !== undefined && typeof item.unique !== "boolean") {
+      errors.push(`Item ${item.id} has invalid unique flag.`);
     }
     if (!item.name.trim() || !item.description.trim() || !item.flavorText.trim()) {
       errors.push(`Item ${item.id} needs name, description, and flavor text.`);

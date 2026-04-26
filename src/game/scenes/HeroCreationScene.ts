@@ -79,7 +79,7 @@ export class HeroCreationScene extends Phaser.Scene {
     }
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
-      <main class="menu-shell creation asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
+      <main class="menu-shell creation asset-screen-bg" data-testid="hero-creation" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel wide">
           <p class="eyebrow">${this.nextMode === "campaign" ? "New Campaign" : "Hero Creation"}</p>
           <h1>Choose Your Ascendant</h1>
@@ -92,7 +92,7 @@ export class HeroCreationScene extends Phaser.Scene {
             }</p>
           </div>
           <label class="field-label" for="hero-name">Hero Name</label>
-          <input id="hero-name" value="${escapeHtml(this.heroName)}" maxlength="24" />
+          <input id="hero-name" data-testid="hero-name-input" value="${escapeHtml(this.heroName)}" maxlength="24" />
           <div class="choice-columns">
             <div>
               <h2>Class</h2>
@@ -101,7 +101,7 @@ export class HeroCreationScene extends Phaser.Scene {
                   const portraitId = heroPortraitAssetId(heroClass.id);
                   const hasPortrait = AssetLoader.hasAsset(portraitId);
                   return `
-                  <button class="choice ${heroClass.id === this.selectedClassId ? "selected" : ""}" data-option-kind="class" data-id="${heroClass.id}">
+                  <button class="choice ${heroClass.id === this.selectedClassId ? "selected" : ""}" data-testid="hero-class-${heroClass.id}" data-option-kind="class" data-id="${heroClass.id}">
                     <span class="choice-content">
                       <span class="choice-portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, this.toCssColor(heroClass.color))}></span>
                       <span class="choice-copy">
@@ -118,7 +118,7 @@ export class HeroCreationScene extends Phaser.Scene {
               <h2>Origin</h2>
               ${ORIGINS.map(
                 (origin) => `
-                  <button class="choice ${origin.id === this.selectedOriginId ? "selected" : ""}" data-option-kind="origin" data-id="${origin.id}">
+                  <button class="choice ${origin.id === this.selectedOriginId ? "selected" : ""}" data-testid="hero-origin-${origin.id}" data-option-kind="origin" data-id="${origin.id}">
                     <strong>${origin.name}</strong>
                     <span>${origin.description}</span>
                   </button>
@@ -127,8 +127,8 @@ export class HeroCreationScene extends Phaser.Scene {
             </div>
           </div>
           <div class="menu-actions row">
-            <button data-hero-action="start">${this.nextMode === "campaign" ? "Begin Campaign" : "Continue To Setup"}</button>
-            <button data-hero-action="back">Back</button>
+            <button data-testid="hero-start" data-hero-action="start">${this.nextMode === "campaign" ? "Begin Campaign" : "Continue To Setup"}</button>
+            <button data-testid="hero-back" data-hero-action="back">Back</button>
           </div>
         </section>
       </main>

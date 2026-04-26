@@ -1,0 +1,375 @@
+/* Hero progression, inventory, equipment, skill tree, and shared menu card primitives. */
+
+.progression-shell {
+  place-items: stretch center;
+  overflow: auto;
+}
+
+.progression-panel {
+  align-self: start;
+  max-height: none;
+}
+
+.progression-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.progression-title-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.skill-points {
+  min-width: 118px;
+  padding: 10px 12px;
+  border: 1px solid rgba(240, 217, 120, 0.28);
+  border-style: solid;
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 8px;
+  border-image-repeat: stretch;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(222, 190, 94, 0.13), rgba(8, 11, 10, 0.62)),
+    var(--panel-texture),
+    rgba(43, 45, 35, 0.55);
+  text-align: center;
+}
+
+.skill-points span,
+.skill-points strong {
+  display: block;
+}
+
+.skill-points span {
+  color: #c8d0bd;
+  font-size: 12px;
+}
+
+.skill-points strong {
+  color: #f0d978;
+  font-size: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: #f0d978;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 12px;
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 1;
+}
+
+h2 {
+  font-size: 18px;
+}
+
+h2::after,
+.panel-title::after,
+.skill-tree h3::after {
+  content: "";
+  display: block;
+  height: 9px;
+  margin-top: 7px;
+  background: var(
+    --ui-divider-ornament,
+    linear-gradient(90deg, rgba(222, 190, 94, 0), rgba(222, 190, 94, 0.46), rgba(222, 190, 94, 0))
+  );
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.78;
+  pointer-events: none;
+}
+
+.menu-copy,
+.quiet {
+  color: #c8d0bd;
+  line-height: 1.55;
+}
+
+.menu-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.menu-actions.row {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.menu-actions button,
+.choice {
+  min-height: 44px;
+  padding: 11px 14px;
+  text-align: left;
+}
+
+.info-box {
+  position: relative;
+  overflow: hidden;
+  margin-top: 18px;
+  padding: 15px 16px 17px;
+  border: 1px solid var(--panel-blue);
+  border-style: solid;
+  border-image-source: var(--ui-tooltip-frame);
+  border-image-slice: 58;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 6px;
+  color: #d9eee8;
+  background:
+    linear-gradient(135deg, rgba(103, 161, 194, 0.16), rgba(6, 9, 9, 0.62)),
+    linear-gradient(90deg, rgba(222, 190, 94, 0.08), transparent 20%, transparent 80%, rgba(116, 211, 242, 0.08)),
+    var(--panel-texture),
+    rgba(28, 48, 52, 0.42);
+  line-height: 1.45;
+  box-shadow: var(--plate-shadow);
+}
+
+.status-box {
+  position: relative;
+  overflow: hidden;
+  margin: 16px 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(116, 211, 242, 0.26);
+  border-style: solid;
+  border-image-source: var(--ui-tooltip-frame);
+  border-image-slice: 58;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 6px;
+  color: #d9eee8;
+  background:
+    linear-gradient(135deg, rgba(103, 161, 194, 0.15), rgba(6, 9, 9, 0.6)),
+    linear-gradient(90deg, rgba(222, 190, 94, 0.08), transparent 22%, transparent 78%, rgba(116, 211, 242, 0.08)),
+    var(--panel-texture),
+    rgba(28, 48, 52, 0.35);
+  box-shadow: var(--plate-shadow);
+}
+
+.guidance-card {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(240, 217, 120, 0.28);
+  border-radius: 6px;
+  color: #ecf6df;
+  background:
+    linear-gradient(135deg, rgba(240, 217, 120, 0.12), rgba(28, 48, 52, 0.48)),
+    var(--panel-texture),
+    rgba(10, 15, 13, 0.62);
+  box-shadow: var(--plate-shadow);
+}
+
+.guidance-card.compact {
+  margin: 10px 0;
+  padding: 10px 12px;
+}
+
+.guidance-card strong {
+  color: #f6e49a;
+}
+
+.guidance-card p {
+  margin: 0;
+  color: #d7e8de;
+  line-height: 1.45;
+}
+
+.results-guidance {
+  margin-top: 0;
+}
+
+.progression-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.progression-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.progression-stats span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag {
+  padding: 5px 8px;
+  border: 1px solid rgba(240, 217, 120, 0.24);
+  border-radius: 999px;
+  color: #f2e5a8;
+  background: rgba(240, 217, 120, 0.08);
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.equipment-list,
+.inventory-list,
+.skill-tree-grid {
+  display: grid;
+  gap: 9px;
+}
+
+.equipment-row,
+.inventory-row,
+.skill-node {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--plate-edge);
+  border-style: solid;
+  border-radius: 6px;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+}
+
+.equipment-row,
+.inventory-row {
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 8px;
+  border-image-repeat: stretch;
+}
+
+.equipment-row span,
+.inventory-row small,
+.skill-node small {
+  display: block;
+  margin-top: 4px;
+  color: #c8d0bd;
+  line-height: 1.35;
+}
+
+.equipment-row p,
+.inventory-row p,
+.skill-tree p {
+  margin: 5px 0 0;
+  color: #c8d0bd;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.equipment-row small,
+.inventory-row small.stat-preview {
+  color: #f1df9d;
+}
+
+.inventory-row.new {
+  border-color: var(--plate-edge-strong);
+  background:
+    linear-gradient(90deg, rgba(240, 217, 120, 0.16), rgba(240, 217, 120, 0.035) 36%, transparent),
+    var(--plate-bg);
+  box-shadow:
+    inset 0 0 0 1px rgba(240, 217, 120, 0.08),
+    0 0 22px rgba(240, 217, 120, 0.08),
+    var(--plate-shadow);
+}
+
+.inventory-row strong span {
+  margin-left: 6px;
+  color: #f0d978;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.rarity-pill {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.rarity-common .rarity-pill {
+  color: #d7d0bd;
+}
+
+.rarity-uncommon .rarity-pill {
+  color: #8fd89b;
+}
+
+.rarity-rare .rarity-pill {
+  color: #8ec8ff;
+}
+
+.rarity-epic .rarity-pill {
+  color: #caa2ff;
+}
+
+.rarity-legendary .rarity-pill {
+  color: #f3b25f;
+}
+
+.inventory-row.rarity-uncommon,
+.equipment-row.rarity-uncommon {
+  border-color: rgba(143, 216, 155, 0.5);
+}
+
+.inventory-row.rarity-rare,
+.equipment-row.rarity-rare {
+  border-color: rgba(142, 200, 255, 0.55);
+}
+
+.inventory-row.rarity-epic,
+.equipment-row.rarity-epic {
+  border-color: rgba(202, 162, 255, 0.62);
+}
+
+.inventory-row.rarity-legendary,
+.equipment-row.rarity-legendary {
+  border-color: rgba(243, 178, 95, 0.72);
+}
+
+.skill-tree-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.skill-tree {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+}
+
+.skill-tree h3 {
+  margin: 0;
+  color: #f0d978;
+}
+
+.skill-node strong span {
+  color: #f0d978;
+  font-size: 12px;
+}

@@ -22,7 +22,7 @@ export type ItemRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
 export type BattleDifficulty = "story" | "easy" | "normal" | "hard";
 export type BattlePhaseId = "opening" | "expansion" | "pressure" | "assault";
 export type EnemyAIPersonalityId = "balanced_warlord" | "raider_rush" | "fortress_keeper" | "hexfire_cult";
-export type CampaignModifierId = "inspired_militia" | "blessed_road" | "angered_raiders" | "local_support";
+export type CampaignModifierId = "inspired_militia" | "blessed_road" | "well_rested" | "angered_raiders" | "local_support";
 export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "next_node_resource_reward";
 export type BuildingConstructionState = "planned" | "underConstruction" | "completed";
 export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
@@ -169,6 +169,7 @@ export interface ItemDefinition {
   name: string;
   slot: EquipmentSlot;
   rarity: ItemRarity;
+  unique?: boolean;
   description: string;
   statMods: HeroStatMods;
   classAffinity?: string[];
@@ -176,6 +177,16 @@ export interface ItemDefinition {
   iconAssetKey?: string;
   flavorText: string;
   tags: string[];
+}
+
+export interface ItemInstance {
+  instanceId: string;
+  itemId: string;
+  acquiredAt: string;
+  source: string;
+  affixes: string[];
+  locked?: boolean;
+  favorite?: boolean;
 }
 
 export interface RewardTableDefinition {
@@ -222,6 +233,14 @@ export interface BattleRewardResult {
   itemIds: string[];
   resources: Partial<ResourceBag>;
   xp: number;
+  itemInstances?: ItemInstance[];
+  duplicateConversions?: ItemDuplicateConversion[];
+}
+
+export interface ItemDuplicateConversion {
+  itemId: string;
+  reason: "unique_duplicate";
+  resources: Partial<ResourceBag>;
 }
 
 export interface RewardLevelUpSummary {
@@ -387,6 +406,7 @@ export interface CampaignModifierDefinition {
     extraPlayerUnitIds?: string[];
     extraEnemyUnitIds?: string[];
     heroManaMultiplier?: number;
+    heroMaxHpMultiplier?: number;
     campaignResourceRewardMultiplier?: number;
   };
 }
@@ -573,6 +593,7 @@ export interface CampaignNodeChoiceDefinition {
   requirements?: CampaignChoiceRequirements;
   costs?: Partial<ResourceBag>;
   rewards?: CampaignChoiceRewardDefinition;
+  stockItemId?: string;
   reputationChanges?: Record<string, number>;
   unlockNodeIds?: string[];
   lockNodeIds?: string[];

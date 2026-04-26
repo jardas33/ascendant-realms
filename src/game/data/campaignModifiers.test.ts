@@ -13,6 +13,7 @@ describe("campaign modifiers", () => {
     expect(CAMPAIGN_MODIFIERS.map((modifier) => modifier.id)).toEqual([
       "inspired_militia",
       "blessed_road",
+      "well_rested",
       "angered_raiders",
       "local_support"
     ]);
@@ -21,13 +22,13 @@ describe("campaign modifiers", () => {
 
   it("grants one-use battle modifiers and consumes them on matching launches", () => {
     const node = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
-    const campaign = grantCampaignModifiers(createStartedCampaignSave(), ["inspired_militia", "blessed_road", "local_support"]);
+    const campaign = grantCampaignModifiers(createStartedCampaignSave(), ["inspired_militia", "blessed_road", "well_rested", "local_support"]);
 
     const consumed = consumeBattleCampaignModifiers({ campaign, node });
 
-    expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["inspired_militia", "blessed_road"]);
+    expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["inspired_militia", "blessed_road", "well_rested"]);
     expect(consumed.campaign.activeModifierIds).toEqual(["local_support"]);
-    expect(consumed.consumedModifierIds).toEqual(["inspired_militia", "blessed_road"]);
+    expect(consumed.consumedModifierIds).toEqual(["inspired_militia", "blessed_road", "well_rested"]);
   });
 
   it("only consumes Angered Raiders for Ashen Covenant battles", () => {

@@ -34,9 +34,98 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
       xp: 40,
       resources: { crowns: 45, stone: 35 }
     },
-    unlocks: ["aether_well_ruins", "bandit_hillfort", "refugee_caravan"],
+    unlocks: ["aether_well_ruins", "bandit_hillfort", "refugee_caravan", "marcher_camp"],
     x: 30,
     y: 52
+  },
+  {
+    id: "marcher_camp",
+    name: "Marcher Camp",
+    description:
+      "Allied town node. Spend campaign resources between battles for rest, volunteers, supplies, or a small fixed stock of early equipment. Services keep the camp open for later visits.",
+    nodeType: "town",
+    difficulty: "story",
+    mapId: "first_claim",
+    enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "balanced_warlord",
+    prerequisites: ["old_stone_road"],
+    rewards: {},
+    eventText:
+      "Canvas tents, field kitchens, and forge smoke gather under Free Marches banners. The quartermaster can turn saved Crowns into a little momentum before the next road.",
+    choices: [
+      {
+        id: "rest_and_recovery",
+        label: "Rest and Recovery",
+        description: "Pay for healers, hot food, and a dry tent. Your hero begins the next battle with more staying power.",
+        costs: { crowns: 30 },
+        rewards: {
+          modifierIds: ["well_rested"]
+        },
+        onceOnly: false,
+        completesNode: false
+      },
+      {
+        id: "hire_volunteers",
+        label: "Hire Volunteers",
+        description: "Hire local spearhands for one march. The next battle starts with one extra Militia near your Command Hall.",
+        costs: { crowns: 45 },
+        rewards: {
+          modifierIds: ["inspired_militia"]
+        },
+        onceOnly: false,
+        completesNode: false
+      },
+      {
+        id: "buy_supplies",
+        label: "Buy Supplies",
+        description: "Trade coin for a compact bundle of Stone, Iron, and Aether for future campaign choices.",
+        costs: { crowns: 35 },
+        rewards: {
+          resources: { stone: 25, iron: 12, aether: 6 }
+        },
+        onceOnly: false,
+        completesNode: false
+      },
+      {
+        id: "purchase_emberglass_wand",
+        label: "Purchase Emberglass Wand",
+        description: "Buy a common caster weapon from the camp's fixed stock.",
+        costs: { crowns: 55 },
+        rewards: {
+          itemIds: ["emberglass_wand"]
+        },
+        stockItemId: "emberglass_wand",
+        onceOnly: true,
+        completesNode: false
+      },
+      {
+        id: "purchase_marcher_plate",
+        label: "Purchase Marcher Plate",
+        description: "Commission a sturdy uncommon armor set from the camp smiths.",
+        costs: { crowns: 75, iron: 15 },
+        rewards: {
+          itemIds: ["marcher_plate"]
+        },
+        stockItemId: "marcher_plate",
+        onceOnly: true,
+        completesNode: false
+      },
+      {
+        id: "purchase_green_chapel_icon",
+        label: "Purchase Green Chapel Icon",
+        description: "Buy a trinket carried by healers and oathbound scouts.",
+        costs: { crowns: 90, aether: 15 },
+        rewards: {
+          itemIds: ["green_chapel_icon"]
+        },
+        stockItemId: "green_chapel_icon",
+        onceOnly: true,
+        completesNode: false
+      }
+    ],
+    unlocks: [],
+    x: 36,
+    y: 66
   },
   {
     id: "aether_well_ruins",

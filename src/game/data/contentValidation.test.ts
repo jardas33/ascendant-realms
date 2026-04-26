@@ -41,6 +41,7 @@ describe("content validation", () => {
       expect.arrayContaining([
         "border_village",
         "old_stone_road",
+        "marcher_camp",
         "aether_well_ruins",
         "bandit_hillfort",
         "chapel_of_the_marches",
@@ -48,9 +49,10 @@ describe("content validation", () => {
         "ashen_outpost"
       ])
     );
-    expect(CAMPAIGN_NODES).toHaveLength(7);
+    expect(CAMPAIGN_NODES).toHaveLength(8);
     expect(CAMPAIGN_NODES.find((node) => node.id === "chapel_of_the_marches")?.choices?.length).toBeGreaterThanOrEqual(3);
     expect(CAMPAIGN_NODES.find((node) => node.id === "refugee_caravan")?.choices?.length).toBeGreaterThanOrEqual(3);
+    expect(CAMPAIGN_NODES.find((node) => node.id === "marcher_camp")?.choices?.length).toBeGreaterThanOrEqual(6);
   });
 
   it("assigns valid AI personalities to battle nodes", () => {

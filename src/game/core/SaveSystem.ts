@@ -1,33 +1,28 @@
 import { SAVE_KEY } from "./Constants";
-import type { BattleDifficulty, ResourceBag, ResourceKey } from "./GameTypes";
+import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "./GameTypes";
 import { isCampaignModifierId } from "../data/campaignModifiers";
-import type { AllocatedSkills, CampaignSaveData, EquipmentSlots, HeroSaveData, StoredGameSave } from "../save/SaveTypes";
+import type {
+  AllocatedSkills,
+  CampaignSaveData,
+  CurrentStoredGameSave,
+  EquipmentSlots,
+  HeroSaveData
+} from "../save/SaveTypes";
+
+export const CURRENT_SAVE_VERSION = 2;
 
 export class SaveSystem {
   static hasSave(): boolean {
     return SaveSystem.load() !== null;
   }
 
-  static load(): StoredGameSave | null {
+  static load(): CurrentStoredGameSave | null {
     const raw = readRawSave();
     if (!raw) {
       return null;
     }
 
-    try {
-      const parsed = JSON.parse(raw) as StoredGameSave;
-      const hero = normalizeHeroSaveData(parsed.hero);
-      if (parsed.version !== 1 || !hero) {
-        return null;
-      }
-      return {
-        ...parsed,
-        hero,
-        campaign: normalizeCampaignSaveData(parsed.campaign) ?? createFallbackCampaignSave()
-      };
-    } catch {
-      return null;
-    }
+    return parseSaveJson(raw);
   }
 
   static saveHero(hero: HeroSaveData): boolean {
@@ -36,13 +31,14 @@ export class SaveSystem {
       console.warn("Ascendant Realms save skipped because hero data was invalid.");
       return false;
     }
-    const save: StoredGameSave = {
-      version: 1,
-      hero: normalizedHero,
-      campaign: SaveSystem.load()?.campaign ?? createFallbackCampaignSave(),
-      updatedAt: new Date().toISOString()
-    };
-    return writeRawSave(JSON.stringify(save));
+    const existing = SaveSystem.load();
+    return writeCurrentSave(
+      createCurrentStoredGameSave({
+        hero: normalizedHero,
+        campaign: existing?.campaign ?? createFallbackCampaignSave(),
+        previousSave: existing
+      })
+    );
   }
 
   static saveGame(hero: HeroSaveData, campaign: CampaignSaveData): boolean {
@@ -52,13 +48,13 @@ export class SaveSystem {
       console.warn("Ascendant Realms save skipped because game data was invalid.");
       return false;
     }
-    const save: StoredGameSave = {
-      version: 1,
-      hero: normalizedHero,
-      campaign: normalizedCampaign,
-      updatedAt: new Date().toISOString()
-    };
-    return writeRawSave(JSON.stringify(save));
+    return writeCurrentSave(
+      createCurrentStoredGameSave({
+        hero: normalizedHero,
+        campaign: normalizedCampaign,
+        previousSave: SaveSystem.load()
+      })
+    );
   }
 
   static saveCampaign(campaign: CampaignSaveData, heroOverride?: HeroSaveData): boolean {
@@ -73,6 +69,52 @@ export class SaveSystem {
   static reset(): void {
     removeRawSave();
   }
+
+  static exportSaveJson(): string | null {
+    const save = SaveSystem.load();
+    return save ? JSON.stringify(save, null, 2) : null;
+  }
+
+  static importSaveJson(raw: string): boolean {
+    const save = parseSaveJson(raw);
+    if (!save) {
+      return false;
+    }
+    return writeCurrentSave(save);
+  }
+}
+
+export function migrateSaveToCurrent(input: unknown): CurrentStoredGameSave | null {
+  if (!isRecord(input)) {
+    return null;
+  }
+  if (input.version === 1) {
+    return migrateV1ToV2(input);
+  }
+  if (input.version === CURRENT_SAVE_VERSION) {
+    return normalizeStoredGameSaveV2(input);
+  }
+  return null;
+}
+
+export function migrateV1ToV2(input: unknown): CurrentStoredGameSave | null {
+  if (!isRecord(input) || input.version !== 1) {
+    return null;
+  }
+  const now = new Date().toISOString();
+  const hero = normalizeHeroSaveData(input.hero);
+  if (!hero) {
+    return null;
+  }
+  return {
+    version: CURRENT_SAVE_VERSION,
+    createdAt: typeof input.createdAt === "string" ? input.createdAt : typeof input.updatedAt === "string" ? input.updatedAt : now,
+    updatedAt: typeof input.updatedAt === "string" ? input.updatedAt : now,
+    hero,
+    campaign: normalizeCampaignSaveData(input.campaign) ?? createFallbackCampaignSave(),
+    settings: {},
+    statistics: {}
+  };
 }
 
 export function isHeroSaveData(value: unknown): value is HeroSaveData {
@@ -81,6 +123,55 @@ export function isHeroSaveData(value: unknown): value is HeroSaveData {
 
 export function isCampaignSaveData(value: unknown): value is CampaignSaveData {
   return normalizeCampaignSaveData(value) !== null;
+}
+
+function parseSaveJson(raw: string): CurrentStoredGameSave | null {
+  try {
+    return migrateSaveToCurrent(JSON.parse(raw));
+  } catch {
+    return null;
+  }
+}
+
+function normalizeStoredGameSaveV2(input: unknown): CurrentStoredGameSave | null {
+  if (!isRecord(input) || input.version !== CURRENT_SAVE_VERSION) {
+    return null;
+  }
+  const now = new Date().toISOString();
+  const hero = normalizeHeroSaveData(input.hero);
+  if (!hero) {
+    return null;
+  }
+  return {
+    version: CURRENT_SAVE_VERSION,
+    createdAt: typeof input.createdAt === "string" ? input.createdAt : now,
+    updatedAt: typeof input.updatedAt === "string" ? input.updatedAt : now,
+    hero,
+    campaign: normalizeCampaignSaveData(input.campaign) ?? createFallbackCampaignSave(),
+    settings: isRecord(input.settings) ? { ...input.settings } : {},
+    statistics: isRecord(input.statistics) ? { ...input.statistics } : {}
+  };
+}
+
+function createCurrentStoredGameSave(options: {
+  hero: HeroSaveData;
+  campaign: CampaignSaveData;
+  previousSave?: CurrentStoredGameSave | null;
+}): CurrentStoredGameSave {
+  const now = new Date().toISOString();
+  return {
+    version: CURRENT_SAVE_VERSION,
+    createdAt: options.previousSave?.createdAt ?? now,
+    updatedAt: now,
+    hero: options.hero,
+    campaign: options.campaign,
+    settings: options.previousSave?.settings ?? {},
+    statistics: options.previousSave?.statistics ?? {}
+  };
+}
+
+function writeCurrentSave(save: CurrentStoredGameSave): boolean {
+  return writeRawSave(JSON.stringify(save));
 }
 
 export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
@@ -113,7 +204,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
     return null;
   }
   const unlockedAbilities = value.unlockedAbilities as string[];
-  const inventory = arrayOfStrings(value.inventory) ? value.inventory : arrayOfStrings(value.items) ? value.items : [];
+  const inventory = normalizeInventoryInstances(value.inventory, value.items);
   const clearedMapIds = arrayOfStrings(value.clearedMapIds) ? value.clearedMapIds : [];
   const allocatedSkills: AllocatedSkills = {};
   if (isRecord(value.allocatedSkills)) {
@@ -126,9 +217,17 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
   const equipment: EquipmentSlots = {};
   if (isRecord(value.equipment)) {
     Object.entries(value.equipment).forEach(([slot, itemId]) => {
-      if ((slot === "weapon" || slot === "armor" || slot === "trinket" || slot === "relic") && typeof itemId === "string" && inventory.includes(itemId)) {
-        equipment[slot] = itemId;
+      if (!isEquipmentSlot(slot) || typeof itemId !== "string") {
+        return;
       }
+      const equippedInstance = inventory.find((instance) => instance.instanceId === itemId) ?? inventory.find((instance) => instance.itemId === itemId);
+      if (equippedInstance) {
+        equipment[slot] = equippedInstance.instanceId;
+        return;
+      }
+      const fallbackInstance = createMigratedItemInstance(itemId, inventory.length, "legacy_equipped");
+      inventory.push(fallbackInstance);
+      equipment[slot] = fallbackInstance.instanceId;
     });
   }
 
@@ -142,7 +241,7 @@ export function normalizeHeroSaveData(value: unknown): HeroSaveData | null {
     unlockedAbilities: [...new Set(unlockedAbilities)],
     completedBattles: clampInteger(value.completedBattles, 0),
     clearedMapIds: [...new Set(clearedMapIds)],
-    inventory: [...new Set(inventory)],
+    inventory: dedupeItemInstances(inventory),
     equipment,
     allocatedSkills,
     factionReputation: normalizeFactionReputation(factionReputationSource as Record<string, number>),
@@ -171,16 +270,20 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
   const lockedNodeIds = arrayOfStrings(value.lockedNodeIds) ? value.lockedNodeIds : [];
   const nodeRewardsClaimedIds = arrayOfStrings(value.nodeRewardsClaimedIds) ? value.nodeRewardsClaimedIds : [];
   const choiceIdsClaimed = arrayOfStrings(value.choiceIdsClaimed) ? value.choiceIdsClaimed : [];
+  const townServiceClaimedIds = arrayOfStrings(value.townServiceClaimedIds) ? value.townServiceClaimedIds : [];
   const activeModifierIds = arrayOfStrings(value.activeModifierIds) ? value.activeModifierIds.filter(isCampaignModifierId) : [];
   return {
     started: value.started,
     difficulty,
     resources: normalizeResourceBag(value.resources),
+    resourcesSpent: normalizeResourceBag(value.resourcesSpent),
     completedNodeIds: [...new Set(completedNodeIds)],
     unlockedNodeIds: [...new Set(unlockedNodeIds)],
     lockedNodeIds: [...new Set(lockedNodeIds)],
     nodeRewardsClaimedIds: [...new Set(nodeRewardsClaimedIds)],
     choiceIdsClaimed: [...new Set(choiceIdsClaimed)],
+    townServiceClaimedIds: [...new Set(townServiceClaimedIds)],
+    townServiceUseCounts: normalizeStringNumberRecord(value.townServiceUseCounts),
     activeModifierIds: [...new Set(activeModifierIds)],
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
@@ -237,6 +340,64 @@ function arrayOfStrings(value: unknown): value is string[] {
   return Array.isArray(value) && value.every((entry) => typeof entry === "string");
 }
 
+function isEquipmentSlot(value: string): value is EquipmentSlot {
+  return value === "weapon" || value === "armor" || value === "trinket" || value === "relic";
+}
+
+function normalizeInventoryInstances(inventoryValue: unknown, legacyItemsValue: unknown): ItemInstance[] {
+  const source = Array.isArray(inventoryValue) ? inventoryValue : arrayOfStrings(legacyItemsValue) ? legacyItemsValue : [];
+  return source
+    .map((entry, index) => normalizeItemInstance(entry, index))
+    .filter((entry): entry is ItemInstance => entry !== undefined);
+}
+
+function normalizeItemInstance(value: unknown, index: number): ItemInstance | undefined {
+  if (typeof value === "string") {
+    return createMigratedItemInstance(value, index, "legacy_inventory");
+  }
+  if (!isRecord(value) || typeof value.instanceId !== "string" || typeof value.itemId !== "string" || !value.instanceId.trim() || !value.itemId.trim()) {
+    return undefined;
+  }
+  const acquiredAt = typeof value.acquiredAt === "string" ? value.acquiredAt : new Date().toISOString();
+  const source = typeof value.source === "string" && value.source.trim() ? value.source : "unknown";
+  return {
+    instanceId: value.instanceId,
+    itemId: value.itemId,
+    acquiredAt,
+    source,
+    affixes: arrayOfStrings(value.affixes) ? [...new Set(value.affixes)] : [],
+    locked: typeof value.locked === "boolean" ? value.locked : false,
+    favorite: typeof value.favorite === "boolean" ? value.favorite : false
+  };
+}
+
+function createMigratedItemInstance(itemId: string, index: number, source: string): ItemInstance {
+  return {
+    instanceId: `${source}:${sanitizeItemInstanceId(itemId)}:${index + 1}`,
+    itemId,
+    acquiredAt: new Date().toISOString(),
+    source,
+    affixes: [],
+    locked: false,
+    favorite: false
+  };
+}
+
+function dedupeItemInstances(inventory: ItemInstance[]): ItemInstance[] {
+  const seen = new Set<string>();
+  return inventory.filter((instance) => {
+    if (seen.has(instance.instanceId)) {
+      return false;
+    }
+    seen.add(instance.instanceId);
+    return true;
+  });
+}
+
+function sanitizeItemInstanceId(value: string): string {
+  return value.replace(/[^a-zA-Z0-9_-]/g, "_");
+}
+
 const RESOURCE_KEYS: ResourceKey[] = ["crowns", "stone", "iron", "aether"];
 const DEFAULT_FACTION_REPUTATION: Record<string, number> = {
   free_marches: 10,
@@ -259,6 +420,18 @@ function normalizeFactionReputation(value: Record<string, number>): Record<strin
     reputation[factionId] = Math.round(clampNumberRange(amount, -100, 100));
   });
   return reputation;
+}
+
+function normalizeStringNumberRecord(value: unknown): Record<string, number> {
+  if (!isRecord(value)) {
+    return {};
+  }
+  return Object.entries(value).reduce<Record<string, number>>((normalized, [key, amount]) => {
+    if (key.trim() && isFiniteNumber(amount) && amount > 0) {
+      normalized[key] = Math.floor(amount);
+    }
+    return normalized;
+  }, {});
 }
 
 export function createFallbackHeroSave(): HeroSaveData {
@@ -295,11 +468,19 @@ export function createFallbackCampaignSave(): CampaignSaveData {
       iron: 0,
       aether: 0
     },
+    resourcesSpent: {
+      crowns: 0,
+      stone: 0,
+      iron: 0,
+      aether: 0
+    },
     completedNodeIds: [],
     unlockedNodeIds: [],
     lockedNodeIds: [],
     nodeRewardsClaimedIds: [],
     choiceIdsClaimed: [],
+    townServiceClaimedIds: [],
+    townServiceUseCounts: {},
     activeModifierIds: []
   };
 }

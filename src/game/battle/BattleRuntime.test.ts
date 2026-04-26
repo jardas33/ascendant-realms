@@ -113,7 +113,7 @@ describe("BattleRuntime", () => {
     expect(result.reward.xp).toBe(80);
     expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles + 1);
     expect(result.heroSave.clearedMapIds).toContain(testMap.id);
-    expect(result.heroSave.inventory).toContain("weathered_command_sword");
+    expect(result.heroSave.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
     expect(result.heroSave.xp).toBe(80);
     expect(result.stats.xpGained).toBe(160);
     expect(result.stats.outcome).toBe("victory");

@@ -81,8 +81,11 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
    - `classAffinity`: hero class IDs that thematically fit the item.
    - `factionOrigin`: faction ID for where the item came from.
    - `iconAssetKey`: future item icon asset key.
+   - `unique`: set to `true` when the hero should only keep one owned copy.
 9. Add the item ID to a reward table in `src/game/data/rewards.ts`.
 10. Run `npm run test`.
+
+Inventory stores item instances, not raw catalog IDs. Rewards and town purchases create an instance with `instanceId`, `itemId`, `acquiredAt`, `source`, and an empty `affixes` placeholder. Equipment references the instance ID. Unique duplicate rewards convert into campaign resources instead of adding a second copy; non-unique duplicates remain separate instances.
 
 ## Add A New Reward Table
 
@@ -99,6 +102,8 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 11. Keep `deterministicItemIds` when tests or scripted flows need predictable item selection.
 12. Open `src/game/data/maps.ts` and set the map scenario's `rewardTableId`.
 13. Run `npm run test`.
+
+Weighted reward rolls prefer unowned catalog items when possible. If a guaranteed, deterministic, or scripted reward grants a unique item the hero already owns, the reward flow converts it into Crowns or Aether and reports the conversion on the Results screen.
 
 ## Add A New Skirmish Map
 
@@ -131,7 +136,7 @@ Current map examples:
 6. Add prerequisite node IDs to `prerequisites`.
 7. Add future node IDs to `unlocks`.
 8. Add node rewards with optional `xp`, `itemIds`, and `resources`. Node resource rewards are added to the persistent campaign bank, not to the temporary battle economy.
-9. For `event`, `town`, `shrine`, or other non-battle nodes, add optional `eventText` and `choices` when the node should ask the player to choose an outcome.
+9. For `event`, `town`, `shrine`, or other non-battle nodes, add optional `eventText` and `choices` when the node should ask the player to choose an outcome or use a service.
 10. Set `x` and `y` as percentages for the campaign map UI position.
 11. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes either resolve direct rewards or show data-driven choices from the campaign map.
 12. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, AI personality IDs, reward item IDs, resource IDs, and choice references.
@@ -141,10 +146,20 @@ Campaign choices support:
 - `id`, `label`, and `description` for display.
 - `requirements` for campaign resources, hero level, completed nodes, owned items, or faction reputation.
 - `costs` paid from the persistent campaign resource bank.
-- `rewards` for XP, item IDs, campaign resources, node unlocks, reputation changes, and a `recoverHero` placeholder.
+- `rewards` for XP, item IDs, campaign resources, campaign modifiers, node unlocks, reputation changes, and a `recoverHero` placeholder.
+- `stockItemId` for town item purchases. It should point at the same item granted in `rewards.itemIds` so the UI can show stock rarity and slot.
 - `reputationChanges` and `unlockNodeIds` as direct choice effects when that reads cleaner than nesting under `rewards`.
 - `onceOnly` to save a claim ID in `choiceIdsClaimed`.
 - `completesNode: false` when the choice should leave the node open for a later choice.
+
+Town service guidance:
+
+- Use `nodeType: "town"` for repeatable service hubs such as Marcher Camp.
+- Give repeatable services `onceOnly: false` and `completesNode: false`.
+- Give fixed stock purchases `onceOnly: true`, `completesNode: false`, `stockItemId`, and a matching `rewards.itemIds` entry.
+- Costs are paid from the persistent campaign bank and are tracked in `campaign.resourcesSpent`.
+- Town service usage is tracked in `campaign.townServiceUseCounts`; once-only service purchases are also tracked in `campaign.townServiceClaimedIds`.
+- Next-battle effects should usually grant a campaign modifier such as `well_rested` or `inspired_militia`.
 
 ## Add A New Faction
 

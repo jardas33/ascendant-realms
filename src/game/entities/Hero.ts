@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import type { HeroClassDefinition, OriginDefinition, UnitDefinition } from "../core/GameTypes";
+import type { HeroClassDefinition, ItemInstance, OriginDefinition, UnitDefinition } from "../core/GameTypes";
 import type { HeroSaveData } from "../save/SaveTypes";
 import { ABILITY_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { HERO_HP_PER_LEVEL, HERO_MANA_PER_LEVEL, LEVEL_XP_THRESHOLDS } from "../core/Constants";
@@ -25,7 +25,7 @@ export class Hero extends Unit {
   completedBattles: number;
   clearedMapIds: string[];
   manaRegenMultiplier = 1;
-  inventory: string[];
+  inventory: ItemInstance[];
   equipment: HeroSaveData["equipment"];
   allocatedSkills: HeroSaveData["allocatedSkills"];
   factionReputation: Record<string, number>;

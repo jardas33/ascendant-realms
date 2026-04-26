@@ -10,6 +10,7 @@ import type {
 } from "../core/GameTypes";
 import { grantBattleRewards, rollBattleRewards } from "../core/HeroProgressionRules";
 import { cloneResources } from "../core/MathUtils";
+import { ITEM_BY_ID } from "../data/contentIndex";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { BattleLaunchMode, ResolvedBattleLaunch } from "./BattleLaunchRequest";
 
@@ -264,7 +265,10 @@ export function completeBattle(
     ...input.heroSave,
     completedBattles: input.heroSave.completedBattles + 1
   };
-  const granted = grantBattleRewards(heroWithBattleCount, reward, input.mapId);
+  const granted = grantBattleRewards(heroWithBattleCount, reward, input.mapId, {
+    itemById: ITEM_BY_ID,
+    source: input.mapId ? `battle:${input.mapId}` : "battle_reward"
+  });
   const baselineHero = input.startingHeroSave ?? input.heroSave;
   const levelUp: RewardLevelUpSummary = {
     previousLevel: baselineHero.level,
@@ -277,8 +281,8 @@ export function completeBattle(
     outcome: "victory",
     stats,
     heroSave: granted.hero,
-    rewardItemIds: reward.itemIds,
-    reward,
+    rewardItemIds: granted.reward.itemIds,
+    reward: granted.reward,
     rewardLevelUp: levelUp,
     shouldSaveHero: true
   };

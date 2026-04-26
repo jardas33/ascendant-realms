@@ -1,0 +1,112 @@
+/* Global theme variables, reset rules, and shared root UI behavior. */
+
+:root {
+  color-scheme: dark;
+  font-family: Verdana, Arial, sans-serif;
+  background: #121813;
+  color: #edf0df;
+  letter-spacing: 0;
+  --asset-bg: radial-gradient(circle at 66% 18%, #273546 0, #10161a 42%, #050707 100%);
+  --panel-texture:
+    linear-gradient(145deg, rgba(255, 246, 200, 0.07), transparent 34%),
+    linear-gradient(180deg, rgba(20, 25, 25, 0.96), rgba(8, 10, 10, 0.94));
+  --panel-ink: rgba(9, 12, 12, 0.9);
+  --panel-gold: rgba(222, 190, 94, 0.62);
+  --panel-blue: rgba(103, 161, 194, 0.28);
+  --panel-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 246, 200, 0.11),
+    inset 0 0 0 1px rgba(255, 246, 200, 0.035);
+  --plate-bg:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.075), rgba(7, 9, 9, 0.52)),
+    linear-gradient(90deg, rgba(103, 161, 194, 0.08), transparent 38%, rgba(222, 190, 94, 0.055)),
+    rgba(14, 18, 18, 0.88);
+  --plate-edge: rgba(246, 237, 180, 0.2);
+  --plate-edge-strong: rgba(240, 217, 120, 0.46);
+  --plate-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.11),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.42),
+    0 10px 24px rgba(0, 0, 0, 0.2);
+  --aether-line: rgba(116, 211, 242, 0.48);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#game-root,
+#ui-root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #121813;
+}
+
+canvas {
+  display: block;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 1px solid rgba(222, 190, 94, 0.34);
+  border-radius: 6px;
+  border-style: solid;
+  border-image-source: var(--ui-button-idle);
+  border-image-slice: 42;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.11), rgba(7, 9, 9, 0.34)),
+    linear-gradient(90deg, rgba(116, 211, 242, 0.07), transparent 42%, rgba(222, 190, 94, 0.08)),
+    #1b2424;
+  color: #f5efdc;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+  box-shadow: var(--plate-shadow);
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+button:hover:not(:disabled),
+button:focus-visible {
+  border-color: #f0d978;
+  border-image-source: var(--ui-button-hover, var(--ui-button-idle));
+  background:
+    linear-gradient(180deg, rgba(240, 217, 120, 0.14), rgba(7, 9, 9, 0.26)),
+    linear-gradient(90deg, rgba(116, 211, 242, 0.12), transparent 42%, rgba(222, 190, 94, 0.12)),
+    #263236;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.16),
+    0 0 0 1px rgba(240, 217, 120, 0.16),
+    0 12px 28px rgba(0, 0, 0, 0.28);
+  outline: none;
+}
+
+button:active:not(:disabled) {
+  border-image-source: var(--ui-button-pressed, var(--ui-button-hover, var(--ui-button-idle)));
+  transform: translateY(1px);
+}
+
+.ui-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+}

@@ -5,7 +5,9 @@ import type {
   HeroBaseStats,
   HeroClassDefinition,
   HeroStatMods,
+  ItemDuplicateConversion,
   ItemDefinition,
+  ItemInstance,
   OriginDefinition,
   ResourceKey,
   RewardTableDefinition,
@@ -41,7 +43,7 @@ export interface ProgressionActionResult {
 export interface RollBattleRewardOptions {
   table: RewardTableDefinition;
   completedBattlesBeforeVictory: number;
-  inventory: string[];
+  inventory: ItemInstance[];
   count?: number;
   deterministic?: boolean;
   isFirstClear?: boolean;
@@ -52,6 +54,9 @@ export interface RollBattleRewardOptions {
 export interface GrantBattleRewardsResult {
   hero: HeroSaveData;
   levelUp: RewardLevelUpSummary;
+  reward: BattleRewardResult;
+  grantedItemInstances: ItemInstance[];
+  duplicateConversions: ItemDuplicateConversion[];
 }
 
 export function calculateLiveHeroStats(
@@ -72,7 +77,7 @@ export function calculateLiveHeroStats(
 
   return applyHeroStatMods(
     base,
-    mergeHeroStatMods(levelStats, calculateSkillStatMods(save.allocatedSkills, skillById), calculateEquipmentStatMods(save.equipment, itemById))
+    mergeHeroStatMods(levelStats, calculateSkillStatMods(save.allocatedSkills, skillById), calculateEquipmentStatMods(save.inventory, save.equipment, itemById))
   );
 }
 
@@ -111,12 +116,13 @@ export function calculateSkillStatMods(
 }
 
 export function calculateEquipmentStatMods(
+  inventory: ItemInstance[],
   equipment: EquipmentSlots,
   itemById: Record<string, ItemDefinition>
 ): HeroStatMods {
   return EQUIPMENT_SLOTS.reduce<HeroStatMods>((mods, slot) => {
-    const itemId = equipment[slot];
-    const item = itemId ? itemById[itemId] : undefined;
+    const instance = equipment[slot] ? findItemInstance(inventory, equipment[slot]!) : undefined;
+    const item = instance ? itemById[instance.itemId] : undefined;
     return item ? mergeHeroStatMods(mods, item.statMods) : mods;
   }, {});
 }
@@ -201,15 +207,16 @@ export function allocateSkillPoint(
 
 export function equipItem(
   save: HeroSaveData,
-  itemId: string,
+  itemInstanceId: string,
   itemById: Record<string, ItemDefinition>
 ): ProgressionActionResult {
-  const item = itemById[itemId];
+  const instance = findItemInstance(save.inventory, itemInstanceId);
+  if (!instance) {
+    return { ok: false, hero: save, message: "Item is not in this hero's inventory." };
+  }
+  const item = itemById[instance.itemId];
   if (!item) {
     return { ok: false, hero: save, message: "Unknown item." };
-  }
-  if (!save.inventory.includes(item.id)) {
-    return { ok: false, hero: save, message: "Item is not in this hero's inventory." };
   }
 
   return {
@@ -218,7 +225,7 @@ export function equipItem(
       ...save,
       equipment: {
         ...save.equipment,
-        [item.slot]: item.id
+        [item.slot]: instance.instanceId
       }
     },
     message: `${item.name} equipped.`
@@ -244,7 +251,7 @@ export function unequipItem(save: HeroSaveData, slot: EquipmentSlot): Progressio
 export function pickBattleRewardItemIds(
   table: RewardTableDefinition,
   completedBattlesBeforeVictory: number,
-  inventory: string[],
+  inventory: ItemInstance[],
   count = 1
 ): string[] {
   return rollBattleRewards({
@@ -264,7 +271,7 @@ export function rollBattleRewards(options: RollBattleRewardOptions): BattleRewar
     resources: {},
     xp: 0
   };
-  const owned = new Set(options.inventory);
+  const owned = new Set(options.inventory.map((instance) => instance.itemId));
   const picked = new Set<string>();
   const addItem = (itemId: string): boolean => {
     if (!owned.has(itemId) && !picked.has(itemId)) {
@@ -311,24 +318,36 @@ export function rollBattleRewards(options: RollBattleRewardOptions): BattleRewar
 }
 
 export function grantItemRewards(save: HeroSaveData, rewardItemIds: string[]): HeroSaveData {
-  const inventory = [...save.inventory];
-  rewardItemIds.forEach((itemId) => {
-    if (!inventory.includes(itemId)) {
-      inventory.push(itemId);
-    }
-  });
+  const inventory = [...save.inventory, ...rewardItemIds.map((itemId) => createItemInstance(itemId, "manual_grant"))];
   return {
     ...save,
     inventory
   };
 }
 
-export function grantBattleRewards(save: HeroSaveData, reward: BattleRewardResult, mapId?: string): GrantBattleRewardsResult {
+export function grantBattleRewards(
+  save: HeroSaveData,
+  reward: BattleRewardResult,
+  mapId?: string,
+  options: { itemById?: Record<string, ItemDefinition>; source?: string; acquiredAt?: string } = {}
+): GrantBattleRewardsResult {
   const inventory = [...save.inventory];
+  const grantedItemInstances: ItemInstance[] = [];
+  const duplicateConversions: ItemDuplicateConversion[] = [];
+  const convertedResources: Partial<Record<ResourceKey, number>> = { ...reward.resources };
   reward.itemIds.forEach((itemId) => {
-    if (!inventory.includes(itemId)) {
-      inventory.push(itemId);
+    const item = options.itemById?.[itemId];
+    if (item?.unique && inventory.some((instance) => instance.itemId === itemId)) {
+      const conversion = createUniqueDuplicateConversion(item);
+      duplicateConversions.push(conversion);
+      Object.entries(conversion.resources).forEach(([resource, amount]) => {
+        convertedResources[resource as ResourceKey] = (convertedResources[resource as ResourceKey] ?? 0) + (amount ?? 0);
+      });
+      return;
     }
+    const instance = createItemInstance(itemId, options.source ?? "battle_reward", options.acquiredAt);
+    inventory.push(instance);
+    grantedItemInstances.push(instance);
   });
 
   const previousLevel = save.level;
@@ -351,8 +370,36 @@ export function grantBattleRewards(save: HeroSaveData, reward: BattleRewardResul
       newLevel,
       levelsGained,
       skillPointsGained: levelsGained
-    }
+    },
+    reward: {
+      ...reward,
+      resources: convertedResources,
+      itemInstances: grantedItemInstances,
+      duplicateConversions
+    },
+    grantedItemInstances,
+    duplicateConversions
   };
+}
+
+export function createItemInstance(itemId: string, source: string, acquiredAt = new Date().toISOString()): ItemInstance {
+  return {
+    instanceId: `${sanitizeItemInstancePart(source)}:${sanitizeItemInstancePart(itemId)}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 8)}`,
+    itemId,
+    acquiredAt,
+    source,
+    affixes: [],
+    locked: false,
+    favorite: false
+  };
+}
+
+export function findItemInstance(inventory: ItemInstance[], instanceOrCatalogId: string): ItemInstance | undefined {
+  return inventory.find((instance) => instance.instanceId === instanceOrCatalogId) ?? inventory.find((instance) => instance.itemId === instanceOrCatalogId);
+}
+
+export function heroOwnsCatalogItem(save: HeroSaveData, itemId: string): boolean {
+  return save.inventory.some((instance) => instance.itemId === itemId);
 }
 
 export function applyHeroStatMods(base: HeroBaseStats, mods: HeroStatMods): HeroBaseStats {
@@ -456,4 +503,26 @@ function applyRewardBonus(reward: BattleRewardResult, bonus: RewardTableDefiniti
 
 function addRewardResource(resources: BattleRewardResult["resources"], resource: ResourceKey, amount: number): void {
   resources[resource] = (resources[resource] ?? 0) + Math.max(0, amount);
+}
+
+function createUniqueDuplicateConversion(item: ItemDefinition): ItemDuplicateConversion {
+  const highRarity = item.rarity === "rare" || item.rarity === "epic" || item.rarity === "legendary";
+  const amountByRarity: Record<ItemDefinition["rarity"], number> = {
+    common: 40,
+    uncommon: 70,
+    rare: 25,
+    epic: 45,
+    legendary: 75
+  };
+  return {
+    itemId: item.id,
+    reason: "unique_duplicate",
+    resources: highRarity
+      ? { aether: amountByRarity[item.rarity] }
+      : { crowns: amountByRarity[item.rarity] }
+  };
+}
+
+function sanitizeItemInstancePart(value: string): string {
+  return value.replace(/[^a-zA-Z0-9_-]/g, "_");
 }

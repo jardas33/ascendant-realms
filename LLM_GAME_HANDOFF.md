@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 12:49 -04:00
+Last updated: 2026-04-26 13:55 -04:00
 
 ## Current Project Identity
 
@@ -12,7 +12,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 4. Resolve victory or defeat through a shared Results scene.
 5. Persist hero XP, skill points, inventory, equipment, campaign node progress, event choices, and campaign resources in local storage.
 
-The project is still a prototype. It has enough structure for iteration, but the worktree currently contains many uncommitted feature-pass changes.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. This handoff reflects the verified state after the item-instance, e2e smoke-test, BattleScene extraction, CSS split, save migration, and Marcher Camp passes. The best current workflow is to keep these changes together as a checkpoint commit before starting another gameplay feature.
 
 ## Current Command List
 
@@ -24,6 +24,8 @@ npm run dev
 npm test
 npm run build
 npm run preview
+npm run test:e2e
+npm run test:e2e:headed
 npm run assets:prompts
 npm run assets:ui-kit
 npm run assets:process-battle-sprites
@@ -52,10 +54,11 @@ Scene keys live in `src/game/core/SceneKeys.ts`.
 
 Campaign data lives in `src/game/data/campaignNodes.ts`. Rules live in `src/game/core/CampaignRules.ts`.
 
-The Border Marches mini-campaign currently has seven nodes:
+The Border Marches mini-campaign currently has eight nodes:
 
 - `border_village`: battle, Easy, First Claim, available at start.
 - `old_stone_road`: battle, Easy, First Claim, unlocks after Border Village.
+- `marcher_camp`: town/services node, unlocks after Old Stone Road and remains reusable.
 - `aether_well_ruins`: battle, Normal, Broken Ford, unlocks after Old Stone Road.
 - `bandit_hillfort`: battle, Normal, Broken Ford, unlocks after Old Stone Road.
 - `chapel_of_the_marches`: shrine/event choices, unlocks after Aether Well Ruins.
@@ -71,6 +74,7 @@ On campaign battle victory:
 - `ResultsScene` applies campaign node completion.
 - One-time node rewards are applied if not already claimed.
 - Campaign resources are added to the persistent campaign bank.
+- Unique duplicate item rewards convert into campaign resources.
 - Hero and campaign state are saved.
 - The player can return to the campaign map.
 
@@ -94,7 +98,7 @@ Flow:
 5. `BattleScene` resolves the selected map and reward table.
 6. `ResultsScene` shows victory/defeat, rewards, Equip Now, and return/retry options.
 
-Skirmish victories can grant map reward-table items, XP, and first-clear/repeat-clear rewards.
+Skirmish victories can grant map reward-table item instances, XP, and first-clear/repeat-clear rewards.
 
 ## Current Maps
 
@@ -211,6 +215,7 @@ Current item fields:
 - optional icon asset key
 - flavor text
 - tags
+- optional `unique` flag
 
 Current equipment slots:
 
@@ -218,6 +223,14 @@ Current equipment slots:
 - armor
 - trinket
 - relic is typed for future use but not in the default active equipment slot list.
+
+Inventory model:
+
+- Item catalog definitions remain static in `src/game/data/items.ts`.
+- The save inventory stores item instances with `instanceId`, `itemId`, `acquiredAt`, `source`, `affixes`, and optional locked/favorite flags.
+- Equipment references item instance IDs where possible.
+- Legacy saves with catalog IDs in inventory/equipment migrate into instances. If legacy equipment points at a catalog ID not present in inventory, normalization creates a safe `legacy_equipped` instance.
+- Unique duplicate rewards convert into campaign resources. Common/uncommon duplicates convert to Crowns; rare/epic/legendary duplicates convert to Aether. Non-unique duplicates remain separate instances.
 
 Reward tables support:
 
@@ -241,15 +254,15 @@ Current map reward tables:
 
 Equip Now:
 
-- checks the reward item exists and is in inventory
-- equips to the item's slot
+- checks the earned reward instance exists in inventory
+- equips the instance to the item's slot
 - recalculates hero stats
 - saves updated hero/campaign state
 - shows stat deltas and current equipped replacement context
 
 ResultsScene also displays map-specific special objectives when the map defines `secondaryObjectives`. Ashen Outpost currently uses this to show whether the player captured the Burned Shrine, destroyed Enemy Barracks, and defeated the Outpost Captain.
 
-Known limitation: items do not yet have instance IDs, randomized affixes, durability, crafting, duplicate conversion, or icon slot art in every UI surface.
+Known limitation: item instances currently have placeholder affix arrays only. Randomized affixes, durability, crafting, and icon slot art in every UI surface are still future work.
 
 ## Current Campaign Resource Bank
 
@@ -286,7 +299,7 @@ Supported requirements:
 - campaign resource thresholds
 - hero level
 - completed campaign node IDs
-- owned item IDs
+- owned item IDs, resolved through item instances
 - faction reputation
 
 Supported effects:
@@ -297,6 +310,8 @@ Supported effects:
 - campaign resource rewards
 - faction reputation changes
 - unlock node IDs
+- campaign modifiers
+- remove campaign modifiers
 - recover hero placeholder
 - complete or keep the node open
 
@@ -306,6 +321,7 @@ Current event-choice nodes:
 
 - Chapel of the Marches: Pray for Strength, Repair the Chapel, Ask for Guidance.
 - Refugee Caravan: Protect Them, Recruit Volunteers, Demand Tribute.
+- Marcher Camp: repeatable Rest and Recovery, Hire Volunteers, Buy Supplies, plus one-time item purchases for Emberglass Wand, Marcher Plate, and Green Chapel Icon.
 
 ## Current Battle Pacing
 
@@ -568,15 +584,28 @@ Runtime tracking lives in `BattleRuntime.stats.completedObjectiveIds`. `BattleSc
 
 Save key is defined in `src/game/core/Constants.ts`. Save logic lives in `src/game/core/SaveSystem.ts`. Save types live in `src/game/save/SaveTypes.ts`.
 
-Stored save:
+Stored saves are versioned. V1 is accepted as legacy input so existing browser localStorage saves keep loading; V2 is the current write shape.
 
 ```ts
-interface StoredGameSave {
+interface StoredGameSaveV1 {
   version: 1;
   hero: HeroSaveData;
   campaign: CampaignSaveData;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
+
+interface StoredGameSaveV2 {
+  version: 2;
+  createdAt: string;
+  updatedAt: string;
+  hero: HeroSaveData;
+  campaign: CampaignSaveData;
+  settings: Record<string, unknown>;
+  statistics: Record<string, unknown>;
+}
+
+type CurrentStoredGameSave = StoredGameSaveV2;
 ```
 
 Hero save:
@@ -590,8 +619,8 @@ Hero save:
 - unlockedAbilities
 - completedBattles
 - clearedMapIds
-- inventory
-- equipment
+- inventory as item instances
+- equipment as item instance IDs where possible
 - allocatedSkills
 - legacy `items` migration input
 - factionReputation
@@ -602,29 +631,44 @@ Campaign save:
 - started
 - difficulty
 - resources
+- resourcesSpent
 - completedNodeIds
 - unlockedNodeIds
+- lockedNodeIds
 - nodeRewardsClaimedIds
 - choiceIdsClaimed
+- townServiceClaimedIds
+- townServiceUseCounts
+- activeModifierIds
 - selectedNodeId
 
 Save normalization:
 
-- rejects invalid save version or invalid hero base data
-- migrates legacy `items` into inventory
+- current save version is 2
+- `migrateSaveToCurrent(input)` accepts valid V1 or V2 saves and returns a normalized V2 save
+- `migrateV1ToV2(input)` converts legacy V1 saves without dropping campaign resources, inventory, equipment, reward claims, or choice claims
+- invalid JSON and invalid save shapes return `null` without clearing or overwriting localStorage
+- new writes always use the V2 shape with `createdAt`, `updatedAt`, `settings`, and `statistics`
+- `SaveSystem.exportSaveJson()` returns the current save JSON for backup/debugging
+- `SaveSystem.importSaveJson(raw)` safely imports valid V1/V2 JSON and writes it as V2
+- rejects invalid save versions or invalid hero base data
+- migrates legacy `items` and raw catalog-ID inventories into item instances
+- migrates legacy catalog-ID equipment to matching instances or creates a safe equipped instance
 - normalizes missing campaign save to fallback
 - normalizes missing campaign resources to zero
 - normalizes missing choice claim IDs to an empty array
-- dedupes inventory, cleared maps, node rewards, unlocks, completions, and choice claims
+- dedupes item instances by instance ID plus cleared maps, node rewards, unlocks, completions, and choice claims
 - clamps negative numeric resources/stats where appropriate
 
 ## Current Tests
 
-Latest verified suite status after the Ashen Outpost map pass:
+Latest verified suite status after the item-instance/checkpoint pass:
 
 - `npm test`: passed
 - 21 test files passed
-- 89 tests passed
+- 105 tests passed
+- `npm run test:e2e`: passed
+- 5 Playwright smoke tests passed
 
 Current test files:
 
@@ -649,15 +693,16 @@ Current test files:
 - `src/game/systems/UpgradeEffects.test.ts`
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
+- `tests/e2e/smoke.spec.ts`
 
-Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, and upgrades. Browser-level scene flow remains mostly manual.
+Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and basic browser scene transitions. Browser-level tests currently verify main menu boot, new campaign creation, locked-node behavior, Border Village battle launch, skirmish map selection/Broken Ford launch, and inventory screen boot. Winning battles and deep in-battle construction/results flows remain manual QA.
 
 ## Current Build And Asset Status
 
-Latest verified build status after the Ashen Outpost map pass:
+Latest verified build status after the item-instance/checkpoint pass:
 
 - `npm run build`: passed
-- Vite emitted the known large-chunk warning for the main JS bundle, approximately 1.7 MB minified and 400 KB gzip.
+- Vite emitted the known large-chunk warning for the main JS bundle, approximately 1.78 MB minified and 420 KB gzip.
 
 Asset refresh status:
 
@@ -666,22 +711,21 @@ Asset refresh status:
 
 ## Current Known Bugs
 
-No deterministic runtime bug was reproduced by automated tests in this pass.
+No deterministic runtime bug was reproduced by automated unit, build, or Playwright smoke tests in this pass.
 
 Known current issues:
 
-- Browser Use could not attach to the in-app browser pane during this pass, so a full browser automation smoke was not completed.
-- `rg --files` failed with Windows access denied in this workspace; PowerShell enumeration was used instead.
 - Vite reports a large bundle chunk warning.
-- Manual browser flow needs another smoke once Browser Use is available.
+- Full battle win/loss browser QA is still manual; the e2e suite intentionally stops after scene transitions and boot checks.
+- Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
 
 ## Current Known Limitations
 
 - Campaign is still a skeleton, not a full strategic layer.
-- No shops, vendors, mercenaries, repairs, stronghold development, diplomacy, invasions, or world simulation.
+- No broad vendor economy, mercenaries, repairs, stronghold development, diplomacy, invasions, or world simulation beyond the small Marcher Camp service/shop node.
 - Event choices are compact cards, not a dialogue engine.
 - `recoverHero` is a placeholder event reward.
-- No item instance IDs, randomized affixes, duplicate conversion, crafting, durability, or item art pipeline integration for all item UI.
+- Item instances exist, but randomized affixes, crafting, durability, and item art pipeline integration for all item UI are not implemented.
 - Relic slot is typed but not fully used.
 - Fog of war is grid-based and not blocker-aware.
 - Minimap has no drag-to-pan or last-known enemy memory.
@@ -696,119 +740,62 @@ Known current issues:
 
 Line counts from the current audit:
 
-- `src/game/styles/ui.css`: 1556 lines. Risk: broad global UI styling, scene-specific styles, and HUD styles in one file.
 - `tools/manual-asset-pipeline/assetRegistry.ts`: 1343 lines. Risk: asset metadata is large and easy to conflict.
-- `src/game/scenes/BattleScene.ts`: 1285 lines. Risk: owns spawning, rendering, input wiring, fog, minimap snapshots, combat hooks, results transitions, and many systems.
-- `src/game/data/contentValidation.ts`: 929 lines. Risk: validation logic keeps growing with each data system.
+- `src/game/data/contentValidation.ts`: 939 lines. Risk: validation logic keeps growing with each data system.
+- `src/game/scenes/BattleScene.ts`: 849 lines. Risk: still coordinates live scene input and system orchestration even after helper extraction.
 - `src/game/data/maps.ts`: 592 lines. Risk: authored map data is growing quickly; future maps should move to separate files or grouped exports.
-- `src/game/scenes/ResultsScene.ts`: 557 lines. Risk: reward UI, campaign reward flow, equip-now behavior, special objectives, save behavior, and navigation are coupled.
-- `src/game/core/GameTypes.ts`: 542 lines. Risk: central type file is accumulating every domain.
-- `src/game/scenes/CampaignMapScene.ts`: 485 lines. Risk: campaign UI, choice application, save calls, and node rendering are coupled.
-- `src/game/scenes/HeroProgressionScene.ts`: 441 lines. Risk: inventory/equipment/skill UI in one DOM scene.
-- `src/game/core/HeroProgressionRules.ts`: 420 lines. Risk: skills, equipment, rewards, XP, and stat math are sharing one rules module.
+- `src/game/scenes/ResultsScene.ts`: 574 lines. Risk: reward UI, campaign reward flow, equip-now behavior, special objectives, save behavior, and navigation are coupled.
+- `src/game/core/GameTypes.ts`: 561 lines. Risk: central type file is accumulating every domain.
+- `src/game/scenes/CampaignMapScene.ts`: 496 lines. Risk: campaign UI, choice application, save calls, and node rendering are coupled.
+- `src/game/core/HeroProgressionRules.ts`: 484 lines. Risk: skills, equipment, rewards, XP, duplicate conversion, and stat math are sharing one rules module.
+- `src/game/scenes/HeroProgressionScene.ts`: 447 lines. Risk: inventory/equipment/skill UI in one DOM scene.
+- `src/game/core/SaveSystem.ts`: 442 lines. Risk: permissive migration and normalization must keep old localStorage saves safe.
+- `src/game/core/CampaignRules.ts`: 404 lines. Risk: node completion, choice costs/rewards, town services, modifiers, and reward claims converge here.
 - `src/game/ui/HUD.ts`: 366 lines. Risk: battle panel, selected entity UI, training, upgrades, alerts, and minimap container are concentrated.
+
+The UI CSS has been split by domain. `src/game/styles/ui.css` is now the import hub, with domain files such as `base.css`, `main-menu.css`, `campaign.css`, `battle-hud.css`, `battle-feedback.css`, `results.css`, `inventory.css`, `minimap.css`, `asset-gallery.css`, `forms.css`, and `responsive.css`.
 
 ## Most Fragile Systems
 
-1. `BattleScene` integration layer: it coordinates almost every live system and is the easiest place to introduce regressions.
+1. `BattleScene` integration layer: it is shorter after helper extraction, but still coordinates live scene input and system orchestration.
 2. Results and campaign reward saving: battle reward, node reward, Equip Now, first-clear, and campaign-bank logic all meet here.
-3. Save normalization: older saves are supported through permissive migration, but save version remains `1` while fields have grown.
+3. Save normalization: older saves are supported through permissive V1/V2 migration while inventory now stores item instances.
 4. Campaign choices: pure rules are covered, but browser UI flow needs manual smoke testing.
 5. Fog/minimap visibility: visibility filters entity rendering and minimap markers; it can easily hide too much or too little.
 6. Input mode overlap: selection, right-click move/attack, rally assignment, placement ghost, minimap click, ability hotkeys, and Esc behavior share player input.
 7. Content validation: high value, but it is expanding into a catch-all validator.
-8. DOM UI styling: one CSS file styles menus, HUD, results, inventory, campaign, minimap, and construction hints.
+8. DOM UI styling: CSS is split by domain now, but global selectors can still collide.
 9. Asset fallback chain: optional manual/final/placeholder assets need regular validation after art changes.
 10. Enemy AI pacing: currently data-driven and safer than before, but still depends on milestone gates and phase math.
 
 ## Current Git Status
 
-Latest commit hash at handoff time:
+Latest pre-checkpoint commit hash at handoff update time:
 
 ```text
-18af42d9520b689ae958f49b41ba9c21346f8e9b
+3449c58d6764fc0b63ee06ad0d5555a0577623e1
 ```
 
-Branch status:
+Branch status before the next checkpoint commit:
 
 ```text
-main...origin/main [ahead 2]
+main...origin/main [ahead 3]
 ```
 
-The worktree is dirty with many uncommitted feature-pass changes. Do not reset, checkout, or delete these changes unless the user explicitly asks.
+The worktree was dirty before this stabilization pass with item-instance, e2e, BattleScene-helper, CSS-split, Marcher Camp, and documentation changes. The recommended action is to commit all verified current changes together as a local checkpoint before starting another gameplay feature.
 
-Modified files at handoff time:
+Expected status after the checkpoint commit:
 
-- `BALANCE.md`
-- `CONTENT_GUIDE.md`
-- `DESIGN.md`
-- `DEVELOPMENT_CHECKPOINT.md`
-- `LLM_GAME_HANDOFF.md`
-- `README.md`
-- `ROADMAP.md`
-- `TECHNICAL_AUDIT.md`
-- `src/game/ai/EnemyAIController.ts`
-- `src/game/battle/BattleLaunchRequest.test.ts`
-- `src/game/battle/BattleLaunchRequest.ts`
-- `src/game/battle/BattleRuntime.test.ts`
-- `src/game/battle/BattleRuntime.ts`
-- `src/game/core/CampaignRules.test.ts`
-- `src/game/core/CampaignRules.ts`
-- `src/game/core/GameTypes.ts`
-- `src/game/core/SaveSystem.test.ts`
-- `src/game/core/SaveSystem.ts`
-- `src/game/data/battlePacing.ts`
-- `src/game/data/buildings.ts`
-- `src/game/data/campaignNodes.ts`
-- `src/game/data/contentIndex.ts`
-- `src/game/data/contentValidation.test.ts`
-- `src/game/data/contentValidation.ts`
-- `src/game/data/factions.ts`
-- `src/game/data/heroClasses.ts`
-- `src/game/data/heroes.ts`
-- `src/game/data/maps.ts`
-- `src/game/data/rewards.ts`
-- `src/game/data/units.ts`
-- `src/game/data/upgrades.ts`
-- `src/game/entities/BaseEntity.ts`
-- `src/game/entities/Building.ts`
-- `src/game/entities/Hero.ts`
-- `src/game/entities/Unit.ts`
-- `src/game/save/SaveTypes.ts`
-- `src/game/scenes/BattleScene.ts`
-- `src/game/scenes/CampaignMapScene.ts`
-- `src/game/scenes/HeroCreationScene.ts`
-- `src/game/scenes/HeroProgressionScene.ts`
-- `src/game/scenes/ResultsScene.ts`
-- `src/game/scenes/SkirmishSetupScene.ts`
-- `src/game/styles/ui.css`
-- `src/game/systems/CombatSystem.ts`
-- `src/game/systems/InputSystem.ts`
-- `src/game/systems/MovementSystem.ts`
-- `src/game/systems/TrainingSystem.ts`
-- `src/game/ui/HUD.ts`
-- `src/game/ui/MinimapView.ts`
+```text
+main...origin/main [ahead 4]
+working tree clean
+```
 
-Untracked files at handoff time:
-
-- `src/game/core/ResultsFlow.test.ts`
-- `src/game/core/ResultsFlow.ts`
-- `src/game/data/aiPersonalities.test.ts`
-- `src/game/data/aiPersonalities.ts`
-- `src/game/data/campaignModifiers.test.ts`
-- `src/game/data/campaignModifiers.ts`
-- `src/game/systems/FogOfWarSystem.test.ts`
-- `src/game/systems/FogOfWarSystem.ts`
-- `src/game/systems/PathfindingGrid.test.ts`
-- `src/game/systems/PathfindingGrid.ts`
-- `src/game/systems/RallyPointSystem.test.ts`
-- `src/game/systems/RallyPointSystem.ts`
-- `src/game/systems/StatusEffectSystem.test.ts`
-- `src/game/systems/StatusEffectSystem.ts`
+Do not reset, checkout, or delete these changes unless the user explicitly asks.
 
 ## Current Manual QA Checklist
 
-Run this before committing or before starting another large feature pass:
+Run this before starting another large feature pass and after any checkpoint commit that changes gameplay/UI:
 
 1. Start dev server and open `http://127.0.0.1:5173/`.
 2. Main menu appears.
@@ -866,22 +853,22 @@ Run this before committing or before starting another large feature pass:
 
 ## Recommended Next 10 Development Priorities
 
-1. Commit the current dirty worktree as a checkpoint after one full manual browser QA pass.
-2. Split `BattleScene` into smaller orchestration helpers: spawning, input wiring, minimap/fog snapshots, result transition, and alerts.
-3. Split `ui.css` by scene or UI domain to reduce style collisions.
-4. Add browser-level smoke tests for menu -> campaign -> battle -> results and skirmish -> Broken Ford.
-5. Add save version migration discipline before adding more persistent systems.
-6. Build the first campaign resource spending sink, preferably a small town/shop or repair node using the existing bank.
-7. Add item instance IDs and duplicate reward conversion before randomized affixes.
-8. Add enemy construction only after player construction/rally/fog/manual QA is stable.
-9. Improve pathing and terrain-aware movement before adding larger maps or blocker-aware fog.
-10. Add lightweight audio/settings/accessibility pass once core loops are stable.
+1. Push or PR the checkpointed local commits to GitHub when the user is ready to publish the current prototype state.
+2. Run a full manual browser QA pass through the 53-item checklist above, especially battle win/loss and reward persistence.
+3. Add e2e coverage for ResultsScene rewards, Equip Now, Marcher Camp services, and campaign choice outcomes.
+4. Split `ResultsScene`, `CampaignMapScene`, and `HeroProgressionScene` into smaller view/rules helpers.
+5. Split large authored data such as `maps.ts` into per-map modules before adding more maps.
+6. Add randomized item affixes only after instance-based inventory has more browser QA coverage.
+7. Improve formation/pathing behavior and dynamic blockers before building larger maps.
+8. Add enemy construction or adaptive AI only after player construction/rally/fog/manual QA is stable.
+9. Add lightweight audio, settings, keybinding, and accessibility passes.
+10. Rebalance first-30-minute campaign pacing after several human playthroughs on Easy and Normal.
 
 ## Guidance For Future LLMs
 
 - Preserve campaign and skirmish as separate entry flows that share `BattleLaunchRequest`.
-- Do not add campaign complexity before stabilizing and committing this feature set.
+- Do not add more campaign complexity before stabilizing the current checkpoint with browser QA.
 - Prefer data additions in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - Keep browser smoke testing close to every UI-heavy change.
-- Avoid broad rewrites while the worktree is dirty.
+- Avoid broad rewrites without a clean checkpoint first.
 - Never reset or checkout over the current uncommitted work without explicit user approval.

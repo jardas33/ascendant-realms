@@ -18,8 +18,8 @@ export interface ResultsGuidanceInput {
 }
 
 export function heroHasUnequippedItems(hero: HeroSaveData): boolean {
-  const equipped = new Set(Object.values(hero.equipment).filter((itemId): itemId is string => typeof itemId === "string"));
-  return hero.inventory.some((itemId) => !equipped.has(itemId));
+  const equipped = new Set(Object.values(hero.equipment).filter((instanceId): instanceId is string => typeof instanceId === "string"));
+  return hero.inventory.some((instance) => !equipped.has(instance.instanceId));
 }
 
 export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSaveData): GuidanceMessage {

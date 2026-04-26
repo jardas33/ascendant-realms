@@ -1,0 +1,74 @@
+/* Cross-domain mobile layout overrides kept last to preserve cascade behavior. */
+
+@media (max-width: 760px) {
+  .choice-columns,
+  .difficulty-grid,
+  .setup-grid,
+  .map-grid,
+  .campaign-layout,
+  .menu-actions.row,
+  .progression-grid,
+  .skill-tree-grid,
+  .results-sections,
+  .reward-card-main {
+    grid-template-columns: 1fr;
+  }
+
+  .progression-header {
+    display: grid;
+  }
+
+  .results-title-row {
+    display: grid;
+  }
+
+  .progression-title-row {
+    align-items: flex-start;
+  }
+
+  .progression-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top-bar {
+    align-items: flex-start;
+  }
+
+  .resource-pill {
+    min-width: 92px;
+    font-size: 12px;
+  }
+
+  .resource-row {
+    max-width: calc(100% - 82px);
+  }
+
+  .side-panel {
+    right: 8px;
+    left: 8px;
+    bottom: 118px;
+    width: auto;
+    max-height: 240px;
+  }
+
+  .hero-panel {
+    left: 8px;
+    bottom: 8px;
+  }
+
+  .minimap-shell {
+    right: 8px;
+    top: 214px;
+    width: 112px;
+    height: 78px;
+    padding: 6px;
+  }
+
+  .status-line {
+    top: 116px;
+  }
+
+  .hint-line {
+    top: 166px;
+  }
+}

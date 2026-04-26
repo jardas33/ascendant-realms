@@ -1,0 +1,81 @@
+/* Live minimap frame, SVG terrain, markers, camera rectangle, and ping styling. */
+
+.minimap-shell {
+  position: absolute;
+  right: 12px;
+  top: 58px;
+  width: 132px;
+  height: 92px;
+  padding: 8px;
+  border: 1px solid rgba(246, 237, 180, 0.2);
+  border-style: solid;
+  border-image-source: var(--ui-minimap-frame);
+  border-image-slice: 56;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.06), rgba(5, 8, 8, 0.48)),
+    rgba(12, 15, 15, 0.82);
+}
+
+.mini-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(216, 222, 199, 0.18);
+  background: #17261d;
+  cursor: crosshair;
+  overflow: hidden;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
+}
+
+.mini-map:hover {
+  border-color: rgba(246, 237, 180, 0.45);
+}
+
+.minimap-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.minimap-terrain {
+  fill: #223226;
+}
+
+.minimap-bounds {
+  fill: none;
+  stroke: rgba(246, 237, 180, 0.28);
+  stroke-width: 0.8;
+}
+
+.minimap-unit,
+.minimap-building,
+.minimap-camp,
+.minimap-site {
+  vector-effect: non-scaling-stroke;
+}
+
+.minimap-unit {
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.82));
+}
+
+.minimap-building {
+  filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.9));
+}
+
+.minimap-site {
+  vector-effect: non-scaling-stroke;
+}
+
+.minimap-camera {
+  fill: rgba(255, 255, 255, 0.05);
+  stroke: #dceef0;
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+
+.minimap-ping circle {
+  vector-effect: non-scaling-stroke;
+}

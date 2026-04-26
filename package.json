@@ -9,6 +9,8 @@
     "build": "tsc -p tsconfig.json && vite build",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
     "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
     "assets:ui-kit": "tsx tools/manual-asset-pipeline/generateProceduralUiKit.ts",
     "assets:process-battle-sprites": "tsx tools/manual-asset-pipeline/processBattleSprites.ts",
@@ -20,6 +22,7 @@
     "phaser": "^3.90.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/node": "^22.10.2",
     "tsx": "^4.20.6",
     "typescript": "^5.7.2",

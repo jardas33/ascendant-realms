@@ -7,9 +7,10 @@ import type {
   ResourceBag,
   RewardLevelUpSummary
 } from "./GameTypes";
-import { grantBattleRewards } from "./HeroProgressionRules";
+import { grantBattleRewards, heroOwnsCatalogItem } from "./HeroProgressionRules";
 import { createFallbackCampaignSave } from "./SaveSystem";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
+import { ITEM_BY_ID } from "../data/contentIndex";
 import {
   applyCampaignResourceRewardModifiers,
   grantCampaignModifiers,
@@ -129,10 +130,13 @@ export function completeCampaignNodeWithRewards(options: {
         resources: adjustedReward.resources,
         xp: options.node.rewards.xp ?? 0
       };
-  const granted = grantBattleRewards(options.hero, nodeReward);
+  const granted = grantBattleRewards(options.hero, nodeReward, undefined, {
+    itemById: ITEM_BY_ID,
+    source: `campaign_node:${options.node.id}`
+  });
   const campaign = rewardAlreadyClaimed
     ? completeCampaignNode(options.campaign, options.node, options.nodes)
-    : addCampaignResources(completeCampaignNode(adjustedReward.campaign, options.node, options.nodes), nodeReward.resources);
+    : addCampaignResources(completeCampaignNode(adjustedReward.campaign, options.node, options.nodes), granted.reward.resources);
   const claimed = new Set(campaign.nodeRewardsClaimedIds);
   if (!rewardAlreadyClaimed) {
     claimed.add(options.node.id);
@@ -144,7 +148,7 @@ export function completeCampaignNodeWithRewards(options: {
       nodeRewardsClaimedIds: [...claimed]
     },
     hero: granted.hero,
-    nodeReward,
+    nodeReward: granted.reward,
     nodeLevelUp: granted.levelUp
   };
 }
@@ -186,8 +190,11 @@ export function getCampaignChoiceAvailability(options: {
   if (status === "completed") {
     reasons.push("Node completed");
   }
-  if (options.choice.onceOnly && (options.campaign.choiceIdsClaimed ?? []).includes(campaignChoiceClaimId(options.node.id, options.choice.id))) {
-    reasons.push("Already chosen");
+  if (options.choice.onceOnly && isCampaignChoiceClaimed(options.campaign, options.node, options.choice)) {
+    reasons.push(options.node.nodeType === "town" ? "Already purchased" : "Already chosen");
+  }
+  if (options.choice.stockItemId && heroOwnsCatalogItem(options.hero, options.choice.stockItemId)) {
+    reasons.push("Already owned");
   }
 
   Object.entries(options.choice.costs ?? {}).forEach(([resource, amount]) => {
@@ -212,7 +219,7 @@ export function getCampaignChoiceAvailability(options: {
     }
   });
   options.choice.requirements?.itemIds?.forEach((itemId) => {
-    if (!options.hero.inventory.includes(itemId)) {
+    if (!heroOwnsCatalogItem(options.hero, itemId)) {
       reasons.push(`Requires item ${itemId}`);
     }
   });
@@ -268,11 +275,16 @@ export function applyCampaignChoice(options: {
   };
   const beforeUnlocked = new Set(options.campaign.unlockedNodeIds);
   const beforeLocked = new Set(options.campaign.lockedNodeIds);
-  const paidCampaign = subtractCampaignResources(options.campaign, options.choice.costs ?? {});
-  const adjustedReward = applyCampaignResourceRewardModifiers({
-    campaign: paidCampaign,
-    resources: reward.resources
-  });
+  const paidCampaign = recordCampaignResourceSpending(
+    subtractCampaignResources(options.campaign, options.choice.costs ?? {}),
+    options.choice.costs ?? {}
+  );
+  const adjustedReward = options.node.nodeType === "town"
+    ? { campaign: paidCampaign, resources: reward.resources, consumedModifierIds: [] }
+    : applyCampaignResourceRewardModifiers({
+        campaign: paidCampaign,
+        resources: reward.resources
+      });
   const adjustedRewardResult: BattleRewardResult = {
     ...reward,
     resources: adjustedReward.resources
@@ -290,7 +302,7 @@ export function applyCampaignChoice(options: {
     }
   });
 
-  const completedNode = options.choice.completesNode !== false;
+  const completedNode = options.node.nodeType === "town" ? options.choice.completesNode === true : options.choice.completesNode !== false;
   const completedCampaign = completedNode
     ? completeCampaignNode({ ...rewardCampaign, unlockedNodeIds: [...unlocked], lockedNodeIds: [...locked] }, options.node, nodes)
     : refreshCampaignUnlocks({ ...rewardCampaign, unlockedNodeIds: [...unlocked], lockedNodeIds: [...locked], selectedNodeId: options.node.id }, nodes);
@@ -298,12 +310,28 @@ export function applyCampaignChoice(options: {
   if (options.choice.onceOnly) {
     claimed.add(campaignChoiceClaimId(options.node.id, options.choice.id));
   }
+  const townServiceClaimed = new Set(completedCampaign.townServiceClaimedIds ?? []);
+  if (options.node.nodeType === "town" && options.choice.onceOnly) {
+    townServiceClaimed.add(campaignChoiceClaimId(options.node.id, options.choice.id));
+  }
+  const townServiceUseCounts = { ...(completedCampaign.townServiceUseCounts ?? {}) };
+  if (options.node.nodeType === "town") {
+    const serviceId = campaignChoiceClaimId(options.node.id, options.choice.id);
+    townServiceUseCounts[serviceId] = (townServiceUseCounts[serviceId] ?? 0) + 1;
+  }
   const reputationChanges = {
     ...(options.choice.reputationChanges ?? {}),
     ...(options.choice.rewards?.reputationChanges ?? {})
   };
   const heroWithReputation = applyReputationChanges(options.hero, reputationChanges);
-  const granted = grantBattleRewards(heroWithReputation, adjustedRewardResult);
+  const granted = grantBattleRewards(heroWithReputation, adjustedRewardResult, undefined, {
+    itemById: ITEM_BY_ID,
+    source: `campaign_choice:${options.node.id}:${options.choice.id}`
+  });
+  const campaignWithConvertedResources = addCampaignResources(
+    completedCampaign,
+    additionalRewardResources(granted.reward.resources, adjustedRewardResult.resources)
+  );
   const grantedModifierIds = [
     ...(options.choice.modifierIds ?? []),
     ...(options.choice.rewards?.modifierIds ?? [])
@@ -315,8 +343,10 @@ export function applyCampaignChoice(options: {
   const modifierCampaign = removeCampaignModifiers(
     grantCampaignModifiers(
       {
-        ...completedCampaign,
-        choiceIdsClaimed: [...claimed]
+        ...campaignWithConvertedResources,
+        choiceIdsClaimed: [...claimed],
+        townServiceClaimedIds: [...townServiceClaimed],
+        townServiceUseCounts
       },
       grantedModifierIds
     ),
@@ -327,7 +357,7 @@ export function applyCampaignChoice(options: {
     ok: true,
     campaign: modifierCampaign,
     hero: granted.hero,
-    reward: adjustedRewardResult,
+    reward: granted.reward,
     levelUp: granted.levelUp,
     unlockedNodeIds: [...modifierCampaign.unlockedNodeIds].filter((nodeId) => !beforeUnlocked.has(nodeId)),
     lockedNodeIds: [...modifierCampaign.lockedNodeIds].filter((nodeId) => !beforeLocked.has(nodeId)),
@@ -347,6 +377,36 @@ function subtractCampaignResources(campaign: CampaignSaveData, resources: Partia
       aether: campaign.resources.aether - (resources.aether ?? 0)
     }
   };
+}
+
+function recordCampaignResourceSpending(campaign: CampaignSaveData, resources: Partial<ResourceBag>): CampaignSaveData {
+  return {
+    ...campaign,
+    resourcesSpent: {
+      crowns: campaign.resourcesSpent.crowns + Math.max(0, Math.floor(resources.crowns ?? 0)),
+      stone: campaign.resourcesSpent.stone + Math.max(0, Math.floor(resources.stone ?? 0)),
+      iron: campaign.resourcesSpent.iron + Math.max(0, Math.floor(resources.iron ?? 0)),
+      aether: campaign.resourcesSpent.aether + Math.max(0, Math.floor(resources.aether ?? 0))
+    }
+  };
+}
+
+function additionalRewardResources(total: Partial<ResourceBag>, alreadyApplied: Partial<ResourceBag>): Partial<ResourceBag> {
+  return {
+    crowns: Math.max(0, (total.crowns ?? 0) - (alreadyApplied.crowns ?? 0)),
+    stone: Math.max(0, (total.stone ?? 0) - (alreadyApplied.stone ?? 0)),
+    iron: Math.max(0, (total.iron ?? 0) - (alreadyApplied.iron ?? 0)),
+    aether: Math.max(0, (total.aether ?? 0) - (alreadyApplied.aether ?? 0))
+  };
+}
+
+function isCampaignChoiceClaimed(
+  campaign: CampaignSaveData,
+  node: CampaignNodeDefinition,
+  choice: CampaignNodeChoiceDefinition
+): boolean {
+  const claimId = campaignChoiceClaimId(node.id, choice.id);
+  return (campaign.choiceIdsClaimed ?? []).includes(claimId) || (node.nodeType === "town" && (campaign.townServiceClaimedIds ?? []).includes(claimId));
 }
 
 function applyReputationChanges(hero: HeroSaveData, changes: Record<string, number>): HeroSaveData {

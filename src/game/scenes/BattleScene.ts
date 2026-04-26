@@ -1,14 +1,12 @@
 import Phaser from "phaser";
 import type {
   BattleSecondaryObjectiveType,
-  FactionModifierDefinition,
   Position,
   ResourceBag,
   ResourceKey,
   Team,
   UpgradeDefinition
 } from "../core/GameTypes";
-import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
 import { formatTime } from "../core/MathUtils";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
@@ -17,20 +15,29 @@ import {
   AI_PERSONALITY_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
-  UPGRADE_BY_ID,
-  requireBuilding,
-  requireCampaignNode,
-  requireHeroClass,
-  requireOrigin,
-  requireUnit
+  UPGRADE_BY_ID
 } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
+import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
+import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
+import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
+import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
+import { spawnBattleScenario } from "../battle/BattleSceneSpawner";
 import {
-  cloneBattleLaunchRequestWithHero,
+  appendMinimapPing,
+  firstBattleTutorialHint,
+  trackEnemyWave as trackEnemyWaveAlert,
+  updateMinimapPings,
+  updateResourceSiteWarnings,
+  updateTrackedEnemyWaves,
+  warnIfCommandHallUnderAttack as warnCommandHallUnderAttack,
+  type TrackedEnemyWave
+} from "../battle/BattleSceneAlerts";
+import {
   createSkirmishBattleLaunchRequest,
   resolveBattleLaunchRequest,
   type BattleLaunchRequest,
@@ -70,11 +77,6 @@ import { XPSystem } from "../systems/XPSystem";
 interface BattleSceneData {
   launchRequest?: BattleLaunchRequest;
   heroSave?: HeroSaveData;
-}
-
-interface TrackedEnemyWave {
-  id: number;
-  unitIds: string[];
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -232,245 +234,20 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private drawMap(): void {
-    this.cameras.main.setBounds(0, 0, this.activeMap.width, this.activeMap.height);
-    const graphics = this.add.graphics().setDepth(-20);
-    this.drawBaseTerrain(graphics);
-    this.drawBattleRoads(graphics);
-
-    this.activeMap.terrainZones.forEach((zone) => {
-      if (zone.type === "buildable") {
-        this.drawBuildableGround(graphics, zone);
-      }
-      if (zone.type === "blocked") {
-        this.drawBlockedGround(graphics, zone);
-      }
-      if (zone.type === "water") {
-        this.drawWaterGround(graphics, zone);
-      }
-    });
-
-    this.drawCaptureSiteGrounds(graphics);
-    this.drawTerrainDetails(graphics);
-    this.drawMapBorder(graphics);
-  }
-
-  private drawBaseTerrain(graphics: Phaser.GameObjects.Graphics): void {
-    graphics.fillStyle(0x17261b, 1);
-    graphics.fillRect(0, 0, this.activeMap.width, this.activeMap.height);
-
-    graphics.fillStyle(0x213923, 0.6);
-    graphics.fillEllipse(570, 780, 980, 720);
-    graphics.fillStyle(0x243223, 0.54);
-    graphics.fillEllipse(1650, 770, 1220, 760);
-    graphics.fillStyle(0x1a2e27, 0.46);
-    graphics.fillEllipse(1160, 230, 620, 300);
-    graphics.fillStyle(0x263827, 0.42);
-    graphics.fillEllipse(1250, 1370, 840, 280);
-
-    for (let index = 0; index < 260; index += 1) {
-      const x = this.noise01(index + 11) * this.activeMap.width;
-      const y = this.noise01(index + 97) * this.activeMap.height;
-      const width = 10 + this.noise01(index + 211) * 34;
-      const height = 4 + this.noise01(index + 307) * 13;
-      const colorRoll = this.noise01(index + 409);
-      const color = colorRoll > 0.72 ? 0x385036 : colorRoll > 0.38 ? 0x203922 : 0x293f2c;
-      graphics.fillStyle(color, 0.13 + this.noise01(index + 503) * 0.17);
-      graphics.fillEllipse(x, y, width, height);
-    }
-  }
-
-  private drawBattleRoads(graphics: Phaser.GameObjects.Graphics): void {
-    this.activeMap.visualPaths.forEach((path) => this.drawPath(graphics, path.points, path.width));
-  }
-
-  private drawBuildableGround(
-    graphics: Phaser.GameObjects.Graphics,
-    zone: { x: number; y: number; width: number; height: number }
-  ): void {
-    graphics.fillStyle(0x2c3f2b, 0.55);
-    graphics.fillRect(zone.x, zone.y, zone.width, zone.height);
-    graphics.fillStyle(0x6b5837, 0.16);
-    graphics.fillRect(zone.x + 18, zone.y + 18, zone.width - 36, zone.height - 36);
-    graphics.lineStyle(3, 0xd6c37d, 0.24);
-    graphics.strokeRect(zone.x + 16, zone.y + 16, zone.width - 32, zone.height - 32);
-
-    graphics.lineStyle(1, 0xf0d978, 0.08);
-    for (let x = zone.x + 74; x < zone.x + zone.width - 40; x += 92) {
-      this.strokePolyline(graphics, [
-        { x, y: zone.y + 34 },
-        { x: x - 18, y: zone.y + zone.height - 34 }
-      ]);
-    }
-    for (let y = zone.y + 68; y < zone.y + zone.height - 40; y += 86) {
-      this.strokePolyline(graphics, [
-        { x: zone.x + 34, y },
-        { x: zone.x + zone.width - 34, y: y + 12 }
-      ]);
-    }
-
-    graphics.fillStyle(0x0f1710, 0.55);
-    graphics.fillCircle(zone.x + 26, zone.y + 26, 6);
-    graphics.fillCircle(zone.x + zone.width - 26, zone.y + 26, 6);
-    graphics.fillCircle(zone.x + 26, zone.y + zone.height - 26, 6);
-    graphics.fillCircle(zone.x + zone.width - 26, zone.y + zone.height - 26, 6);
-  }
-
-  private drawBlockedGround(
-    graphics: Phaser.GameObjects.Graphics,
-    zone: { x: number; y: number; width: number; height: number }
-  ): void {
-    const centerX = zone.x + zone.width / 2;
-    const centerY = zone.y + zone.height / 2;
-    graphics.fillStyle(0x211f1b, 0.45);
-    graphics.fillEllipse(centerX + 8, centerY + 12, zone.width * 1.2, zone.height * 1.08);
-    graphics.fillStyle(0x514f43, 0.94);
-    graphics.fillEllipse(centerX, centerY, zone.width * 1.03, zone.height * 0.86);
-    graphics.fillStyle(0x77705c, 0.72);
-    graphics.fillEllipse(centerX - zone.width * 0.22, centerY - zone.height * 0.1, zone.width * 0.32, zone.height * 0.46);
-    graphics.fillEllipse(centerX + zone.width * 0.18, centerY + zone.height * 0.04, zone.width * 0.36, zone.height * 0.42);
-    graphics.lineStyle(4, 0x191712, 0.42);
-    graphics.strokeEllipse(centerX, centerY, zone.width * 1.03, zone.height * 0.86);
-  }
-
-  private drawWaterGround(
-    graphics: Phaser.GameObjects.Graphics,
-    zone: { x: number; y: number; width: number; height: number }
-  ): void {
-    const centerX = zone.x + zone.width / 2;
-    const centerY = zone.y + zone.height / 2;
-    graphics.fillStyle(0x10241f, 0.42);
-    graphics.fillEllipse(centerX + 8, centerY + 10, zone.width * 1.16, zone.height * 1.22);
-    graphics.fillStyle(0x1d5564, 0.92);
-    graphics.fillEllipse(centerX, centerY, zone.width * 1.06, zone.height * 1.1);
-    graphics.fillStyle(0x276c78, 0.5);
-    graphics.fillEllipse(centerX - zone.width * 0.12, centerY - zone.height * 0.08, zone.width * 0.58, zone.height * 0.38);
-    graphics.lineStyle(8, 0xa2b077, 0.18);
-    graphics.strokeEllipse(centerX, centerY, zone.width * 1.1, zone.height * 1.15);
-    graphics.lineStyle(2, 0xbfe9df, 0.22);
-    for (let index = 0; index < 4; index += 1) {
-      const y = centerY - zone.height * 0.23 + index * (zone.height * 0.15);
-      this.strokePolyline(graphics, [
-        { x: centerX - zone.width * 0.3, y },
-        { x: centerX - zone.width * 0.08, y: y + 8 },
-        { x: centerX + zone.width * 0.22, y: y - 2 }
-      ]);
-    }
-  }
-
-  private drawCaptureSiteGrounds(graphics: Phaser.GameObjects.Graphics): void {
-    this.activeMap.captureSites.forEach((site, index) => {
-      const accent = [0xd8c76f, 0x9fa079, 0xb08059, 0x74d3f2][index] ?? 0xd8c76f;
-      graphics.fillStyle(0x0e1510, 0.28);
-      graphics.fillCircle(site.x, site.y + 6, site.radius + 30);
-      graphics.fillStyle(accent, 0.08);
-      graphics.fillCircle(site.x, site.y, site.radius + 18);
-      graphics.lineStyle(3, accent, 0.26);
-      graphics.strokeCircle(site.x, site.y, site.radius + 16);
-      graphics.lineStyle(2, 0xf0d978, 0.11);
-      graphics.strokeCircle(site.x, site.y, site.radius + 4);
-    });
-  }
-
-  private drawTerrainDetails(graphics: Phaser.GameObjects.Graphics): void {
-    for (let index = 0; index < 110; index += 1) {
-      const x = this.noise01(index + 701) * this.activeMap.width;
-      const y = this.noise01(index + 809) * this.activeMap.height;
-      const height = 12 + this.noise01(index + 877) * 18;
-      graphics.lineStyle(2, 0x54724a, 0.25);
-      this.strokePolyline(graphics, [
-        { x, y },
-        { x: x + 4, y: y - height }
-      ]);
-      this.strokePolyline(graphics, [
-        { x: x + 5, y: y + 1 },
-        { x: x + 11, y: y - height * 0.72 }
-      ]);
-    }
-
-    for (let index = 0; index < 72; index += 1) {
-      const x = this.noise01(index + 1013) * this.activeMap.width;
-      const y = this.noise01(index + 1117) * this.activeMap.height;
-      const radius = 2 + this.noise01(index + 1223) * 5;
-      graphics.fillStyle(0x8b8265, 0.24);
-      graphics.fillCircle(x, y, radius);
-    }
-  }
-
-  private drawMapBorder(graphics: Phaser.GameObjects.Graphics): void {
-    graphics.lineStyle(28, 0x070a08, 0.34);
-    graphics.strokeRect(0, 0, this.activeMap.width, this.activeMap.height);
-    graphics.lineStyle(6, 0x101712, 1);
-    graphics.strokeRect(0, 0, this.activeMap.width, this.activeMap.height);
-  }
-
-  private drawPath(graphics: Phaser.GameObjects.Graphics, points: Position[], width: number): void {
-    graphics.lineStyle(width + 18, 0x10140f, 0.34);
-    this.strokePolyline(graphics, points);
-    graphics.lineStyle(width + 8, 0x5b462d, 0.38);
-    this.strokePolyline(graphics, points);
-    graphics.lineStyle(width, 0x8a6a3f, 0.42);
-    this.strokePolyline(graphics, points);
-    graphics.lineStyle(2, 0xd6bd76, 0.12);
-    this.strokePolyline(graphics, points);
-  }
-
-  private strokePolyline(graphics: Phaser.GameObjects.Graphics, points: Position[]): void {
-    if (points.length === 0) {
-      return;
-    }
-    graphics.beginPath();
-    graphics.moveTo(points[0].x, points[0].y);
-    points.slice(1).forEach((point) => graphics.lineTo(point.x, point.y));
-    graphics.strokePath();
-  }
-
-  private noise01(seed: number): number {
-    const value = Math.sin(seed * 12.9898) * 43758.5453;
-    return value - Math.floor(value);
+    drawBattleMap(this, this.activeMap);
   }
 
   private spawnScenario(): void {
-    const scenario = this.activeMap.scenario;
-    scenario.buildingSpawns.forEach((spawn) => {
-      this.addBuilding(new Building(this, requireBuilding(spawn.buildingId), spawn.team, spawn.x, spawn.y));
+    const spawned = spawnBattleScenario({
+      scene: this,
+      activeMap: this.activeMap,
+      heroSave: this.heroSave,
+      launch: this.launch,
+      addUnit: (unit) => this.addUnit(unit),
+      addBuilding: (building) => this.addBuilding(building)
     });
-
-    const heroClass = requireHeroClass(this.heroSave.classId);
-    const origin = requireOrigin(this.heroSave.originId);
-    this.hero = new Hero(this, this.heroSave, heroClass, origin, scenario.heroSpawn.x, scenario.heroSpawn.y);
-    this.addUnit(this.hero);
-    this.applyHeroLaunchModifiers();
-
-    const difficulty = getBattleDifficulty(this.launch.request.difficulty);
-    const enemyStartingSpawns = new Set(difficulty.enemyStartingUnitSpawnIds);
-    scenario.unitSpawns.forEach((spawn) => {
-      if (spawn.team === "enemy" && !enemyStartingSpawns.has(spawn.id)) {
-        return;
-      }
-      this.spawnUnit(spawn.unitId, spawn.team, spawn.x, spawn.y);
-    });
-    this.spawnLaunchModifierUnits();
-
-    this.activeMap.captureSites.forEach((siteDefinition) => {
-      this.captureSites.push(new CaptureSite(this, siteDefinition));
-    });
-
-    this.activeMap.neutralCamps.forEach((camp) => {
-      camp.unitIds.forEach((unitId, index) => {
-        const angle = index * 2.1;
-        this.spawnUnit(unitId, "neutral", camp.x + Math.cos(angle) * 34, camp.y + Math.sin(angle) * 34);
-      });
-      this.add
-        .text(camp.x, camp.y - 58, camp.name, {
-          fontFamily: "Verdana, Arial, sans-serif",
-          fontSize: "12px",
-          color: "#d7cf9f",
-          stroke: "#101511",
-          strokeThickness: 4
-        })
-        .setOrigin(0.5)
-        .setDepth(1);
-    });
+    this.hero = spawned.hero;
+    this.captureSites = spawned.captureSites;
   }
 
   private createSystems(): void {
@@ -657,39 +434,6 @@ export class BattleScene extends Phaser.Scene {
       aiPersonalityId: this.launch.request.aiPersonalityId
     });
     this.aiSystem = new AISystem(aiController);
-  }
-
-  private spawnUnit(unitId: string, team: "player" | "enemy" | "neutral", x: number, y: number): Unit {
-    const unit = new Unit(this, requireUnit(unitId), team, x, y);
-    this.addUnit(unit);
-    return unit;
-  }
-
-  private applyHeroLaunchModifiers(): void {
-    const manaMultiplier = this.launch.request.modifiers.reduce((multiplier, modifier) => {
-      const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
-      return Math.max(multiplier, definition?.effects.heroManaMultiplier ?? multiplier);
-    }, 1);
-    if (manaMultiplier <= 1) {
-      return;
-    }
-    this.hero.maxMana = Math.round(this.hero.maxMana * manaMultiplier);
-    this.hero.mana = this.hero.maxMana;
-  }
-
-  private spawnLaunchModifierUnits(): void {
-    this.launch.request.modifiers.forEach((modifier, modifierIndex) => {
-      const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
-      if (!definition) {
-        return;
-      }
-      definition.effects.extraPlayerUnitIds?.forEach((unitId, index) => {
-        this.spawnUnit(unitId, "player", this.activeMap.playerStart.x + 92 + index * 34, this.activeMap.playerStart.y + 72 + modifierIndex * 24);
-      });
-      definition.effects.extraEnemyUnitIds?.forEach((unitId, index) => {
-        this.spawnUnit(unitId, "enemy", this.activeMap.enemyStart.x - 92 - index * 34, this.activeMap.enemyStart.y + 72 + modifierIndex * 24);
-      });
-    });
   }
 
   private showBattleStartSummary(): void {
@@ -889,88 +633,20 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createMinimapSnapshot(): MinimapSnapshot {
-    const camera = this.cameras.main;
-    const cameraWidth = Math.min(this.activeMap.width, camera.width / camera.zoom);
-    const cameraHeight = Math.min(this.activeMap.height, camera.height / camera.zoom);
-    const fogEnabled = this.isFogActive();
-    const markers: MinimapSnapshot["markers"] = [
-      ...this.captureSites
-        .filter((site) => this.isPointExploredByPlayer(site.position))
-        .map((site) => ({
-          id: site.id,
-          kind: "capture-site" as const,
-          team: site.owner,
-          x: site.position.x,
-          y: site.position.y,
-          resource: site.definition.resource,
-          resourceColor: this.resourceColor(site.definition.resource)
-        })),
-      ...this.activeMap.neutralCamps
-        .filter((camp) =>
-          this.isPointExploredByPlayer(camp) &&
-          this.units.some(
-            (unit) =>
-              unit.alive &&
-              unit.team === "neutral" &&
-              Phaser.Math.Distance.Between(unit.position.x, unit.position.y, camp.x, camp.y) <= 150
-          )
-        )
-        .map((camp) => ({
-          id: camp.id,
-          kind: "camp" as const,
-          team: "neutral" as const,
-          x: camp.x,
-          y: camp.y,
-          size: 2.5
-        })),
-      ...this.buildings
-        .filter((building) => building.alive && isEntityVisibleToPlayer(building, this.fogOfWar!, fogEnabled))
-        .map((building) => ({
-          id: building.id,
-          kind: "building" as const,
-          team: building.team,
-          x: building.position.x,
-          y: building.position.y,
-          size: Math.max(2.8, Math.min(5, Math.max(building.definition.size.width, building.definition.size.height) / 38))
-        })),
-      ...this.units
-        .filter((unit) => unit.alive && isEntityVisibleToPlayer(unit, this.fogOfWar!, fogEnabled))
-        .map((unit) => ({
-          id: unit.id,
-          kind: "unit" as const,
-          team: unit.team,
-          x: unit.position.x,
-          y: unit.position.y,
-          size: unit === this.hero ? 2.1 : 1.35
-        })),
-      ...this.selectedRallyBuildings()
-        .filter((building) => building.rallyPoint)
-        .map((building) => ({
-          id: `rally-${building.id}`,
-          kind: "rally" as const,
-          team: "player" as const,
-          x: building.rallyPoint?.x ?? building.position.x,
-          y: building.rallyPoint?.y ?? building.position.y,
-          size: 2.3
-        }))
-    ];
-
-    return {
-      mapWidth: this.activeMap.width,
-      mapHeight: this.activeMap.height,
-      markers,
-      camera: {
-        x: Phaser.Math.Clamp(camera.scrollX, 0, this.activeMap.width - cameraWidth),
-        y: Phaser.Math.Clamp(camera.scrollY, 0, this.activeMap.height - cameraHeight),
-        width: cameraWidth,
-        height: cameraHeight
-      },
+    return createBattleMinimapSnapshot({
+      activeMap: this.activeMap,
+      camera: this.cameras.main,
+      captureSites: this.captureSites,
+      buildings: this.buildings,
+      units: this.units,
+      hero: this.hero,
+      selectedRallyBuildings: this.selectedRallyBuildings(),
+      fogOfWar: this.fogOfWar,
+      fogEnabled: this.isFogActive(),
       pings: this.minimapPings,
-      fog: {
-        enabled: fogEnabled,
-        cells: fogEnabled ? this.fogOfWar?.cells() : undefined
-      }
-    };
+      isPointExploredByPlayer: (point) => this.isPointExploredByPlayer(point),
+      resourceColor: (resource) => this.resourceColor(resource)
+    });
   }
 
   private selectedUnitOrBuildings(): Array<Unit | Building> {
@@ -1020,13 +696,14 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private completeSecondaryObjective(type: BattleSecondaryObjectiveType, targetId: string, point?: Position): void {
-    const objective = this.activeMap.scenario.objectives.secondaryObjectives?.find(
-      (entry) => entry.type === type && entry.targetId === targetId
-    );
-    if (!objective || !this.runtime.recordSecondaryObjective(objective.id)) {
-      return;
-    }
-    this.showMessage(`Objective complete: ${objective.name}`, point?.x, point ? point.y - 78 : undefined, "#f6e27d");
+    completeBattleSecondaryObjective({
+      activeMap: this.activeMap,
+      runtime: this.runtime,
+      type,
+      targetId,
+      point,
+      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+    });
   }
 
   private cleanupDeadEntities(): void {
@@ -1056,63 +733,12 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private endBattle(outcome: "victory" | "defeat"): void {
-    const startingHeroSave = this.launch.request.heroSave;
-    const completion = this.runtime.completeBattle({
-      outcome,
-      heroSave: this.hero.toSaveData()
-    });
-    if (!completion) {
-      return;
-    }
-    if (completion.shouldSaveHero && this.launch.request.mode !== "campaign_node") {
-      SaveSystem.saveHero(completion.heroSave);
-    }
-
-    if (outcome === "victory" && this.launch.request.mode === "campaign_node" && this.launch.request.campaignNodeId) {
-      const node = requireCampaignNode(this.launch.request.campaignNodeId);
-      const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
-      const unlockedBefore = new Set(storedCampaign.unlockedNodeIds);
-      const campaignCompletion = completeCampaignNodeWithRewards({
-        campaign: storedCampaign,
-        hero: completion.heroSave,
-        node
-      });
-      const stats = {
-        ...completion.stats,
-        xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp
-      };
-      SaveSystem.saveGame(campaignCompletion.hero, campaignCompletion.campaign);
-      this.scene.start(SCENE_KEYS.results, {
-        stats,
-        heroSave: campaignCompletion.hero,
-        startingHeroSave,
-        rewardItemIds: completion.rewardItemIds,
-        reward: completion.reward,
-        rewardLevelUp: completion.rewardLevelUp,
-        launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, campaignCompletion.hero),
-        campaignResult: {
-          completedNodeId: node.id,
-          completedNodeName: node.name,
-          unlockedNodeIds: campaignCompletion.campaign.unlockedNodeIds.filter((nodeId) => !unlockedBefore.has(nodeId) && nodeId !== node.id),
-          unlockedNodeNames: campaignCompletion.campaign.unlockedNodeIds
-            .filter((nodeId) => !unlockedBefore.has(nodeId) && nodeId !== node.id)
-            .map((nodeId) => requireCampaignNode(nodeId).name),
-          nodeReward: campaignCompletion.nodeReward,
-          nodeLevelUp: campaignCompletion.nodeLevelUp,
-          campaignResources: campaignCompletion.campaign.resources
-        }
-      });
-      return;
-    }
-
-    this.scene.start(SCENE_KEYS.results, {
-      stats: completion.stats,
-      heroSave: completion.heroSave,
-      startingHeroSave,
-      rewardItemIds: completion.rewardItemIds,
-      reward: completion.reward,
-      rewardLevelUp: completion.rewardLevelUp,
-      launchRequest: cloneBattleLaunchRequestWithHero(this.launch.request, outcome === "victory" ? completion.heroSave : startingHeroSave)
+    endBattleAndOpenResults({
+      scene: this,
+      runtime: this.runtime,
+      hero: this.hero,
+      launch: this.launch,
+      outcome
     });
   }
 
@@ -1190,168 +816,69 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateMinimapPings(deltaSeconds: number): void {
-    this.minimapPings = this.minimapPings
-      .map((ping) => ({ ...ping, ageSeconds: ping.ageSeconds + deltaSeconds }))
-      .filter((ping) => ping.ageSeconds < ping.durationSeconds);
+    this.minimapPings = updateMinimapPings(this.minimapPings, deltaSeconds);
   }
 
   private addMinimapPing(x: number, y: number, color: string, label: string): void {
-    this.minimapPings.push({
-      id: this.nextMinimapPingId,
-      x,
-      y,
-      color,
-      label,
-      ageSeconds: 0,
-      durationSeconds: 2.8
-    });
-    this.nextMinimapPingId += 1;
-    this.minimapPings = this.minimapPings.slice(-12);
+    const result = appendMinimapPing(this.minimapPings, this.nextMinimapPingId, x, y, color, label);
+    this.minimapPings = result.pings;
+    this.nextMinimapPingId = result.nextId;
   }
 
   private updateResourceSiteWarnings(deltaSeconds: number): void {
-    this.resourceSiteWarningCooldowns.forEach((remaining, siteId) => {
-      const nextRemaining = remaining - deltaSeconds;
-      if (nextRemaining <= 0) {
-        this.resourceSiteWarningCooldowns.delete(siteId);
-        return;
-      }
-      this.resourceSiteWarningCooldowns.set(siteId, nextRemaining);
-    });
-
-    this.captureSites.forEach((site) => {
-      if (site.owner !== "player" || (this.resourceSiteWarningCooldowns.get(site.definition.id) ?? 0) > 0) {
-        return;
-      }
-
-      const enemyThreateningSite = this.units.some(
-        (unit) =>
-          unit.alive &&
-          unit.team === "enemy" &&
-          Phaser.Math.Distance.Between(unit.position.x, unit.position.y, site.position.x, site.position.y) <=
-            site.definition.radius + 24
-      );
-      if (!enemyThreateningSite) {
-        return;
-      }
-
-      this.resourceSiteWarningCooldowns.set(site.definition.id, 10);
-      this.addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} under attack`);
-      this.showMessage(`${site.definition.name} is under attack.`, site.position.x, site.position.y - 70, "#f0d978");
+    this.resourceSiteWarningCooldowns = updateResourceSiteWarnings({
+      cooldowns: this.resourceSiteWarningCooldowns,
+      deltaSeconds,
+      captureSites: this.captureSites,
+      units: this.units,
+      addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
+      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
     });
   }
 
   private trackEnemyWave(units: Unit[]): void {
-    if (units.length === 0) {
-      return;
-    }
-    this.applyFactionWaveModifiers(units);
-    const waveId = this.nextEnemyWaveId;
-    const center = units.reduce(
-      (sum, unit) => ({
-        x: sum.x + unit.position.x,
-        y: sum.y + unit.position.y
-      }),
-      { x: 0, y: 0 }
-    );
-    this.addMinimapPing(center.x / units.length, center.y / units.length, "#ff7268", `Enemy wave ${waveId} incoming`);
-    this.trackedEnemyWaves.push({
-      id: waveId,
-      unitIds: units.map((unit) => unit.id)
+    const result = trackEnemyWaveAlert({
+      waveUnits: units,
+      waves: this.trackedEnemyWaves,
+      nextWaveId: this.nextEnemyWaveId,
+      addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label)
     });
-    this.nextEnemyWaveId += 1;
-  }
-
-  private applyFactionWaveModifiers(units: Unit[]): void {
-    units.forEach((unit) => {
-      this.factionModifiersFor(unit)
-        .filter((modifier) => modifier.type === "wave-speed" && this.modifierAppliesToUnit(modifier, unit))
-        .forEach((modifier) => {
-          unit.factionSpeedMultiplier = Math.max(unit.factionSpeedMultiplier, modifier.speedMultiplier ?? 1);
-        });
-    });
-  }
-
-  private factionModifiersFor(unit: Unit): FactionModifierDefinition[] {
-    return FACTION_BY_ID[unit.definition.factionId]?.mechanics.factionModifiers ?? [];
-  }
-
-  private modifierAppliesToUnit(modifier: FactionModifierDefinition, unit: Unit): boolean {
-    return !modifier.unitIds || modifier.unitIds.includes(unit.definition.id);
+    this.trackedEnemyWaves = result.waves;
+    this.nextEnemyWaveId = result.nextWaveId;
   }
 
   private updateTrackedEnemyWaves(): void {
-    this.trackedEnemyWaves = this.trackedEnemyWaves.filter((wave) => {
-      const aliveWaveUnits = this.units.filter((unit) => wave.unitIds.includes(unit.id) && unit.alive);
-      if (aliveWaveUnits.length > 0) {
-        return true;
-      }
-      this.runtime.recordEnemyWaveSurvived();
-      this.showMessage(`Enemy wave ${wave.id} defeated`, this.hero.position.x, this.hero.position.y - 80, "#aef7b7");
-      return false;
+    this.trackedEnemyWaves = updateTrackedEnemyWaves({
+      waves: this.trackedEnemyWaves,
+      units: this.units,
+      runtime: this.runtime,
+      hero: this.hero,
+      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
     });
   }
 
   private updateTutorialHint(): void {
-    if (!this.isFirstBattle()) {
-      this.tutorialHint = "";
-      return;
-    }
-
-    const selected = this.selectionSystem.getSelected();
-    const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
-    const crownShrine = this.captureSites.find((site) => site.definition.id === "crown_shrine");
-    const heroSelected = selected.includes(this.hero);
-    const commandHallSelected = commandHall ? selected.includes(commandHall) : false;
-    const barracks = this.buildings.find((building) => building.alive && building.team === "player" && building.definition.id === "barracks");
-    const hasBarracks = Boolean(barracks?.isCompleted());
-
-    if (!heroSelected && this.runtime.elapsedSeconds < 20) {
-      this.tutorialHint = "Select your hero.";
-      return;
-    }
-    if (crownShrine?.owner !== "player") {
-      this.tutorialHint =
-        crownShrine && this.hero.alive && Phaser.Math.Distance.Between(this.hero.position.x, this.hero.position.y, crownShrine.position.x, crownShrine.position.y) <= crownShrine.radius
-          ? "Hold the Crown Shrine circle until it turns green."
-          : "Right-click the Crown Shrine with your hero and troops.";
-      return;
-    }
-    if (!hasBarracks && !commandHallSelected) {
-      this.tutorialHint = "Select your Command Hall.";
-      return;
-    }
-    if (!hasBarracks) {
-      if (barracks?.isUnderConstruction()) {
-        this.tutorialHint = "Barracks is under construction. Hold near your base until it completes.";
-        return;
-      }
-      this.tutorialHint = "Build a Barracks to train troops.";
-      return;
-    }
-    if (this.runtime.stats.unitsTrained === 0) {
-      this.tutorialHint = "Train Militia from your Barracks.";
-      return;
-    }
-    if (this.runtime.stats.enemyWavesSurvived === 0) {
-      this.tutorialHint = "Defend against the first attack near your Command Hall.";
-      return;
-    }
-    this.tutorialHint = "Gather your army and destroy the enemy Stronghold.";
+    this.tutorialHint = firstBattleTutorialHint({
+      isFirstBattle: this.isFirstBattle(),
+      selected: this.selectionSystem.getSelected(),
+      commandHall: this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player"),
+      crownShrine: this.captureSites.find((site) => site.definition.id === "crown_shrine"),
+      hero: this.hero,
+      buildings: this.buildings,
+      elapsedSeconds: this.runtime.elapsedSeconds,
+      unitsTrained: this.runtime.stats.unitsTrained,
+      enemyWavesSurvived: this.runtime.stats.enemyWavesSurvived
+    });
   }
 
   private warnIfCommandHallUnderAttack(target: BaseEntity): void {
-    if (
-      this.commandHallWarningCooldown > 0 ||
-      !(target instanceof Building) ||
-      target.team !== "player" ||
-      target.definition.id !== this.activeMap.scenario.objectives.playerBaseBuildingId
-    ) {
-      return;
-    }
-    this.commandHallWarningCooldown = 8;
-    this.addMinimapPing(target.position.x, target.position.y, "#ff7268", "Command Hall under attack");
-    this.showMessage("Your Command Hall is under attack.", target.position.x, target.position.y - 74, "#ffb1a9");
+    this.commandHallWarningCooldown = warnCommandHallUnderAttack({
+      target,
+      cooldown: this.commandHallWarningCooldown,
+      playerBaseBuildingId: this.activeMap.scenario.objectives.playerBaseBuildingId,
+      addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
+      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+    });
   }
 
   private resourceColor(resource: ResourceKey): string {

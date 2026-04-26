@@ -28,6 +28,16 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
     }
   },
   {
+    id: "well_rested",
+    name: "Well Rested",
+    description: "The next battle starts your hero with +10% maximum HP for that battle.",
+    trigger: "next_battle",
+    durationLabel: "Next battle",
+    effects: {
+      heroMaxHpMultiplier: 1.1
+    }
+  },
+  {
     id: "angered_raiders",
     name: "Angered Raiders",
     description: "The next Ashen Covenant battle starts with one extra Raider.",

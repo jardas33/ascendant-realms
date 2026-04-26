@@ -8,6 +8,7 @@ import {
   getCampaignNodeStatus
 } from "./CampaignRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
+import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { createNewHeroSave } from "../data/heroes";
 
 describe("campaign rules", () => {
@@ -47,7 +48,7 @@ describe("campaign rules", () => {
     expect(completed.campaign.completedNodeIds).toContain(node.id);
     expect(completed.campaign.nodeRewardsClaimedIds).toContain(node.id);
     expect(completed.campaign.resources.crowns).toBe(50);
-    expect(completed.hero.inventory).toContain("weathered_command_sword");
+    expect(completed.hero.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
     expect(repeated.nodeReward.itemIds).toEqual([]);
     expect(repeated.nodeReward.resources).toEqual({});
     expect(repeated.campaign.resources.crowns).toBe(50);
@@ -184,7 +185,7 @@ describe("campaign rules", () => {
     expect(applied.campaign.resources.crowns).toBe(25);
     expect(applied.campaign.resources.iron).toBe(5);
     expect(applied.campaign.completedNodeIds).toContain("refugee_caravan");
-    expect(applied.hero.inventory).toContain("scouts_bow");
+    expect(applied.hero.inventory.some((instance) => instance.itemId === "scouts_bow")).toBe(true);
     expect(applied.hero.xp).toBe(25);
     expect(applied.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 6);
     expect(applied.campaign.activeModifierIds).toContain("inspired_militia");
@@ -241,5 +242,137 @@ describe("campaign rules", () => {
     expect(completed.nodeReward.resources.crowns).toBe(55);
     expect(completed.campaign.resources.crowns).toBe(55);
     expect(completed.campaign.activeModifierIds).not.toContain("local_support");
+  });
+
+  it("unlocks Marcher Camp after Old Stone Road and keeps it open after services", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road"],
+      resources: { crowns: 90, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "rest_and_recovery")!;
+
+    expect(getCampaignNodeStatus(node, campaign)).toBe("available");
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.completedNode).toBe(false);
+    expect(applied.campaign.completedNodeIds).not.toContain("marcher_camp");
+    expect(getCampaignNodeStatus(node, applied.campaign)).toBe("available");
+  });
+
+  it("pays town service costs and tracks resources spent", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 90, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "rest_and_recovery")!;
+
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.campaign.resources.crowns).toBe(60);
+    expect(applied.campaign.resourcesSpent.crowns).toBe(30);
+    expect(applied.campaign.activeModifierIds).toContain("well_rested");
+    expect(applied.campaign.townServiceUseCounts["marcher_camp:rest_and_recovery"]).toBe(1);
+  });
+
+  it("blocks town services when resources are insufficient", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 10, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "hire_volunteers")!;
+
+    const availability = getCampaignChoiceAvailability({ campaign, hero, node, choice });
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(availability.ok).toBe(false);
+    expect(availability.reasons).toContain("Need 45 Crowns");
+    expect(applied.ok).toBe(false);
+    expect(applied.campaign.resources.crowns).toBe(10);
+  });
+
+  it("adds purchased town items to inventory and prevents one-time repurchase", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 120, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "purchase_emberglass_wand")!;
+
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+    const repeated = applyCampaignChoice({ campaign: applied.campaign, hero: applied.hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    const purchased = applied.hero.inventory.find((instance) => instance.itemId === "emberglass_wand");
+    expect(purchased).toBeDefined();
+    expect(purchased?.source).toBe("campaign_choice:marcher_camp:purchase_emberglass_wand");
+    expect(applied.campaign.townServiceClaimedIds).toContain("marcher_camp:purchase_emberglass_wand");
+    expect(applied.campaign.resources.crowns).toBe(65);
+    expect(repeated.ok).toBe(false);
+    expect(repeated.reason).toContain("Already purchased");
+  });
+
+  it("lets repeatable town services run more than once", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 100, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "buy_supplies")!;
+
+    const first = applyCampaignChoice({ campaign, hero, node, choice });
+    const second = applyCampaignChoice({ campaign: first.campaign, hero: first.hero, node, choice });
+
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    expect(second.campaign.resources.crowns).toBe(30);
+    expect(second.campaign.resources.stone).toBe(50);
+    expect(second.campaign.resources.iron).toBe(24);
+    expect(second.campaign.resources.aether).toBe(12);
+    expect(second.campaign.townServiceUseCounts["marcher_camp:buy_supplies"]).toBe(2);
+  });
+
+  it("applies Marcher Camp next-battle modifiers through launch consumption", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 90, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const town = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const rest = town.choices!.find((entry) => entry.id === "rest_and_recovery")!;
+    const serviced = applyCampaignChoice({ campaign, hero, node: town, choice: rest });
+    const nextBattle = CAMPAIGN_NODES.find((entry) => entry.id === "aether_well_ruins")!;
+
+    const consumed = consumeBattleCampaignModifiers({ campaign: serviced.campaign, node: nextBattle });
+
+    expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["well_rested"]);
+    expect(consumed.campaign.activeModifierIds).not.toContain("well_rested");
   });
 });

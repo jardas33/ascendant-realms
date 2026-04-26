@@ -67,7 +67,7 @@ const TEAM_STROKES: Record<Team, string> = {
 export function renderMinimap(snapshot: MinimapSnapshot): string {
   const markers = [...snapshot.markers].sort((left, right) => markerSortOrder(left) - markerSortOrder(right));
   return `
-    <div class="mini-map" data-minimap="true" role="button" aria-label="Minimap">
+    <div class="mini-map" data-testid="minimap" data-minimap="true" role="button" aria-label="Minimap">
       <svg class="minimap-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <rect class="minimap-terrain" x="0" y="0" width="100" height="100"></rect>
         <rect class="minimap-bounds" x="0.5" y="0.5" width="99" height="99"></rect>
