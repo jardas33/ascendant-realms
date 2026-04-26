@@ -1,140 +1,165 @@
 # Development Checkpoint
 
-Date/time: 2026-04-26 01:02:03 -04:00 (America/Toronto)
+Date/time: 2026-04-26 10:58 -04:00 (America/Toronto)
 
-## Purpose
+Purpose: stabilize and checkpoint Ascendant Realms before adding any new gameplay feature.
 
-This checkpoint records the current safe baseline before adding new Ascendant Realms features. No feature work was added during this pass.
+No new gameplay features were added during this pass.
 
-## Repository State
+## Git Status
 
-- Project root inspected: `D:\Code for projects\WB game like\ascendant-realms`
-- Git status: no git repository found at this project path or parent paths.
-- Because no git repository exists, no commit was created.
-- Only checkpoint documentation should be treated as newly added in this pass.
+- Feature checkpoint commit created: `9a1293c`
+- Feature checkpoint commit message: `Add campaign skeleton, pacing, construction, minimap, loot, and skirmish setup`
+- Repository remote: `https://github.com/jardas33/ascendant-realms.git`
+- Branch after feature commit: `main`
+- Branch state after feature commit: ahead of `origin/main` by 1 commit
+- This checkpoint document is written after the feature commit so it can record that hash accurately.
 
-## Current Working Features
+## Verification
 
-- Phaser 3 + TypeScript + Vite browser runtime.
-- DOM menu and HUD layer over Phaser canvas.
-- Main menu, hero creation, hero inventory access, asset gallery, victory/progression flow, and defeat results flow.
-- Persistent hero save through local storage.
-- Three hero classes: Warlord, Arcanist, Shepherd.
-- Three origins with stat modifiers.
-- Hero ability system with class abilities, mana, cooldowns, projectiles, heals, buffs, and blink.
-- Combat, Magic, and Leadership skill trees.
-- Item reward table and deterministic victory rewards.
-- One playable skirmish map: First Claim.
-- Player and enemy bases, neutral camps, capture sites, resources, and enemy AI attack/expand/training behavior.
-- Player building placement for Barracks, Mystic Lodge, and Watchtower.
-- Unit training from Barracks and Mystic Lodge.
-- RTS selection, drag select, move, attack, attack-move, camera movement, and ability hotkeys.
-- Processed battle sprites for units, heroes, and buildings.
-- Manual/final asset manifest pipeline and runtime fallback coverage.
-- Procedural battlefield terrain treatment and adjusted in-world health bars.
-- `LLM_GAME_HANDOFF.md` exists and documents the project state in detail.
+### Handoff Review
 
-## Verification Status
+- `LLM_GAME_HANDOFF.md` was read fully before verification.
+- The handoff confirmed the dirty worktree was expected and that this pass should only fix failing tests, TypeScript errors, broken imports, broken asset paths, or obvious runtime crashes.
 
-- `npm run assets:validate`: passed.
-  - Registry assets: 62.
-  - File-backed assets found: 62.
-  - Runtime fallback coverage: ok.
-  - Notes remain for human-readable filenames that work but are not exact recommended snake_case names.
-- `npm run assets:refresh`: not rerun in this checkpoint because asset validation passed and no asset source/path changes were made in this step.
-- `npm test`: passed.
-  - 6 test files passed.
-  - 25 tests passed.
-- `npm run build`: passed.
-  - TypeScript compilation passed.
-  - Vite build passed.
-  - Existing warning remains: Phaser bundle chunk is larger than 500 kB after minification.
-- Browser smoke test: passed.
-  - Local app loaded at `http://localhost:5173/`.
-  - Main menu appeared.
-  - Start Skirmish -> Begin Skirmish reached the battle scene.
-  - No in-app browser warning/error logs were reported during the smoke test.
+### Tests
 
-## Current Known Issues
+Status: passed
 
-- No git repository exists, so there is no durable commit checkpoint yet.
-- Only one playable skirmish map exists.
-- Battle terrain is procedural Phaser graphics, not a dedicated painted battle-background bitmap.
-- Movement uses direct steering with light separation, not full A* pathfinding.
-- Fog of war is not implemented.
-- Workers, construction time, campaign nodes, shops, diplomacy, retinue persistence, and skill respec are not implemented.
-- Item rewards are deterministic for testing and do not yet use rarity-weighted rolls.
-- Enemy AI is intentionally simple and predictable.
-- Balance is prototype-only and expected to change.
-- `BattleScene` still owns spawning, rendering, input, and system wiring.
-- Live entity state is not fully serializable yet.
-- Some engine classes still combine simulation data with Phaser view objects.
-- Minimap is symbolic/static rather than a live scaled map.
-- Vite build emits the known large Phaser chunk warning.
-- Several manual assets use human-readable filenames; validation confirms they work, but exact snake_case filenames remain recommended.
+Command:
 
-## Recommended Next Milestone
+```powershell
+npm test
+```
 
-Create a real git repository and commit this baseline first. After that, the next gameplay milestone should be construction time plus worker/building workflow, because it strengthens the RTS core without requiring campaign scope, new art, or broad rebalance.
+Result:
 
-## Files Most Likely To Break If Modified
+- 13 test files passed.
+- 47 tests passed.
+- No test failures.
 
-- `src/game/scenes/BattleScene.ts`
-  - Owns battle spawning, map drawing, systems wiring, runtime completion, and scene transitions.
-- `src/game/entities/BaseEntity.ts`
-  - Shared visual and HP/selection behavior for units, buildings, and capture sites.
-- `src/game/entities/Unit.ts`
-  - Unit/hero battle sprite setup, fallback body, buffs, combat state, movement commands.
-- `src/game/entities/Building.ts`
-  - Building sprite setup, fallback body, health-bar layout, training queue state.
-- `src/game/assets/AssetKeys.ts`
-  - Canonical asset IDs and mapping helpers used by loaders and renderers.
-- `src/game/assets/AssetLoader.ts`
-  - Manifest reading, runtime image lookup, CSS URL generation, and texture queueing.
-- `public/assets/manifests/assetManifest.json`
-  - Runtime asset lookup file generated by the manual asset pipeline.
-- `tools/manual-asset-pipeline/*`
-  - Manual/final asset processing, manifest generation, prompt generation, and validation.
-- `src/game/data/contentIndex.ts`
-  - Lookup and require helpers used by scenes and systems.
-- `src/game/data/maps.ts`
-  - Map geometry, spawns, capture sites, objectives, enemy AI config, and reward table link.
-- `src/game/data/units.ts`
-  - Unit stats, costs, radii, training times, and XP values.
-- `src/game/data/buildings.ts`
-  - Building stats, footprints, build/train options, and tower attack data.
-- `src/game/data/abilities.ts`
-  - Ability IDs and effect definitions used by hero classes, skill unlocks, UI, and casting.
-- `src/game/systems/AbilitySystem.ts`
-  - Runtime ability implementation; easy to desync from ability data.
-- `src/game/systems/BuildingSystem.ts`
-  - Placement rules, costs, build ghost, and building creation.
-- `src/game/systems/CombatSystem.ts`
-  - Targeting, cooldowns, projectile creation, damage, and kill callbacks.
-- `src/game/systems/MovementSystem.ts`
-  - Steering, separation, attack movement, and terrain blocking behavior.
-- `src/game/systems/InputSystem.ts`
-  - Pointer and keyboard controls for selection, movement, attack-move, and placement.
-- `src/game/ui/HUD.ts`
-  - DOM HUD markup, action dispatch, resources, selection, build/train buttons, and abilities.
-- `src/game/styles/ui.css`
-  - All menu/HUD layout and responsive styling; small changes can affect playfield readability.
-- `src/game/core/SaveSystem.ts`
-  - Local storage save/load and fallback hero behavior.
-- `src/game/save/SaveTypes.ts`
-  - Persisted hero schema.
-- `src/game/core/HeroProgressionRules.ts`
-  - Hero stats, skill unlocks, item rewards, and progression math.
-- `src/game/battle/BattleRuntime.ts`
-  - Pure battle stats/objective/reward/save boundary.
-- `src/game/battle/BattleLaunchRequest.ts`
-  - Launch contract shared by skirmish and future campaign/scenario entry points.
-- `src/game/data/contentValidation.ts`
-  - Cross-data validation; keep this aligned when adding new data references.
+### Build
 
-## Safe Next-Step Checklist
+Status: passed
 
-1. Initialize git in the project root.
-2. Commit the current baseline including this checkpoint.
-3. Pick one narrow milestone.
-4. Run `npm run assets:validate`, `npm test`, `npm run build`, and a browser smoke test after each milestone.
+Command:
+
+```powershell
+npm run build
+```
+
+Result:
+
+- TypeScript compilation passed.
+- Vite production build passed.
+- Existing expected warning remains: the Phaser application chunk is larger than 500 kB after minification.
+
+### Assets
+
+Status: not rerun
+
+Reason:
+
+- `npm run assets:refresh` was not needed during this pass because no new art, generated asset source, manifest source, or asset path changes were made.
+- Build did not report missing assets or broken asset imports.
+
+### Git Whitespace Check
+
+Status: passed
+
+Command:
+
+```powershell
+git diff --check
+```
+
+Result:
+
+- No whitespace errors were reported before the feature commit.
+
+## Browser Smoke Test
+
+Status: blocked by browser automation availability
+
+What worked:
+
+- Local dev server responded successfully at `http://127.0.0.1:5173/`.
+- HTTP health check returned status `200`.
+
+What failed:
+
+- Browser Use could not attach to an active Codex browser pane.
+- A fresh Browser Use runtime reset did not resolve the issue.
+- The connector reported no active Codex browser pane during setup.
+- A retry with a newly requested tab reported stale session/tab state.
+- Local Playwright fallback was checked but Playwright is not installed in this project or available in the Node REPL environment.
+
+What was not verified because of the browser blocker:
+
+1. Main menu from a clean save.
+2. New Campaign.
+3. Hero creation.
+4. CampaignMapScene opening.
+5. Border Village launch.
+6. First Claim battle start.
+7. Barracks placement.
+8. Barracks construction completion.
+9. Militia training.
+10. Capture site flow.
+11. First enemy attack survival.
+12. Victory or intentional defeat.
+13. ResultsScene.
+14. Retry and campaign return.
+15. Continue Campaign.
+16. Skirmish Setup.
+17. Broken Ford launch.
+18. Inventory opening.
+19. Equipment stat changes.
+20. Reset Save.
+
+Exact browser/tooling bugs found:
+
+- Browser Use connector could not access an active in-app browser pane even though the local app URL was expected to be open.
+- Browser Use retry after reset still failed before page interaction.
+- Playwright is not installed locally, so a fallback browser automation pass would require installing new tooling. That was not done during this stabilization pass.
+
+Exact app bugs found:
+
+- None from tests or build.
+- No browser-level gameplay bugs were confirmed because the smoke path could not be executed.
+
+## What Worked
+
+- `LLM_GAME_HANDOFF.md` is current enough to orient future work.
+- Unit tests passed with the campaign, save, loot, construction, upgrade, minimap, AI pacing, and validation systems included.
+- Production build passed.
+- TypeScript imports and scene registration compiled.
+- The dev server was reachable on port 5173.
+- The feature set was committed locally.
+
+## What Failed
+
+- Requested in-app browser smoke test could not be completed due Browser Use connector/session availability.
+- No interactive manual gameplay path was verified in this pass.
+
+## Safety Assessment
+
+Project status: safe to continue from a code/test/build checkpoint.
+
+Important caveat: the project still needs an actual browser gameplay smoke test before treating the current feature set as playtested.
+
+The next LLM or developer can safely continue if they first:
+
+1. Confirm the working tree is clean or understand any new local changes.
+2. Run `npm test`.
+3. Run `npm run build`.
+4. Run the manual browser smoke test once Browser Use or another approved browser automation surface is available.
+
+## Next Recommended Fixes
+
+1. Restore Browser Use access or add an approved browser automation setup, then run the full smoke path.
+2. If smoke fails, fix only runtime crashes, broken scene transitions, save/load errors, or unusable UI blockers before adding features.
+3. Push the local checkpoint commits to GitHub when ready.
+4. Verify campaign victory and defeat return paths specifically.
+5. Verify item equip and stat preview behavior after earning a reward.
+6. Verify Broken Ford launches from Skirmish Setup and renders its map/camera/minimap correctly.
