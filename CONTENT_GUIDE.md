@@ -22,7 +22,7 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 6. Add `upgradeOptions` if the building should research upgrades.
 7. Add `prerequisites` if it should require another completed building or researched upgrade.
 8. To build it from the Command Hall, add its `id` to the Command Hall's `buildOptions`.
-9. To place it at battle start, add it to a map `scenario.buildingSpawns` entry in `src/game/data/maps.ts`.
+9. To place it at battle start, add it to a map `scenario.buildingSpawns` entry in the relevant file under `src/game/data/maps/`.
 
 ## Add A New Upgrade
 
@@ -100,15 +100,15 @@ Inventory stores item instances, not raw catalog IDs. Rewards and town purchases
 9. Add `resourceRewards` and `xpRewards` for normal victory payouts.
 10. Add `firstClearBonus` and `repeatClearReward` for map-clear pacing.
 11. Keep `deterministicItemIds` when tests or scripted flows need predictable item selection.
-12. Open `src/game/data/maps.ts` and set the map scenario's `rewardTableId`.
+12. Open the relevant map module under `src/game/data/maps/` and set the map scenario's `rewardTableId`.
 13. Run `npm run test`.
 
 Weighted reward rolls prefer unowned catalog items when possible. If a guaranteed, deterministic, or scripted reward grants a unique item the hero already owns, the reward flow converts it into Crowns or Aether and reports the conversion on the Results screen.
 
 ## Add A New Skirmish Map
 
-1. Open `src/game/data/maps.ts`.
-2. Copy an existing `BattleMapDefinition`.
+1. Create a new map module under `src/game/data/maps/`, usually by copying `firstClaim.ts`, `brokenFord.ts`, or `ashenOutpost.ts`.
+2. Export one named `BattleMapDefinition` constant from that file, such as `NEW_FRONTIER_MAP`.
 3. Give the map a unique `id`, display `name`, `role`, `description`, and `strategicNotes`.
 4. Set `width`, `height`, `playerStart`, `enemyStart`, and `visualPaths`. Visual paths draw roads and lanes; keep every path point inside the map.
 5. Add terrain zones. Include one full-map grass zone, buildable zones for each base, and blocked or water zones that shape building placement.
@@ -118,7 +118,8 @@ Weighted reward rolls prefer unowned catalog items when possible. If a guarantee
    - Primary objectives use `playerBaseBuildingId` and `enemyBaseBuildingId`.
    - Optional `secondaryObjectives` can track `capture_site`, `destroy_building`, or `defeat_unit` targets for milestone maps and ResultsScene display.
 9. Add a reward table in `rewards.ts` and point the map's `scenario.rewardTableId` at it.
-10. Run `npm run test` and `npm run build`. The setup screen automatically lists maps from `MAPS`.
+10. Import and add the new map constant to `MAPS` in `src/game/data/maps/index.ts`. Keep `src/game/data/maps.ts` as the compatibility barrel.
+11. Run `npm run test` and `npm run build`. The setup screen automatically lists maps from `MAPS`.
 
 Current map examples:
 
@@ -223,12 +224,20 @@ Important UI-kit rules:
 
 ## Edit A Skirmish Map
 
-1. Open `src/game/data/maps.ts`.
+1. Open the map's module under `src/game/data/maps/`.
 2. Setup metadata, terrain, visual paths, capture sites, and neutral camps are near the top of each map entry.
 3. Starting buildings, starting units, hero spawn, objectives, starting resources, and enemy AI settings live in the map's `scenario` block.
 4. To change enemy pressure, edit `scenario.enemyAI.attackInterval`, `minAttackArmySize`, `attackWaveSize`, and `unitPlan`.
 5. To change victory rewards, edit `scenario.rewardTableId`.
 6. Run `npm run test` after edits. The content validation test catches missing IDs before the game opens.
+
+Map index structure:
+
+- `src/game/data/maps/firstClaim.ts`: First Claim map definition.
+- `src/game/data/maps/brokenFord.ts`: Broken Ford map definition.
+- `src/game/data/maps/ashenOutpost.ts`: Ashen Outpost map definition.
+- `src/game/data/maps/index.ts`: imports map constants, exports `MAPS`, `DEFAULT_MAP_ID`, and lookup helpers.
+- `src/game/data/maps.ts`: compatibility barrel so existing imports from `src/game/data/maps` keep working.
 
 ## Add Or Tune An AI Personality
 

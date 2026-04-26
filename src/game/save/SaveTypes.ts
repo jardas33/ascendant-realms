@@ -33,8 +33,19 @@ export interface StoredGameSaveV1 {
   updatedAt?: string;
 }
 
-// Placeholder for future audio, display, accessibility, and gameplay preferences.
-export type SaveSettingsData = Record<string, unknown>;
+export type FogEnabledOverride = "default" | "enabled" | "disabled";
+
+export interface SaveSettingsData {
+  masterVolume: number;
+  musicVolume: number;
+  sfxVolume: number;
+  screenShakeEnabled: boolean;
+  floatingTextEnabled: boolean;
+  fogEnabledOverride: FogEnabledOverride;
+  reducedMotionEnabled: boolean;
+  uiScale: number;
+  colorblindMinimapPalette: boolean;
+}
 
 // Placeholder for future account-wide and campaign-wide analytics.
 export type SaveStatisticsData = Record<string, unknown>;

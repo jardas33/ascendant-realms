@@ -10,6 +10,7 @@ import type {
 import { formatTime } from "../core/MathUtils";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
+import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
 import {
   BUILDING_BY_ID,
   AI_PERSONALITY_BY_ID,
@@ -51,11 +52,13 @@ import { Hero } from "../entities/Hero";
 import { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import type { HeroSaveData } from "../save/SaveTypes";
+import type { SaveSettingsData } from "../save/SaveTypes";
 import { HUD } from "../ui/HUD";
 import { FloatingText } from "../ui/FloatingText";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
 import { AbilitySystem } from "../systems/AbilitySystem";
 import { AISystem } from "../systems/AISystem";
+import { AudioManager } from "../systems/AudioManager";
 import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
 import { CollisionSystem } from "../systems/CollisionSystem";
@@ -118,6 +121,8 @@ export class BattleScene extends Phaser.Scene {
   private fogOverlay?: Phaser.GameObjects.Graphics;
   private fogUpdateTimer = 0;
   private fogDebugDisabled = false;
+  private settings: SaveSettingsData = DEFAULT_SETTINGS;
+  private lastSelectionAudioKey = "";
   private resourceSiteWarningCooldowns = new Map<string, number>();
   private trackedEnemyWaves: TrackedEnemyWave[] = [];
   private nextEnemyWaveId = 1;
@@ -184,10 +189,12 @@ export class BattleScene extends Phaser.Scene {
     this.updateTrackedEnemyWaves();
     this.updateTutorialHint();
     this.updateFogOfWar(deltaSeconds);
+    const selected = this.selectedUnitOrBuildings();
+    this.playSelectionAudio(selected);
     this.uiSystem.update(deltaSeconds, {
       resources: this.resources.player,
       hero: this.hero,
-      selected: this.selectedUnitOrBuildings(),
+      selected,
       elapsedSeconds: this.runtime.elapsedSeconds,
       isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
       status: this.statusMessage,
@@ -200,6 +207,10 @@ export class BattleScene extends Phaser.Scene {
 
   private resetRuntimeState(): void {
     document.getElementById("ui-root")?.replaceChildren();
+    this.settings = normalizeSettingsData(SaveSystem.load()?.settings ?? DEFAULT_SETTINGS);
+    applySettingsToDocument(this.settings);
+    AudioManager.configure(this.settings);
+    FloatingText.configure(this.settings);
     resetEntityIds();
     this.cameras.main.setBackgroundColor("#17241d");
     this.launch = this.resolveLaunchOrFallback();
@@ -210,6 +221,7 @@ export class BattleScene extends Phaser.Scene {
     this.fogOfWar = new FogOfWarSystem(this.activeMap.width, this.activeMap.height);
     this.fogUpdateTimer = 0;
     this.fogDebugDisabled = false;
+    this.lastSelectionAudioKey = "";
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.resources = this.runtime.resources;
     this.units = [];
@@ -270,6 +282,7 @@ export class BattleScene extends Phaser.Scene {
       onUnitTrained: (unit) => {
         if (unit.team === "player") {
           this.runtime.recordUnitTrained(unit.definition.id);
+          AudioManager.play("unit_trained");
         }
       },
       getTechState: (team) => this.getTechState(team)
@@ -284,11 +297,13 @@ export class BattleScene extends Phaser.Scene {
       onConstructionStarted: (building) => {
         if (building.team === "player") {
           this.selectionSystem.setSelection([building]);
+          AudioManager.play("build_started");
         }
       },
       onBuilt: (building) => {
         if (building.team === "player") {
           this.runtime.recordBuildingBuilt(building.definition.id);
+          AudioManager.play("build_complete");
         }
       }
     });
@@ -358,13 +373,16 @@ export class BattleScene extends Phaser.Scene {
     const hud = new HUD({
       onBuild: (buildingId) => {
         this.buildingSystem.startPlacement(buildingId);
+        AudioManager.play("ui_click");
         const definition = BUILDING_BY_ID[buildingId];
         this.showMessage(`Placing ${definition?.name ?? "building"}`);
       },
       onTrain: (unitId, sourceBuildingId) => {
         const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
         if (building) {
-          this.trainingSystem.queueTraining(building, unitId, this.resources.player);
+          if (this.trainingSystem.queueTraining(building, unitId, this.resources.player)) {
+            AudioManager.play("ui_click");
+          }
         }
       },
       onCancelTrain: (sourceBuildingId, queueIndex) => {
@@ -376,7 +394,9 @@ export class BattleScene extends Phaser.Scene {
       onUpgrade: (upgradeId, sourceBuildingId) => {
         const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
         if (building) {
-          this.upgradeSystem.queueUpgrade(building, upgradeId, this.resources.player);
+          if (this.upgradeSystem.queueUpgrade(building, upgradeId, this.resources.player)) {
+            AudioManager.play("ui_click");
+          }
         }
       },
       onCancelUpgrade: (sourceBuildingId, queueIndex) => {
@@ -385,7 +405,10 @@ export class BattleScene extends Phaser.Scene {
           this.upgradeSystem.cancelUpgrade(building, queueIndex, this.resources.player);
         }
       },
-      onAbility: (abilityId) => this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected()),
+      onAbility: (abilityId) => {
+        AudioManager.play("ability_cast");
+        this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected());
+      },
       onMinimapMove: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
       onMenu: () => this.scene.start(SCENE_KEYS.mainMenu)
     });
@@ -543,7 +566,14 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private isFogActive(): boolean {
-    return getBattleDifficulty(this.launch.request.difficulty).fogOfWarEnabled && !this.fogDebugDisabled;
+    const difficultyFog = getBattleDifficulty(this.launch.request.difficulty).fogOfWarEnabled;
+    const requestedFog =
+      this.settings.fogEnabledOverride === "enabled"
+        ? true
+        : this.settings.fogEnabledOverride === "disabled"
+          ? false
+          : difficultyFog;
+    return requestedFog && !this.fogDebugDisabled;
   }
 
   private isPointVisibleToPlayer(point: Position): boolean {
@@ -646,6 +676,7 @@ export class BattleScene extends Phaser.Scene {
       selectedRallyBuildings: this.selectedRallyBuildings(),
       fogOfWar: this.fogOfWar,
       fogEnabled: this.isFogActive(),
+      colorblindPalette: this.settings.colorblindMinimapPalette,
       pings: this.minimapPings,
       isPointExploredByPlayer: (point) => this.isPointExploredByPlayer(point),
       resourceColor: (resource) => this.resourceColor(resource)
@@ -656,6 +687,17 @@ export class BattleScene extends Phaser.Scene {
     return this.selectionSystem
       .getSelected()
       .filter((entity): entity is Unit | Building => entity instanceof Unit || entity instanceof Building);
+  }
+
+  private playSelectionAudio(selected: Array<Unit | Building>): void {
+    const key = selected
+      .map((entity) => entity.id)
+      .sort()
+      .join("|");
+    if (key && key !== this.lastSelectionAudioKey) {
+      AudioManager.play("unit_selected");
+    }
+    this.lastSelectionAudioKey = key;
   }
 
   private updateStatusEffects(deltaSeconds: number): void {
@@ -751,6 +793,7 @@ export class BattleScene extends Phaser.Scene {
       this.showMessage("No ability in that slot");
       return;
     }
+    AudioManager.play("ability_cast");
     this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected());
   }
 
@@ -885,6 +928,15 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private resourceColor(resource: ResourceKey): string {
+    if (this.settings.colorblindMinimapPalette) {
+      const colorblindResourceColors: Partial<Record<ResourceKey, string>> = {
+        crowns: "#f0e442",
+        stone: "#999999",
+        iron: "#56b4e9",
+        aether: "#cc79a7"
+      };
+      return colorblindResourceColors[resource] ?? "#f5efc2";
+    }
     const color = RESOURCE_DEFINITIONS.find((entry) => entry.id === resource)?.color ?? 0xf5efc2;
     return `#${color.toString(16).padStart(6, "0")}`;
   }

@@ -7,7 +7,8 @@ export const SCENE_KEYS = {
   skirmishSetup: "SkirmishSetupScene",
   battle: "BattleScene",
   results: "ResultsScene",
-  heroProgression: "HeroProgressionScene"
+  heroProgression: "HeroProgressionScene",
+  settings: "SettingsScene"
 } as const;
 
 export type SceneKey = (typeof SCENE_KEYS)[keyof typeof SCENE_KEYS];

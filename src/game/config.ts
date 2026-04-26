@@ -7,6 +7,7 @@ import { HeroCreationScene } from "./scenes/HeroCreationScene";
 import { HeroProgressionScene } from "./scenes/HeroProgressionScene";
 import { MainMenuScene } from "./scenes/MainMenuScene";
 import { ResultsScene } from "./scenes/ResultsScene";
+import { SettingsScene } from "./scenes/SettingsScene";
 import { SkirmishSetupScene } from "./scenes/SkirmishSetupScene";
 
 export const gameConfig: Phaser.Types.Core.GameConfig = {
@@ -32,6 +33,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
     SkirmishSetupScene,
     BattleScene,
     ResultsScene,
-    HeroProgressionScene
+    HeroProgressionScene,
+    SettingsScene
   ]
 };

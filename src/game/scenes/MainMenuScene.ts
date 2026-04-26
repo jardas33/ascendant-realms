@@ -4,6 +4,8 @@ import { AssetLoader } from "../assets/AssetLoader";
 import { createStartedCampaignSave } from "../core/CampaignRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
+import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
+import { AudioManager } from "../systems/AudioManager";
 
 export class MainMenuScene extends Phaser.Scene {
   private root?: HTMLElement;
@@ -19,16 +21,20 @@ export class MainMenuScene extends Phaser.Scene {
     if (!this.root) {
       throw new Error("Missing #ui-root");
     }
+    const settings = normalizeSettingsData(SaveSystem.load()?.settings ?? DEFAULT_SETTINGS);
+    applySettingsToDocument(settings);
+    AudioManager.configure(settings);
 
     this.handler = (event) => {
       const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-menu-action]");
       if (!button) {
         return;
       }
+      AudioManager.play("ui_click");
       const action = button.dataset.menuAction;
       if (action === "campaign-new") {
         const save = SaveSystem.load();
-        if (!save) {
+        if (!save || SaveSystem.isSettingsOnlySave(save)) {
           this.scene.start(SCENE_KEYS.heroCreation, { nextMode: "campaign" });
           return;
         }
@@ -38,13 +44,13 @@ export class MainMenuScene extends Phaser.Scene {
       }
       if (action === "campaign-continue") {
         const save = SaveSystem.load();
-        if (save) {
+        if (save && !SaveSystem.isSettingsOnlySave(save)) {
           this.scene.start(SCENE_KEYS.campaignMap, { heroSave: save.hero, campaignSave: save.campaign });
         }
       }
       if (action === "skirmish") {
         const save = SaveSystem.load();
-        if (save) {
+        if (save && !SaveSystem.isSettingsOnlySave(save)) {
           this.scene.start(SCENE_KEYS.skirmishSetup, { heroSave: save.hero });
           return;
         }
@@ -52,7 +58,7 @@ export class MainMenuScene extends Phaser.Scene {
       }
       if (action === "inventory") {
         const save = SaveSystem.load();
-        if (save) {
+        if (save && !SaveSystem.isSettingsOnlySave(save)) {
           this.scene.start(SCENE_KEYS.heroProgression, { heroSave: save.hero });
         }
       }
@@ -62,6 +68,9 @@ export class MainMenuScene extends Phaser.Scene {
       if (action === "reset") {
         SaveSystem.reset();
         this.render();
+      }
+      if (action === "settings") {
+        this.scene.start(SCENE_KEYS.settings);
       }
       if (action === "credits") {
         this.render(true);
@@ -74,7 +83,8 @@ export class MainMenuScene extends Phaser.Scene {
 
   private render(showInfo = false): void {
     const save = SaveSystem.load();
-    const hasSave = Boolean(save);
+    const hasSave = Boolean(save && !SaveSystem.isSettingsOnlySave(save));
+    const hasAnySave = Boolean(save);
     const hasCampaign = Boolean(save?.campaign.started);
     if (!this.root) {
       return;
@@ -94,7 +104,8 @@ export class MainMenuScene extends Phaser.Scene {
             <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
             <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
             <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
-            <button data-testid="menu-reset-save" data-menu-action="reset" ${hasSave ? "" : "disabled"}>Reset Save</button>
+            <button data-testid="menu-settings" data-menu-action="settings">Settings</button>
+            <button data-testid="menu-reset-save" data-menu-action="reset" ${hasAnySave ? "" : "disabled"}>Reset Save</button>
             <button data-menu-action="credits">Credits / Info</button>
           </div>
           ${

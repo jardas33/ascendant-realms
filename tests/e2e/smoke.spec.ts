@@ -37,7 +37,37 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
     await expect(page.getByTestId("menu-inventory")).toBeVisible();
     await expect(page.getByTestId("menu-asset-gallery")).toBeVisible();
+    await expect(page.getByTestId("menu-settings")).toBeVisible();
     await expect(page.getByTestId("menu-reset-save")).toBeVisible();
+  });
+
+  test("settings screen persists accessibility options", async ({ page }) => {
+    await openFreshMainMenu(page);
+
+    await page.getByTestId("menu-settings").click();
+    await expect(page.getByTestId("settings-screen")).toBeVisible();
+    await page.getByTestId("settings-master-volume").evaluate((input) => {
+      const range = input as HTMLInputElement;
+      range.value = "0.35";
+      range.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.getByTestId("settings-ui-scale").evaluate((input) => {
+      const range = input as HTMLInputElement;
+      range.value = "1.15";
+      range.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await page.getByTestId("settings-floating-text").uncheck();
+    await page.getByTestId("settings-reduced-motion").check();
+    await page.getByTestId("settings-save").click();
+    await expect(page.getByTestId("settings-status")).toContainText("Settings saved");
+    await page.getByTestId("settings-back").click();
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+
+    await page.getByTestId("menu-settings").click();
+    await expect(page.getByTestId("settings-master-volume")).toHaveValue("0.35");
+    await expect(page.getByTestId("settings-ui-scale")).toHaveValue("1.15");
+    await expect(page.getByTestId("settings-floating-text")).not.toBeChecked();
+    await expect(page.getByTestId("settings-reduced-motion")).toBeChecked();
   });
 
   test("new campaign flow opens the campaign map and blocks locked nodes", async ({ page }) => {

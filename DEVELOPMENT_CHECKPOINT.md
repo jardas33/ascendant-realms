@@ -1,39 +1,47 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 14:57 -04:00
+Updated: 2026-04-26 16:34 -04:00
 
 ## Current Health
 
-The project is safe to checkpoint and publish from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite includes smoke/layout coverage plus deeper menu, campaign, shop, inventory, reward, map-launch, battle-HUD, and live BattleScene-to-Results flows.
+The project is safe to checkpoint from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite passes after stabilizing the headless test harness.
 
-Remaining risk is full manual live-battle QA through normal player input. The automated browser suite now verifies live BattleScene victory and defeat objective resolution into Results, but it still does not execute a full real-time player build order from first click to final base kill.
+No gameplay feature work was added during this checkpoint. The only post-verification stabilization edits were:
+
+- Playwright Chromium now launches with SwiftShader/ANGLE flags to avoid a headless WebGL framebuffer startup failure.
+- The deep first-battle e2e flow advances the existing BattleScene simulation after issuing the Crown Shrine move command, avoiding wall-clock timing flake while preserving the same tested RTS path.
 
 ## Git And Remote Status
 
-Verified code checkpoint hash before this documentation-only publish checkpoint:
+Branch:
 
 ```text
-b07f517691f65b2ed9d2f0756a59b0fcc90f6568
+main
 ```
 
-Branch status before this documentation-only publish checkpoint:
-
-```text
-main...origin/main [ahead 7]
-```
-
-Configured remote:
+Remote:
 
 ```text
 origin https://github.com/jardas33/ascendant-realms.git
 ```
 
-Local and remote sync status at verification time:
+Commit hash before creating this safety checkpoint:
 
 ```text
-NOT SYNCED YET
-Local main was 7 commits ahead of origin/main before this checkpoint update.
-This pass should commit the checkpoint update and push main to origin.
+e39d6cc44e81e845b15f0b54b44ea7c53cb5239f
+```
+
+Branch relationship before committing:
+
+```text
+origin/main...HEAD = 0 behind / 0 ahead
+working tree dirty with the current prototype checkpoint changes
+```
+
+After this file is committed, the final checkpoint commit hash should be read with:
+
+```bash
+git rev-parse HEAD
 ```
 
 ## Test Status
@@ -48,8 +56,8 @@ Result:
 
 ```text
 PASS
-21 test files passed
-105 tests passed
+23 test files passed
+111 tests passed
 ```
 
 ## Build Status
@@ -72,56 +80,48 @@ Known build warning:
 
 ```text
 Some chunks are larger than 500 kB after minification.
-Main JS bundle is approximately 1.78 MB minified / 420 KB gzip.
+Main JS bundle is approximately 1.79 MB minified / 423 KB gzip.
 ```
 
-## Browser QA Status
+## Browser E2E Status
 
 Command:
 
 ```bash
-npm run test:e2e
+npm run test:e2e -- --reporter=line
 ```
 
 Result:
 
 ```text
 PASS
-23 Playwright smoke/layout/deep-flow tests passed
+25 Playwright tests passed
 ```
 
-Covered flows:
+Notes:
 
-- Main menu boots.
-- Credits / Info opens.
-- Asset Gallery opens and returns.
-- New Campaign reaches HeroCreationScene, then CampaignMapScene.
-- Continue Campaign and Hero Inventory enable/disable correctly around save reset.
-- Locked campaign nodes cannot launch.
-- Border Village launches a battle scene.
-- Campaign event choices update resources, reputation, modifiers, and completed nodes.
-- Marcher Camp repeatable services and once-only purchases update the save.
-- Inventory equip, unequip, and skill spending persist.
-- ResultsScene victory rewards show Equip Now and save equipped reward instances.
-- ResultsScene defeat tips and retry/campaign actions render.
-- Live Border Village campaign battle victory resolves through BattleScene into Results, completes the node, unlocks Old Stone Road, grants rewards, and saves campaign/hero progress.
-- Live Border Village campaign battle defeat resolves through BattleScene into Results without completing the node or granting rewards.
-- Skirmish Setup launches First Claim, Broken Ford, and Ashen Outpost with selected difficulty/personality.
-- Battle HUD supports minimap click handling, fog toggle, Command Hall action display, building placement start, and placement-cancel feedback.
-- Responsive layout remains horizontally contained and bottom actions remain reachable on desktop, tablet-short, mobile-tall, and mobile-short viewports across main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+- An initial e2e attempt failed at boot with Phaser WebGL `Framebuffer Unsupported` in headless Chromium. The Playwright project now forces SwiftShader/ANGLE for deterministic local headless rendering.
+- A later e2e attempt exposed a timing flake in the first-battle capture step. The test now advances BattleScene simulation after the player-like move command, matching the existing deterministic construction/training helpers.
+- Final e2e run passed all 25 tests.
 
-In-app Browser Use attach attempt:
+Covered browser flows:
 
-```text
-BLOCKED
-No active Codex browser pane was available to the Browser Use runtime.
-```
-
-This appears to be a tool/session attachment issue rather than an app failure; Playwright completed successfully against the local app.
+- Main menu, credits/info, reset, and Asset Gallery.
+- Settings screen persistence for audio/accessibility options.
+- New Campaign and HeroCreationScene.
+- Campaign map locked/available node behavior.
+- Campaign event choices, reputation, resources, modifiers, and Marcher Camp services.
+- Inventory equip/unequip and skill spending.
+- ResultsScene victory/defeat, Equip Now, defeat tips, retry/campaign actions.
+- Skirmish map launches for First Claim, Broken Ford, and Ashen Outpost.
+- Battle HUD minimap movement, fog toggle, building placement cancel, and Command Hall actions.
+- First-battle RTS loop: hero selection, Crown Shrine capture, Barracks placement/construction, Militia queue/training, rally point, and campaign victory rewards.
+- Live BattleScene victory/defeat objective resolution into Results.
+- Responsive layout reachability across desktop, tablet, and mobile viewports.
 
 ## Asset Refresh Status
 
-`npm run assets:refresh` was not run because no asset registry, manual source-art, generated sprite, or manifest input files changed in this checkpoint.
+`npm run assets:refresh` was not run because no asset registry, manual source-art, generated sprite, or manifest input files changed during this checkpoint.
 
 Run `npm run assets:refresh` before the next checkpoint if any of these change:
 
@@ -130,31 +130,40 @@ Run `npm run assets:refresh` before the next checkpoint if any of these change:
 - generated battle sprites
 - asset manifests
 
-## Current Committed Scope
+## Remaining Known Risks
 
-This checkpoint includes the current deep QA stabilization scope and the live battle-resolution follow-up:
+- Full battle victory through normal human input remains manual QA; automated tests cover accelerated and objective-resolution paths.
+- Balance remains prototype-level and needs human Easy/Normal playthroughs.
+- Vite large bundle warning remains.
+- `BattleScene`, `CampaignMapScene`, `HeroProgressionScene`, `SaveSystem`, and `HeroProgressionRules` remain the highest-risk files for future edits.
+- Music is not implemented; `musicVolume` is reserved.
+- `screenShakeEnabled` is saved but no active screen-shake system currently exists to gate.
+- Fog is grid-based and not blocker-aware.
+- Enemy AI is still paced/simple and does not construct, retreat, or adapt composition.
 
-- Added `tests/e2e/deep-flow.spec.ts` for deep automated browser QA.
-- Added live BattleScene-to-Results victory/defeat coverage for Border Village campaign battles.
-- Added battle placement-cancel status feedback in `src/game/scenes/BattleScene.ts`.
-- Updated `README.md` browser test coverage notes.
-- Updated `LLM_GAME_HANDOFF.md`.
-- Updated this checkpoint file.
+## Local And Remote Sync
 
-## Bugs Found And Fixed
+At the time this checkpoint file was written, local and remote were synced at the previous commit, with the current verified changes still uncommitted.
 
-- Building placement cancellation with Esc/right-click previously removed the ghost silently. It now shows `Building placement cancelled` in the battle status line.
+Expected final state after the checkpoint commit and push:
 
-No other deterministic product bug was reproduced during the automated deep pass. Earlier failures were test harness assumptions about data IDs, strict selectors, synthetic-page scope, and long map-launch timing; those are fixed in the new e2e spec.
+```text
+working tree clean
+main synced with origin/main
+```
 
-## Known Risks
+If push fails, run:
 
-- Full battle victory/defeat from live player input remains manual QA.
-- ResultsScene, CampaignMapScene, HeroProgressionScene, SaveSystem, and HeroProgressionRules remain high-risk files for future edits.
-- Bundle size warning remains.
-- Item affixes, crafting, durability, broad shops, and full equipment art are not implemented.
-- Campaign balance still needs human Easy/Normal playthroughs.
+```bash
+git push origin main
+```
 
-## What Should Be Committed Next
+## Next Recommended Task
 
-This documentation-only checkpoint update should be committed and pushed. After a successful push, expected state is a clean working tree with local `main` synced to `origin/main`.
+After this safety checkpoint is committed and pushed, do one manual browser QA pass through the handoff checklist with special attention to:
+
+- Settings persistence and audio mute behavior.
+- Human-paced Border Village battle.
+- Equip Now persistence after a real victory.
+- Marcher Camp purchases/services.
+- Ashen Outpost launch and special objective display.

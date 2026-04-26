@@ -57,7 +57,9 @@ Run this after changing data files. It checks the level curve, hero progression 
 npm run test:e2e
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine.
 
 For a visible browser run:
 
@@ -133,7 +135,9 @@ Use the `Reset Save` button on the main menu. You can also clear the browser's l
 
 ## Save Data
 
-The game stores one local save under the browser localStorage key defined in `src/game/core/Constants.ts`. Current saves write `version: 2` and include `createdAt`, `updatedAt`, `hero`, `campaign`, plus placeholder `settings` and `statistics` objects for future systems.
+The game stores one local save under the browser localStorage key defined in `src/game/core/Constants.ts`. Current saves write `version: 2` and include `createdAt`, `updatedAt`, `hero`, `campaign`, `settings`, and a placeholder `statistics` object.
+
+Settings currently include master/music/SFX volume, screen shake enabled, floating text enabled, fog override, reduced motion, UI scale, and a colorblind-friendly minimap palette. Saving settings before creating a hero creates a settings-only save marker; starting a campaign or skirmish later keeps those settings and replaces the placeholder hero data.
 
 Older `version: 1` saves are migrated in memory when loaded. Invalid JSON or invalid save shapes are rejected safely and do not clear or overwrite the existing localStorage value. New writes always use the current version 2 shape.
 
@@ -183,6 +187,8 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 ## Current Features
 
 - Main menu, hero creation, campaign map, skirmish setup, reset save, credits/info.
+- Settings screen for audio, reduced motion, floating text, UI scale, fog override, colorblind minimap colors, and keyboard controls.
+- Lightweight generated WebAudio cues for UI clicks, selection, build start/complete, unit trained, ability cast, victory, and defeat. Audio fails silently when the browser or test environment blocks it.
 - Eight-node campaign skeleton with locked, available, completed, town-service, and choice-driven node states.
 - Persistent campaign resource bank for node rewards, event choice costs, and Marcher Camp services.
 - Hero inventory screen from the main menu.

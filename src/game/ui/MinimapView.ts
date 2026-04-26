@@ -49,6 +49,7 @@ export interface MinimapSnapshot {
   markers: MinimapMarker[];
   camera: MinimapCameraRect;
   pings: MinimapPing[];
+  colorblindPalette?: boolean;
   fog: MinimapFogState;
 }
 
@@ -62,6 +63,18 @@ const TEAM_STROKES: Record<Team, string> = {
   player: "#74d3f2",
   enemy: "#ffaba4",
   neutral: "#7b5d34"
+};
+
+const COLORBLIND_TEAM_COLORS: Record<Team, string> = {
+  player: "#56b4e9",
+  enemy: "#d55e00",
+  neutral: "#f0e442"
+};
+
+const COLORBLIND_TEAM_STROKES: Record<Team, string> = {
+  player: "#cdefff",
+  enemy: "#ffd2a6",
+  neutral: "#5c4f00"
 };
 
 export function renderMinimap(snapshot: MinimapSnapshot): string {
@@ -102,7 +115,7 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
   const y = worldToMinimapY(snapshot, marker.y);
   if (marker.kind === "capture-site") {
     const color = marker.resourceColor ?? "#f5efc2";
-    const fill = marker.team === "neutral" ? "transparent" : teamColor(marker.team);
+    const fill = marker.team === "neutral" ? "transparent" : teamColor(marker.team, snapshot);
     const opacity = marker.team === "neutral" ? 0 : 0.26;
     return `<circle class="minimap-site" cx="${x}" cy="${y}" r="3.2" fill="${fill}" fill-opacity="${opacity}" stroke="${color}" stroke-width="1.25"></circle>`;
   }
@@ -110,7 +123,7 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
   if (marker.kind === "building") {
     const size = formatNumber(marker.size ?? 3.6);
     const half = formatNumber((marker.size ?? 3.6) / 2);
-    return `<rect class="minimap-building" x="${formatNumber(Number(x) - Number(half))}" y="${formatNumber(Number(y) - Number(half))}" width="${size}" height="${size}" rx="0.5" fill="${teamColor(marker.team)}" stroke="${teamStroke(marker.team)}" stroke-width="0.6"></rect>`;
+    return `<rect class="minimap-building" x="${formatNumber(Number(x) - Number(half))}" y="${formatNumber(Number(y) - Number(half))}" width="${size}" height="${size}" rx="0.5" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.6"></rect>`;
   }
 
   if (marker.kind === "camp") {
@@ -133,7 +146,7 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     `;
   }
 
-  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.35)}" fill="${teamColor(marker.team)}" stroke="${teamStroke(marker.team)}" stroke-width="0.45"></circle>`;
+  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.35)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.45"></circle>`;
 }
 
 function renderPing(snapshot: MinimapSnapshot, ping: MinimapPing): string {
@@ -180,12 +193,12 @@ function worldToMinimapY(snapshot: MinimapSnapshot, y: number): string {
   return formatNumber(clamp((y / snapshot.mapHeight) * 100, 0, 100));
 }
 
-function teamColor(team: Team): string {
-  return TEAM_COLORS[team];
+function teamColor(team: Team, snapshot: MinimapSnapshot): string {
+  return (snapshot.colorblindPalette ? COLORBLIND_TEAM_COLORS : TEAM_COLORS)[team];
 }
 
-function teamStroke(team: Team): string {
-  return TEAM_STROKES[team];
+function teamStroke(team: Team, snapshot: MinimapSnapshot): string {
+  return (snapshot.colorblindPalette ? COLORBLIND_TEAM_STROKES : TEAM_STROKES)[team];
 }
 
 function clamp(value: number, min: number, max: number): number {

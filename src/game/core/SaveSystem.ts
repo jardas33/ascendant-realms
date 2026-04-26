@@ -1,19 +1,26 @@
 import { SAVE_KEY } from "./Constants";
 import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "./GameTypes";
+import { DEFAULT_SETTINGS, normalizeSettingsData } from "./Settings";
 import { isCampaignModifierId } from "../data/campaignModifiers";
 import type {
   AllocatedSkills,
   CampaignSaveData,
   CurrentStoredGameSave,
   EquipmentSlots,
-  HeroSaveData
+  HeroSaveData,
+  SaveSettingsData
 } from "../save/SaveTypes";
 
 export const CURRENT_SAVE_VERSION = 2;
 
 export class SaveSystem {
   static hasSave(): boolean {
-    return SaveSystem.load() !== null;
+    const save = SaveSystem.load();
+    return Boolean(save && !SaveSystem.isSettingsOnlySave(save));
+  }
+
+  static isSettingsOnlySave(save: CurrentStoredGameSave | null | undefined): boolean {
+    return Boolean(save?.statistics.settingsOnly === true);
   }
 
   static load(): CurrentStoredGameSave | null {
@@ -66,6 +73,19 @@ export class SaveSystem {
     return SaveSystem.saveGame(hero, campaign);
   }
 
+  static saveSettings(settings: SaveSettingsData): boolean {
+    const existing = SaveSystem.load();
+    return writeCurrentSave(
+      createCurrentStoredGameSave({
+        hero: existing?.hero ?? createFallbackHeroSave(),
+        campaign: existing?.campaign ?? createFallbackCampaignSave(),
+        previousSave: existing,
+        settings,
+        settingsOnly: !existing || SaveSystem.isSettingsOnlySave(existing)
+      })
+    );
+  }
+
   static reset(): void {
     removeRawSave();
   }
@@ -112,7 +132,7 @@ export function migrateV1ToV2(input: unknown): CurrentStoredGameSave | null {
     updatedAt: typeof input.updatedAt === "string" ? input.updatedAt : now,
     hero,
     campaign: normalizeCampaignSaveData(input.campaign) ?? createFallbackCampaignSave(),
-    settings: {},
+    settings: DEFAULT_SETTINGS,
     statistics: {}
   };
 }
@@ -148,7 +168,7 @@ function normalizeStoredGameSaveV2(input: unknown): CurrentStoredGameSave | null
     updatedAt: typeof input.updatedAt === "string" ? input.updatedAt : now,
     hero,
     campaign: normalizeCampaignSaveData(input.campaign) ?? createFallbackCampaignSave(),
-    settings: isRecord(input.settings) ? { ...input.settings } : {},
+    settings: normalizeSettingsData(input.settings),
     statistics: isRecord(input.statistics) ? { ...input.statistics } : {}
   };
 }
@@ -157,16 +177,24 @@ function createCurrentStoredGameSave(options: {
   hero: HeroSaveData;
   campaign: CampaignSaveData;
   previousSave?: CurrentStoredGameSave | null;
+  settings?: SaveSettingsData;
+  settingsOnly?: boolean;
 }): CurrentStoredGameSave {
   const now = new Date().toISOString();
+  const statistics = { ...(options.previousSave?.statistics ?? {}) };
+  if (options.settingsOnly) {
+    statistics.settingsOnly = true;
+  } else {
+    delete statistics.settingsOnly;
+  }
   return {
     version: CURRENT_SAVE_VERSION,
     createdAt: options.previousSave?.createdAt ?? now,
     updatedAt: now,
     hero: options.hero,
     campaign: options.campaign,
-    settings: options.previousSave?.settings ?? {},
-    statistics: options.previousSave?.statistics ?? {}
+    settings: normalizeSettingsData(options.settings ?? options.previousSave?.settings),
+    statistics
   };
 }
 

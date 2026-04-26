@@ -17,6 +17,7 @@ interface BattleMinimapSnapshotOptions {
   selectedRallyBuildings: Building[];
   fogOfWar?: FogOfWarSystem;
   fogEnabled: boolean;
+  colorblindPalette?: boolean;
   pings: MinimapPing[];
   isPointExploredByPlayer: (point: { x: number; y: number }) => boolean;
   resourceColor: (resource: ResourceKey) => string;
@@ -33,6 +34,7 @@ export function createBattleMinimapSnapshot(options: BattleMinimapSnapshotOption
     selectedRallyBuildings,
     fogOfWar,
     fogEnabled,
+    colorblindPalette,
     pings,
     isPointExploredByPlayer,
     resourceColor
@@ -112,6 +114,7 @@ export function createBattleMinimapSnapshot(options: BattleMinimapSnapshotOption
       height: cameraHeight
     },
     pings,
+    colorblindPalette: Boolean(colorblindPalette),
     fog: {
       enabled: fogEnabled,
       cells: fogEnabled ? fogOfWar?.cells() : undefined

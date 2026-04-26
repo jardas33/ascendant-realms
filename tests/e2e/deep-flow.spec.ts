@@ -152,6 +152,140 @@ async function waitForBattleScene(page: Page): Promise<void> {
   await page.waitForFunction(() => Boolean(window.ascendantRealmsGame?.scene.getScene("BattleScene")?.scene.isActive()));
 }
 
+async function worldToScreen(page: Page, point: { x: number; y: number }): Promise<{ x: number; y: number }> {
+  return page.evaluate((target) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const canvasBounds = scene.game.canvas.getBoundingClientRect();
+    const camera = scene.cameras.main;
+    return {
+      x: canvasBounds.left + target.x - camera.scrollX,
+      y: canvasBounds.top + target.y - camera.scrollY
+    };
+  }, point);
+}
+
+async function clickWorldPoint(page: Page, point: { x: number; y: number }, button: "left" | "right" = "left"): Promise<void> {
+  const screen = await worldToScreen(page, point);
+  await page.mouse.click(screen.x, screen.y, { button });
+}
+
+async function advanceBattleSimulation(page: Page, seconds: number, step = 0.25): Promise<void> {
+  await page.evaluate(
+    ({ totalSeconds, stepSeconds }) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const iterations = Math.ceil(totalSeconds / stepSeconds);
+      for (let index = 0; index < iterations; index += 1) {
+        scene.runtime.tick(stepSeconds);
+        scene.movementSystem.update(stepSeconds, scene.units, scene.activeMap, scene.buildings);
+        scene.resourceSystem.update(stepSeconds, scene.captureSites, scene.units);
+      }
+    },
+    { totalSeconds: seconds, stepSeconds: step }
+  );
+}
+
+async function selectPlayerBuildingFromScene(page: Page, buildingId: string): Promise<void> {
+  await page.evaluate((targetBuildingId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const building = scene.buildings.find(
+      (entry: any) => entry.team === "player" && entry.definition.id === targetBuildingId && entry.alive
+    );
+    if (!building) {
+      throw new Error(`Player building ${targetBuildingId} was not found.`);
+    }
+    scene.cameraSystem.centerOn(building.position);
+    scene.selectionSystem.setSelection([building]);
+  }, buildingId);
+}
+
+async function getBattleSnapshot(page: Page): Promise<Record<string, any>> {
+  return page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    return {
+      selectedIds: scene.selectionSystem.getSelectedIds(),
+      resources: { ...scene.resources.player },
+      stats: { ...scene.runtime.stats },
+      units: scene.units.map((unit: any) => ({
+        id: unit.id,
+        unitId: unit.definition.id,
+        kind: unit.kind,
+        team: unit.team,
+        alive: unit.alive,
+        x: unit.position.x,
+        y: unit.position.y,
+        moveTarget: unit.moveTarget ? { ...unit.moveTarget } : undefined
+      })),
+      buildings: scene.buildings.map((building: any) => ({
+        id: building.id,
+        buildingId: building.definition.id,
+        team: building.team,
+        alive: building.alive,
+        x: building.position.x,
+        y: building.position.y,
+        constructionState: building.constructionState,
+        constructionProgress: building.constructionProgress,
+        trainingQueueLength: building.trainingQueue.length,
+        rallyPoint: building.rallyPoint ? { ...building.rallyPoint } : undefined
+      })),
+      captureSites: scene.captureSites.map((site: any) => ({
+        id: site.definition.id,
+        owner: site.owner,
+        capturingTeam: site.capturingTeam,
+        captureProgress: site.captureProgress
+      }))
+    };
+  });
+}
+
+async function completePlayerBuilding(page: Page, buildingId: string): Promise<void> {
+  await page.evaluate((targetBuildingId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const building = scene.buildings.find(
+      (entry: any) => entry.team === "player" && entry.definition.id === targetBuildingId && entry.alive
+    );
+    if (!building) {
+      throw new Error(`Player building ${targetBuildingId} was not found.`);
+    }
+    scene.buildingSystem.update(building.constructionTimeSeconds + 1);
+  }, buildingId);
+  await page.waitForFunction(
+    (targetBuildingId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const building = scene?.buildings.find(
+        (entry: any) => entry.team === "player" && entry.definition.id === targetBuildingId && entry.alive
+      );
+      return building?.constructionState === "completed";
+    },
+    buildingId,
+    { timeout: 5_000 }
+  );
+}
+
+async function completeTrainingQueues(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.trainingSystem.update(30, scene.buildings);
+  });
+}
+
 async function startSyntheticResults(page: Page, outcome: "victory" | "defeat"): Promise<void> {
   await openMainMenu(page);
   await page.evaluate(({ selectedOutcome, baseHero }) => {
@@ -497,6 +631,157 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
+  });
+
+  test("first campaign battle path covers capture, build, train, rally, and victory rewards", async ({ page }) => {
+    test.setTimeout(90_000);
+    await openFreshMainMenu(page);
+
+    await page.getByTestId("menu-new-campaign").click();
+    await expect(page.getByTestId("hero-creation")).toBeVisible();
+    await page.getByTestId("hero-class-warlord").click();
+    await page.getByTestId("hero-name-input").fill("Loop QA");
+    await page.getByTestId("hero-start").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
+
+    await page.getByTestId("campaign-node-border_village").click();
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+
+    await page.keyboard.press("H");
+    await page.keyboard.press("Space");
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return scene?.selectionSystem.getSelected().some((entity: any) => entity.kind === "hero");
+    });
+
+    await clickWorldPoint(page, { x: 850, y: 780 }, "right");
+    await advanceBattleSimulation(page, 35);
+    await page.waitForFunction(
+      () => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const site = scene?.captureSites.find((entry: any) => entry.definition.id === "crown_shrine");
+        return site?.owner === "player" || (site?.capturingTeam === "player" && site.captureProgress > 0);
+      },
+      undefined,
+      { timeout: 20_000 }
+    );
+    let snapshot = await getBattleSnapshot(page);
+    const crownShrine = snapshot.captureSites.find((site: any) => site.id === "crown_shrine");
+    expect(crownShrine.owner === "player" || crownShrine.captureProgress > 0).toBe(true);
+
+    await selectPlayerCommandHallFromScene(page);
+    await expect(page.locator(".side-panel")).toContainText("Command Hall");
+    await page.locator("button[data-action='build'][data-id='barracks']").click();
+    await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
+    await clickWorldPoint(page, { x: 450, y: 930 }, "left");
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return scene?.buildings.some(
+        (building: any) =>
+          building.team === "player" &&
+          building.definition.id === "barracks" &&
+          building.alive &&
+          building.constructionState === "underConstruction"
+      );
+    });
+    await expect(page.locator(".side-panel")).toContainText(/Construction/i);
+
+    await completePlayerBuilding(page, "barracks");
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator(".side-panel")).toContainText("Barracks");
+    await expect(page.locator(".side-panel")).toContainText("Rally Point: None");
+
+    snapshot = await getBattleSnapshot(page);
+    const militiaBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
+    await page.locator("button[data-action='train'][data-id='militia']").click();
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const barracks = scene?.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+      );
+      return barracks?.trainingQueue.length > 0;
+    });
+
+    const rallyPoint = { x: 650, y: 920 };
+    await clickWorldPoint(page, rallyPoint, "right");
+    await page.waitForFunction(
+      (target) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const barracks = scene?.buildings.find(
+          (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+        );
+        if (!barracks?.rallyPoint) {
+          return false;
+        }
+        return Math.hypot(barracks.rallyPoint.x - target.x, barracks.rallyPoint.y - target.y) < 8;
+      },
+      rallyPoint,
+      { timeout: 5_000 }
+    );
+    await expect(page.getByTestId("battle-status")).toContainText(/Rally point set/i);
+
+    await completeTrainingQueues(page);
+    const trainedMilitia = await page.waitForFunction(
+      ({ beforeCount, target }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const candidates = scene?.units.filter((unit: any) => unit.team === "player" && unit.definition.id === "militia" && unit.alive) ?? [];
+        if (candidates.length <= beforeCount) {
+          return false;
+        }
+        return candidates.find(
+          (unit: any) => unit.moveTarget && Math.hypot(unit.moveTarget.x - target.x, unit.moveTarget.y - target.y) < 8
+        )?.id;
+      },
+      { beforeCount: militiaBefore, target: rallyPoint },
+      { timeout: 5_000 }
+    );
+    const trainedMilitiaId = await trainedMilitia.jsonValue();
+    expect(trainedMilitiaId).toBeTruthy();
+
+    const startingRallyDistance = await page.evaluate(
+      ({ unitId, target }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const unit = scene?.units.find((entry: any) => entry.id === unitId);
+        if (!unit) {
+          throw new Error("Trained militia was not found.");
+        }
+        return Math.hypot(unit.position.x - target.x, unit.position.y - target.y);
+      },
+      { unitId: trainedMilitiaId, target: rallyPoint }
+    );
+    await page.waitForFunction(
+      ({ unitId, target, startDistance }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const unit = scene?.units.find((entry: any) => entry.id === unitId);
+        if (!unit) {
+          return false;
+        }
+        return Math.hypot(unit.position.x - target.x, unit.position.y - target.y) < startDistance - 2;
+      },
+      { unitId: trainedMilitiaId, target: rallyPoint, startDistance: startingRallyDistance },
+      { timeout: 5_000 }
+    );
+
+    snapshot = await getBattleSnapshot(page);
+    const barracks = snapshot.buildings.find((building: any) => building.team === "player" && building.buildingId === "barracks");
+    expect(barracks?.constructionState).toBe("completed");
+    expect(barracks?.rallyPoint).toBeTruthy();
+    expect(snapshot.stats.buildingsBuilt).toBeGreaterThanOrEqual(1);
+    expect(snapshot.stats.unitsTrained).toBeGreaterThanOrEqual(1);
+
+    await forceActiveBattleOutcome(page, "victory");
+    await expect(page.locator(".results-panel")).toContainText("Victory");
+    await expect(page.locator(".results-panel")).toContainText("Border Village");
+    const save = await readSave(page);
+    expect(save.campaign.completedNodeIds).toContain("border_village");
+    expect(save.campaign.nodeRewardsClaimedIds).toContain("border_village");
+    expect(save.campaign.unlockedNodeIds).toContain("old_stone_road");
+    expect(save.hero.completedBattles).toBe(1);
+    expect(save.hero.inventory.length).toBeGreaterThan(0);
   });
 
   test("live campaign battles resolve victory and defeat through BattleScene results", async ({ page }) => {

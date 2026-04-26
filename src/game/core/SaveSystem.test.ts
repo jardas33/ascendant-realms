@@ -13,6 +13,7 @@ import {
   normalizeCampaignSaveData,
   normalizeHeroSaveData
 } from "./SaveSystem";
+import { DEFAULT_SETTINGS, normalizeSettingsData, shouldShowFloatingText } from "./Settings";
 import { createItemInstance } from "./HeroProgressionRules";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
@@ -185,7 +186,7 @@ describe("save version migration", () => {
     expect(migrated?.version).toBe(CURRENT_SAVE_VERSION);
     expect(migrated?.createdAt).toBe(v1.updatedAt);
     expect(migrated?.updatedAt).toBe(v1.updatedAt);
-    expect(migrated?.settings).toEqual({});
+    expect(migrated?.settings).toEqual(DEFAULT_SETTINGS);
     expect(migrated?.statistics).toEqual({});
   });
 
@@ -214,18 +215,18 @@ describe("save version migration", () => {
     expect(parsed.version).toBe(2);
     expect(typeof parsed.createdAt).toBe("string");
     expect(typeof parsed.updatedAt).toBe("string");
-    expect(parsed.settings).toEqual({});
+    expect(parsed.settings).toEqual(DEFAULT_SETTINGS);
     expect(parsed.statistics).toEqual({});
   });
 
-  it("loads V2 saves and preserves placeholder objects", () => {
+  it("loads V2 saves and normalizes settings", () => {
     const v2 = {
       version: 2,
       createdAt: "2026-01-01T00:00:00.000Z",
       updatedAt: "2026-01-02T00:00:00.000Z",
       hero: createFallbackHeroSave(),
       campaign: createFallbackCampaignSave(),
-      settings: { futureAudio: "placeholder" },
+      settings: { masterVolume: 2, sfxVolume: 0.2, floatingTextEnabled: false, uiScale: 9 },
       statistics: { futureBattles: 0 }
     };
     globalThis.localStorage.setItem(SAVE_KEY, JSON.stringify(v2));
@@ -234,7 +235,13 @@ describe("save version migration", () => {
 
     expect(loaded?.version).toBe(2);
     expect(loaded?.createdAt).toBe(v2.createdAt);
-    expect(loaded?.settings).toEqual(v2.settings);
+    expect(loaded?.settings).toEqual({
+      ...DEFAULT_SETTINGS,
+      masterVolume: 1,
+      sfxVolume: 0.2,
+      floatingTextEnabled: false,
+      uiScale: 1.25
+    });
     expect(loaded?.statistics).toEqual(v2.statistics);
   });
 
@@ -256,8 +263,33 @@ describe("save version migration", () => {
     expect(migrated?.campaign.choiceIdsClaimed).toEqual([]);
     expect(migrated?.campaign.townServiceClaimedIds).toEqual([]);
     expect(migrated?.campaign.townServiceUseCounts).toEqual({});
-    expect(migrated?.settings).toEqual({});
+    expect(migrated?.settings).toEqual(DEFAULT_SETTINGS);
     expect(migrated?.statistics).toEqual({});
+  });
+
+  it("saves settings and keeps them through later hero writes", () => {
+    const settings = normalizeSettingsData({
+      ...DEFAULT_SETTINGS,
+      masterVolume: 0.35,
+      floatingTextEnabled: false,
+      reducedMotionEnabled: true,
+      uiScale: 1.15
+    });
+
+    expect(SaveSystem.saveSettings(settings)).toBe(true);
+    const settingsOnly = SaveSystem.load();
+    expect(SaveSystem.isSettingsOnlySave(settingsOnly)).toBe(true);
+    expect(settingsOnly?.settings).toEqual(settings);
+
+    expect(SaveSystem.saveHero(createFallbackHeroSave())).toBe(true);
+    const loaded = SaveSystem.load();
+    expect(SaveSystem.isSettingsOnlySave(loaded)).toBe(false);
+    expect(loaded?.settings).toEqual(settings);
+  });
+
+  it("uses accessibility settings for feature gates", () => {
+    expect(shouldShowFloatingText(DEFAULT_SETTINGS)).toBe(true);
+    expect(shouldShowFloatingText({ ...DEFAULT_SETTINGS, floatingTextEnabled: false })).toBe(false);
   });
 
   it("saves and loads town purchases and campaign spending totals", () => {

@@ -28,6 +28,8 @@
     inset 0 -1px 0 rgba(0, 0, 0, 0.42),
     0 10px 24px rgba(0, 0, 0, 0.2);
   --aether-line: rgba(116, 211, 242, 0.48);
+  --ui-scale: 1;
+  font-size: calc(16px * var(--ui-scale));
 }
 
 * {
@@ -47,6 +49,15 @@ body,
 body {
   background: #121813;
   min-width: 320px;
+}
+
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
 }
 
 canvas {
