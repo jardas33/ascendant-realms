@@ -1,23 +1,39 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 14:46 -04:00
+Updated: 2026-04-26 14:57 -04:00
 
 ## Current Health
 
-The project is safe to continue from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite now includes smoke/layout coverage plus deeper menu, campaign, shop, inventory, reward, map-launch, battle-HUD, and live BattleScene-to-Results flows.
+The project is safe to checkpoint and publish from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite includes smoke/layout coverage plus deeper menu, campaign, shop, inventory, reward, map-launch, battle-HUD, and live BattleScene-to-Results flows.
 
 Remaining risk is full manual live-battle QA through normal player input. The automated browser suite now verifies live BattleScene victory and defeat objective resolution into Results, but it still does not execute a full real-time player build order from first click to final base kill.
 
-## Latest Commit Before This Pass
+## Git And Remote Status
+
+Verified code checkpoint hash before this documentation-only publish checkpoint:
 
 ```text
-be2d0cc42c588bb6aa252f9f82256bd667dd22f0
+b07f517691f65b2ed9d2f0756a59b0fcc90f6568
 ```
 
-Branch status before committing this live battle-resolution pass:
+Branch status before this documentation-only publish checkpoint:
 
 ```text
-main...origin/main [ahead 6]
+main...origin/main [ahead 7]
+```
+
+Configured remote:
+
+```text
+origin https://github.com/jardas33/ascendant-realms.git
+```
+
+Local and remote sync status at verification time:
+
+```text
+NOT SYNCED YET
+Local main was 7 commits ahead of origin/main before this checkpoint update.
+This pass should commit the checkpoint update and push main to origin.
 ```
 
 ## Test Status
@@ -141,4 +157,4 @@ No other deterministic product bug was reproduced during the automated deep pass
 
 ## What Should Be Committed Next
 
-No immediate commit is pending after this checkpoint. The expected post-commit state is `main...origin/main [ahead 7]` with a clean working tree.
+This documentation-only checkpoint update should be committed and pushed. After a successful push, expected state is a clean working tree with local `main` synced to `origin/main`.
