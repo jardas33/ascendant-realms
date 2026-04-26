@@ -57,7 +57,7 @@ Run this after changing data files. It checks the level curve, hero progression 
 npm run test:e2e
 ```
 
-The browser smoke suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, Broken Ford launches, and Hero Inventory opens without crashing.
+The browser smoke suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, Broken Ford launches, and Hero Inventory opens without crashing. It also checks responsive layout reachability and horizontal overflow across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
 For a visible browser run:
 

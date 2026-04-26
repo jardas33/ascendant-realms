@@ -24,6 +24,14 @@ input {
   gap: 18px;
 }
 
+.choice-columns > *,
+.setup-grid > *,
+.map-grid > *,
+.difficulty-grid > *,
+.enemy-grid > * {
+  min-width: 0;
+}
+
 .difficulty-panel {
   margin-top: 8px;
 }
@@ -59,6 +67,7 @@ input {
   position: relative;
   overflow: hidden;
   width: 100%;
+  min-width: 0;
   display: grid;
   gap: 6px;
   margin-bottom: 10px;
@@ -139,6 +148,7 @@ input {
   color: #c8d0bd;
   font-size: 13px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .compact-choice {
@@ -164,4 +174,5 @@ input {
   color: #c8d0bd;
   font-size: 13px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }

@@ -1,25 +1,39 @@
 /* Cross-domain mobile layout overrides kept last to preserve cascade behavior. */
 
-@media (max-width: 760px) {
+@media (max-width: 980px) {
   .choice-columns,
-  .difficulty-grid,
   .setup-grid,
-  .map-grid,
   .campaign-layout,
-  .menu-actions.row,
   .progression-grid,
   .skill-tree-grid,
-  .results-sections,
+  .results-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .difficulty-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .progression-header,
+  .results-title-row {
+    display: grid;
+  }
+}
+
+@media (max-width: 760px) {
+  .difficulty-grid,
+  .map-grid,
+  .menu-actions.row,
   .reward-card-main {
     grid-template-columns: 1fr;
   }
 
-  .progression-header {
-    display: grid;
+  .menu-panel {
+    padding: 18px;
   }
 
-  .results-title-row {
-    display: grid;
+  .campaign-bank {
+    grid-template-columns: 1fr;
   }
 
   .progression-title-row {
@@ -70,5 +84,79 @@
 
   .hint-line {
     top: 166px;
+  }
+
+  .campaign-map-grid {
+    min-height: 360px;
+  }
+
+  .campaign-node {
+    width: min(112px, 30vw);
+    min-height: 58px;
+    padding: 7px 8px;
+    font-size: 12px;
+  }
+
+  .campaign-node span {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .menu-shell {
+    padding: 10px;
+  }
+
+  .menu-panel {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+
+  .choice-content {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .choice-portrait {
+    width: 48px;
+    height: 48px;
+  }
+
+  .stat-list,
+  .progression-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-panel {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 9px;
+    padding: 10px 11px 12px;
+  }
+
+  .portrait {
+    width: 52px;
+    height: 52px;
+  }
+
+  .hero-lines span,
+  .hero-lines small {
+    font-size: 12px;
+  }
+
+  .side-panel {
+    bottom: 104px;
+    max-height: min(220px, calc(100vh - 300px));
+  }
+
+  .resource-pill {
+    min-width: 82px;
+    padding: 6px 8px;
+  }
+
+  .minimap-shell {
+    width: 104px;
+    height: 72px;
   }
 }

@@ -70,8 +70,9 @@ p {
 
 h1 {
   margin-bottom: 12px;
-  font-size: clamp(34px, 6vw, 64px);
+  font-size: clamp(30px, 5vw, 58px);
   line-height: 1;
+  overflow-wrap: anywhere;
 }
 
 h2 {
@@ -117,6 +118,10 @@ h2::after,
   min-height: 44px;
   padding: 11px 14px;
   text-align: left;
+}
+
+.menu-actions button {
+  min-width: 0;
 }
 
 .info-box {
@@ -203,6 +208,15 @@ h2::after,
   margin-top: 12px;
 }
 
+.progression-header,
+.progression-title-row,
+.progression-grid > *,
+.equipment-row > *,
+.inventory-row > *,
+.skill-node > * {
+  min-width: 0;
+}
+
 .progression-stats {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -268,6 +282,7 @@ h2::after,
   margin-top: 4px;
   color: #c8d0bd;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .equipment-row p,
@@ -277,6 +292,13 @@ h2::after,
   color: #c8d0bd;
   font-size: 12px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.equipment-row strong,
+.inventory-row strong,
+.skill-node strong {
+  overflow-wrap: anywhere;
 }
 
 .equipment-row small,

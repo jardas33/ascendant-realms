@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 13:55 -04:00
+Last updated: 2026-04-26 14:14 -04:00
 
 ## Current Project Identity
 
@@ -668,7 +668,7 @@ Latest verified suite status after the item-instance/checkpoint pass:
 - 21 test files passed
 - 105 tests passed
 - `npm run test:e2e`: passed
-- 5 Playwright smoke tests passed
+- 16 Playwright smoke/layout tests passed
 
 Current test files:
 
@@ -693,9 +693,10 @@ Current test files:
 - `src/game/systems/UpgradeEffects.test.ts`
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
+- `tests/e2e/layout.spec.ts`
 - `tests/e2e/smoke.spec.ts`
 
-Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and basic browser scene transitions. Browser-level tests currently verify main menu boot, new campaign creation, locked-node behavior, Border Village battle launch, skirmish map selection/Broken Ford launch, and inventory screen boot. Winning battles and deep in-battle construction/results flows remain manual QA.
+Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and basic browser scene transitions. Browser-level tests currently verify main menu boot, new campaign creation, locked-node behavior, Border Village battle launch, skirmish map selection/Broken Ford launch, inventory screen boot, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for menu, hero creation, campaign, setup, inventory, asset gallery, battle HUD, and results. Winning battles and deep in-battle construction/results flows remain manual QA.
 
 ## Current Build And Asset Status
 
@@ -717,6 +718,7 @@ Known current issues:
 
 - Vite reports a large bundle chunk warning.
 - Full battle win/loss browser QA is still manual; the e2e suite intentionally stops after scene transitions and boot checks.
+- In-app Browser Use attachment may report no active Codex browser pane in this environment; Playwright is the reliable local browser verification path.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
 
 ## Current Known Limitations
@@ -770,24 +772,24 @@ The UI CSS has been split by domain. `src/game/styles/ui.css` is now the import 
 
 ## Current Git Status
 
-Latest pre-checkpoint commit hash at handoff update time:
+Latest pre-UI-fix commit hash at handoff update time:
 
 ```text
-3449c58d6764fc0b63ee06ad0d5555a0577623e1
+f99db596d1d421cc0cd321efa5073a4883c3890c
 ```
 
-Branch status before the next checkpoint commit:
-
-```text
-main...origin/main [ahead 3]
-```
-
-The worktree was dirty before this stabilization pass with item-instance, e2e, BattleScene-helper, CSS-split, Marcher Camp, and documentation changes. The recommended action is to commit all verified current changes together as a local checkpoint before starting another gameplay feature.
-
-Expected status after the checkpoint commit:
+Branch status before the responsive UI fix commit:
 
 ```text
 main...origin/main [ahead 4]
+```
+
+The responsive UI fix pass updated shared menu scrolling, responsive breakpoints, long-text wrapping, and Playwright layout coverage. The recommended action is to keep that pass as a small local commit before starting another gameplay feature.
+
+Expected status after the responsive UI fix commit:
+
+```text
+main...origin/main [ahead 5]
 working tree clean
 ```
 

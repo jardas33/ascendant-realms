@@ -46,6 +46,7 @@ body,
 
 body {
   background: #121813;
+  min-width: 320px;
 }
 
 canvas {
@@ -55,9 +56,11 @@ canvas {
 button,
 input {
   font: inherit;
+  min-width: 0;
 }
 
 button {
+  max-width: 100%;
   border: 1px solid rgba(222, 190, 94, 0.34);
   border-radius: 6px;
   border-style: solid;
@@ -71,6 +74,8 @@ button {
     #1b2424;
   color: #f5efdc;
   cursor: pointer;
+  overflow-wrap: anywhere;
+  white-space: normal;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
   box-shadow: var(--plate-shadow);
   transition:
@@ -109,4 +114,5 @@ button:active:not(:disabled) {
   position: fixed;
   inset: 0;
   z-index: 10;
+  overflow: hidden;
 }

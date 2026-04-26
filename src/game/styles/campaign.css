@@ -97,6 +97,7 @@
 
 .campaign-panel {
   align-self: start;
+  margin-block: 0;
 }
 
 .campaign-layout {
@@ -105,8 +106,15 @@
   gap: 18px;
 }
 
+.campaign-layout > *,
+.campaign-node-details,
+.event-choice {
+  min-width: 0;
+}
+
 .campaign-map-grid {
   position: relative;
+  min-width: 0;
   min-height: 430px;
   border: 1px solid rgba(246, 237, 180, 0.18);
   border-style: solid;
@@ -144,6 +152,8 @@
   padding: 9px 10px;
   transform: translate(-50%, -50%);
   text-align: center;
+  max-width: calc(100% - 12px);
+  overflow-wrap: anywhere;
 }
 
 .campaign-node span {
@@ -196,6 +206,7 @@
 .campaign-node-details p {
   color: #c8d0bd;
   line-height: 1.45;
+  overflow-wrap: anywhere;
 }
 
 .event-text {

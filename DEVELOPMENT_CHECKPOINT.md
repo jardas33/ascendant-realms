@@ -1,24 +1,24 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 13:55 -04:00
+Updated: 2026-04-26 14:14 -04:00
 
 ## Current Health
 
 The project is safe to checkpoint from automated verification: unit tests pass, production build passes, and the Playwright browser smoke suite passes. The remaining risk is manual gameplay QA, especially full battle win/loss paths, construction timing feel, ResultsScene reward persistence, and campaign choice/town-service flows beyond the smoke coverage.
 
-## Latest Commit Before This Checkpoint
+## Latest Commit Before This UI Fix
 
 ```text
-3449c58d6764fc0b63ee06ad0d5555a0577623e1
+f99db596d1d421cc0cd321efa5073a4883c3890c
 ```
 
-Branch status before committing this checkpoint:
+Branch status before committing this UI fix:
 
 ```text
-main...origin/main [ahead 3]
+main...origin/main [ahead 4]
 ```
 
-This file is intended to be included in the next local checkpoint commit. After the commit, run `git rev-parse HEAD` for the exact checkpoint hash; expected branch status is `main...origin/main [ahead 4]` with a clean working tree unless new edits are made.
+This file is intended to be included in the responsive UI fix commit. After the commit, run `git rev-parse HEAD` for the exact commit hash; expected branch status is `main...origin/main [ahead 5]` with a clean working tree unless new edits are made.
 
 ## Test Status
 
@@ -71,7 +71,7 @@ Result:
 
 ```text
 PASS
-5 Playwright smoke tests passed
+16 Playwright smoke/layout tests passed
 ```
 
 Covered flows:
@@ -81,6 +81,7 @@ Covered flows:
 - Border Village launches a battle scene.
 - Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost; Broken Ford launches.
 - Hero Inventory opens without crashing.
+- Responsive layout remains horizontally contained and bottom actions remain reachable on desktop, tablet-short, mobile-tall, and mobile-short viewports across main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
 Manual full-play smoke remains recommended with the checklist in `LLM_GAME_HANDOFF.md`.
 
@@ -108,6 +109,9 @@ Run `npm run assets:refresh` before the next checkpoint if any of these change:
 
 The current checkpoint groups these related stabilization changes:
 
+- Responsive menu/result/setup/inventory/campaign layout hardening.
+- Scrollable menu shell behavior for tall DOM screens.
+- Expanded Playwright layout checks across desktop, tablet, and mobile viewports.
 - Item instance inventory/equipment migration and unique duplicate conversion.
 - Reward, ResultsScene, Hero Inventory, campaign reward, and Marcher Camp purchase updates for item instances.
 - Save V2 migration discipline and older-save normalization.
