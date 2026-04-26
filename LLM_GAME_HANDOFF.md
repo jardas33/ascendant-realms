@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 14:14 -04:00
+Last updated: 2026-04-26 14:35 -04:00
 
 ## Current Project Identity
 
@@ -12,7 +12,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 4. Resolve victory or defeat through a shared Results scene.
 5. Persist hero XP, skill points, inventory, equipment, campaign node progress, event choices, and campaign resources in local storage.
 
-The project is still a prototype, but it now has a broad playable RTS/RPG spine. This handoff reflects the verified state after the item-instance, e2e smoke-test, BattleScene extraction, CSS split, save migration, and Marcher Camp passes. The best current workflow is to keep these changes together as a checkpoint commit before starting another gameplay feature.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. This handoff reflects the verified state after the item-instance, e2e smoke-test, BattleScene extraction, CSS split, save migration, Marcher Camp, responsive UI, and deep browser QA passes. The best current workflow is to keep these changes together as a checkpoint commit before starting another gameplay feature.
 
 ## Current Command List
 
@@ -171,8 +171,8 @@ Current hero classes:
 Current origins:
 
 - Exiled Noble
-- Border Outrider
 - Temple Orphan
+- Wildland Raider
 
 Hero save data tracks:
 
@@ -662,13 +662,14 @@ Save normalization:
 
 ## Current Tests
 
-Latest verified suite status after the item-instance/checkpoint pass:
+Latest verified suite status after the deep browser QA pass:
 
 - `npm test`: passed
 - 21 test files passed
 - 105 tests passed
+- `npm run build`: passed
 - `npm run test:e2e`: passed
-- 16 Playwright smoke/layout tests passed
+- 22 Playwright smoke/layout/deep-flow tests passed
 
 Current test files:
 
@@ -693,14 +694,15 @@ Current test files:
 - `src/game/systems/UpgradeEffects.test.ts`
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
 - `tests/e2e/layout.spec.ts`
 - `tests/e2e/smoke.spec.ts`
 
-Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and basic browser scene transitions. Browser-level tests currently verify main menu boot, new campaign creation, locked-node behavior, Border Village battle launch, skirmish map selection/Broken Ford launch, inventory screen boot, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for menu, hero creation, campaign, setup, inventory, asset gallery, battle HUD, and results. Winning battles and deep in-battle construction/results flows remain manual QA.
+Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and browser scene transitions. Browser-level tests currently verify main menu/info/reset/gallery, hero creation selections, new campaign creation, locked-node behavior, Border Village battle launch, campaign event choices, Marcher Camp repeatable/once-only services, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, skirmish map launches for First Claim/Broken Ford/Ashen Outpost, minimap click handling, fog toggle, battle building-placement cancellation feedback, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for menu, hero creation, campaign, setup, inventory, asset gallery, battle HUD, and results. Full battle victory from live player input remains manual QA.
 
 ## Current Build And Asset Status
 
-Latest verified build status after the item-instance/checkpoint pass:
+Latest verified build status after the deep browser QA pass:
 
 - `npm run build`: passed
 - Vite emitted the known large-chunk warning for the main JS bundle, approximately 1.78 MB minified and 420 KB gzip.
@@ -712,12 +714,12 @@ Asset refresh status:
 
 ## Current Known Bugs
 
-No deterministic runtime bug was reproduced by automated unit, build, or Playwright smoke tests in this pass.
+No deterministic runtime bug was reproduced by automated unit, build, or Playwright deep-flow tests in this pass.
 
 Known current issues:
 
 - Vite reports a large bundle chunk warning.
-- Full battle win/loss browser QA is still manual; the e2e suite intentionally stops after scene transitions and boot checks.
+- Full battle win/loss browser QA is still manual; the e2e suite now covers more menu/campaign/inventory/results/battle-HUD behavior but does not play a complete battle to victory.
 - In-app Browser Use attachment may report no active Codex browser pane in this environment; Playwright is the reliable local browser verification path.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
 
@@ -772,24 +774,24 @@ The UI CSS has been split by domain. `src/game/styles/ui.css` is now the import 
 
 ## Current Git Status
 
-Latest pre-UI-fix commit hash at handoff update time:
+Latest committed checkpoint hash at handoff update time:
 
 ```text
-f99db596d1d421cc0cd321efa5073a4883c3890c
+c35dccd2cbd2ea103951ea8d70fcfb1252a010fe
 ```
 
-Branch status before the responsive UI fix commit:
-
-```text
-main...origin/main [ahead 4]
-```
-
-The responsive UI fix pass updated shared menu scrolling, responsive breakpoints, long-text wrapping, and Playwright layout coverage. The recommended action is to keep that pass as a small local commit before starting another gameplay feature.
-
-Expected status after the responsive UI fix commit:
+Branch status at the start of the deep QA pass:
 
 ```text
 main...origin/main [ahead 5]
+```
+
+The deep QA pass added broad Playwright coverage and one UX fix: Esc/right-click building placement cancellation now shows a clear status message.
+
+Expected status after the deep QA checkpoint commit:
+
+```text
+main...origin/main [ahead 6]
 working tree clean
 ```
 
@@ -857,7 +859,7 @@ Run this before starting another large feature pass and after any checkpoint com
 
 1. Push or PR the checkpointed local commits to GitHub when the user is ready to publish the current prototype state.
 2. Run a full manual browser QA pass through the 53-item checklist above, especially battle win/loss and reward persistence.
-3. Add e2e coverage for ResultsScene rewards, Equip Now, Marcher Camp services, and campaign choice outcomes.
+3. Extend e2e coverage toward one accelerated live battle victory/defeat path when a stable test hook exists.
 4. Split `ResultsScene`, `CampaignMapScene`, and `HeroProgressionScene` into smaller view/rules helpers.
 5. Split large authored data such as `maps.ts` into per-map modules before adding more maps.
 6. Add randomized item affixes only after instance-based inventory has more browser QA coverage.

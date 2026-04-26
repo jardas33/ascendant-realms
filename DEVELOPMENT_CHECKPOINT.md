@@ -1,24 +1,24 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 14:14 -04:00
+Updated: 2026-04-26 14:35 -04:00
 
 ## Current Health
 
-The project is safe to checkpoint from automated verification: unit tests pass, production build passes, and the Playwright browser smoke suite passes. The remaining risk is manual gameplay QA, especially full battle win/loss paths, construction timing feel, ResultsScene reward persistence, and campaign choice/town-service flows beyond the smoke coverage.
+The project is safe to continue from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite now includes both smoke/layout coverage and deeper menu, campaign, shop, inventory, reward, map-launch, and battle-HUD flows.
 
-## Latest Commit Before This UI Fix
+Remaining risk is full manual live-battle QA: the automated browser suite launches battles and checks HUD interactions, but it does not yet play a complete battle to victory through normal player input.
 
-```text
-f99db596d1d421cc0cd321efa5073a4883c3890c
-```
-
-Branch status before committing this UI fix:
+## Latest Commit Before This Pass
 
 ```text
-main...origin/main [ahead 4]
+c35dccd2cbd2ea103951ea8d70fcfb1252a010fe
 ```
 
-This file is intended to be included in the responsive UI fix commit. After the commit, run `git rev-parse HEAD` for the exact commit hash; expected branch status is `main...origin/main [ahead 5]` with a clean working tree unless new edits are made.
+Branch status before committing this deep QA pass:
+
+```text
+main...origin/main [ahead 5]
+```
 
 ## Test Status
 
@@ -59,7 +59,7 @@ Some chunks are larger than 500 kB after minification.
 Main JS bundle is approximately 1.78 MB minified / 420 KB gzip.
 ```
 
-## Browser Smoke Status
+## Browser QA Status
 
 Command:
 
@@ -71,19 +71,26 @@ Result:
 
 ```text
 PASS
-16 Playwright smoke/layout tests passed
+22 Playwright smoke/layout/deep-flow tests passed
 ```
 
 Covered flows:
 
 - Main menu boots.
-- New Campaign reaches CampaignMapScene and locked nodes cannot launch.
+- Credits / Info opens.
+- Asset Gallery opens and returns.
+- New Campaign reaches HeroCreationScene, then CampaignMapScene.
+- Continue Campaign and Hero Inventory enable/disable correctly around save reset.
+- Locked campaign nodes cannot launch.
 - Border Village launches a battle scene.
-- Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost; Broken Ford launches.
-- Hero Inventory opens without crashing.
+- Campaign event choices update resources, reputation, modifiers, and completed nodes.
+- Marcher Camp repeatable services and once-only purchases update the save.
+- Inventory equip, unequip, and skill spending persist.
+- ResultsScene victory rewards show Equip Now and save equipped reward instances.
+- ResultsScene defeat tips and retry/campaign actions render.
+- Skirmish Setup launches First Claim, Broken Ford, and Ashen Outpost with selected difficulty/personality.
+- Battle HUD supports minimap click handling, fog toggle, Command Hall action display, building placement start, and placement-cancel feedback.
 - Responsive layout remains horizontally contained and bottom actions remain reachable on desktop, tablet-short, mobile-tall, and mobile-short viewports across main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
-
-Manual full-play smoke remains recommended with the checklist in `LLM_GAME_HANDOFF.md`.
 
 In-app Browser Use attach attempt:
 
@@ -92,7 +99,7 @@ BLOCKED
 No active Codex browser pane was available to the Browser Use runtime.
 ```
 
-This appears to be a tool/session attachment issue rather than an app failure; the Playwright suite above completed successfully against the local app.
+This appears to be a tool/session attachment issue rather than an app failure; Playwright completed successfully against the local app.
 
 ## Asset Refresh Status
 
@@ -105,35 +112,30 @@ Run `npm run assets:refresh` before the next checkpoint if any of these change:
 - generated battle sprites
 - asset manifests
 
-## Current Worktree Scope
+## Current Committed Scope
 
-The current checkpoint groups these related stabilization changes:
+This checkpoint includes the current deep QA stabilization scope:
 
-- Responsive menu/result/setup/inventory/campaign layout hardening.
-- Scrollable menu shell behavior for tall DOM screens.
-- Expanded Playwright layout checks across desktop, tablet, and mobile viewports.
-- Item instance inventory/equipment migration and unique duplicate conversion.
-- Reward, ResultsScene, Hero Inventory, campaign reward, and Marcher Camp purchase updates for item instances.
-- Save V2 migration discipline and older-save normalization.
-- Playwright e2e setup and smoke tests.
-- BattleScene helper extraction.
-- CSS split into domain files with `ui.css` as import hub.
-- Documentation refresh, including `LLM_GAME_HANDOFF.md`.
+- Added `tests/e2e/deep-flow.spec.ts` for deep automated browser QA.
+- Added battle placement-cancel status feedback in `src/game/scenes/BattleScene.ts`.
+- Updated `README.md` browser test coverage notes.
+- Updated `LLM_GAME_HANDOFF.md`.
+- Updated this checkpoint file.
+
+## Bugs Found And Fixed
+
+- Building placement cancellation with Esc/right-click previously removed the ghost silently. It now shows `Building placement cancelled` in the battle status line.
+
+No other deterministic product bug was reproduced during the automated deep pass. Earlier failures were test harness assumptions about data IDs, strict selectors, synthetic-page scope, and long map-launch timing; those are fixed in the new e2e spec.
 
 ## Known Risks
 
-- Full battle victory/defeat and reward persistence are still primarily manual QA.
-- ResultsScene, CampaignMapScene, HeroProgressionScene, SaveSystem, and HeroProgressionRules are now the highest-risk files for future edits.
+- Full battle victory/defeat from live player input remains manual QA.
+- ResultsScene, CampaignMapScene, HeroProgressionScene, SaveSystem, and HeroProgressionRules remain high-risk files for future edits.
 - Bundle size warning remains.
 - Item affixes, crafting, durability, broad shops, and full equipment art are not implemented.
-- Campaign balance needs human Easy/Normal playthroughs.
+- Campaign balance still needs human Easy/Normal playthroughs.
 
 ## What Should Be Committed Next
 
-Commit the entire current worktree together:
-
-```text
-Checkpoint item instances and prototype stabilization
-```
-
-Do not split, reset, checkout, or discard any current changes unless the user explicitly asks for a different commit strategy.
+No immediate commit is pending after this checkpoint. The expected post-commit state is `main...origin/main [ahead 6]` with a clean working tree.

@@ -398,7 +398,10 @@ export class BattleScene extends Phaser.Scene {
       isPlacingBuilding: () => Boolean(this.buildingSystem.pendingBuildingId),
       updateBuildingGhost: (point) => this.buildingSystem.updateGhost(point.x, point.y, this.resources.player),
       placeBuilding: (point) => this.buildingSystem.tryPlace(point.x, point.y, this.resources.player),
-      cancelPlacement: () => this.buildingSystem.cancelPlacement(),
+      cancelPlacement: () => {
+        this.buildingSystem.cancelPlacement();
+        this.showMessage("Building placement cancelled");
+      },
       getSelectedUnits: () => this.selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
       getSelectedRallyBuildings: () => this.selectedRallyBuildings(),
       setRallyPoint: (point, buildings) => this.setRallyPoint(point, buildings),
