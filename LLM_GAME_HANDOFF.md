@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 14:35 -04:00
+Last updated: 2026-04-26 14:46 -04:00
 
 ## Current Project Identity
 
@@ -669,7 +669,7 @@ Latest verified suite status after the deep browser QA pass:
 - 105 tests passed
 - `npm run build`: passed
 - `npm run test:e2e`: passed
-- 22 Playwright smoke/layout/deep-flow tests passed
+- 23 Playwright smoke/layout/deep-flow tests passed
 
 Current test files:
 
@@ -698,7 +698,7 @@ Current test files:
 - `tests/e2e/layout.spec.ts`
 - `tests/e2e/smoke.spec.ts`
 
-Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and browser scene transitions. Browser-level tests currently verify main menu/info/reset/gallery, hero creation selections, new campaign creation, locked-node behavior, Border Village battle launch, campaign event choices, Marcher Camp repeatable/once-only services, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, skirmish map launches for First Claim/Broken Ford/Ashen Outpost, minimap click handling, fog toggle, battle building-placement cancellation feedback, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for menu, hero creation, campaign, setup, inventory, asset gallery, battle HUD, and results. Full battle victory from live player input remains manual QA.
+Test coverage is strongest around pure rules, launch validation, battle runtime stats, save normalization, reward flow, content validation, AI personalities, campaign modifiers, pathfinding, fog, rally, placement, status effects, upgrades, and browser scene transitions. Browser-level tests currently verify main menu/info/reset/gallery, hero creation selections, new campaign creation, locked-node behavior, Border Village battle launch, campaign event choices, Marcher Camp repeatable/once-only services, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, skirmish map launches for First Claim/Broken Ford/Ashen Outpost, minimap click handling, fog toggle, battle building-placement cancellation feedback, live BattleScene victory/defeat objective resolution into Results, campaign reward/save behavior after live victory, no reward/save grant after live defeat, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for menu, hero creation, campaign, setup, inventory, asset gallery, battle HUD, and results. Full live battle victory through normal player input remains manual QA.
 
 ## Current Build And Asset Status
 
@@ -719,7 +719,7 @@ No deterministic runtime bug was reproduced by automated unit, build, or Playwri
 Known current issues:
 
 - Vite reports a large bundle chunk warning.
-- Full battle win/loss browser QA is still manual; the e2e suite now covers more menu/campaign/inventory/results/battle-HUD behavior but does not play a complete battle to victory.
+- Full battle win/loss through normal player input is still manual; the e2e suite now covers accelerated live BattleScene victory/defeat objective resolution into Results and save behavior.
 - In-app Browser Use attachment may report no active Codex browser pane in this environment; Playwright is the reliable local browser verification path.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
 
@@ -788,10 +788,10 @@ main...origin/main [ahead 5]
 
 The deep QA pass added broad Playwright coverage and one UX fix: Esc/right-click building placement cancellation now shows a clear status message.
 
-Expected status after the deep QA checkpoint commit:
+Expected status after the live battle-resolution e2e checkpoint commit:
 
 ```text
-main...origin/main [ahead 6]
+main...origin/main [ahead 7]
 working tree clean
 ```
 
@@ -859,7 +859,7 @@ Run this before starting another large feature pass and after any checkpoint com
 
 1. Push or PR the checkpointed local commits to GitHub when the user is ready to publish the current prototype state.
 2. Run a full manual browser QA pass through the 53-item checklist above, especially battle win/loss and reward persistence.
-3. Extend e2e coverage toward one accelerated live battle victory/defeat path when a stable test hook exists.
+3. Extend e2e coverage toward a real-time player-like first battle path: capture site, build Barracks, train unit, then resolve the battle.
 4. Split `ResultsScene`, `CampaignMapScene`, and `HeroProgressionScene` into smaller view/rules helpers.
 5. Split large authored data such as `maps.ts` into per-map modules before adding more maps.
 6. Add randomized item affixes only after instance-based inventory has more browser QA coverage.

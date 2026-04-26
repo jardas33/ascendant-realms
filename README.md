@@ -57,7 +57,7 @@ Run this after changing data files. It checks the level curve, hero progression 
 npm run test:e2e
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, minimap clicks, fog toggle, building placement cancellation feedback, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
 For a visible browser run:
 

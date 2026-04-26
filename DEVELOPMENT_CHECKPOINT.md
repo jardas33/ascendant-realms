@@ -1,23 +1,23 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 14:35 -04:00
+Updated: 2026-04-26 14:46 -04:00
 
 ## Current Health
 
-The project is safe to continue from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite now includes both smoke/layout coverage and deeper menu, campaign, shop, inventory, reward, map-launch, and battle-HUD flows.
+The project is safe to continue from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite now includes smoke/layout coverage plus deeper menu, campaign, shop, inventory, reward, map-launch, battle-HUD, and live BattleScene-to-Results flows.
 
-Remaining risk is full manual live-battle QA: the automated browser suite launches battles and checks HUD interactions, but it does not yet play a complete battle to victory through normal player input.
+Remaining risk is full manual live-battle QA through normal player input. The automated browser suite now verifies live BattleScene victory and defeat objective resolution into Results, but it still does not execute a full real-time player build order from first click to final base kill.
 
 ## Latest Commit Before This Pass
 
 ```text
-c35dccd2cbd2ea103951ea8d70fcfb1252a010fe
+be2d0cc42c588bb6aa252f9f82256bd667dd22f0
 ```
 
-Branch status before committing this deep QA pass:
+Branch status before committing this live battle-resolution pass:
 
 ```text
-main...origin/main [ahead 5]
+main...origin/main [ahead 6]
 ```
 
 ## Test Status
@@ -71,7 +71,7 @@ Result:
 
 ```text
 PASS
-22 Playwright smoke/layout/deep-flow tests passed
+23 Playwright smoke/layout/deep-flow tests passed
 ```
 
 Covered flows:
@@ -88,6 +88,8 @@ Covered flows:
 - Inventory equip, unequip, and skill spending persist.
 - ResultsScene victory rewards show Equip Now and save equipped reward instances.
 - ResultsScene defeat tips and retry/campaign actions render.
+- Live Border Village campaign battle victory resolves through BattleScene into Results, completes the node, unlocks Old Stone Road, grants rewards, and saves campaign/hero progress.
+- Live Border Village campaign battle defeat resolves through BattleScene into Results without completing the node or granting rewards.
 - Skirmish Setup launches First Claim, Broken Ford, and Ashen Outpost with selected difficulty/personality.
 - Battle HUD supports minimap click handling, fog toggle, Command Hall action display, building placement start, and placement-cancel feedback.
 - Responsive layout remains horizontally contained and bottom actions remain reachable on desktop, tablet-short, mobile-tall, and mobile-short viewports across main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
@@ -114,9 +116,10 @@ Run `npm run assets:refresh` before the next checkpoint if any of these change:
 
 ## Current Committed Scope
 
-This checkpoint includes the current deep QA stabilization scope:
+This checkpoint includes the current deep QA stabilization scope and the live battle-resolution follow-up:
 
 - Added `tests/e2e/deep-flow.spec.ts` for deep automated browser QA.
+- Added live BattleScene-to-Results victory/defeat coverage for Border Village campaign battles.
 - Added battle placement-cancel status feedback in `src/game/scenes/BattleScene.ts`.
 - Updated `README.md` browser test coverage notes.
 - Updated `LLM_GAME_HANDOFF.md`.
@@ -138,4 +141,4 @@ No other deterministic product bug was reproduced during the automated deep pass
 
 ## What Should Be Committed Next
 
-No immediate commit is pending after this checkpoint. The expected post-commit state is `main...origin/main [ahead 6]` with a clean working tree.
+No immediate commit is pending after this checkpoint. The expected post-commit state is `main...origin/main [ahead 7]` with a clean working tree.

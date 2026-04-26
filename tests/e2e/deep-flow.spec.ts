@@ -273,6 +273,38 @@ async function selectPlayerCommandHallFromScene(page: Page): Promise<void> {
   });
 }
 
+async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat"): Promise<void> {
+  await page.evaluate((selectedOutcome) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const objectiveId = selectedOutcome === "victory"
+      ? scene.activeMap.scenario.objectives.enemyBaseBuildingId
+      : scene.activeMap.scenario.objectives.playerBaseBuildingId;
+    const team = selectedOutcome === "victory" ? "enemy" : "player";
+    const target = scene.buildings.find(
+      (building: any) => building.team === team && building.definition.id === objectiveId && building.alive
+    );
+    if (!target) {
+      throw new Error(`Could not find ${selectedOutcome} objective building ${objectiveId}.`);
+    }
+    target.takeDamage(target.maxHp + target.armor + 10_000);
+    scene.checkEndConditions();
+  }, outcome);
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+}
+
+async function startBorderVillageCampaignBattle(page: Page): Promise<void> {
+  await page.getByTestId("menu-continue-campaign").click();
+  await expect(page.getByTestId("campaign-map")).toBeVisible();
+  await page.getByTestId("campaign-node-border_village").click();
+  await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+  await page.getByTestId("campaign-start-node").click();
+  await expectBattleLoaded(page);
+  await waitForBattleScene(page);
+}
+
 test.describe("Ascendant Realms deep end-to-end QA", () => {
   test("main menu, info, hero creation selections, reset state, and gallery navigation work", async ({ page }) => {
     await openFreshMainMenu(page);
@@ -465,5 +497,38 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
+  });
+
+  test("live campaign battles resolve victory and defeat through BattleScene results", async ({ page }) => {
+    test.setTimeout(80_000);
+
+    await seedSave(page);
+    await startBorderVillageCampaignBattle(page);
+    await forceActiveBattleOutcome(page, "victory");
+    await expect(page.locator(".results-panel")).toContainText("Victory");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Border Village");
+    let save = await readSave(page);
+    expect(save.campaign.completedNodeIds).toContain("border_village");
+    expect(save.campaign.unlockedNodeIds).toContain("old_stone_road");
+    expect(save.campaign.nodeRewardsClaimedIds).toContain("border_village");
+    expect(save.campaign.resources.crowns).toBeGreaterThan(0);
+    expect(save.hero.completedBattles).toBe(1);
+    expect(save.hero.inventory.length).toBeGreaterThan(0);
+
+    await page.getByRole("button", { name: "Campaign Map" }).click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Available/i);
+
+    await seedSave(page);
+    await startBorderVillageCampaignBattle(page);
+    await forceActiveBattleOutcome(page, "defeat");
+    await expect(page.locator(".results-panel")).toContainText("Defeat");
+    await expect(page.locator(".defeat-tips")).toBeVisible();
+    save = await readSave(page);
+    expect(save.campaign.completedNodeIds).not.toContain("border_village");
+    expect(save.campaign.nodeRewardsClaimedIds).not.toContain("border_village");
+    expect(save.hero.completedBattles).toBe(0);
+    expect(save.hero.inventory.length).toBe(0);
   });
 });
