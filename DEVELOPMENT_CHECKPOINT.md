@@ -1,10 +1,10 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 22:48 -04:00
+Updated: 2026-04-26 23:00 -04:00
 
 ## Checkpoint Scope
 
-This checkpoint preserves the current dirty prototype work before any new feature work. No gameplay behavior was intentionally changed during this checkpoint pass; only verification and checkpoint documentation were updated.
+This checkpoint records a fresh automated verification pass before any new feature work. The repository was clean and synced before this pass, so no uncommitted gameplay changes were waiting to be captured. No gameplay behavior was intentionally changed during this checkpoint pass; only checkpoint documentation was updated.
 
 The checkpoint includes the in-progress first-campaign balance tuning, RTS systems polish, save-system split, BattleScene systems wiring helper, HUD/responsive polish, QA documentation, and related test updates described in `LLM_GAME_HANDOFF.md`.
 
@@ -29,7 +29,7 @@ PASS
 Run time reported by Vitest:
 
 ```text
-7.00s
+4.89s
 ```
 
 ### Production Build
@@ -68,14 +68,14 @@ Result:
 ```text
 PASS
 25 Playwright tests passed
-9.1m
+8.5m
 ```
 
 Covered browser flows include main menu boot, settings persistence, hero creation, campaign map state, campaign choices and town services, inventory and skill persistence, Results victory/defeat actions, all skirmish map launches, AI personality launches, battle HUD controls, building placement cancellation, capture/build/train/rally flow, live objective resolution, and responsive layout reachability across desktop, tablet, and mobile.
 
 ## Git And Branch Status
 
-Branch after checkpoint push:
+Branch before this verification checkpoint commit:
 
 ```text
 main tracking origin/main
@@ -92,7 +92,7 @@ origin https://github.com/jardas33/ascendant-realms.git
 Checkpoint commit hash:
 
 ```text
-27d4daf063e0ffb9c433d4432c0c9a6813c95042
+PENDING - to be recorded immediately after this verification checkpoint commit is created.
 ```
 
 Checkpoint commit message:
@@ -104,7 +104,7 @@ Checkpoint first campaign balance and RTS systems polish
 Branch status note:
 
 ```text
-The checkpoint commit and follow-up checkpoint metadata commits have been pushed to origin/main.
+The prior first-campaign balance checkpoint and metadata commits were already pushed. This fresh verification checkpoint is being prepared from a clean local tree.
 ```
 
 ## Remaining Known Risks
