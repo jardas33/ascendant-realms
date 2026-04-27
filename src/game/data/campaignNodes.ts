@@ -31,8 +31,8 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     aiPersonalityId: "raider_rush",
     prerequisites: ["border_village"],
     rewards: {
-      xp: 45,
-      resources: { crowns: 50, stone: 40 }
+      xp: 50,
+      resources: { crowns: 60, stone: 45, iron: 15 }
     },
     unlocks: ["aether_well_ruins", "bandit_hillfort", "refugee_caravan", "marcher_camp"],
     x: 30,
@@ -56,8 +56,8 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
       {
         id: "rest_and_recovery",
         label: "Rest and Recovery",
-        description: "Pay for healers, hot food, and a dry tent. Your hero begins the next battle with more staying power.",
-        costs: { crowns: 35 },
+        description: "Pay for healers, hot food, and a dry tent. Your hero begins the next battle with noticeably more staying power.",
+        costs: { crowns: 30 },
         rewards: {
           modifierIds: ["well_rested"]
         },
@@ -68,7 +68,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "hire_volunteers",
         label: "Hire Volunteers",
         description: "Hire local spearhands for one march. The next battle starts with one extra Militia near your Command Hall.",
-        costs: { crowns: 50 },
+        costs: { crowns: 55 },
         rewards: {
           modifierIds: ["inspired_militia"]
         },
@@ -79,9 +79,9 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "buy_supplies",
         label: "Buy Supplies",
         description: "Trade coin for a compact bundle of Stone, Iron, and Aether for future campaign choices.",
-        costs: { crowns: 40 },
+        costs: { crowns: 45 },
         rewards: {
-          resources: { stone: 30, iron: 14, aether: 6 }
+          resources: { stone: 30, iron: 18, aether: 8 }
         },
         onceOnly: false,
         completesNode: false
@@ -102,7 +102,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "purchase_marcher_plate",
         label: "Purchase Marcher Plate",
         description: "Commission a sturdy uncommon armor set from the camp smiths.",
-        costs: { crowns: 85, iron: 20 },
+        costs: { crowns: 80, iron: 18 },
         rewards: {
           itemIds: ["marcher_plate"]
         },
@@ -114,7 +114,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "purchase_green_chapel_icon",
         label: "Purchase Green Chapel Icon",
         description: "Buy a trinket carried by healers and oathbound scouts.",
-        costs: { crowns: 100, aether: 20 },
+        costs: { crowns: 90, aether: 18 },
         rewards: {
           itemIds: ["green_chapel_icon"]
         },
@@ -138,8 +138,8 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     aiPersonalityId: "hexfire_cult",
     prerequisites: ["old_stone_road"],
     rewards: {
-      xp: 60,
-      resources: { aether: 50 },
+      xp: 70,
+      resources: { stone: 35, aether: 55 },
       itemIds: ["aether_lens"]
     },
     unlocks: ["chapel_of_the_marches"],
@@ -157,8 +157,8 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     aiPersonalityId: "fortress_keeper",
     prerequisites: ["old_stone_road"],
     rewards: {
-      xp: 65,
-      resources: { crowns: 70, iron: 45 },
+      xp: 70,
+      resources: { crowns: 75, stone: 25, iron: 50 },
       itemIds: ["captains_seal"]
     },
     unlocks: ["ashen_outpost"],
@@ -196,7 +196,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "repair_chapel",
         label: "Repair the Chapel",
         description: "Spend campaign supplies to restore the signal fire. The Marches remember visible acts of stewardship.",
-        costs: { crowns: 55, stone: 65 },
+        costs: { crowns: 50, stone: 60 },
         rewards: {
           resources: { aether: 35 },
           itemIds: ["green_chapel_icon"],
@@ -212,7 +212,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
       {
         id: "ask_for_guidance",
         label: "Ask for Guidance",
-        description: "The keeper points to smoke from the Ashen Outpost and warns that its hexers mass near the ford.",
+        description: "Scout the road ahead without closing the chapel. The keeper points to Ashen Outpost smoke and warns that hexers mass near the ford.",
         rewards: {
           xp: 15,
           unlockNodeIds: ["refugee_caravan", "ashen_outpost"],
@@ -244,12 +244,12 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         id: "protect_them",
         label: "Protect Them",
         description: "Assign supplies and outriders to escort the families. It is costly, but the Marches will know who stood guard.",
-        costs: { crowns: 30, iron: 10 },
+        costs: { crowns: 45 },
         rewards: {
-          xp: 30,
+          xp: 35,
           itemIds: ["scouts_bow"],
           modifierIds: ["inspired_militia"],
-          reputationChanges: { common_folk: 6, free_marches: 2 }
+          reputationChanges: { common_folk: 8, free_marches: 2 }
         },
         onceOnly: true,
         completesNode: true
@@ -259,12 +259,13 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         label: "Recruit Volunteers",
         description: "Offer food, order, and a banner. A few caravan guards become the seed of a stronger militia.",
         requirements: { heroLevel: 2 },
+        costs: { crowns: 20 },
         rewards: {
           xp: 25,
-          resources: { iron: 30 },
+          resources: { iron: 25 },
           itemIds: ["marcher_plate"],
           modifierIds: ["inspired_militia"],
-          reputationChanges: { common_folk: -2, free_marches: 2 }
+          reputationChanges: { common_folk: -4, free_marches: 2 }
         },
         onceOnly: true,
         completesNode: true
@@ -274,7 +275,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
         label: "Demand Tribute",
         description: "Take coin for passage and leave the caravan to fend for itself. The purse grows; so does resentment.",
         rewards: {
-          resources: { crowns: 80 },
+          resources: { crowns: 65 },
           modifierIds: ["angered_raiders"],
           reputationChanges: { common_folk: -8, free_marches: -2, ashen_covenant: -3 }
         },

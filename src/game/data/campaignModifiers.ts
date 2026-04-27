@@ -30,11 +30,11 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
   {
     id: "well_rested",
     name: "Well Rested",
-    description: "The next battle starts your hero with +10% maximum HP for that battle.",
+    description: "The next battle starts your hero with +15% maximum HP for that battle.",
     trigger: "next_battle",
     durationLabel: "Next battle",
     effects: {
-      heroMaxHpMultiplier: 1.1
+      heroMaxHpMultiplier: 1.15
     }
   },
   {

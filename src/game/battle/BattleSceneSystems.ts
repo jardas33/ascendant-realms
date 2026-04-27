@@ -1,0 +1,355 @@
+import Phaser from "phaser";
+import type {
+  BattleMapDefinition,
+  BattleSecondaryObjectiveType,
+  Position,
+  ResourceBag,
+  Team,
+  UpgradeDefinition
+} from "../core/GameTypes";
+import { BUILDING_BY_ID } from "../data/contentIndex";
+import { EnemyAIController } from "../ai/EnemyAIController";
+import type { BaseEntity } from "../entities/BaseEntity";
+import { Building } from "../entities/Building";
+import { CaptureSite } from "../entities/CaptureSite";
+import { Hero } from "../entities/Hero";
+import { Projectile } from "../entities/Projectile";
+import { Unit } from "../entities/Unit";
+import { AudioManager } from "../systems/AudioManager";
+import { AbilitySystem } from "../systems/AbilitySystem";
+import { AISystem } from "../systems/AISystem";
+import { BuildingSystem } from "../systems/BuildingSystem";
+import { CameraSystem } from "../systems/CameraSystem";
+import { CombatSystem } from "../systems/CombatSystem";
+import { FogOfWarSystem } from "../systems/FogOfWarSystem";
+import { InputSystem } from "../systems/InputSystem";
+import { MovementSystem } from "../systems/MovementSystem";
+import type { TechState } from "../systems/PrerequisiteSystem";
+import { ResourceSystem } from "../systems/ResourceSystem";
+import { SelectionSystem } from "../systems/SelectionSystem";
+import { TrainingSystem } from "../systems/TrainingSystem";
+import { UISystem } from "../systems/UISystem";
+import { UpgradeSystem } from "../systems/UpgradeSystem";
+import { XPSystem } from "../systems/XPSystem";
+import { FloatingText } from "../ui/FloatingText";
+import { HUD } from "../ui/HUD";
+import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
+import type { BattleRuntime } from "./BattleRuntime";
+
+export interface BattleSceneSystems {
+  movementSystem: MovementSystem;
+  combatSystem: CombatSystem;
+  resourceSystem: ResourceSystem;
+  buildingSystem: BuildingSystem;
+  trainingSystem: TrainingSystem;
+  upgradeSystem: UpgradeSystem;
+  selectionSystem: SelectionSystem;
+  abilitySystem: AbilitySystem;
+  cameraSystem: CameraSystem;
+  inputSystem: InputSystem;
+  uiSystem: UISystem;
+  xpSystem: XPSystem;
+  aiSystem: AISystem;
+}
+
+interface CreateBattleSceneSystemsOptions {
+  scene: Phaser.Scene;
+  activeMap: BattleMapDefinition;
+  launch: ResolvedBattleLaunch;
+  runtime: BattleRuntime;
+  resources: Record<"player" | "enemy", ResourceBag>;
+  hero: Hero;
+  getUnits: () => Unit[];
+  getBuildings: () => Building[];
+  getProjectiles: () => Projectile[];
+  getCaptureSites: () => CaptureSite[];
+  addUnit: (unit: Unit) => void;
+  addBuilding: (building: Building) => void;
+  addProjectile: (projectile: Projectile) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  addMinimapPing: (x: number, y: number, color: string, label: string) => void;
+  warnIfCommandHallUnderAttack: (target: BaseEntity) => void;
+  handleKill: (killer: Unit | Building | Projectile, target: BaseEntity) => void;
+  completeSecondaryObjective: (type: BattleSecondaryObjectiveType, targetId: string, point?: Position) => void;
+  selectedRallyBuildings: () => Building[];
+  setRallyPoint: (point: Position, buildings: Building[]) => boolean;
+  findWorldEntityAt: (point: Position) => BaseEntity | undefined;
+  centerCameraFromMinimap: (normalizedX: number, normalizedY: number) => void;
+  castAbilitySlot: (slot: number) => void;
+  toggleFogDebug: () => void;
+  getTechState: (team: Team) => TechState;
+  isUpgradeResearched: (team: Team, upgradeId: string) => boolean;
+  markUpgradeResearched: (team: Team, upgradeId: string) => void;
+  applyUpgradeEffects: (team: Team, upgrade: UpgradeDefinition) => void;
+  isFirstBattle: () => boolean;
+  hasPlayerProductionBuilding: () => boolean;
+  findPlayerBaseBuilding: () => Building | undefined;
+  trackEnemyWave: (units: Unit[]) => void;
+  showBattleStartSummary: () => void;
+  openMainMenu: () => void;
+}
+
+// BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
+// This helper owns only constructor ordering and callback wiring between systems.
+export function createBattleSceneSystems(options: CreateBattleSceneSystemsOptions): BattleSceneSystems {
+  const {
+    scene,
+    activeMap,
+    launch,
+    runtime,
+    resources,
+    hero,
+    getUnits,
+    getBuildings,
+    getProjectiles,
+    getCaptureSites,
+    addUnit,
+    addBuilding,
+    addProjectile,
+    showMessage,
+    addMinimapPing,
+    warnIfCommandHallUnderAttack,
+    handleKill,
+    completeSecondaryObjective,
+    selectedRallyBuildings,
+    setRallyPoint,
+    findWorldEntityAt,
+    centerCameraFromMinimap,
+    castAbilitySlot,
+    toggleFogDebug,
+    getTechState,
+    isUpgradeResearched,
+    markUpgradeResearched,
+    applyUpgradeEffects,
+    isFirstBattle,
+    hasPlayerProductionBuilding,
+    findPlayerBaseBuilding,
+    trackEnemyWave,
+    showBattleStartSummary,
+    openMainMenu
+  } = options;
+
+  const selectionSystem = new SelectionSystem(() => [
+    ...getUnits().filter((unit) => unit.team === "player"),
+    ...getBuildings().filter((building) => building.team === "player")
+  ]);
+
+  const movementSystem = new MovementSystem({
+    onPathFailed: (unit, target) => {
+      if (unit.team === "player") {
+        showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978");
+      }
+    }
+  });
+
+  const trainingSystem = new TrainingSystem({
+    scene,
+    addUnit,
+    onMessage: (message, x, y) => showMessage(message, x, y),
+    onUnitTrained: (unit) => {
+      if (unit.team === "player") {
+        runtime.recordUnitTrained(unit.definition.id);
+        AudioManager.play("unit_trained");
+      }
+    },
+    getTechState
+  });
+
+  const buildingSystem = new BuildingSystem({
+    scene,
+    map: activeMap,
+    getBuildings,
+    getCaptureSites,
+    addBuilding,
+    onMessage: (message, x, y) => showMessage(message, x, y),
+    onConstructionStarted: (building) => {
+      if (building.team === "player") {
+        selectionSystem.setSelection([building]);
+        AudioManager.play("build_started");
+      }
+    },
+    onBuilt: (building) => {
+      if (building.team === "player") {
+        runtime.recordBuildingBuilt(building.definition.id);
+        AudioManager.play("build_complete");
+      }
+    }
+  });
+
+  const upgradeSystem = new UpgradeSystem({
+    getTechState,
+    isResearched: isUpgradeResearched,
+    markResearched: markUpgradeResearched,
+    onMessage: (message, x, y) => showMessage(message, x, y),
+    onUpgradeCompleted: applyUpgradeEffects
+  });
+
+  const xpSystem = new XPSystem(hero, (amount, leveledUp) => {
+    runtime.recordXpGained(amount);
+    showMessage(leveledUp ? `Level up! +${amount} XP` : `+${amount} XP`, hero.position.x, hero.position.y - 54, "#f6e27d");
+  });
+
+  const combatSystem = new CombatSystem({
+    scene,
+    getUnits,
+    getBuildings,
+    getProjectiles,
+    addProjectile,
+    onDamage: (target, amount) => {
+      if (amount >= 5) {
+        FloatingText.show(scene, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
+      }
+      warnIfCommandHallUnderAttack(target);
+    },
+    onStatusApplied: (target, statusName) => {
+      FloatingText.show(scene, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
+    },
+    onKill: handleKill
+  });
+
+  const resourceSystem = new ResourceSystem({
+    resources,
+    onCapture: (site, owner) => {
+      if (owner === "player") {
+        runtime.recordResourceCaptured(site.definition.id);
+        showMessage(`${site.definition.name} captured`, site.position.x, site.position.y - 70, "#aef7b7");
+        completeSecondaryObjective("capture_site", site.definition.id, site.position);
+        return;
+      }
+      if (owner === "enemy") {
+        addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} captured by enemy`);
+      }
+    },
+    onIncome: (site, owner, amount) => {
+      if (owner === "player") {
+        showMessage(`+${amount} ${site.definition.resource}`, site.position.x, site.position.y - 64, "#f5efc2");
+      }
+    }
+  });
+
+  const abilitySystem = new AbilitySystem({
+    scene,
+    getUnits,
+    getBuildings,
+    addProjectile,
+    onDamage: (target, amount) => {
+      if (amount >= 5) {
+        FloatingText.show(scene, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
+      }
+      warnIfCommandHallUnderAttack(target);
+    },
+    onKill: handleKill,
+    onMessage: showMessage
+  });
+
+  const cameraSystem = new CameraSystem(scene, activeMap);
+  const uiSystem = new UISystem(
+    new HUD({
+      onBuild: (buildingId, sourceBuildingId) => {
+        const source = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        buildingSystem.startPlacement(buildingId, { anchor: source?.position, resources: resources.player });
+        AudioManager.play("ui_click");
+        const definition = BUILDING_BY_ID[buildingId];
+        showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`);
+      },
+      onTrain: (unitId, sourceBuildingId) => {
+        const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        if (building && trainingSystem.queueTraining(building, unitId, resources.player)) {
+          AudioManager.play("ui_click");
+        }
+      },
+      onCancelTrain: (sourceBuildingId, queueIndex) => {
+        const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        if (building) {
+          trainingSystem.cancelTraining(building, queueIndex, resources.player);
+        }
+      },
+      onUpgrade: (upgradeId, sourceBuildingId) => {
+        const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        if (building && upgradeSystem.queueUpgrade(building, upgradeId, resources.player)) {
+          AudioManager.play("ui_click");
+        }
+      },
+      onCancelUpgrade: (sourceBuildingId, queueIndex) => {
+        const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
+        if (building) {
+          upgradeSystem.cancelUpgrade(building, queueIndex, resources.player);
+        }
+      },
+      onAbility: (abilityId) => {
+        AudioManager.play("ability_cast");
+        abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected());
+      },
+      onMinimapMove: centerCameraFromMinimap,
+      onMenu: openMainMenu
+    })
+  );
+
+  const inputSystem = new InputSystem({
+    scene,
+    selection: selectionSystem,
+    findWorldEntityAt,
+    isPlacingBuilding: () => Boolean(buildingSystem.pendingBuildingId),
+    updateBuildingGhost: (point) => buildingSystem.updateGhost(point.x, point.y, resources.player),
+    placeBuilding: (point) => buildingSystem.tryPlace(point.x, point.y, resources.player),
+    cancelPlacement: () => {
+      buildingSystem.cancelPlacement();
+      showMessage("Building placement cancelled");
+    },
+    getSelectedUnits: () => selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
+    getSelectedRallyBuildings: selectedRallyBuildings,
+    setRallyPoint,
+    selectHero: () => {
+      if (hero.alive) {
+        selectionSystem.setSelection([hero]);
+      }
+    },
+    centerOnHero: () => cameraSystem.centerOn(hero.position),
+    castAbilitySlot,
+    toggleFogDebug,
+    showMessage: (message) => showMessage(message)
+  });
+
+  showBattleStartSummary();
+
+  const aiController = new EnemyAIController({
+    resources: resources.enemy,
+    getUnits,
+    getBuildings,
+    getCaptureSites,
+    training: trainingSystem,
+    getAttackTarget: findPlayerBaseBuilding,
+    getElapsedSeconds: () => runtime.elapsedSeconds,
+    getPlayerMilestones: () => ({
+      isFirstBattle: isFirstBattle(),
+      hasCapturedSite: runtime.stats.resourcesCaptured > 0,
+      hasBuiltProduction: hasPlayerProductionBuilding()
+    }),
+    onAlert: (message, x, y) => showMessage(message, x, y, "#f6e27d"),
+    onWaveLaunched: trackEnemyWave,
+    difficulty: launch.request.difficulty,
+    config: activeMap.scenario.enemyAI,
+    aiPersonalityId: launch.request.aiPersonalityId
+  });
+  const aiSystem = new AISystem(aiController);
+
+  return {
+    movementSystem,
+    combatSystem,
+    resourceSystem,
+    buildingSystem,
+    trainingSystem,
+    upgradeSystem,
+    selectionSystem,
+    abilitySystem,
+    cameraSystem,
+    inputSystem,
+    uiSystem,
+    xpSystem,
+    aiSystem
+  };
+}
+
+export function createBattleFogOfWar(activeMap: BattleMapDefinition): FogOfWarSystem {
+  return new FogOfWarSystem(activeMap.width, activeMap.height);
+}

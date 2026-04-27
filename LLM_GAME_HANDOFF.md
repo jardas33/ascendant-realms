@@ -1,22 +1,81 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 19:34 -04:00
+Last updated: 2026-04-26 22:18 -04:00
 
-## Current Project Identity
+This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
+
+## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-The current playable loop is:
+The current playable loop:
 
 1. Create or load a persistent hero.
 2. Enter the Border Marches mini-campaign or a standalone skirmish.
 3. Play an RTS battle with hero abilities, capture sites, construction, training queues, upgrades, rally points, pathfinding, fog of war, live minimap, and enemy pressure waves.
-4. Resolve victory or defeat through a shared Results scene.
-5. Persist hero XP, skill points, inventory item instances, equipment, campaign node progress, event choices, town purchases, campaign modifiers, campaign resources, and user settings in localStorage.
+4. Resolve victory or defeat through the shared Results scene.
+5. Persist hero XP, skill points, inventory item instances, equipment, campaign node progress, event choices, town purchases, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-This is still a prototype, but it now has a broad playable RTS/RPG spine. The current local worktree also contains uncommitted changes from multiple major passes. Preserve them unless the user explicitly asks otherwise.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. The worktree is dirty with useful in-progress changes. Do not reset, delete, checkout, or revert them unless the user explicitly asks.
 
-## Current Command List
+## Current Git State
+
+Project root:
+
+```text
+D:\Code for projects\WB game like\ascendant-realms
+```
+
+Current branch:
+
+```text
+main
+```
+
+Current HEAD:
+
+```text
+06085916752aede8be67894b0ba47a0bdae5ac82
+```
+
+Known shell/tool note:
+
+- `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
+- Browser Use was mentioned during recent prompts. The latest handoff audit did not need live in-app browser control; Playwright e2e remains the verified browser automation surface for the latest pass.
+
+Current dirty files at this handoff audit time:
+
+```text
+ M BALANCE.md
+ M LLM_GAME_HANDOFF.md
+ M QA_RUN.md
+ M src/game/ai/EnemyAIController.test.ts
+ M src/game/core/CampaignRules.test.ts
+ M src/game/core/FirstExperienceGuidance.ts
+ M src/game/core/SaveSystem.test.ts
+ M src/game/core/SaveSystem.ts
+ M src/game/data/aiPersonalities.ts
+ M src/game/data/battlePacing.test.ts
+ M src/game/data/battlePacing.ts
+ M src/game/data/campaignModifiers.ts
+ M src/game/data/campaignNodes.ts
+ M src/game/data/maps/ashenOutpost.ts
+ M src/game/data/rewards.ts
+ M src/game/scenes/BattleScene.ts
+ M src/game/styles/battle-hud.css
+ M src/game/styles/responsive.css
+ M src/game/ui/HUD.ts
+ M tests/e2e/deep-flow.spec.ts
+ M tests/e2e/layout.spec.ts
+?? src/game/battle/BattleSceneSystems.ts
+?? src/game/save/SaveDefaults.ts
+?? src/game/save/SaveImportExport.ts
+?? src/game/save/SaveMigrations.ts
+?? src/game/save/SaveNormalization.ts
+?? src/game/save/SaveSystem.ts
+```
+
+## Commands
 
 Run these from the project root:
 
@@ -38,27 +97,108 @@ npm run assets:refresh
 
 Notes:
 
-- `npm run test:e2e` starts the Vite dev server through Playwright.
-- `npm run assets:refresh` runs battle sprite processing, manifest rebuild, and asset validation. It is only needed after asset registry, manual art, processed sprite, or manifest input changes.
-- Current e2e suite is intentionally one worker for stability.
+- `npm run test:e2e` starts Vite through Playwright.
+- The e2e suite intentionally uses one worker for stability.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 8.3 minutes.
+- `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Latest verification from the battle selection indicator polish:
+Fresh verification completed after this handoff audit on 2026-04-26 at about 22:18 -04:00:
 
-- `npm test`: passed, 25 test files, 117 tests.
-- `npm run build`: passed.
-- `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests.
-- Playwright screenshot check: selected units in Border Village now use flat ground-footprint ellipses instead of upright circles; screenshot saved at `test-results/ui-audit/selection-rings-after.png`.
+```text
+npm test
+PASS: 25 test files, 118 tests
 
-Build warning:
+npm run build
+PASS: TypeScript compile and Vite production build
+Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold
 
-- Vite still reports the known large-chunk warning for the main Phaser bundle. This is not a failing build.
+npm run test:e2e -- --reporter=line
+PASS: 25 Playwright tests in 8.3m
+```
 
-Tool note:
+An earlier e2e run hit a 3-minute shell timeout before results were returned. It was rerun with a longer timeout and passed.
 
-- A plain `npm run test:e2e` command once hit a 5-minute shell-tool timeout without returning output. The suite was then rerun with a longer timeout and passed.
-- Browser Use was requested during recent UI/playtest turns, but the required Node REPL bridge was not exposed by tool discovery in this session. Playwright against `http://127.0.0.1:5173/` was used for screenshot and pointer-click verification instead.
+## Most Recent Completed Work
+
+### First Real Human-Paced Campaign Balance Pass
+
+Goal: make the first 30 minutes of the mini-campaign coherent, fair, and rewarding without adding systems, maps, factions, workers, enemy construction, affixes, or new strategic layers.
+
+Files touched by this pass:
+
+- `BALANCE.md`
+- `src/game/core/FirstExperienceGuidance.ts`
+- `src/game/data/aiPersonalities.ts`
+- `src/game/data/battlePacing.ts`
+- `src/game/data/campaignModifiers.ts`
+- `src/game/data/campaignNodes.ts`
+- `src/game/data/maps/ashenOutpost.ts`
+- `src/game/data/rewards.ts`
+- `src/game/ai/EnemyAIController.test.ts`
+- `src/game/core/CampaignRules.test.ts`
+- `src/game/data/battlePacing.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+
+Core tuning:
+
+- Story is now more clearly the learning/testing lane.
+- Easy has more breathing room for Border Village and Old Stone Road.
+- Normal remains the first serious baseline but spikes less abruptly.
+- Raider Rush still pressures greedy play, but Old Stone Road should be readable.
+- Fortress Keeper and Hexfire Cult were trimmed so identity comes more from composition/behavior than raw economy.
+- Marcher Camp costs and usefulness were rebalanced.
+- Refugee Caravan choices are more distinct and less dominated by Demand Tribute.
+- Aether Well Ruins and Bandit Hillfort rewards are stronger for the first Normal branch.
+- Chapel guidance now explicitly scouts without completing the node.
+- Ashen Outpost player/enemy starting banks and enemy income were softened so fortress/towers/composition create the challenge.
+- Reward weights now lean toward understandable early gear on First Claim and slightly more exciting branch/milestone drops later.
+
+`BALANCE.md` now records before/after values, reasons, intended first-30-minute arc, and remaining human testing notes.
+
+### Save System Split
+
+The public import path still works:
+
+```ts
+import { SaveSystem } from "../core/SaveSystem";
+```
+
+But `src/game/core/SaveSystem.ts` is now a small compatibility re-export:
+
+```ts
+export * from "../save/SaveSystem";
+```
+
+New focused save modules are untracked in the dirty worktree:
+
+- `src/game/save/SaveDefaults.ts`
+- `src/game/save/SaveImportExport.ts`
+- `src/game/save/SaveMigrations.ts`
+- `src/game/save/SaveNormalization.ts`
+- `src/game/save/SaveSystem.ts`
+
+The facade still owns localStorage IO. Defaults, import/export, migrations, and normalization now live in focused modules. Tests in `src/game/core/SaveSystem.test.ts` cover the split and migration behavior.
+
+### BattleScene System Wiring Split
+
+`BattleScene` is still the live Phaser coordinator, but system construction/wiring has moved into:
+
+- `src/game/battle/BattleSceneSystems.ts`
+
+This helper owns constructor ordering and callback wiring between systems. `BattleScene` still owns Phaser lifecycle, runtime state, entity arrays, fog overlay rendering, rally markers, input callbacks, settings/audio integration, and update order.
+
+### Battle HUD And Responsive Polish
+
+Recent dirty changes also include battle HUD and responsive updates:
+
+- `src/game/styles/battle-hud.css`
+- `src/game/styles/responsive.css`
+- `src/game/ui/HUD.ts`
+- `tests/e2e/layout.spec.ts`
+
+The e2e suite verifies command-panel reachability and horizontal overflow across desktop, tablet, and mobile viewports.
 
 ## Current Scenes
 
@@ -68,8 +208,8 @@ Scene keys live in `src/game/core/SceneKeys.ts`.
 - `MainMenuScene`: New Campaign, Continue Campaign, Skirmish, Hero Inventory, Asset Gallery, Settings, Reset Save, Credits / Info.
 - `SettingsScene`: audio, accessibility, UI scale, fog override, minimap palette, and keyboard reference.
 - `HeroCreationScene`: hero name/class/origin creation, then campaign or skirmish handoff.
-- `CampaignMapScene`: campaign node map, hero summary, campaign bank, reputation, modifiers, selected node details, event choices, town services, campaign battle launch.
-- `SkirmishSetupScene`: map selection, hero summary, difficulty selection, enemy faction placeholder, AI personality selection, start battle.
+- `CampaignMapScene`: campaign node map, hero summary, campaign bank, reputation, modifiers, selected node details, event choices, town services, and campaign battle launch.
+- `SkirmishSetupScene`: map selection, hero summary, difficulty selection, enemy faction placeholder, AI personality selection, and start battle.
 - `BattleScene`: main RTS runtime and Phaser entity orchestration.
 - `ResultsScene`: victory/defeat summary, rewards, Equip Now, retry/return flow.
 - `HeroProgressionScene`: inventory/equipment and skill allocation.
@@ -79,55 +219,64 @@ Scene keys live in `src/game/core/SceneKeys.ts`.
 
 Campaign data lives in `src/game/data/campaignNodes.ts`. Rules live in `src/game/core/CampaignRules.ts`.
 
-The Border Marches mini-campaign currently has eight nodes:
+The Border Marches mini-campaign has eight nodes:
 
-- `border_village`: battle, Easy, First Claim, available at start.
-- `old_stone_road`: battle, Easy, First Claim, unlocks after Border Village.
-- `marcher_camp`: town/services node, unlocks after Old Stone Road and remains reusable.
-- `aether_well_ruins`: battle, Normal, Broken Ford, unlocks after Old Stone Road.
-- `bandit_hillfort`: battle, Normal, Broken Ford, unlocks after Old Stone Road.
-- `chapel_of_the_marches`: shrine/event choices, unlocks after Aether Well Ruins.
-- `refugee_caravan`: event choices, unlocks after Old Stone Road.
-- `ashen_outpost`: battle, Normal, dedicated Ashen Outpost fortress map, requires Bandit Hillfort and Chapel of the Marches.
+| Node | Type | Difficulty | Map | Role |
+| --- | --- | --- | --- | --- |
+| `border_village` | Battle | Easy | First Claim | Tutorial battle: capture, build, train, defend, win. |
+| `old_stone_road` | Battle | Easy | First Claim | First real battle with Raider Rush pressure. |
+| `marcher_camp` | Town | Story | First Claim placeholder | First spending sink; reusable services and one-time item purchases. |
+| `refugee_caravan` | Event | Story | First Claim placeholder | First consequence choice. |
+| `aether_well_ruins` | Battle | Normal | Broken Ford | First Normal branch, Hexfire Cult pressure. |
+| `bandit_hillfort` | Battle | Normal | Broken Ford | First Normal branch, Fortress Keeper pressure. |
+| `chapel_of_the_marches` | Shrine | Story | First Claim placeholder | Spiritual/support event and route guidance. |
+| `ashen_outpost` | Battle | Normal | Ashen Outpost | Milestone fortress assault. |
 
-Campaign node state is saved, not stored on node definitions. Nodes can be locked, available, or completed. Battle nodes launch through `createCampaignBattleLaunchRequest`, using the same `BattleLaunchRequest` pathway as skirmish.
+Unlock shape:
+
+- Start: Border Village.
+- Border Village -> Old Stone Road.
+- Old Stone Road -> Aether Well Ruins, Bandit Hillfort, Refugee Caravan, Marcher Camp.
+- Aether Well Ruins -> Chapel of the Marches.
+- Bandit Hillfort + Chapel of the Marches -> Ashen Outpost.
+- Chapel guidance can also reveal Refugee Caravan/Ashen Outpost without completing the chapel.
 
 On campaign battle victory:
 
 - `BattleRuntime` grants battle rewards.
-- Map-specific secondary objective completions are preserved in battle stats.
 - `ResultsScene` applies campaign node completion.
 - One-time node rewards are applied if not already claimed.
-- Campaign resources are added to the persistent campaign bank.
+- Campaign resources go to the persistent campaign bank.
 - Unique duplicate item rewards convert into campaign resources.
 - Hero and campaign state are saved.
-- The player can return to the campaign map.
 
 On campaign battle defeat:
 
 - Rewards are not granted.
 - Campaign node completion is not granted.
-- Secondary objective progress is displayed only as part of that battle result and does not persist.
-- The player can retry the battle or return to the campaign map.
+- The player can retry or return to campaign map.
 
-## Current Skirmish Flow
+## Intended First-30-Minute Campaign Arc
 
-Skirmish mode remains separate from campaign mode.
+1. Border Village teaches capture/build/train/defend/win with low pressure.
+2. Old Stone Road asks the player to use Barracks and rally behavior against readable Raider Rush pressure.
+3. Marcher Camp teaches spending the campaign bank on rest, volunteers, supplies, or early fixed gear.
+4. Refugee Caravan teaches that choices trade resources, reputation, modifiers, and item rewards.
+5. Aether Well Ruins or Bandit Hillfort introduces the first Normal branch with stronger rewards.
+6. Chapel of the Marches supports the player before the milestone and now explains that guidance does not close the node.
+7. Ashen Outpost is the current boss-style fortress map. It should feel fortified, not impossible.
 
-Flow:
+Remaining human-feel checks:
 
-1. Main Menu -> Skirmish.
-2. If no playable hero save exists, create a hero first.
-3. `SkirmishSetupScene` shows map selection, hero summary, difficulty selection, enemy faction placeholder, AI personality selection, and Start Battle.
-4. Start Battle creates a skirmish `BattleLaunchRequest`.
-5. `BattleScene` resolves the selected map and reward table.
-6. `ResultsScene` shows victory/defeat, rewards, Equip Now, and return/retry options.
-
-Skirmish victories can grant map reward-table item instances, XP, and first-clear/repeat-clear rewards.
+- Fresh novice Border Village timing.
+- Greedy vs clean Old Stone Road openings.
+- Marcher Camp spend preference after two clears.
+- Both Normal branches after typical early spending.
+- Ashen Outpost with and without Chapel repair.
 
 ## Current Maps
 
-Map data has been split into per-map modules:
+Map data is split into per-map modules:
 
 - `src/game/data/maps/firstClaim.ts`
 - `src/game/data/maps/brokenFord.ts`
@@ -141,10 +290,9 @@ Map data has been split into per-map modules:
 - Size: 2400 x 1600
 - Role: balanced tutorial skirmish.
 - Player starts west; enemy starts east.
-- Four capture sites: Crown Shrine, Stone Quarry, Iron Vein, Aether Well.
-- Three neutral camps.
+- Capture sites: Crown Shrine, Stone Quarry, Iron Vein, Aether Well.
 - Reward table: `first_claim_rewards`.
-- Intended to teach hero selection, movement, capture, construction, training, hero abilities, first wave defense, and base assault.
+- Used by Border Village and Old Stone Road.
 
 ### Broken Ford
 
@@ -152,33 +300,177 @@ Map data has been split into per-map modules:
 - Size: 2600 x 1700
 - Role: contested ruined river crossing.
 - Player starts southwest; enemy starts northeast.
-- Two main lanes and a dangerous central ford.
-- Four capture sites.
-- Three neutral camps, including a harder central camp.
+- Two main lanes and a risky central ford.
+- Capture sites: Ford Toll, West Stone Cut, South Iron Cache, North Aether Spring.
 - Reward table: `broken_ford_rewards`.
-- Intended to test lane choice, safer side expansion, and risky center control.
+- Used by Aether Well Ruins and Bandit Hillfort.
 
 ### Ashen Outpost
 
 - ID: `ashen_outpost`
 - Size: 2600 x 1800
-- Role: current mini-campaign milestone/boss-style fortress assault.
+- Role: current mini-campaign milestone fortress assault.
 - Player starts lower-left; enemy fortress starts upper-right.
-- Theme: scorched frontier outpost with ash roads, burned central shrine, side supply paths, and a fortified Ashen base.
-- Four capture sites: Burned Shrine, West Supply Pyre, South Iron Pit, North Stone Scar.
-- Three neutral camps: West Cinder Pack, North Ash Imps, Shrine Ember Guardians.
-- Enemy fortress includes Enemy Stronghold, Enemy Barracks, and two enemy Watchtower spawns as defensive tower placeholders.
-- Campaign node uses Ashen Covenant plus Hexfire Cult personality on Normal difficulty.
+- Capture sites: Burned Shrine, West Supply Pyre, South Iron Pit, North Stone Scar.
+- Enemy fortress starts with Enemy Stronghold, Enemy Barracks, and two defensive Watchtowers.
 - Reward table: `ashen_outpost_rewards`.
 - Special objectives:
-  - Primary: destroy the Ashen Stronghold.
-  - Secondary: capture the Burned Shrine.
-  - Secondary: destroy Enemy Barracks.
-  - Secondary: defeat the Outpost Captain / Ashen Commander.
+  - Destroy the Ashen Stronghold.
+  - Capture the Burned Shrine.
+  - Destroy Enemy Barracks.
+  - Defeat the Outpost Captain / Ashen Commander.
+
+Ashen Outpost tuning after the balance pass:
+
+- Player starting bank: 460 Crowns, 320 Stone, 180 Iron, 95 Aether.
+- Enemy starting bank: 280 Crowns, 220 Stone, 160 Iron, 125 Aether.
+- Enemy income every 5s: 100 Crowns, 50 Stone, 50 Iron, 40 Aether.
+
+## Current Battle Pacing
+
+Pacing data lives in `src/game/data/battlePacing.ts`.
+
+Battle phases:
+
+- Opening, 0:00 to 2:00: no base attacks.
+- Expansion, 2:00 to 5:00: small base attacks allowed, no commander.
+- Pressure, 5:00 to 8:00: mixed waves, no commander.
+- Assault, 8:00 onward: larger waves and commander support allowed.
+
+Difficulty presets after the balance pass:
+
+| Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander | Fog |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Story | 0.45x | 300s | 100s | 2 | 9s | 840s | Off |
+| Easy | 0.65x | 240s | 82s | 3 | 7s | 750s | On |
+| Normal | 0.86x | 195s | 66s | 6 | 5.8s | 570s | On |
+| Hard | 1.15x | 150s | 48s | 8 | 3.8s | 480s | On |
+
+First-match tutorial protection:
+
+- No first attack before 150s.
+- If the player has not captured a site, first attack waits until 180s.
+- Large attacks are capped to 2 units until the player has built production or 240s has passed.
+- Enemy commander is excluded from the first attack and cannot join until assault pacing allows it.
+
+Expected Normal waves:
+
+- First wave around 3:15 baseline or around 3:30 on Hexfire Cult.
+- First wave is usually 2 Raiders, or 2 Raiders plus 1 Hexer if the player has already built production.
+- Mid waves, 5:00 to 8:00: 3 to 5 mixed Raiders, Hexers, and occasional Brutes.
+- Late waves, 8:00 onward: Brute and Hexer support, commander after about 9:30 baseline.
+
+## Current Enemy AI Behavior
+
+Enemy AI lives in `src/game/ai/EnemyAIController.ts`.
+
+The AI:
+
+- Gains scaled income on a timer.
+- Trains from completed enemy production buildings.
+- Expands toward capture sites.
+- Defends its base when player units approach.
+- Selects phase-limited attack waves.
+- Respects difficulty timing, wave size, income, training speed, expansion speed, and commander join timing.
+- Sends alerts such as scouts moving, enemy forces gathering, and attack incoming.
+
+AI personality data lives in `src/game/data/aiPersonalities.ts`.
+
+Current personalities:
+
+- Balanced Warlord: mixed expansion and attacks; Border Village default.
+- Raider Rush: 0.86x first attack, 0.88x attack interval, 0.82x expansion interval, 0.88x income, mostly Raiders/Hexers, weaker late posture.
+- Fortress Keeper: 1.22x first attack, 1.18x attack interval, 1.02x income, defensive reserves, protects captured sites, Brute-heavy later waves.
+- Hexfire Cult: 1.08x first attack and attack interval, 1.02x income, more Hexers, burstier caster pressure, thinner frontline.
+
+AI limitations:
+
+- No enemy construction.
+- No workers.
+- No true scouting memory.
+- No retreat logic.
+- No counter-unit strategy.
+- No pathfinding-aware threat routing.
+- No long-term strategy beyond personality/timing/composition modifiers.
+
+## Current Campaign Economy
+
+Campaign resources are saved separately from temporary battle resources.
+
+Bank resources:
+
+- Crowns
+- Stone
+- Iron
+- Aether
+
+Starting battle resources for First Claim/Broken Ford come from `STARTING_PLAYER_RESOURCES`:
+
+- 380 Crowns
+- 255 Stone
+- 140 Iron
+- 75 Aether
+
+Marcher Camp after the balance pass:
+
+- Rest and Recovery: 30 Crowns for Well Rested, next-battle +15% hero max HP.
+- Hire Volunteers: 55 Crowns for Inspired Militia, next battle starts with one extra Militia.
+- Buy Supplies: 45 Crowns for 30 Stone, 18 Iron, 8 Aether.
+- Emberglass Wand: 60 Crowns, one-time common weapon purchase.
+- Marcher Plate: 80 Crowns and 18 Iron, one-time uncommon armor purchase.
+- Green Chapel Icon: 90 Crowns and 18 Aether, one-time trinket purchase.
+
+Refugee Caravan after the balance pass:
+
+- Protect Them: costs 45 Crowns; grants 35 XP, Scout's Bow, Inspired Militia, +8 Common Folk, +2 Free Marches.
+- Recruit Volunteers: requires hero level 2, costs 20 Crowns; grants 25 XP, 25 Iron, Marcher Plate, Inspired Militia, -4 Common Folk, +2 Free Marches.
+- Demand Tribute: grants 65 Crowns, Angered Raiders, -8 Common Folk, -2 Free Marches, -3 Ashen Covenant.
+
+Chapel of the Marches:
+
+- Pray for Strength: grants 35 XP, 15 Aether, Blessed Road, +3 Old Faith, +1 Common Folk, completes the node.
+- Repair the Chapel: costs 50 Crowns and 60 Stone; grants 35 Aether, Green Chapel Icon, Local Support, removes Angered Raiders, recovers hero placeholder, +2 Free Marches, +6 Old Faith, +2 Common Folk, completes the node.
+- Ask for Guidance: grants 15 XP, unlocks/scouts Refugee Caravan and Ashen Outpost, +1 Old Faith, does not complete the node.
+
+## Current Rewards And Items
+
+Item data lives in `src/game/data/items.ts`. Reward tables live in `src/game/data/rewards.ts`.
+
+Current item model:
+
+- Static catalog item definitions.
+- Save inventory stores item instances with `instanceId`, `itemId`, `acquiredAt`, `source`, `affixes`, and optional `locked`/`favorite` flags.
+- Equipment references item instance IDs where possible.
+- Legacy saves with catalog IDs migrate into instances.
+- Unique duplicate rewards convert into campaign resources.
+- Non-unique duplicate rewards remain separate instances.
+
+Reward tables support:
+
+- Guaranteed item IDs.
+- Weighted item pools.
+- Deterministic item order for tests.
+- Map-specific item pool filters.
+- First-clear-only and repeat-clear-only entries.
+- Resource rewards.
+- XP rewards.
+- First-clear and repeat-clear bonuses.
+
+Reward pacing after the balance pass:
+
+- First Claim: one weighted item roll, modest resources, 35 base victory XP, 40 first-clear XP, starter resources, weighted toward starter/common gear.
+- Broken Ford: one weighted item roll, stronger resources, 55 base victory XP, first-clear Fordbreaker Halberd, 65 first-clear XP, slightly improved rare/epic excitement.
+- Ashen Outpost: one weighted item roll, high resources, 85 base victory XP, first-clear Ashbound Censer, 95 first-clear XP, and campaign node Oathbound Aegis.
 
 ## Current Hero System
 
-Hero data lives in `src/game/data/heroes.ts`, `heroClasses.ts`, `origins.ts`, `abilities.ts`, and `skillTrees.ts`.
+Hero data lives in:
+
+- `src/game/data/heroes.ts`
+- `src/game/data/heroClasses.ts`
+- `src/game/data/origins.ts`
+- `src/game/data/abilities.ts`
+- `src/game/data/skillTrees.ts`
 
 Current hero classes:
 
@@ -192,23 +484,7 @@ Current origins:
 - Temple Orphan
 - Wildland Raider
 
-Hero save data tracks:
-
-- name, class, origin
-- level and XP
-- skill points
-- unlocked abilities
-- completed battles
-- cleared map IDs
-- inventory item instances
-- equipment instance IDs
-- allocated skill ranks
-- faction reputation
-- primary stats
-
-Hero progression rules live in `src/game/core/HeroProgressionRules.ts`.
-
-Current skill trees:
+Skill trees:
 
 - Combat: damage, HP, Warlord Cleave.
 - Magic: mana, armor, Arcanist Arcane Burst/Blink, Shepherd Sanctify Ground.
@@ -216,225 +492,7 @@ Current skill trees:
 
 Battle hero stats are recalculated from class base stats, origin modifiers, level bonuses, skill ranks, and equipped item stat modifiers.
 
-## Current Inventory And Equipment System
-
-Item data lives in `src/game/data/items.ts`. Reward tables live in `src/game/data/rewards.ts`.
-
-Current item fields:
-
-- id
-- name
-- rarity
-- slot
-- description
-- stat modifiers
-- optional class affinity
-- optional faction origin
-- optional icon asset key
-- flavor text
-- tags
-- optional `unique` flag
-
-Equipment slots:
-
-- weapon
-- armor
-- trinket
-- relic is typed for future use but not fully active in the default UI loop.
-
-Inventory model:
-
-- Item catalog definitions remain static.
-- The save inventory stores item instances with `instanceId`, `itemId`, `acquiredAt`, `source`, `affixes`, and optional locked/favorite flags.
-- Equipment references item instance IDs where possible.
-- Legacy saves with catalog IDs in inventory/equipment migrate into item instances.
-- If legacy equipment points at a catalog ID not present in inventory, normalization creates a safe `legacy_equipped` instance.
-- Unique duplicate rewards convert into campaign resources. Common/uncommon duplicates convert to Crowns; rare/epic/legendary duplicates convert to Aether. Non-unique duplicates remain separate instances.
-
-Reward tables support:
-
-- guaranteed item IDs
-- weighted item pools
-- deterministic item IDs for tests
-- map-specific item pool filters
-- first-clear-only and repeat-clear-only entries
-- resource rewards
-- XP rewards
-- first-clear bonus
-- repeat-clear reward
-
-Current map reward tables:
-
-- `first_claim_rewards`: starter pool, modest resources/XP, first-clear onboarding bonus.
-- `broken_ford_rewards`: stronger mid-campaign pool, Fordbreaker Halberd first-clear reward.
-- `ashen_outpost_rewards`: milestone pool, higher XP/resources, one weighted roll, first-clear Ashbound Censer, rare/epic chase items, and legendary Ascendant Signet as a repeat-clear chase.
-
-`HeroProgressionScene` shows inventory and equipment. `ResultsScene` shows earned items and supports Equip Now through `src/game/core/ResultsFlow.ts` plus result helper modules.
-
-Equip Now:
-
-- checks the earned reward instance exists in inventory
-- equips the instance to the item's slot
-- recalculates hero stats
-- saves updated hero/campaign state
-- shows stat deltas and current equipped replacement context
-
-Known limitation: item instances currently have placeholder affix arrays only. Randomized affixes, durability, crafting, and full item-icon presentation are future work.
-
-## Current Campaign Resource Bank
-
-Campaign resources are saved separately from temporary battle resources.
-
-Bank resources:
-
-- crowns
-- stone
-- iron
-- aether
-
-Campaign resources are stored on `CampaignSaveData.resources`. They are displayed in `CampaignMapScene`, added by campaign node rewards and event choices, and spent by campaign event choices and Marcher Camp services. They are intended to later support shops, mercenaries, repairs, upgrades, stronghold development, and node choices.
-
-`CampaignSaveData.resourcesSpent` tracks campaign spending totals.
-
-## Current Campaign Event, Choice, And Town Service System
-
-Choice types live in `src/game/core/GameTypes.ts`. Choice rules live in `src/game/core/CampaignRules.ts`.
-
-Campaign choices can define:
-
-- id
-- label
-- description
-- requirements
-- costs
-- rewards
-- reputation changes
-- unlock node IDs
-- lock node IDs
-- campaign modifiers
-- once-only behavior
-- whether the choice completes the node
-
-Supported requirements:
-
-- campaign resource thresholds
-- hero level
-- completed campaign node IDs
-- owned item IDs, resolved through item instances
-- faction reputation
-
-Supported effects:
-
-- campaign resource costs
-- XP rewards
-- item rewards
-- campaign resource rewards
-- faction reputation changes
-- unlock/lock node IDs
-- campaign modifiers
-- remove campaign modifiers
-- recover hero placeholder
-- complete or keep the node open
-
-Once-only choices are saved in `CampaignSaveData.choiceIdsClaimed` using `nodeId:choiceId`. Town service claims and usage counts are saved separately.
-
-Current event/town nodes:
-
-- Chapel of the Marches: Pray for Strength, Repair the Chapel, Ask for Guidance.
-- Refugee Caravan: Protect Them, Recruit Volunteers, Demand Tribute.
-- Marcher Camp: repeatable Rest and Recovery, Hire Volunteers, Buy Supplies, plus one-time item purchases for Emberglass Wand, Marcher Plate, and Green Chapel Icon.
-
-## Current Campaign Modifiers And Reputation
-
-Faction reputation is stored on the hero save and clamped from -100 to +100.
-
-Current reputation entries:
-
-- Free Marches
-- Ashen Covenant
-- Sylvan Concord
-- Common Folk
-- Old Faith
-
-Campaign modifiers live in `src/game/data/campaignModifiers.ts`. They can be granted by choices/services, saved in `CampaignSaveData.activeModifierIds`, applied at battle launch, and consumed when appropriate.
-
-Current modifier examples:
-
-- Inspired Militia: next battle starts with one extra Militia.
-- Blessed Road: next battle hero gets a mana-related bonus.
-- Angered Raiders: next matching Ashen battle receives extra pressure.
-- Local Support: campaign resource rewards can be boosted.
-- Well Rested: next battle hero starts with a max-HP bonus.
-
-## Current Battle Pacing
-
-Battle pacing data lives in `src/game/data/battlePacing.ts`.
-
-Battle phases:
-
-- Opening: 0:00-2:00. No base attacks.
-- Expansion: 2:00-5:00. Small base attacks, no commander.
-- Pressure: 5:00-8:00. Mixed waves, still no commander.
-- Assault: 8:00+. Larger waves and commander support allowed.
-
-Difficulty presets:
-
-- Story: low income, long first delay, small waves, fog off.
-- Easy: forgiving tutorial pace, small waves, fog on.
-- Normal: intended baseline, first serious attack around 3:00, fog on.
-- Hard: faster pressure, larger waves, fog on.
-
-First-match tutorial protection:
-
-- first attack not allowed before 150 seconds
-- first attack forced only after 180 seconds if the player still has not captured a site
-- large attacks delayed until 240 seconds or production milestone
-- early attack wave size capped at 2
-
-Default battle difficulty is currently `normal`; fallback campaign save difficulty is `easy`.
-
-## Current Enemy AI Behavior
-
-Enemy AI lives in `src/game/ai/EnemyAIController.ts`.
-
-The AI:
-
-- gains scaled income on a timer
-- trains from completed enemy production buildings
-- expands toward capture sites
-- defends its base when player units approach
-- selects phase-limited attack waves
-- respects difficulty timing, wave size, income, training speed, expansion speed, and commander join timing
-- sends alerts such as scouts moving, forces gathering, and attack incoming
-
-AI personality data lives in `src/game/data/aiPersonalities.ts`.
-
-Current AI personalities:
-
-- Balanced Warlord: mixed expansion and attacks; current default behavior and Border Village style.
-- Raider Rush: faster early pressure, lighter unit preference, punishes greedy expansion, weaker late-game posture.
-- Fortress Keeper: slower attacks, larger defense radius, defensive reserves, protects captured sites, stronger later waves.
-- Hexfire Cult: more Hexers and ranged/magic pressure, fewer melee bodies, burstier waves, weaker frontline.
-
-Campaign personality assignments:
-
-- Border Village: Balanced Warlord on Easy.
-- Old Stone Road: Raider Rush on Easy.
-- Aether Well Ruins: Hexfire Cult on Normal.
-- Bandit Hillfort: Fortress Keeper on Normal.
-- Ashen Outpost: Hexfire Cult on Normal with dedicated fortress-map AI tuning.
-
-Current AI limitations:
-
-- no enemy construction yet
-- no worker logic
-- no true scouting memory
-- no retreat logic
-- no counter-unit strategy
-- no pathfinding-aware threat routing
-- no true long-term strategic planning beyond personality/timing/composition modifiers
-
-## Current Faction Asymmetry
+## Current Factions
 
 Faction data lives in `src/game/data/factions.ts`.
 
@@ -442,448 +500,61 @@ Current factions:
 
 - `free_marches`: player baseline faction; balanced economy, reliable Militia/Rangers/Acolytes, defensive Watchtower, leadership and reputation hooks.
 - `ashen_covenant`: main enemy faction; aggressive, cheaper early Raiders, harder-hitting but less durable units except Brutes, magic pressure through Hexers, burn/status pressure, and Ashen AI personality preferences.
-- `sylvan_concord`: future placeholder faction with early identity hooks and item origins, but not yet playable or fully implemented.
+- `sylvan_concord`: future placeholder faction with early identity hooks and item origins, not yet playable or fully implemented.
 
-Ashen-specific mechanics currently implemented:
+Implemented Ashen mechanics:
 
-- `hexfire_burn`: burn status effect applied by relevant Ashen modifiers, with damage over time and floating feedback.
+- `hexfire_burn`: damage over time with floating feedback.
 - `ashen_fury`: low-health damage pressure trait.
 - `smoke_march`: wave movement-speed modifier for matching Ashen units.
 
-Faction validation checks unit, building, upgrade, AI personality, reputation hook, and modifier references.
+## Current Construction, Training, Research, And Rally
 
-## Current Construction, Building, Training, And Rally System
+Building data lives in `src/game/data/buildings.ts`.
 
-Building data lives in `src/game/data/buildings.ts`. Building runtime state lives in `src/game/entities/Building.ts`.
-
-Current player buildings:
+Player buildings:
 
 - Command Hall
 - Barracks
 - Mystic Lodge
 - Watchtower
 
-Current enemy buildings:
+Enemy buildings:
 
 - Enemy Stronghold
 - Enemy Barracks
 
-Construction states:
-
-- planned/ghost preview during placement
-- underConstruction after resources are paid
-- completed when construction finishes
-
 Construction times:
 
-- Command Hall: 0 seconds
-- Barracks: 25 seconds
-- Mystic Lodge: 30 seconds
-- Watchtower: 20 seconds
-- enemy prebuilt structures: 0 seconds
+- Command Hall: 0s.
+- Barracks: 25s.
+- Mystic Lodge: 30s.
+- Watchtower: 20s.
+- Enemy prebuilt structures: 0s.
 
-Placement rules live in `src/game/systems/BuildingPlacementRules.ts`.
+Construction behavior:
 
-Placement validates:
+- Player placement uses a ghost preview.
+- Resources are paid on final placement.
+- Under-construction buildings appear at partial HP and cannot train/research/attack.
+- Construction completes automatically.
+- There are no workers.
 
-- resources
-- map bounds
-- blocked/water terrain
-- buildable terrain
-- distance from owned building
-- overlaps with structures
-- overlaps with capture sites
+Training:
 
-Recent building-command feedback fix:
+- Only completed production buildings train.
+- Resources are paid when queued.
+- Canceling a queued or active unit refunds the full paid cost for now.
+- Rally points can be set by right-clicking ground with a rally-capable building selected.
 
-- Build buttons now carry the source building ID through the HUD callback path.
-- Clicking a build command starts placement with the source building as the anchor.
-- The placement ghost immediately appears near the source building on a valid nearby site when one is found, instead of starting off-screen at `(0, 0)`.
-- The status line immediately shows `Placing <building> - click a highlighted site or choose another location.`
-- Pointer-hovering the battlefield still updates valid/invalid placement reasons from `BuildingPlacementRules`.
-- E2E now verifies Build Barracks creates a visible placement ghost near the Command Hall before cancellation.
+Research:
 
-Training lives in `src/game/systems/TrainingSystem.ts`.
+- Research pays up front and completes after `researchTimeSeconds`.
+- Current upgrades: Infantry Weapons I, Ranger Training I, Reinforced Armor I, Aether Study I, Ember Blades placeholder trait.
 
-Training behavior:
+## Current UI And CSS
 
-- only completed production buildings can train
-- resources are paid when queued
-- queues track remaining/total time
-- canceling a queued unit refunds paid cost
-- completed units spawn near the production building
-- spawned units receive the source building rally command when present
-
-Rally-point pure logic lives in `src/game/systems/RallyPointSystem.ts`.
-
-Current rally behavior:
-
-- completed friendly production buildings can hold `rallyPoint` and optional `rallyTargetId`
-- right-click ground with completed Barracks or Mystic Lodge selected sets rally for selected production buildings
-- a world marker is shown for selected production building rally points
-- selected production building rally points appear on the minimap
-- newly trained units automatically receive a move command to the rally point
-- rally points do not persist between battles
-- rally target IDs are present for future capture-site or enemy-objective rallying, but ground rally is the only implemented behavior
-
-## Current Upgrades
-
-Upgrade data lives in `src/game/data/upgrades.ts`. Runtime queueing lives in `src/game/systems/UpgradeSystem.ts`. Effects live in `src/game/systems/UpgradeEffects.ts`.
-
-Current upgrades:
-
-- Infantry Weapons I: Militia/Raider-style melee units +10% damage.
-- Ranger Training I: Ranger range +10% and attack cooldown x0.9.
-- Reinforced Armor I: Militia/Ranger/Acolyte +1 armor.
-- Aether Study I: Acolyte +10% damage and hero mana regen multiplier 1.25.
-
-Upgrades:
-
-- use the shared prerequisite system
-- pay costs immediately
-- queue on eligible completed buildings
-- can be canceled for refunds before completion
-- are tracked per team by researched ID
-
-## Current Movement And Pathfinding System
-
-Movement lives in `src/game/systems/MovementSystem.ts`. Grid pathing support lives in `src/game/systems/PathfindingGrid.ts`.
-
-Current behavior:
-
-- map terrain creates a grid-based walkability layer
-- blocked and water terrain are treated as impassable
-- static building footprints influence path blocking where integrated
-- A* computes waypoint paths around blocked rectangles and impassable zones
-- units follow waypoints while retaining local separation to reduce stacking
-- attack-move remains compatible with path-following and can still stop for enemies
-- simple repath/stuck handling exists, with throttling to avoid constant recalculation
-
-Current limitations:
-
-- no multiplayer determinism
-- no formation movement
-- no true crowd flow fields
-- dynamic building blockers are still intentionally conservative
-- blocked terrain does not yet influence fog line-of-sight
-
-## Current Fog Of War System
-
-Fog logic lives in `src/game/systems/FogOfWarSystem.ts`.
-
-Visibility states:
-
-- unseen
-- explored
-- visible
-
-Current behavior:
-
-- grid-based visibility using a default 160-pixel cell size
-- friendly units/buildings reveal cells using data-defined `visionRadius`
-- visible cells become explored when no longer in current vision
-- enemy and neutral units/buildings are hidden outside current vision
-- capture sites remain visible after discovery; ownership/status is currently shown as live state once discovered for readability
-- Story difficulty disables fog; other current difficulties enable it
-- `F` toggles fog debug reveal in BattleScene
-- Settings can force fog enabled, force fog disabled, or leave it on difficulty default
-
-Known limitation: fog is not blocker-aware and does not do line-of-sight around terrain.
-
-## Current Minimap Behavior
-
-Minimap rendering lives in `src/game/ui/MinimapView.ts`. `BattleScene` builds minimap snapshots through `src/game/battle/BattleSceneSnapshots.ts`.
-
-The minimap shows:
-
-- map bounds
-- player units
-- visible enemy units
-- visible neutral units/camps
-- player buildings
-- visible enemy buildings
-- discovered capture sites
-- selected production building rally points
-- current camera viewport rectangle
-- alert pings
-- fog dimming for unexplored/explored cells
-
-Controls:
-
-- click minimap to center camera on the clicked world position
-- alert pings appear for enemy waves/base/resource attacks
-
-Accessibility:
-
-- Settings can enable a colorblind-friendly minimap palette.
-
-Known limitation: no drag-to-pan, no last-known enemy icons, and no fog memory for enemy positions.
-
-## Current Settings, Audio, And Accessibility Foundation
-
-Settings data lives in `src/game/core/Settings.ts` and `src/game/save/SaveTypes.ts`. The screen is `src/game/scenes/SettingsScene.ts`. Audio is `src/game/systems/AudioManager.ts`.
-
-Current settings:
-
-- `masterVolume`: 0-1, default 0.8
-- `musicVolume`: 0-1, default 0.55
-- `sfxVolume`: 0-1, default 0.75
-- `screenShakeEnabled`: default true
-- `floatingTextEnabled`: default true
-- `fogEnabledOverride`: `default`, `enabled`, or `disabled`
-- `reducedMotionEnabled`: default false
-- `uiScale`: clamped 0.85-1.25, default 1
-- `colorblindMinimapPalette`: default false
-
-Settings behavior:
-
-- Main Menu has a Settings button.
-- Settings can be saved before or after hero creation.
-- Saving settings before hero creation creates a settings-only save marker; starting a real campaign/skirmish preserves settings and clears the marker.
-- `applySettingsToDocument` sets CSS variables/dataset flags for UI scale, reduced motion, and minimap palette.
-- `FloatingText` respects `floatingTextEnabled` and `reducedMotionEnabled`.
-- `BattleScene` respects fog override and minimap colorblind palette.
-
-Audio behavior:
-
-- `AudioManager` uses small generated WebAudio tones.
-- Cues currently exist for UI click, unit selected, build started, build complete, unit trained, ability cast, victory, and defeat.
-- Audio fails silently if browser/test environment blocks or lacks WebAudio.
-- `musicVolume` is saved but reserved until music exists.
-- `screenShakeEnabled` is saved but there is no active screen-shake system to gate yet.
-
-Settings UI includes a compact keyboard controls reference.
-
-## Current Objective Tracking
-
-Primary battle objectives are still simple base survival/destruction:
-
-- player loses if the Command Hall objective building dies
-- player wins if the enemy Stronghold objective building dies
-
-Maps can define optional `secondaryObjectives` under `scenario.objectives`.
-
-Supported secondary objective types:
-
-- `capture_site`
-- `destroy_building`
-- `defeat_unit`
-
-Runtime tracking lives in `BattleRuntime.stats.completedObjectiveIds`. `BattleScene` records secondary objectives from capture and kill hooks. `ResultsScene` displays completion status for maps that define special objectives. Current secondary objectives are informational only; they do not yet alter rewards, campaign unlocks, or score.
-
-## Current Save Format
-
-Save key is defined in `src/game/core/Constants.ts`. Save logic lives in `src/game/core/SaveSystem.ts`. Save types live in `src/game/save/SaveTypes.ts`.
-
-Stored saves are versioned. V1 is accepted as legacy input; V2 is the current write shape.
-
-```ts
-interface StoredGameSaveV2 {
-  version: 2;
-  createdAt: string;
-  updatedAt: string;
-  hero: HeroSaveData;
-  campaign: CampaignSaveData;
-  settings: SaveSettingsData;
-  statistics: SaveStatisticsData;
-}
-```
-
-Current `SaveSettingsData`:
-
-```ts
-interface SaveSettingsData {
-  masterVolume: number;
-  musicVolume: number;
-  sfxVolume: number;
-  screenShakeEnabled: boolean;
-  floatingTextEnabled: boolean;
-  fogEnabledOverride: "default" | "enabled" | "disabled";
-  reducedMotionEnabled: boolean;
-  uiScale: number;
-  colorblindMinimapPalette: boolean;
-}
-```
-
-Hero save:
-
-- heroName
-- classId
-- originId
-- level
-- xp
-- skillPoints
-- unlockedAbilities
-- completedBattles
-- clearedMapIds
-- inventory as item instances
-- equipment as item instance IDs where possible
-- allocatedSkills
-- legacy `items` migration input
-- factionReputation
-- stats
-
-Campaign save:
-
-- started
-- difficulty
-- resources
-- resourcesSpent
-- completedNodeIds
-- unlockedNodeIds
-- lockedNodeIds
-- nodeRewardsClaimedIds
-- choiceIdsClaimed
-- townServiceClaimedIds
-- townServiceUseCounts
-- activeModifierIds
-- selectedNodeId
-
-Save normalization:
-
-- current save version is 2
-- `migrateSaveToCurrent(input)` accepts valid V1 or V2 saves and returns a normalized V2 save
-- `migrateV1ToV2(input)` converts legacy V1 saves without dropping campaign resources, inventory, equipment, reward claims, or choice claims
-- invalid JSON and invalid save shapes return `null` without clearing or overwriting localStorage
-- new writes always use the V2 shape with `createdAt`, `updatedAt`, settings, and statistics
-- `SaveSystem.exportSaveJson()` returns the current save JSON for backup/debugging
-- `SaveSystem.importSaveJson(raw)` safely imports valid V1/V2 JSON and writes it as V2
-- rejects invalid save versions or invalid hero base data
-- migrates legacy `items` and raw catalog-ID inventories into item instances
-- migrates legacy catalog-ID equipment to matching instances or creates a safe equipped instance
-- normalizes missing campaign save to fallback
-- normalizes missing campaign resources to zero
-- normalizes missing settings to `DEFAULT_SETTINGS`
-- preserves settings across later hero/campaign writes
-- normalizes settings-only saves so the menu does not treat them as playable hero saves
-- dedupes item instances by instance ID plus cleared maps, node rewards, unlocks, completions, and choice claims
-- clamps negative numeric resources/stats where appropriate
-
-## Current Results Scene Architecture
-
-`ResultsScene` has been safely reduced to a coordinator. Helper modules live in `src/game/results/`.
-
-Current results helper files:
-
-- `ResultsCampaignFlow.ts`
-- `ResultsEquipActions.ts`
-- `ResultsFormatting.ts`
-- `ResultsNavigation.ts`
-- `ResultsObjectiveSummary.ts`
-- `ResultsRewardPanel.ts`
-- `ResultsTypes.ts`
-- `ResultsViewModel.ts`
-- `ResultsViewModel.test.ts`
-
-`ResultsScene` still owns:
-
-- Phaser scene lifecycle
-- DOM root binding
-- click routing
-- calling helpers for view model/rendering/actions
-- scene navigation
-
-Behavior intentionally unchanged:
-
-- Equip Now persists equipped reward instance.
-- Victory grants rewards and campaign completion.
-- Defeat does not grant rewards.
-- Retry, campaign return, skirmish return, inventory, and main menu actions still work.
-
-## Current CampaignMapScene Helper Architecture
-
-`CampaignMapScene` has been reduced and now delegates view-model creation and panel rendering to helpers in `src/game/campaign/`.
-
-Current campaign helper files:
-
-- `CampaignChoicePanel.ts`
-- `CampaignMapViewModel.ts`
-- `CampaignMapViewModel.test.ts`
-- `CampaignNavigation.ts`
-- `CampaignNodePanel.ts`
-- `CampaignPresentationTypes.ts`
-- `CampaignResourcePanel.ts`
-- `CampaignTownServicesPanel.ts`
-
-`CampaignMapScene` still owns:
-
-- Phaser scene lifecycle
-- DOM root binding
-- click routing
-- selected node state
-- applying choices/services through campaign rules
-- save calls
-- navigation to battle, inventory, and main menu
-
-Behavior intentionally unchanged:
-
-- Marcher Camp services and one-time purchases still work.
-- Event choices still apply costs, rewards, reputation, modifiers, and completion state.
-- Campaign battle launch still uses the shared `BattleLaunchRequest` path.
-- Campaign bank, reputation, active modifiers, and selected node details still render through the same DOM surface.
-
-## Current HeroProgressionScene Helper Architecture
-
-`HeroProgressionScene` has been reduced and now delegates inventory, equipment, skill tree, comparison, and stat presentation to helpers in `src/game/progression/`.
-
-Current progression helper files:
-
-- `EquipmentPanel.ts`
-- `HeroProgressionViewModel.ts`
-- `HeroStatsPanel.ts`
-- `InventoryPanel.ts`
-- `ItemComparison.ts`
-- `ItemComparison.test.ts`
-- `SkillTreePanel.ts`
-
-`HeroProgressionScene` still owns:
-
-- Phaser scene lifecycle
-- DOM root binding
-- click routing
-- equip/unequip actions
-- skill allocation actions
-- save persistence after progression changes
-- navigation back to campaign/main menu
-
-Behavior intentionally unchanged:
-
-- Inventory still displays item instances.
-- Equipment still references item instance IDs.
-- Skill point spending persists.
-- Item stat comparison formatting is covered by pure tests.
-
-## Current BattleScene Helper Architecture
-
-`BattleScene` remains the live Phaser coordinator, but helper modules live in `src/game/battle/`.
-
-Current battle helper files:
-
-- `BattleLaunchRequest.ts`
-- `BattleRuntime.ts`
-- `BattleSceneAlerts.ts`
-- `BattleSceneMapRenderer.ts`
-- `BattleSceneObjectives.ts`
-- `BattleSceneResults.ts`
-- `BattleSceneSnapshots.ts`
-- `BattleSceneSpawner.ts`
-
-`BattleScene` still owns:
-
-- live Phaser scene lifecycle
-- current units/buildings/projectiles/sites arrays
-- system construction and wiring
-- input callbacks
-- fog overlay rendering
-- rally marker graphics
-- runtime update order
-- audio/settings integration
-
-Next safe refactor target here is system construction/wiring, which is still bulky.
-
-## Current CSS Architecture
-
-`src/game/styles/ui.css` is now a central import file. Domain CSS lives in:
+`src/game/styles/ui.css` is the import hub. Domain CSS files:
 
 - `asset-gallery.css`
 - `base.css`
@@ -898,25 +569,101 @@ Next safe refactor target here is system construction/wiring, which is still bul
 - `results.css`
 - `settings.css`
 
-UI scale is handled through `--ui-scale` on `:root`; reduced-motion mode disables transitions/animations through a root dataset flag.
+Recent HUD/responsive behavior:
 
-Recent battle HUD polish:
+- Battle HUD panels are visually tighter.
+- Hero-selected state uses a compact command panel.
+- Building command rows were simplified.
+- Mobile/tablet rules keep hero/building command panels inside the viewport.
+- E2E verifies command reachability and horizontal overflow.
 
-- Battle resource chips, hero card, selected-entity panel, minimap frame, status chip, and hint chip were visually lightened and tightened.
-- Hero-selected state now uses a compact command panel for Damage, Range, Armor, and abilities; HP, mana, XP, and skill points remain in the persistent hero card.
-- Building command buttons were simplified to clearer command rows.
-- Mobile/tablet responsive rules were updated so hero-selected and building-selected panels remain inside the viewport.
-- Screenshots from before/after battle HUD checks live under `test-results/ui-audit/`.
+## Current Save Architecture
+
+Current save modules:
+
+- `src/game/core/SaveSystem.ts`: compatibility re-export.
+- `src/game/save/SaveDefaults.ts`: versions and fallback/current save creation.
+- `src/game/save/SaveImportExport.ts`: JSON parse/stringify boundary.
+- `src/game/save/SaveMigrations.ts`: legacy migration.
+- `src/game/save/SaveNormalization.ts`: hero/campaign shape checks and normalization.
+- `src/game/save/SaveSystem.ts`: public localStorage facade.
+- `src/game/save/SaveTypes.ts`: save-facing types.
+
+Current save version is V2. Save normalization protects:
+
+- Settings-only saves.
+- Legacy catalog-ID inventory/equipment.
+- Item instance migration.
+- Campaign resource and resource-spent bags.
+- Choice IDs.
+- Town service claimed IDs and use counts.
+- Active modifier IDs.
+- Completed/unlocked/locked/node-reward IDs.
+- Negative numeric resource/stat clamping where appropriate.
+
+## Current Helper Architecture
+
+### Results
+
+`ResultsScene` is now a coordinator. Helper modules live in `src/game/results/`:
+
+- `ResultsCampaignFlow.ts`
+- `ResultsEquipActions.ts`
+- `ResultsFormatting.ts`
+- `ResultsNavigation.ts`
+- `ResultsObjectiveSummary.ts`
+- `ResultsRewardPanel.ts`
+- `ResultsTypes.ts`
+- `ResultsViewModel.ts`
+
+### Campaign Map
+
+`CampaignMapScene` delegates view-model creation and panel rendering to helpers in `src/game/campaign/`:
+
+- `CampaignChoicePanel.ts`
+- `CampaignMapViewModel.ts`
+- `CampaignNavigation.ts`
+- `CampaignNodePanel.ts`
+- `CampaignPresentationTypes.ts`
+- `CampaignResourcePanel.ts`
+- `CampaignTownServicesPanel.ts`
+
+### Hero Progression
+
+`HeroProgressionScene` delegates inventory, equipment, skill tree, comparison, and stat presentation to helpers in `src/game/progression/`:
+
+- `EquipmentPanel.ts`
+- `HeroProgressionViewModel.ts`
+- `HeroStatsPanel.ts`
+- `InventoryPanel.ts`
+- `ItemComparison.ts`
+- `SkillTreePanel.ts`
+
+### Battle
+
+Battle helpers live in `src/game/battle/`:
+
+- `BattleLaunchRequest.ts`
+- `BattleRuntime.ts`
+- `BattleSceneAlerts.ts`
+- `BattleSceneMapRenderer.ts`
+- `BattleSceneObjectives.ts`
+- `BattleSceneResults.ts`
+- `BattleSceneSnapshots.ts`
+- `BattleSceneSpawner.ts`
+- `BattleSceneSystems.ts`
+
+`BattleSceneSystems.ts` is currently untracked and should be preserved.
 
 ## Current Tests
 
-Latest verified suite status:
+Latest verified suite status, refreshed during this handoff audit:
 
-- `npm test`: passed, 25 test files, 117 tests.
+- `npm test`: passed, 25 test files, 118 tests.
 - `npm run build`: passed.
-- `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests.
+- `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests in 8.3m.
 
-Current pure/unit test files:
+Current unit/pure test files:
 
 - `src/game/ai/EnemyAIController.test.ts`
 - `src/game/battle/BattleLaunchRequest.test.ts`
@@ -944,259 +691,181 @@ Current pure/unit test files:
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
 
-Current e2e test files:
+Current e2e files:
 
 - `tests/e2e/deep-flow.spec.ts`
 - `tests/e2e/layout.spec.ts`
 - `tests/e2e/smoke.spec.ts`
 
-Browser-level tests currently verify:
+Browser-level tests currently cover:
 
-- main menu boots
-- Settings opens and persists audio/accessibility options
-- hero creation
-- new campaign creation
-- locked-node behavior
-- Border Village battle launch
-- campaign choices
-- Marcher Camp services/purchases
-- inventory equip/unequip
-- skill spending
-- ResultsScene Equip Now
-- defeat tips
-- skirmish launches for all maps
-- minimap click handling
-- fog toggle
-- building placement cancellation feedback
-- Build Barracks creates a visible placement ghost near the Command Hall before cancellation
-- first-battle RTS loop with capture, Barracks construction, Militia training, rally point, and accelerated result
-- live BattleScene victory/defeat objective resolution into Results
-- responsive layout reachability/horizontal overflow across desktop, tablet, and mobile viewports
+- Main menu boot.
+- Settings persistence.
+- Hero creation.
+- Campaign map and locked-node behavior.
+- Border Village battle launch.
+- Campaign choices and Marcher Camp services/purchases.
+- Inventory equip/unequip.
+- Skill spending.
+- Results Equip Now.
+- Defeat tips.
+- Skirmish launches for all maps and AI personalities.
+- Minimap click handling.
+- Fog toggle.
+- Building placement cancellation feedback.
+- Build Barracks placement ghost near Command Hall.
+- First-battle loop: capture, Barracks construction, Militia training, rally point, accelerated result.
+- Live objective resolution into Results.
+- Responsive layout reachability and overflow across desktop, tablet, and mobile.
 
 Full real-time human-style victory from first click to enemy base kill remains manual QA.
-
-## Current Build And Asset Status
-
-Latest build:
-
-- `npm run build`: passed.
-- Known large-chunk warning remains.
-
-Asset refresh:
-
-- `npm run assets:refresh` was not run in the latest settings pass because no asset registry, manual source-art, processed sprite, or manifest input files changed.
-- Run it next if `tools/manual-asset-pipeline/*`, `public/assets/manual/*`, processed battle sprites, or manifests change.
 
 ## Current Known Bugs
 
 No deterministic runtime bug is currently reproduced by unit tests, build, or Playwright e2e.
 
-Known current issues:
+Known issues and caveats:
 
 - Vite reports a large bundle chunk warning.
-- Plain full e2e can exceed a short shell-tool timeout; use a longer timeout for local automation.
-- Full battle win/loss through normal human input is still manual; automated tests cover accelerated and live objective-resolution paths.
+- Full e2e is slow and can exceed short shell-tool timeouts.
+- Full human-paced battle victory/defeat through normal input remains manual.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
-
-Recently fixed:
-
-- User-reported building commands feeling nonresponsive. The build click path worked internally, but the placement ghost started off-screen and the status line could appear unchanged until pointer movement. Build commands now immediately show a nearby placement ghost and clear status instruction.
+- `QA_RUN.md` contains earlier manual QA notes; latest automated verification counts in this handoff are newer.
 
 ## Current Known Limitations
 
-- Campaign is still a skeleton, not a full strategic layer.
-- No broad vendor economy, mercenaries, repairs, stronghold development, diplomacy, invasions, or world simulation beyond Marcher Camp and simple choices.
+- Campaign is a mini-campaign skeleton, not a full strategic layer.
+- No broad vendor economy, mercenaries, repairs, stronghold development, diplomacy, invasions, or world simulation beyond Marcher Camp and compact event choices.
 - Event choices are compact cards, not a dialogue engine.
-- `recoverHero` is a placeholder event reward.
-- Item instances exist, but randomized affixes, crafting, durability, and item art pipeline integration for all item UI are not implemented.
+- `recoverHero` is a placeholder reward effect.
+- Item instances exist, but randomized affixes, crafting, durability, and full item-icon presentation are not implemented.
 - Relic slot is typed but not fully used.
 - Music is not implemented; `musicVolume` is reserved.
-- `screenShakeEnabled` is saved but no active screen shake system currently exists to gate.
+- `screenShakeEnabled` is saved but no active screen shake system currently gates it.
 - Fog of war is grid-based and not blocker-aware.
 - Minimap has no drag-to-pan or last-known enemy memory.
 - Enemy AI is paced but simple; it does not construct, retreat, scout intelligently, or adapt composition.
 - Player construction is automatic; no workers.
 - Pathfinding uses A* waypoints, but it is not formation-aware, flow-field based, or fully dynamic around every temporary obstruction.
-- Campaign and skirmish balance are prototype-level.
 - Scene UI is DOM-heavy and still duplicated across several scenes.
 
-## Files Becoming Too Large Or Risky
+## Large Or Risky Files
 
 Current rough line counts:
 
-- `tools/manual-asset-pipeline/assetRegistry.ts`: 1343 lines. Risk: large asset metadata file, easy conflict point.
-- `src/game/data/contentValidation.ts`: 939 lines. Risk: validation logic keeps growing with each data system.
-- `src/game/scenes/BattleScene.ts`: 904 lines. Risk: still coordinates live scene input, systems, fog overlay, audio/settings, and entity arrays.
-- `src/game/core/GameTypes.ts`: 561 lines. Risk: central type file is accumulating every domain.
-- `src/game/core/HeroProgressionRules.ts`: 484 lines. Risk: skills, equipment, rewards, XP, duplicate conversion, and stat math share one rules module.
-- `src/game/core/SaveSystem.ts`: 468 lines. Risk: permissive migration and normalization must keep old localStorage saves safe.
-- `src/game/core/CampaignRules.ts`: 404 lines. Risk: node completion, choice costs/rewards, town services, modifiers, and reward claims converge here.
-- `src/game/ui/HUD.ts`: 376 lines. Risk: battle panel, selected entity UI, training, upgrades, alerts, and minimap container are concentrated.
-- `src/game/scenes/CampaignMapScene.ts`: 267 lines. Risk reduced by helper extraction; still owns save calls and navigation.
-- `src/game/scenes/HeroProgressionScene.ts`: 268 lines. Risk reduced by helper extraction; still owns equip/skill actions and persistence.
+- `src/game/data/contentValidation.ts`: 973 lines.
+- `src/game/scenes/BattleScene.ts`: 819 lines.
+- `src/game/core/GameTypes.ts`: 624 lines.
+- `src/game/core/HeroProgressionRules.ts`: 528 lines.
+- `src/game/ui/HUD.ts`: 458 lines.
+- `src/game/core/CampaignRules.ts`: 433 lines.
+- `src/game/core/SaveSystem.test.ts`: 409 lines.
+- `src/game/systems/PathfindingGrid.ts`: 397 lines.
+- `src/game/battle/BattleSceneSystems.ts`: 355 lines.
+- `src/game/ai/EnemyAIController.ts`: 352 lines.
+- `src/game/data/campaignNodes.ts`: 310 lines.
+- `src/game/scenes/CampaignMapScene.ts`: 291 lines.
+- `src/game/data/aiPersonalities.ts`: 288 lines.
+- `src/game/scenes/HeroProgressionScene.ts`: 286 lines.
 
-Recently improved:
+Risk notes:
 
-- `src/game/scenes/ResultsScene.ts` is now about 162 lines after helper extraction.
-- `src/game/scenes/CampaignMapScene.ts` is now about 267 lines after campaign helper extraction.
-- `src/game/scenes/HeroProgressionScene.ts` is now about 268 lines after progression helper extraction.
-- `src/game/data/maps.ts` is now a barrel export; authored maps are split into per-map modules.
-- CSS is split by UI domain with `ui.css` as the import hub.
-- Battle HUD visual weight was reduced, and building placement now gives immediate ghost/status feedback.
+- `BattleScene` is smaller than before but still the highest live-scene integration risk.
+- `GameTypes.ts` continues accumulating cross-domain types.
+- `HeroProgressionRules.ts` mixes skills, equipment, reward, XP, duplicate conversion, and stat math.
+- `CampaignRules.ts` joins node completion, costs/rewards, modifiers, town services, and reward claims.
+- `HUD.ts` is still a concentrated battle UI surface.
+- `contentValidation.ts` is valuable but has become a catch-all validator.
 
 ## Most Fragile Systems
 
-1. `BattleScene` integration layer: still coordinates live scene input and system orchestration.
-2. Results and campaign reward saving: battle reward, node reward, Equip Now, first-clear, duplicate conversion, and campaign-bank logic meet here.
-3. Save normalization: old V1/V2 localStorage saves, item-instance migration, settings-only saves, and campaign migration must remain safe.
-4. Campaign choices and town services: pure rules are covered, but UI flow can get crowded.
-5. Fog/minimap visibility: visibility filters entity rendering and minimap markers.
-6. Input mode overlap: selection, right-click move/attack, rally assignment, placement ghost, minimap click, ability hotkeys, fog debug, and Esc behavior share player input.
-7. Content validation: high value, but growing into a catch-all validator.
-8. DOM UI styling: CSS is split, but global selectors can still collide.
-9. Asset fallback chain: optional manual/final/placeholder assets need regular validation after art changes.
-10. Enemy AI pacing: data-driven and safer than before, but still depends on milestone gates and phase math.
+1. `BattleScene` integration: live scene lifecycle, system update order, input mode overlap, fog/minimap/rally wiring.
+2. Results and campaign reward saving: battle rewards, node rewards, Equip Now, first-clear, duplicate conversion, campaign bank.
+3. Save migration/normalization: old localStorage saves, item-instance migration, settings-only saves, campaign state.
+4. Campaign choices and town services: pure rules are covered, but UI crowding can regress.
+5. Fog/minimap visibility: filters rendering and minimap markers.
+6. Input modes: selection, move/attack, rally, placement, minimap, abilities, fog debug, Esc.
+7. Enemy AI pacing: data-driven but dependent on milestone gates and phase math.
+8. DOM CSS: split by domain but global selectors can still collide.
+9. Asset fallback chain: optional manual/final/placeholder assets need validation after art changes.
 
-## Current Git Status
+## Manual QA Checklist
 
-Current HEAD at handoff update time:
-
-```text
-ee4e29de30ca1ea969e7deabaaff08d53b24c26f
-```
-
-Current branch tracking line:
-
-```text
-main...origin/main
-```
-
-Current worktree is dirty with uncommitted changes. Do not reset, checkout, delete, or revert them.
-
-Current modified files:
-
-```text
-BALANCE.md
-DEVELOPMENT_CHECKPOINT.md
-LLM_GAME_HANDOFF.md
-src/game/battle/BattleRuntime.test.ts
-src/game/core/CampaignRules.test.ts
-src/game/core/Constants.ts
-src/game/data/battlePacing.ts
-src/game/data/campaignNodes.ts
-src/game/data/maps/ashenOutpost.ts
-src/game/data/rewards.ts
-src/game/scenes/BattleScene.ts
-src/game/scenes/CampaignMapScene.ts
-src/game/scenes/HeroProgressionScene.ts
-src/game/styles/battle-feedback.css
-src/game/styles/battle-hud.css
-src/game/styles/minimap.css
-src/game/styles/responsive.css
-src/game/systems/BuildingSystem.ts
-src/game/ui/HUD.ts
-tests/e2e/deep-flow.spec.ts
-```
-
-Current untracked paths:
-
-```text
-QA_RUN.md
-src/game/campaign/
-src/game/progression/
-```
-
-Before starting another large feature, make a clean checkpoint commit if the user agrees.
-
-## Current Manual QA Checklist
-
-Run this before starting another large feature pass and after any checkpoint commit that changes gameplay/UI:
+Run this before a checkpoint commit after gameplay/UI changes:
 
 1. Start dev server and open `http://127.0.0.1:5173/`.
 2. Main menu appears.
-3. Settings opens from main menu.
-4. Change audio volume, reduced motion, floating text, UI scale, fog override, and colorblind minimap palette.
-5. Save settings, return to menu, reopen Settings, and verify persistence.
-6. Reset Save works from the main menu.
-7. New Campaign with no playable save opens hero creation.
-8. Create each hero class at least once.
-9. Campaign map opens after hero creation.
-10. Campaign bank displays Crowns, Stone, Iron, and Aether.
-11. Reputation and active modifiers display.
-12. Border Village is available at campaign start.
-13. Locked nodes cannot start.
-14. Border Village launches First Claim.
-15. In battle, select hero with click and `H`.
-16. Move hero/units with right-click.
-17. Capture Crown Shrine.
-18. Select Command Hall.
-19. Place Barracks and verify valid/invalid placement reasons.
-20. Barracks appears under construction and cannot train until complete.
-21. Completed Barracks can train Militia and Ranger.
-22. Queue progress displays and cancel/refund works.
-23. Set Barracks rally point with right-click ground.
-24. Rally marker appears and trained units move to it.
-25. Build Mystic Lodge and train Acolyte.
-26. Build Watchtower and verify it attacks when enemies approach.
-27. Research Infantry Weapons I, Ranger Training I, Reinforced Armor I, and Aether Study I.
-28. Verify locked train/upgrade buttons show reasons.
-29. Use hero abilities with `1`, `2`, `3`.
-30. Verify audio cues are audible when volume is on and silent/muted when volume is zero.
-31. Verify floating text can be disabled.
-32. Verify reduced motion removes floating text tweening and CSS motion.
-33. Verify fog hides enemy/neutral entities outside vision.
-34. Press `F` on fog-enabled difficulty and verify fog debug toggles.
-35. Verify Settings fog override can disable/enable fog regardless of difficulty default.
-36. Verify minimap shows units, buildings, sites, camera rectangle, rally marker, and pings.
-37. Verify colorblind minimap palette changes player/enemy/neutral colors.
-38. Click minimap and confirm the camera recenters.
-39. Survive or intentionally lose the first wave.
-40. Defeat screen shows contextual tips and retry/campaign return.
-41. Victory screen shows map, difficulty, battle time, XP, level progress, item rewards, campaign rewards, and campaign bank.
-42. Equip Now changes stats and persists after leaving Results.
-43. Send-to-inventory behavior leaves item in inventory.
-44. Campaign victory completes Border Village and unlocks Old Stone Road.
-45. Continue Campaign returns to saved campaign state.
-46. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
-47. Open Marcher Camp and verify repeatable services, once-only purchases, costs, locked reasons, and save persistence.
-48. Open Refugee Caravan and verify choices, costs, locked reasons, and reputation/resource effects.
-49. Open Chapel of the Marches and verify choices, non-completing guidance choice, and completing choices.
-50. Verify once-only choices cannot be repeated.
-51. Verify campaign node rewards cannot be claimed repeatedly.
-52. Skirmish Setup opens separately from campaign.
-53. First Claim launches from Skirmish Setup.
-54. Broken Ford launches from Skirmish Setup.
-55. Ashen Outpost launches from Skirmish Setup.
-56. Ashen Outpost shows fortress layout, Burned Shrine, side resources, neutral camps, and defensive towers.
-57. Ashen Outpost Results screen shows special objective completion states.
-58. Difficulty selection changes AI pacing/fog behavior.
-59. AI personality selection changes displayed enemy style and launches without errors.
-60. Hero Inventory opens from main menu.
-61. Equipping/unequipping items changes hero stats.
-62. Skill point spending persists.
-63. Asset Gallery opens without crashing.
-64. Browser console has no new hard errors.
-65. Production build preview boots if using `npm run preview`.
+3. Settings opens and persists audio, UI scale, reduced motion, floating text, fog override, and minimap palette.
+4. Reset Save works in an isolated test context before using on a real save.
+5. New Campaign opens hero creation when no playable save exists.
+6. Create Warlord, Arcanist, and Shepherd at least once.
+7. Campaign map opens after creation.
+8. Campaign bank, reputation, and active modifiers display.
+9. Border Village is available and locked nodes cannot start.
+10. Border Village launches First Claim.
+11. Select hero with click and `H`.
+12. Move units with right-click.
+13. Capture Crown Shrine.
+14. Select Command Hall.
+15. Place Barracks and verify valid/invalid placement reasons.
+16. Barracks appears under construction and cannot train until complete.
+17. Completed Barracks trains Militia and Ranger.
+18. Queue progress displays and cancel/refund works.
+19. Set Barracks rally point and verify marker plus trained-unit movement.
+20. Build Mystic Lodge and train Acolyte.
+21. Build Watchtower and verify it attacks.
+22. Research all current upgrades through UI.
+23. Verify locked train/upgrade buttons show reasons.
+24. Use hero ability hotkeys.
+25. Verify audio cues with human ears.
+26. Verify floating text and reduced motion visually.
+27. Verify fog hides unexplored/undetected entities.
+28. Press `F` on fog-enabled difficulty and verify fog debug.
+29. Verify settings fog override changes battle fog behavior.
+30. Verify minimap units/buildings/sites/camera/rally/pings and colorblind palette.
+31. Survive or lose the first wave through normal play.
+32. Defeat screen shows contextual tips and retry/campaign return.
+33. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, node rewards, and campaign bank.
+34. Equip Now changes stats and persists after leaving Results.
+35. Campaign victory completes Border Village and unlocks Old Stone Road.
+36. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
+37. Marcher Camp repeatable services, once-only purchases, costs, locked reasons, and save persistence work.
+38. Refugee Caravan choices and reputation/resource effects work.
+39. Chapel choices work, especially non-completing guidance.
+40. Campaign node rewards cannot be claimed repeatedly.
+41. Skirmish Setup opens separately.
+42. First Claim, Broken Ford, and Ashen Outpost launch from skirmish.
+43. Ashen Outpost shows fortress layout, Burned Shrine, side resources, neutral camps, and defensive towers.
+44. Ashen Outpost Results show special objective completion states.
+45. Difficulty selection changes pacing/fog behavior.
+46. AI personality selection changes displayed style and launches without errors.
+47. Hero Inventory opens from main menu.
+48. Equipping/unequipping items changes hero stats.
+49. Skill point spending persists.
+50. Asset Gallery opens.
+51. Browser console has no new hard errors.
+52. Production build preview boots if doing release-style QA.
 
-## Recommended Next 10 Development Priorities
+## Recommended Next Priorities
 
-1. Checkpoint the current dirty worktree after confirming the user wants a commit.
-2. Run a targeted manual browser QA pass on building commands, placement, train/cancel/refund, rally, and mobile command-panel usability.
-3. Run one fuller human-paced campaign QA pass through the checklist above, especially audible audio behavior and normal-play victory/defeat.
-4. Split `BattleScene` system construction/wiring into a helper; it is still the largest live-scene risk.
-5. Improve the building command panel on mobile so build/train/research actions feel like a command tray rather than a scrolling form.
-6. Split `SaveSystem` migration/normalization into focused modules before adding more persistent systems.
-7. Add randomized item affixes only after instance-based inventory has more browser QA coverage.
-8. Improve formation/pathing behavior and dynamic blockers before building larger maps.
-9. Add enemy construction or adaptive AI only after player construction/rally/fog/manual QA is stable.
-10. Rebalance the first 30-minute campaign after several human playthroughs on Easy and Normal.
+1. Ask the user whether to checkpoint/commit the current dirty worktree before more feature work.
+2. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
+3. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
+4. Play Ashen Outpost with and without Chapel repair to validate fortress pressure.
+5. Update `QA_RUN.md` to reflect the latest 118-test balance verification if it will remain a canonical QA artifact.
+6. Continue reducing `BattleScene` only in small, behavior-preserving slices.
+7. Split `GameTypes.ts` or `contentValidation.ts` only after a checkpoint, because both are central conflict/risk files.
+8. Add e2e/manual coverage for Chapel choices, Mystic Lodge/Acolyte, Watchtower combat, research UI, and Ashen Outpost special objectives.
+9. Do not add enemy construction, workers, affixes, or new campaign systems until the current mini-campaign balance is human-tested.
+10. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
-- Preserve campaign and skirmish as separate entry flows that share `BattleLaunchRequest`.
-- Preserve all current uncommitted work unless explicitly told to reset/revert.
-- Prefer data additions in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
-- Keep browser smoke testing close to every UI-heavy change.
-- Keep save migrations explicit and add tests for any persistent field.
-- Do not add more campaign complexity before checkpointing and manually QAing the current prototype.
+- Preserve current dirty work unless explicitly told to reset/revert.
+- Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
+- Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
+- Add or update tests for persistent save fields and data contracts.
+- Use Playwright for browser verification when UI/gameplay changes.
+- Use Browser Use only when the user asks for in-app browser inspection or visible local-browser interaction.
+- Keep changes conservative until the current first-hour campaign balance has human playtesting.
 - Never run destructive git commands without explicit user approval.

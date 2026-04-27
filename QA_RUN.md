@@ -2,7 +2,7 @@
 
 Run date: 2026-04-26
 
-Last updated: 2026-04-26 17:10 -04:00
+Last updated: 2026-04-26 20:15 -04:00
 
 Scope: 65-item manual QA checklist from `LLM_GAME_HANDOFF.md`.
 
@@ -31,6 +31,61 @@ PASS: 25 Playwright tests passed in 9.9m
 ```
 
 No critical failures were found.
+
+## Targeted Battle Commands QA - 2026-04-26 20:15 -04:00
+
+Scope: focused browser QA for the recently changed battle HUD, building placement feedback, construction, training, rally, responsive command panels, audio settings, and nearby regressions.
+
+Method:
+
+- Used Browser Use after session resume for a non-destructive visible sanity check of the local app main menu at `http://127.0.0.1:5173/`.
+- Used Playwright against the local app at `http://127.0.0.1:5173/` for the detailed targeted battle-command pass in an isolated browser context.
+- Used real browser clicks, right-clicks, pointer moves, and key presses for player-facing command behavior.
+- Used deterministic scene time advancement for construction/training timers to avoid waiting several real minutes.
+- Captured screenshots under `test-results/targeted-battle-commands/`.
+- No source code changes were made and no bugs were fixed, so `npm test`, `npm run build`, and full e2e were not rerun during this documentation-only QA update. The latest safety checkpoint already has all three passing.
+
+### Targeted Results
+
+| Area | Pass | Fail | Notes | Bug severity | Follow-up action |
+|---|:---:|:---:|---|---|---|
+| Start new campaign and launch Border Village | [x] | [ ] | New Warlord campaign launched First Claim / Border Village battle HUD. | None | None. |
+| Select Command Hall | [x] | [ ] | Command Hall selected by canvas click; building commands were visible. | None | None. |
+| Build Barracks placement ghost | [x] | [ ] | Ghost appeared immediately near Command Hall, about 146px from the source building. Screenshot: `test-results/targeted-battle-commands/02-barracks-placement-ghost.png`. | None | None. |
+| Active placement status | [x] | [ ] | Status line showed `Placing Barracks - click a highlighted site or choose another location.` | None | None. |
+| Valid/invalid placement reasons | [x] | [ ] | Moving pointer over Command Hall showed `Overlaps another structure.` Moving back to a valid site showed `Valid building site.` | None | None. |
+| Resources before placement | [x] | [ ] | Resources were unchanged while the placement ghost was active and before final placement. | None | None. |
+| Esc cancels placement | [x] | [ ] | Pending placement cleared, status changed to `Building placement cancelled`, and resources stayed unchanged. | None | None. |
+| Right-click cancels placement | [x] | [ ] | Right-click also cleared pending placement, status changed to `Building placement cancelled`, and resources stayed unchanged. | None | None. |
+| Place Barracks cost timing | [x] | [ ] | Resources deducted only after placement: Crowns 380 -> 200, Stone 255 -> 135. Screenshot: `test-results/targeted-battle-commands/03-barracks-under-construction.png`. | None | None. |
+| Under-construction Barracks | [x] | [ ] | Barracks appeared under construction with progress visible; incomplete Barracks exposed no train buttons. | None | None. |
+| Completed Barracks training controls | [x] | [ ] | After deterministic construction completion, Militia and Ranger training buttons were visible. Screenshot: `test-results/targeted-battle-commands/04-barracks-completed-train-buttons.png`. | None | None. |
+| Queue Militia and Ranger | [x] | [ ] | Militia and Ranger both queued; resources were paid on queue. Screenshot: `test-results/targeted-battle-commands/05-training-queue.png`. | None | None. |
+| Cancel queued unit refund | [x] | [ ] | Canceling queued Ranger left Militia active and refunded Ranger cost; resources returned to Crowns 140, Iron 120 after Militia remained paid. | None | None. |
+| Trained unit spawn | [x] | [ ] | Militia spawned after training completion. | None | None. |
+| Rally point | [x] | [ ] | Barracks rally point set by right-click; world rally marker appeared. Screenshot: `test-results/targeted-battle-commands/06-rally-marker.png`. | None | None. |
+| Rally minimap marker | [x] | [ ] | Minimap snapshot contained one rally marker for the selected Barracks. | None | None. |
+| Trained unit rally behavior | [x] | [ ] | Newly trained Militia received rally behavior and moved/arrived near the rally point. | None | None. |
+| Tablet command panel | [x] | [ ] | Hero panel, Command Hall build buttons, and Barracks train/research buttons fit with no horizontal overflow at 820x620. Screenshot: `test-results/targeted-battle-commands/07-responsive-tablet-short.png`. | None | None. |
+| Mobile-tall command panel | [x] | [ ] | Hero panel, Command Hall build buttons, and Barracks train/research buttons fit with no horizontal overflow at 390x844. Screenshot: `test-results/targeted-battle-commands/07-responsive-mobile-tall.png`. | None | None. |
+| Mobile-short command panel | [x] | [ ] | Hero panel, Command Hall build buttons, and Barracks train/research buttons fit with no horizontal overflow at 360x640. Screenshot: `test-results/targeted-battle-commands/07-responsive-mobile-short.png`. | None | None. |
+| SFX mute/unmute behavior | [x] | [ ] | Fake AudioContext verified SFX volume 0 suppressed battle oscillator starts and SFX volume 0.75 produced starts. Actual audible output still requires human ears. | None | Human audible check remains. |
+| Hero ability hotkey regression | [x] | [ ] | `1` cast Rally Banner and consumed mana. Screenshot: `test-results/targeted-battle-commands/01-hero-selected-ellipse.png`. | None | None. |
+| Minimap click regression | [x] | [ ] | Clicking minimap changed camera scroll. | None | None. |
+| Fog toggle regression | [x] | [ ] | Pressing `F` updated fog debug/status feedback. | None | None. |
+| Flat selection marker regression | [x] | [ ] | Selected hero marker was a flat `Ellipse2` footprint, 61.1x16.12. | None | None. |
+
+### Targeted Bugs Found
+
+| ID | Severity | Area | Reproduction | Expected | Actual | Fix applied |
+|---|---|---|---|---|---|---|
+| None | None | Battle commands | Targeted Playwright pass across build, construction, train/cancel/refund, rally, responsive panels, audio settings, minimap, fog, and selection markers. | No blocking failures. | No confirmed game bug found. | None. |
+
+### Targeted Caveats
+
+- Audible audio was not human-verified. Automation only verified the WebAudio creation path is suppressed when SFX volume is zero and active when SFX is unmuted.
+- Construction and training completion were advanced deterministically through scene time rather than waiting real-time durations.
+- The responsive check verified horizontal fit and command reachability, not long-session ergonomics under combat pressure.
 
 Status legend:
 
@@ -81,12 +136,12 @@ Severity legend:
 | 16 | Move hero/units with right-click. | [x] | [ ] | Browser Use right-clicked Crown Shrine; hero moved from base to the site. | None | None. |
 | 17 | Capture Crown Shrine. | [x] | [ ] | Browser Use observed Crown Shrine ownership/capture ring turning player-green and resource income increasing. | None | None. |
 | 18 | Select Command Hall. | [x] | [ ] | Browser Use clicked Command Hall and verified the side panel/actions. | None | None. |
-| 19 | Place Barracks and verify valid/invalid placement reasons. | [x] | [ ] | Browser Use placed a valid Barracks and observed placement/under-construction state; Playwright covers placement cancel feedback. Invalid reason matrix not exhausted. | None | Add targeted invalid-placement manual pass. |
+| 19 | Place Barracks and verify valid/invalid placement reasons. | [x] | [ ] | Targeted battle pass confirmed nearby Barracks ghost, valid/invalid placement messages, cancellation, and final placement cost timing. | None | None. |
 | 20 | Barracks appears under construction and cannot train until complete. | [x] | [ ] | Browser Use observed Construction state first, then Train actions only after completion. | None | None. |
 | 21 | Completed Barracks can train Militia and Ranger. | [x] | [ ] | Browser Use trained Militia and Ranger from a completed Barracks. | None | None. |
-| 22 | Queue progress displays and cancel/refund works. | [ ] | [ ] | Browser Use observed queue progress and Cancel button. The attempted cancel/refund check missed the queue timing and did not complete cleanly. | None | Add targeted queue cancel/refund QA. |
+| 22 | Queue progress displays and cancel/refund works. | [x] | [ ] | Targeted battle pass queued Militia and Ranger, canceled Ranger, left Militia active, and confirmed the Ranger refund. | None | None. |
 | 23 | Set Barracks rally point with right-click ground. | [x] | [ ] | Browser Use set a ground rally point; HUD changed to `Rally Point: Set`. | None | None. |
-| 24 | Rally marker appears and trained units move to it. | [x] | [ ] | Browser Use observed the rally marker on the ground; e2e verifies trained unit move-target assignment. | None | None. |
+| 24 | Rally marker appears and trained units move to it. | [x] | [ ] | Targeted battle pass confirmed world rally marker, minimap rally marker, and newly trained Militia rally behavior. | None | None. |
 | 25 | Build Mystic Lodge and train Acolyte. | [ ] | [ ] | Not run in this QA pass. | None | Manual/e2e extension needed. |
 | 26 | Build Watchtower and verify it attacks when enemies approach. | [ ] | [ ] | Not run in this QA pass. | None | Manual/e2e extension needed. |
 | 27 | Research Infantry Weapons I, Ranger Training I, Reinforced Armor I, and Aether Study I. | [ ] | [ ] | Pure upgrade tests exist, but UI research flow not run here. | None | Manual/e2e extension needed. |
@@ -141,6 +196,6 @@ Severity legend:
 |---|---|---|---|
 | P1 | Complete human-audible audio checks. | Human/manual QA | Browser automation cannot confirm hearing output. |
 | P1 | Complete human-paced first battle playthrough through first wave. | Human/manual QA | Automated suite verifies deterministic path; feel and enemy pressure still need human play. |
-| P2 | Add targeted QA for Mystic Lodge/Acolyte, Watchtower combat, research UI, and queue cancel/refund. | Future QA/e2e | These are important RTS systems not covered by the current browser suite. |
+| P2 | Add targeted QA for Mystic Lodge/Acolyte, Watchtower combat, and research UI. | Future QA/e2e | These are important RTS systems not covered by the current browser suite. |
 | P2 | Add targeted QA for Chapel choices and Old Stone Road unlock chain. | Future QA/e2e | Campaign event depth remains partly unverified. |
 | P2 | Add visual QA for colorblind minimap, fog override, Ashen Outpost layout, and special objectives. | Future QA/e2e/manual | Needs screenshots or human visual confirmation. |

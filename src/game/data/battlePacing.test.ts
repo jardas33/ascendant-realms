@@ -13,9 +13,14 @@ describe("battle pacing data", () => {
   it("keeps all required difficulty presets available", () => {
     expect(BATTLE_DIFFICULTIES.map((difficulty) => difficulty.id)).toEqual(["story", "easy", "normal", "hard"]);
     expect(getBattleDifficulty("normal")).toMatchObject({
-      firstAttackDelay: 180,
-      enemyIncomeMultiplier: 0.9,
-      commanderJoinDelay: 540
+      firstAttackDelay: 195,
+      enemyIncomeMultiplier: 0.86,
+      commanderJoinDelay: 570
     });
+    expect(getBattleDifficulty("story")).toMatchObject({
+      firstAttackDelay: 300,
+      fogOfWarEnabled: false
+    });
+    expect(getBattleDifficulty("easy").firstAttackDelay).toBeGreaterThan(getBattleDifficulty("normal").firstAttackDelay);
   });
 });

@@ -502,7 +502,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-status")).toContainText("Demand Tribute chosen");
     let save = await readSave(page);
     expect(save.campaign.completedNodeIds).toContain("refugee_caravan");
-    expect(save.campaign.resources.crowns).toBe(340);
+    expect(save.campaign.resources.crowns).toBe(325);
     expect(save.campaign.activeModifierIds).toContain("angered_raiders");
     expect(save.hero.factionReputation.common_folk).toBe(-8);
 

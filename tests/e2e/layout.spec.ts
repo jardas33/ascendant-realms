@@ -85,6 +85,98 @@ async function expectInViewport(page: Page, locator: Locator, label: string): Pr
   expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(viewport.height + 2);
 }
 
+async function expectBattleCommandButtonsReachable(page: Page, actions: string[], label: string): Promise<void> {
+  const result = await page.evaluate((requestedActions) => {
+    const panel = document.querySelector<HTMLElement>(".side-panel");
+    if (!panel) {
+      return { count: 0, offenders: ["missing side panel"], labels: [] };
+    }
+    const panelRect = panel.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const buttons = requestedActions.flatMap((action) =>
+      Array.from(panel.querySelectorAll<HTMLButtonElement>(`button[data-action="${action}"]`))
+    );
+    const offenders = buttons
+      .map((button) => {
+        const rect = button.getBoundingClientRect();
+        const label = button.getAttribute("aria-label") ?? button.textContent?.replace(/\s+/g, " ").trim() ?? "";
+        const problems = [];
+        if (rect.left < -1 || rect.right > viewportWidth + 1) {
+          problems.push("outside viewport width");
+        }
+        if (rect.top < panelRect.top - 1 || rect.bottom > panelRect.bottom + 1 || rect.top < -1 || rect.bottom > viewportHeight + 1) {
+          problems.push("not visible in command panel");
+        }
+        if (rect.width < 72 || rect.height < 40) {
+          problems.push(`small tap target ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+        }
+        return problems.length > 0 ? `${label}: ${problems.join(", ")}` : undefined;
+      })
+      .filter((entry): entry is string => Boolean(entry));
+    return {
+      count: buttons.length,
+      offenders,
+      labels: buttons.map((button) => button.getAttribute("aria-label") ?? button.textContent?.replace(/\s+/g, " ").trim() ?? "")
+    };
+  }, actions);
+
+  expect(result.count, `${label} command buttons for ${actions.join(", ")} are present`).toBeGreaterThan(0);
+  expect(result.offenders, `${label} command buttons should be visible, wide enough, and inside the panel`).toEqual([]);
+}
+
+async function selectBattleBuilding(page: Page, buildingId: string, expectedName: string): Promise<void> {
+  await page.evaluate(({ buildingId }) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const building = scene.buildings.find(
+      (entry: any) => entry.team === "player" && entry.definition.id === buildingId && entry.alive
+    );
+    if (!building) {
+      throw new Error(`Missing player building: ${buildingId}`);
+    }
+    scene.cameraSystem.centerOn(building.position);
+    scene.selectionSystem.setSelection([building]);
+    scene.update(performance.now(), 200);
+  }, { buildingId });
+  await expect(page.locator(".side-panel")).toContainText(expectedName);
+}
+
+async function createCompletedBarracksAndSelect(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    let barracks = scene.buildings.find(
+      (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
+    );
+    if (!barracks) {
+      const commandHall = scene.buildings.find(
+        (entry: any) => entry.team === "player" && entry.definition.id === "command_hall" && entry.alive
+      );
+      if (!commandHall) {
+        throw new Error("Missing Command Hall.");
+      }
+      scene.buildingSystem.startPlacement("barracks", { anchor: commandHall.position, resources: scene.resources.player });
+      const ghost = scene.buildingSystem.ghost;
+      if (!ghost || !scene.buildingSystem.tryPlace(ghost.x, ghost.y, scene.resources.player)) {
+        throw new Error("Unable to place Barracks for layout check.");
+      }
+      barracks = scene.buildings.find(
+        (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
+      );
+    }
+    scene.buildingSystem.update((barracks.definition.constructionTimeSeconds ?? 25) + 1);
+    scene.cameraSystem.centerOn(barracks.position);
+    scene.selectionSystem.setSelection([barracks]);
+    scene.update(performance.now(), 200);
+  });
+  await expect(page.locator(".side-panel")).toContainText("Barracks");
+}
+
 async function expectBottomActionReachable(page: Page, locator: Locator, label: string): Promise<void> {
   await scrollMainToBottom(page);
   await expectInViewport(page, locator, label);
@@ -243,6 +335,12 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
       await expectInViewport(page, page.getByTestId("battle-hero-panel"), `${viewport.label} hero panel`);
       await expectInViewport(page, page.getByTestId("battle-minimap"), `${viewport.label} minimap`);
+      await selectBattleBuilding(page, "command_hall", "Command Hall");
+      await expectNoHorizontalOverflow(page, `${viewport.label} command hall commands`);
+      await expectBattleCommandButtonsReachable(page, ["build", "upgrade"], `${viewport.label} command hall`);
+      await createCompletedBarracksAndSelect(page);
+      await expectNoHorizontalOverflow(page, `${viewport.label} barracks commands`);
+      await expectBattleCommandButtonsReachable(page, ["train", "upgrade"], `${viewport.label} barracks`);
 
       await showVictoryResults(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} results`);

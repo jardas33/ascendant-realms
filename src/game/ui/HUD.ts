@@ -122,9 +122,8 @@ export class HUD {
       </div>
       <div class="${sidePanelClass}">
         <div class="panel-title">${escapeHtml(selectionTitle(selected))}</div>
-        ${this.renderSelection(selectedOne, selected)}
-        ${this.renderActions(selectedOne, snapshot)}
-        ${this.renderAbilities(abilities, snapshot.hero)}
+        <div class="command-tray">${this.renderActions(selectedOne, snapshot)}${this.renderAbilities(abilities, snapshot.hero)}</div>
+        <div class="selection-summary">${this.renderSelection(selectedOne, selected)}</div>
       </div>
       <div class="minimap-shell" data-testid="battle-minimap">
         ${renderMinimap(snapshot.minimap)}
@@ -239,7 +238,15 @@ export class HUD {
           : canAfford(snapshot.resources, definition.cost)
             ? undefined
             : "Insufficient resources";
-        return `<button class="hud-button ${lockReason ? "locked" : ""}" data-action="build" data-id="${definition.id}" data-source-id="${selectedOne.id}" ${lockReason ? "disabled" : ""}>Build ${escapeHtml(definition.name)}<small>${escapeHtml(lockReason ?? formatCost(definition.cost))}</small></button>`;
+        return this.renderCommandButton({
+          action: "build",
+          verb: "Build",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          name: definition.name,
+          detail: lockReason ?? formatCost(definition.cost),
+          locked: Boolean(lockReason)
+        });
       })
       .join("");
 
@@ -253,7 +260,15 @@ export class HUD {
           : canAfford(snapshot.resources, definition.cost)
             ? undefined
             : "Insufficient resources";
-        return `<button class="hud-button ${lockReason ? "locked" : ""}" data-action="train" data-id="${definition.id}" data-source-id="${selectedOne.id}" ${lockReason ? "disabled" : ""}>Train ${escapeHtml(definition.name)}<small>${escapeHtml(lockReason ?? formatCost(definition.cost))}</small></button>`;
+        return this.renderCommandButton({
+          action: "train",
+          verb: "Train",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          name: definition.name,
+          detail: lockReason ?? formatCost(definition.cost),
+          locked: Boolean(lockReason)
+        });
       })
       .join("");
 
@@ -273,7 +288,15 @@ export class HUD {
               : canAfford(snapshot.resources, definition.cost)
                 ? undefined
                 : "Insufficient resources";
-        return `<button class="hud-button ${lockReason ? "locked" : ""}" data-action="upgrade" data-id="${definition.id}" data-source-id="${selectedOne.id}" ${lockReason ? "disabled" : ""}>Research ${escapeHtml(definition.name)}<small>${escapeHtml(lockReason ?? formatCost(definition.cost))}</small></button>`;
+        return this.renderCommandButton({
+          action: "upgrade",
+          verb: "Research",
+          id: definition.id,
+          sourceId: selectedOne.id,
+          name: definition.name,
+          detail: lockReason ?? formatCost(definition.cost),
+          locked: Boolean(lockReason)
+        });
       })
       .join("");
 
@@ -288,6 +311,36 @@ export class HUD {
       sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
     }
     return sections.join("");
+  }
+
+  private renderCommandButton(options: {
+    action: "build" | "train" | "upgrade";
+    verb: string;
+    id: string;
+    sourceId: string;
+    name: string;
+    detail: string;
+    locked: boolean;
+  }): string {
+    const label = `${options.verb} ${options.name}. ${options.detail}`;
+    return `
+      <button
+        class="hud-button command-button ${options.locked ? "locked" : ""}"
+        data-action="${options.action}"
+        data-command-kind="${options.action}"
+        data-id="${options.id}"
+        data-source-id="${options.sourceId}"
+        aria-label="${escapeHtml(label)}"
+        title="${escapeHtml(label)}"
+        ${options.locked ? "disabled" : ""}
+      >
+        <span class="command-label">
+          <span class="command-verb">${escapeHtml(options.verb)}</span>
+          <span class="command-name">${escapeHtml(options.name)}</span>
+        </span>
+        <small>${escapeHtml(options.detail)}</small>
+      </button>
+    `;
   }
 
   private renderProductionQueue(building: Building): string {

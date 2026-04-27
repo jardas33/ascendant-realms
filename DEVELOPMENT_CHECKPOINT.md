@@ -1,56 +1,16 @@
 # Development Checkpoint
 
-Updated: 2026-04-26 19:50 -04:00
+Updated: 2026-04-26 22:48 -04:00
 
-## Current Health
+## Checkpoint Scope
 
-The project is safe to checkpoint from automated verification. Unit tests pass, the production build passes, and the Playwright browser suite passes. No new gameplay feature work was added during this checkpoint pass.
+This checkpoint preserves the current dirty prototype work before any new feature work. No gameplay behavior was intentionally changed during this checkpoint pass; only verification and checkpoint documentation were updated.
 
-This checkpoint preserves the current uncommitted prototype work, including:
+The checkpoint includes the in-progress first-campaign balance tuning, RTS systems polish, save-system split, BattleScene systems wiring helper, HUD/responsive polish, QA documentation, and related test updates described in `LLM_GAME_HANDOFF.md`.
 
-- Battle HUD polish and responsive battle UI adjustments.
-- Building placement feedback improvements for build commands and placement ghost visibility.
-- First-30-minute balance tuning documentation and conservative data changes.
-- CampaignMapScene helper extraction.
-- HeroProgressionScene helper extraction.
-- ResultsScene helper architecture from the prior reduction pass.
-- Manual QA run documentation in `QA_RUN.md`.
-- Selection indicator polish for unit/building ground markers.
+## Verification Results
 
-## Git And Remote Status
-
-Branch:
-
-```text
-main
-```
-
-Remote:
-
-```text
-origin https://github.com/jardas33/ascendant-realms.git
-```
-
-Current commit hash before creating this safety checkpoint:
-
-```text
-ee4e29de30ca1ea969e7deabaaff08d53b24c26f
-```
-
-Branch relationship before committing:
-
-```text
-origin/main...HEAD = 0 behind / 0 ahead
-working tree dirty with 26 changed/untracked paths staged for the safety checkpoint after verification
-```
-
-After the checkpoint commit is created and pushed, verify the final checkpoint commit hash with:
-
-```bash
-git rev-parse HEAD
-```
-
-## Test Status
+### Unit Tests
 
 Command:
 
@@ -63,10 +23,16 @@ Result:
 ```text
 PASS
 25 test files passed
-117 tests passed
+118 tests passed
 ```
 
-## Build Status
+Run time reported by Vitest:
+
+```text
+7.00s
+```
+
+### Production Build
 
 Command:
 
@@ -86,10 +52,10 @@ Known build warning:
 
 ```text
 Some chunks are larger than 500 kB after minification.
-Main JS bundle is approximately 1.79 MB minified / 424 KB gzip.
+Main JS bundle: 1,794.50 kB minified / 425.09 kB gzip.
 ```
 
-## Browser E2E Status
+### Browser E2E
 
 Command:
 
@@ -102,86 +68,51 @@ Result:
 ```text
 PASS
 25 Playwright tests passed
+9.1m
 ```
 
-Covered browser flows include:
+Covered browser flows include main menu boot, settings persistence, hero creation, campaign map state, campaign choices and town services, inventory and skill persistence, Results victory/defeat actions, all skirmish map launches, AI personality launches, battle HUD controls, building placement cancellation, capture/build/train/rally flow, live objective resolution, and responsive layout reachability across desktop, tablet, and mobile.
 
-- Main menu, credits/info, reset, and Asset Gallery.
-- Settings screen persistence for audio/accessibility options.
-- New Campaign and HeroCreationScene.
-- Campaign map locked/available node behavior.
-- Campaign event choices, reputation, resources, modifiers, and Marcher Camp services.
-- Inventory equip/unequip and skill spending.
-- ResultsScene victory/defeat, Equip Now, defeat tips, retry/campaign actions.
-- Skirmish map launches for First Claim, Broken Ford, and Ashen Outpost.
-- Battle HUD minimap movement, fog toggle, building placement cancel, and Command Hall actions.
-- Build Barracks placement ghost visibility near the Command Hall.
-- First-battle RTS loop: hero selection, Crown Shrine capture, Barracks placement/construction, Militia queue/training, rally point, and campaign victory rewards.
-- Live BattleScene victory/defeat objective resolution into Results.
-- Responsive layout reachability across desktop, tablet, and mobile viewports.
+## Git And Branch Status
 
-## Manual QA Status
-
-Artifact:
+Branch before checkpoint:
 
 ```text
-QA_RUN.md
+main tracking origin/main
+0 commits ahead, 0 commits behind
+working tree dirty with verified in-progress changes
 ```
 
-Result:
+Remote:
 
 ```text
-PASS WITH CAVEATS
-No critical failures found in the documented QA run.
+origin https://github.com/jardas33/ascendant-realms.git
 ```
 
-This checkpoint pass did not add a new manual browser run beyond the automated Playwright suite. The previous documented manual QA caveats still stand:
+Checkpoint commit hash:
 
-- Audible audio confirmation still needs human ears.
-- Full human-paced victory/defeat and first-wave survival/loss remain balance/feel checks.
-- Queue cancel/refund, Mystic Lodge/Acolyte, Watchtower attacks, full upgrade UI matrix, Chapel choices, Ashen Outpost special-objective display, and full minimap ping/color inspection remain follow-up QA items.
+```text
+PENDING - to be recorded immediately after the checkpoint commit is created.
+```
 
-## Asset Refresh Status
+Checkpoint commit message:
 
-`npm run assets:refresh` was not run because no asset registry, manual source-art, generated sprite, or manifest input files changed during this checkpoint pass.
-
-Run `npm run assets:refresh` before the next checkpoint if any of these change:
-
-- `tools/manual-asset-pipeline/*`
-- `public/assets/manual/*`
-- generated battle sprites
-- asset manifests
+```text
+Checkpoint first campaign balance and RTS systems polish
+```
 
 ## Remaining Known Risks
 
-- `BattleScene` remains the largest live-scene risk because it still owns system construction/wiring, input callbacks, fog overlay rendering, rally marker graphics, runtime update order, and audio/settings integration.
-- Full battle victory through normal human input remains manual QA; automated tests cover accelerated and objective-resolution paths.
-- Audible audio behavior still needs human verification.
-- Balance remains prototype-level and needs human Easy/Normal playthroughs.
-- Vite large bundle warning remains.
-- `SaveSystem` migration/normalization remains sensitive because localStorage save compatibility must stay safe.
-- Campaign choices and town services are covered by rules/e2e tests, but the UI can still become crowded as content grows.
-- Fog is grid-based and not blocker-aware.
-- Enemy AI is still paced/simple and does not construct, retreat, or adapt composition.
-- Item instances exist, but affixes, crafting, durability, and full item art integration are not implemented.
+- Full human-paced Border Village and Old Stone Road playthroughs still need timing/feel checks on Easy.
+- Aether Well Ruins and Bandit Hillfort need Normal human playtests from a typical early campaign save.
+- Ashen Outpost needs manual validation with and without Chapel repair.
+- Audible audio behavior still needs human-ear confirmation.
+- Mystic Lodge/Acolyte, Watchtower attacks, full research UI, Chapel choices, Ashen Outpost special-objective display, fog override, colorblind minimap, and minimap ping coverage remain follow-up QA targets.
+- `BattleScene` remains the highest live-scene integration risk even after helper extraction.
+- Save migration and normalization are sensitive because localStorage compatibility must remain intact.
+- Vite still reports the known large Phaser bundle warning.
+- Balance is still prototype-level and should not be expanded with new systems until the first-hour campaign feels good in manual play.
 
-## Local And Remote Sync
+## Next Recommended Action
 
-At the time this checkpoint file was written, `main` and `origin/main` were synced at the previous commit, with verified local changes still uncommitted.
-
-Expected final state after the checkpoint commit and push:
-
-```text
-working tree clean
-main synced with origin/main
-```
-
-If push fails, run:
-
-```bash
-git push origin main
-```
-
-## Next Recommended Task
-
-After this safety checkpoint is committed and pushed, the next high-value engineering task is to safely extract BattleScene system construction and wiring into focused helpers while preserving runtime update order, fog/minimap/audio/settings behavior, and existing tests.
+Commit and push this verified checkpoint, then do a human-paced first-hour campaign QA pass before adding new gameplay systems. Focus that pass on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, both Normal branch battles, and Ashen Outpost fortress pressure.

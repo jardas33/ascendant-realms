@@ -70,6 +70,30 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.clearedMapIds).toEqual(["first_claim", "broken_ford"]);
   });
 
+  it("preserves existing item instances while removing duplicate instance ids", () => {
+    const itemInstance = createItemInstance("captains_seal", "test");
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      inventory: [
+        { ...itemInstance, affixes: ["steady", "steady"], locked: true, favorite: true },
+        { ...itemInstance, source: "duplicate" }
+      ],
+      equipment: {
+        trinket: itemInstance.instanceId
+      }
+    });
+
+    expect(normalized?.inventory).toHaveLength(1);
+    expect(normalized?.inventory[0]).toMatchObject({
+      instanceId: itemInstance.instanceId,
+      itemId: "captains_seal",
+      affixes: ["steady"],
+      locked: true,
+      favorite: true
+    });
+    expect(normalized?.equipment.trinket).toBe(itemInstance.instanceId);
+  });
+
   it("normalizes numeric progression fields into safe ranges", () => {
     const normalized = normalizeHeroSaveData({
       ...createFallbackHeroSave(),
@@ -279,11 +303,13 @@ describe("save version migration", () => {
     expect(SaveSystem.saveSettings(settings)).toBe(true);
     const settingsOnly = SaveSystem.load();
     expect(SaveSystem.isSettingsOnlySave(settingsOnly)).toBe(true);
+    expect(SaveSystem.hasSave()).toBe(false);
     expect(settingsOnly?.settings).toEqual(settings);
 
     expect(SaveSystem.saveHero(createFallbackHeroSave())).toBe(true);
     const loaded = SaveSystem.load();
     expect(SaveSystem.isSettingsOnlySave(loaded)).toBe(false);
+    expect(SaveSystem.hasSave()).toBe(true);
     expect(loaded?.settings).toEqual(settings);
   });
 

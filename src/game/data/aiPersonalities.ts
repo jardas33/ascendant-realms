@@ -52,14 +52,14 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
     preferredUnitIds: ["raider", "hexer"],
     unitPlan: ["raider", "raider", "raider", "hexer", "raider"],
     timing: {
-      firstAttackDelayMultiplier: 0.8,
-      attackIntervalMultiplier: 0.82,
-      expandIntervalMultiplier: 0.78,
+      firstAttackDelayMultiplier: 0.86,
+      attackIntervalMultiplier: 0.88,
+      expandIntervalMultiplier: 0.82,
       trainIntervalMultiplier: 0.9,
       commanderJoinDelayMultiplier: 1.12
     },
     economy: {
-      incomeMultiplier: 0.92
+      incomeMultiplier: 0.88
     },
     waves: {
       attackWaveSizeMultiplier: 0.9,
@@ -115,10 +115,10 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
       commanderJoinDelayMultiplier: 0.95
     },
     economy: {
-      incomeMultiplier: 1.05
+      incomeMultiplier: 1.02
     },
     waves: {
-      attackWaveSizeMultiplier: 1.12,
+      attackWaveSizeMultiplier: 1.08,
       minAttackArmySizeDelta: 1,
       phaseOverrides: {
         expansion: {
@@ -164,14 +164,14 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
     preferredUnitIds: ["hexer", "raider", "brute"],
     unitPlan: ["hexer", "raider", "hexer", "hexer", "brute"],
     timing: {
-      firstAttackDelayMultiplier: 1.05,
-      attackIntervalMultiplier: 1.05,
+      firstAttackDelayMultiplier: 1.08,
+      attackIntervalMultiplier: 1.08,
       expandIntervalMultiplier: 1,
       trainIntervalMultiplier: 0.95,
       commanderJoinDelayMultiplier: 0.92
     },
     economy: {
-      incomeMultiplier: 1.08
+      incomeMultiplier: 1.02
     },
     waves: {
       attackWaveSizeMultiplier: 1,

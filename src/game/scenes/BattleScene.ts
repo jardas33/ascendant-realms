@@ -12,7 +12,6 @@ import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
 import {
-  BUILDING_BY_ID,
   AI_PERSONALITY_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
@@ -21,13 +20,13 @@ import {
 import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
-import { EnemyAIController } from "../ai/EnemyAIController";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
 import { spawnBattleScenario } from "../battle/BattleSceneSpawner";
+import { createBattleFogOfWar, createBattleSceneSystems, type BattleSceneSystems } from "../battle/BattleSceneSystems";
 import {
   appendMinimapPing,
   firstBattleTutorialHint,
@@ -53,29 +52,15 @@ import { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { SaveSettingsData } from "../save/SaveTypes";
-import { HUD } from "../ui/HUD";
 import { FloatingText } from "../ui/FloatingText";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
-import { AbilitySystem } from "../systems/AbilitySystem";
-import { AISystem } from "../systems/AISystem";
 import { AudioManager } from "../systems/AudioManager";
-import { BuildingSystem } from "../systems/BuildingSystem";
-import { CameraSystem } from "../systems/CameraSystem";
 import { CollisionSystem } from "../systems/CollisionSystem";
-import { CombatSystem } from "../systems/CombatSystem";
-import { FogOfWarSystem, isEntityVisibleToPlayer, type VisionSource } from "../systems/FogOfWarSystem";
-import { InputSystem } from "../systems/InputSystem";
-import { MovementSystem } from "../systems/MovementSystem";
-import { ResourceSystem } from "../systems/ResourceSystem";
-import { SelectionSystem } from "../systems/SelectionSystem";
-import { TrainingSystem } from "../systems/TrainingSystem";
+import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
 import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
 import { tickStatusEffects } from "../systems/StatusEffectSystem";
-import { UISystem } from "../systems/UISystem";
 import { applyUpgradeToUnit } from "../systems/UpgradeEffects";
-import { UpgradeSystem } from "../systems/UpgradeSystem";
 import type { TechState } from "../systems/PrerequisiteSystem";
-import { XPSystem } from "../systems/XPSystem";
 
 interface BattleSceneData {
   launchRequest?: BattleLaunchRequest;
@@ -96,19 +81,19 @@ export class BattleScene extends Phaser.Scene {
   private captureSites: CaptureSite[] = [];
   private hero!: Hero;
 
-  private movementSystem!: MovementSystem;
-  private combatSystem!: CombatSystem;
-  private resourceSystem!: ResourceSystem;
-  private buildingSystem!: BuildingSystem;
-  private trainingSystem!: TrainingSystem;
-  private upgradeSystem!: UpgradeSystem;
-  private selectionSystem!: SelectionSystem;
-  private abilitySystem!: AbilitySystem;
-  private cameraSystem!: CameraSystem;
-  private inputSystem!: InputSystem;
-  private uiSystem!: UISystem;
-  private xpSystem!: XPSystem;
-  private aiSystem!: AISystem;
+  private movementSystem!: BattleSceneSystems["movementSystem"];
+  private combatSystem!: BattleSceneSystems["combatSystem"];
+  private resourceSystem!: BattleSceneSystems["resourceSystem"];
+  private buildingSystem!: BattleSceneSystems["buildingSystem"];
+  private trainingSystem!: BattleSceneSystems["trainingSystem"];
+  private upgradeSystem!: BattleSceneSystems["upgradeSystem"];
+  private selectionSystem!: BattleSceneSystems["selectionSystem"];
+  private abilitySystem!: BattleSceneSystems["abilitySystem"];
+  private cameraSystem!: BattleSceneSystems["cameraSystem"];
+  private inputSystem!: BattleSceneSystems["inputSystem"];
+  private uiSystem!: BattleSceneSystems["uiSystem"];
+  private xpSystem!: BattleSceneSystems["xpSystem"];
+  private aiSystem!: BattleSceneSystems["aiSystem"];
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
@@ -218,7 +203,7 @@ export class BattleScene extends Phaser.Scene {
     this.activeMap = this.launch.map;
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
-    this.fogOfWar = new FogOfWarSystem(this.activeMap.width, this.activeMap.height);
+    this.fogOfWar = createBattleFogOfWar(this.activeMap);
     this.fogUpdateTimer = 0;
     this.fogDebugDisabled = false;
     this.lastSelectionAudioKey = "";
@@ -263,204 +248,57 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createSystems(): void {
-    this.selectionSystem = new SelectionSystem(() => [
-      ...this.units.filter((unit) => unit.team === "player"),
-      ...this.buildings.filter((building) => building.team === "player")
-    ]);
-
-    this.movementSystem = new MovementSystem({
-      onPathFailed: (unit, target) => {
-        if (unit.team === "player") {
-          this.showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978");
-        }
-      }
-    });
-    this.trainingSystem = new TrainingSystem({
+    // BattleScene keeps ownership of lifecycle state; BattleSceneSystems keeps constructor wiring in one place.
+    const systems = createBattleSceneSystems({
       scene: this,
-      addUnit: (unit) => this.addUnit(unit),
-      onMessage: (message, x, y) => this.showMessage(message, x, y),
-      onUnitTrained: (unit) => {
-        if (unit.team === "player") {
-          this.runtime.recordUnitTrained(unit.definition.id);
-          AudioManager.play("unit_trained");
-        }
-      },
-      getTechState: (team) => this.getTechState(team)
-    });
-    this.buildingSystem = new BuildingSystem({
-      scene: this,
-      map: this.activeMap,
-      getBuildings: () => this.buildings,
-      getCaptureSites: () => this.captureSites,
-      addBuilding: (building) => this.addBuilding(building),
-      onMessage: (message, x, y) => this.showMessage(message, x, y),
-      onConstructionStarted: (building) => {
-        if (building.team === "player") {
-          this.selectionSystem.setSelection([building]);
-          AudioManager.play("build_started");
-        }
-      },
-      onBuilt: (building) => {
-        if (building.team === "player") {
-          this.runtime.recordBuildingBuilt(building.definition.id);
-          AudioManager.play("build_complete");
-        }
-      }
-    });
-    this.upgradeSystem = new UpgradeSystem({
-      getTechState: (team) => this.getTechState(team),
-      isResearched: (team, upgradeId) => this.isUpgradeResearched(team, upgradeId),
-      markResearched: (team, upgradeId) => this.markUpgradeResearched(team, upgradeId),
-      onMessage: (message, x, y) => this.showMessage(message, x, y),
-      onUpgradeCompleted: (team, upgrade) => this.applyUpgradeEffects(team, upgrade)
-    });
-    this.xpSystem = new XPSystem(this.hero, (amount, leveledUp) => {
-      this.runtime.recordXpGained(amount);
-      this.showMessage(leveledUp ? `Level up! +${amount} XP` : `+${amount} XP`, this.hero.position.x, this.hero.position.y - 54, "#f6e27d");
-    });
-    this.combatSystem = new CombatSystem({
-      scene: this,
+      activeMap: this.activeMap,
+      launch: this.launch,
+      runtime: this.runtime,
+      resources: this.resources,
+      hero: this.hero,
       getUnits: () => this.units,
       getBuildings: () => this.buildings,
       getProjectiles: () => this.projectiles,
+      getCaptureSites: () => this.captureSites,
+      addUnit: (unit) => this.addUnit(unit),
+      addBuilding: (building) => this.addBuilding(building),
       addProjectile: (projectile) => this.projectiles.push(projectile),
-      onDamage: (target, amount) => {
-        if (amount >= 5) {
-          FloatingText.show(this, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
-        }
-        this.warnIfCommandHallUnderAttack(target);
-      },
-      onStatusApplied: (target, statusName) => {
-        FloatingText.show(this, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
-      },
-      onKill: (killer, target) => this.handleKill(killer, target)
-    });
-    this.resourceSystem = new ResourceSystem({
-      resources: this.resources,
-      onCapture: (site, owner) => {
-        if (owner === "player") {
-          this.runtime.recordResourceCaptured(site.definition.id);
-          this.showMessage(`${site.definition.name} captured`, site.position.x, site.position.y - 70, "#aef7b7");
-          this.completeSecondaryObjective("capture_site", site.definition.id, site.position);
-          return;
-        }
-        if (owner === "enemy") {
-          this.addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} captured by enemy`);
-        }
-      },
-      onIncome: (site, owner, amount) => {
-        if (owner === "player") {
-          this.showMessage(`+${amount} ${site.definition.resource}`, site.position.x, site.position.y - 64, "#f5efc2");
-        }
-      }
-    });
-    this.abilitySystem = new AbilitySystem({
-      scene: this,
-      getUnits: () => this.units,
-      getBuildings: () => this.buildings,
-      addProjectile: (projectile) => this.projectiles.push(projectile),
-      onDamage: (target, amount) => {
-        if (amount >= 5) {
-          FloatingText.show(this, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
-        }
-        this.warnIfCommandHallUnderAttack(target);
-      },
-      onKill: (killer, target) => this.handleKill(killer, target),
-      onMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
-    });
-    this.cameraSystem = new CameraSystem(this, this.activeMap);
-
-    const hud = new HUD({
-      onBuild: (buildingId, sourceBuildingId) => {
-        const source = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        this.buildingSystem.startPlacement(buildingId, { anchor: source?.position, resources: this.resources.player });
-        AudioManager.play("ui_click");
-        const definition = BUILDING_BY_ID[buildingId];
-        this.showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`);
-      },
-      onTrain: (unitId, sourceBuildingId) => {
-        const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        if (building) {
-          if (this.trainingSystem.queueTraining(building, unitId, this.resources.player)) {
-            AudioManager.play("ui_click");
-          }
-        }
-      },
-      onCancelTrain: (sourceBuildingId, queueIndex) => {
-        const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        if (building) {
-          this.trainingSystem.cancelTraining(building, queueIndex, this.resources.player);
-        }
-      },
-      onUpgrade: (upgradeId, sourceBuildingId) => {
-        const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        if (building) {
-          if (this.upgradeSystem.queueUpgrade(building, upgradeId, this.resources.player)) {
-            AudioManager.play("ui_click");
-          }
-        }
-      },
-      onCancelUpgrade: (sourceBuildingId, queueIndex) => {
-        const building = this.buildings.find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        if (building) {
-          this.upgradeSystem.cancelUpgrade(building, queueIndex, this.resources.player);
-        }
-      },
-      onAbility: (abilityId) => {
-        AudioManager.play("ability_cast");
-        this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected());
-      },
-      onMinimapMove: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
-      onMenu: () => this.scene.start(SCENE_KEYS.mainMenu)
-    });
-    this.uiSystem = new UISystem(hud);
-
-    this.inputSystem = new InputSystem({
-      scene: this,
-      selection: this.selectionSystem,
-      findWorldEntityAt: (point) => this.findWorldEntityAt(point),
-      isPlacingBuilding: () => Boolean(this.buildingSystem.pendingBuildingId),
-      updateBuildingGhost: (point) => this.buildingSystem.updateGhost(point.x, point.y, this.resources.player),
-      placeBuilding: (point) => this.buildingSystem.tryPlace(point.x, point.y, this.resources.player),
-      cancelPlacement: () => {
-        this.buildingSystem.cancelPlacement();
-        this.showMessage("Building placement cancelled");
-      },
-      getSelectedUnits: () => this.selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
-      getSelectedRallyBuildings: () => this.selectedRallyBuildings(),
+      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color),
+      addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
+      warnIfCommandHallUnderAttack: (target) => this.warnIfCommandHallUnderAttack(target),
+      handleKill: (killer, target) => this.handleKill(killer, target),
+      completeSecondaryObjective: (type, targetId, point) => this.completeSecondaryObjective(type, targetId, point),
+      selectedRallyBuildings: () => this.selectedRallyBuildings(),
       setRallyPoint: (point, buildings) => this.setRallyPoint(point, buildings),
-      selectHero: () => {
-        if (this.hero.alive) {
-          this.selectionSystem.setSelection([this.hero]);
-        }
-      },
-      centerOnHero: () => this.cameraSystem.centerOn(this.hero.position),
+      findWorldEntityAt: (point) => this.findWorldEntityAt(point),
+      centerCameraFromMinimap: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
       toggleFogDebug: () => this.toggleFogDebug(),
-      showMessage: (message) => this.showMessage(message)
+      getTechState: (team) => this.getTechState(team),
+      isUpgradeResearched: (team, upgradeId) => this.isUpgradeResearched(team, upgradeId),
+      markUpgradeResearched: (team, upgradeId) => this.markUpgradeResearched(team, upgradeId),
+      applyUpgradeEffects: (team, upgrade) => this.applyUpgradeEffects(team, upgrade),
+      isFirstBattle: () => this.isFirstBattle(),
+      hasPlayerProductionBuilding: () => this.hasPlayerProductionBuilding(),
+      findPlayerBaseBuilding: () => this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player"),
+      trackEnemyWave: (units) => this.trackEnemyWave(units),
+      showBattleStartSummary: () => this.showBattleStartSummary(),
+      openMainMenu: () => this.scene.start(SCENE_KEYS.mainMenu)
     });
-    this.showBattleStartSummary();
 
-    const aiController = new EnemyAIController({
-      resources: this.resources.enemy,
-      getUnits: () => this.units,
-      getBuildings: () => this.buildings,
-      getCaptureSites: () => this.captureSites,
-      training: this.trainingSystem,
-      getAttackTarget: () => this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player"),
-      getElapsedSeconds: () => this.runtime.elapsedSeconds,
-      getPlayerMilestones: () => ({
-        isFirstBattle: this.isFirstBattle(),
-        hasCapturedSite: this.runtime.stats.resourcesCaptured > 0,
-        hasBuiltProduction: this.hasPlayerProductionBuilding()
-      }),
-      onAlert: (message, x, y) => this.showMessage(message, x, y, "#f6e27d"),
-      onWaveLaunched: (units) => this.trackEnemyWave(units),
-      difficulty: this.launch.request.difficulty,
-      config: this.activeMap.scenario.enemyAI,
-      aiPersonalityId: this.launch.request.aiPersonalityId
-    });
-    this.aiSystem = new AISystem(aiController);
+    this.movementSystem = systems.movementSystem;
+    this.combatSystem = systems.combatSystem;
+    this.resourceSystem = systems.resourceSystem;
+    this.buildingSystem = systems.buildingSystem;
+    this.trainingSystem = systems.trainingSystem;
+    this.upgradeSystem = systems.upgradeSystem;
+    this.selectionSystem = systems.selectionSystem;
+    this.abilitySystem = systems.abilitySystem;
+    this.cameraSystem = systems.cameraSystem;
+    this.inputSystem = systems.inputSystem;
+    this.uiSystem = systems.uiSystem;
+    this.xpSystem = systems.xpSystem;
+    this.aiSystem = systems.aiSystem;
   }
 
   private showBattleStartSummary(): void {

@@ -61,8 +61,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (unlocked.has("chapel_of_the_marches") && !completed.has("chapel_of_the_marches")) {
     return {
       title: "Campaign Choice Moment",
-      body: "Chapel of the Marches is a non-battle node. Use it to gain a blessing, spend campaign resources, or reveal another option.",
-      actions: ["Select Chapel of the Marches", "Compare choice costs", "Pick one once-only outcome"]
+      body: "Chapel of the Marches is a non-battle node. You can take a blessing, spend supplies on a lasting repair, or ask for scouting guidance without closing the chapel.",
+      actions: ["Select Chapel of the Marches", "Compare choice costs", "Use guidance if you want to scout first"]
     };
   }
 
@@ -120,8 +120,8 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
     case "chapel_of_the_marches":
       return {
         title: "Campaign Choice",
-        body: "The chapel offers a blessing or a resource-spending repair choice. Use it to shape your campaign before the next fight.",
-        actions: ["Review your campaign bank", "Choose a blessing", "Notice what unlocks"]
+        body: "The chapel offers a blessing, a resource-spending repair choice, and a guidance option that scouts the route without completing the node.",
+        actions: ["Review your campaign bank", "Choose a blessing or repair", "Use guidance if you are unsure"]
       };
     case "aether_well_ruins":
       return {
@@ -154,8 +154,8 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.outcome === "defeat") {
     return {
       title: "Recover And Retry",
-      body: "Defeat is a planning signal. Strengthen your hero, capture resources earlier, build production sooner, then retry on the same node or lower difficulty.",
-      actions: ["Build Barracks earlier", "Capture resource sites", "Equip prior rewards", "Try Story or Easy while learning"]
+      body: "Defeat is a planning signal. Equip prior rewards, capture at least one resource site, build a Barracks before the first attack, then retry or lower difficulty while learning.",
+      actions: ["Build Barracks earlier", "Set a rally point", "Equip prior rewards", "Try Story or Easy while learning"]
     };
   }
 

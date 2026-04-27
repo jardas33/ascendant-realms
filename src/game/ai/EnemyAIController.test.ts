@@ -6,7 +6,7 @@ import type { TrainingSystem } from "../systems/TrainingSystem";
 import { EnemyAIController } from "./EnemyAIController";
 
 describe("EnemyAIController first battle pacing", () => {
-  it("holds the Normal first attack until 3:00 and caps it to two units without player production", () => {
+  it("holds the Normal first attack until 3:15 and caps it to two units without player production", () => {
     const attacked: string[] = [];
     const waves: Unit[][] = [];
     const units = [
@@ -15,7 +15,7 @@ describe("EnemyAIController first battle pacing", () => {
       fakeEnemyUnit("hexer", "enemy_hexer_1", attacked),
       fakeEnemyUnit("enemy_commander", "enemy_commander_1", attacked)
     ];
-    let elapsedSeconds = 179;
+    let elapsedSeconds = 194;
     const controller = createController({
       units,
       getElapsedSeconds: () => elapsedSeconds,
@@ -24,11 +24,11 @@ describe("EnemyAIController first battle pacing", () => {
       onWaveLaunched: (wave) => waves.push(wave)
     });
 
-    controller.update(179);
+    controller.update(194);
     expect(attacked).toEqual([]);
     expect(waves).toEqual([]);
 
-    elapsedSeconds = 180;
+    elapsedSeconds = 195;
     controller.update(1);
 
     expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2"]);
@@ -47,13 +47,13 @@ describe("EnemyAIController first battle pacing", () => {
     ];
     const controller = createController({
       units,
-      getElapsedSeconds: () => 180,
+      getElapsedSeconds: () => 195,
       hasCapturedSite: true,
       hasBuiltProduction: true,
       onWaveLaunched: (wave) => waves.push(wave)
     });
 
-    controller.update(180);
+    controller.update(195);
 
     expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2", "enemy_hexer_1"]);
     expect(waves[0].map((unit) => unit.definition.id)).toEqual(["raider", "raider", "hexer"]);
@@ -86,13 +86,13 @@ function createController(options: {
     config: {
       incomeInterval: 5,
       incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
-      trainInterval: 5.4,
+      trainInterval: 5.8,
       expandInterval: 21,
       initialExpandDelay: 18,
-      attackInterval: 62,
-      initialAttackDelay: 180,
+      attackInterval: 66,
+      initialAttackDelay: 195,
       minAttackArmySize: 2,
-      attackWaveSize: 7,
+      attackWaveSize: 6,
       expandSquadSize: 2,
       defenseSquadSize: 6,
       defendRadius: 400,
