@@ -75,7 +75,7 @@ Covered browser flows include main menu boot, settings persistence, hero creatio
 
 ## Git And Branch Status
 
-Branch before this verification checkpoint commit:
+Branch after verification checkpoint push:
 
 ```text
 main tracking origin/main
@@ -104,7 +104,7 @@ Checkpoint first campaign balance and RTS systems polish
 Branch status note:
 
 ```text
-This fresh verification checkpoint commit is local and ahead of origin/main by 1 before the metadata recording commit and push.
+The fresh verification checkpoint commit and follow-up checkpoint metadata commits have been pushed to origin/main.
 ```
 
 ## Remaining Known Risks
