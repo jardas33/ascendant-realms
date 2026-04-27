@@ -92,13 +92,19 @@ origin https://github.com/jardas33/ascendant-realms.git
 Checkpoint commit hash:
 
 ```text
-PENDING - to be recorded immediately after the checkpoint commit is created.
+27d4daf063e0ffb9c433d4432c0c9a6813c95042
 ```
 
 Checkpoint commit message:
 
 ```text
 Checkpoint first campaign balance and RTS systems polish
+```
+
+Branch status after checkpoint commit:
+
+```text
+main ahead of origin/main by 1 commit before metadata recording and push
 ```
 
 ## Remaining Known Risks
