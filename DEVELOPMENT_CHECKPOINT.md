@@ -75,12 +75,12 @@ Covered browser flows include main menu boot, settings persistence, hero creatio
 
 ## Git And Branch Status
 
-Branch before checkpoint:
+Branch after checkpoint push:
 
 ```text
 main tracking origin/main
 0 commits ahead, 0 commits behind
-working tree dirty with verified in-progress changes
+working tree clean
 ```
 
 Remote:
@@ -101,10 +101,10 @@ Checkpoint commit message:
 Checkpoint first campaign balance and RTS systems polish
 ```
 
-Branch status after checkpoint commit:
+Branch status note:
 
 ```text
-main ahead of origin/main by 1 commit before metadata recording and push
+The checkpoint commit and follow-up checkpoint metadata commits have been pushed to origin/main.
 ```
 
 ## Remaining Known Risks
@@ -121,4 +121,4 @@ main ahead of origin/main by 1 commit before metadata recording and push
 
 ## Next Recommended Action
 
-Commit and push this verified checkpoint, then do a human-paced first-hour campaign QA pass before adding new gameplay systems. Focus that pass on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, both Normal branch battles, and Ashen Outpost fortress pressure.
+Do a human-paced first-hour campaign QA pass before adding new gameplay systems. Focus that pass on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, both Normal branch battles, and Ashen Outpost fortress pressure.
