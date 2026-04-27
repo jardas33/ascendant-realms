@@ -92,7 +92,7 @@ origin https://github.com/jardas33/ascendant-realms.git
 Checkpoint commit hash:
 
 ```text
-PENDING - to be recorded immediately after this verification checkpoint commit is created.
+67b457bdf9d9e85796920447a484455d7b7efe9f
 ```
 
 Checkpoint commit message:
@@ -104,7 +104,7 @@ Checkpoint first campaign balance and RTS systems polish
 Branch status note:
 
 ```text
-The prior first-campaign balance checkpoint and metadata commits were already pushed. This fresh verification checkpoint is being prepared from a clean local tree.
+This fresh verification checkpoint commit is local and ahead of origin/main by 1 before the metadata recording commit and push.
 ```
 
 ## Remaining Known Risks
