@@ -2,6 +2,135 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
+## First Claim Opening Readability - 2026-04-30
+
+Source: Browser Use visible playtest after the opening squad-selection polish.
+
+- Moved the `sunken_road_pack` neutral camp from `(710, 1110)` to `(650, 1240)`.
+- Reason: the first tutorial instruction asks the player to right-click the Crown Shrine with the starting squad. With the full squad selected, the old camp position could pull neutral creatures into the capture beat before the player had built production.
+- Intended result: Crown Shrine remains a clean first capture lesson; the Sunken Road Pack remains visible as an optional nearby risk after the player understands capture and construction.
+- Added a content-data guard so the first Crown Shrine stays farther from the Sunken Road Pack than capture radius plus normal aggro and opening formation spacing.
+- No enemy attack timing, resources, reward tables, unit stats, or campaign economy values changed in this pass.
+
+## Telemetry Follow-Up - 2026-04-27
+
+Source: `npm run playtest:sim` after aligning the automated driver with the live enemy AI config.
+
+Key fix before tuning: `EnemyAIController` and `ScriptedBattlePlaytest` now both use map-level `scenario.enemyAI` for initial attack delay, attack interval, wave size, training cadence, expansion cadence, and unit plan. Before this fix, several map-level timing changes were real data but were not fully represented in live attacks or automated telemetry.
+
+Telemetry read after this pass:
+
+- Border Village: 3 wins / 0 losses. First contact moved later and Barracks timing is fair again.
+- Old Stone Road: 3 wins / 0 losses. Raider Rush still pressures, but at least two scripts complete Barracks before contact.
+- Aether Well Ruins: 1 win / 2 non-wins. Safe Beginner wins; Greedy and Fast remain deliberate risk openings.
+- Bandit Hillfort: 1 win / 2 losses. Safe Beginner wins; Greedy Economy and Fast Army remain a known human-review risk.
+- Ashen Outpost: 1 win / 2 timeouts. Safe Beginner now wins after capturing Burned Shrine; Greedy and Fast Army still fail to finish.
+
+### Applied Follow-Up Changes
+
+| Area | Before | After | Telemetry reason |
+| --- | --- | --- | --- |
+| Live enemy AI timing source | Difficulty defaults for attack/train/expand pacing | Map `scenario.enemyAI` after personality modifiers | Map tuning and telemetry were diverging; balance numbers must drive the actual runtime. |
+| Playtest enemy AI timing source | Difficulty defaults for attack/train/expand pacing | Map `scenario.enemyAI` after personality modifiers | Keeps automated telemetry aligned with live battles. |
+| First Claim train interval | 5.4s | 5.6s | Config alignment moved Easy pressure earlier than intended; the opener needed a little more room. |
+| First Claim initial attack | 180s | 210s | Restores fair Barracks-before-contact timing on Border Village and Old Stone Road. |
+| First Claim attack interval | 62s | 68s | Reduces repeated Easy pressure while preserving Raider Rush identity. |
+| First Claim wave target | 7 | 6 | Prevents Easy follow-up waves from reading like Normal pressure after config alignment. |
+| Fortress Keeper commander join | 0.95x | 1.05x | Keeps commander-backed hillfort waves from spiking as early. |
+| Fortress Keeper assault cap | 7 units, up to 2 Brutes | 5 units, up to 1 Brute | Safe Beginner already wins; this trims late attrition while preserving the defensive identity. |
+| Fortress Keeper defense radius / squad / reserve | 1.28x radius, +2 squad, 2 reserve | 1.18x radius, +1 squad, 1 reserve | Reduces sticky late defensive pull that was overwhelming non-safe scripts. |
+| Hexfire train interval multiplier | 0.95x | 1.00x | Slows repeated caster replacement without changing opening warning timing. |
+| Hexfire assault cap | 6 units | 5 units | Ashen and Aether failures were sustained-pressure failures after first-wave survival. |
+| Ashen player starting bank | 520/360/210/120 | 560/390/235/140 | Gives the milestone a little more staging economy. |
+| Ashen starting army | 3 Militia, 1 Ranger | 4 Militia, 2 Rangers | Safe Beginner needed enough force to turn a correct staged opening into a win. |
+| Ashen enemy watchtowers | 2 | 1 | The shrine-side tower made the Burned Shrine approach read as a trap rather than a staging objective. |
+| Ashen enemy income per tick | 88/44/42/34 | 80/40/38/30 | Reduces fortress wave replacement after first-wave survival. |
+| Ashen map train interval | 6.2s | 7.0s | Slows enemy rebuild during the milestone fight. |
+| Ashen map attack interval | 68s | 78s | Gives more rebuild time after each survived wave. |
+| Ashen wave target | 8, then 7 | 6 | Keeps Hexfire pressure present without turning every later wave into an army wipe. |
+| Ashen defense squad / radius | 8 and 560, then 6 and 500 | 5 and 460 | Makes the fortress defend itself without pulling the entire map into every approach. |
+| Ashen simulator fortress approach | Flat Ashen fortress bonus | Lower bonus after Burned Shrine capture | Models the map objective as a real staged approach advantage for telemetry. |
+| Ashen live Burned Shrine effect | Objective completion only | Capturing Burned Shrine deals 45% max-HP damage to the gate Watchtower without destroying it | Aligns live play with telemetry: the staged route should visibly soften the fortress approach. |
+
+Telemetry report refinement after this pass:
+
+- `PLAYTEST_TELEMETRY.md` now separates structural `too_hard` failures from `needs_human_review` strategy-spread cases.
+- No current campaign battle node reports `too_hard`: first attack timing is fair across all five nodes, and Barracks timing is not the remaining problem.
+- Aether Well Ruins, Bandit Hillfort, and Ashen Outpost now report `needs_human_review`: Safe Beginner wins while riskier scripts fail or time out.
+- Greedy and Fast Army timing on Normal should be judged by intended design: if those scripts should be viable on milestone maps, tune final-assault attrition or route rewards; if they are supposed to be punished, leave them as risk reads.
+- Ashen Outpost defeat tips now point failed players toward Burned Shrine, Enemy Barracks, and Outpost Captain sequencing before falling back to generic opening advice.
+
+## Telemetry-Based Balance Pass - 2026-04-26
+
+Source: `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` generated by `npm run playtest:sim`.
+
+Telemetry read before this pass:
+
+- Border Village: 3 wins / 0 losses. Easy is forgiving and the first attack is fair.
+- Old Stone Road: 3 wins / 0 losses. Raider Rush is readable, though broad openings still win.
+- Aether Well Ruins: 1 win / 2 losses. First wave is survivable, but Normal attrition was too abrupt.
+- Bandit Hillfort: 1 win / 2 losses. Fortress pressure is survivable early but over-punishes non-safe scripts.
+- Ashen Outpost: 0 wins / 3 losses. Barracks and first unit timing are fine, but the fortress remains structurally unbeaten.
+
+Telemetry read after this pass:
+
+- Border Village and Old Stone Road stayed unchanged at 3 wins / 0 losses.
+- Aether Well Ruins improved from `too_hard` to `reasonable` in the simulator.
+- Bandit Hillfort remains `too_hard`: Safe Beginner wins, Greedy Economy and Fast Army still lose.
+- Ashen Outpost remains `too_hard` and not beatable by the scripted suite.
+- First enemy contact remains fair on all five battle nodes, and Barracks completes before first pressure on the relevant scripts.
+
+### Applied Timing And AI Changes
+
+| Area | Before | After | Telemetry reason |
+| --- | --- | --- | --- |
+| Normal enemy income | 0.86x | 0.82x | Normal losses came after surviving the first wave, so pressure needed less snowball without delaying the first lesson. |
+| Normal first attack | 195s | 195s | First contact was already fair on all Normal nodes. |
+| Normal attack interval | 66s | 72s | Gives more recovery time between the first survived wave and the later attrition waves. |
+| Normal attack wave target | 6 | 5 | Lowers follow-up wave ceiling without changing Easy. |
+| Normal train interval | 5.8s | 6.2s | Slows enemy reserve rebuild after waves are launched. |
+| Normal commander join | 570s | 630s | Keeps commander-backed waves from arriving as abruptly during the first Normal branch and Ashen midpoint. |
+| Hexfire Cult income | 1.02x | 0.98x | Aether Well and Ashen both failed through sustained caster pressure, not first-contact unfairness. |
+| Hexfire commander multiplier | 0.92x | 1.00x | Prevents the commander from joining caster waves too early on Ashen. |
+| Hexfire pressure wave cap | 5 units, up to 3 Hexers | 4 units, up to 2 Hexers | Telemetry showed the first wave survived, but repeated Hexer waves caused late collapse. |
+| Hexfire assault wave cap | 8 units, up to 3 Hexers and 2 Brutes | 6 units, up to 2 Hexers and 1 Brute | Keeps caster identity while reducing late-wave wipe pressure. |
+| Fortress Keeper income | 1.02x | 0.94x | Bandit Hillfort still beat non-safe scripts through attrition after the first wave. |
+| Fortress Keeper train interval multiplier | 1.02x | 1.25x | Reduces reserve rebuild and follow-up pressure. |
+| Fortress Keeper wave size multiplier | 1.08x | 1.00x | Keeps the defensive identity from becoming raw wave-size advantage. |
+| Fortress Keeper pressure cap | 5 units, up to 2 Brutes | 4 units, up to 1 Brute | Telemetry showed pressure-wave attrition, not an opening timing failure. |
+| Fortress Keeper assault cap | 9 units, up to 3 Brutes | 7 units, up to 2 Brutes | Preserves the late fortress threat while trimming endless collapse waves. |
+| Ashen player starting bank | 460 Crowns / 320 Stone / 180 Iron / 95 Aether | 520 Crowns / 360 Stone / 210 Iron / 120 Aether | Ashen scripts had enough timing but not enough structural force for a fortress assault. |
+| Ashen enemy starting bank | 280 Crowns / 220 Stone / 160 Iron / 125 Aether | 240 Crowns / 190 Stone / 135 Iron / 105 Aether | Reduces initial snowball on the milestone map. |
+| Ashen enemy income per tick | 100/50/50/40 | 88/44/42/34 | Reduces repeated fortress pressure while keeping map identity. |
+| Ashen map train interval | 5.2s | 6.2s | Slows runtime enemy replacement on the fortress map. |
+| Ashen map attack interval | 60s | 68s | Gives more rebuild time between milestone waves. |
+
+### Applied Campaign Economy And Reward Changes
+
+| Area | Before | After | Telemetry reason |
+| --- | --- | --- | --- |
+| Hire Volunteers | 55 Crowns | 50 Crowns | Normal failures make the extra Militia a useful prep option rather than a premium luxury. |
+| Buy Supplies | 45 Crowns for 30 Stone, 18 Iron, 8 Aether | 40 Crowns for 30 Stone, 18 Iron, 10 Aether | Makes supplies a clearer bridge from Easy rewards into Chapel and item costs. |
+| Marcher Plate | 80 Crowns, 18 Iron | 75 Crowns, 15 Iron | Border Village plus Old Stone Road telemetry leaves 15 Iron, so the first armor purchase should be reachable. |
+| Green Chapel Icon | 90 Crowns, 18 Aether | 85 Crowns, 16 Aether | Makes the trinket less likely to miss the first branch economy by a tiny amount. |
+| Well Rested | +15% hero max HP | +20% hero max HP | Normal losses are attrition losses after surviving first contact, so HP support should matter. |
+| Blessed Road | +10% hero max mana | +15% hero max mana | Makes the Chapel blessing more relevant before the milestone. |
+| Local Support | +10% next node resource reward | +15% next node resource reward | Makes Chapel repair more useful as Ashen preparation. |
+| Aether Well Ruins node reward | 70 XP, 35 Stone, 55 Aether | 80 XP, 45 Stone, 65 Aether | The first Normal branch needs to better fund recovery after a hard win. |
+| Bandit Hillfort node reward | 70 XP, 75 Crowns, 25 Stone, 50 Iron | 80 XP, 85 Crowns, 35 Stone, 60 Iron | Fortress branch remains hard, so the win should clearly prep Ashen. |
+| Pray for Strength | 35 XP, 15 Aether | 40 XP, 20 Aether | Makes the low-cost Chapel option more legible. |
+| Repair the Chapel | 50 Crowns, 60 Stone | 45 Crowns, 55 Stone | Keeps repair viable after branch rewards and supports Ashen prep. |
+| Protect Them | 45 Crowns, 35 XP | 40 Crowns, 40 XP | Makes the generous caravan line less punishing when Normal is already demanding. |
+| Recruit Volunteers | 20 Crowns, 25 Iron | 15 Crowns, 30 Iron | Makes the pragmatic line a clearer army-prep choice. |
+| Chapel guidance text | Warned about Hexers massing | Warns that Ashen needs a staged army, not an early probe | Matches telemetry: Ashen failures are attack-strength failures, not Barracks timing failures. |
+
+Remaining telemetry risks:
+
+- Bandit Hillfort still reports `too_hard`; the safe opening wins, but Greedy Economy and Fast Army fail after survived waves.
+- Ashen Outpost still reports `too_hard` and `Ashen Outpost beatable: no`.
+- Ashen needs a later pass on fortress assault structure if the design goal is for the scripted suite to beat it without human control.
+- No further Easy tuning is recommended from this telemetry.
+
 ## First Real Human-Paced Campaign Balance Pass - 2026-04-26
 
 Goal: make the first 30 minutes of the mini-campaign coherent, fair, and rewarding without adding systems, maps, factions, construction AI, workers, or affixes. This pass only changes pacing values, rewards, campaign costs, reward weights, and guidance text.
@@ -20,30 +149,30 @@ Intended first-30-minute arc:
 | --- | --- | --- | --- |
 | Story difficulty | 0.50x enemy income, first attack 260s, 90s attack interval, 8s train interval, commander 780s | 0.45x enemy income, first attack 300s, 100s attack interval, 9s train interval, commander 840s | Makes Story a clearer learning/testing lane with the longest warning window and no fog. |
 | Easy difficulty | 0.68x enemy income, first attack 225s, 78s attack interval, 6.6s train interval, commander 720s | 0.65x enemy income, first attack 240s, 82s attack interval, 7s train interval, commander 750s | Gives Border Village and Old Stone Road enough time for capture, Barracks, rally, and first defense. |
-| Normal difficulty | 0.90x enemy income, first attack 180s, 62s attack interval, 7-unit wave target, 5.4s train interval, commander 540s | 0.86x enemy income, first attack 195s, 66s attack interval, 6-unit wave target, 5.8s train interval, commander 570s | Keeps Normal dangerous after the opening while reducing the first branch spike. |
+| Normal difficulty | 0.90x enemy income, first attack 180s, 62s attack interval, 7-unit wave target, 5.4s train interval, commander 540s | 0.82x enemy income, first attack 195s, 72s attack interval, 5-unit wave target, 6.2s train interval, commander 630s | Keeps Normal dangerous after the opening while reducing the first branch spike and later telemetry attrition. |
 | Raider Rush personality | 0.80x first attack, 0.82x attack interval, 0.78x expansion interval, 0.92x income | 0.86x first attack, 0.88x attack interval, 0.82x expansion interval, 0.88x income | Preserves early pressure but makes Old Stone Road feel like a readable lesson instead of a surprise check. |
-| Fortress Keeper personality | 1.05x income, 1.12x wave size | 1.02x income, 1.08x wave size | Keeps the hillfort defensive identity while trimming the raw late-wave spike. |
-| Hexfire Cult personality | 1.05x first attack and interval, 1.08x income | 1.08x first attack and interval, 1.02x income | Makes caster pressure distinct through composition, not simply a stronger economy. |
+| Fortress Keeper personality | 1.05x income, 1.12x wave size | 0.94x income, 1.00x wave size, slower training, lower Brute caps | Keeps the hillfort defensive identity while trimming the raw late-wave spike. |
+| Hexfire Cult personality | 1.05x first attack and interval, 1.08x income | 1.08x first attack and interval, 0.98x income, lower Hexer and assault caps | Makes caster pressure distinct through composition, not simply a stronger economy. |
 
 ### Campaign Economy And Reward Changes
 
 | Node or Table | Before | After | Reason |
 | --- | --- | --- | --- |
 | Old Stone Road node reward | 45 XP, 50 Crowns, 40 Stone | 50 XP, 60 Crowns, 45 Stone, 15 Iron | Makes the second Easy battle pay enough to make Marcher Camp choices understandable. |
-| Well Rested | +10% next-battle hero max HP for 35 Crowns | +15% next-battle hero max HP for 30 Crowns | Gives the first rest service an immediately legible defensive benefit. |
-| Hire Volunteers | 50 Crowns | 55 Crowns | Keeps the extra starting Militia useful but slightly more premium than rest. |
-| Buy Supplies | 40 Crowns for 30 Stone, 14 Iron, 6 Aether | 45 Crowns for 30 Stone, 18 Iron, 8 Aether | Makes the conversion feel worthwhile for later repairs/items without becoming a power buy. |
-| Marcher Plate purchase | 85 Crowns, 20 Iron | 80 Crowns, 18 Iron | Makes the first armor purchase reachable after early battles and one branch reward. |
-| Green Chapel Icon purchase | 100 Crowns, 20 Aether | 90 Crowns, 18 Aether | Keeps the trinket expensive but less likely to be impossible after normal spending. |
-| Aether Well Ruins node reward | 60 XP, 50 Aether, Aether Lens | 70 XP, 35 Stone, 55 Aether, Aether Lens | Gives the first Normal caster branch both progression and repair-relevant resources. |
-| Bandit Hillfort node reward | 65 XP, 70 Crowns, 45 Iron, Captain's Seal | 70 XP, 75 Crowns, 25 Stone, 50 Iron, Captain's Seal | Makes the fortress branch a stronger prep route toward Ashen Outpost. |
-| Chapel repair | 55 Crowns, 65 Stone for 35 Aether, Green Chapel Icon, Local Support, recovery | 50 Crowns, 60 Stone for the same reward | Makes the support/preparation choice viable after reasonable early spending. |
-| Chapel guidance text | Warned about Ashen Outpost but read like a normal completion choice | Explicitly scouts without closing the chapel | Reduces confusion and supports planning before the milestone fight. |
-| Protect Them caravan choice | 30 Crowns, 10 Iron for 30 XP, Scout's Bow, +6 Common Folk, +2 Free Marches | 45 Crowns for 35 XP, Scout's Bow, +8 Common Folk, +2 Free Marches | Makes the generous choice costly in Crowns but not punishing to Iron progression. |
-| Recruit Volunteers caravan choice | Level 2 requirement, no cost, 25 XP, 30 Iron, Marcher Plate, Inspired Militia, -2 Common Folk | Level 2 requirement, 20 Crowns, 25 XP, 25 Iron, Marcher Plate, Inspired Militia, -4 Common Folk | Makes it a distinct pragmatic choice rather than a nearly free item/resource bundle. |
+| Well Rested | +10% next-battle hero max HP for 35 Crowns | +20% next-battle hero max HP for 30 Crowns | Gives the first rest service an immediately legible defensive benefit. |
+| Hire Volunteers | 50 Crowns | 50 Crowns | Keeps the extra starting Militia useful as a prep option after telemetry showed Normal attrition. |
+| Buy Supplies | 40 Crowns for 30 Stone, 14 Iron, 6 Aether | 40 Crowns for 30 Stone, 18 Iron, 10 Aether | Makes the conversion feel worthwhile for later repairs/items without becoming a power buy. |
+| Marcher Plate purchase | 85 Crowns, 20 Iron | 75 Crowns, 15 Iron | Makes the first armor purchase reachable after early battles. |
+| Green Chapel Icon purchase | 100 Crowns, 20 Aether | 85 Crowns, 16 Aether | Keeps the trinket expensive but less likely to be impossible after normal spending. |
+| Aether Well Ruins node reward | 60 XP, 50 Aether, Aether Lens | 80 XP, 45 Stone, 65 Aether, Aether Lens | Gives the first Normal caster branch both progression and repair-relevant resources. |
+| Bandit Hillfort node reward | 65 XP, 70 Crowns, 45 Iron, Captain's Seal | 80 XP, 85 Crowns, 35 Stone, 60 Iron, Captain's Seal | Makes the fortress branch a stronger prep route toward Ashen Outpost. |
+| Chapel repair | 55 Crowns, 65 Stone for 35 Aether, Green Chapel Icon, Local Support, recovery | 45 Crowns, 55 Stone for the same reward | Makes the support/preparation choice viable after reasonable early spending. |
+| Chapel guidance text | Warned about Ashen Outpost but read like a normal completion choice | Explicitly scouts without closing the chapel and warns against early fortress probes | Reduces confusion and supports planning before the milestone fight. |
+| Protect Them caravan choice | 30 Crowns, 10 Iron for 30 XP, Scout's Bow, +6 Common Folk, +2 Free Marches | 40 Crowns for 40 XP, Scout's Bow, +8 Common Folk, +2 Free Marches | Makes the generous choice costly in Crowns but not punishing to Iron progression. |
+| Recruit Volunteers caravan choice | Level 2 requirement, no cost, 25 XP, 30 Iron, Marcher Plate, Inspired Militia, -2 Common Folk | Level 2 requirement, 15 Crowns, 25 XP, 30 Iron, Marcher Plate, Inspired Militia, -4 Common Folk | Makes it a distinct pragmatic choice rather than a nearly free item/resource bundle. |
 | Demand Tribute caravan choice | 80 Crowns, Angered Raiders, -8 Common Folk, -2 Free Marches, -3 Ashen Covenant | 65 Crowns with the same consequences | Keeps the selfish option tempting but not the obvious best economy line. |
-| Ashen Outpost starting banks | Player 440/300/165/95, enemy 300/220/175/140 | Player 460/320/180/95, enemy 280/220/160/125 | Lets the player stage a fortress assault while reducing enemy snowball. |
-| Ashen Outpost enemy income | 105 Crowns, 52 Stone, 52 Iron, 42 Aether every 5s | 100 Crowns, 50 Stone, 50 Iron, 40 Aether every 5s | Keeps pressure steady but lowers attrition from repeated fortress waves. |
+| Ashen Outpost starting banks | Player 440/300/165/95, enemy 300/220/175/140 | Player 520/360/210/120, enemy 240/190/135/105 | Lets the player stage a fortress assault while reducing enemy snowball. |
+| Ashen Outpost enemy income | 105 Crowns, 52 Stone, 52 Iron, 42 Aether every 5s | 88 Crowns, 44 Stone, 42 Iron, 34 Aether every 5s | Keeps pressure steady but lowers attrition from repeated fortress waves. |
 | First Claim reward weights | Starter weapons 28 each, Scout's Bow 18, rare trinkets 7 each | Starter weapons 30 each, Scout's Bow 20, rare trinkets 5 each | Makes the first two battles more likely to award understandable early gear instead of spiky rare trinkets. |
 | Broken Ford reward weights | Scout's Bow 18, rare trinkets 13 each, Ashbound Censer 9, epics 4 each | Scout's Bow 16, rare trinkets 14 each, Ashbound Censer 10, epics 5 each | Slightly improves Normal-branch reward excitement after the guaranteed Fordbreaker Halberd. |
 | Ashen Outpost reward weights | Green Chapel Icon 12, Oathbound Aegis 7, Starfall Prism 5 | Green Chapel Icon 10, Oathbound Aegis 6, Starfall Prism 7 | Avoids overpaying the guaranteed campaign Aegis while making the milestone caster trinket less vanishingly rare. |
@@ -96,8 +225,8 @@ Ashen Outpost:
 
 - First Claim is the balanced tutorial skirmish. Its first Crown site is close, the side camps are readable, and the direct lane keeps the first attack easy to understand.
 - Broken Ford is wider at 2600x1700 and has more blocked terrain. The center pays better but is guarded and exposed, while side resources are safer but slower.
-- Ashen Outpost is the current mini-campaign milestone map at 2600x1800. It gives the player a stronger starting economy and one extra Militia, but the enemy fortress has two defensive towers, tighter upper-right terrain, Hexfire Cult pressure, and a central Burned Shrine that is valuable but dangerous. The enemy's starting bank and income are intentionally below the first fortress draft so the challenge comes from position, towers, and wave composition rather than raw economy alone.
-- All maps use the same global difficulty presets. Map-level `scenario.enemyAI` values can nudge expand and attack rhythm, but difficulty still controls income multiplier, attack delay, wave size, training speed, and commander timing.
+- Ashen Outpost is the current mini-campaign milestone map at 2600x1800. It gives the player a stronger starting economy, four Militia, and two Rangers, while the enemy fortress keeps one gate Watchtower, tighter upper-right terrain, Hexfire Cult pressure, and a central Burned Shrine that now weakens the gate Watchtower as the safe staged approach. The enemy's starting bank and income are intentionally below the first fortress draft so the challenge comes from position, tower cover, and wave composition rather than raw economy alone.
+- Difficulty still controls broad enemy income and commander timing, while map-level `scenario.enemyAI` now controls live attack delay, attack interval, wave target, training cadence, expansion cadence, and unit plan after personality modifiers.
 
 ## Construction Times
 
@@ -199,12 +328,12 @@ Marcher Camp is the first campaign-bank sink and unlocks after Old Stone Road. I
 
 Current Marcher Camp costs:
 
-- Rest and Recovery: 30 Crowns for Well Rested, a next-battle +15% hero maximum HP modifier.
-- Hire Volunteers: 55 Crowns for Inspired Militia, a next-battle extra Militia.
-- Buy Supplies: 45 Crowns for 30 Stone, 18 Iron, and 8 Aether.
+- Rest and Recovery: 30 Crowns for Well Rested, a next-battle +20% hero maximum HP modifier.
+- Hire Volunteers: 50 Crowns for Inspired Militia, a next-battle extra Militia.
+- Buy Supplies: 40 Crowns for 30 Stone, 18 Iron, and 10 Aether.
 - Emberglass Wand: 60 Crowns, one-time common weapon purchase.
-- Marcher Plate: 80 Crowns and 18 Iron, one-time uncommon armor purchase.
-- Green Chapel Icon: 90 Crowns and 18 Aether, one-time trinket purchase.
+- Marcher Plate: 75 Crowns and 15 Iron, one-time uncommon armor purchase.
+- Green Chapel Icon: 85 Crowns and 16 Aether, one-time trinket purchase.
 
 These costs are tuned so Border Village plus Old Stone Road rewards let the player buy one or two meaningful services or an early item immediately, but not clear the whole stock. Future economy passes should add more sinks before raising reward payouts.
 
@@ -231,15 +360,15 @@ Difficulty presets:
 
 - Story: 1 starting Raider, 0.45x income, first attack at 5:00, 100s interval, 2-unit waves, commander after 14:00, fog disabled.
 - Easy: 2 starting Raiders, 0.65x income, first attack at 4:00, 82s interval, 3-unit waves, commander after 12:30, fog enabled.
-- Normal: 2 Raiders, 1 Hexer, commander at base, 0.86x income, first attack at 3:15, 66s interval, phase-capped 6-unit waves, commander after 9:30, fog enabled.
+- Normal: 2 Raiders, 1 Hexer, commander at base, 0.82x income, first attack at 3:15, 72s interval, phase-capped 5-unit waves, commander after 10:30, fog enabled.
 - Hard: Raiders, Hexer, Brute, commander, 1.15x income, first attack at 2:30, 48s interval, larger waves, commander after 8:00, fog enabled.
 
 AI personalities live in `src/game/data/aiPersonalities.ts` and modify the base difficulty/map pacing:
 
 - Balanced Warlord: 1.0x baseline timing, mixed Raider/Hexer/Brute training, default for Border Village.
 - Raider Rush: 0.86x first-attack delay, 0.88x attack interval, 0.82x expansion interval, 0.88x income, mostly Raiders and Hexers, smaller late waves.
-- Fortress Keeper: 1.22x first-attack delay, 1.18x attack interval, 1.02x income, larger defense radius, defensive reserves, Brute-heavy late waves.
-- Hexfire Cult: 1.08x first-attack delay and attack interval, 1.02x income, more Hexers, dangerous caster bursts with fewer melee bodies.
+- Fortress Keeper: 1.22x first-attack delay, 1.18x attack interval, 0.94x income, slower training, larger defense radius, defensive reserves, Brute-heavy late waves.
+- Hexfire Cult: 1.08x first-attack delay and attack interval, 0.98x income, more Hexers, dangerous caster bursts with fewer melee bodies.
 
 Campaign assignments:
 
@@ -284,8 +413,8 @@ First-match protection:
 Expected enemy waves on Normal:
 
 - First wave, around 3:15 baseline or around 3:30 on Hexfire Cult: 2 Raiders, or 2 Raiders plus 1 Hexer if the player has already built production.
-- Mid waves, 5:00 to 8:00: 3 to 5 mixed Raiders, Hexers, and occasional Brutes.
-- Late waves, 8:00 onward: Brute and Hexer support, with commander participation after about 9:30 baseline.
+- Mid waves, 5:00 to 8:00: 3 to 4 mixed Raiders, Hexers, and occasional Brutes on the current Normal branch personalities.
+- Late waves, 8:00 onward: Brute and Hexer support, with commander participation after about 10:30 baseline.
 
 Intended first 10 minutes:
 

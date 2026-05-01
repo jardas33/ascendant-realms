@@ -119,6 +119,50 @@ describe("results reward flow", () => {
     expect(tips.join(" ")).toContain("equip rewards");
   });
 
+  it("adds Ashen Outpost objective tips before generic defeat advice", () => {
+    const stats: BattleStats = {
+      unitsKilled: 6,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 2,
+      buildingsBuilt: 2,
+      builtBuildingIds: ["barracks", "mystic_lodge"],
+      unitsTrained: 6,
+      trainedUnitIds: ["militia", "ranger", "militia", "ranger", "acolyte", "militia"],
+      enemyWavesSurvived: 2,
+      xpGained: 0,
+      timeSeconds: 420,
+      completedObjectiveIds: [],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "ashen_outpost", campaignNodeId: "ashen_outpost" });
+
+    expect(tips[0]).toContain("Burned Shrine");
+    expect(tips[0]).toContain("gate Watchtower");
+  });
+
+  it("advances Ashen Outpost defeat advice after Burned Shrine is complete", () => {
+    const stats: BattleStats = {
+      unitsKilled: 10,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 3,
+      buildingsBuilt: 3,
+      builtBuildingIds: ["barracks", "mystic_lodge", "watchtower"],
+      unitsTrained: 8,
+      trainedUnitIds: ["militia", "ranger", "militia", "ranger", "acolyte", "militia", "ranger", "militia"],
+      enemyWavesSurvived: 3,
+      xpGained: 0,
+      timeSeconds: 560,
+      completedObjectiveIds: ["capture_burned_shrine"],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "ashen_outpost" });
+
+    expect(tips[0]).toContain("Enemy Barracks");
+    expect(tips[0]).toContain("Stronghold");
+  });
+
   it("saves campaign node completion and does not grant the same node reward twice", () => {
     const campaign = createStartedCampaignSave();
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");

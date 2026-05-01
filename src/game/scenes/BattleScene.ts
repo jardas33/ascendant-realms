@@ -25,7 +25,8 @@ import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
-import { spawnBattleScenario } from "../battle/BattleSceneSpawner";
+import { applySecondaryObjectiveBattleEffect } from "../battle/SecondaryObjectiveEffects";
+import { spawnBattleScenario, type NeutralCampLabel } from "../battle/BattleSceneSpawner";
 import { createBattleFogOfWar, createBattleSceneSystems, type BattleSceneSystems } from "../battle/BattleSceneSystems";
 import {
   appendMinimapPing,
@@ -104,6 +105,7 @@ export class BattleScene extends Phaser.Scene {
   private rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
   private fogOfWar?: FogOfWarSystem;
   private fogOverlay?: Phaser.GameObjects.Graphics;
+  private neutralCampLabels: NeutralCampLabel[] = [];
   private fogUpdateTimer = 0;
   private fogDebugDisabled = false;
   private settings: SaveSettingsData = DEFAULT_SETTINGS;
@@ -139,7 +141,7 @@ export class BattleScene extends Phaser.Scene {
     this.createSystems();
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
-    this.selectionSystem.setSelection([this.hero]);
+    this.selectionSystem.setSelection(this.initialPlayerSelection());
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
   }
 
@@ -174,19 +176,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateTrackedEnemyWaves();
     this.updateTutorialHint();
     this.updateFogOfWar(deltaSeconds);
-    const selected = this.selectedUnitOrBuildings();
-    this.playSelectionAudio(selected);
-    this.uiSystem.update(deltaSeconds, {
-      resources: this.resources.player,
-      hero: this.hero,
-      selected,
-      elapsedSeconds: this.runtime.elapsedSeconds,
-      isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
-      status: this.statusMessage,
-      hint: this.tutorialHint,
-      techState: this.getTechState("player"),
-      minimap: this.createMinimapSnapshot()
-    });
+    this.refreshBattleHud(deltaSeconds);
     this.checkEndConditions();
   }
 
@@ -213,6 +203,7 @@ export class BattleScene extends Phaser.Scene {
     this.buildings = [];
     this.projectiles = [];
     this.captureSites = [];
+    this.neutralCampLabels = [];
     this.statusMessage = "Capture resource sites to grow your army.";
     this.statusTimer = 4;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
@@ -245,6 +236,7 @@ export class BattleScene extends Phaser.Scene {
     });
     this.hero = spawned.hero;
     this.captureSites = spawned.captureSites;
+    this.neutralCampLabels = spawned.neutralCampLabels;
   }
 
   private createSystems(): void {
@@ -351,7 +343,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    this.fogUpdateTimer = 0.24;
+    this.fogUpdateTimer = 0.12;
     fog.update(this.createVisionSources());
     this.renderFogOverlay();
     this.applyFogEntityVisibility(true);
@@ -395,24 +387,30 @@ export class BattleScene extends Phaser.Scene {
     const fog = this.fogOfWar;
     if (!fog || !fogEnabled) {
       [...this.units, ...this.buildings, ...this.captureSites, ...this.projectiles].forEach((entity) => entity.view?.setVisible(true));
+      this.neutralCampLabels.forEach((entry) => entry.label.setVisible(true));
       return;
     }
 
     this.units.forEach((unit) => unit.view?.setVisible(isEntityVisibleToPlayer(unit, fog, true)));
     this.buildings.forEach((building) => building.view?.setVisible(isEntityVisibleToPlayer(building, fog, true)));
     this.projectiles.forEach((projectile) => projectile.view?.setVisible(projectile.team === "player" || fog.isVisible(projectile.position)));
-    this.captureSites.forEach((site) => site.view?.setVisible(fog.isExplored(site.position)));
+    this.captureSites.forEach((site) =>
+      site.view?.setVisible(site.owner === "player" || fog.isEntityVisible(site.position, site.definition.radius))
+    );
+    this.neutralCampLabels.forEach((entry) => entry.label.setVisible(fog.isEntityVisible(entry.position, 48)));
   }
 
   private isFogActive(): boolean {
+    return this.isFogRequested() && !this.fogDebugDisabled;
+  }
+
+  private isFogRequested(): boolean {
     const difficultyFog = getBattleDifficulty(this.launch.request.difficulty).fogOfWarEnabled;
-    const requestedFog =
-      this.settings.fogEnabledOverride === "enabled"
-        ? true
-        : this.settings.fogEnabledOverride === "disabled"
-          ? false
-          : difficultyFog;
-    return requestedFog && !this.fogDebugDisabled;
+    return this.settings.fogEnabledOverride === "enabled"
+      ? true
+      : this.settings.fogEnabledOverride === "disabled"
+        ? false
+        : difficultyFog;
   }
 
   private isPointVisibleToPlayer(point: Position): boolean {
@@ -424,9 +422,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private toggleFogDebug(): void {
-    const difficulty = getBattleDifficulty(this.launch.request.difficulty);
-    if (!difficulty.fogOfWarEnabled) {
-      this.showMessage("Fog is disabled for this difficulty.");
+    if (!this.isFogRequested()) {
+      this.showMessage("Fog is disabled for this battle.");
       return;
     }
     this.fogDebugDisabled = !this.fogDebugDisabled;
@@ -522,10 +519,26 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  private createObjectiveSnapshot() {
+    const objectives = this.activeMap.scenario.objectives.secondaryObjectives ?? [];
+    const completed = new Set(this.runtime.stats.completedObjectiveIds);
+    return objectives.map((objective) => ({
+      id: objective.id,
+      name: objective.name,
+      description: objective.description,
+      completed: completed.has(objective.id)
+    }));
+  }
+
   private selectedUnitOrBuildings(): Array<Unit | Building> {
     return this.selectionSystem
       .getSelected()
       .filter((entity): entity is Unit | Building => entity instanceof Unit || entity instanceof Building);
+  }
+
+  private initialPlayerSelection(): Unit[] {
+    const playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
+    return playerUnits.length > 0 ? playerUnits : [this.hero];
   }
 
   private playSelectionAudio(selected: Array<Unit | Building>): void {
@@ -580,13 +593,45 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private completeSecondaryObjective(type: BattleSecondaryObjectiveType, targetId: string, point?: Position): void {
-    completeBattleSecondaryObjective({
+    const objective = completeBattleSecondaryObjective({
       activeMap: this.activeMap,
       runtime: this.runtime,
       type,
       targetId,
       point,
       showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+    });
+    if (!objective) {
+      return;
+    }
+
+    const effect = applySecondaryObjectiveBattleEffect({
+      mapId: this.activeMap.id,
+      objectiveId: objective.id,
+      buildings: this.buildings
+    });
+    if (effect) {
+      this.addMinimapPing(effect.point.x, effect.point.y, "#f6e27d", effect.message);
+      this.showMessage(effect.message, effect.point.x, effect.point.y - 92, "#f6e27d");
+    }
+
+    this.refreshBattleHud(0);
+  }
+
+  private refreshBattleHud(deltaSeconds: number): void {
+    const selected = this.selectedUnitOrBuildings();
+    this.playSelectionAudio(selected);
+    this.uiSystem.update(deltaSeconds, {
+      resources: this.resources.player,
+      hero: this.hero,
+      selected,
+      elapsedSeconds: this.runtime.elapsedSeconds,
+      isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
+      status: this.statusMessage,
+      hint: this.tutorialHint,
+      techState: this.getTechState("player"),
+      minimap: this.createMinimapSnapshot(),
+      objectives: this.createObjectiveSnapshot()
     });
   }
 
@@ -632,8 +677,9 @@ export class BattleScene extends Phaser.Scene {
       this.showMessage("No ability in that slot");
       return;
     }
-    AudioManager.play("ability_cast");
-    this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected());
+    if (this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected())) {
+      AudioManager.play("ability_cast");
+    }
   }
 
   private findBuilding(id: string, team: "player" | "enemy"): Building | undefined {
@@ -743,6 +789,11 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateTutorialHint(): void {
+    if (this.buildingSystem?.pendingBuildingId) {
+      this.tutorialHint = "";
+      return;
+    }
+
     this.tutorialHint = firstBattleTutorialHint({
       isFirstBattle: this.isFirstBattle(),
       selected: this.selectionSystem.getSelected(),
@@ -794,6 +845,8 @@ export class BattleScene extends Phaser.Scene {
     this.buildingSystem?.cancelPlacement();
     this.rallyMarkers.forEach((marker) => marker.destroy(true));
     this.rallyMarkers.clear();
+    this.neutralCampLabels.forEach((entry) => entry.label.destroy());
+    this.neutralCampLabels = [];
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
   }

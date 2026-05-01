@@ -1,5 +1,5 @@
 import { LEVEL_XP_THRESHOLDS } from "../core/Constants";
-import type { AbilityDefinition, ResourceBag } from "../core/GameTypes";
+import type { AbilityDefinition, BuildingDefinition, ResourceBag, UnitDefinition, UpgradeDefinition } from "../core/GameTypes";
 import { canAfford } from "../core/MathUtils";
 import { xpProgressForLevel } from "../core/Progression";
 import { abilityIconAssetId, heroPortraitAssetId } from "../assets/AssetKeys";
@@ -15,6 +15,7 @@ import { formatCost } from "./BuildMenu";
 import { healthPercent } from "./HealthBar";
 import { renderMinimap, type MinimapSnapshot } from "./MinimapView";
 import { selectionTitle } from "./SelectionPanel";
+import { describeUnitOrder, summarizeUnitOrders } from "./UnitOrderSummary";
 
 interface HUDCallbacks {
   onBuild: (buildingId: string, sourceBuildingId: string) => void;
@@ -27,7 +28,7 @@ interface HUDCallbacks {
   onMenu: () => void;
 }
 
-interface HUDSnapshot {
+export interface HUDSnapshot {
   resources: ResourceBag;
   hero: Hero;
   selected: Array<Unit | Building>;
@@ -37,6 +38,14 @@ interface HUDSnapshot {
   hint?: string;
   techState: TechState;
   minimap: MinimapSnapshot;
+  objectives?: HUDObjectiveSnapshot[];
+}
+
+export interface HUDObjectiveSnapshot {
+  id: string;
+  name: string;
+  description: string;
+  completed: boolean;
 }
 
 export class HUD {
@@ -128,6 +137,15 @@ export class HUD {
       <div class="minimap-shell" data-testid="battle-minimap">
         ${renderMinimap(snapshot.minimap)}
       </div>
+      ${this.renderObjectives(snapshot.objectives)}
+      ${
+        snapshot.isPlacing
+          ? `<div class="placement-banner" data-testid="placement-banner">
+              <strong>Placement Mode</strong>
+              <span>Move the cursor to valid ground, left-click to place, or right-click/Esc to cancel.</span>
+            </div>`
+          : ""
+      }
       <div class="status-line ${snapshot.isPlacing ? "active" : ""}" data-testid="battle-status">${escapeHtml(snapshot.status)}</div>
       ${snapshot.hint ? `<div class="hint-line">${escapeHtml(snapshot.hint)}</div>` : ""}
     `;
@@ -153,13 +171,40 @@ export class HUD {
     ).join("");
   }
 
+  private renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined): string {
+    if (!objectives || objectives.length === 0) {
+      return "";
+    }
+    const completedCount = objectives.filter((objective) => objective.completed).length;
+    return `
+      <div class="objectives-panel" data-testid="battle-objectives">
+        <strong>Objectives ${completedCount}/${objectives.length}</strong>
+        ${objectives
+          .map(
+            (objective) => `
+              <div class="objective-row ${objective.completed ? "completed" : ""}" data-objective-id="${escapeHtml(objective.id)}">
+                <span>${objective.completed ? "Done" : "Open"}</span>
+                <div>
+                  <b>${escapeHtml(objective.name)}</b>
+                  <small>${escapeHtml(objective.description)}</small>
+                </div>
+              </div>
+            `
+          )
+          .join("")}
+      </div>
+    `;
+  }
+
   private renderSelection(selectedOne: Unit | Building | undefined, selected: Array<Unit | Building>): string {
     if (!selectedOne) {
       if (selected.length > 1) {
+        const selectedUnits = selected.filter((entity): entity is Unit => entity instanceof Unit);
         const productionBuildings = selected.filter(
           (entity): entity is Building => entity instanceof Building && entity.isCompleted() && entity.definition.trainOptions.length > 0
         );
-        return `<div class="selection-grid">${selected
+        return `${selectedUnits.length > 0 ? this.renderOrderSummary("Orders", summarizeUnitOrders(selectedUnits)) : ""}
+        <div class="selection-grid">${selected
           .slice(0, 12)
           .map((entity) => `<span>${escapeHtml(entity.definition.name)}</span>`)
           .join("")}</div>${
@@ -172,7 +217,9 @@ export class HUD {
     }
 
     if (selectedOne instanceof Hero) {
+      const order = describeUnitOrder(selectedOne);
       return `
+        ${this.renderOrderSummary(order.label, order.detail, order.tone)}
         <div class="hero-command-summary">
           <span><strong>Damage</strong>${Math.round(selectedOne.damage)}</span>
           <span><strong>Range</strong>${selectedOne.range}</span>
@@ -182,7 +229,9 @@ export class HUD {
     }
 
     if (selectedOne instanceof Unit) {
+      const order = describeUnitOrder(selectedOne);
       return `
+        ${this.renderOrderSummary(order.label, order.detail, order.tone)}
         <div class="stat-list">
           <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
           <span>Damage ${Math.round(selectedOne.damage)}</span>
@@ -219,6 +268,15 @@ export class HUD {
     `;
   }
 
+  private renderOrderSummary(label: string, detail: string, tone: "active" | "neutral" = "neutral"): string {
+    return `
+      <div class="order-summary ${tone}" data-testid="unit-order-summary">
+        <strong>${escapeHtml(label)}</strong>
+        <span>${escapeHtml(detail)}</span>
+      </div>
+    `;
+  }
+
   private renderActions(selectedOne: Unit | Building | undefined, snapshot: HUDSnapshot): string {
     if (!(selectedOne instanceof Building)) {
       return "";
@@ -245,6 +303,8 @@ export class HUD {
           sourceId: selectedOne.id,
           name: definition.name,
           detail: lockReason ?? formatCost(definition.cost),
+          description: definition.description,
+          effect: this.formatBuildingSummary(definition),
           locked: Boolean(lockReason)
         });
       })
@@ -267,6 +327,8 @@ export class HUD {
           sourceId: selectedOne.id,
           name: definition.name,
           detail: lockReason ?? formatCost(definition.cost),
+          description: `${definition.role}. ${definition.description}`,
+          effect: this.formatUnitSummary(definition),
           locked: Boolean(lockReason)
         });
       })
@@ -295,6 +357,8 @@ export class HUD {
           sourceId: selectedOne.id,
           name: definition.name,
           detail: lockReason ?? formatCost(definition.cost),
+          description: definition.description,
+          effect: this.formatUpgradeEffects(definition),
           locked: Boolean(lockReason)
         });
       })
@@ -320,9 +384,12 @@ export class HUD {
     sourceId: string;
     name: string;
     detail: string;
+    description?: string;
+    effect?: string;
     locked: boolean;
   }): string {
-    const label = `${options.verb} ${options.name}. ${options.detail}`;
+    const extra = [options.description, options.effect].filter(Boolean).join(" ");
+    const label = `${options.verb} ${options.name}. ${options.detail}${extra ? `. ${extra}` : ""}`;
     return `
       <button
         class="hud-button command-button ${options.locked ? "locked" : ""}"
@@ -339,6 +406,8 @@ export class HUD {
           <span class="command-name">${escapeHtml(options.name)}</span>
         </span>
         <small>${escapeHtml(options.detail)}</small>
+        ${options.description ? `<span class="command-description">${escapeHtml(options.description)}</span>` : ""}
+        ${options.effect ? `<span class="command-effect">${escapeHtml(options.effect)}</span>` : ""}
       </button>
     `;
   }
@@ -439,6 +508,50 @@ export class HUD {
     return UPGRADE_BY_ID[upgradeId]?.name ?? upgradeId;
   }
 
+  private formatBuildingSummary(definition: BuildingDefinition): string {
+    const parts = [`HP ${definition.maxHp}`];
+    if (definition.constructionTimeSeconds > 0) {
+      parts.push(`${definition.constructionTimeSeconds}s build`);
+    }
+    if (definition.attack) {
+      parts.push(`${definition.attack.damage} damage`, `${definition.attack.range} range`);
+    }
+    if (definition.trainOptions.length > 0) {
+      parts.push(`trains ${definition.trainOptions.map((unitId) => this.unitName(unitId)).join(", ")}`);
+    }
+    return parts.join(" - ");
+  }
+
+  private formatUnitSummary(definition: UnitDefinition): string {
+    const stats = definition.stats;
+    return `HP ${stats.maxHp} - ${stats.damage} damage - ${stats.range} range - ${definition.trainTime}s train`;
+  }
+
+  private formatUpgradeEffects(definition: UpgradeDefinition): string {
+    const effects = definition.effects.flatMap((effect) => {
+      if (effect.type === "hero-mana-regen") {
+        return [`${formatMultiplierPercent(effect.multiplier)} hero mana regen`];
+      }
+
+      const unitNames = effect.unitIds.map((unitId) => this.unitName(unitId)).join("/");
+      const modifiers = [];
+      if (effect.damageMultiplier !== undefined) {
+        modifiers.push(`${formatMultiplierPercent(effect.damageMultiplier)} damage`);
+      }
+      if (effect.rangeMultiplier !== undefined) {
+        modifiers.push(`${formatMultiplierPercent(effect.rangeMultiplier)} range`);
+      }
+      if (effect.attackCooldownMultiplier !== undefined) {
+        modifiers.push(`${formatInverseMultiplierPercent(effect.attackCooldownMultiplier)} attack cooldown`);
+      }
+      if (effect.armorBonus !== undefined) {
+        modifiers.push(`${effect.armorBonus > 0 ? "+" : ""}${effect.armorBonus} armor`);
+      }
+      return modifiers.length > 0 ? [`${unitNames}: ${modifiers.join(", ")}`] : [];
+    });
+    return effects.join("; ");
+  }
+
   private toCssColor(value: number): string {
     return `#${value.toString(16).padStart(6, "0")}`;
   }
@@ -455,4 +568,14 @@ function escapeHtml(value: string): string {
 
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
+}
+
+function formatMultiplierPercent(multiplier: number): string {
+  const percent = Math.round((multiplier - 1) * 100);
+  return `${percent > 0 ? "+" : ""}${percent}%`;
+}
+
+function formatInverseMultiplierPercent(multiplier: number): string {
+  const percent = Math.round((1 - multiplier) * 100);
+  return `${percent > 0 ? "-" : "+"}${Math.abs(percent)}%`;
 }

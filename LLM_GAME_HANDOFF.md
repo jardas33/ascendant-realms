@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-26 22:18 -04:00
+Last updated: 2026-04-30 21:13 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -41,38 +41,68 @@ Current HEAD:
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Browser Use was mentioned during recent prompts. The latest handoff audit did not need live in-app browser control; Playwright e2e remains the verified browser automation surface for the latest pass.
+- Browser Use was used in the latest pass against the rebuilt production preview at `http://127.0.0.1:4177/`; the rebuilt preview showed the Ascendant Realms main menu heading and New Campaign button with browser console errors at 0 after the Ashen landmark/fog coverage pass. Playwright e2e remains the deterministic browser verification surface.
 
-Current dirty files at this handoff audit time:
+Current dirty files at this handoff update time:
 
 ```text
+ M .gitignore
  M BALANCE.md
  M LLM_GAME_HANDOFF.md
  M QA_RUN.md
+ M package.json
  M src/game/ai/EnemyAIController.test.ts
+ M src/game/ai/EnemyAIController.ts
+ M src/game/battle/BattleSceneObjectives.ts
+ M src/game/battle/BattleSceneResults.ts
+ M src/game/battle/BattleSceneSpawner.ts
+ M src/game/battle/BattleSceneSystems.ts
  M src/game/core/CampaignRules.test.ts
  M src/game/core/FirstExperienceGuidance.ts
- M src/game/core/SaveSystem.test.ts
- M src/game/core/SaveSystem.ts
+ M src/game/core/GameTypes.ts
+ M src/game/core/ResultsFlow.test.ts
+ M src/game/core/ResultsFlow.ts
  M src/game/data/aiPersonalities.ts
  M src/game/data/battlePacing.test.ts
  M src/game/data/battlePacing.ts
+ M src/game/data/campaignModifiers.test.ts
  M src/game/data/campaignModifiers.ts
  M src/game/data/campaignNodes.ts
  M src/game/data/maps/ashenOutpost.ts
- M src/game/data/rewards.ts
+ M src/game/data/maps/firstClaim.ts
+ M src/game/results/ResultsEquipActions.ts
+ M src/game/results/ResultsNavigation.ts
+ M src/game/results/ResultsObjectiveSummary.ts
+ M src/game/results/ResultsRewardPanel.ts
+ M src/game/results/ResultsViewModel.test.ts
+ M src/game/results/ResultsViewModel.ts
  M src/game/scenes/BattleScene.ts
+ M src/game/scenes/HeroProgressionScene.ts
+ M src/game/scenes/ResultsScene.ts
+ M src/game/styles/battle-feedback.css
  M src/game/styles/battle-hud.css
  M src/game/styles/responsive.css
+ M src/game/systems/AbilitySystem.ts
+ M src/game/systems/BuildingSystem.ts
+ M src/game/systems/CombatSystem.ts
+ M src/game/systems/FogOfWarSystem.test.ts
+ M src/game/systems/FogOfWarSystem.ts
+ M src/game/systems/InputSystem.ts
+ M src/game/systems/UISystem.ts
  M src/game/ui/HUD.ts
  M tests/e2e/deep-flow.spec.ts
  M tests/e2e/layout.spec.ts
-?? src/game/battle/BattleSceneSystems.ts
-?? src/game/save/SaveDefaults.ts
-?? src/game/save/SaveImportExport.ts
-?? src/game/save/SaveMigrations.ts
-?? src/game/save/SaveNormalization.ts
-?? src/game/save/SaveSystem.ts
+ M tests/e2e/smoke.spec.ts
+?? PLAYTEST_TELEMETRY.json
+?? PLAYTEST_TELEMETRY.md
+?? src/game/battle/SecondaryObjectiveEffects.test.ts
+?? src/game/battle/SecondaryObjectiveEffects.ts
+?? src/game/playtest/
+?? src/game/systems/CombatSystem.test.ts
+?? src/game/types/
+?? src/game/ui/UnitOrderSummary.test.ts
+?? src/game/ui/UnitOrderSummary.ts
+?? tools/runPlaytestSim.ts
 ```
 
 ## Commands
@@ -99,28 +129,566 @@ Notes:
 
 - `npm run test:e2e` starts Vite through Playwright.
 - The e2e suite intentionally uses one worker for stability.
-- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 8.3 minutes.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 13.3 minutes.
 - `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Fresh verification completed after this handoff audit on 2026-04-26 at about 22:18 -04:00:
+Fresh verification completed after the Ashen Outpost landmark/fog coverage pass on 2026-04-30 at about 19:24 -04:00:
 
 ```text
 npm test
-PASS: 25 test files, 118 tests
+PASS: 29 test files, 140 tests
 
 npm run build
 PASS: TypeScript compile and Vite production build
 Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold
 
 npm run test:e2e -- --reporter=line
-PASS: 25 Playwright tests in 8.3m
+PASS: 38 Playwright tests in 13.3m
+
+npm run playtest:sim
+PASS: last regenerated telemetry still has 15 runs across 5 campaign battle nodes; no structural too-hard nodes; Ashen Outpost beatable: yes
+
+Browser Use sanity
+PASS: rebuilt production preview rendered at http://127.0.0.1:4177/ with main menu heading and New Campaign button visible, plus 0 browser console errors after the final build
 ```
 
-An earlier e2e run hit a 3-minute shell timeout before results were returned. It was rerun with a longer timeout and passed.
+Recent targeted checks also passed:
+
+```text
+npm run test:e2e -- --reporter=line -g "Ashen Outpost landmarks"
+PASS: 1 Playwright test, including Normal-fog baseline, scouted Ashen resource sites, neutral camps, fortress buildings, minimap markers, and HUD-overlap guards
+
+npm run test:e2e -- --reporter=line -g "minimap renders marker families"
+PASS: 1 Playwright test, including unit/building/site/camp/rally markers, player/enemy/neutral teams, the camera rectangle, and rally/wave/base/resource pings
+
+npm run test:e2e -- --reporter=line -g "unlocked hero ability hotkeys"
+PASS: 1 Playwright test, including keyboard casts for Rally Banner, Cleave, and War Cry plus success-feedback stability
+
+npm run test:e2e -- --reporter=line -g "main menu, info"
+PASS: 1 Playwright test, including Arcanist and Shepherd save persistence through hero creation, with explicit 60s timeout after the expanded flow measured 35.9s
+
+npm run test:e2e -- --reporter=line -g "battle HUD supports minimap movement"
+PASS: 1 Playwright test, including direct canvas click-selection of the live hero and selected-hero HUD state
+
+npm run test:e2e -- --reporter=line -g "all skirmish maps"
+PASS: 1 Playwright test after the transient full-suite `net::ERR_NO_BUFFER_SPACE` interruption
+
+npm run test:e2e -- --reporter=line -g "first enemy wave pressure can damage the base and be survived"
+PASS: 1 Playwright test, including tracked wave pressure, Command Hall damage, pings, and survival bookkeeping
+
+npm test -- battlePacing
+PASS: 1 test file, 3 tests, including ordered difficulty pacing and fog defaults
+
+npm run test:e2e -- --reporter=line -g "skirmish difficulty selection changes fog and starting pressure"
+PASS: 1 Playwright test, including Story vs Normal live fog and starting enemy roster differences
+
+npm run test:e2e -- --reporter=line -g "campaign Border Village launches a battle scene"
+PASS: 1 Playwright test, including fogged quarry camp/site/unit minimap-marker leak coverage
+
+npm test -- UnitOrderSummary CombatSystem FogOfWarSystem
+PASS: 3 test files, 12 tests
+
+npm run test:e2e -- --reporter=line tests/e2e/smoke.spec.ts -g "campaign Border Village launches a battle scene"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line tests/e2e/deep-flow.spec.ts -g "battle HUD supports"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "Ashen Outpost special objectives"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "Ashen Outpost defeat tips"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "alternate Refugee Caravan"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "Old Stone Road victory"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "settings screen persists accessibility options"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "Ashen Outpost objectives do not cover"
+PASS: 1 Playwright test
+
+npm test -- ResultsViewModel
+PASS: 1 test file, 3 tests
+
+npm run test:e2e -- --reporter=line -g "victory and defeat result actions"
+PASS: 1 Playwright test, including defeat Open Hero Inventory navigation to saved hero progress
+
+npm run test:e2e -- --reporter=line -g "victory reward can be kept"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "first campaign battle path"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line -g "Ashen Outpost special objectives"
+PASS: 1 Playwright test after immediate objective-HUD refresh
+```
 
 ## Most Recent Completed Work
+
+### Ashen Outpost Landmark Fog Coverage
+
+Goal: close the remaining automated Ashen Outpost landmark/readability gap without changing gameplay.
+
+Files touched by this follow-up:
+
+- `tests/e2e/layout.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a Playwright layout test that launches Ashen Outpost on Normal so fog is active.
+- Verifies the enemy Stronghold is hidden from the minimap before scouting.
+- Uses test-only unit positioning to scout Burned Shrine, the west/south/north resource sites, all neutral camps, the enemy Stronghold, the enemy Barracks, and the gate Watchtower.
+- Verifies each scouted landmark becomes visible in-world and appears on the minimap.
+- Verifies each centered landmark is not covered by the top bar, hero panel, side panel, minimap, objectives panel, status line, or hint line.
+- No gameplay logic, balance values, fog logic, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### Minimap Marker And Ping Matrix Coverage
+
+Goal: close the remaining automated minimap marker/ping matrix gap without changing gameplay.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a deep Playwright test that launches First Claim on Story to keep marker families visible for this matrix check.
+- The test builds, completes, and selects Barracks, then sets a rally point through right-click input.
+- The snapshot now verifies unit, building, capture-site, camp, and rally marker families.
+- The snapshot now verifies player, enemy, and neutral marker teams.
+- The test verifies concrete Command Hall, Barracks, Crown Shrine, and rally marker IDs.
+- The test triggers live minimap pings for rally, enemy wave, Command Hall attack, and Crown Shrine attack.
+- The rendered SVG is checked for site, building, unit, camp, rally, ping, and camera elements.
+- No gameplay logic, balance values, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### Ability Hotkey Feedback Coverage
+
+Goal: close the remaining automated hero ability hotkey gap and fix confusing duplicate ability feedback.
+
+Files touched by this follow-up:
+
+- `src/game/systems/AbilitySystem.ts`
+- `src/game/systems/InputSystem.ts`
+- `src/game/battle/BattleSceneSystems.ts`
+- `src/game/scenes/BattleScene.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a deep Playwright test that seeds a level-4 Warlord with Rally Banner, Cleave, and War Cry unlocked.
+- The test verifies HUD labels for ability slots `1`, `2`, and `3`, presses each key through the live keyboard path, and confirms mana spend, cooldown start, ally buffing, and enemy damage.
+- Fixed successful ability feedback being overwritten by immediate duplicate cooldown retries.
+- Ability SFX now plays only after successful casts.
+- The expanded menu/hero-creation test has a 60s timeout because the two-class creation flow can exceed Playwright's default 35s timeout on this machine.
+
+### Hero Creation And Direct Hero Click Selection Coverage
+
+Goal: close two remaining player-control coverage gaps without changing runtime behavior.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- The main menu/create/reset e2e flow now verifies Arcanist and Shepherd hero class selections persist to save. Warlord remains covered by the first campaign battle path.
+- The battle HUD e2e flow now centers the camera on the live hero, click-selects the hero on the canvas, verifies the BattleScene selected entity is the hero, and verifies selected-hero HUD/order state before using `H`.
+- No gameplay logic, balance values, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### First Enemy Wave Survival Coverage
+
+Goal: close the remaining automated first-wave pressure gap without changing battle balance or player-facing behavior.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a deep Playwright test that launches Border Village through the live campaign battle path.
+- The test tracks a first Raider wave, puts it in melee range of the Command Hall, and ticks live combat to verify the base takes damage.
+- The test verifies incoming-wave and Command Hall under-attack minimap pings.
+- The test defeats the tracked wave, verifies `enemyWavesSurvived` increments to 1, confirms the tracked wave clears, and confirms the Command Hall remains alive.
+- No gameplay logic, balance values, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### Difficulty Selection, Pacing, And Fog Coverage
+
+Goal: close the remaining automated coverage gap proving difficulty selection changes live battle behavior, not just setup UI state.
+
+Files touched by this follow-up:
+
+- `src/game/data/battlePacing.test.ts`
+- `tests/e2e/smoke.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Battle-pacing unit coverage now verifies Story, Easy, Normal, and Hard remain ordered from forgiving to punishing across first attack delay, attack interval, wave size, enemy income multiplier, training interval, and fog defaults.
+- Smoke e2e now launches Story and Normal skirmishes through the UI and verifies those choices reach BattleScene.
+- The browser test verifies Story has fog off and one starting Raider, while Normal has fog on and a larger starting enemy roster.
+- No gameplay logic, balance values, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### Fog And Minimap Visibility Coverage
+
+Goal: close the remaining automated coverage gap where fogged entities could be hidden in-world but still leak through minimap marker data.
+
+Files touched by this follow-up:
+
+- `tests/e2e/smoke.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- The Border Village campaign smoke test now verifies fog is active in both the BattleScene and minimap snapshot.
+- The same test verifies minimap fog cells are present.
+- The test verifies unseen Stone Quarry, Quarry Imps, and hidden quarry neutral units are absent from minimap marker IDs before scouting.
+- No gameplay logic, balance values, save format, maps, factions, workers, affixes, or player-facing systems changed in this pass.
+
+### Reward Keep-In-Inventory Clarity And Objective HUD Refresh
+
+Goal: make the non-equip reward path explicit and remove a timing-sensitive secondary-objective HUD refresh gap found during full e2e.
+
+Files touched by this follow-up:
+
+- `src/game/results/ResultsEquipActions.ts`
+- `src/game/results/ResultsRewardPanel.ts`
+- `src/game/results/ResultsViewModel.test.ts`
+- `src/game/scenes/BattleScene.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Victory reward cards now show `Keep in Inventory` beside `Equip Now` for newly earned equippable rewards.
+- Results status now confirms the item is kept in inventory and can be equipped later from Hero Inventory.
+- Reward-card copy now says the item is already saved to inventory, making the non-equip path obvious.
+- Unit coverage verifies the keep-in-inventory Results helper leaves equipment unchanged and returns a useful status message.
+- Browser e2e verifies keeping a reward unequipped, opening Hero Inventory, seeing the reward marked `New`, and leaving the weapon slot empty.
+- The live first-campaign reward test now verifies rewards are saved without being auto-equipped.
+- Battle HUD secondary-objective state now refreshes immediately when an objective completes, which improves player feedback and removed a timing-sensitive Ashen objective e2e failure.
+- No rewards, balance values, save format, map, faction, worker, affix, or strategic systems changed in this pass.
+
+### Defeat Inventory Prep Action
+
+Goal: make defeat prep match the advice shown on the Results screen without changing gameplay or reward persistence.
+
+Files touched by this follow-up:
+
+- `src/game/results/ResultsNavigation.ts`
+- `src/game/results/ResultsViewModel.test.ts`
+- `src/game/scenes/HeroProgressionScene.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Defeat Results now include `Open Hero Inventory` alongside Retry and Campaign Map/Main Menu.
+- Results inventory navigation now uses the saved starting hero on defeat, matching Retry and preventing unsaved live battle XP or skill points from appearing in prep.
+- The progression screen now labels defeat prep as `Hero Inventory` instead of `Victory Progression`.
+- Unit coverage verifies defeat inventory data uses the saved hero.
+- Browser e2e clicks the defeat inventory action and verifies the inventory screen shows `Hero Inventory`, saved Level 1, and 0 skill points after synthetic unsaved battle XP.
+- No gameplay, balance, save format, map, faction, worker, affix, or battle runtime logic changed in this pass.
+
+### Defeat Results Saved Progress Clarity
+
+Goal: make defeat Results honest about unsaved live battle XP after Browser Use found an Ashen Outpost Defeat screen showing a level jump that would not persist.
+
+Files touched by this follow-up:
+
+- `src/game/battle/BattleSceneResults.ts`
+- `src/game/results/ResultsViewModel.ts`
+- `src/game/results/ResultsObjectiveSummary.ts`
+- `src/game/scenes/ResultsScene.ts`
+- `src/game/results/ResultsViewModel.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Defeat Results now display saved hero progress as the after-battle state, because defeat does not persist live battle XP or level-ups.
+- The XP summary shows `XP saved: 0` on defeat and labels combat XP as `Battle XP earned ... (not saved)`.
+- The top Hero Level badge, defeat tips, and current hero stat strip use the saved hero on defeat.
+- The live BattleScene-to-Results handoff now sends saved hero progress for normal defeats, so the Results payload itself is honest.
+- Unit coverage now verifies defeat view-model progress does not use unsaved live XP/skill points.
+- Browser e2e now verifies defeat Results wording and saved-level display alongside Retry/Campaign actions.
+- No gameplay, balance, save format, map, faction, worker, affix, or battle runtime logic changed in this pass.
+
+### Ashen Fortress Readability And Minimap Palette Coverage
+
+Goal: keep Ashen Outpost's objective HUD useful without covering the desktop fortress focus lane, and strengthen colorblind minimap coverage without changing gameplay.
+
+Files touched by this follow-up:
+
+- `src/game/styles/battle-hud.css`
+- `tests/e2e/layout.spec.ts`
+- `tests/e2e/smoke.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Moved the desktop Objectives panel from the right side under the minimap to the upper-left under resources.
+- Added a deterministic Ashen Outpost layout e2e guard that centers the camera on the enemy fortress and verifies the objectives panel does not cover the enemy Stronghold, enemy Barracks, or gate Watchtower focus points.
+- Expanded the settings/accessibility e2e test to assert the rendered minimap SVG uses colorblind player/enemy colors (`#56b4e9` and `#d55e00`).
+- Browser Use verified the rebuilt preview with Ashen Outpost launch, upper-right minimap camera movement, clear right-side lane, and 0 console errors.
+- No gameplay, balance, save format, or battle runtime logic changed in this pass.
+
+### Old Stone Road Live Completion Coverage
+
+Goal: close the remaining browser-coverage gap for Old Stone Road post-victory progression and repeated reward protection without changing gameplay.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a generic `startCampaignBattle(page, nodeId)` e2e helper and kept `startBorderVillageCampaignBattle` as a wrapper.
+- Added a deterministic Playwright test that seeds a Border Village-complete campaign, launches Old Stone Road, forces a live BattleScene victory, and verifies Results plus saved campaign progression.
+- The test confirms Old Stone Road first-clear campaign resources, node reward claim recording, and unlocks for Aether Well Ruins, Bandit Hillfort, Refugee Caravan, and Marcher Camp.
+- The test returns to the campaign map and verifies completed Old Stone Road disables Start Battle, protecting against repeat live reward claims through the UI.
+- Browser Use also visually sanity-checked Ashen Outpost launch and the player-facing Barracks placement feedback loop in the production preview.
+- No gameplay, balance, save format, or runtime behavior changed in this pass.
+
+### Alternate Campaign Choice Browser Coverage
+
+Goal: close the remaining browser-coverage gap for early campaign choice branches without changing gameplay.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a deterministic Playwright test for alternate Refugee Caravan and Chapel of the Marches choices.
+- Recruit Volunteers is now browser-tested as locked for level 1 heroes with the visible level requirement.
+- Protect Them is now browser-tested for Crown cost, Scout's Bow, Inspired Militia, XP, completion, and reputation rewards.
+- Recruit Volunteers is now browser-tested for Crown cost, Iron reward, Marcher Plate, Inspired Militia, XP, completion, and reputation changes.
+- Pray for Strength is now browser-tested for Chapel completion, Aether, Blessed Road, XP, reputation, and Ashen Outpost unlock.
+- No gameplay, balance, save format, or runtime behavior changed in this pass.
+
+### Ashen Defeat Tip Browser Coverage
+
+Goal: cover the objective-aware Ashen Outpost defeat advice in browser e2e, not only pure unit tests.
+
+Files touched by this follow-up:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- The synthetic Results e2e helper can now launch Results for a specific map, campaign node, difficulty, reward table, and completed secondary-objective state.
+- A new Playwright test verifies Ashen Outpost defeat Results before Burned Shrine completion and after Burned Shrine completion.
+- The test confirms the player-facing tips show Burned Shrine / gate Watchtower advice first, then Enemy Barracks / Stronghold advice after the shrine objective is complete.
+- No gameplay, balance, save format, or runtime source behavior changed in this pass.
+
+### Telemetry Verdict And Defeat Tip Refinement
+
+Goal: keep the automated playtest bot useful without overclaiming difficulty failures, and give failed Ashen Outpost runs more actionable Results-screen guidance.
+
+Files touched by this follow-up:
+
+- `src/game/playtest/ScriptedBattlePlaytest.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.test.ts`
+- `src/game/core/ResultsFlow.ts`
+- `src/game/core/ResultsFlow.test.ts`
+- `src/game/results/ResultsRewardPanel.ts`
+- `.gitignore`
+- `BALANCE.md`
+- `PLAYTEST_TELEMETRY.md`
+- `PLAYTEST_TELEMETRY.json`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- The playtest analyzer now separates structural `too_hard` failures from fair-opening strategy-spread cases.
+- The regenerated telemetry report now says: Too hard none; Needs human review Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
+- Suggested tuning now steers future work toward objective route, army timing, and final-assault attrition instead of automatically recommending first-attack/resource tuning.
+- Ashen Outpost defeat tips now lead with Burned Shrine advice, then Enemy Barracks advice, then Outpost Captain advice as objectives are completed.
+- `.preview-server.pid` was added to `.gitignore` for local Browser Use preview cleanup hygiene.
+
+### Ashen Objective Readability And Live Effect
+
+Goal: make Ashen Outpost's staged Burned Shrine route visible in live play, matching the automated telemetry assumption without adding a new campaign system.
+
+Files touched by this follow-up:
+
+- `src/game/battle/BattleSceneObjectives.ts`
+- `src/game/battle/SecondaryObjectiveEffects.ts`
+- `src/game/battle/SecondaryObjectiveEffects.test.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/systems/UISystem.ts`
+- `src/game/ui/HUD.ts`
+- `src/game/styles/battle-hud.css`
+- `src/game/styles/responsive.css`
+- `src/game/data/maps/ashenOutpost.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `BALANCE.md`
+- `PLAYTEST_TELEMETRY.md`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Maps with secondary objectives now get a compact in-battle Objectives panel in the HUD.
+- Ashen Outpost shows Capture the Burned Shrine, Destroy Enemy Barracks, and Defeat the Outpost Captain during live battle.
+- Completing `capture_burned_shrine` on Ashen Outpost now weakens the enemy gate Watchtower by 45% max HP without destroying it.
+- The Ashen objective description now tells the player that Burned Shrine weakens the gate Watchtower.
+- The existing Ashen Outpost e2e test now verifies the objective HUD, the Watchtower weakening effect, and Results objective completion states.
+
+### Enemy AI Config Alignment And Telemetry Balance Follow-Up
+
+Goal: continue the deep systems/balance polish using automated telemetry rather than manual playtesting, while keeping changes numeric or dev-only where possible.
+
+Files touched by this follow-up:
+
+- `src/game/ai/EnemyAIController.ts`
+- `src/game/ai/EnemyAIController.test.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.ts`
+- `src/game/data/maps/firstClaim.ts`
+- `src/game/data/maps/ashenOutpost.ts`
+- `src/game/data/aiPersonalities.ts`
+- `BALANCE.md`
+- `PLAYTEST_TELEMETRY.md`
+- `PLAYTEST_TELEMETRY.json`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Live enemy AI now uses map-level `scenario.enemyAI` values for initial attack delay, attack interval, wave size, train interval, expansion cadence, expansion squad size, and unit plan after personality modifiers.
+- The scripted playtest driver now uses the same map-level enemy AI config, so telemetry matches live battle pacing instead of silently reading only global difficulty defaults.
+- First Claim pacing was softened after that alignment: slightly slower training, later first attack, longer interval, and smaller wave target.
+- Fortress Keeper and Hexfire Cult assault caps were trimmed because failures happened after first-wave survival.
+- Ashen Outpost now starts with one extra Militia and one extra Ranger, one fewer enemy Watchtower, softer enemy economy/training/wave pressure, and smaller defense radius/squad values.
+- The Ashen simulator model now treats Burned Shrine capture as a staged fortress-approach advantage. Safe Beginner beats Ashen; Greedy Economy and Fast Army still time out.
+- `BALANCE.md` records the before/after values and the remaining risks.
+
+### Battle Feedback, Auto-Attack, Fog, And Order-State Polish
+
+Goal: address player-facing confusion from building placement, unclear research effects, inconsistent troop attack behavior, and fog/readability issues without adding new gameplay systems or changing balance.
+
+Files touched by this pass:
+
+- `src/game/ui/HUD.ts`
+- `src/game/ui/UnitOrderSummary.ts`
+- `src/game/ui/UnitOrderSummary.test.ts`
+- `src/game/styles/battle-feedback.css`
+- `src/game/styles/battle-hud.css`
+- `src/game/styles/responsive.css`
+- `src/game/systems/BuildingSystem.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/game/systems/CombatSystem.test.ts`
+- `src/game/systems/FogOfWarSystem.ts`
+- `src/game/systems/FogOfWarSystem.test.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/battle/BattleSceneSpawner.ts`
+- `src/game/battle/BattleSceneSystems.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `tests/e2e/smoke.spec.ts`
+
+What changed:
+
+- Building placement now has a clear HUD placement banner, stronger ghost/label feedback, cleaner cancellation state, and placement mode suppresses conflicting first-battle tutorial hints.
+- Build, train, and research buttons now show concise descriptions and stat/effect summaries, including upgrade effects such as Infantry Weapons I.
+- Player units stop and fight when enemies enter weapon range, idle units guard-chase nearby threats, and normal move orders do not pull troops into distant aggro.
+- Selected heroes/troops now show an order strip: Guarding, Moving, Attack-moving, or Attacking; mixed unit selections summarize their orders.
+- Fog updates more frequently, uses smaller cells, and applies exact source-distance checks for entity visibility so coarse visible cells no longer reveal entities by accident.
+- Neutral camp labels are tracked and hidden by fog unless currently visible; unowned capture-site views require current vision, while player-owned sites remain visible.
+- Fog debug now respects settings override and says when fog is disabled for the current battle.
+
+No balance values, campaign rules, maps, factions, workers, or affixes were intentionally changed in this pass.
+
+### GameTypes Domain Split
+
+Goal: split the central cross-domain type file without changing runtime behavior, game logic, balance, or save format.
+
+Files touched by this pass:
+
+- `src/game/core/GameTypes.ts`
+- `src/game/types/CampaignTypes.ts`
+- `src/game/types/CombatTypes.ts`
+- `src/game/types/EconomyTypes.ts`
+- `src/game/types/HeroTypes.ts`
+- `src/game/types/ItemTypes.ts`
+- `src/game/types/MapTypes.ts`
+- `src/game/types/UITypes.ts`
+- `src/game/types/index.ts`
+- `LLM_GAME_HANDOFF.md`
+
+Shape after the split:
+
+- `src/game/core/GameTypes.ts` is now a one-line compatibility barrel:
+
+```ts
+export type * from "../types";
+```
+
+- Existing `import type { ... } from "../core/GameTypes"` callers still work.
+- The new `src/game/types/index.ts` re-exports all domain type modules.
+- Cross-module dependencies use type-only imports so no runtime coupling was introduced.
+- No direct gameplay/data imports were churned unless needed; this keeps the diff focused and lowers merge risk.
+
+Domain grouping:
+
+- `UITypes.ts`: shared primitives such as `Team`, `EntityKind`, `Position`, `Size`, and `VisibilityState`.
+- `EconomyTypes.ts`: resource keys, bags, costs, and resource definitions.
+- `CombatTypes.ts`: combat stats, unit/building definitions, factions, status effects, upgrades, pacing, difficulty, and AI personality definitions.
+- `HeroTypes.ts`: hero stats, abilities, classes, origins, and skill-tree definitions.
+- `ItemTypes.ts`: equipment slots, item definitions/instances, reward tables, battle rewards, duplicate conversions, and level-up summaries.
+- `MapTypes.ts`: terrain, capture sites, spawns, battle objectives, scenarios, maps, and battle stats.
+- `CampaignTypes.ts`: campaign modifiers, node choices, node rewards, node definitions, and node status.
+
+### Automated Browser Coverage Expansion
+
+Goal: expand deterministic Playwright coverage for implemented systems that were still under-tested without adding gameplay or changing balance.
+
+Files touched by this pass:
+
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+- `tests/e2e/deep-flow.spec.ts`
+- `tests/e2e/smoke.spec.ts`
+
+Coverage added:
+
+- Chapel of the Marches: Ask for Guidance scouts/unlocks without completing the node; Repair the Chapel spends resources, grants rewards, removes Angered Raiders, adds Local Support, and completes the node.
+- Mystic Lodge and Acolyte: build Mystic Lodge, accelerate construction through existing scene systems, train Acolyte, and verify a live player Acolyte appears.
+- Watchtower combat: build/complete Watchtower, reposition an existing enemy into range through Playwright, and verify enemy HP decreases.
+- Research UI: verify an insufficient-resource lock reason, then research Infantry Weapons I, Reinforced Armor I, Ranger Training I, and Aether Study I through HUD buttons.
+- Ashen Outpost: launch the campaign node, mark Burned Shrine / Enemy Barracks / Outpost Captain objectives complete through a test hook, force victory, and verify Results shows each objective as Completed.
+- Settings/accessibility: persist floating text off, reduced motion, fog override disabled, and colorblind minimap palette; verify those settings reach battle state, fog is inactive, colorblind minimap snapshot is true, and forced damage does not spawn damage-number text while floating text is disabled.
+
+No gameplay behavior, balance values, maps, factions, workers, or affixes were changed in this pass.
 
 ### First Real Human-Paced Campaign Balance Pass
 
@@ -312,19 +880,22 @@ Map data is split into per-map modules:
 - Role: current mini-campaign milestone fortress assault.
 - Player starts lower-left; enemy fortress starts upper-right.
 - Capture sites: Burned Shrine, West Supply Pyre, South Iron Pit, North Stone Scar.
-- Enemy fortress starts with Enemy Stronghold, Enemy Barracks, and two defensive Watchtowers.
+- Enemy fortress starts with Enemy Stronghold, Enemy Barracks, and one gate Watchtower.
 - Reward table: `ashen_outpost_rewards`.
 - Special objectives:
   - Destroy the Ashen Stronghold.
-  - Capture the Burned Shrine.
+  - Capture the Burned Shrine; in live battle this weakens the gate Watchtower by 45% max HP without destroying it.
   - Destroy Enemy Barracks.
   - Defeat the Outpost Captain / Ashen Commander.
 
 Ashen Outpost tuning after the balance pass:
 
-- Player starting bank: 460 Crowns, 320 Stone, 180 Iron, 95 Aether.
-- Enemy starting bank: 280 Crowns, 220 Stone, 160 Iron, 125 Aether.
-- Enemy income every 5s: 100 Crowns, 50 Stone, 50 Iron, 40 Aether.
+- Player starting bank: 560 Crowns, 390 Stone, 235 Iron, 140 Aether.
+- Player starts with 4 Militia and 2 Rangers.
+- Enemy starting bank: 240 Crowns, 190 Stone, 135 Iron, 105 Aether.
+- Enemy income every 5s: 80 Crowns, 40 Stone, 38 Iron, 30 Aether.
+- Enemy AI map pacing: 7s train interval, 78s attack interval, 205s base first attack before Hexfire personality modifiers, 6-unit wave target, 5-unit defense squad, 460 defense radius.
+- Burned Shrine is now both telemetry-modeled and live: capturing it softens the fortress approach by damaging the gate Watchtower and showing a status/minimap cue.
 
 ## Current Battle Pacing
 
@@ -413,23 +984,23 @@ Starting battle resources for First Claim/Broken Ford come from `STARTING_PLAYER
 
 Marcher Camp after the balance pass:
 
-- Rest and Recovery: 30 Crowns for Well Rested, next-battle +15% hero max HP.
-- Hire Volunteers: 55 Crowns for Inspired Militia, next battle starts with one extra Militia.
-- Buy Supplies: 45 Crowns for 30 Stone, 18 Iron, 8 Aether.
+- Rest and Recovery: 30 Crowns for Well Rested, next-battle +20% hero max HP.
+- Hire Volunteers: 50 Crowns for Inspired Militia, next battle starts with one extra Militia.
+- Buy Supplies: 40 Crowns for 30 Stone, 18 Iron, 10 Aether.
 - Emberglass Wand: 60 Crowns, one-time common weapon purchase.
-- Marcher Plate: 80 Crowns and 18 Iron, one-time uncommon armor purchase.
-- Green Chapel Icon: 90 Crowns and 18 Aether, one-time trinket purchase.
+- Marcher Plate: 75 Crowns and 15 Iron, one-time uncommon armor purchase.
+- Green Chapel Icon: 85 Crowns and 16 Aether, one-time trinket purchase.
 
 Refugee Caravan after the balance pass:
 
-- Protect Them: costs 45 Crowns; grants 35 XP, Scout's Bow, Inspired Militia, +8 Common Folk, +2 Free Marches.
-- Recruit Volunteers: requires hero level 2, costs 20 Crowns; grants 25 XP, 25 Iron, Marcher Plate, Inspired Militia, -4 Common Folk, +2 Free Marches.
+- Protect Them: costs 40 Crowns; grants 40 XP, Scout's Bow, Inspired Militia, +8 Common Folk, +2 Free Marches.
+- Recruit Volunteers: requires hero level 2, costs 15 Crowns; grants 25 XP, 30 Iron, Marcher Plate, Inspired Militia, -4 Common Folk, +2 Free Marches.
 - Demand Tribute: grants 65 Crowns, Angered Raiders, -8 Common Folk, -2 Free Marches, -3 Ashen Covenant.
 
 Chapel of the Marches:
 
-- Pray for Strength: grants 35 XP, 15 Aether, Blessed Road, +3 Old Faith, +1 Common Folk, completes the node.
-- Repair the Chapel: costs 50 Crowns and 60 Stone; grants 35 Aether, Green Chapel Icon, Local Support, removes Angered Raiders, recovers hero placeholder, +2 Free Marches, +6 Old Faith, +2 Common Folk, completes the node.
+- Pray for Strength: grants 40 XP, 20 Aether, Blessed Road, +3 Old Faith, +1 Common Folk, completes the node.
+- Repair the Chapel: costs 45 Crowns and 55 Stone; grants 35 Aether, Green Chapel Icon, Local Support, removes Angered Raiders, recovers hero placeholder, +2 Free Marches, +6 Old Faith, +2 Common Folk, completes the node.
 - Ask for Guidance: grants 15 XP, unlocks/scouts Refugee Caravan and Ashen Outpost, +1 Old Faith, does not complete the node.
 
 ## Current Rewards And Items
@@ -603,6 +1174,21 @@ Current save version is V2. Save normalization protects:
 
 ## Current Helper Architecture
 
+### Types
+
+`src/game/core/GameTypes.ts` is now a compatibility barrel for focused type modules in `src/game/types/`:
+
+- `CampaignTypes.ts`
+- `CombatTypes.ts`
+- `EconomyTypes.ts`
+- `HeroTypes.ts`
+- `ItemTypes.ts`
+- `MapTypes.ts`
+- `UITypes.ts`
+- `index.ts`
+
+Prefer importing new type-only dependencies from `src/game/types` or the focused module when touching nearby code, but existing `core/GameTypes` imports are intentionally preserved for compatibility.
+
 ### Results
 
 `ResultsScene` is now a coordinator. Helper modules live in `src/game/results/`:
@@ -648,26 +1234,29 @@ Battle helpers live in `src/game/battle/`:
 - `BattleSceneAlerts.ts`
 - `BattleSceneMapRenderer.ts`
 - `BattleSceneObjectives.ts`
+- `SecondaryObjectiveEffects.ts`
 - `BattleSceneResults.ts`
 - `BattleSceneSnapshots.ts`
 - `BattleSceneSpawner.ts`
 - `BattleSceneSystems.ts`
 
-`BattleSceneSystems.ts` is currently untracked and should be preserved.
+Several battle helpers are modified in the current dirty tree and should be preserved.
 
 ## Current Tests
 
-Latest verified suite status, refreshed during this handoff audit:
+Latest verified suite status, refreshed during the 2026-04-30 19:24 -04:00 Ashen Outpost landmark/fog update:
 
-- `npm test`: passed, 25 test files, 118 tests.
+- `npm test`: passed, 29 test files, 140 tests.
 - `npm run build`: passed.
-- `npm run test:e2e -- --reporter=line`: passed, 25 Playwright tests in 8.3m.
+- `npm run test:e2e -- --reporter=line`: passed, 38 Playwright tests in 13.3m.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes, with no structural `too_hard` nodes.
 
 Current unit/pure test files:
 
 - `src/game/ai/EnemyAIController.test.ts`
 - `src/game/battle/BattleLaunchRequest.test.ts`
 - `src/game/battle/BattleRuntime.test.ts`
+- `src/game/battle/SecondaryObjectiveEffects.test.ts`
 - `src/game/campaign/CampaignMapViewModel.test.ts`
 - `src/game/core/CampaignRules.test.ts`
 - `src/game/core/FirstExperienceGuidance.test.ts`
@@ -678,10 +1267,12 @@ Current unit/pure test files:
 - `src/game/data/battlePacing.test.ts`
 - `src/game/data/campaignModifiers.test.ts`
 - `src/game/data/contentValidation.test.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.test.ts`
 - `src/game/progression/ItemComparison.test.ts`
 - `src/game/results/ResultsViewModel.test.ts`
 - `src/game/systems/AudioManager.test.ts`
 - `src/game/systems/BuildingPlacementRules.test.ts`
+- `src/game/systems/CombatSystem.test.ts`
 - `src/game/systems/FogOfWarSystem.test.ts`
 - `src/game/systems/PathfindingGrid.test.ts`
 - `src/game/systems/PrerequisiteSystem.test.ts`
@@ -690,6 +1281,7 @@ Current unit/pure test files:
 - `src/game/systems/UpgradeEffects.test.ts`
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
+- `src/game/ui/UnitOrderSummary.test.ts`
 
 Current e2e files:
 
@@ -700,25 +1292,169 @@ Current e2e files:
 Browser-level tests currently cover:
 
 - Main menu boot.
-- Settings persistence.
+- Settings persistence, including floating text, reduced motion, fog override, colorblind minimap persistence, and rendered player/enemy colorblind minimap colors.
 - Hero creation.
 - Campaign map and locked-node behavior.
 - Border Village battle launch.
-- Campaign choices and Marcher Camp services/purchases.
+- First enemy wave pressure, Command Hall damage alerts, and wave-survival bookkeeping.
+- Campaign choices, including Refugee Caravan Demand/Protect/Recruit, Chapel guidance/repair/pray, and Marcher Camp services/purchases.
 - Inventory equip/unequip.
 - Skill spending.
 - Results Equip Now.
 - Defeat tips.
+- Defeat Results saved-progress display and unsaved battle XP labeling.
+- Ashen Outpost defeat tips for Burned Shrine and Enemy Barracks recovery sequencing.
 - Skirmish launches for all maps and AI personalities.
+- Skirmish difficulty selection changes live battle fog and starting enemy pressure between Story and Normal.
 - Minimap click handling.
+- Minimap marker matrix for units, buildings, capture sites, neutral camps, rally markers, camera rectangle, and rally/wave/base/resource pings.
 - Fog toggle.
+- Hero ability hotkeys `1`, `2`, and `3`, including Warlord Rally Banner, Cleave, and War Cry effects.
+- Fog visibility regression for distant neutral camp labels, neutral units, unowned capture sites, minimap fog cells, and hidden minimap marker IDs.
 - Building placement cancellation feedback.
 - Build Barracks placement ghost near Command Hall.
+- Selected-unit order summary for Guarding and Moving states.
+- Mystic Lodge construction and Acolyte training.
+- Watchtower combat damage against an enemy in range.
+- Research UI lock/researched states for Infantry Weapons I, Reinforced Armor I, Ranger Training I, and Aether Study I.
 - First-battle loop: capture, Barracks construction, Militia training, rally point, accelerated result.
+- Old Stone Road live campaign victory, next-layer unlocks, first-clear campaign resource reward, and completed-node Start Battle disablement.
+- Ashen Outpost objective HUD, Burned Shrine gate-Watchtower weakening, and special objective Results states for Burned Shrine, Enemy Barracks, and Outpost Captain.
+- Ashen Outpost desktop objective-panel placement avoiding the enemy stronghold/barracks/gate-Watchtower focus area.
+- Ashen Outpost landmark scoutability under Normal fog, including resource sites, neutral camps, fortress buildings, minimap markers, and major HUD-overlap guards.
 - Live objective resolution into Results.
 - Responsive layout reachability and overflow across desktop, tablet, and mobile.
 
 Full real-time human-style victory from first click to enemy base kill remains manual QA.
+
+### Crown Shrine Selected-Forces Copy Polish
+
+Goal: make the Crown Shrine retake guide accurate for partial combat selections. Browser Use showed that after selecting only Aster, the guide still said to right-click with `hero and troops`.
+
+Files changed in this pass:
+
+- `src/game/battle/BattleSceneAlerts.ts`
+- `src/game/battle/BattleSceneAlerts.test.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- The combat-selected Crown Shrine retake prompt now says `Right-click the Crown Shrine with your selected forces.`.
+- This wording stays correct for the opening full-squad selection, hero-only selection, or any selected player unit.
+- Added focused unit coverage for the hero-only retake state.
+
+Verification in this pass:
+
+- `npm test -- --run src/game/battle/BattleSceneAlerts.test.ts`: passed, 1 file and 4 tests.
+- `npm test`: passed, 30 test files and 145 tests.
+- `npm run build`: passed with only the known large Phaser bundle warning.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes.
+- Browser Use: fresh First Claim skirmish starts with `4 units selected` and the selected-forces Crown Shrine prompt.
+
+### Crown Shrine Retake Selection Hint Polish
+
+Goal: prevent the first-battle guide from asking for a combat move while a production building is selected. Browser Use showed that when the enemy recaptured the Crown Shrine and the Barracks was selected, right-clicking the Shrine set the Barracks rally point instead of moving the army.
+
+Files changed in this pass:
+
+- `src/game/battle/BattleSceneAlerts.ts`
+- `src/game/battle/BattleSceneAlerts.test.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- `firstBattleTutorialHint` now detects whether a player combat entity is selected before giving the Crown Shrine retake move prompt.
+- If no hero or player unit is selected while the Crown Shrine is not player-owned, the guide says `Select your army, then right-click the Crown Shrine.`.
+- If the hero or a player unit is selected, the follow-up selected-forces copy pass now uses `Right-click the Crown Shrine with your selected forces.`.
+- Added focused unit coverage for the building-selected retake state.
+
+Verification in this pass:
+
+- `npm test -- --run src/game/battle/BattleSceneAlerts.test.ts`: passed, 1 file and 3 tests.
+- `npm test`: passed, 30 test files and 144 tests.
+- `npm run build`: passed with only the known large Phaser bundle warning.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes.
+- Browser Use: with Command Hall selected and Crown Shrine not owned, the guide asks for army selection; combat-selected retake wording was tightened in the follow-up selected-forces copy pass.
+
+### First Battle Construction Hint Polish
+
+Goal: keep the first-battle guide synchronized after the player places their first Barracks. Browser Use showed that immediately after placing the Barracks, the construction site became selected but the guide could briefly step backward to `Select your Command Hall.`.
+
+Files changed in this pass:
+
+- `src/game/battle/BattleSceneAlerts.ts`
+- `src/game/battle/BattleSceneAlerts.test.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- `firstBattleTutorialHint` now checks for an in-progress player Barracks before requiring Command Hall selection.
+- While the unfinished Barracks is selected, the guide stays on `Barracks is under construction. Hold near your base until it completes.`.
+- Added focused unit coverage for the in-progress Barracks hint and the earlier no-production Command Hall prompt.
+
+Verification in this pass:
+
+- `npm test -- --run src/game/battle/BattleSceneAlerts.test.ts`: passed, 1 file and 2 tests.
+- `npm test`: passed, 30 test files and 143 tests.
+- `npm run build`: passed with only the known large Phaser bundle warning.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes.
+- `git diff --check`: no whitespace errors; existing `.gitignore` CRLF warning only.
+- Browser Use: First Claim Easy replayed through capture, Command Hall selection, Barracks placement, construction completion, Militia training, and the first-defense prompt.
+
+### First Claim Neutral Camp Opening Polish
+
+Goal: preserve the First Claim tutorial capture as a clean first beat after full-squad opening selection. Browser Use showed that moving the selected starting squad to the Crown Shrine could pull the nearby Sunken Road Pack into combat before the player had built production.
+
+Files changed in this pass:
+
+- `src/game/data/maps/firstClaim.ts`
+- `src/game/data/contentValidation.test.ts`
+- `BALANCE.md`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Moved `sunken_road_pack` from `(710, 1110)` to `(650, 1240)`.
+- Added a content-validation test that keeps the tutorial Crown Shrine farther from that camp than capture radius plus normal aggro and opening formation spacing.
+- No enemy attack timing, unit stats, rewards, campaign economy, or new systems changed.
+
+Verification in this pass:
+
+- `npm test -- --run src/game/data/contentValidation.test.ts`: passed, 1 file and 6 tests.
+- `npm test`: passed, 29 test files and 141 tests.
+- `npm run build`: passed with only the known large Phaser bundle warning.
+- `npm run test:e2e -- --reporter=line -g "battle HUD supports minimap movement"`: passed, 1 focused Playwright test.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes.
+- Browser Use: First Claim Easy opening captured Crown Shrine cleanly with the neutral camp visible lower on the map and not pulled into combat.
+
+### Opening Squad Selection Polish
+
+Goal: close a small first-click onboarding mismatch found in Browser Use. The first battle hint told the player to right-click the Crown Shrine with hero and troops, but battle startup selected only the hero, so the first command sent Aster alone.
+
+Files changed in this pass:
+
+- `src/game/scenes/BattleScene.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `QA_RUN.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Battle startup now selects every alive starting player unit after the scene systems are created.
+- The initial First Claim HUD now visibly starts at `4 units selected` for the default Warlord skirmish: Aster, two Militia, and Ranger.
+- The existing battle HUD Playwright test now asserts that the opening selection includes the hero and all starting player units before it continues into click-selection, minimap, fog, and building-placement coverage.
+- Browser Use rechecked First Claim Easy from Skirmish, without resetting or replacing the user's campaign save.
+
+Verification in this pass:
+
+- `npm test`: passed, 29 test files and 140 tests.
+- `npm run build`: passed with only the known large Phaser bundle warning.
+- `npm run test:e2e -- --reporter=line -g "battle HUD supports minimap movement"`: passed, 1 focused Playwright test.
+- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes.
 
 ## Current Known Bugs
 
@@ -754,10 +1490,9 @@ Known issues and caveats:
 Current rough line counts:
 
 - `src/game/data/contentValidation.ts`: 973 lines.
-- `src/game/scenes/BattleScene.ts`: 819 lines.
-- `src/game/core/GameTypes.ts`: 624 lines.
+- `src/game/scenes/BattleScene.ts`: 862 lines.
 - `src/game/core/HeroProgressionRules.ts`: 528 lines.
-- `src/game/ui/HUD.ts`: 458 lines.
+- `src/game/ui/HUD.ts`: 581 lines.
 - `src/game/core/CampaignRules.ts`: 433 lines.
 - `src/game/core/SaveSystem.test.ts`: 409 lines.
 - `src/game/systems/PathfindingGrid.ts`: 397 lines.
@@ -766,12 +1501,18 @@ Current rough line counts:
 - `src/game/data/campaignNodes.ts`: 310 lines.
 - `src/game/scenes/CampaignMapScene.ts`: 291 lines.
 - `src/game/data/aiPersonalities.ts`: 288 lines.
+- `src/game/types/CombatTypes.ts`: 221 lines.
+- `src/game/types/MapTypes.ts`: 132 lines.
+- `src/game/types/ItemTypes.ts`: 92 lines.
+- `src/game/types/HeroTypes.ts`: 85 lines.
+- `src/game/types/CampaignTypes.ts`: 83 lines.
+- `src/game/core/GameTypes.ts`: 1 line.
 - `src/game/scenes/HeroProgressionScene.ts`: 286 lines.
 
 Risk notes:
 
 - `BattleScene` is smaller than before but still the highest live-scene integration risk.
-- `GameTypes.ts` continues accumulating cross-domain types.
+- `GameTypes.ts` is no longer a large risk file; it is a 1-line compatibility barrel over focused modules.
 - `HeroProgressionRules.ts` mixes skills, equipment, reward, XP, duplicate conversion, and stat math.
 - `CampaignRules.ts` joins node completion, costs/rewards, modifiers, town services, and reward claims.
 - `HUD.ts` is still a concentrated battle UI surface.
@@ -852,12 +1593,11 @@ Run this before a checkpoint commit after gameplay/UI changes:
 2. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
 3. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
 4. Play Ashen Outpost with and without Chapel repair to validate fortress pressure.
-5. Update `QA_RUN.md` to reflect the latest 118-test balance verification if it will remain a canonical QA artifact.
+5. Do a human-paced Ashen assault with fog on, especially final approach/tower readability and whether the upper-left objective panel placement feels good across a full fight.
 6. Continue reducing `BattleScene` only in small, behavior-preserving slices.
-7. Split `GameTypes.ts` or `contentValidation.ts` only after a checkpoint, because both are central conflict/risk files.
-8. Add e2e/manual coverage for Chapel choices, Mystic Lodge/Acolyte, Watchtower combat, research UI, and Ashen Outpost special objectives.
-9. Do not add enemy construction, workers, affixes, or new campaign systems until the current mini-campaign balance is human-tested.
-10. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+7. Consider splitting `contentValidation.ts` only after a checkpoint, because it remains a central conflict/risk file.
+8. Do not add enemy construction, workers, affixes, or new campaign systems until the current mini-campaign balance is human-tested.
+9. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 

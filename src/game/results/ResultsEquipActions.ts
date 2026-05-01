@@ -31,6 +31,23 @@ export function equipResultsRewardItem(data: ResultsData, itemInstanceId: string
   };
 }
 
+export function keepResultsRewardItem(data: ResultsData, itemInstanceId: string): ResultsEquipActionResult {
+  const instance = findItemInstance(data.heroSave.inventory, itemInstanceId);
+  const item = instance ? ITEM_BY_ID[instance.itemId] : undefined;
+  if (!instance || !item) {
+    return {
+      ok: false,
+      data,
+      message: "That reward is no longer in this hero's inventory."
+    };
+  }
+  return {
+    ok: true,
+    data,
+    message: `${item.name} kept in inventory. Open Hero Inventory when you want to equip it.`
+  };
+}
+
 export function previewEquipDeltas(data: ResultsData, itemInstanceId: string): StatDelta[] {
   const heroClass = HERO_CLASS_BY_ID[data.heroSave.classId] ?? Object.values(HERO_CLASS_BY_ID)[0];
   const origin = ORIGIN_BY_ID[data.heroSave.originId] ?? Object.values(ORIGIN_BY_ID)[0];

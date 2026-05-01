@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./aiPersonalities";
 import { CAMPAIGN_NODES } from "./campaignNodes";
+import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
 import { MAPS } from "./maps";
 import { REWARD_TABLES } from "./rewards";
@@ -34,6 +35,22 @@ describe("content validation", () => {
       expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks", "defeat_outpost_captain"])
     );
     expect(REWARD_TABLES.map((table) => table.id)).toContain("ashen_outpost_rewards");
+  });
+
+  it("keeps the First Claim tutorial capture clear of neutral camp aggro", () => {
+    const firstClaim = MAPS.find((map) => map.id === "first_claim");
+    const crownShrine = firstClaim?.captureSites.find((site) => site.id === "crown_shrine");
+    const sunkenRoadPack = firstClaim?.neutralCamps.find((camp) => camp.id === "sunken_road_pack");
+    expect(firstClaim).toBeTruthy();
+    expect(crownShrine).toBeTruthy();
+    expect(sunkenRoadPack).toBeTruthy();
+
+    const safeOpeningDistance = DEFAULT_AGGRO_RADIUS + (crownShrine?.radius ?? 0) + FORMATION_SPACING * 3;
+    const actualDistance = Math.hypot(
+      (sunkenRoadPack?.x ?? 0) - (crownShrine?.x ?? 0),
+      (sunkenRoadPack?.y ?? 0) - (crownShrine?.y ?? 0)
+    );
+    expect(actualDistance).toBeGreaterThan(safeOpeningDistance);
   });
 
   it("defines the first mini-campaign chain", () => {

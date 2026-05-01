@@ -3,6 +3,7 @@ import { createSkirmishBattleLaunchRequest } from "../battle/BattleLaunchRequest
 import type { BattleStats } from "../core/GameTypes";
 import { createItemInstance } from "../core/HeroProgressionRules";
 import { createNewHeroSave } from "../data/heroes";
+import { keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import type { ResultsData } from "./ResultsTypes";
 import { createResultsViewModel, initialResultsStatus } from "./ResultsViewModel";
@@ -61,9 +62,68 @@ describe("results scene helpers", () => {
     const actions = renderPrimaryActions(data);
 
     expect(retry.launchRequest.heroSave.inventory).toHaveLength(0);
+    expect((inventory.heroSave as { inventory: unknown[] }).inventory).toHaveLength(0);
     expect(inventory.returnMode).toBe("campaign");
     expect(actions).toContain("Retry");
+    expect(actions).toContain("Open Hero Inventory");
     expect(actions).toContain("Campaign Map");
+  });
+
+  it("shows saved hero progress on defeat when battle XP was earned but not saved", () => {
+    const startingHero = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      xp: 80
+    };
+    const defeatedHero = {
+      ...startingHero,
+      level: 3,
+      xp: 320,
+      skillPoints: 2
+    };
+    const data = createResultsData({
+      stats: {
+        ...baseStats(),
+        outcome: "defeat",
+        xpGained: 240
+      },
+      heroSave: defeatedHero,
+      startingHeroSave: startingHero
+    });
+
+    const viewModel = createResultsViewModel(data);
+
+    expect(initialResultsStatus(data)).toContain("battle XP");
+    expect(viewModel.title).toBe("Defeat");
+    expect(viewModel.xp.afterHero).toBe(startingHero);
+    expect(viewModel.xp.levelsGained).toBe(0);
+    expect(viewModel.xp.skillPointsGained).toBe(0);
+    expect(viewModel.skillPointsGained).toBe(0);
+  });
+
+  it("reports when a victory reward is intentionally kept in inventory", () => {
+    const rewardInstance = createItemInstance("weathered_command_sword", "results_test");
+    const heroSave = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      inventory: [rewardInstance]
+    };
+    const data = createResultsData({
+      heroSave,
+      rewardItemIds: ["weathered_command_sword"],
+      reward: {
+        itemIds: ["weathered_command_sword"],
+        itemInstances: [rewardInstance],
+        resources: {},
+        xp: 45,
+        duplicateConversions: []
+      }
+    });
+
+    const result = keepResultsRewardItem(data, rewardInstance.instanceId);
+
+    expect(result.ok).toBe(true);
+    expect(result.data.heroSave.equipment.weapon).toBeUndefined();
+    expect(result.message).toContain("Weathered Command Sword");
+    expect(result.message).toContain("kept in inventory");
   });
 });
 

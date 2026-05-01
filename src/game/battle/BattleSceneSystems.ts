@@ -36,6 +36,8 @@ import { HUD } from "../ui/HUD";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
 
+const BATTLE_FOG_CELL_SIZE = 96;
+
 export interface BattleSceneSystems {
   movementSystem: MovementSystem;
   combatSystem: CombatSystem;
@@ -277,8 +279,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         }
       },
       onAbility: (abilityId) => {
-        AudioManager.play("ability_cast");
-        abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected());
+        if (abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected())) {
+          AudioManager.play("ability_cast");
+        }
       },
       onMinimapMove: centerCameraFromMinimap,
       onMenu: openMainMenu
@@ -351,5 +354,5 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 }
 
 export function createBattleFogOfWar(activeMap: BattleMapDefinition): FogOfWarSystem {
-  return new FogOfWarSystem(activeMap.width, activeMap.height);
+  return new FogOfWarSystem(activeMap.width, activeMap.height, BATTLE_FOG_CELL_SIZE);
 }

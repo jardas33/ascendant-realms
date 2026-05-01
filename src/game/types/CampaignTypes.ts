@@ -1,0 +1,83 @@
+import type { BattleDifficulty, EnemyAIPersonalityId } from "./CombatTypes";
+import type { ResourceBag } from "./EconomyTypes";
+
+export type CampaignModifierId = "inspired_militia" | "blessed_road" | "well_rested" | "angered_raiders" | "local_support";
+
+export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "next_node_resource_reward";
+
+export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
+
+export interface CampaignModifierDefinition {
+  id: CampaignModifierId;
+  name: string;
+  description: string;
+  trigger: CampaignModifierTrigger;
+  durationLabel: string;
+  effects: {
+    extraPlayerUnitIds?: string[];
+    extraEnemyUnitIds?: string[];
+    heroManaMultiplier?: number;
+    heroMaxHpMultiplier?: number;
+    campaignResourceRewardMultiplier?: number;
+  };
+}
+
+export interface CampaignNodeRewardDefinition {
+  itemIds?: string[];
+  resources?: Partial<ResourceBag>;
+  xp?: number;
+}
+
+export interface CampaignChoiceRequirements {
+  resources?: Partial<ResourceBag>;
+  heroLevel?: number;
+  completedNodeIds?: string[];
+  itemIds?: string[];
+  factionReputation?: Record<string, number>;
+}
+
+export interface CampaignChoiceRewardDefinition extends CampaignNodeRewardDefinition {
+  unlockNodeIds?: string[];
+  lockNodeIds?: string[];
+  modifierIds?: CampaignModifierId[];
+  removeModifierIds?: CampaignModifierId[];
+  reputationChanges?: Record<string, number>;
+  recoverHero?: boolean;
+}
+
+export interface CampaignNodeChoiceDefinition {
+  id: string;
+  label: string;
+  description: string;
+  requirements?: CampaignChoiceRequirements;
+  costs?: Partial<ResourceBag>;
+  rewards?: CampaignChoiceRewardDefinition;
+  stockItemId?: string;
+  reputationChanges?: Record<string, number>;
+  unlockNodeIds?: string[];
+  lockNodeIds?: string[];
+  modifierIds?: CampaignModifierId[];
+  removeModifierIds?: CampaignModifierId[];
+  onceOnly: boolean;
+  completesNode?: boolean;
+}
+
+export interface CampaignNodeDefinition {
+  id: string;
+  name: string;
+  description: string;
+  nodeType: CampaignNodeType;
+  difficulty: BattleDifficulty;
+  mapId: string;
+  enemyFactionId: string;
+  aiPersonalityId?: EnemyAIPersonalityId;
+  prerequisites: string[];
+  rewards: CampaignNodeRewardDefinition;
+  eventText?: string;
+  choices?: CampaignNodeChoiceDefinition[];
+  unlocks: string[];
+  x: number;
+  y: number;
+}
+
+export type CampaignNodeStatus = "locked" | "available" | "completed";

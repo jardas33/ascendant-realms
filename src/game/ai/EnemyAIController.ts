@@ -66,7 +66,7 @@ export class EnemyAIController {
     this.personality = getAIPersonality(options.aiPersonalityId);
     this.difficulty = applyAIPersonalityToDifficulty(getBattleDifficulty(options.difficulty), this.personality);
     this.config = applyAIPersonalityToConfig(options.config, this.personality);
-    this.expandTimer = 0;
+    this.expandTimer = Math.max(0, this.config.expandInterval - this.config.initialExpandDelay);
     this.attackTimer = 0;
   }
 
@@ -88,7 +88,7 @@ export class EnemyAIController {
       addResources(this.options.resources, scaledEnemyIncome(this.config.incomePerTick, this.difficulty.enemyIncomeMultiplier));
     }
 
-    if (this.trainTimer >= this.difficulty.trainInterval) {
+    if (this.trainTimer >= this.config.trainInterval) {
       this.trainTimer = 0;
       this.trainEnemyUnit(phase);
     }
@@ -104,7 +104,7 @@ export class EnemyAIController {
     this.maybeAlert(
       "gathering",
       "Enemy forces are gathering.",
-      this.attacksLaunched === 0 && elapsedSeconds >= Math.max(20, this.difficulty.firstAttackDelay - 35)
+      this.attacksLaunched === 0 && elapsedSeconds >= Math.max(20, this.config.initialAttackDelay - 35)
     );
     if (this.canSendAttackWave(attackWave, phase)) {
       this.attackTimer = 0;
@@ -116,7 +116,7 @@ export class EnemyAIController {
       return;
     }
 
-    if (this.expandTimer >= this.difficulty.expandInterval) {
+    if (this.expandTimer >= this.config.expandInterval) {
       this.expandTimer = 0;
       this.state.set(enemyArmy.length >= 3 ? "EXPAND" : "BUILD_ARMY");
       this.maybeAlert("scouts", "Enemy scouts are moving.", true);
@@ -173,7 +173,7 @@ export class EnemyAIController {
     if (!target) {
       return;
     }
-    army.slice(0, Math.min(this.difficulty.expandSquadSize, army.length)).forEach((unit, index) => {
+    army.slice(0, Math.min(this.config.expandSquadSize, army.length)).forEach((unit, index) => {
       unit.commandMove({ x: target.position.x + index * 20, y: target.position.y + index * 16 }, true);
     });
   }
@@ -193,12 +193,12 @@ export class EnemyAIController {
 
     const elapsedSeconds = this.options.getElapsedSeconds();
     const milestones = this.options.getPlayerMilestones();
-    const requiredTimer = this.attacksLaunched === 0 ? this.difficulty.firstAttackDelay : this.difficulty.attackInterval;
+    const requiredTimer = this.attacksLaunched === 0 ? this.config.initialAttackDelay : this.config.attackInterval;
     if (this.attackTimer < requiredTimer) {
       return false;
     }
 
-    if (this.attacksLaunched === 0 && elapsedSeconds < this.difficulty.firstAttackDelay) {
+    if (this.attacksLaunched === 0 && elapsedSeconds < this.config.initialAttackDelay) {
       return false;
     }
 
@@ -211,7 +211,7 @@ export class EnemyAIController {
       }
     }
 
-    return wave.length >= Math.min(this.difficulty.minAttackArmySize, Math.max(1, this.maxAttackWaveSize(phase)));
+    return wave.length >= Math.min(this.config.minAttackArmySize, Math.max(1, this.maxAttackWaveSize(phase)));
   }
 
   private selectAttackWave(army: Unit[], phase: BattlePhaseDefinition): Unit[] {
@@ -251,7 +251,7 @@ export class EnemyAIController {
   private maxAttackWaveSize(phase: BattlePhaseDefinition): number {
     const milestones = this.options.getPlayerMilestones();
     const elapsedSeconds = this.options.getElapsedSeconds();
-    let maxSize = Math.min(this.difficulty.attackWaveSize, phase.enemy.maxAttackWaveSize);
+    let maxSize = Math.min(this.config.attackWaveSize, phase.enemy.maxAttackWaveSize);
     if (
       milestones.isFirstBattle &&
       !milestones.hasBuiltProduction &&

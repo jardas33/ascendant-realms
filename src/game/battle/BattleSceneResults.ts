@@ -25,6 +25,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
   if (!completion) {
     return;
   }
+  const resultsHeroSave = outcome === "victory" ? completion.heroSave : startingHeroSave;
   if (completion.shouldSaveHero && launch.request.mode !== "campaign_node") {
     SaveSystem.saveHero(completion.heroSave);
   }
@@ -69,11 +70,11 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
 
   scene.scene.start(SCENE_KEYS.results, {
     stats: completion.stats,
-    heroSave: completion.heroSave,
+    heroSave: resultsHeroSave,
     startingHeroSave,
     rewardItemIds: completion.rewardItemIds,
     reward: completion.reward,
     rewardLevelUp: completion.rewardLevelUp,
-    launchRequest: cloneBattleLaunchRequestWithHero(launch.request, outcome === "victory" ? completion.heroSave : startingHeroSave)
+    launchRequest: cloneBattleLaunchRequestWithHero(launch.request, resultsHeroSave)
   });
 }

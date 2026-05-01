@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import type { BattleMapDefinition, Team } from "../core/GameTypes";
+import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { Building } from "../entities/Building";
@@ -21,6 +21,13 @@ interface SpawnBattleScenarioOptions {
 export interface SpawnBattleScenarioResult {
   hero: Hero;
   captureSites: CaptureSite[];
+  neutralCampLabels: NeutralCampLabel[];
+}
+
+export interface NeutralCampLabel {
+  id: string;
+  position: Position;
+  label: Phaser.GameObjects.Text;
 }
 
 export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnBattleScenarioResult {
@@ -48,6 +55,7 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
 
   const captureSites = activeMap.captureSites.map((siteDefinition) => new CaptureSite(scene, siteDefinition));
 
+  const neutralCampLabels: NeutralCampLabel[] = [];
   activeMap.neutralCamps.forEach((camp) => {
     camp.unitIds.forEach((unitId, index) => {
       const angle = index * 2.1;
@@ -60,7 +68,7 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
         y: camp.y + Math.sin(angle) * 34
       });
     });
-    scene.add
+    const label = scene.add
       .text(camp.x, camp.y - 58, camp.name, {
         fontFamily: "Verdana, Arial, sans-serif",
         fontSize: "12px",
@@ -70,9 +78,14 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
       })
       .setOrigin(0.5)
       .setDepth(1);
+    neutralCampLabels.push({
+      id: camp.id,
+      position: { x: camp.x, y: camp.y },
+      label
+    });
   });
 
-  return { hero, captureSites };
+  return { hero, captureSites, neutralCampLabels };
 }
 
 function spawnUnit(options: {

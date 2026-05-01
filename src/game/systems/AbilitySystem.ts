@@ -42,7 +42,9 @@ export class AbilitySystem {
       return false;
     }
     if (hero.abilityCooldowns[ability.id] > 0) {
-      this.options.onMessage("Ability cooling down", hero.position.x, hero.position.y - 44, "#ffd27a");
+      if (hero.abilityCooldowns[ability.id] < ability.cooldown - 0.5) {
+        this.options.onMessage("Ability cooling down", hero.position.x, hero.position.y - 44, "#ffd27a");
+      }
       return false;
     }
     if (hero.mana < ability.manaCost) {

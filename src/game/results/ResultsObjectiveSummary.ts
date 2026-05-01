@@ -57,9 +57,15 @@ export function renderSpecialObjectives(data: ResultsData, map?: BattleMapDefini
 
 function renderXpProgress(data: ResultsData, viewModel: ResultsViewModel): string {
   const { before, after, beforeHero, afterHero, levelsGained, skillPointsGained } = viewModel.xp;
+  const isDefeat = data.stats.outcome === "defeat";
   return `
     <div class="results-grid compact">
-      <span>XP gained</span><strong>${data.stats.xpGained}</strong>
+      <span>${isDefeat ? "XP saved" : "XP gained"}</span><strong>${isDefeat ? 0 : data.stats.xpGained}</strong>
+      ${
+        isDefeat && data.stats.xpGained > 0
+          ? `<span>Battle XP earned</span><strong>${data.stats.xpGained} (not saved)</strong>`
+          : ""
+      }
       <span>Before</span><strong>Level ${beforeHero.level} - ${formatXpProgress(beforeHero.xp, beforeHero.level, before)}</strong>
       <span>After</span><strong>Level ${afterHero.level} - ${formatXpProgress(afterHero.xp, afterHero.level, after)}</strong>
       <span>Level-up</span><strong>${levelsGained > 0 ? `+${levelsGained} level${levelsGained === 1 ? "" : "s"}` : "No level-up"}</strong>

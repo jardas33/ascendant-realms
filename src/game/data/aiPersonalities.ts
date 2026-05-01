@@ -111,14 +111,14 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
       firstAttackDelayMultiplier: 1.22,
       attackIntervalMultiplier: 1.18,
       expandIntervalMultiplier: 1.12,
-      trainIntervalMultiplier: 1.02,
-      commanderJoinDelayMultiplier: 0.95
+      trainIntervalMultiplier: 1.25,
+      commanderJoinDelayMultiplier: 1.05
     },
     economy: {
-      incomeMultiplier: 1.02
+      incomeMultiplier: 0.94
     },
     waves: {
-      attackWaveSizeMultiplier: 1.08,
+      attackWaveSizeMultiplier: 1,
       minAttackArmySizeDelta: 1,
       phaseOverrides: {
         expansion: {
@@ -129,25 +129,25 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
           maxAttackByUnitId: { raider: 2 }
         },
         pressure: {
-          maxAttackWaveSize: 5,
+          maxAttackWaveSize: 4,
           allowedAttackUnitIds: ["raider", "hexer", "brute"],
           preferredAttackUnitIds: ["brute", "raider", "raider", "hexer", "brute"],
           trainUnitIds: ["raider", "hexer", "brute"],
-          maxAttackByUnitId: { raider: 2, hexer: 1, brute: 2 }
+          maxAttackByUnitId: { raider: 2, hexer: 1, brute: 1 }
         },
         assault: {
-          maxAttackWaveSize: 9,
+          maxAttackWaveSize: 5,
           allowedAttackUnitIds: ["raider", "hexer", "brute", "enemy_commander"],
           preferredAttackUnitIds: ["brute", "raider", "hexer", "brute", "enemy_commander", "raider", "brute"],
           trainUnitIds: ["raider", "hexer", "brute"],
-          maxAttackByUnitId: { raider: 3, hexer: 2, brute: 3, enemy_commander: 1 }
+          maxAttackByUnitId: { raider: 3, hexer: 2, brute: 1, enemy_commander: 1 }
         }
       }
     },
     defense: {
-      defendRadiusMultiplier: 1.28,
-      defenseSquadSizeDelta: 2,
-      reserveDefenseUnits: 2,
+      defendRadiusMultiplier: 1.18,
+      defenseSquadSizeDelta: 1,
+      reserveDefenseUnits: 1,
       protectCaptureSites: true
     },
     commander: {
@@ -167,11 +167,11 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
       firstAttackDelayMultiplier: 1.08,
       attackIntervalMultiplier: 1.08,
       expandIntervalMultiplier: 1,
-      trainIntervalMultiplier: 0.95,
-      commanderJoinDelayMultiplier: 0.92
+      trainIntervalMultiplier: 1,
+      commanderJoinDelayMultiplier: 1
     },
     economy: {
-      incomeMultiplier: 1.02
+      incomeMultiplier: 0.98
     },
     waves: {
       attackWaveSizeMultiplier: 1,
@@ -185,18 +185,18 @@ export const AI_PERSONALITIES: EnemyAIPersonalityDefinition[] = [
           maxAttackByUnitId: { raider: 1, hexer: 2 }
         },
         pressure: {
-          maxAttackWaveSize: 5,
+          maxAttackWaveSize: 4,
           allowedAttackUnitIds: ["raider", "hexer", "brute"],
           preferredAttackUnitIds: ["hexer", "hexer", "raider", "brute", "hexer"],
           trainUnitIds: ["hexer", "raider", "brute"],
-          maxAttackByUnitId: { raider: 2, hexer: 3, brute: 1 }
+          maxAttackByUnitId: { raider: 2, hexer: 2, brute: 1 }
         },
         assault: {
-          maxAttackWaveSize: 8,
+          maxAttackWaveSize: 5,
           allowedAttackUnitIds: ["raider", "hexer", "brute", "enemy_commander"],
           preferredAttackUnitIds: ["hexer", "brute", "hexer", "enemy_commander", "raider", "hexer", "brute"],
           trainUnitIds: ["hexer", "raider", "brute"],
-          maxAttackByUnitId: { raider: 2, hexer: 3, brute: 2, enemy_commander: 1 }
+          maxAttackByUnitId: { raider: 2, hexer: 2, brute: 1, enemy_commander: 1 }
         }
       }
     },

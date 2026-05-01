@@ -65,7 +65,11 @@ export function renderRewardItems(
 }
 
 export function renderDefeatTips(data: ResultsData): string {
-  const tips = createDefeatTips(data.stats, { hero: data.heroSave });
+  const tips = createDefeatTips(data.stats, {
+    hero: data.heroSave,
+    mapId: data.launchRequest?.mapId,
+    campaignNodeId: data.launchRequest?.campaignNodeId
+  });
   return `
     <section class="result-block wide defeat-tips">
       <h2>Next Attempt</h2>
@@ -112,9 +116,15 @@ function renderRewardItem(
         <div class="reward-actions">
           <small>Current ${titleCase(item.slot)}: ${currentItem ? escapeHtml(currentItem.name) : "Empty"}</small>
           <small class="stat-preview">${escapeHtml(formatDeltas(deltas))}</small>
+          ${entry.instance && !equipped ? `<small class="reward-action-note">Already saved to inventory. Equip now or keep it for later.</small>` : ""}
           ${
             canEquip
-              ? `<button data-results-action="equip" data-item-id="${entry.instance?.instanceId ?? ""}" ${equipped || !entry.instance ? "disabled" : ""}>${equipped ? "Equipped" : entry.instance ? "Equip Now" : "Sent to Inventory"}</button>`
+              ? `<button data-results-action="equip" data-item-id="${entry.instance?.instanceId ?? ""}" ${equipped || !entry.instance ? "disabled" : ""}>${equipped ? "Equipped" : entry.instance ? "Equip Now" : "Sent to Inventory"}</button>
+                ${
+                  entry.instance && !equipped
+                    ? `<button data-results-action="keep_inventory" data-item-id="${escapeHtml(entry.instance.instanceId)}">Keep in Inventory</button>`
+                    : ""
+                }`
               : ""
           }
         </div>

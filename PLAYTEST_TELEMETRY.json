@@ -1,0 +1,1643 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "Ascendant Realms deterministic scripted playtest v1",
+  "telemetry": [
+    {
+      "nodeId": "border_village",
+      "nodeName": "Border Village",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "balanced_warlord",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 9,
+      "timeBarracksPlaced": 9,
+      "timeBarracksCompleted": 34,
+      "timeFirstUnitTrained": 38,
+      "timeFirstEnemyWarning": 175,
+      "timeFirstEnemyContact": 233,
+      "firstWaveSurvived": true,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 347,
+      "resourcesFloated": {
+        "crowns": 1380,
+        "stone": 365,
+        "iron": 100,
+        "aether": 255
+      },
+      "peakResourcesFloated": {
+        "crowns": 1620,
+        "stone": 365,
+        "iron": 140,
+        "aether": 255
+      },
+      "heroLevel": 1,
+      "heroXpGained": 105,
+      "finalArmySize": 10,
+      "rewardResult": {
+        "battleItemIds": [
+          "weathered_command_sword"
+        ],
+        "battleResources": {
+          "crowns": 120,
+          "stone": 65,
+          "aether": 15
+        },
+        "battleXp": 75,
+        "campaignItemIds": [
+          "weathered_command_sword"
+        ],
+        "campaignResources": {
+          "crowns": 50
+        },
+        "campaignXp": 30
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Crown Shrine",
+        "0:09 captured Crown Shrine",
+        "0:09 select Command Hall",
+        "0:09 placed Barracks",
+        "0:09 wait for Barracks construction",
+        "0:34 Barracks completed",
+        "0:34 queue Militia",
+        "0:38 trained Militia",
+        "0:38 set rally point at 520,820",
+        "2:55 enemy forces warning",
+        "3:30 enemy wave 1 launched (raider, raider, hexer)",
+        "3:53 survived enemy wave 1",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Stone Quarry",
+        "4:23 captured Stone Quarry",
+        "4:23 move hero and army to Iron Vein",
+        "4:34 captured Iron Vein",
+        "4:34 move hero and army to Aether Well",
+        "4:38 enemy wave 2 launched (raider, raider, hexer)",
+        "4:42 captured Aether Well",
+        "4:42 placed Watchtower",
+        "4:42 research Reinforced Armor I",
+        "5:01 survived enemy wave 2",
+        "5:02 Watchtower completed",
+        "5:04 completed Reinforced Armor I",
+        "5:04 research Infantry Weapons I",
+        "5:22 completed Infantry Weapons I",
+        "5:22 queue Militia",
+        "5:26 trained Militia",
+        "5:26 queue Militia",
+        "5:30 trained Militia",
+        "5:30 queue Militia",
+        "5:34 trained Militia",
+        "5:34 queue Ranger",
+        "5:39 trained Ranger",
+        "5:39 attack enemy base (safe beginner timing)",
+        "5:46 enemy wave 3 launched (raider, raider, hexer, brute, raider)",
+        "5:47 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Cannot train Acolyte; Mystic Lodge is not complete."
+      ]
+    },
+    {
+      "nodeId": "border_village",
+      "nodeName": "Border Village",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "balanced_warlord",
+      "playerScript": "greedy_economy",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 9,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 175,
+      "timeFirstEnemyContact": 233,
+      "firstWaveSurvived": true,
+      "unitsTrained": 7,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 1,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 295,
+      "resourcesFloated": {
+        "crowns": 1160,
+        "stone": 1410,
+        "iron": 1050,
+        "aether": 640
+      },
+      "peakResourcesFloated": {
+        "crowns": 1370,
+        "stone": 1410,
+        "iron": 1050,
+        "aether": 640
+      },
+      "heroLevel": 1,
+      "heroXpGained": 105,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "weathered_command_sword"
+        ],
+        "battleResources": {
+          "crowns": 120,
+          "stone": 65,
+          "aether": 15
+        },
+        "battleXp": 75,
+        "campaignItemIds": [
+          "weathered_command_sword"
+        ],
+        "campaignResources": {
+          "crowns": 50
+        },
+        "campaignXp": 30
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Crown Shrine",
+        "0:09 captured Crown Shrine",
+        "0:09 move hero and army to Stone Quarry",
+        "0:18 captured Stone Quarry",
+        "0:18 move hero and army to Iron Vein",
+        "0:29 captured Iron Vein",
+        "0:29 move hero and army to Aether Well",
+        "0:38 captured Aether Well",
+        "2:55 enemy forces warning",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:30 enemy wave 1 launched (raider, raider, hexer)",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:53 survived enemy wave 1",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:38 enemy wave 2 launched (raider, raider, hexer)",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 queue Militia",
+        "4:48 trained Militia",
+        "4:48 attack enemy base (greedy economy push)",
+        "4:55 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "nodeId": "border_village",
+      "nodeName": "Border Village",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "balanced_warlord",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 47,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 9,
+      "unitsLost": 2,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 125,
+      "resourcesFloated": {
+        "crowns": 90,
+        "stone": 135,
+        "iron": 210,
+        "aether": 75
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 255,
+        "iron": 210,
+        "aether": 75
+      },
+      "heroLevel": 1,
+      "heroXpGained": 105,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "weathered_command_sword"
+        ],
+        "battleResources": {
+          "crowns": 120,
+          "stone": 65,
+          "aether": 15
+        },
+        "battleXp": 75,
+        "campaignItemIds": [
+          "weathered_command_sword"
+        ],
+        "campaignResources": {
+          "crowns": 50
+        },
+        "campaignXp": 30
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Crown Shrine",
+        "0:47 captured Crown Shrine",
+        "0:47 move hero and army to Iron Vein",
+        "0:57 captured Iron Vein",
+        "0:57 set rally point at 620,780",
+        "0:57 queue Militia",
+        "1:01 trained Militia",
+        "1:01 attack enemy base (fast army probe)",
+        "1:11 queue Militia",
+        "1:15 trained Militia",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:35 queue Militia",
+        "1:39 trained Militia",
+        "1:39 queue Militia",
+        "1:43 trained Militia",
+        "1:51 queue Militia",
+        "1:55 trained Militia",
+        "1:55 attack enemy base (fast army follow-up)",
+        "2:04 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:11: strength 136 into 158."
+      ]
+    },
+    {
+      "nodeId": "old_stone_road",
+      "nodeName": "Old Stone Road",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "raider_rush",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 9,
+      "timeBarracksPlaced": 9,
+      "timeBarracksCompleted": 34,
+      "timeFirstUnitTrained": 38,
+      "timeFirstEnemyWarning": 146,
+      "timeFirstEnemyContact": 204,
+      "firstWaveSurvived": true,
+      "unitsTrained": 9,
+      "unitsLost": 3,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 3,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 355,
+      "resourcesFloated": {
+        "crowns": 1320,
+        "stone": 415,
+        "iron": 100,
+        "aether": 285
+      },
+      "peakResourcesFloated": {
+        "crowns": 1620,
+        "stone": 415,
+        "iron": 140,
+        "aether": 285
+      },
+      "heroLevel": 2,
+      "heroXpGained": 100,
+      "finalArmySize": 10,
+      "rewardResult": {
+        "battleItemIds": [
+          "emberglass_wand"
+        ],
+        "battleResources": {
+          "crowns": 75,
+          "stone": 45
+        },
+        "battleXp": 50,
+        "campaignItemIds": [],
+        "campaignResources": {
+          "crowns": 60,
+          "stone": 45,
+          "iron": 15
+        },
+        "campaignXp": 50
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Crown Shrine",
+        "0:09 captured Crown Shrine",
+        "0:09 select Command Hall",
+        "0:09 placed Barracks",
+        "0:09 wait for Barracks construction",
+        "0:34 Barracks completed",
+        "0:34 queue Militia",
+        "0:38 trained Militia",
+        "0:38 set rally point at 520,820",
+        "2:26 enemy forces warning",
+        "3:01 enemy wave 1 launched (raider, raider, raider)",
+        "3:24 survived enemy wave 1",
+        "4:01 enemy wave 2 launched (raider, raider, raider)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Stone Quarry",
+        "4:23 captured Stone Quarry",
+        "4:23 move hero and army to Iron Vein",
+        "4:24 survived enemy wave 2",
+        "4:34 captured Iron Vein",
+        "4:34 move hero and army to Aether Well",
+        "4:42 captured Aether Well",
+        "4:42 placed Watchtower",
+        "4:42 research Reinforced Armor I",
+        "5:01 enemy wave 3 launched (raider, raider, raider, hexer, raider)",
+        "5:02 Watchtower completed",
+        "5:04 completed Reinforced Armor I",
+        "5:04 research Infantry Weapons I",
+        "5:22 completed Infantry Weapons I",
+        "5:22 queue Militia",
+        "5:24 survived enemy wave 3",
+        "5:26 trained Militia",
+        "5:26 queue Militia",
+        "5:30 trained Militia",
+        "5:30 queue Militia",
+        "5:34 trained Militia",
+        "5:34 queue Militia",
+        "5:38 trained Militia",
+        "5:38 queue Militia",
+        "5:42 trained Militia",
+        "5:42 queue Ranger",
+        "5:47 trained Ranger",
+        "5:47 attack enemy base (safe beginner timing)",
+        "5:55 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Cannot train Acolyte; Mystic Lodge is not complete."
+      ]
+    },
+    {
+      "nodeId": "old_stone_road",
+      "nodeName": "Old Stone Road",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "raider_rush",
+      "playerScript": "greedy_economy",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 9,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 146,
+      "timeFirstEnemyContact": 204,
+      "firstWaveSurvived": true,
+      "unitsTrained": 9,
+      "unitsLost": 2,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 303,
+      "resourcesFloated": {
+        "crowns": 1070,
+        "stone": 1435,
+        "iron": 1030,
+        "aether": 655
+      },
+      "peakResourcesFloated": {
+        "crowns": 1370,
+        "stone": 1435,
+        "iron": 1030,
+        "aether": 655
+      },
+      "heroLevel": 2,
+      "heroXpGained": 100,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "emberglass_wand"
+        ],
+        "battleResources": {
+          "crowns": 75,
+          "stone": 45
+        },
+        "battleXp": 50,
+        "campaignItemIds": [],
+        "campaignResources": {
+          "crowns": 60,
+          "stone": 45,
+          "iron": 15
+        },
+        "campaignXp": 50
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Crown Shrine",
+        "0:09 captured Crown Shrine",
+        "0:09 move hero and army to Stone Quarry",
+        "0:18 captured Stone Quarry",
+        "0:18 move hero and army to Iron Vein",
+        "0:29 captured Iron Vein",
+        "0:29 move hero and army to Aether Well",
+        "0:38 captured Aether Well",
+        "2:26 enemy forces warning",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:01 enemy wave 1 launched (raider, raider, raider)",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:24 survived enemy wave 1",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "4:01 enemy wave 2 launched (raider, raider, raider)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:24 survived enemy wave 2",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 queue Militia",
+        "4:48 trained Militia",
+        "4:48 queue Militia",
+        "4:52 trained Militia",
+        "4:52 queue Militia",
+        "4:56 trained Militia",
+        "4:56 attack enemy base (greedy economy push)",
+        "5:01 enemy wave 3 launched (raider, raider, raider, hexer, raider)",
+        "5:03 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "nodeId": "old_stone_road",
+      "nodeName": "Old Stone Road",
+      "mapId": "first_claim",
+      "difficulty": "easy",
+      "aiPersonality": "raider_rush",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 47,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 122,
+      "resourcesFloated": {
+        "crowns": 100,
+        "stone": 135,
+        "iron": 200,
+        "aether": 75
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 255,
+        "iron": 200,
+        "aether": 75
+      },
+      "heroLevel": 2,
+      "heroXpGained": 100,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "emberglass_wand"
+        ],
+        "battleResources": {
+          "crowns": 75,
+          "stone": 45
+        },
+        "battleXp": 50,
+        "campaignItemIds": [],
+        "campaignResources": {
+          "crowns": 60,
+          "stone": 45,
+          "iron": 15
+        },
+        "campaignXp": 50
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Crown Shrine",
+        "0:47 captured Crown Shrine",
+        "0:47 move hero and army to Iron Vein",
+        "0:57 captured Iron Vein",
+        "0:57 set rally point at 620,780",
+        "0:57 queue Militia",
+        "1:01 trained Militia",
+        "1:01 attack enemy base (fast army probe)",
+        "1:11 queue Militia",
+        "1:15 trained Militia",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:35 queue Ranger",
+        "1:40 trained Ranger",
+        "1:48 queue Militia",
+        "1:52 trained Militia",
+        "1:52 attack enemy base (fast army follow-up)",
+        "2:01 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:11: strength 136 into 154."
+      ]
+    },
+    {
+      "nodeId": "aether_well_ruins",
+      "nodeName": "Aether Well Ruins",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 8,
+      "timeBarracksPlaced": 8,
+      "timeBarracksCompleted": 33,
+      "timeFirstUnitTrained": 37,
+      "timeFirstEnemyWarning": 171,
+      "timeFirstEnemyContact": 234,
+      "firstWaveSurvived": true,
+      "unitsTrained": 10,
+      "unitsLost": 2,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 3,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 377,
+      "resourcesFloated": {
+        "crowns": 138,
+        "stone": 1477,
+        "iron": 244,
+        "aether": 299
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 1477,
+        "iron": 244,
+        "aether": 299
+      },
+      "heroLevel": 3,
+      "heroXpGained": 200,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "fordbreaker_halberd",
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 170,
+          "iron": 85,
+          "aether": 50
+        },
+        "battleXp": 120,
+        "campaignItemIds": [
+          "aether_lens"
+        ],
+        "campaignResources": {
+          "stone": 45,
+          "aether": 65
+        },
+        "campaignXp": 80
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to West Stone Cut",
+        "0:07 captured West Stone Cut",
+        "0:07 select Command Hall",
+        "0:07 placed Barracks",
+        "0:07 wait for Barracks construction",
+        "0:32 Barracks completed",
+        "0:32 queue Militia",
+        "0:36 trained Militia",
+        "0:36 set rally point at 520,820",
+        "2:50 enemy forces warning",
+        "3:25 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:53 survived enemy wave 1",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to South Iron Cache",
+        "4:23 captured South Iron Cache",
+        "4:23 move hero and army to North Aether Spring",
+        "4:36 enemy wave 2 launched (hexer, raider, hexer)",
+        "4:38 captured North Aether Spring",
+        "4:38 move hero and army to Ford Toll",
+        "4:47 captured Ford Toll",
+        "5:03 queue Militia",
+        "5:04 survived enemy wave 2",
+        "5:07 trained Militia",
+        "5:07 queue Militia",
+        "5:11 trained Militia",
+        "5:19 queue Ranger",
+        "5:24 trained Ranger",
+        "5:24 attack enemy base (safe beginner timing)",
+        "5:38 queue Militia",
+        "5:42 trained Militia",
+        "5:42 queue Militia",
+        "5:46 trained Militia",
+        "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "5:54 queue Militia",
+        "5:58 trained Militia",
+        "5:58 queue Militia",
+        "6:02 trained Militia",
+        "6:02 attack enemy base (safe beginner second push)",
+        "6:15 survived enemy wave 3",
+        "6:16 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 5:38: strength 166 into 186."
+      ]
+    },
+    {
+      "nodeId": "aether_well_ruins",
+      "nodeName": "Aether Well Ruins",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "timeFirstSiteCaptured": 15,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 170,
+      "timeFirstEnemyContact": 233,
+      "firstWaveSurvived": true,
+      "unitsTrained": 7,
+      "unitsLost": 7,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 10,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5468,
+        "stone": 3225,
+        "iron": 2582,
+        "aether": 1849
+      },
+      "peakResourcesFloated": {
+        "crowns": 5468,
+        "stone": 3225,
+        "iron": 2582,
+        "aether": 1849
+      },
+      "heroLevel": 2,
+      "heroXpGained": 0,
+      "finalArmySize": 4,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Ford Toll",
+        "0:14 captured Ford Toll",
+        "0:14 move hero and army to West Stone Cut",
+        "0:25 captured West Stone Cut",
+        "0:25 move hero and army to South Iron Cache",
+        "0:35 captured South Iron Cache",
+        "0:35 move hero and army to North Aether Spring",
+        "0:50 captured North Aether Spring",
+        "2:50 enemy forces warning",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:25 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:53 survived enemy wave 1",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:36 enemy wave 2 launched (hexer, raider, hexer)",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 queue Militia",
+        "4:48 trained Militia",
+        "4:48 attack enemy base (greedy economy push)",
+        "5:04 survived enemy wave 2",
+        "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:15 survived enemy wave 3",
+        "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "7:26 survived enemy wave 4",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:37 survived enemy wave 5",
+        "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "9:48 survived enemy wave 6",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:59 survived enemy wave 7",
+        "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "12:10 survived enemy wave 8",
+        "12:53 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)",
+        "13:21 survived enemy wave 9",
+        "14:04 enemy wave 10 launched (hexer, brute, hexer, raider, hexer)",
+        "14:32 survived enemy wave 10"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:57: strength 174 into 186."
+      ]
+    },
+    {
+      "nodeId": "aether_well_ruins",
+      "nodeName": "Aether Well Ruins",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "defeat",
+      "timeFirstSiteCaptured": 46,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": 170,
+      "timeFirstEnemyContact": 233,
+      "firstWaveSurvived": true,
+      "unitsTrained": 3,
+      "unitsLost": 6,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 4,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 451,
+      "resourcesFloated": {
+        "crowns": 0,
+        "stone": 1609,
+        "iron": 1240,
+        "aether": 75
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 1609,
+        "iron": 1240,
+        "aether": 75
+      },
+      "heroLevel": 2,
+      "heroXpGained": 0,
+      "finalArmySize": 1,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to West Stone Cut",
+        "0:45 captured West Stone Cut",
+        "0:45 move hero and army to South Iron Cache",
+        "0:55 captured South Iron Cache",
+        "0:55 set rally point at 620,780",
+        "2:50 enemy forces warning",
+        "3:25 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:53 survived enemy wave 1",
+        "4:36 enemy wave 2 launched (hexer, raider, hexer)",
+        "5:04 survived enemy wave 2",
+        "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:15 survived enemy wave 3",
+        "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "7:11 attack enemy base (fast army probe)",
+        "7:26 survived enemy wave 4"
+      ],
+      "structuralNotes": [
+        "Attack failed at 7:30: strength 97 into 185."
+      ]
+    },
+    {
+      "nodeId": "bandit_hillfort",
+      "nodeName": "Bandit Hillfort",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "fortress_keeper",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 8,
+      "timeBarracksPlaced": 8,
+      "timeBarracksCompleted": 33,
+      "timeFirstUnitTrained": 37,
+      "timeFirstEnemyWarning": 198,
+      "timeFirstEnemyContact": 261,
+      "firstWaveSurvived": true,
+      "unitsTrained": 10,
+      "unitsLost": 2,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 2,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold"
+      ],
+      "battleDurationSeconds": 377,
+      "resourcesFloated": {
+        "crowns": 138,
+        "stone": 1477,
+        "iron": 244,
+        "aether": 299
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 1477,
+        "iron": 244,
+        "aether": 299
+      },
+      "heroLevel": 3,
+      "heroXpGained": 200,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "fordbreaker_halberd",
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 170,
+          "iron": 85,
+          "aether": 50
+        },
+        "battleXp": 120,
+        "campaignItemIds": [
+          "captains_seal"
+        ],
+        "campaignResources": {
+          "crowns": 85,
+          "stone": 35,
+          "iron": 60
+        },
+        "campaignXp": 80
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to West Stone Cut",
+        "0:07 captured West Stone Cut",
+        "0:07 select Command Hall",
+        "0:07 placed Barracks",
+        "0:07 wait for Barracks construction",
+        "0:32 Barracks completed",
+        "0:32 queue Militia",
+        "0:36 trained Militia",
+        "0:36 set rally point at 520,820",
+        "3:17 enemy forces warning",
+        "3:52 enemy wave 1 launched (raider, raider)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to South Iron Cache",
+        "4:21 survived enemy wave 1",
+        "4:23 captured South Iron Cache",
+        "4:23 move hero and army to North Aether Spring",
+        "4:38 captured North Aether Spring",
+        "4:38 move hero and army to Ford Toll",
+        "4:47 captured Ford Toll",
+        "5:03 queue Militia",
+        "5:07 trained Militia",
+        "5:07 queue Militia",
+        "5:10 enemy wave 2 launched (brute, raider, raider, hexer)",
+        "5:11 trained Militia",
+        "5:19 queue Ranger",
+        "5:24 trained Ranger",
+        "5:24 attack enemy base (safe beginner timing)",
+        "5:38 survived enemy wave 2",
+        "5:38 queue Militia",
+        "5:42 trained Militia",
+        "5:42 queue Militia",
+        "5:46 trained Militia",
+        "5:54 queue Militia",
+        "5:58 trained Militia",
+        "5:58 queue Militia",
+        "6:02 trained Militia",
+        "6:02 attack enemy base (safe beginner second push)",
+        "6:16 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 5:38: strength 166 into 193."
+      ]
+    },
+    {
+      "nodeId": "bandit_hillfort",
+      "nodeName": "Bandit Hillfort",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "fortress_keeper",
+      "playerScript": "greedy_economy",
+      "battleResult": "defeat",
+      "timeFirstSiteCaptured": 15,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 197,
+      "timeFirstEnemyContact": 260,
+      "firstWaveSurvived": true,
+      "unitsTrained": 7,
+      "unitsLost": 10,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 7,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 806,
+      "resourcesFloated": {
+        "crowns": 4822,
+        "stone": 2895,
+        "iron": 2294,
+        "aether": 1625
+      },
+      "peakResourcesFloated": {
+        "crowns": 4822,
+        "stone": 2895,
+        "iron": 2294,
+        "aether": 1625
+      },
+      "heroLevel": 2,
+      "heroXpGained": 0,
+      "finalArmySize": 1,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Ford Toll",
+        "0:14 captured Ford Toll",
+        "0:14 move hero and army to West Stone Cut",
+        "0:25 captured West Stone Cut",
+        "0:25 move hero and army to South Iron Cache",
+        "0:35 captured South Iron Cache",
+        "0:35 move hero and army to North Aether Spring",
+        "0:50 captured North Aether Spring",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:17 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:52 enemy wave 1 launched (raider, raider)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:20 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 queue Militia",
+        "4:48 trained Militia",
+        "4:48 attack enemy base (greedy economy push)",
+        "5:10 enemy wave 2 launched (brute, raider, raider, hexer)",
+        "5:38 survived enemy wave 2",
+        "6:28 enemy wave 3 launched (brute, raider, raider, hexer)",
+        "6:56 survived enemy wave 3",
+        "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
+        "8:14 survived enemy wave 4",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:32 survived enemy wave 5",
+        "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
+        "10:50 survived enemy wave 6",
+        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
+        "12:08 survived enemy wave 7",
+        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:57: strength 174 into 193.",
+        "Base collapsed to wave 8 at 13:26."
+      ]
+    },
+    {
+      "nodeId": "bandit_hillfort",
+      "nodeName": "Bandit Hillfort",
+      "mapId": "broken_ford",
+      "difficulty": "normal",
+      "aiPersonality": "fortress_keeper",
+      "playerScript": "fast_army",
+      "battleResult": "defeat",
+      "timeFirstSiteCaptured": 46,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": 197,
+      "timeFirstEnemyContact": 260,
+      "firstWaveSurvived": true,
+      "unitsTrained": 3,
+      "unitsLost": 6,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 3,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 451,
+      "resourcesFloated": {
+        "crowns": 0,
+        "stone": 1609,
+        "iron": 1240,
+        "aether": 75
+      },
+      "peakResourcesFloated": {
+        "crowns": 380,
+        "stone": 1609,
+        "iron": 1240,
+        "aether": 75
+      },
+      "heroLevel": 2,
+      "heroXpGained": 0,
+      "finalArmySize": 1,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to West Stone Cut",
+        "0:45 captured West Stone Cut",
+        "0:45 move hero and army to South Iron Cache",
+        "0:55 captured South Iron Cache",
+        "0:55 set rally point at 620,780",
+        "3:17 enemy forces warning",
+        "3:52 enemy wave 1 launched (raider, raider)",
+        "4:20 survived enemy wave 1",
+        "5:10 enemy wave 2 launched (brute, raider, raider, hexer)",
+        "5:38 survived enemy wave 2",
+        "6:28 enemy wave 3 launched (brute, raider, raider, hexer)",
+        "6:56 survived enemy wave 3",
+        "7:11 attack enemy base (fast army probe)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 7:30: strength 97 into 197."
+      ]
+    },
+    {
+      "nodeId": "ashen_outpost",
+      "nodeName": "Ashen Outpost",
+      "mapId": "ashen_outpost",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "timeFirstSiteCaptured": 8,
+      "timeBarracksPlaced": 8,
+      "timeBarracksCompleted": 33,
+      "timeFirstUnitTrained": 37,
+      "timeFirstEnemyWarning": 186,
+      "timeFirstEnemyContact": 250,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_burned_shrine",
+        "destroy_enemy_barracks",
+        "defeat_outpost_captain"
+      ],
+      "battleDurationSeconds": 385,
+      "resourcesFloated": {
+        "crowns": 1440,
+        "stone": 494,
+        "iron": 357,
+        "aether": 566
+      },
+      "peakResourcesFloated": {
+        "crowns": 1560,
+        "stone": 494,
+        "iron": 357,
+        "aether": 566
+      },
+      "heroLevel": 4,
+      "heroXpGained": 280,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "ashbound_censer",
+          "oathbound_aegis"
+        ],
+        "battleResources": {
+          "crowns": 240,
+          "stone": 115,
+          "iron": 130,
+          "aether": 100
+        },
+        "battleXp": 180,
+        "campaignItemIds": [
+          "oathbound_aegis"
+        ],
+        "campaignResources": {
+          "crowns": 130,
+          "stone": 70,
+          "iron": 80,
+          "aether": 55
+        },
+        "campaignXp": 100
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to West Supply Pyre",
+        "0:08 captured West Supply Pyre",
+        "0:08 select Command Hall",
+        "0:08 placed Barracks",
+        "0:08 wait for Barracks construction",
+        "0:33 Barracks completed",
+        "0:33 queue Militia",
+        "0:37 trained Militia",
+        "0:37 set rally point at 520,820",
+        "3:06 enemy forces warning",
+        "3:41 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:10 survived enemy wave 1",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to North Stone Scar",
+        "4:29 captured North Stone Scar",
+        "4:29 move hero and army to Burned Shrine",
+        "4:37 captured Burned Shrine",
+        "4:37 move hero and army to South Iron Pit",
+        "4:48 captured South Iron Pit",
+        "4:48 placed Watchtower",
+        "4:48 placed Mystic Lodge",
+        "4:48 wait for Mystic Lodge construction",
+        "5:05 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:08 Watchtower completed",
+        "5:18 Mystic Lodge completed",
+        "5:18 queue Acolyte",
+        "5:24 trained Acolyte",
+        "5:24 research Reinforced Armor I",
+        "5:34 survived enemy wave 2",
+        "5:46 completed Reinforced Armor I",
+        "5:46 research Infantry Weapons I",
+        "6:04 completed Infantry Weapons I",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:25 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "nodeId": "ashen_outpost",
+      "nodeName": "Ashen Outpost",
+      "mapId": "ashen_outpost",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "timeFirstSiteCaptured": 8,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 186,
+      "timeFirstEnemyContact": 250,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 7,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 10,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 1050,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 4616,
+        "iron": 3821,
+        "aether": 5180
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 4616,
+        "iron": 3821,
+        "aether": 5180
+      },
+      "heroLevel": 3,
+      "heroXpGained": 0,
+      "finalArmySize": 4,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to West Supply Pyre",
+        "0:08 captured West Supply Pyre",
+        "0:08 move hero and army to North Stone Scar",
+        "0:23 captured North Stone Scar",
+        "0:23 move hero and army to South Iron Pit",
+        "0:38 captured South Iron Pit",
+        "0:38 move hero and army to Burned Shrine",
+        "0:49 captured Burned Shrine",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:06 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:41 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:10 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 attack enemy base (greedy economy push)",
+        "5:05 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:34 survived enemy wave 2",
+        "6:29 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:58 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:22 survived enemy wave 4",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:46 survived enemy wave 5",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "11:10 survived enemy wave 6",
+        "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:34 survived enemy wave 7",
+        "13:29 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:58 survived enemy wave 8",
+        "14:53 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)",
+        "15:22 survived enemy wave 9",
+        "16:17 enemy wave 10 launched (hexer, brute, hexer, raider, hexer)",
+        "16:46 survived enemy wave 10"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:48: strength 182 into 195."
+      ]
+    },
+    {
+      "nodeId": "ashen_outpost",
+      "nodeName": "Ashen Outpost",
+      "mapId": "ashen_outpost",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "timeout",
+      "timeFirstSiteCaptured": 46,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": 186,
+      "timeFirstEnemyContact": 250,
+      "firstWaveSurvived": true,
+      "unitsTrained": 5,
+      "unitsLost": 9,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 10,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 1050,
+      "resourcesFloated": {
+        "crowns": 4930,
+        "stone": 270,
+        "iron": 3675,
+        "aether": 140
+      },
+      "peakResourcesFloated": {
+        "crowns": 4930,
+        "stone": 390,
+        "iron": 3675,
+        "aether": 140
+      },
+      "heroLevel": 3,
+      "heroXpGained": 0,
+      "finalArmySize": 3,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to West Supply Pyre",
+        "0:46 captured West Supply Pyre",
+        "0:46 move hero and army to South Iron Pit",
+        "0:55 captured South Iron Pit",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 research Infantry Weapons I",
+        "1:22 completed Infantry Weapons I",
+        "1:22 attack enemy base (fast army probe)",
+        "1:43 attack enemy base (fast army follow-up)",
+        "3:06 enemy forces warning",
+        "3:41 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:10 survived enemy wave 1",
+        "5:05 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:34 survived enemy wave 2",
+        "6:29 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:58 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:22 survived enemy wave 4",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:46 survived enemy wave 5",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "11:10 survived enemy wave 6",
+        "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:34 survived enemy wave 7",
+        "13:29 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:58 survived enemy wave 8",
+        "14:53 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)",
+        "15:22 survived enemy wave 9",
+        "16:17 enemy wave 10 launched (hexer, brute, hexer, raider, hexer)",
+        "16:46 survived enemy wave 10"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:43: strength 205 into 213.",
+        "Attack failed at 2:04: strength 190 into 213."
+      ]
+    }
+  ],
+  "analysis": {
+    "tooEasyNodes": [],
+    "tooHardNodes": [],
+    "fairFirstAttackNodes": [
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost"
+    ],
+    "unfairFirstAttackNodes": [],
+    "barracksCompletesBeforePressure": [
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost"
+    ],
+    "barracksLateBeforePressure": [],
+    "usefulRewardNodes": [
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost"
+    ],
+    "weakRewardNodes": [],
+    "ashenOutpostBeatable": true,
+    "suggestedTuningChanges": [
+      "Review strategy spread on aether_well_ruins, bandit_hillfort, ashen_outpost before more numeric changes; Safe Beginner can stabilize, so remaining failures are more likely objective route, army timing, or final-assault attrition than first-wave unfairness.",
+      "Use this bot to guide conservative numeric passes, and reserve deeper map or objective changes for a later review."
+    ],
+    "nodeSummaries": [
+      {
+        "nodeId": "border_village",
+        "nodeName": "Border Village",
+        "mapId": "first_claim",
+        "difficulty": "easy",
+        "aiPersonality": "balanced_warlord",
+        "victories": 3,
+        "defeats": 0,
+        "timeouts": 0,
+        "averageDurationSeconds": 255.66666666666666,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
+        "nodeId": "old_stone_road",
+        "nodeName": "Old Stone Road",
+        "mapId": "first_claim",
+        "difficulty": "easy",
+        "aiPersonality": "raider_rush",
+        "victories": 3,
+        "defeats": 0,
+        "timeouts": 0,
+        "averageDurationSeconds": 260,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "All scripted strategies won; verify this node is not over-rewarding broad openings.",
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
+        "nodeId": "aether_well_ruins",
+        "nodeName": "Aether Well Ruins",
+        "mapId": "broken_ford",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 1,
+        "defeats": 1,
+        "timeouts": 1,
+        "averageDurationSeconds": 576,
+        "barracksBeforePressureRuns": 3,
+        "firstWaveSurvivedRuns": 3,
+        "verdict": "needs_human_review",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "All scripts survived the first wave.",
+          "Victory rewards include meaningful XP, resources, or gear.",
+          "Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair."
+        ]
+      },
+      {
+        "nodeId": "bandit_hillfort",
+        "nodeName": "Bandit Hillfort",
+        "mapId": "broken_ford",
+        "difficulty": "normal",
+        "aiPersonality": "fortress_keeper",
+        "victories": 1,
+        "defeats": 2,
+        "timeouts": 0,
+        "averageDurationSeconds": 544.6666666666666,
+        "barracksBeforePressureRuns": 3,
+        "firstWaveSurvivedRuns": 3,
+        "verdict": "needs_human_review",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "All scripts survived the first wave.",
+          "Victory rewards include meaningful XP, resources, or gear.",
+          "Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair."
+        ]
+      },
+      {
+        "nodeId": "ashen_outpost",
+        "nodeName": "Ashen Outpost",
+        "mapId": "ashen_outpost",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 1,
+        "defeats": 0,
+        "timeouts": 2,
+        "averageDurationSeconds": 828.3333333333334,
+        "barracksBeforePressureRuns": 3,
+        "firstWaveSurvivedRuns": 3,
+        "verdict": "needs_human_review",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "All scripts survived the first wave.",
+          "Victory rewards include meaningful XP, resources, or gear.",
+          "Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair."
+        ]
+      }
+    ]
+  }
+}

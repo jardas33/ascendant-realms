@@ -43,17 +43,11 @@ export class CombatSystem {
       const range = this.getRange(attacker);
       const targetDistance = distance(attacker.position, target.position);
       if (targetDistance > range) {
-        if (attacker instanceof Unit && (attacker.attackTargetId || attacker.attackMove || attacker.team !== "player")) {
-          const direction = normalizeVector(target.position.x - attacker.position.x, target.position.y - attacker.position.y);
-          attacker.moveTarget = {
-            x: target.position.x - direction.x * Math.max(18, range * 0.7),
-            y: target.position.y - direction.y * Math.max(18, range * 0.7)
-          };
-        }
+        this.moveTowardTargetIfAllowed(attacker, target, range);
         return;
       }
 
-      if (attacker instanceof Unit && (attacker.attackTargetId || attacker.attackMove || attacker.team !== "player")) {
+      if (attacker instanceof Unit) {
         attacker.moveTarget = undefined;
       }
 
@@ -63,6 +57,22 @@ export class CombatSystem {
 
       this.attack(attacker, target);
     });
+  }
+
+  private moveTowardTargetIfAllowed(attacker: Combatant, target: BaseEntity, range: number): void {
+    if (!(attacker instanceof Unit) || !this.shouldChaseTarget(attacker)) {
+      return;
+    }
+
+    const direction = normalizeVector(target.position.x - attacker.position.x, target.position.y - attacker.position.y);
+    attacker.moveTarget = {
+      x: target.position.x - direction.x * Math.max(18, range * 0.7),
+      y: target.position.y - direction.y * Math.max(18, range * 0.7)
+    };
+  }
+
+  private shouldChaseTarget(attacker: Unit): boolean {
+    return Boolean(attacker.attackTargetId || attacker.attackMove || attacker.team !== "player" || !attacker.moveTarget);
   }
 
   private updateProjectiles(deltaSeconds: number): void {

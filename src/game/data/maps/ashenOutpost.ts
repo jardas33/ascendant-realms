@@ -148,16 +148,16 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
     scenario: {
       startingResources: {
         player: {
-          crowns: 460,
-          stone: 320,
-          iron: 180,
-          aether: 95
+          crowns: 560,
+          stone: 390,
+          iron: 235,
+          aether: 140
         },
         enemy: {
-          crowns: 280,
-          stone: 220,
-          iron: 160,
-          aether: 125
+          crowns: 240,
+          stone: 190,
+          iron: 135,
+          aether: 105
         }
       },
       heroSpawn: { x: 370, y: 1445 },
@@ -165,14 +165,15 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
         { id: "player_command_hall", buildingId: "command_hall", team: "player", x: 300, y: 1500 },
         { id: "enemy_stronghold", buildingId: "enemy_stronghold", team: "enemy", x: 2320, y: 300 },
         { id: "enemy_barracks", buildingId: "enemy_barracks", team: "enemy", x: 2180, y: 430 },
-        { id: "enemy_gate_watchtower", buildingId: "watchtower", team: "enemy", x: 2040, y: 570 },
-        { id: "enemy_shrine_watchtower", buildingId: "watchtower", team: "enemy", x: 1780, y: 760 }
+        { id: "enemy_gate_watchtower", buildingId: "watchtower", team: "enemy", x: 2040, y: 570 }
       ],
       unitSpawns: [
         { id: "player_militia_1", unitId: "militia", team: "player", x: 390, y: 1540 },
         { id: "player_militia_2", unitId: "militia", team: "player", x: 430, y: 1520 },
         { id: "player_militia_3", unitId: "militia", team: "player", x: 470, y: 1500 },
+        { id: "player_militia_4", unitId: "militia", team: "player", x: 450, y: 1460 },
         { id: "player_ranger_1", unitId: "ranger", team: "player", x: 405, y: 1410 },
+        { id: "player_ranger_2", unitId: "ranger", team: "player", x: 365, y: 1400 },
         { id: "enemy_raider_1", unitId: "raider", team: "enemy", x: 2235, y: 285 },
         { id: "enemy_raider_2", unitId: "raider", team: "enemy", x: 2200, y: 330 },
         { id: "enemy_hexer_1", unitId: "hexer", team: "enemy", x: 2265, y: 405 },
@@ -186,7 +187,7 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
           {
             id: "capture_burned_shrine",
             name: "Capture the Burned Shrine",
-            description: "Seize the central aether shrine before assaulting the fortress.",
+            description: "Seize the central aether shrine to weaken the gate Watchtower before assaulting the fortress.",
             type: "capture_site",
             targetId: "burned_shrine"
           },
@@ -208,17 +209,17 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
       },
       enemyAI: {
         incomeInterval: 5,
-        incomePerTick: { crowns: 100, stone: 50, iron: 50, aether: 40 },
-        trainInterval: 5.2,
+        incomePerTick: { crowns: 80, stone: 40, iron: 38, aether: 30 },
+        trainInterval: 7,
         expandInterval: 22,
         initialExpandDelay: 22,
-        attackInterval: 60,
+        attackInterval: 78,
         initialAttackDelay: 205,
         minAttackArmySize: 3,
-        attackWaveSize: 8,
+        attackWaveSize: 6,
         expandSquadSize: 2,
-        defenseSquadSize: 8,
-        defendRadius: 560,
+        defenseSquadSize: 5,
+        defendRadius: 460,
         baseBuildingId: "enemy_stronghold",
         productionBuildingId: "enemy_barracks",
         attackTargetBuildingId: "command_hall",

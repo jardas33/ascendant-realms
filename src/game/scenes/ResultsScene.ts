@@ -3,7 +3,7 @@ import { AssetLoader } from "../assets/AssetLoader";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
-import { currentItemInSlot, equipResultsRewardItem, previewEquipDeltas } from "../results/ResultsEquipActions";
+import { currentItemInSlot, equipResultsRewardItem, keepResultsRewardItem, previewEquipDeltas } from "../results/ResultsEquipActions";
 import { escapeHtml } from "../results/ResultsFormatting";
 import {
   createCampaignMapReturnData,
@@ -60,6 +60,9 @@ export class ResultsScene extends Phaser.Scene {
     if (action === "equip") {
       this.equipRewardItem(itemId);
     }
+    if (action === "keep_inventory") {
+      this.keepRewardItem(itemId);
+    }
     if (action === "retry") {
       this.retryBattle();
     }
@@ -113,12 +116,22 @@ export class ResultsScene extends Phaser.Scene {
     this.render();
   }
 
+  private keepRewardItem(itemId: string): void {
+    if (!this.dataSnapshot) {
+      return;
+    }
+    const result = keepResultsRewardItem(this.dataSnapshot, itemId);
+    this.status = result.message;
+    this.render();
+  }
+
   private render(): void {
     if (!this.root || !this.dataSnapshot) {
       return;
     }
     const data = this.dataSnapshot;
     const viewModel = createResultsViewModel(data);
+    const displayedData = viewModel.isVictory ? data : { ...data, heroSave: viewModel.xp.afterHero };
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell progression-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: viewModel.backgroundId })}>
@@ -131,7 +144,7 @@ export class ResultsScene extends Phaser.Scene {
             </div>
             <div class="skill-points compact">
               <span>Hero Level</span>
-              <strong>${data.heroSave.level}</strong>
+              <strong>${viewModel.xp.afterHero.level}</strong>
             </div>
           </div>
           ${renderBattleSummary(data, viewModel)}
@@ -142,10 +155,10 @@ export class ResultsScene extends Phaser.Scene {
                   currentItemInSlot: (slot) => currentItemInSlot(data, slot),
                   previewEquipDeltas: (itemInstanceId) => previewEquipDeltas(data, itemInstanceId)
                 })
-              : renderDefeatTips(data)
+              : renderDefeatTips(displayedData)
           }
           <div class="status-box">${escapeHtml(this.status)}</div>
-          ${renderHeroStats(data)}
+          ${renderHeroStats(displayedData)}
           <div class="menu-actions row">
             ${renderPrimaryActions(data)}
           </div>

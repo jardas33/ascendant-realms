@@ -166,7 +166,7 @@ export class HeroProgressionScene extends Phaser.Scene {
             <div class="progression-title-row">
               <div class="portrait large ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(viewModel.portraitId, toCssColor(viewModel.heroClass.color))}></div>
               <div>
-              <p class="eyebrow">${this.stats ? "Victory Progression" : "Hero Inventory"}</p>
+              <p class="eyebrow">${this.stats?.outcome === "victory" ? "Victory Progression" : "Hero Inventory"}</p>
               <h1>${escapeHtml(viewModel.heroName)}</h1>
               <p class="menu-copy">${escapeHtml(viewModel.heroClass.name)} - ${escapeHtml(viewModel.origin.name)} - Level ${viewModel.level}</p>
               </div>

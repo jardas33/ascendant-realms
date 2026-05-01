@@ -69,7 +69,7 @@ describe("campaign rules", () => {
     const applied = applyCampaignChoice({ campaign, hero, node, choice });
 
     expect(availability.ok).toBe(false);
-    expect(availability.reasons).toContain("Need 50 Crowns");
+    expect(availability.reasons).toContain("Need 45 Crowns");
     expect(applied.ok).toBe(false);
     expect(applied.campaign).toBe(campaign);
     expect(applied.hero).toBe(hero);
@@ -91,7 +91,7 @@ describe("campaign rules", () => {
     const applied = applyCampaignChoice({ campaign, hero, node, choice });
 
     expect(applied.ok).toBe(true);
-    expect(applied.campaign.resources).toMatchObject({ crowns: 70, stone: 20, aether: 40 });
+    expect(applied.campaign.resources).toMatchObject({ crowns: 75, stone: 25, aether: 40 });
     expect(applied.campaign.completedNodeIds).toContain("chapel_of_the_marches");
     expect(applied.campaign.unlockedNodeIds).toContain("ashen_outpost");
     expect(applied.hero.factionReputation.free_marches).toBe(hero.factionReputation.free_marches + 2);
@@ -182,11 +182,11 @@ describe("campaign rules", () => {
     const applied = applyCampaignChoice({ campaign, hero, node, choice });
 
     expect(applied.ok).toBe(true);
-    expect(applied.campaign.resources.crowns).toBe(15);
+    expect(applied.campaign.resources.crowns).toBe(20);
     expect(applied.campaign.resources.iron).toBe(20);
     expect(applied.campaign.completedNodeIds).toContain("refugee_caravan");
     expect(applied.hero.inventory.some((instance) => instance.itemId === "scouts_bow")).toBe(true);
-    expect(applied.hero.xp).toBe(35);
+    expect(applied.hero.xp).toBe(40);
     expect(applied.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 8);
     expect(applied.campaign.activeModifierIds).toContain("inspired_militia");
   });
@@ -239,8 +239,8 @@ describe("campaign rules", () => {
 
     const completed = completeCampaignNodeWithRewards({ campaign, hero, node });
 
-    expect(completed.nodeReward.resources.crowns).toBe(55);
-    expect(completed.campaign.resources.crowns).toBe(55);
+    expect(completed.nodeReward.resources.crowns).toBe(57);
+    expect(completed.campaign.resources.crowns).toBe(57);
     expect(completed.campaign.activeModifierIds).not.toContain("local_support");
   });
 
@@ -302,7 +302,7 @@ describe("campaign rules", () => {
     const applied = applyCampaignChoice({ campaign, hero, node, choice });
 
     expect(availability.ok).toBe(false);
-    expect(availability.reasons).toContain("Need 55 Crowns");
+    expect(availability.reasons).toContain("Need 50 Crowns");
     expect(applied.ok).toBe(false);
     expect(applied.campaign.resources.crowns).toBe(10);
   });
@@ -349,10 +349,10 @@ describe("campaign rules", () => {
 
     expect(first.ok).toBe(true);
     expect(second.ok).toBe(true);
-    expect(second.campaign.resources.crowns).toBe(10);
+    expect(second.campaign.resources.crowns).toBe(20);
     expect(second.campaign.resources.stone).toBe(60);
     expect(second.campaign.resources.iron).toBe(36);
-    expect(second.campaign.resources.aether).toBe(16);
+    expect(second.campaign.resources.aether).toBe(20);
     expect(second.campaign.townServiceUseCounts["marcher_camp:buy_supplies"]).toBe(2);
   });
 

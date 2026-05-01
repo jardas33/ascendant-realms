@@ -107,8 +107,8 @@ export const FIRST_CLAIM_MAP: BattleMapDefinition = {
       {
         id: "sunken_road_pack",
         name: "Sunken Road Pack",
-        x: 710,
-        y: 1110,
+        x: 650,
+        y: 1240,
         unitIds: ["wild_hound", "wild_hound", "stone_imp"]
       },
       {
@@ -154,13 +154,13 @@ export const FIRST_CLAIM_MAP: BattleMapDefinition = {
       enemyAI: {
         incomeInterval: 5,
         incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
-        trainInterval: 5.4,
+        trainInterval: 5.6,
         expandInterval: 21,
         initialExpandDelay: 18,
-        attackInterval: 62,
-        initialAttackDelay: 180,
+        attackInterval: 68,
+        initialAttackDelay: 210,
         minAttackArmySize: 2,
-        attackWaveSize: 7,
+        attackWaveSize: 6,
         expandSquadSize: 2,
         defenseSquadSize: 6,
         defendRadius: 400,

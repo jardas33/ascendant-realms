@@ -3,6 +3,7 @@ import type { Building } from "../entities/Building";
 import type { CaptureSite } from "../entities/CaptureSite";
 import type { Unit } from "../entities/Unit";
 import type { TrainingSystem } from "../systems/TrainingSystem";
+import type { EnemyAIConfig } from "../core/GameTypes";
 import { EnemyAIController } from "./EnemyAIController";
 
 describe("EnemyAIController first battle pacing", () => {
@@ -58,6 +59,39 @@ describe("EnemyAIController first battle pacing", () => {
     expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2", "enemy_hexer_1"]);
     expect(waves[0].map((unit) => unit.definition.id)).toEqual(["raider", "raider", "hexer"]);
   });
+
+  it("uses the map AI config for first attack timing and wave size", () => {
+    const attacked: string[] = [];
+    const waves: Unit[][] = [];
+    const units = [
+      fakeEnemyUnit("raider", "enemy_raider_1", attacked),
+      fakeEnemyUnit("raider", "enemy_raider_2", attacked),
+      fakeEnemyUnit("hexer", "enemy_hexer_1", attacked),
+      fakeEnemyUnit("brute", "enemy_brute_1", attacked)
+    ];
+    let elapsedSeconds = 229;
+    const controller = createController({
+      units,
+      getElapsedSeconds: () => elapsedSeconds,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: {
+        initialAttackDelay: 230,
+        attackWaveSize: 2,
+        minAttackArmySize: 2
+      },
+      onWaveLaunched: (wave) => waves.push(wave)
+    });
+
+    controller.update(229);
+    expect(attacked).toEqual([]);
+
+    elapsedSeconds = 230;
+    controller.update(1);
+
+    expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2"]);
+    expect(waves[0]).toHaveLength(2);
+  });
 });
 
 function createController(options: {
@@ -66,7 +100,26 @@ function createController(options: {
   hasCapturedSite: boolean;
   hasBuiltProduction: boolean;
   onWaveLaunched: (units: Unit[]) => void;
+  config?: Partial<EnemyAIConfig>;
 }): EnemyAIController {
+  const baseConfig: EnemyAIConfig = {
+    incomeInterval: 5,
+    incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
+    trainInterval: 5.8,
+    expandInterval: 21,
+    initialExpandDelay: 18,
+    attackInterval: 66,
+    initialAttackDelay: 195,
+    minAttackArmySize: 2,
+    attackWaveSize: 6,
+    expandSquadSize: 2,
+    defenseSquadSize: 6,
+    defendRadius: 400,
+    baseBuildingId: "enemy_stronghold",
+    productionBuildingId: "enemy_barracks",
+    attackTargetBuildingId: "command_hall",
+    unitPlan: ["raider", "raider", "hexer", "raider", "brute"]
+  };
   return new EnemyAIController({
     resources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
     getUnits: () => options.units,
@@ -83,24 +136,7 @@ function createController(options: {
     onAlert: vi.fn(),
     onWaveLaunched: options.onWaveLaunched,
     difficulty: "normal",
-    config: {
-      incomeInterval: 5,
-      incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
-      trainInterval: 5.8,
-      expandInterval: 21,
-      initialExpandDelay: 18,
-      attackInterval: 66,
-      initialAttackDelay: 195,
-      minAttackArmySize: 2,
-      attackWaveSize: 6,
-      expandSquadSize: 2,
-      defenseSquadSize: 6,
-      defendRadius: 400,
-      baseBuildingId: "enemy_stronghold",
-      productionBuildingId: "enemy_barracks",
-      attackTargetBuildingId: "command_hall",
-      unitPlan: ["raider", "raider", "hexer", "raider", "brute"]
-    }
+    config: { ...baseConfig, ...options.config }
   });
 }
 

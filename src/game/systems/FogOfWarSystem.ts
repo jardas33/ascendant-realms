@@ -23,12 +23,14 @@ export interface VisibilityCellSnapshot {
 export interface VisibilityEntity {
   team: Team;
   position: Position;
+  radius?: number;
 }
 
 export class FogOfWarSystem {
   readonly columns: number;
   readonly rows: number;
   readonly states: Uint8Array;
+  private currentSources: VisionSource[] = [];
 
   constructor(
     readonly mapWidth: number,
@@ -41,6 +43,7 @@ export class FogOfWarSystem {
   }
 
   update(sources: VisionSource[]): void {
+    this.currentSources = sources.map((source) => ({ ...source }));
     for (let index = 0; index < this.states.length; index += 1) {
       if (this.states[index] === STATE_VALUE.visible) {
         this.states[index] = STATE_VALUE.explored;
@@ -55,7 +58,17 @@ export class FogOfWarSystem {
   }
 
   isVisible(position: Position): boolean {
-    return this.stateAt(position) === "visible";
+    if (this.currentSources.length === 0) {
+      return this.stateAt(position) === "visible";
+    }
+    return this.currentSources.some((source) => distance(position, source) <= source.radius);
+  }
+
+  isEntityVisible(position: Position, radius = 0): boolean {
+    if (this.currentSources.length === 0) {
+      return this.stateAt(position) === "visible";
+    }
+    return this.currentSources.some((source) => distance(position, source) <= source.radius + radius);
   }
 
   isExplored(position: Position): boolean {
@@ -134,7 +147,7 @@ export function isEntityVisibleToPlayer(entity: VisibilityEntity, fog: FogOfWarS
   if (!fogEnabled || entity.team === "player") {
     return true;
   }
-  return fog.isVisible(entity.position);
+  return fog.isEntityVisible(entity.position, entity.radius ?? 0);
 }
 
 function distance(a: Position, b: Position): number {

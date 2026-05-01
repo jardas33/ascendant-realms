@@ -69,7 +69,7 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("aether_well_ruins") && unlocked.has("aether_well_ruins")) {
     return {
       title: "Harder Battle Available",
-      body: "Aether Well Ruins is a Normal battle on Broken Ford. Equip your best item, spend skill points, and expect a more dangerous center.",
+      body: "Aether Well Ruins is a Normal battle on Broken Ford. Equip your best item, spend skill points, and stabilize after the first wave before pushing.",
       actions: ["Prepare your hero", "Launch Aether Well Ruins", "Use side resources if the center is too risky"]
     };
   }
@@ -85,8 +85,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("ashen_outpost") && unlocked.has("ashen_outpost")) {
     return {
       title: "Current Finale",
-      body: "Ashen Outpost is the current endpoint. Enter with upgraded gear and a plan to survive pressure before attacking the enemy base.",
-      actions: ["Spend all skill points", "Equip best rewards", "Launch Ashen Outpost"]
+      body: "Ashen Outpost is the current endpoint. Enter with upgraded gear, use Chapel or camp support if available, and avoid early probes into the fortress.",
+      actions: ["Spend all skill points", "Equip best rewards", "Stage a larger army before attacking"]
     };
   }
 
@@ -126,20 +126,20 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
     case "aether_well_ruins":
       return {
         title: "Harder Battle",
-        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. The safer side resources can buy time.",
-        actions: ["Scout carefully", "Use side resources", "Avoid rushing the central camp"]
+        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. The first wave is survivable, but later waves punish a thin army.",
+        actions: ["Scout carefully", "Use side resources", "Rebuild before attacking"]
       };
     case "bandit_hillfort":
       return {
         title: "Harder Battle",
-        body: "This fight checks whether you can build an army while under steadier pressure.",
+        body: "This fight checks whether you can build an army while under steadier pressure. Fortress waves are slower, but they hit harder if you attack underprepared.",
         actions: ["Build production early", "Train a mixed army", "Attack after stabilizing"]
       };
     case "ashen_outpost":
       return {
         title: "Current Finale",
-        body: "This is the strongest current campaign battle. Bring equipment, skill points, upgrades, and patience.",
-        actions: ["Prepare hero progression", "Hold resources", "Assault after surviving pressure"]
+        body: "This is the strongest current campaign battle. Bring equipment, skill points, upgrades, and enough troops to break a fortified base.",
+        actions: ["Prepare hero progression", "Use support choices", "Assault after building a real army"]
       };
     default:
       return {
@@ -154,8 +154,8 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.outcome === "defeat") {
     return {
       title: "Recover And Retry",
-      body: "Defeat is a planning signal. Equip prior rewards, capture at least one resource site, build a Barracks before the first attack, then retry or lower difficulty while learning.",
-      actions: ["Build Barracks earlier", "Set a rally point", "Equip prior rewards", "Try Story or Easy while learning"]
+      body: "Defeat is a planning signal. The first wave should be survivable; if the base collapses later, equip rewards, use support choices, rebuild after each wave, and wait for a larger army before attacking.",
+      actions: ["Build Barracks earlier", "Set a rally point", "Use camp or Chapel support", "Attack with a larger army"]
     };
   }
 

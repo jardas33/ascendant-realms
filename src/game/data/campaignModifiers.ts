@@ -20,21 +20,21 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
   {
     id: "blessed_road",
     name: "Blessed Road",
-    description: "The next battle starts your hero with +10% maximum mana for that battle.",
+    description: "The next battle starts your hero with +15% maximum mana for that battle.",
     trigger: "next_battle",
     durationLabel: "Next battle",
     effects: {
-      heroManaMultiplier: 1.1
+      heroManaMultiplier: 1.15
     }
   },
   {
     id: "well_rested",
     name: "Well Rested",
-    description: "The next battle starts your hero with +15% maximum HP for that battle.",
+    description: "The next battle starts your hero with +20% maximum HP for that battle.",
     trigger: "next_battle",
     durationLabel: "Next battle",
     effects: {
-      heroMaxHpMultiplier: 1.15
+      heroMaxHpMultiplier: 1.2
     }
   },
   {
@@ -50,11 +50,11 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
   {
     id: "local_support",
     name: "Local Support",
-    description: "The next node resource reward is increased by 10%.",
+    description: "The next node resource reward is increased by 15%.",
     trigger: "next_node_resource_reward",
     durationLabel: "Next resource reward",
     effects: {
-      campaignResourceRewardMultiplier: 1.1
+      campaignResourceRewardMultiplier: 1.15
     }
   }
 ];

@@ -281,6 +281,17 @@ async function showVictoryResults(page: Page): Promise<void> {
   await expect(page.locator(".results-panel")).toBeVisible();
 }
 
+async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<void> {
+  await openFreshMainMenu(page);
+  await page.getByTestId("menu-skirmish").click();
+  await createHero(page, heroName);
+  await expect(page.getByTestId("skirmish-setup")).toBeVisible();
+  await page.getByTestId("setup-map-ashen_outpost").click();
+  await page.getByTestId("setup-difficulty-normal").click();
+  await page.getByTestId("setup-start-battle").click();
+  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
+}
+
 test.describe("Ascendant Realms responsive layout", () => {
   for (const viewport of LAYOUT_VIEWPORTS) {
     test(`menu and hero creation fit or scroll on ${viewport.label}`, async ({ page }) => {
@@ -347,4 +358,196 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectBottomActionReachable(page, page.getByText("Main Menu"), `${viewport.label} results main menu`);
     });
   }
+
+  test("Ashen Outpost objectives do not cover the fortress focus area on desktop", async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await startAshenOutpostSkirmish(page, "Layout Ashen");
+    await expect(page.getByTestId("battle-objectives")).toBeVisible();
+
+    const fortressPoints = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.cameraSystem.centerOn(scene.activeMap.enemyStart);
+      scene.update(performance.now(), 200);
+      const canvasBounds = scene.game.canvas.getBoundingClientRect();
+      const camera = scene.cameras.main;
+      return ["enemy_stronghold", "enemy_barracks", "watchtower"].map((buildingId) => {
+        const building = scene.buildings.find(
+          (entry: any) => entry.team === "enemy" && entry.definition.id === buildingId && entry.alive
+        );
+        if (!building) {
+          throw new Error(`Missing ${buildingId}.`);
+        }
+        return {
+          id: buildingId,
+          x: canvasBounds.left + building.position.x - camera.scrollX,
+          y: canvasBounds.top + building.position.y - camera.scrollY
+        };
+      });
+    });
+
+    const objectivesBox = await page.getByTestId("battle-objectives").boundingBox();
+    expect(objectivesBox, "Ashen objectives panel has a layout box").not.toBeNull();
+    if (!objectivesBox) {
+      return;
+    }
+    for (const point of fortressPoints) {
+      const covered =
+        point.x >= objectivesBox.x &&
+        point.x <= objectivesBox.x + objectivesBox.width &&
+        point.y >= objectivesBox.y &&
+        point.y <= objectivesBox.y + objectivesBox.height;
+      expect(covered, `${point.id} should stay visible outside the objectives panel`).toBe(false);
+    }
+  });
+
+  test("Ashen Outpost landmarks are scoutable under fog without HUD overlap", async ({ page }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await startAshenOutpostSkirmish(page, "Scout Ashen");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
+
+    const result = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+
+      const playerUnits = scene.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      if (playerUnits.length === 0) {
+        throw new Error("Expected player units for Ashen scouting coverage.");
+      }
+
+      const readHudRects = () =>
+        Array.from(
+          document.querySelectorAll<HTMLElement>(
+            ".top-bar, [data-testid='battle-hero-panel'], .side-panel, [data-testid='battle-minimap'], [data-testid='battle-objectives'], [data-testid='battle-status'], .hint-line"
+          )
+        )
+          .filter((element) => {
+            const style = window.getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+          })
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+            return {
+              label: element.getAttribute("data-testid") ?? element.className,
+              left: rect.left,
+              right: rect.right,
+              top: rect.top,
+              bottom: rect.bottom
+            };
+          });
+
+      const screenFor = (point: { x: number; y: number }) => {
+        const canvasBounds = scene.game.canvas.getBoundingClientRect();
+        const camera = scene.cameras.main;
+        return {
+          x: canvasBounds.left + point.x - camera.scrollX,
+          y: canvasBounds.top + point.y - camera.scrollY
+        };
+      };
+
+      const scoutPoint = (point: { x: number; y: number }) => {
+        playerUnits.forEach((unit: any, index: number) => {
+          const angle = (index / Math.max(1, playerUnits.length)) * Math.PI * 2;
+          unit.setPosition(point.x + Math.cos(angle) * 28, point.y + Math.sin(angle) * 28);
+          unit.moveTarget = undefined;
+          unit.attackTargetId = undefined;
+          unit.attackMove = false;
+        });
+        scene.cameraSystem.centerOn(point);
+        scene.updateFogOfWar(0, true);
+        scene.refreshBattleHud(0.11);
+        const screen = screenFor(point);
+        const coveredBy = readHudRects()
+          .filter((rect) => screen.x >= rect.left && screen.x <= rect.right && screen.y >= rect.top && screen.y <= rect.bottom)
+          .map((rect) => rect.label);
+        return {
+          screen,
+          coveredBy
+        };
+      };
+
+      scene.updateFogOfWar(0, true);
+      const initialSnapshot = scene.createMinimapSnapshot();
+      const initialMarkerIds = new Set(initialSnapshot.markers.map((marker: any) => marker.id));
+      const enemyStronghold = scene.buildings.find((building: any) => building.team === "enemy" && building.definition.id === "enemy_stronghold");
+      if (!enemyStronghold) {
+        throw new Error("Expected Ashen enemy Stronghold.");
+      }
+
+      const captureSiteIds = ["burned_shrine", "west_supply_pyre", "south_iron_pit", "north_stone_scar"];
+      const sites = captureSiteIds.map((siteId) => {
+        const site = scene.captureSites.find((entry: any) => entry.definition.id === siteId);
+        if (!site) {
+          throw new Error(`Missing Ashen capture site: ${siteId}`);
+        }
+        const scout = scoutPoint(site.position);
+        const markerIds = new Set(scene.createMinimapSnapshot().markers.map((marker: any) => marker.id));
+        return {
+          id: siteId,
+          visible: Boolean(site.view?.visible),
+          markerVisible: markerIds.has(site.id),
+          coveredBy: scout.coveredBy
+        };
+      });
+
+      const camps = scene.neutralCampLabels.map((camp: any) => {
+        const scout = scoutPoint(camp.position);
+        const markerIds = new Set(scene.createMinimapSnapshot().markers.map((marker: any) => marker.id));
+        return {
+          id: camp.id,
+          labelVisible: Boolean(camp.label.visible),
+          markerVisible: markerIds.has(camp.id),
+          coveredBy: scout.coveredBy
+        };
+      });
+
+      const fortressBuildings = ["enemy_stronghold", "enemy_barracks", "watchtower"].map((buildingId) => {
+        const building = scene.buildings.find((entry: any) => entry.team === "enemy" && entry.definition.id === buildingId && entry.alive);
+        if (!building) {
+          throw new Error(`Missing Ashen fortress building: ${buildingId}`);
+        }
+        const scout = scoutPoint(building.position);
+        const markerIds = new Set(scene.createMinimapSnapshot().markers.map((marker: any) => marker.id));
+        return {
+          id: buildingId,
+          visible: Boolean(building.view?.visible),
+          markerVisible: markerIds.has(building.id),
+          coveredBy: scout.coveredBy
+        };
+      });
+
+      return {
+        fogEnabled: initialSnapshot.fog.enabled,
+        hasFogCells: (initialSnapshot.fog.cells?.length ?? 0) > 0,
+        enemyStrongholdHiddenAtStart: !initialMarkerIds.has(enemyStronghold.id),
+        sites,
+        camps,
+        fortressBuildings
+      };
+    });
+
+    expect(result.fogEnabled).toBe(true);
+    expect(result.hasFogCells).toBe(true);
+    expect(result.enemyStrongholdHiddenAtStart).toBe(true);
+    for (const site of result.sites) {
+      expect(site.visible, `${site.id} should become visible after scouting`).toBe(true);
+      expect(site.markerVisible, `${site.id} should appear on the minimap after scouting`).toBe(true);
+      expect(site.coveredBy, `${site.id} should not be covered by HUD while centered`).toEqual([]);
+    }
+    for (const camp of result.camps) {
+      expect(camp.labelVisible, `${camp.id} label should become visible after scouting`).toBe(true);
+      expect(camp.markerVisible, `${camp.id} should appear on the minimap after scouting`).toBe(true);
+      expect(camp.coveredBy, `${camp.id} should not be covered by HUD while centered`).toEqual([]);
+    }
+    for (const building of result.fortressBuildings) {
+      expect(building.visible, `${building.id} should become visible after scouting`).toBe(true);
+      expect(building.markerVisible, `${building.id} should appear on the minimap after scouting`).toBe(true);
+      expect(building.coveredBy, `${building.id} should not be covered by HUD while centered`).toEqual([]);
+    }
+  });
 });

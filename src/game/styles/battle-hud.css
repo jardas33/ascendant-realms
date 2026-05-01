@@ -18,6 +18,7 @@
 .top-bar,
 .hero-panel,
 .side-panel,
+.objectives-panel,
 .minimap-shell {
   pointer-events: auto;
 }
@@ -69,6 +70,83 @@
   font-variant-numeric: tabular-nums;
 }
 
+.objectives-panel {
+  position: absolute;
+  left: 12px;
+  right: auto;
+  top: 58px;
+  width: min(272px, calc(100vw - 24px));
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid rgba(246, 237, 180, 0.24);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.065), rgba(5, 8, 8, 0.44)),
+    var(--panel-texture),
+    rgba(12, 15, 15, 0.82);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(5px);
+}
+
+.objectives-panel > strong {
+  color: #f0d978;
+  font-size: 12px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.objective-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  min-width: 0;
+  padding: 6px 7px;
+  border: 1px solid rgba(216, 222, 199, 0.12);
+  border-left: 3px solid rgba(116, 211, 242, 0.52);
+  border-radius: 5px;
+  background: var(--plate-bg);
+}
+
+.objective-row.completed {
+  border-left-color: rgba(156, 247, 177, 0.76);
+}
+
+.objective-row span {
+  color: #aee6d7;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.objective-row.completed span {
+  color: #9cf7b1;
+}
+
+.objective-row b,
+.objective-row small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.objective-row b {
+  color: #eef2df;
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.objective-row small {
+  color: #cbd6c2;
+  font-size: 10px;
+  line-height: 1.18;
+}
+
 .hud-button {
   min-height: 34px;
   padding: 7px 9px;
@@ -107,6 +185,10 @@
   min-width: 0;
 }
 
+.command-button[data-command-kind="upgrade"] {
+  border-left-color: rgba(116, 211, 242, 0.62);
+}
+
 .command-label {
   display: flex;
   gap: 4px;
@@ -125,6 +207,23 @@
   color: #eef2df;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.command-description,
+.command-effect {
+  display: block;
+  min-width: 0;
+  color: #cbd6c2;
+  font-size: 11px;
+  line-height: 1.22;
+}
+
+.command-description {
+  color: #dfe6d4;
+}
+
+.command-effect {
+  color: #aee6d7;
 }
 
 .hud-button.mini {
@@ -353,6 +452,41 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.order-summary {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 8px;
+  padding: 7px 8px;
+  border: 1px solid rgba(216, 222, 199, 0.13);
+  border-left: 3px solid rgba(116, 211, 242, 0.58);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.12), transparent 42%),
+    var(--plate-bg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.08),
+    0 5px 12px rgba(0, 0, 0, 0.16);
+}
+
+.order-summary.active {
+  border-left-color: rgba(240, 217, 120, 0.72);
+  background:
+    linear-gradient(90deg, rgba(240, 217, 120, 0.13), transparent 44%),
+    var(--plate-bg);
+}
+
+.order-summary strong {
+  color: #f0d978;
+  font-size: 12px;
+  line-height: 1.05;
+}
+
+.order-summary span {
+  color: #dce2d0;
+  font-size: 11px;
+  line-height: 1.2;
 }
 
 .action-group {

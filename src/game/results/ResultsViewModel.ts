@@ -42,11 +42,13 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
   const map = data.launchRequest ? MAP_BY_ID[data.launchRequest.mapId] : undefined;
   const difficulty = data.launchRequest ? getBattleDifficulty(data.launchRequest.difficulty) : undefined;
   const beforeHero = data.startingHeroSave ?? data.heroSave;
+  const afterHero = isVictory ? data.heroSave : beforeHero;
   const rewardItemCount =
     (data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0) +
     (data.campaignResult?.nodeReward.itemIds.length ?? 0);
-  const skillPointsGained =
-    (data.rewardLevelUp?.skillPointsGained ?? 0) + (data.campaignResult?.nodeLevelUp.skillPointsGained ?? 0);
+  const skillPointsGained = isVictory
+    ? (data.rewardLevelUp?.skillPointsGained ?? 0) + (data.campaignResult?.nodeLevelUp.skillPointsGained ?? 0)
+    : 0;
   return {
     isVictory,
     title: isVictory ? "Victory" : "Defeat",
@@ -67,10 +69,10 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
     }),
     xp: {
       before: xpProgressForLevel(beforeHero.xp, beforeHero.level, LEVEL_XP_THRESHOLDS),
-      after: xpProgressForLevel(data.heroSave.xp, data.heroSave.level, LEVEL_XP_THRESHOLDS),
+      after: xpProgressForLevel(afterHero.xp, afterHero.level, LEVEL_XP_THRESHOLDS),
       beforeHero,
-      afterHero: data.heroSave,
-      levelsGained: Math.max(0, data.heroSave.level - beforeHero.level),
+      afterHero,
+      levelsGained: isVictory ? Math.max(0, afterHero.level - beforeHero.level) : 0,
       skillPointsGained
     }
   };
@@ -78,7 +80,7 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
 
 export function initialResultsStatus(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
-    return "No victory rewards were granted. Retry when ready, or return and adjust your plan.";
+    return "No victory rewards or battle XP were saved. Retry when ready, or return and adjust your plan.";
   }
   const rewardCount = (data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0) + (data.campaignResult?.nodeReward.itemIds.length ?? 0);
   const skillPointsGained = (data.rewardLevelUp?.skillPointsGained ?? 0) + (data.campaignResult?.nodeLevelUp.skillPointsGained ?? 0);

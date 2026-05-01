@@ -29,21 +29,24 @@ export class BuildingSystem {
     const definition = requireBuilding(buildingId);
     this.pendingBuildingId = buildingId;
     this.ghost?.destroy();
+    this.ghostLabel?.destroy();
     this.ghost = this.options.scene.add
-      .rectangle(0, 0, definition.size.width, definition.size.height, 0xe8e1b0, 0.35)
-      .setStrokeStyle(2, 0xf4e8a4, 0.8)
-      .setDepth(30);
+      .rectangle(0, 0, definition.size.width, definition.size.height, 0xe8e1b0, 0.46)
+      .setStrokeStyle(3, 0xf4e8a4, 0.95)
+      .setDepth(42);
     this.ghostLabel = this.options.scene.add
-      .text(0, -definition.size.height / 2 - 22, "Choose building site", {
+      .text(0, -definition.size.height / 2 - 22, `Place ${definition.name}`, {
         fontFamily: "Verdana, Arial, sans-serif",
         fontSize: "11px",
         color: "#f5efc2",
+        backgroundColor: "#08100c",
         stroke: "#101511",
         strokeThickness: 3
       })
       .setOrigin(0.5)
-      .setDepth(31);
-    this.placementMessage = "Choose a buildable site near your base.";
+      .setPadding(6, 3, 6, 3)
+      .setDepth(43);
+    this.placementMessage = `Placing ${definition.name}: choose valid ground near your base.`;
 
     if (preview?.anchor && preview.resources) {
       const point = this.findInitialPreviewPoint(preview.anchor, buildingId, preview.resources);
@@ -80,10 +83,12 @@ export class BuildingSystem {
     const result = this.getPlacementResult(x, y, definition.id, resources);
     const valid = result.ok;
     this.ghost.setPosition(x, y);
-    this.ghost.setFillStyle(valid ? 0xa6e5a1 : 0xe36d62, 0.34);
-    this.ghost.setStrokeStyle(2, valid ? 0xb9ffba : 0xff9b90, 0.9);
+    this.ghost.setFillStyle(valid ? 0xa6e5a1 : 0xe36d62, valid ? 0.46 : 0.5);
+    this.ghost.setStrokeStyle(3, valid ? 0xb9ffba : 0xff9b90, 1);
     this.ghostLabel?.setPosition(x, y - definition.size.height / 2 - 22);
-    this.placementMessage = valid ? "Valid building site." : placementReasonText(result.reason);
+    this.placementMessage = valid
+      ? `Valid ${definition.name} site. Left-click to place.`
+      : `${definition.name}: ${placementReasonText(result.reason)}`;
     this.ghostLabel?.setText(this.placementMessage);
     this.ghostLabel?.setColor(valid ? "#b9ffba" : "#ffb1a9");
   }

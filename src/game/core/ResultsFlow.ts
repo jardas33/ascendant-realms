@@ -140,8 +140,12 @@ export function calculateStatDeltas(before: HeroBaseStats, after: HeroBaseStats)
   })).filter((delta) => delta.delta !== 0);
 }
 
-export function createDefeatTips(stats: BattleStats, options: { hero?: HeroSaveData } = {}): string[] {
+export function createDefeatTips(
+  stats: BattleStats,
+  options: { hero?: HeroSaveData; mapId?: string; campaignNodeId?: string } = {}
+): string[] {
   const tips: string[] = [];
+  addObjectiveDefeatTips(stats, options, tips);
   if (stats.resourcesCaptured === 0) {
     tips.push("Capture the Crown Shrine early so your economy starts before the first wave.");
   }
@@ -160,6 +164,29 @@ export function createDefeatTips(stats: BattleStats, options: { hero?: HeroSaveD
   }
   tips.push("Use hero abilities during the first wave and retreat wounded heroes or troops toward the Command Hall.");
   return [...new Set(tips)].slice(0, 4);
+}
+
+function addObjectiveDefeatTips(
+  stats: BattleStats,
+  options: { mapId?: string; campaignNodeId?: string },
+  tips: string[]
+): void {
+  const isAshenOutpost = options.mapId === "ashen_outpost" || options.campaignNodeId === "ashen_outpost";
+  if (!isAshenOutpost) {
+    return;
+  }
+
+  if (!stats.completedObjectiveIds.includes("capture_burned_shrine")) {
+    tips.push("On Ashen Outpost, capture Burned Shrine before the final attack; it weakens the gate Watchtower.");
+    return;
+  }
+  if (!stats.completedObjectiveIds.includes("destroy_enemy_barracks")) {
+    tips.push("After Burned Shrine, destroy Enemy Barracks before burning down the Stronghold.");
+    return;
+  }
+  if (!stats.completedObjectiveIds.includes("defeat_outpost_captain")) {
+    tips.push("Save hero abilities for the Outpost Captain once the shrine and barracks objectives are secure.");
+  }
 }
 
 export function rewardStateLabel(state: RewardItemState): string {

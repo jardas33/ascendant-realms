@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
+    "playtest:sim": "tsx tools/runPlaytestSim.ts",
     "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
     "assets:ui-kit": "tsx tools/manual-asset-pipeline/generateProceduralUiKit.ts",
     "assets:process-battle-sprites": "tsx tools/manual-asset-pipeline/processBattleSprites.ts",

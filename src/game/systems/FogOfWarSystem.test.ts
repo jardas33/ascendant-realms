@@ -20,6 +20,16 @@ describe("FogOfWarSystem", () => {
     expect(fog.stateAt({ x: 450, y: 450 })).toBe("unseen");
   });
 
+  it("uses precise vision checks for entities inside coarse visible cells", () => {
+    const fog = new FogOfWarSystem(300, 300, 100);
+
+    fog.update([{ x: 50, y: 50, radius: 10 }]);
+
+    expect(fog.stateAt({ x: 95, y: 95 })).toBe("visible");
+    expect(fog.isVisible({ x: 95, y: 95 })).toBe(false);
+    expect(fog.isEntityVisible({ x: 95, y: 95 }, 60)).toBe(true);
+  });
+
   it("keeps previously visible cells explored after vision leaves", () => {
     const fog = new FogOfWarSystem(600, 400, 100);
 

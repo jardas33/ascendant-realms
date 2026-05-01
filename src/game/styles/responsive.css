@@ -60,6 +60,15 @@
     line-height: 1.12;
   }
 
+  .side-panel .command-description {
+    display: none;
+  }
+
+  .side-panel .command-effect {
+    font-size: 10px;
+    line-height: 1.12;
+  }
+
   .side-panel .command-label {
     display: grid;
     gap: 1px;
@@ -200,12 +209,28 @@
     padding: 6px;
   }
 
+  .objectives-panel {
+    left: 8px;
+    right: auto;
+    top: 202px;
+    width: min(360px, calc(100vw - 140px));
+    max-height: 118px;
+    overflow: auto;
+  }
+
   .status-line {
     top: 106px;
   }
 
+  .placement-banner {
+    top: 148px;
+    width: min(420px, calc(100vw - 160px));
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
   .hint-line {
-    top: 152px;
+    top: 204px;
   }
 
   .campaign-map-grid {
@@ -309,9 +334,31 @@
     height: 72px;
   }
 
+  .objectives-panel {
+    width: calc(100vw - 136px);
+    max-height: 96px;
+    padding: 6px;
+  }
+
+  .objective-row {
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .objective-row small {
+    display: none;
+  }
+
   .status-line,
-  .hint-line {
+  .hint-line,
+  .placement-banner {
     max-width: calc(100vw - 160px);
+  }
+
+  .placement-banner {
+    padding: 6px 8px;
+    font-size: 11px;
   }
 }
 
@@ -322,5 +369,11 @@
 
   .side-panel.hero-selected {
     max-height: 202px;
+  }
+}
+
+@media (max-width: 520px) and (max-height: 700px) {
+  .side-panel .command-effect {
+    display: none;
   }
 }

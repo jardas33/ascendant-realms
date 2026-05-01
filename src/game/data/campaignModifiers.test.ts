@@ -55,7 +55,7 @@ describe("campaign modifiers", () => {
       resources: { crowns: 50, stone: 35 }
     });
 
-    expect(applied.resources).toEqual({ crowns: 55, stone: 39 });
+    expect(applied.resources).toEqual({ crowns: 57, stone: 40 });
     expect(applied.consumedModifierIds).toEqual(["local_support"]);
     expect(applied.campaign.activeModifierIds).toEqual([]);
   });

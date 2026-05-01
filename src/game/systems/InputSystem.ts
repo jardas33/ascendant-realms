@@ -34,6 +34,7 @@ export class InputSystem {
   private pointerUpHandler?: (pointer: Phaser.Input.Pointer) => void;
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
+  private lastAbilityKey?: { slot: number; at: number };
 
   constructor(private readonly options: InputSystemOptions) {
     this.dragGraphic = options.scene.add.graphics().setDepth(90);
@@ -113,12 +114,12 @@ export class InputSystem {
     const keyboard = this.options.scene.input.keyboard!;
     this.addKeyHandler("keydown-H", () => this.options.selectHero());
     this.addKeyHandler("keydown-SPACE", () => this.options.centerOnHero());
-    this.addKeyHandler("keydown-ONE", () => this.options.castAbilitySlot(0));
-    this.addKeyHandler("keydown-NUMPAD_ONE", () => this.options.castAbilitySlot(0));
-    this.addKeyHandler("keydown-TWO", () => this.options.castAbilitySlot(1));
-    this.addKeyHandler("keydown-NUMPAD_TWO", () => this.options.castAbilitySlot(1));
-    this.addKeyHandler("keydown-THREE", () => this.options.castAbilitySlot(2));
-    this.addKeyHandler("keydown-NUMPAD_THREE", () => this.options.castAbilitySlot(2));
+    this.addKeyHandler("keydown-ONE", (event) => this.triggerAbilitySlot(0, event));
+    this.addKeyHandler("keydown-NUMPAD_ONE", (event) => this.triggerAbilitySlot(0, event));
+    this.addKeyHandler("keydown-TWO", (event) => this.triggerAbilitySlot(1, event));
+    this.addKeyHandler("keydown-NUMPAD_TWO", (event) => this.triggerAbilitySlot(1, event));
+    this.addKeyHandler("keydown-THREE", (event) => this.triggerAbilitySlot(2, event));
+    this.addKeyHandler("keydown-NUMPAD_THREE", (event) => this.triggerAbilitySlot(2, event));
     this.addKeyHandler("keydown-F", () => this.options.toggleFogDebug?.());
     this.addKeyHandler("keydown-ESC", () => {
       if (this.options.isPlacingBuilding()) {
@@ -148,6 +149,18 @@ export class InputSystem {
 
   private addKeyHandler(event: string, handler: (event?: KeyboardEvent) => void): void {
     this.keyHandlers.push({ event, handler });
+  }
+
+  private triggerAbilitySlot(slot: number, event?: KeyboardEvent): void {
+    if (event?.repeat) {
+      return;
+    }
+    const now = performance.now();
+    if (this.lastAbilityKey?.slot === slot && now - this.lastAbilityKey.at < 250) {
+      return;
+    }
+    this.lastAbilityKey = { slot, at: now };
+    this.options.castAbilitySlot(slot);
   }
 
   private handleRightClick(point: Position): void {

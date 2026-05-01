@@ -2,8 +2,12 @@ import { cloneBattleLaunchRequestWithHero, createSkirmishBattleLaunchRequest } f
 import type { CurrentStoredGameSave } from "../save/SaveTypes";
 import type { ResultsData } from "./ResultsTypes";
 
+function heroForResultsContinuation(data: ResultsData) {
+  return data.stats.outcome === "defeat" ? data.startingHeroSave ?? data.heroSave : data.heroSave;
+}
+
 export function createRetryBattleData(data: ResultsData): { launchRequest: ReturnType<typeof createSkirmishBattleLaunchRequest> } {
-  const retryHero = data.stats.outcome === "defeat" ? data.startingHeroSave ?? data.heroSave : data.heroSave;
+  const retryHero = heroForResultsContinuation(data);
   return {
     launchRequest: data.launchRequest
       ? cloneBattleLaunchRequestWithHero(data.launchRequest, retryHero, { sourceId: "results_retry" })
@@ -13,7 +17,7 @@ export function createRetryBattleData(data: ResultsData): { launchRequest: Retur
 
 export function createInventorySceneData(data: ResultsData): Record<string, unknown> {
   return {
-    heroSave: data.heroSave,
+    heroSave: heroForResultsContinuation(data),
     stats: data.stats,
     rewardItemIds: data.rewardItemIds,
     reward: data.reward,
@@ -37,6 +41,7 @@ export function renderPrimaryActions(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
     return `
       <button data-results-action="retry">Retry</button>
+      <button data-results-action="inventory">Open Hero Inventory</button>
       <button data-results-action="${isCampaign ? "campaign" : "menu"}">${isCampaign ? "Campaign Map" : "Main Menu"}</button>
       ${isCampaign ? `<button data-results-action="menu">Main Menu</button>` : ""}
     `;

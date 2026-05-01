@@ -151,27 +151,35 @@ export function firstBattleTutorialHint(options: {
   }
 
   const heroSelected = options.selected.includes(options.hero);
+  const playerCombatSelected =
+    heroSelected || options.selected.some((entity) => entity instanceof Unit && entity.alive && entity.team === "player");
   const commandHallSelected = options.commandHall ? options.selected.includes(options.commandHall) : false;
   const barracks = options.buildings.find((building) => building.alive && building.team === "player" && building.definition.id === "barracks");
   const hasBarracks = Boolean(barracks?.isCompleted());
+  const barracksUnderConstruction = Boolean(barracks?.isUnderConstruction());
 
   if (!heroSelected && options.elapsedSeconds < 20) {
     return "Select your hero.";
   }
   if (options.crownShrine?.owner !== "player") {
-    return options.crownShrine &&
+    if (
+      options.crownShrine &&
       options.hero.alive &&
-      Phaser.Math.Distance.Between(options.hero.position.x, options.hero.position.y, options.crownShrine.position.x, options.crownShrine.position.y) <= options.crownShrine.radius
-      ? "Hold the Crown Shrine circle until it turns green."
-      : "Right-click the Crown Shrine with your hero and troops.";
+      Phaser.Math.Distance.Between(options.hero.position.x, options.hero.position.y, options.crownShrine.position.x, options.crownShrine.position.y) <=
+        options.crownShrine.radius
+    ) {
+      return "Hold the Crown Shrine circle until it turns green.";
+    }
+    return playerCombatSelected ? "Right-click the Crown Shrine with your selected forces." : "Select your army, then right-click the Crown Shrine.";
+  }
+  if (!hasBarracks && barracksUnderConstruction) {
+    return "Barracks is under construction. Hold near your base until it completes.";
   }
   if (!hasBarracks && !commandHallSelected) {
     return "Select your Command Hall.";
   }
   if (!hasBarracks) {
-    return barracks?.isUnderConstruction()
-      ? "Barracks is under construction. Hold near your base until it completes."
-      : "Build a Barracks to train troops.";
+    return "Build a Barracks to train troops.";
   }
   if (options.unitsTrained === 0) {
     return "Train Militia from your Barracks.";
