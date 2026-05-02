@@ -1,12 +1,12 @@
 # Development Checkpoint
 
-Updated: 2026-05-01 18:32 -04:00
+Updated: 2026-05-01 21:12 -04:00
 
 ## Checkpoint Scope
 
-This checkpoint records a clean automated verification pass before any new feature work. The repository intentionally had a broad dirty worktree containing useful in-progress campaign, battle, UI, save, telemetry, and test coverage changes described in `LLM_GAME_HANDOFF.md`.
+This checkpoint records a clean automated verification pass before more feature work. The repository intentionally had a broad dirty worktree containing useful Stronghold Development V1, campaign simulator profile, HUD split, content-validation split, save, telemetry, documentation, and test coverage changes described in `LLM_GAME_HANDOFF.md`.
 
-No gameplay behavior was changed during this checkpoint pass. The only post-verification edit was this checkpoint metadata update.
+No gameplay behavior was changed during this checkpoint pass. After verification, all current dirty work was committed as the Stronghold checkpoint, then this metadata note was updated to record the resulting commit hash.
 
 ## Verification Results
 
@@ -22,9 +22,9 @@ Result:
 
 ```text
 PASS
-30 test files passed
-145 tests passed
-Vitest duration: 8.02s
+32 test files passed
+157 tests passed
+Vitest duration: 7.73s
 ```
 
 ### Production Build
@@ -47,7 +47,7 @@ Known build warning:
 
 ```text
 Some chunks are larger than 500 kB after minification.
-Main JS bundle: 1,803.04 kB minified / 427.71 kB gzip.
+Main JS bundle: 1,812.13 kB minified / 430.15 kB gzip.
 ```
 
 ### Browser E2E
@@ -62,9 +62,9 @@ Result:
 
 ```text
 PASS
-38 Playwright tests passed
-Total duration: 13.6m
-Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 7.5m
+39 Playwright tests passed
+Total duration: 14.2m
+Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 7.9m
 ```
 
 ### Playtest Simulation
@@ -79,7 +79,11 @@ Result:
 
 ```text
 PASS
-Simulated 15 runs across 5 campaign battle nodes.
+Simulated 60 runs across 5 campaign battle nodes and 4 Stronghold profiles.
+Generated 20 profile-node summaries.
+No structural too-hard nodes.
+Training Yard I improves the Ashen Outpost profile.
+Watch Post I and Quartermaster Stores I remain deterministic usefulness warnings.
 Regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json.
 ```
 
@@ -88,13 +92,13 @@ Regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json.
 Checkpoint commit hash:
 
 ```text
-5c9798046c1e574028cf4f4c6f62966c61dfd7c3
+3f676e16b6fde65ffdb95c62ef273e78b8179854
 ```
 
 Checkpoint commit message:
 
 ```text
-Checkpoint automated playtest coverage and first campaign polish
+Checkpoint Stronghold development and campaign simulator profiles
 ```
 
 Branch:
@@ -112,8 +116,9 @@ origin https://github.com/jardas33/ascendant-realms.git
 Branch status after completing this checkpoint:
 
 ```text
-The checkpoint commit and this checkpoint metadata update were pushed to origin/main.
-Local main and origin/main are synced.
+After the Stronghold checkpoint commit and before this metadata update, local main was ahead of origin/main by 1 commit.
+This metadata update records the checkpoint hash as a follow-up documentation commit.
+Push both commits to origin/main so local main and origin/main are synced.
 ```
 
 ## Remaining Known Risks
@@ -121,14 +126,16 @@ Local main and origin/main are synced.
 - Full human-paced Border Village and Old Stone Road playthroughs still need timing and feel checks on Easy.
 - Aether Well Ruins and Bandit Hillfort still need Normal human playtests from a typical early campaign save.
 - Ashen Outpost still needs manual validation with and without Chapel repair.
+- Watch Post I and Quartermaster Stores I are flagged by deterministic telemetry as not improving outcomes; treat this as a human fog/readability and build-order review prompt before changing costs or effects.
 - Audible audio behavior still needs human-ear confirmation.
 - Full real-time victory from first click to enemy base kill remains manual QA.
+- `ScriptedBattlePlaytest.ts` is now the largest file and should be kept focused if simulator coverage grows.
 - `BattleScene` remains the highest live-scene integration risk.
 - Save migration and normalization remain sensitive because localStorage compatibility must stay intact.
-- `contentValidation.ts` is valuable but large and should be split only after a stable checkpoint.
+- The focused content validators are valuable but should be extended carefully because they protect many data contracts.
 - Vite still reports the known large Phaser bundle warning.
 - Balance is still prototype-level and should not be expanded with new systems until the current first-hour campaign feels good in manual play.
 
 ## Recommended Next Task
 
-Run a human-paced first-hour campaign QA pass before adding new gameplay systems. Focus on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, both Normal branch battles, and Ashen Outpost fortress pressure with fog enabled.
+Run a human-paced Stronghold and first-hour campaign QA pass before adding new gameplay systems. Focus on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, Training Yard I feel, Watch Post I fog/readability value, Quartermaster Stores I build-order value, both Normal branch battles, and Ashen Outpost fortress pressure with fog enabled.
