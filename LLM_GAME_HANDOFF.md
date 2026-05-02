@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-01 20:51 -04:00
+Last updated: 2026-05-01 23:22 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,9 +14,9 @@ The current playable loop:
 2. Enter the Border Marches mini-campaign or a standalone skirmish.
 3. Play an RTS battle with hero abilities, capture sites, construction, training queues, upgrades, rally points, pathfinding, fog of war, live minimap, and enemy pressure waves.
 4. Resolve victory or defeat through the shared Results scene.
-5. Persist hero XP, skill points, inventory item instances, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
+5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is still a prototype, but it now has a broad playable RTS/RPG spine. The latest checkpoint before this feature was committed and pushed. The current dirty worktree is intentional and contains useful in-progress work: documentation consolidation, the HUD and content-validation splits, and the first Stronghold Development feature. Preserve it. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. The latest clean checkpoint was committed and pushed before this tuning pass. The current dirty worktree is intentional and contains the Stronghold Tier I telemetry-response changes, the Stronghold Development Tier II slice, the campaign consequence/reputation-hook slice, randomized item affixes V1, regenerated telemetry, and updated balance/docs notes. Preserve it. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
 ## Current Git State
 
@@ -35,12 +35,14 @@ main
 Current HEAD:
 
 ```text
-b952cbee2a214d9958cfedf56069d5fecb55ca67
+a0d3f3c2da636c816f1f081dc7ec58efce470ab8
 ```
 
 Latest commits:
 
 ```text
+a0d3f3c Update development checkpoint metadata
+3f676e1 Checkpoint Stronghold development and campaign simulator profiles
 b952cbe Update development checkpoint metadata
 5c97980 Checkpoint automated playtest coverage and first campaign polish
 ```
@@ -48,7 +50,7 @@ b952cbe Update development checkpoint metadata
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest Browser Use sanity checks are historical from the 2026-04-30 polish pass: the rebuilt production preview at `http://127.0.0.1:4177/` showed the Ascendant Realms main menu heading and New Campaign button with browser console errors at 0, and later visible First Claim checks verified the tutorial prompt polish. Playwright e2e remains the deterministic browser verification surface.
+- Latest Browser Use sanity was rerun after the item affix pass: the rebuilt production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. Playwright e2e remains the deterministic browser verification surface for the full affixed reward/equip/stat flow.
 
 Current branch status at this handoff update time:
 
@@ -60,34 +62,169 @@ Current branch status at this handoff update time:
  M LLM_GAME_HANDOFF.md
  M PLAYTEST_TELEMETRY.json
  M PLAYTEST_TELEMETRY.md
- M QA_RUN.md
- M README.md
  M ROADMAP.md
+ M src/game/ai/EnemyAIController.test.ts
+ M src/game/ai/EnemyAIController.ts
  M src/game/battle/BattleRuntime.test.ts
  M src/game/battle/BattleRuntime.ts
  M src/game/battle/BattleSceneSpawner.ts
+ M src/game/battle/BattleSceneSystems.ts
+ M src/game/campaign/CampaignChoicePanel.ts
+ M src/game/campaign/CampaignMapViewModel.test.ts
+ M src/game/campaign/CampaignMapViewModel.ts
+ M src/game/campaign/CampaignPresentationTypes.ts
+ M src/game/campaign/CampaignResourcePanel.ts
+ M src/game/campaign/StrongholdPanel.ts
+ M src/game/core/CampaignRules.test.ts
+ M src/game/core/CampaignRules.ts
+ M src/game/core/HeroProgressionRules.test.ts
+ M src/game/core/HeroProgressionRules.ts
  M src/game/core/SaveSystem.test.ts
- M src/game/data/contentValidation.ts
+ M src/game/core/StrongholdRules.test.ts
+ M src/game/core/StrongholdRules.ts
+ M src/game/data/campaignModifiers.test.ts
+ M src/game/data/campaignModifiers.ts
+ M src/game/data/contentIndex.ts
+ M src/game/data/contentValidation.test.ts
+ M src/game/data/strongholdUpgrades.ts
+ M src/game/data/validation/ValidationTypes.ts
+ M src/game/data/validation/validateCampaign.ts
+ M src/game/data/validation/validateContent.ts
+ M src/game/data/validation/validateItems.ts
+ M src/game/data/validation/validateStronghold.ts
  M src/game/playtest/ScriptedBattlePlaytest.test.ts
  M src/game/playtest/ScriptedBattlePlaytest.ts
- M src/game/save/SaveDefaults.ts
- M src/game/save/SaveNormalization.ts
- M src/game/save/SaveTypes.ts
- M src/game/scenes/BattleScene.ts
+ M src/game/progression/EquipmentPanel.ts
+ M src/game/progression/InventoryPanel.ts
+ M src/game/progression/ItemComparison.test.ts
+ M src/game/progression/ItemComparison.ts
+ M src/game/results/ResultsRewardPanel.ts
  M src/game/scenes/CampaignMapScene.ts
  M src/game/styles/campaign.css
+ M src/game/styles/inventory.css
+ M src/game/styles/results.css
+ M src/game/systems/BuildingSystem.ts
+ M src/game/systems/TrainingSystem.ts
  M src/game/types/CampaignTypes.ts
- M src/game/ui/HUD.ts
+ M src/game/types/ItemTypes.ts
  M tests/e2e/deep-flow.spec.ts
-?? src/game/campaign/StrongholdPanel.ts
-?? src/game/core/StrongholdRules.test.ts
-?? src/game/core/StrongholdRules.ts
-?? src/game/data/strongholdUpgrades.ts
-?? src/game/data/validation/
-?? src/game/ui/hudPanels/
+?? src/game/data/itemAffixes.test.ts
+?? src/game/data/itemAffixes.ts
+?? src/game/data/reputation.ts
 ```
 
-`main` and `origin/main` were synced at commit `b952cbee2a214d9958cfedf56069d5fecb55ca67` before the current dirty work. The local branch is now ahead of that clean checkpoint only by uncommitted changes; nothing in the current feature has been committed yet.
+`main` and `origin/main` are synced at commit `a0d3f3c2da636c816f1f081dc7ec58efce470ab8`. The local branch now has uncommitted Stronghold Tier I tuning, Tier II development work, compact campaign reputation/consequence work, and item affix V1 work on top of that clean checkpoint.
+
+## Randomized Item Affixes V1 - 2026-05-01
+
+Goal: add a small, safe affix layer to item instances without crafting, durability, item art, inventory rewrites, or large loot complexity.
+
+What changed in this pass:
+
+- Added `src/game/data/itemAffixes.ts` with 9 data-driven affixes: Sturdy, Sharp, Guarding, Aether-Touched, Commanding, Faithful, Swift, Embered, and Ranger's.
+- Added `ItemAffixDefinition` to `ItemTypes.ts`: affixes have `id`, `name`, `tier`, `allowedSlots`, `statMods`, `tags`, and `weight`.
+- Added rarity-based affix counts: common 0-1, uncommon 1, rare 1-2, epic 2, legendary 2-3. Deterministic mode picks weighted slot-filtered affixes for tests.
+- Reward-generated item instances now roll and persist affix IDs when item definitions are available. Old empty-affix instances remain valid.
+- Equipment stat calculation now applies base item stats plus valid equipped affix stats. Unknown or slot-invalid saved affix IDs are ignored by stat application.
+- Results and Inventory UI now show affix names, base stats, affix stat contribution, total item stats, and equip preview deltas.
+- Content validation now checks affix IDs, names, tiers, slots, tags, stat values, and weights.
+- E2E adds a deterministic affixed reward path: earn an affixed Weathered Command Sword, verify Sharp and total stats in Results, equip it, verify save persistence and Inventory stats.
+
+Verification completed for this pass:
+
+```text
+npm test
+PASS: 33 test files, 178 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 41 Playwright tests in 16.1m
+
+npm run playtest:sim
+PASS: 105 simulated runs across 35 campaign battle nodes; no structural too_hard nodes, no too_easy nodes, Ashen Outpost beatable, no Stronghold warnings
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, browser console errors: 0
+```
+
+## Campaign Consequences And Reputation Hooks - 2026-05-01
+
+Goal: make campaign choices and reputation visibly affect play without adding a broad diplomacy system.
+
+What changed in this pass:
+
+- Added `src/game/data/reputation.ts` with data-driven ranks for Free Marches, Common Folk, Old Faith, Ashen Covenant, and Sylvan Concord. Thresholds are Friendly `>= 25`, Honored `>= 50`, Disliked `<= -25`, and Hostile `<= -50`.
+- Added four compact reputation effects:
+  - Common Folk Friendly: Marcher Camp choice/service costs are 10% cheaper.
+  - Free Marches Friendly: Stronghold upgrade Crown costs are 10% cheaper.
+  - Old Faith Friendly: Chapel choices with Aether rewards grant +5 extra Aether.
+  - Ashen Covenant Hostile: Ashen battle launches include the `ashen_hostile_pressure` modifier, spawning one extra Raider.
+- Campaign choice rules now preview and apply adjusted costs/rewards, so discounts and Chapel bonuses are visible before purchase and deterministic when applied.
+- Stronghold purchase rules now accept hero reputation context and spend discounted Crown costs when Free Marches Friendly is active.
+- Campaign map UI now shows reputation value, rank, active effects, adjusted cost/reward lines, reputation deltas, modifier grants/removals, and whether a choice completes its node.
+- Battle launch now merges campaign modifiers, reputation-derived launch modifiers, and Stronghold modifiers. The Ashen hostile pressure effect uses the existing launch-modifier path and battle telemetry.
+- Content validation now checks reputation effect references, ranks, modifiers, discount multipliers, bonus values, and scoped node references.
+- Save/load needed no schema change; existing reputation values persist through the current save format.
+
+Verification completed for this pass:
+
+```text
+npm test
+PASS: 32 test files, 170 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 40 Playwright tests in 15.3m
+
+npm run playtest:sim
+PASS: 105 simulated runs across 35 campaign battle nodes; no structural too_hard nodes, no too_easy nodes, Ashen Outpost beatable, no Stronghold warnings
+
+Browser Use preview smoke at http://127.0.0.1:4181/
+PASS: main menu visible, campaign reputation panel rendered, browser console errors: 0
+```
+
+## Stronghold Development Tier II - 2026-05-01
+
+Goal: add a compact second tier of Stronghold upgrades without turning the campaign into a city-builder.
+
+What changed in this pass:
+
+- Added five data-driven Tier II upgrades in `src/game/data/strongholdUpgrades.ts`: Training Yard II, Watch Post II, Quartermaster Stores II, Chapel Corner II, and Ranger Paths II.
+- Each Tier II upgrade requires its matching Tier I upgrade through `prerequisites.upgradeRanks`.
+- Implemented Tier II effects through existing launch-effect hooks:
+  - Training Yard II: Militia and Rangers train 10% faster.
+  - Watch Post II: first enemy wave warning arrives 15s earlier on top of Watch Post I, and player Watchtowers reach +20% total range.
+  - Quartermaster Stores II: additional starting battle resources, including Iron and Aether.
+  - Chapel Corner II: hero starts with +8% max HP and Mana total.
+  - Ranger Paths II: +1 starting Ranger.
+- Stronghold UI now exposes the new effects through the existing cost/effect/locked-state cards.
+- Content validation now checks that Tier II Stronghold upgrades require their previous tier at rank 1.
+- Battle launch support covers Tier II through existing modifier aggregation, runtime starter resources, hero stat modifiers, enemy warning lead, Watchtower range, construction/training modifiers, and extra starting unit spawning.
+- The simulator now includes a `tier_two_quartermaster_path` profile and writes aggregated Stronghold effects into telemetry so every launch effect is visible in JSON and Markdown.
+- The Stronghold e2e now seeds resources, verifies a locked Tier II card, buys Quartermaster Stores I and II, launches Border Village, and verifies the Tier II starting-resource package in battle.
+
+Verification completed for this pass:
+
+```text
+npm test
+PASS: 32 test files, 162 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 39 Playwright tests in 14.6m
+
+npm run playtest:sim
+PASS: 105 simulated runs across 35 profile-node summaries; no structural too_hard nodes, no too_easy nodes, no Stronghold warnings
+
+Browser Use preview smoke at http://127.0.0.1:4180/
+PASS: main menu visible, browser console errors: 0
+```
 
 ## Commands
 
@@ -113,35 +250,45 @@ Notes:
 
 - `npm run test:e2e` starts Vite through Playwright.
 - The e2e suite intentionally uses one worker for stability.
-- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 13.7 minutes.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 16.1 minutes.
 - `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Fresh verification completed for the current Stronghold Development and automated Stronghold playtest worktree on 2026-05-01 at about 20:51 -04:00:
+Fresh verification completed for the current randomized item affix V1 worktree on 2026-05-01 at about 23:22 -04:00:
 
 ```text
 npm test
-PASS: 32 test files, 157 tests
+PASS: 33 test files, 178 tests
 
 npm run build
 PASS: TypeScript compile and Vite production build
 Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 39 Playwright tests in 13.7m. This suite is slow; use a long timeout.
+PASS: 41 Playwright tests in 16.1m. This suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: regenerated telemetry has 60 runs across 5 campaign battle nodes and 4 Stronghold profiles; no structural too-hard nodes; Ashen Outpost beatable: yes; Stronghold warnings are Watch Post I and Quartermaster Stores I not improving deterministic outcomes.
+PASS: regenerated telemetry has 105 runs across 35 profile-node summaries and 7 Stronghold profiles; no structural too-hard nodes; no too-easy nodes; Ashen Outpost beatable: yes; Stronghold warnings: none.
 
 Browser Use sanity
-Not rerun for the simulator-only follow-up. Latest recorded successful Browser Use production-preview sanity remains from 2026-04-30: http://127.0.0.1:4177/ rendered with the main menu heading and New Campaign button visible, plus 0 browser console errors after that build.
+Rerun against production preview at http://127.0.0.1:4182/. The main menu rendered and browser console errors stayed at 0. The full affixed reward/equip/stat flow is covered by Playwright e2e.
 ```
 
-Focused Stronghold verification on 2026-05-01:
+Focused item-affix verification on 2026-05-01 during this pass:
 
-- `npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts`: passed, 4 test files and 42 tests.
-- `npm run test:e2e -- --reporter=line -g "stronghold upgrades"`: passed, 1 Playwright test.
+- `npm test -- src/game/data/itemAffixes.test.ts src/game/core/HeroProgressionRules.test.ts src/game/progression/ItemComparison.test.ts src/game/core/SaveSystem.test.ts src/game/data/contentValidation.test.ts src/game/battle/BattleRuntime.test.ts`: passed, 6 test files and 57 tests.
+- The full e2e suite includes affixed reward display, affix persistence after Equip Now, and Inventory stat display including affix contribution.
+
+Focused reputation/consequence verification on 2026-05-01 during this pass:
+
+- `npm test -- src/game/core/CampaignRules.test.ts src/game/core/StrongholdRules.test.ts src/game/campaign/CampaignMapViewModel.test.ts src/game/core/SaveSystem.test.ts src/game/data/contentValidation.test.ts`: passed, 5 test files and 66 tests.
+- The full e2e suite includes reputation rank/effect display, Free Marches Stronghold discount preview, Common Folk Marcher Camp discount preview, and event choice reputation/modifier preview coverage.
+
+Focused Stronghold verification on 2026-05-01 during this pass:
+
+- `npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts src/game/playtest/ScriptedBattlePlaytest.test.ts`: passed, 5 test files and 52 tests.
+- `npm run playtest:sim`: passed after the final code/docs update and regenerated both telemetry files.
 
 Recent targeted checks also passed:
 
@@ -221,6 +368,109 @@ PASS: 1 Playwright test; the final full-suite run also passes after targeting th
 
 ## Most Recent Completed Work
 
+### Randomized Item Affixes V1
+
+Goal: add modest item-instance variation while keeping inventory, reward tables, and equipment flow simple.
+
+What changed:
+
+- Added data-driven affix definitions and deterministic rarity/slot-filtered generation.
+- Reward-generated item instances can now persist affixes, while old empty-affix saves remain valid.
+- Equipped affixes contribute to hero stats through the existing equipment stat path.
+- Results and Inventory UI show affix names, base stats, affix stats, total item stats, and equip preview deltas.
+- Added unit/content/save/e2e coverage for generation rules, allowed-slot filtering, stat application, persistence, deterministic generation, and browser-visible affix UI.
+- Full verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, `npm run playtest:sim`, and Browser Use preview smoke.
+
+### Campaign Consequences And Reputation Hooks
+
+Goal: make choices and faction reputation visible and mechanically meaningful without adding a full diplomacy layer.
+
+What changed:
+
+- Added rank calculation and active-effect helpers for Free Marches, Common Folk, Old Faith, Ashen Covenant, and Sylvan Concord.
+- Added Common Folk Marcher Camp discounts, Free Marches Stronghold Crown discounts, Old Faith Chapel Aether bonuses, and Ashen Covenant Hostile enemy-pressure launches.
+- Updated campaign choice cards to show costs, adjusted rewards, reputation changes, modifiers, and completion outcomes.
+- Updated campaign reputation UI to show each faction's value/rank and currently active effects.
+- Added unit/content/save/e2e coverage for ranks, discounts, hostile pressure, view-model output, persistence, and browser-visible previews.
+- Full verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, `npm run playtest:sim`, and Browser Use preview smoke.
+
+### Stronghold Development Tier II
+
+Goal: add a compact second Stronghold tier that requires matching Tier I upgrades, creates campaign-strategy differences, and stays readable in UI/telemetry.
+
+What changed:
+
+- Added Training Yard II, Watch Post II, Quartermaster Stores II, Chapel Corner II, and Ranger Paths II as data-driven upgrades.
+- Added Tier I prerequisite validation for all Tier II Stronghold upgrades.
+- Applied Tier II effects at battle launch through existing systems: faster Militia/Ranger training, earlier enemy warning, larger Watchtower range, broader starter resources, hero HP/Mana bonus, and an extra Ranger.
+- Expanded pure tests, save normalization tests, content validation, Playwright e2e, simulator profiles, generated telemetry, and design/balance/content docs.
+- Full verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, `npm run playtest:sim`, and Browser Use preview smoke.
+
+### Stronghold Tier I Telemetry Response
+
+Goal: improve Stronghold Development V1 based on simulator telemetry so Watch Post I and Quartermaster Stores I have clear deterministic value, while keeping all Tier I upgrades modest and readable.
+
+Files touched by this follow-up:
+
+- `src/game/data/strongholdUpgrades.ts`
+- `src/game/types/CampaignTypes.ts`
+- `src/game/campaign/StrongholdPanel.ts`
+- `src/game/data/validation/validateStronghold.ts`
+- `src/game/ai/EnemyAIController.ts`
+- `src/game/ai/EnemyAIController.test.ts`
+- `src/game/battle/BattleSceneSpawner.ts`
+- `src/game/battle/BattleSceneSystems.ts`
+- `src/game/systems/BuildingSystem.ts`
+- `src/game/systems/TrainingSystem.ts`
+- `src/game/battle/BattleRuntime.test.ts`
+- `src/game/core/StrongholdRules.test.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.test.ts`
+- `PLAYTEST_TELEMETRY.md`
+- `PLAYTEST_TELEMETRY.json`
+- `BALANCE.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Watch Post I old issue: +80 player-building vision was readable in fog but did not change deterministic simulator outcomes. It now keeps +80 building vision, makes the first enemy-wave gathering warning 25 seconds earlier, and gives player Watchtowers +10% attack range. Live enemy attack timing is unchanged.
+- Quartermaster Stores I old issue: +50 Crowns/+30 Stone mostly increased floated resources. It now grants +60 Crowns, +40 Stone, +20 Iron, and +10 Aether at battle start, and the first player building in each battle completes 10% faster.
+- Chapel Corner I now explicitly gives +5% hero maximum HP and +5% maximum Mana; UI copy and aggregation tests match the intended chapel fantasy.
+- Ranger Paths I changed from +1 starting Ranger to Rangers training 10% faster, and its Iron cost moved from 45 to 40. A temporary full Ranger profile showed that stacking a free Ranger on top of Training Yard I made Ashen Outpost too easy, so the final version uses the safer training-speed effect.
+- Training Yard I stayed mechanically unchanged; copy now uses explicit `+1 Militia`.
+- Stronghold UI effect formatting now names enemy warning lead, Watchtower range, first-building construction speed, hero Mana, and unit training speed clearly.
+- The simulator now covers six profiles: No Stronghold upgrades, Training Yard path, Defensive Watch Post path, Economy Quartermaster path, Chapel Corner path, and Ranger Paths path.
+- Stronghold usefulness analysis now counts earlier first-wave warning, earlier Barracks completion, and earlier first trained unit as deterministic improvements, in addition to result/loss/duration/final-army outcomes.
+- Regenerated telemetry is 90 runs across 30 profile-node summaries. Stronghold warnings are none. `too_hard` nodes are none. `too_easy` nodes are none. Ashen Outpost remains beatable.
+- Updated `BALANCE.md` with old effect, new effect, reason, expected effect, and telemetry result for every Tier I upgrade.
+
+Final telemetry profile records after this pass:
+
+| Profile | Record | Improved runs | First purchase | Warnings |
+| --- | ---: | ---: | --- | --- |
+| No Stronghold upgrades | 9-3-3 | 0 | - | none |
+| Training Yard path | 10-3-2 | 2 | ashen_outpost | none |
+| Defensive Watch Post path | 9-3-3 | 9 | aether_well_ruins | none |
+| Economy Quartermaster path | 9-3-3 | 6 | bandit_hillfort | none |
+| Chapel Corner path | 9-2-4 | 1 | bandit_hillfort | none |
+| Ranger Paths path | 10-3-2 | 2 | ashen_outpost | none |
+
+Verification passed:
+
+```text
+npm test
+PASS: 32 test files, 159 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 39 Playwright tests in 14.1m
+
+npm run playtest:sim
+PASS: 90 simulated runs across 30 profile-node summaries, no structural too-hard nodes, no too-easy nodes, no Stronghold warnings
+```
+
 ### Automated Stronghold Playtest Profiles
 
 Goal: update the deterministic playtest simulator so Stronghold Development is represented in baseline and upgraded campaign-battle paths without adding gameplay or changing live balance values.
@@ -243,7 +493,7 @@ What changed:
 - Extended telemetry with Stronghold profile ID/name, target upgrades, purchased upgrades, purchase notes, starting unit counts after upgrade effects, starting resources after upgrade effects, battle result, duration, first-wave survival, resources floated, objective completion, and rewards.
 - Updated analyzer output with per-profile records, first purchase node, improved-run counts, too-expensive warnings, useless-upgrade warnings, and overpowered/trivialization warnings.
 - Regenerated `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` as schema version 2.
-- Current telemetry says no structural `too_hard` nodes. Training Yard I improves Ashen Outpost from 1 win / 2 non-wins to 2 wins / 1 non-win in the profile record. Watch Post I and Quartermaster Stores I are flagged as not improving deterministic outcomes. No tested path is too expensive or overpowered.
+- At that checkpoint, telemetry said no structural `too_hard` nodes; Training Yard I improved Ashen Outpost; Watch Post I and Quartermaster Stores I were flagged as not improving deterministic outcomes. This was superseded by the later Stronghold Tier I telemetry response above.
 - Updated `BALANCE.md` with the early Stronghold simulator read and left live balance values unchanged.
 - Hardened one existing Ashen objective e2e assertion to target the visible completed objectives panel after a full-suite stale-HUD-locator failure; the focused test and final full e2e run both pass.
 
@@ -1101,7 +1351,7 @@ Chapel of the Marches:
 
 ## Current Rewards And Items
 
-Item data lives in `src/game/data/items.ts`. Reward tables live in `src/game/data/rewards.ts`.
+Item data lives in `src/game/data/items.ts`. Item affixes live in `src/game/data/itemAffixes.ts`. Reward tables live in `src/game/data/rewards.ts`.
 
 Current item model:
 
@@ -1111,12 +1361,15 @@ Current item model:
 - Legacy saves with catalog IDs migrate into instances.
 - Unique duplicate rewards convert into campaign resources.
 - Non-unique duplicate rewards remain separate instances.
+- Reward-generated instances can roll modest affixes by rarity and slot. Current affixes are Sturdy, Sharp, Guarding, Aether-Touched, Commanding, Faithful, Swift, Embered, and Ranger's.
+- Equipped item stats combine base item stats plus valid affix stat modifiers.
 
 Reward tables support:
 
 - Guaranteed item IDs.
 - Weighted item pools.
 - Deterministic item order for tests.
+- Deterministic affix generation for tests.
 - Map-specific item pool filters.
 - First-clear-only and repeat-clear-only entries.
 - Resource rewards.
@@ -1128,6 +1381,14 @@ Reward pacing after the balance pass:
 - First Claim: one weighted item roll, modest resources, 35 base victory XP, 40 first-clear XP, starter resources, weighted toward starter/common gear.
 - Broken Ford: one weighted item roll, stronger resources, 55 base victory XP, first-clear Fordbreaker Halberd, 65 first-clear XP, slightly improved rare/epic excitement.
 - Ashen Outpost: one weighted item roll, high resources, 85 base victory XP, first-clear Ashbound Censer, 95 first-clear XP, and campaign node Oathbound Aegis.
+
+Affix generation rules:
+
+- Common: 0-1 affix.
+- Uncommon: 1 affix.
+- Rare: 1-2 affixes.
+- Epic: 2 affixes.
+- Legendary: 2-3 affixes.
 
 ## Current Hero System
 
@@ -1157,7 +1418,7 @@ Skill trees:
 - Magic: mana, armor, Arcanist Arcane Burst/Blink, Shepherd Sanctify Ground.
 - Leadership: command, faith, Warlord War Cry, Shepherd Blessing.
 
-Battle hero stats are recalculated from class base stats, origin modifiers, level bonuses, skill ranks, and equipped item stat modifiers.
+Battle hero stats are recalculated from class base stats, origin modifiers, level bonuses, skill ranks, and equipped item stat modifiers, including valid affix modifiers on equipped item instances.
 
 ## Current Factions
 
@@ -1340,12 +1601,12 @@ Several battle helpers changed during the latest checkpoint and are now committe
 
 ## Current Tests
 
-Latest verified suite status, refreshed during the 2026-05-01 Stronghold simulator follow-up:
+Latest verified suite status, refreshed during the 2026-05-01 item affix V1 follow-up:
 
-- `npm test`: passed, 32 test files, 157 tests.
+- `npm test`: passed, 33 test files, 178 tests.
 - `npm run build`: passed with the known Vite large-chunk warning, which is not a failure.
-- `npm run test:e2e -- --reporter=line`: passed, 39 Playwright tests in 13.7m. Use a long timeout.
-- `npm run playtest:sim`: passed, 60 simulated runs across 20 profile-node summaries, with no structural `too_hard` nodes and Stronghold usefulness warnings for Watch Post I and Quartermaster Stores I.
+- `npm run test:e2e -- --reporter=line`: passed, 41 Playwright tests in 16.1m. Use a long timeout.
+- `npm run playtest:sim`: passed, 105 simulated runs across 35 profile-node summaries, with no structural `too_hard` nodes, no `too_easy` nodes, and no Stronghold warnings.
 
 Current unit/pure test files:
 
@@ -1364,6 +1625,7 @@ Current unit/pure test files:
 - `src/game/data/battlePacing.test.ts`
 - `src/game/data/campaignModifiers.test.ts`
 - `src/game/data/contentValidation.test.ts`
+- `src/game/data/itemAffixes.test.ts`
 - `src/game/playtest/ScriptedBattlePlaytest.test.ts`
 - `src/game/progression/ItemComparison.test.ts`
 - `src/game/results/ResultsViewModel.test.ts`
@@ -1393,13 +1655,14 @@ Browser-level tests currently cover:
 - Settings persistence, including floating text, reduced motion, fog override, colorblind minimap persistence, and rendered player/enemy colorblind minimap colors.
 - Hero creation.
 - Campaign map and locked-node behavior.
-- Stronghold panel purchase flow, resource spending, save persistence, prerequisite lock text, and Training Yard I battle-launch effect.
+- Reputation rank/effect display, active reputation consequences, discounted Marcher Camp/Stronghold previews, and event-choice reputation/modifier previews.
+- Stronghold panel purchase flow, resource spending, save persistence, prerequisite lock text, and Quartermaster Stores I/II battle-launch resources.
 - Border Village battle launch.
 - First enemy wave pressure, Command Hall damage alerts, and wave-survival bookkeeping.
 - Campaign choices, including Refugee Caravan Demand/Protect/Recruit, Chapel guidance/repair/pray, and Marcher Camp services/purchases.
-- Inventory equip/unequip.
+- Inventory equip/unequip, including affix display and equipped affix stat contribution.
 - Skill spending.
-- Results Equip Now.
+- Results Equip Now, including deterministic affixed reward display and affix persistence after equip.
 - Defeat tips.
 - Defeat Results saved-progress display and unsaved battle XP labeling.
 - Ashen Outpost defeat tips for Burned Shrine and Enemy Barracks recovery sequencing.
@@ -1565,17 +1828,18 @@ Known issues and caveats:
 - Full e2e is slow and can exceed short shell-tool timeouts.
 - Full human-paced battle victory/defeat through normal input remains manual.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
-- Automated Stronghold telemetry currently flags Watch Post I and Quartermaster Stores I as not improving deterministic outcomes; treat that as a human feel/readability review prompt before changing costs or effects.
+- Automated Stronghold telemetry currently has no too-expensive, useless-upgrade, overpowered, too-easy, or structural too-hard warnings after the Tier II pass.
 - `QA_RUN.md` contains earlier manual QA notes; latest automated verification counts in this handoff are newer.
 
 ## Current Known Limitations
 
 - Campaign is a mini-campaign skeleton, not a full strategic layer.
-- Stronghold Development is a first small persistent-upgrade slice, not a broad city-builder.
-- No broad vendor economy, mercenaries, repairs, diplomacy, invasions, or world simulation beyond Marcher Camp, Stronghold upgrades, and compact event choices.
+- Stronghold Development is a compact two-tier persistent-upgrade slice, not a broad city-builder.
+- Reputation hooks are compact rank/effect rules, not a diplomacy screen or full faction simulation.
+- No broad vendor economy, mercenaries, repairs, diplomacy, invasions, or world simulation beyond Marcher Camp, Stronghold upgrades, reputation hooks, and compact event choices.
 - Event choices are compact cards, not a dialogue engine.
 - `recoverHero` is a placeholder reward effect.
-- Item instances exist, but randomized affixes, crafting, durability, and full item-icon presentation are not implemented.
+- Item affixes are V1 stat packages only; crafting, durability, affix rerolling, proc chains, and full item-icon presentation are not implemented.
 - Relic slot is typed but not fully used.
 - Music is not implemented; `musicVolume` is reserved.
 - `screenShakeEnabled` is saved but no active screen shake system currently gates it.
@@ -1590,27 +1854,28 @@ Known issues and caveats:
 
 Current rough line counts:
 
-- `src/game/playtest/ScriptedBattlePlaytest.ts`: 1567 lines.
-- `src/game/scenes/BattleScene.ts`: 795 lines.
-- `src/game/core/HeroProgressionRules.ts`: 484 lines.
-- `src/game/core/CampaignRules.ts`: 404 lines.
-- `src/game/core/SaveSystem.test.ts`: 376 lines.
-- `src/game/systems/PathfindingGrid.ts`: 354 lines.
-- `src/game/battle/BattleSceneSystems.ts`: 339 lines.
-- `src/game/ai/EnemyAIController.ts`: 316 lines.
-- `src/game/data/campaignNodes.ts`: 309 lines.
-- `src/game/scenes/CampaignMapScene.ts`: 287 lines.
-- `src/game/data/aiPersonalities.ts`: 279 lines.
-- `src/game/scenes/HeroProgressionScene.ts`: 268 lines.
+- `src/game/playtest/ScriptedBattlePlaytest.ts`: 1795 lines.
+- `src/game/scenes/BattleScene.ts`: 876 lines.
+- `src/game/core/HeroProgressionRules.ts`: 560 lines.
+- `src/game/core/CampaignRules.ts`: 449 lines.
+- `src/game/core/SaveSystem.test.ts`: 452 lines.
+- `src/game/systems/PathfindingGrid.ts`: 397 lines.
+- `src/game/battle/BattleSceneSystems.ts`: 363 lines.
+- `src/game/ai/EnemyAIController.ts`: 354 lines.
+- `src/game/data/campaignNodes.ts`: 310 lines.
+- `src/game/scenes/CampaignMapScene.ts`: 318 lines.
+- `src/game/data/aiPersonalities.ts`: 288 lines.
+- `src/game/scenes/HeroProgressionScene.ts`: 286 lines.
 - `src/game/types/CombatTypes.ts`: 200 lines.
-- `src/game/data/strongholdUpgrades.ts`: 137 lines.
+- `src/game/data/strongholdUpgrades.ts`: 282 lines.
 - `src/game/types/MapTypes.ts`: 118 lines.
-- `src/game/types/CampaignTypes.ts`: 113 lines.
-- `src/game/core/StrongholdRules.ts`: 112 lines.
-- `src/game/types/ItemTypes.ts`: 80 lines.
-- `src/game/campaign/StrongholdPanel.ts`: 79 lines.
-- `src/game/ui/HUD.ts`: 72 lines.
-- `src/game/data/validation/validateContent.ts`: 67 lines.
+- `src/game/types/CampaignTypes.ts`: 159 lines.
+- `src/game/core/StrongholdRules.ts`: 134 lines.
+- `src/game/types/ItemTypes.ts`: 103 lines.
+- `src/game/data/itemAffixes.ts`: 196 lines.
+- `src/game/campaign/StrongholdPanel.ts`: 109 lines.
+- `src/game/ui/HUD.ts`: 79 lines.
+- `src/game/data/validation/validateContent.ts`: 73 lines.
 - `src/game/core/GameTypes.ts`: 1 line.
 - `src/game/data/contentValidation.ts`: 1 line.
 
@@ -1623,12 +1888,14 @@ Risk notes:
 - `CampaignRules.ts` joins node completion, costs/rewards, modifiers, town services, and reward claims.
 - `HUD.ts` has been reduced to a facade over focused HUD panel modules; selectors and behavior should still be treated as fragile.
 - `contentValidation.ts` is now a compatibility export over focused validators; the validation domain remains important even though the old catch-all file is gone.
-- `StrongholdRules`, `strongholdUpgrades`, and `StrongholdPanel` are new and covered, but should stay small until human campaign-economy feel is checked.
+- `StrongholdRules`, `strongholdUpgrades`, `StrongholdPanel`, and the Stronghold hooks in AI/building/training systems are covered, but should stay small until human campaign-economy feel is checked.
+- `reputation.ts`, `CampaignChoicePanel`, `CampaignResourcePanel`, and the reputation hooks inside `CampaignRules`, `StrongholdRules`, and `CampaignMapScene` are covered, but should remain a compact consequence layer rather than growing into diplomacy.
+- `itemAffixes.ts`, `HeroProgressionRules`, `ItemComparison`, `InventoryPanel`, and `ResultsRewardPanel` now form the compact affix path; keep future affix work data-driven and modest unless the user explicitly asks for deeper loot systems.
 
 ## Most Fragile Systems
 
 1. `BattleScene` integration: live scene lifecycle, system update order, input mode overlap, fog/minimap/rally wiring.
-2. Results and campaign reward saving: battle rewards, node rewards, Equip Now, first-clear, duplicate conversion, campaign bank.
+2. Results and campaign reward saving: battle rewards, node rewards, affix generation/display, Equip Now, first-clear, duplicate conversion, campaign bank.
 3. Save migration/normalization: old localStorage saves, item-instance migration, settings-only saves, campaign state.
 4. Campaign choices and town services: pure rules are covered, but UI crowding can regress.
 5. Fog/minimap visibility: filters rendering and minimap markers.
@@ -1650,7 +1917,7 @@ Run this before a checkpoint commit after gameplay/UI changes:
 7. Campaign map opens after creation.
 8. Campaign bank, reputation, and active modifiers display.
 9. Stronghold panel displays resources, purchased/locked/available states, costs, effects, and purchase buttons.
-10. Buy Training Yard I from a resource-seeded campaign and verify the next launched battle starts with one extra Militia.
+10. Buy Quartermaster Stores I and II from a resource-seeded campaign and verify the next launched battle starts with the Tier II resource package.
 11. Border Village is available and locked nodes cannot start.
 12. Border Village launches First Claim.
 13. Select hero with click and `H`.
@@ -1675,8 +1942,8 @@ Run this before a checkpoint commit after gameplay/UI changes:
 32. Verify minimap units/buildings/sites/camera/rally/pings and colorblind palette.
 33. Survive or lose the first wave through normal play.
 34. Defeat screen shows contextual tips and retry/campaign return.
-35. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, node rewards, and campaign bank.
-36. Equip Now changes stats and persists after leaving Results.
+35. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, affixes, node rewards, and campaign bank.
+36. Equip Now changes stats, including affix stats, and persists after leaving Results.
 37. Campaign victory completes Border Village and unlocks Old Stone Road.
 38. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
 39. Marcher Camp repeatable services, once-only purchases, costs, locked reasons, and save persistence work.
@@ -1690,7 +1957,7 @@ Run this before a checkpoint commit after gameplay/UI changes:
 47. Difficulty selection changes pacing/fog behavior.
 48. AI personality selection changes displayed style and launches without errors.
 49. Hero Inventory opens from main menu.
-50. Equipping/unequipping items changes hero stats.
+50. Equipping/unequipping items changes hero stats, including affixed item instances.
 51. Skill point spending persists.
 52. Asset Gallery opens.
 53. Browser console has no new hard errors.
@@ -1701,19 +1968,21 @@ Run this before a checkpoint commit after gameplay/UI changes:
 1. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
 2. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
 3. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, final approach readability, tower pressure, and upper-left objective-panel placement across a full fight.
-4. Human-review Watch Post I and Quartermaster Stores I in actual fog/build-order play before changing Stronghold costs or effects; the deterministic simulator currently flags both as not improving outcomes.
-5. Pick the next game-design direction as campaign depth, a second small Stronghold tier, or stronger node consequences. Do not move into workers or enemy construction yet.
-6. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `HeroProgressionRules`, and `CampaignRules`.
-7. Continue reducing `BattleScene` and `contentValidation.ts` only in small, behavior-preserving slices after checkpoints.
-8. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+4. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
+5. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
+6. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Watch Post II's earlier warning/tower reach and Quartermaster II's broader starter package feel helpful without becoming mandatory.
+7. Reputation hooks, item affixes V1, and Stronghold Tier II are telemetry-clean; the next campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, or broad city-builder systems yet.
+8. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `HeroProgressionRules`, `CampaignRules`, `itemAffixes`, and the reputation helper/rule hooks.
+9. Continue reducing `BattleScene` and `contentValidation.ts` only in small, behavior-preserving slices after checkpoints.
+10. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
-- Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current docs-only consolidation edits are intentional.
+- Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, and item affix V1 edits are intentional.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - Add or update tests for persistent save fields and data contracts.
 - Use Playwright for browser verification when UI/gameplay changes.
-- Use Browser Use only when the user asks for in-app browser inspection or visible local-browser interaction.
+- Use Browser Use when the user asks for in-app browser inspection or visible local-browser interaction; the latest affix pass used it for a production-preview smoke after deterministic Playwright e2e passed.
 - Keep changes conservative until the current first-hour campaign balance has human playtesting.
 - Never run destructive git commands without explicit user approval.

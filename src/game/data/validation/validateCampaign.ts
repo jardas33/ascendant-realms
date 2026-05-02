@@ -2,6 +2,7 @@ import { BATTLE_DIFFICULTIES } from "../battlePacing";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { MAPS } from "../maps";
+import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "../reputation";
 import { assertUniqueIds, type ValidationContext } from "./ValidationTypes";
 
 export function validateCampaignNodes(errors: string[], context: ValidationContext): void {
@@ -80,6 +81,43 @@ export function validateCampaignModifiers(errors: string[], context: ValidationC
     if (modifier.effects.campaignResourceRewardMultiplier !== undefined && modifier.effects.campaignResourceRewardMultiplier <= 0) {
       errors.push(`Campaign modifier ${modifier.id} has invalid resource reward multiplier.`);
     }
+  });
+}
+
+export function validateReputationEffects(errors: string[], context: ValidationContext): void {
+  TRACKED_REPUTATION_FACTION_IDS.forEach((factionId) => {
+    if (!context.factionIds.has(factionId)) {
+      errors.push(`Tracked reputation faction ${factionId} is missing from factions.`);
+    }
+  });
+  REPUTATION_EFFECTS.forEach((reputationEffect) => {
+    if (!context.factionIds.has(reputationEffect.factionId)) {
+      errors.push(`Reputation effect ${reputationEffect.id} references missing faction ${reputationEffect.factionId}.`);
+    }
+    if (!["friendly", "hostile"].includes(reputationEffect.requiredRank)) {
+      errors.push(`Reputation effect ${reputationEffect.id} has invalid required rank ${reputationEffect.requiredRank}.`);
+    }
+    reputationEffect.effects.forEach((effect) => {
+      if (effect.type === "town-choice-cost-multiplier" && (effect.multiplier <= 0 || effect.multiplier >= 1)) {
+        errors.push(`Reputation effect ${reputationEffect.id} has invalid town choice discount.`);
+      }
+      if (effect.type === "stronghold-crown-cost-multiplier" && (effect.multiplier <= 0 || effect.multiplier >= 1)) {
+        errors.push(`Reputation effect ${reputationEffect.id} has invalid Stronghold Crown discount.`);
+      }
+      if (effect.type === "chapel-aether-bonus" && effect.amount <= 0) {
+        errors.push(`Reputation effect ${reputationEffect.id} has invalid Chapel Aether bonus.`);
+      }
+      if (effect.type === "ashen-hostile-pressure" && !context.campaignModifierIds.has(effect.modifierId)) {
+        errors.push(`Reputation effect ${reputationEffect.id} references missing campaign modifier ${effect.modifierId}.`);
+      }
+      if ("nodeIds" in effect) {
+        effect.nodeIds.forEach((nodeId) => {
+          if (!context.campaignNodeIds.has(nodeId)) {
+            errors.push(`Reputation effect ${reputationEffect.id} references missing campaign node ${nodeId}.`);
+          }
+        });
+      }
+    });
   });
 }
 

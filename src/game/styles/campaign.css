@@ -61,6 +61,19 @@
   font-size: 0.84rem;
 }
 
+.reputation-row span {
+  min-width: 0;
+}
+
+.reputation-row span:first-child {
+  flex: 1 1 auto;
+}
+
+.reputation-row span:nth-child(2) {
+  color: #d8c982;
+  font-size: 0.78rem;
+}
+
 .reputation-row strong.positive {
   color: #aef7b7;
 }

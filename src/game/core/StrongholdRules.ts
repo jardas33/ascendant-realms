@@ -1,6 +1,7 @@
 import type { ResourceBag, StrongholdUpgradeDefinition, StrongholdUpgradeId } from "./GameTypes";
+import { getAdjustedStrongholdUpgradeCost } from "../data/reputation";
 import { STRONGHOLD_UPGRADE_BY_ID, STRONGHOLD_UPGRADES, isStrongholdUpgradeId, strongholdLaunchModifierId } from "../data/strongholdUpgrades";
-import type { CampaignSaveData } from "../save/SaveTypes";
+import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 export interface StrongholdUpgradeAvailability {
   ok: boolean;
@@ -20,7 +21,8 @@ export function getStrongholdUpgradeRank(campaign: CampaignSaveData, upgradeId: 
 
 export function getStrongholdUpgradeAvailability(
   campaign: CampaignSaveData,
-  upgrade: StrongholdUpgradeDefinition
+  upgrade: StrongholdUpgradeDefinition,
+  hero?: HeroSaveData
 ): StrongholdUpgradeAvailability {
   const reasons: string[] = [];
   const currentRank = getStrongholdUpgradeRank(campaign, upgrade.id);
@@ -40,7 +42,8 @@ export function getStrongholdUpgradeAvailability(
     }
   });
 
-  Object.entries(upgrade.cost).forEach(([resource, amount]) => {
+  const adjustedCost = getAdjustedStrongholdUpgradeCost(upgrade.cost, hero);
+  Object.entries(adjustedCost).forEach(([resource, amount]) => {
     const current = campaign.resources[resource as keyof ResourceBag] ?? 0;
     if ((amount ?? 0) > current) {
       reasons.push(`Need ${amount} ${titleCase(resource)}`);
@@ -53,7 +56,11 @@ export function getStrongholdUpgradeAvailability(
   };
 }
 
-export function purchaseStrongholdUpgrade(campaign: CampaignSaveData, upgradeId: string): StrongholdPurchaseResult {
+export function purchaseStrongholdUpgrade(
+  campaign: CampaignSaveData,
+  upgradeId: string,
+  hero?: HeroSaveData
+): StrongholdPurchaseResult {
   if (!isStrongholdUpgradeId(upgradeId)) {
     return {
       ok: false,
@@ -62,7 +69,7 @@ export function purchaseStrongholdUpgrade(campaign: CampaignSaveData, upgradeId:
     };
   }
   const upgrade = STRONGHOLD_UPGRADE_BY_ID[upgradeId];
-  const availability = getStrongholdUpgradeAvailability(campaign, upgrade);
+  const availability = getStrongholdUpgradeAvailability(campaign, upgrade, hero);
   if (!availability.ok) {
     return {
       ok: false,
@@ -73,7 +80,8 @@ export function purchaseStrongholdUpgrade(campaign: CampaignSaveData, upgradeId:
   }
 
   const nextRank = getStrongholdUpgradeRank(campaign, upgrade.id) + 1;
-  const paidCampaign = recordCampaignResourceSpending(subtractCampaignResources(campaign, upgrade.cost), upgrade.cost);
+  const adjustedCost = getAdjustedStrongholdUpgradeCost(upgrade.cost, hero);
+  const paidCampaign = recordCampaignResourceSpending(subtractCampaignResources(campaign, adjustedCost), adjustedCost);
   return {
     ok: true,
     campaign: {

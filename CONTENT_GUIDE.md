@@ -85,7 +85,30 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 9. Add the item ID to a reward table in `src/game/data/rewards.ts`.
 10. Run `npm run test`.
 
-Inventory stores item instances, not raw catalog IDs. Rewards and town purchases create an instance with `instanceId`, `itemId`, `acquiredAt`, `source`, and an empty `affixes` placeholder. Equipment references the instance ID. Unique duplicate rewards convert into campaign resources instead of adding a second copy; non-unique duplicates remain separate instances.
+Inventory stores item instances, not raw catalog IDs. Rewards and town purchases create an instance with `instanceId`, `itemId`, `acquiredAt`, `source`, and `affixes`. Equipment references the instance ID. Unique duplicate rewards convert into campaign resources instead of adding a second copy; non-unique duplicates remain separate instances.
+
+## Add Or Tune An Item Affix
+
+1. Open `src/game/data/itemAffixes.ts`.
+2. Copy an existing affix entry.
+3. Give it a unique `id` and player-facing `name`.
+4. Choose `tier`: currently `minor` or reserved `major`.
+5. Set `allowedSlots` to one or more of `weapon`, `armor`, `trinket`, or future `relic`.
+6. Add modest `statMods`. Supported stats match item stats: HP, mana, damage, range, attack cooldown, speed, armor, Might, Command, Arcana, and Faith.
+7. Add `tags` for content meaning, such as `damage`, `support`, `aether`, or `ranged`.
+8. Set a positive `weight`; higher weights appear more often when an eligible item rolls an affix.
+9. Keep V1 affixes simple. Do not add crafting, durability, rerolling, item art, or proc chains through this file.
+10. Run `npm test -- src/game/data/itemAffixes.test.ts src/game/data/contentValidation.test.ts`.
+
+Affix generation is slot-filtered and rarity-based:
+
+- Common: 0-1 affix.
+- Uncommon: 1 affix.
+- Rare: 1-2 affixes.
+- Epic: 2 affixes.
+- Legendary: 2-3 affixes.
+
+Deterministic tests can request predictable affixes through the reward/item-generation helpers. Normal play uses weighted randomness. Old saves with empty `affixes` arrays remain valid, and stat application ignores unknown or slot-invalid affix IDs.
 
 ## Add A New Reward Table
 
@@ -103,7 +126,7 @@ Inventory stores item instances, not raw catalog IDs. Rewards and town purchases
 12. Open the relevant map module under `src/game/data/maps/` and set the map scenario's `rewardTableId`.
 13. Run `npm run test`.
 
-Weighted reward rolls prefer unowned catalog items when possible. If a guaranteed, deterministic, or scripted reward grants a unique item the hero already owns, the reward flow converts it into Crowns or Aether and reports the conversion on the Results screen.
+Weighted reward rolls prefer unowned catalog items when possible. When a reward creates a new item instance, the instance rolls affixes from the item rarity and slot unless a deterministic test hook supplies exact affixes. If a guaranteed, deterministic, or scripted reward grants a unique item the hero already owns, the reward flow converts it into Crowns or Aether and reports the conversion on the Results screen.
 
 ## Add A New Skirmish Map
 
@@ -153,6 +176,15 @@ Campaign choices support:
 - `onceOnly` to save a claim ID in `choiceIdsClaimed`.
 - `completesNode: false` when the choice should leave the node open for a later choice.
 
+Reputation guidance:
+
+- Reputation values live on the hero save in `hero.factionReputation`.
+- The tracked campaign reputation IDs are `free_marches`, `common_folk`, `old_faith`, `ashen_covenant`, and `sylvan_concord`.
+- Rank thresholds are shared by every tracked faction: Friendly at 25, Honored at 50, Disliked at -25, and Hostile at -50.
+- Small reputation effects live in `src/game/data/reputation.ts`; add effects there instead of hard-coding campaign UI or battle launch behavior.
+- Current supported effect shapes discount Marcher Camp choice costs, discount Stronghold Crown costs, add a Chapel Aether bonus, or add the Ashen hostile pressure launch modifier.
+- If a new effect references a node, faction, or campaign modifier, update validation and tests so non-coder data edits fail loudly.
+
 Town service guidance:
 
 - Use `nodeType: "town"` for repeatable service hubs such as Marcher Camp.
@@ -172,8 +204,13 @@ Town service guidance:
    - `extra-starting-unit`
    - `starting-resources`
    - `hero-max-hp-multiplier`
+   - `hero-max-mana-multiplier`
    - `building-vision-bonus`
-6. Add prerequisite upgrade IDs through `prerequisites.upgradeRanks` and prerequisite campaign nodes through `prerequisites.completedNodeIds`.
+   - `enemy-wave-warning-lead`
+   - `watchtower-range-multiplier`
+   - `first-building-construction-time-multiplier`
+   - `unit-training-time-multiplier`
+6. Add prerequisite upgrade IDs through `prerequisites.upgradeRanks` and prerequisite campaign nodes through `prerequisites.completedNodeIds`. Tier II upgrades must require the matching Tier I upgrade at rank 1.
 7. Keep costs in campaign resources; purchases spend from `campaign.resources` and record `campaign.resourcesSpent`.
 8. Purchases persist in `campaign.strongholdUpgradeRanks`, and save normalization filters unknown upgrades for old or edited saves.
 9. If you add a new effect type, update battle launch application, Stronghold UI copy, and `src/game/data/validation/validateStronghold.ts`.

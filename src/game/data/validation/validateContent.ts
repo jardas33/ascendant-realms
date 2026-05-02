@@ -5,6 +5,7 @@ import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { FACTIONS } from "../factions";
 import { HERO_CLASSES } from "../heroClasses";
+import { ITEM_AFFIXES } from "../itemAffixes";
 import { ITEMS } from "../items";
 import { ORIGINS } from "../origins";
 import { REWARD_TABLES } from "../rewards";
@@ -17,9 +18,9 @@ import { idsFor, type ValidationContext } from "./ValidationTypes";
 import { validateAbilities, validateHeroClasses, validateSkillNodes } from "./validateAbilities";
 import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
-import { validateCampaignModifiers, validateCampaignNodes } from "./validateCampaign";
+import { validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
 import { validateFactions } from "./validateFactions";
-import { validateItems } from "./validateItems";
+import { validateItemAffixes, validateItems } from "./validateItems";
 import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
 import { validateRewardTables } from "./validateRewards";
@@ -37,6 +38,7 @@ export function validateContent(): string[] {
     heroClassIds: idsFor(HERO_CLASSES, "hero class", errors),
     originIds: idsFor(ORIGINS, "origin", errors),
     itemIds: idsFor(ITEMS, "item", errors),
+    itemAffixIds: idsFor(ITEM_AFFIXES, "item affix", errors),
     resourceIds: idsFor(RESOURCE_DEFINITIONS, "resource", errors),
     skillTreeIds: idsFor(SKILL_TREES, "skill tree", errors),
     skillNodeIds: idsFor(SKILL_NODES, "skill node", errors),
@@ -53,6 +55,7 @@ export function validateContent(): string[] {
   validateAbilities(errors, context);
   validateHeroClasses(errors, context);
   validateItems(errors, context);
+  validateItemAffixes(errors);
   validateOrigins(errors);
   validateResources(errors);
   validateFactions(errors, context);
@@ -60,6 +63,7 @@ export function validateContent(): string[] {
   validateRewardTables(errors, context);
   validateStrongholdUpgrades(errors, context);
   validateCampaignNodes(errors, context);
+  validateReputationEffects(errors, context);
   validateUpgrades(errors, context);
   validateDifficulties(errors);
   validateAIPersonalities(errors, context);

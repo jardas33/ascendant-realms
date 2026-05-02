@@ -270,7 +270,9 @@ export function completeBattle(
   };
   const granted = grantBattleRewards(heroWithBattleCount, reward, input.mapId, {
     itemById: ITEM_BY_ID,
-    source: input.mapId ? `battle:${input.mapId}` : "battle_reward"
+    source: input.mapId ? `battle:${input.mapId}` : "battle_reward",
+    deterministicAffixes: input.deterministicRewards,
+    rng: input.rng
   });
   const baselineHero = input.startingHeroSave ?? input.heroSave;
   const levelUp: RewardLevelUpSummary = {

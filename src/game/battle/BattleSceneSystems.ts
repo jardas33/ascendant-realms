@@ -8,6 +8,7 @@ import type {
   UpgradeDefinition
 } from "../core/GameTypes";
 import { BUILDING_BY_ID } from "../data/contentIndex";
+import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
@@ -130,6 +131,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     showBattleStartSummary,
     openMainMenu
   } = options;
+  const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
   const selectionSystem = new SelectionSystem(() => [
     ...getUnits().filter((unit) => unit.team === "player"),
@@ -154,7 +156,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         AudioManager.play("unit_trained");
       }
     },
-    getTechState
+    getTechState,
+    strongholdEffects
   });
 
   const buildingSystem = new BuildingSystem({
@@ -164,6 +167,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getCaptureSites,
     addBuilding,
     onMessage: (message, x, y) => showMessage(message, x, y),
+    strongholdEffects,
     onConstructionStarted: (building) => {
       if (building.team === "player") {
         selectionSystem.setSelection([building]);
@@ -332,7 +336,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onWaveLaunched: trackEnemyWave,
     difficulty: launch.request.difficulty,
     config: activeMap.scenario.enemyAI,
-    aiPersonalityId: launch.request.aiPersonalityId
+    aiPersonalityId: launch.request.aiPersonalityId,
+    attackWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds
   });
   const aiSystem = new AISystem(aiController);
 

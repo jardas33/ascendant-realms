@@ -4,12 +4,13 @@ import {
   getStrongholdUpgradeRank,
   getPurchasedStrongholdUpgrades
 } from "../core/StrongholdRules";
+import { getAdjustedStrongholdUpgradeCost } from "../data/reputation";
 import { STRONGHOLD_UPGRADES } from "../data/strongholdUpgrades";
-import type { CampaignSaveData } from "../save/SaveTypes";
+import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 import { escapeHtml } from "./CampaignPresentationTypes";
 import { formatResourceRewards } from "./CampaignResourcePanel";
 
-export function renderStrongholdPanel(campaignSave: CampaignSaveData): string {
+export function renderStrongholdPanel(campaignSave: CampaignSaveData, heroSave?: HeroSaveData): string {
   const purchased = getPurchasedStrongholdUpgrades(campaignSave);
   return `
     <section class="stronghold-panel" data-testid="stronghold-panel">
@@ -25,15 +26,19 @@ export function renderStrongholdPanel(campaignSave: CampaignSaveData): string {
         ${escapeHtml(formatResourceRewards(campaignSave.resources).join(" - ") || "No campaign resources")}
       </div>
       <div class="stronghold-upgrade-list">
-        ${STRONGHOLD_UPGRADES.map((upgrade) => renderStrongholdUpgrade(campaignSave, upgrade)).join("")}
+        ${STRONGHOLD_UPGRADES.map((upgrade) => renderStrongholdUpgrade(campaignSave, upgrade, heroSave)).join("")}
       </div>
     </section>
   `;
 }
 
-function renderStrongholdUpgrade(campaignSave: CampaignSaveData, upgrade: StrongholdUpgradeDefinition): string {
+function renderStrongholdUpgrade(
+  campaignSave: CampaignSaveData,
+  upgrade: StrongholdUpgradeDefinition,
+  heroSave?: HeroSaveData
+): string {
   const rank = getStrongholdUpgradeRank(campaignSave, upgrade.id);
-  const availability = getStrongholdUpgradeAvailability(campaignSave, upgrade);
+  const availability = getStrongholdUpgradeAvailability(campaignSave, upgrade, heroSave);
   const purchased = rank >= upgrade.maxRank;
   const locked = !availability.ok && !purchased;
   const reason = availability.reasons.join(", ");
@@ -47,7 +52,7 @@ function renderStrongholdUpgrade(campaignSave: CampaignSaveData, upgrade: Strong
         <span>Tier ${upgrade.tier} - Rank ${rank}/${upgrade.maxRank}</span>
       </div>
       <p>${escapeHtml(upgrade.description)}</p>
-      <small>Cost: ${escapeHtml(formatResourceRewards(upgrade.cost).join(", ") || "None")}</small>
+      <small>Cost: ${escapeHtml(formatStrongholdCost(upgrade, heroSave))}</small>
       <small>Effect: ${escapeHtml(formatStrongholdEffects(upgrade))}</small>
       <small class="flavor">${escapeHtml(upgrade.flavorText)}</small>
       <div class="stronghold-upgrade-footer">
@@ -64,6 +69,13 @@ function renderStrongholdUpgrade(campaignSave: CampaignSaveData, upgrade: Strong
   `;
 }
 
+function formatStrongholdCost(upgrade: StrongholdUpgradeDefinition, heroSave?: HeroSaveData): string {
+  const adjustedCost = getAdjustedStrongholdUpgradeCost(upgrade.cost, heroSave);
+  const adjusted = formatResourceRewards(adjustedCost).join(", ") || "None";
+  const base = formatResourceRewards(upgrade.cost).join(", ") || "None";
+  return adjusted === base ? adjusted : `${adjusted} (base ${base})`;
+}
+
 function formatStrongholdEffects(upgrade: StrongholdUpgradeDefinition): string {
   return upgrade.effects
     .map((effect) => {
@@ -76,7 +88,22 @@ function formatStrongholdEffects(upgrade: StrongholdUpgradeDefinition): string {
       if (effect.type === "hero-max-hp-multiplier") {
         return `Hero max HP +${Math.round((effect.multiplier - 1) * 100)}%`;
       }
-      return `Player building vision +${effect.amount}`;
+      if (effect.type === "hero-max-mana-multiplier") {
+        return `Hero max Mana +${Math.round((effect.multiplier - 1) * 100)}%`;
+      }
+      if (effect.type === "building-vision-bonus") {
+        return `Player building vision +${effect.amount}`;
+      }
+      if (effect.type === "enemy-wave-warning-lead") {
+        return `First enemy wave warning ${effect.seconds}s earlier`;
+      }
+      if (effect.type === "watchtower-range-multiplier") {
+        return `Watchtower attack range +${Math.round((effect.multiplier - 1) * 100)}%`;
+      }
+      if (effect.type === "first-building-construction-time-multiplier") {
+        return `First player building construction ${Math.round((1 - effect.multiplier) * 100)}% faster`;
+      }
+      return `${effect.unitId} training ${Math.round((1 - effect.multiplier) * 100)}% faster`;
     })
     .join("; ");
 }

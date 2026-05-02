@@ -47,6 +47,7 @@ interface EnemyAIOptions {
   difficulty: BattleDifficulty;
   config: EnemyAIConfig;
   aiPersonalityId?: EnemyAIPersonalityId;
+  attackWarningLeadSeconds?: number;
 }
 
 export class EnemyAIController {
@@ -104,7 +105,8 @@ export class EnemyAIController {
     this.maybeAlert(
       "gathering",
       "Enemy forces are gathering.",
-      this.attacksLaunched === 0 && elapsedSeconds >= Math.max(20, this.config.initialAttackDelay - 35)
+      this.attacksLaunched === 0 &&
+        elapsedSeconds >= Math.max(20, this.config.initialAttackDelay - 35 - (this.options.attackWarningLeadSeconds ?? 0))
     );
     if (this.canSendAttackWave(attackWave, phase)) {
       this.attackTimer = 0;

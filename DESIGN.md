@@ -38,7 +38,7 @@ Battles use a lightweight grid fog model with three states: unseen, explored, an
 
 ## 5. Campaign Loop
 
-The campaign begins as a small node-based Border Marches map. The hero selects available nodes, launches battles through the shared battle request path, resolves simple event choices, spends resources at the Marcher Camp town node or Stronghold panel, completes nodes, claims one-time rewards, adds campaign resource rewards to a persistent bank, saves progress, and unlocks the next branch.
+The campaign begins as a small node-based Border Marches map. The hero selects available nodes, launches battles through the shared battle request path, resolves simple event choices, changes faction reputation, spends resources at the Marcher Camp town node or Stronghold panel, completes nodes, claims one-time rewards, adds campaign resource rewards to a persistent bank, saves progress, and unlocks the next branch.
 
 Long term, the campaign map should grow into the living heart of the game: quests, shops, faction reputation, strongholds, random events, persistent rewards, invasions, alliances, and regional consequences.
 
@@ -54,11 +54,13 @@ The current skill trees are:
 
 Each class has three total abilities in data. The first ability is available at hero creation, while later abilities are unlocked through skill nodes.
 
-Loot should make the hero feel persistent without replacing RTS decision-making. Catalog items are small, readable stat packages with rarity, slot, flavor text, tags, optional class affinity, optional faction origin, and optional uniqueness. Rewards and town purchases create item instances with source history and an affixes placeholder, while equipment references the equipped instance. Rewards are rolled from map-specific weighted tables, with first-clear bonuses to make a new map feel meaningful and repeat-clear rewards to keep skirmishes useful.
+Loot should make the hero feel persistent without replacing RTS decision-making. Catalog items are small, readable stat packages with rarity, slot, flavor text, tags, optional class affinity, optional faction origin, and optional uniqueness. Rewards and town purchases create item instances with source history and optional V1 affixes, while equipment references the equipped instance. Rewards are rolled from map-specific weighted tables, with first-clear bonuses to make a new map feel meaningful and repeat-clear rewards to keep skirmishes useful.
+
+Item affixes are intentionally small in V1. Common items can roll zero or one affix, uncommon items roll one, rare items roll one or two, epic items roll two, and legendary items roll two or three. Affixes are slot-filtered stat packages such as Sharp, Sturdy, Guarding, Aether-Touched, Commanding, Faithful, Swift, Embered, and Ranger's. They add visible item-instance flavor and modest stat variation, not crafting depth, durability, art variants, proc chains, or a loot treadmill.
 
 Equipment is allowed to change battle feel through HP, mana, damage, armor, speed, range, primary stats, and attack cadence. It should not become so strong that army composition, expansion, upgrades, and hero ability timing stop mattering.
 
-Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
+Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, affixes, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
 
 ## 7. Faction Design
 
@@ -80,6 +82,8 @@ Campaign nodes are data-driven. Each node defines an ID, display copy, node type
 
 Event choices, town services, and Stronghold upgrades are intentionally small data objects, not a city-builder or vendor engine. Choices and services can require campaign resources, hero level, completed nodes, owned items, or faction reputation; pay campaign resource costs; grant XP, items, resources, modifiers, reputation, or node unlocks; and either complete the node or keep it open. Town services default to keeping the node open and can be repeatable or once-only purchases. Stronghold upgrades are persistent campaign purchases that apply only to later battle launches.
 
+Reputation now has simple readable ranks across Free Marches, Common Folk, Old Faith, Ashen Covenant, and the Sylvan Concord placeholder: Friendly at +25, Honored at +50, Disliked at -25, and Hostile at -50. Active effects stay small and data-driven: Common Folk Friendly discounts Marcher Camp services, Free Marches Friendly discounts Stronghold Crown costs, Old Faith Friendly improves Chapel Aether rewards, and Ashen Covenant Hostile adds minor Ashen battle pressure. The campaign map shows values, ranks, active effects, and choice previews before the player commits.
+
 The first campaign is intentionally small:
 
 - Border Village starts available.
@@ -90,6 +94,8 @@ The first campaign is intentionally small:
 - Ashen Outpost unlocks after Bandit Hillfort and Chapel of the Marches.
 
 Only battle nodes launch combat. Non-battle nodes either resolve direct rewards, present choices, or present town services in the campaign map. Chapel of the Marches and Refugee Caravan prove the first consequence layer with resource costs, locked choices, reputation shifts, item rewards, and optional node unlocks. Marcher Camp proves the first town sink with repeatable services, one-time item stock, and next-battle modifiers. Stronghold Development proves the first persistent strategic sink, with purchased camp upgrades carried in the campaign save and converted into launch modifiers for future battles.
+
+Stronghold Development currently has two small tiers, not a city-builder. Tier II upgrades require their matching Tier I upgrades and deepen strategy through simple launch effects: faster basic troop training, earlier first-wave warning with better Watchtower reach, a broader starting resource package, a small hero HP/Mana bump, and one extra starting Ranger on the scout path.
 
 ## 10. Skirmish Map Design
 
@@ -128,7 +134,7 @@ Personalities adjust preferred units, training plan, attack and expansion timing
 
 ## 14. Data-Driven Content Philosophy
 
-Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, items, campaign nodes, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
+Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, items, item affixes, campaign nodes, reputation effects, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
 
 Manual art assets live in the manual asset pipeline. The UI art kit is also data-driven: reusable frame, button, divider, slot, minimap, victory, and defeat panel assets are registered in `tools/manual-asset-pipeline/assetRegistry.ts`, discovered through the manifest, and exposed to CSS as optional variables. The game must keep working without those files.
 
@@ -139,7 +145,8 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Phaser/Vite/TypeScript project.
 - Menu, hero creation, campaign map, skirmish setup, battle, progression screen, inventory screen, local save.
 - Eight-node campaign skeleton with save-backed node unlocks, completion, one-time node rewards, event choices, town services, Stronghold Development, and a persistent campaign resource bank.
-- Data-driven Stronghold upgrades on the campaign map: Training Yard I, Watch Post I, Quartermaster Stores I, Chapel Corner I, and Ranger Paths I.
+- Reputation ranks and small reputation effects for campaign costs, Chapel rewards, and hostile Ashen pressure.
+- Data-driven Stronghold upgrades on the campaign map: five Tier I upgrades and five compact Tier II follow-ups, each purchased with campaign resources and each requiring its matching Tier I upgrade.
 - RTS selection, movement, capture sites, resource income, combat, projectiles.
 - Lightweight fog of war with grid visibility, dim explored areas, hidden enemies outside vision, and minimap masking.
 - Two playable skirmish maps: First Claim and Broken Ford.
@@ -148,7 +155,7 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Data-driven prerequisites for units, buildings, upgrades, and future ability gates.
 - Hero XP, level-up, mana, three abilities per class, skill point allocation.
 - Passive stat upgrades through Combat, Magic, and Leadership skill trees.
-- Weighted item rewards, item instance inventory, weapon/armor/trinket equipment, equip previews, unique duplicate conversion, first-clear reward tracking, and reward XP.
+- Weighted item rewards, modest randomized item affixes, item instance inventory, weapon/armor/trinket equipment, equip previews, unique duplicate conversion, first-clear reward tracking, and reward XP.
 - Basic data-configured enemy AI.
 - First-pass faction asymmetry: Free Marches baseline identity, Ashen Covenant burn/status pressure, Ashen Fury damage spikes, Smoke March wave speed, and faction style display in setup/campaign/battle start.
 - Data validation tests for content references.
@@ -159,8 +166,8 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 ## 16. What Is Intentionally Postponed
 
 - Worker harvesting and worker-driven construction.
-- Campaign depth beyond the first skeleton: broader shops, diplomacy, multi-step dialogue, invasions, quest chains, larger stronghold trees, and world-state consequences.
-- More complex randomized item affixes, broader shops, item crafting, durability, and equipment art.
+- Campaign depth beyond the first skeleton: broader shops, diplomacy, multi-step dialogue, invasions, quest chains, larger stronghold trees beyond this compact two-tier slice, and larger world-state consequences.
+- Deeper affix tiers/effect families, broader shops, item crafting, durability, and equipment art.
 - Full class-specific skill trees with choices, prerequisites, and respec rules.
 - Retinue persistence.
 - Tilemap-based terrain and full A*.

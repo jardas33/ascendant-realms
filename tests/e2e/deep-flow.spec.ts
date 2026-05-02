@@ -16,6 +16,7 @@ interface SyntheticResultsOptions {
   difficulty?: "story" | "easy" | "normal" | "hard";
   completedObjectiveIds?: string[];
   defeatBattleXp?: number;
+  rewardAffixes?: string[];
 }
 
 const EMPTY_RESOURCES: CampaignResources = {
@@ -401,7 +402,7 @@ async function startSyntheticResults(page: Page, outcome: "victory" | "defeat", 
       itemId: "weathered_command_sword",
       acquiredAt: "2026-04-26T00:00:00.000Z",
       source: "deep_e2e",
-      affixes: [],
+      affixes: resultOptions.rewardAffixes ?? [],
       locked: false,
       favorite: false
     };
@@ -669,10 +670,49 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.campaign.townServiceClaimedIds).toContain("marcher_camp:purchase_emberglass_wand");
   });
 
+  test("reputation ranks expose active effects and discounted campaign actions", async ({ page }) => {
+    await seedSave(page, {
+      hero: {
+        level: 2,
+        factionReputation: {
+          free_marches: 25,
+          ashen_covenant: -50,
+          sylvan_concord: 0,
+          common_folk: 25,
+          old_faith: 25
+        }
+      },
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road"],
+        unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp", "refugee_caravan"],
+        resources: { crowns: 220, stone: 80, iron: 40, aether: 20 },
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road"]
+      }
+    });
+
+    await page.getByTestId("menu-continue-campaign").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("reputation-common_folk")).toContainText("Friendly");
+    await expect(page.getByTestId("reputation-ashen_covenant")).toContainText("Hostile");
+    await expect(page.getByTestId("reputation-effect-common_folk_friendly_services")).toContainText("10% fewer resources");
+    await expect(page.getByTestId("reputation-effect-free_marches_friendly_stronghold")).toContainText("10% fewer Crowns");
+    await expect(page.getByTestId("reputation-effect-old_faith_friendly_chapel")).toContainText("+5 Aether");
+    await expect(page.getByTestId("reputation-effect-ashen_covenant_hostile_pressure")).toContainText("one extra Raider");
+    await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("72 Crowns");
+    await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("base 80 Crowns");
+
+    await page.getByTestId("campaign-node-marcher_camp").click();
+    await expect(page.locator("button[data-campaign-choice='rest_and_recovery']")).toContainText("Cost: 27 Crowns (base 30 Crowns)");
+
+    await page.getByTestId("campaign-node-refugee_caravan").click();
+    await expect(page.locator("button[data-campaign-choice='protect_them']")).toContainText("Reputation: +8 Common Folk");
+    await expect(page.locator("button[data-campaign-choice='demand_tribute']")).toContainText("Modifiers: Gain Angered Raiders");
+  });
+
   test("stronghold upgrades spend campaign resources and apply to later battles", async ({ page }) => {
     await seedSave(page, {
       campaign: {
-        resources: { crowns: 220, stone: 80, iron: 90, aether: 40 },
+        resources: { crowns: 320, stone: 220, iron: 100, aether: 40 },
         unlockedNodeIds: ["border_village"],
         selectedNodeId: "border_village"
       }
@@ -680,23 +720,27 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("stronghold-panel")).toContainText("Stronghold");
-    await expect(page.getByTestId("stronghold-upgrade-ranger_paths_i")).toContainText("Requires Training Yard I rank 1");
+    await expect(page.getByTestId("stronghold-upgrade-quartermaster_stores_ii")).toContainText("Requires Quartermaster Stores I rank 1");
 
-    await page.getByTestId("stronghold-purchase-training_yard_i").click();
-    await expect(page.getByTestId("campaign-status")).toContainText("Training Yard I upgraded");
-    await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("Purchased");
+    await page.getByTestId("stronghold-purchase-quartermaster_stores_i").click();
+    await expect(page.getByTestId("campaign-status")).toContainText("Quartermaster Stores I upgraded");
+    await expect(page.getByTestId("stronghold-upgrade-quartermaster_stores_i")).toContainText("Purchased");
+    await expect(page.getByTestId("stronghold-upgrade-quartermaster_stores_ii")).toContainText("Available");
+    await page.getByTestId("stronghold-purchase-quartermaster_stores_ii").click();
+    await expect(page.getByTestId("campaign-status")).toContainText("Quartermaster Stores II upgraded");
+    await expect(page.getByTestId("stronghold-upgrade-quartermaster_stores_ii")).toContainText("Purchased");
 
     const purchasedSave = await readSave(page);
-    expect(purchasedSave.campaign.strongholdUpgradeRanks.training_yard_i).toBe(1);
-    expect(purchasedSave.campaign.resources).toMatchObject({ crowns: 140, iron: 55 });
-    expect(purchasedSave.campaign.resourcesSpent).toMatchObject({ crowns: 80, iron: 35 });
+    expect(purchasedSave.campaign.strongholdUpgradeRanks.quartermaster_stores_i).toBe(1);
+    expect(purchasedSave.campaign.strongholdUpgradeRanks.quartermaster_stores_ii).toBe(1);
+    expect(purchasedSave.campaign.resources).toMatchObject({ crowns: 130, stone: 115, iron: 65, aether: 40 });
+    expect(purchasedSave.campaign.resourcesSpent).toMatchObject({ crowns: 190, stone: 105, iron: 35, aether: 0 });
 
     await page.getByTestId("campaign-start-node").click();
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     const snapshot = await getBattleSnapshot(page);
-    const playerMilitia = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia");
-    expect(playerMilitia).toHaveLength(3);
+    expect(snapshot.resources).toMatchObject({ crowns: 520, stone: 345, iron: 195, aether: 105 });
   });
 
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {
@@ -847,6 +891,27 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("inventory-list")).toContainText("New");
     await expect(page.locator(".equipment-row", { hasText: "Weapon" })).toContainText("Empty");
     await expect(page.locator(".inventory-row", { hasText: "Weathered Command Sword" }).getByRole("button", { name: "Equip Now" })).toBeVisible();
+  });
+
+  test("affixed victory reward displays and applies equipment stats", async ({ page }) => {
+    await seedSave(page);
+    await startSyntheticResults(page, "victory", { rewardAffixes: ["sharp"] });
+
+    const rewardCard = page.locator(".reward-card", { hasText: "Weathered Command Sword" });
+    await expect(rewardCard).toContainText("Affixes: Sharp");
+    await expect(rewardCard).toContainText("Total: +6 damage, +1 might, +1 command");
+    await expect(rewardCard.locator(".stat-preview")).toContainText("+6 damage");
+    await page.getByRole("button", { name: "Equip Now" }).click();
+    await expect(page.locator(".status-box")).toContainText(/equipped/i);
+    const save = await readSave(page);
+    expect(save.hero.equipment.weapon).toBe("deep-qa:weathered_command_sword:1");
+    expect(save.hero.inventory[0].affixes).toEqual(["sharp"]);
+
+    await page.getByRole("button", { name: "Open Hero Inventory" }).click();
+    await expect(page.getByTestId("hero-inventory")).toBeVisible();
+    await expect(page.getByTestId("hero-stats")).toContainText("Damage 26");
+    await expect(page.locator(".equipment-row", { hasText: "Weapon" })).toContainText("Affixes: Sharp");
+    await expect(page.locator(".equipment-row", { hasText: "Weapon" })).toContainText("Total: +6 damage, +1 might, +1 command");
   });
 
   test("victory and defeat result actions are clear and save the equip-now path", async ({ page }) => {

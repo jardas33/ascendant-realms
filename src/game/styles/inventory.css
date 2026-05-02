@@ -306,6 +306,11 @@ h2::after,
   color: #f1df9d;
 }
 
+.equipment-row small.affix-line,
+.inventory-row small.affix-line {
+  color: #9fd8c2;
+}
+
 .inventory-row.new {
   border-color: var(--plate-edge-strong);
   background:

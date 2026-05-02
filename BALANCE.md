@@ -6,13 +6,15 @@ These numbers are prototype values. They are designed for readability and fast t
 
 The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
 
-- Latest simulator verdict: `npm run playtest:sim` passes with 60 deterministic runs across 5 campaign battle nodes and 4 Stronghold profiles, no structural `too_hard` nodes, and Ashen Outpost beatable by the Safe Beginner script.
+- Latest simulator verdict: `npm run playtest:sim` passes with 105 deterministic runs across 5 campaign battle nodes and 7 Stronghold profiles, including a Tier II Quartermaster path for no-upgrade, Tier I, and Tier II comparison; no structural `too_hard` nodes, no `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script.
 - Current starting battle resources: 380 Crowns, 255 Stone, 140 Iron, 75 Aether.
 - Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
 - Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
 - Current Ashen Outpost site income: Burned Shrine +26 Aether/5s, West Supply Pyre +30 Crowns/6s, South Iron Pit +22 Iron/6s, North Stone Scar +26 Stone/6s.
 - Current broad difficulty pacing baseline: Story is the learning/testing lane with no fog, Easy is for tutorial battles with survivable pressure, and Normal is the first real baseline once build/train/rally is understood.
-- Current Stronghold Development v1 is a small persistent campaign-resource sink. Purchased upgrades apply only to later battle launches and do not alter the current battle retroactively.
+- Current Stronghold Development is a small persistent campaign-resource sink with five Tier I upgrades and five compact Tier II follow-ups. Purchased upgrades apply only to later battle launches and do not alter the current battle retroactively.
+- Current reputation hooks are intentionally modest: Friendly starts at +25, Honored at +50, Disliked at -25, and Hostile at -50. Reputation effects adjust preparation costs/rewards or add one minor Ashen pressure unit; they do not create diplomacy, new factions, or alternate maps.
+- Current item affixes are V1 only: small stat packages rolled onto reward-generated item instances, visible in Results/Inventory, and applied only while the item instance is equipped. They do not add crafting, durability, item art, affix rerolls, or proc-heavy loot complexity.
 
 | Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander timing |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -22,7 +24,50 @@ The values in this section are the current first-campaign balance baseline. Olde
 
 - Current map-level pacing is authoritative where present: First Claim currently uses the softened Easy opener from the telemetry follow-up, and Ashen Outpost currently uses the reduced fortress economy, one gate Watchtower, four starting Militia, two Rangers, and Burned Shrine gate-Watchtower weakening.
 - Current human-review focus: Aether Well Ruins, Bandit Hillfort, and Ashen Outpost need feel/readability review before more numeric tuning.
-- Current Stronghold tuning focus: Training Yard I improves the Ashen Outpost profile without trivializing all nodes; Watch Post I and Quartermaster Stores I are flagged by the simulator as not improving deterministic outcomes and need human feel review before any numeric response.
+- Current Stronghold tuning focus: Tier I has readable value in telemetry without an overpowered warning, while Tier II should stay optional and route-specific. Watch Post I/II improve warning/readability telemetry, Quartermaster Stores I/II improve build-order resources, Chapel Corner I/II add modest hero durability, and Ranger Paths II adds only one starting Ranger after the scout path is already purchased.
+
+## Reputation Hooks
+
+Reputation effects are current as of the 2026-05-01 campaign consequence slice. They are deliberately smaller than Stronghold upgrades because they can be unlocked through event choices and should make prior decisions visible without becoming a diplomacy system.
+
+| Faction rank | Threshold | Implemented effect | Balance intent |
+| --- | ---: | --- | --- |
+| Common Folk Friendly | >= 25 | Marcher Camp services cost 10% fewer resources. | Makes generous caravan play visible in town preparation without creating free services. |
+| Free Marches Friendly | >= 25 | Stronghold upgrades cost 10% fewer Crowns. | Rewards local legitimacy with a small persistent-upgrade discount, while Stone/Iron/Aether gates remain intact. |
+| Old Faith Friendly | >= 25 | Chapel choices with Aether rewards grant +5 Aether. | Makes chapel trust matter on the support route without adding revival or stronger blessing logic. |
+| Ashen Covenant Hostile | <= -50 | Ashen Covenant battles start with one extra Raider. | Lets openly antagonizing Ashen forces create visible pressure while staying below a full difficulty bump. |
+
+Honored and Disliked ranks currently display in UI but do not add extra effects. That is intentional; future effects should stay sparse and easy to preview.
+
+## Item Affixes V1
+
+Affixes are current as of the randomized item affix V1 slice. Their job is to make item instances feel a little less static without letting loot replace battle execution, army composition, or campaign preparation.
+
+Generation rules:
+
+| Item rarity | Affix count |
+| --- | ---: |
+| Common | 0-1 |
+| Uncommon | 1 |
+| Rare | 1-2 |
+| Epic | 2 |
+| Legendary | 2-3 |
+
+Initial affixes:
+
+| Affix | Allowed slots | Effect | Balance intent |
+| --- | --- | --- | --- |
+| Sturdy | Armor, Trinket | +14 HP | Small survivability bump without replacing armor items. |
+| Sharp | Weapon | +2 damage | Makes weapon drops feel meaningfully sharper but below a full rarity jump. |
+| Guarding | Armor, Trinket | +1 armor | Readable defense bump that stacks modestly with item base armor. |
+| Aether-Touched | Weapon, Armor, Trinket | +12 Mana | Supports ability use without matching larger class/origin mana swings. |
+| Commanding | Weapon, Armor, Trinket | +1 Command | Supports Warlord/army routes without changing unit data. |
+| Faithful | Weapon, Armor, Trinket | +1 Faith | Supports Shepherd and Chapel-flavored rewards. |
+| Swift | Weapon, Armor, Trinket | +3 speed | Small movement feel bonus; deliberately below map/pathing significance. |
+| Embered | Weapon, Trinket | +1 damage, +1 Arcana | Ashen/magic flavor without adding burn procs to equipment yet. |
+| Ranger's | Weapon | +16 range | Ranged identity hook; still modest next to base weapon ranges. |
+
+Deterministic tests use weighted slot-filtered affix selection so item reward e2e can assert exact UI text. Normal play uses the same weights with randomness, and unknown/invalid saved affix IDs are ignored by stat application.
 
 ## Stronghold Development
 
@@ -31,27 +76,50 @@ Stronghold costs and effects are current as of the 2026-05-01 feature slice. The
 | Upgrade | Cost | Current implemented effect |
 | --- | --- | --- |
 | Training Yard I | 80 Crowns, 35 Iron | Future battles start with +1 Militia near the Command Hall. |
-| Watch Post I | 70 Crowns, 45 Stone | Player buildings reveal +80 more vision radius in future battles. |
-| Quartermaster Stores I | 85 Crowns, 50 Stone | Future battles start with +50 Crowns and +30 Stone. |
-| Chapel Corner I | 75 Crowns, 25 Aether | The hero starts future battles with +5% maximum HP. |
-| Ranger Paths I | 90 Crowns, 45 Iron; requires Training Yard I | Future battles start with +1 Ranger near the Command Hall. |
+| Training Yard II | 70 Crowns, 35 Iron; requires Training Yard I | Militia and Rangers train 10% faster in future battles. |
+| Watch Post I | 70 Crowns, 45 Stone | First enemy wave warning arrives 25s earlier, player buildings reveal +80 more vision radius, and player Watchtowers gain +10% attack range. |
+| Watch Post II | 95 Crowns, 55 Stone, 25 Aether; requires Watch Post I | First enemy wave warning arrives 15s earlier on top of Watch Post I, and player Watchtowers reach +20% total attack range. |
+| Quartermaster Stores I | 85 Crowns, 50 Stone | Future battles start with +60 Crowns, +40 Stone, +20 Iron, and +10 Aether; the first player building completes 10% faster. |
+| Quartermaster Stores II | 105 Crowns, 55 Stone, 35 Iron; requires Quartermaster Stores I | Future battles start with an additional +80 Crowns, +50 Stone, +35 Iron, and +20 Aether. |
+| Chapel Corner I | 75 Crowns, 25 Aether | The hero starts future battles with +5% maximum HP and Mana. |
+| Chapel Corner II | 95 Crowns, 45 Aether; requires Chapel Corner I | The hero starts future battles with +8% maximum HP and Mana total. |
+| Ranger Paths I | 90 Crowns, 40 Iron; requires Training Yard I | Rangers train 10% faster in future battles. |
+| Ranger Paths II | 75 Crowns, 35 Iron; requires Ranger Paths I | Future battles start with +1 Ranger near the Command Hall. |
 
 Balance intent:
 
-- Training Yard I and Ranger Paths I are early safety valves, not a replacement for building production.
-- Watch Post I supports fog readability and defensive awareness without changing enemy wave timing.
+- Training Yard I is an early safety valve, not a replacement for building production.
+- Training Yard II improves production tempo instead of adding more free bodies.
+- Watch Post I supports fog readability, earlier attack awareness, and defensive tower reach without changing enemy attack timing.
+- Watch Post II doubles down on warning and tower reach, but still does not delay or weaken enemy attacks.
 - Quartermaster Stores I accelerates the first build/train sequence slightly without increasing campaign-bank rewards.
+- Quartermaster Stores II is the clearest Tier II economy route; its extra Iron/Aether is moderate and front-loaded only into battle starts.
 - Chapel Corner I is deliberately smaller than the Marcher Camp Well Rested next-battle modifier because it is permanent.
+- Chapel Corner II stays a simple +8% total HP/Mana bonus rather than introducing revival or death-prevention logic.
+- Ranger Paths I now supports Ranger-focused production instead of adding a second free starting unit on top of Training Yard I.
+- Ranger Paths II adds a single starting Ranger only after the player has already paid into Training Yard I and Ranger Paths I.
 - Human review should watch whether players can buy too many Stronghold upgrades before Ashen Outpost after normal Marcher Camp spending.
 
 Automated Stronghold simulator read:
 
-- The deterministic simulator now runs No Stronghold upgrades, Training Yard path, Defensive Watch Post path, and Economy Quartermaster path across Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
-- The simulated campaign bank can afford all three tested tier-1 paths before or by Ashen Outpost, so no tested Stronghold path currently reads as too expensive.
-- Training Yard I is useful in the structural bot: it changes the Ashen Outpost profile from 1 win / 2 non-wins to 2 wins / 1 non-win, with the Fast Army script converting from timeout to victory.
-- Watch Post I is flagged as usefulness-risk in the bot because the deterministic structural model does not reward additional building vision. Treat this as a manual fog/readability playtest prompt, not proof that the upgrade is bad.
-- Quartermaster Stores I is flagged as usefulness-risk in the bot because the extra starting resources increased floated resources but did not improve result, duration, first-wave survival, or losses in this deterministic suite.
-- No Stronghold path trivialized all nodes, so no overpowered warning is active and no balance value changed in this pass.
+- The deterministic simulator now runs No Stronghold upgrades, Training Yard path, Defensive Watch Post path, Economy Quartermaster path, Tier II Quartermaster path, Chapel Corner path, and Ranger Paths path across Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
+- The simulated campaign bank compares no-upgrade, Tier I Quartermaster, and Tier II Quartermaster paths directly. Tier II Quartermaster becomes affordable before Ashen Outpost on the default reward route.
+- Training Yard I remains useful in the structural bot: it changes the Ashen Outpost profile from 1 win / 2 non-wins to 2 wins / 1 non-win, with the Fast Army script converting from timeout to victory.
+- Watch Post I now improves 9 runs through earlier first-wave warning telemetry while preserving the same 9-3-3 profile record.
+- Quartermaster Stores I now improves 6 runs through earlier Barracks/first-unit timing while preserving the same 9-3-3 profile record.
+- Chapel Corner I improves 1 run through the permanent hero durability/mana profile and stays intentionally modest at 9-2-4.
+- Ranger Paths I plus Training Yard I improves 2 runs, matches Training Yard's 10-3-2 profile record, and avoids the earlier extra-Ranger overpowered read that made Ashen Outpost too easy.
+- No Stronghold path triggers too-expensive, useless-upgrade, overpowered, `too_easy`, or structural `too_hard` warnings after this pass.
+
+### Stronghold Tier I Telemetry Response - 2026-05-01
+
+| Upgrade | Old effect | New effect | Reason | Expected effect | Telemetry after change |
+| --- | --- | --- | --- | --- | --- |
+| Training Yard I | +1 starting Militia. | Unchanged; copy tightened to `+1 Militia`. | It already improved Ashen Outpost without trivializing the suite. | Preserve the Ashen Fast Army timeout-to-victory improvement. | Training Yard path remains 10-3-2 with 2 improved runs and no warnings. |
+| Watch Post I | +80 player-building vision. | +80 player-building vision, first enemy wave warning 25s earlier, +10% player Watchtower range. | Pure vision was readable to humans but invisible to deterministic outcome scoring. | Make defensive awareness measurable while keeping attack timing unchanged. | Defensive Watch Post path is 9-3-3 with 9 improved warning/readability runs and no warnings. |
+| Quartermaster Stores I | +50 Crowns, +30 Stone. | +60 Crowns, +40 Stone, +20 Iron, +10 Aether, and first player building construction 10% faster. | The old bundle mostly increased floated resources and did not move build-order timing. | Let the first Barracks/unit timing improve without granting a free army. | Economy Quartermaster path is 9-3-3 with 6 improved timing runs and no warnings. |
+| Chapel Corner I | +5% hero maximum HP. | +5% hero maximum HP and Mana. | The upgrade needed to match the intended chapel fantasy and visible hero stat copy. | Small permanent hero durability/casting support, weaker than one-battle Well Rested. | Chapel Corner path is 9-2-4 with 1 improved run and no warnings. |
+| Ranger Paths I | +1 starting Ranger, 90 Crowns/45 Iron. | Rangers train 10% faster, 90 Crowns/40 Iron. | A full Ranger profile showed that Training Yard plus a free Ranger could make Ashen Outpost too easy. | Reward Ranger production without stacking too many free starting bodies. | Ranger Paths path is 10-3-2 with 2 improved runs, no too-easy node, and no warnings. |
 
 ## First Claim Opening Readability - 2026-04-30
 
@@ -364,7 +432,7 @@ Use small equipment bonuses while the roster is tiny:
 - Epic items can combine a strong defensive or caster bonus with 1 to 2 secondary stats.
 - Legendary items should feel broad and special, but not invalidate skill trees or army control.
 
-Reward tables now use weighted pools, fixed rewards, resource payouts, XP payouts, first-clear bonuses, and repeat-clear rewards. Deterministic item order remains available for tests. Each item reward creates an inventory instance so future affixes and provenance can attach to individual copies.
+Reward tables now use weighted pools, fixed rewards, resource payouts, XP payouts, first-clear bonuses, and repeat-clear rewards. Deterministic item order remains available for tests. Each item reward creates an inventory instance so affixes and provenance can attach to individual copies.
 
 Current reward pacing:
 

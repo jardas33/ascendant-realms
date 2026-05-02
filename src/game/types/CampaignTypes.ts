@@ -1,7 +1,13 @@
 import type { BattleDifficulty, EnemyAIPersonalityId } from "./CombatTypes";
 import type { Cost, ResourceBag } from "./EconomyTypes";
 
-export type CampaignModifierId = "inspired_militia" | "blessed_road" | "well_rested" | "angered_raiders" | "local_support";
+export type CampaignModifierId =
+  | "inspired_militia"
+  | "blessed_road"
+  | "well_rested"
+  | "angered_raiders"
+  | "local_support"
+  | "ashen_hostile_pressure";
 
 export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "next_node_resource_reward";
 
@@ -84,10 +90,15 @@ export type CampaignNodeStatus = "locked" | "available" | "completed";
 
 export type StrongholdUpgradeId =
   | "training_yard_i"
+  | "training_yard_ii"
   | "watch_post_i"
+  | "watch_post_ii"
   | "quartermaster_stores_i"
+  | "quartermaster_stores_ii"
   | "chapel_corner_i"
-  | "ranger_paths_i";
+  | "chapel_corner_ii"
+  | "ranger_paths_i"
+  | "ranger_paths_ii";
 
 export interface StrongholdUpgradePrerequisites {
   upgradeRanks?: Partial<Record<StrongholdUpgradeId, number>>;
@@ -109,8 +120,29 @@ export type StrongholdUpgradeEffectDefinition =
       multiplier: number;
     }
   | {
+      type: "hero-max-mana-multiplier";
+      multiplier: number;
+    }
+  | {
       type: "building-vision-bonus";
       amount: number;
+    }
+  | {
+      type: "enemy-wave-warning-lead";
+      seconds: number;
+    }
+  | {
+      type: "watchtower-range-multiplier";
+      multiplier: number;
+    }
+  | {
+      type: "first-building-construction-time-multiplier";
+      multiplier: number;
+    }
+  | {
+      type: "unit-training-time-multiplier";
+      unitId: string;
+      multiplier: number;
     };
 
 export interface StrongholdUpgradeDefinition {

@@ -1,7 +1,9 @@
 import type { ResourceBag } from "../core/GameTypes";
-import { CAMPAIGN_MODIFIER_BY_ID, FACTION_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_MODIFIER_BY_ID } from "../data/contentIndex";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
-import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
+import { formatReputationValue } from "../data/reputation";
+import type { CampaignSaveData } from "../save/SaveTypes";
+import type { CampaignReputationViewModel } from "./CampaignPresentationTypes";
 import { escapeHtml, titleCase } from "./CampaignPresentationTypes";
 
 export function renderCampaignResourceBank(campaignSave: CampaignSaveData): string {
@@ -20,22 +22,36 @@ export function renderCampaignResourceBank(campaignSave: CampaignSaveData): stri
     `;
 }
 
-export function renderReputation(heroSave: HeroSaveData): string {
-  const reputationIds = ["free_marches", "ashen_covenant", "sylvan_concord", "common_folk", "old_faith"];
+export function renderReputation(reputation: CampaignReputationViewModel): string {
   return `
-      <div class="reputation-grid">
-        ${reputationIds
-          .map((factionId) => {
-            const faction = FACTION_BY_ID[factionId];
-            const value = heroSave.factionReputation[factionId] ?? 0;
-            return `
-              <div class="reputation-row">
-                <span>${escapeHtml(faction?.name ?? titleCase(factionId))}</span>
-                <strong class="${value < 0 ? "negative" : value > 0 ? "positive" : ""}">${value > 0 ? "+" : ""}${value}</strong>
+      <div class="reputation-grid" data-testid="campaign-reputation">
+        ${reputation.rows
+          .map(
+            (row) => `
+              <div class="reputation-row" data-testid="reputation-${row.factionId}">
+                <span>${escapeHtml(row.factionName)}</span>
+                <span>${escapeHtml(row.rankLabel)}</span>
+                <strong class="${row.value < 0 ? "negative" : row.value > 0 ? "positive" : ""}">${escapeHtml(formatReputationValue(row.value))}</strong>
               </div>
-            `;
-          })
+            `
+          )
           .join("")}
+      </div>
+      <div class="modifier-list reputation-effects" data-testid="reputation-effects">
+        ${
+          reputation.activeEffects.length === 0
+            ? `<p class="quiet">No active reputation effects.</p>`
+            : reputation.activeEffects
+                .map(
+                  (effect) => `
+                    <div class="modifier-card reputation-effect-card" data-testid="reputation-effect-${effect.id}">
+                      <strong>${escapeHtml(effect.name)}</strong>
+                      <span>${escapeHtml(effect.factionName)} - ${escapeHtml(effect.description)}</span>
+                    </div>
+                  `
+                )
+                .join("")
+        }
       </div>
     `;
 }

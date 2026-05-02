@@ -1,12 +1,17 @@
+import { ITEM_AFFIXES } from "../itemAffixes";
 import { ITEMS } from "../items";
 import type { ValidationContext } from "./ValidationTypes";
 
+const EQUIPMENT_SLOTS = ["weapon", "armor", "trinket", "relic"];
+const ITEM_RARITIES = ["common", "uncommon", "rare", "epic", "legendary"];
+const ITEM_AFFIX_TIERS = ["minor", "major"];
+
 export function validateItems(errors: string[], context: ValidationContext): void {
   ITEMS.forEach((item) => {
-    if (!["weapon", "armor", "trinket", "relic"].includes(item.slot)) {
+    if (!EQUIPMENT_SLOTS.includes(item.slot)) {
       errors.push(`Item ${item.id} has invalid equipment slot ${item.slot}.`);
     }
-    if (!["common", "uncommon", "rare", "epic", "legendary"].includes(item.rarity)) {
+    if (!ITEM_RARITIES.includes(item.rarity)) {
       errors.push(`Item ${item.id} has invalid rarity ${item.rarity}.`);
     }
     if (item.unique !== undefined && typeof item.unique !== "boolean") {
@@ -29,6 +34,36 @@ export function validateItems(errors: string[], context: ValidationContext): voi
     Object.entries(item.statMods).forEach(([stat, value]) => {
       if (value !== undefined && !Number.isFinite(value)) {
         errors.push(`Item ${item.id} has a non-finite ${stat} modifier.`);
+      }
+    });
+  });
+}
+
+export function validateItemAffixes(errors: string[]): void {
+  ITEM_AFFIXES.forEach((affix) => {
+    if (!affix.name.trim()) {
+      errors.push(`Item affix ${affix.id} needs a name.`);
+    }
+    if (!ITEM_AFFIX_TIERS.includes(affix.tier)) {
+      errors.push(`Item affix ${affix.id} has invalid tier ${affix.tier}.`);
+    }
+    if (!Array.isArray(affix.allowedSlots) || affix.allowedSlots.length === 0) {
+      errors.push(`Item affix ${affix.id} needs at least one allowed slot.`);
+    }
+    affix.allowedSlots.forEach((slot) => {
+      if (!EQUIPMENT_SLOTS.includes(slot)) {
+        errors.push(`Item affix ${affix.id} has invalid slot ${slot}.`);
+      }
+    });
+    if (!Array.isArray(affix.tags) || affix.tags.length === 0) {
+      errors.push(`Item affix ${affix.id} should include at least one tag.`);
+    }
+    if (!Number.isFinite(affix.weight) || affix.weight <= 0) {
+      errors.push(`Item affix ${affix.id} has invalid weight.`);
+    }
+    Object.entries(affix.statMods).forEach(([stat, value]) => {
+      if (value !== undefined && !Number.isFinite(value)) {
+        errors.push(`Item affix ${affix.id} has a non-finite ${stat} modifier.`);
       }
     });
   });

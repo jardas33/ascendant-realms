@@ -1,7 +1,18 @@
 import type { BattleRewardResult, ItemDefinition, ItemInstance } from "../core/GameTypes";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
-import { escapeHtml, formatStatMods, formatTags, previewEquipDelta, rarityClass, renderItemName, titleCase } from "./ItemComparison";
+import {
+  escapeHtml,
+  formatItemAffixes,
+  formatItemAffixStats,
+  formatItemBaseStats,
+  formatItemTotalStats,
+  formatTags,
+  previewEquipDelta,
+  rarityClass,
+  renderItemName,
+  titleCase
+} from "./ItemComparison";
 
 export interface InventoryPanelViewModel {
   rows: InventoryRowViewModel[];
@@ -11,7 +22,10 @@ export interface InventoryRowViewModel {
   instanceId: string;
   source: string;
   slotLabel: string;
-  statModsText: string;
+  baseStatModsText: string;
+  affixText: string;
+  affixStatModsText: string;
+  totalStatModsText: string;
   tagsText: string;
   description: string;
   flavorText: string;
@@ -43,13 +57,16 @@ export function createInventoryViewModel({ heroSave, rewardItemIds, reward, cata
         instanceId: instance.instanceId,
         source: instance.source,
         slotLabel: titleCase(item.slot),
-        statModsText: formatStatMods(item.statMods),
+        baseStatModsText: formatItemBaseStats(item),
+        affixText: formatItemAffixes(item, instance),
+        affixStatModsText: formatItemAffixStats(item, instance),
+        totalStatModsText: formatItemTotalStats(item, instance),
         tagsText: formatTags(item.tags),
         description: item.description,
         flavorText: item.flavorText,
         itemNameHtml: renderItemName(item),
         rarityClassName: rarityClass(item.rarity),
-        statPreviewText: previewEquipDelta(heroSave, item, equipped, catalogs),
+        statPreviewText: previewEquipDelta(heroSave, item, equipped, catalogs, instance.instanceId),
         rewarded,
         equipped,
         equipText
@@ -72,7 +89,10 @@ export function renderInventoryPanel(viewModel: InventoryPanelViewModel): string
                 <div>
                   <strong>${row.itemNameHtml} ${row.rewarded ? "<span>New</span>" : ""}</strong>
                   <small>Instance: ${escapeHtml(row.instanceId)} - Source: ${escapeHtml(row.source)}</small>
-                  <small>${row.slotLabel} - ${escapeHtml(row.statModsText)}</small>
+                  <small>${row.slotLabel} - ${escapeHtml(row.totalStatModsText)}</small>
+                  <small class="affix-line">${escapeHtml(row.affixText)}</small>
+                  <small>${escapeHtml(row.baseStatModsText)}</small>
+                  <small>${escapeHtml(row.affixStatModsText)}</small>
                   <p>${escapeHtml(row.description)}</p>
                   <small>${escapeHtml(row.flavorText)}</small>
                   <small>${escapeHtml(row.tagsText)}</small>

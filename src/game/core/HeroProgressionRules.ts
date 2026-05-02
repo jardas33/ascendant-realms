@@ -15,6 +15,7 @@ import type {
   SkillNodeDefinition
 } from "./GameTypes";
 import { applyOriginMods, calculateLevelFromXp } from "./Progression";
+import { generateItemAffixIds, getItemTotalStatMods } from "../data/itemAffixes";
 import type { EquipmentSlots, HeroSaveData } from "../save/SaveTypes";
 
 export const EQUIPMENT_SLOTS: EquipmentSlot[] = ["weapon", "armor", "trinket"];
@@ -57,6 +58,14 @@ export interface GrantBattleRewardsResult {
   reward: BattleRewardResult;
   grantedItemInstances: ItemInstance[];
   duplicateConversions: ItemDuplicateConversion[];
+}
+
+export interface CreateItemInstanceOptions {
+  item?: ItemDefinition;
+  itemById?: Record<string, ItemDefinition>;
+  affixes?: string[];
+  deterministicAffixes?: boolean;
+  rng?: () => number;
 }
 
 export function calculateLiveHeroStats(
@@ -123,8 +132,12 @@ export function calculateEquipmentStatMods(
   return EQUIPMENT_SLOTS.reduce<HeroStatMods>((mods, slot) => {
     const instance = equipment[slot] ? findItemInstance(inventory, equipment[slot]!) : undefined;
     const item = instance ? itemById[instance.itemId] : undefined;
-    return item ? mergeHeroStatMods(mods, item.statMods) : mods;
+    return item && instance ? mergeHeroStatMods(mods, calculateItemInstanceStatMods(item, instance)) : mods;
   }, {});
+}
+
+export function calculateItemInstanceStatMods(item: ItemDefinition, instance: ItemInstance): HeroStatMods {
+  return getItemTotalStatMods(item, instance);
 }
 
 export function getUnlockedAbilityIds(
@@ -329,7 +342,14 @@ export function grantBattleRewards(
   save: HeroSaveData,
   reward: BattleRewardResult,
   mapId?: string,
-  options: { itemById?: Record<string, ItemDefinition>; source?: string; acquiredAt?: string } = {}
+  options: {
+    itemById?: Record<string, ItemDefinition>;
+    source?: string;
+    acquiredAt?: string;
+    deterministicAffixes?: boolean;
+    rng?: () => number;
+    affixesByItemId?: Record<string, string[]>;
+  } = {}
 ): GrantBattleRewardsResult {
   const inventory = [...save.inventory];
   const grantedItemInstances: ItemInstance[] = [];
@@ -345,7 +365,12 @@ export function grantBattleRewards(
       });
       return;
     }
-    const instance = createItemInstance(itemId, options.source ?? "battle_reward", options.acquiredAt);
+    const instance = createItemInstance(itemId, options.source ?? "battle_reward", options.acquiredAt, {
+      itemById: options.itemById,
+      affixes: options.affixesByItemId?.[itemId],
+      deterministicAffixes: options.deterministicAffixes,
+      rng: options.rng
+    });
     inventory.push(instance);
     grantedItemInstances.push(instance);
   });
@@ -382,13 +407,20 @@ export function grantBattleRewards(
   };
 }
 
-export function createItemInstance(itemId: string, source: string, acquiredAt = new Date().toISOString()): ItemInstance {
+export function createItemInstance(
+  itemId: string,
+  source: string,
+  acquiredAt = new Date().toISOString(),
+  options: CreateItemInstanceOptions = {}
+): ItemInstance {
+  const item = options.item ?? options.itemById?.[itemId];
+  const affixes = options.affixes ?? (item ? generateItemAffixIds(item, { deterministic: options.deterministicAffixes, rng: options.rng }) : []);
   return {
     instanceId: `${sanitizeItemInstancePart(source)}:${sanitizeItemInstancePart(itemId)}:${Date.now().toString(36)}:${Math.random().toString(36).slice(2, 8)}`,
     itemId,
     acquiredAt,
     source,
-    affixes: [],
+    affixes: [...new Set(affixes)],
     locked: false,
     favorite: false
   };

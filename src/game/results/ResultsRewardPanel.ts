@@ -1,6 +1,7 @@
 import type { EquipmentSlot, ItemDefinition } from "../core/GameTypes";
 import { buildRewardItemPresentations, createDefeatTips, rewardStateLabel, type RewardItemPresentation, type StatDelta } from "../core/ResultsFlow";
 import { ITEM_BY_ID } from "../data/contentIndex";
+import { getItemAffixStatMods, getItemInstanceAffixes, getItemTotalStatMods } from "../data/itemAffixes";
 import { EQUIPPABLE_SLOTS, heroStatsRows } from "./ResultsEquipActions";
 import {
   escapeHtml,
@@ -101,13 +102,20 @@ function renderRewardItem(
   const canEquip = EQUIPPABLE_SLOTS.includes(item.slot);
   const currentItem = context.currentItemInSlot(item.slot);
   const deltas = entry.instance ? context.previewEquipDeltas(entry.instance.instanceId) : [];
+  const affixes = entry.instance ? getItemInstanceAffixes(item, entry.instance) : [];
+  const affixNames = affixes.length > 0 ? affixes.map((affix) => affix.name).join(", ") : "None";
+  const totalStatText = entry.instance ? formatStatMods(getItemTotalStatMods(item, entry.instance)) : formatStatMods(item.statMods);
+  const affixStatText = entry.instance ? formatStatMods(getItemAffixStatMods(item, entry.instance)) : "No stat modifiers";
   return `
     <article class="reward-card ${rarityClass(item.rarity)} ${entry.state}">
       <div class="reward-card-main">
         <div>
           <strong>${renderItemName(item)} <span class="reward-state">${escapeHtml(rewardStateLabel(entry.state))}</span></strong>
           ${entry.instance ? `<small>Instance: ${escapeHtml(entry.instance.instanceId)} - Source: ${escapeHtml(entry.instance.source)}</small>` : ""}
-          <small>${titleCase(item.slot)} - ${escapeHtml(formatStatMods(item.statMods))}</small>
+          <small>${titleCase(item.slot)} - Total: ${escapeHtml(totalStatText)}</small>
+          <small class="affix-line">Affixes: ${escapeHtml(affixNames)}</small>
+          <small>Base: ${escapeHtml(formatStatMods(item.statMods))}</small>
+          <small>Affix stats: ${escapeHtml(affixStatText)}</small>
           <p>${escapeHtml(item.description)}</p>
           <small>${escapeHtml(item.flavorText)}</small>
           <small>${escapeHtml(formatTags(item.tags))}</small>

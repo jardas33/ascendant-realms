@@ -4,6 +4,7 @@ import type { HeroStatMods } from "./HeroTypes";
 export type EquipmentSlot = "weapon" | "armor" | "trinket" | "relic";
 
 export type ItemRarity = "common" | "uncommon" | "rare" | "epic" | "legendary";
+export type ItemAffixTier = "minor" | "major";
 
 export interface ItemDefinition {
   id: string;
@@ -28,6 +29,16 @@ export interface ItemInstance {
   affixes: string[];
   locked?: boolean;
   favorite?: boolean;
+}
+
+export interface ItemAffixDefinition {
+  id: string;
+  name: string;
+  tier: ItemAffixTier;
+  allowedSlots: EquipmentSlot[];
+  statMods: HeroStatMods;
+  tags: string[];
+  weight: number;
 }
 
 export interface RewardTableDefinition {

@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
-import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
+import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import { CaptureSite } from "../entities/CaptureSite";
 import { Hero } from "../entities/Hero";
@@ -34,8 +34,17 @@ export interface NeutralCampLabel {
 export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnBattleScenarioResult {
   const { scene, activeMap, heroSave, launch, addUnit, addBuilding } = options;
   const scenario = activeMap.scenario;
+  const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
   scenario.buildingSpawns.forEach((spawn) => {
-    addBuilding(new Building(scene, requireBuilding(spawn.buildingId), spawn.team, spawn.x, spawn.y));
+    addBuilding(
+      new Building(
+        scene,
+        applyStrongholdBuildingEffects(requireBuilding(spawn.buildingId), spawn.team, strongholdEffects),
+        spawn.team,
+        spawn.x,
+        spawn.y
+      )
+    );
   });
 
   const heroClass = requireHeroClass(heroSave.classId);
@@ -107,7 +116,7 @@ function applyHeroLaunchModifiers(hero: Hero, launch: ResolvedBattleLaunch): voi
   const manaMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroManaMultiplier ?? multiplier);
-  }, 1);
+  }, strongholdEffects.heroMaxManaMultiplier);
   const hpMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroMaxHpMultiplier ?? multiplier);

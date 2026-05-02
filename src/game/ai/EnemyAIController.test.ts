@@ -92,6 +92,34 @@ describe("EnemyAIController first battle pacing", () => {
     expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2"]);
     expect(waves[0]).toHaveLength(2);
   });
+
+  it("can announce the first enemy gathering warning earlier without moving the attack", () => {
+    const alerts: string[] = [];
+    const units = [
+      fakeEnemyUnit("raider", "enemy_raider_1", []),
+      fakeEnemyUnit("raider", "enemy_raider_2", []),
+      fakeEnemyUnit("hexer", "enemy_hexer_1", [])
+    ];
+    let elapsedSeconds = 134;
+    const controller = createController({
+      units,
+      getElapsedSeconds: () => elapsedSeconds,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { expandInterval: 9999, initialExpandDelay: 9999 },
+      attackWarningLeadSeconds: 25,
+      onAlert: (message) => alerts.push(message),
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(134);
+    expect(alerts).toEqual([]);
+
+    elapsedSeconds = 135;
+    controller.update(1);
+
+    expect(alerts).toEqual(["Enemy forces are gathering."]);
+  });
 });
 
 function createController(options: {
@@ -101,6 +129,8 @@ function createController(options: {
   hasBuiltProduction: boolean;
   onWaveLaunched: (units: Unit[]) => void;
   config?: Partial<EnemyAIConfig>;
+  attackWarningLeadSeconds?: number;
+  onAlert?: (message: string) => void;
 }): EnemyAIController {
   const baseConfig: EnemyAIConfig = {
     incomeInterval: 5,
@@ -133,10 +163,11 @@ function createController(options: {
       hasCapturedSite: options.hasCapturedSite,
       hasBuiltProduction: options.hasBuiltProduction
     }),
-    onAlert: vi.fn(),
+    onAlert: options.onAlert ?? vi.fn(),
     onWaveLaunched: options.onWaveLaunched,
     difficulty: "normal",
-    config: { ...baseConfig, ...options.config }
+    config: { ...baseConfig, ...options.config },
+    attackWarningLeadSeconds: options.attackWarningLeadSeconds
   });
 }
 

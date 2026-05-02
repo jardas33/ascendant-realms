@@ -16,6 +16,7 @@ import {
   grantCampaignModifiers,
   removeCampaignModifiers
 } from "../data/campaignModifiers";
+import { getAdjustedCampaignChoiceCost, getAdjustedCampaignChoiceRewards } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 export interface CampaignNodeCompletionResult {
@@ -197,7 +198,12 @@ export function getCampaignChoiceAvailability(options: {
     reasons.push("Already owned");
   }
 
-  Object.entries(options.choice.costs ?? {}).forEach(([resource, amount]) => {
+  const adjustedChoiceCost = getAdjustedCampaignChoiceCost({
+    hero: options.hero,
+    node: options.node,
+    choice: options.choice
+  });
+  Object.entries(adjustedChoiceCost).forEach(([resource, amount]) => {
     const current = options.campaign.resources[resource as keyof ResourceBag] ?? 0;
     if ((amount ?? 0) > current) {
       reasons.push(`Need ${amount} ${titleCase(resource)}`);
@@ -268,16 +274,26 @@ export function applyCampaignChoice(options: {
     };
   }
 
+  const adjustedChoiceCost = getAdjustedCampaignChoiceCost({
+    hero: options.hero,
+    node: options.node,
+    choice: options.choice
+  });
+  const adjustedChoiceRewards = getAdjustedCampaignChoiceRewards({
+    hero: options.hero,
+    node: options.node,
+    choice: options.choice
+  });
   const reward: BattleRewardResult = {
-    itemIds: options.choice.rewards?.itemIds ?? [],
-    resources: options.choice.rewards?.resources ?? {},
-    xp: options.choice.rewards?.xp ?? 0
+    itemIds: adjustedChoiceRewards?.itemIds ?? [],
+    resources: adjustedChoiceRewards?.resources ?? {},
+    xp: adjustedChoiceRewards?.xp ?? 0
   };
   const beforeUnlocked = new Set(options.campaign.unlockedNodeIds);
   const beforeLocked = new Set(options.campaign.lockedNodeIds);
   const paidCampaign = recordCampaignResourceSpending(
-    subtractCampaignResources(options.campaign, options.choice.costs ?? {}),
-    options.choice.costs ?? {}
+    subtractCampaignResources(options.campaign, adjustedChoiceCost),
+    adjustedChoiceCost
   );
   const adjustedReward = options.node.nodeType === "town"
     ? { campaign: paidCampaign, resources: reward.resources, consumedModifierIds: [] }
@@ -292,10 +308,10 @@ export function applyCampaignChoice(options: {
   const rewardCampaign = addCampaignResources(adjustedReward.campaign, adjustedRewardResult.resources);
   const unlocked = new Set(rewardCampaign.unlockedNodeIds);
   options.choice.unlockNodeIds?.forEach((nodeId) => unlocked.add(nodeId));
-  options.choice.rewards?.unlockNodeIds?.forEach((nodeId) => unlocked.add(nodeId));
+  adjustedChoiceRewards?.unlockNodeIds?.forEach((nodeId) => unlocked.add(nodeId));
   const locked = new Set(rewardCampaign.lockedNodeIds);
   options.choice.lockNodeIds?.forEach((nodeId) => locked.add(nodeId));
-  options.choice.rewards?.lockNodeIds?.forEach((nodeId) => locked.add(nodeId));
+  adjustedChoiceRewards?.lockNodeIds?.forEach((nodeId) => locked.add(nodeId));
   unlocked.forEach((nodeId) => {
     if (locked.has(nodeId)) {
       unlocked.delete(nodeId);
@@ -321,7 +337,7 @@ export function applyCampaignChoice(options: {
   }
   const reputationChanges = {
     ...(options.choice.reputationChanges ?? {}),
-    ...(options.choice.rewards?.reputationChanges ?? {})
+    ...(adjustedChoiceRewards?.reputationChanges ?? {})
   };
   const heroWithReputation = applyReputationChanges(options.hero, reputationChanges);
   const granted = grantBattleRewards(heroWithReputation, adjustedRewardResult, undefined, {
@@ -334,11 +350,11 @@ export function applyCampaignChoice(options: {
   );
   const grantedModifierIds = [
     ...(options.choice.modifierIds ?? []),
-    ...(options.choice.rewards?.modifierIds ?? [])
+    ...(adjustedChoiceRewards?.modifierIds ?? [])
   ].filter((modifierId, index, ids): modifierId is CampaignModifierId => ids.indexOf(modifierId) === index);
   const removedModifierIds = [
     ...(options.choice.removeModifierIds ?? []),
-    ...(options.choice.rewards?.removeModifierIds ?? [])
+    ...(adjustedChoiceRewards?.removeModifierIds ?? [])
   ];
   const modifierCampaign = removeCampaignModifiers(
     grantCampaignModifiers(

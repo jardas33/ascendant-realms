@@ -15,7 +15,8 @@ describe("campaign modifiers", () => {
       "blessed_road",
       "well_rested",
       "angered_raiders",
-      "local_support"
+      "local_support",
+      "ashen_hostile_pressure"
     ]);
     expect(CAMPAIGN_MODIFIERS.filter((modifier) => modifier.trigger.includes("battle")).length).toBeGreaterThanOrEqual(3);
   });

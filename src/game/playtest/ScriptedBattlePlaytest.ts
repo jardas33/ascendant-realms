@@ -35,7 +35,8 @@ import {
 import {
   STRONGHOLD_UPGRADE_BY_ID,
   getStrongholdBattleEffects,
-  strongholdLaunchModifierId
+  strongholdLaunchModifierId,
+  type StrongholdBattleEffects
 } from "../data/strongholdUpgrades";
 import type { HeroSaveData } from "../save/SaveTypes";
 
@@ -46,7 +47,10 @@ export type PlaytestStrongholdProfileId =
   | "no_stronghold"
   | "training_yard_path"
   | "defensive_watch_post_path"
-  | "economy_quartermaster_path";
+  | "economy_quartermaster_path"
+  | "tier_two_quartermaster_path"
+  | "chapel_corner_path"
+  | "ranger_paths_path";
 
 export interface PlaytestScenarioDefinition {
   nodeId: string;
@@ -83,6 +87,7 @@ export interface PlaytestTelemetry {
   strongholdTargetUpgradeIds: StrongholdUpgradeId[];
   strongholdUpgradeIds: StrongholdUpgradeId[];
   strongholdPurchaseNotes: string[];
+  strongholdEffects: StrongholdBattleEffects;
   nodeId: string;
   nodeName: string;
   mapId: string;
@@ -217,6 +222,12 @@ interface BattleDriverState {
   notes: string[];
   strongholdPlan: PlaytestStrongholdNodePlan;
   heroMaxHpMultiplier: number;
+  heroMaxManaMultiplier: number;
+  enemyWarningLeadSeconds: number;
+  watchtowerRangeMultiplier: number;
+  firstBuildingConstructionTimeMultiplier: number;
+  unitTrainingTimeMultipliers: Partial<Record<string, number>>;
+  firstConstructionBoostUsed: boolean;
   telemetry: Omit<
     PlaytestTelemetry,
     | "battleDurationSeconds"
@@ -270,6 +281,24 @@ export const DEFAULT_PLAYTEST_STRONGHOLD_PROFILES: PlaytestStrongholdProfileDefi
     name: "Economy Quartermaster path",
     description: "Buys Quartermaster Stores I as soon as normal campaign rewards can fund it.",
     targetUpgradeIds: ["quartermaster_stores_i"]
+  },
+  {
+    id: "tier_two_quartermaster_path",
+    name: "Tier II Quartermaster path",
+    description: "Buys Quartermaster Stores I and II as soon as normal campaign rewards can fund them.",
+    targetUpgradeIds: ["quartermaster_stores_i", "quartermaster_stores_ii"]
+  },
+  {
+    id: "chapel_corner_path",
+    name: "Chapel Corner path",
+    description: "Buys Chapel Corner I as soon as normal campaign rewards can fund it.",
+    targetUpgradeIds: ["chapel_corner_i"]
+  },
+  {
+    id: "ranger_paths_path",
+    name: "Ranger Paths path",
+    description: "Buys Training Yard I and Ranger Paths I when normal campaign rewards can fund them.",
+    targetUpgradeIds: ["training_yard_i", "ranger_paths_i"]
   }
 ];
 
@@ -472,6 +501,8 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Live Ashen Outpost now matches that telemetry assumption: completing Burned Shrine weakens the gate Watchtower and the in-battle HUD lists all three secondary objectives.");
   lines.push("- The report now separates structural too-hard failures from strategy-spread review when Safe Beginner wins with fair Barracks and first-wave timing.");
   lines.push("- Stronghold profiles are telemetry-only simulation paths: upgrades are purchased from simulated campaign-node resources when affordable, then applied as battle-launch effects.");
+  lines.push("- Stronghold telemetry now covers every Tier I path plus a Tier II Quartermaster path for no-upgrade, Tier I, and Tier II comparison.");
+  lines.push("- Watch Post now models earlier first-wave warning and better Watchtower reach; Quartermaster now models a broader starter bundle and faster first player building construction.");
   lines.push("");
   lines.push("## Stronghold Profile Verdicts");
   lines.push("");
@@ -507,16 +538,18 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Profile | Node | Script | Upgrades | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
+    "| Profile | Node | Script | Upgrades | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
       `| ${run.strongholdProfileName} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
         run.strongholdUpgradeIds
-      )} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(run.startingResources)} | ${run.battleResult} | ${formatTime(
-        run.battleDurationSeconds
-      )} | ${run.firstWaveSurvived ? "yes" : "no"} | ${formatResources(run.resourcesFloated)} | ${
+      )} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
+        run.startingResources
+      )} | ${run.battleResult} | ${formatTime(run.battleDurationSeconds)} | ${
+        run.firstWaveSurvived ? "yes" : "no"
+      } | ${formatResources(run.resourcesFloated)} | ${
         run.objectiveCompletion.length > 0 ? run.objectiveCompletion.join(", ") : "-"
       } | ${formatReward(run.rewardResult)} |`
     );
@@ -598,12 +631,19 @@ class ScriptedBattleDriver {
       notes: [],
       strongholdPlan: options.strongholdPlan,
       heroMaxHpMultiplier: strongholdEffects.heroMaxHpMultiplier,
+      heroMaxManaMultiplier: strongholdEffects.heroMaxManaMultiplier,
+      enemyWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds,
+      watchtowerRangeMultiplier: strongholdEffects.watchtowerRangeMultiplier,
+      firstBuildingConstructionTimeMultiplier: strongholdEffects.firstBuildingConstructionTimeMultiplier,
+      unitTrainingTimeMultipliers: { ...strongholdEffects.unitTrainingTimeMultipliers },
+      firstConstructionBoostUsed: false,
       telemetry: {
         strongholdProfileId: options.strongholdPlan.profileId,
         strongholdProfileName: options.strongholdPlan.profileName,
         strongholdTargetUpgradeIds: [...options.strongholdPlan.targetUpgradeIds],
         strongholdUpgradeIds: [...options.strongholdPlan.purchasedUpgradeIds],
         strongholdPurchaseNotes: [...options.strongholdPlan.purchaseNotes],
+        strongholdEffects: cloneStrongholdBattleEffects(strongholdEffects),
         nodeId: options.node.id,
         nodeName: options.node.name,
         mapId: options.map.id,
@@ -688,20 +728,30 @@ class ScriptedBattleDriver {
       this.note(`Could not afford ${building.name} at ${formatTime(this.state.time)}.`);
       return false;
     }
+    const constructionTimeSeconds = this.applyFirstBuildingConstructionMultiplier(building.constructionTimeSeconds);
     this.state.pendingBuildings.push({
       id: buildingId,
-      completeAt: this.state.time + building.constructionTimeSeconds,
-      completed: building.constructionTimeSeconds <= 0
+      completeAt: this.state.time + constructionTimeSeconds,
+      completed: constructionTimeSeconds <= 0
     });
     this.state.telemetry.buildingsBuilt.push(buildingId);
     if (buildingId === "barracks") {
       this.state.telemetry.timeBarracksPlaced ??= Math.round(this.state.time);
     }
     this.log(`placed ${building.name}`);
-    if (building.constructionTimeSeconds <= 0) {
+    if (constructionTimeSeconds <= 0) {
       this.completeBuilding(buildingId);
     }
     return true;
+  }
+
+  private applyFirstBuildingConstructionMultiplier(constructionTimeSeconds: number): number {
+    const multiplier = this.state.firstBuildingConstructionTimeMultiplier;
+    if (this.state.firstConstructionBoostUsed || multiplier >= 1 || constructionTimeSeconds <= 0) {
+      return constructionTimeSeconds;
+    }
+    this.state.firstConstructionBoostUsed = true;
+    return Math.max(1, constructionTimeSeconds * multiplier);
   }
 
   waitForConstruction(buildingId: string): void {
@@ -728,7 +778,7 @@ class ScriptedBattleDriver {
       return false;
     }
     this.log(`queue ${unit.name}`);
-    this.advanceBy(unit.trainTime);
+    this.advanceBy(this.unitTrainingTime(unitId, unit.trainTime));
     this.state.playerUnits[unitId] = (this.state.playerUnits[unitId] ?? 0) + 1;
     this.state.telemetry.unitsTrained += 1;
     this.state.telemetry.timeFirstUnitTrained ??= Math.round(this.state.time);
@@ -933,7 +983,7 @@ class ScriptedBattleDriver {
   }
 
   private updateEnemyWarning(): void {
-    const warningAt = Math.max(20, this.state.enemyConfig.initialAttackDelay - 35);
+    const warningAt = Math.max(20, this.state.enemyConfig.initialAttackDelay - 35 - this.state.enemyWarningLeadSeconds);
     if (this.state.telemetry.timeFirstEnemyWarning === null && this.state.time >= warningAt) {
       this.state.telemetry.timeFirstEnemyWarning = Math.round(this.state.time);
       this.log("enemy forces warning");
@@ -1064,7 +1114,7 @@ class ScriptedBattleDriver {
   }
 
   private playerDefenseStrength(): number {
-    return this.playerAttackStrength() * 0.92 + this.countBuilding("watchtower") * 18 + 8;
+    return this.playerAttackStrength() * 0.92 + this.countBuilding("watchtower") * 18 * this.state.watchtowerRangeMultiplier + 8;
   }
 
   private playerAttackStrength(): number {
@@ -1125,6 +1175,11 @@ class ScriptedBattleDriver {
           ? ["ranger", "militia", "acolyte"]
           : ["militia", "ranger", "acolyte"];
     return preferred.some((unitId) => this.trainIfAffordable(unitId));
+  }
+
+  private unitTrainingTime(unitId: string, baseTime: number): number {
+    const multiplier = this.state.unitTrainingTimeMultipliers[unitId] ?? 1;
+    return Math.max(1, baseTime * multiplier);
   }
 
   private hasCaptured(siteId: string): boolean {
@@ -1327,6 +1382,27 @@ function strongholdRunImprovesOnBaseline(run: PlaytestTelemetry, baseline: Playt
     return false;
   }
   if (!baseline.firstWaveSurvived && run.firstWaveSurvived) {
+    return true;
+  }
+  if (
+    baseline.timeFirstEnemyWarning !== null &&
+    run.timeFirstEnemyWarning !== null &&
+    run.timeFirstEnemyWarning <= baseline.timeFirstEnemyWarning - 10
+  ) {
+    return true;
+  }
+  if (
+    baseline.timeBarracksCompleted !== null &&
+    run.timeBarracksCompleted !== null &&
+    run.timeBarracksCompleted <= baseline.timeBarracksCompleted - 2
+  ) {
+    return true;
+  }
+  if (
+    baseline.timeFirstUnitTrained !== null &&
+    run.timeFirstUnitTrained !== null &&
+    run.timeFirstUnitTrained <= baseline.timeFirstUnitTrained - 2
+  ) {
     return true;
   }
   if (run.battleResult === "victory" && run.battleDurationSeconds <= baseline.battleDurationSeconds - 15) {
@@ -1616,6 +1692,55 @@ function formatReward(reward: PlaytestRewardTelemetry | null): string {
     Object.values(reward.battleResources).reduce((total, amount) => total + (amount ?? 0), 0) +
     Object.values(reward.campaignResources).reduce((total, amount) => total + (amount ?? 0), 0);
   return `${reward.battleXp + reward.campaignXp} XP, ${resourceTotal} resources${itemText ? `, ${itemText}` : ""}`;
+}
+
+function cloneStrongholdBattleEffects(effects: StrongholdBattleEffects): StrongholdBattleEffects {
+  return {
+    extraPlayerUnitIds: [...effects.extraPlayerUnitIds],
+    startingResources: { ...effects.startingResources },
+    heroMaxHpMultiplier: effects.heroMaxHpMultiplier,
+    heroMaxManaMultiplier: effects.heroMaxManaMultiplier,
+    buildingVisionBonus: effects.buildingVisionBonus,
+    enemyWarningLeadSeconds: effects.enemyWarningLeadSeconds,
+    watchtowerRangeMultiplier: effects.watchtowerRangeMultiplier,
+    firstBuildingConstructionTimeMultiplier: effects.firstBuildingConstructionTimeMultiplier,
+    unitTrainingTimeMultipliers: { ...effects.unitTrainingTimeMultipliers }
+  };
+}
+
+function formatStrongholdEffectTelemetry(effects: StrongholdBattleEffects): string {
+  const parts: string[] = [];
+  if (effects.extraPlayerUnitIds.length > 0) {
+    parts.push(`units ${effects.extraPlayerUnitIds.join(", ")}`);
+  }
+  if (Object.values(effects.startingResources).some((amount) => (amount ?? 0) > 0)) {
+    parts.push(`resources ${formatResources(effects.startingResources)}`);
+  }
+  if (effects.heroMaxHpMultiplier > 1 || effects.heroMaxManaMultiplier > 1) {
+    parts.push(
+      `hero ${Math.round((effects.heroMaxHpMultiplier - 1) * 100)}% HP/${Math.round(
+        (effects.heroMaxManaMultiplier - 1) * 100
+      )}% Mana`
+    );
+  }
+  if (effects.buildingVisionBonus > 0) {
+    parts.push(`vision +${effects.buildingVisionBonus}`);
+  }
+  if (effects.enemyWarningLeadSeconds > 0) {
+    parts.push(`warning +${effects.enemyWarningLeadSeconds}s`);
+  }
+  if (effects.watchtowerRangeMultiplier > 1) {
+    parts.push(`tower +${Math.round((effects.watchtowerRangeMultiplier - 1) * 100)}%`);
+  }
+  if (effects.firstBuildingConstructionTimeMultiplier < 1) {
+    parts.push(`first build ${Math.round((1 - effects.firstBuildingConstructionTimeMultiplier) * 100)}% faster`);
+  }
+  Object.entries(effects.unitTrainingTimeMultipliers).forEach(([unitId, multiplier]) => {
+    if (multiplier !== undefined && multiplier < 1) {
+      parts.push(`${titleCase(unitId)} train ${Math.round((1 - multiplier) * 100)}% faster`);
+    }
+  });
+  return parts.length > 0 ? parts.join("; ") : "-";
 }
 
 function formatResources(resources: Partial<ResourceBag>): string {

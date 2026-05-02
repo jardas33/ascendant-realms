@@ -12,6 +12,14 @@ export function validateStrongholdUpgrades(errors: string[], context: Validation
     if (upgrade.maxRank <= 0) {
       errors.push(`Stronghold upgrade ${upgrade.id} must have a positive max rank.`);
     }
+    if (upgrade.tier > 1) {
+      const prerequisiteId = expectedPreviousTierUpgradeId(upgrade.id);
+      const prerequisiteRanks = upgrade.prerequisites.upgradeRanks as Record<string, number | undefined> | undefined;
+      const prerequisiteRank = prerequisiteId ? prerequisiteRanks?.[prerequisiteId] : undefined;
+      if (!prerequisiteId || prerequisiteRank === undefined || prerequisiteRank < 1) {
+        errors.push(`Stronghold upgrade ${upgrade.id} must require its previous tier at rank 1.`);
+      }
+    }
     Object.entries(upgrade.cost).forEach(([resource, amount]) => {
       if (!context.resourceIds.has(resource)) {
         errors.push(`Stronghold upgrade ${upgrade.id} costs missing resource ${resource}.`);
@@ -58,9 +66,36 @@ export function validateStrongholdUpgrades(errors: string[], context: Validation
       if (effect.type === "hero-max-hp-multiplier" && effect.multiplier <= 0) {
         errors.push(`Stronghold upgrade ${upgrade.id} has invalid hero HP multiplier.`);
       }
+      if (effect.type === "hero-max-mana-multiplier" && effect.multiplier <= 0) {
+        errors.push(`Stronghold upgrade ${upgrade.id} has invalid hero Mana multiplier.`);
+      }
       if (effect.type === "building-vision-bonus" && effect.amount <= 0) {
         errors.push(`Stronghold upgrade ${upgrade.id} has invalid building vision bonus.`);
       }
+      if (effect.type === "enemy-wave-warning-lead" && effect.seconds <= 0) {
+        errors.push(`Stronghold upgrade ${upgrade.id} has invalid enemy warning lead.`);
+      }
+      if (effect.type === "watchtower-range-multiplier" && effect.multiplier <= 0) {
+        errors.push(`Stronghold upgrade ${upgrade.id} has invalid Watchtower range multiplier.`);
+      }
+      if (effect.type === "first-building-construction-time-multiplier" && (effect.multiplier <= 0 || effect.multiplier >= 1)) {
+        errors.push(`Stronghold upgrade ${upgrade.id} has invalid first building construction multiplier.`);
+      }
+      if (effect.type === "unit-training-time-multiplier") {
+        if (!context.unitIds.has(effect.unitId)) {
+          errors.push(`Stronghold upgrade ${upgrade.id} changes missing unit ${effect.unitId} training time.`);
+        }
+        if (effect.multiplier <= 0 || effect.multiplier >= 1) {
+          errors.push(`Stronghold upgrade ${upgrade.id} has invalid unit training time multiplier.`);
+        }
+      }
     });
   });
+}
+
+function expectedPreviousTierUpgradeId(upgradeId: string): string | undefined {
+  if (upgradeId.endsWith("_ii")) {
+    return `${upgradeId.slice(0, -3)}_i`;
+  }
+  return undefined;
 }

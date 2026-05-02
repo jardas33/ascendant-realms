@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { ResourceBag, Team } from "../core/GameTypes";
 import { addResources, canAfford, payCost } from "../core/MathUtils";
 import { requireUnit } from "../data/contentIndex";
+import type { StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { checkPrerequisites, type TechState } from "./PrerequisiteSystem";
@@ -13,6 +14,7 @@ interface TrainingSystemOptions {
   onMessage: (message: string, x?: number, y?: number) => void;
   onUnitTrained?: (unit: Unit) => void;
   getTechState?: (team: Team) => TechState;
+  strongholdEffects?: Pick<StrongholdBattleEffects, "unitTrainingTimeMultipliers">;
 }
 
 export class TrainingSystem {
@@ -49,10 +51,11 @@ export class TrainingSystem {
       return false;
     }
     payCost(resources, unitDefinition.cost);
+    const trainTime = this.trainingTime(unitId, unitDefinition.trainTime, building.team);
     building.trainingQueue.push({
       unitId,
-      remaining: unitDefinition.trainTime,
-      total: unitDefinition.trainTime,
+      remaining: trainTime,
+      total: trainTime,
       announce,
       paidCost: { ...unitDefinition.cost }
     });
@@ -60,6 +63,14 @@ export class TrainingSystem {
       this.options.onMessage(`Training ${unitDefinition.name}`, building.position.x, building.position.y - 60);
     }
     return true;
+  }
+
+  private trainingTime(unitId: string, baseTime: number, team: Team): number {
+    if (team !== "player") {
+      return baseTime;
+    }
+    const multiplier = this.options.strongholdEffects?.unitTrainingTimeMultipliers[unitId] ?? 1;
+    return Math.max(1, baseTime * multiplier);
   }
 
   cancelTraining(building: Building, queueIndex: number, resources: ResourceBag): boolean {

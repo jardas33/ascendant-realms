@@ -2,7 +2,7 @@ import type { EquipmentSlot } from "../core/GameTypes";
 import { EQUIPMENT_SLOTS, findItemInstance } from "../core/HeroProgressionRules";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
-import { escapeHtml, formatStatMods, rarityClass, renderItemName, titleCase } from "./ItemComparison";
+import { escapeHtml, formatItemAffixes, formatItemTotalStats, rarityClass, renderItemName, titleCase } from "./ItemComparison";
 
 export interface EquipmentPanelViewModel {
   slots: EquipmentSlotViewModel[];
@@ -14,6 +14,7 @@ export interface EquipmentSlotViewModel {
   itemNameHtml?: string;
   instanceId?: string;
   statModsText?: string;
+  affixText?: string;
   description?: string;
   flavorText?: string;
   rarityClassName?: string;
@@ -37,7 +38,8 @@ export function createEquipmentViewModel(heroSave: HeroSaveData, catalogs: HeroP
       slotLabel: titleCase(slot),
       itemNameHtml: renderItemName(item),
       instanceId: instance?.instanceId,
-      statModsText: formatStatMods(item.statMods),
+      statModsText: instance ? formatItemTotalStats(item, instance) : undefined,
+      affixText: instance ? formatItemAffixes(item, instance) : undefined,
       description: item.description,
       flavorText: item.flavorText,
       rarityClassName: rarityClass(item.rarity)
@@ -61,6 +63,7 @@ export function renderEquipmentPanel(viewModel: EquipmentPanelViewModel): string
                   equipped
                     ? `<span>${slot.itemNameHtml} - ${escapeHtml(slot.statModsText ?? "")}</span>
                       <small>Instance: ${escapeHtml(slot.instanceId ?? "")}</small>
+                      <small class="affix-line">${escapeHtml(slot.affixText ?? "")}</small>
                       <p>${escapeHtml(slot.description ?? "")}</p>
                       <small>${escapeHtml(slot.flavorText ?? "")}</small>`
                     : "<span>Empty</span>"

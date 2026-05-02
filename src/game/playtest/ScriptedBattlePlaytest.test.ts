@@ -12,7 +12,7 @@ describe("ScriptedBattlePlaytest", () => {
   it("runs every current campaign battle node with the three core scripts and stronghold profiles", () => {
     const report = runScriptedPlaytestSuite();
 
-    expect(report.telemetry).toHaveLength(60);
+    expect(report.telemetry).toHaveLength(105);
     expect(new Set(report.telemetry.map((run) => run.nodeId))).toEqual(
       new Set(["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "ashen_outpost"])
     );
@@ -20,7 +20,15 @@ describe("ScriptedBattlePlaytest", () => {
       new Set(["safe_beginner", "greedy_economy", "fast_army"])
     );
     expect(new Set(report.telemetry.map((run) => run.strongholdProfileId))).toEqual(
-      new Set(["no_stronghold", "training_yard_path", "defensive_watch_post_path", "economy_quartermaster_path"])
+      new Set([
+        "no_stronghold",
+        "training_yard_path",
+        "defensive_watch_post_path",
+        "economy_quartermaster_path",
+        "tier_two_quartermaster_path",
+        "chapel_corner_path",
+        "ranger_paths_path"
+      ])
     );
   });
 
@@ -98,9 +106,20 @@ describe("ScriptedBattlePlaytest", () => {
     const trainingProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "training_yard_path")!;
     const watchPostProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "defensive_watch_post_path")!;
     const quartermasterProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "economy_quartermaster_path")!;
+    const tierTwoQuartermasterProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "tier_two_quartermaster_path")!;
+    const chapelProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "chapel_corner_path")!;
+    const rangerProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "ranger_paths_path")!;
     const report = runScriptedPlaytestSuite({
       scripts: ["safe_beginner"],
-      strongholdProfiles: [noStrongholdProfile, trainingProfile, watchPostProfile, quartermasterProfile]
+      strongholdProfiles: [
+        noStrongholdProfile,
+        trainingProfile,
+        watchPostProfile,
+        quartermasterProfile,
+        tierTwoQuartermasterProfile,
+        chapelProfile,
+        rangerProfile
+      ]
     });
 
     const trainingAshen = report.telemetry.find(
@@ -112,11 +131,35 @@ describe("ScriptedBattlePlaytest", () => {
     const watchSummary = report.analysis.strongholdProfileSummaries.find(
       (summary) => summary.profileId === "defensive_watch_post_path"
     );
+    const watchBandit = report.telemetry.find(
+      (run) => run.strongholdProfileId === "defensive_watch_post_path" && run.nodeId === "bandit_hillfort"
+    );
+    const baselineBandit = report.telemetry.find((run) => run.strongholdProfileId === "no_stronghold" && run.nodeId === "bandit_hillfort");
+    const rangerAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "ranger_paths_path" && run.nodeId === "ashen_outpost"
+    );
+    const tierTwoQuartermasterAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "tier_two_quartermaster_path" && run.nodeId === "ashen_outpost"
+    );
 
     expect(trainingAshen?.strongholdUpgradeIds).toContain("training_yard_i");
     expect(trainingAshen?.startingUnits.militia).toBeGreaterThan(4);
     expect(quartermasterBandit?.strongholdUpgradeIds).toContain("quartermaster_stores_i");
-    expect(quartermasterBandit?.startingResources.crowns).toBeGreaterThan(380);
-    expect(watchSummary?.warnings.join(" ")).toContain("did not improve");
+    expect(quartermasterBandit?.startingResources).toMatchObject({ crowns: 440, stone: 295, iron: 160, aether: 85 });
+    expect(quartermasterBandit?.timeBarracksCompleted).toBeLessThan(baselineBandit?.timeBarracksCompleted ?? 999);
+    expect(watchBandit?.timeFirstEnemyWarning).toBeLessThan(baselineBandit?.timeFirstEnemyWarning ?? 999);
+    expect(watchSummary?.warnings).toEqual([]);
+    expect(rangerAshen?.strongholdUpgradeIds).toEqual(expect.arrayContaining(["training_yard_i", "ranger_paths_i"]));
+    expect(rangerAshen?.startingUnits.militia).toBeGreaterThan(4);
+    expect(tierTwoQuartermasterAshen?.strongholdUpgradeIds).toEqual(
+      expect.arrayContaining(["quartermaster_stores_i", "quartermaster_stores_ii"])
+    );
+    expect(tierTwoQuartermasterAshen?.strongholdEffects.startingResources).toMatchObject({
+      crowns: 140,
+      stone: 90,
+      iron: 55,
+      aether: 30
+    });
+    expect(tierTwoQuartermasterAshen?.startingResources).toMatchObject({ crowns: 700, stone: 480, iron: 290, aether: 170 });
   });
 });

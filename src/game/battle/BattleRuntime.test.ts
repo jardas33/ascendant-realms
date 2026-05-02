@@ -50,13 +50,15 @@ describe("BattleRuntime", () => {
       createSkirmishBattleLaunchRequest(testHeroSave, {
         mapId: testMap.id,
         sourceId: "runtime_test",
-        modifiers: [{ id: "stronghold:quartermaster_stores_i" }]
+        modifiers: [{ id: "stronghold:quartermaster_stores_i" }, { id: "stronghold:quartermaster_stores_ii" }]
       })
     );
     const runtime = createBattleRuntime({ launch });
 
-    expect(runtime.resources.player.crowns).toBe(testMap.scenario.startingResources.player.crowns + 50);
-    expect(runtime.resources.player.stone).toBe(testMap.scenario.startingResources.player.stone + 30);
+    expect(runtime.resources.player.crowns).toBe(testMap.scenario.startingResources.player.crowns + 140);
+    expect(runtime.resources.player.stone).toBe(testMap.scenario.startingResources.player.stone + 90);
+    expect(runtime.resources.player.iron).toBe(testMap.scenario.startingResources.player.iron + 55);
+    expect(runtime.resources.player.aether).toBe(testMap.scenario.startingResources.player.aether + 30);
   });
 
   it("keeps objective resolution compatible with current skirmish rules", () => {
@@ -128,6 +130,7 @@ describe("BattleRuntime", () => {
     expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles + 1);
     expect(result.heroSave.clearedMapIds).toContain(testMap.id);
     expect(result.heroSave.inventory.some((instance) => instance.itemId === "weathered_command_sword")).toBe(true);
+    expect(result.reward.itemInstances?.[0].affixes).toEqual(["sharp"]);
     expect(result.heroSave.xp).toBe(75);
     expect(result.stats.xpGained).toBe(155);
     expect(result.stats.outcome).toBe("victory");

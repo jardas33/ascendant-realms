@@ -3,8 +3,11 @@ import { AI_PERSONALITIES } from "./aiPersonalities";
 import { CAMPAIGN_NODES } from "./campaignNodes";
 import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
+import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
+import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
+import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { validateContent } from "./contentValidation";
 
 describe("content validation", () => {
@@ -96,5 +99,57 @@ describe("content validation", () => {
       expect.arrayContaining(["hexfire_burn", "ashen_fury", "smoke_march"])
     );
     expect(ashen?.mechanics.aiPersonalityPreferences).toEqual(expect.arrayContaining(["raider_rush", "hexfire_cult"]));
+  });
+
+  it("defines compact Stronghold Tier II upgrades behind matching Tier I upgrades", () => {
+    const tierTwoIds = STRONGHOLD_UPGRADES.filter((upgrade) => upgrade.tier === 2).map((upgrade) => upgrade.id);
+
+    expect(tierTwoIds).toEqual([
+      "training_yard_ii",
+      "watch_post_ii",
+      "quartermaster_stores_ii",
+      "chapel_corner_ii",
+      "ranger_paths_ii"
+    ]);
+    STRONGHOLD_UPGRADES.filter((upgrade) => upgrade.tier === 2).forEach((upgrade) => {
+      const expectedPrerequisiteId = `${upgrade.id.slice(0, -3)}_i`;
+      expect(upgrade.prerequisites.upgradeRanks).toMatchObject({ [expectedPrerequisiteId]: 1 });
+      expect(upgrade.effects.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("defines compact reputation thresholds and campaign effects", () => {
+    expect([...TRACKED_REPUTATION_FACTION_IDS]).toEqual([
+      "free_marches",
+      "common_folk",
+      "old_faith",
+      "ashen_covenant",
+      "sylvan_concord"
+    ]);
+    expect(REPUTATION_EFFECTS.map((effect) => effect.id)).toEqual([
+      "common_folk_friendly_services",
+      "free_marches_friendly_stronghold",
+      "old_faith_friendly_chapel",
+      "ashen_covenant_hostile_pressure"
+    ]);
+  });
+
+  it("defines the first compact item affix set", () => {
+    expect(ITEM_AFFIXES.map((affix) => affix.id)).toEqual([
+      "sturdy",
+      "sharp",
+      "guarding",
+      "aether_touched",
+      "commanding",
+      "faithful",
+      "swift",
+      "embered",
+      "rangers"
+    ]);
+    ITEM_AFFIXES.forEach((affix) => {
+      expect(affix.allowedSlots.length).toBeGreaterThan(0);
+      expect(Object.keys(affix.statMods).length).toBeGreaterThan(0);
+      expect(affix.weight).toBeGreaterThan(0);
+    });
   });
 });

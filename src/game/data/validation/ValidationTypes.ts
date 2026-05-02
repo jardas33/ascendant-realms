@@ -8,6 +8,7 @@ export interface ValidationContext {
   heroClassIds: Set<string>;
   originIds: Set<string>;
   itemIds: Set<string>;
+  itemAffixIds: Set<string>;
   resourceIds: Set<string>;
   skillTreeIds: Set<string>;
   skillNodeIds: Set<string>;

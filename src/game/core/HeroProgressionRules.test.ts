@@ -49,6 +49,36 @@ describe("hero RPG progression rules", () => {
     expect(stats.maxMana).toBeGreaterThan(HERO_CLASS_BY_ID.arcanist.baseStats.maxMana);
   });
 
+  it("applies equipped item affix modifiers to live hero stats", () => {
+    const baseHero = createNewHeroSave("Mira", "warlord", "exiled_noble");
+    const instance = createItemInstance("weathered_command_sword", "test", "2026-05-01T00:00:00.000Z", {
+      affixes: ["sharp"]
+    });
+    const hero = {
+      ...baseHero,
+      inventory: [instance],
+      equipment: { weapon: instance.instanceId }
+    };
+
+    const before = calculateLiveHeroStats(
+      baseHero,
+      HERO_CLASS_BY_ID[hero.classId],
+      ORIGIN_BY_ID[hero.originId],
+      SKILL_NODE_BY_ID,
+      ITEM_BY_ID
+    );
+    const after = calculateLiveHeroStats(
+      hero,
+      HERO_CLASS_BY_ID[hero.classId],
+      ORIGIN_BY_ID[hero.originId],
+      SKILL_NODE_BY_ID,
+      ITEM_BY_ID
+    );
+
+    expect(after.damage - before.damage).toBe(6);
+    expect(after.command - before.command).toBe(1);
+  });
+
   it("equips only owned items and picks new battle rewards deterministically", () => {
     const hero = createNewHeroSave("Tamsin", "shepherd", "temple_orphan");
     const denied = equipItem(hero, "green_chapel_icon", ITEM_BY_ID);
@@ -119,6 +149,30 @@ describe("hero RPG progression rules", () => {
     expect(granted.hero.level).toBe(2);
     expect(granted.hero.skillPoints).toBe(1);
     expect(granted.levelUp.skillPointsGained).toBe(1);
+  });
+
+  it("rolls deterministic affixes when reward instances are generated for tests", () => {
+    const hero = createNewHeroSave("Vale", "warlord", "exiled_noble");
+    const granted = grantBattleRewards(
+      hero,
+      {
+        itemIds: ["scouts_bow"],
+        resources: {},
+        xp: 0
+      },
+      undefined,
+      {
+        itemById: ITEM_BY_ID,
+        deterministicAffixes: true,
+        acquiredAt: "2026-05-01T00:00:00.000Z"
+      }
+    );
+
+    expect(granted.grantedItemInstances).toHaveLength(1);
+    expect(granted.grantedItemInstances[0]).toMatchObject({
+      itemId: "scouts_bow",
+      affixes: ["sharp"]
+    });
   });
 
   it("keeps non-unique duplicate rewards as separate instances", () => {

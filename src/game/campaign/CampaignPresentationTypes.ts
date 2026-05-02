@@ -7,6 +7,26 @@ export interface CampaignNodeViewModel {
   selected: boolean;
 }
 
+export interface CampaignReputationRowViewModel {
+  factionId: string;
+  factionName: string;
+  value: number;
+  rankLabel: string;
+}
+
+export interface CampaignReputationEffectViewModel {
+  id: string;
+  factionId: string;
+  factionName: string;
+  name: string;
+  description: string;
+}
+
+export interface CampaignReputationViewModel {
+  rows: CampaignReputationRowViewModel[];
+  activeEffects: CampaignReputationEffectViewModel[];
+}
+
 export interface CampaignMapViewModel {
   heroSave: HeroSaveData;
   campaignSave: CampaignSaveData;
@@ -14,6 +34,7 @@ export interface CampaignMapViewModel {
   nodes: CampaignNodeViewModel[];
   progressSummary: string;
   campaignStateLabel: string;
+  reputation: CampaignReputationViewModel;
 }
 
 export function titleCase(value: string): string {

@@ -4,6 +4,7 @@ import type {
   BuildingDefinition,
   CampaignNodeDefinition,
   FactionDefinition,
+  ItemAffixDefinition,
   HeroClassDefinition,
   ItemDefinition,
   OriginDefinition,
@@ -21,6 +22,7 @@ import { CAMPAIGN_NODES } from "./campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
+import { ITEM_AFFIXES } from "./itemAffixes";
 import { ITEMS } from "./items";
 import { MAPS } from "./maps";
 import { ORIGINS } from "./origins";
@@ -41,6 +43,7 @@ export const ORIGIN_BY_ID: Record<string, OriginDefinition> = toIndex(ORIGINS);
 export const MAP_BY_ID: Record<string, BattleMapDefinition> = toIndex(MAPS);
 export const CAMPAIGN_NODE_BY_ID: Record<string, CampaignNodeDefinition> = toIndex(CAMPAIGN_NODES);
 export const FACTION_BY_ID: Record<string, FactionDefinition> = toIndex(FACTIONS);
+export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
 export const SKILL_NODE_BY_ID: Record<string, SkillNodeDefinition> = toIndex(SKILL_NODES);
 export const REWARD_TABLE_BY_ID: Record<string, RewardTableDefinition> = toIndex(REWARD_TABLES);

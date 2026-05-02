@@ -177,6 +177,10 @@
   color: #f1df9d;
 }
 
+.reward-card small.affix-line {
+  color: #9fd8c2;
+}
+
 .reward-state {
   display: inline-block;
   margin-left: 7px;

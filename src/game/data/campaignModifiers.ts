@@ -56,6 +56,16 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
     effects: {
       campaignResourceRewardMultiplier: 1.15
     }
+  },
+  {
+    id: "ashen_hostile_pressure",
+    name: "Ashen Hostility",
+    description: "Hostile Ashen Covenant reputation adds one extra Raider to Ashen battles.",
+    trigger: "next_ashen_battle",
+    durationLabel: "Reputation effect",
+    effects: {
+      extraEnemyUnitIds: ["raider"]
+    }
   }
 ];
 

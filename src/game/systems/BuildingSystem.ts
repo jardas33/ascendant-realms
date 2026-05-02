@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, ResourceBag } from "../core/GameTypes";
 import { payCost } from "../core/MathUtils";
 import { requireBuilding } from "../data/contentIndex";
+import { applyStrongholdBuildingEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import type { CaptureSite } from "../entities/CaptureSite";
 import { canPlaceBuilding, placementReasonText, type PlacementResult } from "./BuildingPlacementRules";
@@ -15,6 +16,7 @@ interface BuildingSystemOptions {
   onMessage: (message: string, x?: number, y?: number) => void;
   onConstructionStarted?: (building: Building) => void;
   onBuilt?: (building: Building) => void;
+  strongholdEffects?: StrongholdBattleEffects;
 }
 
 export class BuildingSystem {
@@ -22,6 +24,7 @@ export class BuildingSystem {
   private ghost?: Phaser.GameObjects.Rectangle;
   private ghostLabel?: Phaser.GameObjects.Text;
   placementMessage = "";
+  private firstConstructionBoostUsed = false;
 
   constructor(private readonly options: BuildingSystemOptions) {}
 
@@ -79,7 +82,11 @@ export class BuildingSystem {
     if (!this.pendingBuildingId || !this.ghost) {
       return;
     }
-    const definition = requireBuilding(this.pendingBuildingId);
+    const definition = applyStrongholdBuildingEffects(
+      requireBuilding(this.pendingBuildingId),
+      "player",
+      this.options.strongholdEffects ?? { watchtowerRangeMultiplier: 1 }
+    );
     const result = this.getPlacementResult(x, y, definition.id, resources);
     const valid = result.ok;
     this.ghost.setPosition(x, y);
@@ -98,7 +105,11 @@ export class BuildingSystem {
       return false;
     }
 
-    const definition = requireBuilding(this.pendingBuildingId);
+    const definition = applyStrongholdBuildingEffects(
+      requireBuilding(this.pendingBuildingId),
+      "player",
+      this.options.strongholdEffects ?? { watchtowerRangeMultiplier: 1 }
+    );
 
     const placement = this.getPlacementResult(x, y, definition.id, resources);
     if (!placement.ok) {
@@ -110,6 +121,7 @@ export class BuildingSystem {
     const building = new Building(this.options.scene, definition, "player", x, y, {
       constructionState: definition.constructionTimeSeconds > 0 ? "underConstruction" : "completed"
     });
+    this.applyFirstConstructionBoost(building);
     this.options.addBuilding(building);
     this.options.onConstructionStarted?.(building);
     if (building.isCompleted()) {
@@ -122,6 +134,15 @@ export class BuildingSystem {
     );
     this.cancelPlacement();
     return true;
+  }
+
+  private applyFirstConstructionBoost(building: Building): void {
+    const multiplier = this.options.strongholdEffects?.firstBuildingConstructionTimeMultiplier ?? 1;
+    if (this.firstConstructionBoostUsed || multiplier >= 1 || building.constructionTimeSeconds <= 0) {
+      return;
+    }
+    building.constructionTimeSeconds = Math.max(1, building.constructionTimeSeconds * multiplier);
+    this.firstConstructionBoostUsed = true;
   }
 
   private getPlacementResult(x: number, y: number, buildingId: string, resources: ResourceBag): PlacementResult {

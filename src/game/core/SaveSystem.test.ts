@@ -133,7 +133,7 @@ describe("calculateLevelFromXp", () => {
       townServiceClaimedIds: ["marcher_camp:purchase_emberglass_wand", "marcher_camp:purchase_emberglass_wand"],
       townServiceUseCounts: { "marcher_camp:buy_supplies": 2, bad: -1 },
       activeModifierIds: ["inspired_militia", "missing_modifier", "inspired_militia"],
-      strongholdUpgradeRanks: { training_yard_i: 1.8, missing_upgrade: 2, watch_post_i: -1 },
+      strongholdUpgradeRanks: { training_yard_i: 1.8, quartermaster_stores_ii: 1, missing_upgrade: 2, watch_post_i: -1 },
       resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       resourcesSpent: { crowns: 60, stone: -4, iron: 2, aether: 1 },
       selectedNodeId: "old_stone_road"
@@ -148,7 +148,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(normalized?.townServiceUseCounts).toEqual({ "marcher_camp:buy_supplies": 2 });
     expect(normalized?.activeModifierIds).toEqual(["inspired_militia"]);
-    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
+    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1, quartermaster_stores_ii: 1 });
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
     expect(normalized?.resourcesSpent).toEqual({ crowns: 60, stone: 0, iron: 2, aether: 1 });
   });
@@ -177,10 +177,10 @@ describe("calculateLevelFromXp", () => {
       ...createFallbackCampaignSave(),
       started: true,
       difficulty: "easy",
-      strongholdUpgradeIds: ["training_yard_i", "missing_upgrade", "training_yard_i"]
+      strongholdUpgradeIds: ["training_yard_i", "quartermaster_stores_ii", "missing_upgrade", "training_yard_i"]
     });
 
-    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
+    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1, quartermaster_stores_ii: 1 });
   });
 
   it("normalizes reputation defaults and clamps reputation values", () => {
@@ -283,6 +283,27 @@ describe("save version migration", () => {
     expect(loaded?.statistics).toEqual(v2.statistics);
   });
 
+  it("saves and loads reputation values without campaign migration fields", () => {
+    const hero = {
+      ...createFallbackHeroSave(),
+      factionReputation: {
+        free_marches: 50,
+        ashen_covenant: -50,
+        sylvan_concord: 0,
+        common_folk: 25,
+        old_faith: 25
+      }
+    };
+    const campaign = createFallbackCampaignSave();
+
+    expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+
+    expect(loaded?.hero.factionReputation).toMatchObject(hero.factionReputation);
+    expect(loaded?.campaign.activeModifierIds).toEqual([]);
+    expect(loaded?.campaign.strongholdUpgradeRanks).toEqual({});
+  });
+
   it("normalizes missing V2 fields into safe defaults", () => {
     const migrated = migrateSaveToCurrent({
       version: 2,
@@ -336,7 +357,11 @@ describe("save version migration", () => {
   it("saves and loads town purchases and campaign spending totals", () => {
     const hero = {
       ...createFallbackHeroSave(),
-      inventory: [createItemInstance("emberglass_wand", "test")]
+      inventory: [
+        createItemInstance("emberglass_wand", "test", "2026-05-01T00:00:00.000Z", {
+          affixes: ["aether_touched"]
+        })
+      ]
     };
     const campaign = {
       ...createFallbackCampaignSave(),
@@ -345,17 +370,18 @@ describe("save version migration", () => {
       resourcesSpent: { crowns: 55, stone: 0, iron: 0, aether: 0 },
       townServiceClaimedIds: ["marcher_camp:purchase_emberglass_wand"],
       townServiceUseCounts: { "marcher_camp:purchase_emberglass_wand": 1 },
-      strongholdUpgradeRanks: { training_yard_i: 1 }
+      strongholdUpgradeRanks: { training_yard_i: 1, quartermaster_stores_ii: 1 }
     };
 
     expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
     const loaded = SaveSystem.load();
 
     expect(loaded?.hero.inventory.map((instance) => instance.itemId)).toEqual(["emberglass_wand"]);
+    expect(loaded?.hero.inventory[0].affixes).toEqual(["aether_touched"]);
     expect(loaded?.campaign.resourcesSpent.crowns).toBe(55);
     expect(loaded?.campaign.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(loaded?.campaign.townServiceUseCounts).toEqual({ "marcher_camp:purchase_emberglass_wand": 1 });
-    expect(loaded?.campaign.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
+    expect(loaded?.campaign.strongholdUpgradeRanks).toEqual({ training_yard_i: 1, quartermaster_stores_ii: 1 });
   });
 
   it("rejects invalid JSON and invalid save shapes without clearing storage", () => {

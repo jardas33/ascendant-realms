@@ -10,6 +10,7 @@ import {
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { createNewHeroSave } from "../data/heroes";
+import { getReputationBattleLaunchModifiers, getReputationRank } from "../data/reputation";
 
 describe("campaign rules", () => {
   it("unlocks the first node and gates later nodes by prerequisites", () => {
@@ -19,6 +20,14 @@ describe("campaign rules", () => {
 
     expect(borderVillage && getCampaignNodeStatus(borderVillage, campaign)).toBe("available");
     expect(oldRoad && getCampaignNodeStatus(oldRoad, campaign)).toBe("locked");
+  });
+
+  it("calculates reputation ranks from simple thresholds", () => {
+    expect(getReputationRank(50).id).toBe("honored");
+    expect(getReputationRank(25).id).toBe("friendly");
+    expect(getReputationRank(0).id).toBe("neutral");
+    expect(getReputationRank(-25).id).toBe("disliked");
+    expect(getReputationRank(-50).id).toBe("hostile");
   });
 
   it("completes nodes and unlocks their next choices", () => {
@@ -284,6 +293,80 @@ describe("campaign rules", () => {
     expect(applied.campaign.resourcesSpent.crowns).toBe(30);
     expect(applied.campaign.activeModifierIds).toContain("well_rested");
     expect(applied.campaign.townServiceUseCounts["marcher_camp:rest_and_recovery"]).toBe(1);
+  });
+
+  it("discounts Marcher Camp services when Common Folk reputation is friendly", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp"],
+      resources: { crowns: 90, stone: 0, iron: 0, aether: 0 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      factionReputation: {
+        free_marches: 10,
+        ashen_covenant: -10,
+        sylvan_concord: 0,
+        common_folk: 25,
+        old_faith: 0
+      }
+    };
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const choice = node.choices!.find((entry) => entry.id === "rest_and_recovery")!;
+
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.campaign.resources.crowns).toBe(63);
+    expect(applied.campaign.resourcesSpent.crowns).toBe(27);
+  });
+
+  it("improves Chapel Aether rewards when Old Faith reputation is friendly", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      resources: { crowns: 120, stone: 80, iron: 0, aether: 0 },
+      completedNodeIds: ["old_stone_road", "aether_well_ruins"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins", "chapel_of_the_marches"],
+      nodeRewardsClaimedIds: []
+    });
+    const hero = {
+      ...createNewHeroSave("Aster", "shepherd", "temple_orphan"),
+      factionReputation: {
+        free_marches: 10,
+        ashen_covenant: -10,
+        sylvan_concord: 0,
+        common_folk: 0,
+        old_faith: 25
+      }
+    };
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "chapel_of_the_marches")!;
+    const choice = node.choices!.find((entry) => entry.id === "repair_chapel")!;
+
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.campaign.resources.aether).toBe(40);
+    expect(applied.hero.factionReputation.old_faith).toBe(31);
+  });
+
+  it("adds minor Ashen pressure when Ashen Covenant reputation is hostile", () => {
+    const hero = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      factionReputation: {
+        free_marches: 10,
+        ashen_covenant: -50,
+        sylvan_concord: 0,
+        common_folk: 0,
+        old_faith: 0
+      }
+    };
+    const ashenNode = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    expect(getReputationBattleLaunchModifiers(hero, ashenNode).map((modifier) => modifier.id)).toEqual([
+      "ashen_hostile_pressure"
+    ]);
   });
 
   it("blocks town services when resources are insufficient", () => {

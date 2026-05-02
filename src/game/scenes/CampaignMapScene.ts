@@ -17,8 +17,9 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { CAMPAIGN_MODIFIER_BY_ID, HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
+import { getReputationBattleLaunchModifiers } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
-import { formatChoiceRewardSummary } from "../campaign/CampaignChoicePanel";
+import { formatChoiceCostSummary, formatChoiceRewardSummary } from "../campaign/CampaignChoicePanel";
 import { createCampaignMapViewModel } from "../campaign/CampaignMapViewModel";
 import {
   canStartCampaignNode,
@@ -30,7 +31,6 @@ import {
 import { formatNodeRewardSummary, renderGuidanceMessage, renderNodeButton, renderNodeDetails } from "../campaign/CampaignNodePanel";
 import { escapeHtml, toCssColor } from "../campaign/CampaignPresentationTypes";
 import {
-  formatResourceRewards,
   renderActiveModifiers,
   renderCampaignResourceBank,
   renderReputation
@@ -139,7 +139,11 @@ export class CampaignMapScene extends Phaser.Scene {
       SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
       this.scene.start(SCENE_KEYS.battle, {
         launchRequest: createCampaignBattleLaunchRequest(this.heroSave, node, {
-          modifiers: [...modifierResult.launchModifiers, ...getStrongholdLaunchModifiers(this.campaignSave)]
+          modifiers: [
+            ...modifierResult.launchModifiers,
+            ...getReputationBattleLaunchModifiers(this.heroSave, node),
+            ...getStrongholdLaunchModifiers(this.campaignSave)
+          ]
         })
       });
       return;
@@ -164,7 +168,7 @@ export class CampaignMapScene extends Phaser.Scene {
   }
 
   private purchaseStrongholdUpgrade(upgradeId: string): void {
-    const result = purchaseStrongholdUpgrade(this.campaignSave, upgradeId);
+    const result = purchaseStrongholdUpgrade(this.campaignSave, upgradeId, this.heroSave);
     if (!result.ok) {
       this.message = result.reason ?? "That stronghold upgrade is locked.";
       this.render();
@@ -198,13 +202,13 @@ export class CampaignMapScene extends Phaser.Scene {
 
     this.heroSave = result.hero;
     this.campaignSave = result.campaign;
-    const rewards = formatChoiceRewardSummary(choice, this.heroSave);
-    const costs = formatResourceRewards(choice.costs ?? {});
+    const rewards = formatChoiceRewardSummary(choice, this.heroSave, node);
+    const costs = formatChoiceCostSummary({ node, choice, heroSave: this.heroSave });
     const unlocked = result.unlockedNodeIds.map((nodeId) => formatCampaignNodeList([nodeId]) || nodeId);
     const locked = result.lockedNodeIds.map((nodeId) => formatCampaignNodeList([nodeId]) || nodeId);
     const modifiers = result.grantedModifierIds.map((modifierId) => CAMPAIGN_MODIFIER_BY_ID[modifierId]?.name ?? modifierId);
     const verb = node.nodeType === "town" ? "used" : "chosen";
-    this.message = `${choice.label} ${verb}.${costs.length > 0 ? ` Spent ${costs.join(", ")}.` : ""}${rewards ? ` ${rewards}.` : ""}${modifiers.length > 0 ? ` Modifier gained: ${modifiers.join(", ")}.` : ""}${unlocked.length > 0 ? ` New path: ${unlocked.join(", ")}.` : ""}${locked.length > 0 ? ` Path closed: ${locked.join(", ")}.` : ""}`;
+    this.message = `${choice.label} ${verb}.${costs !== "None" ? ` Spent ${costs}.` : ""}${rewards ? ` ${rewards}.` : ""}${modifiers.length > 0 ? ` Modifier gained: ${modifiers.join(", ")}.` : ""}${unlocked.length > 0 ? ` New path: ${unlocked.join(", ")}.` : ""}${locked.length > 0 ? ` Path closed: ${locked.join(", ")}.` : ""}`;
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }
@@ -242,9 +246,9 @@ export class CampaignMapScene extends Phaser.Scene {
               ${this.renderHeroSummary()}
               <h2>Campaign Bank</h2>
               ${renderCampaignResourceBank(this.campaignSave)}
-              ${renderStrongholdPanel(this.campaignSave)}
+              ${renderStrongholdPanel(this.campaignSave, this.heroSave)}
               <h2>Reputation</h2>
-              ${renderReputation(this.heroSave)}
+              ${renderReputation(viewModel.reputation)}
               <h2>Active Modifiers</h2>
               ${renderActiveModifiers(this.campaignSave)}
               <h2>Nodes</h2>

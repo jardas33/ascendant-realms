@@ -11,12 +11,12 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-After the first Stronghold Development slice, the best next product step is still campaign depth: either deepen the Stronghold with a second small tier or add stronger node consequences around existing campaign routes. Keep workers, enemy construction, diplomacy, and broad faction-economy expansion parked until the first mini-campaign has more human-paced validation.
+After the compact Stronghold Development Tier II slice and the first reputation-effect hooks, the best next product step is human-paced validation of the existing mini-campaign routes. Keep workers, enemy construction, diplomacy screens, new factions, broad faction-economy expansion, and larger tech trees parked until the current campaign consequences feel good in play.
 
 Recommended focus:
 
 - Human-paced campaign QA for Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
-- Design a small campaign-depth slice around stronger node consequences, repeatable preparation decisions, or a second Stronghold tier with clear prerequisites.
+- Human-review the new reputation discounts, Chapel bonus, and Ashen hostile pressure before adding more consequence rules.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `HeroProgressionRules`, and `CampaignRules`.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
@@ -72,7 +72,8 @@ Recommended focus:
 - Locations. First pass includes battle, shrine, and event node handling.
 - Ashen Outpost now uses a dedicated fortress map as the current mini-campaign finale.
 - Simple data-driven event choices with requirements, costs, rewards, reputation changes, and node unlocks.
-- Stronghold Development v1 with five persistent campaign-resource upgrades and battle-launch effects.
+- Reputation ranks and small data-driven effects for Marcher Camp discounts, Stronghold Crown discounts, Chapel Aether bonuses, and Ashen hostile pressure.
+- Stronghold Development with five Tier I upgrades, five matching Tier II upgrades, prerequisite locks, campaign-resource spending, save-backed ranks, and battle-launch effects.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.
@@ -83,7 +84,7 @@ Recommended focus:
 - Holy orders.
 - Cursed lands.
 - Ancient threat encounters.
-- Faction reputation.
+- Broader faction reputation arcs beyond the current rank/effect hooks.
 - Alliances and betrayals.
 - Invasions.
 - Deeper random events and multi-step dialogue.

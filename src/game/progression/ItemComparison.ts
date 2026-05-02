@@ -1,5 +1,6 @@
-import type { BattleRewardResult, HeroBaseStats, HeroStatMods, ItemDefinition } from "../core/GameTypes";
-import { equipItem } from "../core/HeroProgressionRules";
+import type { BattleRewardResult, HeroBaseStats, HeroStatMods, ItemDefinition, ItemInstance } from "../core/GameTypes";
+import { calculateItemInstanceStatMods, equipItem, findItemInstance } from "../core/HeroProgressionRules";
+import { getItemAffixStatMods, getItemInstanceAffixes } from "../data/itemAffixes";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
 import { liveStatsFor } from "./HeroProgressionViewModel";
@@ -18,11 +19,17 @@ export const STAT_PREVIEW_KEYS: Array<keyof HeroBaseStats> = [
   "faith"
 ];
 
-export function previewEquipDelta(save: HeroSaveData, item: ItemDefinition, equipped: boolean, catalogs: HeroProgressionCatalogs): string {
+export function previewEquipDelta(
+  save: HeroSaveData,
+  item: ItemDefinition,
+  equipped: boolean,
+  catalogs: HeroProgressionCatalogs,
+  instanceId?: string
+): string {
   if (equipped) {
     return "Currently equipped.";
   }
-  const instance = save.inventory.find((entry) => entry.itemId === item.id);
+  const instance = instanceId ? findItemInstance(save.inventory, instanceId) : save.inventory.find((entry) => entry.itemId === item.id);
   const result = instance ? equipItem(save, instance.instanceId, catalogs.itemById) : { ok: false, hero: save, message: "Item is not in this hero's inventory." };
   if (!result.ok) {
     return result.message;
@@ -40,6 +47,23 @@ export function formatStatMods(mods: HeroStatMods): string {
     .map(([key, value]) => `${value && value > 0 ? "+" : ""}${value} ${statLabel(key)}`)
     .join(", ");
   return formatted || "No stat modifiers";
+}
+
+export function formatItemBaseStats(item: ItemDefinition): string {
+  return `Base: ${formatStatMods(item.statMods)}`;
+}
+
+export function formatItemAffixes(item: ItemDefinition, instance: ItemInstance): string {
+  const affixes = getItemInstanceAffixes(item, instance);
+  return affixes.length > 0 ? `Affixes: ${affixes.map((affix) => affix.name).join(", ")}` : "Affixes: None";
+}
+
+export function formatItemAffixStats(item: ItemDefinition, instance: ItemInstance): string {
+  return `Affix stats: ${formatStatMods(getItemAffixStatMods(item, instance))}`;
+}
+
+export function formatItemTotalStats(item: ItemDefinition, instance: ItemInstance): string {
+  return `Total: ${formatStatMods(calculateItemInstanceStatMods(item, instance))}`;
 }
 
 export function formatResourceRewards(resources: BattleRewardResult["resources"]): string {
