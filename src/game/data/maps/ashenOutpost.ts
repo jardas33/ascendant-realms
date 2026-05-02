@@ -200,8 +200,8 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
           },
           {
             id: "defeat_outpost_captain",
-            name: "Defeat the Outpost Captain",
-            description: "Defeat the Ashen commander guarding the upper ridge.",
+            name: "Defeat Captain Malrec",
+            description: "Defeat Captain Malrec, the Ashen commander guarding the upper ridge.",
             type: "defeat_unit",
             targetId: "enemy_commander"
           }

@@ -119,7 +119,7 @@ Training and research queues pay costs immediately. Training can be canceled for
 
 Units have HP, damage, range, cooldown, speed, armor, cost, train time, role, and XP value. The first roster is intentionally small: Militia, Ranger, Acolyte, Raider, Hexer, and Brute.
 
-Unit Veterancy V1 gives ordinary player battle units a lightweight runtime progression layer. Units track a battle-local instance ID, unit type, XP, rank, kills, damage dealt, and survival state. They earn small XP from dealing damage, getting kills, and surviving victory. Ranks are Recruit, Seasoned, Veteran, and Elite; bonuses are deliberately modest at +5%, +10%, and +15% HP/damage, with +1 armor starting at Veteran. Rank bonuses apply immediately in battle, selected-unit UI shows rank/XP/kills, rank-up feedback appears in combat, and the Results screen summarizes Notable Veterans.
+Unit Veterancy V1 gives ordinary player battle units a lightweight runtime progression layer. Units track a battle-local instance ID, unit type, XP, rank, kills, damage dealt, and survival state. They earn small XP from dealing damage, getting kills, and surviving victory. Ranks are Recruit, Seasoned, Veteran, and Elite; bonuses are deliberately modest at +4%, +8%, and +12% HP/damage, with +1 armor at Elite. Rank bonuses apply immediately in battle, selected-unit UI shows rank/XP/kills, rank-up feedback appears in combat, and the Results screen summarizes Notable Veterans.
 
 Retinue Camp V1 is the compact save-backed layer on top of veterancy. After a campaign victory, surviving player-owned non-hero, non-building units that are Seasoned or better can be added from Results. Capacity starts at 2 active units, and Training Yard II raises it to 3. A saved retinue record stores unit type, optional name, rank, XP, kills, source battle, acquired timestamp, and active status. The Campaign Map shows a Retinue Camp section with capacity, saved units, rank/type, and a dismiss action.
 
@@ -138,9 +138,11 @@ Current personalities:
 
 Personalities adjust preferred units, training plan, attack and expansion timing, wave caps, defense radius, defensive reserves, capture-site protection, and commander participation timing. They do not yet understand true scouting paths, counter-builds, retreat micro, or rebuilding destroyed production.
 
+Enemy Hero / Rival Commander V1 adds a compact data-driven identity layer to important Ashen battles. Campaign nodes can reference an `enemyHeroId`, and the existing `enemy_commander` spawn becomes the named rival for that launch while preserving the same delayed commander AI behavior. The first rivals are Gorak Emberhand on Bandit Hillfort, Veyra of the Cinders on Aether Well Ruins, and Captain Malrec on Ashen Outpost. They use small ability packages, grant XP when defeated, can complete commander objectives such as Ashen Outpost's Captain Malrec objective, appear in campaign preview/battle start/scout feedback/results, and report telemetry fields in the playtest simulator. V1 does not add enemy construction, workers, new factions, diplomacy, procedural campaign, or raid-boss scale encounters.
+
 ## 14. Data-Driven Content Philosophy
 
-Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, items, item affixes, campaign nodes, reputation effects, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
+Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, items, item affixes, campaign nodes, enemy heroes, reputation effects, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
 
 Manual art assets live in the manual asset pipeline. The UI art kit is also data-driven: reusable frame, button, divider, slot, minimap, victory, and defeat panel assets are registered in `tools/manual-asset-pipeline/assetRegistry.ts`, discovered through the manifest, and exposed to CSS as optional variables. The game must keep working without those files.
 
@@ -164,6 +166,7 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Weighted item rewards, modest randomized item affixes, item instance inventory, weapon/armor/trinket equipment, equip previews, unique duplicate conversion, first-clear reward tracking, and reward XP.
 - Unit Veterancy V1: battle-local unit XP, Recruit/Seasoned/Veteran/Elite ranks, modest stat bonuses, selected-unit rank display, rank-up feedback, and victory Results veteran summaries.
 - Retinue Camp V1: up to 2 saved veteran units by default, +1 capacity from Training Yard II, Campaign Map display/dismiss, campaign battle deployment, save/load, and permanent removal on retinue death.
+- Enemy Hero / Rival Commander V1: three named Ashen commanders, data validation, campaign node preview, battle start/scout feedback, modest combat abilities, XP/objective/results credit, and simulator telemetry.
 - Basic data-configured enemy AI.
 - First-pass faction asymmetry: Free Marches baseline identity, Ashen Covenant burn/status pressure, Ashen Fury damage spikes, Smoke March wave speed, and faction style display in setup/campaign/battle start.
 - Data validation tests for content references.

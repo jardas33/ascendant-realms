@@ -28,6 +28,7 @@ import {
 import {
   requireBuilding,
   requireCampaignNode,
+  requireEnemyHero,
   requireHeroClass,
   requireOrigin,
   requireUnit,
@@ -125,6 +126,10 @@ export interface PlaytestTelemetry {
   heroXpGained: number;
   finalArmySize: number;
   enemyWavesSurvived: number;
+  enemyHeroId: string | null;
+  enemyHeroDefeated: boolean;
+  timeEnemyHeroJoinedAttack: number | null;
+  lossesInvolvingEnemyHero: number;
   objectiveCompletion: string[];
   rewardResult: PlaytestRewardTelemetry | null;
   commandLog: string[];
@@ -596,6 +601,24 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Retinue telemetry now covers no retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.");
   lines.push("- The simulator now applies the same active retinue capacity used by campaign launches: 2 units by default, +1 only after Training Yard II is purchased.");
   lines.push("- Unit Veterancy thresholds were raised to 55 / 130 / 230 XP, rank stat multipliers were softened to +4% / +8% / +12%, and the armor bonus now starts at Elite.");
+  lines.push("- Enemy Hero V1 telemetry now records assigned rival commander id, defeated state, attack-join timing, and losses involving the rival.");
+  lines.push("");
+  lines.push("## Enemy Hero Balance Pass Result");
+  lines.push("");
+  lines.push("- The 2026-05-02 telemetry-based enemy hero pass applied no numeric gameplay changes because rival commanders are relevant without creating structural `too_easy` or `too_hard` nodes.");
+  lines.push("- Old Stone Road remains unassigned to an enemy hero: all 36 Old Stone Road simulations still win, and adding a rival there would risk making the early Easy lane noisy before the player has seen the mid-campaign commander pattern.");
+  lines.push("- Veyra of the Cinders on Aether Well Ruins appears in 36 runs, is defeated in 24, joins attacks around 10:31-10:32 in 17 slow or retinue-assisted runs, and is involved in 12 player losses. Safe Beginner still wins, so her HP, damage, Hexfire Bolt range/cooldown, XP reward, and map assignment remain unchanged.");
+  lines.push("- Gorak Emberhand on Bandit Hillfort appears in 36 runs, is defeated in 13, joins attacks around 11:40-11:41 in 12 Greedy Economy runs, and is involved in 12 player losses. His pressure is meaningful but not an early rush, so his HP, damage, Ember Strike/Rally Raiders tuning, XP reward, and Bandit Hillfort assignment remain unchanged.");
+  lines.push("- Captain Malrec on Ashen Outpost appears in 36 runs, is defeated in all 36, joins attacks around 10:41-10:42 in 14 slow runs, and is involved in 14 player losses. Ashen remains a milestone because no-retinue and many Stronghold paths still produce timeouts, while mixed retinue sweeps remain human-review rather than structural `too_easy`.");
+  lines.push("- Retinue and Stronghold paths make some Ashen outcomes stronger, but the commander data does not isolate a rival-specific overpowered or unfair pattern; keep deathless mixed-retinue Ashen sweeps under human review before buffing Malrec or nerfing retinue-adjacent interactions.");
+  lines.push("");
+  lines.push("## Retinue Balance Pass Result");
+  lines.push("");
+  lines.push("- The 2026-05-02 conservative retinue balance pass applied no numeric gameplay changes because telemetry shows no structural `too_easy` or `too_hard` nodes.");
+  lines.push("- Retained capacity at 2 active units by default and +1 only from Training Yard II; mixed retinue profiles are strong enough for human review, but no-retinue Ashen Outpost remains beatable.");
+  lines.push("- Retained Seasoned+ eligibility, 55 / 130 / 230 XP thresholds, +4% / +8% / +12% rank bonuses, Elite-only +1 armor, and permanent retinue removal on death.");
+  lines.push("- Retained Quartermaster II interaction unchanged; the mixed-retinue Quartermaster profile is strong but still classified as human-review rather than structural `too_easy`.");
+  lines.push("- Next balance action is human-paced Ashen Outpost review with no retinue, one Veteran, mixed retinue, Training Yard II, and Quartermaster II before changing numbers.");
   lines.push("");
   lines.push("## Stronghold Profile Verdicts");
   lines.push("");
@@ -631,14 +654,14 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Profile | Node | Script | Upgrades | Retinue | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
+    "| Profile | Node | Script | Upgrades | Retinue | Enemy hero | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
       `| ${run.strongholdProfileName} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
         run.strongholdUpgradeIds
-      )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
+      )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatEnemyHeroTelemetry(run)} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
         run.startingResources
       )} | ${run.battleResult} | ${formatTime(run.battleDurationSeconds)} | ${
         run.firstWaveSurvived ? "yes" : "no"
@@ -767,6 +790,10 @@ class ScriptedBattleDriver {
         buildingsBuilt: [],
         upgradesResearched: [],
         enemyWavesSurvived: 0,
+        enemyHeroId: options.node.enemyHeroId ?? null,
+        enemyHeroDefeated: false,
+        timeEnemyHeroJoinedAttack: null,
+        lossesInvolvingEnemyHero: 0,
         objectiveCompletion: []
       }
     };
@@ -945,6 +972,7 @@ class ScriptedBattleDriver {
       this.state.ended = true;
       this.state.telemetry.battleResult = "victory";
       this.state.telemetry.objectiveCompletion.push("destroy_enemy_stronghold");
+      this.defeatEnemyHeroIfPresent();
       this.completeSecondaryObjectivesForVictory();
       this.log("destroyed enemy Stronghold");
       return;
@@ -986,6 +1014,19 @@ class ScriptedBattleDriver {
     }
     for (let index = 0; index < this.state.telemetry.enemyWavesSurvived; index += 1) {
       runtime.recordEnemyWaveSurvived();
+    }
+    if (this.state.telemetry.enemyHeroId) {
+      const enemyHero = requireEnemyHero(this.state.telemetry.enemyHeroId);
+      runtime.recordEnemyHeroPresence(enemyHero.id, enemyHero.name);
+      if (this.state.telemetry.timeEnemyHeroJoinedAttack !== null) {
+        runtime.recordEnemyHeroJoinedAttack(enemyHero.id, this.state.telemetry.timeEnemyHeroJoinedAttack);
+      }
+      for (let index = 0; index < this.state.telemetry.lossesInvolvingEnemyHero; index += 1) {
+        runtime.recordEnemyHeroPressure(enemyHero.id, enemyHero.name);
+      }
+      if (this.state.telemetry.enemyHeroDefeated) {
+        runtime.recordEnemyHeroDefeated(enemyHero.id, enemyHero.name, this.state.time);
+      }
     }
     this.state.telemetry.objectiveCompletion.forEach((objectiveId) => runtime.recordSecondaryObjective(objectiveId));
     if (this.state.telemetry.timeFirstSiteCaptured !== null) {
@@ -1107,6 +1148,9 @@ class ScriptedBattleDriver {
         unitIds: wave,
         firstWave: this.state.enemyWavesLaunched === 1
       });
+      if (wave.includes("enemy_commander") && this.state.node.enemyHeroId) {
+        this.state.telemetry.timeEnemyHeroJoinedAttack ??= Math.round(this.state.time);
+      }
       this.log(`enemy wave ${this.state.enemyWavesLaunched} launched (${wave.join(", ")})`);
       this.state.nextEnemyWaveAt += this.state.enemyConfig.attackInterval;
     }
@@ -1120,11 +1164,14 @@ class ScriptedBattleDriver {
 
   private resolveEnemyContact(contact: PendingEnemyContact): void {
     this.state.telemetry.timeFirstEnemyContact ??= Math.round(this.state.time);
-    const waveStrength = contact.unitIds.reduce((total, unitId) => total + unitStrength(requireUnit(unitId)), 0);
+    const waveStrength = contact.unitIds.reduce((total, unitId) => total + this.enemyUnitStrength(unitId), 0);
     const defenseStrength = this.playerDefenseStrength();
     const ratio = waveStrength / Math.max(1, defenseStrength);
+    const lossesBefore = this.state.telemetry.unitsLost;
+    const enemyHeroInvolved = contact.unitIds.includes("enemy_commander") && Boolean(this.state.node.enemyHeroId);
     if (ratio > 1.42) {
       this.loseUnits(this.nonHeroArmySize());
+      this.recordEnemyHeroLosses(enemyHeroInvolved, lossesBefore);
       this.state.result = "defeat";
       this.state.ended = true;
       this.state.telemetry.battleResult = "defeat";
@@ -1136,6 +1183,10 @@ class ScriptedBattleDriver {
     }
     const losses = Math.min(this.nonHeroArmySize(), Math.max(0, Math.floor(ratio * 2.4)));
     this.loseUnits(losses);
+    this.recordEnemyHeroLosses(enemyHeroInvolved, lossesBefore);
+    if (enemyHeroInvolved) {
+      this.state.telemetry.enemyHeroDefeated = true;
+    }
     this.state.telemetry.enemyWavesSurvived += 1;
     if (contact.firstWave) {
       this.state.telemetry.firstWaveSurvived = true;
@@ -1165,7 +1216,7 @@ class ScriptedBattleDriver {
     ) {
       maxWave = Math.min(maxWave, FIRST_MATCH_TUTORIAL_PROTECTION.earlyAttackMaxWaveSize);
     }
-    const candidates = this.state.enemyArmy.filter((unitId) => phase.enemy.allowedAttackUnitIds.includes(unitId));
+    const candidates = this.state.enemyArmy.filter((unitId) => this.canEnemyUnitJoinAttack(unitId, phase));
     if (candidates.length < Math.min(this.state.enemyConfig.minAttackArmySize, maxWave)) {
       return [];
     }
@@ -1207,6 +1258,43 @@ class ScriptedBattleDriver {
     return unitId;
   }
 
+  private canEnemyUnitJoinAttack(unitId: string, phase: ReturnType<typeof getBattlePhase>): boolean {
+    if (!phase.enemy.allowedAttackUnitIds.includes(unitId)) {
+      return false;
+    }
+    if (unitId !== "enemy_commander") {
+      return true;
+    }
+    const canJoinFirstAttack = this.state.personality.commander.joinsFirstAttack || this.state.enemyWavesLaunched > 0;
+    return canJoinFirstAttack && phase.enemy.commanderAllowed && this.state.time >= this.state.difficulty.commanderJoinDelay;
+  }
+
+  private enemyUnitStrength(unitId: string): number {
+    if (unitId === "enemy_commander" && this.state.node.enemyHeroId) {
+      return unitStrengthFromStats(requireEnemyHero(this.state.node.enemyHeroId).stats);
+    }
+    return unitStrength(requireUnit(unitId));
+  }
+
+  private recordEnemyHeroLosses(enemyHeroInvolved: boolean, lossesBefore: number): void {
+    if (!enemyHeroInvolved) {
+      return;
+    }
+    const losses = Math.max(0, this.state.telemetry.unitsLost - lossesBefore);
+    this.state.telemetry.lossesInvolvingEnemyHero += losses;
+  }
+
+  private defeatEnemyHeroIfPresent(): void {
+    if (!this.state.node.enemyHeroId || !this.state.enemyArmy.includes("enemy_commander")) {
+      return;
+    }
+    this.state.telemetry.enemyHeroDefeated = true;
+    const index = this.state.enemyArmy.indexOf("enemy_commander");
+    if (index >= 0) {
+      this.state.enemyArmy.splice(index, 1);
+    }
+  }
+
   private completeSecondaryObjectivesForVictory(): void {
     this.state.map.scenario.objectives.secondaryObjectives?.forEach((objective) => {
       if (objective.type === "capture_site" && !this.hasCaptured(objective.targetId)) {
@@ -1235,7 +1323,7 @@ class ScriptedBattleDriver {
     const reserveLimit = Math.max(3, this.state.enemyConfig.defenseSquadSize);
     const reserve = this.state.enemyArmy
       .slice(0, reserveLimit)
-      .reduce((total, unitId) => total + unitStrength(requireUnit(unitId)) * 0.32, 0);
+      .reduce((total, unitId) => total + this.enemyUnitStrength(unitId) * 0.32, 0);
     const fortressBonus = this.fortressApproachBonus();
     return 78 + towerCount * 34 + reserve + fortressBonus;
   }
@@ -1888,6 +1976,16 @@ function formatUpgradeList(upgradeIds: StrongholdUpgradeId[]): string {
 
 function formatRetinueTelemetry(unit: RetinueUnitSaveData): string {
   return `${getUnitVeterancyRank(unit.rank).name} ${titleCase(unit.unitTypeId)}`;
+}
+
+function formatEnemyHeroTelemetry(run: PlaytestTelemetry): string {
+  if (!run.enemyHeroId) {
+    return "-";
+  }
+  const joined = run.timeEnemyHeroJoinedAttack === null ? "held" : `joined ${formatTime(run.timeEnemyHeroJoinedAttack)}`;
+  const defeated = run.enemyHeroDefeated ? "defeated" : "alive";
+  const losses = run.lossesInvolvingEnemyHero > 0 ? `, losses ${run.lossesInvolvingEnemyHero}` : "";
+  return `${run.enemyHeroId} ${defeated}, ${joined}${losses}`;
 }
 
 function listLine(label: string, values: string[]): string {

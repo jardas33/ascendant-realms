@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
+import { createEnemyHeroUnitDefinition, ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { createUnitVeterancyState } from "../data/unitVeterancy";
 import { Building } from "../entities/Building";
@@ -60,7 +61,15 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
     if (spawn.team === "enemy" && !enemyStartingSpawns.has(spawn.id)) {
       return;
     }
-    spawnUnit({ scene, addUnit, unitId: spawn.unitId, team: spawn.team, x: spawn.x, y: spawn.y });
+    spawnUnit({
+      scene,
+      addUnit,
+      unitId: spawn.unitId,
+      team: spawn.team,
+      x: spawn.x,
+      y: spawn.y,
+      enemyHeroId: spawn.team === "enemy" && spawn.unitId === "enemy_commander" ? launch.request.enemyHeroId : undefined
+    });
   });
   spawnLaunchModifierUnits({ scene, activeMap, launch, addUnit });
   spawnRetinueUnits({ scene, activeMap, launch, addUnit });
@@ -108,8 +117,23 @@ function spawnUnit(options: {
   x: number;
   y: number;
   id?: string;
+  enemyHeroId?: string;
 }): Unit {
-  const unit = new Unit(options.scene, requireUnit(options.unitId), options.team, options.x, options.y, { id: options.id });
+  const baseDefinition = requireUnit(options.unitId);
+  const enemyHero = options.enemyHeroId ? ENEMY_HERO_BY_ID[options.enemyHeroId] : undefined;
+  const unit = new Unit(
+    options.scene,
+    enemyHero ? createEnemyHeroUnitDefinition(enemyHero, baseDefinition) : baseDefinition,
+    options.team,
+    options.x,
+    options.y,
+    { id: options.id }
+  );
+  if (enemyHero) {
+    unit.enemyHeroId = enemyHero.id;
+    unit.enemyHeroName = enemyHero.name;
+    unit.enemyHeroTitle = enemyHero.title;
+  }
   options.addUnit(unit);
   return unit;
 }

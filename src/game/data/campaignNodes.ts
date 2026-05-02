@@ -136,6 +136,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
     aiPersonalityId: "hexfire_cult",
+    enemyHeroId: "veyra_cinders",
     prerequisites: ["old_stone_road"],
     rewards: {
       xp: 80,
@@ -155,6 +156,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
     aiPersonalityId: "fortress_keeper",
+    enemyHeroId: "gorak_emberhand",
     prerequisites: ["old_stone_road"],
     rewards: {
       xp: 80,
@@ -297,6 +299,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     mapId: "ashen_outpost",
     enemyFactionId: "ashen_covenant",
     aiPersonalityId: "hexfire_cult",
+    enemyHeroId: "captain_malrec",
     prerequisites: ["bandit_hillfort", "chapel_of_the_marches"],
     rewards: {
       xp: 100,

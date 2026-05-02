@@ -55,6 +55,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -192,6 +196,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -321,6 +329,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -448,6 +460,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -589,6 +605,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -723,6 +743,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -836,28 +860,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -922,14 +950,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -984,6 +1009,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -1046,11 +1075,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -1060,7 +1089,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -1112,6 +1141,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -1159,7 +1192,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -1211,6 +1244,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -1296,7 +1333,7 @@
         "6:16 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 193."
+        "Attack failed at 5:38: strength 166 into 194."
       ]
     },
     {
@@ -1350,20 +1387,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -1413,17 +1454,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:57: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -1475,6 +1514,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -1577,6 +1620,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -1716,6 +1763,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -1772,9 +1823,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -1840,6 +1891,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -1892,9 +1947,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -1967,6 +2022,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2108,6 +2167,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2241,6 +2304,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2372,6 +2439,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2517,6 +2588,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2655,6 +2730,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -2772,28 +2851,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -2858,14 +2941,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -2924,6 +3004,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -2986,11 +3070,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -3000,7 +3084,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -3056,6 +3140,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -3103,7 +3191,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -3159,6 +3247,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -3244,7 +3336,7 @@
         "6:16 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 193."
+        "Attack failed at 5:38: strength 166 into 194."
       ]
     },
     {
@@ -3302,20 +3394,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -3365,17 +3461,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:57: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -3431,6 +3525,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -3541,6 +3639,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -3688,6 +3790,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -3742,9 +3848,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -3818,6 +3924,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -3947,6 +4057,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4088,6 +4202,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4221,6 +4339,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4352,6 +4474,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4497,6 +4623,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4635,6 +4765,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -4754,28 +4888,32 @@
       "timeFirstEnemyWarning": 146,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -4840,14 +4978,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -4908,6 +5043,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -4970,11 +5109,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -4984,7 +5123,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -5042,6 +5181,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -5089,7 +5232,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -5145,6 +5288,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -5230,7 +5377,7 @@
         "6:16 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 193."
+        "Attack failed at 5:38: strength 166 into 194."
       ]
     },
     {
@@ -5288,20 +5435,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -5351,17 +5502,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:57: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -5417,6 +5566,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -5523,6 +5676,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -5666,6 +5823,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -5722,9 +5883,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -5794,6 +5955,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -5846,9 +6011,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -5921,6 +6086,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6062,6 +6231,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6195,6 +6368,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6326,6 +6503,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6471,6 +6652,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6609,6 +6794,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -6726,28 +6915,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -6812,14 +7005,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -6878,6 +7068,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -6940,11 +7134,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -6954,7 +7148,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -7010,6 +7204,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -7057,7 +7255,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -7120,6 +7318,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -7207,7 +7409,7 @@
         "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:29: strength 170 into 193."
+        "Attack failed at 5:29: strength 170 into 194."
       ]
     },
     {
@@ -7272,20 +7474,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 701,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 807,
+      "battleDurationSeconds": 729,
       "resourcesFloated": {
-        "crowns": 4882,
-        "stone": 2935,
-        "iron": 2314,
-        "aether": 1649
+        "crowns": 4338,
+        "stone": 2649,
+        "iron": 2080,
+        "aether": 1467
       },
       "peakResourcesFloated": {
-        "crowns": 4882,
-        "stone": 2935,
-        "iron": 2314,
-        "aether": 1649
+        "crowns": 4338,
+        "stone": 2649,
+        "iron": 2080,
+        "aether": 1467
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -7335,17 +7541,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:54: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:54: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -7408,6 +7612,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 572,
       "resourcesFloated": {
@@ -7455,7 +7663,7 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)"
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)"
       ],
       "structuralNotes": [
         "Attack failed at 1:16: strength 141 into 192.",
@@ -7525,6 +7733,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -7673,6 +7885,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 642,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -7729,9 +7945,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -7798,7 +8014,7 @@
       "timeFirstEnemyContact": 251,
       "firstWaveSurvived": true,
       "unitsTrained": 5,
-      "unitsLost": 9,
+      "unitsLost": 8,
       "buildingsBuilt": [
         "barracks",
         "watchtower"
@@ -7807,6 +8023,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 642,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -7823,7 +8043,7 @@
       },
       "heroLevel": 3,
       "heroXpGained": 0,
-      "finalArmySize": 3,
+      "finalArmySize": 4,
       "rewardResult": null,
       "commandLog": [
         "0:00 select Command Hall",
@@ -7861,9 +8081,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -7938,6 +8158,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8081,6 +8305,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8216,6 +8444,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8349,6 +8581,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8496,6 +8732,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8636,6 +8876,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -8755,28 +8999,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -8841,14 +9089,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -8909,6 +9154,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -8971,11 +9220,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -8985,7 +9234,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -9043,6 +9292,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -9090,7 +9343,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -9155,6 +9408,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -9242,7 +9499,7 @@
         "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:29: strength 170 into 193."
+        "Attack failed at 5:29: strength 170 into 194."
       ]
     },
     {
@@ -9309,20 +9566,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 701,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 807,
+      "battleDurationSeconds": 729,
       "resourcesFloated": {
-        "crowns": 4882,
-        "stone": 2935,
-        "iron": 2314,
-        "aether": 1649
+        "crowns": 4338,
+        "stone": 2649,
+        "iron": 2080,
+        "aether": 1467
       },
       "peakResourcesFloated": {
-        "crowns": 4882,
-        "stone": 2935,
-        "iron": 2314,
-        "aether": 1649
+        "crowns": 4338,
+        "stone": 2649,
+        "iron": 2080,
+        "aether": 1467
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -9372,17 +9633,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:54: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:54: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -9447,6 +9706,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 572,
       "resourcesFloated": {
@@ -9494,7 +9757,7 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)"
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)"
       ],
       "structuralNotes": [
         "Attack failed at 1:16: strength 141 into 192.",
@@ -9568,6 +9831,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -9720,6 +9987,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 642,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -9776,9 +10047,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -9849,7 +10120,7 @@
       "timeFirstEnemyContact": 251,
       "firstWaveSurvived": true,
       "unitsTrained": 5,
-      "unitsLost": 9,
+      "unitsLost": 8,
       "buildingsBuilt": [
         "barracks",
         "watchtower"
@@ -9858,6 +10129,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 642,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -9874,7 +10149,7 @@
       },
       "heroLevel": 3,
       "heroXpGained": 0,
-      "finalArmySize": 3,
+      "finalArmySize": 4,
       "rewardResult": null,
       "commandLog": [
         "0:00 select Command Hall",
@@ -9912,9 +10187,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -9987,6 +10262,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10128,6 +10407,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10261,6 +10544,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10392,6 +10679,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10537,6 +10828,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10675,6 +10970,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -10792,28 +11091,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -10878,14 +11181,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -10944,6 +11244,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -11006,11 +11310,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -11020,7 +11324,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -11076,6 +11380,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -11123,7 +11431,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -11181,6 +11489,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -11266,7 +11578,7 @@
         "6:16 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 168 into 193."
+        "Attack failed at 5:38: strength 168 into 194."
       ]
     },
     {
@@ -11327,6 +11639,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 9,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -11389,11 +11705,11 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)",
         "12:08 survived enemy wave 7",
         "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)",
         "13:26 survived enemy wave 8",
@@ -11401,7 +11717,7 @@
         "14:44 survived enemy wave 9"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 177 into 193."
+        "Attack failed at 4:57: strength 177 into 194."
       ]
     },
     {
@@ -11459,6 +11775,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -11565,6 +11885,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -11708,6 +12032,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -11764,9 +12092,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -11836,6 +12164,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -11888,9 +12220,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -11965,6 +12297,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12108,6 +12444,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12243,6 +12583,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12376,6 +12720,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12523,6 +12871,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12663,6 +13015,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -12782,28 +13138,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 10,
-      "unitsLost": 2,
+      "unitsTrained": 9,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
-      "enemyWavesSurvived": 3,
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 377,
+      "battleDurationSeconds": 373,
       "resourcesFloated": {
-        "crowns": 138,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "crowns": 164,
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1477,
-        "iron": 244,
-        "aether": 299
+        "stone": 1455,
+        "iron": 264,
+        "aether": 285
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -12868,14 +13228,11 @@
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
         "5:54 queue Militia",
         "5:58 trained Militia",
-        "5:58 queue Militia",
-        "6:02 trained Militia",
-        "6:02 attack enemy base (safe beginner second push)",
-        "6:15 survived enemy wave 3",
-        "6:16 destroyed enemy Stronghold"
+        "5:58 attack enemy base (safe beginner second push)",
+        "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 186."
+        "Attack failed at 5:38: strength 166 into 183."
       ]
     },
     {
@@ -12936,6 +13293,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -12998,11 +13359,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -13012,7 +13373,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 186."
+        "Attack failed at 4:57: strength 174 into 183."
       ]
     },
     {
@@ -13070,6 +13431,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -13117,7 +13482,7 @@
         "7:26 survived enemy wave 4"
       ],
       "structuralNotes": [
-        "Attack failed at 7:30: strength 97 into 185."
+        "Attack failed at 7:30: strength 97 into 181."
       ]
     },
     {
@@ -13175,6 +13540,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -13260,7 +13629,7 @@
         "6:16 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:38: strength 166 into 193."
+        "Attack failed at 5:38: strength 166 into 194."
       ]
     },
     {
@@ -13320,20 +13689,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4822,
-        "stone": 2895,
-        "iron": 2294,
-        "aether": 1625
+        "crowns": 4278,
+        "stone": 2609,
+        "iron": 2060,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -13383,17 +13756,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:57: strength 174 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:57: strength 174 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -13451,6 +13822,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 451,
       "resourcesFloated": {
@@ -13566,6 +13941,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -13718,6 +14097,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 642,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -13772,9 +14155,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -13853,6 +14236,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -13980,6 +14367,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14114,6 +14505,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14243,6 +14638,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14368,6 +14767,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14505,6 +14908,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14636,6 +15043,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14756,6 +15167,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -14837,7 +15252,7 @@
         "6:00 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:25: strength 171 into 186."
+        "Attack failed at 5:25: strength 171 into 183."
       ]
     },
     {
@@ -14894,6 +15309,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -14954,11 +15373,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -14968,7 +15387,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:53: strength 175 into 186."
+        "Attack failed at 4:53: strength 175 into 183."
       ]
     },
     {
@@ -15022,6 +15441,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 6,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 632,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -15067,15 +15490,15 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
         "10:26 attack enemy base (fast army follow-up)",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)"
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 1:14: strength 142 into 184.",
+        "Attack failed at 1:14: strength 142 into 180.",
         "Attack failed at 10:46: strength 48 into 178."
       ]
     },
@@ -15130,6 +15553,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -15213,7 +15640,7 @@
         "6:12 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:25: strength 171 into 193."
+        "Attack failed at 5:25: strength 171 into 194."
       ]
     },
     {
@@ -15269,20 +15696,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4882,
-        "stone": 2895,
-        "iron": 2314,
-        "aether": 1625
+        "crowns": 4338,
+        "stone": 2609,
+        "iron": 2080,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4882,
-        "stone": 2895,
-        "iron": 2314,
-        "aether": 1625
+        "crowns": 4338,
+        "stone": 2609,
+        "iron": 2080,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -15330,17 +15761,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:53: strength 175 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:53: strength 175 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -15394,6 +15823,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 573,
       "resourcesFloated": {
@@ -15439,7 +15872,7 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)"
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)"
       ],
       "structuralNotes": [
         "Attack failed at 1:14: strength 142 into 192.",
@@ -15502,6 +15935,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -15643,6 +16080,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -15697,9 +16138,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -15767,6 +16208,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -15894,6 +16339,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16028,6 +16477,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16157,6 +16610,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16282,6 +16739,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16421,6 +16882,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16552,6 +17017,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -16665,28 +17134,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 9,
-      "unitsLost": 2,
+      "unitsTrained": 8,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 364,
+      "battleDurationSeconds": 352,
       "resourcesFloated": {
-        "crowns": 150,
-        "stone": 1433,
-        "iron": 238,
-        "aether": 271
+        "crowns": 108,
+        "stone": 1389,
+        "iron": 222,
+        "aether": 243
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1433,
-        "iron": 238,
-        "aether": 271
+        "stone": 1389,
+        "iron": 222,
+        "aether": 243
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -16748,14 +17221,12 @@
         "5:33 trained Militia",
         "5:33 queue Militia",
         "5:37 trained Militia",
-        "5:45 queue Militia",
+        "5:37 attack enemy base (safe beginner second push)",
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
-        "5:49 trained Militia",
-        "5:49 attack enemy base (safe beginner second push)",
-        "6:03 destroyed enemy Stronghold"
+        "5:51 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:25: strength 167 into 186."
+        "Attack failed at 5:25: strength 167 into 183."
       ]
     },
     {
@@ -16812,6 +17283,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -16872,11 +17347,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -16886,7 +17361,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:53: strength 170 into 186."
+        "Attack failed at 4:53: strength 170 into 183."
       ]
     },
     {
@@ -16940,6 +17415,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 6,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 632,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -16985,15 +17464,15 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
         "10:26 attack enemy base (fast army follow-up)",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)"
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 1:14: strength 137 into 184.",
+        "Attack failed at 1:14: strength 137 into 180.",
         "Attack failed at 10:46: strength 48 into 178."
       ]
     },
@@ -17048,6 +17527,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -17131,7 +17614,7 @@
         "6:03 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:25: strength 167 into 193."
+        "Attack failed at 5:25: strength 167 into 194."
       ]
     },
     {
@@ -17187,20 +17670,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4882,
-        "stone": 2895,
-        "iron": 2314,
-        "aether": 1625
+        "crowns": 4338,
+        "stone": 2609,
+        "iron": 2080,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4882,
-        "stone": 2895,
-        "iron": 2314,
-        "aether": 1625
+        "crowns": 4338,
+        "stone": 2609,
+        "iron": 2080,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -17248,17 +17735,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:53: strength 170 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:53: strength 170 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -17312,6 +17797,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 4,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 573,
       "resourcesFloated": {
@@ -17357,7 +17846,7 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)"
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)"
       ],
       "structuralNotes": [
         "Attack failed at 1:14: strength 137 into 192.",
@@ -17420,6 +17909,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -17561,6 +18054,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 641,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 1050,
       "resourcesFloated": {
@@ -17615,9 +18112,9 @@
         "6:58 survived enemy wave 3",
         "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "8:22 survived enemy wave 4",
-        "9:17 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "9:17 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "9:46 survived enemy wave 5",
-        "10:41 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
+        "10:41 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
         "11:10 survived enemy wave 6",
         "12:05 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
         "12:34 survived enemy wave 7",
@@ -17685,6 +18182,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -17813,6 +18314,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -17946,6 +18451,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -18074,6 +18583,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -18191,6 +18704,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -18325,6 +18842,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -18455,6 +18976,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -18560,28 +19085,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 8,
-      "unitsLost": 2,
+      "unitsTrained": 7,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 352,
+      "battleDurationSeconds": 348,
       "resourcesFloated": {
-        "crowns": 108,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "crowns": 134,
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -18641,14 +19170,12 @@
         "5:29 trained Militia",
         "5:29 queue Militia",
         "5:33 trained Militia",
-        "5:33 queue Militia",
-        "5:37 trained Militia",
-        "5:37 attack enemy base (safe beginner second push)",
+        "5:33 attack enemy base (safe beginner second push)",
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
-        "5:51 destroyed enemy Stronghold"
+        "5:47 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:21: strength 167 into 186."
+        "Attack failed at 5:21: strength 167 into 183."
       ]
     },
     {
@@ -18706,6 +19233,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -18764,11 +19295,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -18778,7 +19309,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:49: strength 171 into 186."
+        "Attack failed at 4:49: strength 171 into 183."
       ]
     },
     {
@@ -18833,6 +19364,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 6,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 632,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -18878,16 +19413,16 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
         "10:26 attack enemy base (fast army follow-up)",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)"
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 1:14: strength 153 into 184.",
-        "Attack failed at 10:46: strength 49 into 178."
+        "Attack failed at 1:14: strength 153 into 180.",
+        "Attack failed at 10:46: strength 59 into 178."
       ]
     },
     {
@@ -18942,6 +19477,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -19023,7 +19562,7 @@
         "5:51 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:21: strength 167 into 193."
+        "Attack failed at 5:21: strength 167 into 194."
       ]
     },
     {
@@ -19080,20 +19619,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4942,
-        "stone": 2895,
-        "iron": 2334,
-        "aether": 1625
+        "crowns": 4398,
+        "stone": 2609,
+        "iron": 2100,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4942,
-        "stone": 2895,
-        "iron": 2334,
-        "aether": 1625
+        "crowns": 4398,
+        "stone": 2609,
+        "iron": 2100,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -19139,17 +19682,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:49: strength 171 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:49: strength 171 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -19204,6 +19745,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 5,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -19249,14 +19794,14 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:26 attack enemy base (fast army follow-up)"
       ],
       "structuralNotes": [
         "Attack failed at 1:14: strength 153 into 192.",
-        "Attack failed at 10:46: strength 49 into 197."
+        "Attack failed at 10:46: strength 49 into 200."
       ]
     },
     {
@@ -19316,6 +19861,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -19458,6 +20007,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -19591,6 +20144,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -19725,6 +20282,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -19864,6 +20425,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -19998,6 +20563,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -20121,6 +20690,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -20261,6 +20834,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -20397,6 +20974,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -20508,28 +21089,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 8,
-      "unitsLost": 2,
+      "unitsTrained": 7,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 352,
+      "battleDurationSeconds": 348,
       "resourcesFloated": {
-        "crowns": 108,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "crowns": 134,
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -20589,14 +21174,12 @@
         "5:29 trained Militia",
         "5:29 queue Militia",
         "5:33 trained Militia",
-        "5:33 queue Militia",
-        "5:37 trained Militia",
-        "5:37 attack enemy base (safe beginner second push)",
+        "5:33 attack enemy base (safe beginner second push)",
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
-        "5:51 destroyed enemy Stronghold"
+        "5:47 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:21: strength 167 into 186."
+        "Attack failed at 5:21: strength 167 into 183."
       ]
     },
     {
@@ -20660,6 +21243,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -20718,11 +21305,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -20732,7 +21319,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:49: strength 171 into 186."
+        "Attack failed at 4:49: strength 171 into 183."
       ]
     },
     {
@@ -20793,6 +21380,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 6,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 632,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -20838,16 +21429,16 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
         "10:26 attack enemy base (fast army follow-up)",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)"
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 1:14: strength 153 into 184.",
-        "Attack failed at 10:46: strength 49 into 178."
+        "Attack failed at 1:14: strength 153 into 180.",
+        "Attack failed at 10:46: strength 59 into 178."
       ]
     },
     {
@@ -20908,6 +21499,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -20989,7 +21584,7 @@
         "5:51 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:21: strength 167 into 193."
+        "Attack failed at 5:21: strength 167 into 194."
       ]
     },
     {
@@ -21052,20 +21647,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 700,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 806,
+      "battleDurationSeconds": 728,
       "resourcesFloated": {
-        "crowns": 4942,
-        "stone": 2895,
-        "iron": 2334,
-        "aether": 1625
+        "crowns": 4398,
+        "stone": 2609,
+        "iron": 2100,
+        "aether": 1443
       },
       "peakResourcesFloated": {
-        "crowns": 4942,
-        "stone": 2895,
-        "iron": 2334,
-        "aether": 1625
+        "crowns": 4398,
+        "stone": 2609,
+        "iron": 2100,
+        "aether": 1443
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -21111,17 +21710,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:49: strength 171 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:49: strength 171 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -21182,6 +21779,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 5,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -21227,14 +21828,14 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:26 attack enemy base (fast army follow-up)"
       ],
       "structuralNotes": [
         "Attack failed at 1:14: strength 153 into 192.",
-        "Attack failed at 10:46: strength 49 into 197."
+        "Attack failed at 10:46: strength 49 into 200."
       ]
     },
     {
@@ -21309,6 +21910,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -21466,6 +22071,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -21612,6 +22221,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -21744,6 +22357,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -21883,6 +22500,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -22017,6 +22638,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -22140,6 +22765,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 3,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -22280,6 +22909,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -22416,6 +23049,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -22527,28 +23164,32 @@
       "timeFirstEnemyWarning": 171,
       "timeFirstEnemyContact": 234,
       "firstWaveSurvived": true,
-      "unitsTrained": 8,
-      "unitsLost": 2,
+      "unitsTrained": 7,
+      "unitsLost": 1,
       "buildingsBuilt": [
         "barracks"
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
-      "battleDurationSeconds": 352,
+      "battleDurationSeconds": 348,
       "resourcesFloated": {
-        "crowns": 108,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "crowns": 134,
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "peakResourcesFloated": {
         "crowns": 380,
-        "stone": 1389,
-        "iron": 222,
-        "aether": 243
+        "stone": 1367,
+        "iron": 242,
+        "aether": 229
       },
       "heroLevel": 3,
       "heroXpGained": 200,
@@ -22608,14 +23249,12 @@
         "5:29 trained Militia",
         "5:29 queue Militia",
         "5:33 trained Militia",
-        "5:33 queue Militia",
-        "5:37 trained Militia",
-        "5:37 attack enemy base (safe beginner second push)",
+        "5:33 attack enemy base (safe beginner second push)",
         "5:47 enemy wave 3 launched (hexer, hexer, raider, brute)",
-        "5:51 destroyed enemy Stronghold"
+        "5:47 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:21: strength 167 into 186."
+        "Attack failed at 5:21: strength 167 into 183."
       ]
     },
     {
@@ -22679,6 +23318,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 10,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": 631,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
       "battleDurationSeconds": 900,
       "resourcesFloated": {
@@ -22737,11 +23380,11 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)",
         "10:59 survived enemy wave 7",
         "11:42 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
         "12:10 survived enemy wave 8",
@@ -22751,7 +23394,7 @@
         "14:32 survived enemy wave 10"
       ],
       "structuralNotes": [
-        "Attack failed at 4:49: strength 171 into 186."
+        "Attack failed at 4:49: strength 171 into 183."
       ]
     },
     {
@@ -22812,6 +23455,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 6,
+      "enemyHeroId": "veyra_cinders",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 632,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 646,
       "resourcesFloated": {
@@ -22857,16 +23504,16 @@
         "6:15 survived enemy wave 3",
         "6:58 enemy wave 4 launched (hexer, hexer, raider, brute)",
         "7:26 survived enemy wave 4",
-        "8:09 enemy wave 5 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "8:09 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
         "8:37 survived enemy wave 5",
         "9:20 enemy wave 6 launched (hexer, brute, hexer, raider, hexer)",
         "9:48 survived enemy wave 6",
         "10:26 attack enemy base (fast army follow-up)",
-        "10:31 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)"
+        "10:31 enemy wave 7 launched (hexer, brute, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 1:14: strength 153 into 184.",
-        "Attack failed at 10:46: strength 49 into 178."
+        "Attack failed at 1:14: strength 153 into 180.",
+        "Attack failed at 10:46: strength 59 into 178."
       ]
     },
     {
@@ -22934,6 +23581,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold"
       ],
@@ -23015,7 +23666,7 @@
         "5:51 destroyed enemy Stronghold"
       ],
       "structuralNotes": [
-        "Attack failed at 5:05: strength 167 into 193."
+        "Attack failed at 5:05: strength 167 into 194."
       ]
     },
     {
@@ -23085,20 +23736,24 @@
       "upgradesResearched": [
         "ranger_training_1"
       ],
-      "enemyWavesSurvived": 7,
+      "enemyWavesSurvived": 6,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": 701,
+      "lossesInvolvingEnemyHero": 1,
       "objectiveCompletion": [],
-      "battleDurationSeconds": 807,
+      "battleDurationSeconds": 729,
       "resourcesFloated": {
-        "crowns": 5002,
-        "stone": 2935,
-        "iron": 2354,
-        "aether": 1649
+        "crowns": 4458,
+        "stone": 2649,
+        "iron": 2120,
+        "aether": 1467
       },
       "peakResourcesFloated": {
-        "crowns": 5002,
-        "stone": 2935,
-        "iron": 2354,
-        "aether": 1649
+        "crowns": 4458,
+        "stone": 2649,
+        "iron": 2120,
+        "aether": 1467
       },
       "heroLevel": 2,
       "heroXpGained": 0,
@@ -23144,17 +23799,15 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)",
         "10:50 survived enemy wave 6",
-        "11:40 enemy wave 7 launched (brute, raider, hexer, raider, brute)",
-        "12:08 survived enemy wave 7",
-        "12:58 enemy wave 8 launched (brute, raider, hexer, raider, brute)"
+        "11:40 enemy wave 7 launched (brute, raider, hexer, enemy_commander, raider)"
       ],
       "structuralNotes": [
-        "Attack failed at 4:46: strength 171 into 193.",
-        "Base collapsed to wave 8 at 13:26."
+        "Attack failed at 4:46: strength 171 into 194.",
+        "Base collapsed to wave 7 at 12:08."
       ]
     },
     {
@@ -23222,6 +23875,10 @@
       ],
       "upgradesResearched": [],
       "enemyWavesSurvived": 5,
+      "enemyHeroId": "gorak_emberhand",
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [],
       "battleDurationSeconds": 640,
       "resourcesFloated": {
@@ -23269,14 +23926,14 @@
         "6:56 survived enemy wave 3",
         "7:46 enemy wave 4 launched (brute, raider, raider, hexer)",
         "8:14 survived enemy wave 4",
-        "9:04 enemy wave 5 launched (brute, raider, hexer, enemy_commander, raider)",
+        "9:04 enemy wave 5 launched (brute, raider, hexer, raider, brute)",
         "9:32 survived enemy wave 5",
         "10:20 attack enemy base (fast army follow-up)",
         "10:22 enemy wave 6 launched (brute, raider, hexer, raider, brute)"
       ],
       "structuralNotes": [
         "Attack failed at 1:16: strength 167 into 192.",
-        "Attack failed at 10:39: strength 69 into 197."
+        "Attack failed at 10:39: strength 69 into 200."
       ]
     },
     {
@@ -23349,6 +24006,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 2,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -23504,6 +24165,10 @@
         "ranger_training_1"
       ],
       "enemyWavesSurvived": 1,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "capture_burned_shrine",
@@ -23651,6 +24316,10 @@
         "infantry_weapons_1"
       ],
       "enemyWavesSurvived": 0,
+      "enemyHeroId": "captain_malrec",
+      "enemyHeroDefeated": true,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
       "objectiveCompletion": [
         "destroy_enemy_stronghold",
         "destroy_enemy_barracks",
@@ -23880,7 +24549,7 @@
         "victories": 10,
         "defeats": 3,
         "timeouts": 2,
-        "improvedRuns": 7,
+        "improvedRuns": 6,
         "firstPurchaseNodeId": null,
         "warnings": []
       },
@@ -23892,7 +24561,7 @@
         "victories": 10,
         "defeats": 3,
         "timeouts": 2,
-        "improvedRuns": 6,
+        "improvedRuns": 7,
         "firstPurchaseNodeId": null,
         "warnings": []
       },
@@ -24000,7 +24669,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24022,7 +24691,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 544.6666666666666,
+        "averageDurationSeconds": 518.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24109,7 +24778,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24131,7 +24800,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 544.6666666666666,
+        "averageDurationSeconds": 518.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24217,7 +24886,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24239,7 +24908,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 544.6666666666666,
+        "averageDurationSeconds": 518.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24326,7 +24995,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24348,7 +25017,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 584,
+        "averageDurationSeconds": 558,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24435,7 +25104,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24457,7 +25126,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 584,
+        "averageDurationSeconds": 558,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24544,7 +25213,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24653,7 +25322,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 576,
+        "averageDurationSeconds": 574.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24675,7 +25344,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 544.6666666666666,
+        "averageDurationSeconds": 518.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24783,7 +25452,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 584,
+        "averageDurationSeconds": 558,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24869,7 +25538,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 636.6666666666666,
+        "averageDurationSeconds": 632.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24891,7 +25560,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 581,
+        "averageDurationSeconds": 555,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24977,7 +25646,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 632.6666666666666,
+        "averageDurationSeconds": 631.3333333333334,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -24999,7 +25668,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 601.3333333333334,
+        "averageDurationSeconds": 575.3333333333334,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -25086,7 +25755,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 632.6666666666666,
+        "averageDurationSeconds": 631.3333333333334,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -25108,7 +25777,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 601.3333333333334,
+        "averageDurationSeconds": 575.3333333333334,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -25195,7 +25864,7 @@
         "victories": 1,
         "defeats": 1,
         "timeouts": 1,
-        "averageDurationSeconds": 632.6666666666666,
+        "averageDurationSeconds": 631.3333333333334,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",
@@ -25217,7 +25886,7 @@
         "victories": 1,
         "defeats": 2,
         "timeouts": 0,
-        "averageDurationSeconds": 599.6666666666666,
+        "averageDurationSeconds": 573.6666666666666,
         "barracksBeforePressureRuns": 3,
         "firstWaveSurvivedRuns": 3,
         "verdict": "needs_human_review",

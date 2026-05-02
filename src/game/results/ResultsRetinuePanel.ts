@@ -1,10 +1,13 @@
 import {
   activeRetinueUnits,
   createRetinueUnitFromVeteran,
+  formatRetinueDeploymentLabel,
   formatRetinueUnitSummary,
-  getRetinueCapacity,
-  isRetinueEligibleVeteran
+  getRetinueCapacityBreakdown,
+  isRetinueEligibleVeteran,
+  retinueEligibilityReason
 } from "../core/RetinueRules";
+import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import type { CampaignSaveData } from "../save/SaveTypes";
 import { escapeHtml } from "./ResultsFormatting";
 import type { ResultsData } from "./ResultsTypes";
@@ -14,18 +17,21 @@ export function renderRetinueRecruitment(data: ResultsData, campaign?: CampaignS
     return "";
   }
   const summary = data.stats.veteranSummary;
-  const eligible = (summary?.notableVeterans ?? []).filter(isRetinueEligibleVeteran);
+  const candidates = summary?.notableVeterans ?? [];
+  const eligible = candidates.filter(isRetinueEligibleVeteran);
   const sourceBattleId = retinueSourceBattleId(data);
   const currentRetinue = activeRetinueUnits(campaign);
-  const capacity = getRetinueCapacity(campaign);
-  const capacityFull = currentRetinue.length >= capacity;
+  const capacity = getRetinueCapacityBreakdown(campaign);
+  const capacityFull = capacity.activeCount >= capacity.capacity;
 
   return `
     <section class="result-block wide retinue-results" data-testid="results-retinue-panel">
       <h2>Retinue Camp</h2>
-      <p class="quiet">Add surviving Seasoned or better units to deploy near your hero in future campaign battles.</p>
+      <p class="quiet">Add selected surviving Seasoned or better units to deploy near your hero in future campaign battles. If a retinue unit dies, it is permanently removed after the battle in V1.</p>
       <div class="results-grid compact">
-        <span>Capacity</span><strong>${currentRetinue.length}/${capacity}</strong>
+        <span>Capacity</span><strong data-testid="results-retinue-capacity">${capacity.activeCount}/${capacity.capacity} active</strong>
+        <span>Base camp</span><strong>${capacity.baseCapacity} slots</strong>
+        <span>Training Yard II</span><strong>${capacity.trainingYardBonus > 0 ? "+1 capacity active" : "No capacity bonus"}</strong>
         ${
           currentRetinue.length > 0
             ? `<span>Current retinue</span><strong>${currentRetinue.map(formatRetinueUnitSummary).map(escapeHtml).join("; ")}</strong>`
@@ -33,17 +39,23 @@ export function renderRetinueRecruitment(data: ResultsData, campaign?: CampaignS
         }
       </div>
       ${
-        eligible.length === 0
-          ? `<p class="quiet">No surviving Seasoned or better units are available to add.</p>`
-          : `<div class="reward-list">
-              ${eligible.map((entry) => renderEligibleVeteran(data, campaign, sourceBattleId, capacityFull, entry.unitInstanceId)).join("")}
+        capacityFull
+          ? `<p class="quiet retinue-full-message" data-testid="retinue-full-message">Retinue is full. Skip recruitment here, or return to the Campaign Map and dismiss a unit before adding another veteran.</p>`
+          : ""
+      }
+      ${
+        candidates.length === 0
+          ? `<p class="quiet">No notable surviving units were available this battle.</p>`
+          : `<p class="quiet">Eligible recruits this battle: ${eligible.length}. Recruits can gain ranks in battle, but only Seasoned or better survivors can join the retinue.</p>
+            <div class="reward-list">
+              ${candidates.map((entry) => renderRetinueCandidate(data, campaign, sourceBattleId, capacityFull, entry.unitInstanceId)).join("")}
             </div>`
       }
     </section>
   `;
 }
 
-function renderEligibleVeteran(
+function renderRetinueCandidate(
   data: ResultsData,
   campaign: CampaignSaveData,
   sourceBattleId: string,
@@ -55,15 +67,24 @@ function renderEligibleVeteran(
     return "";
   }
   const candidate = createRetinueUnitFromVeteran(entry, sourceBattleId);
+  const eligible = isRetinueEligibleVeteran(entry);
   const alreadySaved = campaign.retinueUnits.some(
     (unit) => unit.retinueUnitId === candidate.retinueUnitId || unit.retinueUnitId === entry.unitInstanceId
   );
-  const disabledReason = alreadySaved ? "Already in retinue" : capacityFull ? "Retinue full" : "";
+  const disabledReason = alreadySaved
+    ? "Already Saved"
+    : !eligible
+      ? "Not Eligible"
+      : capacityFull
+        ? "Capacity Full"
+        : "";
   return `
-    <article class="reward-card">
+    <article class="reward-card" data-testid="results-retinue-candidate-${escapeHtml(entry.unitInstanceId)}">
       <div>
-        <strong>${escapeHtml(entry.unitName)} - ${escapeHtml(entry.rankName)}</strong>
-        <p>${entry.xp} XP - ${entry.kills} kills - ${entry.damageDealt} damage</p>
+        <strong>${escapeHtml(formatRetinueDeploymentLabel(candidate))}</strong>
+        <p>${escapeHtml(formatUnitVeterancyXpProgress(entry.xp))} - ${entry.kills} kills - ${entry.damageDealt} damage</p>
+        <small>Rank bonus: ${escapeHtml(formatUnitVeterancyBonusSummary(entry.rank))}</small>
+        <small>${escapeHtml(retinueEligibilityReason(entry))}</small>
       </div>
       <button
         data-results-action="add_retinue"

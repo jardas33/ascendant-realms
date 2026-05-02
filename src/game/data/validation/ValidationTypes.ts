@@ -18,6 +18,8 @@ export interface ValidationContext {
   campaignNodeIds: Set<string>;
   aiPersonalityIds: Set<string>;
   campaignModifierIds: Set<string>;
+  enemyHeroIds: Set<string>;
+  enemyHeroAbilityIds: Set<string>;
 }
 
 export function idsFor(entries: Array<{ id: string }>, label: string, errors: string[]): Set<string> {

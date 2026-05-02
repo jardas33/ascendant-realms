@@ -21,12 +21,18 @@ export class Unit extends BaseEntity {
   readonly unitTypeId: string;
   veterancy: UnitVeterancyState;
   retinueUnitId?: string;
+  enemyHeroId?: string;
+  enemyHeroName?: string;
+  enemyHeroTitle?: string;
+  enemyHeroAbilityCooldowns = new Map<string, number>();
   attackTargetId?: string;
   moveTarget?: Position;
   attackMove = false;
   attackCooldownRemaining = 0;
   damageBuffMultiplier = 1;
   damageBuffRemaining = 0;
+  armorBuffBonus = 0;
+  armorBuffRemaining = 0;
   upgradeDamageMultiplier = 1;
   upgradeRangeMultiplier = 1;
   upgradeAttackCooldownMultiplier = 1;
@@ -116,6 +122,17 @@ export class Unit extends BaseEntity {
     this.sprite?.setTint(0xffe59a);
   }
 
+  applyArmorBuff(bonus: number, duration: number): void {
+    const nextBonus = Math.max(0, Math.round(bonus));
+    if (nextBonus > this.armorBuffBonus) {
+      this.armor += nextBonus - this.armorBuffBonus;
+      this.armorBuffBonus = nextBonus;
+    }
+    this.armorBuffRemaining = Math.max(this.armorBuffRemaining, duration);
+    this.body?.setStrokeStyle(3, 0xb9d7ff, 1);
+    this.sprite?.setTint(0xc8ddff);
+  }
+
   addVeterancyXp(amount: number): ReturnType<typeof addUnitVeterancyXp> {
     const result = addUnitVeterancyXp(this.veterancy, amount);
     this.veterancy = result.state;
@@ -148,8 +165,21 @@ export class Unit extends BaseEntity {
       this.damageBuffRemaining -= deltaSeconds;
       if (this.damageBuffRemaining <= 0) {
         this.damageBuffMultiplier = 1;
-        this.body?.setStrokeStyle(2, 0x172019, 0.9);
-        this.sprite?.clearTint();
+        if (this.armorBuffRemaining <= 0) {
+          this.body?.setStrokeStyle(2, 0x172019, 0.9);
+          this.sprite?.clearTint();
+        }
+      }
+    }
+    if (this.armorBuffRemaining > 0) {
+      this.armorBuffRemaining -= deltaSeconds;
+      if (this.armorBuffRemaining <= 0) {
+        this.armor -= this.armorBuffBonus;
+        this.armorBuffBonus = 0;
+        if (this.damageBuffRemaining <= 0) {
+          this.body?.setStrokeStyle(2, 0x172019, 0.9);
+          this.sprite?.clearTint();
+        }
       }
     }
   }

@@ -79,6 +79,10 @@ describe("BattleRuntime", () => {
     runtime.recordUnitTrained("militia");
     runtime.recordEnemyWaveSurvived();
     runtime.recordXpGained(30);
+    runtime.recordEnemyHeroPresence("captain_malrec", "Captain Malrec");
+    runtime.recordEnemyHeroJoinedAttack("captain_malrec", 390);
+    runtime.recordEnemyHeroPressure("captain_malrec", "Captain Malrec");
+    runtime.recordEnemyHeroDefeated("captain_malrec", "Captain Malrec", 420);
     expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(true);
     expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(false);
 
@@ -94,7 +98,13 @@ describe("BattleRuntime", () => {
       enemyWavesSurvived: 1,
       xpGained: 30,
       completedObjectiveIds: ["capture_burned_shrine"],
-      timeSeconds: 2.5
+      timeSeconds: 2.5,
+      enemyHeroId: "captain_malrec",
+      enemyHeroName: "Captain Malrec",
+      enemyHeroJoinedAttackAtSeconds: 390,
+      lossesInvolvingEnemyHero: 1,
+      enemyHeroDefeated: true,
+      enemyHeroDefeatedAtSeconds: 420
     });
   });
 

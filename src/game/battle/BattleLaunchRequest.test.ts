@@ -119,6 +119,20 @@ describe("BattleLaunchRequest", () => {
     expect(roadRequest.aiPersonalityId).toBe("raider_rush");
   });
 
+  it("carries campaign enemy hero assignments into battle launches", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "ashen_outpost");
+    const override = createCampaignBattleLaunchRequest(heroSave, "ashen_outpost", { enemyHeroId: "gorak_emberhand" });
+    const invalid = resolveBattleLaunchRequest({ ...request, enemyHeroId: "missing_commander" });
+
+    expect(request.enemyHeroId).toBe("captain_malrec");
+    expect(override.enemyHeroId).toBe("gorak_emberhand");
+    expect(invalid.ok).toBe(false);
+    if (!invalid.ok) {
+      expect(invalid.errors).toContain("Battle launch request references missing enemy hero missing_commander.");
+    }
+  });
+
   it("carries sanitized retinue units on campaign launches", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "border_village", {

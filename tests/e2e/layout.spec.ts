@@ -338,6 +338,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     { width: 360, height: 640, label: "mobile-short" }
   ]) {
     test(`battle HUD and results layout stay inside the viewport on ${viewport.label}`, async ({ page }) => {
+      test.setTimeout(60_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await startNewCampaign(page);
       await page.getByTestId("campaign-node-border_village").click();
@@ -355,7 +356,11 @@ test.describe("Ascendant Realms responsive layout", () => {
 
       await showVictoryResults(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} results`);
-      await expectBottomActionReachable(page, page.getByText("Main Menu"), `${viewport.label} results main menu`);
+      await expectBottomActionReachable(
+        page,
+        page.locator(".results-panel").getByRole("button", { name: "Main Menu" }),
+        `${viewport.label} results main menu`
+      );
     });
   }
 

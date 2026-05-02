@@ -6,6 +6,8 @@ import { SaveSystem, createFallbackCampaignSave } from "../core/SaveSystem";
 import { createNewHeroSave } from "../data/heroes";
 import { keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
+import { renderBattleSummary } from "./ResultsObjectiveSummary";
+import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
 import type { ResultsData } from "./ResultsTypes";
 import { createResultsViewModel, initialResultsStatus } from "./ResultsViewModel";
 
@@ -192,6 +194,88 @@ describe("results scene helpers", () => {
     expect(result.data.heroSave.equipment.weapon).toBeUndefined();
     expect(result.message).toContain("Weathered Command Sword");
     expect(result.message).toContain("kept in inventory");
+  });
+
+  it("renders clearer veteran and retinue recruitment copy", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const veteran = {
+      unitInstanceId: "unit-veteran",
+      unitTypeId: "militia",
+      unitName: "Militia",
+      xp: 140,
+      rank: "veteran" as const,
+      rankName: "Veteran",
+      kills: 3,
+      damageDealt: 120,
+      survivedBattle: true,
+      rankedUp: true,
+      previousRank: "seasoned" as const
+    };
+    const recruit = {
+      ...veteran,
+      unitInstanceId: "unit-recruit",
+      xp: 20,
+      rank: "recruit" as const,
+      rankName: "Recruit",
+      kills: 0,
+      rankedUp: false,
+      previousRank: undefined
+    };
+    const data = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "first_claim",
+        difficulty: "easy",
+        campaignNodeId: "border_village"
+      }),
+      stats: {
+        ...baseStats(),
+        veteranSummary: {
+          rankedUpUnits: [veteran],
+          notableVeterans: [veteran, recruit],
+          topSurvivor: veteran
+        }
+      }
+    });
+    const fullCampaign = {
+      ...createFallbackCampaignSave(),
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:old:militia",
+          unitTypeId: "militia",
+          rank: "veteran" as const,
+          xp: 140,
+          kills: 3,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const
+        },
+        {
+          retinueUnitId: "retinue:old:ranger",
+          unitTypeId: "ranger",
+          rank: "seasoned" as const,
+          xp: 80,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const
+        }
+      ]
+    };
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+    const retinueHtml = renderRetinueRecruitment(data, fullCampaign);
+
+    expect(summaryHtml).toContain("Rank-up");
+    expect(summaryHtml).toContain("140/230 XP to Elite");
+    expect(summaryHtml).toContain("Rank bonus: +8% HP, +8% damage");
+    expect(summaryHtml).toContain("Eligible: survived at Seasoned rank or better.");
+    expect(retinueHtml).toContain("2/2 active");
+    expect(retinueHtml).toContain("Retinue is full");
+    expect(retinueHtml).toContain("Eligible recruits this battle: 1");
+    expect(retinueHtml).toContain("Not eligible: needs Seasoned rank or better.");
+    expect(retinueHtml).toContain("Capacity Full");
   });
 });
 

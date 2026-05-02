@@ -6,6 +6,7 @@ import { formatChoiceModifierSummary, formatChoiceReputationSummary, formatChoic
 import { createCampaignMapViewModel } from "./CampaignMapViewModel";
 import { renderNodeDetails } from "./CampaignNodePanel";
 import { formatResourceRewards } from "./CampaignResourcePanel";
+import { renderRetinuePanel } from "./RetinuePanel";
 
 describe("campaign map presentation helpers", () => {
   it("creates a stable view model with selected node and node statuses", () => {
@@ -104,5 +105,35 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("data-campaign-choice=\"rest_and_recovery\"");
     expect(html).toContain("Purchase Emberglass Wand");
     expect(html).toContain("Repeatable service.");
+  });
+
+  it("renders Retinue Camp capacity, death rule, and Training Yard II bonus copy", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      strongholdUpgradeRanks: { training_yard_ii: 1 },
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:test:militia",
+          unitTypeId: "militia",
+          name: "Gate Militia",
+          rank: "veteran",
+          xp: 140,
+          kills: 3,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        }
+      ]
+    });
+
+    const html = renderRetinuePanel(campaign);
+
+    expect(html).toContain("1/3 active");
+    expect(html).toContain("Training Yard II");
+    expect(html).toContain("+1 capacity active");
+    expect(html).toContain("Retinue death is permanent in V1");
+    expect(html).toContain("Veteran Militia");
+    expect(html).toContain("140/230 XP to Elite");
+    expect(html).toContain("Dismiss from Retinue");
   });
 });

@@ -9,6 +9,7 @@ import type {
   UnitVeterancyRankUpEvent
 } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
+import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
@@ -19,6 +20,7 @@ import {
   UPGRADE_BY_ID
 } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
+import { ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
@@ -92,6 +94,15 @@ interface AscendantBattleTestHooks {
     armor: number;
   } | null;
   forceBattleVictory?: () => boolean;
+  scoutEnemyHero?: () => { enemyHeroId: string; name: string; title: string } | null;
+  defeatEnemyHero?: () => {
+    enemyHeroId: string;
+    name: string;
+    title: string;
+    completedObjectiveIds: string[];
+    xpGained: number;
+    enemyHeroDefeated: boolean;
+  } | null;
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -116,6 +127,7 @@ export class BattleScene extends Phaser.Scene {
   private upgradeSystem!: BattleSceneSystems["upgradeSystem"];
   private selectionSystem!: BattleSceneSystems["selectionSystem"];
   private abilitySystem!: BattleSceneSystems["abilitySystem"];
+  private enemyHeroAbilitySystem!: BattleSceneSystems["enemyHeroAbilitySystem"];
   private cameraSystem!: BattleSceneSystems["cameraSystem"];
   private inputSystem!: BattleSceneSystems["inputSystem"];
   private uiSystem!: BattleSceneSystems["uiSystem"];
@@ -141,6 +153,7 @@ export class BattleScene extends Phaser.Scene {
   private nextEnemyWaveId = 1;
   private unitVeterancyRankUps: UnitVeterancyRankUpEvent[] = [];
   private lostRetinueUnitIds = new Set<string>();
+  private scoutedEnemyHeroIds = new Set<string>();
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
     enemy: new Set<string>()
@@ -195,6 +208,7 @@ export class BattleScene extends Phaser.Scene {
     this.movementSystem.update(deltaSeconds, this.units, this.activeMap, this.buildings);
     this.combatSystem.update(deltaSeconds);
     this.updateStatusEffects(deltaSeconds);
+    this.enemyHeroAbilitySystem.update(deltaSeconds);
     this.buildingSystem.update(deltaSeconds);
     this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
     this.updateResourceSiteWarnings(deltaSeconds);
@@ -246,6 +260,7 @@ export class BattleScene extends Phaser.Scene {
     this.nextEnemyWaveId = 1;
     this.unitVeterancyRankUps = [];
     this.lostRetinueUnitIds = new Set<string>();
+    this.scoutedEnemyHeroIds = new Set<string>();
     this.researchedUpgradeIds = {
       player: new Set<string>(),
       enemy: new Set<string>()
@@ -268,6 +283,7 @@ export class BattleScene extends Phaser.Scene {
     this.hero = spawned.hero;
     this.captureSites = spawned.captureSites;
     this.neutralCampLabels = spawned.neutralCampLabels;
+    this.enemyHeroUnits().forEach((unit) => this.runtime.recordEnemyHeroPresence(unit.enemyHeroId, unit.enemyHeroName));
   }
 
   private createSystems(): void {
@@ -290,6 +306,7 @@ export class BattleScene extends Phaser.Scene {
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
       warnIfCommandHallUnderAttack: (target) => this.warnIfCommandHallUnderAttack(target),
       handleUnitDamage: (source, target, amount) => this.handleUnitDamage(source, target, amount),
+      applyEnemyHeroDamage: (source, target, amount) => this.applyEnemyHeroDamage(source, target, amount),
       handleKill: (killer, target) => this.handleKill(killer, target),
       completeSecondaryObjective: (type, targetId, point) => this.completeSecondaryObjective(type, targetId, point),
       selectedRallyBuildings: () => this.selectedRallyBuildings(),
@@ -318,6 +335,7 @@ export class BattleScene extends Phaser.Scene {
     this.upgradeSystem = systems.upgradeSystem;
     this.selectionSystem = systems.selectionSystem;
     this.abilitySystem = systems.abilitySystem;
+    this.enemyHeroAbilitySystem = systems.enemyHeroAbilitySystem;
     this.cameraSystem = systems.cameraSystem;
     this.inputSystem = systems.inputSystem;
     this.uiSystem = systems.uiSystem;
@@ -333,15 +351,23 @@ export class BattleScene extends Phaser.Scene {
       .map((modifier) => CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name ?? strongholdUpgradeForModifier(modifier.id)?.name)
       .filter((name): name is string => Boolean(name));
     const modifierText = names.length > 0 ? ` Modifiers: ${names.join(", ")}.` : "";
+    const retinueNames = (this.launch.request.mode === "campaign_node" ? this.launch.request.retinueUnits ?? [] : [])
+      .map(formatRetinueDeploymentLabel);
+    const retinueText = retinueNames.length > 0 ? `Retinue deployed: ${retinueNames.join(", ")}. ` : "";
+    const enemyHero = this.launch.request.enemyHeroId ? ENEMY_HERO_BY_ID[this.launch.request.enemyHeroId] : undefined;
+    const enemyHeroText = enemyHero ? ` Enemy commander: ${enemyHero.name}, ${enemyHero.title}.` : "";
     const enemyText = faction
       ? `${faction.name} (${personality?.name ?? "Balanced Warlord"})`
       : personality?.name ?? "Unknown enemy";
     this.showMessage(
-      `${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${modifierText}`,
+      `${retinueText}${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${enemyHeroText}${modifierText}`,
       this.hero.position.x,
       this.hero.position.y - 96,
       "#f6e27d"
     );
+    if (retinueNames.length > 0 || enemyHero) {
+      this.statusTimer = 4.5;
+    }
   }
 
   private addUnit(unit: Unit): void {
@@ -423,10 +449,17 @@ export class BattleScene extends Phaser.Scene {
     if (!fog || !fogEnabled) {
       [...this.units, ...this.buildings, ...this.captureSites, ...this.projectiles].forEach((entity) => entity.view?.setVisible(true));
       this.neutralCampLabels.forEach((entry) => entry.label.setVisible(true));
+      this.enemyHeroUnits().forEach((unit) => this.handleEnemyHeroVisible(unit));
       return;
     }
 
-    this.units.forEach((unit) => unit.view?.setVisible(isEntityVisibleToPlayer(unit, fog, true)));
+    this.units.forEach((unit) => {
+      const visible = isEntityVisibleToPlayer(unit, fog, true);
+      unit.view?.setVisible(visible);
+      if (visible && unit.enemyHeroId) {
+        this.handleEnemyHeroVisible(unit);
+      }
+    });
     this.buildings.forEach((building) => building.view?.setVisible(isEntityVisibleToPlayer(building, fog, true)));
     this.projectiles.forEach((projectile) => projectile.view?.setVisible(projectile.team === "player" || fog.isVisible(projectile.position)));
     this.captureSites.forEach((site) =>
@@ -615,6 +648,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private handleKill(killer: Unit | Building | Projectile, target: BaseEntity): void {
+    if (killer instanceof Unit && killer.enemyHeroId && target.team === "player") {
+      this.runtime.recordEnemyHeroPressure(killer.enemyHeroId, killer.enemyHeroName);
+    }
     if (target.team !== "player") {
       if (target instanceof Building) {
         this.runtime.recordBuildingDestroyed();
@@ -622,6 +658,9 @@ export class BattleScene extends Phaser.Scene {
       } else if (target instanceof Unit) {
         this.runtime.recordUnitKilled();
         this.completeSecondaryObjective("defeat_unit", target.definition.id, target.position);
+        if (target.enemyHeroId) {
+          this.runtime.recordEnemyHeroDefeated(target.enemyHeroId, target.enemyHeroName, this.runtime.elapsedSeconds);
+        }
       }
     }
     if (target.team !== "player" && killer instanceof Unit && this.isUnitVeterancyEligible(killer)) {
@@ -632,12 +671,42 @@ export class BattleScene extends Phaser.Scene {
     this.xpSystem.awardForKill(killer, target);
   }
 
+  private applyEnemyHeroDamage(source: Unit, target: BaseEntity, amount: number): void {
+    const wasAlive = target.alive;
+    const actual = target.takeDamage(amount);
+    if (actual > 0) {
+      FloatingText.show(this, `-${Math.round(actual)}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
+      this.warnIfCommandHallUnderAttack(target);
+      this.handleUnitDamage(source, target, actual);
+    }
+    if (wasAlive && !target.alive) {
+      this.handleKill(source, target);
+      target.destroyView();
+    }
+  }
+
   private handleUnitDamage(source: Unit, target: BaseEntity, amount: number): void {
     if (!this.isUnitVeterancyEligible(source) || target.team === "player") {
       return;
     }
     source.veterancy = recordUnitVeterancyDamage(source.veterancy, amount);
     this.awardUnitVeterancyXp(source, getUnitVeterancyXpForDamage(amount));
+  }
+
+  private enemyHeroUnits(): Unit[] {
+    return this.units.filter((unit) => unit.alive && unit.enemyHeroId);
+  }
+
+  private handleEnemyHeroVisible(unit: Unit): void {
+    if (!unit.enemyHeroId || this.scoutedEnemyHeroIds.has(unit.enemyHeroId)) {
+      return;
+    }
+    this.scoutedEnemyHeroIds.add(unit.enemyHeroId);
+    this.runtime.recordEnemyHeroPresence(unit.enemyHeroId, unit.enemyHeroName);
+    const name = unit.enemyHeroName ?? unit.definition.name;
+    const title = unit.enemyHeroTitle ?? unit.definition.role;
+    this.addMinimapPing(unit.position.x, unit.position.y, "#ff9a64", `Enemy commander: ${name}`);
+    this.showMessage(`Enemy commander sighted: ${name}, ${title}`, unit.position.x, unit.position.y - 72, "#ff9a64");
   }
 
   private isUnitVeterancyEligible(unit: Unit): boolean {
@@ -871,6 +940,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private trackEnemyWave(units: Unit[]): void {
+    units
+      .filter((unit) => unit.enemyHeroId)
+      .forEach((unit) => this.runtime.recordEnemyHeroJoinedAttack(unit.enemyHeroId, this.runtime.elapsedSeconds));
     const result = trackEnemyWaveAlert({
       waveUnits: units,
       waves: this.trackedEnemyWaves,
@@ -976,6 +1048,43 @@ export class BattleScene extends Phaser.Scene {
         }
         this.endBattle("victory");
         return true;
+      },
+      scoutEnemyHero: () => {
+        const enemyHero = this.enemyHeroUnits()[0];
+        if (!enemyHero?.enemyHeroId) {
+          return null;
+        }
+        this.fogDebugDisabled = true;
+        this.updateFogOfWar(0, true);
+        this.cameraSystem.centerOn(enemyHero.position);
+        this.handleEnemyHeroVisible(enemyHero);
+        return {
+          enemyHeroId: enemyHero.enemyHeroId,
+          name: enemyHero.enemyHeroName ?? enemyHero.definition.name,
+          title: enemyHero.enemyHeroTitle ?? enemyHero.definition.role
+        };
+      },
+      defeatEnemyHero: () => {
+        const enemyHero = this.enemyHeroUnits()[0];
+        if (!enemyHero?.enemyHeroId) {
+          return null;
+        }
+        const wasAlive = enemyHero.alive;
+        enemyHero.takeDamage(enemyHero.maxHp + enemyHero.armor + 9999);
+        if (wasAlive && !enemyHero.alive) {
+          this.handleKill(this.hero, enemyHero);
+          enemyHero.destroyView();
+          this.cleanupDeadEntities();
+        }
+        this.refreshBattleHud(0);
+        return {
+          enemyHeroId: enemyHero.enemyHeroId,
+          name: enemyHero.enemyHeroName ?? enemyHero.definition.name,
+          title: enemyHero.enemyHeroTitle ?? enemyHero.definition.role,
+          completedObjectiveIds: [...this.runtime.stats.completedObjectiveIds],
+          xpGained: this.runtime.stats.xpGained,
+          enemyHeroDefeated: Boolean(this.runtime.stats.enemyHeroDefeated)
+        };
       }
     };
   }
@@ -987,6 +1096,8 @@ export class BattleScene extends Phaser.Scene {
     }
     delete target.__ASCENDANT_TEST_HOOKS__.grantSelectedUnitVeterancyXp;
     delete target.__ASCENDANT_TEST_HOOKS__.forceBattleVictory;
+    delete target.__ASCENDANT_TEST_HOOKS__.scoutEnemyHero;
+    delete target.__ASCENDANT_TEST_HOOKS__.defeatEnemyHero;
   }
 
   private cleanup(): void {

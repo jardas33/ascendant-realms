@@ -11,16 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Milestone
 
-Retinue Camp V1 is now implemented as the small persistent-unit layer after battle-local Unit Veterancy V1. The next milestone should be a human-paced campaign balance and readability pass before adding larger systems.
+Enemy Hero / Rival Commander V1 is now implemented on top of the v0.2 prototype baseline, Unit Veterancy V1, and Retinue Camp V1. The next milestone should be a human-paced campaign balance and readability pass before adding larger systems.
+
+The current visible product baseline is `Prototype v0.2` with the menu subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
 
 Recommended focus:
 
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
+- Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, and late-attack fairness.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
 - Review whether permanent retinue death feels clear enough before adding wounded timers or replacement UI.
 - Keep bonuses modest, visible in UI, and represented in telemetry.
-- Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
-- Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `HeroProgressionRules`, and `CampaignRules`.
+- Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
+- Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, and `CampaignRules`.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation
@@ -55,7 +58,7 @@ Recommended focus:
 - Level-up choices.
 - Scars and titles.
 - Reputation hooks.
-- Unit Veterancy V1 is implemented as battle-local XP/ranks/results summaries. Retinue Camp V1 selectively saves a small number of campaign veterans.
+- Unit Veterancy V1 is implemented as battle-local XP/ranks/results summaries. Retinue Camp V1 selectively saves a small number of campaign veterans. Enemy Hero / Rival Commander V1 gives important Ashen battles named commanders without adding enemy construction.
 
 ## Phase 3: Faction Expansion
 
@@ -78,6 +81,7 @@ Recommended focus:
 - Reputation ranks and small data-driven effects for Marcher Camp discounts, Stronghold Crown discounts, Chapel Aether bonuses, and Ashen hostile pressure.
 - Stronghold Development with five Tier I upgrades, five matching Tier II upgrades, prerequisite locks, campaign-resource spending, save-backed ranks, and battle-launch effects.
 - Battle-local Unit Veterancy V1 with Notable Veterans in Results, plus Retinue Camp V1 for a capped set of saved campaign veterans.
+- Enemy Hero / Rival Commander V1 with three named Ashen commanders, campaign node assignments, scout/battle/results feedback, modest abilities, and playtest telemetry.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.

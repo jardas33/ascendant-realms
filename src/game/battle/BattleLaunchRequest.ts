@@ -8,7 +8,14 @@ import type {
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
 import { DEFAULT_AI_PERSONALITY_ID, isAIPersonalityId } from "../data/aiPersonalities";
 import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePacing";
-import { CAMPAIGN_NODE_BY_ID, FACTION_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
+import {
+  CAMPAIGN_NODE_BY_ID,
+  ENEMY_HERO_BY_ID,
+  FACTION_BY_ID,
+  MAP_BY_ID,
+  REWARD_TABLE_BY_ID,
+  UNIT_BY_ID
+} from "../data/contentIndex";
 import { DEFAULT_MAP_ID } from "../data/maps";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
 import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
@@ -31,6 +38,7 @@ export interface BattleLaunchRequest {
   modifiers: BattleLaunchModifier[];
   enemyProfileId?: string;
   aiPersonalityId?: EnemyAIPersonalityId;
+  enemyHeroId?: string;
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
@@ -62,6 +70,7 @@ export interface CreateBattleLaunchRequestOptions {
   modifiers?: BattleLaunchModifier[];
   enemyProfileId?: string;
   aiPersonalityId?: EnemyAIPersonalityId;
+  enemyHeroId?: string;
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
@@ -100,6 +109,7 @@ export function createCampaignBattleLaunchRequest(
     difficulty: options.difficulty ?? definition.difficulty,
     enemyProfileId: options.enemyProfileId ?? definition.enemyFactionId,
     aiPersonalityId: options.aiPersonalityId ?? definition.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
+    enemyHeroId: options.enemyHeroId ?? definition.enemyHeroId,
     campaignNodeId: definition.id,
     sourceId: options.sourceId ?? `campaign_${definition.id}`
   });
@@ -123,6 +133,7 @@ export function createBattleLaunchRequest(
     modifiers: options.modifiers ?? [],
     enemyProfileId: options.enemyProfileId,
     aiPersonalityId: options.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
+    enemyHeroId: options.enemyHeroId,
     campaignNodeId: options.campaignNodeId,
     scenarioMissionId: options.scenarioMissionId,
     retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits)
@@ -188,6 +199,9 @@ export function resolveBattleLaunchRequest(
   if (request.enemyProfileId && !FACTION_BY_ID[request.enemyProfileId]) {
     errors.push(`Battle launch request references missing enemy faction ${request.enemyProfileId}.`);
   }
+  if (request.enemyHeroId && !ENEMY_HERO_BY_ID[request.enemyHeroId]) {
+    errors.push(`Battle launch request references missing enemy hero ${request.enemyHeroId}.`);
+  }
 
   if (errors.length > 0 || !map || !rewardTable || !heroSave) {
     return { ok: false, errors };
@@ -203,6 +217,7 @@ export function resolveBattleLaunchRequest(
         difficulty: request.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
         modifiers: request.modifiers ?? [],
         aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
+        enemyHeroId: request.enemyHeroId,
         retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits)
       },
       map,

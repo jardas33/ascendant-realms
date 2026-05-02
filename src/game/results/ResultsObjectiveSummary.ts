@@ -1,5 +1,7 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
+import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
+import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatXpProgress, titleCase } from "./ResultsFormatting";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
@@ -21,6 +23,8 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Units killed</span><strong>${stats.unitsKilled}</strong>
           <span>Buildings destroyed</span><strong>${stats.buildingsDestroyed}</strong>
           <span>Sites captured</span><strong>${stats.resourcesCaptured}</strong>
+          <span>Enemy commander</span><strong>${escapeHtml(stats.enemyHeroName ?? "None")}</strong>
+          <span>Commander defeated</span><strong>${stats.enemyHeroId ? (stats.enemyHeroDefeated ? `Yes (${formatTime(stats.enemyHeroDefeatedAtSeconds ?? stats.timeSeconds)})` : "No") : "None"}</strong>
         </div>
       </section>
       <section class="result-block">
@@ -40,7 +44,9 @@ export function renderVeteranSummary(data: ResultsData): string {
   }
 
   const rankedUp = summary.rankedUpUnits.slice(0, 4);
+  const notable = summary.notableVeterans.slice(0, 6);
   const top = summary.topSurvivor;
+  const eligibleCount = summary.notableVeterans.filter(isRetinueEligibleVeteran).length;
   return `
     <section class="result-block wide veteran-summary">
       <h2>Notable Veterans</h2>
@@ -58,17 +64,38 @@ export function renderVeteranSummary(data: ResultsData): string {
             ? rankedUp
                 .map(
                   (entry) => `
-                    <span>Ranked up</span><strong>${escapeHtml(entry.unitName)} - ${escapeHtml(
+                    <span>Rank-up</span><strong>${escapeHtml(entry.unitName)} - ${escapeHtml(
                       entry.previousRank ? titleCase(entry.previousRank) : "Recruit"
                     )} to ${escapeHtml(entry.rankName)}</strong>
                     <span>${escapeHtml(entry.unitName)} record</span><strong>${entry.kills} kills, ${entry.damageDealt} damage</strong>
                   `
                 )
                 .join("")
-            : `<span>Ranked up</span><strong>None this battle</strong>`
+            : `<span>Rank-ups this battle</span><strong>None</strong>`
         }
+        <span>Retinue candidates</span><strong>${eligibleCount}</strong>
       </div>
-      <p class="quiet">Campaign victories can add surviving Seasoned or better units to the Retinue Camp.</p>
+      ${
+        notable.length > 0
+          ? `<div class="reward-list veteran-list">
+              ${notable
+                .map(
+                  (entry) => `
+                    <article class="reward-card veteran-card">
+                      <div>
+                        <strong>${escapeHtml(entry.unitName)} - ${escapeHtml(entry.rankName)}</strong>
+                        <p>${escapeHtml(formatUnitVeterancyXpProgress(entry.xp))} - ${entry.kills} kills - ${entry.damageDealt} damage</p>
+                        <small>Rank bonus: ${escapeHtml(formatUnitVeterancyBonusSummary(entry.rank))}</small>
+                        <small>${escapeHtml(retinueEligibilityReason(entry))}</small>
+                      </div>
+                    </article>
+                  `
+                )
+                .join("")}
+            </div>`
+          : ""
+      }
+      <p class="quiet">Campaign victories can add selected surviving Seasoned or better units to the Retinue Camp. Retinue death is permanent in V1.</p>
     </section>
   `;
 }

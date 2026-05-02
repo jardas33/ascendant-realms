@@ -3,6 +3,7 @@ import { AI_PERSONALITIES } from "../aiPersonalities";
 import { BUILDINGS } from "../buildings";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
+import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "../enemyHeroes";
 import { FACTIONS } from "../factions";
 import { HERO_CLASSES } from "../heroClasses";
 import { ITEM_AFFIXES } from "../itemAffixes";
@@ -19,6 +20,7 @@ import { validateAbilities, validateHeroClasses, validateSkillNodes } from "./va
 import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
 import { validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
+import { validateEnemyHeroes } from "./validateEnemyHeroes";
 import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
 import { validateMaps } from "./validateMaps";
@@ -47,7 +49,9 @@ export function validateContent(): string[] {
     strongholdUpgradeIds: idsFor(STRONGHOLD_UPGRADES, "stronghold upgrade", errors),
     campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors),
     aiPersonalityIds: idsFor(AI_PERSONALITIES, "AI personality", errors),
-    campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors)
+    campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
+    enemyHeroIds: idsFor(ENEMY_HEROES, "enemy hero", errors),
+    enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors)
   };
 
   validateUnits(errors, context);
@@ -68,6 +72,7 @@ export function validateContent(): string[] {
   validateDifficulties(errors);
   validateAIPersonalities(errors, context);
   validateCampaignModifiers(errors, context);
+  validateEnemyHeroes(errors, context);
   validateMaps(errors, context);
   return errors;
 }

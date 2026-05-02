@@ -47,6 +47,7 @@ export interface BattleSetupSnapshot {
     playerBase: string;
     enemyBase: string;
   };
+  enemyHeroId?: string;
 }
 
 export interface BattleCompletionInput {
@@ -134,6 +135,39 @@ export class BattleRuntime {
     this.stats.retinueUnitIdsLost = [...new Set(retinueUnitIds)];
   }
 
+  recordEnemyHeroPresence(enemyHeroId: string | undefined, enemyHeroName?: string): void {
+    if (!enemyHeroId) {
+      return;
+    }
+    this.stats.enemyHeroId = enemyHeroId;
+    this.stats.enemyHeroName = enemyHeroName;
+  }
+
+  recordEnemyHeroDefeated(enemyHeroId: string | undefined, enemyHeroName?: string, defeatedAtSeconds = this.elapsedSeconds): void {
+    if (!enemyHeroId) {
+      return;
+    }
+    this.recordEnemyHeroPresence(enemyHeroId, enemyHeroName);
+    this.stats.enemyHeroDefeated = true;
+    this.stats.enemyHeroDefeatedAtSeconds = Math.max(0, defeatedAtSeconds);
+  }
+
+  recordEnemyHeroJoinedAttack(enemyHeroId: string | undefined, joinedAtSeconds = this.elapsedSeconds): void {
+    if (!enemyHeroId || this.stats.enemyHeroJoinedAttackAtSeconds !== undefined) {
+      return;
+    }
+    this.stats.enemyHeroId = enemyHeroId;
+    this.stats.enemyHeroJoinedAttackAtSeconds = Math.max(0, joinedAtSeconds);
+  }
+
+  recordEnemyHeroPressure(enemyHeroId: string | undefined, enemyHeroName?: string): void {
+    if (!enemyHeroId) {
+      return;
+    }
+    this.recordEnemyHeroPresence(enemyHeroId, enemyHeroName);
+    this.stats.lossesInvolvingEnemyHero = (this.stats.lossesInvolvingEnemyHero ?? 0) + 1;
+  }
+
   recordSecondaryObjective(objectiveId: string): boolean {
     if (this.stats.completedObjectiveIds.includes(objectiveId)) {
       return false;
@@ -181,7 +215,9 @@ export function createInitialBattleStats(): BattleStats {
     timeSeconds: 0,
     completedObjectiveIds: [],
     outcome: "defeat",
-    retinueUnitIdsLost: []
+    retinueUnitIdsLost: [],
+    enemyHeroDefeated: false,
+    lossesInvolvingEnemyHero: 0
   };
 }
 
@@ -219,7 +255,8 @@ export function createBattleSetupSnapshot(launch: ResolvedBattleLaunch): BattleS
     objectiveBuildingIds: {
       playerBase: map.scenario.objectives.playerBaseBuildingId,
       enemyBase: map.scenario.objectives.enemyBaseBuildingId
-    }
+    },
+    enemyHeroId: request.enemyHeroId
   };
 }
 
@@ -241,6 +278,8 @@ export function completeBattle(
     completedObjectiveIds: [...input.stats.completedObjectiveIds],
     outcome: input.outcome,
     retinueUnitIdsLost: [...(input.stats.retinueUnitIdsLost ?? [])],
+    enemyHeroDefeated: input.stats.enemyHeroDefeated ?? false,
+    lossesInvolvingEnemyHero: input.stats.lossesInvolvingEnemyHero ?? 0,
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const emptyReward: BattleRewardResult = {

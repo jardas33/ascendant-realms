@@ -20,6 +20,13 @@ export interface RetinueAddResult {
   reason?: string;
 }
 
+export interface RetinueCapacityBreakdown {
+  activeCount: number;
+  capacity: number;
+  baseCapacity: number;
+  trainingYardBonus: number;
+}
+
 export function getRetinueCapacity(campaign: CampaignSaveData): number {
   const trainingYardBonus =
     (campaign.strongholdUpgradeRanks.training_yard_ii ?? 0) > 0
@@ -32,8 +39,31 @@ export function activeRetinueUnits(campaign: CampaignSaveData): RetinueUnitSaveD
   return campaign.retinueUnits.filter((unit) => unit.status === "active");
 }
 
+export function getRetinueCapacityBreakdown(campaign: CampaignSaveData): RetinueCapacityBreakdown {
+  const trainingYardBonus =
+    (campaign.strongholdUpgradeRanks.training_yard_ii ?? 0) > 0
+      ? RETINUE_TRAINING_YARD_II_CAPACITY_BONUS
+      : 0;
+  return {
+    activeCount: activeRetinueUnits(campaign).length,
+    capacity: RETINUE_BASE_CAPACITY + trainingYardBonus,
+    baseCapacity: RETINUE_BASE_CAPACITY,
+    trainingYardBonus
+  };
+}
+
 export function isRetinueEligibleVeteran(entry: UnitVeterancySummaryEntry): boolean {
   return entry.survivedBattle && entry.rank !== "recruit";
+}
+
+export function retinueEligibilityReason(entry: UnitVeterancySummaryEntry): string {
+  if (!entry.survivedBattle) {
+    return "Not eligible: did not survive the battle.";
+  }
+  if (entry.rank === "recruit") {
+    return "Not eligible: needs Seasoned rank or better.";
+  }
+  return "Eligible: survived at Seasoned rank or better.";
 }
 
 export function createRetinueUnitFromVeteran(
@@ -146,6 +176,12 @@ export function formatRetinueUnitName(unit: RetinueUnitSaveData): string {
 export function formatRetinueUnitSummary(unit: RetinueUnitSaveData): string {
   const rank = getUnitVeterancyRank(unit.rank);
   return `${rank.name} ${formatRetinueUnitName(unit)} (${unit.xp} XP, ${unit.kills} kills)`;
+}
+
+export function formatRetinueDeploymentLabel(unit: RetinueUnitSaveData): string {
+  const rank = getUnitVeterancyRank(unit.rank);
+  const unitTypeName = UNIT_BY_ID[unit.unitTypeId]?.name ?? formatRetinueUnitName(unit);
+  return `${rank.name} ${unitTypeName}`;
 }
 
 function createRetinueUnitId(sourceBattleId: string, unitInstanceId: string): string {

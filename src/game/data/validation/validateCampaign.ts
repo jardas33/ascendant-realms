@@ -25,6 +25,9 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
     if (node.aiPersonalityId && !context.aiPersonalityIds.has(node.aiPersonalityId)) {
       errors.push(`Campaign node ${node.id} references missing AI personality ${node.aiPersonalityId}.`);
     }
+    if (node.enemyHeroId && !context.enemyHeroIds.has(node.enemyHeroId)) {
+      errors.push(`Campaign node ${node.id} references missing enemy hero ${node.enemyHeroId}.`);
+    }
     node.prerequisites.forEach((nodeId) => {
       if (!context.campaignNodeIds.has(nodeId)) {
         errors.push(`Campaign node ${node.id} requires missing node ${nodeId}.`);

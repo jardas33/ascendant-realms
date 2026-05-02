@@ -67,6 +67,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await openFreshMainMenu(page);
 
     await expect(page.getByRole("heading", { name: "Ascendant Realms" })).toBeVisible();
+    await expect(page.getByText("Prototype v0.2", { exact: true })).toBeVisible();
+    await expect(page.getByText("v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue")).toBeVisible();
+    await expect(page.getByText("Prototype v0.1", { exact: true })).toHaveCount(0);
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
     await expect(page.getByTestId("menu-inventory")).toBeVisible();

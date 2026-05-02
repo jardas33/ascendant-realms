@@ -2,11 +2,11 @@
 
 ## v0.2 Prototype Baseline - 2026-05-02
 
-This release baseline captures the current playable Ascendant Realms prototype so it is easier to share, test, and continue from. It does not represent a content-complete game; it is the stable RTS/RPG campaign spine with Unit Veterancy V1 and Retinue Camp V1 included.
+This release baseline captures the current playable Ascendant Realms prototype so it is easier to share, test, and continue from. It does not represent a content-complete game; it is the stable RTS/RPG campaign spine with Unit Veterancy V1, Retinue Camp V1, and Enemy Hero / Rival Commander V1 included.
 
 ### Campaign And Skirmish Structure
 
-- Main menu flow supports New Campaign, Continue Campaign, Skirmish, Hero Inventory, Settings, Asset Gallery, Info, and Reset Save.
+- Main menu flow labels the build as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`, and supports New Campaign, Continue Campaign, Skirmish, Hero Inventory, Settings, Asset Gallery, Info, and Reset Save.
 - The Border Marches mini-campaign has eight authored nodes: Border Village, Old Stone Road, Marcher Camp, Aether Well Ruins, Bandit Hillfort, Chapel of the Marches, Refugee Caravan, and Ashen Outpost.
 - Campaign battle nodes and standalone skirmishes launch through the shared `BattleLaunchRequest` path.
 - Skirmish mode includes First Claim, Broken Ford, and Ashen Outpost with difficulty and AI-personality selection.
@@ -28,6 +28,7 @@ This release baseline captures the current playable Ascendant Realms prototype s
 - Research upgrades include current data-driven battle upgrades such as infantry, armor, ranger, and Aether study lines.
 - Unit Veterancy V1 gives player non-hero units battle-local XP, Recruit/Seasoned/Veteran/Elite ranks, modest stat bonuses, selected-unit rank display, rank-up feedback, and Notable Veterans in victory Results.
 - Retinue Camp V1 lets campaign victories save a small number of surviving Seasoned+ veterans, shows them on the Campaign Map, deploys them in future campaign battles, and removes them permanently if they die.
+- Enemy Hero / Rival Commander V1 adds three named Ashen commanders: Gorak Emberhand on Bandit Hillfort, Veyra of the Cinders on Aether Well Ruins, and Captain Malrec on Ashen Outpost, with scout feedback, minimap markers, modest abilities, XP/objective/results credit, and simulator telemetry.
 - Enemy AI expands, trains, defends, and sends pressure waves through data-driven personalities.
 
 ### Fog And Minimap
@@ -67,17 +68,18 @@ This release baseline captures the current playable Ascendant Realms prototype s
 ### Automated Playtest Simulator
 
 - `npm run playtest:sim` regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
-- The simulator currently runs 150 deterministic campaign battle runs across 50 profile-node summaries.
+- The simulator currently runs 180 deterministic campaign battle runs across 60 profile-node summaries.
 - Profiles include no Stronghold upgrades, Tier I paths, a Tier II Quartermaster path, and retinue-aware profiles for one Veteran Militia, one Veteran Ranger, and mixed retinue.
+- Telemetry includes assigned rival commander id, defeated state, attack-join timing, losses involving the rival, and objective completion.
 - Latest simulator status: no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
 ### Current Verification Status
 
-Latest full verification recorded after Retinue Camp V1:
+Latest full verification recorded after Enemy Hero / Rival Commander V1:
 
-- `npm test`: 35 test files, 194 tests passing.
+- `npm test`: 35 test files, 200 tests passing.
 - `npm run build`: passing with the known Vite large-chunk warning.
-- `npm run test:e2e -- --reporter=line`: 43 Playwright tests passing.
-- `npm run playtest:sim`: 150 simulated runs passing.
+- `npm run test:e2e -- --reporter=line`: 44 Playwright tests passing.
+- `npm run playtest:sim`: 180 simulated runs passing.
 
 Known release caveat: the Vite production build reports that the main Phaser bundle is larger than the default 500 kB chunk warning threshold. This is tracked as a warning, not a failure.

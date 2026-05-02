@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 11:51 -04:00
+Last updated: 2026-05-02 17:31 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -16,7 +16,7 @@ The current playable loop:
 4. Resolve victory or defeat through the shared Results scene.
 5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, retinue units, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is now marked as the v0.2 prototype baseline plus Unit Veterancy V1 and Retinue Camp V1. It is still a prototype, but it has a broad playable RTS/RPG spine with Stronghold Tier I telemetry-response changes, Stronghold Development Tier II, campaign consequence/reputation hooks, randomized item affixes V1, battle-local unit XP/ranks/results summaries, compact save-backed retinue persistence, regenerated telemetry, a safe HeroProgressionRules module split, release documentation, and updated balance/docs notes. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is now marked as the v0.2 prototype baseline plus Unit Veterancy V1, Retinue Camp V1, and Enemy Hero / Rival Commander V1. It is still a prototype, but it has a broad playable RTS/RPG spine with Stronghold Tier I telemetry-response changes, Stronghold Development Tier II, campaign consequence/reputation hooks, randomized item affixes V1, battle-local unit XP/ranks/results summaries, compact save-backed retinue persistence, named Ashen rival commanders on important campaign battles, regenerated telemetry, a safe HeroProgressionRules module split, release documentation, and updated balance/docs notes. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
 ## Current Git State
 
@@ -35,44 +35,44 @@ main
 Latest published commit:
 
 ```text
-9cd3205e3d1be23ed967bd51f315bab3d39cc52e
+b2da48effc0dca5d6cf91b38cc12801f00a87e16
 ```
 
 Latest commits:
 
 ```text
+b2da48e Update checkpoint metadata
+9f96b1f Checkpoint unit veterancy retinue camp and progression refactor
 9cd3205 Update development checkpoint metadata
 a3dba27 Checkpoint Stronghold development and simulator profiles
-a0d3f3c Update development checkpoint metadata
-3f676e1 Checkpoint Stronghold development and campaign simulator profiles
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest Browser Use sanity was rerun during the pre-feature checkpoint: the current in-app preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. The visible menu still says `Prototype v0.1` even though the docs describe the current v0.2 prototype baseline; treat that as a known copy/version mismatch until product copy is intentionally refreshed. Playwright e2e remains the deterministic browser verification surface for gameplay flows.
+- Latest Browser Use sanity was rerun after the enemy hero balance pass: the current production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with `Prototype v0.2`, `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`, no `Prototype v0.1`, and browser console errors at 0. Playwright e2e remains the deterministic browser verification surface for gameplay flows.
 
-Current branch status for this handoff update:
+Current branch status for this handoff update before checkpoint commit creation:
 
 ```text
 ## main...origin/main
+modified working tree with intentional product/version copy, veterancy/retinue readability UX, conservative retinue balance docs/telemetry, e2e timing hardening, Enemy Hero / Rival Commander V1 work, enemy hero balance docs/telemetry, and checkpoint metadata
+?? .codex-e2e.ps1
 ```
 
-Before the checkpoint commit is created, `main` and `origin/main` both point at `9cd3205e3d1be23ed967bd51f315bab3d39cc52e`. The worktree contains intentional uncommitted code, test, documentation, and telemetry edits from the Stronghold/reputation/affix follow-up work, Unit Veterancy V1, Retinue Camp V1, the retinue telemetry balance pass, and the HeroProgressionRules refactor. Do not reset or revert those edits unless the user explicitly asks.
+`main` and `origin/main` both point at `b2da48effc0dca5d6cf91b38cc12801f00a87e16` before the new checkpoint commit. The checkpoint worktree is intentional and includes the v0.2 product-copy pass, veterancy/retinue readability pass, conservative no-numeric-change retinue balance documentation, regenerated telemetry, e2e timing/wait hardening for slower full-suite runs, Enemy Hero / Rival Commander V1, the no-numeric-change enemy hero balance pass, and the `.codex-e2e.ps1` helper. Do not reset or revert future dirty edits unless the user explicitly asks.
 
-Pending checkpoint commit:
+Feature checkpoint commit:
 
 ```text
-9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
+pending; replace with the checkpoint commit hash after creating the commit
 ```
 
-Pending branch sync status:
+Current branch sync status before checkpoint commit creation:
 
 ```text
-Post-checkpoint/pre-push: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`. A small metadata follow-up records this hash before pushing.
+main...origin/main synced at b2da48effc0dca5d6cf91b38cc12801f00a87e16.
 ```
-
-Notable current untracked additions include `CHANGELOG.md`, `RELEASE_CHECKLIST.md`, `src/game/core/progression/`, `src/game/core/RetinueRules.ts`, `src/game/core/RetinueRules.test.ts`, `src/game/campaign/RetinuePanel.ts`, `src/game/results/ResultsRetinuePanel.ts`, `src/game/data/unitVeterancy.ts`, and `src/game/data/unitVeterancy.test.ts`. Many existing game, test, docs, telemetry, and e2e files are modified as part of the same intentional feature/refactor stack.
 
 ## Randomized Item Affixes V1 - 2026-05-01
 
@@ -209,34 +209,46 @@ Notes:
 
 - `npm run test:e2e` starts Vite through Playwright.
 - The e2e suite intentionally uses one worker for stability.
-- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 18.0 minutes.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 21.5 minutes.
 - `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Fresh pre-feature checkpoint verification completed on 2026-05-02 at about 11:51 -04:00:
+Fresh checkpoint verification completed on 2026-05-02 at 17:31 -04:00:
 
 ```text
 npm test
-PASS: 35 test files, 194 tests
+PASS: 35 test files, 200 tests
 
 npm run build
 PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
 
 npm run test:e2e -- --reporter=line
-PASS: 43 Playwright tests in 18.0m. This suite is slow; use a long timeout. Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 10.7m.
+PASS: 44 Playwright tests in 23.3m. This suite is slow; use a long timeout. Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts. An initial full run found one slow Command Hall selection HUD refresh; the test helper was hardened and the focused rerun passed before the full suite was rerun.
 
 npm run playtest:sim
 PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
 
-Browser Use sanity
-PASS: current in-app preview at http://127.0.0.1:4182/ loads Ascendant Realms main menu, browser console errors: 0. Known copy/version mismatch: visible menu still says `Prototype v0.1`.
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, `Prototype v0.2` present, subtitle present, `Prototype v0.1` absent, browser console errors 0
+
+Enemy Hero V1 result
+Three data-driven rivals exist: Gorak Emberhand on Bandit Hillfort, Veyra of the Cinders on Aether Well Ruins, and Captain Malrec on Ashen Outpost. Campaign launches carry `enemyHeroId`, the existing `enemy_commander` spawn becomes the named rival, scout/battle/results feedback is visible, the Ashen commander objective is `Defeat Captain Malrec`, and telemetry records hero id, defeated state, join timing, and losses involving the rival.
+
+Enemy Hero balance result
+No numeric gameplay changes. Retained current enemy hero HP, damage, ability cooldowns/ranges, Normal commander join timing, XP values, objective credit, and campaign map assignments. Old Stone Road remains unassigned to an enemy hero because all 36 Old Stone Road simulations already win on the Easy lane and adding a rival there would risk early commander noise.
+
+Enemy Hero telemetry read
+Veyra appears in 36 runs, is defeated in 24, joins attacks in 17, and is involved in 12 player losses. Gorak appears in 36 runs, is defeated in 13, joins attacks in 12, and is involved in 12 losses. Captain Malrec appears in 36 runs, is defeated in 36, joins attacks in 14, and is involved in 14 losses. No structural too-easy or too-hard node emerged.
+
+Retinue balance result
+No numeric gameplay changes. Retained capacity 2/+1 Training Yard II, Seasoned+ eligibility, 55/130/230 XP thresholds, +4%/+8%/+12% rank bonuses, Elite-only +1 armor, Quartermaster II interaction, and permanent retinue removal on death.
 
 Checkpoint commit
-9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
+pending; replace with the checkpoint commit hash after creating the commit
 
 Branch sync
-Post-checkpoint/pre-push: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`. A small metadata follow-up records this hash before pushing.
+main...origin/main synced at b2da48effc0dca5d6cf91b38cc12801f00a87e16 before creating the checkpoint commit
 ```
 
 Focused item-affix verification on 2026-05-02 during this pass:
@@ -332,6 +344,196 @@ PASS: 1 Playwright test; the final full-suite run also passes after targeting th
 
 ## Most Recent Completed Work
 
+### Checkpoint - Enemy Heroes, Rival Commanders, And v0.2 Polish - 2026-05-02
+
+Goal: create a clean checkpoint before any new feature work while preserving all current dirty work and avoiding gameplay changes.
+
+What changed:
+
+- Re-ran the required verification suite: unit tests, production build, full Playwright e2e, and playtest simulator.
+- Hardened the `selectPlayerCommandHallFromScene` e2e helper after the first full Playwright run exposed a slow Command Hall side-panel refresh. This is test-only; no gameplay behavior changed.
+- Updated `DEVELOPMENT_CHECKPOINT.md` and this handoff with checkpoint verification status and the next recommended milestone.
+- Next recommended milestone is Rival/Nemesis Persistence V1.
+
+Verification:
+
+```text
+npm test
+PASS: 35 test files, 200 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 44 Playwright tests in 23.3m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries
+```
+
+### Enemy Hero Balance Pass - 2026-05-02
+
+Goal: use `LLM_GAME_HANDOFF.md`, `BALANCE.md`, `PLAYTEST_TELEMETRY.md`, and `PLAYTEST_TELEMETRY.json` to tune enemy heroes only where telemetry showed unfairness or trivialization.
+
+What changed:
+
+- Applied no numeric gameplay changes. Telemetry shows rival commanders are relevant without creating structural `too_easy` or `too_hard` nodes.
+- Kept Old Stone Road without an enemy hero assignment; it is still the Easy second battle lane and already wins 36/36 simulations.
+- Kept Veyra on Aether Well Ruins, Gorak on Bandit Hillfort, and Captain Malrec on Ashen Outpost.
+- Kept enemy hero HP, damage, ability cooldowns/ranges, Normal commander join timing, XP values, and objective credit unchanged.
+- Updated `BALANCE.md` with a before/after knob table and reason for each no-change decision.
+- Updated the generated `PLAYTEST_TELEMETRY.md` report through `ScriptedBattlePlaytest.ts` so future simulator runs preserve the enemy-hero balance read.
+
+Verification:
+
+```text
+npm test
+PASS: 35 test files, 200 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 44 Playwright tests in 21.5m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, `Prototype v0.2` present, subtitle present, `Prototype v0.1` absent, browser console errors 0
+```
+
+### Enemy Hero / Rival Commander V1 - 2026-05-02
+
+Goal: add a small data-driven enemy hero/rival commander system that makes important battles feel more RPG-like without adding enemy construction, workers, new factions, diplomacy, procedural campaign, or a raid-boss layer.
+
+What changed:
+
+- Added `src/game/data/enemyHeroes.ts` with three named Ashen commanders:
+  - Gorak Emberhand, Ashen Raider Captain, assigned to Bandit Hillfort.
+  - Veyra of the Cinders, Hexfire Seer, assigned to Aether Well Ruins.
+  - Captain Malrec, Outpost Commander, assigned to Ashen Outpost.
+- Added Enemy Hero V1 ability definitions for Ember Strike, Rally Raiders, Hexfire Bolt, and Hold the Line.
+- Campaign nodes now support optional `enemyHeroId`; campaign battle launches carry that ID through `BattleLaunchRequest`.
+- Battle spawning reuses the existing `enemy_commander` slot and replaces its displayed name/stats/XP with the assigned enemy hero. Skirmish remains generic by default.
+- Enemy heroes stay under existing commander AI pacing: they defend when the base is threatened and only join attack waves when phase/difficulty/personality commander timing allows it.
+- Added `EnemyHeroAbilitySystem` for modest cooldown abilities: short burn strike, small rally damage buff, ranged direct damage, and a short fortress armor aura.
+- Added scout feedback, minimap enemy-hero marker, battle-start commander copy, campaign node commander preview, Results commander defeated line, Ashen defeat tip copy, and test hooks for safe Playwright scouting/defeat.
+- Ashen Outpost secondary objective copy is now `Defeat Captain Malrec` while still using the existing `defeat_unit` objective target `enemy_commander`.
+- Battle stats and simulator telemetry now include `enemyHeroId`, `enemyHeroDefeated`, `timeEnemyHeroJoinedAttack`, and `lossesInvolvingEnemyHero`.
+- Updated `DESIGN.md`, `BALANCE.md`, `CONTENT_GUIDE.md`, `ROADMAP.md`, `PLAYTEST_TELEMETRY.md`, `PLAYTEST_TELEMETRY.json`, and this handoff.
+
+Verification for this pass:
+
+```text
+npm test
+PASS: 35 test files, 200 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 44 Playwright tests in 20.7m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, `Prototype v0.2` present, subtitle present, `Prototype v0.1` absent, browser console errors 0
+```
+
+### Conservative Retinue Balance Pass - 2026-05-02
+
+Goal: use `LLM_GAME_HANDOFF.md`, `BALANCE.md`, `PLAYTEST_TELEMETRY.md`, and `PLAYTEST_TELEMETRY.json` to confirm Unit Veterancy V1 and Retinue Camp V1 are useful without becoming mandatory, tuning only if telemetry clearly showed a structural problem.
+
+What changed:
+
+- Applied no numeric gameplay changes. The telemetry shows no structural `too_easy` or `too_hard` nodes, no-retinue Ashen Outpost remains beatable, one Veteran Militia/Ranger helps without becoming required, and mixed retinue profiles are strong but classified as `needs_human_review`.
+- Retained retinue capacity at 2 active units by default and +1 from Training Yard II.
+- Retained Seasoned+ eligibility, 55 / 130 / 230 XP thresholds, +4% / +8% / +12% rank bonuses, Elite-only +1 armor, and permanent retinue death/removal.
+- Retained Quartermaster II interaction unchanged; the mixed-retinue Quartermaster profile is strong, but not structurally too easy in the deterministic suite.
+- Updated `BALANCE.md` with before/after reasoning for each allowed knob.
+- Updated the generated `PLAYTEST_TELEMETRY.md` report via `ScriptedBattlePlaytest.ts` so future simulator runs preserve the no-numeric-change balance result.
+- Hardened two slow/flaky Playwright assertions with longer test/wait timeouts only; no gameplay behavior changed.
+
+Verification:
+
+```text
+npm test
+PASS: 35 test files, 198 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 44 Playwright tests in 21.0m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+```
+
+### Veterancy And Retinue Readability UX - 2026-05-02
+
+Goal: make Unit Veterancy V1 and Retinue Camp V1 understandable and satisfying without adding systems, maps, factions, workers, enemy construction, or balance changes.
+
+What changed:
+
+- Selected-unit HUD now shows rank, XP progress to next rank, kills, rank bonuses, and whether the unit is a normal battle unit or a deployed retinue veteran.
+- Results `Notable Veterans` now calls out rank-ups, top survivor, retinue candidate count, XP progress, rank bonuses, and eligibility reasons.
+- Results `Retinue Camp` recruitment now shows active capacity, base capacity, Training Yard II capacity state, current retinue, eligible recruit count, clear `Add to Retinue` buttons, explicit ineligible reasons, and a full-capacity message instead of a vague disabled state.
+- Campaign `Retinue Camp` now shows active capacity, base capacity, Training Yard II capacity bonus state, active saved units with rank/type/XP/kills/bonus copy, the permanent-death V1 rule, and clearer dismiss wording.
+- Campaign battle start status now includes `Retinue deployed: ...` when saved retinue units spawn.
+- Main menu info copy now explains battle-local ranks, selected surviving veterans, retinue persistence, and permanent death in V1.
+- Added pure formatting coverage for veterancy progress/bonus strings, retinue capacity/eligibility labels, Retinue Camp rendering, and Results veteran/retinue rendering.
+- Added Playwright coverage for selected-panel veterancy copy, Results veteran summary, visible retinue capacity, eligible add button, full-retinue messaging, and deployed-retinue selected-panel copy.
+
+Verification:
+
+```text
+npm test
+PASS: 35 test files, 198 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 44 Playwright tests in 18.7m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries
+```
+
+### Product Version Copy Consistency - 2026-05-02
+
+Goal: make visible product/version copy agree with the documented v0.2 prototype baseline without adding gameplay, changing balance, or refactoring unrelated systems.
+
+What changed:
+
+- Main menu eyebrow now says `Prototype v0.2`.
+- Main menu now includes the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
+- Playwright smoke coverage now asserts the v0.2 label and subtitle are visible and that `Prototype v0.1` is absent from the main menu.
+- README, CHANGELOG, RELEASE_CHECKLIST, ROADMAP, DEVELOPMENT_CHECKPOINT, and this handoff now agree with the visible v0.2 product copy.
+- The first full e2e run during this pass exposed an existing brittle Ashen Outpost objective-panel assertion. The product-copy change did not touch gameplay; the test now checks the unique `battle-objectives` element with `toContainText("Objectives 3/3")`, matching the rest of that test.
+
+Verification:
+
+```text
+npm test
+PASS: 35 test files, 194 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line -g "Ashen Outpost special objectives display completed states"
+PASS: 1 focused Playwright test after the assertion hardening
+
+npm run test:e2e -- --reporter=line
+PASS: 43 Playwright tests in 17.6m
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, `Prototype v0.2` present, subtitle present, `Prototype v0.1` absent, browser console errors 0
+```
+
 ### Clean Checkpoint Verification - 2026-05-02
 
 Goal: create a clean checkpoint before any new feature work, preserving all current dirty work from Unit Veterancy V1, Retinue Camp V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, the retinue telemetry balance pass, release docs, and the HeroProgressionRules split.
@@ -352,7 +554,7 @@ npm run playtest:sim
 PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
 
 Browser Use preview smoke at http://127.0.0.1:4182/
-PASS: main menu visible, browser console errors: 0; visible menu still labels the build `Prototype v0.1`
+PASS: main menu visible, browser console errors: 0; current expected menu label is `Prototype v0.2`
 ```
 
 Checkpoint commit:
@@ -403,7 +605,7 @@ git diff --check
 PASS: no whitespace errors; existing `.gitignore` CRLF warning only
 
 Browser Use preview smoke at http://127.0.0.1:4182/
-PASS: main menu visible, browser console errors: 0; visible menu still labels the build `Prototype v0.1`
+PASS: main menu visible, browser console errors: 0; current expected menu label is `Prototype v0.2`
 ```
 
 ### Retinue Telemetry Balance Pass - 2026-05-02
@@ -1053,7 +1255,7 @@ What changed:
 - The playtest analyzer now separates structural `too_hard` failures from fair-opening strategy-spread cases.
 - The regenerated telemetry report now says: Too hard none; Needs human review Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
 - Suggested tuning now steers future work toward objective route, army timing, and final-assault attrition instead of automatically recommending first-attack/resource tuning.
-- Ashen Outpost defeat tips now lead with Burned Shrine advice, then Enemy Barracks advice, then Outpost Captain advice as objectives are completed.
+- Ashen Outpost defeat tips now lead with Burned Shrine advice, then Enemy Barracks advice, then Captain Malrec advice as objectives are completed.
 - `.preview-server.pid` was added to `.gitignore` for local Browser Use preview cleanup hygiene.
 
 ### Ashen Objective Readability And Live Effect
@@ -1080,7 +1282,7 @@ Files touched by this follow-up:
 What changed:
 
 - Maps with secondary objectives now get a compact in-battle Objectives panel in the HUD.
-- Ashen Outpost shows Capture the Burned Shrine, Destroy Enemy Barracks, and Defeat the Outpost Captain during live battle.
+- Ashen Outpost shows Capture the Burned Shrine, Destroy Enemy Barracks, and Defeat Captain Malrec during live battle.
 - Completing `capture_burned_shrine` on Ashen Outpost now weakens the enemy gate Watchtower by 45% max HP without destroying it.
 - The Ashen objective description now tells the player that Burned Shrine weakens the gate Watchtower.
 - The existing Ashen Outpost e2e test now verifies the objective HUD, the Watchtower weakening effect, and Results objective completion states.
@@ -1205,7 +1407,7 @@ Coverage added:
 - Mystic Lodge and Acolyte: build Mystic Lodge, accelerate construction through existing scene systems, train Acolyte, and verify a live player Acolyte appears.
 - Watchtower combat: build/complete Watchtower, reposition an existing enemy into range through Playwright, and verify enemy HP decreases.
 - Research UI: verify an insufficient-resource lock reason, then research Infantry Weapons I, Reinforced Armor I, Ranger Training I, and Aether Study I through HUD buttons.
-- Ashen Outpost: launch the campaign node, mark Burned Shrine / Enemy Barracks / Outpost Captain objectives complete through a test hook, force victory, and verify Results shows each objective as Completed.
+- Ashen Outpost: launch the campaign node, scout Captain Malrec, mark Burned Shrine / Enemy Barracks / Captain Malrec objectives complete through test hooks, force victory, and verify Results shows each objective as Completed.
 - Settings/accessibility: persist floating text off, reduced motion, fog override disabled, and colorblind minimap palette; verify those settings reach battle state, fog is inactive, colorblind minimap snapshot is true, and forced damage does not spawn damage-number text while floating text is disabled.
 
 No gameplay behavior, balance values, maps, factions, workers, or affixes were changed in this pass.
@@ -1406,7 +1608,7 @@ Map data is split into per-map modules:
   - Destroy the Ashen Stronghold.
   - Capture the Burned Shrine; in live battle this weakens the gate Watchtower by 45% max HP without destroying it.
   - Destroy Enemy Barracks.
-  - Defeat the Outpost Captain / Ashen Commander.
+  - Defeat Captain Malrec / Ashen Commander.
 
 Ashen Outpost tuning after the balance pass:
 
@@ -1775,11 +1977,11 @@ Several battle helpers changed during earlier checkpoint work and the current un
 
 ## Current Tests
 
-Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, the retinue telemetry balance pass, and the HeroProgressionRules refactor:
+Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, the conservative retinue balance pass, the enemy hero balance pass, the readability UX pass, and the HeroProgressionRules refactor:
 
-- `npm test`: passed, 35 test files, 194 tests.
+- `npm test`: passed, 35 test files, 200 tests.
 - `npm run build`: passed with the known Vite large-chunk warning, which is not a failure.
-- `npm run test:e2e -- --reporter=line`: passed, 43 Playwright tests in 18.0m. Use a long timeout.
+- `npm run test:e2e -- --reporter=line`: passed, 44 Playwright tests in 21.5m. Use a long timeout.
 - `npm run playtest:sim`: passed, 180 simulated runs across 60 campaign battle node/profile summaries, with no structural `too_hard` nodes, no `too_easy` nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
 Current unit/pure test files:
@@ -1827,7 +2029,7 @@ Current e2e files:
 
 Browser-level tests currently cover:
 
-- Main menu boot.
+- Main menu boot, including visible `Prototype v0.2` label and v0.2 subtitle copy.
 - Settings persistence, including floating text, reduced motion, fog override, colorblind minimap persistence, and rendered player/enemy colorblind minimap colors.
 - Hero creation.
 - Campaign map and locked-node behavior.
@@ -1858,7 +2060,7 @@ Browser-level tests currently cover:
 - Research UI lock/researched states for Infantry Weapons I, Reinforced Armor I, Ranger Training I, and Aether Study I.
 - First-battle loop: capture, Barracks construction, Militia training, rally point, accelerated result.
 - Old Stone Road live campaign victory, next-layer unlocks, first-clear campaign resource reward, and completed-node Start Battle disablement.
-- Ashen Outpost objective HUD, Burned Shrine gate-Watchtower weakening, and special objective Results states for Burned Shrine, Enemy Barracks, and Outpost Captain.
+- Ashen Outpost objective HUD, Burned Shrine gate-Watchtower weakening, Captain Malrec scout/minimap/objective feedback, safe enemy-hero defeat hook, and special objective Results states for Burned Shrine, Enemy Barracks, and Captain Malrec.
 - Ashen Outpost desktop objective-panel placement avoiding the enemy stronghold/barracks/gate-Watchtower focus area.
 - Ashen Outpost landmark scoutability under Normal fog, including resource sites, neutral camps, fortress buildings, minimap markers, and major HUD-overlap guards.
 - Live objective resolution into Results.
@@ -2151,22 +2353,23 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Recommended Next Priorities
 
-1. Next feature milestone: human-paced campaign balance/readability review with Retinue Camp V1 included. Test no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
-2. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, first attack contact, and whether retinue trivializes the opener.
-3. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
-4. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
-5. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
-6. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
-7. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
-8. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, and Retinue Camp V1 are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, or broad city-builder systems yet.
-9. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `CampaignRules`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and the reputation helper/rule hooks. `HeroProgressionRules.ts` itself is now only a compatibility barrel.
-10. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+1. Next feature milestone: Rival/Nemesis Persistence V1. Keep it compact and build on Enemy Hero / Rival Commander V1 without adding enemy construction, workers, new factions, diplomacy, procedural campaign, or a broad army-management layer.
+2. Before expanding rival persistence, do a human-paced campaign balance/readability review with Retinue Camp V1 and Enemy Hero / Rival Commander V1 included. Test no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+3. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, first attack contact, and whether retinue trivializes the opener.
+4. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
+5. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, Captain Malrec readability, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
+6. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
+7. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
+8. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
+9. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, and Enemy Hero / Rival Commander V1 are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, or broad city-builder systems yet.
+10. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `CampaignRules`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and the reputation helper/rule hooks. `HeroProgressionRules.ts` itself is now only a compatibility barrel.
+11. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
 - Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, and HeroProgressionRules refactor edits are intentional.
 - Treat the current docs as the v0.2 prototype baseline. Use `CHANGELOG.md` and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
-- The next named milestone is human campaign balance/readability review with Retinue Camp V1 included. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, retinue balance, or HeroProgressionRules refactor work unless the user asks for a targeted polish pass.
+- The next named milestone is Rival/Nemesis Persistence V1, with human campaign balance/readability review still recommended before or alongside it. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, retinue balance, or HeroProgressionRules refactor work unless the user asks for a targeted polish pass.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - `src/game/core/HeroProgressionRules.ts` is intentionally a compatibility barrel. Preserve it for old imports and put future hero progression work in the focused modules under `src/game/core/progression/`.

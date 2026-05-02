@@ -89,6 +89,37 @@ export const getUnitVeterancyRankForXp = (xp: number): UnitVeterancyRankDefiniti
   return current;
 };
 
+export const getNextUnitVeterancyRankForXp = (xp: number): UnitVeterancyRankDefinition | undefined => {
+  const current = getUnitVeterancyRankForXp(xp);
+  return UNIT_VETERANCY_RANKS.find((rank) => rank.minXp > current.minXp);
+};
+
+export const formatUnitVeterancyXpProgress = (xp: number): string => {
+  const normalizedXp = Math.max(0, Math.floor(xp));
+  const nextRank = getNextUnitVeterancyRankForXp(normalizedXp);
+  if (!nextRank) {
+    return `${normalizedXp} XP - max rank`;
+  }
+  return `${normalizedXp}/${nextRank.minXp} XP to ${nextRank.name}`;
+};
+
+export const formatUnitVeterancyBonusSummary = (rankId: UnitVeterancyRankId): string => {
+  const rank = getUnitVeterancyRank(rankId);
+  const bonuses: string[] = [];
+  const hpPercent = Math.round((rank.maxHpMultiplier - 1) * 100);
+  const damagePercent = Math.round((rank.damageMultiplier - 1) * 100);
+  if (hpPercent !== 0) {
+    bonuses.push(`${hpPercent > 0 ? "+" : ""}${hpPercent}% HP`);
+  }
+  if (damagePercent !== 0) {
+    bonuses.push(`${damagePercent > 0 ? "+" : ""}${damagePercent}% damage`);
+  }
+  if (rank.armorBonus !== 0) {
+    bonuses.push(`${rank.armorBonus > 0 ? "+" : ""}${rank.armorBonus} armor`);
+  }
+  return bonuses.length > 0 ? bonuses.join(", ") : "No rank bonus yet";
+};
+
 export const createUnitVeterancyState = (
   unitInstanceId: string,
   unitTypeId: string,

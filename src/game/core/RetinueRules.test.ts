@@ -3,8 +3,11 @@ import { createFallbackCampaignSave } from "./SaveSystem";
 import {
   addVeteranToRetinue,
   dismissRetinueUnit,
+  formatRetinueDeploymentLabel,
+  getRetinueCapacityBreakdown,
   getRetinueCapacity,
   retinueDeploymentUnits,
+  retinueEligibilityReason,
   updateRetinueAfterBattle
 } from "./RetinueRules";
 import type { UnitVeterancySummaryEntry } from "./GameTypes";
@@ -38,6 +41,30 @@ describe("RetinueRules", () => {
       kills: 2,
       status: "active"
     });
+  });
+
+  it("formats capacity and eligibility copy for presentation surfaces", () => {
+    const campaign = {
+      ...createFallbackCampaignSave(),
+      strongholdUpgradeRanks: { training_yard_ii: 1 }
+    };
+
+    expect(getRetinueCapacityBreakdown(campaign)).toMatchObject({
+      activeCount: 0,
+      capacity: 3,
+      baseCapacity: 2,
+      trainingYardBonus: 1
+    });
+    expect(retinueEligibilityReason({ ...veteranMilitia, rank: "recruit", rankName: "Recruit" })).toBe(
+      "Not eligible: needs Seasoned rank or better."
+    );
+    expect(retinueEligibilityReason({ ...veteranMilitia, survivedBattle: false })).toBe(
+      "Not eligible: did not survive the battle."
+    );
+    expect(retinueEligibilityReason(veteranMilitia)).toBe("Eligible: survived at Seasoned rank or better.");
+    expect(formatRetinueDeploymentLabel(addVeteranToRetinue(createFallbackCampaignSave(), veteranMilitia, "border_village").campaign.retinueUnits[0])).toBe(
+      "Veteran Militia"
+    );
   });
 
   it("enforces capacity and Training Yard II capacity bonus", () => {

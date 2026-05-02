@@ -95,8 +95,9 @@ export class MainMenuScene extends Phaser.Scene {
       <main class="menu-shell asset-screen-bg" data-testid="main-menu" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel">
           ${emblem}
-          <p class="eyebrow">Prototype v0.1</p>
+          <p class="eyebrow">Prototype v0.2</p>
           <h1>Ascendant Realms</h1>
+          <p class="menu-copy">v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue</p>
           <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
           <div class="menu-actions">
             <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
@@ -110,7 +111,7 @@ export class MainMenuScene extends Phaser.Scene {
           </div>
           ${
             showInfo
-              ? `<div class="info-box">Original prototype inspired by classic RTS/RPG hybrids. Uses local manual art when files exist, then falls back to placeholders. No copyrighted assets, names, factions, maps, music, or API image calls are included.</div>`
+              ? `<div class="info-box">Original prototype inspired by classic RTS/RPG hybrids. Normal units gain ranks during battle; selected surviving Seasoned or better veterans can be saved to the Retinue Camp after campaign victories, then persist into future campaign battles. Retinue death is permanent in V1. Uses local manual art when files exist, then falls back to placeholders. No copyrighted assets, names, factions, maps, music, or API image calls are included.</div>`
               : ""
           }
         </section>

@@ -7,6 +7,9 @@ import {
   createUnitVeterancyBattleSummary,
   createUnitVeterancyRankUpEvent,
   createUnitVeterancyState,
+  formatUnitVeterancyBonusSummary,
+  formatUnitVeterancyXpProgress,
+  getNextUnitVeterancyRankForXp,
   getUnitVeterancyRankForXp,
   getUnitVeterancyXpForDamage,
   markUnitVeterancySurvived,
@@ -21,6 +24,16 @@ describe("unit veterancy rules", () => {
     expect(getUnitVeterancyRankForXp(55).id).toBe("seasoned");
     expect(getUnitVeterancyRankForXp(130).id).toBe("veteran");
     expect(getUnitVeterancyRankForXp(230).id).toBe("elite");
+  });
+
+  it("formats XP progress and rank bonuses for UI panels", () => {
+    expect(getNextUnitVeterancyRankForXp(54)?.id).toBe("seasoned");
+    expect(formatUnitVeterancyXpProgress(54)).toBe("54/55 XP to Seasoned");
+    expect(formatUnitVeterancyXpProgress(140)).toBe("140/230 XP to Elite");
+    expect(formatUnitVeterancyXpProgress(260)).toBe("260 XP - max rank");
+    expect(formatUnitVeterancyBonusSummary("recruit")).toBe("No rank bonus yet");
+    expect(formatUnitVeterancyBonusSummary("veteran")).toBe("+8% HP, +8% damage");
+    expect(formatUnitVeterancyBonusSummary("elite")).toBe("+12% HP, +12% damage, +1 armor");
   });
 
   it("applies rank stat bonuses without mutating base stats", () => {

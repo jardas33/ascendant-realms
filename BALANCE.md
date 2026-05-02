@@ -2,11 +2,12 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
-## Current First-Campaign Baseline - 2026-05-02 Retinue Balance Pass
+## Current First-Campaign Baseline - 2026-05-02 Enemy Hero Balance Pass
 
 The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
 
 - Latest simulator verdict: `npm run playtest:sim` passes with 180 deterministic runs across 5 campaign battle nodes and 12 profiles, including no-retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II; no structural `too_hard` nodes, no structural `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script without retinue.
+- Latest Enemy Hero / Rival Commander tuning result: no numeric gameplay changes. Old Stone Road remains unassigned; Veyra, Gorak, and Captain Malrec stay on their current HP/damage/ability/XP/map assignments because telemetry shows late, readable pressure without structural unfairness.
 - Current starting battle resources: 380 Crowns, 255 Stone, 140 Iron, 75 Aether.
 - Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
 - Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
@@ -16,6 +17,7 @@ The values in this section are the current first-campaign balance baseline. Olde
 - Current reputation hooks are intentionally modest: Friendly starts at +25, Honored at +50, Disliked at -25, and Hostile at -50. Reputation effects adjust preparation costs/rewards or add one minor Ashen pressure unit; they do not create diplomacy, new factions, or alternate maps.
 - Current item affixes are V1 only: small stat packages rolled onto reward-generated item instances, visible in Results/Inventory, and applied only while the item instance is equipped. They do not add crafting, durability, item art, affix rerolls, or proc-heavy loot complexity.
 - Current Unit Veterancy and Retinue Camp are V1 only: ordinary player units can rank up inside a battle, campaign victories can save a small number of surviving Seasoned+ units, and campaign launches redeploy saved retinue units without adding a large army-management layer.
+- Current Enemy Hero / Rival Commander V1 is data-driven and compact: named Ashen commanders replace the existing `enemy_commander` slot on assigned campaign nodes, stay gated by commander join timing, grant XP/objective/results credit, and expose simulator telemetry. They do not add enemy construction, workers, new factions, diplomacy, or raid-boss tuning.
 
 | Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander timing |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -128,11 +130,73 @@ Telemetry read:
 - The simulator now respects the same retinue capacity as campaign launch: 2 active units by default, +1 only after Training Yard II is purchased.
 - No structural too-easy nodes appear in the full simulator output after retinue and combined Stronghold profiles are included.
 
+Conservative telemetry pass, 2026-05-02:
+
+| Knob | Before | After | Reason |
+| --- | --- | --- | --- |
+| Retinue capacity | 2 active units by default, +1 from Training Yard II | Unchanged | Single veterans help without becoming mandatory; mixed profiles are strong but still human-review, not structural `too_easy`. |
+| Unit XP thresholds | Seasoned 55, Veteran 130, Elite 230 | Unchanged | Telemetry does not show rank-up frequency creating structural early-node trivialization. |
+| Rank stat bonuses | +4% / +8% / +12% HP and damage | Unchanged | The softened bonuses make saved units satisfying while one-Veteran profiles remain optional. |
+| Elite armor bonus | +1 armor at Elite only | Unchanged | No evidence that Elite armor is common enough or strong enough to drive the Ashen result. |
+| Retinue eligibility | Surviving player non-hero units, Seasoned or better | Unchanged | Already blocks recruits, buildings, heroes, and enemies from filling the camp by default. |
+| Death/removal rule | Permanent removal after the battle | Unchanged | This remains the clearest V1 pressure valve against retinue becoming a mandatory permanent army. |
+| Training Yard II interaction | +1 retinue capacity after purchase | Unchanged | Route-specific payoff is strong with mixed retinue, but no structural too-easy node appears. |
+| Quartermaster II interaction | Starter resource package only; no retinue capacity bonus | Unchanged | The mixed-retinue Quartermaster profile is strong, but telemetry flags it for human review rather than a numeric nerf. |
+| Ashen Outpost outcome | No-retinue 1-0-2, one Veteran 2-0-1, mixed/combined 3-0-0 `needs_human_review` | Unchanged | Ashen remains beatable without retinue and notably helped by retinue; human-paced review should judge whether the sweep feels trivial before tuning numbers. |
+
+Result: no gameplay balance values changed in this pass. Retinue and Unit Veterancy stay useful but not required by the structural bot.
+
 Tuning watchpoints:
 
 - If early nodes feel trivial with a single Veteran Militia, keep tuning XP thresholds before cutting the retinue cap.
 - If Ashen Outpost feels mandatory with retinue, review whether the issue is mixed-retinue starting body count before changing map structure.
 - Do not add replacement UI, wounded timers, unit equipment, crafting, or broader barracks management until the basic retinue loop has been human-played.
+
+## Enemy Hero / Rival Commander V1
+
+Enemy Hero V1 is current as of the 2026-05-02 rival-commander slice. It gives important Ashen battles a named RPG threat without changing the overall army-management or AI-construction model.
+
+Definitions:
+
+| Enemy hero | Campaign node | Role | Ability package | Balance intent |
+| --- | --- | --- | --- | --- |
+| Gorak Emberhand, Ashen Raider Captain | Bandit Hillfort | Aggressive melee commander | Ember Strike, Rally Raiders | Stronger than a normal Raider/Brute mix, but still gated by fortress pacing and late commander attacks. |
+| Veyra of the Cinders, Hexfire Seer | Aether Well Ruins | Ranged magic commander | Hexfire Bolt, Rally Raiders | Punishes exposed troops around the ford without becoming a raid boss. |
+| Captain Malrec, Outpost Commander | Ashen Outpost | Fortress commander | Hold the Line, Rally Raiders, Ember Strike | Makes the milestone fortress feel led by a character and satisfies the commander objective. |
+
+Rules:
+
+| Rule | Current value | Balance intent |
+| --- | --- | --- |
+| Spawn model | Campaign node `enemyHeroId` upgrades the existing `enemy_commander` spawn for that battle. | Reuses current commander slot, objectives, AI pacing, and difficulty filters. |
+| Early rush prevention | Commander still follows existing commander join phase and delay: Normal commander timing is 630s before attack-wave participation. | Rivals can defend when attacked but should not suicide into the player at minute 1. |
+| Ability scale | Cooldown-based direct damage, short burn, small damage rally, or short armor aura. | Readable pressure that makes the commander memorable without replacing army fights. |
+| Defeat rewards | Uses the enemy hero's unit XP value and normal kill/objective paths. | Defeating a rival should feel rewarding without adding a separate reward layer. |
+| Ashen objective | Ashen Outpost now names the commander objective `Defeat Captain Malrec`. | Keeps the old objective structure but gives it character identity. |
+
+Telemetry read:
+
+- `npm run playtest:sim` now writes `enemyHeroId`, `enemyHeroDefeated`, `timeEnemyHeroJoinedAttack`, and `lossesInvolvingEnemyHero` into `PLAYTEST_TELEMETRY.json` and the Markdown scenario table.
+- Latest 180-run output still reports `too_easy: none`, `too_hard: none`, Ashen Outpost beatable `yes`, and Stronghold warnings `none`.
+- Latest hero-specific simulator read: Veyra appears in 36 runs, is defeated in 24, joins attacks in 17, and is involved in 12 player losses; Gorak appears in 36 runs, is defeated in 13, joins attacks in 12, and is involved in 12 losses; Captain Malrec appears in 36 runs, is defeated in 36, joins attacks in 14, and is involved in 14 losses.
+- Commander join timing appears late in non-winning or slow scripts, while safe winning routes often defeat the rival during the final base assault before a commander wave leaves the base.
+- Human review should watch whether Captain Malrec's Hold the Line aura reads clearly near the fortress and whether Veyra's ranged pressure feels fair in fog.
+
+Telemetry-based enemy hero tuning pass, 2026-05-02:
+
+| Knob | Before | After | Reason |
+| --- | --- | --- | --- |
+| Old Stone Road assignment | No enemy hero | Unchanged | 36/36 Old Stone Road simulations already win on the Easy lane; adding Gorak here would create early commander noise before mid-campaign. |
+| Aether Well Ruins assignment | Veyra of the Cinders | Unchanged | Veyra is relevant but not structurally unfair: Safe Beginner wins, joins happen around 10:31-10:32, and losses concentrate in greedy/fast scripts. |
+| Bandit Hillfort assignment | Gorak Emberhand | Unchanged | Gorak creates identity and pressure at 11:40-11:41 in slow Greedy Economy runs without an early rush; Safe Beginner still wins. |
+| Ashen Outpost assignment | Captain Malrec | Unchanged | Malrec is defeated in all simulated runs, but Ashen still has no-retinue and Stronghold-path timeouts, so the milestone remains intact. |
+| Enemy hero HP/damage | Gorak 235 HP / 17 damage, Veyra 180 HP / 12 damage, Malrec 265 HP / 16 damage | Unchanged | No structural too-hard or too-easy node isolates HP/damage as a problem. |
+| Ability cooldowns/ranges | Ember Strike 10s/48, Rally Raiders 18s/210, Hexfire Bolt 8s/185, Hold the Line 20s/230 | Unchanged | Abilities provide readable identity; losses involving enemy heroes stay late and one-unit-scale in telemetry. |
+| Join-attack timing | Existing commander phase and Normal 630s commander delay | Unchanged | First commander attack joins are around 10:31 for Veyra, 11:40 for Gorak, and 10:41 for Malrec, so no minute-1 unfair rush appears. |
+| XP reward/objective reward | Current unit XP values; Ashen uses existing `defeat_unit` objective credit | Unchanged | Defeat payoff is visible without adding a separate reward layer; no objective reward inflation is needed. |
+| Retinue/Stronghold interaction | Retinue and Stronghold paths can help Ashen; mixed retinue sweeps are human-review | Unchanged | The strong Ashen outcomes are not isolated to enemy hero stats, so changing rival numbers would be premature. |
+
+Result: no enemy hero gameplay values changed in this pass. Keep the current commanders and focus human playtests on visibility, ability readability, and whether mixed retinue makes Malrec feel too easy before changing numbers.
 
 ## Stronghold Development
 
@@ -250,7 +314,7 @@ Telemetry report refinement after this pass:
 - No current campaign battle node reports `too_hard`: first attack timing is fair across all five nodes, and Barracks timing is not the remaining problem.
 - Aether Well Ruins, Bandit Hillfort, and Ashen Outpost now report `needs_human_review`: Safe Beginner wins while riskier scripts fail or time out.
 - Greedy and Fast Army timing on Normal should be judged by intended design: if those scripts should be viable on milestone maps, tune final-assault attrition or route rewards; if they are supposed to be punished, leave them as risk reads.
-- Ashen Outpost defeat tips now point failed players toward Burned Shrine, Enemy Barracks, and Outpost Captain sequencing before falling back to generic opening advice.
+- Ashen Outpost defeat tips now point failed players toward Burned Shrine, Enemy Barracks, and Captain Malrec sequencing before falling back to generic opening advice.
 
 ## Telemetry-Based Balance Pass - 2026-04-26
 
@@ -575,7 +639,7 @@ Ashen Outpost special objectives:
 - Primary: destroy the Ashen Stronghold.
 - Secondary: capture the Burned Shrine.
 - Secondary: destroy the Enemy Barracks.
-- Secondary: defeat the Outpost Captain.
+- Secondary: defeat Captain Malrec.
 
 ## Fog Of War
 

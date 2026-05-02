@@ -77,6 +77,7 @@ export interface CampaignNodeDefinition {
   mapId: string;
   enemyFactionId: string;
   aiPersonalityId?: EnemyAIPersonalityId;
+  enemyHeroId?: string;
   prerequisites: string[];
   rewards: CampaignNodeRewardDefinition;
   eventText?: string;

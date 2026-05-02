@@ -1,14 +1,17 @@
 import { describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./aiPersonalities";
+import { BATTLE_DIFFICULTIES } from "./battlePacing";
 import { CAMPAIGN_NODES } from "./campaignNodes";
 import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
 import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
+import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { validateContent } from "./contentValidation";
+import { UNIT_BY_ID } from "./contentIndex";
 
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
@@ -87,6 +90,33 @@ describe("content validation", () => {
     expect(CAMPAIGN_NODES.find((node) => node.id === "aether_well_ruins")?.aiPersonalityId).toBe("hexfire_cult");
     expect(CAMPAIGN_NODES.find((node) => node.id === "ashen_outpost")?.mapId).toBe("ashen_outpost");
     expect(CAMPAIGN_NODES.find((node) => node.id === "ashen_outpost")?.aiPersonalityId).toBe("hexfire_cult");
+  });
+
+  it("defines compact enemy hero commanders for campaign battles", () => {
+    expect(ENEMY_HEROES.map((hero) => hero.id)).toEqual(["gorak_emberhand", "veyra_cinders", "captain_malrec"]);
+    expect(CAMPAIGN_NODES.find((node) => node.id === "aether_well_ruins")?.enemyHeroId).toBe("veyra_cinders");
+    expect(CAMPAIGN_NODES.find((node) => node.id === "bandit_hillfort")?.enemyHeroId).toBe("gorak_emberhand");
+    expect(CAMPAIGN_NODES.find((node) => node.id === "ashen_outpost")?.enemyHeroId).toBe("captain_malrec");
+
+    CAMPAIGN_NODES.filter((node) => node.enemyHeroId).forEach((node) => {
+      const map = MAPS.find((entry) => entry.id === node.mapId);
+      const difficulty = BATTLE_DIFFICULTIES.find((entry) => entry.id === node.difficulty);
+      expect(difficulty?.enemyStartingUnitSpawnIds).toContain("enemy_commander_1");
+      expect(map?.scenario.unitSpawns.some((spawn) => spawn.id === "enemy_commander_1" && spawn.unitId === "enemy_commander")).toBe(true);
+    });
+
+    const baseCommander = UNIT_BY_ID.enemy_commander;
+    ENEMY_HEROES.forEach((hero) => {
+      const unit = createEnemyHeroUnitDefinition(hero, baseCommander);
+      expect(unit.id).toBe("enemy_commander");
+      expect(unit.name).toBe(hero.name);
+      expect(unit.stats.maxHp).toBeGreaterThan(150);
+      expect(unit.stats.damage).toBeGreaterThan(0);
+      expect(unit.xpValue).toBeGreaterThanOrEqual(120);
+      hero.abilities.forEach((abilityId) => {
+        expect(ENEMY_HERO_ABILITIES.some((ability) => ability.id === abilityId)).toBe(true);
+      });
+    });
   });
 
   it("defines asymmetric faction mechanics", () => {

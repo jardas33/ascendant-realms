@@ -146,6 +146,9 @@ export function createDefeatTips(
 ): string[] {
   const tips: string[] = [];
   addObjectiveDefeatTips(stats, options, tips);
+  if ((stats.lossesInvolvingEnemyHero ?? 0) > 0 && stats.enemyHeroName) {
+    tips.push(`${stats.enemyHeroName} drove the pressure. Scout the commander, clear escorts first, and pull wounded troops back before re-engaging.`);
+  }
   if (stats.resourcesCaptured === 0) {
     tips.push("Capture the Crown Shrine early so your economy starts before the first wave.");
   }
@@ -185,7 +188,7 @@ function addObjectiveDefeatTips(
     return;
   }
   if (!stats.completedObjectiveIds.includes("defeat_outpost_captain")) {
-    tips.push("Save hero abilities for the Outpost Captain once the shrine and barracks objectives are secure.");
+    tips.push("Save hero abilities for Captain Malrec once the shrine and barracks objectives are secure.");
   }
 }
 

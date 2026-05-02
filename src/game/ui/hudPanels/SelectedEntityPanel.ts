@@ -1,7 +1,11 @@
 import { Building } from "../../entities/Building";
 import { Hero } from "../../entities/Hero";
 import { Unit } from "../../entities/Unit";
-import { getUnitVeterancyRank } from "../../data/unitVeterancy";
+import {
+  formatUnitVeterancyBonusSummary,
+  formatUnitVeterancyXpProgress,
+  getUnitVeterancyRank
+} from "../../data/unitVeterancy";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
 import { escapeHtml, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
@@ -43,12 +47,17 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
   if (selectedOne instanceof Unit) {
     const order = describeUnitOrder(selectedOne);
     const rank = getUnitVeterancyRank(selectedOne.veterancy.rank);
+    const xpProgress = formatUnitVeterancyXpProgress(selectedOne.veterancy.xp);
+    const bonuses = formatUnitVeterancyBonusSummary(selectedOne.veterancy.rank);
+    const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Normal battle unit";
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
-      <div class="stat-list">
+      <div class="stat-list" data-testid="selected-unit-stats">
         <span>Rank ${escapeHtml(rank.name)}</span>
-        <span>Unit XP ${selectedOne.veterancy.xp}</span>
+        <span>XP ${escapeHtml(xpProgress)}</span>
         <span>Kills ${selectedOne.veterancy.kills}</span>
+        <span>Bonuses ${escapeHtml(bonuses)}</span>
+        <span>Retinue ${escapeHtml(retinueState)}</span>
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
         <span>Damage ${Math.round(selectedOne.damage)}</span>
         <span>Range ${selectedOne.range}</span>

@@ -85,11 +85,11 @@ export function createBattleMinimapSnapshot(options: BattleMinimapSnapshotOption
       .filter((unit) => unit.alive && isEntityVisibleToPlayer(unit, fogOfWar!, fogEnabled))
       .map((unit) => ({
         id: unit.id,
-        kind: "unit" as const,
+        kind: unit.enemyHeroId ? ("enemy-hero" as const) : ("unit" as const),
         team: unit.team,
         x: unit.position.x,
         y: unit.position.y,
-        size: unit === hero ? 2.1 : 1.35
+        size: unit.enemyHeroId ? 2.6 : unit === hero ? 2.1 : 1.35
       })),
     ...selectedRallyBuildings
       .filter((building) => building.rallyPoint)

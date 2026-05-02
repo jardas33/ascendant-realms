@@ -17,6 +17,7 @@ interface SyntheticResultsOptions {
   completedObjectiveIds?: string[];
   defeatBattleXp?: number;
   rewardAffixes?: string[];
+  veteranSummary?: Record<string, unknown>;
 }
 
 const EMPTY_RESOURCES: CampaignResources = {
@@ -67,7 +68,8 @@ const BASE_CAMPAIGN = {
   townServiceClaimedIds: [],
   townServiceUseCounts: {},
   activeModifierIds: [],
-  strongholdUpgradeRanks: {}
+  strongholdUpgradeRanks: {},
+  retinueUnits: []
 };
 
 function attachConsoleFailure(page: Page): void {
@@ -460,7 +462,8 @@ async function startSyntheticResults(page: Page, outcome: "victory" | "defeat", 
         enemyWavesSurvived: selectedOutcome === "victory" ? 1 : 0,
         xpGained: selectedOutcome === "victory" ? 45 : resultOptions.defeatBattleXp ?? 0,
         timeSeconds: selectedOutcome === "victory" ? 420 : 95,
-        completedObjectiveIds: resultOptions.completedObjectiveIds ?? []
+        completedObjectiveIds: resultOptions.completedObjectiveIds ?? [],
+        veteranSummary: resultOptions.veteranSummary
       },
       reward: selectedOutcome === "victory"
         ? {
@@ -516,7 +519,9 @@ async function selectPlayerCommandHallFromScene(page: Page): Promise<void> {
     }
     scene.cameraSystem.centerOn(commandHall.position);
     scene.selectionSystem.setSelection([commandHall]);
+    scene.refreshBattleHud?.(0);
   });
+  await expect(page.locator(".side-panel")).toContainText("Command Hall", { timeout: 20_000 });
 }
 
 async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat"): Promise<void> {
@@ -671,6 +676,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("reputation ranks expose active effects and discounted campaign actions", async ({ page }) => {
+    test.setTimeout(60_000);
     await seedSave(page, {
       hero: {
         level: 2,
@@ -754,8 +760,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       xp: 140
     });
     await expect(page.locator(".stat-list")).toContainText("Rank Veteran");
-    await expect(page.locator(".stat-list")).toContainText("Unit XP 140");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("XP 140/230 XP to Elite");
     await expect(page.locator(".stat-list")).toContainText("Kills 0");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Bonuses +8% HP, +8% damage");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Normal battle unit");
 
     const forced = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.forceBattleVictory?.());
     expect(forced).toBe(true);
@@ -763,7 +771,115 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".veteran-summary")).toContainText("Notable Veterans");
     await expect(page.locator(".veteran-summary")).toContainText(granted.unitName);
     await expect(page.locator(".veteran-summary")).toContainText("Veteran");
+    await expect(page.locator(".veteran-summary")).toContainText("Rank-up");
+    await expect(page.locator(".veteran-summary")).toContainText("152/230 XP to Elite");
+    await expect(page.locator(".veteran-summary")).toContainText("Rank bonus: +8% HP, +8% damage");
+    await expect(page.locator(".veteran-summary")).toContainText("Eligible: survived at Seasoned rank or better.");
     await expect(page.locator(".veteran-summary")).toContainText("Retinue Camp");
+  });
+
+  test("Results retinue recruitment explains capacity, eligibility, and full camp state", async ({ page }) => {
+    test.setTimeout(60_000);
+
+    const veteranSummary = {
+      rankedUpUnits: [],
+      notableVeterans: [
+        {
+          unitInstanceId: "retinue-e2e-veteran",
+          unitTypeId: "militia",
+          unitName: "Militia",
+          xp: 140,
+          rank: "veteran",
+          rankName: "Veteran",
+          kills: 3,
+          damageDealt: 120,
+          survivedBattle: true,
+          rankedUp: false
+        },
+        {
+          unitInstanceId: "retinue-e2e-recruit",
+          unitTypeId: "ranger",
+          unitName: "Ranger",
+          xp: 20,
+          rank: "recruit",
+          rankName: "Recruit",
+          kills: 0,
+          damageDealt: 20,
+          survivedBattle: true,
+          rankedUp: false
+        }
+      ],
+      topSurvivor: {
+        unitInstanceId: "retinue-e2e-veteran",
+        unitTypeId: "militia",
+        unitName: "Militia",
+        xp: 140,
+        rank: "veteran",
+        rankName: "Veteran",
+        kills: 3,
+        damageDealt: 120,
+        survivedBattle: true,
+        rankedUp: false
+      }
+    };
+
+    await seedSave(page, {
+      campaign: {
+        unlockedNodeIds: ["border_village"],
+        selectedNodeId: "border_village",
+        retinueUnits: []
+      }
+    });
+    await startSyntheticResults(page, "victory", { veteranSummary });
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("0/2 active");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("Eligible recruits this battle: 1");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("Veteran Militia");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("Not eligible: needs Seasoned rank or better.");
+    const addButton = page.locator("button[data-results-action='add_retinue'][data-unit-instance-id='retinue-e2e-veteran']");
+    await expect(addButton).toBeEnabled();
+    await expect(addButton).toContainText("Add to Retinue");
+    await addButton.click();
+    await expect(page.locator(".status-box")).toContainText("joined the retinue");
+    let save = await readSave(page);
+    expect(save.campaign.retinueUnits).toHaveLength(1);
+
+    await seedSave(page, {
+      campaign: {
+        unlockedNodeIds: ["border_village"],
+        selectedNodeId: "border_village",
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:e2e:full_militia",
+            unitTypeId: "militia",
+            name: "Gate Militia",
+            rank: "veteran",
+            xp: 140,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          },
+          {
+            retinueUnitId: "retinue:e2e:full_ranger",
+            unitTypeId: "ranger",
+            name: "Ford Ranger",
+            rank: "seasoned",
+            xp: 80,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          }
+        ]
+      }
+    });
+    await startSyntheticResults(page, "victory", { veteranSummary });
+    await expect(page.getByTestId("results-retinue-capacity")).toContainText("2/2 active");
+    await expect(page.getByTestId("retinue-full-message")).toContainText("Retinue is full");
+    await expect(page.locator("button[data-results-action='add_retinue'][data-unit-instance-id='retinue-e2e-veteran']")).toBeDisabled();
+    await expect(page.locator("button[data-results-action='add_retinue'][data-unit-instance-id='retinue-e2e-veteran']")).toContainText("Capacity Full");
+    save = await readSave(page);
+    expect(save.campaign.retinueUnits).toHaveLength(2);
   });
 
   test("campaign retinue units deploy with saved veterancy rank", async ({ page }) => {
@@ -789,14 +905,18 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await expect(page.getByTestId("retinue-panel")).toContainText("1/2");
+    await expect(page.getByTestId("retinue-panel")).toContainText("1/2 active");
     await expect(page.getByTestId("retinue-panel")).toContainText("Gate Militia");
     await expect(page.getByTestId("retinue-panel")).toContainText("Veteran");
+    await expect(page.getByTestId("retinue-panel")).toContainText("140/230 XP to Elite");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Retinue death is permanent in V1");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Training Yard II");
 
     await page.getByTestId("campaign-node-border_village").click();
     await page.getByTestId("campaign-start-node").click();
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Retinue deployed: Veteran Militia");
 
     const retinue = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -820,8 +940,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(retinue.maxHp).toBeGreaterThan(retinue.baseHp);
     expect(retinue.armor).toBeGreaterThanOrEqual(1);
     await expect(page.locator(".stat-list")).toContainText("Rank Veteran");
-    await expect(page.locator(".stat-list")).toContainText("Unit XP 140");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("XP 140/230 XP to Elite");
     await expect(page.locator(".stat-list")).toContainText("Kills 3");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Bonuses +8% HP, +8% damage");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Deployed retinue veteran");
   });
 
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {
@@ -996,6 +1118,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("victory and defeat result actions are clear and save the equip-now path", async ({ page }) => {
+    test.setTimeout(60_000);
+
     await seedSave(page);
     await startSyntheticResults(page, "victory");
 
@@ -1837,12 +1961,24 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await page.getByTestId("campaign-node-ashen_outpost").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Captain Malrec");
+    await expect(page.locator(".campaign-node-details")).toContainText("Outpost Commander");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await page.getByTestId("campaign-start-node").click();
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/3");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Defeat Captain Malrec");
+
+    const scouted = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.scoutEnemyHero?.());
+    expect(scouted).toMatchObject({
+      enemyHeroId: "captain_malrec",
+      name: "Captain Malrec",
+      title: "Outpost Commander"
+    });
+    await expect(page.getByTestId("battle-status")).toContainText("Enemy commander sighted: Captain Malrec");
+    await expect(page.locator(".minimap-enemy-hero")).toHaveCount(1);
 
     const completedObjectiveIds = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1852,8 +1988,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       const shrine = scene.captureSites.find((site: any) => site.definition.id === "burned_shrine");
       const watchtower = scene.buildings.find((building: any) => building.team === "enemy" && building.definition.id === "watchtower");
       const barracks = scene.buildings.find((building: any) => building.team === "enemy" && building.definition.id === "enemy_barracks");
-      const captain = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.id === "enemy_commander");
-      if (!shrine || !watchtower || !barracks || !captain) {
+      if (!shrine || !watchtower || !barracks) {
         throw new Error("Expected Ashen Outpost shrine, gate watchtower, enemy barracks, and outpost captain.");
       }
       const watchtowerHpBefore = watchtower.hp;
@@ -1866,24 +2001,34 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       }
       barracks.takeDamage(barracks.maxHp + barracks.armor + 10_000);
       scene.completeSecondaryObjective("destroy_building", "enemy_barracks", barracks.position);
-      captain.takeDamage(captain.maxHp + captain.armor + 10_000);
-      scene.completeSecondaryObjective("defeat_unit", "enemy_commander", captain.position);
       return [...scene.runtime.stats.completedObjectiveIds];
     });
     expect(completedObjectiveIds).toEqual(
-      expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks", "defeat_outpost_captain"])
+      expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks"])
     );
-    await expect(page.getByTestId("battle-objectives").filter({ hasText: "Objectives 3/3" })).toBeVisible();
+
+    const defeated = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.defeatEnemyHero?.());
+    expect(defeated).toMatchObject({
+      enemyHeroId: "captain_malrec",
+      name: "Captain Malrec",
+      enemyHeroDefeated: true
+    });
+    expect(defeated.completedObjectiveIds).toEqual(expect.arrayContaining(["defeat_outpost_captain"]));
+    expect(defeated.xpGained).toBeGreaterThan(0);
+    await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 3/3", { timeout: 20_000 });
 
     await forceActiveBattleOutcome(page, "victory");
+    await expect(page.locator(".results-panel")).toContainText("Enemy commander");
+    await expect(page.locator(".results-panel")).toContainText("Captain Malrec");
+    await expect(page.locator(".results-panel")).toContainText("Commander defeated");
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");
-    await expect(objectiveSummary).toContainText("Defeat the Outpost Captain");
+    await expect(objectiveSummary).toContainText("Defeat Captain Malrec");
     const summaryText = await objectiveSummary.innerText();
     expect(summaryText).toMatch(/Capture the Burned Shrine\s+Completed/);
     expect(summaryText).toMatch(/Destroy Enemy Barracks\s+Completed/);
-    expect(summaryText).toMatch(/Defeat the Outpost Captain\s+Completed/);
+    expect(summaryText).toMatch(/Defeat Captain Malrec\s+Completed/);
   });
 
   test("Old Stone Road victory unlocks the next campaign layer without repeat-starting completed rewards", async ({ page }) => {

@@ -7,6 +7,10 @@ export type BattlePhaseId = "opening" | "expansion" | "pressure" | "assault";
 
 export type EnemyAIPersonalityId = "balanced_warlord" | "raider_rush" | "fortress_keeper" | "hexfire_cult";
 
+export type EnemyHeroAbilityId = "ember_strike" | "rally_raiders" | "hexfire_bolt" | "hold_the_line";
+
+export type EnemyHeroArchetype = "melee_commander" | "hexfire_seer" | "fortress_commander";
+
 export type BuildingConstructionState = "planned" | "underConstruction" | "completed";
 
 export type StatusEffectType = "burn";
@@ -92,6 +96,62 @@ export interface UnitDefinition {
   stats: CombatStats;
   xpValue: number;
   prerequisites?: TechPrerequisites;
+}
+
+export type EnemyHeroAbilityEffectDefinition =
+  | {
+      type: "damage-and-burn";
+      damage: number;
+      burn: {
+        damagePerSecond: number;
+        durationSeconds: number;
+        tickInterval: number;
+      };
+    }
+  | {
+      type: "damage-buff";
+      multiplier: number;
+      durationSeconds: number;
+      radius: number;
+      maxTargets?: number;
+    }
+  | {
+      type: "direct-damage";
+      damage: number;
+      projectileColor?: number;
+    }
+  | {
+      type: "armor-aura";
+      armorBonus: number;
+      durationSeconds: number;
+      radius: number;
+      requiresNearEnemyBase?: boolean;
+    };
+
+export interface EnemyHeroAbilityDefinition {
+  id: EnemyHeroAbilityId;
+  name: string;
+  description: string;
+  cooldownSeconds: number;
+  range: number;
+  effect: EnemyHeroAbilityEffectDefinition;
+}
+
+export interface EnemyHeroDefinition {
+  id: string;
+  name: string;
+  title: string;
+  factionId: string;
+  personalityId: EnemyAIPersonalityId;
+  archetype: EnemyHeroArchetype;
+  level: number;
+  unitId: string;
+  stats: CombatStats;
+  xpValue: number;
+  abilities: EnemyHeroAbilityId[];
+  flavorText: string;
+  campaignNodeIds: string[];
+  mapIds: string[];
 }
 
 export interface BuildingDefinition {

@@ -1,6 +1,6 @@
 import type { ResourceKey, Team, VisibilityState } from "../core/GameTypes";
 
-export type MinimapMarkerKind = "unit" | "building" | "capture-site" | "camp" | "rally";
+export type MinimapMarkerKind = "unit" | "enemy-hero" | "building" | "capture-site" | "camp" | "rally";
 
 export interface MinimapMarker {
   id: string;
@@ -146,6 +146,17 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     `;
   }
 
+  if (marker.kind === "enemy-hero") {
+    const radius = marker.size ?? 2.6;
+    const points = [
+      `${x},${formatNumber(Number(y) - radius)}`,
+      `${formatNumber(Number(x) + radius)},${y}`,
+      `${x},${formatNumber(Number(y) + radius)}`,
+      `${formatNumber(Number(x) - radius)},${y}`
+    ].join(" ");
+    return `<polygon class="minimap-enemy-hero" points="${points}" fill="${teamColor(marker.team, snapshot)}" stroke="#ffd28a" stroke-width="0.8" aria-label="Enemy commander marker"></polygon>`;
+  }
+
   return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.35)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.45"></circle>`;
 }
 
@@ -181,6 +192,9 @@ function markerSortOrder(marker: MinimapMarker): number {
   }
   if (marker.kind === "rally") {
     return 3;
+  }
+  if (marker.kind === "enemy-hero") {
+    return 5;
   }
   return 4;
 }

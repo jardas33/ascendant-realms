@@ -17,7 +17,7 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 1. Open `src/game/data/unitVeterancy.ts`.
 2. Tune only one axis at a time: rank thresholds, XP source rules, or rank stat bonuses.
 3. Keep ranks to the current V1 set unless you are also updating UI and Results copy: Recruit, Seasoned, Veteran, and Elite.
-4. Keep bonuses modest. V1 rank bonuses are percentages to max HP and damage, plus a small armor bonus at Veteran/Elite.
+4. Keep bonuses modest. V1 rank bonuses are percentages to max HP and damage, plus a small armor bonus only at Elite.
 5. Keep automatic persistence out of this file. Retinue Camp saves only selected campaign veterans through `src/game/core/RetinueRules.ts`.
 6. If you add a new XP source, wire it through battle systems and add pure tests before using it in e2e.
 7. Update `src/game/data/unitVeterancy.test.ts`, battle Results coverage, and Playwright coverage when rank behavior changes.
@@ -42,6 +42,24 @@ Current V1 behavior:
 6. Campaign battle deployment passes through `BattleLaunchRequest` and `BattleSceneSpawner`; skirmish should stay retinue-free unless a future task explicitly changes it.
 7. Current death rule is permanent removal after a battle when a retinue unit dies. Do not add wounded recovery until there is a concrete UI/test plan.
 8. Update `src/game/core/RetinueRules.test.ts`, save tests, launch tests, Playwright retinue deployment coverage, and simulator profiles if retinue rules change.
+
+## Add Or Tune An Enemy Hero
+
+1. Open `src/game/data/enemyHeroes.ts`.
+2. Add or edit a compact `EnemyHeroDefinition`: `id`, `name`, `title`, `factionId`, `personalityId`, `archetype`, `level`, `unitId`, `stats`, `xpValue`, `abilities`, flavor text, and campaign/map assignments.
+3. Keep `unitId` as `enemy_commander` for V1 unless you are intentionally adding a new enemy unit and updating validation, objectives, AI phase data, and tests.
+4. Add ability data in the same file only from the supported V1 effect shapes: `damage-and-burn`, `damage-buff`, `direct-damage`, and `armor-aura`.
+5. Assign the hero to a battle node with `enemyHeroId` in `src/game/data/campaignNodes.ts`.
+6. Make sure the assigned map spawns `enemy_commander` for that difficulty, or the named hero will have no live commander slot to replace.
+7. If the hero should count for a secondary objective, point the map objective at `enemy_commander` and use node/map copy for the named commander.
+8. Update `src/game/data/contentValidation.test.ts`, `BattleLaunchRequest` tests, Playwright commander coverage, and playtest simulator telemetry expectations.
+9. Run `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, and `npm run playtest:sim`.
+
+Current Enemy Hero V1 assignments:
+
+- `gorak_emberhand`: Gorak Emberhand, Ashen Raider Captain, assigned to Bandit Hillfort.
+- `veyra_cinders`: Veyra of the Cinders, Hexfire Seer, assigned to Aether Well Ruins.
+- `captain_malrec`: Captain Malrec, Outpost Commander, assigned to Ashen Outpost and the `Defeat Captain Malrec` objective.
 
 ## Add A New Building
 
@@ -187,7 +205,7 @@ Current map examples:
 2. Copy an existing node entry.
 3. Give it a unique `id`, display `name`, and `description`.
 4. Choose `nodeType`: `battle`, `shrine`, `town`, `ruin`, `fortress`, or `event`.
-5. Set `difficulty`, `mapId`, `enemyFactionId`, and optional `aiPersonalityId`.
+5. Set `difficulty`, `mapId`, `enemyFactionId`, optional `aiPersonalityId`, and optional `enemyHeroId` for named rival battles.
 6. Add prerequisite node IDs to `prerequisites`.
 7. Add future node IDs to `unlocks`.
 8. Add node rewards with optional `xp`, `itemIds`, and `resources`. Node resource rewards are added to the persistent campaign bank, not to the temporary battle economy.

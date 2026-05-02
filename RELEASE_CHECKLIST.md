@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 35 test files, 194 tests
+PASS: 35 test files, 200 tests
 ```
 
 2. Production build:
@@ -49,10 +49,10 @@ npm run test:e2e -- --reporter=line
 Expected current prototype result:
 
 ```text
-PASS: 43 Playwright tests
+PASS: 44 Playwright tests
 ```
 
-Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 15 to 16 minutes on this machine.
+Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 21 minutes on this machine.
 
 4. Deterministic playtest simulator:
 
@@ -63,7 +63,7 @@ npm run playtest:sim
 Expected current prototype result:
 
 ```text
-PASS: 150 simulated runs across 50 campaign battle node/profile summaries
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries
 No too-easy nodes
 No structural too-hard nodes
 Ashen Outpost beatable
@@ -82,15 +82,15 @@ npm run preview
 
 Open the local preview URL and confirm:
 
-- Main menu renders.
+- Main menu renders `Prototype v0.2` and `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
 ## Manual QA Areas Not Fully Automated
 
 - Full human-paced Border Village and Old Stone Road playthroughs on Easy, including first warning, Barracks timing, first trained unit, and first enemy contact.
-- Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
-- Ashen Outpost with and without Chapel repair, including final approach readability, tower pressure, and objective-panel placement.
+- Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save, including Veyra and Gorak scout/readability checks.
+- Ashen Outpost with and without Chapel repair, including Captain Malrec readability, final approach readability, tower pressure, and objective-panel placement.
 - Stronghold Tier I and II purchase feel in a real campaign economy, especially Watch Post II and Quartermaster Stores II.
 - Reputation hooks in normal campaign flow: Common Folk Marcher Camp discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
@@ -102,5 +102,5 @@ Open the local preview URL and confirm:
 
 - `CHANGELOG.md` describes the current feature baseline.
 - `README.md` has current setup, feature summary, known limitations, and verification counts.
-- `ROADMAP.md` names the next milestone as human campaign balance/readability review with Retinue Camp V1 included.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.2 prototype baseline plus Unit Veterancy V1 and Retinue Camp V1.
+- `ROADMAP.md` names the next milestone as human campaign balance/readability review with Retinue Camp V1 and Enemy Hero / Rival Commander V1 included.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.2 prototype baseline plus Unit Veterancy V1, Retinue Camp V1, and Enemy Hero / Rival Commander V1.

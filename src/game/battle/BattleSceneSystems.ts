@@ -23,6 +23,7 @@ import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
 import { CombatSystem } from "../systems/CombatSystem";
 import { FogOfWarSystem } from "../systems/FogOfWarSystem";
+import { EnemyHeroAbilitySystem } from "../systems/EnemyHeroAbilitySystem";
 import { InputSystem } from "../systems/InputSystem";
 import { MovementSystem } from "../systems/MovementSystem";
 import type { TechState } from "../systems/PrerequisiteSystem";
@@ -48,6 +49,7 @@ export interface BattleSceneSystems {
   upgradeSystem: UpgradeSystem;
   selectionSystem: SelectionSystem;
   abilitySystem: AbilitySystem;
+  enemyHeroAbilitySystem: EnemyHeroAbilitySystem;
   cameraSystem: CameraSystem;
   inputSystem: InputSystem;
   uiSystem: UISystem;
@@ -73,6 +75,7 @@ interface CreateBattleSceneSystemsOptions {
   addMinimapPing: (x: number, y: number, color: string, label: string) => void;
   warnIfCommandHallUnderAttack: (target: BaseEntity) => void;
   handleUnitDamage: (source: Unit, target: BaseEntity, amount: number) => void;
+  applyEnemyHeroDamage: (source: Unit, target: BaseEntity, amount: number) => void;
   handleKill: (killer: Unit | Building | Projectile, target: BaseEntity) => void;
   completeSecondaryObjective: (type: BattleSecondaryObjectiveType, targetId: string, point?: Position) => void;
   selectedRallyBuildings: () => Building[];
@@ -114,6 +117,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     addMinimapPing,
     warnIfCommandHallUnderAttack,
     handleUnitDamage,
+    applyEnemyHeroDamage,
     handleKill,
     completeSecondaryObjective,
     selectedRallyBuildings,
@@ -251,6 +255,18 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onMessage: showMessage
   });
 
+  const enemyHeroAbilitySystem = new EnemyHeroAbilitySystem({
+    getUnits,
+    getBuildings,
+    getElapsedSeconds: () => runtime.elapsedSeconds,
+    getEnemyBase: () => getBuildings().find((building) => building.alive && building.team === "enemy" && building.definition.id === activeMap.scenario.objectives.enemyBaseBuildingId),
+    applyDamage: applyEnemyHeroDamage,
+    onStatusApplied: (target, statusName) => {
+      FloatingText.show(scene, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
+    },
+    onMessage: showMessage
+  });
+
   const cameraSystem = new CameraSystem(scene, activeMap);
   const uiSystem = new UISystem(
     new HUD({
@@ -353,6 +369,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     upgradeSystem,
     selectionSystem,
     abilitySystem,
+    enemyHeroAbilitySystem,
     cameraSystem,
     inputSystem,
     uiSystem,
