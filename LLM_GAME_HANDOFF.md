@@ -59,7 +59,7 @@ Current branch status for this handoff update:
 ## main...origin/main
 ```
 
-The checkpoint stack was pushed successfully with `git push origin main`, advancing GitHub from `b2da48e` to `fa90b49`. Immediately after that push, local `HEAD` and `origin/main` both pointed at `fa90b4938109ce05da91d52004d376bd20311312`. The checkpoint worktree preserved the v0.2 product-copy pass, veterancy/retinue readability pass, conservative no-numeric-change retinue balance documentation, regenerated telemetry, e2e timing/wait hardening for slower full-suite runs, Enemy Hero / Rival Commander V1, the no-numeric-change enemy hero balance pass, and the `.codex-e2e.ps1` helper. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint stack was pushed successfully with `git push origin main`. After the final metadata push, `git status -sb` should report `## main...origin/main`, with checkpoint feature commit `938f768f91a69bbf3883cc3350acf822492fea72` included on `origin/main`. The checkpoint worktree preserved the v0.2 product-copy pass, veterancy/retinue readability pass, conservative no-numeric-change retinue balance documentation, regenerated telemetry, e2e timing/wait hardening for slower full-suite runs, Enemy Hero / Rival Commander V1, the no-numeric-change enemy hero balance pass, and the `.codex-e2e.ps1` helper. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
@@ -247,7 +247,7 @@ Checkpoint commit
 938f768f91a69bbf3883cc3350acf822492fea72
 
 Branch sync
-git push origin main succeeded. Immediately after push, `git status -sb` reported `## main...origin/main`; local `HEAD` and `origin/main` both pointed at `fa90b4938109ce05da91d52004d376bd20311312`.
+git push origin main succeeded. After the final metadata push, `git status -sb` should report `## main...origin/main`; checkpoint feature commit `938f768f91a69bbf3883cc3350acf822492fea72` is included on `origin/main`.
 ```
 
 Focused item-affix verification on 2026-05-02 during this pass:

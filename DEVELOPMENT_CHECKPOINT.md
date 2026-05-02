@@ -145,7 +145,7 @@ The local branch was not ahead or behind origin/main before committing.
 The worktree was dirty with intentional code, test, telemetry, and documentation edits from v0.2 product copy, Unit Veterancy V1, Retinue Camp V1, readability UX, conservative retinue balance, Enemy Hero / Rival Commander V1, enemy-hero balance docs/telemetry, and e2e timing hardening.
 A small metadata follow-up records the created checkpoint hash in this file and LLM_GAME_HANDOFF.md before pushing.
 Post-checkpoint/pre-push status: `main...origin/main [ahead 1]` at checkpoint commit `938f768f91a69bbf3883cc3350acf822492fea72`.
-Push result: `git push origin main` succeeded and advanced GitHub from `b2da48e` to `fa90b49`. Immediately after that push, `git status -sb` reported `## main...origin/main`, with local `HEAD` and `origin/main` both at `fa90b4938109ce05da91d52004d376bd20311312`.
+Push result: `git push origin main` succeeded. After the final metadata push, `git status -sb` should report `## main...origin/main`; the checkpoint feature commit recorded above is included on `origin/main`.
 ```
 
 Dirty files observed:
