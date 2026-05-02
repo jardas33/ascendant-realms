@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 17:31 -04:00
+Last updated: 2026-05-02 17:33 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -65,7 +65,7 @@ modified working tree with intentional product/version copy, veterancy/retinue r
 Feature checkpoint commit:
 
 ```text
-pending; replace with the checkpoint commit hash after creating the commit
+938f768f91a69bbf3883cc3350acf822492fea72
 ```
 
 Current branch sync status before checkpoint commit creation:
@@ -245,10 +245,10 @@ Retinue balance result
 No numeric gameplay changes. Retained capacity 2/+1 Training Yard II, Seasoned+ eligibility, 55/130/230 XP thresholds, +4%/+8%/+12% rank bonuses, Elite-only +1 armor, Quartermaster II interaction, and permanent retinue removal on death.
 
 Checkpoint commit
-pending; replace with the checkpoint commit hash after creating the commit
+938f768f91a69bbf3883cc3350acf822492fea72
 
 Branch sync
-main...origin/main synced at b2da48effc0dca5d6cf91b38cc12801f00a87e16 before creating the checkpoint commit
+main...origin/main [ahead 1] after creating checkpoint commit 938f768f91a69bbf3883cc3350acf822492fea72; metadata follow-up will record this hash before push
 ```
 
 Focused item-affix verification on 2026-05-02 during this pass:

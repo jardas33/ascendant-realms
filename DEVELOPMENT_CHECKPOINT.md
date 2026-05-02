@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-02 17:31 -04:00
+Updated: 2026-05-02 17:33 -04:00
 
 ## Checkpoint Scope
 
@@ -116,7 +116,7 @@ Current expected visible product copy: Prototype v0.2 with subtitle "v0.2 Protot
 Checkpoint commit hash:
 
 ```text
-pending; replace with the checkpoint commit hash after creating the commit
+938f768f91a69bbf3883cc3350acf822492fea72
 ```
 
 Checkpoint commit message:
@@ -144,6 +144,7 @@ Before checkpoint commit creation, main and origin/main both pointed at b2da48ef
 The local branch was not ahead or behind origin/main before committing.
 The worktree was dirty with intentional code, test, telemetry, and documentation edits from v0.2 product copy, Unit Veterancy V1, Retinue Camp V1, readability UX, conservative retinue balance, Enemy Hero / Rival Commander V1, enemy-hero balance docs/telemetry, and e2e timing hardening.
 A small metadata follow-up records the created checkpoint hash in this file and LLM_GAME_HANDOFF.md before pushing.
+Post-checkpoint/pre-push status: `main...origin/main [ahead 1]` at checkpoint commit `938f768f91a69bbf3883cc3350acf822492fea72`.
 ```
 
 Dirty files observed:
