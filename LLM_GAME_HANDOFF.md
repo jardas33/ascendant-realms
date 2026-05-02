@@ -63,13 +63,13 @@ Before the checkpoint commit is created, `main` and `origin/main` both point at 
 Pending checkpoint commit:
 
 ```text
-CHECKPOINT_COMMIT_PENDING
+9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
 ```
 
 Pending branch sync status:
 
 ```text
-CHECKPOINT_SYNC_PENDING
+Post-checkpoint/pre-push: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`. A small metadata follow-up records this hash before pushing.
 ```
 
 Notable current untracked additions include `CHANGELOG.md`, `RELEASE_CHECKLIST.md`, `src/game/core/progression/`, `src/game/core/RetinueRules.ts`, `src/game/core/RetinueRules.test.ts`, `src/game/campaign/RetinuePanel.ts`, `src/game/results/ResultsRetinuePanel.ts`, `src/game/data/unitVeterancy.ts`, and `src/game/data/unitVeterancy.test.ts`. Many existing game, test, docs, telemetry, and e2e files are modified as part of the same intentional feature/refactor stack.
@@ -233,10 +233,10 @@ Browser Use sanity
 PASS: current in-app preview at http://127.0.0.1:4182/ loads Ascendant Realms main menu, browser console errors: 0. Known copy/version mismatch: visible menu still says `Prototype v0.1`.
 
 Checkpoint commit
-CHECKPOINT_COMMIT_PENDING
+9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
 
 Branch sync
-CHECKPOINT_SYNC_PENDING
+Post-checkpoint/pre-push: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`. A small metadata follow-up records this hash before pushing.
 ```
 
 Focused item-affix verification on 2026-05-02 during this pass:
@@ -358,13 +358,13 @@ PASS: main menu visible, browser console errors: 0; visible menu still labels th
 Checkpoint commit:
 
 ```text
-CHECKPOINT_COMMIT_PENDING
+9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
 ```
 
 Branch sync status:
 
 ```text
-CHECKPOINT_SYNC_PENDING
+Post-checkpoint/pre-push: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`. A small metadata follow-up records this hash before pushing.
 ```
 
 No gameplay behavior changed during this checkpoint pass; only verification, telemetry regeneration from `npm run playtest:sim`, and checkpoint documentation updates were performed.

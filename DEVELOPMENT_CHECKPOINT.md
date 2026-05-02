@@ -111,7 +111,7 @@ Known copy/version mismatch: visible menu still says Prototype v0.1 while docs d
 Checkpoint commit hash:
 
 ```text
-CHECKPOINT_COMMIT_PENDING
+9f96b1f9e5cdf25081c4a817f9c5796000fdfc82
 ```
 
 Checkpoint commit message:
@@ -138,7 +138,8 @@ Branch sync status at verification time:
 Before checkpoint commit creation, main and origin/main both pointed at 9cd3205e3d1be23ed967bd51f315bab3d39cc52e.
 The local branch was not ahead or behind origin/main before committing.
 The worktree was dirty with intentional uncommitted code, test, telemetry, and documentation edits from Unit Veterancy V1, Retinue Camp V1, retinue telemetry balance, release docs, and the HeroProgressionRules refactor.
-Final post-push sync status: CHECKPOINT_SYNC_PENDING
+Post-checkpoint/pre-push status: `main...origin/main [ahead 1]` at checkpoint commit `9f96b1f9e5cdf25081c4a817f9c5796000fdfc82`.
+A small metadata follow-up records this hash in the docs before pushing.
 ```
 
 Dirty files observed:
