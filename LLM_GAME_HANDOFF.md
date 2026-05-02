@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 17:33 -04:00
+Last updated: 2026-05-02 17:35 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -32,19 +32,20 @@ Current branch:
 main
 ```
 
-Latest published commit:
+Latest checkpoint feature commit:
 
 ```text
-b2da48effc0dca5d6cf91b38cc12801f00a87e16
+938f768f91a69bbf3883cc3350acf822492fea72
 ```
 
 Latest commits:
 
 ```text
+current docs metadata commit Update checkpoint metadata
+fa90b49 Update checkpoint metadata
+938f768 Checkpoint enemy heroes rival commanders and v0.2 polish
 b2da48e Update checkpoint metadata
 9f96b1f Checkpoint unit veterancy retinue camp and progression refactor
-9cd3205 Update development checkpoint metadata
-a3dba27 Checkpoint Stronghold development and simulator profiles
 ```
 
 Known shell/tool note:
@@ -52,15 +53,13 @@ Known shell/tool note:
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
 - Latest Browser Use sanity was rerun after the enemy hero balance pass: the current production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with `Prototype v0.2`, `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`, no `Prototype v0.1`, and browser console errors at 0. Playwright e2e remains the deterministic browser verification surface for gameplay flows.
 
-Current branch status for this handoff update before checkpoint commit creation:
+Current branch status for this handoff update:
 
 ```text
 ## main...origin/main
-modified working tree with intentional product/version copy, veterancy/retinue readability UX, conservative retinue balance docs/telemetry, e2e timing hardening, Enemy Hero / Rival Commander V1 work, enemy hero balance docs/telemetry, and checkpoint metadata
-?? .codex-e2e.ps1
 ```
 
-`main` and `origin/main` both point at `b2da48effc0dca5d6cf91b38cc12801f00a87e16` before the new checkpoint commit. The checkpoint worktree is intentional and includes the v0.2 product-copy pass, veterancy/retinue readability pass, conservative no-numeric-change retinue balance documentation, regenerated telemetry, e2e timing/wait hardening for slower full-suite runs, Enemy Hero / Rival Commander V1, the no-numeric-change enemy hero balance pass, and the `.codex-e2e.ps1` helper. Do not reset or revert future dirty edits unless the user explicitly asks.
+The checkpoint stack was pushed successfully with `git push origin main`, advancing GitHub from `b2da48e` to `fa90b49`. Immediately after that push, local `HEAD` and `origin/main` both pointed at `fa90b4938109ce05da91d52004d376bd20311312`. The checkpoint worktree preserved the v0.2 product-copy pass, veterancy/retinue readability pass, conservative no-numeric-change retinue balance documentation, regenerated telemetry, e2e timing/wait hardening for slower full-suite runs, Enemy Hero / Rival Commander V1, the no-numeric-change enemy hero balance pass, and the `.codex-e2e.ps1` helper. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
@@ -248,7 +247,7 @@ Checkpoint commit
 938f768f91a69bbf3883cc3350acf822492fea72
 
 Branch sync
-main...origin/main [ahead 1] after creating checkpoint commit 938f768f91a69bbf3883cc3350acf822492fea72; metadata follow-up will record this hash before push
+git push origin main succeeded. Immediately after push, `git status -sb` reported `## main...origin/main`; local `HEAD` and `origin/main` both pointed at `fa90b4938109ce05da91d52004d376bd20311312`.
 ```
 
 Focused item-affix verification on 2026-05-02 during this pass:
