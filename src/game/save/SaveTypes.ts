@@ -76,5 +76,6 @@ export interface CampaignSaveData {
   townServiceClaimedIds: string[];
   townServiceUseCounts: Record<string, number>;
   activeModifierIds: string[];
+  strongholdUpgradeRanks: Record<string, number>;
   selectedNodeId?: string;
 }

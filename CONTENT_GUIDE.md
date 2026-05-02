@@ -162,6 +162,23 @@ Town service guidance:
 - Town service usage is tracked in `campaign.townServiceUseCounts`; once-only service purchases are also tracked in `campaign.townServiceClaimedIds`.
 - Next-battle effects should usually grant a campaign modifier such as `well_rested` or `inspired_militia`.
 
+## Add A Stronghold Upgrade
+
+1. Open `src/game/data/strongholdUpgrades.ts`.
+2. Copy an existing `STRONGHOLD_UPGRADES` entry and give it a unique `id`.
+3. Add that ID to `StrongholdUpgradeId` in `src/game/types/CampaignTypes.ts`.
+4. Set `name`, `description`, `tier`, `cost`, `prerequisites`, `effects`, `maxRank`, optional `iconKey`, and `flavorText`.
+5. Use only supported effect types unless you are also adding engine support:
+   - `extra-starting-unit`
+   - `starting-resources`
+   - `hero-max-hp-multiplier`
+   - `building-vision-bonus`
+6. Add prerequisite upgrade IDs through `prerequisites.upgradeRanks` and prerequisite campaign nodes through `prerequisites.completedNodeIds`.
+7. Keep costs in campaign resources; purchases spend from `campaign.resources` and record `campaign.resourcesSpent`.
+8. Purchases persist in `campaign.strongholdUpgradeRanks`, and save normalization filters unknown upgrades for old or edited saves.
+9. If you add a new effect type, update battle launch application, Stronghold UI copy, and `src/game/data/validation/validateStronghold.ts`.
+10. Run `npm test` and at least one e2e flow that opens the Campaign Map before relying on the new upgrade.
+
 ## Add A New Faction
 
 1. Open `src/game/data/factions.ts`.

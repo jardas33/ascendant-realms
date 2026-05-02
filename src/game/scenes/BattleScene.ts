@@ -20,6 +20,7 @@ import {
 import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
+import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
@@ -298,7 +299,7 @@ export class BattleScene extends Phaser.Scene {
     const personality = AI_PERSONALITY_BY_ID[this.launch.request.aiPersonalityId ?? "balanced_warlord"];
     const difficulty = getBattleDifficulty(this.launch.request.difficulty);
     const names = this.launch.request.modifiers
-      .map((modifier) => CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name)
+      .map((modifier) => CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name ?? strongholdUpgradeForModifier(modifier.id)?.name)
       .filter((name): name is string => Boolean(name));
     const modifierText = names.length > 0 ? ` Modifiers: ${names.join(", ")}.` : "";
     const enemyText = faction
@@ -350,6 +351,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createVisionSources(): VisionSource[] {
+    const buildingVisionBonus = getStrongholdBattleEffects(this.launch.request.modifiers).buildingVisionBonus;
     const unitSources = this.units
       .filter((unit) => unit.alive && unit.team === "player")
       .map((unit) => ({
@@ -362,7 +364,9 @@ export class BattleScene extends Phaser.Scene {
       .map((building) => ({
         x: building.position.x,
         y: building.position.y,
-        radius: building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65
+        radius:
+          (building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65) +
+          buildingVisionBonus
       }));
     return [...unitSources, ...buildingSources];
   }

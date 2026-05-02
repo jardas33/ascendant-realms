@@ -1,5 +1,5 @@
 import type { BattleDifficulty, EnemyAIPersonalityId } from "./CombatTypes";
-import type { ResourceBag } from "./EconomyTypes";
+import type { Cost, ResourceBag } from "./EconomyTypes";
 
 export type CampaignModifierId = "inspired_militia" | "blessed_road" | "well_rested" | "angered_raiders" | "local_support";
 
@@ -81,3 +81,47 @@ export interface CampaignNodeDefinition {
 }
 
 export type CampaignNodeStatus = "locked" | "available" | "completed";
+
+export type StrongholdUpgradeId =
+  | "training_yard_i"
+  | "watch_post_i"
+  | "quartermaster_stores_i"
+  | "chapel_corner_i"
+  | "ranger_paths_i";
+
+export interface StrongholdUpgradePrerequisites {
+  upgradeRanks?: Partial<Record<StrongholdUpgradeId, number>>;
+  completedNodeIds?: string[];
+}
+
+export type StrongholdUpgradeEffectDefinition =
+  | {
+      type: "extra-starting-unit";
+      unitId: string;
+      count: number;
+    }
+  | {
+      type: "starting-resources";
+      resources: Partial<ResourceBag>;
+    }
+  | {
+      type: "hero-max-hp-multiplier";
+      multiplier: number;
+    }
+  | {
+      type: "building-vision-bonus";
+      amount: number;
+    };
+
+export interface StrongholdUpgradeDefinition {
+  id: StrongholdUpgradeId;
+  name: string;
+  description: string;
+  tier: number;
+  cost: Cost;
+  prerequisites: StrongholdUpgradePrerequisites;
+  effects: StrongholdUpgradeEffectDefinition[];
+  maxRank: number;
+  iconKey?: string;
+  flavorText: string;
+}

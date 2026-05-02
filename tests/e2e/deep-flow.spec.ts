@@ -65,7 +65,8 @@ const BASE_CAMPAIGN = {
   choiceIdsClaimed: [],
   townServiceClaimedIds: [],
   townServiceUseCounts: {},
-  activeModifierIds: []
+  activeModifierIds: [],
+  strongholdUpgradeRanks: {}
 };
 
 function attachConsoleFailure(page: Page): void {
@@ -666,6 +667,36 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     save = await readSave(page);
     expect(save.hero.inventory.some((item: { itemId: string }) => item.itemId === "emberglass_wand")).toBe(true);
     expect(save.campaign.townServiceClaimedIds).toContain("marcher_camp:purchase_emberglass_wand");
+  });
+
+  test("stronghold upgrades spend campaign resources and apply to later battles", async ({ page }) => {
+    await seedSave(page, {
+      campaign: {
+        resources: { crowns: 220, stone: 80, iron: 90, aether: 40 },
+        unlockedNodeIds: ["border_village"],
+        selectedNodeId: "border_village"
+      }
+    });
+    await page.getByTestId("menu-continue-campaign").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("stronghold-panel")).toContainText("Stronghold");
+    await expect(page.getByTestId("stronghold-upgrade-ranger_paths_i")).toContainText("Requires Training Yard I rank 1");
+
+    await page.getByTestId("stronghold-purchase-training_yard_i").click();
+    await expect(page.getByTestId("campaign-status")).toContainText("Training Yard I upgraded");
+    await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("Purchased");
+
+    const purchasedSave = await readSave(page);
+    expect(purchasedSave.campaign.strongholdUpgradeRanks.training_yard_i).toBe(1);
+    expect(purchasedSave.campaign.resources).toMatchObject({ crowns: 140, iron: 55 });
+    expect(purchasedSave.campaign.resourcesSpent).toMatchObject({ crowns: 80, iron: 35 });
+
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+    const snapshot = await getBattleSnapshot(page);
+    const playerMilitia = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia");
+    expect(playerMilitia).toHaveLength(3);
   });
 
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {
@@ -1696,7 +1727,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(completedObjectiveIds).toEqual(
       expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks", "defeat_outpost_captain"])
     );
-    await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 3/3");
+    await expect(page.getByTestId("battle-objectives").filter({ hasText: "Objectives 3/3" })).toBeVisible();
 
     await forceActiveBattleOutcome(page, "victory");
     const objectiveSummary = page.locator(".special-objectives");

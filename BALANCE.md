@@ -2,6 +2,57 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
+## Current First-Campaign Baseline - 2026-05-01 Checkpoint
+
+The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
+
+- Latest simulator verdict: `npm run playtest:sim` passes with 60 deterministic runs across 5 campaign battle nodes and 4 Stronghold profiles, no structural `too_hard` nodes, and Ashen Outpost beatable by the Safe Beginner script.
+- Current starting battle resources: 380 Crowns, 255 Stone, 140 Iron, 75 Aether.
+- Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
+- Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
+- Current Ashen Outpost site income: Burned Shrine +26 Aether/5s, West Supply Pyre +30 Crowns/6s, South Iron Pit +22 Iron/6s, North Stone Scar +26 Stone/6s.
+- Current broad difficulty pacing baseline: Story is the learning/testing lane with no fog, Easy is for tutorial battles with survivable pressure, and Normal is the first real baseline once build/train/rally is understood.
+- Current Stronghold Development v1 is a small persistent campaign-resource sink. Purchased upgrades apply only to later battle launches and do not alter the current battle retroactively.
+
+| Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander timing |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Story | 0.45x | 300s | 100s | 2 | 9.0s | 840s |
+| Easy | 0.65x | 240s | 82s | 3 | 7.0s | 750s |
+| Normal | 0.82x | 195s | 72s | 5 | 6.2s | 630s |
+
+- Current map-level pacing is authoritative where present: First Claim currently uses the softened Easy opener from the telemetry follow-up, and Ashen Outpost currently uses the reduced fortress economy, one gate Watchtower, four starting Militia, two Rangers, and Burned Shrine gate-Watchtower weakening.
+- Current human-review focus: Aether Well Ruins, Bandit Hillfort, and Ashen Outpost need feel/readability review before more numeric tuning.
+- Current Stronghold tuning focus: Training Yard I improves the Ashen Outpost profile without trivializing all nodes; Watch Post I and Quartermaster Stores I are flagged by the simulator as not improving deterministic outcomes and need human feel review before any numeric response.
+
+## Stronghold Development
+
+Stronghold costs and effects are current as of the 2026-05-01 feature slice. These are intentionally modest because the campaign resource bank already feeds Marcher Camp services and event choices.
+
+| Upgrade | Cost | Current implemented effect |
+| --- | --- | --- |
+| Training Yard I | 80 Crowns, 35 Iron | Future battles start with +1 Militia near the Command Hall. |
+| Watch Post I | 70 Crowns, 45 Stone | Player buildings reveal +80 more vision radius in future battles. |
+| Quartermaster Stores I | 85 Crowns, 50 Stone | Future battles start with +50 Crowns and +30 Stone. |
+| Chapel Corner I | 75 Crowns, 25 Aether | The hero starts future battles with +5% maximum HP. |
+| Ranger Paths I | 90 Crowns, 45 Iron; requires Training Yard I | Future battles start with +1 Ranger near the Command Hall. |
+
+Balance intent:
+
+- Training Yard I and Ranger Paths I are early safety valves, not a replacement for building production.
+- Watch Post I supports fog readability and defensive awareness without changing enemy wave timing.
+- Quartermaster Stores I accelerates the first build/train sequence slightly without increasing campaign-bank rewards.
+- Chapel Corner I is deliberately smaller than the Marcher Camp Well Rested next-battle modifier because it is permanent.
+- Human review should watch whether players can buy too many Stronghold upgrades before Ashen Outpost after normal Marcher Camp spending.
+
+Automated Stronghold simulator read:
+
+- The deterministic simulator now runs No Stronghold upgrades, Training Yard path, Defensive Watch Post path, and Economy Quartermaster path across Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
+- The simulated campaign bank can afford all three tested tier-1 paths before or by Ashen Outpost, so no tested Stronghold path currently reads as too expensive.
+- Training Yard I is useful in the structural bot: it changes the Ashen Outpost profile from 1 win / 2 non-wins to 2 wins / 1 non-win, with the Fast Army script converting from timeout to victory.
+- Watch Post I is flagged as usefulness-risk in the bot because the deterministic structural model does not reward additional building vision. Treat this as a manual fog/readability playtest prompt, not proof that the upgrade is bad.
+- Quartermaster Stores I is flagged as usefulness-risk in the bot because the extra starting resources increased floated resources but did not improve result, duration, first-wave survival, or losses in this deterministic suite.
+- No Stronghold path trivialized all nodes, so no overpowered warning is active and no balance value changed in this pass.
+
 ## First Claim Opening Readability - 2026-04-30
 
 Source: Browser Use visible playtest after the opening squad-selection polish.
@@ -124,10 +175,10 @@ Telemetry read after this pass:
 | Recruit Volunteers | 20 Crowns, 25 Iron | 15 Crowns, 30 Iron | Makes the pragmatic line a clearer army-prep choice. |
 | Chapel guidance text | Warned about Hexers massing | Warns that Ashen needs a staged army, not an early probe | Matches telemetry: Ashen failures are attack-strength failures, not Barracks timing failures. |
 
-Remaining telemetry risks:
+Historical telemetry risks from this 2026-04-26 pass, superseded by the 2026-05-01 checkpoint baseline above:
 
-- Bandit Hillfort still reports `too_hard`; the safe opening wins, but Greedy Economy and Fast Army fail after survived waves.
-- Ashen Outpost still reports `too_hard` and `Ashen Outpost beatable: no`.
+- At that time, Bandit Hillfort still reported `too_hard`; the safe opening won, but Greedy Economy and Fast Army failed after survived waves.
+- At that time, Ashen Outpost still reported `too_hard` and the older simulator could not beat it.
 - Ashen needs a later pass on fortress assault structure if the design goal is for the scripted suite to beat it without human control.
 - No further Easy tuning is recommended from this telemetry.
 

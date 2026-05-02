@@ -11,6 +11,7 @@ import {
   getCampaignNodeStatus,
   refreshCampaignUnlocks
 } from "../core/CampaignRules";
+import { getStrongholdLaunchModifiers, purchaseStrongholdUpgrade } from "../core/StrongholdRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -34,6 +35,7 @@ import {
   renderCampaignResourceBank,
   renderReputation
 } from "../campaign/CampaignResourcePanel";
+import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
 
 interface CampaignMapData {
   heroSave?: HeroSaveData;
@@ -90,6 +92,12 @@ export class CampaignMapScene extends Phaser.Scene {
         return;
       }
 
+      const strongholdButton = target.closest<HTMLButtonElement>("button[data-stronghold-upgrade]");
+      if (strongholdButton) {
+        this.purchaseStrongholdUpgrade(strongholdButton.dataset.strongholdUpgrade ?? "");
+        return;
+      }
+
       const action = target.closest<HTMLButtonElement>("button[data-campaign-action]")?.dataset.campaignAction;
       if (action === "start") {
         this.startSelectedNode();
@@ -131,7 +139,7 @@ export class CampaignMapScene extends Phaser.Scene {
       SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
       this.scene.start(SCENE_KEYS.battle, {
         launchRequest: createCampaignBattleLaunchRequest(this.heroSave, node, {
-          modifiers: modifierResult.launchModifiers
+          modifiers: [...modifierResult.launchModifiers, ...getStrongholdLaunchModifiers(this.campaignSave)]
         })
       });
       return;
@@ -151,6 +159,20 @@ export class CampaignMapScene extends Phaser.Scene {
     this.heroSave = completed.hero;
     this.campaignSave = completed.campaign;
     this.message = `${node.name} completed. ${formatNodeRewardSummary(node)}`;
+    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.render();
+  }
+
+  private purchaseStrongholdUpgrade(upgradeId: string): void {
+    const result = purchaseStrongholdUpgrade(this.campaignSave, upgradeId);
+    if (!result.ok) {
+      this.message = result.reason ?? "That stronghold upgrade is locked.";
+      this.render();
+      return;
+    }
+
+    this.campaignSave = result.campaign;
+    this.message = `${result.upgrade?.name ?? "Stronghold upgrade"} upgraded. Effects apply to future battles.`;
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }
@@ -220,6 +242,7 @@ export class CampaignMapScene extends Phaser.Scene {
               ${this.renderHeroSummary()}
               <h2>Campaign Bank</h2>
               ${renderCampaignResourceBank(this.campaignSave)}
+              ${renderStrongholdPanel(this.campaignSave)}
               <h2>Reputation</h2>
               ${renderReputation(this.heroSave)}
               <h2>Active Modifiers</h2>

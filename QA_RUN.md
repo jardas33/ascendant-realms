@@ -1,42 +1,72 @@
 # Ascendant Realms QA Run
 
-Run date: 2026-04-26
+Run date: 2026-04-26 onward
 
-Last updated: 2026-04-30 21:13 -04:00
+Last updated: 2026-05-01 20:08 -04:00
 
-Scope: 65-item manual QA checklist from `LLM_GAME_HANDOFF.md`.
+Scope: consolidated manual notes, automated verification, Browser Use sanity checks, and remaining manual-only QA areas for `LLM_GAME_HANDOFF.md`.
 
 Tester: Codex.
 
-Method:
+## Latest Automated Verification - 2026-05-01 Stronghold Feature
 
-- Used Browser Use against the in-app browser at `http://127.0.0.1:5173/` for a visible manual smoke/play pass.
-- Directly exercised settings persistence, campaign map inspection, Border Village launch, hero selection/movement, Crown Shrine capture, Command Hall selection, Barracks placement/construction, Militia/Ranger training, rally point setting, enemy pressure, minimap/fog visuals, and hero ability hotkeys `1`, `2`, and `3`.
-- Used the project Playwright browser suite for deterministic coverage of reset-save, seeded campaign/event states, victory/defeat resolution, Equip Now persistence, inventory/skills, responsive layout, skirmish launches, and console-error hooks.
-- Recorded human-only checks, especially audible sound and long-form battle balance feel, as not fully verified instead of overclaiming.
-- Did not click Reset Save in the user's in-app browser because it deletes local save data; reset-save behavior was verified in Playwright's isolated browser context.
-
-Verification results:
+These are the current authoritative automated results after the Stronghold Development v1 feature. Older per-pass results remain below as historical notes.
 
 ```text
 npm test
-PASS: 29 test files passed, 140 tests passed
+PASS: 32 test files passed, 156 tests passed
 
 npm run build
 PASS: TypeScript compile passed, Vite production build passed
-Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold
+Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 38 Playwright tests passed in 13.0m
+PASS: 39 Playwright tests passed in 14.2m. The e2e suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: latest regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json still cover 15 simulated runs across 5 campaign nodes; no structural too-hard nodes; Ashen Outpost beatable: yes
-
-Browser Use
-PASS: rebuilt production preview rendered Ascendant Realms at http://127.0.0.1:4177/ with 0 browser console errors; main menu title and New Campaign text were visible after the campaign event repeatability coverage build.
+PASS: regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json cover 15 simulated runs across 5 campaign nodes; no structural too-hard nodes; Ashen Outpost beatable: yes
 ```
 
-No critical failures were found.
+Focused Stronghold verification also passed:
+
+- `npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts`: PASS, 4 test files and 42 tests.
+- `npm run test:e2e -- --reporter=line -g "stronghold upgrades"`: PASS, 1 Playwright test.
+
+The previous checkpoint was committed and pushed. At the checkpoint metadata update, `main` and `origin/main` were synced at `b952cbee2a214d9958cfedf56069d5fecb55ca67`. The current Stronghold/HUD/contentValidation/docs work remains uncommitted.
+
+Do not reset, checkout, delete, or revert dirty work unless the user explicitly asks. Future dirty work should be treated as intentional until proven otherwise.
+
+## Latest Browser Use Sanity Checks
+
+Fresh Browser Use was attempted after the Stronghold feature, but the Browser Use runtime reported no active Codex browser pane for both selected-tab and fresh-tab paths. Playwright remains the deterministic browser suite and passed the new Stronghold flow plus the full e2e suite.
+
+Latest recorded successful Browser Use checks are from the 2026-04-30 polish pass, before the 2026-05-01 checkpoint commit:
+
+- Production preview at `http://127.0.0.1:4177/` rendered the Ascendant Realms main menu with the title and New Campaign button visible.
+- Browser console errors were 0 in that production-preview sanity pass.
+- Visible First Claim checks in the in-app browser verified the opening full-squad selection, clean Crown Shrine capture prompt, construction hint progression, and selected-forces retake wording.
+
+Browser Use was used for visible local-browser confidence. Playwright remains the deterministic browser suite.
+
+## Older Manual QA Notes
+
+The sections below this point are chronological QA history from earlier visible Browser Use passes, focused Playwright runs, and manual-style checklist tracking. They are useful context, but the latest automated verification above supersedes older counts when they disagree.
+
+Earlier manual/browser method:
+
+- Used Browser Use against the in-app browser at `http://127.0.0.1:5173/` for visible smoke/play passes.
+- Directly exercised settings persistence, campaign map inspection, Border Village launch, hero selection/movement, Crown Shrine capture, Command Hall selection, Barracks placement/construction, Militia/Ranger training, rally point setting, enemy pressure, minimap/fog visuals, and hero ability hotkeys `1`, `2`, and `3`.
+- Did not click Reset Save in the user's in-app browser because it deletes local save data; reset-save behavior was verified in Playwright's isolated browser context.
+
+## Current Remaining Manual-Only Areas
+
+- Human-audible audio checks for music/SFX/mute behavior.
+- Human-paced first battle feel through normal input: timing, stress, readability, and whether the first warning, Barracks completion, first trained unit, and first attack contact feel fair.
+- Human-paced Normal branch checks for Aether Well Ruins and Bandit Hillfort from a typical early campaign save.
+- Human-paced Ashen Outpost assault with fog on, including Burned Shrine route readability, fortress/tower pressure, and full-fight HUD clarity.
+- Subjective campaign choice feel: Marcher Camp spending, Chapel preparation, and whether Stronghold purchases make early campaign prep feel too generous or just meaningfully strategic.
+
+No critical failures are currently known from automated verification.
 
 ## Crown Shrine Selected-Forces Copy Polish - 2026-04-30 21:13 -04:00
 

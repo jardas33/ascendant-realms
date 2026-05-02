@@ -133,6 +133,7 @@ describe("calculateLevelFromXp", () => {
       townServiceClaimedIds: ["marcher_camp:purchase_emberglass_wand", "marcher_camp:purchase_emberglass_wand"],
       townServiceUseCounts: { "marcher_camp:buy_supplies": 2, bad: -1 },
       activeModifierIds: ["inspired_militia", "missing_modifier", "inspired_militia"],
+      strongholdUpgradeRanks: { training_yard_i: 1.8, missing_upgrade: 2, watch_post_i: -1 },
       resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       resourcesSpent: { crowns: 60, stone: -4, iron: 2, aether: 1 },
       selectedNodeId: "old_stone_road"
@@ -147,6 +148,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(normalized?.townServiceUseCounts).toEqual({ "marcher_camp:buy_supplies": 2 });
     expect(normalized?.activeModifierIds).toEqual(["inspired_militia"]);
+    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
     expect(normalized?.resourcesSpent).toEqual({ crowns: 60, stone: 0, iron: 2, aether: 1 });
   });
@@ -167,6 +169,18 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.townServiceUseCounts).toEqual({});
     expect(normalized?.lockedNodeIds).toEqual([]);
     expect(normalized?.activeModifierIds).toEqual([]);
+    expect(normalized?.strongholdUpgradeRanks).toEqual({});
+  });
+
+  it("migrates legacy stronghold upgrade ids into rank data", () => {
+    const normalized = normalizeCampaignSaveData({
+      ...createFallbackCampaignSave(),
+      started: true,
+      difficulty: "easy",
+      strongholdUpgradeIds: ["training_yard_i", "missing_upgrade", "training_yard_i"]
+    });
+
+    expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
   });
 
   it("normalizes reputation defaults and clamps reputation values", () => {
@@ -287,6 +301,7 @@ describe("save version migration", () => {
     expect(migrated?.campaign.choiceIdsClaimed).toEqual([]);
     expect(migrated?.campaign.townServiceClaimedIds).toEqual([]);
     expect(migrated?.campaign.townServiceUseCounts).toEqual({});
+    expect(migrated?.campaign.strongholdUpgradeRanks).toEqual({});
     expect(migrated?.settings).toEqual(DEFAULT_SETTINGS);
     expect(migrated?.statistics).toEqual({});
   });
@@ -329,7 +344,8 @@ describe("save version migration", () => {
       resources: { crowns: 45, stone: 25, iron: 12, aether: 6 },
       resourcesSpent: { crowns: 55, stone: 0, iron: 0, aether: 0 },
       townServiceClaimedIds: ["marcher_camp:purchase_emberglass_wand"],
-      townServiceUseCounts: { "marcher_camp:purchase_emberglass_wand": 1 }
+      townServiceUseCounts: { "marcher_camp:purchase_emberglass_wand": 1 },
+      strongholdUpgradeRanks: { training_yard_i: 1 }
     };
 
     expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
@@ -339,6 +355,7 @@ describe("save version migration", () => {
     expect(loaded?.campaign.resourcesSpent.crowns).toBe(55);
     expect(loaded?.campaign.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(loaded?.campaign.townServiceUseCounts).toEqual({ "marcher_camp:purchase_emberglass_wand": 1 });
+    expect(loaded?.campaign.strongholdUpgradeRanks).toEqual({ training_yard_i: 1 });
   });
 
   it("rejects invalid JSON and invalid save shapes without clearing storage", () => {

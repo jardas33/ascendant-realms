@@ -9,6 +9,17 @@ Every phase should protect these long-term pillars:
 3. Living campaign map: the world should react with alliances, betrayals, invasions, shops, temples, ruins, contracts, holy orders, cursed lands, and ancient threats.
 4. Data-driven and mod-friendly content: future expansion should mostly mean adding data and assets, not rewriting engine code.
 
+## Current Recommended Next Phase
+
+After the first Stronghold Development slice, the best next product step is still campaign depth: either deepen the Stronghold with a second small tier or add stronger node consequences around existing campaign routes. Keep workers, enemy construction, diplomacy, and broad faction-economy expansion parked until the first mini-campaign has more human-paced validation.
+
+Recommended focus:
+
+- Human-paced campaign QA for Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
+- Design a small campaign-depth slice around stronger node consequences, repeatable preparation decisions, or a second Stronghold tier with clear prerequisites.
+- Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `HeroProgressionRules`, and `CampaignRules`.
+- Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
+
 ## Phase 0: Project Foundation
 
 - Phaser/Vite/TypeScript setup.
@@ -57,10 +68,11 @@ Every phase should protect these long-term pillars:
 
 ## Phase 4: Campaign Map
 
-- Node-based overworld. Skeleton implemented with seven Border Marches nodes.
+- Node-based overworld. Skeleton implemented with eight Border Marches nodes.
 - Locations. First pass includes battle, shrine, and event node handling.
 - Ashen Outpost now uses a dedicated fortress map as the current mini-campaign finale.
 - Simple data-driven event choices with requirements, costs, rewards, reputation changes, and node unlocks.
+- Stronghold Development v1 with five persistent campaign-resource upgrades and battle-launch effects.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.

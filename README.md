@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a small first playable prototype for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies, level up, earn loot, and save progress locally.
+Ascendant Realms is a small first playable prototype for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies, level up, earn loot, spend campaign resources on Stronghold upgrades, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -43,6 +43,8 @@ http://localhost:5173
 npm run build
 ```
 
+Latest feature status, 2026-05-01: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+
 ## Test Content And Pure Rules
 
 ```bash
@@ -50,6 +52,8 @@ npm run test
 ```
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
+
+Latest feature status, 2026-05-01: `npm test` passes with 32 test files and 156 tests.
 
 ## Browser Smoke Tests
 
@@ -59,13 +63,21 @@ npm run test:e2e
 
 The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest feature run passed 39 Playwright tests in 14.2 minutes.
 
 For a visible browser run:
 
 ```bash
 npm run test:e2e:headed
 ```
+
+## Playtest Simulation
+
+```bash
+npm run playtest:sim
+```
+
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest feature status, 2026-05-01: passed with 15 simulated runs across 5 campaign battle nodes, no structural too-hard nodes, and Ashen Outpost beatable by the Safe Beginner script.
 
 ## Preview A Build
 
@@ -156,7 +168,7 @@ The first skeleton campaign has eight nodes:
 - Refugee Caravan.
 - Ashen Outpost.
 
-Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. Choices can be locked by resource costs, hero level, ownership, or previous purchase, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
+Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. The Campaign Map also includes the first Stronghold panel, where persistent upgrades spend Crowns, Stone, Iron, and Aether and apply to later battle launches. Choices can be locked by resource costs, hero level, ownership, or previous purchase, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
 
 Skirmish mode remains separate through the `Skirmish` button.
 
@@ -166,7 +178,7 @@ After victory, the Results screen summarizes the map, difficulty, battle time, X
 
 Using Equip Now equips the earned item instance, saves the updated hero equipment, and recalculates stats. Leaving the screen without equipping keeps the instance in inventory. Campaign node item rewards are claimed once. If a unique reward is already owned, the reward converts into campaign Crowns or Aether and the Results screen shows the conversion.
 
-Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Marcher Camp spends from it now; later shops, mercenaries, repairs, upgrades, and stronghold development should use the same bank.
+Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Marcher Camp and Stronghold Development spend from it now; later shops, mercenaries, repairs, and broader upgrades should use the same bank.
 
 ## Controls
 
@@ -190,7 +202,8 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Settings screen for audio, reduced motion, floating text, UI scale, fog override, colorblind minimap colors, and keyboard controls.
 - Lightweight generated WebAudio cues for UI clicks, selection, build start/complete, unit trained, ability cast, victory, and defeat. Audio fails silently when the browser or test environment blocks it.
 - Eight-node campaign skeleton with locked, available, completed, town-service, and choice-driven node states.
-- Persistent campaign resource bank for node rewards, event choice costs, and Marcher Camp services.
+- Persistent campaign resource bank for node rewards, event choice costs, Marcher Camp services, and Stronghold upgrades.
+- Stronghold Development panel with five data-driven persistent upgrades: Training Yard I, Watch Post I, Quartermaster Stores I, Chapel Corner I, and Ranger Paths I.
 - Hero inventory screen from the main menu.
 - Asset gallery for checking manual/final/placeholder art.
 - Three hero classes: Warlord, Arcanist, Shepherd.
@@ -224,7 +237,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Movement uses a coarse A* pathfinding grid plus local separation. It is not formation-aware or flow-field based yet.
 - Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
 - Workers, retinue persistence, broad vendors, and diplomacy are postponed.
-- Campaign is a skeleton only: Marcher Camp proves one tiny town/shop sink, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
+- Campaign is a skeleton only: Marcher Camp and Stronghold Development prove small resource sinks, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
 - Balance is prototype-only and expected to change often.
@@ -240,6 +253,7 @@ Good next prompts are specific and small. Examples:
 - "Split ResultsScene into smaller reward, campaign-return, and item-comparison helpers."
 - "Split maps.ts into one file per map without changing map behavior."
 - "Add randomized item affixes on top of the item instance model."
+- "Add the second Stronghold tier with one new prerequisite chain and no new battle mechanics."
 - "Improve formation movement and dynamic path blockers without changing combat balance."
 - "Add worker builders on top of the automatic construction system."
 - "Add a respec button to the hero progression screen."

@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
+import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import { CaptureSite } from "../entities/CaptureSite";
 import { Hero } from "../entities/Hero";
@@ -102,6 +103,7 @@ function spawnUnit(options: {
 }
 
 function applyHeroLaunchModifiers(hero: Hero, launch: ResolvedBattleLaunch): void {
+  const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
   const manaMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroManaMultiplier ?? multiplier);
@@ -109,7 +111,7 @@ function applyHeroLaunchModifiers(hero: Hero, launch: ResolvedBattleLaunch): voi
   const hpMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroMaxHpMultiplier ?? multiplier);
-  }, 1);
+  }, strongholdEffects.heroMaxHpMultiplier);
   if (hpMultiplier > 1) {
     hero.maxHp = Math.round(hero.maxHp * hpMultiplier);
     hero.hp = hero.maxHp;
@@ -128,12 +130,14 @@ function spawnLaunchModifierUnits(options: {
   addUnit: (unit: Unit) => void;
 }): void {
   const { scene, activeMap, launch, addUnit } = options;
+  let playerExtraCount = 0;
   launch.request.modifiers.forEach((modifier, modifierIndex) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     if (!definition) {
       return;
     }
     definition.effects.extraPlayerUnitIds?.forEach((unitId, index) => {
+      playerExtraCount += 1;
       spawnUnit({
         scene,
         addUnit,
@@ -152,6 +156,16 @@ function spawnLaunchModifierUnits(options: {
         x: activeMap.enemyStart.x - 92 - index * 34,
         y: activeMap.enemyStart.y + 72 + modifierIndex * 24
       });
+    });
+  });
+  getStrongholdBattleEffects(launch.request.modifiers).extraPlayerUnitIds.forEach((unitId, index) => {
+    spawnUnit({
+      scene,
+      addUnit,
+      unitId,
+      team: "player",
+      x: activeMap.playerStart.x + 92 + (playerExtraCount + index) * 34,
+      y: activeMap.playerStart.y + 96
     });
   });
 }

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-04-30 21:13 -04:00
+Last updated: 2026-05-01 20:51 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,9 +14,9 @@ The current playable loop:
 2. Enter the Border Marches mini-campaign or a standalone skirmish.
 3. Play an RTS battle with hero abilities, capture sites, construction, training queues, upgrades, rally points, pathfinding, fog of war, live minimap, and enemy pressure waves.
 4. Resolve victory or defeat through the shared Results scene.
-5. Persist hero XP, skill points, inventory item instances, equipment, campaign node progress, event choices, town purchases, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
+5. Persist hero XP, skill points, inventory item instances, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is still a prototype, but it now has a broad playable RTS/RPG spine. The worktree is dirty with useful in-progress changes. Do not reset, delete, checkout, or revert them unless the user explicitly asks.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. The latest checkpoint before this feature was committed and pushed. The current dirty worktree is intentional and contains useful in-progress work: documentation consolidation, the HUD and content-validation splits, and the first Stronghold Development feature. Preserve it. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
 ## Current Git State
 
@@ -35,75 +35,59 @@ main
 Current HEAD:
 
 ```text
-06085916752aede8be67894b0ba47a0bdae5ac82
+b952cbee2a214d9958cfedf56069d5fecb55ca67
+```
+
+Latest commits:
+
+```text
+b952cbe Update development checkpoint metadata
+5c97980 Checkpoint automated playtest coverage and first campaign polish
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Browser Use was used in the latest pass against the rebuilt production preview at `http://127.0.0.1:4177/`; the rebuilt preview showed the Ascendant Realms main menu heading and New Campaign button with browser console errors at 0 after the Ashen landmark/fog coverage pass. Playwright e2e remains the deterministic browser verification surface.
+- Latest Browser Use sanity checks are historical from the 2026-04-30 polish pass: the rebuilt production preview at `http://127.0.0.1:4177/` showed the Ascendant Realms main menu heading and New Campaign button with browser console errors at 0, and later visible First Claim checks verified the tutorial prompt polish. Playwright e2e remains the deterministic browser verification surface.
 
-Current dirty files at this handoff update time:
+Current branch status at this handoff update time:
 
 ```text
- M .gitignore
+## main...origin/main
  M BALANCE.md
+ M CONTENT_GUIDE.md
+ M DESIGN.md
  M LLM_GAME_HANDOFF.md
+ M PLAYTEST_TELEMETRY.json
+ M PLAYTEST_TELEMETRY.md
  M QA_RUN.md
- M package.json
- M src/game/ai/EnemyAIController.test.ts
- M src/game/ai/EnemyAIController.ts
- M src/game/battle/BattleSceneObjectives.ts
- M src/game/battle/BattleSceneResults.ts
+ M README.md
+ M ROADMAP.md
+ M src/game/battle/BattleRuntime.test.ts
+ M src/game/battle/BattleRuntime.ts
  M src/game/battle/BattleSceneSpawner.ts
- M src/game/battle/BattleSceneSystems.ts
- M src/game/core/CampaignRules.test.ts
- M src/game/core/FirstExperienceGuidance.ts
- M src/game/core/GameTypes.ts
- M src/game/core/ResultsFlow.test.ts
- M src/game/core/ResultsFlow.ts
- M src/game/data/aiPersonalities.ts
- M src/game/data/battlePacing.test.ts
- M src/game/data/battlePacing.ts
- M src/game/data/campaignModifiers.test.ts
- M src/game/data/campaignModifiers.ts
- M src/game/data/campaignNodes.ts
- M src/game/data/maps/ashenOutpost.ts
- M src/game/data/maps/firstClaim.ts
- M src/game/results/ResultsEquipActions.ts
- M src/game/results/ResultsNavigation.ts
- M src/game/results/ResultsObjectiveSummary.ts
- M src/game/results/ResultsRewardPanel.ts
- M src/game/results/ResultsViewModel.test.ts
- M src/game/results/ResultsViewModel.ts
+ M src/game/core/SaveSystem.test.ts
+ M src/game/data/contentValidation.ts
+ M src/game/playtest/ScriptedBattlePlaytest.test.ts
+ M src/game/playtest/ScriptedBattlePlaytest.ts
+ M src/game/save/SaveDefaults.ts
+ M src/game/save/SaveNormalization.ts
+ M src/game/save/SaveTypes.ts
  M src/game/scenes/BattleScene.ts
- M src/game/scenes/HeroProgressionScene.ts
- M src/game/scenes/ResultsScene.ts
- M src/game/styles/battle-feedback.css
- M src/game/styles/battle-hud.css
- M src/game/styles/responsive.css
- M src/game/systems/AbilitySystem.ts
- M src/game/systems/BuildingSystem.ts
- M src/game/systems/CombatSystem.ts
- M src/game/systems/FogOfWarSystem.test.ts
- M src/game/systems/FogOfWarSystem.ts
- M src/game/systems/InputSystem.ts
- M src/game/systems/UISystem.ts
+ M src/game/scenes/CampaignMapScene.ts
+ M src/game/styles/campaign.css
+ M src/game/types/CampaignTypes.ts
  M src/game/ui/HUD.ts
  M tests/e2e/deep-flow.spec.ts
- M tests/e2e/layout.spec.ts
- M tests/e2e/smoke.spec.ts
-?? PLAYTEST_TELEMETRY.json
-?? PLAYTEST_TELEMETRY.md
-?? src/game/battle/SecondaryObjectiveEffects.test.ts
-?? src/game/battle/SecondaryObjectiveEffects.ts
-?? src/game/playtest/
-?? src/game/systems/CombatSystem.test.ts
-?? src/game/types/
-?? src/game/ui/UnitOrderSummary.test.ts
-?? src/game/ui/UnitOrderSummary.ts
-?? tools/runPlaytestSim.ts
+?? src/game/campaign/StrongholdPanel.ts
+?? src/game/core/StrongholdRules.test.ts
+?? src/game/core/StrongholdRules.ts
+?? src/game/data/strongholdUpgrades.ts
+?? src/game/data/validation/
+?? src/game/ui/hudPanels/
 ```
+
+`main` and `origin/main` were synced at commit `b952cbee2a214d9958cfedf56069d5fecb55ca67` before the current dirty work. The local branch is now ahead of that clean checkpoint only by uncommitted changes; nothing in the current feature has been committed yet.
 
 ## Commands
 
@@ -129,30 +113,35 @@ Notes:
 
 - `npm run test:e2e` starts Vite through Playwright.
 - The e2e suite intentionally uses one worker for stability.
-- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 13.3 minutes.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 13.7 minutes.
 - `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Fresh verification completed after the Ashen Outpost landmark/fog coverage pass on 2026-04-30 at about 19:24 -04:00:
+Fresh verification completed for the current Stronghold Development and automated Stronghold playtest worktree on 2026-05-01 at about 20:51 -04:00:
 
 ```text
 npm test
-PASS: 29 test files, 140 tests
+PASS: 32 test files, 157 tests
 
 npm run build
 PASS: TypeScript compile and Vite production build
-Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold
+Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 38 Playwright tests in 13.3m
+PASS: 39 Playwright tests in 13.7m. This suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: last regenerated telemetry still has 15 runs across 5 campaign battle nodes; no structural too-hard nodes; Ashen Outpost beatable: yes
+PASS: regenerated telemetry has 60 runs across 5 campaign battle nodes and 4 Stronghold profiles; no structural too-hard nodes; Ashen Outpost beatable: yes; Stronghold warnings are Watch Post I and Quartermaster Stores I not improving deterministic outcomes.
 
 Browser Use sanity
-PASS: rebuilt production preview rendered at http://127.0.0.1:4177/ with main menu heading and New Campaign button visible, plus 0 browser console errors after the final build
+Not rerun for the simulator-only follow-up. Latest recorded successful Browser Use production-preview sanity remains from 2026-04-30: http://127.0.0.1:4177/ rendered with the main menu heading and New Campaign button visible, plus 0 browser console errors after that build.
 ```
+
+Focused Stronghold verification on 2026-05-01:
+
+- `npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts`: passed, 4 test files and 42 tests.
+- `npm run test:e2e -- --reporter=line -g "stronghold upgrades"`: passed, 1 Playwright test.
 
 Recent targeted checks also passed:
 
@@ -227,10 +216,117 @@ npm run test:e2e -- --reporter=line -g "first campaign battle path"
 PASS: 1 Playwright test
 
 npm run test:e2e -- --reporter=line -g "Ashen Outpost special objectives"
-PASS: 1 Playwright test after immediate objective-HUD refresh
+PASS: 1 Playwright test; the final full-suite run also passes after targeting the visible completed objectives panel
 ```
 
 ## Most Recent Completed Work
+
+### Automated Stronghold Playtest Profiles
+
+Goal: update the deterministic playtest simulator so Stronghold Development is represented in baseline and upgraded campaign-battle paths without adding gameplay or changing live balance values.
+
+Files touched by this follow-up:
+
+- `src/game/playtest/ScriptedBattlePlaytest.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.test.ts`
+- `PLAYTEST_TELEMETRY.md`
+- `PLAYTEST_TELEMETRY.json`
+- `BALANCE.md`
+- `tests/e2e/deep-flow.spec.ts`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added four simulator profiles: No Stronghold upgrades, Training Yard path, Defensive Watch Post path, and Economy Quartermaster path.
+- Each profile now runs Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost through the existing Safe Beginner, Greedy Economy, and Fast Army scripts, for 60 deterministic runs total.
+- Added a conservative simulated campaign bank for profile purchases. It buys each profile's target upgrade only when prior campaign-node rewards can afford it, then records purchase notes and the upgrades active for that node.
+- Extended telemetry with Stronghold profile ID/name, target upgrades, purchased upgrades, purchase notes, starting unit counts after upgrade effects, starting resources after upgrade effects, battle result, duration, first-wave survival, resources floated, objective completion, and rewards.
+- Updated analyzer output with per-profile records, first purchase node, improved-run counts, too-expensive warnings, useless-upgrade warnings, and overpowered/trivialization warnings.
+- Regenerated `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` as schema version 2.
+- Current telemetry says no structural `too_hard` nodes. Training Yard I improves Ashen Outpost from 1 win / 2 non-wins to 2 wins / 1 non-win in the profile record. Watch Post I and Quartermaster Stores I are flagged as not improving deterministic outcomes. No tested path is too expensive or overpowered.
+- Updated `BALANCE.md` with the early Stronghold simulator read and left live balance values unchanged.
+- Hardened one existing Ashen objective e2e assertion to target the visible completed objectives panel after a full-suite stale-HUD-locator failure; the focused test and final full e2e run both pass.
+
+Verification passed after this follow-up:
+
+```text
+npm test
+PASS: 32 test files, 157 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 39 Playwright tests in 13.7m
+
+npm run playtest:sim
+PASS: 60 simulated runs across 20 profile-node summaries, no structural too-hard nodes
+```
+
+### Stronghold Development V1
+
+Goal: add a small, data-driven persistent campaign-resource sink that improves future battles without turning the campaign layer into a city builder.
+
+Files touched by this feature:
+
+- `src/game/data/strongholdUpgrades.ts`
+- `src/game/core/StrongholdRules.ts`
+- `src/game/campaign/StrongholdPanel.ts`
+- `src/game/types/CampaignTypes.ts`
+- `src/game/save/SaveTypes.ts`
+- `src/game/save/SaveDefaults.ts`
+- `src/game/save/SaveNormalization.ts`
+- `src/game/battle/BattleRuntime.ts`
+- `src/game/battle/BattleSceneSpawner.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/scenes/CampaignMapScene.ts`
+- `src/game/styles/campaign.css`
+- `src/game/data/validation/validateStronghold.ts`
+- `src/game/core/StrongholdRules.test.ts`
+- `src/game/core/SaveSystem.test.ts`
+- `src/game/battle/BattleRuntime.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `DESIGN.md`
+- `BALANCE.md`
+- `CONTENT_GUIDE.md`
+- `README.md`
+- `ROADMAP.md`
+- `LLM_GAME_HANDOFF.md`
+
+What changed:
+
+- Added a Stronghold panel to the Campaign Map below the campaign bank.
+- Added five data-driven upgrades: Training Yard I, Watch Post I, Quartermaster Stores I, Chapel Corner I, and Ranger Paths I.
+- Purchases spend campaign Crowns, Stone, Iron, and Aether, record `resourcesSpent`, persist in `campaign.strongholdUpgradeRanks`, and cannot be repeated past `maxRank`.
+- Save normalization now safely migrates legacy `strongholdUpgradeIds` arrays into rank 1 purchases and filters unknown upgrade IDs.
+- Battle launches now convert purchased Stronghold upgrades into non-consumable launch modifiers.
+- Implemented effects: extra starting Militia, extra starting Ranger, extra starting Crowns/Stone, +5% hero max HP, and +80 player-building vision radius.
+- Added content validation for Stronghold upgrade IDs, costs, prerequisites, unit references, resource references, and effect values.
+- Added pure tests for affordability, duplicate purchase prevention, prerequisites, resource spending, save/load normalization, and battle-launch effect aggregation.
+- Added Playwright coverage that seeds campaign resources, buys Training Yard I, launches Border Village, and verifies the extra starting Militia.
+- No workers, enemy construction, diplomacy, new maps, randomized affixes, or broad city-builder systems were added.
+
+Verification already passed:
+
+```text
+npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts
+PASS: 4 test files, 42 tests
+
+npm test
+PASS: 32 test files, 157 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line -g "stronghold upgrades"
+PASS: 1 Playwright test
+
+npm run test:e2e -- --reporter=line
+PASS: 39 Playwright tests in 13.7m
+
+npm run playtest:sim
+PASS: 60 simulated runs across 20 profile-node summaries
+```
 
 ### Ashen Outpost Landmark Fog Coverage
 
@@ -739,7 +835,7 @@ But `src/game/core/SaveSystem.ts` is now a small compatibility re-export:
 export * from "../save/SaveSystem";
 ```
 
-New focused save modules are untracked in the dirty worktree:
+Focused save modules added before the latest checkpoint:
 
 - `src/game/save/SaveDefaults.ts`
 - `src/game/save/SaveImportExport.ts`
@@ -759,7 +855,7 @@ This helper owns constructor ordering and callback wiring between systems. `Batt
 
 ### Battle HUD And Responsive Polish
 
-Recent dirty changes also include battle HUD and responsive updates:
+The checkpoint also includes battle HUD and responsive updates:
 
 - `src/game/styles/battle-hud.css`
 - `src/game/styles/responsive.css`
@@ -1240,16 +1336,16 @@ Battle helpers live in `src/game/battle/`:
 - `BattleSceneSpawner.ts`
 - `BattleSceneSystems.ts`
 
-Several battle helpers are modified in the current dirty tree and should be preserved.
+Several battle helpers changed during the latest checkpoint and are now committed. Preserve any future dirty edits unless the user explicitly asks for a reset or revert.
 
 ## Current Tests
 
-Latest verified suite status, refreshed during the 2026-04-30 19:24 -04:00 Ashen Outpost landmark/fog update:
+Latest verified suite status, refreshed during the 2026-05-01 Stronghold simulator follow-up:
 
-- `npm test`: passed, 29 test files, 140 tests.
-- `npm run build`: passed.
-- `npm run test:e2e -- --reporter=line`: passed, 38 Playwright tests in 13.3m.
-- `npm run playtest:sim`: passed, 15 simulated runs across 5 campaign battle nodes, with no structural `too_hard` nodes.
+- `npm test`: passed, 32 test files, 157 tests.
+- `npm run build`: passed with the known Vite large-chunk warning, which is not a failure.
+- `npm run test:e2e -- --reporter=line`: passed, 39 Playwright tests in 13.7m. Use a long timeout.
+- `npm run playtest:sim`: passed, 60 simulated runs across 20 profile-node summaries, with no structural `too_hard` nodes and Stronghold usefulness warnings for Watch Post I and Quartermaster Stores I.
 
 Current unit/pure test files:
 
@@ -1263,6 +1359,7 @@ Current unit/pure test files:
 - `src/game/core/HeroProgressionRules.test.ts`
 - `src/game/core/ResultsFlow.test.ts`
 - `src/game/core/SaveSystem.test.ts`
+- `src/game/core/StrongholdRules.test.ts`
 - `src/game/data/aiPersonalities.test.ts`
 - `src/game/data/battlePacing.test.ts`
 - `src/game/data/campaignModifiers.test.ts`
@@ -1282,6 +1379,7 @@ Current unit/pure test files:
 - `src/game/systems/UpgradeSystem.test.ts`
 - `src/game/ui/MinimapView.test.ts`
 - `src/game/ui/UnitOrderSummary.test.ts`
+- `src/game/ui/hudPanels/HudFormatting.test.ts`
 
 Current e2e files:
 
@@ -1295,6 +1393,7 @@ Browser-level tests currently cover:
 - Settings persistence, including floating text, reduced motion, fog override, colorblind minimap persistence, and rendered player/enemy colorblind minimap colors.
 - Hero creation.
 - Campaign map and locked-node behavior.
+- Stronghold panel purchase flow, resource spending, save persistence, prerequisite lock text, and Training Yard I battle-launch effect.
 - Border Village battle launch.
 - First enemy wave pressure, Command Hall damage alerts, and wave-survival bookkeeping.
 - Campaign choices, including Refugee Caravan Demand/Protect/Recruit, Chapel guidance/repair/pray, and Marcher Camp services/purchases.
@@ -1466,12 +1565,14 @@ Known issues and caveats:
 - Full e2e is slow and can exceed short shell-tool timeouts.
 - Full human-paced battle victory/defeat through normal input remains manual.
 - Balance remains prototype-level and needs human playtesting after each larger AI/map/economy change.
+- Automated Stronghold telemetry currently flags Watch Post I and Quartermaster Stores I as not improving deterministic outcomes; treat that as a human feel/readability review prompt before changing costs or effects.
 - `QA_RUN.md` contains earlier manual QA notes; latest automated verification counts in this handoff are newer.
 
 ## Current Known Limitations
 
 - Campaign is a mini-campaign skeleton, not a full strategic layer.
-- No broad vendor economy, mercenaries, repairs, stronghold development, diplomacy, invasions, or world simulation beyond Marcher Camp and compact event choices.
+- Stronghold Development is a first small persistent-upgrade slice, not a broad city-builder.
+- No broad vendor economy, mercenaries, repairs, diplomacy, invasions, or world simulation beyond Marcher Camp, Stronghold upgrades, and compact event choices.
 - Event choices are compact cards, not a dialogue engine.
 - `recoverHero` is a placeholder reward effect.
 - Item instances exist, but randomized affixes, crafting, durability, and full item-icon presentation are not implemented.
@@ -1489,34 +1590,40 @@ Known issues and caveats:
 
 Current rough line counts:
 
-- `src/game/data/contentValidation.ts`: 973 lines.
-- `src/game/scenes/BattleScene.ts`: 862 lines.
-- `src/game/core/HeroProgressionRules.ts`: 528 lines.
-- `src/game/ui/HUD.ts`: 581 lines.
-- `src/game/core/CampaignRules.ts`: 433 lines.
-- `src/game/core/SaveSystem.test.ts`: 409 lines.
-- `src/game/systems/PathfindingGrid.ts`: 397 lines.
-- `src/game/battle/BattleSceneSystems.ts`: 355 lines.
-- `src/game/ai/EnemyAIController.ts`: 352 lines.
-- `src/game/data/campaignNodes.ts`: 310 lines.
-- `src/game/scenes/CampaignMapScene.ts`: 291 lines.
-- `src/game/data/aiPersonalities.ts`: 288 lines.
-- `src/game/types/CombatTypes.ts`: 221 lines.
-- `src/game/types/MapTypes.ts`: 132 lines.
-- `src/game/types/ItemTypes.ts`: 92 lines.
-- `src/game/types/HeroTypes.ts`: 85 lines.
-- `src/game/types/CampaignTypes.ts`: 83 lines.
+- `src/game/playtest/ScriptedBattlePlaytest.ts`: 1567 lines.
+- `src/game/scenes/BattleScene.ts`: 795 lines.
+- `src/game/core/HeroProgressionRules.ts`: 484 lines.
+- `src/game/core/CampaignRules.ts`: 404 lines.
+- `src/game/core/SaveSystem.test.ts`: 376 lines.
+- `src/game/systems/PathfindingGrid.ts`: 354 lines.
+- `src/game/battle/BattleSceneSystems.ts`: 339 lines.
+- `src/game/ai/EnemyAIController.ts`: 316 lines.
+- `src/game/data/campaignNodes.ts`: 309 lines.
+- `src/game/scenes/CampaignMapScene.ts`: 287 lines.
+- `src/game/data/aiPersonalities.ts`: 279 lines.
+- `src/game/scenes/HeroProgressionScene.ts`: 268 lines.
+- `src/game/types/CombatTypes.ts`: 200 lines.
+- `src/game/data/strongholdUpgrades.ts`: 137 lines.
+- `src/game/types/MapTypes.ts`: 118 lines.
+- `src/game/types/CampaignTypes.ts`: 113 lines.
+- `src/game/core/StrongholdRules.ts`: 112 lines.
+- `src/game/types/ItemTypes.ts`: 80 lines.
+- `src/game/campaign/StrongholdPanel.ts`: 79 lines.
+- `src/game/ui/HUD.ts`: 72 lines.
+- `src/game/data/validation/validateContent.ts`: 67 lines.
 - `src/game/core/GameTypes.ts`: 1 line.
-- `src/game/scenes/HeroProgressionScene.ts`: 286 lines.
+- `src/game/data/contentValidation.ts`: 1 line.
 
 Risk notes:
 
 - `BattleScene` is smaller than before but still the highest live-scene integration risk.
+- `ScriptedBattlePlaytest.ts` is now the largest file because it carries deterministic strategies, Stronghold profile planning, telemetry rendering, and analyzer logic; keep future simulator additions focused and tested.
 - `GameTypes.ts` is no longer a large risk file; it is a 1-line compatibility barrel over focused modules.
 - `HeroProgressionRules.ts` mixes skills, equipment, reward, XP, duplicate conversion, and stat math.
 - `CampaignRules.ts` joins node completion, costs/rewards, modifiers, town services, and reward claims.
-- `HUD.ts` is still a concentrated battle UI surface.
-- `contentValidation.ts` is valuable but has become a catch-all validator.
+- `HUD.ts` has been reduced to a facade over focused HUD panel modules; selectors and behavior should still be treated as fragile.
+- `contentValidation.ts` is now a compatibility export over focused validators; the validation domain remains important even though the old catch-all file is gone.
+- `StrongholdRules`, `strongholdUpgrades`, and `StrongholdPanel` are new and covered, but should stay small until human campaign-economy feel is checked.
 
 ## Most Fragile Systems
 
@@ -1542,66 +1649,67 @@ Run this before a checkpoint commit after gameplay/UI changes:
 6. Create Warlord, Arcanist, and Shepherd at least once.
 7. Campaign map opens after creation.
 8. Campaign bank, reputation, and active modifiers display.
-9. Border Village is available and locked nodes cannot start.
-10. Border Village launches First Claim.
-11. Select hero with click and `H`.
-12. Move units with right-click.
-13. Capture Crown Shrine.
-14. Select Command Hall.
-15. Place Barracks and verify valid/invalid placement reasons.
-16. Barracks appears under construction and cannot train until complete.
-17. Completed Barracks trains Militia and Ranger.
-18. Queue progress displays and cancel/refund works.
-19. Set Barracks rally point and verify marker plus trained-unit movement.
-20. Build Mystic Lodge and train Acolyte.
-21. Build Watchtower and verify it attacks.
-22. Research all current upgrades through UI.
-23. Verify locked train/upgrade buttons show reasons.
-24. Use hero ability hotkeys.
-25. Verify audio cues with human ears.
-26. Verify floating text and reduced motion visually.
-27. Verify fog hides unexplored/undetected entities.
-28. Press `F` on fog-enabled difficulty and verify fog debug.
-29. Verify settings fog override changes battle fog behavior.
-30. Verify minimap units/buildings/sites/camera/rally/pings and colorblind palette.
-31. Survive or lose the first wave through normal play.
-32. Defeat screen shows contextual tips and retry/campaign return.
-33. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, node rewards, and campaign bank.
-34. Equip Now changes stats and persists after leaving Results.
-35. Campaign victory completes Border Village and unlocks Old Stone Road.
-36. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
-37. Marcher Camp repeatable services, once-only purchases, costs, locked reasons, and save persistence work.
-38. Refugee Caravan choices and reputation/resource effects work.
-39. Chapel choices work, especially non-completing guidance.
-40. Campaign node rewards cannot be claimed repeatedly.
-41. Skirmish Setup opens separately.
-42. First Claim, Broken Ford, and Ashen Outpost launch from skirmish.
-43. Ashen Outpost shows fortress layout, Burned Shrine, side resources, neutral camps, and defensive towers.
-44. Ashen Outpost Results show special objective completion states.
-45. Difficulty selection changes pacing/fog behavior.
-46. AI personality selection changes displayed style and launches without errors.
-47. Hero Inventory opens from main menu.
-48. Equipping/unequipping items changes hero stats.
-49. Skill point spending persists.
-50. Asset Gallery opens.
-51. Browser console has no new hard errors.
-52. Production build preview boots if doing release-style QA.
+9. Stronghold panel displays resources, purchased/locked/available states, costs, effects, and purchase buttons.
+10. Buy Training Yard I from a resource-seeded campaign and verify the next launched battle starts with one extra Militia.
+11. Border Village is available and locked nodes cannot start.
+12. Border Village launches First Claim.
+13. Select hero with click and `H`.
+14. Move units with right-click.
+15. Capture Crown Shrine.
+16. Select Command Hall.
+17. Place Barracks and verify valid/invalid placement reasons.
+18. Barracks appears under construction and cannot train until complete.
+19. Completed Barracks trains Militia and Ranger.
+20. Queue progress displays and cancel/refund works.
+21. Set Barracks rally point and verify marker plus trained-unit movement.
+22. Build Mystic Lodge and train Acolyte.
+23. Build Watchtower and verify it attacks.
+24. Research all current upgrades through UI.
+25. Verify locked train/upgrade buttons show reasons.
+26. Use hero ability hotkeys.
+27. Verify audio cues with human ears.
+28. Verify floating text and reduced motion visually.
+29. Verify fog hides unexplored/undetected entities.
+30. Press `F` on fog-enabled difficulty and verify fog debug.
+31. Verify settings fog override changes battle fog behavior.
+32. Verify minimap units/buildings/sites/camera/rally/pings and colorblind palette.
+33. Survive or lose the first wave through normal play.
+34. Defeat screen shows contextual tips and retry/campaign return.
+35. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, node rewards, and campaign bank.
+36. Equip Now changes stats and persists after leaving Results.
+37. Campaign victory completes Border Village and unlocks Old Stone Road.
+38. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
+39. Marcher Camp repeatable services, once-only purchases, costs, locked reasons, and save persistence work.
+40. Refugee Caravan choices and reputation/resource effects work.
+41. Chapel choices work, especially non-completing guidance.
+42. Campaign node rewards cannot be claimed repeatedly.
+43. Skirmish Setup opens separately.
+44. First Claim, Broken Ford, and Ashen Outpost launch from skirmish.
+45. Ashen Outpost shows fortress layout, Burned Shrine, side resources, neutral camps, and defensive towers.
+46. Ashen Outpost Results show special objective completion states.
+47. Difficulty selection changes pacing/fog behavior.
+48. AI personality selection changes displayed style and launches without errors.
+49. Hero Inventory opens from main menu.
+50. Equipping/unequipping items changes hero stats.
+51. Skill point spending persists.
+52. Asset Gallery opens.
+53. Browser console has no new hard errors.
+54. Production build preview boots if doing release-style QA.
 
 ## Recommended Next Priorities
 
-1. Ask the user whether to checkpoint/commit the current dirty worktree before more feature work.
-2. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
-3. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
-4. Play Ashen Outpost with and without Chapel repair to validate fortress pressure.
-5. Do a human-paced Ashen assault with fog on, especially final approach/tower readability and whether the upper-left objective panel placement feels good across a full fight.
-6. Continue reducing `BattleScene` only in small, behavior-preserving slices.
-7. Consider splitting `contentValidation.ts` only after a checkpoint, because it remains a central conflict/risk file.
-8. Do not add enemy construction, workers, affixes, or new campaign systems until the current mini-campaign balance is human-tested.
-9. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+1. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
+2. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
+3. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, final approach readability, tower pressure, and upper-left objective-panel placement across a full fight.
+4. Human-review Watch Post I and Quartermaster Stores I in actual fog/build-order play before changing Stronghold costs or effects; the deterministic simulator currently flags both as not improving outcomes.
+5. Pick the next game-design direction as campaign depth, a second small Stronghold tier, or stronger node consequences. Do not move into workers or enemy construction yet.
+6. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `HeroProgressionRules`, and `CampaignRules`.
+7. Continue reducing `BattleScene` and `contentValidation.ts` only in small, behavior-preserving slices after checkpoints.
+8. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
-- Preserve current dirty work unless explicitly told to reset/revert.
+- Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current docs-only consolidation edits are intentional.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - Add or update tests for persistent save fields and data contracts.

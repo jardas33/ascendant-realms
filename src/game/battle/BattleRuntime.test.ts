@@ -45,6 +45,20 @@ describe("BattleRuntime", () => {
     expect(testMap.scenario.startingResources.player.crowns).toBe(380);
   });
 
+  it("applies stronghold starting resource modifiers at launch", () => {
+    const launch = requireBattleLaunch(
+      createSkirmishBattleLaunchRequest(testHeroSave, {
+        mapId: testMap.id,
+        sourceId: "runtime_test",
+        modifiers: [{ id: "stronghold:quartermaster_stores_i" }]
+      })
+    );
+    const runtime = createBattleRuntime({ launch });
+
+    expect(runtime.resources.player.crowns).toBe(testMap.scenario.startingResources.player.crowns + 50);
+    expect(runtime.resources.player.stone).toBe(testMap.scenario.startingResources.player.stone + 30);
+  });
+
   it("keeps objective resolution compatible with current skirmish rules", () => {
     expect(evaluateBattleObjectives({ playerBaseAlive: true, enemyBaseAlive: true })).toBeUndefined();
     expect(evaluateBattleObjectives({ playerBaseAlive: true, enemyBaseAlive: false })).toBe("victory");

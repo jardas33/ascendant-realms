@@ -5,6 +5,7 @@ import type {
   EnemyAIPersonalityId,
   Position,
   ResourceBag,
+  StrongholdUpgradeId,
   UnitDefinition
 } from "../core/GameTypes";
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
@@ -31,15 +32,40 @@ import {
   requireUnit,
   requireUpgrade
 } from "../data/contentIndex";
+import {
+  STRONGHOLD_UPGRADE_BY_ID,
+  getStrongholdBattleEffects,
+  strongholdLaunchModifierId
+} from "../data/strongholdUpgrades";
 import type { HeroSaveData } from "../save/SaveTypes";
 
 export type PlaytestScriptId = "safe_beginner" | "greedy_economy" | "fast_army";
 export type PlaytestResult = "victory" | "defeat" | "timeout";
 export type PlaytestFindingSeverity = "info" | "watch" | "risk";
+export type PlaytestStrongholdProfileId =
+  | "no_stronghold"
+  | "training_yard_path"
+  | "defensive_watch_post_path"
+  | "economy_quartermaster_path";
 
 export interface PlaytestScenarioDefinition {
   nodeId: string;
   expectedDifficulty: BattleDifficulty;
+}
+
+export interface PlaytestStrongholdProfileDefinition {
+  id: PlaytestStrongholdProfileId;
+  name: string;
+  description: string;
+  targetUpgradeIds: StrongholdUpgradeId[];
+}
+
+interface PlaytestStrongholdNodePlan {
+  profileId: PlaytestStrongholdProfileId;
+  profileName: string;
+  targetUpgradeIds: StrongholdUpgradeId[];
+  purchasedUpgradeIds: StrongholdUpgradeId[];
+  purchaseNotes: string[];
 }
 
 export interface PlaytestRewardTelemetry {
@@ -52,6 +78,11 @@ export interface PlaytestRewardTelemetry {
 }
 
 export interface PlaytestTelemetry {
+  strongholdProfileId: PlaytestStrongholdProfileId;
+  strongholdProfileName: string;
+  strongholdTargetUpgradeIds: StrongholdUpgradeId[];
+  strongholdUpgradeIds: StrongholdUpgradeId[];
+  strongholdPurchaseNotes: string[];
   nodeId: string;
   nodeName: string;
   mapId: string;
@@ -60,6 +91,8 @@ export interface PlaytestTelemetry {
   playerScript: PlaytestScriptId;
   battleResult: PlaytestResult;
   battleDurationSeconds: number;
+  startingUnits: Record<string, number>;
+  startingResources: ResourceBag;
   timeFirstSiteCaptured: number | null;
   timeBarracksPlaced: number | null;
   timeBarracksCompleted: number | null;
@@ -84,6 +117,8 @@ export interface PlaytestTelemetry {
 }
 
 export interface PlaytestNodeSummary {
+  strongholdProfileId: PlaytestStrongholdProfileId;
+  strongholdProfileName: string;
   nodeId: string;
   nodeName: string;
   mapId: string;
@@ -99,6 +134,19 @@ export interface PlaytestNodeSummary {
   notes: string[];
 }
 
+export interface PlaytestStrongholdProfileSummary {
+  profileId: PlaytestStrongholdProfileId;
+  profileName: string;
+  targetUpgradeIds: StrongholdUpgradeId[];
+  purchasedUpgradeIds: StrongholdUpgradeId[];
+  victories: number;
+  defeats: number;
+  timeouts: number;
+  improvedRuns: number;
+  firstPurchaseNodeId: string | null;
+  warnings: string[];
+}
+
 export interface PlaytestAnalysis {
   tooEasyNodes: string[];
   tooHardNodes: string[];
@@ -109,12 +157,14 @@ export interface PlaytestAnalysis {
   usefulRewardNodes: string[];
   weakRewardNodes: string[];
   ashenOutpostBeatable: boolean;
+  strongholdWarnings: string[];
   suggestedTuningChanges: string[];
+  strongholdProfileSummaries: PlaytestStrongholdProfileSummary[];
   nodeSummaries: PlaytestNodeSummary[];
 }
 
 export interface PlaytestReport {
-  schemaVersion: 1;
+  schemaVersion: 2;
   generatedBy: string;
   telemetry: PlaytestTelemetry[];
   analysis: PlaytestAnalysis;
@@ -165,6 +215,8 @@ interface BattleDriverState {
   result: PlaytestResult;
   commandLog: string[];
   notes: string[];
+  strongholdPlan: PlaytestStrongholdNodePlan;
+  heroMaxHpMultiplier: number;
   telemetry: Omit<
     PlaytestTelemetry,
     | "battleDurationSeconds"
@@ -194,18 +246,48 @@ export const DEFAULT_PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = BATTLE_N
 
 export const DEFAULT_PLAYTEST_SCRIPTS: PlaytestScriptId[] = ["safe_beginner", "greedy_economy", "fast_army"];
 
+export const DEFAULT_PLAYTEST_STRONGHOLD_PROFILES: PlaytestStrongholdProfileDefinition[] = [
+  {
+    id: "no_stronghold",
+    name: "No Stronghold upgrades",
+    description: "Baseline campaign battles with no persistent Stronghold purchases.",
+    targetUpgradeIds: []
+  },
+  {
+    id: "training_yard_path",
+    name: "Training Yard path",
+    description: "Buys Training Yard I as soon as normal campaign rewards can fund it.",
+    targetUpgradeIds: ["training_yard_i"]
+  },
+  {
+    id: "defensive_watch_post_path",
+    name: "Defensive Watch Post path",
+    description: "Buys Watch Post I as soon as normal campaign rewards can fund it.",
+    targetUpgradeIds: ["watch_post_i"]
+  },
+  {
+    id: "economy_quartermaster_path",
+    name: "Economy Quartermaster path",
+    description: "Buys Quartermaster Stores I as soon as normal campaign rewards can fund it.",
+    targetUpgradeIds: ["quartermaster_stores_i"]
+  }
+];
+
 export function runScriptedPlaytestSuite(options: {
   scenarios?: PlaytestScenarioDefinition[];
   scripts?: PlaytestScriptId[];
+  strongholdProfiles?: PlaytestStrongholdProfileDefinition[];
 } = {}): PlaytestReport {
   const scenarios = options.scenarios ?? DEFAULT_PLAYTEST_SCENARIOS;
   const scripts = options.scripts ?? DEFAULT_PLAYTEST_SCRIPTS;
-  const telemetry = scenarios.flatMap((scenario) => {
-    return scripts.map((scriptId) => runScriptedBattlePlaytest({ scenario, scriptId }));
+  const strongholdProfiles = options.strongholdProfiles ?? DEFAULT_PLAYTEST_STRONGHOLD_PROFILES;
+  const profilePlans = strongholdProfiles.flatMap((profile) => buildStrongholdProfileNodePlans(profile, scenarios));
+  const telemetry = profilePlans.flatMap(({ scenario, strongholdPlan }) => {
+    return scripts.map((scriptId) => runScriptedBattlePlaytest({ scenario, scriptId, strongholdPlan }));
   });
   return {
-    schemaVersion: 1,
-    generatedBy: "Ascendant Realms deterministic scripted playtest v1",
+    schemaVersion: 2,
+    generatedBy: "Ascendant Realms deterministic scripted playtest v2",
     telemetry,
     analysis: analyzePlaytestTelemetry(telemetry)
   };
@@ -214,29 +296,100 @@ export function runScriptedPlaytestSuite(options: {
 export function runScriptedBattlePlaytest(options: {
   scenario: PlaytestScenarioDefinition;
   scriptId: PlaytestScriptId;
+  strongholdPlan?: PlaytestStrongholdNodePlan;
 }): PlaytestTelemetry {
   const node = requireCampaignNode(options.scenario.nodeId);
   const heroSave = createPlaytestHeroForNode(node.id);
+  const strongholdPlan = options.strongholdPlan ?? noStrongholdPlan();
   const launch = requireBattleLaunch(
     createCampaignBattleLaunchRequest(heroSave, node, {
       difficulty: options.scenario.expectedDifficulty,
-      aiPersonalityId: node.aiPersonalityId
+      aiPersonalityId: node.aiPersonalityId,
+      modifiers: strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) }))
     })
   );
   const driver = new ScriptedBattleDriver({
     node,
     heroSave,
     map: launch.map,
-    scriptId: options.scriptId
+    scriptId: options.scriptId,
+    strongholdPlan
   });
 
   runStrategy(options.scriptId, driver);
   return driver.finish(heroSave);
 }
 
+function buildStrongholdProfileNodePlans(
+  profile: PlaytestStrongholdProfileDefinition,
+  scenarios: PlaytestScenarioDefinition[]
+): Array<{ scenario: PlaytestScenarioDefinition; strongholdPlan: PlaytestStrongholdNodePlan }> {
+  const campaignBank: ResourceBag = { crowns: 0, stone: 0, iron: 0, aether: 0 };
+  const purchasedUpgradeIds: StrongholdUpgradeId[] = [];
+  return scenarios.map((scenario) => {
+    const purchaseNotes = purchaseAffordableStrongholdTargets(profile, campaignBank, purchasedUpgradeIds);
+    const plan: PlaytestStrongholdNodePlan = {
+      profileId: profile.id,
+      profileName: profile.name,
+      targetUpgradeIds: [...profile.targetUpgradeIds],
+      purchasedUpgradeIds: [...purchasedUpgradeIds],
+      purchaseNotes
+    };
+    const node = requireCampaignNode(scenario.nodeId);
+    addResources(campaignBank, node.rewards.resources ?? {});
+    return { scenario, strongholdPlan: plan };
+  });
+}
+
+function purchaseAffordableStrongholdTargets(
+  profile: PlaytestStrongholdProfileDefinition,
+  campaignBank: ResourceBag,
+  purchasedUpgradeIds: StrongholdUpgradeId[]
+): string[] {
+  const notes: string[] = [];
+  profile.targetUpgradeIds.forEach((upgradeId) => {
+    if (purchasedUpgradeIds.includes(upgradeId)) {
+      return;
+    }
+    const upgrade = STRONGHOLD_UPGRADE_BY_ID[upgradeId];
+    const hasPrerequisites = Object.entries(upgrade.prerequisites.upgradeRanks ?? {}).every(([requiredUpgradeId, rank]) => {
+      return purchasedUpgradeIds.includes(requiredUpgradeId as StrongholdUpgradeId) && (rank ?? 1) <= 1;
+    });
+    if (!hasPrerequisites) {
+      notes.push(`${upgrade.name} waiting on Stronghold prerequisite.`);
+      return;
+    }
+    if (!canAfford(campaignBank, upgrade.cost)) {
+      notes.push(`${upgrade.name} not yet affordable from simulated campaign bank (${formatResources(campaignBank)}).`);
+      return;
+    }
+    payCost(campaignBank, upgrade.cost);
+    purchasedUpgradeIds.push(upgradeId);
+    notes.push(`Purchased ${upgrade.name}; remaining campaign bank ${formatResources(campaignBank)}.`);
+  });
+  return notes;
+}
+
+function noStrongholdPlan(): PlaytestStrongholdNodePlan {
+  return {
+    profileId: "no_stronghold",
+    profileName: "No Stronghold upgrades",
+    targetUpgradeIds: [],
+    purchasedUpgradeIds: [],
+    purchaseNotes: []
+  };
+}
+
 export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAnalysis {
-  const nodeIds = [...new Set(runs.map((run) => run.nodeId))];
-  const nodeSummaries = nodeIds.map((nodeId) => summarizeNode(runs.filter((run) => run.nodeId === nodeId)));
+  const summaryKeys = [
+    ...new Set(runs.map((run) => `${run.strongholdProfileId}:${run.nodeId}`))
+  ];
+  const nodeSummaries = summaryKeys.map((summaryKey) => {
+    const [profileId, nodeId] = summaryKey.split(":");
+    return summarizeNode(
+      runs.filter((run) => run.strongholdProfileId === profileId && run.nodeId === nodeId)
+    );
+  });
   const tooEasyNodes = nodeSummaries.filter((summary) => summary.verdict === "too_easy").map((summary) => summary.nodeId);
   const tooHardNodes = nodeSummaries.filter((summary) => summary.verdict === "too_hard").map((summary) => summary.nodeId);
   const fairFirstAttackNodes = nodeSummaries
@@ -258,17 +411,20 @@ export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAna
     .filter((summary) => !usefulRewardNodes.includes(summary.nodeId))
     .map((summary) => summary.nodeId);
   const ashenOutpostBeatable = runs.some((run) => run.nodeId === "ashen_outpost" && run.battleResult === "victory");
+  const strongholdProfileSummaries = summarizeStrongholdProfiles(runs);
+  const strongholdWarnings = strongholdProfileSummaries.flatMap((summary) => summary.warnings);
 
   return {
-    tooEasyNodes,
-    tooHardNodes,
-    fairFirstAttackNodes,
-    unfairFirstAttackNodes,
-    barracksCompletesBeforePressure,
-    barracksLateBeforePressure,
-    usefulRewardNodes,
-    weakRewardNodes,
+    tooEasyNodes: [...new Set(tooEasyNodes)],
+    tooHardNodes: [...new Set(tooHardNodes)],
+    fairFirstAttackNodes: [...new Set(fairFirstAttackNodes)],
+    unfairFirstAttackNodes: [...new Set(unfairFirstAttackNodes)],
+    barracksCompletesBeforePressure: [...new Set(barracksCompletesBeforePressure)],
+    barracksLateBeforePressure: [...new Set(barracksLateBeforePressure)],
+    usefulRewardNodes: [...new Set(usefulRewardNodes)],
+    weakRewardNodes: [...new Set(weakRewardNodes)],
     ashenOutpostBeatable,
+    strongholdWarnings,
     suggestedTuningChanges: buildSuggestedTuningChanges({
       nodeSummaries,
       tooEasyNodes,
@@ -276,8 +432,10 @@ export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAna
       unfairFirstAttackNodes,
       barracksLateBeforePressure,
       weakRewardNodes,
-      ashenOutpostBeatable
+      ashenOutpostBeatable,
+      strongholdWarnings
     }),
+    strongholdProfileSummaries,
     nodeSummaries
   };
 }
@@ -295,13 +453,14 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push(
     listLine(
       "Needs human review",
-      report.analysis.nodeSummaries.filter((summary) => summary.verdict === "needs_human_review").map((summary) => summary.nodeId)
+      report.analysis.nodeSummaries.filter((summary) => summary.verdict === "needs_human_review").map(formatSummaryLabel)
     )
   );
   lines.push(listLine("Fair first attack timing", report.analysis.fairFirstAttackNodes));
   lines.push(listLine("Late Barracks pressure risk", report.analysis.barracksLateBeforePressure));
   lines.push(listLine("Useful rewards observed", report.analysis.usefulRewardNodes));
   lines.push(`- Ashen Outpost beatable: ${report.analysis.ashenOutpostBeatable ? "yes" : "no"}`);
+  lines.push(listLine("Stronghold warnings", report.analysis.strongholdWarnings));
   lines.push("");
   lines.push("## Tuning Applied");
   lines.push("");
@@ -312,35 +471,53 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- The Ashen simulator model now treats capturing the Burned Shrine as a staged approach advantage, which lets Safe Beginner beat the fortress while Greedy Economy and Fast Army still fail or time out.");
   lines.push("- Live Ashen Outpost now matches that telemetry assumption: completing Burned Shrine weakens the gate Watchtower and the in-battle HUD lists all three secondary objectives.");
   lines.push("- The report now separates structural too-hard failures from strategy-spread review when Safe Beginner wins with fair Barracks and first-wave timing.");
+  lines.push("- Stronghold profiles are telemetry-only simulation paths: upgrades are purchased from simulated campaign-node resources when affordable, then applied as battle-launch effects.");
+  lines.push("");
+  lines.push("## Stronghold Profile Verdicts");
+  lines.push("");
+  lines.push("| Profile | Target upgrades | Purchased upgrades | First purchase | Record | Improved runs | Warnings |");
+  lines.push("| --- | --- | --- | --- | ---: | ---: | --- |");
+  report.analysis.strongholdProfileSummaries.forEach((summary) => {
+    lines.push(
+      `| ${summary.profileName} | ${formatUpgradeList(summary.targetUpgradeIds)} | ${formatUpgradeList(
+        summary.purchasedUpgradeIds
+      )} | ${summary.firstPurchaseNodeId ?? "-"} | ${summary.victories}-${summary.defeats}-${summary.timeouts} | ${
+        summary.improvedRuns
+      } | ${summary.warnings.length > 0 ? summary.warnings.join("; ") : "-"} |`
+    );
+  });
   lines.push("");
   lines.push("## Node Verdicts");
   lines.push("");
-  lines.push("| Node | Difficulty | AI | Wins | Losses | Barracks before pressure | First wave survived | Verdict |");
-  lines.push("| --- | --- | --- | ---: | ---: | ---: | ---: | --- |");
+  lines.push("| Profile | Node | Difficulty | AI | Wins | Losses | Barracks before pressure | First wave survived | Verdict |");
+  lines.push("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |");
   report.analysis.nodeSummaries.forEach((summary) => {
+    const runCount = report.telemetry.filter(
+      (run) => run.strongholdProfileId === summary.strongholdProfileId && run.nodeId === summary.nodeId
+    ).length;
     lines.push(
-      `| ${summary.nodeName} | ${summary.difficulty} | ${summary.aiPersonality} | ${summary.victories} | ${
-        summary.defeats + summary.timeouts
-      } | ${summary.barracksBeforePressureRuns}/3 | ${summary.firstWaveSurvivedRuns}/3 | ${summary.verdict} |`
+      `| ${summary.strongholdProfileName} | ${summary.nodeName} | ${summary.difficulty} | ${summary.aiPersonality} | ${
+        summary.victories
+      } | ${summary.defeats + summary.timeouts} | ${summary.barracksBeforePressureRuns}/${runCount} | ${
+        summary.firstWaveSurvivedRuns
+      }/${runCount} | ${summary.verdict} |`
     );
   });
   lines.push("");
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Node | Script | Result | Duration | First site | Barracks placed | Barracks complete | First unit | Warning | Contact | First wave | Trained/Lost | Final army | Waves | Rewards |"
+    "| Profile | Node | Script | Upgrades | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
-      `| ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${run.battleResult} | ${formatTime(
+      `| ${run.strongholdProfileName} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
+        run.strongholdUpgradeIds
+      )} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(run.startingResources)} | ${run.battleResult} | ${formatTime(
         run.battleDurationSeconds
-      )} | ${formatOptionalTime(run.timeFirstSiteCaptured)} | ${formatOptionalTime(run.timeBarracksPlaced)} | ${formatOptionalTime(
-        run.timeBarracksCompleted
-      )} | ${formatOptionalTime(run.timeFirstUnitTrained)} | ${formatOptionalTime(run.timeFirstEnemyWarning)} | ${formatOptionalTime(
-        run.timeFirstEnemyContact
-      )} | ${run.firstWaveSurvived ? "yes" : "no"} | ${run.unitsTrained}/${run.unitsLost} | ${run.finalArmySize} | ${
-        run.enemyWavesSurvived
+      )} | ${run.firstWaveSurvived ? "yes" : "no"} | ${formatResources(run.resourcesFloated)} | ${
+        run.objectiveCompletion.length > 0 ? run.objectiveCompletion.join(", ") : "-"
       } | ${formatReward(run.rewardResult)} |`
     );
   });
@@ -348,7 +525,7 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Balance Read");
   lines.push("");
   report.analysis.nodeSummaries.forEach((summary) => {
-    lines.push(`### ${summary.nodeName}`);
+    lines.push(`### ${summary.strongholdProfileName} - ${summary.nodeName}`);
     lines.push("");
     summary.notes.forEach((note) => lines.push(`- ${note}`));
     lines.push("");
@@ -375,11 +552,21 @@ class ScriptedBattleDriver {
     heroSave: HeroSaveData;
     map: BattleMapDefinition;
     scriptId: PlaytestScriptId;
+    strongholdPlan: PlaytestStrongholdNodePlan;
   }) {
     const personalityId = options.node.aiPersonalityId ?? "balanced_warlord";
     const personality = getAIPersonality(personalityId);
     const difficulty = applyAIPersonalityToDifficulty(getBattleDifficulty(options.node.difficulty), personality);
     const enemyConfig = applyAIPersonalityToConfig(options.map.scenario.enemyAI, personality);
+    const strongholdEffects = getStrongholdBattleEffects(
+      options.strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) }))
+    );
+    const startingResources = cloneResources(options.map.scenario.startingResources.player);
+    addResources(startingResources, strongholdEffects.startingResources);
+    const startingUnits = initialPlayerUnits(options.map);
+    strongholdEffects.extraPlayerUnitIds.forEach((unitId) => {
+      startingUnits[unitId] = (startingUnits[unitId] ?? 0) + 1;
+    });
     this.heroSave = options.heroSave;
     this.state = {
       node: options.node,
@@ -391,11 +578,11 @@ class ScriptedBattleDriver {
       personality,
       time: 0,
       maxTime: options.node.id === "ashen_outpost" ? 1050 : options.node.difficulty === "normal" ? 900 : 780,
-      resources: cloneResources(options.map.scenario.startingResources.player),
-      peakResources: cloneResources(options.map.scenario.startingResources.player),
+      resources: cloneResources(startingResources),
+      peakResources: cloneResources(startingResources),
       capturedSites: [],
       heroPosition: { ...options.map.scenario.heroSpawn },
-      playerUnits: initialPlayerUnits(options.map),
+      playerUnits: { ...startingUnits },
       enemyArmy: initialEnemyArmy(options.map, options.node.difficulty),
       pendingBuildings: [],
       completedBuildings: ["command_hall"],
@@ -409,7 +596,14 @@ class ScriptedBattleDriver {
       result: "timeout",
       commandLog: [],
       notes: [],
+      strongholdPlan: options.strongholdPlan,
+      heroMaxHpMultiplier: strongholdEffects.heroMaxHpMultiplier,
       telemetry: {
+        strongholdProfileId: options.strongholdPlan.profileId,
+        strongholdProfileName: options.strongholdPlan.profileName,
+        strongholdTargetUpgradeIds: [...options.strongholdPlan.targetUpgradeIds],
+        strongholdUpgradeIds: [...options.strongholdPlan.purchasedUpgradeIds],
+        strongholdPurchaseNotes: [...options.strongholdPlan.purchaseNotes],
         nodeId: options.node.id,
         nodeName: options.node.name,
         mapId: options.map.id,
@@ -417,6 +611,8 @@ class ScriptedBattleDriver {
         aiPersonality: personalityId,
         playerScript: options.scriptId,
         battleResult: "timeout",
+        startingUnits: { ...startingUnits },
+        startingResources: cloneResources(startingResources),
         timeFirstSiteCaptured: null,
         timeBarracksPlaced: null,
         timeBarracksCompleted: null,
@@ -622,7 +818,13 @@ class ScriptedBattleDriver {
       this.state.result = "timeout";
       this.state.telemetry.battleResult = "timeout";
     }
-    const launch = requireBattleLaunch(createCampaignBattleLaunchRequest(heroSave, this.state.node));
+    const launch = requireBattleLaunch(
+      createCampaignBattleLaunchRequest(heroSave, this.state.node, {
+        modifiers: this.state.strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({
+          id: strongholdLaunchModifierId(upgradeId)
+        }))
+      })
+    );
     const runtime = createBattleRuntime({ launch });
     runtime.tick(this.state.time);
     this.state.telemetry.buildingsBuilt.forEach((buildingId) => runtime.recordBuildingBuilt(buildingId));
@@ -870,7 +1072,7 @@ class ScriptedBattleDriver {
     const unitScore = Object.entries(this.state.playerUnits).reduce((total, [unitId, count]) => {
       return total + unitStrength(requireUnit(unitId)) * count;
     }, 0);
-    return (unitScore + heroStrength(this.heroSave)) * (1 + upgrades * 0.045);
+    return (unitScore + heroStrength(this.heroSave) * this.state.heroMaxHpMultiplier) * (1 + upgrades * 0.045);
   }
 
   private enemyBaseDefenseStrength(): number {
@@ -1069,6 +1271,83 @@ function runFastArmy(driver: ScriptedBattleDriver): void {
   driver.attackEnemyBase("fast army follow-up");
 }
 
+function summarizeStrongholdProfiles(runs: PlaytestTelemetry[]): PlaytestStrongholdProfileSummary[] {
+  const baseline = runs.filter((run) => run.strongholdProfileId === "no_stronghold");
+  const profileIds = [...new Set(runs.map((run) => run.strongholdProfileId))];
+  return profileIds.map((profileId) => {
+    const profileRuns = runs.filter((run) => run.strongholdProfileId === profileId);
+    const first = profileRuns[0];
+    const targetUpgradeIds = [...new Set(profileRuns.flatMap((run) => run.strongholdTargetUpgradeIds))];
+    const purchasedUpgradeIds = [...new Set(profileRuns.flatMap((run) => run.strongholdUpgradeIds))];
+    const victories = profileRuns.filter((run) => run.battleResult === "victory").length;
+    const defeats = profileRuns.filter((run) => run.battleResult === "defeat").length;
+    const timeouts = profileRuns.filter((run) => run.battleResult === "timeout").length;
+    const improvedRuns =
+      profileId === "no_stronghold"
+        ? 0
+        : profileRuns.filter((run) => {
+            const baselineRun = baseline.find((entry) => entry.nodeId === run.nodeId && entry.playerScript === run.playerScript);
+            return baselineRun ? strongholdRunImprovesOnBaseline(run, baselineRun) : false;
+          }).length;
+    const firstPurchase = profileRuns.find((run) => run.strongholdUpgradeIds.length > 0);
+    const warnings: string[] = [];
+    if (profileId !== "no_stronghold" && targetUpgradeIds.some((upgradeId) => !purchasedUpgradeIds.includes(upgradeId))) {
+      const missing = targetUpgradeIds
+        .filter((upgradeId) => !purchasedUpgradeIds.includes(upgradeId))
+        .map((upgradeId) => STRONGHOLD_UPGRADE_BY_ID[upgradeId].name);
+      warnings.push(`${first.strongholdProfileName}: too expensive in simulated route; never purchased ${missing.join(", ")}.`);
+    }
+    if (profileId !== "no_stronghold" && purchasedUpgradeIds.length > 0 && improvedRuns === 0) {
+      warnings.push(`${first.strongholdProfileName}: purchased upgrade did not improve any simulated outcome.`);
+    }
+    if (profileId !== "no_stronghold" && profileRuns.length > 0 && profileRuns.every((run) => run.battleResult === "victory" && run.unitsLost <= 1)) {
+      warnings.push(`${first.strongholdProfileName}: overpowered risk; it trivialized every simulated node.`);
+    }
+    return {
+      profileId,
+      profileName: first.strongholdProfileName,
+      targetUpgradeIds,
+      purchasedUpgradeIds,
+      victories,
+      defeats,
+      timeouts,
+      improvedRuns,
+      firstPurchaseNodeId: firstPurchase?.nodeId ?? null,
+      warnings
+    };
+  });
+}
+
+function strongholdRunImprovesOnBaseline(run: PlaytestTelemetry, baseline: PlaytestTelemetry): boolean {
+  const resultDelta = resultScore(run.battleResult) - resultScore(baseline.battleResult);
+  if (resultDelta > 0) {
+    return true;
+  }
+  if (resultDelta < 0) {
+    return false;
+  }
+  if (!baseline.firstWaveSurvived && run.firstWaveSurvived) {
+    return true;
+  }
+  if (run.battleResult === "victory" && run.battleDurationSeconds <= baseline.battleDurationSeconds - 15) {
+    return true;
+  }
+  if (run.unitsLost <= baseline.unitsLost - 1) {
+    return true;
+  }
+  return run.finalArmySize >= baseline.finalArmySize + 1;
+}
+
+function resultScore(result: PlaytestResult): number {
+  if (result === "victory") {
+    return 3;
+  }
+  if (result === "timeout") {
+    return 2;
+  }
+  return 1;
+}
+
 function summarizeNode(runs: PlaytestTelemetry[]): PlaytestNodeSummary {
   const first = runs[0];
   const victories = runs.filter((run) => run.battleResult === "victory").length;
@@ -1114,6 +1393,8 @@ function summarizeNode(runs: PlaytestTelemetry[]): PlaytestNodeSummary {
     notes.push("Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair.");
   }
   return {
+    strongholdProfileId: first.strongholdProfileId,
+    strongholdProfileName: first.strongholdProfileName,
     nodeId: first.nodeId,
     nodeName: first.nodeName,
     mapId: first.mapId,
@@ -1171,11 +1452,12 @@ function buildSuggestedTuningChanges(input: {
   barracksLateBeforePressure: string[];
   weakRewardNodes: string[];
   ashenOutpostBeatable: boolean;
+  strongholdWarnings: string[];
 }): string[] {
   const suggestions: string[] = [];
   const humanReviewNodes = input.nodeSummaries
     .filter((summary) => summary.verdict === "needs_human_review")
-    .map((summary) => summary.nodeId);
+    .map(formatSummaryLabel);
   if (input.tooHardNodes.length > 0) {
     suggestions.push(
       `Investigate remaining pressure on ${input.tooHardNodes.join(", ")} before further changes; only tune first attack delay, wave size, or starting resources when opening timing also fails.`
@@ -1209,6 +1491,7 @@ function buildSuggestedTuningChanges(input: {
   if (!input.ashenOutpostBeatable) {
     suggestions.push("Ashen Outpost was not beaten by the scripted suite; inspect fortress assault requirements before any deeper structural tuning.");
   }
+  input.strongholdWarnings.forEach((warning) => suggestions.push(warning));
   suggestions.push("Use this bot to guide conservative numeric passes, and reserve deeper map or objective changes for a later review.");
   return suggestions;
 }
@@ -1335,8 +1618,33 @@ function formatReward(reward: PlaytestRewardTelemetry | null): string {
   return `${reward.battleXp + reward.campaignXp} XP, ${resourceTotal} resources${itemText ? `, ${itemText}` : ""}`;
 }
 
+function formatResources(resources: Partial<ResourceBag>): string {
+  const parts = [
+    ["Crowns", resources.crowns ?? 0],
+    ["Stone", resources.stone ?? 0],
+    ["Iron", resources.iron ?? 0],
+    ["Aether", resources.aether ?? 0]
+  ] as const;
+  const active = parts.filter(([, amount]) => amount > 0);
+  return active.length > 0 ? active.map(([label, amount]) => `${amount} ${label}`).join(", ") : "none";
+}
+
+function formatUnitCounts(units: Record<string, number>): string {
+  const active = Object.entries(units).filter(([, count]) => count > 0);
+  return active.length > 0
+    ? active
+        .map(([unitId, count]) => `${count} ${titleCase(unitId)}`)
+        .join(", ")
+    : "none";
+}
+
+function formatUpgradeList(upgradeIds: StrongholdUpgradeId[]): string {
+  return upgradeIds.length > 0 ? upgradeIds.map((upgradeId) => STRONGHOLD_UPGRADE_BY_ID[upgradeId].name).join(", ") : "none";
+}
+
 function listLine(label: string, values: string[]): string {
-  return `- ${label}: ${values.length > 0 ? values.join(", ") : "none"}`;
+  const unique = uniqueValues(values);
+  return `- ${label}: ${unique.length > 0 ? unique.join(", ") : "none"}`;
 }
 
 function formatScriptName(scriptId: PlaytestScriptId): string {
@@ -1344,4 +1652,19 @@ function formatScriptName(scriptId: PlaytestScriptId): string {
     .split("_")
     .map((part) => part[0].toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function titleCase(value: string): string {
+  return value
+    .split("_")
+    .map((part) => part[0].toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function formatSummaryLabel(summary: PlaytestNodeSummary): string {
+  return `${summary.strongholdProfileName} / ${summary.nodeName}`;
+}
+
+function uniqueValues<T>(values: T[]): T[] {
+  return [...new Set(values)];
 }

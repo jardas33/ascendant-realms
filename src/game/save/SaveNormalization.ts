@@ -1,5 +1,6 @@
 import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "../core/GameTypes";
 import { isCampaignModifierId } from "../data/campaignModifiers";
+import { isStrongholdUpgradeId } from "../data/strongholdUpgrades";
 import { DEFAULT_FACTION_REPUTATION } from "./SaveDefaults";
 import type { AllocatedSkills, CampaignSaveData, EquipmentSlots, HeroSaveData } from "./SaveTypes";
 
@@ -126,6 +127,7 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     townServiceClaimedIds: [...new Set(townServiceClaimedIds)],
     townServiceUseCounts: normalizeStringNumberRecord(value.townServiceUseCounts),
     activeModifierIds: [...new Set(activeModifierIds)],
+    strongholdUpgradeRanks: normalizeStrongholdUpgradeRanks(value.strongholdUpgradeRanks, value.strongholdUpgradeIds),
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }
@@ -245,4 +247,23 @@ function normalizeStringNumberRecord(value: unknown): Record<string, number> {
     }
     return normalized;
   }, {});
+}
+
+function normalizeStrongholdUpgradeRanks(ranksValue: unknown, legacyIdsValue: unknown): Record<string, number> {
+  const ranks: Record<string, number> = {};
+  if (isRecord(ranksValue)) {
+    Object.entries(ranksValue).forEach(([upgradeId, rank]) => {
+      if (isStrongholdUpgradeId(upgradeId) && isFiniteNumber(rank) && rank > 0) {
+        ranks[upgradeId] = Math.floor(rank);
+      }
+    });
+  }
+  if (arrayOfStrings(legacyIdsValue)) {
+    legacyIdsValue.forEach((upgradeId) => {
+      if (isStrongholdUpgradeId(upgradeId)) {
+        ranks[upgradeId] = Math.max(ranks[upgradeId] ?? 0, 1);
+      }
+    });
+  }
+  return ranks;
 }

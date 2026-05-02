@@ -9,8 +9,9 @@ import type {
   RewardTableDefinition
 } from "../core/GameTypes";
 import { grantBattleRewards, rollBattleRewards } from "../core/HeroProgressionRules";
-import { cloneResources } from "../core/MathUtils";
+import { addResources, cloneResources } from "../core/MathUtils";
 import { ITEM_BY_ID } from "../data/contentIndex";
+import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { BattleLaunchMode, ResolvedBattleLaunch } from "./BattleLaunchRequest";
 
@@ -175,8 +176,10 @@ export function createInitialBattleStats(): BattleStats {
 }
 
 export function createInitialBattleResources(launch: ResolvedBattleLaunch): Record<"player" | "enemy", ResourceBag> {
+  const player = cloneResources(launch.map.scenario.startingResources.player);
+  addResources(player, getStrongholdBattleEffects(launch.request.modifiers).startingResources);
   return {
-    player: cloneResources(launch.map.scenario.startingResources.player),
+    player,
     enemy: cloneResources(launch.map.scenario.startingResources.enemy)
   };
 }
