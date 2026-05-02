@@ -28,7 +28,48 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
         ${renderXpProgress(data, viewModel)}
       </section>
     </div>
+    ${renderVeteranSummary(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+  `;
+}
+
+export function renderVeteranSummary(data: ResultsData): string {
+  const summary = data.stats.veteranSummary;
+  if (data.stats.outcome !== "victory" || !summary || (!summary.topSurvivor && summary.rankedUpUnits.length === 0)) {
+    return "";
+  }
+
+  const rankedUp = summary.rankedUpUnits.slice(0, 4);
+  const top = summary.topSurvivor;
+  return `
+    <section class="result-block wide veteran-summary">
+      <h2>Notable Veterans</h2>
+      <div class="results-grid compact">
+        ${
+          top
+            ? `
+              <span>Top survivor</span><strong>${escapeHtml(top.unitName)} - ${escapeHtml(top.rankName)} (${top.xp} XP)</strong>
+              <span>Top survivor kills</span><strong>${top.kills}</strong>
+            `
+            : ""
+        }
+        ${
+          rankedUp.length > 0
+            ? rankedUp
+                .map(
+                  (entry) => `
+                    <span>Ranked up</span><strong>${escapeHtml(entry.unitName)} - ${escapeHtml(
+                      entry.previousRank ? titleCase(entry.previousRank) : "Recruit"
+                    )} to ${escapeHtml(entry.rankName)}</strong>
+                    <span>${escapeHtml(entry.unitName)} record</span><strong>${entry.kills} kills, ${entry.damageDealt} damage</strong>
+                  `
+                )
+                .join("")
+            : `<span>Ranked up</span><strong>None this battle</strong>`
+        }
+      </div>
+      <p class="quiet">Campaign victories can add surviving Seasoned or better units to the Retinue Camp.</p>
+    </section>
   `;
 }
 

@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a small first playable prototype for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies, level up, earn loot, spend campaign resources on Stronghold upgrades, and save progress locally.
+Ascendant Realms is a v0.2 prototype baseline for a long-term fantasy RTS/RPG hybrid. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies, level up, earn loot with item affixes, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -43,7 +43,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest feature status, 2026-05-01: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.2 baseline status, 2026-05-02: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -53,7 +53,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest feature status, 2026-05-01: `npm test` passes with 32 test files and 156 tests.
+Latest status after Retinue Camp V1, 2026-05-02: `npm test` passes with 35 test files and 194 tests, including Retinue rules, save/load, launch, retry, and simulator coverage.
 
 ## Browser Smoke Tests
 
@@ -63,7 +63,7 @@ npm run test:e2e
 
 The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest feature run passed 39 Playwright tests in 14.2 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest run passed 43 Playwright tests.
 
 For a visible browser run:
 
@@ -77,7 +77,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest feature status, 2026-05-01: passed with 15 simulated runs across 5 campaign battle nodes, no structural too-hard nodes, and Ashen Outpost beatable by the Safe Beginner script.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest Retinue Camp V1 status, 2026-05-02: passed with 150 simulated runs across 50 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
 ## Preview A Build
 
@@ -168,7 +168,7 @@ The first skeleton campaign has eight nodes:
 - Refugee Caravan.
 - Ashen Outpost.
 
-Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. The Campaign Map also includes the first Stronghold panel, where persistent upgrades spend Crowns, Stone, Iron, and Aether and apply to later battle launches. Choices can be locked by resource costs, hero level, ownership, or previous purchase, pay from the campaign resource bank, grant XP/items/resources, change faction reputation, unlock nodes, and save once-only claims.
+Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. The Campaign Map also includes the Stronghold panel, where two tiers of persistent upgrades spend Crowns, Stone, Iron, and Aether and apply to later battle launches. Choices can be locked by resource costs, hero level, ownership, previous purchase, or faction reputation; pay from the campaign resource bank; grant XP/items/resources; change faction reputation; unlock nodes; and save once-only claims. Reputation ranks and active effects are visible before the player commits.
 
 Skirmish mode remains separate through the `Skirmish` button.
 
@@ -176,7 +176,7 @@ Skirmish mode remains separate through the `Skirmish` button.
 
 After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, and campaign node rewards when applicable. Earned equipment creates an inventory instance immediately. Equippable rewards show rarity, slot, stat modifiers, source details, the currently equipped item in that slot, and an Equip Now comparison.
 
-Using Equip Now equips the earned item instance, saves the updated hero equipment, and recalculates stats. Leaving the screen without equipping keeps the instance in inventory. Campaign node item rewards are claimed once. If a unique reward is already owned, the reward converts into campaign Crowns or Aether and the Results screen shows the conversion.
+Using Equip Now equips the earned item instance, saves the updated hero equipment, and recalculates stats, including valid affix stat modifiers. Leaving the screen without equipping keeps the instance in inventory. Campaign node item rewards are claimed once. If a unique reward is already owned, the reward converts into campaign Crowns or Aether and the Results screen shows the conversion.
 
 Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Marcher Camp and Stronghold Development spend from it now; later shops, mercenaries, repairs, and broader upgrades should use the same bank.
 
@@ -203,7 +203,8 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Lightweight generated WebAudio cues for UI clicks, selection, build start/complete, unit trained, ability cast, victory, and defeat. Audio fails silently when the browser or test environment blocks it.
 - Eight-node campaign skeleton with locked, available, completed, town-service, and choice-driven node states.
 - Persistent campaign resource bank for node rewards, event choice costs, Marcher Camp services, and Stronghold upgrades.
-- Stronghold Development panel with five data-driven persistent upgrades: Training Yard I, Watch Post I, Quartermaster Stores I, Chapel Corner I, and Ranger Paths I.
+- Stronghold Development panel with five Tier I upgrades and five matching Tier II upgrades, prerequisite locks, campaign-resource costs, and battle-launch effects.
+- Reputation ranks for Free Marches, Common Folk, Old Faith, Ashen Covenant, and Sylvan Concord placeholder, with small active effects for Marcher Camp discounts, Stronghold Crown discounts, Chapel Aether bonuses, and Ashen hostile pressure.
 - Hero inventory screen from the main menu.
 - Asset gallery for checking manual/final/placeholder art.
 - Three hero classes: Warlord, Arcanist, Shepherd.
@@ -212,6 +213,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Three data-defined abilities per class.
 - Skill point allocation after level-up.
 - Rarity-weighted item rewards after victory.
+- Randomized item affixes V1 with slot-filtered stat packages, deterministic test generation, save persistence, equipment stat contribution, and Results/Inventory display.
 - Equipment slots: weapon, armor, trinket.
 - Three playable skirmish maps: First Claim, Broken Ford, and Ashen Outpost.
 - Player base, enemy base, neutral camps, and capturable resource sites.
@@ -224,20 +226,24 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Live RTS minimap with units, buildings, capture sites, camera viewport, click-to-pan, and alert pings.
 - Lightweight grid fog of war with unseen, explored, and visible states. Enemy and neutral units/buildings are hidden outside current vision.
 - Simple RTS selection, movement, combat, projectiles, XP, level-up, and ability use.
+- Unit Veterancy V1 with battle-local unit XP, Recruit/Seasoned/Veteran/Elite ranks, selected-unit rank display, rank-up feedback, and Notable Veterans in victory Results.
+- Retinue Camp V1 with a small save-backed campaign roster, Results recruitment for eligible veterans, Campaign Map display/dismiss, campaign battle deployment, and permanent removal when a retinue unit dies.
 - Simple enemy AI that expands, trains, defends, sends attack waves, and uses selectable/campaign-assigned personalities.
 - Shared victory/defeat Results screen with XP summary, item rewards, Equip Now, campaign node completion details, retry/return flow, and local hero save.
 - Pure `BattleRuntime` tests for setup, objectives, battle results, rewards, and save-output decisions.
 - `BattleLaunchRequest` contract so skirmish, campaign nodes, and future scenario missions can all start battles through one clean pathway.
 - Clean procedural UI skin for menus, result panels, HUD panels, and info boxes.
 - Optional dedicated UI-kit assets for panel frames, button states, resource frames, dividers, tooltip frames, minimap frame, ability slot frame, inventory slot frame, victory panel, and defeat panel.
+- Automated playtest simulator coverage for no-upgrade, Tier I Stronghold, and Tier II Quartermaster campaign paths.
 
 ## Known Limitations
 
 - Gameplay units and buildings use dedicated battle sprites when available, then fall back to concept art or simple Phaser shapes if art is missing.
 - Movement uses a coarse A* pathfinding grid plus local separation. It is not formation-aware or flow-field based yet.
 - Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
-- Workers, retinue persistence, broad vendors, and diplomacy are postponed.
-- Campaign is a skeleton only: Marcher Camp and Stronghold Development prove small resource sinks, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
+- Workers, broad vendors, full diplomacy, and enemy construction are postponed.
+- Retinue Camp V1 is intentionally small: no replacement UI, wounded timers, unit biographies, scars/titles, or broad army management yet.
+- Campaign is a skeleton only: Marcher Camp, Stronghold Development, and reputation effects prove small resource sinks and consequences, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
 - Balance is prototype-only and expected to change often.
@@ -249,11 +255,11 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 
 Good next prompts are specific and small. Examples:
 
-- "Add e2e coverage for Equip Now, Marcher Camp services, and campaign choice outcomes."
+- "Human-review Border Village through Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue."
+- "Tune Retinue Camp V1 if saved veterans trivialize early nodes or feel mandatory for Ashen Outpost."
+- "Human-review Stronghold Tier II, reputation effects, retinue, and affixed reward readability in the current campaign."
 - "Split ResultsScene into smaller reward, campaign-return, and item-comparison helpers."
 - "Split maps.ts into one file per map without changing map behavior."
-- "Add randomized item affixes on top of the item instance model."
-- "Add the second Stronghold tier with one new prerequisite chain and no new battle mechanics."
 - "Improve formation movement and dynamic path blockers without changing combat balance."
 - "Add worker builders on top of the automatic construction system."
 - "Add a respec button to the hero progression screen."

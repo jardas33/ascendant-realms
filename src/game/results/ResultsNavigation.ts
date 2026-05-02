@@ -1,4 +1,6 @@
 import { cloneBattleLaunchRequestWithHero, createSkirmishBattleLaunchRequest } from "../battle/BattleLaunchRequest";
+import { retinueDeploymentUnits } from "../core/RetinueRules";
+import { SaveSystem } from "../core/SaveSystem";
 import type { CurrentStoredGameSave } from "../save/SaveTypes";
 import type { ResultsData } from "./ResultsTypes";
 
@@ -8,11 +10,23 @@ function heroForResultsContinuation(data: ResultsData) {
 
 export function createRetryBattleData(data: ResultsData): { launchRequest: ReturnType<typeof createSkirmishBattleLaunchRequest> } {
   const retryHero = heroForResultsContinuation(data);
+  const launchRequest = data.launchRequest
+    ? cloneBattleLaunchRequestWithHero(data.launchRequest, retryHero, { sourceId: "results_retry" })
+    : createSkirmishBattleLaunchRequest(retryHero, { sourceId: "results_retry" });
   return {
-    launchRequest: data.launchRequest
-      ? cloneBattleLaunchRequestWithHero(data.launchRequest, retryHero, { sourceId: "results_retry" })
-      : createSkirmishBattleLaunchRequest(retryHero, { sourceId: "results_retry" })
+    launchRequest: {
+      ...launchRequest,
+      retinueUnits: retinueUnitsForRetry(data)
+    }
   };
+}
+
+function retinueUnitsForRetry(data: ResultsData) {
+  if (data.launchRequest?.mode !== "campaign_node") {
+    return data.launchRequest?.retinueUnits ?? [];
+  }
+  const campaign = SaveSystem.load()?.campaign;
+  return campaign ? retinueDeploymentUnits(campaign) : data.launchRequest.retinueUnits ?? [];
 }
 
 export function createInventorySceneData(data: ResultsData): Record<string, unknown> {

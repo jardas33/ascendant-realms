@@ -35,7 +35,9 @@ import {
   renderCampaignResourceBank,
   renderReputation
 } from "../campaign/CampaignResourcePanel";
+import { renderRetinuePanel } from "../campaign/RetinuePanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
+import { dismissRetinueUnit, retinueDeploymentUnits } from "../core/RetinueRules";
 
 interface CampaignMapData {
   heroSave?: HeroSaveData;
@@ -98,6 +100,12 @@ export class CampaignMapScene extends Phaser.Scene {
         return;
       }
 
+      const retinueDismissButton = target.closest<HTMLButtonElement>("button[data-retinue-dismiss]");
+      if (retinueDismissButton) {
+        this.dismissRetinueUnit(retinueDismissButton.dataset.retinueDismiss ?? "");
+        return;
+      }
+
       const action = target.closest<HTMLButtonElement>("button[data-campaign-action]")?.dataset.campaignAction;
       if (action === "start") {
         this.startSelectedNode();
@@ -143,7 +151,8 @@ export class CampaignMapScene extends Phaser.Scene {
             ...modifierResult.launchModifiers,
             ...getReputationBattleLaunchModifiers(this.heroSave, node),
             ...getStrongholdLaunchModifiers(this.campaignSave)
-          ]
+          ],
+          retinueUnits: retinueDeploymentUnits(this.campaignSave)
         })
       });
       return;
@@ -163,6 +172,16 @@ export class CampaignMapScene extends Phaser.Scene {
     this.heroSave = completed.hero;
     this.campaignSave = completed.campaign;
     this.message = `${node.name} completed. ${formatNodeRewardSummary(node)}`;
+    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.render();
+  }
+
+  private dismissRetinueUnit(retinueUnitId: string): void {
+    if (!retinueUnitId) {
+      return;
+    }
+    this.campaignSave = dismissRetinueUnit(this.campaignSave, retinueUnitId);
+    this.message = "Retinue unit dismissed.";
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }
@@ -247,6 +266,7 @@ export class CampaignMapScene extends Phaser.Scene {
               <h2>Campaign Bank</h2>
               ${renderCampaignResourceBank(this.campaignSave)}
               ${renderStrongholdPanel(this.campaignSave, this.heroSave)}
+              ${renderRetinuePanel(this.campaignSave)}
               <h2>Reputation</h2>
               ${renderReputation(viewModel.reputation)}
               <h2>Active Modifiers</h2>

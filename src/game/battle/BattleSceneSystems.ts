@@ -72,6 +72,7 @@ interface CreateBattleSceneSystemsOptions {
   showMessage: (message: string, x?: number, y?: number, color?: string) => void;
   addMinimapPing: (x: number, y: number, color: string, label: string) => void;
   warnIfCommandHallUnderAttack: (target: BaseEntity) => void;
+  handleUnitDamage: (source: Unit, target: BaseEntity, amount: number) => void;
   handleKill: (killer: Unit | Building | Projectile, target: BaseEntity) => void;
   completeSecondaryObjective: (type: BattleSecondaryObjectiveType, targetId: string, point?: Position) => void;
   selectedRallyBuildings: () => Building[];
@@ -112,6 +113,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     showMessage,
     addMinimapPing,
     warnIfCommandHallUnderAttack,
+    handleUnitDamage,
     handleKill,
     completeSecondaryObjective,
     selectedRallyBuildings,
@@ -207,6 +209,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       }
       warnIfCommandHallUnderAttack(target);
     },
+    onUnitDamage: handleUnitDamage,
     onStatusApplied: (target, statusName) => {
       FloatingText.show(scene, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
     },

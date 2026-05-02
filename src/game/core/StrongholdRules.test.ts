@@ -161,6 +161,22 @@ describe("stronghold development rules", () => {
     expect(effects.unitTrainingTimeMultipliers.ranger).toBe(0.9);
   });
 
+  it("keeps Watch Post I and Quartermaster Stores I useful without adding free units", () => {
+    const effects = getStrongholdBattleEffects([
+      { id: "stronghold:watch_post_i" },
+      { id: "stronghold:quartermaster_stores_i" }
+    ]);
+
+    expect(effects.extraPlayerUnitIds).toEqual([]);
+    expect(effects.startingResources).toMatchObject({ crowns: 60, stone: 40, iron: 20, aether: 10 });
+    expect(effects.buildingVisionBonus).toBe(80);
+    expect(effects.enemyWarningLeadSeconds).toBe(25);
+    expect(effects.watchtowerRangeMultiplier).toBe(1.1);
+    expect(effects.firstBuildingConstructionTimeMultiplier).toBe(0.9);
+    expect(effects.heroMaxHpMultiplier).toBe(1);
+    expect(effects.heroMaxManaMultiplier).toBe(1);
+  });
+
   it("applies Watch Post range only to player Watchtowers", () => {
     const watchtower = requireBuilding("watchtower");
     const effects = getStrongholdBattleEffects([{ id: "stronghold:watch_post_i" }]);

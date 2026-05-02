@@ -98,6 +98,47 @@ describe("BattleRuntime", () => {
     });
   });
 
+  it("preserves battle-only veteran summaries without changing save output", () => {
+    const runtime = createBattleRuntime({ launch: createTestLaunch() });
+    runtime.recordVeterancySummary({
+      rankedUpUnits: [
+        {
+          unitInstanceId: "unit-1",
+          unitTypeId: "militia",
+          unitName: "Militia",
+          xp: 120,
+          rank: "veteran",
+          rankName: "Veteran",
+          kills: 2,
+          damageDealt: 84,
+          survivedBattle: true,
+          rankedUp: true,
+          previousRank: "seasoned"
+        }
+      ],
+      notableVeterans: [],
+      topSurvivor: {
+        unitInstanceId: "unit-1",
+        unitTypeId: "militia",
+        unitName: "Militia",
+        xp: 120,
+        rank: "veteran",
+        rankName: "Veteran",
+        kills: 2,
+        damageDealt: 84,
+        survivedBattle: true,
+        rankedUp: true,
+        previousRank: "seasoned"
+      }
+    });
+
+    const result = runtime.completeBattle({ outcome: "defeat", heroSave: createFallbackHeroSave() });
+
+    expect(result?.stats.veteranSummary?.topSurvivor?.rank).toBe("veteran");
+    expect(result?.shouldSaveHero).toBe(false);
+    expect(runtime.stats.veteranSummary?.rankedUpUnits[0].kills).toBe(2);
+  });
+
   it("produces victory rewards and save output without writing storage directly", () => {
     const heroSave = createFallbackHeroSave();
     const rewardTable = requireRewardTable(testMap.scenario.rewardTableId);

@@ -19,6 +19,7 @@ interface CombatSystemOptions {
   getProjectiles: () => Projectile[];
   addProjectile: (projectile: Projectile) => void;
   onDamage: (target: BaseEntity, amount: number) => void;
+  onUnitDamage?: (source: Unit, target: BaseEntity, amount: number) => void;
   onKill: (killer: Combatant | Projectile, target: BaseEntity) => void;
   onStatusApplied?: (target: BaseEntity, statusName: string) => void;
 }
@@ -154,6 +155,9 @@ export class CombatSystem {
     const wasAlive = target.alive;
     const actual = target.takeDamage(amount);
     this.options.onDamage(target, actual);
+    if (actual > 0 && source instanceof Unit) {
+      this.options.onUnitDamage?.(source, target, actual);
+    }
     if (actual > 0 && target.alive) {
       this.applyOnHitEffects(source, target);
     }

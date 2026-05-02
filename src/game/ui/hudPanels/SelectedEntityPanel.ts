@@ -1,6 +1,7 @@
 import { Building } from "../../entities/Building";
 import { Hero } from "../../entities/Hero";
 import { Unit } from "../../entities/Unit";
+import { getUnitVeterancyRank } from "../../data/unitVeterancy";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
 import { escapeHtml, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
@@ -41,9 +42,13 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
 
   if (selectedOne instanceof Unit) {
     const order = describeUnitOrder(selectedOne);
+    const rank = getUnitVeterancyRank(selectedOne.veterancy.rank);
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       <div class="stat-list">
+        <span>Rank ${escapeHtml(rank.name)}</span>
+        <span>Unit XP ${selectedOne.veterancy.xp}</span>
+        <span>Kills ${selectedOne.veterancy.kills}</span>
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
         <span>Damage ${Math.round(selectedOne.damage)}</span>
         <span>Range ${selectedOne.range}</span>

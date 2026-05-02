@@ -1,8 +1,16 @@
 import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "../core/GameTypes";
 import { isCampaignModifierId } from "../data/campaignModifiers";
+import { UNIT_BY_ID } from "../data/contentIndex";
 import { isStrongholdUpgradeId } from "../data/strongholdUpgrades";
+import { isUnitVeterancyRankId } from "../data/unitVeterancy";
 import { DEFAULT_FACTION_REPUTATION } from "./SaveDefaults";
-import type { AllocatedSkills, CampaignSaveData, EquipmentSlots, HeroSaveData } from "./SaveTypes";
+import type {
+  AllocatedSkills,
+  CampaignSaveData,
+  EquipmentSlots,
+  HeroSaveData,
+  RetinueUnitSaveData
+} from "./SaveTypes";
 
 export function isHeroSaveData(value: unknown): value is HeroSaveData {
   return normalizeHeroSaveData(value) !== null;
@@ -128,6 +136,7 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     townServiceUseCounts: normalizeStringNumberRecord(value.townServiceUseCounts),
     activeModifierIds: [...new Set(activeModifierIds)],
     strongholdUpgradeRanks: normalizeStrongholdUpgradeRanks(value.strongholdUpgradeRanks, value.strongholdUpgradeIds),
+    retinueUnits: normalizeRetinueUnits(value.retinueUnits),
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }
@@ -266,4 +275,46 @@ function normalizeStrongholdUpgradeRanks(ranksValue: unknown, legacyIdsValue: un
     });
   }
   return ranks;
+}
+
+function normalizeRetinueUnits(value: unknown): RetinueUnitSaveData[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const seen = new Set<string>();
+  return value
+    .map(normalizeRetinueUnit)
+    .filter((unit): unit is RetinueUnitSaveData => {
+      if (!unit || seen.has(unit.retinueUnitId)) {
+        return false;
+      }
+      seen.add(unit.retinueUnitId);
+      return true;
+    });
+}
+
+function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  if (
+    typeof value.retinueUnitId !== "string" ||
+    !value.retinueUnitId.trim() ||
+    typeof value.unitTypeId !== "string" ||
+    !UNIT_BY_ID[value.unitTypeId] ||
+    !isUnitVeterancyRankId(value.rank)
+  ) {
+    return undefined;
+  }
+  return {
+    retinueUnitId: value.retinueUnitId,
+    unitTypeId: value.unitTypeId,
+    name: typeof value.name === "string" && value.name.trim() ? value.name : undefined,
+    rank: value.rank,
+    xp: clampInteger(value.xp, 0),
+    kills: clampInteger(value.kills, 0),
+    sourceBattleId: typeof value.sourceBattleId === "string" && value.sourceBattleId.trim() ? value.sourceBattleId : "unknown",
+    acquiredAt: typeof value.acquiredAt === "string" ? value.acquiredAt : new Date().toISOString(),
+    status: value.status === "wounded" ? "wounded" : "active"
+  };
 }

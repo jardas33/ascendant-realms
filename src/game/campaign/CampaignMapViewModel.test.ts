@@ -67,7 +67,24 @@ describe("campaign map presentation helpers", () => {
     expect(formatResourceRewards({ crowns: 90, stone: 0 })).toEqual(["90 Crowns"]);
     expect(formatChoiceRewardSummary(choice, hero, node)).toContain("65 Crowns");
     expect(formatChoiceModifierSummary(choice, hero, node)).toContain("Gain Angered Raiders");
-    expect(formatChoiceReputationSummary(choice, hero, node)).toContain("-8 Common Folk");
+    expect(formatChoiceReputationSummary(choice, hero, node)).toContain("-8 Common Folk (to -8 Neutral)");
+  });
+
+  it("previews the resulting reputation rank on choice cards", () => {
+    const hero = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      factionReputation: {
+        free_marches: 10,
+        ashen_covenant: -10,
+        sylvan_concord: 0,
+        common_folk: 20,
+        old_faith: 0
+      }
+    };
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "refugee_caravan")!;
+    const choice = node.choices!.find((entry) => entry.id === "protect_them")!;
+
+    expect(formatChoiceReputationSummary(choice, hero, node)).toContain("+8 Common Folk (to +28 Friendly)");
   });
 
   it("renders town service details with stable choice actions", () => {

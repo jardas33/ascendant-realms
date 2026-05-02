@@ -705,7 +705,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='rest_and_recovery']")).toContainText("Cost: 27 Crowns (base 30 Crowns)");
 
     await page.getByTestId("campaign-node-refugee_caravan").click();
-    await expect(page.locator("button[data-campaign-choice='protect_them']")).toContainText("Reputation: +8 Common Folk");
+    await expect(page.locator("button[data-campaign-choice='protect_them']")).toContainText(
+      "Reputation: +8 Common Folk (to +33 Friendly)"
+    );
     await expect(page.locator("button[data-campaign-choice='demand_tribute']")).toContainText("Modifiers: Gain Angered Raiders");
   });
 
@@ -741,6 +743,85 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await waitForBattleScene(page);
     const snapshot = await getBattleSnapshot(page);
     expect(snapshot.resources).toMatchObject({ crowns: 520, stone: 345, iron: 195, aether: 105 });
+  });
+
+  test("unit veterancy rank appears in battle HUD and victory results", async ({ page }) => {
+    await startFirstClaimSkirmish(page, "Veterancy QA", "story");
+
+    const granted = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.grantSelectedUnitVeterancyXp?.(140));
+    expect(granted).toMatchObject({
+      rank: "Veteran",
+      xp: 140
+    });
+    await expect(page.locator(".stat-list")).toContainText("Rank Veteran");
+    await expect(page.locator(".stat-list")).toContainText("Unit XP 140");
+    await expect(page.locator(".stat-list")).toContainText("Kills 0");
+
+    const forced = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.forceBattleVictory?.());
+    expect(forced).toBe(true);
+    await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator(".veteran-summary")).toContainText("Notable Veterans");
+    await expect(page.locator(".veteran-summary")).toContainText(granted.unitName);
+    await expect(page.locator(".veteran-summary")).toContainText("Veteran");
+    await expect(page.locator(".veteran-summary")).toContainText("Retinue Camp");
+  });
+
+  test("campaign retinue units deploy with saved veterancy rank", async ({ page }) => {
+    await seedSave(page, {
+      campaign: {
+        unlockedNodeIds: ["border_village"],
+        selectedNodeId: "border_village",
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:e2e:veteran_militia",
+            unitTypeId: "militia",
+            name: "Gate Militia",
+            rank: "veteran",
+            xp: 140,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          }
+        ]
+      }
+    });
+
+    await page.getByTestId("menu-continue-campaign").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("retinue-panel")).toContainText("1/2");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Gate Militia");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Veteran");
+
+    await page.getByTestId("campaign-node-border_village").click();
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+
+    const retinue = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const unit = scene?.units.find((entry: any) => entry.retinueUnitId === "retinue:e2e:veteran_militia");
+      if (!unit) {
+        throw new Error("Expected retinue militia to spawn.");
+      }
+      scene.selectionSystem.setSelection([unit]);
+      scene.refreshBattleHud(0);
+      return {
+        rank: unit.veterancy.rank,
+        xp: unit.veterancy.xp,
+        kills: unit.veterancy.kills,
+        maxHp: unit.maxHp,
+        baseHp: unit.definition.stats.maxHp,
+        armor: unit.armor
+      };
+    });
+
+    expect(retinue).toMatchObject({ rank: "veteran", xp: 140, kills: 3 });
+    expect(retinue.maxHp).toBeGreaterThan(retinue.baseHp);
+    expect(retinue.armor).toBeGreaterThanOrEqual(1);
+    await expect(page.locator(".stat-list")).toContainText("Rank Veteran");
+    await expect(page.locator(".stat-list")).toContainText("Unit XP 140");
+    await expect(page.locator(".stat-list")).toContainText("Kills 3");
   });
 
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {

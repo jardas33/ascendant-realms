@@ -134,6 +134,39 @@ describe("calculateLevelFromXp", () => {
       townServiceUseCounts: { "marcher_camp:buy_supplies": 2, bad: -1 },
       activeModifierIds: ["inspired_militia", "missing_modifier", "inspired_militia"],
       strongholdUpgradeRanks: { training_yard_i: 1.8, quartermaster_stores_ii: 1, missing_upgrade: 2, watch_post_i: -1 },
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:border_village:unit-1",
+          unitTypeId: "militia",
+          name: "Gate Militia",
+          rank: "veteran",
+          xp: 120.8,
+          kills: 2.4,
+          sourceBattleId: "border_village",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        },
+        {
+          retinueUnitId: "retinue:border_village:unit-1",
+          unitTypeId: "militia",
+          rank: "veteran",
+          xp: 120,
+          kills: 2,
+          sourceBattleId: "duplicate",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        },
+        {
+          retinueUnitId: "bad",
+          unitTypeId: "missing_unit",
+          rank: "legend",
+          xp: 999,
+          kills: 999,
+          sourceBattleId: "bad",
+          acquiredAt: "bad",
+          status: "active"
+        }
+      ],
       resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       resourcesSpent: { crowns: 60, stone: -4, iron: 2, aether: 1 },
       selectedNodeId: "old_stone_road"
@@ -149,6 +182,19 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.townServiceUseCounts).toEqual({ "marcher_camp:buy_supplies": 2 });
     expect(normalized?.activeModifierIds).toEqual(["inspired_militia"]);
     expect(normalized?.strongholdUpgradeRanks).toEqual({ training_yard_i: 1, quartermaster_stores_ii: 1 });
+    expect(normalized?.retinueUnits).toEqual([
+      {
+        retinueUnitId: "retinue:border_village:unit-1",
+        unitTypeId: "militia",
+        name: "Gate Militia",
+        rank: "veteran",
+        xp: 120,
+        kills: 2,
+        sourceBattleId: "border_village",
+        acquiredAt: "2026-05-02T12:00:00.000Z",
+        status: "active"
+      }
+    ]);
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
     expect(normalized?.resourcesSpent).toEqual({ crowns: 60, stone: 0, iron: 2, aether: 1 });
   });
@@ -170,6 +216,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.lockedNodeIds).toEqual([]);
     expect(normalized?.activeModifierIds).toEqual([]);
     expect(normalized?.strongholdUpgradeRanks).toEqual({});
+    expect(normalized?.retinueUnits).toEqual([]);
   });
 
   it("migrates legacy stronghold upgrade ids into rank data", () => {
@@ -382,6 +429,32 @@ describe("save version migration", () => {
     expect(loaded?.campaign.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(loaded?.campaign.townServiceUseCounts).toEqual({ "marcher_camp:purchase_emberglass_wand": 1 });
     expect(loaded?.campaign.strongholdUpgradeRanks).toEqual({ training_yard_i: 1, quartermaster_stores_ii: 1 });
+  });
+
+  it("saves and loads retinue units through campaign data", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = {
+      ...createFallbackCampaignSave(),
+      started: true,
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:border_village:unit-1",
+          unitTypeId: "ranger",
+          name: "Old Road Ranger",
+          rank: "veteran" as const,
+          xp: 140,
+          kills: 3,
+          sourceBattleId: "border_village",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const
+        }
+      ]
+    };
+
+    expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+
+    expect(loaded?.campaign.retinueUnits).toEqual(campaign.retinueUnits);
   });
 
   it("rejects invalid JSON and invalid save shapes without clearing storage", () => {

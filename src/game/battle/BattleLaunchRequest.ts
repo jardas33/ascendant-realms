@@ -8,9 +8,10 @@ import type {
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
 import { DEFAULT_AI_PERSONALITY_ID, isAIPersonalityId } from "../data/aiPersonalities";
 import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePacing";
-import { CAMPAIGN_NODE_BY_ID, FACTION_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_NODE_BY_ID, FACTION_BY_ID, MAP_BY_ID, REWARD_TABLE_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { DEFAULT_MAP_ID } from "../data/maps";
-import type { HeroSaveData } from "../save/SaveTypes";
+import { isUnitVeterancyRankId } from "../data/unitVeterancy";
+import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
 
 export type BattleLaunchMode = "skirmish" | "campaign_node" | "scenario_mission";
 
@@ -32,6 +33,7 @@ export interface BattleLaunchRequest {
   aiPersonalityId?: EnemyAIPersonalityId;
   campaignNodeId?: string;
   scenarioMissionId?: string;
+  retinueUnits?: RetinueUnitSaveData[];
 }
 
 export interface ResolvedBattleLaunch {
@@ -62,6 +64,7 @@ export interface CreateBattleLaunchRequestOptions {
   aiPersonalityId?: EnemyAIPersonalityId;
   campaignNodeId?: string;
   scenarioMissionId?: string;
+  retinueUnits?: RetinueUnitSaveData[];
 }
 
 const defaultIndexes: BattleLaunchIndexes = {
@@ -121,7 +124,8 @@ export function createBattleLaunchRequest(
     enemyProfileId: options.enemyProfileId,
     aiPersonalityId: options.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     campaignNodeId: options.campaignNodeId,
-    scenarioMissionId: options.scenarioMissionId
+    scenarioMissionId: options.scenarioMissionId,
+    retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits)
   };
 }
 
@@ -134,7 +138,8 @@ export function cloneBattleLaunchRequestWithHero(
     ...request,
     requestId: overrides.requestId ?? request.requestId,
     sourceId: overrides.sourceId ?? request.sourceId,
-    heroSave
+    heroSave,
+    retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits)
   };
 }
 
@@ -197,7 +202,8 @@ export function resolveBattleLaunchRequest(
         rewardTableId,
         difficulty: request.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
         modifiers: request.modifiers ?? [],
-        aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID
+        aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
+        retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits)
       },
       map,
       rewardTable,
@@ -216,4 +222,29 @@ export function requireBattleLaunch(request: BattleLaunchRequest): ResolvedBattl
 
 function buildBattleLaunchRequestId(mode: BattleLaunchMode, mapId: string, sourceId: string): string {
   return `${mode}:${sourceId}:${mapId}`;
+}
+
+function sanitizeLaunchRetinueUnits(value: unknown): RetinueUnitSaveData[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const seen = new Set<string>();
+  return value
+    .filter((unit): unit is RetinueUnitSaveData => {
+      const entry = unit as Partial<RetinueUnitSaveData>;
+      if (
+        typeof unit !== "object" ||
+        unit === null ||
+        typeof entry.retinueUnitId !== "string" ||
+        typeof entry.unitTypeId !== "string" ||
+        !UNIT_BY_ID[entry.unitTypeId] ||
+        !isUnitVeterancyRankId(entry.rank) ||
+        seen.has(entry.retinueUnitId)
+      ) {
+        return false;
+      }
+      seen.add(entry.retinueUnitId);
+      return true;
+    })
+    .map((unit) => ({ ...unit }));
 }

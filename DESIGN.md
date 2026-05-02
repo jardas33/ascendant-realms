@@ -60,7 +60,7 @@ Item affixes are intentionally small in V1. Common items can roll zero or one af
 
 Equipment is allowed to change battle feel through HP, mana, damage, armor, speed, range, primary stats, and attack cadence. It should not become so strong that army composition, expansion, upgrades, and hero ability timing stop mattering.
 
-Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, affixes, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
+Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, affixes, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, Notable Veterans from surviving battle units, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
 
 ## 7. Faction Design
 
@@ -82,7 +82,7 @@ Campaign nodes are data-driven. Each node defines an ID, display copy, node type
 
 Event choices, town services, and Stronghold upgrades are intentionally small data objects, not a city-builder or vendor engine. Choices and services can require campaign resources, hero level, completed nodes, owned items, or faction reputation; pay campaign resource costs; grant XP, items, resources, modifiers, reputation, or node unlocks; and either complete the node or keep it open. Town services default to keeping the node open and can be repeatable or once-only purchases. Stronghold upgrades are persistent campaign purchases that apply only to later battle launches.
 
-Reputation now has simple readable ranks across Free Marches, Common Folk, Old Faith, Ashen Covenant, and the Sylvan Concord placeholder: Friendly at +25, Honored at +50, Disliked at -25, and Hostile at -50. Active effects stay small and data-driven: Common Folk Friendly discounts Marcher Camp services, Free Marches Friendly discounts Stronghold Crown costs, Old Faith Friendly improves Chapel Aether rewards, and Ashen Covenant Hostile adds minor Ashen battle pressure. The campaign map shows values, ranks, active effects, and choice previews before the player commits.
+Reputation now has simple readable ranks across Free Marches, Common Folk, Old Faith, Ashen Covenant, and the Sylvan Concord placeholder: Friendly at +25, Honored at +50, Disliked at -25, and Hostile at -50. Active effects stay small and data-driven: Common Folk Friendly discounts Marcher Camp services, Free Marches Friendly discounts Stronghold Crown costs, Old Faith Friendly improves Chapel Aether rewards, and Ashen Covenant Hostile adds minor Ashen battle pressure. The campaign map shows values, ranks, active effects, and choice previews before the player commits, including the resulting reputation value and rank after each choice.
 
 The first campaign is intentionally small:
 
@@ -95,7 +95,7 @@ The first campaign is intentionally small:
 
 Only battle nodes launch combat. Non-battle nodes either resolve direct rewards, present choices, or present town services in the campaign map. Chapel of the Marches and Refugee Caravan prove the first consequence layer with resource costs, locked choices, reputation shifts, item rewards, and optional node unlocks. Marcher Camp proves the first town sink with repeatable services, one-time item stock, and next-battle modifiers. Stronghold Development proves the first persistent strategic sink, with purchased camp upgrades carried in the campaign save and converted into launch modifiers for future battles.
 
-Stronghold Development currently has two small tiers, not a city-builder. Tier II upgrades require their matching Tier I upgrades and deepen strategy through simple launch effects: faster basic troop training, earlier first-wave warning with better Watchtower reach, a broader starting resource package, a small hero HP/Mana bump, and one extra starting Ranger on the scout path.
+Stronghold Development currently has two small tiers, not a city-builder. Tier II upgrades require their matching Tier I upgrades and deepen strategy through simple launch effects: faster basic troop training, earlier first-wave warning with better Watchtower reach, a broader starting resource package, a small hero HP/Mana bump, and one extra starting Ranger on the scout path. Tier II uses the same data-driven launch modifier path as Tier I; it does not add workers, enemy construction, diplomacy, new maps, or a large tech tree.
 
 ## 10. Skirmish Map Design
 
@@ -118,6 +118,12 @@ Training and research queues pay costs immediately. Training can be canceled for
 ## 12. Unit Design
 
 Units have HP, damage, range, cooldown, speed, armor, cost, train time, role, and XP value. The first roster is intentionally small: Militia, Ranger, Acolyte, Raider, Hexer, and Brute.
+
+Unit Veterancy V1 gives ordinary player battle units a lightweight runtime progression layer. Units track a battle-local instance ID, unit type, XP, rank, kills, damage dealt, and survival state. They earn small XP from dealing damage, getting kills, and surviving victory. Ranks are Recruit, Seasoned, Veteran, and Elite; bonuses are deliberately modest at +5%, +10%, and +15% HP/damage, with +1 armor starting at Veteran. Rank bonuses apply immediately in battle, selected-unit UI shows rank/XP/kills, rank-up feedback appears in combat, and the Results screen summarizes Notable Veterans.
+
+Retinue Camp V1 is the compact save-backed layer on top of veterancy. After a campaign victory, surviving player-owned non-hero, non-building units that are Seasoned or better can be added from Results. Capacity starts at 2 active units, and Training Yard II raises it to 3. A saved retinue record stores unit type, optional name, rank, XP, kills, source battle, acquired timestamp, and active status. The Campaign Map shows a Retinue Camp section with capacity, saved units, rank/type, and a dismiss action.
+
+Campaign battle launches deploy active retinue units near the hero/Command Hall and reapply their saved rank, XP, kills, and stat bonuses. Skirmish does not deploy retinue by default. V1 uses permanent-loss death handling: if a retinue unit dies in a campaign battle, it is removed from the campaign retinue after the battle rather than entering a wounded/recovery system.
 
 ## 13. AI Design
 
@@ -156,6 +162,8 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Hero XP, level-up, mana, three abilities per class, skill point allocation.
 - Passive stat upgrades through Combat, Magic, and Leadership skill trees.
 - Weighted item rewards, modest randomized item affixes, item instance inventory, weapon/armor/trinket equipment, equip previews, unique duplicate conversion, first-clear reward tracking, and reward XP.
+- Unit Veterancy V1: battle-local unit XP, Recruit/Seasoned/Veteran/Elite ranks, modest stat bonuses, selected-unit rank display, rank-up feedback, and victory Results veteran summaries.
+- Retinue Camp V1: up to 2 saved veteran units by default, +1 capacity from Training Yard II, Campaign Map display/dismiss, campaign battle deployment, save/load, and permanent removal on retinue death.
 - Basic data-configured enemy AI.
 - First-pass faction asymmetry: Free Marches baseline identity, Ashen Covenant burn/status pressure, Ashen Fury damage spikes, Smoke March wave speed, and faction style display in setup/campaign/battle start.
 - Data validation tests for content references.
@@ -169,7 +177,7 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Campaign depth beyond the first skeleton: broader shops, diplomacy, multi-step dialogue, invasions, quest chains, larger stronghold trees beyond this compact two-tier slice, and larger world-state consequences.
 - Deeper affix tiers/effect families, broader shops, item crafting, durability, and equipment art.
 - Full class-specific skill trees with choices, prerequisites, and respec rules.
-- Retinue persistence.
+- Larger army management, complex retinue replacement UI, wounded recovery, scars, titles, and unit biography systems.
 - Tilemap-based terrain and full A*.
 - Multiplayer.
 - Production art, animation, sound, music, settings, and tutorial polish.

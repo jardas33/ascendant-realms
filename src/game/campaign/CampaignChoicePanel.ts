@@ -2,7 +2,12 @@ import type { CampaignNodeDefinition, CampaignNodeStatus } from "../core/GameTyp
 import { getCampaignChoiceAvailability } from "../core/CampaignRules";
 import { heroOwnsCatalogItem } from "../core/HeroProgressionRules";
 import { CAMPAIGN_MODIFIER_BY_ID, FACTION_BY_ID, ITEM_BY_ID } from "../data/contentIndex";
-import { getAdjustedCampaignChoiceCost, getAdjustedCampaignChoiceRewards } from "../data/reputation";
+import {
+  formatReputationValue,
+  getAdjustedCampaignChoiceCost,
+  getAdjustedCampaignChoiceRewards,
+  getReputationRank
+} from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 import { formatCampaignNodeList } from "./CampaignNavigation";
 import { escapeHtml, titleCase } from "./CampaignPresentationTypes";
@@ -125,7 +130,13 @@ export function formatChoiceReputationSummary(
     ...(adjustedRewards?.reputationChanges ?? {})
   };
   return Object.entries(reputationChanges)
-    .map(([factionId, amount]) => `${amount > 0 ? "+" : ""}${amount} ${FACTION_BY_ID[factionId]?.name ?? titleCase(factionId)}`)
+    .map(([factionId, amount]) => {
+      const currentValue = Math.round(heroSave.factionReputation[factionId] ?? 0);
+      const nextValue = clampReputationPreview(currentValue + amount);
+      const factionName = FACTION_BY_ID[factionId]?.name ?? titleCase(factionId);
+      const delta = `${amount > 0 ? "+" : ""}${amount} ${factionName}`;
+      return `${delta} (to ${formatReputationValue(nextValue)} ${getReputationRank(nextValue).label})`;
+    })
     .join(", ");
 }
 
@@ -149,4 +160,8 @@ export function formatChoiceModifierSummary(
     rewards.push(`Remove ${CAMPAIGN_MODIFIER_BY_ID[modifierId]?.name ?? titleCase(modifierId)}`);
   });
   return rewards.join(", ");
+}
+
+function clampReputationPreview(value: number): number {
+  return Math.max(-100, Math.min(100, Math.round(value)));
 }

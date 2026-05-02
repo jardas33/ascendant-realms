@@ -2,11 +2,11 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
-## Current First-Campaign Baseline - 2026-05-01 Checkpoint
+## Current First-Campaign Baseline - 2026-05-02 Retinue Balance Pass
 
 The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
 
-- Latest simulator verdict: `npm run playtest:sim` passes with 105 deterministic runs across 5 campaign battle nodes and 7 Stronghold profiles, including a Tier II Quartermaster path for no-upgrade, Tier I, and Tier II comparison; no structural `too_hard` nodes, no `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script.
+- Latest simulator verdict: `npm run playtest:sim` passes with 180 deterministic runs across 5 campaign battle nodes and 12 profiles, including no-retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II; no structural `too_hard` nodes, no structural `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script without retinue.
 - Current starting battle resources: 380 Crowns, 255 Stone, 140 Iron, 75 Aether.
 - Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
 - Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
@@ -15,6 +15,7 @@ The values in this section are the current first-campaign balance baseline. Olde
 - Current Stronghold Development is a small persistent campaign-resource sink with five Tier I upgrades and five compact Tier II follow-ups. Purchased upgrades apply only to later battle launches and do not alter the current battle retroactively.
 - Current reputation hooks are intentionally modest: Friendly starts at +25, Honored at +50, Disliked at -25, and Hostile at -50. Reputation effects adjust preparation costs/rewards or add one minor Ashen pressure unit; they do not create diplomacy, new factions, or alternate maps.
 - Current item affixes are V1 only: small stat packages rolled onto reward-generated item instances, visible in Results/Inventory, and applied only while the item instance is equipped. They do not add crafting, durability, item art, affix rerolls, or proc-heavy loot complexity.
+- Current Unit Veterancy and Retinue Camp are V1 only: ordinary player units can rank up inside a battle, campaign victories can save a small number of surviving Seasoned+ units, and campaign launches redeploy saved retinue units without adding a large army-management layer.
 
 | Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander timing |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -24,7 +25,7 @@ The values in this section are the current first-campaign balance baseline. Olde
 
 - Current map-level pacing is authoritative where present: First Claim currently uses the softened Easy opener from the telemetry follow-up, and Ashen Outpost currently uses the reduced fortress economy, one gate Watchtower, four starting Militia, two Rangers, and Burned Shrine gate-Watchtower weakening.
 - Current human-review focus: Aether Well Ruins, Bandit Hillfort, and Ashen Outpost need feel/readability review before more numeric tuning.
-- Current Stronghold tuning focus: Tier I has readable value in telemetry without an overpowered warning, while Tier II should stay optional and route-specific. Watch Post I/II improve warning/readability telemetry, Quartermaster Stores I/II improve build-order resources, Chapel Corner I/II add modest hero durability, and Ranger Paths II adds only one starting Ranger after the scout path is already purchased.
+- Current Stronghold tuning focus: Tier I has readable value in telemetry without an overpowered warning, while Tier II stays optional and route-specific. Watch Post I/II improve warning/readability telemetry, Quartermaster Stores I/II improve build-order resources, Chapel Corner I/II add modest hero durability, and Ranger Paths II adds one starting Ranger only after the scout path is already purchased.
 
 ## Reputation Hooks
 
@@ -37,7 +38,7 @@ Reputation effects are current as of the 2026-05-01 campaign consequence slice. 
 | Old Faith Friendly | >= 25 | Chapel choices with Aether rewards grant +5 Aether. | Makes chapel trust matter on the support route without adding revival or stronger blessing logic. |
 | Ashen Covenant Hostile | <= -50 | Ashen Covenant battles start with one extra Raider. | Lets openly antagonizing Ashen forces create visible pressure while staying below a full difficulty bump. |
 
-Honored and Disliked ranks currently display in UI but do not add extra effects. That is intentional; future effects should stay sparse and easy to preview.
+Honored and Disliked ranks currently display in UI but do not add extra effects. That is intentional; future effects should stay sparse and easy to preview. Choice cards now show the resulting reputation value and rank, such as `+8 Common Folk (to +33 Friendly)`, so threshold progress is visible without adding a diplomacy screen.
 
 ## Item Affixes V1
 
@@ -69,14 +70,78 @@ Initial affixes:
 
 Deterministic tests use weighted slot-filtered affix selection so item reward e2e can assert exact UI text. Normal play uses the same weights with randomness, and unknown/invalid saved affix IDs are ignored by stat application.
 
+## Unit Veterancy V1
+
+Unit Veterancy is current as of the 2026-05-02 runtime-veterancy slice. It should make ordinary troops feel more personal during a battle and feed the compact Retinue Camp layer without persisting every normal unit.
+
+XP sources:
+
+| Source | XP rule | Balance intent |
+| --- | ---: | --- |
+| Damage dealt | 1 XP per 4 actual damage, minimum 1 for positive damage | Rewards participation without making chip damage explosive. |
+| Kill | Target XP value | Lets finishing blows matter and reuses existing unit/building XP values. |
+| Survival on victory | 12 XP | Highlights surviving units in Results without save persistence. |
+
+Ranks:
+
+| Rank | XP threshold | Bonus |
+| --- | ---: | --- |
+| Recruit | 0 | No bonus. |
+| Seasoned | 55 | +4% max HP, +4% damage. |
+| Veteran | 130 | +8% max HP, +8% damage. |
+| Elite | 230 | +12% max HP, +12% damage, +1 armor. |
+
+Battle-runtime intent:
+
+- Rank bonuses apply immediately to player non-hero units only.
+- Enemy unit ranks are intentionally unused for V1, though the rank data can support them later.
+- Selected-unit UI shows rank, unit XP, kills, HP, damage, range, and armor.
+- Rank-up feedback uses the existing floating/status message path.
+- Victory Results show ranked-up units, the top surviving unit, kills, damage dealt, and campaign-retinue recruitment for eligible campaign victories.
+- Save persistence is intentionally selective: only player-chosen retinue units are written to the campaign save.
+
+Tuning watchpoints:
+
+- If ranks still happen too often in normal early battles, raise Seasoned in another 10 XP step before changing retinue capacity.
+- If ranks are invisible, lower survival XP only after checking that kill XP is credited correctly.
+- Do not widen this into automatic whole-army persistence; the retinue cap and permanent-death rule are the pressure valves.
+
+## Retinue Camp V1
+
+Retinue Camp is current as of the 2026-05-02 persistent-retinue slice. It is a small bridge between battle-local veterancy and campaign identity, not an army roster manager.
+
+Rules:
+
+| Rule | Current value | Balance intent |
+| --- | ---: | --- |
+| Base capacity | 2 active units | Lets a few favorites matter without replacing normal battle production. |
+| Training Yard II capacity | +1 active unit | Gives the drill path a light identity payoff without adding more free bodies. |
+| Eligibility | Surviving player non-hero units, Seasoned or better | Prevents buildings, heroes, enemies, and disposable recruits from filling the camp by default. |
+| Deployment | Campaign battles only | Keeps skirmish setup clean and avoids surprising power in standalone battles. |
+| Death rule | Permanent removal after the battle | Simpler and clearer than wounded timers for V1. |
+
+Telemetry read:
+
+- Retinue profiles are modeled as no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+- Retinue helps Ashen Outpost in the deterministic suite: single-veteran profiles move Ashen to 2 wins / 1 non-win, while mixed and combined paths sweep Ashen but stay flagged as `needs_human_review` rather than structural `too_easy`.
+- No-retinue Ashen Outpost remains beatable by Safe Beginner, so retinue is useful but not required by the structural bot.
+- The simulator now respects the same retinue capacity as campaign launch: 2 active units by default, +1 only after Training Yard II is purchased.
+- No structural too-easy nodes appear in the full simulator output after retinue and combined Stronghold profiles are included.
+
+Tuning watchpoints:
+
+- If early nodes feel trivial with a single Veteran Militia, keep tuning XP thresholds before cutting the retinue cap.
+- If Ashen Outpost feels mandatory with retinue, review whether the issue is mixed-retinue starting body count before changing map structure.
+- Do not add replacement UI, wounded timers, unit equipment, crafting, or broader barracks management until the basic retinue loop has been human-played.
+
 ## Stronghold Development
 
-Stronghold costs and effects are current as of the 2026-05-01 feature slice. These are intentionally modest because the campaign resource bank already feeds Marcher Camp services and event choices.
+Stronghold costs and effects are current as of the 2026-05-01 feature slice. These are intentionally modest because the campaign resource bank already feeds Marcher Camp services and event choices. The Tier I balance response below supersedes the older simulator read where Watch Post I and Quartermaster Stores I did not improve deterministic outcomes.
 
 | Upgrade | Cost | Current implemented effect |
 | --- | --- | --- |
 | Training Yard I | 80 Crowns, 35 Iron | Future battles start with +1 Militia near the Command Hall. |
-| Training Yard II | 70 Crowns, 35 Iron; requires Training Yard I | Militia and Rangers train 10% faster in future battles. |
+| Training Yard II | 70 Crowns, 35 Iron; requires Training Yard I | Militia and Rangers train 10% faster in future battles, and Retinue capacity increases by +1. |
 | Watch Post I | 70 Crowns, 45 Stone | First enemy wave warning arrives 25s earlier, player buildings reveal +80 more vision radius, and player Watchtowers gain +10% attack range. |
 | Watch Post II | 95 Crowns, 55 Stone, 25 Aether; requires Watch Post I | First enemy wave warning arrives 15s earlier on top of Watch Post I, and player Watchtowers reach +20% total attack range. |
 | Quartermaster Stores I | 85 Crowns, 50 Stone | Future battles start with +60 Crowns, +40 Stone, +20 Iron, and +10 Aether; the first player building completes 10% faster. |
@@ -89,7 +154,7 @@ Stronghold costs and effects are current as of the 2026-05-01 feature slice. The
 Balance intent:
 
 - Training Yard I is an early safety valve, not a replacement for building production.
-- Training Yard II improves production tempo instead of adding more free bodies.
+- Training Yard II improves production tempo and adds one Retinue capacity slot instead of adding more free starting bodies.
 - Watch Post I supports fog readability, earlier attack awareness, and defensive tower reach without changing enemy attack timing.
 - Watch Post II doubles down on warning and tower reach, but still does not delay or weaken enemy attacks.
 - Quartermaster Stores I accelerates the first build/train sequence slightly without increasing campaign-bank rewards.
@@ -102,14 +167,22 @@ Balance intent:
 
 Automated Stronghold simulator read:
 
-- The deterministic simulator now runs No Stronghold upgrades, Training Yard path, Defensive Watch Post path, Economy Quartermaster path, Tier II Quartermaster path, Chapel Corner path, and Ranger Paths path across Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
+- The deterministic simulator now runs No Stronghold upgrades, Training Yard path, Defensive Watch Post path, Economy Quartermaster path, Tier II Quartermaster path, Chapel Corner path, Ranger Paths path, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II across Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
 - The simulated campaign bank compares no-upgrade, Tier I Quartermaster, and Tier II Quartermaster paths directly. Tier II Quartermaster becomes affordable before Ashen Outpost on the default reward route.
 - Training Yard I remains useful in the structural bot: it changes the Ashen Outpost profile from 1 win / 2 non-wins to 2 wins / 1 non-win, with the Fast Army script converting from timeout to victory.
+- Watch Post I's weak version was only +80 player-building vision. That was useful to humans in fog but did not move the deterministic scripts. The current Tier I effect makes its value visible through first-wave warning timing, building vision, and player Watchtower reach.
 - Watch Post I now improves 9 runs through earlier first-wave warning telemetry while preserving the same 9-3-3 profile record.
+- Quartermaster Stores I's weak version was +50 Crowns and +30 Stone. That mostly became floated resources instead of changing the first build order. The current Tier I effect adds a broader resource package plus a small first-building construction boost.
 - Quartermaster Stores I now improves 6 runs through earlier Barracks/first-unit timing while preserving the same 9-3-3 profile record.
 - Chapel Corner I improves 1 run through the permanent hero durability/mana profile and stays intentionally modest at 9-2-4.
 - Ranger Paths I plus Training Yard I improves 2 runs, matches Training Yard's 10-3-2 profile record, and avoids the earlier extra-Ranger overpowered read that made Ashen Outpost too easy.
 - No Stronghold path triggers too-expensive, useless-upgrade, overpowered, `too_easy`, or structural `too_hard` warnings after this pass.
+
+### Stronghold Development Tier II - 2026-05-02 Recheck
+
+The Tier II layer remains intentionally small: five upgrades and one matching prerequisite each. Training Yard II uses 10% Militia/Ranger training speed plus one Retinue capacity slot instead of adding another free squad. Watch Post II stacks more warning and total Watchtower reach onto Watch Post I. Quartermaster Stores II expands the starter bundle with Iron and Aether but does not change campaign income. Chapel Corner II stays a simple +8% HP/Mana blessing. Ranger Paths II adds one starting Ranger only after the player has already bought the scout path.
+
+This keeps Tier II useful for route expression without adding workers, enemy construction, diplomacy, new maps, randomized affixes, or a large tech tree.
 
 ### Stronghold Tier I Telemetry Response - 2026-05-01
 

@@ -12,10 +12,12 @@ import {
   renderPrimaryActions
 } from "../results/ResultsNavigation";
 import { renderBattleSummary } from "../results/ResultsObjectiveSummary";
+import { renderRetinueRecruitment, retinueSourceBattleId } from "../results/ResultsRetinuePanel";
 import { renderDefeatTips, renderHeroStats, renderVictoryRewards } from "../results/ResultsRewardPanel";
 import type { ResultsData } from "../results/ResultsTypes";
 import { createResultsViewModel, initialResultsStatus, type ResultsGuidanceViewModel } from "../results/ResultsViewModel";
 import { AudioManager } from "../systems/AudioManager";
+import { addVeteranToRetinue } from "../core/RetinueRules";
 
 export class ResultsScene extends Phaser.Scene {
   private root?: HTMLElement;
@@ -62,6 +64,9 @@ export class ResultsScene extends Phaser.Scene {
     }
     if (action === "keep_inventory") {
       this.keepRewardItem(itemId);
+    }
+    if (action === "add_retinue") {
+      this.addRetinueUnit(button.dataset.unitInstanceId ?? "");
     }
     if (action === "retry") {
       this.retryBattle();
@@ -125,6 +130,29 @@ export class ResultsScene extends Phaser.Scene {
     this.render();
   }
 
+  private addRetinueUnit(unitInstanceId: string): void {
+    if (!this.dataSnapshot) {
+      return;
+    }
+    const entry = this.dataSnapshot.stats.veteranSummary?.notableVeterans.find(
+      (candidate) => candidate.unitInstanceId === unitInstanceId
+    );
+    const save = SaveSystem.load();
+    if (!entry || !save) {
+      this.status = "No eligible veteran was found.";
+      this.render();
+      return;
+    }
+    const result = addVeteranToRetinue(save.campaign, entry, retinueSourceBattleId(this.dataSnapshot));
+    this.status = result.ok
+      ? `${result.retinueUnit?.name ?? entry.unitName} joined the retinue.`
+      : result.reason ?? "That veteran could not join the retinue.";
+    if (result.ok) {
+      SaveSystem.saveGame(this.dataSnapshot.heroSave, result.campaign);
+    }
+    this.render();
+  }
+
   private render(): void {
     if (!this.root || !this.dataSnapshot) {
       return;
@@ -132,6 +160,7 @@ export class ResultsScene extends Phaser.Scene {
     const data = this.dataSnapshot;
     const viewModel = createResultsViewModel(data);
     const displayedData = viewModel.isVictory ? data : { ...data, heroSave: viewModel.xp.afterHero };
+    const currentCampaign = SaveSystem.load()?.campaign;
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell progression-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: viewModel.backgroundId })}>
@@ -149,6 +178,7 @@ export class ResultsScene extends Phaser.Scene {
           </div>
           ${renderBattleSummary(data, viewModel)}
           ${this.renderGuidancePanel(viewModel.guidance)}
+          ${renderRetinueRecruitment(data, currentCampaign)}
           ${
             viewModel.isVictory
               ? renderVictoryRewards(data, {

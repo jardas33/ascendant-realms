@@ -5,7 +5,8 @@ import type {
   ResourceBag,
   ResourceKey,
   Team,
-  UpgradeDefinition
+  UpgradeDefinition,
+  UnitVeterancyRankUpEvent
 } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
@@ -21,6 +22,17 @@ import { getBattleDifficulty } from "../data/battlePacing";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
+import {
+  UNIT_VETERANCY_XP_RULES,
+  createUnitVeterancyBattleSummary,
+  createUnitVeterancyRankUpEvent,
+  getUnitVeterancyRank,
+  getUnitVeterancyXpForDamage,
+  getUnitVeterancyXpForKill,
+  markUnitVeterancySurvived,
+  recordUnitVeterancyDamage,
+  recordUnitVeterancyKill
+} from "../data/unitVeterancy";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
@@ -69,6 +81,19 @@ interface BattleSceneData {
   heroSave?: HeroSaveData;
 }
 
+interface AscendantBattleTestHooks {
+  grantSelectedUnitVeterancyXp?: (amount?: number) => {
+    unitInstanceId: string;
+    unitName: string;
+    rank: string;
+    xp: number;
+    maxHp: number;
+    damage: number;
+    armor: number;
+  } | null;
+  forceBattleVictory?: () => boolean;
+}
+
 export class BattleScene extends Phaser.Scene {
   private heroSave: HeroSaveData = createFallbackHeroSave();
   private launchRequest: BattleLaunchRequest = createSkirmishBattleLaunchRequest(this.heroSave);
@@ -114,6 +139,8 @@ export class BattleScene extends Phaser.Scene {
   private resourceSiteWarningCooldowns = new Map<string, number>();
   private trackedEnemyWaves: TrackedEnemyWave[] = [];
   private nextEnemyWaveId = 1;
+  private unitVeterancyRankUps: UnitVeterancyRankUpEvent[] = [];
+  private lostRetinueUnitIds = new Set<string>();
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
     enemy: new Set<string>()
@@ -143,6 +170,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection(this.initialPlayerSelection());
+    this.installTestHooks();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
   }
 
@@ -216,6 +244,8 @@ export class BattleScene extends Phaser.Scene {
     this.resourceSiteWarningCooldowns = new Map<string, number>();
     this.trackedEnemyWaves = [];
     this.nextEnemyWaveId = 1;
+    this.unitVeterancyRankUps = [];
+    this.lostRetinueUnitIds = new Set<string>();
     this.researchedUpgradeIds = {
       player: new Set<string>(),
       enemy: new Set<string>()
@@ -259,6 +289,7 @@ export class BattleScene extends Phaser.Scene {
       showMessage: (message, x, y, color) => this.showMessage(message, x, y, color),
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
       warnIfCommandHallUnderAttack: (target) => this.warnIfCommandHallUnderAttack(target),
+      handleUnitDamage: (source, target, amount) => this.handleUnitDamage(source, target, amount),
       handleKill: (killer, target) => this.handleKill(killer, target),
       completeSecondaryObjective: (type, targetId, point) => this.completeSecondaryObjective(type, targetId, point),
       selectedRallyBuildings: () => this.selectedRallyBuildings(),
@@ -593,7 +624,49 @@ export class BattleScene extends Phaser.Scene {
         this.completeSecondaryObjective("defeat_unit", target.definition.id, target.position);
       }
     }
+    if (target.team !== "player" && killer instanceof Unit && this.isUnitVeterancyEligible(killer)) {
+      killer.veterancy = recordUnitVeterancyKill(killer.veterancy);
+      const xpValue = target instanceof Unit || target instanceof Building ? target.definition.xpValue : 0;
+      this.awardUnitVeterancyXp(killer, getUnitVeterancyXpForKill(xpValue));
+    }
     this.xpSystem.awardForKill(killer, target);
+  }
+
+  private handleUnitDamage(source: Unit, target: BaseEntity, amount: number): void {
+    if (!this.isUnitVeterancyEligible(source) || target.team === "player") {
+      return;
+    }
+    source.veterancy = recordUnitVeterancyDamage(source.veterancy, amount);
+    this.awardUnitVeterancyXp(source, getUnitVeterancyXpForDamage(amount));
+  }
+
+  private isUnitVeterancyEligible(unit: Unit): boolean {
+    return unit.alive && unit.team === "player" && unit.kind === "unit";
+  }
+
+  private awardUnitVeterancyXp(unit: Unit, amount: number): void {
+    if (!this.isUnitVeterancyEligible(unit) || amount <= 0) {
+      return;
+    }
+    const result = unit.addVeterancyXp(amount);
+    if (result.rankedUp) {
+      const event = createUnitVeterancyRankUpEvent(
+        {
+          state: unit.veterancy,
+          unitName: unit.definition.name
+        },
+        result.previousRank.id,
+        result.currentRank.id
+      );
+      this.unitVeterancyRankUps.push(event);
+      this.showMessage(
+        `${unit.definition.name} reached ${result.currentRank.name}`,
+        unit.position.x,
+        unit.position.y - 48,
+        "#f6e27d"
+      );
+    }
+    this.refreshBattleHud(0);
   }
 
   private completeSecondaryObjective(type: BattleSecondaryObjectiveType, targetId: string, point?: Position): void {
@@ -641,6 +714,11 @@ export class BattleScene extends Phaser.Scene {
 
   private cleanupDeadEntities(): void {
     this.cleanupRallyMarkers();
+    this.units.forEach((unit) => {
+      if (!unit.alive && unit.retinueUnitId) {
+        this.lostRetinueUnitIds.add(unit.retinueUnitId);
+      }
+    });
     this.units = this.units.filter((unit) => unit.alive);
     this.buildings = this.buildings.filter((building) => building.alive);
   }
@@ -666,6 +744,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private endBattle(outcome: "victory" | "defeat"): void {
+    this.finalizeUnitVeterancy(outcome);
     endBattleAndOpenResults({
       scene: this,
       runtime: this.runtime,
@@ -673,6 +752,26 @@ export class BattleScene extends Phaser.Scene {
       launch: this.launch,
       outcome
     });
+  }
+
+  private finalizeUnitVeterancy(outcome: "victory" | "defeat"): void {
+    const survivingUnits = this.units.filter((unit) => this.isUnitVeterancyEligible(unit));
+    survivingUnits.forEach((unit) => {
+      unit.veterancy = markUnitVeterancySurvived(unit.veterancy);
+      if (outcome === "victory") {
+        this.awardUnitVeterancyXp(unit, UNIT_VETERANCY_XP_RULES.survivalXp);
+      }
+    });
+    this.runtime.recordVeterancySummary(
+      createUnitVeterancyBattleSummary(
+        survivingUnits.map((unit) => ({
+          state: unit.veterancy,
+          unitName: unit.definition.name
+        })),
+        this.unitVeterancyRankUps
+      )
+    );
+    this.runtime.recordRetinueLosses([...this.lostRetinueUnitIds]);
   }
 
   private castAbilitySlot(slot: number): void {
@@ -843,7 +942,55 @@ export class BattleScene extends Phaser.Scene {
     }
   }
 
+  private installTestHooks(): void {
+    const target = globalThis as typeof globalThis & { __ASCENDANT_TEST_HOOKS__?: AscendantBattleTestHooks };
+    target.__ASCENDANT_TEST_HOOKS__ = {
+      ...(target.__ASCENDANT_TEST_HOOKS__ ?? {}),
+      grantSelectedUnitVeterancyXp: (amount = 120) => {
+        const selectedUnit =
+          this.selectionSystem
+            .getSelected()
+            .find((entity): entity is Unit => entity instanceof Unit && this.isUnitVeterancyEligible(entity)) ??
+          this.units.find((unit) => this.isUnitVeterancyEligible(unit));
+        if (!selectedUnit) {
+          return null;
+        }
+
+        this.selectionSystem.setSelection([selectedUnit]);
+        this.awardUnitVeterancyXp(selectedUnit, amount);
+        this.refreshBattleHud(0);
+        const rank = getUnitVeterancyRank(selectedUnit.veterancy.rank);
+        return {
+          unitInstanceId: selectedUnit.unitInstanceId,
+          unitName: selectedUnit.definition.name,
+          rank: rank.name,
+          xp: selectedUnit.veterancy.xp,
+          maxHp: selectedUnit.maxHp,
+          damage: selectedUnit.damage,
+          armor: selectedUnit.armor
+        };
+      },
+      forceBattleVictory: () => {
+        if (this.runtime.ended) {
+          return false;
+        }
+        this.endBattle("victory");
+        return true;
+      }
+    };
+  }
+
+  private removeTestHooks(): void {
+    const target = globalThis as typeof globalThis & { __ASCENDANT_TEST_HOOKS__?: AscendantBattleTestHooks };
+    if (!target.__ASCENDANT_TEST_HOOKS__) {
+      return;
+    }
+    delete target.__ASCENDANT_TEST_HOOKS__.grantSelectedUnitVeterancyXp;
+    delete target.__ASCENDANT_TEST_HOOKS__.forceBattleVictory;
+  }
+
   private cleanup(): void {
+    this.removeTestHooks();
     this.inputSystem?.destroy();
     this.uiSystem?.destroy();
     this.buildingSystem?.cancelPlacement();

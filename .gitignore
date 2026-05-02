@@ -6,5 +6,6 @@ test-results/
 blob-report/
 *.log
 .preview-server.pid
+.retinue-preview.pid
 .DS_Store
 Thumbs.db

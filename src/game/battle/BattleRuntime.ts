@@ -6,7 +6,8 @@ import type {
   Position,
   ResourceBag,
   RewardLevelUpSummary,
-  RewardTableDefinition
+  RewardTableDefinition,
+  UnitVeterancyBattleSummary
 } from "../core/GameTypes";
 import { grantBattleRewards, rollBattleRewards } from "../core/HeroProgressionRules";
 import { addResources, cloneResources } from "../core/MathUtils";
@@ -125,6 +126,14 @@ export class BattleRuntime {
     this.stats.xpGained += Math.max(0, amount);
   }
 
+  recordVeterancySummary(summary: UnitVeterancyBattleSummary): void {
+    this.stats.veteranSummary = cloneVeterancySummary(summary);
+  }
+
+  recordRetinueLosses(retinueUnitIds: string[]): void {
+    this.stats.retinueUnitIdsLost = [...new Set(retinueUnitIds)];
+  }
+
   recordSecondaryObjective(objectiveId: string): boolean {
     if (this.stats.completedObjectiveIds.includes(objectiveId)) {
       return false;
@@ -171,7 +180,8 @@ export function createInitialBattleStats(): BattleStats {
     xpGained: 0,
     timeSeconds: 0,
     completedObjectiveIds: [],
-    outcome: "defeat"
+    outcome: "defeat",
+    retinueUnitIdsLost: []
   };
 }
 
@@ -229,7 +239,9 @@ export function completeBattle(
   const stats = {
     ...input.stats,
     completedObjectiveIds: [...input.stats.completedObjectiveIds],
-    outcome: input.outcome
+    outcome: input.outcome,
+    retinueUnitIdsLost: [...(input.stats.retinueUnitIdsLost ?? [])],
+    veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const emptyReward: BattleRewardResult = {
     itemIds: [],
@@ -290,5 +302,13 @@ export function completeBattle(
     reward: granted.reward,
     rewardLevelUp: levelUp,
     shouldSaveHero: true
+  };
+}
+
+function cloneVeterancySummary(summary: UnitVeterancyBattleSummary): UnitVeterancyBattleSummary {
+  return {
+    rankedUpUnits: summary.rankedUpUnits.map((entry) => ({ ...entry })),
+    notableVeterans: summary.notableVeterans.map((entry) => ({ ...entry })),
+    topSurvivor: summary.topSurvivor ? { ...summary.topSurvivor } : undefined
   };
 }

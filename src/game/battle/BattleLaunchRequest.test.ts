@@ -119,6 +119,45 @@ describe("BattleLaunchRequest", () => {
     expect(roadRequest.aiPersonalityId).toBe("raider_rush");
   });
 
+  it("carries sanitized retinue units on campaign launches", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "border_village", {
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:border_village:unit-1",
+          unitTypeId: "militia",
+          rank: "veteran",
+          xp: 120,
+          kills: 2,
+          sourceBattleId: "border_village",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        },
+        {
+          retinueUnitId: "bad",
+          unitTypeId: "missing",
+          rank: "elite",
+          xp: 999,
+          kills: 9,
+          sourceBattleId: "bad",
+          acquiredAt: "bad",
+          status: "active"
+        }
+      ]
+    });
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request.retinueUnits).toHaveLength(1);
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.request.retinueUnits?.[0]).toMatchObject({
+        retinueUnitId: "retinue:border_village:unit-1",
+        unitTypeId: "militia",
+        rank: "veteran"
+      });
+    }
+  });
+
   it("clones an existing request with updated hero progress", () => {
     const request = createSkirmishBattleLaunchRequest(createFallbackHeroSave(), { sourceId: "results_retry" });
     const nextHero = { ...request.heroSave, level: 3 };

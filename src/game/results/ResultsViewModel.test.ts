@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { createSkirmishBattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import type { BattleStats } from "../core/GameTypes";
 import { createItemInstance } from "../core/HeroProgressionRules";
+import { SaveSystem, createFallbackCampaignSave } from "../core/SaveSystem";
 import { createNewHeroSave } from "../data/heroes";
 import { keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
@@ -67,6 +68,73 @@ describe("results scene helpers", () => {
     expect(actions).toContain("Retry");
     expect(actions).toContain("Open Hero Inventory");
     expect(actions).toContain("Campaign Map");
+  });
+
+  it("refreshes campaign retry retinue from the current save", () => {
+    const originalLocalStorage = globalThis.localStorage;
+    Object.defineProperty(globalThis, "localStorage", {
+      configurable: true,
+      value: createMemoryStorage()
+    });
+
+    try {
+      const startingHero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+      SaveSystem.saveGame(startingHero, {
+        ...createFallbackCampaignSave(),
+        started: true,
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:saved:ranger",
+            unitTypeId: "ranger",
+            rank: "veteran",
+            xp: 130,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          }
+        ]
+      });
+      const defeatedHero = {
+        ...startingHero,
+        inventory: [createItemInstance("weathered_command_sword", "test")]
+      };
+      const data = createResultsData({
+        stats: {
+          ...baseStats(),
+          outcome: "defeat"
+        },
+        heroSave: defeatedHero,
+        startingHeroSave: startingHero,
+        launchRequest: createSkirmishBattleLaunchRequest(defeatedHero, {
+          mode: "campaign_node",
+          mapId: "first_claim",
+          difficulty: "easy",
+          campaignNodeId: "border_village",
+          retinueUnits: [
+            {
+              retinueUnitId: "retinue:lost:militia",
+              unitTypeId: "militia",
+              rank: "veteran",
+              xp: 120,
+              kills: 2,
+              sourceBattleId: "border_village",
+              acquiredAt: "2026-05-02T11:00:00.000Z",
+              status: "active"
+            }
+          ]
+        })
+      });
+
+      const retry = createRetryBattleData(data);
+
+      expect(retry.launchRequest.retinueUnits?.map((unit) => unit.retinueUnitId)).toEqual(["retinue:saved:ranger"]);
+    } finally {
+      Object.defineProperty(globalThis, "localStorage", {
+        configurable: true,
+        value: originalLocalStorage
+      });
+    }
   });
 
   it("shows saved hero progress on defeat when battle XP was earned but not saved", () => {
@@ -157,5 +225,23 @@ function baseStats(): BattleStats {
     timeSeconds: 420,
     completedObjectiveIds: [],
     outcome: "victory"
+  };
+}
+
+function createMemoryStorage(): Storage {
+  const data = new Map<string, string>();
+  return {
+    get length() {
+      return data.size;
+    },
+    clear: () => data.clear(),
+    getItem: (key: string) => data.get(key) ?? null,
+    key: (index: number) => [...data.keys()][index] ?? null,
+    removeItem: (key: string) => {
+      data.delete(key);
+    },
+    setItem: (key: string, value: string) => {
+      data.set(key, value);
+    }
   };
 }

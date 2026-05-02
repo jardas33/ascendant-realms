@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
+import { updateRetinueAfterBattle } from "../core/RetinueRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { requireCampaignNode } from "../data/contentIndex";
@@ -30,9 +31,25 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     SaveSystem.saveHero(completion.heroSave);
   }
 
+  if (launch.request.mode === "campaign_node") {
+    const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
+    const campaignWithRetinueUpdates = updateRetinueAfterBattle(
+      storedCampaign,
+      completion.stats.veteranSummary,
+      completion.stats.retinueUnitIdsLost
+    );
+    if (outcome !== "victory") {
+      SaveSystem.saveCampaign(campaignWithRetinueUpdates, startingHeroSave);
+    }
+  }
+
   if (outcome === "victory" && launch.request.mode === "campaign_node" && launch.request.campaignNodeId) {
     const node = requireCampaignNode(launch.request.campaignNodeId);
-    const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
+    const storedCampaign = updateRetinueAfterBattle(
+      SaveSystem.load()?.campaign ?? createStartedCampaignSave(),
+      completion.stats.veteranSummary,
+      completion.stats.retinueUnitIdsLost
+    );
     const unlockedBefore = new Set(storedCampaign.unlockedNodeIds);
     const campaignCompletion = completeCampaignNodeWithRewards({
       campaign: storedCampaign,

@@ -22,6 +22,61 @@ export interface CombatStats {
   armor: number;
 }
 
+export type UnitVeterancyRankId = "recruit" | "seasoned" | "veteran" | "elite";
+
+export interface UnitVeterancyRankDefinition {
+  id: UnitVeterancyRankId;
+  name: string;
+  minXp: number;
+  maxHpMultiplier: number;
+  damageMultiplier: number;
+  armorBonus: number;
+  flavorText?: string;
+}
+
+export interface UnitVeterancyState {
+  unitInstanceId: string;
+  unitTypeId: string;
+  xp: number;
+  rank: UnitVeterancyRankId;
+  kills: number;
+  damageDealt: number;
+  survivedBattle: boolean;
+  rankedUpThisBattle: boolean;
+}
+
+export interface UnitVeterancyRankUpEvent {
+  unitInstanceId: string;
+  unitTypeId: string;
+  unitName: string;
+  fromRank: UnitVeterancyRankId;
+  toRank: UnitVeterancyRankId;
+  xp: number;
+  kills: number;
+  damageDealt: number;
+  survivedBattle: boolean;
+}
+
+export interface UnitVeterancySummaryEntry {
+  unitInstanceId: string;
+  unitTypeId: string;
+  unitName: string;
+  xp: number;
+  rank: UnitVeterancyRankId;
+  rankName: string;
+  kills: number;
+  damageDealt: number;
+  survivedBattle: boolean;
+  rankedUp: boolean;
+  previousRank?: UnitVeterancyRankId;
+}
+
+export interface UnitVeterancyBattleSummary {
+  rankedUpUnits: UnitVeterancySummaryEntry[];
+  notableVeterans: UnitVeterancySummaryEntry[];
+  topSurvivor?: UnitVeterancySummaryEntry;
+}
+
 export interface UnitDefinition {
   id: string;
   name: string;

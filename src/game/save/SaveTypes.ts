@@ -1,4 +1,11 @@
-import type { BattleDifficulty, EquipmentSlot, HeroPrimaryStats, ItemInstance, ResourceBag } from "../core/GameTypes";
+import type {
+  BattleDifficulty,
+  EquipmentSlot,
+  HeroPrimaryStats,
+  ItemInstance,
+  ResourceBag,
+  UnitVeterancyRankId
+} from "../core/GameTypes";
 
 export type EquipmentSlots = Partial<Record<EquipmentSlot, string>>;
 export type AllocatedSkills = Record<string, number>;
@@ -63,6 +70,20 @@ export interface StoredGameSaveV2 {
 export type CurrentStoredGameSave = StoredGameSaveV2;
 export type StoredGameSave = CurrentStoredGameSave;
 
+export type RetinueUnitStatus = "active" | "wounded";
+
+export interface RetinueUnitSaveData {
+  retinueUnitId: string;
+  unitTypeId: string;
+  name?: string;
+  rank: UnitVeterancyRankId;
+  xp: number;
+  kills: number;
+  sourceBattleId: string;
+  acquiredAt: string;
+  status: RetinueUnitStatus;
+}
+
 export interface CampaignSaveData {
   started: boolean;
   difficulty: BattleDifficulty;
@@ -77,5 +98,6 @@ export interface CampaignSaveData {
   townServiceUseCounts: Record<string, number>;
   activeModifierIds: string[];
   strongholdUpgradeRanks: Record<string, number>;
+  retinueUnits: RetinueUnitSaveData[];
   selectedNodeId?: string;
 }

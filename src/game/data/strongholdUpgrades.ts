@@ -37,7 +37,7 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "training_yard_ii",
     name: "Training Yard II",
-    description: "Militia and Rangers train 10% faster in future battles.",
+    description: "Future battles drill faster: Militia and Rangers train 10% faster, and Retinue capacity increases by +1.",
     tier: 2,
     cost: { crowns: 70, iron: 35 },
     prerequisites: { upgradeRanks: { training_yard_i: 1 } },
@@ -52,7 +52,8 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "watch_post_i",
     name: "Watch Post I",
-    description: "Future battles warn of the first enemy wave 25 seconds earlier. Player buildings reveal +80 vision, and Watchtowers fire 10% farther.",
+    description:
+      "Future battles reveal trouble sooner: first-wave warnings arrive 25s earlier, player buildings gain +80 vision, and Watchtowers fire 10% farther.",
     tier: 1,
     cost: { crowns: 70, stone: 45 },
     prerequisites: {},
@@ -68,7 +69,7 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "watch_post_ii",
     name: "Watch Post II",
-    description: "Future battles warn of the first enemy wave 15 more seconds earlier, and player Watchtowers fire 20% farther total.",
+    description: "Future battles extend the warning net: first-wave warnings arrive 15s earlier again, and Watchtowers fire 20% farther total.",
     tier: 2,
     cost: { crowns: 95, stone: 55, aether: 25 },
     prerequisites: { upgradeRanks: { watch_post_i: 1 } },
@@ -83,7 +84,8 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "quartermaster_stores_i",
     name: "Quartermaster Stores I",
-    description: "Future battles start with +60 Crowns, +40 Stone, +20 Iron, and +10 Aether. The first player building finishes 10% faster.",
+    description:
+      "Future battles start stocked: +60 Crowns, +40 Stone, +20 Iron, +10 Aether, and the first player building finishes 10% faster.",
     tier: 1,
     cost: { crowns: 85, stone: 50 },
     prerequisites: {},
@@ -98,7 +100,7 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "quartermaster_stores_ii",
     name: "Quartermaster Stores II",
-    description: "Future battles start with +80 Crowns, +50 Stone, +35 Iron, and +20 Aether.",
+    description: "Future battles add a Tier II stockpile: +80 Crowns, +50 Stone, +35 Iron, and +20 Aether.",
     tier: 2,
     cost: { crowns: 105, stone: 55, iron: 35 },
     prerequisites: { upgradeRanks: { quartermaster_stores_i: 1 } },
@@ -125,7 +127,7 @@ export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
   {
     id: "chapel_corner_ii",
     name: "Chapel Corner II",
-    description: "The hero starts future battles with +8% maximum HP and Mana.",
+    description: "The hero starts future battles with +8% maximum HP and +8% maximum Mana.",
     tier: 2,
     cost: { crowns: 95, aether: 45 },
     prerequisites: { upgradeRanks: { chapel_corner_i: 1 } },

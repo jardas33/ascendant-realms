@@ -12,7 +12,7 @@ describe("ScriptedBattlePlaytest", () => {
   it("runs every current campaign battle node with the three core scripts and stronghold profiles", () => {
     const report = runScriptedPlaytestSuite();
 
-    expect(report.telemetry).toHaveLength(105);
+    expect(report.telemetry).toHaveLength(180);
     expect(new Set(report.telemetry.map((run) => run.nodeId))).toEqual(
       new Set(["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "ashen_outpost"])
     );
@@ -27,9 +27,15 @@ describe("ScriptedBattlePlaytest", () => {
         "economy_quartermaster_path",
         "tier_two_quartermaster_path",
         "chapel_corner_path",
-        "ranger_paths_path"
+        "ranger_paths_path",
+        "retinue_veteran_militia",
+        "retinue_veteran_ranger",
+        "retinue_mixed_veterans",
+        "retinue_training_yard_path",
+        "retinue_quartermaster_path"
       ])
     );
+    expect(report.telemetry.some((run) => run.retinueUnits.includes("Veteran Militia"))).toBe(true);
   });
 
   it("captures opening timing and command telemetry for the tutorial battles", () => {
@@ -161,5 +167,52 @@ describe("ScriptedBattlePlaytest", () => {
       aether: 30
     });
     expect(tierTwoQuartermasterAshen?.startingResources).toMatchObject({ crowns: 700, stone: 480, iron: 290, aether: 170 });
+  });
+
+  it("models retinue profiles without making them mandatory in telemetry", () => {
+    const veteranMilitiaProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "retinue_veteran_militia")!;
+    const veteranRangerProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "retinue_veteran_ranger")!;
+    const mixedProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "retinue_mixed_veterans")!;
+    const retinueTrainingProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "retinue_training_yard_path")!;
+    const retinueQuartermasterProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "retinue_quartermaster_path")!;
+    const report = runScriptedPlaytestSuite({
+      scripts: ["safe_beginner", "greedy_economy", "fast_army"],
+      strongholdProfiles: [
+        noStrongholdProfile,
+        veteranMilitiaProfile,
+        veteranRangerProfile,
+        mixedProfile,
+        retinueTrainingProfile,
+        retinueQuartermasterProfile
+      ]
+    });
+
+    const militiaBorder = report.telemetry.find(
+      (run) => run.strongholdProfileId === "retinue_veteran_militia" && run.nodeId === "border_village"
+    );
+    const rangerAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "retinue_veteran_ranger" && run.nodeId === "ashen_outpost"
+    );
+    const mixedAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "retinue_mixed_veterans" && run.nodeId === "ashen_outpost"
+    );
+    const retinueTrainingAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "retinue_training_yard_path" && run.nodeId === "ashen_outpost"
+    );
+    const retinueQuartermasterAshen = report.telemetry.find(
+      (run) => run.strongholdProfileId === "retinue_quartermaster_path" && run.nodeId === "ashen_outpost"
+    );
+
+    expect(militiaBorder?.retinueUnits).toEqual(["Veteran Militia"]);
+    expect(militiaBorder?.startingUnits.militia).toBeGreaterThan(2);
+    expect(rangerAshen?.retinueUnits).toEqual(["Veteran Ranger"]);
+    expect(mixedAshen?.retinueUnits).toEqual(["Veteran Militia", "Seasoned Ranger"]);
+    expect(retinueTrainingAshen?.strongholdUpgradeIds).toEqual(expect.arrayContaining(["training_yard_i", "training_yard_ii"]));
+    expect(retinueTrainingAshen?.retinueUnits).toEqual(["Veteran Militia", "Seasoned Ranger", "Seasoned Militia"]);
+    expect(retinueQuartermasterAshen?.strongholdUpgradeIds).toEqual(
+      expect.arrayContaining(["quartermaster_stores_i", "quartermaster_stores_ii"])
+    );
+    expect(retinueQuartermasterAshen?.retinueUnits).toEqual(["Veteran Militia", "Seasoned Ranger"]);
+    expect(report.analysis.tooEasyNodes).toEqual([]);
   });
 });

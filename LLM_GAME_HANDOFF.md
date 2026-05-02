@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-01 23:43 -04:00
+Last updated: 2026-05-02 11:51 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,9 +14,9 @@ The current playable loop:
 2. Enter the Border Marches mini-campaign or a standalone skirmish.
 3. Play an RTS battle with hero abilities, capture sites, construction, training queues, upgrades, rally points, pathfinding, fog of war, live minimap, and enemy pressure waves.
 4. Resolve victory or defeat through the shared Results scene.
-5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
+5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, retinue units, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is still a prototype, but it now has a broad playable RTS/RPG spine. The Stronghold Tier I telemetry-response changes, Stronghold Development Tier II slice, campaign consequence/reputation-hook slice, randomized item affixes V1, regenerated telemetry, and updated balance/docs notes were checkpointed in commit `a3dba27bc837092f49c3532926b4dba118cecf45`. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is now marked as the v0.2 prototype baseline plus Unit Veterancy V1 and Retinue Camp V1. It is still a prototype, but it has a broad playable RTS/RPG spine with Stronghold Tier I telemetry-response changes, Stronghold Development Tier II, campaign consequence/reputation hooks, randomized item affixes V1, battle-local unit XP/ranks/results summaries, compact save-backed retinue persistence, regenerated telemetry, a safe HeroProgressionRules module split, release documentation, and updated balance/docs notes. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
 ## Current Git State
 
@@ -32,33 +32,47 @@ Current branch:
 main
 ```
 
-Latest checkpoint commit:
+Latest published commit:
 
 ```text
-a3dba27bc837092f49c3532926b4dba118cecf45
+9cd3205e3d1be23ed967bd51f315bab3d39cc52e
 ```
 
 Latest commits:
 
 ```text
+9cd3205 Update development checkpoint metadata
 a3dba27 Checkpoint Stronghold development and simulator profiles
 a0d3f3c Update development checkpoint metadata
 3f676e1 Checkpoint Stronghold development and campaign simulator profiles
-b952cbe Update development checkpoint metadata
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest Browser Use sanity was rerun after the item affix pass: the rebuilt production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. The checkpoint pass did not add features or rerun Browser Use; Playwright e2e remains the deterministic browser verification surface for the full affixed reward/equip/stat flow.
+- Latest Browser Use sanity was rerun during the pre-feature checkpoint: the current in-app preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. The visible menu still says `Prototype v0.1` even though the docs describe the current v0.2 prototype baseline; treat that as a known copy/version mismatch until product copy is intentionally refreshed. Playwright e2e remains the deterministic browser verification surface for gameplay flows.
 
-Current branch status after the checkpoint commit and before this metadata documentation update:
+Current branch status for this handoff update:
 
 ```text
-## main...origin/main [ahead 1]
+## main...origin/main
 ```
 
-`main` and `origin/main` were synced before the checkpoint commit. The local branch is now ahead by the checkpoint commit `a3dba27bc837092f49c3532926b4dba118cecf45`; this documentation update records that hash as a follow-up metadata change before pushing.
+Before the checkpoint commit is created, `main` and `origin/main` both point at `9cd3205e3d1be23ed967bd51f315bab3d39cc52e`. The worktree contains intentional uncommitted code, test, documentation, and telemetry edits from the Stronghold/reputation/affix follow-up work, Unit Veterancy V1, Retinue Camp V1, the retinue telemetry balance pass, and the HeroProgressionRules refactor. Do not reset or revert those edits unless the user explicitly asks.
+
+Pending checkpoint commit:
+
+```text
+CHECKPOINT_COMMIT_PENDING
+```
+
+Pending branch sync status:
+
+```text
+CHECKPOINT_SYNC_PENDING
+```
+
+Notable current untracked additions include `CHANGELOG.md`, `RELEASE_CHECKLIST.md`, `src/game/core/progression/`, `src/game/core/RetinueRules.ts`, `src/game/core/RetinueRules.test.ts`, `src/game/campaign/RetinuePanel.ts`, `src/game/results/ResultsRetinuePanel.ts`, `src/game/data/unitVeterancy.ts`, and `src/game/data/unitVeterancy.test.ts`. Many existing game, test, docs, telemetry, and e2e files are modified as part of the same intentional feature/refactor stack.
 
 ## Randomized Item Affixes V1 - 2026-05-01
 
@@ -141,7 +155,7 @@ What changed in this pass:
 - Added five data-driven Tier II upgrades in `src/game/data/strongholdUpgrades.ts`: Training Yard II, Watch Post II, Quartermaster Stores II, Chapel Corner II, and Ranger Paths II.
 - Each Tier II upgrade requires its matching Tier I upgrade through `prerequisites.upgradeRanks`.
 - Implemented Tier II effects through existing launch-effect hooks:
-  - Training Yard II: Militia and Rangers train 10% faster.
+  - Training Yard II: Militia and Rangers train 10% faster and Retinue capacity increases by +1.
   - Watch Post II: first enemy wave warning arrives 15s earlier on top of Watch Post I, and player Watchtowers reach +20% total range.
   - Quartermaster Stores II: additional starting battle resources, including Iron and Aether.
   - Chapel Corner II: hero starts with +8% max HP and Mana total.
@@ -195,32 +209,37 @@ Notes:
 
 - `npm run test:e2e` starts Vite through Playwright.
 - The e2e suite intentionally uses one worker for stability.
-- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 16.1 minutes.
+- Use a long shell timeout for e2e. A 3-minute shell timeout is too short; the latest full run took 18.0 minutes.
 - `npm run assets:refresh` is only needed after changing asset registry, manual art, processed sprites, or manifest inputs.
 
 ## Latest Verified Status
 
-Fresh checkpoint verification completed on 2026-05-01 at about 23:43 -04:00 before commit `a3dba27bc837092f49c3532926b4dba118cecf45`:
+Fresh pre-feature checkpoint verification completed on 2026-05-02 at about 11:51 -04:00:
 
 ```text
 npm test
-PASS: 33 test files, 178 tests
+PASS: 35 test files, 194 tests
 
 npm run build
-PASS: TypeScript compile and Vite production build
-Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
 
 npm run test:e2e -- --reporter=line
-PASS: 41 Playwright tests in 15.4m. This suite is slow; use a long timeout.
+PASS: 43 Playwright tests in 18.0m. This suite is slow; use a long timeout. Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 10.7m.
 
 npm run playtest:sim
-PASS: regenerated telemetry after 105 simulated runs across 35 campaign battle nodes; too easy: none; too hard: none; Ashen Outpost beatable: yes; Stronghold warnings: none.
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
 
 Browser Use sanity
-Not rerun during this checkpoint-only pass. The latest Browser Use preview smoke remains the post-affix production preview at http://127.0.0.1:4182/, where the main menu rendered and browser console errors stayed at 0. The full affixed reward/equip/stat flow is covered by Playwright e2e.
+PASS: current in-app preview at http://127.0.0.1:4182/ loads Ascendant Realms main menu, browser console errors: 0. Known copy/version mismatch: visible menu still says `Prototype v0.1`.
+
+Checkpoint commit
+CHECKPOINT_COMMIT_PENDING
+
+Branch sync
+CHECKPOINT_SYNC_PENDING
 ```
 
-Focused item-affix verification on 2026-05-01 during this pass:
+Focused item-affix verification on 2026-05-02 during this pass:
 
 - `npm test -- src/game/data/itemAffixes.test.ts src/game/core/HeroProgressionRules.test.ts src/game/progression/ItemComparison.test.ts src/game/core/SaveSystem.test.ts src/game/data/contentValidation.test.ts src/game/battle/BattleRuntime.test.ts`: passed, 6 test files and 57 tests.
 - The full e2e suite includes affixed reward display, affix persistence after Equip Now, and Inventory stat display including affix contribution.
@@ -312,6 +331,216 @@ PASS: 1 Playwright test; the final full-suite run also passes after targeting th
 ```
 
 ## Most Recent Completed Work
+
+### Clean Checkpoint Verification - 2026-05-02
+
+Goal: create a clean checkpoint before any new feature work, preserving all current dirty work from Unit Veterancy V1, Retinue Camp V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, the retinue telemetry balance pass, release docs, and the HeroProgressionRules split.
+
+What was verified:
+
+```text
+npm test
+PASS: 35 test files, 194 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 43 Playwright tests in 18.0m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, browser console errors: 0; visible menu still labels the build `Prototype v0.1`
+```
+
+Checkpoint commit:
+
+```text
+CHECKPOINT_COMMIT_PENDING
+```
+
+Branch sync status:
+
+```text
+CHECKPOINT_SYNC_PENDING
+```
+
+No gameplay behavior changed during this checkpoint pass; only verification, telemetry regeneration from `npm run playtest:sim`, and checkpoint documentation updates were performed.
+
+### HeroProgressionRules Refactor - 2026-05-02
+
+Goal: split the high-risk hero progression rules file into focused pure-rule modules without changing gameplay, balance, save format, UI, or formulas.
+
+What changed:
+
+- `src/game/core/HeroProgressionRules.ts` is now a 1-line compatibility barrel for existing imports.
+- Added focused modules under `src/game/core/progression/`: `HeroStatRules.ts`, `SkillRules.ts`, `EquipmentStatRules.ts`, `ItemRewardRules.ts`, `AffixRules.ts`, `DuplicateRewardRules.ts`, `LevelingRules.ts`, and `index.ts`.
+- Public imports through `src/game/core/HeroProgressionRules.ts` still work.
+- Important Windows/path note: the compatibility barrel exports from `./progression/index` instead of `./progression` to avoid casing ambiguity with the existing `src/game/core/Progression.ts`.
+- No formulas were intentionally changed. This was extraction-only.
+
+Verification completed for this refactor:
+
+```text
+npm test -- --run src/game/core/HeroProgressionRules.test.ts src/game/progression/ItemComparison.test.ts src/game/data/itemAffixes.test.ts src/game/core/ResultsFlow.test.ts
+PASS: 4 test files, 24 tests
+
+npm test
+PASS: 35 test files, 194 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 43 Playwright tests in 18.9m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+
+git diff --check
+PASS: no whitespace errors; existing `.gitignore` CRLF warning only
+
+Browser Use preview smoke at http://127.0.0.1:4182/
+PASS: main menu visible, browser console errors: 0; visible menu still labels the build `Prototype v0.1`
+```
+
+### Retinue Telemetry Balance Pass - 2026-05-02
+
+Goal: make Unit Veterancy and Retinue Camp V1 useful but not mandatory, using `LLM_GAME_HANDOFF.md`, `BALANCE.md`, `PLAYTEST_TELEMETRY.md`, and `PLAYTEST_TELEMETRY.json` as the source read.
+
+What changed:
+
+- Unit Veterancy thresholds moved from 40 / 100 / 180 XP to 55 / 130 / 230 XP.
+- Rank bonuses were softened from +5% / +10% / +15% to +4% / +8% / +12%.
+- The +1 armor bonus now starts at Elite instead of Veteran, keeping Veteran useful without making every saved Veteran a small armor upgrade.
+- The simulator now includes combined retinue profiles for mixed retinue plus Training Yard II and mixed retinue plus Quartermaster II.
+- Simulator retinue deployment now respects live campaign capacity: 2 active units by default, +1 only after Training Yard II is purchased.
+- Retinue death handling remains the simple V1 permanent-removal rule. No wounded timer, replacement UI, workers, enemy construction, maps, factions, diplomacy, or crafting were added.
+
+Telemetry read after this pass:
+
+- No retinue baseline: 9-3-3 overall; Ashen Outpost is 1-0-2, with Safe Beginner winning and no structural `too_hard`.
+- One Veteran Militia: 10-3-2 overall; Ashen Outpost becomes 2-0-1, useful but not required.
+- One Veteran Ranger: 10-3-2 overall; Ashen Outpost becomes 2-0-1, useful but not required.
+- Mixed retinue: 11-3-1 overall; Ashen Outpost sweeps 3-0 and stays flagged `needs_human_review`.
+- Retinue plus Training Yard II: 11-3-1 overall; third-slot Ashen starts 7 Militia / 3 Rangers and is flagged `needs_human_review`, not structural `too_easy`.
+- Retinue plus Quartermaster II: 11-3-1 overall; Ashen sweep is flagged for human review because starter resources plus mixed retinue are visibly strong.
+- Early nodes produce no structural `too_easy`; Old Stone Road retinue sweeps remain human-review items because the no-retinue baseline already wins all scripts.
+
+### Retinue Camp V1 - 2026-05-02
+
+Goal: let a small number of surviving campaign veterans persist across battles as the hero's personal retinue without adding workers, enemy construction, diplomacy, crafting, new factions, or a large army-management layer.
+
+What changed:
+
+- Added `src/game/core/RetinueRules.ts` for capacity, eligibility, add/dismiss, deployment, survivor updates, and death removal.
+- Campaign retinue capacity is 2 active units by default; Training Yard II adds +1 capacity.
+- Eligible recruits come from campaign victory Results Notable Veterans: player-owned surviving non-hero units that are Seasoned or better.
+- Campaign saves now persist `retinueUnits` with retinue ID, unit type, optional name, rank, XP, kills, source battle, acquired timestamp, and status. Old saves normalize safely to an empty retinue.
+- Results can add eligible surviving veterans to the retinue when capacity is available. Full retinues show current saved units and disable additional adds rather than opening replacement UI.
+- Campaign Map now has a Retinue Camp panel with capacity, saved units, rank/type, and a simple Dismiss button.
+- Campaign battle launches pass active retinue units through `BattleLaunchRequest`; `BattleSceneSpawner` deploys them near the player start with saved rank, XP, kills, and rank stat bonuses.
+- Skirmish stays retinue-free by default.
+- V1 death handling is permanent removal after the battle if a retinue unit dies. There is no wounded recovery timer in this slice.
+- Retry launches refresh campaign retinue from the current save so dead/dismissed retinue units are not reintroduced from an older Results payload.
+- Added deterministic retinue simulator profiles: no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+
+Fresh Retinue Camp V1 verification completed on 2026-05-02:
+
+```text
+npm test
+PASS: 35 test files, 194 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 43 Playwright tests in 18.5m
+
+npm run playtest:sim
+PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
+```
+
+### Unit Veterancy V1 - 2026-05-02
+
+Goal: make ordinary battle units feel like they can become veterans without adding workers, enemy construction, new factions, diplomacy, crafting, maps, or broad army persistence.
+
+What changed:
+
+- Added data-driven unit veterancy rules in `src/game/data/unitVeterancy.ts`.
+- Added battle-local unit veterancy state for runtime unit instances: unit instance ID, unit type ID, XP, rank, kills, damage dealt, survived-battle state, and rank-up state.
+- Added four ranks: Recruit, Seasoned, Veteran, and Elite.
+- Added rank bonuses, currently tuned to Seasoned +4% max HP/damage, Veteran +8% max HP/damage, and Elite +12% max HP/damage plus +1 armor.
+- Units earn XP from actual damage dealt, kills using target XP value, and surviving a victorious battle.
+- Rank bonuses apply immediately to player non-hero units during battle.
+- Selected-unit UI now shows unit rank, unit XP, and kills.
+- Rank-ups use the existing floating/status message path.
+- Victory Results now show Notable Veterans, including ranked-up units, top surviving unit, kills, damage dealt, and campaign retinue recruitment when eligible.
+- Normal units are still not automatically persisted; Retinue Camp V1 only saves selected campaign veterans under a small cap.
+- Added pure tests for thresholds, XP rules, stat bonuses, rank-up behavior, and veteran Results summaries.
+- Added Playwright coverage that grants deterministic unit XP, verifies the selected-unit panel, forces victory, and verifies the Results veteran summary.
+
+Verification passed for this pass:
+
+```text
+npm test
+PASS: 34 test files, 186 tests
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning
+
+npm run test:e2e -- --reporter=line
+PASS: 42 Playwright tests in 16.2m
+
+npm run playtest:sim
+PASS: 105 simulated runs across 35 campaign battle nodes
+```
+
+Next recommended work after Unit Veterancy plus Retinue: human-paced campaign balance and readability review with no retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+
+### v0.2 Prototype Baseline Documentation - 2026-05-02
+
+Goal: make the current Ascendant Realms prototype easy to understand, share, release-check, and continue from without adding gameplay, changing balance, or refactoring code.
+
+What changed:
+
+- Created `CHANGELOG.md` with the v0.2 prototype baseline summary: campaign/skirmish structure, hero progression, construction/training/upgrades, fog/minimap, Stronghold Tier I/II, reputation effects, randomized item affixes V1, automated playtest simulator, and current verification status.
+- Created `RELEASE_CHECKLIST.md` with required release commands, expected v0.2 results, the known Vite chunk warning, optional preview check, and manual QA areas that remain outside automation.
+- Updated `README.md` so setup, feature summary, known limitations, and next-feature prompts match the current baseline instead of older Tier I/early simulator status.
+- Updated `ROADMAP.md` to name Retinue and Unit Veterancy V1 as the next feature milestone at the time of the v0.2 baseline; Retinue Camp V1 has since been implemented, so the next milestone is human-paced campaign balance/readability review.
+- Marked this handoff as the v0.2 prototype baseline and corrected the published branch status to `main...origin/main` at `9cd3205e3d1be23ed967bd51f315bab3d39cc52e`.
+
+Verification passed for this docs-only pass: `npm test` and `npm run build`.
+
+### Campaign Reputation Choice Preview Recheck - 2026-05-02
+
+Goal: make reputation consequences more visible on campaign choices without adding diplomacy, new factions, or a broader faction simulation.
+
+What changed:
+
+- Confirmed the existing rank/effect layer remains data-driven for Free Marches, Common Folk, Old Faith, Ashen Covenant, and Sylvan Concord.
+- Kept the current compact effects: Common Folk Friendly Marcher Camp discount, Free Marches Friendly Stronghold Crown discount, Old Faith Friendly Chapel Aether bonus, and Ashen Covenant Hostile pressure on Ashen nodes.
+- Updated choice reputation previews to show the resulting value and rank after the delta, for example `+8 Common Folk (to +33 Friendly)`.
+- Added pure presentation coverage for threshold-crossing choice previews and updated e2e coverage for the visible preview text.
+- Updated `DESIGN.md`, `BALANCE.md`, and `CONTENT_GUIDE.md` to document the resulting-rank preview rule.
+
+Verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, and `npm run playtest:sim`.
+
+### Stronghold Development Tier II Recheck - 2026-05-02
+
+Goal: keep the existing compact Tier II Stronghold layer clear, optional, and fully verified without adding workers, enemy construction, diplomacy, maps, new factions, or new affix work.
+
+What changed:
+
+- Confirmed the current branch already has all five Tier II upgrades: Training Yard II, Watch Post II, Quartermaster Stores II, Chapel Corner II, and Ranger Paths II.
+- Kept the existing clean implementation choices: 10% Militia/Ranger training speed, stacked earlier warning and Watchtower reach, a moderate resource package with Iron/Aether, +8% hero HP/Mana, and +1 starting Ranger on the scout path.
+- Tightened Tier II UI descriptions so players can read future-battle effects and stacking behavior more easily.
+- Left prerequisite, save normalization, launch-effect support, content validation, e2e coverage, and the `tier_two_quartermaster_path` simulator profile intact.
+- Updated `DESIGN.md`, `BALANCE.md`, `CONTENT_GUIDE.md`, `ROADMAP.md`, and this handoff with the current Tier II framing and verification.
+
+Verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, and `npm run playtest:sim`.
 
 ### Randomized Item Affixes V1
 
@@ -1542,16 +1771,16 @@ Battle helpers live in `src/game/battle/`:
 - `BattleSceneSpawner.ts`
 - `BattleSceneSystems.ts`
 
-Several battle helpers changed during the latest checkpoint and are now committed. Preserve any future dirty edits unless the user explicitly asks for a reset or revert.
+Several battle helpers changed during earlier checkpoint work and the current uncommitted Retinue/Unit Veterancy stack. Preserve future dirty edits unless the user explicitly asks for a reset or revert.
 
 ## Current Tests
 
-Latest verified suite status, refreshed during the 2026-05-01 item affix V1 follow-up:
+Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, the retinue telemetry balance pass, and the HeroProgressionRules refactor:
 
-- `npm test`: passed, 33 test files, 178 tests.
+- `npm test`: passed, 35 test files, 194 tests.
 - `npm run build`: passed with the known Vite large-chunk warning, which is not a failure.
-- `npm run test:e2e -- --reporter=line`: passed, 41 Playwright tests in 16.1m. Use a long timeout.
-- `npm run playtest:sim`: passed, 105 simulated runs across 35 profile-node summaries, with no structural `too_hard` nodes, no `too_easy` nodes, and no Stronghold warnings.
+- `npm run test:e2e -- --reporter=line`: passed, 43 Playwright tests in 18.0m. Use a long timeout.
+- `npm run playtest:sim`: passed, 180 simulated runs across 60 campaign battle node/profile summaries, with no structural `too_hard` nodes, no `too_easy` nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
 Current unit/pure test files:
 
@@ -1564,6 +1793,7 @@ Current unit/pure test files:
 - `src/game/core/FirstExperienceGuidance.test.ts`
 - `src/game/core/HeroProgressionRules.test.ts`
 - `src/game/core/ResultsFlow.test.ts`
+- `src/game/core/RetinueRules.test.ts`
 - `src/game/core/SaveSystem.test.ts`
 - `src/game/core/StrongholdRules.test.ts`
 - `src/game/data/aiPersonalities.test.ts`
@@ -1571,6 +1801,7 @@ Current unit/pure test files:
 - `src/game/data/campaignModifiers.test.ts`
 - `src/game/data/contentValidation.test.ts`
 - `src/game/data/itemAffixes.test.ts`
+- `src/game/data/unitVeterancy.test.ts`
 - `src/game/playtest/ScriptedBattlePlaytest.test.ts`
 - `src/game/progression/ItemComparison.test.ts`
 - `src/game/results/ResultsViewModel.test.ts`
@@ -1608,6 +1839,7 @@ Browser-level tests currently cover:
 - Inventory equip/unequip, including affix display and equipped affix stat contribution.
 - Skill spending.
 - Results Equip Now, including deterministic affixed reward display and affix persistence after equip.
+- Unit Veterancy selected-panel rank display, victory Results Notable Veterans, retinue recruitment, save/load persistence, campaign launch retinue deployment, saved rank bonus preservation, and permanent retinue death removal.
 - Defeat tips.
 - Defeat Results saved-progress display and unsaved battle XP labeling.
 - Ashen Outpost defeat tips for Burned Shrine and Enemy Barracks recovery sequencing.
@@ -1799,28 +2031,36 @@ Known issues and caveats:
 
 Current rough line counts:
 
-- `src/game/playtest/ScriptedBattlePlaytest.ts`: 1795 lines.
-- `src/game/scenes/BattleScene.ts`: 876 lines.
-- `src/game/core/HeroProgressionRules.ts`: 560 lines.
-- `src/game/core/CampaignRules.ts`: 449 lines.
-- `src/game/core/SaveSystem.test.ts`: 452 lines.
-- `src/game/systems/PathfindingGrid.ts`: 397 lines.
-- `src/game/battle/BattleSceneSystems.ts`: 363 lines.
-- `src/game/ai/EnemyAIController.ts`: 354 lines.
-- `src/game/data/campaignNodes.ts`: 310 lines.
-- `src/game/scenes/CampaignMapScene.ts`: 318 lines.
-- `src/game/data/aiPersonalities.ts`: 288 lines.
-- `src/game/scenes/HeroProgressionScene.ts`: 286 lines.
-- `src/game/types/CombatTypes.ts`: 200 lines.
-- `src/game/data/strongholdUpgrades.ts`: 282 lines.
-- `src/game/types/MapTypes.ts`: 118 lines.
-- `src/game/types/CampaignTypes.ts`: 159 lines.
-- `src/game/core/StrongholdRules.ts`: 134 lines.
-- `src/game/types/ItemTypes.ts`: 103 lines.
-- `src/game/data/itemAffixes.ts`: 196 lines.
-- `src/game/campaign/StrongholdPanel.ts`: 109 lines.
-- `src/game/ui/HUD.ts`: 79 lines.
-- `src/game/data/validation/validateContent.ts`: 73 lines.
+- `src/game/playtest/ScriptedBattlePlaytest.ts`: 1806 lines.
+- `src/game/scenes/BattleScene.ts`: 934 lines.
+- `src/game/core/SaveSystem.test.ts`: 469 lines.
+- `src/game/core/CampaignRules.ts`: 420 lines.
+- `src/game/systems/PathfindingGrid.ts`: 354 lines.
+- `src/game/battle/BattleSceneSystems.ts`: 347 lines.
+- `src/game/ai/EnemyAIController.ts`: 318 lines.
+- `src/game/scenes/CampaignMapScene.ts`: 309 lines.
+- `src/game/data/campaignNodes.ts`: 309 lines.
+- `src/game/data/aiPersonalities.ts`: 279 lines.
+- `src/game/data/strongholdUpgrades.ts`: 272 lines.
+- `src/game/scenes/HeroProgressionScene.ts`: 268 lines.
+- `src/game/types/CombatTypes.ts`: 249 lines.
+- `src/game/core/progression/ItemRewardRules.ts`: 212 lines.
+- `src/game/data/itemAffixes.ts`: 182 lines.
+- `src/game/types/CampaignTypes.ts`: 145 lines.
+- `src/game/types/MapTypes.ts`: 121 lines.
+- `src/game/core/StrongholdRules.ts`: 120 lines.
+- `src/game/core/progression/HeroStatRules.ts`: 107 lines.
+- `src/game/campaign/StrongholdPanel.ts`: 105 lines.
+- `src/game/core/progression/SkillRules.ts`: 98 lines.
+- `src/game/types/ItemTypes.ts`: 90 lines.
+- `src/game/core/progression/EquipmentStatRules.ts`: 75 lines.
+- `src/game/ui/HUD.ts`: 72 lines.
+- `src/game/data/validation/validateContent.ts`: 71 lines.
+- `src/game/core/progression/AffixRules.ts`: 37 lines.
+- `src/game/core/progression/LevelingRules.ts`: 29 lines.
+- `src/game/core/progression/DuplicateRewardRules.ts`: 18 lines.
+- `src/game/core/progression/index.ts`: 7 lines.
+- `src/game/core/HeroProgressionRules.ts`: 1 line.
 - `src/game/core/GameTypes.ts`: 1 line.
 - `src/game/data/contentValidation.ts`: 1 line.
 
@@ -1829,18 +2069,19 @@ Risk notes:
 - `BattleScene` is smaller than before but still the highest live-scene integration risk.
 - `ScriptedBattlePlaytest.ts` is now the largest file because it carries deterministic strategies, Stronghold profile planning, telemetry rendering, and analyzer logic; keep future simulator additions focused and tested.
 - `GameTypes.ts` is no longer a large risk file; it is a 1-line compatibility barrel over focused modules.
-- `HeroProgressionRules.ts` mixes skills, equipment, reward, XP, duplicate conversion, and stat math.
+- `HeroProgressionRules.ts` is no longer a large risk file; it is a 1-line compatibility barrel over focused modules in `src/game/core/progression/`.
+- `ItemRewardRules.ts`, `HeroStatRules.ts`, `SkillRules.ts`, `EquipmentStatRules.ts`, `AffixRules.ts`, `DuplicateRewardRules.ts`, and `LevelingRules.ts` now split the hero progression domain. Keep formulas stable unless the user explicitly asks for tuning.
 - `CampaignRules.ts` joins node completion, costs/rewards, modifiers, town services, and reward claims.
 - `HUD.ts` has been reduced to a facade over focused HUD panel modules; selectors and behavior should still be treated as fragile.
 - `contentValidation.ts` is now a compatibility export over focused validators; the validation domain remains important even though the old catch-all file is gone.
 - `StrongholdRules`, `strongholdUpgrades`, `StrongholdPanel`, and the Stronghold hooks in AI/building/training systems are covered, but should stay small until human campaign-economy feel is checked.
 - `reputation.ts`, `CampaignChoicePanel`, `CampaignResourcePanel`, and the reputation hooks inside `CampaignRules`, `StrongholdRules`, and `CampaignMapScene` are covered, but should remain a compact consequence layer rather than growing into diplomacy.
-- `itemAffixes.ts`, `HeroProgressionRules`, `ItemComparison`, `InventoryPanel`, and `ResultsRewardPanel` now form the compact affix path; keep future affix work data-driven and modest unless the user explicitly asks for deeper loot systems.
+- `itemAffixes.ts`, `progression/AffixRules.ts`, `progression/ItemRewardRules.ts`, `ItemComparison`, `InventoryPanel`, and `ResultsRewardPanel` now form the compact affix path; keep future affix work data-driven and modest unless the user explicitly asks for deeper loot systems.
 
 ## Most Fragile Systems
 
 1. `BattleScene` integration: live scene lifecycle, system update order, input mode overlap, fog/minimap/rally wiring.
-2. Results and campaign reward saving: battle rewards, node rewards, affix generation/display, Equip Now, first-clear, duplicate conversion, campaign bank.
+2. Results and campaign reward saving: battle rewards, node rewards, affix generation/display, Equip Now, first-clear, duplicate conversion, campaign bank, and the `progression/ItemRewardRules.ts` handoff into Results.
 3. Save migration/normalization: old localStorage saves, item-instance migration, settings-only saves, campaign state.
 4. Campaign choices and town services: pure rules are covered, but UI crowding can regress.
 5. Fog/minimap visibility: filters rendering and minimap markers.
@@ -1860,12 +2101,12 @@ Run this before a checkpoint commit after gameplay/UI changes:
 5. New Campaign opens hero creation when no playable save exists.
 6. Create Warlord, Arcanist, and Shepherd at least once.
 7. Campaign map opens after creation.
-8. Campaign bank, reputation, and active modifiers display.
+8. Campaign bank, reputation, active modifiers, and Retinue Camp display. On a disposable seeded save, verify retinue capacity, rank/type text, and Dismiss behavior.
 9. Stronghold panel displays resources, purchased/locked/available states, costs, effects, and purchase buttons.
 10. Buy Quartermaster Stores I and II from a resource-seeded campaign and verify the next launched battle starts with the Tier II resource package.
 11. Border Village is available and locked nodes cannot start.
 12. Border Village launches First Claim.
-13. Select hero with click and `H`.
+13. Select hero with click and `H`; select a ranked non-hero unit during a seeded run and verify rank/XP/kills display.
 14. Move units with right-click.
 15. Capture Crown Shrine.
 16. Select Command Hall.
@@ -1887,9 +2128,9 @@ Run this before a checkpoint commit after gameplay/UI changes:
 32. Verify minimap units/buildings/sites/camera/rally/pings and colorblind palette.
 33. Survive or lose the first wave through normal play.
 34. Defeat screen shows contextual tips and retry/campaign return.
-35. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, affixes, node rewards, and campaign bank.
+35. Victory screen shows map, difficulty, time, XP, level progress, battle rewards, affixes, node rewards, campaign bank, Notable Veterans, and Retinue add/skip controls when eligible.
 36. Equip Now changes stats, including affix stats, and persists after leaving Results.
-37. Campaign victory completes Border Village and unlocks Old Stone Road.
+37. Campaign victory completes Border Village and unlocks Old Stone Road; if a retinue unit was added, the next campaign battle deploys it near the hero/Command Hall with saved rank.
 38. Complete Old Stone Road and verify Aether Well Ruins, Bandit Hillfort, Marcher Camp, and Refugee Caravan unlock.
 39. Marcher Camp repeatable services, once-only purchases, costs, locked reasons, and save persistence work.
 40. Refugee Caravan choices and reputation/resource effects work.
@@ -1910,24 +2151,27 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Recommended Next Priorities
 
-1. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, and first attack contact.
-2. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
-3. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, final approach readability, tower pressure, and upper-left objective-panel placement across a full fight.
-4. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
-5. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
-6. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Watch Post II's earlier warning/tower reach and Quartermaster II's broader starter package feel helpful without becoming mandatory.
-7. Reputation hooks, item affixes V1, and Stronghold Tier II are telemetry-clean; the next campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, or broad city-builder systems yet.
-8. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `HeroProgressionRules`, `CampaignRules`, `itemAffixes`, and the reputation helper/rule hooks.
-9. Continue reducing `BattleScene` and `contentValidation.ts` only in small, behavior-preserving slices after checkpoints.
+1. Next feature milestone: human-paced campaign balance/readability review with Retinue Camp V1 included. Test no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+2. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, first attack contact, and whether retinue trivializes the opener.
+3. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
+4. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
+5. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
+6. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
+7. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
+8. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, and Retinue Camp V1 are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, or broad city-builder systems yet.
+9. Treat the next technical risks as `ScriptedBattlePlaytest`, `BattleScene`, `HUD`, `contentValidation`, `CampaignRules`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and the reputation helper/rule hooks. `HeroProgressionRules.ts` itself is now only a compatibility barrel.
 10. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
-- Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, and item affix V1 edits are intentional.
+- Preserve current dirty work unless explicitly told to reset/revert. The checkpoint commit is synced with origin, and the current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, and HeroProgressionRules refactor edits are intentional.
+- Treat the current docs as the v0.2 prototype baseline. Use `CHANGELOG.md` and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
+- The next named milestone is human campaign balance/readability review with Retinue Camp V1 included. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, retinue balance, or HeroProgressionRules refactor work unless the user asks for a targeted polish pass.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
+- `src/game/core/HeroProgressionRules.ts` is intentionally a compatibility barrel. Preserve it for old imports and put future hero progression work in the focused modules under `src/game/core/progression/`.
 - Add or update tests for persistent save fields and data contracts.
 - Use Playwright for browser verification when UI/gameplay changes.
-- Use Browser Use when the user asks for in-app browser inspection or visible local-browser interaction; the latest affix pass used it for a production-preview smoke after deterministic Playwright e2e passed.
+- Use Browser Use when the user asks for in-app browser inspection or visible local-browser interaction; the latest handoff update used it for an in-app preview smoke after deterministic Playwright e2e passed.
 - Keep changes conservative until the current first-hour campaign balance has human playtesting.
 - Never run destructive git commands without explicit user approval.

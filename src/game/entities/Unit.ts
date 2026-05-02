@@ -1,10 +1,26 @@
 import Phaser from "phaser";
 import { unitBattleAssetIds } from "../assets/AssetKeys";
-import type { EntityKind, Position, Team, UnitDefinition } from "../core/GameTypes";
+import type {
+  EntityKind,
+  Position,
+  Team,
+  UnitDefinition,
+  UnitVeterancyRankId,
+  UnitVeterancyState
+} from "../core/GameTypes";
+import {
+  addUnitVeterancyXp,
+  createUnitVeterancyState,
+  getUnitVeterancyRank
+} from "../data/unitVeterancy";
 import { BaseEntity } from "./BaseEntity";
 
 export class Unit extends BaseEntity {
   readonly definition: UnitDefinition;
+  readonly unitInstanceId: string;
+  readonly unitTypeId: string;
+  veterancy: UnitVeterancyState;
+  retinueUnitId?: string;
   attackTargetId?: string;
   moveTarget?: Position;
   attackMove = false;
@@ -14,7 +30,9 @@ export class Unit extends BaseEntity {
   upgradeDamageMultiplier = 1;
   upgradeRangeMultiplier = 1;
   upgradeAttackCooldownMultiplier = 1;
+  veterancyDamageMultiplier = 1;
   factionSpeedMultiplier = 1;
+  veterancyArmorBonus = 0;
   readonly appliedUpgradeIds = new Set<string>();
 
   private body?: Phaser.GameObjects.Arc;
@@ -39,6 +57,9 @@ export class Unit extends BaseEntity {
       armor: definition.stats.armor
     });
     this.definition = definition;
+    this.unitInstanceId = this.id;
+    this.unitTypeId = definition.id;
+    this.veterancy = createUnitVeterancyState(this.id, definition.id);
     const isHero = options.kind === "hero";
     this.createCommonView(scene, definition.name, this.healthColorForTeam(), true);
     const layout = this.addBattleView(scene, options.kind ?? "unit");
@@ -61,7 +82,12 @@ export class Unit extends BaseEntity {
   }
 
   get damage(): number {
-    return this.definition.stats.damage * this.damageBuffMultiplier * this.upgradeDamageMultiplier;
+    return (
+      this.definition.stats.damage *
+      this.damageBuffMultiplier *
+      this.upgradeDamageMultiplier *
+      (this.veterancyDamageMultiplier ?? 1)
+    );
   }
 
   get range(): number {
@@ -88,6 +114,33 @@ export class Unit extends BaseEntity {
     this.damageBuffRemaining = Math.max(this.damageBuffRemaining, duration);
     this.body?.setStrokeStyle(3, 0xffdf75, 1);
     this.sprite?.setTint(0xffe59a);
+  }
+
+  addVeterancyXp(amount: number): ReturnType<typeof addUnitVeterancyXp> {
+    const result = addUnitVeterancyXp(this.veterancy, amount);
+    this.veterancy = result.state;
+    if (result.rankedUp) {
+      this.applyVeterancyRank(result.currentRank.id);
+    }
+    return result;
+  }
+
+  applyVeterancyRank(rankId: UnitVeterancyRankId): void {
+    const rank = getUnitVeterancyRank(rankId);
+    const currentHpRatio = this.maxHp > 0 ? this.hp / this.maxHp : 1;
+    const nextMaxHp = Math.round(this.definition.stats.maxHp * rank.maxHpMultiplier);
+    const armorDelta = rank.armorBonus - this.veterancyArmorBonus;
+
+    this.maxHp = nextMaxHp;
+    this.hp = Math.max(1, Math.min(this.maxHp, Math.round(this.maxHp * currentHpRatio)));
+    this.armor += armorDelta;
+    this.veterancyArmorBonus = rank.armorBonus;
+    this.veterancyDamageMultiplier = rank.damageMultiplier;
+    this.veterancy = {
+      ...this.veterancy,
+      rank: rank.id
+    };
+    this.updateHealthBar();
   }
 
   updateBuffs(deltaSeconds: number): void {

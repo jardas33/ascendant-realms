@@ -9,14 +9,17 @@ Every phase should protect these long-term pillars:
 3. Living campaign map: the world should react with alliances, betrayals, invasions, shops, temples, ruins, contracts, holy orders, cursed lands, and ancient threats.
 4. Data-driven and mod-friendly content: future expansion should mostly mean adding data and assets, not rewriting engine code.
 
-## Current Recommended Next Phase
+## Current Recommended Next Milestone
 
-After the compact Stronghold Development Tier II slice and the first reputation-effect hooks, the best next product step is human-paced validation of the existing mini-campaign routes. Keep workers, enemy construction, diplomacy screens, new factions, broad faction-economy expansion, and larger tech trees parked until the current campaign consequences feel good in play.
+Retinue Camp V1 is now implemented as the small persistent-unit layer after battle-local Unit Veterancy V1. The next milestone should be a human-paced campaign balance and readability pass before adding larger systems.
 
 Recommended focus:
 
-- Human-paced campaign QA for Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost.
-- Human-review the new reputation discounts, Chapel bonus, and Ashen hostile pressure before adding more consequence rules.
+- Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
+- Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
+- Review whether permanent retinue death feels clear enough before adding wounded timers or replacement UI.
+- Keep bonuses modest, visible in UI, and represented in telemetry.
+- Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `HeroProgressionRules`, and `CampaignRules`.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
@@ -52,7 +55,7 @@ Recommended focus:
 - Level-up choices.
 - Scars and titles.
 - Reputation hooks.
-- Retinue units.
+- Unit Veterancy V1 is implemented as battle-local XP/ranks/results summaries. Retinue Camp V1 selectively saves a small number of campaign veterans.
 
 ## Phase 3: Faction Expansion
 
@@ -74,6 +77,7 @@ Recommended focus:
 - Simple data-driven event choices with requirements, costs, rewards, reputation changes, and node unlocks.
 - Reputation ranks and small data-driven effects for Marcher Camp discounts, Stronghold Crown discounts, Chapel Aether bonuses, and Ashen hostile pressure.
 - Stronghold Development with five Tier I upgrades, five matching Tier II upgrades, prerequisite locks, campaign-resource spending, save-backed ranks, and battle-launch effects.
+- Battle-local Unit Veterancy V1 with Notable Veterans in Results, plus Retinue Camp V1 for a capped set of saved campaign veterans.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.

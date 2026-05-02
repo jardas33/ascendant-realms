@@ -6,6 +6,7 @@ import type {
   Position,
   ResourceBag,
   StrongholdUpgradeId,
+  CombatStats,
   UnitDefinition
 } from "../core/GameTypes";
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
@@ -38,7 +39,8 @@ import {
   strongholdLaunchModifierId,
   type StrongholdBattleEffects
 } from "../data/strongholdUpgrades";
-import type { HeroSaveData } from "../save/SaveTypes";
+import { applyUnitVeterancyStatBonuses, getUnitVeterancyRank } from "../data/unitVeterancy";
+import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
 
 export type PlaytestScriptId = "safe_beginner" | "greedy_economy" | "fast_army";
 export type PlaytestResult = "victory" | "defeat" | "timeout";
@@ -50,7 +52,12 @@ export type PlaytestStrongholdProfileId =
   | "economy_quartermaster_path"
   | "tier_two_quartermaster_path"
   | "chapel_corner_path"
-  | "ranger_paths_path";
+  | "ranger_paths_path"
+  | "retinue_veteran_militia"
+  | "retinue_veteran_ranger"
+  | "retinue_mixed_veterans"
+  | "retinue_training_yard_path"
+  | "retinue_quartermaster_path";
 
 export interface PlaytestScenarioDefinition {
   nodeId: string;
@@ -62,6 +69,7 @@ export interface PlaytestStrongholdProfileDefinition {
   name: string;
   description: string;
   targetUpgradeIds: StrongholdUpgradeId[];
+  retinueUnits?: RetinueUnitSaveData[];
 }
 
 interface PlaytestStrongholdNodePlan {
@@ -70,6 +78,7 @@ interface PlaytestStrongholdNodePlan {
   targetUpgradeIds: StrongholdUpgradeId[];
   purchasedUpgradeIds: StrongholdUpgradeId[];
   purchaseNotes: string[];
+  retinueUnits: RetinueUnitSaveData[];
 }
 
 export interface PlaytestRewardTelemetry {
@@ -88,6 +97,7 @@ export interface PlaytestTelemetry {
   strongholdUpgradeIds: StrongholdUpgradeId[];
   strongholdPurchaseNotes: string[];
   strongholdEffects: StrongholdBattleEffects;
+  retinueUnits: string[];
   nodeId: string;
   nodeName: string;
   mapId: string;
@@ -223,6 +233,7 @@ interface BattleDriverState {
   strongholdPlan: PlaytestStrongholdNodePlan;
   heroMaxHpMultiplier: number;
   heroMaxManaMultiplier: number;
+  retinueStrengthBonus: number;
   enemyWarningLeadSeconds: number;
   watchtowerRangeMultiplier: number;
   firstBuildingConstructionTimeMultiplier: number;
@@ -299,6 +310,55 @@ export const DEFAULT_PLAYTEST_STRONGHOLD_PROFILES: PlaytestStrongholdProfileDefi
     name: "Ranger Paths path",
     description: "Buys Training Yard I and Ranger Paths I when normal campaign rewards can fund them.",
     targetUpgradeIds: ["training_yard_i", "ranger_paths_i"]
+  },
+  {
+    id: "retinue_veteran_militia",
+    name: "Retinue: Veteran Militia",
+    description: "Baseline campaign battles with one saved Veteran Militia deployed from the retinue.",
+    targetUpgradeIds: [],
+    retinueUnits: [
+      createSimRetinueUnit("sim-retinue-veteran-militia", "militia", "veteran", 140, 3)
+    ]
+  },
+  {
+    id: "retinue_veteran_ranger",
+    name: "Retinue: Veteran Ranger",
+    description: "Baseline campaign battles with one saved Veteran Ranger deployed from the retinue.",
+    targetUpgradeIds: [],
+    retinueUnits: [
+      createSimRetinueUnit("sim-retinue-veteran-ranger", "ranger", "veteran", 140, 3)
+    ]
+  },
+  {
+    id: "retinue_mixed_veterans",
+    name: "Retinue: Mixed Veterans",
+    description: "Baseline campaign battles with one Veteran Militia and one Seasoned Ranger deployed from the retinue.",
+    targetUpgradeIds: [],
+    retinueUnits: [
+      createSimRetinueUnit("sim-retinue-mixed-militia", "militia", "veteran", 140, 3),
+      createSimRetinueUnit("sim-retinue-mixed-ranger", "ranger", "seasoned", 65, 1)
+    ]
+  },
+  {
+    id: "retinue_training_yard_path",
+    name: "Retinue + Training Yard II",
+    description: "Mixed retinue pressure combined with Training Yard I and II, including the third capacity slot once affordable.",
+    targetUpgradeIds: ["training_yard_i", "training_yard_ii"],
+    retinueUnits: [
+      createSimRetinueUnit("sim-retinue-yard-militia", "militia", "veteran", 140, 3),
+      createSimRetinueUnit("sim-retinue-yard-ranger", "ranger", "seasoned", 65, 1),
+      createSimRetinueUnit("sim-retinue-yard-second-militia", "militia", "seasoned", 65, 1)
+    ]
+  },
+  {
+    id: "retinue_quartermaster_path",
+    name: "Retinue + Quartermaster II",
+    description: "Mixed retinue pressure combined with the Quartermaster I and II starter-resource path.",
+    targetUpgradeIds: ["quartermaster_stores_i", "quartermaster_stores_ii"],
+    retinueUnits: [
+      createSimRetinueUnit("sim-retinue-quartermaster-militia", "militia", "veteran", 140, 3),
+      createSimRetinueUnit("sim-retinue-quartermaster-ranger", "ranger", "seasoned", 65, 1)
+    ]
   }
 ];
 
@@ -334,7 +394,8 @@ export function runScriptedBattlePlaytest(options: {
     createCampaignBattleLaunchRequest(heroSave, node, {
       difficulty: options.scenario.expectedDifficulty,
       aiPersonalityId: node.aiPersonalityId,
-      modifiers: strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) }))
+      modifiers: strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) })),
+      retinueUnits: strongholdPlan.retinueUnits
     })
   );
   const driver = new ScriptedBattleDriver({
@@ -362,7 +423,8 @@ function buildStrongholdProfileNodePlans(
       profileName: profile.name,
       targetUpgradeIds: [...profile.targetUpgradeIds],
       purchasedUpgradeIds: [...purchasedUpgradeIds],
-      purchaseNotes
+      purchaseNotes,
+      retinueUnits: deployableRetinueForProfile(profile.retinueUnits ?? [], purchasedUpgradeIds)
     };
     const node = requireCampaignNode(scenario.nodeId);
     addResources(campaignBank, node.rewards.resources ?? {});
@@ -405,8 +467,36 @@ function noStrongholdPlan(): PlaytestStrongholdNodePlan {
     profileName: "No Stronghold upgrades",
     targetUpgradeIds: [],
     purchasedUpgradeIds: [],
-    purchaseNotes: []
+    purchaseNotes: [],
+    retinueUnits: []
   };
+}
+
+function createSimRetinueUnit(
+  retinueUnitId: string,
+  unitTypeId: string,
+  rank: RetinueUnitSaveData["rank"],
+  xp: number,
+  kills: number
+): RetinueUnitSaveData {
+  return {
+    retinueUnitId,
+    unitTypeId,
+    rank,
+    xp,
+    kills,
+    sourceBattleId: "playtest_retinue",
+    acquiredAt: "2026-05-02T00:00:00.000Z",
+    status: "active"
+  };
+}
+
+function deployableRetinueForProfile(
+  retinueUnits: RetinueUnitSaveData[],
+  purchasedUpgradeIds: StrongholdUpgradeId[]
+): RetinueUnitSaveData[] {
+  const capacity = 2 + (purchasedUpgradeIds.includes("training_yard_ii") ? 1 : 0);
+  return retinueUnits.filter((unit) => unit.status === "active").slice(0, capacity);
 }
 
 export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAnalysis {
@@ -503,6 +593,9 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Stronghold profiles are telemetry-only simulation paths: upgrades are purchased from simulated campaign-node resources when affordable, then applied as battle-launch effects.");
   lines.push("- Stronghold telemetry now covers every Tier I path plus a Tier II Quartermaster path for no-upgrade, Tier I, and Tier II comparison.");
   lines.push("- Watch Post now models earlier first-wave warning and better Watchtower reach; Quartermaster now models a broader starter bundle and faster first player building construction.");
+  lines.push("- Retinue telemetry now covers no retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.");
+  lines.push("- The simulator now applies the same active retinue capacity used by campaign launches: 2 units by default, +1 only after Training Yard II is purchased.");
+  lines.push("- Unit Veterancy thresholds were raised to 55 / 130 / 230 XP, rank stat multipliers were softened to +4% / +8% / +12%, and the armor bonus now starts at Elite.");
   lines.push("");
   lines.push("## Stronghold Profile Verdicts");
   lines.push("");
@@ -538,14 +631,14 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Profile | Node | Script | Upgrades | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
+    "| Profile | Node | Script | Upgrades | Retinue | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
       `| ${run.strongholdProfileName} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
         run.strongholdUpgradeIds
-      )} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
+      )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
         run.startingResources
       )} | ${run.battleResult} | ${formatTime(run.battleDurationSeconds)} | ${
         run.firstWaveSurvived ? "yes" : "no"
@@ -600,6 +693,13 @@ class ScriptedBattleDriver {
     strongholdEffects.extraPlayerUnitIds.forEach((unitId) => {
       startingUnits[unitId] = (startingUnits[unitId] ?? 0) + 1;
     });
+    options.strongholdPlan.retinueUnits.forEach((unit) => {
+      startingUnits[unit.unitTypeId] = (startingUnits[unit.unitTypeId] ?? 0) + 1;
+    });
+    const retinueStrengthBonus = options.strongholdPlan.retinueUnits.reduce(
+      (total, unit) => total + retinueStrengthBonusForUnit(unit),
+      0
+    );
     this.heroSave = options.heroSave;
     this.state = {
       node: options.node,
@@ -632,6 +732,7 @@ class ScriptedBattleDriver {
       strongholdPlan: options.strongholdPlan,
       heroMaxHpMultiplier: strongholdEffects.heroMaxHpMultiplier,
       heroMaxManaMultiplier: strongholdEffects.heroMaxManaMultiplier,
+      retinueStrengthBonus,
       enemyWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds,
       watchtowerRangeMultiplier: strongholdEffects.watchtowerRangeMultiplier,
       firstBuildingConstructionTimeMultiplier: strongholdEffects.firstBuildingConstructionTimeMultiplier,
@@ -644,6 +745,7 @@ class ScriptedBattleDriver {
         strongholdUpgradeIds: [...options.strongholdPlan.purchasedUpgradeIds],
         strongholdPurchaseNotes: [...options.strongholdPlan.purchaseNotes],
         strongholdEffects: cloneStrongholdBattleEffects(strongholdEffects),
+        retinueUnits: options.strongholdPlan.retinueUnits.map(formatRetinueTelemetry),
         nodeId: options.node.id,
         nodeName: options.node.name,
         mapId: options.map.id,
@@ -872,7 +974,8 @@ class ScriptedBattleDriver {
       createCampaignBattleLaunchRequest(heroSave, this.state.node, {
         modifiers: this.state.strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({
           id: strongholdLaunchModifierId(upgradeId)
-        }))
+        })),
+        retinueUnits: this.state.strongholdPlan.retinueUnits
       })
     );
     const runtime = createBattleRuntime({ launch });
@@ -1122,7 +1225,7 @@ class ScriptedBattleDriver {
     const unitScore = Object.entries(this.state.playerUnits).reduce((total, [unitId, count]) => {
       return total + unitStrength(requireUnit(unitId)) * count;
     }, 0);
-    return (unitScore + heroStrength(this.heroSave) * this.state.heroMaxHpMultiplier) * (1 + upgrades * 0.045);
+    return (unitScore + this.state.retinueStrengthBonus + heroStrength(this.heroSave) * this.state.heroMaxHpMultiplier) * (1 + upgrades * 0.045);
   }
 
   private enemyBaseDefenseStrength(): number {
@@ -1443,7 +1546,11 @@ function summarizeNode(runs: PlaytestTelemetry[]): PlaytestNodeSummary {
   const verdict = nodeVerdict(runs, victories, defeats, timeouts, safeRouteWon, fairOpening);
   const notes: string[] = [];
   if (victories === runs.length && first.nodeId !== "border_village") {
-    notes.push("All scripted strategies won; verify this node is not over-rewarding broad openings.");
+    notes.push(
+      first.strongholdProfileId.startsWith("retinue_")
+        ? "Retinue profile swept this node; review whether saved veterans feel helpful or too mandatory in human play."
+        : "All scripted strategies won; verify this node is not over-rewarding broad openings."
+    );
   }
   if (victories === 0) {
     notes.push("No scripted strategy won; this is a structural difficulty risk before deeper tuning.");
@@ -1500,6 +1607,9 @@ function nodeVerdict(
     return "too_hard";
   }
   if (nodeId !== "border_village" && victories === runs.length && runs.every((run) => run.unitsLost <= 1)) {
+    if (runs[0]?.strongholdProfileId.startsWith("retinue_")) {
+      return "needs_human_review";
+    }
     return "too_easy";
   }
   if (nodeId === "border_village" && victories >= 2) {
@@ -1662,8 +1772,17 @@ function firstAttackTime(node: CampaignNodeDefinition, firstAttackDelay: number)
 }
 
 function unitStrength(unit: UnitDefinition): number {
-  const rangeFactor = unit.stats.range >= 120 ? 1.22 : 1;
-  return unit.stats.maxHp / 22 + (unit.stats.damage / unit.stats.attackCooldown) * rangeFactor + unit.stats.armor * 1.6;
+  return unitStrengthFromStats(unit.stats);
+}
+
+function unitStrengthFromStats(stats: CombatStats): number {
+  const rangeFactor = stats.range >= 120 ? 1.22 : 1;
+  return stats.maxHp / 22 + (stats.damage / stats.attackCooldown) * rangeFactor + stats.armor * 1.6;
+}
+
+function retinueStrengthBonusForUnit(unit: RetinueUnitSaveData): number {
+  const definition = requireUnit(unit.unitTypeId);
+  return Math.max(0, unitStrengthFromStats(applyUnitVeterancyStatBonuses(definition.stats, unit.rank)) - unitStrength(definition));
 }
 
 function heroStrength(hero: HeroSaveData): number {
@@ -1765,6 +1884,10 @@ function formatUnitCounts(units: Record<string, number>): string {
 
 function formatUpgradeList(upgradeIds: StrongholdUpgradeId[]): string {
   return upgradeIds.length > 0 ? upgradeIds.map((upgradeId) => STRONGHOLD_UPGRADE_BY_ID[upgradeId].name).join(", ") : "none";
+}
+
+function formatRetinueTelemetry(unit: RetinueUnitSaveData): string {
+  return `${getUnitVeterancyRank(unit.rank).name} ${titleCase(unit.unitTypeId)}`;
 }
 
 function listLine(label: string, values: string[]): string {

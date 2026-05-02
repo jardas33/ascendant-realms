@@ -84,6 +84,7 @@ export function createFallbackCampaignSave(): CampaignSaveData {
     townServiceClaimedIds: [],
     townServiceUseCounts: {},
     activeModifierIds: [],
-    strongholdUpgradeRanks: {}
+    strongholdUpgradeRanks: {},
+    retinueUnits: []
   };
 }

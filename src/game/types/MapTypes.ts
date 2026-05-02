@@ -1,3 +1,4 @@
+import type { UnitVeterancyBattleSummary } from "./CombatTypes";
 import type { ResourceBag, ResourceKey } from "./EconomyTypes";
 import type { Position, Team } from "./UITypes";
 
@@ -129,4 +130,6 @@ export interface BattleStats {
   timeSeconds: number;
   completedObjectiveIds: string[];
   outcome: "victory" | "defeat";
+  veteranSummary?: UnitVeterancyBattleSummary;
+  retinueUnitIdsLost?: string[];
 }

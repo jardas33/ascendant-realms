@@ -12,6 +12,37 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 6. Add `prerequisites` if it should require a completed building or researched upgrade.
 7. Run `npm run test` to make sure the new ID is valid everywhere.
 
+## Tune Unit Veterancy
+
+1. Open `src/game/data/unitVeterancy.ts`.
+2. Tune only one axis at a time: rank thresholds, XP source rules, or rank stat bonuses.
+3. Keep ranks to the current V1 set unless you are also updating UI and Results copy: Recruit, Seasoned, Veteran, and Elite.
+4. Keep bonuses modest. V1 rank bonuses are percentages to max HP and damage, plus a small armor bonus at Veteran/Elite.
+5. Keep automatic persistence out of this file. Retinue Camp saves only selected campaign veterans through `src/game/core/RetinueRules.ts`.
+6. If you add a new XP source, wire it through battle systems and add pure tests before using it in e2e.
+7. Update `src/game/data/unitVeterancy.test.ts`, battle Results coverage, and Playwright coverage when rank behavior changes.
+8. Run `npm test` and an e2e battle HUD/Results flow before relying on the new tuning.
+
+Current V1 behavior:
+
+- Damage dealt grants 1 XP per 4 actual damage, minimum 1 for positive damage.
+- Kills grant the defeated target's existing XP value.
+- Surviving a victory grants 12 XP.
+- Rank bonuses apply immediately to player non-hero units.
+- Selected-unit UI shows rank, unit XP, and kills.
+- Results show Notable Veterans, and campaign victories can add eligible Seasoned+ survivors to the Retinue Camp.
+
+## Tune Retinue Camp
+
+1. Open `src/game/core/RetinueRules.ts` for capacity, eligibility, add/dismiss, deployment, and death-removal behavior.
+2. Keep base capacity small. Current capacity is 2 active units, with +1 from Training Yard II.
+3. Keep eligibility narrow: player-owned surviving units, not heroes, not buildings, preferably Seasoned or better.
+4. Retinue save shape lives in `src/game/save/SaveTypes.ts`; normalize old or malformed saves in `src/game/save/SaveNormalization.ts`.
+5. Results recruitment UI lives in `src/game/results/ResultsRetinuePanel.ts`; Campaign Map display lives in `src/game/campaign/RetinuePanel.ts`.
+6. Campaign battle deployment passes through `BattleLaunchRequest` and `BattleSceneSpawner`; skirmish should stay retinue-free unless a future task explicitly changes it.
+7. Current death rule is permanent removal after a battle when a retinue unit dies. Do not add wounded recovery until there is a concrete UI/test plan.
+8. Update `src/game/core/RetinueRules.test.ts`, save tests, launch tests, Playwright retinue deployment coverage, and simulator profiles if retinue rules change.
+
 ## Add A New Building
 
 1. Open `src/game/data/buildings.ts`.
@@ -183,6 +214,7 @@ Reputation guidance:
 - Rank thresholds are shared by every tracked faction: Friendly at 25, Honored at 50, Disliked at -25, and Hostile at -50.
 - Small reputation effects live in `src/game/data/reputation.ts`; add effects there instead of hard-coding campaign UI or battle launch behavior.
 - Current supported effect shapes discount Marcher Camp choice costs, discount Stronghold Crown costs, add a Chapel Aether bonus, or add the Ashen hostile pressure launch modifier.
+- Choice previews should show both the reputation delta and resulting value/rank so players can see threshold consequences before committing.
 - If a new effect references a node, faction, or campaign modifier, update validation and tests so non-coder data edits fail loudly.
 
 Town service guidance:
@@ -215,6 +247,8 @@ Town service guidance:
 8. Purchases persist in `campaign.strongholdUpgradeRanks`, and save normalization filters unknown upgrades for old or edited saves.
 9. If you add a new effect type, update battle launch application, Stronghold UI copy, and `src/game/data/validation/validateStronghold.ts`.
 10. Run `npm test` and at least one e2e flow that opens the Campaign Map before relying on the new upgrade.
+
+Current Tier II pairings are deliberately narrow: Training Yard II speeds Militia/Ranger training and adds +1 Retinue capacity, Watch Post II extends warning and Watchtower range, Quartermaster Stores II adds a moderate Iron/Aether-inclusive starter package, Chapel Corner II raises the hero HP/Mana blessing to 8%, and Ranger Paths II adds one starting Ranger after Ranger Paths I.
 
 ## Add A New Faction
 

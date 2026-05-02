@@ -3,6 +3,7 @@ import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
+import { createUnitVeterancyState } from "../data/unitVeterancy";
 import { Building } from "../entities/Building";
 import { CaptureSite } from "../entities/CaptureSite";
 import { Hero } from "../entities/Hero";
@@ -62,6 +63,7 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
     spawnUnit({ scene, addUnit, unitId: spawn.unitId, team: spawn.team, x: spawn.x, y: spawn.y });
   });
   spawnLaunchModifierUnits({ scene, activeMap, launch, addUnit });
+  spawnRetinueUnits({ scene, activeMap, launch, addUnit });
 
   const captureSites = activeMap.captureSites.map((siteDefinition) => new CaptureSite(scene, siteDefinition));
 
@@ -105,8 +107,9 @@ function spawnUnit(options: {
   team: Team;
   x: number;
   y: number;
+  id?: string;
 }): Unit {
-  const unit = new Unit(options.scene, requireUnit(options.unitId), options.team, options.x, options.y);
+  const unit = new Unit(options.scene, requireUnit(options.unitId), options.team, options.x, options.y, { id: options.id });
   options.addUnit(unit);
   return unit;
 }
@@ -176,5 +179,34 @@ function spawnLaunchModifierUnits(options: {
       x: activeMap.playerStart.x + 92 + (playerExtraCount + index) * 34,
       y: activeMap.playerStart.y + 96
     });
+  });
+}
+
+function spawnRetinueUnits(options: {
+  scene: Phaser.Scene;
+  activeMap: BattleMapDefinition;
+  launch: ResolvedBattleLaunch;
+  addUnit: (unit: Unit) => void;
+}): void {
+  if (options.launch.request.mode !== "campaign_node") {
+    return;
+  }
+  options.launch.request.retinueUnits?.forEach((retinueUnit, index) => {
+    const unit = spawnUnit({
+      scene: options.scene,
+      addUnit: options.addUnit,
+      unitId: retinueUnit.unitTypeId,
+      team: "player",
+      x: options.activeMap.playerStart.x + 92 + index * 34,
+      y: options.activeMap.playerStart.y + 132,
+      id: retinueUnit.retinueUnitId
+    });
+    unit.retinueUnitId = retinueUnit.retinueUnitId;
+    unit.veterancy = {
+      ...createUnitVeterancyState(retinueUnit.retinueUnitId, retinueUnit.unitTypeId, retinueUnit.xp),
+      rank: retinueUnit.rank,
+      kills: retinueUnit.kills
+    };
+    unit.applyVeterancyRank(retinueUnit.rank);
   });
 }
