@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-01 23:22 -04:00
+Last updated: 2026-05-01 23:43 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -16,7 +16,7 @@ The current playable loop:
 4. Resolve victory or defeat through the shared Results scene.
 5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is still a prototype, but it now has a broad playable RTS/RPG spine. The latest clean checkpoint was committed and pushed before this tuning pass. The current dirty worktree is intentional and contains the Stronghold Tier I telemetry-response changes, the Stronghold Development Tier II slice, the campaign consequence/reputation-hook slice, randomized item affixes V1, regenerated telemetry, and updated balance/docs notes. Preserve it. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is still a prototype, but it now has a broad playable RTS/RPG spine. The Stronghold Tier I telemetry-response changes, Stronghold Development Tier II slice, campaign consequence/reputation-hook slice, randomized item affixes V1, regenerated telemetry, and updated balance/docs notes were checkpointed in commit `a3dba27bc837092f49c3532926b4dba118cecf45`. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
 ## Current Git State
 
@@ -32,88 +32,33 @@ Current branch:
 main
 ```
 
-Current HEAD:
+Latest checkpoint commit:
 
 ```text
-a0d3f3c2da636c816f1f081dc7ec58efce470ab8
+a3dba27bc837092f49c3532926b4dba118cecf45
 ```
 
 Latest commits:
 
 ```text
+a3dba27 Checkpoint Stronghold development and simulator profiles
 a0d3f3c Update development checkpoint metadata
 3f676e1 Checkpoint Stronghold development and campaign simulator profiles
 b952cbe Update development checkpoint metadata
-5c97980 Checkpoint automated playtest coverage and first campaign polish
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest Browser Use sanity was rerun after the item affix pass: the rebuilt production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. Playwright e2e remains the deterministic browser verification surface for the full affixed reward/equip/stat flow.
+- Latest Browser Use sanity was rerun after the item affix pass: the rebuilt production preview at `http://127.0.0.1:4182/` showed the Ascendant Realms main menu with browser console errors at 0. The checkpoint pass did not add features or rerun Browser Use; Playwright e2e remains the deterministic browser verification surface for the full affixed reward/equip/stat flow.
 
-Current branch status at this handoff update time:
+Current branch status after the checkpoint commit and before this metadata documentation update:
 
 ```text
-## main...origin/main
- M BALANCE.md
- M CONTENT_GUIDE.md
- M DESIGN.md
- M LLM_GAME_HANDOFF.md
- M PLAYTEST_TELEMETRY.json
- M PLAYTEST_TELEMETRY.md
- M ROADMAP.md
- M src/game/ai/EnemyAIController.test.ts
- M src/game/ai/EnemyAIController.ts
- M src/game/battle/BattleRuntime.test.ts
- M src/game/battle/BattleRuntime.ts
- M src/game/battle/BattleSceneSpawner.ts
- M src/game/battle/BattleSceneSystems.ts
- M src/game/campaign/CampaignChoicePanel.ts
- M src/game/campaign/CampaignMapViewModel.test.ts
- M src/game/campaign/CampaignMapViewModel.ts
- M src/game/campaign/CampaignPresentationTypes.ts
- M src/game/campaign/CampaignResourcePanel.ts
- M src/game/campaign/StrongholdPanel.ts
- M src/game/core/CampaignRules.test.ts
- M src/game/core/CampaignRules.ts
- M src/game/core/HeroProgressionRules.test.ts
- M src/game/core/HeroProgressionRules.ts
- M src/game/core/SaveSystem.test.ts
- M src/game/core/StrongholdRules.test.ts
- M src/game/core/StrongholdRules.ts
- M src/game/data/campaignModifiers.test.ts
- M src/game/data/campaignModifiers.ts
- M src/game/data/contentIndex.ts
- M src/game/data/contentValidation.test.ts
- M src/game/data/strongholdUpgrades.ts
- M src/game/data/validation/ValidationTypes.ts
- M src/game/data/validation/validateCampaign.ts
- M src/game/data/validation/validateContent.ts
- M src/game/data/validation/validateItems.ts
- M src/game/data/validation/validateStronghold.ts
- M src/game/playtest/ScriptedBattlePlaytest.test.ts
- M src/game/playtest/ScriptedBattlePlaytest.ts
- M src/game/progression/EquipmentPanel.ts
- M src/game/progression/InventoryPanel.ts
- M src/game/progression/ItemComparison.test.ts
- M src/game/progression/ItemComparison.ts
- M src/game/results/ResultsRewardPanel.ts
- M src/game/scenes/CampaignMapScene.ts
- M src/game/styles/campaign.css
- M src/game/styles/inventory.css
- M src/game/styles/results.css
- M src/game/systems/BuildingSystem.ts
- M src/game/systems/TrainingSystem.ts
- M src/game/types/CampaignTypes.ts
- M src/game/types/ItemTypes.ts
- M tests/e2e/deep-flow.spec.ts
-?? src/game/data/itemAffixes.test.ts
-?? src/game/data/itemAffixes.ts
-?? src/game/data/reputation.ts
+## main...origin/main [ahead 1]
 ```
 
-`main` and `origin/main` are synced at commit `a0d3f3c2da636c816f1f081dc7ec58efce470ab8`. The local branch now has uncommitted Stronghold Tier I tuning, Tier II development work, compact campaign reputation/consequence work, and item affix V1 work on top of that clean checkpoint.
+`main` and `origin/main` were synced before the checkpoint commit. The local branch is now ahead by the checkpoint commit `a3dba27bc837092f49c3532926b4dba118cecf45`; this documentation update records that hash as a follow-up metadata change before pushing.
 
 ## Randomized Item Affixes V1 - 2026-05-01
 
@@ -255,7 +200,7 @@ Notes:
 
 ## Latest Verified Status
 
-Fresh verification completed for the current randomized item affix V1 worktree on 2026-05-01 at about 23:22 -04:00:
+Fresh checkpoint verification completed on 2026-05-01 at about 23:43 -04:00 before commit `a3dba27bc837092f49c3532926b4dba118cecf45`:
 
 ```text
 npm test
@@ -266,13 +211,13 @@ PASS: TypeScript compile and Vite production build
 Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 41 Playwright tests in 16.1m. This suite is slow; use a long timeout.
+PASS: 41 Playwright tests in 15.4m. This suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: regenerated telemetry has 105 runs across 35 profile-node summaries and 7 Stronghold profiles; no structural too-hard nodes; no too-easy nodes; Ashen Outpost beatable: yes; Stronghold warnings: none.
+PASS: regenerated telemetry after 105 simulated runs across 35 campaign battle nodes; too easy: none; too hard: none; Ashen Outpost beatable: yes; Stronghold warnings: none.
 
 Browser Use sanity
-Rerun against production preview at http://127.0.0.1:4182/. The main menu rendered and browser console errors stayed at 0. The full affixed reward/equip/stat flow is covered by Playwright e2e.
+Not rerun during this checkpoint-only pass. The latest Browser Use preview smoke remains the post-affix production preview at http://127.0.0.1:4182/, where the main menu rendered and browser console errors stayed at 0. The full affixed reward/equip/stat flow is covered by Playwright e2e.
 ```
 
 Focused item-affix verification on 2026-05-01 during this pass:

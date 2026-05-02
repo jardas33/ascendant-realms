@@ -1,12 +1,12 @@
 # Development Checkpoint
 
-Updated: 2026-05-01 21:12 -04:00
+Updated: 2026-05-01 23:43 -04:00
 
 ## Checkpoint Scope
 
-This checkpoint records a clean automated verification pass before more feature work. The repository intentionally had a broad dirty worktree containing useful Stronghold Development V1, campaign simulator profile, HUD split, content-validation split, save, telemetry, documentation, and test coverage changes described in `LLM_GAME_HANDOFF.md`.
+This checkpoint records a clean automated verification pass before more feature work. The repository intentionally had a broad dirty worktree containing Stronghold Tier I telemetry-response tuning, Stronghold Development Tier II, compact campaign reputation/consequence hooks, randomized item affixes V1, regenerated telemetry, documentation, and test coverage changes described in `LLM_GAME_HANDOFF.md`.
 
-No gameplay behavior was changed during this checkpoint pass. After verification, all current dirty work was committed as the Stronghold checkpoint, then this metadata note was updated to record the resulting commit hash.
+No gameplay behavior was changed during this checkpoint pass. After verification, all current dirty work was committed as the checkpoint below, then this metadata note was updated to record the resulting commit hash and verification status.
 
 ## Verification Results
 
@@ -22,9 +22,9 @@ Result:
 
 ```text
 PASS
-32 test files passed
-157 tests passed
-Vitest duration: 7.73s
+33 test files passed
+178 tests passed
+Vitest duration: 6.25s
 ```
 
 ### Production Build
@@ -47,7 +47,7 @@ Known build warning:
 
 ```text
 Some chunks are larger than 500 kB after minification.
-Main JS bundle: 1,812.13 kB minified / 430.15 kB gzip.
+Main JS bundle: 1,829.64 kB minified / 434.84 kB gzip.
 ```
 
 ### Browser E2E
@@ -62,9 +62,9 @@ Result:
 
 ```text
 PASS
-39 Playwright tests passed
-Total duration: 14.2m
-Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 7.9m
+41 Playwright tests passed
+Total duration: 15.4m
+Slow file noted by Playwright: tests/e2e/deep-flow.spec.ts, 8.8m
 ```
 
 ### Playtest Simulation
@@ -79,11 +79,12 @@ Result:
 
 ```text
 PASS
-Simulated 60 runs across 5 campaign battle nodes and 4 Stronghold profiles.
-Generated 20 profile-node summaries.
+Simulated 105 runs across 35 campaign battle nodes.
 No structural too-hard nodes.
-Training Yard I improves the Ashen Outpost profile.
-Watch Post I and Quartermaster Stores I remain deterministic usefulness warnings.
+Too easy: none.
+Too hard: none.
+Ashen Outpost beatable: yes.
+Stronghold warnings: none.
 Regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json.
 ```
 
@@ -92,13 +93,13 @@ Regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json.
 Checkpoint commit hash:
 
 ```text
-3f676e16b6fde65ffdb95c62ef273e78b8179854
+a3dba27bc837092f49c3532926b4dba118cecf45
 ```
 
 Checkpoint commit message:
 
 ```text
-Checkpoint Stronghold development and campaign simulator profiles
+Checkpoint Stronghold development and simulator profiles
 ```
 
 Branch:
@@ -116,8 +117,8 @@ origin https://github.com/jardas33/ascendant-realms.git
 Branch status after completing this checkpoint:
 
 ```text
-After the Stronghold checkpoint commit and before this metadata update, local main was ahead of origin/main by 1 commit.
-This metadata update records the checkpoint hash as a follow-up documentation commit.
+Before this metadata update, local main was ahead of origin/main by 1 checkpoint commit.
+This metadata update records that checkpoint hash as a follow-up documentation commit.
 Push both commits to origin/main so local main and origin/main are synced.
 ```
 
@@ -126,7 +127,7 @@ Push both commits to origin/main so local main and origin/main are synced.
 - Full human-paced Border Village and Old Stone Road playthroughs still need timing and feel checks on Easy.
 - Aether Well Ruins and Bandit Hillfort still need Normal human playtests from a typical early campaign save.
 - Ashen Outpost still needs manual validation with and without Chapel repair.
-- Watch Post I and Quartermaster Stores I are flagged by deterministic telemetry as not improving outcomes; treat this as a human fog/readability and build-order review prompt before changing costs or effects.
+- Automated telemetry currently reports no structural too-hard nodes after the Stronghold Tier II, reputation, and affix checkpoint, but balance remains prototype-level.
 - Audible audio behavior still needs human-ear confirmation.
 - Full real-time victory from first click to enemy base kill remains manual QA.
 - `ScriptedBattlePlaytest.ts` is now the largest file and should be kept focused if simulator coverage grows.
@@ -138,4 +139,4 @@ Push both commits to origin/main so local main and origin/main are synced.
 
 ## Recommended Next Task
 
-Run a human-paced Stronghold and first-hour campaign QA pass before adding new gameplay systems. Focus on Border Village timing, Old Stone Road pressure, Marcher Camp spending choices, Training Yard I feel, Watch Post I fog/readability value, Quartermaster Stores I build-order value, both Normal branch battles, and Ashen Outpost fortress pressure with fog enabled.
+Run a human-paced Stronghold, reputation, affix-reward, and first-hour campaign QA pass before adding new gameplay systems. Focus on Border Village timing, Old Stone Road pressure, Marcher Camp and Stronghold discounts, Tier II purchase feel, affixed reward readability, both Normal branch battles, and Ashen Outpost fortress pressure with fog enabled.
