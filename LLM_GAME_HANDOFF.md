@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-03 01:19 -04:00
+Last updated: 2026-05-03 08:58 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a v0.2.1 prototype baseline candidate. The visible in-game menu still says `Prototype v0.2`, while v0.2.1 documents the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, and permanent Playwright regression coverage for the reported HUD/fog issues. It is still a prototype, but it has a broad playable RTS/RPG spine and a clearer verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The next recommended phase is **v0.3 planning: Chapter 2 vertical slice**. A minimal Chapter 2 scaffold has been started: chapter metadata plus locked/upcoming Cinderfen Road placeholder nodes that cannot launch a missing map. Before adding Chapter 2 gameplay, do a human-paced v0.2.1 readability and balance review focused on retinue usefulness, rival readability, rival rewards/trophies, HUD hover/scroll feel, captured-site fog readability, and Ashen Outpost pressure. Keep follow-up compact; do not move to workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems yet.
+The next recommended milestone is **Chapter 2 vertical slice implementation**. A minimal Chapter 2 scaffold exists: chapter metadata plus locked/upcoming Cinderfen Road placeholder nodes that cannot launch a missing map. Keep Chapter 2 implementation compact; do not move to workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems.
 
 ## Current Git State
 
@@ -37,17 +37,17 @@ main
 Latest checkpoint feature commit:
 
 ```text
-c277675
+2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
 ```
 
 Recent checkpoint stack:
 
 ```text
+2d5b0cd Checkpoint v0.2.1 baseline and Chapter 2 scaffold
 c277675 Update handoff checkpoint stack
 4fb085a Finalize checkpoint sync metadata
 386afa9 Record checkpoint metadata
 5911374 Checkpoint rival persistence rewards and HUD fog polish
-6c210c2 Clarify checkpoint sync metadata
 ```
 
 Known shell/tool note:
@@ -58,24 +58,24 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-## main...origin/main with intentional uncommitted v0.2.1 docs, HUD/fog regression coverage edits, and minimal Chapter 2 scaffold work
+## main...origin/main after pushing checkpoint commit 2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
 ```
 
-The checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was created with message `Checkpoint rival persistence rewards and HUD fog polish` and pushed successfully with `git push origin main`. A later handoff metadata commit `c277675` is the current HEAD. The current worktree contains intentional uncommitted edits for permanent HUD/fog Playwright regression coverage, the small HUD refresh behavior needed by that coverage, the v0.2.1 documentation/readability pass, and the minimal Chapter 2 scaffold. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was created with message `Checkpoint v0.2.1 baseline and Chapter 2 scaffold` and pushed successfully with `git push origin main`. This metadata follow-up records that pushed checkpoint. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
 ```text
-59113746a09f5f1c2cbf053c640a24ab21e92b9b
+2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
 ```
 
 Current branch sync status:
 
 ```text
-Last checkpoint and metadata commits are synced with origin/main. Current `git status -sb` is dirty from intentional v0.2.1 docs, HUD/fog regression coverage edits, readability report/planning docs, and Chapter 2 scaffold edits.
+Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` is pushed to origin/main. After this metadata follow-up is pushed, final `git status -sb` should report `## main...origin/main`.
 ```
 
-The worktree is not clean during the v0.2.1 baseline candidate pass. Preserve the dirty work unless the user explicitly asks for a different git action.
+The worktree is expected to be clean after the checkpoint metadata follow-up push. Preserve future dirty work unless the user explicitly asks for a different git action.
 
 ## v0.2.1 Prototype Baseline Candidate - 2026-05-03
 
@@ -113,9 +113,55 @@ Known risks for v0.2.1:
 
 Recommended next milestones:
 
-1. Human-paced v0.2.1 campaign readability and balance review before adding Chapter 2 gameplay content.
-2. v0.3 Chapter 2 vertical slice implementation only after the scaffold remains green.
-3. Keep future additions compact and data-driven; avoid workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.
+1. Chapter 2 vertical slice implementation.
+2. Keep the implementation compact and data-driven around the existing scaffold.
+3. Keep human-paced v0.2.1 campaign readability and balance review in mind while implementing Chapter 2 content, especially retinue, rival/trophy, HUD/fog, and Ashen Outpost readability.
+4. Avoid workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.
+
+## Clean Checkpoint - 2026-05-03 08:58 -04:00
+
+Scope: checkpoint the v0.2.1 baseline candidate plus the minimal non-playable Chapter 2 scaffold before any Chapter 2 gameplay implementation.
+
+Checkpoint commit:
+
+```text
+2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
+Checkpoint v0.2.1 baseline and Chapter 2 scaffold
+```
+
+Verification:
+
+```text
+npm test
+PASS: 36 test files, 217 tests, latest duration 11.91s
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only
+
+npm run test:e2e -- --reporter=line
+PASS: 49 Playwright tests in 19.2m
+
+npm run playtest:sim
+PASS: 180 deterministic simulated runs across 60 campaign battle nodes
+```
+
+Branch sync status:
+
+```text
+`git fetch origin` completed before commit, and `main` was aligned with `origin/main`.
+Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was pushed successfully to `origin/main`.
+This metadata follow-up should be pushed after this section is committed; final expected status is `## main...origin/main`.
+```
+
+Remaining known risks:
+
+- Human-style readability still matters for retinue recruitment, rival/trophy rewards, HUD hover feel, side-panel scrolling, captured-site fog readability, and Ashen Outpost pressure.
+- The minimal Chapter 2 scaffold has no playable battle content yet; keep the first Chapter 2 implementation small.
+- The Vite production build still reports the known large Phaser chunk warning.
+- Full e2e is slow and should be run with a long timeout.
+- `BattleScene`, `HUD`, `battle-hud.css`, `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RivalRules.ts`, and reward/results save paths remain the highest-risk areas.
+
+Next recommended milestone: Chapter 2 vertical slice implementation.
 
 ## Minimal Chapter 2 Scaffold - 2026-05-03
 
