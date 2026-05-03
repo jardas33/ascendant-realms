@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 22:56 -04:00
+Last updated: 2026-05-02 22:58 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -37,7 +37,7 @@ main
 Latest checkpoint feature commit:
 
 ```text
-Pending: checkpoint commit will be created with message "Checkpoint rival persistence rewards and HUD fog polish" after this docs update.
+59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
 Latest commits:
@@ -58,24 +58,24 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-## main...origin/main with intentional dirty checkpoint work before commit
+## main...origin/main after pushing checkpoint commit 59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
-The next checkpoint is pending creation after the full verification pass below. Before commit, `git status -sb` reported `## main...origin/main` with intentional dirty code, tests, telemetry, and documentation edits for Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, HUD interaction/captured-site fog polish, and this checkpoint documentation. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was created with message `Checkpoint rival persistence rewards and HUD fog polish` and pushed successfully with `git push origin main`. Before commit, `git status -sb` reported `## main...origin/main` with intentional dirty code, tests, telemetry, and documentation edits for Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, HUD interaction/captured-site fog polish, and this checkpoint documentation. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
 ```text
-Pending until commit creation.
+59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
 Current branch sync status:
 
 ```text
-Pending push after checkpoint commit creation.
+Checkpoint commit pushed to origin/main; `git status -sb` reported `## main...origin/main` immediately after that push. This metadata follow-up should be pushed after commit.
 ```
 
-The worktree now contains the verified checkpoint edits listed above. Preserve them unless the user explicitly asks for a different git action.
+The worktree now contains only this metadata follow-up after the verified checkpoint push. Preserve future edits unless the user explicitly asks for a different git action.
 
 ## Full Verification Checkpoint - 2026-05-02 22:56 -04:00
 
@@ -108,7 +108,7 @@ Important verification note:
 Checkpoint commit:
 
 ```text
-Pending until commit creation.
+59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
 ## HUD Interaction And Captured-Site Fog Polish - 2026-05-02
@@ -530,10 +530,10 @@ HUD/fog polish result
 Player-reported command hover flicker, side-panel scroll snap-back, and conquered-site fog readability issues have a focused fix in `HUD.ts`, `battle-hud.css`, and `BattleScene.ts`. Captured player resource sites now provide local vision; routine HUD DOM rebuilds are deferred while the player is interacting with command/objective panels; scroll positions are restored across necessary HUD rebuilds; command/test-hook HUD updates can force a refresh so status and selection copy do not get stuck. Full e2e/sim were rerun in the 2026-05-02 22:56 checkpoint and passed.
 
 Checkpoint commit
-Pending: checkpoint commit will be created with message `Checkpoint rival persistence rewards and HUD fog polish`.
+59113746a09f5f1c2cbf053c640a24ab21e92b9b
 
 Branch sync
-Pending push after checkpoint commit creation. Pre-commit status was `## main...origin/main` with intentional dirty checkpoint work.
+Checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was pushed successfully to `origin/main`. After that push, `git status -sb` reported `## main...origin/main`; this metadata follow-up should be pushed immediately after commit.
 
 Focused item-affix verification on 2026-05-02 during this pass:
 

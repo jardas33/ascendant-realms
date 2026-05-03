@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-02 22:56 -04:00
+Updated: 2026-05-02 22:58 -04:00
 
 ## Checkpoint Scope
 
@@ -105,7 +105,7 @@ Checkpoint rival persistence rewards and HUD fog polish
 Checkpoint commit hash:
 
 ```text
-Pending until the checkpoint commit is created.
+59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
 Branch:
@@ -118,7 +118,9 @@ Branch sync status at verification time:
 
 ```text
 Before the checkpoint commit, git status reported `## main...origin/main` with intentional dirty code, test, telemetry, and documentation edits.
-Push status is pending until the checkpoint commit is created.
+Checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was pushed successfully to `origin/main`.
+After that push, `git status -sb` reported `## main...origin/main`.
+This metadata follow-up records the created checkpoint hash and should be pushed immediately after commit.
 ```
 
 ## Remaining Known Risks
