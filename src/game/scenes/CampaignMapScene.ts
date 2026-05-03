@@ -12,6 +12,7 @@ import {
   refreshCampaignUnlocks
 } from "../core/CampaignRules";
 import { getStrongholdLaunchModifiers, purchaseStrongholdUpgrade } from "../core/StrongholdRules";
+import { getRivalBattleLaunchModifiers } from "../core/RivalRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -36,6 +37,7 @@ import {
   renderReputation
 } from "../campaign/CampaignResourcePanel";
 import { renderRetinuePanel } from "../campaign/RetinuePanel";
+import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
 import { dismissRetinueUnit, retinueDeploymentUnits } from "../core/RetinueRules";
 
@@ -150,7 +152,8 @@ export class CampaignMapScene extends Phaser.Scene {
           modifiers: [
             ...modifierResult.launchModifiers,
             ...getReputationBattleLaunchModifiers(this.heroSave, node),
-            ...getStrongholdLaunchModifiers(this.campaignSave)
+            ...getStrongholdLaunchModifiers(this.campaignSave),
+            ...getRivalBattleLaunchModifiers(this.campaignSave, node)
           ],
           retinueUnits: retinueDeploymentUnits(this.campaignSave)
         })
@@ -267,6 +270,7 @@ export class CampaignMapScene extends Phaser.Scene {
               ${renderCampaignResourceBank(this.campaignSave)}
               ${renderStrongholdPanel(this.campaignSave, this.heroSave)}
               ${renderRetinuePanel(this.campaignSave)}
+              ${renderRivalIntelPanel(this.campaignSave)}
               <h2>Reputation</h2>
               ${renderReputation(viewModel.reputation)}
               <h2>Active Modifiers</h2>

@@ -201,6 +201,57 @@ export const ITEMS: ItemDefinition[] = [
     }
   },
   {
+    id: "ember_raider_blade",
+    name: "Ember Raider Blade",
+    slot: "weapon",
+    rarity: "rare",
+    unique: true,
+    description: "A captured raider sword that still carries the rhythm of Gorak Emberhand's charges.",
+    flavorText: "The fuller is black with smoke, but the grip is worn by a living hand.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["warlord"],
+    tags: ["rival", "melee", "ember"],
+    statMods: {
+      damage: 5,
+      might: 2,
+      speed: 2
+    }
+  },
+  {
+    id: "cinderseer_lens",
+    name: "Cinder-Seer Lens",
+    slot: "trinket",
+    rarity: "rare",
+    unique: true,
+    description: "A small aether lens recovered from Veyra of the Cinders after her rites were broken.",
+    flavorText: "Its fractures glow brightest when no fire is nearby.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["arcanist", "shepherd"],
+    tags: ["rival", "magic", "aether"],
+    statMods: {
+      arcana: 2,
+      maxMana: 24,
+      damage: 2
+    }
+  },
+  {
+    id: "malrecs_bastion_sigil",
+    name: "Malrec's Bastion Sigil",
+    slot: "trinket",
+    rarity: "epic",
+    unique: true,
+    description: "A fortress command sigil taken from Captain Malrec's outpost command.",
+    flavorText: "It is heavier than a trinket should be, as if part of the wall came with it.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["warlord", "shepherd"],
+    tags: ["rival", "command", "milestone"],
+    statMods: {
+      command: 3,
+      armor: 1,
+      maxHp: 28
+    }
+  },
+  {
     id: "oathbound_aegis",
     name: "Oathbound Aegis",
     slot: "armor",

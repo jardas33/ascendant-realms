@@ -89,6 +89,8 @@
     inset 0 1px 0 rgba(255, 246, 200, 0.08),
     0 10px 24px rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(5px);
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
 }
 
 .objectives-panel > strong {
@@ -363,6 +365,9 @@
     0 16px 42px rgba(0, 0, 0, 0.42),
     inset 0 1px 0 rgba(255, 246, 200, 0.1);
   backdrop-filter: blur(5px);
+  overscroll-behavior: contain;
+  scroll-behavior: auto;
+  scrollbar-gutter: stable;
   scrollbar-color: rgba(240, 217, 120, 0.44) rgba(5, 8, 8, 0.42);
 }
 

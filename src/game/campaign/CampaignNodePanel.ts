@@ -1,6 +1,7 @@
 import type { CampaignNodeDefinition } from "../core/GameTypes";
 import { getCampaignNodeGuidance } from "../core/FirstExperienceGuidance";
 import { getCampaignNodeStatus } from "../core/CampaignRules";
+import { getRivalNodePreview } from "../core/RivalRules";
 import {
   AI_PERSONALITY_BY_ID,
   ENEMY_HERO_ABILITY_BY_ID,
@@ -44,6 +45,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const faction = FACTION_BY_ID[node.enemyFactionId];
   const personality = node.aiPersonalityId ? AI_PERSONALITY_BY_ID[node.aiPersonalityId] : undefined;
   const enemyHero = node.enemyHeroId ? ENEMY_HERO_BY_ID[node.enemyHeroId] : undefined;
+  const rivalPreview = getRivalNodePreview(campaignSave, node);
   const nodeGuidance = getCampaignNodeGuidance(node.id);
   return `
       <div class="campaign-node-details ${status}">
@@ -57,6 +59,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
           <span>Enemy</span><strong>${escapeHtml(faction?.name ?? node.enemyFactionId)}</strong>
           <span>Enemy Style</span><strong>${escapeHtml(personality ? `${personality.name}: ${personality.shortDescription}` : "Balanced Warlord: Mixed expansion and attacks.")}</strong>
           <span>Enemy Commander</span><strong>${escapeHtml(enemyHero ? `${enemyHero.name}, ${enemyHero.title}` : "None scouted")}</strong>
+          <span>Rival Status</span><strong>${escapeHtml(rivalPreview?.summaryText ?? "No known rival")}</strong>
           <span>Prerequisites</span><strong>${escapeHtml(formatCampaignNodeList(node.prerequisites) || "None")}</strong>
           <span>Unlocks</span><strong>${escapeHtml(formatCampaignNodeList(node.unlocks) || "None")}</strong>
           <span>XP reward</span><strong>${node.rewards.xp ?? 0}</strong>
@@ -69,6 +72,16 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
                 "Enemy commander",
                 `${enemyHero.name}, ${enemyHero.title}. ${enemyHero.flavorText}`,
                 enemyHero.abilities.map((abilityId) => ENEMY_HERO_ABILITY_BY_ID[abilityId]?.name ?? abilityId),
+                "compact"
+              )
+            : ""
+        }
+        ${
+          rivalPreview
+            ? renderGuidanceMessage(
+                "Rival intel",
+                rivalPreview.effectText,
+                [rivalPreview.isKnownToPlayer ? "Known rival" : "First encounter", rivalPreview.summaryText],
                 "compact"
               )
             : ""

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
+import { applyRivalModifiersToEnemyHeroStats } from "../core/RivalRules";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { createEnemyHeroUnitDefinition, ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
@@ -68,7 +69,8 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
       team: spawn.team,
       x: spawn.x,
       y: spawn.y,
-      enemyHeroId: spawn.team === "enemy" && spawn.unitId === "enemy_commander" ? launch.request.enemyHeroId : undefined
+      enemyHeroId: spawn.team === "enemy" && spawn.unitId === "enemy_commander" ? launch.request.enemyHeroId : undefined,
+      modifiers: launch.request.modifiers
     });
   });
   spawnLaunchModifierUnits({ scene, activeMap, launch, addUnit });
@@ -118,12 +120,19 @@ function spawnUnit(options: {
   y: number;
   id?: string;
   enemyHeroId?: string;
+  modifiers?: ResolvedBattleLaunch["request"]["modifiers"];
 }): Unit {
   const baseDefinition = requireUnit(options.unitId);
   const enemyHero = options.enemyHeroId ? ENEMY_HERO_BY_ID[options.enemyHeroId] : undefined;
+  const adjustedEnemyHero = enemyHero
+    ? {
+        ...enemyHero,
+        stats: applyRivalModifiersToEnemyHeroStats(enemyHero.stats, options.modifiers)
+      }
+    : undefined;
   const unit = new Unit(
     options.scene,
-    enemyHero ? createEnemyHeroUnitDefinition(enemyHero, baseDefinition) : baseDefinition,
+    adjustedEnemyHero ? createEnemyHeroUnitDefinition(adjustedEnemyHero, baseDefinition) : baseDefinition,
     options.team,
     options.x,
     options.y,

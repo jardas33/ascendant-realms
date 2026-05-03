@@ -6,6 +6,7 @@ import { formatChoiceModifierSummary, formatChoiceReputationSummary, formatChoic
 import { createCampaignMapViewModel } from "./CampaignMapViewModel";
 import { renderNodeDetails } from "./CampaignNodePanel";
 import { formatResourceRewards } from "./CampaignResourcePanel";
+import { renderRivalIntelPanel } from "./RivalIntelPanel";
 import { renderRetinuePanel } from "./RetinuePanel";
 
 describe("campaign map presentation helpers", () => {
@@ -58,6 +59,71 @@ describe("campaign map presentation helpers", () => {
       "old_faith_friendly_chapel",
       "ashen_covenant_hostile_pressure"
     ]);
+  });
+
+  it("shows known rival intel in the view model, panel, and selected node preview", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins"],
+      rivals: [
+        {
+          enemyHeroId: "veyra_cinders",
+          encounters: 1,
+          defeats: 0,
+          victoriesAgainstPlayer: 0,
+          lastEncounterNodeId: "aether_well_ruins",
+          lastOutcome: "escaped",
+          disposition: "wary",
+          activeModifiers: ["rival_wary_hp_5"],
+          isKnownToPlayer: true
+        }
+      ],
+      rivalTrophies: [
+        {
+          trophyId: "trophy_veyra_cinder_lens",
+          enemyHeroId: "veyra_cinders",
+          earnedAt: "2026-05-02T19:58:00.000Z",
+          sourceNodeId: "aether_well_ruins",
+          label: "Cinder-Seer's Cracked Lens",
+          description: "A cracked aether lens recovered after Veyra of the Cinders was driven from the ruins.",
+          effect: "First defeat claimed: +20 Aether, +90 XP, and +1 Old Faith reputation."
+        }
+      ]
+    });
+
+    const viewModel = createCampaignMapViewModel({
+      heroSave: hero,
+      campaignSave: campaign,
+      selectedNodeId: "aether_well_ruins"
+    });
+    const panelHtml = renderRivalIntelPanel(campaign);
+    const nodeHtml = renderNodeDetails({
+      node: CAMPAIGN_NODES.find((entry) => entry.id === "aether_well_ruins")!,
+      campaignSave: campaign,
+      heroSave: hero
+    });
+
+    expect(viewModel.rivalIntel[0]).toMatchObject({
+      enemyHeroId: "veyra_cinders",
+      lastOutcomeLabel: "Escaped",
+      dispositionLabel: "Wary",
+      trophyLabel: "Cinder-Seer's Cracked Lens",
+      firstDefeatRewardClaimed: true
+    });
+    expect(viewModel.rivalTrophies[0]).toMatchObject({
+      label: "Cinder-Seer's Cracked Lens",
+      enemyHeroName: "Veyra of the Cinders"
+    });
+    expect(panelHtml).toContain("Rival Intel");
+    expect(panelHtml).toContain("Veyra of the Cinders");
+    expect(panelHtml).toContain("+5% HP next encounter");
+    expect(panelHtml).toContain("One-time first-defeat reward: Claimed");
+    expect(panelHtml).toContain("Rival Trophies");
+    expect(panelHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
+    expect(nodeHtml).toContain("Rival Status");
+    expect(nodeHtml).toContain("Escaped - Wary");
   });
 
   it("formats resource and choice reward summaries without scene state", () => {

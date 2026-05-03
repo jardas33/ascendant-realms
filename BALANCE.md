@@ -2,12 +2,14 @@
 
 These numbers are prototype values. They are designed for readability and fast testing, not final balance.
 
-## Current First-Campaign Baseline - 2026-05-02 Enemy Hero Balance Pass
+## Current First-Campaign Baseline - 2026-05-02 Rival Persistence Balance Pass
 
 The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
 
 - Latest simulator verdict: `npm run playtest:sim` passes with 180 deterministic runs across 5 campaign battle nodes and 12 profiles, including no-retinue, one Veteran Militia, one Veteran Ranger, mixed retinue, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II; no structural `too_hard` nodes, no structural `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script without retinue.
 - Latest Enemy Hero / Rival Commander tuning result: no numeric gameplay changes. Old Stone Road remains unassigned; Veyra, Gorak, and Captain Malrec stay on their current HP/damage/ability/XP/map assignments because telemetry shows late, readable pressure without structural unfairness.
+- Latest Rival / Nemesis Persistence result: no enemy hero balance numbers changed. Rival state persists, first defeats grant a small one-time reward and trophy record, escaped rivals can return with +5% HP, triumphant rivals can return with +5% damage, and the simulator records before/outcome/after/reward/trophy fields without creating structural `too_easy` or `too_hard` nodes.
+- Latest Rival Rewards balance result: no XP/resource/item reward values changed. Telemetry shows one-time reward/trophy grants only on winning commander defeats, no baseline duplicate grants, no structural reward snowball, and no active rematch modifier runs in the first-encounter suite; UI/report copy now labels those rewards as one-time.
 - Current starting battle resources: 380 Crowns, 255 Stone, 140 Iron, 75 Aether.
 - Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
 - Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
@@ -18,6 +20,7 @@ The values in this section are the current first-campaign balance baseline. Olde
 - Current item affixes are V1 only: small stat packages rolled onto reward-generated item instances, visible in Results/Inventory, and applied only while the item instance is equipped. They do not add crafting, durability, item art, affix rerolls, or proc-heavy loot complexity.
 - Current Unit Veterancy and Retinue Camp are V1 only: ordinary player units can rank up inside a battle, campaign victories can save a small number of surviving Seasoned+ units, and campaign launches redeploy saved retinue units without adding a large army-management layer.
 - Current Enemy Hero / Rival Commander V1 is data-driven and compact: named Ashen commanders replace the existing `enemy_commander` slot on assigned campaign nodes, stay gated by commander join timing, grant XP/objective/results credit, and expose simulator telemetry. They do not add enemy construction, workers, new factions, diplomacy, or raid-boss tuning.
+- Current Rival / Nemesis Persistence V1 and Rival Rewards and Trophies V1 are intentionally small: campaign saves remember rival outcomes, disposition, and earned trophies; Campaign Map displays Rival Intel and Rival Trophies; Results reports rival consequences and first-defeat rewards; battle launch can apply only +5% HP or +5% damage in a later encounter.
 
 | Difficulty | Enemy income | First attack | Attack interval | Wave target | Train interval | Commander timing |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -197,6 +200,58 @@ Telemetry-based enemy hero tuning pass, 2026-05-02:
 | Retinue/Stronghold interaction | Retinue and Stronghold paths can help Ashen; mixed retinue sweeps are human-review | Unchanged | The strong Ashen outcomes are not isolated to enemy hero stats, so changing rival numbers would be premature. |
 
 Result: no enemy hero gameplay values changed in this pass. Keep the current commanders and focus human playtests on visibility, ability readability, and whether mixed retinue makes Malrec feel too easy before changing numbers.
+
+## Rival / Nemesis Persistence V1
+
+Rival persistence is current as of the 2026-05-02 nemesis slice. It makes named enemy commanders remember campaign outcomes without turning them into scaling raid bosses.
+
+Rules:
+
+| Outcome | Saved result | Disposition | Current consequence | Balance intent |
+| --- | --- | --- | --- | --- |
+| Player wins and defeats rival | `defeated` | First defeat `humiliated`, later defeats `enraged` | First defeat grants a data-driven XP/resource/reputation/item reward plus a trophy once; no combat buff remains active. | Makes the first commander takedown feel meaningful without creating repeat-farm loot. |
+| Player wins and rival survives | `escaped` | `wary` | Next encounter with that rival gets +5% HP. | Creates a visible rematch note while staying below a full difficulty bump. |
+| Player loses | `triumphant` | `emboldened` | Next encounter with that rival gets +5% damage. | Lets losses matter without changing map assignments or enemy economy. |
+
+Telemetry read:
+
+- The 180-run scripted suite still reports `too_easy: none`, `too_hard: none`, Stronghold warnings `none`, and Ashen Outpost beatable `yes`.
+- The simulator currently treats each commander battle as a first encounter, so `rivalStateBefore` is Unseen/Wary and `rivalModifiersApplied` is empty in baseline runs.
+- Safe Beginner victories produce `rivalOutcome: defeated` on commander nodes; timeouts/defeats produce `rivalOutcome: triumphant` for persistence telemetry.
+- Current rival outcome counts across 108 commander-node runs: 46 winning commander defeats, 0 escaped-rival victories, and 38 non-winning runs with rival pressure. Veyra produces 12 wins / 12 defeats / 12 timeouts, Gorak 12 / 23 / 1, and Malrec 22 / 0 / 14.
+- Rival Rewards and Trophies V1 telemetry now records `rivalFirstDefeatRewardEarned`, `rivalDuplicateRewardPrevented`, and `rivalTrophyEarned`. Baseline first-encounter wins earn the trophy once (46 total first-reward/trophy grants), while repeat live defeats are blocked by save-backed trophy records and covered by unit/e2e tests rather than the first-encounter simulator path.
+- No structural result changed after adding persistence fields and live launch modifiers. Keep +5% HP/damage as the ceiling until human playtests confirm rematches feel too flat.
+
+Telemetry-based rival persistence balance pass, 2026-05-02:
+
+| Knob | Before | After | Reason |
+| --- | --- | --- | --- |
+| Rival modifier strength | Escaped +5% HP, triumphant +5% damage | Unchanged | Baseline suite has 0 active rematch modifier runs and no structural too-hard nodes; keep the current tiny ceiling until a future rematch-profile pass or human play shows the modifiers are unfair or invisible. |
+| First-defeat XP/resources | Gorak +80 XP/+25 Crowns/+15 Iron; Veyra +90 XP/+20 Aether; Malrec +140 XP/+60 Crowns/+25 Iron | Unchanged | Rewards are one-time, post-battle, and do not change the current fight. Telemetry shows no structural reward snowball; reduce XP/resources only if later campaign play shows these first defeats becoming mandatory. |
+| First-defeat items/trophies | One themed item and one trophy per rival | Unchanged | The item/trophy payoff is the main RPG satisfaction beat. Duplicate prevention is save-backed, so repeats cannot farm the item or trophy. |
+| Escape condition | Victory with enemy hero surviving | Unchanged | Current deterministic victories defeat the commander before the Stronghold falls, so no escapes are observed. Changing the condition now would be speculative. |
+| Copy/readability | First-defeat reward copy was present but could read like a repeatable payout | Tightened | Results, Rival Intel, trophy effect copy, and telemetry now call the reward one-time and clarify that V1 rematch modifiers are only +5% HP/damage. |
+| Telemetry warning threshold | Structural too-hard/easy plus reward/trophy fields | Unchanged structurally, clearer report | The report now summarizes reward grants, duplicate-prevention observations, modifier-run count, and per-rival pressure so future snowball signals are easier to spot without adding new gameplay. |
+| Retinue interaction | Mixed retinue and combined paths remain human-review, especially Ashen | Unchanged | Strong Ashen outcomes come from retinue/Stronghold profiles, not a rival reward or modifier signal. |
+| Stronghold Tier II interaction | Quartermaster II and Training Yard II remain optional path boosts | Unchanged | No Stronghold warnings appear and no rival modifier runs are active; changing rival rewards to compensate for Stronghold would be premature. |
+| Captain Malrec / Ashen Outpost | Malrec defeated in all 36 Ashen commander runs; Ashen still has no-retinue and Stronghold-path timeouts | Unchanged | Malrec is a milestone reward/completion beat, while mixed-retinue Ashen sweeps remain human-review rather than structural `too_easy`. |
+
+Result: no gameplay balance values changed in this pass. Rival persistence remains dramatic through saved outcomes, one-time trophies, and tiny rematch modifiers without creating a structural snowball in the automated suite.
+
+First-defeat rewards:
+
+| Rival | First-defeat reward | Trophy | Balance intent |
+| --- | --- | --- | --- |
+| Gorak Emberhand | One-time +80 XP, +25 Crowns, +15 Iron, Ember Raider Blade, +2 Free Marches reputation | Gorak's Emberbrand | Makes Bandit Hillfort feel like a raider-camp victory without adding a farmable Iron source. |
+| Veyra of the Cinders | One-time +90 XP, +20 Aether, Cinder-Seer Lens, +1 Old Faith reputation | Cinder-Seer's Cracked Lens | Gives Aether Well Ruins a magic-flavored payoff without adding spellcraft, crafting, or repeat Aether farming. |
+| Captain Malrec | One-time +140 XP, +60 Crowns, +25 Iron, Malrec's Bastion Sigil, +4 Free Marches reputation | Malrec's Outpost Standard | Makes Ashen Outpost feel like a milestone while keeping the reward one-time and post-battle only. |
+
+Tuning watchpoints:
+
+- If escaped-rival rematches feel invisible, improve warning/UI copy before increasing the HP modifier.
+- If triumphant-rival rematches feel punitive, reduce or remove the +5% damage modifier before changing base enemy hero stats.
+- If first-defeat rewards make a later campaign route feel mandatory, reduce reward XP/resources before changing rival combat stats or retinue rules.
+- Do not add rival leveling trees, new maps, procedural rematches, capture/recruit outcomes, workers, enemy construction, or new factions through this layer.
 
 ## Stronghold Development
 

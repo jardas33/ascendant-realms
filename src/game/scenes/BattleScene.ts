@@ -10,6 +10,7 @@ import type {
 } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
 import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
+import { formatRivalBattleStartCopy, rivalLaunchModifierName } from "../core/RivalRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
@@ -348,14 +349,22 @@ export class BattleScene extends Phaser.Scene {
     const personality = AI_PERSONALITY_BY_ID[this.launch.request.aiPersonalityId ?? "balanced_warlord"];
     const difficulty = getBattleDifficulty(this.launch.request.difficulty);
     const names = this.launch.request.modifiers
-      .map((modifier) => CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name ?? strongholdUpgradeForModifier(modifier.id)?.name)
+      .map(
+        (modifier) =>
+          CAMPAIGN_MODIFIER_BY_ID[modifier.id]?.name ??
+          strongholdUpgradeForModifier(modifier.id)?.name ??
+          rivalLaunchModifierName(modifier.id)
+      )
       .filter((name): name is string => Boolean(name));
     const modifierText = names.length > 0 ? ` Modifiers: ${names.join(", ")}.` : "";
     const retinueNames = (this.launch.request.mode === "campaign_node" ? this.launch.request.retinueUnits ?? [] : [])
       .map(formatRetinueDeploymentLabel);
     const retinueText = retinueNames.length > 0 ? `Retinue deployed: ${retinueNames.join(", ")}. ` : "";
     const enemyHero = this.launch.request.enemyHeroId ? ENEMY_HERO_BY_ID[this.launch.request.enemyHeroId] : undefined;
-    const enemyHeroText = enemyHero ? ` Enemy commander: ${enemyHero.name}, ${enemyHero.title}.` : "";
+    const rivalText = formatRivalBattleStartCopy(this.launch.request.enemyHeroId, this.launch.request.modifiers);
+    const enemyHeroText = enemyHero
+      ? ` Enemy commander: ${enemyHero.name}, ${enemyHero.title}.${rivalText ? ` ${rivalText}` : ""}`
+      : "";
     const enemyText = faction
       ? `${faction.name} (${personality?.name ?? "Balanced Warlord"})`
       : personality?.name ?? "Unknown enemy";
@@ -425,7 +434,14 @@ export class BattleScene extends Phaser.Scene {
           (building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65) +
           buildingVisionBonus
       }));
-    return [...unitSources, ...buildingSources];
+    const capturedSiteSources = this.captureSites
+      .filter((site) => site.owner === "player")
+      .map((site) => ({
+        x: site.position.x,
+        y: site.position.y,
+        radius: Math.max(160, site.definition.radius + 84)
+      }));
+    return [...unitSources, ...buildingSources, ...capturedSiteSources];
   }
 
   private renderFogOverlay(): void {
@@ -1054,14 +1070,18 @@ export class BattleScene extends Phaser.Scene {
         if (!enemyHero?.enemyHeroId) {
           return null;
         }
+        const name = enemyHero.enemyHeroName ?? enemyHero.definition.name;
+        const title = enemyHero.enemyHeroTitle ?? enemyHero.definition.role;
         this.fogDebugDisabled = true;
         this.updateFogOfWar(0, true);
         this.cameraSystem.centerOn(enemyHero.position);
         this.handleEnemyHeroVisible(enemyHero);
+        this.showMessage(`Enemy commander sighted: ${name}, ${title}`, enemyHero.position.x, enemyHero.position.y - 72, "#ff9a64");
+        this.refreshBattleHud(0);
         return {
           enemyHeroId: enemyHero.enemyHeroId,
-          name: enemyHero.enemyHeroName ?? enemyHero.definition.name,
-          title: enemyHero.enemyHeroTitle ?? enemyHero.definition.role
+          name,
+          title
         };
       },
       defeatEnemyHero: () => {

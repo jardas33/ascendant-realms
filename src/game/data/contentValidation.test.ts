@@ -9,6 +9,7 @@ import { MAPS } from "./maps";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
+import { RIVAL_REWARDS } from "./rivalRewards";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { validateContent } from "./contentValidation";
 import { UNIT_BY_ID } from "./contentIndex";
@@ -116,6 +117,19 @@ describe("content validation", () => {
       hero.abilities.forEach((abilityId) => {
         expect(ENEMY_HERO_ABILITIES.some((ability) => ability.id === abilityId)).toBe(true);
       });
+    });
+  });
+
+  it("defines first-defeat rival rewards and trophy records", () => {
+    expect(RIVAL_REWARDS.map((reward) => reward.enemyHeroId)).toEqual([
+      "gorak_emberhand",
+      "veyra_cinders",
+      "captain_malrec"
+    ]);
+    RIVAL_REWARDS.forEach((reward) => {
+      expect(reward.firstDefeat.xp).toBeGreaterThan(0);
+      expect(reward.firstDefeat.trophy.trophyId).toContain("trophy_");
+      expect(reward.firstDefeat.trophy.label.length).toBeGreaterThan(0);
     });
   });
 

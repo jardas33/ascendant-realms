@@ -26,7 +26,7 @@ The first versions are allowed to look ugly. They are not allowed to become rigi
 
 ## 3. Core Loop
 
-Create a hero, enter a battle, capture resources, build an army, defeat enemies, earn XP, collect an item reward, spend skill points, equip gear, spend campaign resources on persistent preparation, save progress, and return stronger for the next battle.
+Create a hero, enter a battle, capture resources, build an army, defeat enemies, earn XP, collect item rewards, claim compact rival trophies, spend skill points, equip gear, spend campaign resources on persistent preparation, save progress, and return stronger for the next battle.
 
 ## 4. Battle Loop
 
@@ -39,6 +39,8 @@ Battles use a lightweight grid fog model with three states: unseen, explored, an
 ## 5. Campaign Loop
 
 The campaign begins as a small node-based Border Marches map. The hero selects available nodes, launches battles through the shared battle request path, resolves simple event choices, changes faction reputation, spends resources at the Marcher Camp town node or Stronghold panel, completes nodes, claims one-time rewards, adds campaign resource rewards to a persistent bank, saves progress, and unlocks the next branch.
+
+Named enemy commanders now persist as lightweight rivals. The campaign save tracks known rivals, encounters, defeats, victories against the player, last outcome, disposition, small active modifiers, and first-defeat trophy records. The Campaign Map shows Rival Intel, earned Rival Trophies, and node previews for known commanders, while battle launch can apply tiny next-encounter effects such as +5% HP after an escape or +5% damage after a rival victory.
 
 Long term, the campaign map should grow into the living heart of the game: quests, shops, faction reputation, strongholds, random events, persistent rewards, invasions, alliances, and regional consequences.
 
@@ -60,7 +62,7 @@ Item affixes are intentionally small in V1. Common items can roll zero or one af
 
 Equipment is allowed to change battle feel through HP, mana, damage, armor, speed, range, primary stats, and attack cadence. It should not become so strong that army composition, expansion, upgrades, and hero ability timing stop mattering.
 
-Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, affixes, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, Notable Veterans from surviving battle units, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
+Post-battle rewards should feel like a compact RPG payoff rather than an accounting screen. The Results screen is the shared victory/defeat handoff: victory shows XP before/after, level-ups, skill points, item rarity, item slot, affixes, stat comparison, Equip Now for the earned instance, inventory confirmation, unique duplicate conversion, campaign node completion rewards, Notable Veterans from surviving battle units, rival outcome/trophy rewards when a commander is defeated, and the campaign bank after resource rewards are added. Defeat shows contextual recovery tips from the actual battle stats.
 
 ## 7. Faction Design
 
@@ -140,9 +142,11 @@ Personalities adjust preferred units, training plan, attack and expansion timing
 
 Enemy Hero / Rival Commander V1 adds a compact data-driven identity layer to important Ashen battles. Campaign nodes can reference an `enemyHeroId`, and the existing `enemy_commander` spawn becomes the named rival for that launch while preserving the same delayed commander AI behavior. The first rivals are Gorak Emberhand on Bandit Hillfort, Veyra of the Cinders on Aether Well Ruins, and Captain Malrec on Ashen Outpost. They use small ability packages, grant XP when defeated, can complete commander objectives such as Ashen Outpost's Captain Malrec objective, appear in campaign preview/battle start/scout feedback/results, and report telemetry fields in the playtest simulator. V1 does not add enemy construction, workers, new factions, diplomacy, procedural campaign, or raid-boss scale encounters.
 
+Rival / Nemesis Persistence V1 builds on those enemy heroes without adding a new system layer. After a battle, a defeated commander becomes humiliated or enraged, an escaped commander becomes wary, and a commander who beats the player becomes emboldened. Results show the rival outcome and consequence. Rival Rewards and Trophies V1 adds data-driven first-defeat rewards for Gorak, Veyra, and Malrec: a small XP/resource/reputation grant, one themed item where defined, and a save-backed trophy record. Repeat defeats do not duplicate first-defeat rewards. Escapes and rival victories only create small next-encounter stat modifiers. This keeps rival memory visible while avoiding raid-boss escalation, crafting, durability, or a full trophy room.
+
 ## 14. Data-Driven Content Philosophy
 
-Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, items, item affixes, campaign nodes, enemy heroes, reputation effects, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
+Units, buildings, abilities, resources, factions, maps, hero classes, origins, skill trees, reward tables, rival reward tables, items, item affixes, campaign nodes, enemy heroes, reputation effects, and Stronghold upgrades live in `src/game/data`. Engine code should read these definitions instead of hard-coding content names and numbers.
 
 Manual art assets live in the manual asset pipeline. The UI art kit is also data-driven: reusable frame, button, divider, slot, minimap, victory, and defeat panel assets are registered in `tools/manual-asset-pipeline/assetRegistry.ts`, discovered through the manifest, and exposed to CSS as optional variables. The game must keep working without those files.
 
@@ -157,7 +161,7 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Data-driven Stronghold upgrades on the campaign map: five Tier I upgrades and five compact Tier II follow-ups, each purchased with campaign resources and each requiring its matching Tier I upgrade.
 - RTS selection, movement, capture sites, resource income, combat, projectiles.
 - Lightweight fog of war with grid visibility, dim explored areas, hidden enemies outside vision, and minimap masking.
-- Two playable skirmish maps: First Claim and Broken Ford.
+- Three playable skirmish maps: First Claim, Broken Ford, and Ashen Outpost.
 - Building placement, automatic construction, unit training, research queues, upgrades, watchtower attacks.
 - Live minimap snapshots for units, buildings, capture sites, neutral camps, camera position, and alert pings.
 - Data-driven prerequisites for units, buildings, upgrades, and future ability gates.
@@ -167,6 +171,8 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Unit Veterancy V1: battle-local unit XP, Recruit/Seasoned/Veteran/Elite ranks, modest stat bonuses, selected-unit rank display, rank-up feedback, and victory Results veteran summaries.
 - Retinue Camp V1: up to 2 saved veteran units by default, +1 capacity from Training Yard II, Campaign Map display/dismiss, campaign battle deployment, save/load, and permanent removal on retinue death.
 - Enemy Hero / Rival Commander V1: three named Ashen commanders, data validation, campaign node preview, battle start/scout feedback, modest combat abilities, XP/objective/results credit, and simulator telemetry.
+- Rival / Nemesis Persistence V1: campaign-save rival state, Rival Intel panel, node preview state, Results outcome consequences, small next-encounter modifiers, safe old-save normalization, and simulator telemetry fields.
+- Rival Rewards and Trophies V1: data-driven first-defeat XP/resource/reputation/item rewards, save-backed trophy records, Results reward/trophy copy, Campaign Map trophy display, duplicate prevention, and simulator telemetry.
 - Basic data-configured enemy AI.
 - First-pass faction asymmetry: Free Marches baseline identity, Ashen Covenant burn/status pressure, Ashen Fury damage spikes, Smoke March wave speed, and faction style display in setup/campaign/battle start.
 - Data validation tests for content references.
@@ -181,6 +187,7 @@ UI-kit art should be edge and slot art, not full UI screenshots. Frames should u
 - Deeper affix tiers/effect families, broader shops, item crafting, durability, and equipment art.
 - Full class-specific skill trees with choices, prerequisites, and respec rules.
 - Larger army management, complex retinue replacement UI, wounded recovery, scars, titles, and unit biography systems.
+- Deep nemesis escalation, rival skill trees, rival death cinematics, capture/recruit options, and multi-map procedural rival arcs.
 - Tilemap-based terrain and full A*.
 - Multiplayer.
 - Production art, animation, sound, music, settings, and tutorial polish.

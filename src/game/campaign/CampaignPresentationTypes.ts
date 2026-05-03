@@ -1,4 +1,5 @@
 import type { CampaignNodeDefinition, CampaignNodeStatus } from "../core/GameTypes";
+import type { RivalIntelEntry, RivalTrophyIntelEntry } from "../core/RivalRules";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 export interface CampaignNodeViewModel {
@@ -35,6 +36,8 @@ export interface CampaignMapViewModel {
   progressSummary: string;
   campaignStateLabel: string;
   reputation: CampaignReputationViewModel;
+  rivalIntel: RivalIntelEntry[];
+  rivalTrophies: RivalTrophyIntelEntry[];
 }
 
 export function titleCase(value: string): string {

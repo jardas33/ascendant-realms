@@ -1,14 +1,21 @@
 import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "../core/GameTypes";
+import {
+  isRivalDisposition,
+  isRivalLastOutcome,
+  isRivalModifierId
+} from "../core/RivalRules";
 import { isCampaignModifierId } from "../data/campaignModifiers";
-import { UNIT_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_NODE_BY_ID, ENEMY_HERO_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { isStrongholdUpgradeId } from "../data/strongholdUpgrades";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
 import { DEFAULT_FACTION_REPUTATION } from "./SaveDefaults";
 import type {
   AllocatedSkills,
+  CampaignRivalSaveData,
   CampaignSaveData,
   EquipmentSlots,
   HeroSaveData,
+  RivalTrophySaveData,
   RetinueUnitSaveData
 } from "./SaveTypes";
 
@@ -137,6 +144,8 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     activeModifierIds: [...new Set(activeModifierIds)],
     strongholdUpgradeRanks: normalizeStrongholdUpgradeRanks(value.strongholdUpgradeRanks, value.strongholdUpgradeIds),
     retinueUnits: normalizeRetinueUnits(value.retinueUnits),
+    rivals: normalizeRivalStates(value.rivals),
+    rivalTrophies: normalizeRivalTrophies(value.rivalTrophies),
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }
@@ -316,5 +325,94 @@ function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
     sourceBattleId: typeof value.sourceBattleId === "string" && value.sourceBattleId.trim() ? value.sourceBattleId : "unknown",
     acquiredAt: typeof value.acquiredAt === "string" ? value.acquiredAt : new Date().toISOString(),
     status: value.status === "wounded" ? "wounded" : "active"
+  };
+}
+
+function normalizeRivalStates(value: unknown): CampaignRivalSaveData[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const seen = new Set<string>();
+  return value
+    .map(normalizeRivalState)
+    .filter((rival): rival is CampaignRivalSaveData => {
+      if (!rival || seen.has(rival.enemyHeroId)) {
+        return false;
+      }
+      seen.add(rival.enemyHeroId);
+      return true;
+    });
+}
+
+function normalizeRivalState(value: unknown): CampaignRivalSaveData | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  if (typeof value.enemyHeroId !== "string" || !ENEMY_HERO_BY_ID[value.enemyHeroId]) {
+    return undefined;
+  }
+  const activeModifiers = arrayOfStrings(value.activeModifiers)
+    ? value.activeModifiers.filter(isRivalModifierId)
+    : [];
+  return {
+    enemyHeroId: value.enemyHeroId,
+    encounters: clampInteger(value.encounters, 0),
+    defeats: clampInteger(value.defeats, 0),
+    victoriesAgainstPlayer: clampInteger(value.victoriesAgainstPlayer, 0),
+    lastEncounterNodeId:
+      typeof value.lastEncounterNodeId === "string" && value.lastEncounterNodeId.trim()
+        ? value.lastEncounterNodeId
+        : undefined,
+    lastOutcome: isRivalLastOutcome(value.lastOutcome) ? value.lastOutcome : "unseen",
+    disposition: isRivalDisposition(value.disposition) ? value.disposition : "wary",
+    activeModifiers: [...new Set(activeModifiers)],
+    isKnownToPlayer: typeof value.isKnownToPlayer === "boolean" ? value.isKnownToPlayer : false
+  };
+}
+
+function normalizeRivalTrophies(value: unknown): RivalTrophySaveData[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const seen = new Set<string>();
+  return value
+    .map(normalizeRivalTrophy)
+    .filter((trophy): trophy is RivalTrophySaveData => {
+      if (!trophy || seen.has(trophy.trophyId)) {
+        return false;
+      }
+      seen.add(trophy.trophyId);
+      return true;
+    });
+}
+
+function normalizeRivalTrophy(value: unknown): RivalTrophySaveData | undefined {
+  if (!isRecord(value)) {
+    return undefined;
+  }
+  if (
+    typeof value.trophyId !== "string" ||
+    !value.trophyId.trim() ||
+    typeof value.enemyHeroId !== "string" ||
+    !ENEMY_HERO_BY_ID[value.enemyHeroId] ||
+    typeof value.label !== "string" ||
+    !value.label.trim() ||
+    typeof value.description !== "string" ||
+    !value.description.trim()
+  ) {
+    return undefined;
+  }
+  const sourceNodeId =
+    typeof value.sourceNodeId === "string" && CAMPAIGN_NODE_BY_ID[value.sourceNodeId]
+      ? value.sourceNodeId
+      : "unknown";
+  return {
+    trophyId: value.trophyId,
+    enemyHeroId: value.enemyHeroId,
+    earnedAt: typeof value.earnedAt === "string" ? value.earnedAt : new Date().toISOString(),
+    sourceNodeId,
+    label: value.label,
+    description: value.description,
+    effect: typeof value.effect === "string" && value.effect.trim() ? value.effect : undefined
   };
 }

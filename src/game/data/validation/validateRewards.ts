@@ -1,5 +1,6 @@
 import { MAPS } from "../maps";
 import { REWARD_TABLES } from "../rewards";
+import { RIVAL_REWARDS } from "../rivalRewards";
 import type { ValidationContext } from "./ValidationTypes";
 
 export function validateRewardTables(errors: string[], context: ValidationContext): void {
@@ -42,6 +43,49 @@ export function validateRewardTables(errors: string[], context: ValidationContex
     });
     validateRewardBonus(table.id, "first-clear bonus", table.firstClearBonus, errors, context);
     validateRewardBonus(table.id, "repeat-clear reward", table.repeatClearReward, errors, context);
+  });
+}
+
+export function validateRivalRewards(errors: string[], context: ValidationContext): void {
+  const seenEnemyHeroes = new Set<string>();
+  const seenTrophies = new Set<string>();
+  RIVAL_REWARDS.forEach((reward) => {
+    if (!context.enemyHeroIds.has(reward.enemyHeroId)) {
+      errors.push(`Rival reward references missing enemy hero ${reward.enemyHeroId}.`);
+    }
+    if (seenEnemyHeroes.has(reward.enemyHeroId)) {
+      errors.push(`Rival reward duplicates enemy hero ${reward.enemyHeroId}.`);
+    }
+    seenEnemyHeroes.add(reward.enemyHeroId);
+
+    const firstDefeat = reward.firstDefeat;
+    if (firstDefeat.xp < 0) {
+      errors.push(`Rival reward ${reward.enemyHeroId} has negative XP.`);
+    }
+    if (firstDefeat.itemId && !context.itemIds.has(firstDefeat.itemId)) {
+      errors.push(`Rival reward ${reward.enemyHeroId} references missing item ${firstDefeat.itemId}.`);
+    }
+    if (firstDefeat.reputation && !context.factionIds.has(firstDefeat.reputation.factionId)) {
+      errors.push(`Rival reward ${reward.enemyHeroId} references missing faction ${firstDefeat.reputation.factionId}.`);
+    }
+    Object.entries(firstDefeat.resources).forEach(([resource, amount]) => {
+      if (!context.resourceIds.has(resource)) {
+        errors.push(`Rival reward ${reward.enemyHeroId} gives missing resource ${resource}.`);
+      }
+      if ((amount ?? 0) < 0) {
+        errors.push(`Rival reward ${reward.enemyHeroId} has negative resource reward ${resource}.`);
+      }
+    });
+    if (!firstDefeat.trophy.trophyId.trim()) {
+      errors.push(`Rival reward ${reward.enemyHeroId} has an empty trophy id.`);
+    }
+    if (seenTrophies.has(firstDefeat.trophy.trophyId)) {
+      errors.push(`Rival reward trophy ${firstDefeat.trophy.trophyId} is duplicated.`);
+    }
+    seenTrophies.add(firstDefeat.trophy.trophyId);
+    if (!firstDefeat.trophy.label.trim() || !firstDefeat.trophy.description.trim()) {
+      errors.push(`Rival reward ${reward.enemyHeroId} trophy needs label and description.`);
+    }
   });
 }
 

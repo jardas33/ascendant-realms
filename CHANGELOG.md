@@ -2,7 +2,7 @@
 
 ## v0.2 Prototype Baseline - 2026-05-02
 
-This release baseline captures the current playable Ascendant Realms prototype so it is easier to share, test, and continue from. It does not represent a content-complete game; it is the stable RTS/RPG campaign spine with Unit Veterancy V1, Retinue Camp V1, and Enemy Hero / Rival Commander V1 included.
+This release baseline captures the current playable Ascendant Realms prototype so it is easier to share, test, and continue from. It does not represent a content-complete game; it is the stable RTS/RPG campaign spine with Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 included.
 
 ### Campaign And Skirmish Structure
 
@@ -29,6 +29,8 @@ This release baseline captures the current playable Ascendant Realms prototype s
 - Unit Veterancy V1 gives player non-hero units battle-local XP, Recruit/Seasoned/Veteran/Elite ranks, modest stat bonuses, selected-unit rank display, rank-up feedback, and Notable Veterans in victory Results.
 - Retinue Camp V1 lets campaign victories save a small number of surviving Seasoned+ veterans, shows them on the Campaign Map, deploys them in future campaign battles, and removes them permanently if they die.
 - Enemy Hero / Rival Commander V1 adds three named Ashen commanders: Gorak Emberhand on Bandit Hillfort, Veyra of the Cinders on Aether Well Ruins, and Captain Malrec on Ashen Outpost, with scout feedback, minimap markers, modest abilities, XP/objective/results credit, and simulator telemetry.
+- Rival/Nemesis Persistence V1 saves commander encounters, defeats, victories against the player, last outcomes, dispositions, small repeat-encounter modifiers, Campaign Map intel, and Results consequence copy.
+- Rival Rewards and Trophies V1 adds data-driven once-only first-defeat rewards, duplicate prevention, persistent trophy records, Results reward copy, and compact Campaign Map trophy display.
 - Enemy AI expands, trains, defends, and sends pressure waves through data-driven personalities.
 
 ### Fog And Minimap
@@ -70,16 +72,21 @@ This release baseline captures the current playable Ascendant Realms prototype s
 - `npm run playtest:sim` regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
 - The simulator currently runs 180 deterministic campaign battle runs across 60 profile-node summaries.
 - Profiles include no Stronghold upgrades, Tier I paths, a Tier II Quartermaster path, and retinue-aware profiles for one Veteran Militia, one Veteran Ranger, and mixed retinue.
-- Telemetry includes assigned rival commander id, defeated state, attack-join timing, losses involving the rival, and objective completion.
+- Telemetry includes assigned rival commander id, defeated state, attack-join timing, losses involving the rival, objective completion, rival state before/after, rival outcome, active rival modifiers, first-defeat reward state, duplicate prevention, and trophy-earned state.
 - Latest simulator status: no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
 ### Current Verification Status
 
-Latest full verification recorded after Enemy Hero / Rival Commander V1:
+Latest full verification recorded after Rival Rewards and Trophies V1:
 
-- `npm test`: 35 test files, 200 tests passing.
+- `npm test`: 36 test files, 210 tests passing.
 - `npm run build`: passing with the known Vite large-chunk warning.
-- `npm run test:e2e -- --reporter=line`: 44 Playwright tests passing.
+- `npm run test:e2e -- --reporter=line`: 45 Playwright tests passing.
 - `npm run playtest:sim`: 180 simulated runs passing.
 
 Known release caveat: the Vite production build reports that the main Phaser bundle is larger than the default 500 kB chunk warning threshold. This is tracked as a warning, not a failure.
+
+### Next Milestone
+
+- Next recommended pass: Rival Rewards Balance And Readability Review, focused on whether first-defeat rewards and trophies feel satisfying without becoming mandatory progression.
+- Keep the next slice compact. Do not move into workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, or broad army-management systems yet.

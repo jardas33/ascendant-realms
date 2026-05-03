@@ -277,6 +277,55 @@ describe("results scene helpers", () => {
     expect(retinueHtml).toContain("Not eligible: needs Seasoned rank or better.");
     expect(retinueHtml).toContain("Capacity Full");
   });
+
+  it("renders campaign rival outcome and consequence copy", () => {
+    const data = createResultsData({
+      stats: {
+        ...baseStats(),
+        enemyHeroId: "veyra_cinders",
+        enemyHeroName: "Veyra of the Cinders",
+        enemyHeroDefeated: true
+      },
+      rivalResult: {
+        enemyHeroId: "veyra_cinders",
+        name: "Veyra of the Cinders",
+        title: "Hexfire Seer",
+        lastOutcome: "defeated",
+        outcomeLabel: "Defeated",
+        previousDisposition: "wary",
+        disposition: "humiliated",
+        dispositionLabel: "Humiliated",
+        encounters: 2,
+        defeats: 1,
+        victoriesAgainstPlayer: 0,
+        consequenceText: "Veyra is humiliated, and the Border Marches celebrate the victory.",
+        rewardText: "+90 XP, +20 Aether, Cinder-Seer Lens, +1 Old Faith reputation, Trophy: Cinder-Seer's Cracked Lens",
+        firstDefeatRewardEarned: true,
+        duplicateFirstDefeatRewardPrevented: false,
+        trophyEarned: {
+          trophyId: "trophy_veyra_cinder_lens",
+          enemyHeroId: "veyra_cinders",
+          earnedAt: "2026-05-02T19:58:00.000Z",
+          sourceNodeId: "aether_well_ruins",
+          label: "Cinder-Seer's Cracked Lens",
+          description: "A cracked aether lens recovered after Veyra of the Cinders was driven from the ruins.",
+          effect: "First defeat claimed: +20 Aether, +90 XP, and +1 Old Faith reputation."
+        },
+        rewardXp: 90,
+        activeModifiers: []
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Rival Defeated");
+    expect(summaryHtml).toContain("Veyra of the Cinders");
+    expect(summaryHtml).toContain("Defeated");
+    expect(summaryHtml).toContain("Humiliated");
+    expect(summaryHtml).toContain("+90 XP, +20 Aether");
+    expect(summaryHtml).toContain("Trophy earned");
+    expect(summaryHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
+  });
 });
 
 function createResultsData(overrides: Partial<ResultsData> = {}): ResultsData {

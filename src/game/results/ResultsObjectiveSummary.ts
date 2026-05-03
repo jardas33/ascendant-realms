@@ -33,7 +33,42 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
       </section>
     </div>
     ${renderVeteranSummary(data)}
+    ${renderRivalOutcome(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+  `;
+}
+
+export function renderRivalOutcome(data: ResultsData): string {
+  const rival = data.rivalResult;
+  if (!rival) {
+    return "";
+  }
+  const title = rival.lastOutcome === "defeated" ? "Rival Defeated" : "Rival Outcome";
+  return `
+    <section class="result-block wide rival-outcome" data-testid="results-rival-outcome">
+      <h2>${title}</h2>
+      <div class="results-grid compact">
+        <span>Rival encountered</span><strong>${escapeHtml(rival.name)}, ${escapeHtml(rival.title)}</strong>
+        <span>Outcome</span><strong>${escapeHtml(rival.outcomeLabel)}</strong>
+        <span>Disposition</span><strong>${escapeHtml(rival.dispositionLabel)}</strong>
+        <span>Record</span><strong>${rival.encounters} encounters, ${rival.defeats} defeats, ${rival.victoriesAgainstPlayer} rival victories</strong>
+        <span>Consequence</span><strong>${escapeHtml(rival.consequenceText)}</strong>
+        ${
+          rival.rewardText
+            ? `<span>One-time first-defeat reward</span><strong>${escapeHtml(rival.rewardText)}</strong>`
+            : rival.duplicateFirstDefeatRewardPrevented
+              ? `<span>One-time first-defeat reward</span><strong>Already claimed for this campaign</strong>`
+              : ""
+        }
+        ${
+          rival.trophyEarned
+            ? `<span>Trophy earned</span><strong>${escapeHtml(rival.trophyEarned.label)}</strong>
+               <span>Trophy note</span><strong>${escapeHtml(rival.trophyEarned.description)}</strong>`
+            : ""
+        }
+      </div>
+      <p class="quiet">Rival state persists on the campaign save. V1 rematch modifiers are small: escaped rivals gain +5% HP, and triumphant rivals gain +5% damage.</p>
+    </section>
   `;
 }
 

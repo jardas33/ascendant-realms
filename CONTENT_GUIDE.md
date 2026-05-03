@@ -61,6 +61,20 @@ Current Enemy Hero V1 assignments:
 - `veyra_cinders`: Veyra of the Cinders, Hexfire Seer, assigned to Aether Well Ruins.
 - `captain_malrec`: Captain Malrec, Outpost Commander, assigned to Ashen Outpost and the `Defeat Captain Malrec` objective.
 
+## Tune Rival / Nemesis Persistence
+
+1. Open `src/game/core/RivalRules.ts` for campaign rival state creation, outcome updates, launch modifiers, copy labels, first-defeat reward claiming, and trophy records.
+2. Open `src/game/data/rivalRewards.ts` for data-driven first-defeat rewards. Each entry should reference an existing enemy hero, optional item, optional reputation faction, resources, XP, and one trophy definition.
+3. Keep state compact: `enemyHeroId`, encounters, defeats, victories against the player, last node, last outcome, disposition, active modifiers, known/unseen status, and save-backed `rivalTrophies`.
+4. Keep consequences small. V1 supports one-time first-defeat XP/resource/reputation/item/trophy rewards, escaped-rival +5% HP, and triumphant-rival +5% damage.
+5. Campaign save shape lives in `src/game/save/SaveTypes.ts`; old saves must normalize to empty `rivals` and `rivalTrophies` arrays in `src/game/save/SaveNormalization.ts`.
+6. Campaign Map display lives in `src/game/campaign/RivalIntelPanel.ts` and node preview copy lives in `src/game/campaign/CampaignNodePanel.ts`.
+7. Battle launch modifiers are added from `CampaignMapScene` through `BattleLaunchRequest`; enemy hero stat application happens in `BattleSceneSpawner`.
+8. Results outcome/reward/trophy copy lives in `src/game/results/ResultsObjectiveSummary.ts`.
+9. Simulator telemetry fields live in `src/game/playtest/PlaytestTypes.ts`, `PlaytestRunner.ts`, and `PlaytestReportWriter.ts`.
+10. Update `src/game/core/RivalRules.test.ts`, save normalization tests, Campaign Map presentation tests, Results rendering tests, Playwright rival flow coverage, content validation, and simulator telemetry if rival behavior changes.
+11. Do not add rival leveling trees, procedural rematches, new maps, new factions, diplomacy, workers, enemy construction, crafting, durability, broad loot complexity, full trophy rooms, or capture/recruit outcomes unless a future task explicitly scopes them.
+
 ## Add A New Building
 
 1. Open `src/game/data/buildings.ts`.

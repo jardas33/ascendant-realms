@@ -25,7 +25,7 @@ import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
 import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
-import { validateRewardTables } from "./validateRewards";
+import { validateRewardTables, validateRivalRewards } from "./validateRewards";
 import { validateStrongholdUpgrades } from "./validateStronghold";
 import { validateUnits } from "./validateUnits";
 import { validateUpgrades } from "./validateUpgrades";
@@ -65,6 +65,7 @@ export function validateContent(): string[] {
   validateFactions(errors, context);
   validateSkillNodes(errors, context);
   validateRewardTables(errors, context);
+  validateRivalRewards(errors, context);
   validateStrongholdUpgrades(errors, context);
   validateCampaignNodes(errors, context);
   validateReputationEffects(errors, context);

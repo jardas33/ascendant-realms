@@ -11,19 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Milestone
 
-Enemy Hero / Rival Commander V1 is now implemented on top of the v0.2 prototype baseline, Unit Veterancy V1, and Retinue Camp V1. The next milestone should be a human-paced campaign balance and readability pass before adding larger systems.
+Rival/Nemesis Persistence V1 and Rival Rewards and Trophies V1 are now implemented on top of Enemy Hero / Rival Commander V1, Unit Veterancy V1, Retinue Camp V1, and the v0.2 prototype baseline. The next recommended milestone is **Rival Rewards Balance And Readability Review** before larger systems.
 
 The current visible product baseline is `Prototype v0.2` with the menu subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
 
 Recommended focus:
 
+- Keep Rival/Nemesis follow-up compact: review existing persistent rival identity/state/rewards without adding enemy construction, workers, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, or a broad army-management layer.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
-- Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, and late-attack fairness.
+- Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
 - Review whether permanent retinue death feels clear enough before adding wounded timers or replacement UI.
 - Keep bonuses modest, visible in UI, and represented in telemetry.
 - Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
-- Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, and `CampaignRules`.
+- Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, `RivalRules`, and `CampaignRules`.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation
@@ -58,7 +59,7 @@ Recommended focus:
 - Level-up choices.
 - Scars and titles.
 - Reputation hooks.
-- Unit Veterancy V1 is implemented as battle-local XP/ranks/results summaries. Retinue Camp V1 selectively saves a small number of campaign veterans. Enemy Hero / Rival Commander V1 gives important Ashen battles named commanders without adding enemy construction.
+- Unit Veterancy V1 is implemented as battle-local XP/ranks/results summaries. Retinue Camp V1 selectively saves a small number of campaign veterans. Enemy Hero / Rival Commander V1 gives important Ashen battles named commanders without adding enemy construction. Rival/Nemesis Persistence V1 now persists commander outcomes and small rematch modifiers, while Rival Rewards and Trophies V1 adds one-time first-defeat rewards and save-backed trophies.
 
 ## Phase 3: Faction Expansion
 
@@ -82,6 +83,8 @@ Recommended focus:
 - Stronghold Development with five Tier I upgrades, five matching Tier II upgrades, prerequisite locks, campaign-resource spending, save-backed ranks, and battle-launch effects.
 - Battle-local Unit Veterancy V1 with Notable Veterans in Results, plus Retinue Camp V1 for a capped set of saved campaign veterans.
 - Enemy Hero / Rival Commander V1 with three named Ashen commanders, campaign node assignments, scout/battle/results feedback, modest abilities, and playtest telemetry.
+- Rival/Nemesis Persistence V1 with campaign-save rival records, Rival Intel, node previews, Results outcome copy, escaped/triumphant rematch modifiers, and playtest telemetry fields.
+- Rival Rewards and Trophies V1 with data-driven first-defeat XP/resource/reputation/item rewards, duplicate prevention, save-backed trophy records, Campaign Map trophy display, Results reward/trophy copy, and playtest telemetry fields.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
 - Quests.

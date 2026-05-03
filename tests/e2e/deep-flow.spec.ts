@@ -69,7 +69,9 @@ const BASE_CAMPAIGN = {
   townServiceUseCounts: {},
   activeModifierIds: [],
   strongholdUpgradeRanks: {},
-  retinueUnits: []
+  retinueUnits: [],
+  rivals: [],
+  rivalTrophies: []
 };
 
 function attachConsoleFailure(page: Page): void {
@@ -946,8 +948,90 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Deployed retinue veteran");
   });
 
+  test("known rival state previews, resolves, and persists after a commander defeat", async ({ page }) => {
+    test.setTimeout(80_000);
+    await seedSave(page, {
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road"],
+        unlockedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins"],
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road"],
+        selectedNodeId: "aether_well_ruins",
+        rivals: [
+          {
+            enemyHeroId: "veyra_cinders",
+            encounters: 1,
+            defeats: 0,
+            victoriesAgainstPlayer: 0,
+            lastEncounterNodeId: "aether_well_ruins",
+            lastOutcome: "escaped",
+            disposition: "wary",
+            activeModifiers: ["rival_wary_hp_5"],
+            isKnownToPlayer: true
+          }
+        ]
+      }
+    });
+
+    await page.getByTestId("menu-continue-campaign").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("Veyra of the Cinders");
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("Escaped");
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("+5% HP next encounter");
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Rival Status");
+    await expect(page.locator(".campaign-node-details")).toContainText("Escaped - Wary");
+
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Rival warning: Veyra of the Cinders returns with +5% HP");
+
+    const defeated = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.defeatEnemyHero?.());
+    expect(defeated).toMatchObject({
+      enemyHeroId: "veyra_cinders",
+      enemyHeroDefeated: true
+    });
+    await forceActiveBattleOutcome(page, "victory");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Veyra of the Cinders");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Rival Defeated");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Defeated");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Humiliated");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("One-time first-defeat reward");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("+20 Aether");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Cinder-Seer Lens");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Trophy earned");
+    await expect(page.getByTestId("results-rival-outcome")).toContainText("Cinder-Seer's Cracked Lens");
+
+    await page.locator("button[data-results-action='campaign']").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("2 encounters");
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("1 defeats");
+    await expect(page.getByTestId("rival-intel-panel")).toContainText("Humiliated");
+    await expect(page.getByTestId("rival-trophy-panel")).toContainText("Cinder-Seer's Cracked Lens");
+    await expect(page.getByTestId("rival-trophy-panel")).toContainText("Veyra of the Cinders");
+    const save = await readSave(page);
+    expect(save.campaign.rivals.find((rival: any) => rival.enemyHeroId === "veyra_cinders")).toMatchObject({
+      encounters: 2,
+      defeats: 1,
+      lastOutcome: "defeated",
+      disposition: "humiliated",
+      activeModifiers: []
+    });
+    expect(save.campaign.rivalTrophies).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          trophyId: "trophy_veyra_cinder_lens",
+          enemyHeroId: "veyra_cinders",
+          sourceNodeId: "aether_well_ruins",
+          label: "Cinder-Seer's Cracked Lens"
+        })
+      ])
+    );
+    expect(save.hero.inventory.some((item: any) => item.itemId === "cinderseer_lens")).toBe(true);
+  });
+
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {
-    test.setTimeout(70_000);
+    test.setTimeout(100_000);
 
     const earlyCampaign = {
       completedNodeIds: ["border_village", "old_stone_road"],

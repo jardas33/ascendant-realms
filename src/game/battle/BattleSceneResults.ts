@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
 import { updateRetinueAfterBattle } from "../core/RetinueRules";
+import { updateRivalAfterBattle, type RivalBattleOutcomeSummary } from "../core/RivalRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { requireCampaignNode } from "../data/contentIndex";
@@ -30,6 +31,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
   if (completion.shouldSaveHero && launch.request.mode !== "campaign_node") {
     SaveSystem.saveHero(completion.heroSave);
   }
+  let rivalResult: RivalBattleOutcomeSummary | undefined;
 
   if (launch.request.mode === "campaign_node") {
     const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
@@ -39,7 +41,16 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
       completion.stats.retinueUnitIdsLost
     );
     if (outcome !== "victory") {
-      SaveSystem.saveCampaign(campaignWithRetinueUpdates, startingHeroSave);
+      const rivalUpdate = updateRivalAfterBattle({
+        campaign: campaignWithRetinueUpdates,
+        hero: startingHeroSave,
+        nodeId: launch.request.campaignNodeId,
+        enemyHeroId: launch.request.enemyHeroId,
+        playerWon: false,
+        enemyHeroDefeated: false
+      });
+      rivalResult = rivalUpdate.rivalResult;
+      SaveSystem.saveCampaign(rivalUpdate.campaign, rivalUpdate.hero);
     }
   }
 
@@ -56,22 +67,31 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
       hero: completion.heroSave,
       node
     });
+    const rivalUpdate = updateRivalAfterBattle({
+      campaign: campaignCompletion.campaign,
+      hero: campaignCompletion.hero,
+      nodeId: node.id,
+      enemyHeroId: launch.request.enemyHeroId,
+      playerWon: true,
+      enemyHeroDefeated: Boolean(completion.stats.enemyHeroDefeated)
+    });
+    rivalResult = rivalUpdate.rivalResult;
     const stats = {
       ...completion.stats,
-      xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp
+      xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp + (rivalUpdate.rivalResult?.rewardXp ?? 0)
     };
     const newlyUnlockedNodeIds = campaignCompletion.campaign.unlockedNodeIds.filter(
       (nodeId) => !unlockedBefore.has(nodeId) && nodeId !== node.id
     );
-    SaveSystem.saveGame(campaignCompletion.hero, campaignCompletion.campaign);
+    SaveSystem.saveGame(rivalUpdate.hero, rivalUpdate.campaign);
     scene.scene.start(SCENE_KEYS.results, {
       stats,
-      heroSave: campaignCompletion.hero,
+      heroSave: rivalUpdate.hero,
       startingHeroSave,
       rewardItemIds: completion.rewardItemIds,
       reward: completion.reward,
       rewardLevelUp: completion.rewardLevelUp,
-      launchRequest: cloneBattleLaunchRequestWithHero(launch.request, campaignCompletion.hero),
+      launchRequest: cloneBattleLaunchRequestWithHero(launch.request, rivalUpdate.hero),
       campaignResult: {
         completedNodeId: node.id,
         completedNodeName: node.name,
@@ -79,8 +99,9 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
         unlockedNodeNames: newlyUnlockedNodeIds.map((nodeId) => requireCampaignNode(nodeId).name),
         nodeReward: campaignCompletion.nodeReward,
         nodeLevelUp: campaignCompletion.nodeLevelUp,
-        campaignResources: campaignCompletion.campaign.resources
-      }
+        campaignResources: rivalUpdate.campaign.resources
+      },
+      rivalResult
     });
     return;
   }
@@ -92,6 +113,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     rewardItemIds: completion.rewardItemIds,
     reward: completion.reward,
     rewardLevelUp: completion.rewardLevelUp,
-    launchRequest: cloneBattleLaunchRequestWithHero(launch.request, resultsHeroSave)
+    launchRequest: cloneBattleLaunchRequestWithHero(launch.request, resultsHeroSave),
+    rivalResult
   });
 }

@@ -167,6 +167,66 @@ describe("calculateLevelFromXp", () => {
           status: "active"
         }
       ],
+      rivals: [
+        {
+          enemyHeroId: "veyra_cinders",
+          encounters: 2.8,
+          defeats: 1.2,
+          victoriesAgainstPlayer: 1.9,
+          lastEncounterNodeId: "aether_well_ruins",
+          lastOutcome: "escaped",
+          disposition: "wary",
+          activeModifiers: ["rival_wary_hp_5", "missing_modifier", "rival_wary_hp_5"],
+          isKnownToPlayer: true
+        },
+        {
+          enemyHeroId: "veyra_cinders",
+          encounters: 99,
+          defeats: 99,
+          victoriesAgainstPlayer: 99,
+          lastOutcome: "triumphant",
+          disposition: "emboldened",
+          activeModifiers: ["rival_emboldened_damage_5"],
+          isKnownToPlayer: true
+        },
+        {
+          enemyHeroId: "missing_rival",
+          encounters: 1,
+          defeats: 0,
+          victoriesAgainstPlayer: 0,
+          lastOutcome: "escaped",
+          disposition: "wary",
+          activeModifiers: [],
+          isKnownToPlayer: true
+        }
+      ],
+      rivalTrophies: [
+        {
+          trophyId: "trophy_veyra_cinder_lens",
+          enemyHeroId: "veyra_cinders",
+          earnedAt: "2026-05-02T19:58:00.000Z",
+          sourceNodeId: "aether_well_ruins",
+          label: "Cinder-Seer's Cracked Lens",
+          description: "A cracked aether lens.",
+          effect: "First defeat claimed."
+        },
+        {
+          trophyId: "trophy_veyra_cinder_lens",
+          enemyHeroId: "veyra_cinders",
+          earnedAt: "duplicate",
+          sourceNodeId: "aether_well_ruins",
+          label: "Duplicate",
+          description: "Duplicate"
+        },
+        {
+          trophyId: "bad",
+          enemyHeroId: "missing_rival",
+          earnedAt: "bad",
+          sourceNodeId: "missing_node",
+          label: "",
+          description: ""
+        }
+      ],
       resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       resourcesSpent: { crowns: 60, stone: -4, iron: 2, aether: 1 },
       selectedNodeId: "old_stone_road"
@@ -195,6 +255,30 @@ describe("calculateLevelFromXp", () => {
         status: "active"
       }
     ]);
+    expect(normalized?.rivals).toEqual([
+      {
+        enemyHeroId: "veyra_cinders",
+        encounters: 2,
+        defeats: 1,
+        victoriesAgainstPlayer: 1,
+        lastEncounterNodeId: "aether_well_ruins",
+        lastOutcome: "escaped",
+        disposition: "wary",
+        activeModifiers: ["rival_wary_hp_5"],
+        isKnownToPlayer: true
+      }
+    ]);
+    expect(normalized?.rivalTrophies).toEqual([
+      {
+        trophyId: "trophy_veyra_cinder_lens",
+        enemyHeroId: "veyra_cinders",
+        earnedAt: "2026-05-02T19:58:00.000Z",
+        sourceNodeId: "aether_well_ruins",
+        label: "Cinder-Seer's Cracked Lens",
+        description: "A cracked aether lens.",
+        effect: "First defeat claimed."
+      }
+    ]);
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
     expect(normalized?.resourcesSpent).toEqual({ crowns: 60, stone: 0, iron: 2, aether: 1 });
   });
@@ -217,6 +301,8 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.activeModifierIds).toEqual([]);
     expect(normalized?.strongholdUpgradeRanks).toEqual({});
     expect(normalized?.retinueUnits).toEqual([]);
+    expect(normalized?.rivals).toEqual([]);
+    expect(normalized?.rivalTrophies).toEqual([]);
   });
 
   it("migrates legacy stronghold upgrade ids into rank data", () => {
@@ -455,6 +541,44 @@ describe("save version migration", () => {
     const loaded = SaveSystem.load();
 
     expect(loaded?.campaign.retinueUnits).toEqual(campaign.retinueUnits);
+  });
+
+  it("saves and loads rival state and trophy records through campaign data", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = {
+      ...createFallbackCampaignSave(),
+      started: true,
+      rivals: [
+        {
+          enemyHeroId: "captain_malrec",
+          encounters: 1,
+          defeats: 0,
+          victoriesAgainstPlayer: 1,
+          lastEncounterNodeId: "ashen_outpost",
+          lastOutcome: "triumphant" as const,
+          disposition: "emboldened" as const,
+          activeModifiers: ["rival_emboldened_damage_5" as const],
+          isKnownToPlayer: true
+        }
+      ],
+      rivalTrophies: [
+        {
+          trophyId: "trophy_malrec_outpost_standard",
+          enemyHeroId: "captain_malrec",
+          earnedAt: "2026-05-02T19:58:00.000Z",
+          sourceNodeId: "ashen_outpost",
+          label: "Malrec's Outpost Standard",
+          description: "The torn fortress standard of Captain Malrec's Ashen Outpost command.",
+          effect: "Milestone first defeat claimed."
+        }
+      ]
+    };
+
+    expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+
+    expect(loaded?.campaign.rivals).toEqual(campaign.rivals);
+    expect(loaded?.campaign.rivalTrophies).toEqual(campaign.rivalTrophies);
   });
 
   it("rejects invalid JSON and invalid save shapes without clearing storage", () => {

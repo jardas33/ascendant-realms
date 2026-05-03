@@ -2,49 +2,44 @@
 
 Run date: 2026-04-26 onward
 
-Last updated: 2026-05-01 20:08 -04:00
+Last updated: 2026-05-02 20:32 -04:00
 
 Scope: consolidated manual notes, automated verification, Browser Use sanity checks, and remaining manual-only QA areas for `LLM_GAME_HANDOFF.md`.
 
 Tester: Codex.
 
-## Latest Automated Verification - 2026-05-01 Stronghold Feature
+## Latest Automated Verification - 2026-05-02 v0.2+ Rival Rewards and Trophies V1
 
-These are the current authoritative automated results after the Stronghold Development v1 feature. Older per-pass results remain below as historical notes.
+These are the current authoritative automated results after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, and the latest docs/checkpoint consolidation. Older per-pass results remain below as historical notes.
 
 ```text
 npm test
-PASS: 32 test files passed, 156 tests passed
+PASS: 36 test files passed, 210 tests passed during the Rival Rewards and Trophies V1 pass
 
 npm run build
-PASS: TypeScript compile passed, Vite production build passed
+PASS: TypeScript compile passed, Vite production build passed during the Rival Rewards and Trophies V1 pass
 Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 39 Playwright tests passed in 14.2m. The e2e suite is slow; use a long timeout.
+PASS: 45 Playwright tests passed in 23.0m. The e2e suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json cover 15 simulated runs across 5 campaign nodes; no structural too-hard nodes; Ashen Outpost beatable: yes
+PASS: regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json cover 180 simulated runs across 60 campaign battle node/profile summaries; no too-easy nodes; no structural too-hard nodes; Ashen Outpost beatable: yes; no Stronghold warnings
 ```
 
-Focused Stronghold verification also passed:
+Current feature coverage includes Retinue rules/deployment/readability, Unit Veterancy rank/results display, Stronghold Tier II launch effects, affixed rewards and inventory stat contribution, reputation effects, enemy hero data validation, campaign node enemy-hero references, rival commander objective/results credit, persistent rival state normalization, campaign rival intel preview, Results rival outcome copy, battle-launch rival modifiers, first-defeat rival rewards, duplicate reward prevention, trophy save/load normalization, Campaign Map trophy display, Results trophy copy, and simulator telemetry for rival state before/after, outcome, modifiers, join timing, losses involving the rival, first-defeat rewards, duplicate prevention, and trophies.
 
-- `npm test -- src/game/core/StrongholdRules.test.ts src/game/core/SaveSystem.test.ts src/game/battle/BattleRuntime.test.ts src/game/data/contentValidation.test.ts`: PASS, 4 test files and 42 tests.
-- `npm run test:e2e -- --reporter=line -g "stronghold upgrades"`: PASS, 1 Playwright test.
+The checkpoint containing Enemy Hero / Rival Commander V1 and v0.2 polish was committed and pushed. Before this docs-consolidation pass, `main` and `origin/main` were synced at `6c210c2d2a463cffec182ebb78cdcbf102b4d666`.
 
-The previous checkpoint was committed and pushed. At the checkpoint metadata update, `main` and `origin/main` were synced at `b952cbee2a214d9958cfedf56069d5fecb55ca67`. The current Stronghold/HUD/contentValidation/docs work remains uncommitted.
-
-Do not reset, checkout, delete, or revert dirty work unless the user explicitly asks. Future dirty work should be treated as intentional until proven otherwise.
+Do not reset, checkout, delete, or revert work unless the user explicitly asks. Future dirty work should be treated as intentional until proven otherwise.
 
 ## Latest Browser Use Sanity Checks
 
-Fresh Browser Use was attempted after the Stronghold feature, but the Browser Use runtime reported no active Codex browser pane for both selected-tab and fresh-tab paths. Playwright remains the deterministic browser suite and passed the new Stronghold flow plus the full e2e suite.
+Latest recorded successful Browser Use check:
 
-Latest recorded successful Browser Use checks are from the 2026-04-30 polish pass, before the 2026-05-01 checkpoint commit:
-
-- Production preview at `http://127.0.0.1:4177/` rendered the Ascendant Realms main menu with the title and New Campaign button visible.
-- Browser console errors were 0 in that production-preview sanity pass.
-- Visible First Claim checks in the in-app browser verified the opening full-squad selection, clean Crown Shrine capture prompt, construction hint progression, and selected-forces retake wording.
+- Production preview at `http://127.0.0.1:4182/` rendered the Ascendant Realms main menu with `Prototype v0.2` and `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
+- `Prototype v0.1` was absent.
+- Browser console errors were 0.
 
 Browser Use was used for visible local-browser confidence. Playwright remains the deterministic browser suite.
 
@@ -62,9 +57,10 @@ Earlier manual/browser method:
 
 - Human-audible audio checks for music/SFX/mute behavior.
 - Human-paced first battle feel through normal input: timing, stress, readability, and whether the first warning, Barracks completion, first trained unit, and first attack contact feel fair.
-- Human-paced Normal branch checks for Aether Well Ruins and Bandit Hillfort from a typical early campaign save.
-- Human-paced Ashen Outpost assault with fog on, including Burned Shrine route readability, fortress/tower pressure, and full-fight HUD clarity.
-- Subjective campaign choice feel: Marcher Camp spending, Chapel preparation, and whether Stronghold purchases make early campaign prep feel too generous or just meaningfully strategic.
+- Human-paced Normal branch checks for Aether Well Ruins and Bandit Hillfort from a typical early campaign save, including Veyra and Gorak readability.
+- Human-paced Ashen Outpost assault with fog on, including Burned Shrine route readability, Captain Malrec/Hold the Line readability, fortress/tower pressure, and full-fight HUD clarity.
+- Subjective campaign choice feel: Marcher Camp spending, Chapel preparation, reputation hooks, Retinue Camp choices, rival commander rewards/trophies, and whether Stronghold purchases make early campaign prep feel too generous or just meaningfully strategic.
+- Mixed retinue and mixed retinue plus Training Yard II/Quartermaster II on Ashen Outpost need human review because telemetry flags them as strong but not structurally too easy.
 
 No critical failures are currently known from automated verification.
 

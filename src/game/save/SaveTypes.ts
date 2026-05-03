@@ -84,6 +84,32 @@ export interface RetinueUnitSaveData {
   status: RetinueUnitStatus;
 }
 
+export type RivalLastOutcome = "unseen" | "escaped" | "defeated" | "wounded" | "triumphant";
+export type RivalDisposition = "wary" | "enraged" | "humiliated" | "emboldened";
+export type RivalModifierId = "rival_wary_hp_5" | "rival_emboldened_damage_5";
+
+export interface CampaignRivalSaveData {
+  enemyHeroId: string;
+  encounters: number;
+  defeats: number;
+  victoriesAgainstPlayer: number;
+  lastEncounterNodeId?: string;
+  lastOutcome: RivalLastOutcome;
+  disposition: RivalDisposition;
+  activeModifiers: RivalModifierId[];
+  isKnownToPlayer: boolean;
+}
+
+export interface RivalTrophySaveData {
+  trophyId: string;
+  enemyHeroId: string;
+  earnedAt: string;
+  sourceNodeId: string;
+  label: string;
+  description: string;
+  effect?: string;
+}
+
 export interface CampaignSaveData {
   started: boolean;
   difficulty: BattleDifficulty;
@@ -99,5 +125,7 @@ export interface CampaignSaveData {
   activeModifierIds: string[];
   strongholdUpgradeRanks: Record<string, number>;
   retinueUnits: RetinueUnitSaveData[];
+  rivals: CampaignRivalSaveData[];
+  rivalTrophies: RivalTrophySaveData[];
   selectedNodeId?: string;
 }

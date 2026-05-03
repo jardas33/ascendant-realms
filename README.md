@@ -1,8 +1,18 @@
 # Ascendant Realms
 
-Ascendant Realms is a v0.2 prototype baseline for a long-term fantasy RTS/RPG hybrid. The visible main menu labels this baseline as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a v0.2 prototype baseline for a long-term fantasy RTS/RPG hybrid. The visible main menu labels this baseline as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
+
+Current v0.2+ feature snapshot:
+
+- Named enemy heroes/rival commanders on important Ashen campaign battles, with compact persistent rival state.
+- Rival Rewards and Trophies V1 with once-only first-defeat rewards and cosmetic trophy records.
+- Retinue Camp V1 for a small save-backed roster of surviving veteran units.
+- Unit Veterancy V1 with Recruit, Seasoned, Veteran, and Elite ranks.
+- Stronghold Development Tier II with compact persistent upgrade effects.
+- Randomized item affixes V1 on reward-generated item instances.
+- Reputation hooks for modest campaign choice consequences and preparation effects.
 
 ## Design Pillars
 
@@ -53,7 +63,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest status after Enemy Hero / Rival Commander V1, 2026-05-02: `npm test` passes with 35 test files and 200 tests, including Retinue rules, enemy hero data validation, campaign launch references, save/load, launch, retry, and simulator coverage.
+Latest status after Rival Rewards and Trophies V1, 2026-05-02: `npm test` passes with 36 test files and 210 tests, including Retinue rules, enemy hero/rival reward data validation, campaign launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
 
 ## Browser Smoke Tests
 
@@ -63,7 +73,7 @@ npm run test:e2e
 
 The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.2` label, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest run passed 44 Playwright tests.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest run passed 45 Playwright tests.
 
 For a visible browser run:
 
@@ -77,7 +87,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest Enemy Hero / Rival Commander V1 status, 2026-05-02: passed with 180 simulated runs across 60 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, and enemy hero telemetry for assigned rival commanders.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest Rival Rewards and Trophies V1 status, 2026-05-02: passed with 180 simulated runs across 60 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, and enemy hero/rival telemetry including first-defeat rewards, duplicate prevention, and trophy-earned fields.
 
 ## Preview A Build
 
@@ -229,6 +239,8 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Unit Veterancy V1 with battle-local unit XP, Recruit/Seasoned/Veteran/Elite ranks, selected-unit rank display, rank-up feedback, and Notable Veterans in victory Results.
 - Retinue Camp V1 with a small save-backed campaign roster, Results recruitment for eligible veterans, Campaign Map display/dismiss, campaign battle deployment, and permanent removal when a retinue unit dies.
 - Enemy Hero / Rival Commander V1 with Gorak Emberhand, Veyra of the Cinders, and Captain Malrec assigned to important campaign battles, plus scout feedback, minimap markers, modest abilities, XP/objective/results credit, and playtest telemetry.
+- Rival/Nemesis Persistence V1 with save-backed rival encounters, defeats, victories against the player, last outcomes, dispositions, small repeat-encounter modifiers, Campaign Map intel, Results consequences, and simulator telemetry.
+- Rival Rewards and Trophies V1 with data-driven first-defeat rewards, duplicate prevention, persistent trophy records, Campaign Map trophy display, Results reward copy, and simulator telemetry.
 - Simple enemy AI that expands, trains, defends, sends attack waves, and uses selectable/campaign-assigned personalities.
 - Shared victory/defeat Results screen with XP summary, item rewards, Equip Now, campaign node completion details, retry/return flow, and local hero save.
 - Pure `BattleRuntime` tests for setup, objectives, battle results, rewards, and save-output decisions.
@@ -243,7 +255,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Movement uses a coarse A* pathfinding grid plus local separation. It is not formation-aware or flow-field based yet.
 - Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
 - Workers, broad vendors, full diplomacy, and enemy construction are postponed.
-- Retinue Camp V1 and Enemy Hero / Rival Commander V1 are intentionally small: no replacement UI, wounded timers, unit biographies, scars/titles, broad army management, enemy construction, or raid-boss layer yet.
+- Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 are intentionally small: no replacement UI, wounded timers, deep nemesis branches, unit biographies, scars/titles, full trophy room, crafting, durability, broad loot complexity, broad army management, enemy construction, or raid-boss layer yet.
 - Campaign is a skeleton only: Marcher Camp, Stronghold Development, and reputation effects prove small resource sinks and consequences, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
@@ -259,10 +271,11 @@ Good next prompts are specific and small. Examples:
 - "Human-review Border Village through Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue."
 - "Tune Retinue Camp V1 if saved veterans trivialize early nodes or feel mandatory for Ashen Outpost."
 - "Human-review Stronghold Tier II, reputation effects, retinue, rival commanders, and affixed reward readability in the current campaign."
+- "Review Rival/Nemesis Persistence V1 balance and readability without adding enemy construction or new factions."
+- "Review Rival Rewards and Trophies V1 balance and readability without adding crafting, durability, or a full trophy room."
 - "Split ResultsScene into smaller reward, campaign-return, and item-comparison helpers."
 - "Split maps.ts into one file per map without changing map behavior."
 - "Improve formation movement and dynamic path blockers without changing combat balance."
-- "Add worker builders on top of the automatic construction system."
 - "Add a respec button to the hero progression screen."
 
 ## Troubleshooting
