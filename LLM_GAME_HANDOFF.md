@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 22:58 -04:00
+Last updated: 2026-05-02 23:00 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -40,14 +40,14 @@ Latest checkpoint feature commit:
 59113746a09f5f1c2cbf053c640a24ab21e92b9b
 ```
 
-Latest commits:
+Recent checkpoint stack:
 
 ```text
+4fb085a Finalize checkpoint sync metadata
+386afa9 Record checkpoint metadata
+5911374 Checkpoint rival persistence rewards and HUD fog polish
 6c210c2 Clarify checkpoint sync metadata
 86ad394 Update checkpoint sync metadata
-fa90b49 Update checkpoint metadata
-938f768 Checkpoint enemy heroes rival commanders and v0.2 polish
-b2da48e Update checkpoint metadata
 ```
 
 Known shell/tool note:
