@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-03 19:02 -04:00
+Last updated: 2026-05-03 19:28 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -37,17 +37,17 @@ main
 Latest checkpoint feature commit:
 
 ```text
-6543f212431e18a5cbe916f9984797313513fe57
+e52636729f05f0b54c2896200aa57ceebc13e6b1
 ```
 
 Recent checkpoint stack:
 
 ```text
+e526367 Checkpoint Cinderfen two-battle Chapter 2 slice
 6543f21 Checkpoint Chapter 2 Cinderfen event battle and balance slice
 df318e0 Sync v0.2.1 checkpoint branch status
 b79e0f8 Record v0.2.1 checkpoint metadata
 2d5b0cd Checkpoint v0.2.1 baseline and Chapter 2 scaffold
-c277675 Update handoff checkpoint stack
 ```
 
 Known shell/tool note:
@@ -58,24 +58,66 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-main has intentional dirty work after pushed checkpoint commit 6543f212431e18a5cbe916f9984797313513fe57. The dirty work includes the Chapter 2 event/support/two-battle slice, balance/report/doc updates, the Cinderfen Watchpost map, and the Chapter 2 data-organization cleanup. Preserve it unless the user explicitly asks for a reset/revert.
+Checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1 preserves the Chapter 2 Cinderfen two-battle slice. The only post-checkpoint edits in this pass are DEVELOPMENT_CHECKPOINT.md and LLM_GAME_HANDOFF.md metadata updates recording the exact checkpoint hash and verification results. Preserve the checkpoint unless the user explicitly asks for a reset/revert.
 ```
 
-The checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` was created with message `Checkpoint Chapter 2 Cinderfen event battle and balance slice` and pushed successfully with `git push origin main`. This metadata follow-up records that pushed checkpoint. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `e52636729f05f0b54c2896200aa57ceebc13e6b1` was created with message `Checkpoint Cinderfen two-battle Chapter 2 slice`. This metadata follow-up records that checkpoint. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
 ```text
-6543f212431e18a5cbe916f9984797313513fe57
+e52636729f05f0b54c2896200aa57ceebc13e6b1
 ```
 
 Current branch sync status:
 
 ```text
-As of this handoff refresh, `git rev-list --left-right --count origin/main...HEAD` reports `0 0`, so HEAD is aligned with origin/main. The working tree is intentionally dirty with uncommitted Chapter 2 slice, docs, telemetry, e2e, simulator, Cinderfen Watchpost map, and data-organization cleanup files. Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` remains pushed to origin/main.
+Before checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. After creating the checkpoint commit, `git status -sb` reported `## main...origin/main [ahead 1]` and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`. Push the checkpoint commit together with this metadata follow-up, then verify `git status -sb` reports `## main...origin/main` and `git rev-list --left-right --count origin/main...HEAD` reports `0 0`.
 ```
 
 The pushed checkpoint preserves the Chapter 2 battle-slice edits. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Clean Checkpoint - 2026-05-03 19:28 -04:00
+
+Scope: create a clean checkpoint before new feature work. No gameplay, balance, map, faction, unit, worker, enemy construction, diplomacy, procedural generation, crafting, or save-format changes were made during the checkpoint pass. The checkpoint preserves the current Chapter 2 Cinderfen two-battle slice, including Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, Cinder Shrine, Malrec trophy consequence, Chapter 2 docs/report updates, e2e/simulator coverage, telemetry, and the focused campaign data split.
+
+Verification completed:
+
+```text
+npm test
+PASS: 37 test files, 251 tests, 11.94s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-DHOLAhSV.js, 1,911.42 kB minified / 455.81 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.5m, including Cinderfen Overlook, Cinderfen Waystation Shrine Attunement, Cinderfen Crossing victory/reward persistence, Cinder Shrine duplicate prevention, Cinderfen Watch victory/reward persistence, and Malrec trophy consequence coverage.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+```
+
+Branch and commit status:
+
+```text
+Pre-checkpoint sync check: `origin/main...HEAD` reported `0 0`.
+Checkpoint commit: e52636729f05f0b54c2896200aa57ceebc13e6b1
+Checkpoint message: Checkpoint Cinderfen two-battle Chapter 2 slice
+Post-checkpoint/pre-metadata status: `main...origin/main [ahead 1]`, with `origin/main...HEAD` reporting `0 1`.
+```
+
+Remaining known risks:
+
+- Human playtesting still needs to check Cinderfen Crossing and Cinderfen Watch with no retinue, light retinue, Training Yard II, Quartermaster II, and mixed Chapter 1 upgrade states.
+- Fast Army and retinue plus Training Yard II can still clear Cinderfen quickly, so future Chapter 2 rewards should stay modest.
+- Cinder Shrine and Shrine Attunement need a live readability pass even though tests and simulator cover the Aether surge and duplicate prevention.
+- Cinderfen Overlook and Waystation choice/service density should be spot-checked on mobile.
+- The Malrec trophy consequence is intentionally compact; broader returning-rival arcs remain future work.
+- The focused campaign data split depends on node arrays, reward tables, chapter metadata, compatibility barrels, and content validation staying aligned.
+- The known Vite large chunk warning remains.
+- Full Playwright e2e remains slow at about 21-22 minutes.
+
+Next recommended milestone: human-verify the current Cinderfen two-battle slice end to end, then add only one compact non-battle Chapter 2 consequence at a time if the slice stays green. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
 
 ## Clean Checkpoint - 2026-05-03 14:31 -04:00
 
@@ -248,16 +290,16 @@ Latest verification status:
 
 ```text
 npm test
-Latest result after the Chapter 2 data-organization cleanup: PASS, 37 test files and 251 tests.
+Latest result after the 2026-05-03 19:28 checkpoint run: PASS, 37 test files and 251 tests.
 
 npm run build
-Latest result after the Chapter 2 data-organization cleanup: PASS, known Vite large-chunk warning only.
+Latest result after the 2026-05-03 19:28 checkpoint run: PASS, known Vite large-chunk warning only.
 
 npm run test:e2e -- --reporter=line
 Latest full recorded result after Cinderfen Overlook, Malrec trophy consequence, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, and Cinderfen Watch e2e coverage: PASS, 52 Playwright tests in 21.5m on the clean full rerun.
 
 npm run playtest:sim
-Latest simulator baseline after the Chapter 2 data-organization cleanup: PASS, 255 deterministic runs across 85 campaign battle node/profile summaries; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings; Cinder Shrine first-capture bonuses modeled at +20 Aether and +25 Aether when Shrine Attunement is active.
+Latest simulator baseline after the 2026-05-03 19:28 checkpoint run: PASS, 255 deterministic runs across 85 campaign battle node/profile summaries; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings; Cinder Shrine first-capture bonuses modeled at +20 Aether and +25 Aether when Shrine Attunement is active.
 ```
 
 Known risks for v0.2.1:
