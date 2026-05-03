@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_PLAYTEST_STRONGHOLD_PROFILES,
+  DEFAULT_PLAYTEST_SCENARIOS,
   analyzePlaytestTelemetry,
   renderPlaytestMarkdownReport,
+  runScriptedBattlePlaytest,
   runScriptedPlaytestSuite
 } from "./ScriptedBattlePlaytest";
+import { CAMPAIGN_NODES } from "../data/campaignNodes";
 
 describe("ScriptedBattlePlaytest", () => {
   const noStrongholdProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find((profile) => profile.id === "no_stronghold")!;
@@ -12,9 +15,16 @@ describe("ScriptedBattlePlaytest", () => {
   it("runs every current campaign battle node with the three core scripts and stronghold profiles", () => {
     const report = runScriptedPlaytestSuite();
 
-    expect(report.telemetry).toHaveLength(180);
+    expect(report.telemetry).toHaveLength(216);
     expect(new Set(report.telemetry.map((run) => run.nodeId))).toEqual(
-      new Set(["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "ashen_outpost"])
+      new Set([
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "ashen_outpost",
+        "cinderfen_crossing"
+      ])
     );
     expect(new Set(report.telemetry.map((run) => run.playerScript))).toEqual(
       new Set(["safe_beginner", "greedy_economy", "fast_army"])
@@ -36,6 +46,35 @@ describe("ScriptedBattlePlaytest", () => {
       ])
     );
     expect(report.telemetry.some((run) => run.retinueUnits.includes("Veteran Militia"))).toBe(true);
+  });
+
+  it("includes the playable Chapter 2 battle while excluding non-battle event nodes", () => {
+    const scenarioNodeIds = DEFAULT_PLAYTEST_SCENARIOS.map((scenario) => scenario.nodeId);
+    const eventNodeIds = CAMPAIGN_NODES.filter((node) => node.nodeType === "event").map((node) => node.id);
+
+    expect(CAMPAIGN_NODES.filter((node) => node.isPlaceholder).map((node) => node.id)).toEqual([]);
+    expect(eventNodeIds).toEqual(expect.arrayContaining(["refugee_caravan", "cinderfen_overlook"]));
+    expect(scenarioNodeIds).toEqual([
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost",
+      "cinderfen_crossing"
+    ]);
+    eventNodeIds.forEach((nodeId) => {
+      expect(scenarioNodeIds).not.toContain(nodeId);
+    });
+  });
+
+  it("models the Cinder Shrine first-capture surge in Cinderfen scripts", () => {
+    const run = runScriptedBattlePlaytest({
+      scenario: { nodeId: "cinderfen_crossing", expectedDifficulty: "normal" },
+      scriptId: "greedy_economy"
+    });
+
+    expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("captured Cinder Shrine")]));
+    expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("Cinder Shrine Surge: 20 Aether")]));
   });
 
   it("captures opening timing and command telemetry for the tutorial battles", () => {

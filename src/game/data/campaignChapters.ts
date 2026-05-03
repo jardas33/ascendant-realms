@@ -22,12 +22,11 @@ export const CAMPAIGN_CHAPTERS: CampaignChapterDefinition[] = [
   },
   {
     id: "cinderfen_road",
-    title: "Chapter 2: The Cinderfen Road",
+    title: "Chapter 2: Cinderfen Road",
     shortDescription:
-      "Upcoming v0.3 scaffold for the ash-glass wetland road beyond Ashen Outpost. Planning only; no Chapter 2 battle map launches yet.",
+      "The first playable v0.3 road beyond Ashen Outpost: one compact ash-glass wetland event gate and one causeway battle.",
     nodeIds: ["cinderfen_overlook", "cinderfen_crossing"],
-    unlockPrerequisiteNodeIds: ["ashen_outpost"],
-    isUpcoming: true
+    unlockPrerequisiteNodeIds: ["ashen_outpost"]
   }
 ];
 

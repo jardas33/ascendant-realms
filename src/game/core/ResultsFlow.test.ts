@@ -163,6 +163,52 @@ describe("results reward flow", () => {
     expect(tips[0]).toContain("Stronghold");
   });
 
+  it("adds Cinderfen Crossing objective tips before generic defeat advice", () => {
+    const stats: BattleStats = {
+      unitsKilled: 5,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 1,
+      buildingsBuilt: 2,
+      builtBuildingIds: ["barracks", "watchtower"],
+      unitsTrained: 5,
+      trainedUnitIds: ["militia", "ranger", "militia", "militia", "ranger"],
+      enemyWavesSurvived: 1,
+      xpGained: 0,
+      timeSeconds: 360,
+      completedObjectiveIds: [],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "cinderfen_causeway", campaignNodeId: "cinderfen_crossing" });
+
+    expect(tips[0]).toContain("Causeway Toll");
+    expect(tips[0]).toContain("Reedcut Quarry");
+    expect(tips[0]).toContain("Cinder Shrine");
+    expect(tips[0]).toContain("Aether surge");
+  });
+
+  it("advances Cinderfen Crossing defeat advice after the central crossing is secured", () => {
+    const stats: BattleStats = {
+      unitsKilled: 9,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 3,
+      buildingsBuilt: 3,
+      builtBuildingIds: ["barracks", "mystic_lodge", "watchtower"],
+      unitsTrained: 8,
+      trainedUnitIds: ["militia", "ranger", "militia", "ranger", "acolyte", "militia", "ranger", "militia"],
+      enemyWavesSurvived: 2,
+      xpGained: 0,
+      timeSeconds: 520,
+      completedObjectiveIds: ["capture_cinder_crossing"],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "cinderfen_causeway" });
+
+    expect(tips[0]).toContain("Cinder Guardians");
+    expect(tips[0]).toContain("Brute");
+  });
+
   it("saves campaign node completion and does not grant the same node reward twice", () => {
     const campaign = createStartedCampaignSave();
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");

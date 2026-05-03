@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-03 08:58 -04:00
+Last updated: 2026-05-03 13:54 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a v0.2.1 prototype baseline candidate. The visible in-game menu still says `Prototype v0.2`, while v0.2.1 documents the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, and permanent Playwright regression coverage for the reported HUD/fog issues. It is still a prototype, but it has a broad playable RTS/RPG spine and a clearer verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The next recommended milestone is **Chapter 2 vertical slice implementation**. A minimal Chapter 2 scaffold exists: chapter metadata plus locked/upcoming Cinderfen Road placeholder nodes that cannot launch a missing map. Keep Chapter 2 implementation compact; do not move to workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems.
+The next recommended milestone is **continuing the Chapter 2 vertical slice after the Cinderfen event gate, first battle slice, telemetry balance pass, compact Malrec trophy consequence, and Cinder Shrine tactical identity feature**. Chapter metadata exists, `cinderfen_overlook` is now a playable preparation event after `ashen_outpost`, and `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed. Keep further Chapter 2 implementation compact; do not move to workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems.
 
 ## Current Git State
 
@@ -53,7 +53,7 @@ c277675 Update handoff checkpoint stack
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest Browser Use status check was rerun after the HUD/fog polish pass: the current in-app browser tab is `http://127.0.0.1:4182/`, title `Ascendant Realms`, with browser console errors at 0. The latest full main-menu Browser Use copy sanity remains the earlier `Prototype v0.2` preview with no `Prototype v0.1`. Playwright remains the deterministic browser verification surface for gameplay flows.
+- Latest Browser Use status check was rerun after the Cinderfen balance pass: temporary Vite at `http://127.0.0.1:4184/`, title `Ascendant Realms`, main menu present, browser console errors at 0, then the smoke tab and dev server were closed. Playwright remains the deterministic browser verification surface for gameplay flows.
 
 Current branch status for this handoff update:
 
@@ -75,7 +75,83 @@ Current branch sync status:
 Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` is pushed to origin/main. The checkpoint metadata follow-up was also pushed successfully, and final `git status -sb` reported `## main...origin/main`.
 ```
 
-The worktree is clean after the checkpoint metadata follow-up push. Preserve future dirty work unless the user explicitly asks for a different git action.
+The pushed checkpoint was clean, but the current worktree may contain uncommitted Chapter 2 battle-slice edits. Preserve dirty work unless the user explicitly asks for a different git action.
+
+## Chapter 2 Event Gate And First Battle Slice - 2026-05-03
+
+Scope: implement only the playable `cinderfen_overlook` event gate plus `cinderfen_crossing` on the existing Chapter 2 battle map, `cinderfen_causeway` / **Cinderfen Causeway**. This is not full Chapter 2.
+
+What changed:
+
+- Added `src/game/data/maps/cinderfenCauseway.ts` and registered it in the map index.
+- Converted `cinderfen_crossing` from a locked placeholder into a playable Normal battle after `ashen_outpost`.
+- Converted `cinderfen_overlook` from a placeholder into a playable event after `ashen_outpost`.
+- Added three baseline one-time Cinderfen Overlook choices: Scout the Causeway, Aid the Marsh Refugees, and Study the Cinders.
+- Added one optional Malrec trophy consequence choice: Raise Malrec's Standard appears when `trophy_malrec_outpost_standard` is present, grants 10 XP, +3 Free Marches reputation, and the existing Well Rested next-battle modifier, then completes the event.
+- Each Cinderfen Overlook choice uses existing campaign costs, XP/resources/items, reputation changes, and campaign modifiers, then completes the event and unlocks `cinderfen_crossing`.
+- Used existing Ashen Covenant units, existing Ashen structures, and the existing `hexfire_cult` AI personality.
+- Added objectives for destroying the enemy Stronghold, claiming the Cinder Shrine, clearing the central Cinder Guardians Brute, and destroying the Enemy Barracks.
+- Added the Cinder Shrine tactical identity feature on the existing `cinder_crossing` capture site: first capture by a side grants one battle-local `Cinder Shrine Surge` of +20 Aether, then normal +16 Aether/6s income continues.
+- Added `cinderfen_causeway_rewards` with one existing-item weighted roll, modest XP/resources, and lower payoff than Ashen Outpost.
+- Added/updated content validation for the new map, node, reward table, objectives, capture sites, neutral camps, and enemy references.
+- Added e2e coverage that seeds post-Ashen progress, resolves Cinderfen Overlook, verifies choice reward/reputation/modifier persistence, launches Cinderfen Crossing, verifies BattleScene map/objective/resource/minimap state, captures the Cinder Shrine through a safe hook, verifies +20 Aether, and verifies the surge does not duplicate.
+- Added Cinderfen Crossing to the scripted playtest simulator as the first Chapter 2 scenario, reported separately from Chapter 1. The simulator now also models capture-site first-capture bonuses, including the Cinder Shrine Surge.
+- Telemetry balance pass trimmed Cinderfen player start resources, capture-site income, battle XP/resources, campaign-node rewards, and event-choice payouts while giving the Ashen staging camp a slightly stronger starting bank and faster training.
+- Added Cinderfen-specific defeat tips for side income, Cinder Guardians, and Enemy Barracks sequencing.
+- Updated roadmap, balance, content, and Chapter 2 implementation docs.
+
+Explicitly not implemented:
+
+- No workers, enemy construction, full new faction, diplomacy, procedural generation, crafting, extra Chapter 2 maps, new unit types, Chapter 2 named rival, rematch logic, or new rival system.
+- The only returning-rival consequence is the existing Malrec trophy gating one optional Cinderfen event choice.
+- The only Cinderfen-specific tactical feature is the Cinder Shrine first-capture Aether surge on the existing map/site.
+- No additional Chapter 2 event nodes or maps beyond the event gate and existing Cinderfen Causeway battle slice.
+
+Verification for this slice should include:
+
+```text
+npm test
+PASS: 37 test files, 233 tests after the post-feature Cinderfen balance pass.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only
+
+npm run test:e2e -- --reporter=line
+PASS: 51 Playwright tests in 21.9m on the clean full rerun, including Cinderfen Overlook choice flow, Malrec trophy consequence coverage, Cinderfen Crossing launch/victory coverage, and Cinder Shrine +20 first-capture coverage.
+
+npm run playtest:sim
+PASS: 216 deterministic battle runs across 72 campaign battle node/profile summaries. Cinderfen Overlook remains covered by unit/e2e save flow, including the Malrec trophy option, while Cinderfen Crossing remains in the battle simulator baseline with Cinder Shrine first-capture bonuses modeled at +20 Aether.
+```
+
+## Chapter 2 Telemetry Balance Pass - 2026-05-03
+
+Source: `PLAYTEST_TELEMETRY.md`, `PLAYTEST_TELEMETRY.json`, `BALANCE.md`, and `docs/CHAPTER_2_IMPLEMENTATION_SPEC.md`.
+
+Telemetry read:
+
+- Cinderfen Crossing remained structurally reasonable before tuning at 24 wins / 0 defeats / 12 timeouts.
+- Safe Beginner won 12/12 with fair first contact around 4:16.
+- Greedy Economy mostly timed out, preserving the staging lesson.
+- Fast Army won 11/12 and often finished before first-wave pressure mattered, so the risk was quick reward farming rather than a difficulty cliff.
+- Retinue + Training Yard II swept Cinderfen and remains a human-review watchpoint; Retinue + Quartermaster II did not sweep.
+- Cinderfen has no named rival in this slice and 0 simulator runs applied rival persistence modifiers.
+- Cinder Shrine impact is modest and battle-local: 24/36 Cinderfen simulator runs captured the shrine and received +20 Aether; Fast Army skips it in the current profile, so the shrine does not explain quick rush wins.
+- Chapter 1 telemetry stayed stable because the pass touched only Cinderfen values and Cinderfen-specific result copy.
+
+Tuning applied:
+
+- Cinderfen player starting bank reduced to 480 Crowns, 325 Stone, 195 Iron, and 110 Aether.
+- Cinderfen enemy starting bank increased to 250 Crowns, 195 Stone, 140 Iron, and 100 Aether.
+- Cinderfen enemy income per tick increased slightly to 80 Crowns, 40 Stone, 36 Iron, and 30 Aether.
+- Cinderfen enemy train interval tightened from 6.8s to 6.4s.
+- Cinderfen capture site income reduced to 30 Crowns/5s, 22 Stone/6s, 18 Iron/6s, and 16 Aether/6s.
+- Cinderfen battle first-clear reward reduced to 65 XP and 30 Crowns, 20 Stone, 16 Iron, 12 Aether.
+- `cinderfen_crossing` campaign node reward reduced to 60 XP and 40 Crowns, 20 Stone, 20 Iron, 12 Aether plus Scout's Bow.
+- Cinderfen repeat reward reduced to 34 XP and 22 Crowns, 10 Stone, 11 Iron, 8 Aether plus the existing item roll path.
+- Cinderfen event choices now cost more and pay less raw XP/resources: Scout 30 Crowns for 20 XP/8 Stone, Aid 55 Crowns for 25 XP/10 Iron, Study 24 Aether for 20 XP/Emberglass Wand.
+- Later Cinder Shrine feature adds one battle-local +20 Aether first-capture surge on the existing central Aether site after the post-feature telemetry pass trimmed it from +24. It does not add campaign rewards, save schema, a new map, units, workers, enemy construction, diplomacy, procedural generation, or crafting.
+- Post-feature telemetry pass left Cinderfen enemy pacing, wave size, AI income/training interval, starting resources, capture-site income, battle rewards, event costs/rewards, and the Malrec trophy consequence unchanged because Cinderfen stayed structurally reasonable and the only over-generous new knob was the shrine tempo burst.
+- No systems, maps, units, factions, faction mechanics, diplomacy, crafting, or Chapter 1 values changed.
 
 ## v0.2.1 Prototype Baseline Candidate - 2026-05-03
 
@@ -92,16 +168,16 @@ Latest verification status:
 
 ```text
 npm test
-Latest result after minimal Chapter 2 scaffold: PASS, 36 test files and 217 tests.
+Latest result after the post-feature Cinderfen balance pass: PASS, 37 test files and 233 tests.
 
 npm run build
-Expected/current v0.2.1 result: PASS, known Vite large-chunk warning only.
+Latest result after the post-feature Cinderfen balance pass: PASS, known Vite large-chunk warning only.
 
 npm run test:e2e -- --reporter=line
-Latest full recorded result after HUD/fog regression coverage: PASS, 49 Playwright tests.
+Latest full recorded result after Cinderfen Overlook, Malrec trophy consequence, Cinderfen Crossing, and Cinder Shrine e2e coverage: PASS, 51 Playwright tests in 21.9m on the clean full rerun.
 
 npm run playtest:sim
-Latest simulator baseline: PASS, 180 deterministic runs; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings.
+Latest simulator baseline: PASS, 216 deterministic runs across 72 campaign battle node/profile summaries; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings; Cinder Shrine first-capture bonuses modeled at +20 Aether.
 ```
 
 Known risks for v0.2.1:
@@ -113,7 +189,7 @@ Known risks for v0.2.1:
 
 Recommended next milestones:
 
-1. Chapter 2 vertical slice implementation.
+1. Continue the Chapter 2 vertical slice after the Cinderfen Overlook event gate and first playable Cinderfen Crossing battle.
 2. Keep the implementation compact and data-driven around the existing scaffold.
 3. Keep human-paced v0.2.1 campaign readability and balance review in mind while implementing Chapter 2 content, especially retinue, rival/trophy, HUD/fog, and Ashen Outpost readability.
 4. Avoid workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.

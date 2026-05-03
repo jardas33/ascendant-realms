@@ -15,6 +15,8 @@ import {
 } from "./SaveSystem";
 import { DEFAULT_SETTINGS, normalizeSettingsData, shouldShowFloatingText } from "./Settings";
 import { createItemInstance } from "./HeroProgressionRules";
+import { applyCampaignChoice, createStartedCampaignSave } from "./CampaignRules";
+import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 describe("calculateLevelFromXp", () => {
@@ -391,6 +393,107 @@ describe("save version migration", () => {
     expect(typeof parsed.updatedAt).toBe("string");
     expect(parsed.settings).toEqual(DEFAULT_SETTINGS);
     expect(parsed.statistics).toEqual({});
+  });
+
+  it("saves and loads completed Cinderfen Overlook choice state", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = createStartedCampaignSave({
+      ...createFallbackCampaignSave(),
+      resources: { crowns: 100, stone: 0, iron: 0, aether: 20 },
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "aid_marsh_refugees")!;
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(SaveSystem.saveGame(applied.hero, applied.campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+
+    expect(loaded?.campaign.completedNodeIds).toContain("cinderfen_overlook");
+    expect(loaded?.campaign.unlockedNodeIds).toContain("cinderfen_crossing");
+    expect(loaded?.campaign.choiceIdsClaimed).toContain("cinderfen_overlook:aid_marsh_refugees");
+    expect(loaded?.campaign.resources).toMatchObject({ crowns: 45, iron: 10 });
+    expect(loaded?.campaign.resourcesSpent.crowns).toBe(55);
+    expect(loaded?.campaign.activeModifierIds).toContain("inspired_militia");
+    expect(loaded?.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 6);
+    expect(loaded?.hero.xp).toBe(25);
+  });
+
+  it("saves and loads the Malrec Standard Cinderfen trophy choice without duplicating rewards", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = createStartedCampaignSave({
+      ...createFallbackCampaignSave(),
+      resources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      rivalTrophies: [
+        {
+          trophyId: "trophy_malrec_outpost_standard",
+          enemyHeroId: "captain_malrec",
+          earnedAt: "2026-05-03T12:00:00.000Z",
+          sourceNodeId: "ashen_outpost",
+          label: "Malrec's Outpost Standard",
+          description: "The torn fortress standard of Captain Malrec's Ashen Outpost command."
+        }
+      ]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "raise_malrecs_standard")!;
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(SaveSystem.saveGame(applied.hero, applied.campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+    const repeated = applyCampaignChoice({ campaign: loaded!.campaign, hero: loaded!.hero, node, choice });
+
+    expect(loaded?.campaign.rivalTrophies.map((trophy) => trophy.trophyId)).toEqual(["trophy_malrec_outpost_standard"]);
+    expect(loaded?.campaign.choiceIdsClaimed).toContain("cinderfen_overlook:raise_malrecs_standard");
+    expect(loaded?.campaign.activeModifierIds).toContain("well_rested");
+    expect(loaded?.hero.xp).toBe(hero.xp + 10);
+    expect(loaded?.hero.factionReputation.free_marches).toBe(hero.factionReputation.free_marches + 3);
+    expect(repeated.ok).toBe(false);
+    expect(repeated.campaign.activeModifierIds).toEqual(["well_rested"]);
+    expect(repeated.hero.xp).toBe(hero.xp + 10);
   });
 
   it("loads V2 saves and normalizes settings", () => {

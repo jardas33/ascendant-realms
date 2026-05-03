@@ -133,7 +133,7 @@ describe("BattleLaunchRequest", () => {
     }
   });
 
-  it("keeps future Chapter 2 placeholder battles from resolving missing maps", () => {
+  it("resolves the first playable Chapter 2 battle map", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "cinderfen_crossing");
     const resolved = resolveBattleLaunchRequest(request);
@@ -141,11 +141,16 @@ describe("BattleLaunchRequest", () => {
     expect(request).toMatchObject({
       mode: "campaign_node",
       campaignNodeId: "cinderfen_crossing",
-      mapId: "cinderfen_causeway"
+      mapId: "cinderfen_causeway",
+      difficulty: "normal",
+      enemyProfileId: "ashen_covenant",
+      aiPersonalityId: "hexfire_cult"
     });
-    expect(resolved.ok).toBe(false);
-    if (!resolved.ok) {
-      expect(resolved.errors).toContain("Battle launch request references missing map cinderfen_causeway.");
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.map.name).toBe("Cinderfen Causeway");
+      expect(resolved.launch.rewardTable.id).toBe("cinderfen_causeway_rewards");
+      expect(resolved.launch.request.enemyHeroId).toBeUndefined();
     }
   });
 

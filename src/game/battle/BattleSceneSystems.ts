@@ -2,8 +2,10 @@ import Phaser from "phaser";
 import type {
   BattleMapDefinition,
   BattleSecondaryObjectiveType,
+  CaptureSiteFirstCaptureBonusDefinition,
   Position,
   ResourceBag,
+  ResourceKey,
   Team,
   UpgradeDefinition
 } from "../core/GameTypes";
@@ -237,6 +239,14 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       if (owner === "player") {
         showMessage(`+${amount} ${site.definition.resource}`, site.position.x, site.position.y - 64, "#f5efc2");
       }
+    },
+    onCaptureBonus: (site, owner, bonus) => {
+      if (owner === "player") {
+        const resourceText = formatResourceBonus(bonus.resources);
+        const message = resourceText ? `${bonus.label}: ${resourceText}` : bonus.label;
+        addMinimapPing(site.position.x, site.position.y, "#f6e27d", bonus.label);
+        showMessage(message, site.position.x, site.position.y - 96, "#f6e27d");
+      }
     }
   });
 
@@ -380,4 +390,19 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
 export function createBattleFogOfWar(activeMap: BattleMapDefinition): FogOfWarSystem {
   return new FogOfWarSystem(activeMap.width, activeMap.height, BATTLE_FOG_CELL_SIZE);
+}
+
+function formatResourceBonus(resources: CaptureSiteFirstCaptureBonusDefinition["resources"]): string {
+  const labels: Record<ResourceKey, string> = {
+    crowns: "Crowns",
+    stone: "Stone",
+    iron: "Iron",
+    aether: "Aether"
+  };
+  return (Object.keys(labels) as ResourceKey[])
+    .flatMap((resource) => {
+      const amount = resources[resource] ?? 0;
+      return amount > 0 ? [`+${amount} ${labels[resource]}`] : [];
+    })
+    .join(", ");
 }

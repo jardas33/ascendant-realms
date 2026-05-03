@@ -11,7 +11,9 @@ import { CAMPAIGN_NODES } from "../../data/campaignNodes";
 import { ITEM_BY_ID } from "../../data/contentIndex";
 import { applyCampaignResourceRewardModifiers, grantCampaignModifiers, removeCampaignModifiers } from "../../data/campaignModifiers";
 import { getAdjustedCampaignChoiceCost, getAdjustedCampaignChoiceRewards } from "../../data/reputation";
+import { RIVAL_REWARDS } from "../../data/rivalRewards";
 import type { CampaignSaveData, HeroSaveData } from "../../save/SaveTypes";
+import { hasRivalTrophy } from "../RivalRules";
 import { completeCampaignNode, getCampaignNodeStatus, refreshCampaignUnlocks } from "./CampaignNodeRules";
 import {
   addCampaignResources,
@@ -93,6 +95,11 @@ export function getCampaignChoiceAvailability(options: {
   options.choice.requirements?.itemIds?.forEach((itemId) => {
     if (!heroOwnsCatalogItem(options.hero, itemId)) {
       reasons.push(`Requires item ${itemId}`);
+    }
+  });
+  options.choice.requirements?.rivalTrophyIds?.forEach((trophyId) => {
+    if (!hasRivalTrophy(options.campaign, trophyId)) {
+      reasons.push(`Requires trophy ${rivalTrophyName(trophyId)}`);
     }
   });
   Object.entries(options.choice.requirements?.factionReputation ?? {}).forEach(([factionId, amount]) => {
@@ -239,6 +246,10 @@ export function applyCampaignChoice(options: {
 
 function nodeName(nodeId: string, nodes: CampaignNodeDefinition[]): string {
   return nodes.find((node) => node.id === nodeId)?.name ?? nodeId;
+}
+
+function rivalTrophyName(trophyId: string): string {
+  return RIVAL_REWARDS.find((reward) => reward.firstDefeat.trophy.trophyId === trophyId)?.firstDefeat.trophy.label ?? trophyId;
 }
 
 function titleCase(value: string): string {

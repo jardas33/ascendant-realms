@@ -21,6 +21,7 @@ export interface ValidationContext {
   campaignModifierIds: Set<string>;
   enemyHeroIds: Set<string>;
   enemyHeroAbilityIds: Set<string>;
+  rivalTrophyIds: Set<string>;
 }
 
 export function idsFor(entries: Array<{ id: string }>, label: string, errors: string[]): Set<string> {

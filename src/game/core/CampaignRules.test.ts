@@ -13,6 +13,29 @@ import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { createNewHeroSave } from "../data/heroes";
 import { getReputationBattleLaunchModifiers, getReputationRank } from "../data/reputation";
 
+const CHAPTER_ONE_COMPLETED_NODE_IDS = [
+  "border_village",
+  "old_stone_road",
+  "marcher_camp",
+  "aether_well_ruins",
+  "bandit_hillfort",
+  "chapel_of_the_marches",
+  "refugee_caravan",
+  "ashen_outpost"
+];
+
+const POST_ASHEN_UNLOCKED_NODE_IDS = [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook"];
+
+const MALREC_STANDARD_TROPHY = {
+  trophyId: "trophy_malrec_outpost_standard",
+  enemyHeroId: "captain_malrec",
+  earnedAt: "2026-05-03T12:00:00.000Z",
+  sourceNodeId: "ashen_outpost",
+  label: "Malrec's Outpost Standard",
+  description: "The torn fortress standard of Captain Malrec's Ashen Outpost command.",
+  effect: "Milestone one-time first-defeat reward claimed."
+};
+
 describe("campaign rules", () => {
   it("unlocks the first node and gates later nodes by prerequisites", () => {
     const campaign = createStartedCampaignSave();
@@ -23,7 +46,7 @@ describe("campaign rules", () => {
     expect(oldRoad && getCampaignNodeStatus(oldRoad, campaign)).toBe("locked");
   });
 
-  it("keeps Chapter 2 placeholder nodes locked outside playable progress", () => {
+  it("opens the Chapter 2 event after Ashen Outpost and gates the battle behind the event choice", () => {
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),
       completedNodeIds: [
@@ -52,9 +75,9 @@ describe("campaign rules", () => {
     const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook")!;
     const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing")!;
 
-    expect(getCampaignNodeStatus(overlook, campaign)).toBe("locked");
+    expect(getCampaignNodeStatus(overlook, campaign)).toBe("available");
     expect(getCampaignNodeStatus(crossing, campaign)).toBe("locked");
-    expect(getCampaignProgressSummary(campaign)).toBe("8/8 nodes completed");
+    expect(getCampaignProgressSummary(campaign)).toBe("8/10 nodes completed");
   });
 
   it("calculates reputation ranks from simple thresholds", () => {
@@ -209,6 +232,164 @@ describe("campaign rules", () => {
     expect(repeated.ok).toBe(false);
     expect(repeated.reason).toContain("Already chosen");
     expect(repeated.campaign.resources.crowns).toBe(65);
+  });
+
+  it("applies the Cinderfen Overlook choice cost, rewards, reputation, unlock, and duplicate prevention", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      resources: { crowns: 80, stone: 0, iron: 0, aether: 30 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "shepherd", "temple_orphan");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "study_the_cinders")!;
+
+    expect(getCampaignNodeStatus(node, campaign)).toBe("available");
+    expect(getCampaignChoiceAvailability({ campaign, hero, node, choice }).ok).toBe(true);
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+    const repeated = applyCampaignChoice({ campaign: applied.campaign, hero: applied.hero, node, choice });
+    const crossing = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+
+    expect(applied.ok).toBe(true);
+    expect(applied.completedNode).toBe(true);
+    expect(applied.campaign.resources.aether).toBe(6);
+    expect(applied.campaign.resourcesSpent.aether).toBe(24);
+    expect(applied.campaign.completedNodeIds).toContain("cinderfen_overlook");
+    expect(applied.campaign.choiceIdsClaimed).toContain("cinderfen_overlook:study_the_cinders");
+    expect(applied.campaign.unlockedNodeIds).toContain("cinderfen_crossing");
+    expect(getCampaignNodeStatus(crossing, applied.campaign)).toBe("available");
+    expect(applied.hero.inventory.some((instance) => instance.itemId === "emberglass_wand")).toBe(true);
+    expect(applied.hero.xp).toBe(20);
+    expect(applied.hero.factionReputation.old_faith).toBe(hero.factionReputation.old_faith + 5);
+    expect(applied.hero.factionReputation.ashen_covenant).toBe(hero.factionReputation.ashen_covenant - 2);
+    expect(applied.campaign.activeModifierIds).toContain("blessed_road");
+    expect(repeated.ok).toBe(false);
+    expect(repeated.reason).toContain("Node completed");
+    expect(repeated.reason).toContain("Already chosen");
+    expect(repeated.campaign.resources.aether).toBe(6);
+  });
+
+  it("locks Cinderfen Overlook choices when their campaign resource costs are missing", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      resources: { crowns: 80, stone: 0, iron: 0, aether: 5 },
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "study_the_cinders")!;
+
+    const availability = getCampaignChoiceAvailability({ campaign, hero, node, choice });
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(availability.ok).toBe(false);
+    expect(availability.reasons).toContain("Need 24 Aether");
+    expect(applied.ok).toBe(false);
+    expect(applied.campaign.resources.aether).toBe(5);
+    expect(applied.campaign.completedNodeIds).not.toContain("cinderfen_overlook");
+  });
+
+  it("locks the Malrec Standard Cinderfen choice until the rival trophy is present", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: CHAPTER_ONE_COMPLETED_NODE_IDS,
+      unlockedNodeIds: POST_ASHEN_UNLOCKED_NODE_IDS,
+      resources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
+      rivalTrophies: [],
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "raise_malrecs_standard")!;
+
+    const availability = getCampaignChoiceAvailability({ campaign, hero, node, choice });
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(availability.ok).toBe(false);
+    expect(availability.reasons).toContain("Requires trophy Malrec's Outpost Standard");
+    expect(applied.ok).toBe(false);
+    expect(applied.reason).toContain("Requires trophy Malrec's Outpost Standard");
+    expect(applied.campaign.completedNodeIds).not.toContain("cinderfen_overlook");
+    expect(applied.campaign.activeModifierIds).not.toContain("well_rested");
+    expect(applied.hero.xp).toBe(hero.xp);
+  });
+
+  it("applies the Malrec Standard Cinderfen choice once when the trophy is present", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: CHAPTER_ONE_COMPLETED_NODE_IDS,
+      unlockedNodeIds: POST_ASHEN_UNLOCKED_NODE_IDS,
+      resources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
+      rivalTrophies: [MALREC_STANDARD_TROPHY],
+      nodeRewardsClaimedIds: []
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const choice = node.choices!.find((entry) => entry.id === "raise_malrecs_standard")!;
+    const crossing = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+
+    const availability = getCampaignChoiceAvailability({ campaign, hero, node, choice });
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+    const repeated = applyCampaignChoice({ campaign: applied.campaign, hero: applied.hero, node, choice });
+
+    expect(availability.ok).toBe(true);
+    expect(applied.ok).toBe(true);
+    expect(applied.completedNode).toBe(true);
+    expect(applied.campaign.completedNodeIds).toContain("cinderfen_overlook");
+    expect(applied.campaign.choiceIdsClaimed).toContain("cinderfen_overlook:raise_malrecs_standard");
+    expect(applied.campaign.rivalTrophies).toEqual([MALREC_STANDARD_TROPHY]);
+    expect(applied.campaign.resources).toMatchObject({ crowns: 0, stone: 0, iron: 0, aether: 0 });
+    expect(applied.campaign.activeModifierIds).toEqual(["well_rested"]);
+    expect(applied.hero.xp).toBe(hero.xp + 10);
+    expect(applied.hero.factionReputation.free_marches).toBe(hero.factionReputation.free_marches + 3);
+    expect(getCampaignNodeStatus(crossing, applied.campaign)).toBe("available");
+    expect(repeated.ok).toBe(false);
+    expect(repeated.reason).toContain("Node completed");
+    expect(repeated.reason).toContain("Already chosen");
+    expect(repeated.campaign.activeModifierIds).toEqual(["well_rested"]);
+    expect(repeated.hero.xp).toBe(hero.xp + 10);
   });
 
   it("grants item and completes the new caravan event when choosing protection", () => {

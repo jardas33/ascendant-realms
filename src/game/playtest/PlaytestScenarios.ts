@@ -6,11 +6,11 @@ export const BATTLE_NODE_IDS = [
   "old_stone_road",
   "aether_well_ruins",
   "bandit_hillfort",
-  "ashen_outpost"
+  "ashen_outpost",
+  "cinderfen_crossing"
 ] as const;
 
 export const DEFAULT_PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = BATTLE_NODE_IDS.map((nodeId) => {
   const node = requireCampaignNode(nodeId);
   return { nodeId, expectedDifficulty: node.difficulty };
 });
-

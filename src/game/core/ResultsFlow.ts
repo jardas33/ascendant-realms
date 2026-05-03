@@ -175,7 +175,23 @@ function addObjectiveDefeatTips(
   tips: string[]
 ): void {
   const isAshenOutpost = options.mapId === "ashen_outpost" || options.campaignNodeId === "ashen_outpost";
-  if (!isAshenOutpost) {
+  const isCinderfenCrossing = options.mapId === "cinderfen_causeway" || options.campaignNodeId === "cinderfen_crossing";
+  if (!isAshenOutpost && !isCinderfenCrossing) {
+    return;
+  }
+
+  if (isCinderfenCrossing) {
+    if (!stats.completedObjectiveIds.includes("capture_cinder_crossing")) {
+      tips.push("On Cinderfen Crossing, secure the Causeway Toll or Reedcut Quarry before claiming the Cinder Shrine for its one-time Aether surge.");
+      return;
+    }
+    if (!stats.completedObjectiveIds.includes("clear_cinder_guardians")) {
+      tips.push("Clear the Cinder Guardians before the final push so the Brute and Hexer do not split your army.");
+      return;
+    }
+    if (!stats.completedObjectiveIds.includes("destroy_cinderfen_barracks")) {
+      tips.push("Destroy Enemy Barracks before burning down the Cinderfen Stronghold.");
+    }
     return;
   }
 

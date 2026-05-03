@@ -150,5 +150,50 @@ export const REWARD_TABLES: RewardTableDefinition[] = [
       },
       xp: 35
     }
+  },
+  {
+    id: "cinderfen_causeway_rewards",
+    name: "Cinderfen Causeway Spoils",
+    guaranteedItemIds: [],
+    deterministicItemIds: [
+      "aether_lens",
+      "ashbound_censer",
+      "captains_seal",
+      "fordbreaker_halberd",
+      "starfall_prism"
+    ],
+    rolls: 1,
+    weightedItemPool: [
+      { itemId: "aether_lens", weight: 18, mapIds: ["cinderfen_causeway"] },
+      { itemId: "ashbound_censer", weight: 16, mapIds: ["cinderfen_causeway"] },
+      { itemId: "captains_seal", weight: 14, mapIds: ["cinderfen_causeway"] },
+      { itemId: "green_chapel_icon", weight: 10, mapIds: ["cinderfen_causeway"] },
+      { itemId: "fordbreaker_halberd", weight: 9, mapIds: ["cinderfen_causeway"] },
+      { itemId: "starfall_prism", weight: 4, mapIds: ["cinderfen_causeway"] }
+    ],
+    resourceRewards: [
+      { resource: "crowns", amount: 16 },
+      { resource: "stone", amount: 10 },
+      { resource: "iron", amount: 8 },
+      { resource: "aether", amount: 6 }
+    ],
+    xpRewards: [{ amount: 30 }],
+    firstClearBonus: {
+      resources: {
+        crowns: 14,
+        stone: 10,
+        iron: 8,
+        aether: 6
+      },
+      xp: 35
+    },
+    repeatClearReward: {
+      resources: {
+        crowns: 6,
+        iron: 3,
+        aether: 2
+      },
+      xp: 4
+    }
   }
 ];

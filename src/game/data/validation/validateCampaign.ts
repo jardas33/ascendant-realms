@@ -171,6 +171,7 @@ function validateCampaignChoice(
       heroLevel?: number;
       completedNodeIds?: string[];
       itemIds?: string[];
+      rivalTrophyIds?: string[];
       factionReputation?: Record<string, number>;
     };
     costs?: Partial<Record<string, number>>;
@@ -211,6 +212,11 @@ function validateCampaignChoice(
   choice.requirements?.itemIds?.forEach((itemId) => {
     if (!context.itemIds.has(itemId)) {
       errors.push(`Campaign choice ${nodeId}:${choice.id} requires missing item ${itemId}.`);
+    }
+  });
+  choice.requirements?.rivalTrophyIds?.forEach((trophyId) => {
+    if (!context.rivalTrophyIds.has(trophyId)) {
+      errors.push(`Campaign choice ${nodeId}:${choice.id} requires missing rival trophy ${trophyId}.`);
     }
   });
   Object.keys(choice.requirements?.factionReputation ?? {}).forEach((factionId) => {

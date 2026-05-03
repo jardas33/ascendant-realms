@@ -52,6 +52,7 @@ export interface CampaignChoiceRequirements {
   heroLevel?: number;
   completedNodeIds?: string[];
   itemIds?: string[];
+  rivalTrophyIds?: string[];
   factionReputation?: Record<string, number>;
 }
 

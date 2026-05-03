@@ -36,11 +36,11 @@ describe("campaign map presentation helpers", () => {
     expect(viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")).toMatchObject({
       status: "locked",
       completedNodeCount: 0,
-      currentNodeCount: 0
+      currentNodeCount: 2
     });
   });
 
-  it("shows Chapter 2 as an upcoming scaffold while keeping future nodes unlaunchable", () => {
+  it("shows Chapter 2 as unlocked after Ashen with a playable event gate before the battle", () => {
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),
@@ -62,6 +62,122 @@ describe("campaign map presentation helpers", () => {
         "chapel_of_the_marches",
         "refugee_caravan",
         "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_overlook"
+    });
+    const eventNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const battleNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+
+    const viewModel = createCampaignMapViewModel({
+      heroSave: hero,
+      campaignSave: campaign,
+      selectedNodeId: "cinderfen_overlook"
+    });
+    const chapterTwo = viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")!;
+    const html = renderNodeDetails({ node: eventNode, campaignSave: campaign, heroSave: hero });
+
+    expect(getCampaignChapterStatus(chapterTwo.chapter, campaign)).toBe("unlocked");
+    expect(chapterTwo).toMatchObject({
+      status: "unlocked",
+      completedNodeCount: 0,
+      currentNodeCount: 2
+    });
+    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_overlook")).toMatchObject({
+      status: "available",
+      selected: true
+    });
+    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_crossing")).toMatchObject({
+      status: "locked",
+      selected: false
+    });
+    expect(canStartCampaignNode(eventNode, campaign)).toBe(false);
+    expect(canStartCampaignNode(battleNode, campaign)).toBe(false);
+    expect(html).toContain("Scout the Causeway");
+    expect(html).toContain("Aid the Marsh Refugees");
+    expect(html).toContain("Study the Cinders");
+    expect(html).toContain("Raise Malrec&#039;s Standard");
+    expect(html).toContain("Requires trophy Malrec&#039;s Outpost Standard");
+    expect(html).toContain("Cost: 30 Crowns");
+    expect(html).toContain("Modifiers: Gain Local Support");
+    expect(html).toContain("Outcome: Completes this node.");
+    expect(html).not.toContain("Future battle locked");
+  });
+
+  it("shows the Malrec trophy Cinderfen choice as available when the standard was earned", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      resources: { crowns: 100, stone: 0, iron: 0, aether: 30 },
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_overlook",
+      rivalTrophies: [
+        {
+          trophyId: "trophy_malrec_outpost_standard",
+          enemyHeroId: "captain_malrec",
+          earnedAt: "2026-05-03T12:00:00.000Z",
+          sourceNodeId: "ashen_outpost",
+          label: "Malrec's Outpost Standard",
+          description: "The torn fortress standard of Captain Malrec's Ashen Outpost command."
+        }
+      ]
+    });
+    const eventNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+
+    const html = renderNodeDetails({ node: eventNode, campaignSave: campaign, heroSave: hero });
+
+    expect(html).toContain("data-campaign-choice=\"raise_malrecs_standard\"");
+    expect(html).toContain("Raise Malrec&#039;s Standard");
+    expect(html).toContain("Rewards: 10 XP");
+    expect(html).toContain("Reputation: +3 The Free Marches");
+    expect(html).toContain("Modifiers: Gain Well Rested");
+    expect(html).not.toContain("Requires trophy Malrec&#039;s Outpost Standard");
+  });
+
+  it("shows Cinderfen Crossing launch details after the overlook event is completed", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
         "cinderfen_overlook",
         "cinderfen_crossing"
       ],
@@ -70,29 +186,12 @@ describe("campaign map presentation helpers", () => {
     });
     const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
 
-    const viewModel = createCampaignMapViewModel({
-      heroSave: hero,
-      campaignSave: campaign,
-      selectedNodeId: "cinderfen_crossing"
-    });
-    const chapterTwo = viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")!;
     const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
 
-    expect(getCampaignChapterStatus(chapterTwo.chapter, campaign)).toBe("upcoming");
-    expect(chapterTwo).toMatchObject({
-      status: "upcoming",
-      completedNodeCount: 0,
-      currentNodeCount: 0
-    });
-    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_crossing")).toMatchObject({
-      status: "locked",
-      selected: true
-    });
-    expect(canStartCampaignNode(node, campaign)).toBe(false);
-    expect(html).toContain("Future battle locked");
-    expect(html).toContain("Requires the future Cinderfen Causeway battle map");
-    expect(html).toContain("No battle launch");
+    expect(canStartCampaignNode(node, campaign)).toBe(true);
     expect(html).toContain("Cinderfen Causeway");
+    expect(html).toContain("Hexfire Cult");
+    expect(html).toContain("Scout&#039;s Bow");
   });
 
   it("shows reputation ranks and active reputation effects in the view model", () => {

@@ -1,6 +1,6 @@
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
-import type { ResourceBag, Team } from "../core/GameTypes";
-import { distance } from "../core/MathUtils";
+import type { CaptureSiteFirstCaptureBonusDefinition, ResourceBag, Team } from "../core/GameTypes";
+import { addResources, distance } from "../core/MathUtils";
 import { CaptureSite } from "../entities/CaptureSite";
 import type { Unit } from "../entities/Unit";
 
@@ -8,9 +8,12 @@ interface ResourceSystemOptions {
   resources: Record<"player" | "enemy", ResourceBag>;
   onCapture: (site: CaptureSite, newOwner: Team) => void;
   onIncome: (site: CaptureSite, owner: Team, amount: number) => void;
+  onCaptureBonus?: (site: CaptureSite, owner: Team, bonus: CaptureSiteFirstCaptureBonusDefinition) => void;
 }
 
 export class ResourceSystem {
+  private readonly claimedFirstCaptureBonuses = new Set<string>();
+
   constructor(private readonly options: ResourceSystemOptions) {}
 
   update(deltaSeconds: number, sites: CaptureSite[], units: Unit[]): void {
@@ -49,6 +52,7 @@ export class ResourceSystem {
     if (site.captureProgress >= 1) {
       site.setOwner(capturingTeam);
       this.options.onCapture(site, capturingTeam);
+      this.applyFirstCaptureBonus(site, capturingTeam);
     }
   }
 
@@ -66,5 +70,23 @@ export class ResourceSystem {
     const ownerResources = this.options.resources[site.owner];
     ownerResources[site.definition.resource] += site.definition.incomeAmount;
     this.options.onIncome(site, site.owner, site.definition.incomeAmount);
+  }
+
+  private applyFirstCaptureBonus(site: CaptureSite, owner: Team): void {
+    if (owner !== "player" && owner !== "enemy") {
+      return;
+    }
+    const bonus = site.definition.firstCaptureBonus;
+    if (!bonus) {
+      return;
+    }
+    const claimId = `${site.definition.id}:${owner}:${bonus.id}`;
+    if (this.claimedFirstCaptureBonuses.has(claimId)) {
+      return;
+    }
+
+    this.claimedFirstCaptureBonuses.add(claimId);
+    addResources(this.options.resources[owner], bonus.resources);
+    this.options.onCaptureBonus?.(site, owner, bonus);
   }
 }

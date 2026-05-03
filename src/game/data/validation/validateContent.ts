@@ -12,6 +12,7 @@ import { ITEMS } from "../items";
 import { ORIGINS } from "../origins";
 import { REWARD_TABLES } from "../rewards";
 import { RESOURCE_DEFINITIONS } from "../resources";
+import { RIVAL_REWARDS } from "../rivalRewards";
 import { SKILL_NODES, SKILL_TREES } from "../skillTrees";
 import { STRONGHOLD_UPGRADES } from "../strongholdUpgrades";
 import { UNITS } from "../units";
@@ -53,7 +54,8 @@ export function validateContent(): string[] {
     aiPersonalityIds: idsFor(AI_PERSONALITIES, "AI personality", errors),
     campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
     enemyHeroIds: idsFor(ENEMY_HEROES, "enemy hero", errors),
-    enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors)
+    enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors),
+    rivalTrophyIds: new Set(RIVAL_REWARDS.map((reward) => reward.firstDefeat.trophy.trophyId))
   };
 
   validateUnits(errors, context);

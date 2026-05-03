@@ -27,10 +27,12 @@ Next phase:
 
 - **v0.3 proposed milestone: Chapter 2 vertical slice**.
 - Planning spec: `docs/CHAPTER_2_PLAN.md`.
-- Minimal scaffold status: Chapter metadata and locked/upcoming Cinderfen Road placeholder nodes are in place; no Chapter 2 gameplay, battle map, unit, faction, worker flow, enemy construction, diplomacy, procedural generation, crafting, or balance content is implemented.
+- First playable implementation spec: `docs/CHAPTER_2_IMPLEMENTATION_SPEC.md`.
+- First playable slice status: `cinderfen_crossing` now launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map after `ashen_outpost`; `cinderfen_overlook` remains a non-playable future event placeholder.
 - Working proposal: The Cinderfen Road, a small ash-glass wetland/causeway chapter that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
-- Scope target: 4-6 campaign nodes, exactly one new battle map when implementation begins later, one new event node, one town/service addition, one returning-rival consequence, and at most one new enemy unit type only if existing Ashen units cannot carry the map identity.
+- Scope target: keep the shipped first slice to one new battle map and one playable Chapter 2 battle node; later Chapter 2 expansion may add one event node, one town/service addition, one returning-rival consequence, and at most one new enemy unit type only if existing Ashen units cannot carry the map identity.
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
+- First playable slice result: `cinderfen_crossing` is playable on `Cinderfen Causeway`, uses existing Ashen Covenant units and the Hexfire Cult AI personality, has map/objective/reward validation, appears in e2e coverage, and is included as the first Chapter 2 simulator scenario. No event conversion, returning rival, new unit, worker, enemy construction, diplomacy, procedural generation, or crafting was added.
 
 Must be stable before implementation:
 
@@ -82,7 +84,7 @@ Recommended focus before new Chapter 2 gameplay:
 - Basic buildings.
 - Enemy AI.
 - Win/loss.
-- Three authored battlefields now prove the map pipeline: First Claim, Broken Ford, and Ashen Outpost.
+- Four authored battlefields now prove the map pipeline: First Claim, Broken Ford, Ashen Outpost, and the Chapter 2 Cinderfen Causeway.
 - Ashen Outpost serves as the first campaign milestone/boss-style fortress assault, with secondary objective tracking for map-specific goals.
 
 ## Phase 2: Hero RPG Depth
@@ -124,6 +126,7 @@ Recommended focus before new Chapter 2 gameplay:
 - Rival Rewards and Trophies V1 with data-driven first-defeat XP/resource/reputation/item rewards, duplicate prevention, save-backed trophy records, Campaign Map trophy display, Results reward/trophy copy, and playtest telemetry fields.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
+- Chapter 2 has its first playable battle slice: `cinderfen_crossing` unlocks after Ashen Outpost and launches `Cinderfen Causeway` while the surrounding Chapter 2 event/content remains future work.
 - Quests.
 - Shops.
 - Temples.

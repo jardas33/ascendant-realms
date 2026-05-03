@@ -90,6 +90,7 @@ interface BattleDriverState {
   resources: ResourceBag;
   peakResources: ResourceBag;
   capturedSites: CapturedSite[];
+  claimedCaptureBonuses: string[];
   heroPosition: Position;
   playerUnits: Record<string, number>;
   enemyArmy: string[];
@@ -310,6 +311,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       resources: cloneResources(startingResources),
       peakResources: cloneResources(startingResources),
       capturedSites: [],
+      claimedCaptureBonuses: [],
       heroPosition: { ...options.map.scenario.heroSpawn },
       playerUnits: { ...startingUnits },
       enemyArmy: initialEnemyArmy(options.map, options.node.difficulty),
@@ -410,6 +412,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
     this.state.capturedSites.push({ id: site.id, nextIncomeAt: this.state.time + site.incomeInterval });
     this.state.telemetry.timeFirstSiteCaptured ??= Math.round(this.state.time);
     this.log(`captured ${site.name}`);
+    this.applyFirstCaptureBonus(site);
   }
 
   moveHeroAndUnitsToPreferredCapturePoint(options: { preferredIds?: string[]; resources?: Array<keyof ResourceBag> }): void {
@@ -689,6 +692,22 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
         captured.nextIncomeAt += definition.incomeInterval;
       }
     });
+  }
+
+  private applyFirstCaptureBonus(site: BattleMapDefinition["captureSites"][number]): void {
+    const bonus = site.firstCaptureBonus;
+    if (!bonus) {
+      return;
+    }
+    const claimId = `${site.id}:player:${bonus.id}`;
+    if (this.state.claimedCaptureBonuses.includes(claimId)) {
+      return;
+    }
+
+    this.state.claimedCaptureBonuses.push(claimId);
+    addResources(this.state.resources, bonus.resources);
+    this.updatePeakResources();
+    this.log(`${bonus.label}: ${formatResources(bonus.resources)}`);
   }
 
   private completeReadyBuildings(): void {

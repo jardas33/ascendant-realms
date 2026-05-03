@@ -13,6 +13,13 @@ export interface TerrainZoneDefinition {
   height: number;
 }
 
+export interface CaptureSiteFirstCaptureBonusDefinition {
+  id: string;
+  label: string;
+  description: string;
+  resources: Partial<ResourceBag>;
+}
+
 export interface CaptureSiteDefinition {
   id: string;
   name: string;
@@ -22,6 +29,7 @@ export interface CaptureSiteDefinition {
   radius: number;
   incomeAmount: number;
   incomeInterval: number;
+  firstCaptureBonus?: CaptureSiteFirstCaptureBonusDefinition;
 }
 
 export interface NeutralCampDefinition {

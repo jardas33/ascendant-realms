@@ -66,7 +66,7 @@ Current Enemy Hero V1 assignments:
 1. Open `src/game/core/RivalRules.ts` for campaign rival state creation, outcome updates, launch modifiers, copy labels, first-defeat reward claiming, and trophy records.
 2. Open `src/game/data/rivalRewards.ts` for data-driven first-defeat rewards. Each entry should reference an existing enemy hero, optional item, optional reputation faction, resources, XP, and one trophy definition.
 3. Keep state compact: `enemyHeroId`, encounters, defeats, victories against the player, last node, last outcome, disposition, active modifiers, known/unseen status, and save-backed `rivalTrophies`.
-4. Keep consequences small. V1 supports one-time first-defeat XP/resource/reputation/item/trophy rewards, escaped-rival +5% HP, and triumphant-rival +5% damage.
+4. Keep consequences small. V1 supports one-time first-defeat XP/resource/reputation/item/trophy rewards, escaped-rival +5% HP, triumphant-rival +5% damage, and compact campaign choices that require an existing trophy through `requirements.rivalTrophyIds`.
 5. Campaign save shape lives in `src/game/save/SaveTypes.ts`; old saves must normalize to empty `rivals` and `rivalTrophies` arrays in `src/game/save/SaveNormalization.ts`.
 6. Campaign Map display lives in `src/game/campaign/RivalIntelPanel.ts` and node preview copy lives in `src/game/campaign/CampaignNodePanel.ts`.
 7. Battle launch modifiers are added from `CampaignMapScene` through `BattleLaunchRequest`; enemy hero stat application happens in `BattleSceneSpawner`.
@@ -212,6 +212,7 @@ Current map examples:
 - `first_claim`: tutorial skirmish with the safest opening economy.
 - `broken_ford`: contested two-lane river map with a risky center.
 - `ashen_outpost`: campaign milestone fortress assault with a central Burned Shrine, enemy defensive towers, side resource paths, and secondary objectives for shrine capture, enemy Barracks destruction, and commander defeat.
+- `cinderfen_causeway`: first Chapter 2 ash-marsh causeway battle with a safe but constrained player start, four capture sites, three neutral camps, a central contested Cinder Shrine with a one-time +20 Aether first-capture surge, and one enemy staging tower.
 
 ## Add A New Campaign Node
 
@@ -228,10 +229,18 @@ Current map examples:
 11. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes either resolve direct rewards or show data-driven choices from the campaign map.
 12. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, AI personality IDs, reward item IDs, resource IDs, and choice references.
 
+Current campaign battle assignments:
+
+- Chapter 1 Border Marches uses First Claim, Broken Ford, and Ashen Outpost across its battle nodes.
+- Chapter 2 Cinderfen Road currently has one playable event gate and one playable battle node.
+- `cinderfen_overlook` unlocks after `ashen_outpost` and offers three baseline one-time preparation choices using existing campaign resources, reputation, item rewards, and campaign modifiers. If the hero has `trophy_malrec_outpost_standard`, it also offers the optional Raise Malrec's Standard choice for a small morale-style modifier and reputation reward.
+- `cinderfen_crossing` launches `cinderfen_causeway` only after `cinderfen_overlook` is completed. Its only Cinderfen-specific tactical feature is the Cinder Shrine: a first-capture +20 Aether battle-local surge on the existing central Aether site.
+- Do not make additional Chapter 2 nodes playable unless the task explicitly scopes them.
+
 Campaign choices support:
 
 - `id`, `label`, and `description` for display.
-- `requirements` for campaign resources, hero level, completed nodes, owned items, or faction reputation.
+- `requirements` for campaign resources, hero level, completed nodes, owned items, earned rival trophies, or faction reputation.
 - `costs` paid from the persistent campaign resource bank.
 - `rewards` for XP, item IDs, campaign resources, campaign modifiers, node unlocks, reputation changes, and a `recoverHero` placeholder.
 - `stockItemId` for town item purchases. It should point at the same item granted in `rewards.itemIds` so the UI can show stock rarity and slot.
@@ -356,6 +365,7 @@ Map index structure:
 - `src/game/data/maps/firstClaim.ts`: First Claim map definition.
 - `src/game/data/maps/brokenFord.ts`: Broken Ford map definition.
 - `src/game/data/maps/ashenOutpost.ts`: Ashen Outpost map definition.
+- `src/game/data/maps/cinderfenCauseway.ts`: Cinderfen Causeway map definition.
 - `src/game/data/maps/index.ts`: imports map constants, exports `MAPS`, `DEFAULT_MAP_ID`, and lookup helpers.
 - `src/game/data/maps.ts`: compatibility barrel so existing imports from `src/game/data/maps` keep working.
 

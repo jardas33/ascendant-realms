@@ -43,6 +43,23 @@ export function createPlaytestHeroForNode(nodeId: string): HeroSaveData {
       stats: { ...hero.stats, might: hero.stats.might + 2, command: hero.stats.command + 1 }
     };
   }
+  if (nodeId === "cinderfen_crossing") {
+    return {
+      ...hero,
+      level: 4,
+      xp: 520,
+      skillPoints: 3,
+      completedBattles: 5,
+      clearedMapIds: ["first_claim", "broken_ford", "ashen_outpost"],
+      inventory: [
+        { instanceId: "sim-weathered-sword", itemId: "weathered_command_sword", acquiredAt: "sim", source: "playtest", affixes: [] },
+        { instanceId: "sim-fordbreaker", itemId: "fordbreaker_halberd", acquiredAt: "sim", source: "playtest", affixes: [] },
+        { instanceId: "sim-captains-seal", itemId: "captains_seal", acquiredAt: "sim", source: "playtest", affixes: [] },
+        { instanceId: "sim-oathbound-aegis", itemId: "oathbound_aegis", acquiredAt: "sim", source: "playtest", affixes: [] }
+      ],
+      stats: { ...hero.stats, might: hero.stats.might + 3, command: hero.stats.command + 2 }
+    };
+  }
   return {
     ...hero,
     level: 2,

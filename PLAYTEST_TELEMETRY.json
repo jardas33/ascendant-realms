@@ -2086,6 +2086,447 @@
       ]
     },
     {
+      "strongholdProfileId": "no_stronghold",
+      "strongholdProfileName": "No Stronghold upgrades",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 403,
+      "resourcesFloated": {
+        "crowns": 1610,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 queue Acolyte",
+        "6:04 trained Acolyte",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 queue Militia",
+        "6:30 trained Militia",
+        "6:30 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:42 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:16: strength 184 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "no_stronghold",
+      "strongholdProfileName": "No Stronghold upgrades",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:56: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "no_stronghold",
+      "strongholdProfileName": "No Stronghold upgrades",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 110,
+      "resourcesFloated": {
+        "crowns": 230,
+        "stone": 205,
+        "iron": 197,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 197,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:27 queue Militia",
+        "1:31 trained Militia",
+        "1:31 attack enemy base (fast army follow-up)",
+        "1:50 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:23: strength 177 into 191."
+      ]
+    },
+    {
       "strongholdProfileId": "training_yard_path",
       "strongholdProfileName": "Training Yard path",
       "strongholdTargetUpgradeIds": [
@@ -4241,6 +4682,444 @@
       "structuralNotes": []
     },
     {
+      "strongholdProfileId": "training_yard_path",
+      "strongholdProfileName": "Training Yard path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 371,
+      "resourcesFloated": {
+        "crowns": 1660,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 10,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 attack enemy base (safe beginner timing)",
+        "6:10 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "training_yard_path",
+      "strongholdProfileName": "Training Yard path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 5,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:52: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "training_yard_path",
+      "strongholdProfileName": "Training Yard path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 83,
+      "resourcesFloated": {
+        "crowns": 170,
+        "stone": 205,
+        "iron": 147,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
       "strongholdProfileId": "defensive_watch_post_path",
       "strongholdProfileName": "Defensive Watch Post path",
       "strongholdTargetUpgradeIds": [
@@ -6387,6 +7266,459 @@
       "structuralNotes": [
         "Attack failed at 1:43: strength 205 into 213.",
         "Attack failed at 2:04: strength 190 into 213."
+      ]
+    },
+    {
+      "strongholdProfileId": "defensive_watch_post_path",
+      "strongholdProfileName": "Defensive Watch Post path",
+      "strongholdTargetUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 80,
+        "enemyWarningLeadSeconds": 25,
+        "watchtowerRangeMultiplier": 1.1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 168,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 403,
+      "resourcesFloated": {
+        "crowns": 1610,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "2:47 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 queue Acolyte",
+        "6:04 trained Acolyte",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 queue Militia",
+        "6:30 trained Militia",
+        "6:30 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:42 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:16: strength 184 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "defensive_watch_post_path",
+      "strongholdProfileName": "Defensive Watch Post path",
+      "strongholdTargetUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 80,
+        "enemyWarningLeadSeconds": 25,
+        "watchtowerRangeMultiplier": 1.1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 167,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:47 enemy forces warning",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:56: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "defensive_watch_post_path",
+      "strongholdProfileName": "Defensive Watch Post path",
+      "strongholdTargetUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdUpgradeIds": [
+        "watch_post_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 80,
+        "enemyWarningLeadSeconds": 25,
+        "watchtowerRangeMultiplier": 1.1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 110,
+      "resourcesFloated": {
+        "crowns": 230,
+        "stone": 205,
+        "iron": 197,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 197,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:27 queue Militia",
+        "1:31 trained Militia",
+        "1:31 attack enemy base (fast army follow-up)",
+        "1:50 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:23: strength 177 into 191."
       ]
     },
     {
@@ -8577,6 +9909,474 @@
       "structuralNotes": [
         "Attack failed at 1:40: strength 205 into 213.",
         "Attack failed at 2:01: strength 190 into 213."
+      ]
+    },
+    {
+      "strongholdProfileId": "economy_quartermaster_path",
+      "strongholdProfileName": "Economy Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 60,
+          "stone": 40,
+          "iron": 20,
+          "aether": 10
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 540,
+        "stone": 365,
+        "iron": 215,
+        "aether": 120
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 29,
+      "timeFirstUnitTrained": 33,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 403,
+      "resourcesFloated": {
+        "crowns": 1670,
+        "stone": 481,
+        "iron": 323,
+        "aether": 260
+      },
+      "peakResourcesFloated": {
+        "crowns": 1810,
+        "stone": 481,
+        "iron": 323,
+        "aether": 260
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:29 Barracks completed",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 queue Acolyte",
+        "6:04 trained Acolyte",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 queue Militia",
+        "6:30 trained Militia",
+        "6:30 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:42 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:16: strength 184 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "economy_quartermaster_path",
+      "strongholdProfileName": "Economy Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 60,
+          "stone": 40,
+          "iron": 20,
+          "aether": 10
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 540,
+        "stone": 365,
+        "iron": 215,
+        "aether": 120
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 201,
+      "timeFirstUnitTrained": 205,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 3379,
+        "iron": 2695,
+        "aether": 2244
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 3379,
+        "iron": 2695,
+        "aether": 2244
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:20 Barracks completed",
+        "3:20 queue Militia",
+        "3:24 trained Militia",
+        "3:24 queue Ranger",
+        "3:29 trained Ranger",
+        "3:29 set rally point at 780,880",
+        "3:29 placed Mystic Lodge",
+        "3:29 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:59 Mystic Lodge completed",
+        "3:59 queue Acolyte",
+        "4:05 trained Acolyte",
+        "4:05 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:25 completed Ranger Training I",
+        "4:25 queue Acolyte",
+        "4:31 trained Acolyte",
+        "4:31 queue Acolyte",
+        "4:37 trained Acolyte",
+        "4:37 queue Militia",
+        "4:41 trained Militia",
+        "4:41 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:53: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "economy_quartermaster_path",
+      "strongholdProfileName": "Economy Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 60,
+          "stone": 40,
+          "iron": 20,
+          "aether": 10
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 540,
+        "stone": 365,
+        "iron": 215,
+        "aether": 120
+      },
+      "timeFirstSiteCaptured": 42,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 23,
+      "timeFirstUnitTrained": 27,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 108,
+      "resourcesFloated": {
+        "crowns": 290,
+        "stone": 245,
+        "iron": 217,
+        "aether": 120
+      },
+      "peakResourcesFloated": {
+        "crowns": 540,
+        "stone": 365,
+        "iron": 217,
+        "aether": 120
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:22 Barracks completed",
+        "0:22 queue Militia",
+        "0:26 trained Militia",
+        "0:26 queue Militia",
+        "0:30 trained Militia",
+        "0:30 queue Ranger",
+        "0:35 trained Ranger",
+        "0:35 select hero",
+        "0:35 move hero and army to Causeway Toll",
+        "0:42 captured Causeway Toll",
+        "0:42 move hero and army to Sunken Iron Cache",
+        "0:52 captured Sunken Iron Cache",
+        "0:52 set rally point at 620,780",
+        "0:52 queue Militia",
+        "0:56 trained Militia",
+        "0:56 queue Ranger",
+        "1:01 trained Ranger",
+        "1:01 attack enemy base (fast army probe)",
+        "1:20 queue Militia",
+        "1:24 trained Militia",
+        "1:24 queue Militia",
+        "1:28 trained Militia",
+        "1:28 attack enemy base (fast army follow-up)",
+        "1:47 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:20: strength 177 into 191."
       ]
     },
     {
@@ -10806,6 +12606,487 @@
       ]
     },
     {
+      "strongholdProfileId": "tier_two_quartermaster_path",
+      "strongholdProfileName": "Tier II Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 29,
+      "timeFirstUnitTrained": 33,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 403,
+      "resourcesFloated": {
+        "crowns": 1750,
+        "stone": 531,
+        "iron": 358,
+        "aether": 280
+      },
+      "peakResourcesFloated": {
+        "crowns": 1890,
+        "stone": 531,
+        "iron": 358,
+        "aether": 280
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:29 Barracks completed",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 queue Acolyte",
+        "6:04 trained Acolyte",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 queue Militia",
+        "6:30 trained Militia",
+        "6:30 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:42 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:16: strength 184 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "tier_two_quartermaster_path",
+      "strongholdProfileName": "Tier II Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 201,
+      "timeFirstUnitTrained": 205,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5090,
+        "stone": 3429,
+        "iron": 2730,
+        "aether": 2264
+      },
+      "peakResourcesFloated": {
+        "crowns": 5090,
+        "stone": 3429,
+        "iron": 2730,
+        "aether": 2264
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:20 Barracks completed",
+        "3:20 queue Militia",
+        "3:24 trained Militia",
+        "3:24 queue Ranger",
+        "3:29 trained Ranger",
+        "3:29 set rally point at 780,880",
+        "3:29 placed Mystic Lodge",
+        "3:29 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:59 Mystic Lodge completed",
+        "3:59 queue Acolyte",
+        "4:05 trained Acolyte",
+        "4:05 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:25 completed Ranger Training I",
+        "4:25 queue Acolyte",
+        "4:31 trained Acolyte",
+        "4:31 queue Acolyte",
+        "4:37 trained Acolyte",
+        "4:37 queue Militia",
+        "4:41 trained Militia",
+        "4:41 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:53: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "tier_two_quartermaster_path",
+      "strongholdProfileName": "Tier II Quartermaster path",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 42,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 23,
+      "timeFirstUnitTrained": 27,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower"
+      ],
+      "upgradesResearched": [
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 126,
+      "resourcesFloated": {
+        "crowns": 220,
+        "stone": 195,
+        "iron": 196,
+        "aether": 140
+      },
+      "peakResourcesFloated": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:22 Barracks completed",
+        "0:22 queue Militia",
+        "0:26 trained Militia",
+        "0:26 queue Militia",
+        "0:30 trained Militia",
+        "0:30 queue Ranger",
+        "0:35 trained Ranger",
+        "0:35 select hero",
+        "0:35 move hero and army to Causeway Toll",
+        "0:42 captured Causeway Toll",
+        "0:42 move hero and army to Sunken Iron Cache",
+        "0:52 captured Sunken Iron Cache",
+        "0:52 set rally point at 620,780",
+        "0:52 queue Militia",
+        "0:56 trained Militia",
+        "0:56 queue Ranger",
+        "1:01 trained Ranger",
+        "1:01 research Infantry Weapons I",
+        "1:19 completed Infantry Weapons I",
+        "1:19 placed Watchtower",
+        "1:19 attack enemy base (fast army probe)",
+        "1:38 queue Militia",
+        "1:40 Watchtower completed",
+        "1:42 trained Militia",
+        "1:42 queue Militia",
+        "1:46 trained Militia",
+        "1:46 attack enemy base (fast army follow-up)",
+        "2:05 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:38: strength 185 into 191."
+      ]
+    },
+    {
       "strongholdProfileId": "chapel_corner_path",
       "strongholdProfileName": "Chapel Corner path",
       "strongholdTargetUpgradeIds": [
@@ -12956,6 +15237,459 @@
       "structuralNotes": [
         "Attack failed at 1:43: strength 208 into 213.",
         "Attack failed at 2:04: strength 192 into 213."
+      ]
+    },
+    {
+      "strongholdProfileId": "chapel_corner_path",
+      "strongholdProfileName": "Chapel Corner path",
+      "strongholdTargetUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1.05,
+        "heroMaxManaMultiplier": 1.05,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 8,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 403,
+      "resourcesFloated": {
+        "crowns": 1610,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 441,
+        "iron": 303,
+        "aether": 250
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 queue Acolyte",
+        "6:04 trained Acolyte",
+        "6:04 attack enemy base (safe beginner timing)",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 queue Militia",
+        "6:30 trained Militia",
+        "6:30 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:42 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:16: strength 187 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "chapel_corner_path",
+      "strongholdProfileName": "Chapel Corner path",
+      "strongholdTargetUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1.05,
+        "heroMaxManaMultiplier": 1.05,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 4950,
+        "stone": 3339,
+        "iron": 2675,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 queue Militia",
+        "4:44 trained Militia",
+        "4:44 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:56: strength 189 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "chapel_corner_path",
+      "strongholdProfileName": "Chapel Corner path",
+      "strongholdTargetUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdUpgradeIds": [
+        "chapel_corner_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1.05,
+        "heroMaxManaMultiplier": 1.05,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 110,
+      "resourcesFloated": {
+        "crowns": 230,
+        "stone": 205,
+        "iron": 197,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 197,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:27 queue Militia",
+        "1:31 trained Militia",
+        "1:31 attack enemy base (fast army follow-up)",
+        "1:50 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:23: strength 180 into 191."
       ]
     },
     {
@@ -15153,6 +17887,456 @@
       "structuralNotes": []
     },
     {
+      "strongholdProfileId": "ranger_paths_path",
+      "strongholdProfileName": "Ranger Paths path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 257,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 370,
+      "resourcesFloated": {
+        "crowns": 1660,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 10,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:13 trained Ranger",
+        "4:13 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:21 captured Reedcut Quarry",
+        "4:21 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:41 captured Cinder Shrine",
+        "4:41 Cinder Shrine Surge: 20 Aether",
+        "4:41 placed Watchtower",
+        "4:41 placed Mystic Lodge",
+        "4:41 wait for Mystic Lodge construction",
+        "5:01 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:11 Mystic Lodge completed",
+        "5:11 queue Acolyte",
+        "5:17 trained Acolyte",
+        "5:17 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:39 completed Reinforced Armor I",
+        "5:39 research Infantry Weapons I",
+        "5:57 completed Infantry Weapons I",
+        "5:57 attack enemy base (safe beginner timing)",
+        "6:10 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "ranger_paths_path",
+      "strongholdProfileName": "Ranger Paths path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 5,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:31 trained Ranger",
+        "3:31 set rally point at 780,880",
+        "3:31 placed Mystic Lodge",
+        "3:31 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:01 Mystic Lodge completed",
+        "4:01 queue Acolyte",
+        "4:07 trained Acolyte",
+        "4:07 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:27 completed Ranger Training I",
+        "4:27 queue Acolyte",
+        "4:33 trained Acolyte",
+        "4:33 queue Acolyte",
+        "4:39 trained Acolyte",
+        "4:39 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:51: strength 186 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "ranger_paths_path",
+      "strongholdProfileName": "Ranger Paths path",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "ranger_paths_i"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 44,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 82,
+      "resourcesFloated": {
+        "crowns": 170,
+        "stone": 205,
+        "iron": 147,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:37 trained Ranger",
+        "0:37 select hero",
+        "0:37 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:54 captured Sunken Iron Cache",
+        "0:54 set rally point at 620,780",
+        "0:54 queue Militia",
+        "0:58 trained Militia",
+        "0:58 queue Ranger",
+        "1:03 trained Ranger",
+        "1:03 attack enemy base (fast army probe)",
+        "1:22 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
       "strongholdProfileId": "retinue_veteran_militia",
       "strongholdProfileName": "Retinue: Veteran Militia",
       "strongholdTargetUpgradeIds": [],
@@ -17241,6 +20425,432 @@
         "1:22 completed Infantry Weapons I",
         "1:22 attack enemy base (fast army probe)",
         "1:43 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_veteran_militia",
+      "strongholdProfileName": "Retinue: Veteran Militia",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 371,
+      "resourcesFloated": {
+        "crowns": 1660,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 10,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 attack enemy base (safe beginner timing)",
+        "6:10 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_veteran_militia",
+      "strongholdProfileName": "Retinue: Veteran Militia",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 5,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:52: strength 187 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "retinue_veteran_militia",
+      "strongholdProfileName": "Retinue: Veteran Militia",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 1
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 83,
+      "resourcesFloated": {
+        "crowns": 170,
+        "stone": 205,
+        "iron": 147,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 destroyed enemy Stronghold"
       ],
       "structuralNotes": []
     },
@@ -19339,6 +22949,440 @@
       "structuralNotes": []
     },
     {
+      "strongholdProfileId": "retinue_veteran_ranger",
+      "strongholdProfileName": "Retinue: Veteran Ranger",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 7,
+      "unitsLost": 1,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 399,
+      "resourcesFloated": {
+        "crowns": 1640,
+        "stone": 419,
+        "iron": 323,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 419,
+        "iron": 323,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 attack enemy base (safe beginner timing)",
+        "6:10 queue Acolyte",
+        "6:16 trained Acolyte",
+        "6:16 queue Acolyte",
+        "6:22 trained Acolyte",
+        "6:22 queue Militia",
+        "6:26 trained Militia",
+        "6:26 attack enemy base (safe beginner second push)",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:38 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": [
+        "Attack failed at 6:10: strength 187 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "retinue_veteran_ranger",
+      "strongholdProfileName": "Retinue: Veteran Ranger",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 5,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "peakResourcesFloated": {
+        "crowns": 5010,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 queue Acolyte",
+        "4:40 trained Acolyte",
+        "4:40 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:52: strength 182 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "retinue_veteran_ranger",
+      "strongholdProfileName": "Retinue: Veteran Ranger",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 3,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 6,
+      "unitsLost": 6,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5030,
+        "stone": 205,
+        "iron": 2575,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 5030,
+        "stone": 325,
+        "iron": 2575,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 queue Militia",
+        "1:27 trained Militia",
+        "1:27 attack enemy base (fast army follow-up)",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:15 survived enemy wave 1",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 1:23: strength 188 into 191.",
+        "Attack failed at 1:46: strength 188 into 191."
+      ]
+    },
+    {
       "strongholdProfileId": "retinue_mixed_veterans",
       "strongholdProfileName": "Retinue: Mixed Veterans",
       "strongholdTargetUpgradeIds": [],
@@ -21417,6 +25461,433 @@
         "1:22 completed Infantry Weapons I",
         "1:22 attack enemy base (fast army probe)",
         "1:43 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_mixed_veterans",
+      "strongholdProfileName": "Retinue: Mixed Veterans",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 371,
+      "resourcesFloated": {
+        "crowns": 1660,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1750,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 attack enemy base (safe beginner timing)",
+        "6:10 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_mixed_veterans",
+      "strongholdProfileName": "Retinue: Mixed Veterans",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5080,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2274
+      },
+      "peakResourcesFloated": {
+        "crowns": 5080,
+        "stone": 3339,
+        "iron": 2695,
+        "aether": 2274
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:27 trained Militia",
+        "3:27 queue Ranger",
+        "3:32 trained Ranger",
+        "3:32 set rally point at 780,880",
+        "3:32 placed Mystic Lodge",
+        "3:32 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:02 Mystic Lodge completed",
+        "4:02 queue Acolyte",
+        "4:08 trained Acolyte",
+        "4:08 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:28 completed Ranger Training I",
+        "4:28 queue Acolyte",
+        "4:34 trained Acolyte",
+        "4:34 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:46: strength 189 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "retinue_mixed_veterans",
+      "strongholdProfileName": "Retinue: Mixed Veterans",
+      "strongholdTargetUpgradeIds": [],
+      "strongholdUpgradeIds": [],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 45,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 83,
+      "resourcesFloated": {
+        "crowns": 170,
+        "stone": 205,
+        "iron": 147,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:29 trained Militia",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 queue Ranger",
+        "0:38 trained Ranger",
+        "0:38 select hero",
+        "0:38 move hero and army to Causeway Toll",
+        "0:44 captured Causeway Toll",
+        "0:44 move hero and army to Sunken Iron Cache",
+        "0:55 captured Sunken Iron Cache",
+        "0:55 set rally point at 620,780",
+        "0:55 queue Militia",
+        "0:59 trained Militia",
+        "0:59 queue Ranger",
+        "1:04 trained Ranger",
+        "1:04 attack enemy base (fast army probe)",
+        "1:23 destroyed enemy Stronghold"
       ],
       "structuralNotes": []
     },
@@ -23612,6 +28083,477 @@
         "1:02 trained Ranger",
         "1:02 attack enemy base (fast army probe)",
         "1:23 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_training_yard_path",
+      "strongholdProfileName": "Retinue + Training Yard II",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "militia": 0.9,
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger",
+        "Seasoned Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 6,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 32,
+      "timeFirstUnitTrained": 36,
+      "timeFirstEnemyWarning": 193,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 370,
+      "resourcesFloated": {
+        "crowns": 1660,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "peakResourcesFloated": {
+        "crowns": 1720,
+        "stone": 331,
+        "iron": 253,
+        "aether": 234
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 13,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:31 Barracks completed",
+        "0:31 queue Militia",
+        "0:35 trained Militia",
+        "0:35 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:08 trained Militia",
+        "4:08 queue Ranger",
+        "4:13 trained Ranger",
+        "4:13 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:21 captured Reedcut Quarry",
+        "4:21 move hero and army to Sunken Iron Cache",
+        "4:30 captured Sunken Iron Cache",
+        "4:30 move hero and army to Cinder Shrine",
+        "4:41 captured Cinder Shrine",
+        "4:41 Cinder Shrine Surge: 20 Aether",
+        "4:41 placed Watchtower",
+        "4:41 placed Mystic Lodge",
+        "4:41 wait for Mystic Lodge construction",
+        "5:01 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:11 Mystic Lodge completed",
+        "5:11 queue Acolyte",
+        "5:17 trained Acolyte",
+        "5:17 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:39 completed Reinforced Armor I",
+        "5:39 research Infantry Weapons I",
+        "5:57 completed Infantry Weapons I",
+        "5:57 attack enemy base (safe beginner timing)",
+        "6:09 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_training_yard_path",
+      "strongholdProfileName": "Retinue + Training Yard II",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "militia": 0.9,
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger",
+        "Seasoned Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 6,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 203,
+      "timeFirstUnitTrained": 207,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 255,
+      "firstWaveSurvived": true,
+      "unitsTrained": 3,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 1,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 279,
+      "resourcesFloated": {
+        "crowns": 1430,
+        "stone": 1073,
+        "iron": 841,
+        "aether": 650
+      },
+      "peakResourcesFloated": {
+        "crowns": 1500,
+        "stone": 1073,
+        "iron": 841,
+        "aether": 650
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:23 Barracks completed",
+        "3:23 queue Militia",
+        "3:26 trained Militia",
+        "3:26 queue Ranger",
+        "3:31 trained Ranger",
+        "3:31 set rally point at 780,880",
+        "3:31 placed Mystic Lodge",
+        "3:31 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:01 Mystic Lodge completed",
+        "4:01 queue Acolyte",
+        "4:07 trained Acolyte",
+        "4:07 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:27 completed Ranger Training I",
+        "4:27 attack enemy base (greedy economy push)",
+        "4:39 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_training_yard_path",
+      "strongholdProfileName": "Retinue + Training Yard II",
+      "strongholdTargetUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "training_yard_i",
+        "training_yard_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [
+          "militia"
+        ],
+        "startingResources": {},
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 1,
+        "unitTrainingTimeMultipliers": {
+          "militia": 0.9,
+          "ranger": 0.9
+        }
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger",
+        "Seasoned Militia"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 6,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "timeFirstSiteCaptured": 44,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 25,
+      "timeFirstUnitTrained": 29,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks"
+      ],
+      "upgradesResearched": [],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 81,
+      "resourcesFloated": {
+        "crowns": 170,
+        "stone": 205,
+        "iron": 147,
+        "aether": 110
+      },
+      "peakResourcesFloated": {
+        "crowns": 480,
+        "stone": 325,
+        "iron": 195,
+        "aether": 110
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 14,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:25 Barracks completed",
+        "0:25 queue Militia",
+        "0:28 trained Militia",
+        "0:28 queue Militia",
+        "0:32 trained Militia",
+        "0:32 queue Ranger",
+        "0:36 trained Ranger",
+        "0:36 select hero",
+        "0:36 move hero and army to Causeway Toll",
+        "0:43 captured Causeway Toll",
+        "0:43 move hero and army to Sunken Iron Cache",
+        "0:53 captured Sunken Iron Cache",
+        "0:53 set rally point at 620,780",
+        "0:53 queue Militia",
+        "0:57 trained Militia",
+        "0:57 queue Ranger",
+        "1:02 trained Ranger",
+        "1:02 attack enemy base (fast army probe)",
+        "1:21 destroyed enemy Stronghold"
       ],
       "structuralNotes": []
     },
@@ -25833,6 +30775,472 @@
         "1:40 destroyed enemy Stronghold"
       ],
       "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_quartermaster_path",
+      "strongholdProfileName": "Retinue + Quartermaster II",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "safe_beginner",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 7,
+      "timeBarracksCompleted": 29,
+      "timeFirstUnitTrained": 33,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "reinforced_armor_1",
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 2,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "capture_cinder_crossing",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 371,
+      "resourcesFloated": {
+        "crowns": 1800,
+        "stone": 421,
+        "iron": 308,
+        "aether": 264
+      },
+      "peakResourcesFloated": {
+        "crowns": 1890,
+        "stone": 421,
+        "iron": 308,
+        "aether": 264
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 11,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 select Command Hall",
+        "0:06 placed Barracks",
+        "0:06 wait for Barracks construction",
+        "0:29 Barracks completed",
+        "0:29 queue Militia",
+        "0:33 trained Militia",
+        "0:33 set rally point at 520,820",
+        "3:12 enemy forces warning",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "4:05 queue Militia",
+        "4:09 trained Militia",
+        "4:09 queue Ranger",
+        "4:14 trained Ranger",
+        "4:14 move hero and army to Reedcut Quarry",
+        "4:16 survived enemy wave 1",
+        "4:22 captured Reedcut Quarry",
+        "4:22 move hero and army to Sunken Iron Cache",
+        "4:31 captured Sunken Iron Cache",
+        "4:31 move hero and army to Cinder Shrine",
+        "4:42 captured Cinder Shrine",
+        "4:42 Cinder Shrine Surge: 20 Aether",
+        "4:42 placed Watchtower",
+        "4:42 placed Mystic Lodge",
+        "4:42 wait for Mystic Lodge construction",
+        "5:02 Watchtower completed",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:12 Mystic Lodge completed",
+        "5:12 queue Acolyte",
+        "5:18 trained Acolyte",
+        "5:18 research Reinforced Armor I",
+        "5:37 survived enemy wave 2",
+        "5:40 completed Reinforced Armor I",
+        "5:40 research Infantry Weapons I",
+        "5:58 completed Infantry Weapons I",
+        "5:58 attack enemy base (safe beginner timing)",
+        "6:10 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
+    },
+    {
+      "strongholdProfileId": "retinue_quartermaster_path",
+      "strongholdProfileName": "Retinue + Quartermaster II",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "greedy_economy",
+      "battleResult": "timeout",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 7,
+      "timeBarracksPlaced": 178,
+      "timeBarracksCompleted": 201,
+      "timeFirstUnitTrained": 205,
+      "timeFirstEnemyWarning": 192,
+      "timeFirstEnemyContact": 256,
+      "firstWaveSurvived": true,
+      "unitsTrained": 4,
+      "unitsLost": 5,
+      "buildingsBuilt": [
+        "barracks",
+        "mystic_lodge"
+      ],
+      "upgradesResearched": [
+        "ranger_training_1"
+      ],
+      "enemyWavesSurvived": 8,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [],
+      "battleDurationSeconds": 900,
+      "resourcesFloated": {
+        "crowns": 5220,
+        "stone": 3429,
+        "iron": 2750,
+        "aether": 2304
+      },
+      "peakResourcesFloated": {
+        "crowns": 5220,
+        "stone": 3429,
+        "iron": 2750,
+        "aether": 2304
+      },
+      "heroLevel": 4,
+      "heroXpGained": 0,
+      "finalArmySize": 6,
+      "rewardResult": null,
+      "commandLog": [
+        "0:00 select hero",
+        "0:00 move hero and army to Causeway Toll",
+        "0:06 captured Causeway Toll",
+        "0:06 move hero and army to Reedcut Quarry",
+        "0:15 captured Reedcut Quarry",
+        "0:15 move hero and army to Sunken Iron Cache",
+        "0:24 captured Sunken Iron Cache",
+        "0:24 move hero and army to Cinder Shrine",
+        "0:35 captured Cinder Shrine",
+        "0:35 Cinder Shrine Surge: 20 Aether",
+        "2:58 select Command Hall",
+        "2:58 placed Barracks",
+        "2:58 wait for Barracks construction",
+        "3:12 enemy forces warning",
+        "3:20 Barracks completed",
+        "3:20 queue Militia",
+        "3:24 trained Militia",
+        "3:24 queue Ranger",
+        "3:29 trained Ranger",
+        "3:29 set rally point at 780,880",
+        "3:29 placed Mystic Lodge",
+        "3:29 wait for Mystic Lodge construction",
+        "3:47 enemy wave 1 launched (hexer, raider, hexer)",
+        "3:59 Mystic Lodge completed",
+        "3:59 queue Acolyte",
+        "4:05 trained Acolyte",
+        "4:05 research Ranger Training I",
+        "4:15 survived enemy wave 1",
+        "4:25 completed Ranger Training I",
+        "4:25 queue Acolyte",
+        "4:31 trained Acolyte",
+        "4:31 attack enemy base (greedy economy push)",
+        "5:09 enemy wave 2 launched (hexer, hexer, raider, brute)",
+        "5:37 survived enemy wave 2",
+        "6:31 enemy wave 3 launched (hexer, hexer, raider, brute)",
+        "6:59 survived enemy wave 3",
+        "7:53 enemy wave 4 launched (hexer, hexer, raider, brute)",
+        "8:21 survived enemy wave 4",
+        "9:15 enemy wave 5 launched (hexer, brute, hexer, raider, hexer)",
+        "9:43 survived enemy wave 5",
+        "10:37 enemy wave 6 launched (hexer, brute, hexer, enemy_commander, raider)",
+        "11:05 survived enemy wave 6",
+        "11:59 enemy wave 7 launched (hexer, brute, hexer, raider, hexer)",
+        "12:27 survived enemy wave 7",
+        "13:21 enemy wave 8 launched (hexer, brute, hexer, raider, hexer)",
+        "13:49 survived enemy wave 8",
+        "14:43 enemy wave 9 launched (hexer, brute, hexer, raider, hexer)"
+      ],
+      "structuralNotes": [
+        "Attack failed at 4:43: strength 189 into 191."
+      ]
+    },
+    {
+      "strongholdProfileId": "retinue_quartermaster_path",
+      "strongholdProfileName": "Retinue + Quartermaster II",
+      "strongholdTargetUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdUpgradeIds": [
+        "quartermaster_stores_i",
+        "quartermaster_stores_ii"
+      ],
+      "strongholdPurchaseNotes": [],
+      "strongholdEffects": {
+        "extraPlayerUnitIds": [],
+        "startingResources": {
+          "crowns": 140,
+          "stone": 90,
+          "iron": 55,
+          "aether": 30
+        },
+        "heroMaxHpMultiplier": 1,
+        "heroMaxManaMultiplier": 1,
+        "buildingVisionBonus": 0,
+        "enemyWarningLeadSeconds": 0,
+        "watchtowerRangeMultiplier": 1,
+        "firstBuildingConstructionTimeMultiplier": 0.9,
+        "unitTrainingTimeMultipliers": {}
+      },
+      "retinueUnits": [
+        "Veteran Militia",
+        "Seasoned Ranger"
+      ],
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "mapId": "cinderfen_causeway",
+      "difficulty": "normal",
+      "aiPersonality": "hexfire_cult",
+      "playerScript": "fast_army",
+      "battleResult": "victory",
+      "startingUnits": {
+        "militia": 4,
+        "ranger": 2
+      },
+      "startingResources": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "timeFirstSiteCaptured": 42,
+      "timeBarracksPlaced": 0,
+      "timeBarracksCompleted": 23,
+      "timeFirstUnitTrained": 27,
+      "timeFirstEnemyWarning": null,
+      "timeFirstEnemyContact": null,
+      "firstWaveSurvived": false,
+      "unitsTrained": 5,
+      "unitsLost": 0,
+      "buildingsBuilt": [
+        "barracks",
+        "watchtower"
+      ],
+      "upgradesResearched": [
+        "infantry_weapons_1"
+      ],
+      "enemyWavesSurvived": 0,
+      "enemyHeroId": null,
+      "enemyHeroDefeated": false,
+      "timeEnemyHeroJoinedAttack": null,
+      "lossesInvolvingEnemyHero": 0,
+      "rivalStateBefore": null,
+      "rivalOutcome": "none",
+      "rivalStateAfter": null,
+      "rivalModifiersApplied": [],
+      "lossesAgainstRival": 0,
+      "rivalFirstDefeatRewardEarned": false,
+      "rivalDuplicateRewardPrevented": false,
+      "rivalTrophyEarned": null,
+      "objectiveCompletion": [
+        "destroy_enemy_stronghold",
+        "clear_cinder_guardians",
+        "destroy_cinderfen_barracks"
+      ],
+      "battleDurationSeconds": 99,
+      "resourcesFloated": {
+        "crowns": 190,
+        "stone": 195,
+        "iron": 146,
+        "aether": 140
+      },
+      "peakResourcesFloated": {
+        "crowns": 620,
+        "stone": 415,
+        "iron": 250,
+        "aether": 140
+      },
+      "heroLevel": 4,
+      "heroXpGained": 125,
+      "finalArmySize": 12,
+      "rewardResult": {
+        "battleItemIds": [
+          "aether_lens"
+        ],
+        "battleResources": {
+          "crowns": 30,
+          "stone": 20,
+          "iron": 16,
+          "aether": 12
+        },
+        "battleXp": 65,
+        "campaignItemIds": [
+          "scouts_bow"
+        ],
+        "campaignResources": {
+          "crowns": 40,
+          "stone": 20,
+          "iron": 20,
+          "aether": 12
+        },
+        "campaignXp": 60
+      },
+      "commandLog": [
+        "0:00 select Command Hall",
+        "0:00 placed Barracks",
+        "0:00 wait for Barracks construction",
+        "0:22 Barracks completed",
+        "0:22 queue Militia",
+        "0:26 trained Militia",
+        "0:26 queue Militia",
+        "0:30 trained Militia",
+        "0:30 queue Ranger",
+        "0:35 trained Ranger",
+        "0:35 select hero",
+        "0:35 move hero and army to Causeway Toll",
+        "0:42 captured Causeway Toll",
+        "0:42 move hero and army to Sunken Iron Cache",
+        "0:52 captured Sunken Iron Cache",
+        "0:52 set rally point at 620,780",
+        "0:52 queue Militia",
+        "0:56 trained Militia",
+        "0:56 queue Ranger",
+        "1:01 trained Ranger",
+        "1:01 research Infantry Weapons I",
+        "1:19 completed Infantry Weapons I",
+        "1:19 placed Watchtower",
+        "1:19 attack enemy base (fast army probe)",
+        "1:38 destroyed enemy Stronghold"
+      ],
+      "structuralNotes": []
     }
   ],
   "analysis": {
@@ -25843,7 +31251,8 @@
       "old_stone_road",
       "aether_well_ruins",
       "bandit_hillfort",
-      "ashen_outpost"
+      "ashen_outpost",
+      "cinderfen_crossing"
     ],
     "unfairFirstAttackNodes": [],
     "barracksCompletesBeforePressure": [
@@ -25851,7 +31260,8 @@
       "old_stone_road",
       "aether_well_ruins",
       "bandit_hillfort",
-      "ashen_outpost"
+      "ashen_outpost",
+      "cinderfen_crossing"
     ],
     "barracksLateBeforePressure": [],
     "usefulRewardNodes": [
@@ -25859,13 +31269,14 @@
       "old_stone_road",
       "aether_well_ruins",
       "bandit_hillfort",
-      "ashen_outpost"
+      "ashen_outpost",
+      "cinderfen_crossing"
     ],
     "weakRewardNodes": [],
     "ashenOutpostBeatable": true,
     "strongholdWarnings": [],
     "suggestedTuningChanges": [
-      "Review strategy spread on No Stronghold upgrades / Aether Well Ruins, No Stronghold upgrades / Bandit Hillfort, No Stronghold upgrades / Ashen Outpost, Training Yard path / Aether Well Ruins, Training Yard path / Bandit Hillfort, Defensive Watch Post path / Aether Well Ruins, Defensive Watch Post path / Bandit Hillfort, Defensive Watch Post path / Ashen Outpost, Economy Quartermaster path / Aether Well Ruins, Economy Quartermaster path / Bandit Hillfort, Economy Quartermaster path / Ashen Outpost, Tier II Quartermaster path / Aether Well Ruins, Tier II Quartermaster path / Bandit Hillfort, Tier II Quartermaster path / Ashen Outpost, Chapel Corner path / Aether Well Ruins, Chapel Corner path / Bandit Hillfort, Chapel Corner path / Ashen Outpost, Ranger Paths path / Aether Well Ruins, Ranger Paths path / Bandit Hillfort, Retinue: Veteran Militia / Old Stone Road, Retinue: Veteran Militia / Aether Well Ruins, Retinue: Veteran Militia / Bandit Hillfort, Retinue: Veteran Ranger / Aether Well Ruins, Retinue: Veteran Ranger / Bandit Hillfort, Retinue: Mixed Veterans / Old Stone Road, Retinue: Mixed Veterans / Aether Well Ruins, Retinue: Mixed Veterans / Bandit Hillfort, Retinue: Mixed Veterans / Ashen Outpost, Retinue + Training Yard II / Old Stone Road, Retinue + Training Yard II / Aether Well Ruins, Retinue + Training Yard II / Bandit Hillfort, Retinue + Training Yard II / Ashen Outpost, Retinue + Quartermaster II / Old Stone Road, Retinue + Quartermaster II / Aether Well Ruins, Retinue + Quartermaster II / Bandit Hillfort, Retinue + Quartermaster II / Ashen Outpost before more numeric changes; Safe Beginner can stabilize, so remaining failures are more likely objective route, army timing, or final-assault attrition than first-wave unfairness.",
+      "Review strategy spread on No Stronghold upgrades / Aether Well Ruins, No Stronghold upgrades / Bandit Hillfort, No Stronghold upgrades / Ashen Outpost, Training Yard path / Aether Well Ruins, Training Yard path / Bandit Hillfort, Defensive Watch Post path / Aether Well Ruins, Defensive Watch Post path / Bandit Hillfort, Defensive Watch Post path / Ashen Outpost, Economy Quartermaster path / Aether Well Ruins, Economy Quartermaster path / Bandit Hillfort, Economy Quartermaster path / Ashen Outpost, Tier II Quartermaster path / Aether Well Ruins, Tier II Quartermaster path / Bandit Hillfort, Tier II Quartermaster path / Ashen Outpost, Chapel Corner path / Aether Well Ruins, Chapel Corner path / Bandit Hillfort, Chapel Corner path / Ashen Outpost, Ranger Paths path / Aether Well Ruins, Ranger Paths path / Bandit Hillfort, Retinue: Veteran Militia / Old Stone Road, Retinue: Veteran Militia / Aether Well Ruins, Retinue: Veteran Militia / Bandit Hillfort, Retinue: Veteran Ranger / Aether Well Ruins, Retinue: Veteran Ranger / Bandit Hillfort, Retinue: Veteran Ranger / Cinderfen Crossing, Retinue: Mixed Veterans / Old Stone Road, Retinue: Mixed Veterans / Aether Well Ruins, Retinue: Mixed Veterans / Bandit Hillfort, Retinue: Mixed Veterans / Ashen Outpost, Retinue + Training Yard II / Old Stone Road, Retinue + Training Yard II / Aether Well Ruins, Retinue + Training Yard II / Bandit Hillfort, Retinue + Training Yard II / Ashen Outpost, Retinue + Training Yard II / Cinderfen Crossing, Retinue + Quartermaster II / Old Stone Road, Retinue + Quartermaster II / Aether Well Ruins, Retinue + Quartermaster II / Bandit Hillfort, Retinue + Quartermaster II / Ashen Outpost before more numeric changes; Safe Beginner can stabilize, so remaining failures are more likely objective route, army timing, or final-assault attrition than first-wave unfairness.",
       "Use this bot to guide conservative numeric passes, and reserve deeper map or objective changes for a later review."
     ],
     "strongholdProfileSummaries": [
@@ -25874,9 +31285,9 @@
         "profileName": "No Stronghold upgrades",
         "targetUpgradeIds": [],
         "purchasedUpgradeIds": [],
-        "victories": 9,
+        "victories": 11,
         "defeats": 3,
-        "timeouts": 3,
+        "timeouts": 4,
         "improvedRuns": 0,
         "firstPurchaseNodeId": null,
         "warnings": []
@@ -25890,10 +31301,10 @@
         "purchasedUpgradeIds": [
           "training_yard_i"
         ],
-        "victories": 10,
+        "victories": 12,
         "defeats": 3,
-        "timeouts": 2,
-        "improvedRuns": 2,
+        "timeouts": 3,
+        "improvedRuns": 4,
         "firstPurchaseNodeId": "ashen_outpost",
         "warnings": []
       },
@@ -25906,10 +31317,10 @@
         "purchasedUpgradeIds": [
           "watch_post_i"
         ],
-        "victories": 9,
+        "victories": 11,
         "defeats": 3,
-        "timeouts": 3,
-        "improvedRuns": 9,
+        "timeouts": 4,
+        "improvedRuns": 11,
         "firstPurchaseNodeId": "aether_well_ruins",
         "warnings": []
       },
@@ -25922,10 +31333,10 @@
         "purchasedUpgradeIds": [
           "quartermaster_stores_i"
         ],
-        "victories": 9,
+        "victories": 11,
         "defeats": 3,
-        "timeouts": 3,
-        "improvedRuns": 6,
+        "timeouts": 4,
+        "improvedRuns": 9,
         "firstPurchaseNodeId": "bandit_hillfort",
         "warnings": []
       },
@@ -25940,10 +31351,10 @@
           "quartermaster_stores_i",
           "quartermaster_stores_ii"
         ],
-        "victories": 9,
+        "victories": 11,
         "defeats": 3,
-        "timeouts": 3,
-        "improvedRuns": 6,
+        "timeouts": 4,
+        "improvedRuns": 9,
         "firstPurchaseNodeId": "bandit_hillfort",
         "warnings": []
       },
@@ -25956,9 +31367,9 @@
         "purchasedUpgradeIds": [
           "chapel_corner_i"
         ],
-        "victories": 9,
+        "victories": 11,
         "defeats": 2,
-        "timeouts": 4,
+        "timeouts": 5,
         "improvedRuns": 1,
         "firstPurchaseNodeId": "bandit_hillfort",
         "warnings": []
@@ -25974,10 +31385,10 @@
           "training_yard_i",
           "ranger_paths_i"
         ],
-        "victories": 10,
+        "victories": 12,
         "defeats": 3,
-        "timeouts": 2,
-        "improvedRuns": 2,
+        "timeouts": 3,
+        "improvedRuns": 4,
         "firstPurchaseNodeId": "ashen_outpost",
         "warnings": []
       },
@@ -25986,10 +31397,10 @@
         "profileName": "Retinue: Veteran Militia",
         "targetUpgradeIds": [],
         "purchasedUpgradeIds": [],
-        "victories": 10,
+        "victories": 12,
         "defeats": 3,
-        "timeouts": 2,
-        "improvedRuns": 6,
+        "timeouts": 3,
+        "improvedRuns": 8,
         "firstPurchaseNodeId": null,
         "warnings": []
       },
@@ -25998,9 +31409,9 @@
         "profileName": "Retinue: Veteran Ranger",
         "targetUpgradeIds": [],
         "purchasedUpgradeIds": [],
-        "victories": 10,
+        "victories": 11,
         "defeats": 3,
-        "timeouts": 2,
+        "timeouts": 4,
         "improvedRuns": 7,
         "firstPurchaseNodeId": null,
         "warnings": []
@@ -26010,10 +31421,10 @@
         "profileName": "Retinue: Mixed Veterans",
         "targetUpgradeIds": [],
         "purchasedUpgradeIds": [],
-        "victories": 11,
+        "victories": 13,
         "defeats": 3,
-        "timeouts": 1,
-        "improvedRuns": 10,
+        "timeouts": 2,
+        "improvedRuns": 12,
         "firstPurchaseNodeId": null,
         "warnings": []
       },
@@ -26028,10 +31439,10 @@
           "training_yard_i",
           "training_yard_ii"
         ],
-        "victories": 11,
+        "victories": 14,
         "defeats": 3,
         "timeouts": 1,
-        "improvedRuns": 10,
+        "improvedRuns": 13,
         "firstPurchaseNodeId": "ashen_outpost",
         "warnings": []
       },
@@ -26046,10 +31457,10 @@
           "quartermaster_stores_i",
           "quartermaster_stores_ii"
         ],
-        "victories": 11,
+        "victories": 13,
         "defeats": 3,
-        "timeouts": 1,
-        "improvedRuns": 12,
+        "timeouts": 2,
+        "improvedRuns": 15,
         "firstPurchaseNodeId": "bandit_hillfort",
         "warnings": []
       }
@@ -26165,6 +31576,27 @@
         ]
       },
       {
+        "strongholdProfileId": "no_stronghold",
+        "strongholdProfileName": "No Stronghold upgrades",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 471,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "training_yard_path",
         "strongholdProfileName": "Training Yard path",
         "nodeId": "border_village",
@@ -26273,6 +31705,27 @@
         ]
       },
       {
+        "strongholdProfileId": "training_yard_path",
+        "strongholdProfileName": "Training Yard path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 451.3333333333333,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "defensive_watch_post_path",
         "strongholdProfileName": "Defensive Watch Post path",
         "nodeId": "border_village",
@@ -26382,6 +31835,27 @@
         ]
       },
       {
+        "strongholdProfileId": "defensive_watch_post_path",
+        "strongholdProfileName": "Defensive Watch Post path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 471,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "economy_quartermaster_path",
         "strongholdProfileName": "Economy Quartermaster path",
         "nodeId": "border_village",
@@ -26491,6 +31965,27 @@
         ]
       },
       {
+        "strongholdProfileId": "economy_quartermaster_path",
+        "strongholdProfileName": "Economy Quartermaster path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 470.3333333333333,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "tier_two_quartermaster_path",
         "strongholdProfileName": "Tier II Quartermaster path",
         "nodeId": "border_village",
@@ -26597,6 +32092,27 @@
           "All scripts survived the first wave.",
           "Victory rewards include meaningful XP, resources, or gear.",
           "Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair."
+        ]
+      },
+      {
+        "strongholdProfileId": "tier_two_quartermaster_path",
+        "strongholdProfileName": "Tier II Quartermaster path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 476.3333333333333,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
         ]
       },
       {
@@ -26709,6 +32225,27 @@
         ]
       },
       {
+        "strongholdProfileId": "chapel_corner_path",
+        "strongholdProfileName": "Chapel Corner path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 471,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "ranger_paths_path",
         "strongholdProfileName": "Ranger Paths path",
         "nodeId": "border_village",
@@ -26807,6 +32344,27 @@
         "defeats": 0,
         "timeouts": 1,
         "averageDurationSeconds": 512.3333333333334,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
+        "strongholdProfileId": "ranger_paths_path",
+        "strongholdProfileName": "Ranger Paths path",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 450.6666666666667,
         "barracksBeforePressureRuns": 2,
         "firstWaveSurvivedRuns": 2,
         "verdict": "reasonable",
@@ -26925,6 +32483,27 @@
         ]
       },
       {
+        "strongholdProfileId": "retinue_veteran_militia",
+        "strongholdProfileName": "Retinue: Veteran Militia",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 451.3333333333333,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "retinue_veteran_ranger",
         "strongholdProfileName": "Retinue: Veteran Ranger",
         "nodeId": "border_village",
@@ -27033,6 +32612,28 @@
         ]
       },
       {
+        "strongholdProfileId": "retinue_veteran_ranger",
+        "strongholdProfileName": "Retinue: Veteran Ranger",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 1,
+        "defeats": 0,
+        "timeouts": 2,
+        "averageDurationSeconds": 733,
+        "barracksBeforePressureRuns": 3,
+        "firstWaveSurvivedRuns": 3,
+        "verdict": "needs_human_review",
+        "notes": [
+          "At least two scripts complete Barracks before first contact.",
+          "All scripts survived the first wave.",
+          "Victory rewards include meaningful XP, resources, or gear.",
+          "Safe Beginner wins while riskier scripts fail or time out; treat this as a strategy-spread review, not proof that opening pressure is unfair."
+        ]
+      },
+      {
         "strongholdProfileId": "retinue_mixed_veterans",
         "strongholdProfileName": "Retinue: Mixed Veterans",
         "nodeId": "border_village",
@@ -27136,6 +32737,27 @@
         "verdict": "needs_human_review",
         "notes": [
           "Retinue profile swept this node; review whether saved veterans feel helpful or too mandatory in human play.",
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
+        "strongholdProfileId": "retinue_mixed_veterans",
+        "strongholdProfileName": "Retinue: Mixed Veterans",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 451.3333333333333,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
           "At least two scripts complete Barracks before first contact.",
           "First wave pressure differentiates scripts, which is useful for balance reads.",
           "Victory rewards include meaningful XP, resources, or gear."
@@ -27251,6 +32873,28 @@
         ]
       },
       {
+        "strongholdProfileId": "retinue_training_yard_path",
+        "strongholdProfileName": "Retinue + Training Yard II",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 3,
+        "defeats": 0,
+        "timeouts": 0,
+        "averageDurationSeconds": 243.33333333333334,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "needs_human_review",
+        "notes": [
+          "Retinue profile swept this node; review whether saved veterans feel helpful or too mandatory in human play.",
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
         "strongholdProfileId": "retinue_quartermaster_path",
         "strongholdProfileName": "Retinue + Quartermaster II",
         "nodeId": "border_village",
@@ -27354,6 +32998,27 @@
         "verdict": "needs_human_review",
         "notes": [
           "Retinue profile swept this node; review whether saved veterans feel helpful or too mandatory in human play.",
+          "At least two scripts complete Barracks before first contact.",
+          "First wave pressure differentiates scripts, which is useful for balance reads.",
+          "Victory rewards include meaningful XP, resources, or gear."
+        ]
+      },
+      {
+        "strongholdProfileId": "retinue_quartermaster_path",
+        "strongholdProfileName": "Retinue + Quartermaster II",
+        "nodeId": "cinderfen_crossing",
+        "nodeName": "Cinderfen Crossing",
+        "mapId": "cinderfen_causeway",
+        "difficulty": "normal",
+        "aiPersonality": "hexfire_cult",
+        "victories": 2,
+        "defeats": 0,
+        "timeouts": 1,
+        "averageDurationSeconds": 456.6666666666667,
+        "barracksBeforePressureRuns": 2,
+        "firstWaveSurvivedRuns": 2,
+        "verdict": "reasonable",
+        "notes": [
           "At least two scripts complete Barracks before first contact.",
           "First wave pressure differentiates scripts, which is useful for balance reads.",
           "Victory rewards include meaningful XP, resources, or gear."

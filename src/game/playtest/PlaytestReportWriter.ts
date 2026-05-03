@@ -1,5 +1,6 @@
 import type { ResourceBag, StrongholdUpgradeId } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
+import { CAMPAIGN_CHAPTER_BY_ID, CAMPAIGN_NODE_BY_ID } from "../data/contentIndex";
 import { STRONGHOLD_UPGRADE_BY_ID, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { formatSummaryLabel } from "./PlaytestAnalyzer";
 import { formatResources } from "./PlaytestTelemetry";
@@ -49,6 +50,15 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Unit Veterancy thresholds were raised to 55 / 130 / 230 XP, rank stat multipliers were softened to +4% / +8% / +12%, and the armor bonus now starts at Elite.");
   lines.push("- Enemy Hero V1 telemetry now records assigned rival commander id, defeated state, attack-join timing, and losses involving the rival.");
   lines.push("- Rival Persistence balance reporting now calls first-defeat rewards one-time, keeps +5% HP/+5% damage rematch modifiers unchanged, and surfaces reward/trophy duplicate-prevention signals.");
+  lines.push("- Chapter 2 telemetry now includes `cinderfen_crossing` as the first playable Cinderfen Road battle and keeps it visibly separated by chapter in node and scenario tables.");
+  lines.push("- `cinderfen_overlook` is a playable event gate in live campaign flow; simulator Cinderfen runs model battle-local capture-site bonuses, while event-choice launch modifiers remain reserved for a future scenario-profile pass.");
+  lines.push("- Chapter 2 balance pass trimmed Cinderfen player start resources, capture-site income, battle XP/resources, campaign-node rewards, and event-choice payouts while giving the Ashen staging camp slightly more starting bank and faster training.");
+  lines.push("- The post-feature Chapter 2 balance pass trims the Cinder Shrine from +24 to +20 battle-local Aether after telemetry showed it was useful in staged routes but not the cause of fast rush wins.");
+  lines.push("- Cinderfen-specific defeat tips now point players toward side income, the Cinder Shrine, Cinder Guardians, and Enemy Barracks sequencing before generic retry advice.");
+  lines.push("");
+  lines.push("## Chapter 2 Balance Pass Result");
+  lines.push("");
+  renderChapterTwoBalanceLines(report.telemetry).forEach((line) => lines.push(line));
   lines.push("");
   lines.push("## Current Enemy Hero Telemetry Read");
   lines.push("");
@@ -65,7 +75,7 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Safe Beginner victories against Veyra, Gorak, and Malrec produce `rivalOutcome: defeated`; non-winning or timeout runs produce `rivalOutcome: triumphant`, which mirrors the live campaign rule that a player loss emboldens the rival.");
   lines.push("- The new persistence layer adds small future-encounter effects only after live campaign outcomes: escaped rivals can return with +5% HP, triumphant rivals can return with +5% damage, and first defeated rivals grant a small one-time campaign/item/trophy reward.");
   lines.push("- Rival Rewards and Trophies V1 telemetry records whether a first-defeat reward was earned, whether a duplicate first-defeat reward was prevented, and which trophy id was earned.");
-  lines.push("- Current 180-run structural read remains unchanged after adding persistence telemetry: no structural `too_easy`, no structural `too_hard`, no Stronghold warnings, and Ashen Outpost remains beatable.");
+  lines.push(`- Current ${report.telemetry.length}-run structural read reports no structural \`too_easy\`, no structural \`too_hard\`, no Stronghold warnings, and Ashen Outpost remains beatable.`);
   lines.push("");
   lines.push("## Rival Persistence Balance Pass Result");
   lines.push("");
@@ -104,14 +114,14 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("");
   lines.push("## Node Verdicts");
   lines.push("");
-  lines.push("| Profile | Node | Difficulty | AI | Wins | Losses | Barracks before pressure | First wave survived | Verdict |");
-  lines.push("| --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |");
+  lines.push("| Profile | Chapter | Node | Difficulty | AI | Wins | Losses | Barracks before pressure | First wave survived | Verdict |");
+  lines.push("| --- | --- | --- | --- | --- | ---: | ---: | ---: | ---: | --- |");
   report.analysis.nodeSummaries.forEach((summary) => {
     const runCount = report.telemetry.filter(
       (run) => run.strongholdProfileId === summary.strongholdProfileId && run.nodeId === summary.nodeId
     ).length;
     lines.push(
-      `| ${summary.strongholdProfileName} | ${summary.nodeName} | ${summary.difficulty} | ${summary.aiPersonality} | ${
+      `| ${summary.strongholdProfileName} | ${formatChapterLabel(summary.nodeId)} | ${summary.nodeName} | ${summary.difficulty} | ${summary.aiPersonality} | ${
         summary.victories
       } | ${summary.defeats + summary.timeouts} | ${summary.barracksBeforePressureRuns}/${runCount} | ${
         summary.firstWaveSurvivedRuns
@@ -122,12 +132,12 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Profile | Node | Script | Upgrades | Retinue | Enemy hero | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
+    "| Profile | Chapter | Node | Script | Upgrades | Retinue | Enemy hero | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
-      `| ${run.strongholdProfileName} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
+      `| ${run.strongholdProfileName} | ${formatChapterLabel(run.nodeId)} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
         run.strongholdUpgradeIds
       )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatEnemyHeroTelemetry(run)} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
         run.startingResources
@@ -195,7 +205,10 @@ function renderRivalPersistenceBalanceLines(runs: PlaytestTelemetry[]): string[]
   lines.push("- Tuning result: no rival HP, damage, modifier strength, escape rule, XP reward, resource reward, or trophy effect changed; only player-facing/reporting copy was tightened around one-time rewards and small rematch modifiers.");
   summarizeRivalRuns(rivalRuns).forEach((summary) => {
     lines.push(
-      `- ${summary.enemyHeroId}: ${summary.runs} runs, ${summary.wins} wins / ${summary.defeats} defeats / ${summary.timeouts} timeouts, commander defeated ${summary.commanderDefeated} times, joined attacks ${summary.joinedAttack} times, ${summary.lossRuns} non-winning pressure runs, ${summary.firstRewards} one-time rewards.`
+      `- ${summary.enemyHeroId}: ${summary.runs} runs, ${formatCount(summary.wins, "win")} / ${formatCount(
+        summary.defeats,
+        "defeat"
+      )} / ${formatCount(summary.timeouts, "timeout")}, commander defeated ${summary.commanderDefeated} times, joined attacks ${summary.joinedAttack} times, ${summary.lossRuns} non-winning pressure runs, ${summary.firstRewards} one-time rewards.`
     );
   });
   return lines;
@@ -300,6 +313,71 @@ function formatEnemyHeroTelemetry(run: PlaytestTelemetry): string {
 function listLine(label: string, values: string[]): string {
   const unique = uniqueValues(values);
   return `- ${label}: ${unique.length > 0 ? unique.join(", ") : "none"}`;
+}
+
+function renderChapterTwoBalanceLines(telemetry: PlaytestTelemetry[]): string[] {
+  const cinderfenRuns = telemetry.filter((run) => run.nodeId === "cinderfen_crossing");
+  const scriptLines = ["- Cinderfen Crossing script read:"];
+  ["safe_beginner", "greedy_economy", "fast_army"].forEach((scriptId) => {
+    const runs = cinderfenRuns.filter((run) => run.playerScript === scriptId);
+    scriptLines.push(
+      `  - ${formatScriptName(scriptId as PlaytestScriptId)}: ${formatRunRecord(runs)}, average contact ${formatAverageTime(
+        runs.map((run) => run.timeFirstEnemyContact)
+      )}, first wave survived ${runs.filter((run) => run.firstWaveSurvived).length}/${runs.length}.`
+    );
+  });
+  const noStrongholdSafe = cinderfenRuns.find(
+    (run) => run.strongholdProfileId === "no_stronghold" && run.playerScript === "safe_beginner"
+  );
+  const retinueTrainingYard = cinderfenRuns.filter((run) => run.strongholdProfileId === "retinue_training_yard_path");
+  const rivalModifierRuns = cinderfenRuns.filter((run) => run.rivalModifiersApplied.length > 0).length;
+  const shrineSurgeRuns = cinderfenRuns.filter((run) => run.commandLog.some((entry) => entry.includes("Cinder Shrine Surge"))).length;
+  const reward = noStrongholdSafe?.rewardResult;
+  return [
+    "- Cinderfen Crossing remains structurally reasonable after the pass: no `too_easy` or `too_hard` node flags, Safe Beginner wins, Greedy Economy mostly times out, and Fast Army still exposes the rush/readability edge without making every profile a sweep.",
+    ...scriptLines,
+    `- Retinue + Training Yard II remains the strongest Chapter 2 profile at ${formatRunRecord(retinueTrainingYard)} and stays a human-review watchpoint rather than an automated ` +
+      "`too_easy` flag.",
+    `- Rival state impact: ${rivalModifierRuns} Cinderfen runs applied rival modifiers; this node has no named rival in the current slice.`,
+    `- Cinder Shrine impact: ${shrineSurgeRuns}/${cinderfenRuns.length} Cinderfen runs captured the shrine and received the one-time +20 Aether battle-local surge; Fast Army often skips it, so the surge does not explain quick rush wins.`,
+    reward
+      ? `- Normal first-clear reward read: ${reward.battleXp + reward.campaignXp} XP, ${sumResources(
+          reward.battleResources
+        ) + sumResources(reward.campaignResources)} campaign/battle resources, ${[
+          ...reward.battleItemIds,
+          ...reward.campaignItemIds
+        ].join(", ")}.`
+      : "- Normal first-clear reward read: no winning Cinderfen baseline run found.",
+    "- Chapter 1 telemetry remains unchanged by this pass because tuning and the shrine feature touch only Cinderfen data, battle-local capture-site rules, simulator modeling, and Cinderfen-specific result copy."
+  ];
+}
+
+function formatRunRecord(runs: PlaytestTelemetry[]): string {
+  const victories = runs.filter((run) => run.battleResult === "victory").length;
+  const defeats = runs.filter((run) => run.battleResult === "defeat").length;
+  const timeouts = runs.filter((run) => run.battleResult === "timeout").length;
+  return `${formatCount(victories, "win")} / ${formatCount(defeats, "defeat")} / ${formatCount(timeouts, "timeout")}`;
+}
+
+function formatCount(value: number, label: string): string {
+  return `${value} ${label}${value === 1 ? "" : "s"}`;
+}
+
+function formatAverageTime(values: Array<number | null>): string {
+  const numeric = values.filter((value): value is number => typeof value === "number");
+  if (numeric.length === 0) {
+    return "-";
+  }
+  return formatTime(numeric.reduce((total, value) => total + value, 0) / numeric.length);
+}
+
+function sumResources(resources: Partial<ResourceBag>): number {
+  return Object.values(resources).reduce((total, amount) => total + (amount ?? 0), 0);
+}
+
+function formatChapterLabel(nodeId: string): string {
+  const chapterId = CAMPAIGN_NODE_BY_ID[nodeId]?.chapterId;
+  return chapterId ? CAMPAIGN_CHAPTER_BY_ID[chapterId]?.title ?? chapterId : "Unknown chapter";
 }
 
 function formatScriptName(scriptId: PlaytestScriptId): string {

@@ -59,6 +59,22 @@ function validateMap(map: BattleMapDefinition, errors: string[], context: Valida
     if (site.incomeAmount < 0 || site.incomeInterval <= 0) {
       errors.push(`Map ${map.id} capture site ${site.id} has invalid income settings.`);
     }
+    if (site.firstCaptureBonus) {
+      if (!site.firstCaptureBonus.id.trim() || !site.firstCaptureBonus.label.trim() || !site.firstCaptureBonus.description.trim()) {
+        errors.push(`Map ${map.id} capture site ${site.id} first-capture bonus needs id, label, and description.`);
+      }
+      Object.entries(site.firstCaptureBonus.resources).forEach(([resource, amount]) => {
+        if (!context.resourceIds.has(resource)) {
+          errors.push(`Map ${map.id} capture site ${site.id} first-capture bonus references missing resource ${resource}.`);
+        }
+        if ((amount ?? 0) <= 0) {
+          errors.push(`Map ${map.id} capture site ${site.id} first-capture bonus must grant positive ${resource}.`);
+        }
+      });
+      if (Object.keys(site.firstCaptureBonus.resources).length === 0) {
+        errors.push(`Map ${map.id} capture site ${site.id} first-capture bonus must grant at least one resource.`);
+      }
+    }
     validatePointInMap(map, site, `capture site ${site.id}`, errors);
   });
 
@@ -129,7 +145,8 @@ function validateMap(map: BattleMapDefinition, errors: string[], context: Valida
     if (
       objective.type === "defeat_unit" &&
       context.unitIds.has(objective.targetId) &&
-      !map.scenario.unitSpawns.some((spawn) => spawn.unitId === objective.targetId)
+      !map.scenario.unitSpawns.some((spawn) => spawn.unitId === objective.targetId) &&
+      !map.neutralCamps.some((camp) => camp.unitIds.includes(objective.targetId))
     ) {
       errors.push(`Map ${map.id} secondary objective ${objective.id} targets a unit not spawned on this map.`);
     }

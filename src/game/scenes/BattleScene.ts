@@ -36,6 +36,7 @@ import {
   recordUnitVeterancyDamage,
   recordUnitVeterancyKill
 } from "../data/unitVeterancy";
+import { CAPTURE_TIME_SECONDS } from "../core/Constants";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
@@ -95,6 +96,19 @@ interface AscendantBattleTestHooks {
     armor: number;
   } | null;
   forceBattleVictory?: () => boolean;
+  captureSite?: (siteId: string) => {
+    siteId: string;
+    owner: Team;
+    beforeResources: ResourceBag;
+    afterResources: ResourceBag;
+    completedObjectiveIds: string[];
+    status: string;
+    firstCaptureBonus?: {
+      id: string;
+      label: string;
+      resources: Partial<ResourceBag>;
+    };
+  } | null;
   scoutEnemyHero?: () => { enemyHeroId: string; name: string; title: string } | null;
   defeatEnemyHero?: () => {
     enemyHeroId: string;
@@ -1068,6 +1082,41 @@ export class BattleScene extends Phaser.Scene {
         this.endBattle("victory");
         return true;
       },
+      captureSite: (siteId: string) => {
+        if (this.runtime.ended) {
+          return null;
+        }
+        const site = this.captureSites.find((entry) => entry.definition.id === siteId);
+        const playerUnit = this.units.find((unit) => unit.alive && unit.team === "player");
+        if (!site || !playerUnit) {
+          return null;
+        }
+        const beforeResources = { ...this.resources.player };
+        playerUnit.setPosition(site.position.x, site.position.y);
+        playerUnit.moveTarget = undefined;
+        playerUnit.attackTargetId = undefined;
+        playerUnit.attackMove = false;
+        const step = CAPTURE_TIME_SECONDS / 12;
+        for (let index = 0; index < 12 && site.owner !== "player"; index += 1) {
+          this.resourceSystem.update(step, [site], this.units);
+        }
+        this.refreshBattleHud(0);
+        return {
+          siteId: site.definition.id,
+          owner: site.owner,
+          beforeResources,
+          afterResources: { ...this.resources.player },
+          completedObjectiveIds: [...this.runtime.stats.completedObjectiveIds],
+          status: this.statusMessage,
+          firstCaptureBonus: site.definition.firstCaptureBonus
+            ? {
+                id: site.definition.firstCaptureBonus.id,
+                label: site.definition.firstCaptureBonus.label,
+                resources: { ...site.definition.firstCaptureBonus.resources }
+              }
+            : undefined
+        };
+      },
       scoutEnemyHero: () => {
         const enemyHero = this.enemyHeroUnits()[0];
         if (!enemyHero?.enemyHeroId) {
@@ -1119,6 +1168,7 @@ export class BattleScene extends Phaser.Scene {
     }
     delete target.__ASCENDANT_TEST_HOOKS__.grantSelectedUnitVeterancyXp;
     delete target.__ASCENDANT_TEST_HOOKS__.forceBattleVictory;
+    delete target.__ASCENDANT_TEST_HOOKS__.captureSite;
     delete target.__ASCENDANT_TEST_HOOKS__.scoutEnemyHero;
     delete target.__ASCENDANT_TEST_HOOKS__.defeatEnemyHero;
   }
