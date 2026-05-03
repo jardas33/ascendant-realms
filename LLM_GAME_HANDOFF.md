@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-03 13:54 -04:00
+Last updated: 2026-05-03 14:31 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -37,17 +37,17 @@ main
 Latest checkpoint feature commit:
 
 ```text
-2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
+6543f212431e18a5cbe916f9984797313513fe57
 ```
 
 Recent checkpoint stack:
 
 ```text
+6543f21 Checkpoint Chapter 2 Cinderfen event battle and balance slice
+df318e0 Sync v0.2.1 checkpoint branch status
+b79e0f8 Record v0.2.1 checkpoint metadata
 2d5b0cd Checkpoint v0.2.1 baseline and Chapter 2 scaffold
 c277675 Update handoff checkpoint stack
-4fb085a Finalize checkpoint sync metadata
-386afa9 Record checkpoint metadata
-5911374 Checkpoint rival persistence rewards and HUD fog polish
 ```
 
 Known shell/tool note:
@@ -58,24 +58,64 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-## main...origin/main after pushing checkpoint commit 2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
+## main...origin/main after pushing checkpoint commit 6543f212431e18a5cbe916f9984797313513fe57
 ```
 
-The checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was created with message `Checkpoint v0.2.1 baseline and Chapter 2 scaffold` and pushed successfully with `git push origin main`. This metadata follow-up records that pushed checkpoint. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` was created with message `Checkpoint Chapter 2 Cinderfen event battle and balance slice` and pushed successfully with `git push origin main`. This metadata follow-up records that pushed checkpoint. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
 ```text
-2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
+6543f212431e18a5cbe916f9984797313513fe57
 ```
 
 Current branch sync status:
 
 ```text
-Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` is pushed to origin/main. The checkpoint metadata follow-up was also pushed successfully, and final `git status -sb` reported `## main...origin/main`.
+Before the checkpoint commit, `git fetch origin main` completed and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` is pushed to origin/main. This metadata follow-up records that pushed checkpoint and should be pushed after the docs update.
 ```
 
-The pushed checkpoint was clean, but the current worktree may contain uncommitted Chapter 2 battle-slice edits. Preserve dirty work unless the user explicitly asks for a different git action.
+The pushed checkpoint preserves the Chapter 2 battle-slice edits. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Clean Checkpoint - 2026-05-03 14:31 -04:00
+
+Scope: create a clean checkpoint before continuing Chapter 2. No gameplay, balance, map, faction, unit, worker, enemy construction, diplomacy, procedural generation, or crafting changes were made during the checkpoint pass.
+
+Verification completed:
+
+```text
+npm test
+PASS: 37 test files, 233 tests, 12.56s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+
+npm run test:e2e -- --reporter=line
+PASS: 51 Playwright tests in 21.8m, including Cinderfen Overlook, Cinderfen Crossing victory/reward persistence, and Malrec trophy consequence coverage.
+
+npm run playtest:sim
+PASS: 216 deterministic runs across 72 campaign battle nodes; PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+```
+
+Branch and commit status:
+
+```text
+Pre-commit sync check: `origin/main...HEAD` reported `0 0`.
+Checkpoint commit: 6543f212431e18a5cbe916f9984797313513fe57
+Checkpoint message: Checkpoint Chapter 2 Cinderfen event battle and balance slice
+Push status: checkpoint commit pushed successfully to origin/main.
+```
+
+Remaining known risks:
+
+- Human playtesting still needs to check Cinderfen Crossing with no retinue, light retinue, Training Yard II, Quartermaster II, and mixed Chapter 1 upgrade states.
+- Fast Army can still clear Cinderfen quickly, so further Chapter 2 reward additions should stay modest.
+- Cinder Shrine readability needs a live human pass even though tests and simulator model the +20 Aether first-capture surge.
+- Event choice mobile density, Results readability, and Cinderfen fog/capture-site legibility still deserve browser spot checks.
+- The known Vite large chunk warning remains.
+- Full Playwright e2e remains slow at about 22 minutes.
+
+Next recommended milestone: human-play the Cinderfen vertical slice, then add only one compact Chapter 2 follow-up at a time. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
 
 ## Chapter 2 Event Gate And First Battle Slice - 2026-05-03
 

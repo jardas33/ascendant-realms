@@ -1,14 +1,21 @@
 # Development Checkpoint
 
-Updated: 2026-05-03 08:58 -04:00
+Updated: 2026-05-03 14:31 -04:00
 
 ## Checkpoint Scope
 
-This checkpoint records the full verification pass for the v0.2.1 baseline candidate plus the minimal Chapter 2 scaffold before any Chapter 2 gameplay implementation.
+This checkpoint records the verified Chapter 2 Cinderfen event battle and balance slice. It preserves the current dirty work as a pushed checkpoint commit without adding new gameplay during the checkpoint pass.
 
-The checkpoint includes the accumulated v0.2.1 prototype work: Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, HeroProgressionRules split, playtest simulator split, CampaignRules split, permanent HUD/fog regression coverage, readability/planning docs, and the minimal non-playable Chapter 2 scaffold.
+Included in this checkpoint:
 
-The Chapter 2 scaffold is metadata and UI preview only: chapter cards, locked/upcoming Cinderfen Road placeholder nodes, safe save normalization, content validation, and tests that prevent a missing future map from launching. No gameplay, balance, map, faction, worker, enemy construction, diplomacy, procedural generation, crafting, or save-format behavior changed during this checkpoint.
+- `cinderfen_overlook` is a playable Chapter 2 event gate after `ashen_outpost`.
+- `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event gate is completed.
+- Cinderfen Causeway includes the Cinder Shrine first-capture Aether surge.
+- The compact Malrec trophy consequence is visible through the existing rival/trophy state.
+- Chapter 2 event, battle, reward, persistence, simulator, e2e, telemetry, balance, and documentation changes from the current slice are preserved.
+- Chapter 1 remains stable in tests, e2e, and simulator telemetry.
+
+No gameplay behavior was changed during this checkpoint request. The only post-verification edits are this checkpoint record and the corresponding handoff update.
 
 ## Verification Results
 
@@ -24,9 +31,9 @@ Result:
 
 ```text
 PASS
-36 test files passed
-217 tests passed
-Latest duration: 11.91s
+37 test files passed
+233 tests passed
+Latest duration: 12.56s
 ```
 
 ### Production Build
@@ -43,7 +50,7 @@ Result:
 PASS
 TypeScript compile passed
 Vite production build passed
-Latest output: assets/index-CZ2MQO2_.js, 1,888.89 kB minified / 450.96 kB gzip.
+Latest output: assets/index-BuswvSTS.js, 1,899.96 kB minified / 453.40 kB gzip.
 ```
 
 Known build warning:
@@ -64,16 +71,12 @@ Result:
 
 ```text
 PASS
-49 Playwright tests passed
-Total duration: 19.2m
+51 Playwright tests passed
+Total duration: 21.8m
 Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts
 ```
 
-Note:
-
-```text
-Full Playwright coverage includes the permanent HUD/fog regressions plus the Chapter 2 locked/upcoming scaffold smoke assertion.
-```
+Coverage includes the Chapter 2 browser flow that resolves Cinderfen Overlook, wins Cinderfen Crossing, verifies rewards persist once, and verifies the Malrec trophy consequence.
 
 ### Playtest Simulation
 
@@ -87,11 +90,10 @@ Result:
 
 ```text
 PASS
-Simulated 180 runs across 60 campaign battle nodes.
+Simulated 216 runs across 72 campaign battle nodes.
 Regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json.
-No structural too-hard nodes.
-No structural too-easy nodes.
-Ashen Outpost remains beatable.
+Chapter 1 telemetry remains stable.
+Cinderfen Crossing remains structurally reasonable.
 ```
 
 ## Git And Branch Status
@@ -99,13 +101,13 @@ Ashen Outpost remains beatable.
 Checkpoint commit message:
 
 ```text
-Checkpoint v0.2.1 baseline and Chapter 2 scaffold
+Checkpoint Chapter 2 Cinderfen event battle and balance slice
 ```
 
 Checkpoint commit hash:
 
 ```text
-2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2
+6543f212431e18a5cbe916f9984797313513fe57
 ```
 
 Branch:
@@ -114,27 +116,24 @@ Branch:
 main tracking origin/main
 ```
 
-Branch sync status at verification time:
+Branch sync status:
 
 ```text
-Before the checkpoint commit, `git fetch origin` completed and `git status -sb` reported `## main...origin/main` with intentional dirty v0.2.1 docs, HUD/fog regression coverage edits, readability/planning docs, and Chapter 2 scaffold edits.
-Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was pushed successfully to `origin/main`.
-The checkpoint metadata follow-up was pushed successfully. Final `git status -sb` reported `## main...origin/main`.
+Before the checkpoint commit, `git fetch origin main` completed and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
+Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` was pushed successfully to `origin/main`.
+This documentation follow-up records the pushed checkpoint hash and verification results.
 ```
 
 ## Remaining Known Risks
 
-- Human spot-check the battle HUD hover behavior, command-button clickability, side-panel scroll retention, and captured-site fog reveal because those issues were tactile player reports.
-- Human-review the minimal Chapter 2 scaffold copy on the campaign map before adding playable Chapter 2 content.
-- Chapter 2 currently has no playable map, units, faction, event implementation, town service, or battle content; this is intentional.
-- Human-play Border Village and Old Stone Road on Easy with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
-- Human-play Aether Well Ruins and Bandit Hillfort on Normal to confirm Gorak and Veyra add identity without unfair pressure.
-- Human-play Ashen Outpost with and without Chapel repair, retinue, Stronghold Tier II, and Captain Malrec.
-- Rival first-defeat rewards and trophies are automated and one-time, but still need human readability checks in Results and Campaign Map.
-- Balance remains prototype-level even though the simulator reports no structural too-hard or too-easy nodes.
-- `BattleScene`, `HUD.ts`, `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, save normalization, and campaign/results reward handoff remain the highest integration-risk areas.
+- Human playtesting is still needed for Cinderfen Crossing with no retinue, light retinue, Training Yard II, Quartermaster II, and mixed Chapter 1 upgrade states.
+- Fast Army profiles can still clear Cinderfen quickly, so reward pacing should be watched before adding more Chapter 2 payouts.
+- The Cinder Shrine is intentionally modest, but human players may overvalue or miss the first-capture Aether surge without a live readability pass.
+- Event choice copy is covered by tests, but mobile UI density should still be spot-checked in the browser.
+- Rival impact is intentionally compact and trophy-gated; broader returning-rival arcs remain future work.
 - Vite still reports the known large Phaser bundle warning.
+- Full Playwright e2e remains slow at roughly 22 minutes.
 
 ## Recommended Next Milestone
 
-Chapter 2 vertical slice implementation. Keep it compact and do not move into workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, a full trophy room, or broad army management.
+Human-play the Cinderfen vertical slice, then add only one compact Chapter 2 follow-up at a time. Good candidates are a small rival-return consequence, a small Cinderfen-specific tactical refinement, or a second lightweight event node. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
