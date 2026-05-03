@@ -7,6 +7,7 @@ import {
   consumeBattleCampaignModifiers,
   grantCampaignModifiers
 } from "./campaignModifiers";
+import { getStrongholdBattleEffects } from "./strongholdUpgrades";
 
 describe("campaign modifiers", () => {
   it("defines the initial visible consequence modifiers", () => {
@@ -16,7 +17,10 @@ describe("campaign modifiers", () => {
       "well_rested",
       "angered_raiders",
       "local_support",
-      "ashen_hostile_pressure"
+      "ashen_hostile_pressure",
+      "marsh_guides",
+      "ash_filters",
+      "shrine_attunement"
     ]);
     expect(CAMPAIGN_MODIFIERS.filter((modifier) => modifier.trigger.includes("battle")).length).toBeGreaterThanOrEqual(3);
   });
@@ -46,6 +50,38 @@ describe("campaign modifiers", () => {
     expect(skipped.campaign.activeModifierIds).toEqual(["angered_raiders"]);
     expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["angered_raiders"]);
     expect(consumed.campaign.activeModifierIds).toEqual([]);
+  });
+
+  it("only consumes Cinderfen Waystation modifiers for Chapter 2 Cinderfen battles", () => {
+    const campaign = grantCampaignModifiers(createStartedCampaignSave(), ["marsh_guides", "ash_filters", "shrine_attunement"]);
+    const oldRoad = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
+    const cinderfen = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+    const watch = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_watch")!;
+
+    const skipped = consumeBattleCampaignModifiers({ campaign, node: oldRoad });
+    const consumed = consumeBattleCampaignModifiers({ campaign, node: cinderfen });
+    const watchConsumed = consumeBattleCampaignModifiers({ campaign, node: watch });
+
+    expect(skipped.launchModifiers).toEqual([]);
+    expect(skipped.campaign.activeModifierIds).toEqual(["marsh_guides", "ash_filters", "shrine_attunement"]);
+    expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual([
+      "marsh_guides",
+      "ash_filters",
+      "shrine_attunement"
+    ]);
+    expect(consumed.campaign.activeModifierIds).toEqual([]);
+    expect(watchConsumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["marsh_guides", "ash_filters"]);
+    expect(watchConsumed.campaign.activeModifierIds).toEqual(["shrine_attunement"]);
+  });
+
+  it("projects Cinderfen service modifiers into battle launch effects", () => {
+    const effects = getStrongholdBattleEffects([{ id: "marsh_guides" }, { id: "ash_filters" }, { id: "shrine_attunement" }]);
+
+    expect(effects.buildingVisionBonus).toBe(60);
+    expect(effects.enemyWarningLeadSeconds).toBe(20);
+    expect(effects.heroMaxHpMultiplier).toBe(1.08);
+    expect(effects.heroMaxManaMultiplier).toBe(1.08);
+    expect(effects.firstCaptureBonusResourceAdditions.cinder_crossing).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 5 });
   });
 
   it("applies Local Support to one campaign resource reward", () => {

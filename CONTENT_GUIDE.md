@@ -49,7 +49,7 @@ Current V1 behavior:
 2. Add or edit a compact `EnemyHeroDefinition`: `id`, `name`, `title`, `factionId`, `personalityId`, `archetype`, `level`, `unitId`, `stats`, `xpValue`, `abilities`, flavor text, and campaign/map assignments.
 3. Keep `unitId` as `enemy_commander` for V1 unless you are intentionally adding a new enemy unit and updating validation, objectives, AI phase data, and tests.
 4. Add ability data in the same file only from the supported V1 effect shapes: `damage-and-burn`, `damage-buff`, `direct-damage`, and `armor-aura`.
-5. Assign the hero to a battle node with `enemyHeroId` in `src/game/data/campaignNodes.ts`.
+5. Assign the hero to a battle node with `enemyHeroId` in the relevant focused campaign node module, such as `src/game/data/borderMarchesNodes.ts` or `src/game/data/cinderfenRoadNodes.ts`.
 6. Make sure the assigned map spawns `enemy_commander` for that difficulty, or the named hero will have no live commander slot to replace.
 7. If the hero should count for a secondary objective, point the map objective at `enemy_commander` and use node/map copy for the named commander.
 8. Update `src/game/data/contentValidation.test.ts`, `BattleLaunchRequest` tests, Playwright commander coverage, and playtest simulator telemetry expectations.
@@ -145,7 +145,7 @@ Current Enemy Hero V1 assignments:
    - `factionOrigin`: faction ID for where the item came from.
    - `iconAssetKey`: future item icon asset key.
    - `unique`: set to `true` when the hero should only keep one owned copy.
-9. Add the item ID to a reward table in `src/game/data/rewards.ts`.
+9. Add the item ID to a reward table in `src/game/data/campaignRewards.ts`. `src/game/data/rewards.ts` is the compatibility barrel used by existing imports.
 10. Run `npm run test`.
 
 Inventory stores item instances, not raw catalog IDs. Rewards and town purchases create an instance with `instanceId`, `itemId`, `acquiredAt`, `source`, and `affixes`. Equipment references the instance ID. Unique duplicate rewards convert into campaign resources instead of adding a second copy; non-unique duplicates remain separate instances.
@@ -175,8 +175,8 @@ Deterministic tests can request predictable affixes through the reward/item-gene
 
 ## Add A New Reward Table
 
-1. Open `src/game/data/rewards.ts`.
-2. Copy the existing reward table.
+1. Open `src/game/data/campaignRewards.ts`.
+2. Copy a reward table in the matching chapter section.
 3. Give it a unique `id`.
 4. Add fixed items to `guaranteedItemIds` if every victory should grant them.
 5. Add weighted drops to `weightedItemPool`. Each entry needs an `itemId` and positive `weight`.
@@ -213,11 +213,14 @@ Current map examples:
 - `broken_ford`: contested two-lane river map with a risky center.
 - `ashen_outpost`: campaign milestone fortress assault with a central Burned Shrine, enemy defensive towers, side resource paths, and secondary objectives for shrine capture, enemy Barracks destruction, and commander defeat.
 - `cinderfen_causeway`: first Chapter 2 ash-marsh causeway battle with a safe but constrained player start, four capture sites, three neutral camps, a central contested Cinder Shrine with a one-time +20 Aether first-capture surge, and one enemy staging tower.
+- `cinderfen_watchpost`: second compact Chapter 2 raised-road watchpost battle with three capture sites, two neutral camps, fogged central tower pressure, and no Cinder Shrine.
 
 ## Add A New Campaign Node
 
-1. Open `src/game/data/campaignNodes.ts`.
-2. Copy an existing node entry.
+Campaign node definitions are split by chapter. `src/game/data/campaignNodes.ts` is a public compatibility barrel that combines the focused arrays; do not add new node objects directly to the barrel.
+
+1. Open the focused chapter node module: `src/game/data/borderMarchesNodes.ts` for Chapter 1 or `src/game/data/cinderfenRoadNodes.ts` for the current Chapter 2 slice.
+2. Copy an existing node entry from the same chapter when possible.
 3. Give it a unique `id`, display `name`, and `description`.
 4. Choose `nodeType`: `battle`, `shrine`, `town`, `ruin`, `fortress`, or `event`.
 5. Set `difficulty`, `mapId`, `enemyFactionId`, optional `aiPersonalityId`, and optional `enemyHeroId` for named rival battles.
@@ -226,15 +229,27 @@ Current map examples:
 8. Add node rewards with optional `xp`, `itemIds`, and `resources`. Node resource rewards are added to the persistent campaign bank, not to the temporary battle economy.
 9. For `event`, `town`, `shrine`, or other non-battle nodes, add optional `eventText` and `choices` when the node should ask the player to choose an outcome or use a service.
 10. Set `x` and `y` as percentages for the campaign map UI position.
-11. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes either resolve direct rewards or show data-driven choices from the campaign map.
-12. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, AI personality IDs, reward item IDs, resource IDs, and choice references.
+11. Add the node id to the matching `nodeIds` list in `src/game/data/campaignChapters.ts`; keep the order in that list the same as the focused chapter node array.
+12. Battle nodes launch combat through `BattleLaunchRequest`. Non-battle nodes either resolve direct rewards or show data-driven choices from the campaign map.
+13. Run `npm run test`. Content validation checks node links, map IDs, faction IDs, AI personality IDs, reward item IDs, resource IDs, choice references, and that focused chapter arrays still flow through the public barrels.
+
+## Add A New Chapter
+
+1. Add a focused node module under `src/game/data/`, following the pattern in `borderMarchesNodes.ts` and `cinderfenRoadNodes.ts`.
+2. Export the chapter node array from `src/game/data/campaignNodes.ts` and append it to `CAMPAIGN_NODES`.
+3. Add the chapter metadata to `src/game/data/campaignChapters.ts`, including `id`, title, short description, ordered `nodeIds`, and unlock prerequisites.
+4. Add or group any chapter-specific battle reward tables in `src/game/data/campaignRewards.ts`; keep `src/game/data/rewards.ts` as the public import surface.
+5. Add maps under `src/game/data/maps/` only when the task explicitly calls for a map. Otherwise, reuse existing maps and systems.
+6. Run `npm test`, `npm run build`, and any requested Playwright/simulator coverage.
 
 Current campaign battle assignments:
 
 - Chapter 1 Border Marches uses First Claim, Broken Ford, and Ashen Outpost across its battle nodes.
-- Chapter 2 Cinderfen Road currently has one playable event gate and one playable battle node.
+- Chapter 2 Cinderfen Road currently has one playable event gate, one compact support/town node, and two playable battle nodes.
 - `cinderfen_overlook` unlocks after `ashen_outpost` and offers three baseline one-time preparation choices using existing campaign resources, reputation, item rewards, and campaign modifiers. If the hero has `trophy_malrec_outpost_standard`, it also offers the optional Raise Malrec's Standard choice for a small morale-style modifier and reputation reward.
+- `cinderfen_waystation` unlocks after `cinderfen_overlook` and stays open as a small support node. It offers Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement through the existing town-service choice UI, resource costs, modifiers, reputation, and save/duplicate-prevention rules.
 - `cinderfen_crossing` launches `cinderfen_causeway` only after `cinderfen_overlook` is completed. Its only Cinderfen-specific tactical feature is the Cinder Shrine: a first-capture +20 Aether battle-local surge on the existing central Aether site.
+- `cinderfen_watch` launches `cinderfen_watchpost` only after `cinderfen_crossing` is completed. It reuses existing Ashen units, structures, objective types, rewards, fog/minimap behavior, and simulator/e2e hooks; it has no named rival and no Cinder Shrine.
 - Do not make additional Chapter 2 nodes playable unless the task explicitly scopes them.
 
 Campaign choices support:
@@ -266,6 +281,8 @@ Town service guidance:
 - Costs are paid from the persistent campaign bank and are tracked in `campaign.resourcesSpent`.
 - Town service usage is tracked in `campaign.townServiceUseCounts`; once-only service purchases are also tracked in `campaign.townServiceClaimedIds`.
 - Next-battle effects should usually grant a campaign modifier such as `well_rested` or `inspired_militia`.
+- Chapter-specific services can use narrow campaign modifiers when they remain small and clearly labeled. Current Cinderfen examples are `marsh_guides`, `ash_filters`, and `shrine_attunement`; broad next-Cinderfen-battle services apply to Cinderfen battle nodes, while site-specific services such as Shrine Attunement are consumed only when the launched map contains the matching Cinder Shrine site.
+- Avoid turning a town node into a broad vendor system unless the task explicitly scopes one. Cinderfen Waystation is a preparation stop, not a general shop.
 
 ## Add A Stronghold Upgrade
 
@@ -366,6 +383,7 @@ Map index structure:
 - `src/game/data/maps/brokenFord.ts`: Broken Ford map definition.
 - `src/game/data/maps/ashenOutpost.ts`: Ashen Outpost map definition.
 - `src/game/data/maps/cinderfenCauseway.ts`: Cinderfen Causeway map definition.
+- `src/game/data/maps/cinderfenWatchpost.ts`: Cinderfen Watchpost map definition.
 - `src/game/data/maps/index.ts`: imports map constants, exports `MAPS`, `DEFAULT_MAP_ID`, and lookup helpers.
 - `src/game/data/maps.ts`: compatibility barrel so existing imports from `src/game/data/maps` keep working.
 

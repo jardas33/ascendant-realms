@@ -15,7 +15,7 @@ describe("ScriptedBattlePlaytest", () => {
   it("runs every current campaign battle node with the three core scripts and stronghold profiles", () => {
     const report = runScriptedPlaytestSuite();
 
-    expect(report.telemetry).toHaveLength(216);
+    expect(report.telemetry).toHaveLength(255);
     expect(new Set(report.telemetry.map((run) => run.nodeId))).toEqual(
       new Set([
         "border_village",
@@ -23,7 +23,8 @@ describe("ScriptedBattlePlaytest", () => {
         "aether_well_ruins",
         "bandit_hillfort",
         "ashen_outpost",
-        "cinderfen_crossing"
+        "cinderfen_crossing",
+        "cinderfen_watch"
       ])
     );
     expect(new Set(report.telemetry.map((run) => run.playerScript))).toEqual(
@@ -42,7 +43,8 @@ describe("ScriptedBattlePlaytest", () => {
         "retinue_veteran_ranger",
         "retinue_mixed_veterans",
         "retinue_training_yard_path",
-        "retinue_quartermaster_path"
+        "retinue_quartermaster_path",
+        "waystation_shrine_attunement"
       ])
     );
     expect(report.telemetry.some((run) => run.retinueUnits.includes("Veteran Militia"))).toBe(true);
@@ -60,7 +62,8 @@ describe("ScriptedBattlePlaytest", () => {
       "aether_well_ruins",
       "bandit_hillfort",
       "ashen_outpost",
-      "cinderfen_crossing"
+      "cinderfen_crossing",
+      "cinderfen_watch"
     ]);
     eventNodeIds.forEach((nodeId) => {
       expect(scenarioNodeIds).not.toContain(nodeId);
@@ -75,6 +78,40 @@ describe("ScriptedBattlePlaytest", () => {
 
     expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("captured Cinder Shrine")]));
     expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("Cinder Shrine Surge: 20 Aether")]));
+  });
+
+  it("models the Cinderfen Waystation Shrine Attunement service in the simulator", () => {
+    const waystationProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find(
+      (profile) => profile.id === "waystation_shrine_attunement"
+    )!;
+    const report = runScriptedPlaytestSuite({
+      scenarios: [{ nodeId: "cinderfen_crossing", expectedDifficulty: "normal" }],
+      scripts: ["greedy_economy"],
+      strongholdProfiles: [waystationProfile]
+    });
+    const run = report.telemetry[0];
+
+    expect(run.strongholdPurchaseNotes).toContain("Modeled Cinderfen Waystation service: shrine_attunement.");
+    expect(run.strongholdEffects.firstCaptureBonusResourceAdditions.cinder_crossing).toEqual({
+      crowns: 0,
+      stone: 0,
+      iron: 0,
+      aether: 5
+    });
+    expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("Cinder Shrine Surge: 25 Aether")]));
+  });
+
+  it("keeps Shrine Attunement from being spent on the Watchpost map without a Cinder Shrine", () => {
+    const waystationProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find(
+      (profile) => profile.id === "waystation_shrine_attunement"
+    )!;
+    const report = runScriptedPlaytestSuite({
+      scenarios: [{ nodeId: "cinderfen_watch", expectedDifficulty: "normal" }],
+      scripts: ["safe_beginner"],
+      strongholdProfiles: [waystationProfile]
+    });
+
+    expect(report.telemetry).toHaveLength(0);
   });
 
   it("captures opening timing and command telemetry for the tutorial battles", () => {

@@ -440,6 +440,61 @@ describe("save version migration", () => {
     expect(loaded?.hero.xp).toBe(25);
   });
 
+  it("saves and loads Cinderfen Waystation service state without duplicating one-time rewards", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = createStartedCampaignSave({
+      ...createFallbackCampaignSave(),
+      resources: { crowns: 90, stone: 0, iron: 0, aether: 45 },
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing"
+      ]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const repeatable = node.choices!.find((entry) => entry.id === "shrine_attunement")!;
+    const oneTime = node.choices!.find((entry) => entry.id === "refugee_scouts")!;
+    const first = applyCampaignChoice({ campaign, hero, node, choice: repeatable });
+    const second = applyCampaignChoice({ campaign: first.campaign, hero: first.hero, node, choice: oneTime });
+
+    expect(second.ok).toBe(true);
+    expect(SaveSystem.saveGame(second.hero, second.campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+    const repeatedOneTime = applyCampaignChoice({ campaign: loaded!.campaign, hero: loaded!.hero, node, choice: oneTime });
+
+    expect(loaded?.campaign.completedNodeIds).not.toContain("cinderfen_waystation");
+    expect(loaded?.campaign.resources).toMatchObject({ crowns: 65, aether: 33 });
+    expect(loaded?.campaign.resourcesSpent).toMatchObject({ crowns: 25, aether: 12 });
+    expect(loaded?.campaign.activeModifierIds).toContain("shrine_attunement");
+    expect(loaded?.campaign.townServiceUseCounts["cinderfen_waystation:shrine_attunement"]).toBe(1);
+    expect(loaded?.campaign.townServiceClaimedIds).toContain("cinderfen_waystation:refugee_scouts");
+    expect(loaded?.campaign.choiceIdsClaimed).toContain("cinderfen_waystation:refugee_scouts");
+    expect(loaded?.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 2);
+    expect(repeatedOneTime.ok).toBe(false);
+    expect(repeatedOneTime.reason).toContain("Already purchased");
+    expect(repeatedOneTime.campaign.resources.crowns).toBe(65);
+    expect(repeatedOneTime.hero.xp).toBe(hero.xp + 10);
+  });
+
   it("saves and loads the Malrec Standard Cinderfen trophy choice without duplicating rewards", () => {
     const hero = createFallbackHeroSave();
     const campaign = createStartedCampaignSave({

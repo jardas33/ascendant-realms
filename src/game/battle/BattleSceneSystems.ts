@@ -10,7 +10,7 @@ import type {
   UpgradeDefinition
 } from "../core/GameTypes";
 import { BUILDING_BY_ID } from "../data/contentIndex";
-import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
+import { getStrongholdBattleEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
@@ -247,6 +247,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         addMinimapPing(site.position.x, site.position.y, "#f6e27d", bonus.label);
         showMessage(message, site.position.x, site.position.y - 96, "#f6e27d");
       }
+    },
+    adjustFirstCaptureBonus: (site, owner, bonus) => {
+      return applyFirstCaptureBonusAdditions(site.definition.id, owner, bonus, strongholdEffects);
     }
   });
 
@@ -390,6 +393,28 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
 export function createBattleFogOfWar(activeMap: BattleMapDefinition): FogOfWarSystem {
   return new FogOfWarSystem(activeMap.width, activeMap.height, BATTLE_FOG_CELL_SIZE);
+}
+
+export function applyFirstCaptureBonusAdditions(
+  siteId: string,
+  owner: Team,
+  bonus: CaptureSiteFirstCaptureBonusDefinition,
+  strongholdEffects: Pick<StrongholdBattleEffects, "firstCaptureBonusResourceAdditions">
+): CaptureSiteFirstCaptureBonusDefinition {
+  const additions = owner === "player" ? strongholdEffects.firstCaptureBonusResourceAdditions[siteId] : undefined;
+  if (!additions || !Object.values(additions).some((amount) => (amount ?? 0) > 0)) {
+    return bonus;
+  }
+  return {
+    ...bonus,
+    description: `${bonus.description} Waystation attunement adds a small extra surge.`,
+    resources: {
+      crowns: (bonus.resources.crowns ?? 0) + (additions.crowns ?? 0),
+      stone: (bonus.resources.stone ?? 0) + (additions.stone ?? 0),
+      iron: (bonus.resources.iron ?? 0) + (additions.iron ?? 0),
+      aether: (bonus.resources.aether ?? 0) + (additions.aether ?? 0)
+    }
+  };
 }
 
 function formatResourceBonus(resources: CaptureSiteFirstCaptureBonusDefinition["resources"]): string {

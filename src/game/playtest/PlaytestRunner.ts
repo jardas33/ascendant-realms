@@ -28,6 +28,7 @@ import {
   getAIPersonality
 } from "../data/aiPersonalities";
 import { FIRST_MATCH_TUTORIAL_PROTECTION, getBattleDifficulty, getBattlePhase } from "../data/battlePacing";
+import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { requireBuilding, requireCampaignNode, requireEnemyHero, requireUnit, requireUpgrade } from "../data/contentIndex";
 import { getStrongholdBattleEffects, strongholdLaunchModifierId, STRONGHOLD_UPGRADE_BY_ID } from "../data/strongholdUpgrades";
 import { createFallbackCampaignSave } from "../save/SaveDefaults";
@@ -172,6 +173,7 @@ export function runScriptedBattlePlaytest(options: {
       aiPersonalityId: node.aiPersonalityId,
       modifiers: [
         ...strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) })),
+        ...strongholdPlan.campaignModifierIds.map((modifierId) => ({ id: modifierId })),
         ...rivalModifiers
       ],
       retinueUnits: strongholdPlan.retinueUnits
@@ -198,20 +200,48 @@ function buildStrongholdProfileNodePlans(
 ): Array<{ scenario: PlaytestScenarioDefinition; strongholdPlan: PlaytestStrongholdNodePlan }> {
   const campaignBank: ResourceBag = { crowns: 0, stone: 0, iron: 0, aether: 0 };
   const purchasedUpgradeIds: StrongholdUpgradeId[] = [];
-  return scenarios.map((scenario) => {
+  return scenarios.flatMap((scenario) => {
+    const node = requireCampaignNode(scenario.nodeId);
+    if ((profile.campaignModifierIds?.length ?? 0) > 0 && node.chapterId !== "cinderfen_road") {
+      addResources(campaignBank, node.rewards.resources ?? {});
+      return [];
+    }
+    const campaignModifierIds =
+      node.chapterId === "cinderfen_road" ? applicableProfileCampaignModifierIds(profile, node) : [];
+    if ((profile.campaignModifierIds?.length ?? 0) > 0 && campaignModifierIds.length === 0) {
+      addResources(campaignBank, node.rewards.resources ?? {});
+      return [];
+    }
     const purchaseNotes = purchaseAffordableStrongholdTargets(profile, campaignBank, purchasedUpgradeIds);
+    if (campaignModifierIds.length > 0) {
+      purchaseNotes.push(`Modeled Cinderfen Waystation service: ${campaignModifierIds.join(", ")}.`);
+    }
     const plan: PlaytestStrongholdNodePlan = {
       profileId: profile.id,
       profileName: profile.name,
       targetUpgradeIds: [...profile.targetUpgradeIds],
       purchasedUpgradeIds: [...purchasedUpgradeIds],
       purchaseNotes,
-      retinueUnits: deployableRetinueForProfile(profile.retinueUnits ?? [], purchasedUpgradeIds)
+      retinueUnits: deployableRetinueForProfile(profile.retinueUnits ?? [], purchasedUpgradeIds),
+      campaignModifierIds
     };
-    const node = requireCampaignNode(scenario.nodeId);
     addResources(campaignBank, node.rewards.resources ?? {});
     return { scenario, strongholdPlan: plan };
   });
+}
+
+function applicableProfileCampaignModifierIds(
+  profile: PlaytestStrongholdProfileDefinition,
+  node: CampaignNodeDefinition
+): PlaytestStrongholdNodePlan["campaignModifierIds"] {
+  const modifierIds = profile.campaignModifierIds ?? [];
+  if (modifierIds.length === 0) {
+    return [];
+  }
+  return consumeBattleCampaignModifiers({
+    campaign: { ...createFallbackCampaignSave(), activeModifierIds: [...modifierIds] },
+    node
+  }).launchModifiers.map((modifier) => modifier.id as PlaytestStrongholdNodePlan["campaignModifierIds"][number]);
 }
 
 function purchaseAffordableStrongholdTargets(
@@ -250,7 +280,8 @@ function noStrongholdPlan(): PlaytestStrongholdNodePlan {
     targetUpgradeIds: [],
     purchasedUpgradeIds: [],
     purchaseNotes: [],
-    retinueUnits: []
+    retinueUnits: [],
+    campaignModifierIds: []
   };
 }
 
@@ -282,7 +313,10 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
     const difficulty = applyAIPersonalityToDifficulty(getBattleDifficulty(options.node.difficulty), personality);
     const enemyConfig = applyAIPersonalityToConfig(options.map.scenario.enemyAI, personality);
     const strongholdEffects = getStrongholdBattleEffects(
-      options.strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) }))
+      [
+        ...options.strongholdPlan.purchasedUpgradeIds.map((upgradeId) => ({ id: strongholdLaunchModifierId(upgradeId) })),
+        ...options.strongholdPlan.campaignModifierIds.map((modifierId) => ({ id: modifierId }))
+      ]
     );
     const startingResources = cloneResources(options.map.scenario.startingResources.player);
     addResources(startingResources, strongholdEffects.startingResources);
@@ -704,10 +738,17 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       return;
     }
 
+    const additions = this.state.telemetry.strongholdEffects.firstCaptureBonusResourceAdditions[site.id] ?? {};
+    const resources = {
+      crowns: (bonus.resources.crowns ?? 0) + (additions.crowns ?? 0),
+      stone: (bonus.resources.stone ?? 0) + (additions.stone ?? 0),
+      iron: (bonus.resources.iron ?? 0) + (additions.iron ?? 0),
+      aether: (bonus.resources.aether ?? 0) + (additions.aether ?? 0)
+    };
     this.state.claimedCaptureBonuses.push(claimId);
-    addResources(this.state.resources, bonus.resources);
+    addResources(this.state.resources, resources);
     this.updatePeakResources();
-    this.log(`${bonus.label}: ${formatResources(bonus.resources)}`);
+    this.log(`${bonus.label}: ${formatResources(resources)}`);
   }
 
   private completeReadyBuildings(): void {

@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BATTLE_DIFFICULTIES } from "./battlePacing";
+import { BORDER_MARCHES_NODES } from "./borderMarchesNodes";
 import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_NODES } from "./campaignNodes";
+import { BORDER_MARCHES_REWARD_TABLES, CINDERFEN_ROAD_REWARD_TABLES } from "./campaignRewards";
+import { CINDERFEN_ROAD_NODES } from "./cinderfenRoadNodes";
 import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
 import { ITEM_AFFIXES } from "./itemAffixes";
@@ -20,9 +23,20 @@ describe("content validation", () => {
     expect(validateContent()).toEqual([]);
   });
 
+  it("keeps focused chapter data modules wired through public data barrels", () => {
+    expect(CAMPAIGN_NODES).toEqual([...BORDER_MARCHES_NODES, ...CINDERFEN_ROAD_NODES]);
+    expect(CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "border_marches")?.nodeIds).toEqual(
+      BORDER_MARCHES_NODES.map((node) => node.id)
+    );
+    expect(CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "cinderfen_road")?.nodeIds).toEqual(
+      CINDERFEN_ROAD_NODES.map((node) => node.id)
+    );
+    expect(REWARD_TABLES).toEqual([...BORDER_MARCHES_REWARD_TABLES, ...CINDERFEN_ROAD_REWARD_TABLES]);
+  });
+
   it("covers multiple skirmish maps with complete setup metadata", () => {
     expect(MAPS.map((map) => map.id)).toEqual(
-      expect.arrayContaining(["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway"])
+      expect.arrayContaining(["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway", "cinderfen_watchpost"])
     );
     MAPS.forEach((map) => {
       expect(map.role.length).toBeGreaterThan(0);
@@ -61,6 +75,14 @@ describe("content validation", () => {
       expect.arrayContaining(["capture_cinder_crossing", "clear_cinder_guardians", "destroy_cinderfen_barracks"])
     );
     expect(REWARD_TABLES.map((table) => table.id)).toContain("cinderfen_causeway_rewards");
+    const cinderfenWatchpost = MAPS.find((map) => map.id === "cinderfen_watchpost");
+    expect(cinderfenWatchpost?.captureSites).toHaveLength(3);
+    expect(cinderfenWatchpost?.neutralCamps).toHaveLength(2);
+    expect(cinderfenWatchpost?.scenario.rewardTableId).toBe("cinderfen_watchpost_rewards");
+    expect(cinderfenWatchpost?.scenario.objectives.secondaryObjectives?.map((objective) => objective.id)).toEqual(
+      expect.arrayContaining(["capture_watch_road", "clear_marsh_raider_camp", "destroy_watchpost_tower"])
+    );
+    expect(REWARD_TABLES.map((table) => table.id)).toContain("cinderfen_watchpost_rewards");
   });
 
   it("keeps the First Claim tutorial capture clear of neutral camp aggro", () => {
@@ -100,22 +122,24 @@ describe("content validation", () => {
     expect(CAMPAIGN_NODES.find((node) => node.id === "marcher_camp")?.choices?.length).toBeGreaterThanOrEqual(6);
   });
 
-  it("defines Chapter 2 with a playable event gate and first battle map", () => {
+  it("defines Chapter 2 with a playable event gate, support node, and two compact battle maps", () => {
     const chapterTwo = CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "cinderfen_road");
     const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook");
+    const waystation = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_waystation");
     const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing");
+    const watch = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_watch");
 
     expect(CAMPAIGN_CHAPTERS.map((chapter) => chapter.id)).toEqual(["border_marches", "cinderfen_road"]);
     expect(chapterTwo).toMatchObject({
       title: "Chapter 2: Cinderfen Road",
-      nodeIds: ["cinderfen_overlook", "cinderfen_crossing"],
+      nodeIds: ["cinderfen_overlook", "cinderfen_waystation", "cinderfen_crossing", "cinderfen_watch"],
       unlockPrerequisiteNodeIds: ["ashen_outpost"]
     });
     expect(overlook).toMatchObject({
       nodeType: "event",
       chapterId: "cinderfen_road",
       prerequisites: ["ashen_outpost"],
-      unlocks: ["cinderfen_crossing"]
+      unlocks: ["cinderfen_waystation", "cinderfen_crossing"]
     });
     expect(overlook?.isPlaceholder).toBeUndefined();
     expect(overlook?.choices?.map((choice) => choice.id)).toEqual([
@@ -132,13 +156,31 @@ describe("content validation", () => {
         reputationChanges: { free_marches: 3 }
       }
     });
+    expect(waystation).toMatchObject({
+      nodeType: "town",
+      chapterId: "cinderfen_road",
+      prerequisites: ["cinderfen_overlook"],
+      unlocks: []
+    });
+    expect(waystation?.choices?.map((choice) => choice.id)).toEqual([
+      "marsh_guides",
+      "ash_filters",
+      "refugee_scouts",
+      "shrine_attunement"
+    ]);
+    expect(waystation?.choices?.filter((choice) => !choice.onceOnly).map((choice) => choice.id)).toEqual([
+      "marsh_guides",
+      "ash_filters",
+      "shrine_attunement"
+    ]);
     expect(crossing).toMatchObject({
       nodeType: "battle",
       chapterId: "cinderfen_road",
       mapId: "cinderfen_causeway",
       difficulty: "normal",
       aiPersonalityId: "hexfire_cult",
-      prerequisites: ["ashen_outpost", "cinderfen_overlook"]
+      prerequisites: ["ashen_outpost", "cinderfen_overlook"],
+      unlocks: ["cinderfen_watch"]
     });
     expect(crossing?.isPlaceholder).toBeUndefined();
     expect(crossing?.rewards).toMatchObject({
@@ -147,6 +189,19 @@ describe("content validation", () => {
       itemIds: ["scouts_bow"]
     });
     expect(MAPS.some((map) => map.id === "cinderfen_causeway")).toBe(true);
+    expect(watch).toMatchObject({
+      nodeType: "battle",
+      chapterId: "cinderfen_road",
+      mapId: "cinderfen_watchpost",
+      difficulty: "normal",
+      aiPersonalityId: "hexfire_cult",
+      prerequisites: ["cinderfen_crossing"],
+      rewards: {
+        xp: 62,
+        resources: { crowns: 40, stone: 22, iron: 18, aether: 10 }
+      }
+    });
+    expect(MAPS.some((map) => map.id === "cinderfen_watchpost")).toBe(true);
   });
 
   it("assigns valid AI personalities to battle nodes", () => {

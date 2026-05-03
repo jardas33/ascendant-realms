@@ -26,6 +26,16 @@ const CHAPTER_ONE_COMPLETED_NODE_IDS = [
 
 const POST_ASHEN_UNLOCKED_NODE_IDS = [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook"];
 
+function createPostOverlookCampaign(resources = { crowns: 120, stone: 0, iron: 0, aether: 60 }) {
+  return createStartedCampaignSave({
+    ...createStartedCampaignSave(),
+    completedNodeIds: [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook"],
+    unlockedNodeIds: [...POST_ASHEN_UNLOCKED_NODE_IDS, "cinderfen_waystation", "cinderfen_crossing"],
+    resources,
+    nodeRewardsClaimedIds: []
+  });
+}
+
 const MALREC_STANDARD_TROPHY = {
   trophyId: "trophy_malrec_outpost_standard",
   enemyHeroId: "captain_malrec",
@@ -73,11 +83,15 @@ describe("campaign rules", () => {
       ]
     });
     const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook")!;
+    const waystation = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_waystation")!;
     const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing")!;
+    const watch = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_watch")!;
 
     expect(getCampaignNodeStatus(overlook, campaign)).toBe("available");
+    expect(getCampaignNodeStatus(waystation, campaign)).toBe("locked");
     expect(getCampaignNodeStatus(crossing, campaign)).toBe("locked");
-    expect(getCampaignProgressSummary(campaign)).toBe("8/10 nodes completed");
+    expect(getCampaignNodeStatus(watch, campaign)).toBe("locked");
+    expect(getCampaignProgressSummary(campaign)).toBe("8/12 nodes completed");
   });
 
   it("calculates reputation ranks from simple thresholds", () => {
@@ -269,6 +283,7 @@ describe("campaign rules", () => {
     expect(getCampaignChoiceAvailability({ campaign, hero, node, choice }).ok).toBe(true);
     const applied = applyCampaignChoice({ campaign, hero, node, choice });
     const repeated = applyCampaignChoice({ campaign: applied.campaign, hero: applied.hero, node, choice });
+    const waystation = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
     const crossing = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
 
     expect(applied.ok).toBe(true);
@@ -277,7 +292,9 @@ describe("campaign rules", () => {
     expect(applied.campaign.resourcesSpent.aether).toBe(24);
     expect(applied.campaign.completedNodeIds).toContain("cinderfen_overlook");
     expect(applied.campaign.choiceIdsClaimed).toContain("cinderfen_overlook:study_the_cinders");
+    expect(applied.campaign.unlockedNodeIds).toContain("cinderfen_waystation");
     expect(applied.campaign.unlockedNodeIds).toContain("cinderfen_crossing");
+    expect(getCampaignNodeStatus(waystation, applied.campaign)).toBe("available");
     expect(getCampaignNodeStatus(crossing, applied.campaign)).toBe("available");
     expect(applied.hero.inventory.some((instance) => instance.itemId === "emberglass_wand")).toBe(true);
     expect(applied.hero.xp).toBe(20);
@@ -390,6 +407,121 @@ describe("campaign rules", () => {
     expect(repeated.reason).toContain("Already chosen");
     expect(repeated.campaign.activeModifierIds).toEqual(["well_rested"]);
     expect(repeated.hero.xp).toBe(hero.xp + 10);
+  });
+
+  it("unlocks Cinderfen Waystation after Overlook and grants a repeatable service modifier", () => {
+    const campaign = createPostOverlookCampaign();
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const choice = node.choices!.find((entry) => entry.id === "marsh_guides")!;
+
+    expect(getCampaignNodeStatus(node, campaign)).toBe("available");
+    expect(getCampaignChoiceAvailability({ campaign, hero, node, choice }).ok).toBe(true);
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.completedNode).toBe(false);
+    expect(applied.campaign.completedNodeIds).not.toContain("cinderfen_waystation");
+    expect(applied.campaign.resources.crowns).toBe(85);
+    expect(applied.campaign.resourcesSpent.crowns).toBe(35);
+    expect(applied.campaign.activeModifierIds).toContain("marsh_guides");
+    expect(applied.campaign.townServiceUseCounts["cinderfen_waystation:marsh_guides"]).toBe(1);
+  });
+
+  it("blocks Cinderfen Waystation services when resources are insufficient", () => {
+    const campaign = createPostOverlookCampaign({ crowns: 20, stone: 0, iron: 0, aether: 10 });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const choice = node.choices!.find((entry) => entry.id === "ash_filters")!;
+
+    const availability = getCampaignChoiceAvailability({ campaign, hero, node, choice });
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(availability.ok).toBe(false);
+    expect(availability.reasons).toContain("Need 35 Crowns");
+    expect(availability.reasons).toContain("Need 15 Aether");
+    expect(applied.ok).toBe(false);
+    expect(applied.campaign.resources).toMatchObject({ crowns: 20, aether: 10 });
+    expect(applied.campaign.activeModifierIds).not.toContain("ash_filters");
+  });
+
+  it("prevents the one-time Cinderfen refugee scout service from duplicating rewards", () => {
+    const campaign = createPostOverlookCampaign();
+    const hero = createNewHeroSave("Aster", "shepherd", "temple_orphan");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const choice = node.choices!.find((entry) => entry.id === "refugee_scouts")!;
+
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+    const repeated = applyCampaignChoice({ campaign: applied.campaign, hero: applied.hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(applied.campaign.resources.crowns).toBe(95);
+    expect(applied.campaign.choiceIdsClaimed).toContain("cinderfen_waystation:refugee_scouts");
+    expect(applied.campaign.townServiceClaimedIds).toContain("cinderfen_waystation:refugee_scouts");
+    expect(applied.hero.xp).toBe(hero.xp + 10);
+    expect(applied.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 2);
+    expect(repeated.ok).toBe(false);
+    expect(repeated.reason).toContain("Already purchased");
+    expect(repeated.campaign.resources.crowns).toBe(95);
+    expect(repeated.hero.xp).toBe(hero.xp + 10);
+  });
+
+  it("lets repeatable Cinderfen Waystation services track repeated use", () => {
+    const campaign = createPostOverlookCampaign();
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const choice = node.choices!.find((entry) => entry.id === "shrine_attunement")!;
+
+    const first = applyCampaignChoice({ campaign, hero, node, choice });
+    const second = applyCampaignChoice({ campaign: first.campaign, hero: first.hero, node, choice });
+
+    expect(first.ok).toBe(true);
+    expect(second.ok).toBe(true);
+    expect(second.campaign.resources.aether).toBe(36);
+    expect(second.campaign.resourcesSpent.aether).toBe(24);
+    expect(second.campaign.activeModifierIds).toEqual(["shrine_attunement"]);
+    expect(second.campaign.townServiceUseCounts["cinderfen_waystation:shrine_attunement"]).toBe(2);
+  });
+
+  it("consumes Cinderfen Waystation battle prep only when launching Cinderfen Crossing", () => {
+    const campaign = {
+      ...createPostOverlookCampaign(),
+      activeModifierIds: ["marsh_guides", "shrine_attunement"]
+    };
+    const oldRoad = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
+    const crossing = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+    const watch = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_watch")!;
+
+    const skipped = consumeBattleCampaignModifiers({ campaign, node: oldRoad });
+    const consumed = consumeBattleCampaignModifiers({ campaign, node: crossing });
+    const watchConsumed = consumeBattleCampaignModifiers({ campaign, node: watch });
+
+    expect(skipped.launchModifiers).toEqual([]);
+    expect(skipped.campaign.activeModifierIds).toEqual(["marsh_guides", "shrine_attunement"]);
+    expect(consumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["marsh_guides", "shrine_attunement"]);
+    expect(consumed.campaign.activeModifierIds).toEqual([]);
+    expect(watchConsumed.launchModifiers.map((modifier) => modifier.id)).toEqual(["marsh_guides"]);
+    expect(watchConsumed.campaign.activeModifierIds).toEqual(["shrine_attunement"]);
+  });
+
+  it("unlocks Cinderfen Watch only after Cinderfen Crossing is completed", () => {
+    const campaign = createPostOverlookCampaign();
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const crossing = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+    const watch = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_watch")!;
+
+    expect(getCampaignNodeStatus(watch, campaign)).toBe("locked");
+
+    const completed = completeCampaignNodeWithRewards({ campaign, hero, node: crossing });
+
+    expect(completed.campaign.completedNodeIds).toContain("cinderfen_crossing");
+    expect(completed.campaign.unlockedNodeIds).toContain("cinderfen_watch");
+    expect(getCampaignNodeStatus(watch, completed.campaign)).toBe("available");
+    expect(completed.nodeReward).toMatchObject({
+      xp: 60,
+      resources: { crowns: 40, stone: 20, iron: 20, aether: 12 },
+      itemIds: ["scouts_bow"]
+    });
   });
 
   it("grants item and completes the new caravan event when choosing protection", () => {

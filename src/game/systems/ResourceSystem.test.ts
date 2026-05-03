@@ -119,6 +119,39 @@ describe("ResourceSystem first-capture bonuses", () => {
     expect(onCaptureBonus).toHaveBeenCalledTimes(2);
   });
 
+  it("applies an adjusted first-capture bonus without changing duplicate prevention", () => {
+    const resources = createResourceBank();
+    const site = createSite();
+    const onCaptureBonus = vi.fn();
+    const system = new ResourceSystem({
+      resources,
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onCaptureBonus,
+      adjustFirstCaptureBonus: (_site, owner, bonus) =>
+        owner === "player"
+          ? {
+              ...bonus,
+              resources: { ...bonus.resources, aether: (bonus.resources.aether ?? 0) + 5 }
+            }
+          : bonus
+    });
+
+    system.update(CAPTURE_TIME_SECONDS, [site], [createUnit("player")]);
+    site.setOwner("neutral");
+    system.update(CAPTURE_TIME_SECONDS, [site], [createUnit("player")]);
+
+    expect(resources.player.aether).toBe(25);
+    expect(onCaptureBonus).toHaveBeenCalledTimes(1);
+    expect(onCaptureBonus).toHaveBeenCalledWith(
+      site,
+      "player",
+      expect.objectContaining({
+        resources: { aether: 25 }
+      })
+    );
+  });
+
   it("falls back to ordinary capture behavior when a site has no bonus", () => {
     const resources = createResourceBank();
     const site = createSite({ firstCaptureBonus: undefined });

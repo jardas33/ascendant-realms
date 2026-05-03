@@ -103,7 +103,7 @@ export function validateCampaignModifiers(errors: string[], context: ValidationC
     if (!modifier.name.trim() || !modifier.description.trim() || !modifier.durationLabel.trim()) {
       errors.push(`Campaign modifier ${modifier.id} needs name, description, and durationLabel.`);
     }
-    if (!["next_battle", "next_ashen_battle", "next_node_resource_reward"].includes(modifier.trigger)) {
+    if (!["next_battle", "next_ashen_battle", "next_cinderfen_battle", "next_node_resource_reward"].includes(modifier.trigger)) {
       errors.push(`Campaign modifier ${modifier.id} has invalid trigger ${modifier.trigger}.`);
     }
     [...(modifier.effects.extraPlayerUnitIds ?? []), ...(modifier.effects.extraEnemyUnitIds ?? [])].forEach((unitId) => {

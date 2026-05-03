@@ -50,10 +50,12 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- Unit Veterancy thresholds were raised to 55 / 130 / 230 XP, rank stat multipliers were softened to +4% / +8% / +12%, and the armor bonus now starts at Elite.");
   lines.push("- Enemy Hero V1 telemetry now records assigned rival commander id, defeated state, attack-join timing, and losses involving the rival.");
   lines.push("- Rival Persistence balance reporting now calls first-defeat rewards one-time, keeps +5% HP/+5% damage rematch modifiers unchanged, and surfaces reward/trophy duplicate-prevention signals.");
-  lines.push("- Chapter 2 telemetry now includes `cinderfen_crossing` as the first playable Cinderfen Road battle and keeps it visibly separated by chapter in node and scenario tables.");
-  lines.push("- `cinderfen_overlook` is a playable event gate in live campaign flow; simulator Cinderfen runs model battle-local capture-site bonuses, while event-choice launch modifiers remain reserved for a future scenario-profile pass.");
+  lines.push("- Chapter 2 telemetry now includes `cinderfen_crossing` and `cinderfen_watch` as the current playable Cinderfen Road battles and keeps them visibly separated by chapter in node and scenario tables.");
+  lines.push("- `cinderfen_overlook` is a playable event gate in live campaign flow; `cinderfen_waystation` now has one simulator profile for Shrine Attunement while other event/service launch modifiers stay covered by unit and e2e tests.");
   lines.push("- Chapter 2 balance pass trimmed Cinderfen player start resources, capture-site income, battle XP/resources, campaign-node rewards, and event-choice payouts while giving the Ashen staging camp slightly more starting bank and faster training.");
   lines.push("- The post-feature Chapter 2 balance pass trims the Cinder Shrine from +24 to +20 battle-local Aether after telemetry showed it was useful in staged routes but not the cause of fast rush wins.");
+  lines.push("- Cinderfen Watchpost is the second compact Chapter 2 battle map: it uses existing Ashen units and systems, a raised-road watchtower, three capture sites, two neutral camps, and no Cinder Shrine.");
+  lines.push("- The post-Waystation/Watchpost balance pass keeps Chapter 2 enemy pacing unchanged, lowers Shrine Attunement to 12 Aether, trims Cinderfen Watchpost first-clear rewards, and reduces Watchpost repeat-clear payout.");
   lines.push("- Cinderfen-specific defeat tips now point players toward side income, the Cinder Shrine, Cinder Guardians, and Enemy Barracks sequencing before generic retry advice.");
   lines.push("");
   lines.push("## Chapter 2 Balance Pass Result");
@@ -276,6 +278,11 @@ function formatStrongholdEffectTelemetry(effects: StrongholdBattleEffects): stri
       parts.push(`${titleCase(unitId)} train ${Math.round((1 - multiplier) * 100)}% faster`);
     }
   });
+  Object.entries(effects.firstCaptureBonusResourceAdditions).forEach(([siteId, resources]) => {
+    if (Object.values(resources).some((amount) => (amount ?? 0) > 0)) {
+      parts.push(`${titleCase(siteId)} first capture +${formatResources(resources)}`);
+    }
+  });
   return parts.length > 0 ? parts.join("; ") : "-";
 }
 
@@ -316,40 +323,67 @@ function listLine(label: string, values: string[]): string {
 }
 
 function renderChapterTwoBalanceLines(telemetry: PlaytestTelemetry[]): string[] {
-  const cinderfenRuns = telemetry.filter((run) => run.nodeId === "cinderfen_crossing");
-  const scriptLines = ["- Cinderfen Crossing script read:"];
-  ["safe_beginner", "greedy_economy", "fast_army"].forEach((scriptId) => {
-    const runs = cinderfenRuns.filter((run) => run.playerScript === scriptId);
-    scriptLines.push(
-      `  - ${formatScriptName(scriptId as PlaytestScriptId)}: ${formatRunRecord(runs)}, average contact ${formatAverageTime(
-        runs.map((run) => run.timeFirstEnemyContact)
-      )}, first wave survived ${runs.filter((run) => run.firstWaveSurvived).length}/${runs.length}.`
-    );
-  });
-  const noStrongholdSafe = cinderfenRuns.find(
+  const crossingRuns = telemetry.filter((run) => run.nodeId === "cinderfen_crossing");
+  const watchRuns = telemetry.filter((run) => run.nodeId === "cinderfen_watch");
+  const cinderfenRuns = [...crossingRuns, ...watchRuns];
+  const crossingScriptLines = renderCinderfenScriptRead("Cinderfen Crossing", crossingRuns);
+  const watchScriptLines = renderCinderfenScriptRead("Cinderfen Watchpost", watchRuns);
+  const noStrongholdSafe = crossingRuns.find(
+    (run) => run.strongholdProfileId === "no_stronghold" && run.playerScript === "safe_beginner"
+  );
+  const watchNoStrongholdSafe = watchRuns.find(
     (run) => run.strongholdProfileId === "no_stronghold" && run.playerScript === "safe_beginner"
   );
   const retinueTrainingYard = cinderfenRuns.filter((run) => run.strongholdProfileId === "retinue_training_yard_path");
   const rivalModifierRuns = cinderfenRuns.filter((run) => run.rivalModifiersApplied.length > 0).length;
-  const shrineSurgeRuns = cinderfenRuns.filter((run) => run.commandLog.some((entry) => entry.includes("Cinder Shrine Surge"))).length;
+  const shrineSurgeRuns = crossingRuns.filter((run) => run.commandLog.some((entry) => entry.includes("Cinder Shrine Surge"))).length;
+  const attunedShrineRuns = crossingRuns.filter(
+    (run) =>
+      run.strongholdProfileId === "waystation_shrine_attunement" &&
+      run.commandLog.some((entry) => entry.includes("Cinder Shrine Surge: 25 Aether"))
+  ).length;
+  const watchShrineRuns = watchRuns.filter((run) => run.commandLog.some((entry) => entry.includes("Cinder Shrine Surge"))).length;
   const reward = noStrongholdSafe?.rewardResult;
+  const watchReward = watchNoStrongholdSafe?.rewardResult;
   return [
-    "- Cinderfen Crossing remains structurally reasonable after the pass: no `too_easy` or `too_hard` node flags, Safe Beginner wins, Greedy Economy mostly times out, and Fast Army still exposes the rush/readability edge without making every profile a sweep.",
-    ...scriptLines,
+    "- Cinderfen Crossing and Cinderfen Watchpost are reported separately in the Chapter 2 slice so the second battle can be tuned without masking the first battle's stability.",
+    ...crossingScriptLines,
+    ...watchScriptLines,
     `- Retinue + Training Yard II remains the strongest Chapter 2 profile at ${formatRunRecord(retinueTrainingYard)} and stays a human-review watchpoint rather than an automated ` +
       "`too_easy` flag.",
-    `- Rival state impact: ${rivalModifierRuns} Cinderfen runs applied rival modifiers; this node has no named rival in the current slice.`,
-    `- Cinder Shrine impact: ${shrineSurgeRuns}/${cinderfenRuns.length} Cinderfen runs captured the shrine and received the one-time +20 Aether battle-local surge; Fast Army often skips it, so the surge does not explain quick rush wins.`,
+    `- Rival state impact: ${rivalModifierRuns} Cinderfen runs applied rival modifiers; neither current Chapter 2 battle has a named enemy hero.`,
+    `- Cinder Shrine impact: ${shrineSurgeRuns}/${crossingRuns.length} Crossing runs captured the shrine and received the one-time battle-local surge; ${attunedShrineRuns} attuned Waystation runs raised that capture to +25 Aether. Watchpost has no shrine and recorded ${watchShrineRuns}/${watchRuns.length} shrine surges.`,
     reward
-      ? `- Normal first-clear reward read: ${reward.battleXp + reward.campaignXp} XP, ${sumResources(
+      ? `- Cinderfen Crossing normal first-clear reward read: ${reward.battleXp + reward.campaignXp} XP, ${sumResources(
           reward.battleResources
         ) + sumResources(reward.campaignResources)} campaign/battle resources, ${[
           ...reward.battleItemIds,
           ...reward.campaignItemIds
         ].join(", ")}.`
-      : "- Normal first-clear reward read: no winning Cinderfen baseline run found.",
-    "- Chapter 1 telemetry remains unchanged by this pass because tuning and the shrine feature touch only Cinderfen data, battle-local capture-site rules, simulator modeling, and Cinderfen-specific result copy."
+      : "- Cinderfen Crossing normal first-clear reward read: no winning baseline run found.",
+    watchReward
+      ? `- Cinderfen Watchpost normal first-clear reward read: ${
+          watchReward.battleXp + watchReward.campaignXp
+        } XP, ${sumResources(watchReward.battleResources) + sumResources(watchReward.campaignResources)} campaign/battle resources, ${[
+          ...watchReward.battleItemIds,
+          ...watchReward.campaignItemIds
+        ].join(", ")}.`
+      : "- Cinderfen Watchpost normal first-clear reward read: no winning baseline run found.",
+    "- Chapter 1 telemetry remains unchanged by this pass because tuning touches only Cinderfen battle data, Cinderfen reward/service values, battle-local capture-site rules, simulator modeling, and Cinderfen-specific result copy."
   ];
+}
+
+function renderCinderfenScriptRead(label: string, runs: PlaytestTelemetry[]): string[] {
+  const scriptLines = [`- ${label} script read:`];
+  ["safe_beginner", "greedy_economy", "fast_army"].forEach((scriptId) => {
+    const scriptRuns = runs.filter((run) => run.playerScript === scriptId);
+    scriptLines.push(
+      `  - ${formatScriptName(scriptId as PlaytestScriptId)}: ${formatRunRecord(scriptRuns)}, average contact ${formatAverageTime(
+        scriptRuns.map((run) => run.timeFirstEnemyContact)
+      )}, first wave survived ${scriptRuns.filter((run) => run.firstWaveSurvived).length}/${scriptRuns.length}.`
+    );
+  });
+  return scriptLines;
 }
 
 function formatRunRecord(runs: PlaytestTelemetry[]): string {

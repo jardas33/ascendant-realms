@@ -129,6 +129,95 @@ async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOptions =
   await expect(page.getByTestId("main-menu")).toBeVisible();
 }
 
+async function seedPostCinderfenCrossingCampaign(page: Page): Promise<void> {
+  await page.goto("/");
+  await page.evaluate(
+    ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          version: 2,
+          createdAt: "2026-05-03T12:00:00.000Z",
+          updatedAt: "2026-05-03T12:00:00.000Z",
+          hero: {
+            heroName: "E2E Cinderfen Watch",
+            classId: "warlord",
+            originId: "exiled_noble",
+            level: 4,
+            xp: 670,
+            skillPoints: 3,
+            unlockedAbilities: ["rally_banner"],
+            completedBattles: 6,
+            clearedMapIds: ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway"],
+            inventory: [
+              {
+                instanceId: "e2e-weathered-command-sword",
+                itemId: "weathered_command_sword",
+                acquiredAt: "2026-05-03T12:00:00.000Z",
+                source: "e2e_seed",
+                affixes: []
+              },
+              {
+                instanceId: "e2e-scouts-bow",
+                itemId: "scouts_bow",
+                acquiredAt: "2026-05-03T12:05:00.000Z",
+                source: "campaign:cinderfen_crossing",
+                affixes: []
+              }
+            ],
+            equipment: {},
+            allocatedSkills: {},
+            factionReputation: {
+              free_marches: 27,
+              ashen_covenant: -50,
+              sylvan_concord: 0,
+              common_folk: 31,
+              old_faith: 25
+            },
+            stats: { might: 11, command: 10, arcana: 2, faith: 3 }
+          },
+          campaign: {
+            started: true,
+            difficulty: "normal",
+            resources: { crowns: 245, stone: 200, iron: 150, aether: 80 },
+            resourcesSpent: { ...emptyResources, crowns: 55, aether: 12 },
+            completedNodeIds,
+            unlockedNodeIds,
+            lockedNodeIds: [],
+            nodeRewardsClaimedIds: completedNodeIds,
+            choiceIdsClaimed: ["cinderfen_overlook:aid_marsh_refugees"],
+            townServiceClaimedIds: [],
+            townServiceUseCounts: { "cinderfen_waystation:shrine_attunement": 1 },
+            activeModifierIds: [],
+            strongholdUpgradeRanks: {},
+            retinueUnits: [],
+            rivals: [],
+            rivalTrophies: [],
+            selectedChapterId: "cinderfen_road",
+            selectedNodeId: "cinderfen_watch"
+          },
+          settings: {},
+          statistics: {}
+        })
+      );
+    },
+    {
+      key: SAVE_KEY,
+      completedNodeIds: [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook", "cinderfen_crossing"],
+      unlockedNodeIds: [
+        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch"
+      ],
+      emptyResources: EMPTY_RESOURCES
+    }
+  );
+  await page.reload();
+  await expect(page.getByTestId("main-menu")).toBeVisible();
+}
+
 async function readStoredSave(page: Page): Promise<any> {
   return page.evaluate((key) => {
     const raw = localStorage.getItem(key);
@@ -140,7 +229,7 @@ async function readStoredSave(page: Page): Promise<any> {
 }
 
 async function expectBattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
   await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
   await expect(page.getByTestId("battle-minimap")).toBeVisible();
@@ -225,6 +314,94 @@ async function completeCinderfenVictory(page: Page): Promise<{
       cinderCrossingOwner: cinderCrossing.owner,
       cinderGuardianBruteAlive: cinderBrute.alive,
       enemyBarracksAlive: enemyBarracks.alive,
+      enemyStrongholdAlive: enemyStronghold.alive,
+      completedObjectiveIds
+    };
+    scene.checkEndConditions();
+    return summary;
+  });
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+  return result;
+}
+
+async function completeCinderfenWatchVictory(page: Page): Promise<{
+  watchRoadOwner: string;
+  marshBruteAlive: boolean;
+  watchtowerAlive: boolean;
+  enemyStrongholdAlive: boolean;
+  completedObjectiveIds: string[];
+}> {
+  const result = await page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    if (scene.activeMap?.id !== "cinderfen_watchpost") {
+      throw new Error(`Expected Cinderfen Watchpost, found ${scene.activeMap?.id ?? "none"}.`);
+    }
+
+    const completeSecondary = (type: string, targetId: string, point?: { x: number; y: number }) => {
+      if (typeof scene.completeSecondaryObjective === "function") {
+        scene.completeSecondaryObjective(type, targetId, point);
+        return;
+      }
+      const objective = scene.activeMap.scenario.objectives.secondaryObjectives?.find(
+        (entry: any) => entry.type === type && entry.targetId === targetId
+      );
+      if (objective) {
+        scene.runtime.recordSecondaryObjective(objective.id);
+      }
+    };
+
+    const watchRoad = scene.captureSites.find((site: any) => site.definition.id === "watch_road_toll");
+    if (!watchRoad) {
+      throw new Error("Watch Road Toll capture site was not found.");
+    }
+    const watchObjectiveAlreadyComplete = scene.runtime.stats.completedObjectiveIds.includes("capture_watch_road");
+    if (watchRoad.owner !== "player") {
+      watchRoad.setOwner("player");
+      if (!watchObjectiveAlreadyComplete) {
+        scene.runtime.recordResourceCaptured(watchRoad.definition.id);
+      }
+    }
+    if (!watchObjectiveAlreadyComplete) {
+      completeSecondary("capture_site", "watch_road_toll", watchRoad.position);
+    }
+
+    const marshBrute = scene.units.find(
+      (unit: any) => unit.team === "neutral" && unit.definition.id === "brute" && unit.alive
+    );
+    if (!marshBrute) {
+      throw new Error("Marsh Raider Camp Brute was not found.");
+    }
+    marshBrute.takeDamage(marshBrute.maxHp + marshBrute.armor + 10_000);
+    marshBrute.destroyView?.();
+    completeSecondary("defeat_unit", "brute", marshBrute.position);
+
+    const watchtower = scene.buildings.find(
+      (building: any) => building.team === "enemy" && building.definition.id === "watchtower" && building.alive
+    );
+    if (!watchtower) {
+      throw new Error("Watchpost Tower was not found.");
+    }
+    watchtower.takeDamage(watchtower.maxHp + watchtower.armor + 10_000);
+    watchtower.destroyView?.();
+    completeSecondary("destroy_building", "watchtower", watchtower.position);
+
+    const enemyStronghold = scene.buildings.find(
+      (building: any) => building.team === "enemy" && building.definition.id === "enemy_stronghold" && building.alive
+    );
+    if (!enemyStronghold) {
+      throw new Error("Enemy Stronghold was not found.");
+    }
+    enemyStronghold.takeDamage(enemyStronghold.maxHp + enemyStronghold.armor + 10_000);
+    enemyStronghold.destroyView?.();
+
+    const completedObjectiveIds = [...scene.runtime.stats.completedObjectiveIds];
+    const summary = {
+      watchRoadOwner: watchRoad.owner,
+      marshBruteAlive: marshBrute.alive,
+      watchtowerAlive: watchtower.alive,
       enemyStrongholdAlive: enemyStronghold.alive,
       completedObjectiveIds
     };
@@ -395,11 +572,16 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
     await page.getByTestId("campaign-node-cinderfen_crossing").click();
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
   });
 
@@ -455,7 +637,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards", async ({ page }) => {
-    test.setTimeout(70_000);
+    test.setTimeout(85_000);
     await seedPostAshenCampaign(page);
 
     await page.getByTestId("menu-continue-campaign").click();
@@ -485,11 +667,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     );
     await expect(page.locator("button[data-campaign-choice='aid_marsh_refugees']")).toContainText("Completes this node");
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
 
     await page.locator("button[data-campaign-choice='aid_marsh_refugees']").click();
     await expect(page.getByTestId("campaign-status")).toContainText("Aid the Marsh Refugees chosen");
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
     await expect(page.locator("button[data-campaign-choice='aid_marsh_refugees']")).toBeDisabled();
     await expect(page.locator("button[data-campaign-choice='aid_marsh_refugees']")).toContainText("Already chosen");
 
@@ -503,6 +689,28 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.hero.xp).toBe(545);
     expect(save.hero.factionReputation.common_folk).toBe(31);
     expect(save.hero.factionReputation.free_marches).toBe(27);
+
+    await page.getByTestId("campaign-node-cinderfen_waystation").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Waystation");
+    await expect(page.locator(".campaign-node-details")).toContainText("Town Services");
+    await expect(page.locator("button[data-campaign-choice='marsh_guides']")).toContainText("Cost: 35 Crowns");
+    await expect(page.locator("button[data-campaign-choice='marsh_guides']")).toContainText("Modifiers: Gain Marsh Guides");
+    await expect(page.locator("button[data-campaign-choice='ash_filters']")).toContainText("Cost: 35 Crowns, 15 Aether");
+    await expect(page.locator("button[data-campaign-choice='refugee_scouts']")).toContainText("Reputation: +2 Common Folk");
+    await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText("Cost: 12 Aether");
+    await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText(
+      "Modifiers: Gain Shrine Attunement"
+    );
+    await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText("Keeps this node open");
+    await page.locator("button[data-campaign-choice='shrine_attunement']").click();
+    await expect(page.getByTestId("campaign-status")).toContainText("Shrine Attunement used");
+    await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Available/i);
+    save = await readStoredSave(page);
+    expect(save.campaign.completedNodeIds).not.toContain("cinderfen_waystation");
+    expect(save.campaign.resources.aether).toBe(68);
+    expect(save.campaign.resourcesSpent.aether).toBe(12);
+    expect(save.campaign.activeModifierIds).toEqual(expect.arrayContaining(["inspired_militia", "shrine_attunement"]));
+    expect(save.campaign.townServiceUseCounts["cinderfen_waystation:shrine_attunement"]).toBe(1);
 
     await page.getByTestId("campaign-node-cinderfen_crossing").click();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
@@ -570,11 +778,13 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       expect.arrayContaining(["capture_cinder_crossing", "clear_cinder_guardians", "destroy_cinderfen_barracks"])
     );
     expect(battleState.modifiers).toContain("inspired_militia");
+    expect(battleState.modifiers).toContain("shrine_attunement");
     expect(battleState.playerMilitiaCount).toBe(4);
     expect(battleState.minimapMarkers).toBeGreaterThan(0);
     expect(battleState.resources).toMatchObject({ crowns: 480, stone: 325, iron: 195, aether: 110 });
     save = await readStoredSave(page);
     expect(save.campaign.activeModifierIds).not.toContain("inspired_militia");
+    expect(save.campaign.activeModifierIds).not.toContain("shrine_attunement");
 
     const shrineCapture = await page.evaluate(() => {
       const hook = (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite;
@@ -589,15 +799,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       firstCaptureBonus: {
         id: "cinder_shrine_surge",
         label: "Cinder Shrine Surge",
-        resources: { aether: 20 }
+        resources: { aether: 25 }
       },
       completedObjectiveIds: expect.arrayContaining(["capture_cinder_crossing"])
     });
     expect(shrineCapture.beforeResources.aether).toBe(110);
-    expect(shrineCapture.afterResources.aether).toBe(130);
+    expect(shrineCapture.afterResources.aether).toBe(135);
     expect(shrineCapture.status).toContain("Cinder Shrine Surge");
     await expect(page.getByTestId("battle-status")).toContainText("Cinder Shrine Surge");
-    await expect(page.getByTestId("battle-resources")).toContainText("130");
+    await expect(page.getByTestId("battle-resources")).toContainText("135");
 
     const duplicateShrineCapture = await page.evaluate(() => {
       const hook = (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite;
@@ -606,8 +816,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       }
       return hook("cinder_crossing");
     });
-    expect(duplicateShrineCapture.beforeResources.aether).toBe(130);
-    expect(duplicateShrineCapture.afterResources.aether).toBe(130);
+    expect(duplicateShrineCapture.beforeResources.aether).toBe(135);
+    expect(duplicateShrineCapture.afterResources.aether).toBe(135);
 
     const completed = await completeCinderfenVictory(page);
     expect(completed).toMatchObject({
@@ -628,7 +838,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(resultsPanel).toContainText("65");
     await expect(resultsPanel).toContainText("30 Crowns, 20 Stone, 16 Iron, 12 Aether");
     await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Crossing");
-    await expect(page.locator(".campaign-reward-block")).toContainText("No new nodes");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Watch");
     await expect(page.locator(".campaign-reward-block")).toContainText("Node XP");
     await expect(page.locator(".campaign-reward-block")).toContainText("60");
     await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 20 Stone, 20 Iron, 12 Aether");
@@ -645,7 +855,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     save = await readStoredSave(page);
     expect(save.campaign.completedNodeIds).toContain("cinderfen_crossing");
     expect(save.campaign.nodeRewardsClaimedIds).toContain("cinderfen_crossing");
-    expect(save.campaign.resources).toMatchObject({ crowns: 245, stone: 200, iron: 150, aether: 92 });
+    expect(save.campaign.resources).toMatchObject({ crowns: 245, stone: 200, iron: 150, aether: 80 });
     expect(save.hero.xp).toBe(670);
     expect(save.hero.completedBattles).toBe(6);
     expect(save.hero.clearedMapIds).toContain("cinderfen_causeway");
@@ -659,10 +869,11 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await page.getByRole("button", { name: "Campaign Map" }).click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await page.getByTestId("campaign-node-cinderfen_crossing").click();
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.locator(".campaign-node-details")).toContainText("Unlocks");
-    await expect(page.locator(".campaign-node-details")).toContainText("None");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
     await expect(page.locator(".campaign-node-details")).not.toContainText("Future map not implemented");
     save = await readStoredSave(page);
     expect(save.campaign.resources).toMatchObject(rewardSnapshot.resources);
@@ -674,7 +885,132 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    save = await readStoredSave(page);
+    expect(save.campaign.resources).toMatchObject(rewardSnapshot.resources);
+    expect(save.hero.xp).toBe(rewardSnapshot.xp);
+    expect(save.hero.inventory).toHaveLength(rewardSnapshot.inventoryCount);
+  });
+
+  test("post-Crossing campaign launches Cinderfen Watch and persists completion", async ({ page }) => {
+    test.setTimeout(65_000);
+    await seedPostCinderfenCrossingCampaign(page);
+
+    await page.getByTestId("menu-continue-campaign").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
+    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
+    await expect(page.locator(".campaign-node-details")).toContainText("Normal");
+    await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+
+    await page.getByTestId("campaign-node-cinderfen_waystation").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Waystation");
+    await page.locator("button[data-campaign-choice='marsh_guides']").click();
+    await expect(page.getByTestId("campaign-status")).toContainText("Marsh Guides used");
+    let save = await readStoredSave(page);
+    expect(save.campaign.resources.crowns).toBe(210);
+    expect(save.campaign.resourcesSpent.crowns).toBe(90);
+    expect(save.campaign.activeModifierIds).toContain("marsh_guides");
+
+    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Watchpost");
+    await expect(page.getByTestId("battle-status")).toContainText("Normal");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Watch Road");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Clear the Marsh Raider Camp");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Destroy the Watchpost Tower");
+
+    const battleState = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.update(performance.now(), 250);
+      return {
+        mapName: scene.activeMap.name,
+        campaignNodeId: scene.launch.request.campaignNodeId,
+        mode: scene.launch.request.mode,
+        rewardTableId: scene.launch.rewardTableId,
+        captureSites: scene.activeMap.captureSites.map((site: any) => site.id),
+        neutralCamps: scene.activeMap.neutralCamps.map((camp: any) => camp.id),
+        objectives: scene.runtime.setup.secondaryObjectiveIds,
+        modifiers: scene.launch.request.modifiers.map((modifier: any) => modifier.id),
+        minimapMarkers: scene.createMinimapSnapshot().markers.length,
+        playerMilitiaCount: scene.units.filter((unit: any) => unit.team === "player" && unit.definition.id === "militia").length,
+        difficulty: scene.launch.request.difficulty,
+        resources: scene.resources.player
+      };
+    });
+    expect(battleState).toMatchObject({
+      mapName: "Cinderfen Watchpost",
+      campaignNodeId: "cinderfen_watch",
+      mode: "campaign_node",
+      rewardTableId: "cinderfen_watchpost_rewards",
+      difficulty: "normal"
+    });
+    expect(battleState.captureSites).toEqual(expect.arrayContaining(["watch_road_toll", "blackreed_stonecut", "ash_cistern"]));
+    expect(battleState.neutralCamps).toEqual(expect.arrayContaining(["marsh_raider_camp", "watch_road_pickets"]));
+    expect(battleState.objectives).toEqual(
+      expect.arrayContaining(["capture_watch_road", "clear_marsh_raider_camp", "destroy_watchpost_tower"])
+    );
+    expect(battleState.modifiers).toContain("marsh_guides");
+    expect(battleState.playerMilitiaCount).toBe(3);
+    expect(battleState.minimapMarkers).toBeGreaterThan(0);
+    expect(battleState.resources).toMatchObject({ crowns: 500, stone: 335, iron: 205, aether: 115 });
+    save = await readStoredSave(page);
+    expect(save.campaign.activeModifierIds).not.toContain("marsh_guides");
+
+    const completed = await completeCinderfenWatchVictory(page);
+    expect(completed).toMatchObject({
+      watchRoadOwner: "player",
+      marshBruteAlive: false,
+      watchtowerAlive: false,
+      enemyStrongholdAlive: false
+    });
+    expect(completed.completedObjectiveIds).toEqual(
+      expect.arrayContaining(["capture_watch_road", "clear_marsh_raider_camp", "destroy_watchpost_tower"])
+    );
+
+    const resultsPanel = page.locator(".results-panel");
+    await expect(resultsPanel).toContainText("Victory");
+    await expect(resultsPanel).toContainText("Cinderfen Watchpost");
+    await expect(resultsPanel).toContainText("Reward XP");
+    await expect(resultsPanel).toContainText("66");
+    await expect(resultsPanel).toContainText("34 Crowns, 20 Stone, 16 Iron, 10 Aether");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Watch");
+    await expect(page.locator(".campaign-reward-block")).toContainText("No new nodes");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Node XP");
+    await expect(page.locator(".campaign-reward-block")).toContainText("62");
+    await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 22 Stone, 18 Iron, 10 Aether");
+    const objectiveSummary = page.locator(".special-objectives");
+    await expect(objectiveSummary).toContainText("Capture the Watch Road");
+    await expect(objectiveSummary).toContainText("Clear the Marsh Raider Camp");
+    await expect(objectiveSummary).toContainText("Destroy the Watchpost Tower");
+
+    save = await readStoredSave(page);
+    expect(save.campaign.completedNodeIds).toContain("cinderfen_watch");
+    expect(save.campaign.nodeRewardsClaimedIds).toContain("cinderfen_watch");
+    expect(save.campaign.resources).toMatchObject({ crowns: 250, stone: 222, iron: 168, aether: 90 });
+    expect(save.hero.xp).toBe(798);
+    expect(save.hero.completedBattles).toBe(7);
+    expect(save.hero.clearedMapIds).toContain("cinderfen_watchpost");
+    const rewardSnapshot = {
+      resources: save.campaign.resources,
+      xp: save.hero.xp,
+      inventoryCount: save.hero.inventory.length
+    };
+
+    await page.getByRole("button", { name: "Campaign Map" }).click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Completed/i);
+    await page.getByTestId("campaign-node-cinderfen_watch").click();
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     save = await readStoredSave(page);
     expect(save.campaign.resources).toMatchObject(rewardSnapshot.resources);
@@ -702,6 +1038,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await standardChoice.click();
     await expect(page.getByTestId("campaign-status")).toContainText("Raise Malrec's Standard chosen");
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Completed/i);
+    await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
     await expect(standardChoice).toBeDisabled();
     await expect(standardChoice).toContainText("Already chosen");
@@ -725,6 +1062,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("setup-map-first_claim")).toBeVisible();
     await expect(page.getByTestId("setup-map-broken_ford")).toBeVisible();
     await expect(page.getByTestId("setup-map-ashen_outpost")).toBeVisible();
+    await expect(page.getByTestId("setup-map-cinderfen_causeway")).toBeVisible();
+    await expect(page.getByTestId("setup-map-cinderfen_watchpost")).toBeVisible();
     await expect(page.getByTestId("setup-difficulty-easy")).toBeVisible();
     await expect(page.getByTestId("setup-difficulty-normal")).toBeVisible();
 

@@ -7,9 +7,16 @@ export type CampaignModifierId =
   | "well_rested"
   | "angered_raiders"
   | "local_support"
-  | "ashen_hostile_pressure";
+  | "ashen_hostile_pressure"
+  | "marsh_guides"
+  | "ash_filters"
+  | "shrine_attunement";
 
-export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "next_node_resource_reward";
+export type CampaignModifierTrigger =
+  | "next_battle"
+  | "next_ashen_battle"
+  | "next_cinderfen_battle"
+  | "next_node_resource_reward";
 
 export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
 
@@ -37,7 +44,10 @@ export interface CampaignModifierDefinition {
     extraEnemyUnitIds?: string[];
     heroManaMultiplier?: number;
     heroMaxHpMultiplier?: number;
+    buildingVisionBonus?: number;
+    enemyWarningLeadSeconds?: number;
     campaignResourceRewardMultiplier?: number;
+    firstCaptureBonusResourceAdditions?: Record<string, Partial<ResourceBag>>;
   };
 }
 

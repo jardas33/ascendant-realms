@@ -1,11 +1,13 @@
 import type {
   BuildingDefinition,
+  CampaignModifierDefinition,
   ResourceBag,
   StrongholdUpgradeDefinition,
   StrongholdUpgradeId,
   StrongholdUpgradeEffectDefinition,
   Team
 } from "../core/GameTypes";
+import { CAMPAIGN_MODIFIER_BY_ID, isCampaignModifierId } from "./campaignModifiers";
 
 export const STRONGHOLD_LAUNCH_MODIFIER_PREFIX = "stronghold:";
 
@@ -19,6 +21,7 @@ export interface StrongholdBattleEffects {
   watchtowerRangeMultiplier: number;
   firstBuildingConstructionTimeMultiplier: number;
   unitTrainingTimeMultipliers: Partial<Record<string, number>>;
+  firstCaptureBonusResourceAdditions: Record<string, Partial<ResourceBag>>;
 }
 
 export const STRONGHOLD_UPGRADES: StrongholdUpgradeDefinition[] = [
@@ -198,6 +201,10 @@ export function getStrongholdBattleEffects(modifiers: Array<{ id: string }>): St
     .forEach((upgrade) => {
       upgrade.effects.forEach((effect) => applyStrongholdEffect(effects, effect));
     });
+  modifiers
+    .map((modifier) => (isCampaignModifierId(modifier.id) ? CAMPAIGN_MODIFIER_BY_ID[modifier.id] : undefined))
+    .filter((modifier): modifier is CampaignModifierDefinition => Boolean(modifier))
+    .forEach((modifier) => applyCampaignModifierBattleEffects(effects, modifier));
   return effects;
 }
 
@@ -211,7 +218,8 @@ export function createEmptyStrongholdBattleEffects(): StrongholdBattleEffects {
     enemyWarningLeadSeconds: 0,
     watchtowerRangeMultiplier: 1,
     firstBuildingConstructionTimeMultiplier: 1,
-    unitTrainingTimeMultipliers: {}
+    unitTrainingTimeMultipliers: {},
+    firstCaptureBonusResourceAdditions: {}
   };
 }
 
@@ -281,4 +289,28 @@ function applyStrongholdEffect(effects: StrongholdBattleEffects, effect: Strongh
       [effect.unitId]: Math.min(effects.unitTrainingTimeMultipliers[effect.unitId] ?? 1, effect.multiplier)
     };
   }
+}
+
+function applyCampaignModifierBattleEffects(effects: StrongholdBattleEffects, modifier: CampaignModifierDefinition): void {
+  if (modifier.effects.heroMaxHpMultiplier) {
+    effects.heroMaxHpMultiplier = Math.max(effects.heroMaxHpMultiplier, modifier.effects.heroMaxHpMultiplier);
+  }
+  if (modifier.effects.heroManaMultiplier) {
+    effects.heroMaxManaMultiplier = Math.max(effects.heroMaxManaMultiplier, modifier.effects.heroManaMultiplier);
+  }
+  if (modifier.effects.buildingVisionBonus) {
+    effects.buildingVisionBonus += modifier.effects.buildingVisionBonus;
+  }
+  if (modifier.effects.enemyWarningLeadSeconds) {
+    effects.enemyWarningLeadSeconds += modifier.effects.enemyWarningLeadSeconds;
+  }
+  Object.entries(modifier.effects.firstCaptureBonusResourceAdditions ?? {}).forEach(([siteId, resources]) => {
+    const existing = effects.firstCaptureBonusResourceAdditions[siteId] ?? {};
+    effects.firstCaptureBonusResourceAdditions[siteId] = {
+      crowns: (existing.crowns ?? 0) + (resources.crowns ?? 0),
+      stone: (existing.stone ?? 0) + (resources.stone ?? 0),
+      iron: (existing.iron ?? 0) + (resources.iron ?? 0),
+      aether: (existing.aether ?? 0) + (resources.aether ?? 0)
+    };
+  });
 }

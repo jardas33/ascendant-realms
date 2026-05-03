@@ -9,6 +9,11 @@ interface ResourceSystemOptions {
   onCapture: (site: CaptureSite, newOwner: Team) => void;
   onIncome: (site: CaptureSite, owner: Team, amount: number) => void;
   onCaptureBonus?: (site: CaptureSite, owner: Team, bonus: CaptureSiteFirstCaptureBonusDefinition) => void;
+  adjustFirstCaptureBonus?: (
+    site: CaptureSite,
+    owner: Team,
+    bonus: CaptureSiteFirstCaptureBonusDefinition
+  ) => CaptureSiteFirstCaptureBonusDefinition;
 }
 
 export class ResourceSystem {
@@ -76,15 +81,16 @@ export class ResourceSystem {
     if (owner !== "player" && owner !== "enemy") {
       return;
     }
-    const bonus = site.definition.firstCaptureBonus;
-    if (!bonus) {
+    const baseBonus = site.definition.firstCaptureBonus;
+    if (!baseBonus) {
       return;
     }
-    const claimId = `${site.definition.id}:${owner}:${bonus.id}`;
+    const claimId = `${site.definition.id}:${owner}:${baseBonus.id}`;
     if (this.claimedFirstCaptureBonuses.has(claimId)) {
       return;
     }
 
+    const bonus = this.options.adjustFirstCaptureBonus?.(site, owner, baseBonus) ?? baseBonus;
     this.claimedFirstCaptureBonuses.add(claimId);
     addResources(this.options.resources[owner], bonus.resources);
     this.options.onCaptureBonus?.(site, owner, bonus);

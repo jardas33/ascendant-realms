@@ -6,10 +6,11 @@ These numbers are prototype values. They are designed for readability and fast t
 
 The values in this section are the current first-campaign balance baseline. Older dated sections below explain how they changed, but should not be read as newer than this checkpoint.
 
-- Latest simulator verdict: `npm run playtest:sim` passes with 216 deterministic runs across 6 campaign battle nodes and 12 profiles, including the first Chapter 2 scenario `cinderfen_crossing`; no structural `too_hard` nodes, no structural `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script without retinue.
+- Latest simulator verdict: `npm run playtest:sim` passes with 255 deterministic runs across 85 campaign battle node/profile summaries. This includes the current Chapter 2 scenarios `cinderfen_crossing` and `cinderfen_watch` plus one Cinderfen-only Waystation Shrine Attunement profile that applies only when the Cinder Shrine exists; no structural `too_hard` nodes, no structural `too_easy` nodes, no Stronghold warnings, and Ashen Outpost remains beatable by the Safe Beginner script without retinue.
 - Latest Chapter 2 event result: `cinderfen_overlook` is a playable preparation gate after `ashen_outpost`. Its three baseline choices spend campaign resources and grant existing rewards/modifiers only: Scout the Causeway costs 30 Crowns for 20 XP, 8 Stone, Free Marches/Common Folk reputation, and Local Support; Aid the Marsh Refugees costs 55 Crowns for 25 XP, 10 Iron, Common Folk/Free Marches reputation, and Inspired Militia; Study the Cinders costs 24 Aether for 20 XP, Emberglass Wand, Old Faith reputation, Ashen Covenant reputation loss, and Blessed Road. If the player earned `trophy_malrec_outpost_standard`, the event also offers Raise Malrec's Standard for no resource cost, 10 XP, +3 Free Marches reputation, and Well Rested.
-- Latest Chapter 2 slice result: `cinderfen_crossing` is a Normal Cinderfen Road battle on `cinderfen_causeway`, using existing Ashen Covenant units, the Hexfire Cult AI personality, no named enemy hero, no new unit types, no enemy construction, and one prebuilt enemy watchtower. The balance pass trims player economy/reward flow and slightly strengthens Ashen staging instead of adding new mechanics.
+- Latest Chapter 2 slice result: `cinderfen_crossing` is a Normal Cinderfen Road battle on `cinderfen_causeway`, and `cinderfen_watch` is a second compact Normal Cinderfen Road battle on `cinderfen_watchpost`. Both use existing Ashen Covenant units, the Hexfire Cult AI personality, no named enemy hero, no new unit types, and no enemy construction.
 - Latest Cinderfen tactical identity result: the central `cinder_crossing` site is now the Cinder Shrine. Its first capture by a side grants a one-time `Cinder Shrine Surge` of +20 Aether, then the site behaves like the existing Aether income site. The effect is battle-local, modeled in the simulator, does not persist to campaign resources, and cannot be repeated by recapturing the same shrine with the same team.
+- Latest Chapter 2 support result: `cinderfen_waystation` is a compact town/service node after Cinderfen Overlook. Marsh Guides costs 35 Crowns for the next Cinderfen battle's +60 base vision and +20s warning lead; Ash Filters costs 35 Crowns and 15 Aether for +8% hero HP/Mana in the next Cinderfen battle; Refugee Scouts costs 25 Crowns once for 10 XP and +2 Common Folk; Shrine Attunement costs 12 Aether and adds +5 Aether to the next Cinderfen battle's Cinder Shrine Surge. These services are modest campaign-resource sinks, not a broad shop or power spike.
 - Latest Enemy Hero / Rival Commander tuning result: no numeric gameplay changes. Old Stone Road remains unassigned; Veyra, Gorak, and Captain Malrec stay on their current HP/damage/ability/XP/map assignments because telemetry shows late, readable pressure without structural unfairness.
 - Latest Rival / Nemesis Persistence result: no enemy hero balance numbers changed. Rival state persists, first defeats grant a small one-time reward and trophy record, escaped rivals can return with +5% HP, triumphant rivals can return with +5% damage, and the simulator records before/outcome/after/reward/trophy fields without creating structural `too_easy` or `too_hard` nodes.
 - Latest Rival Rewards balance result: no XP/resource/item reward values changed. Telemetry shows one-time reward/trophy grants only on winning commander defeats, no baseline duplicate grants, no structural reward snowball, and no active rematch modifier runs in the first-encounter suite; UI/report copy now labels those rewards as one-time.
@@ -17,7 +18,8 @@ The values in this section are the current first-campaign balance baseline. Olde
 - Current First Claim site income: Crown Shrine +30 Crowns/5s, Stone Quarry +25 Stone/5s, Iron Vein +20 Iron/5s, Aether Well +15 Aether/5s.
 - Current Broken Ford site income: Ford Toll +34 Crowns/5s, West Stone Cut +22 Stone/6s, South Iron Cache +18 Iron/6s, North Aether Spring +14 Aether/6s.
 - Current Ashen Outpost site income: Burned Shrine +26 Aether/5s, West Supply Pyre +30 Crowns/6s, South Iron Pit +22 Iron/6s, North Stone Scar +26 Stone/6s.
-- Current Cinderfen Causeway site income: Causeway Toll +30 Crowns/5s, Reedcut Quarry +22 Stone/6s, Sunken Iron Cache +18 Iron/6s, Cinder Shrine +16 Aether/6s plus a one-time +20 Aether first-capture surge.
+- Current Cinderfen Causeway site income: Causeway Toll +30 Crowns/5s, Reedcut Quarry +22 Stone/6s, Sunken Iron Cache +18 Iron/6s, Cinder Shrine +16 Aether/6s plus a one-time +20 Aether first-capture surge. Shrine Attunement can raise that one next-Cinderfen-battle surge to +25 Aether.
+- Current Cinderfen Watchpost site income: Watch Road Toll +28 Crowns/5s, Blackreed Stonecut +20 Stone/6s, Ash Cistern +14 Aether/6s. There is no Cinder Shrine on Watchpost, so Shrine Attunement is not consumed by that battle.
 - Current broad difficulty pacing baseline: Story is the learning/testing lane with no fog, Easy is for tutorial battles with survivable pressure, and Normal is the first real baseline once build/train/rally is understood.
 - Current Stronghold Development is a small persistent campaign-resource sink with five Tier I upgrades and five compact Tier II follow-ups. Purchased upgrades apply only to later battle launches and do not alter the current battle retroactively.
 - Current reputation hooks are intentionally modest: Friendly starts at +25, Honored at +50, Disliked at -25, and Hostile at -50. Reputation effects adjust preparation costs/rewards or add one minor Ashen pressure unit; they do not create diplomacy, new factions, or alternate maps.
@@ -32,8 +34,8 @@ The values in this section are the current first-campaign balance baseline. Olde
 | Easy | 0.65x | 240s | 82s | 3 | 7.0s | 750s |
 | Normal | 0.82x | 195s | 72s | 5 | 6.2s | 630s |
 
-- Current map-level pacing is authoritative where present: First Claim currently uses the softened Easy opener from the telemetry follow-up, Ashen Outpost currently uses the reduced fortress economy, and Cinderfen Causeway uses a constrained player start, lower capture income, three neutral camps, four capture sites, a static enemy staging tower, a one-time Cinder Shrine Aether surge, and slightly faster Ashen staging production.
-- Current human-review focus: Aether Well Ruins, Bandit Hillfort, Ashen Outpost, and Cinderfen Crossing with Retinue + Training Yard II need feel/readability review before more numeric tuning.
+- Current map-level pacing is authoritative where present: First Claim currently uses the softened Easy opener from the telemetry follow-up, Ashen Outpost currently uses the reduced fortress economy, Cinderfen Causeway uses a constrained player start, lower capture income, three neutral camps, four capture sites, a static enemy staging tower, a one-time Cinder Shrine Aether surge, optional Waystation preparation modifiers, and slightly faster Ashen staging production. Cinderfen Watchpost uses 500 / 335 / 205 / 115 player resources, 280 / 210 / 155 / 110 enemy resources, 80 / 40 / 36 / 30 enemy income, 6.4s enemy training, 195s first attack delay, 74s attack interval, a 6-unit wave target, and a 4-unit base defense squad.
+- Current human-review focus: Aether Well Ruins, Bandit Hillfort, Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch with Retinue + Training Yard II need feel/readability review before more numeric tuning.
 - Current Stronghold tuning focus: Tier I has readable value in telemetry without an overpowered warning, while Tier II stays optional and route-specific. Watch Post I/II improve warning/readability telemetry, Quartermaster Stores I/II improve build-order resources, Chapel Corner I/II add modest hero durability, and Ranger Paths II adds one starting Ranger only after the scout path is already purchased.
 
 ## Telemetry-Based Chapter 2 Balance Pass - 2026-05-03
@@ -42,7 +44,7 @@ Source: `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` generated by `npm 
 
 Telemetry read before tuning:
 
-- Cinderfen Crossing was structurally reasonable at 24 wins / 0 defeats / 12 timeouts. Safe Beginner won 12/12, Greedy Economy mostly timed out, and Fast Army won 11/12 while often ending before the first enemy wave mattered.
+- Cinderfen Crossing is structurally reasonable at 26 wins / 0 defeats / 13 timeouts across the current 219-run simulator scope. Safe Beginner wins consistently, Greedy Economy mostly times out, and Fast Army still often ends before the first enemy wave matters.
 - First enemy contact was fair, around 4:15-4:16 on average, with Safe Beginner and Greedy Economy completing Barracks before pressure in all Cinderfen runs.
 - Barracks remained useful in every script, Mystic Lodge showed up in Safe Beginner and Greedy Economy, and Watchtower mostly helped the Safe Beginner route. Fast Army still acted as the rush pressure read.
 - Retinue impact was visible but not automatically structural: Veteran Militia and mixed retinue sped up Cinderfen, Veteran Ranger slowed Fast Army into a timeout, and Retinue + Training Yard II swept Cinderfen at 3 wins / 0 defeats / 0 timeouts.
@@ -72,12 +74,25 @@ Tuning applied:
 
 Telemetry read after tuning:
 
-- Cinderfen Crossing remains 24 wins / 0 defeats / 12 timeouts with no structural `too_easy` or `too_hard` flag.
+- Cinderfen Crossing remains structurally reasonable with no structural `too_easy` or `too_hard` flag.
 - Safe Beginner still wins 12/12 and keeps fair first contact around 4:16, so there is no difficulty cliff after Chapter 1.
 - Greedy Economy remains mostly timeout-prone, which preserves the map's staging lesson.
 - Fast Army remains the rush/readability watchpoint, but the reduced reward totals keep its quick wins from becoming a large power spike.
-- Post-feature Cinder Shrine impact is modest: 24/36 Cinderfen simulator runs captured it and received the one-time +20 Aether battle-local surge, while Fast Army skipped the shrine entirely. The pass left enemy pacing, wave size, AI income/training, starting resources, battle rewards, event rewards, and Malrec's event-only Well Rested consequence unchanged because none of those knobs produced a structural cliff or farm warning.
+- Cinderfen Watchpost, added after the support-node checkpoint, is structurally reasonable at 25 wins / 0 defeats / 11 timeouts across 36 runs. It sits just below Cinderfen Crossing's 26 wins and above Ashen Outpost's 22 wins, with average first enemy contact around 3:57.
+- Post-feature Cinder Shrine impact is modest: 26/39 Cinderfen simulator runs captured it and received a one-time battle-local surge, with two Waystation-attuned captures at +25 Aether instead of +20. The post-Waystation/Watchpost pass left enemy pacing, wave size, AI income/training, starting resources, capture-site income, event rewards, Cinder Shrine strength, and Malrec's event-only Well Rested consequence unchanged. It only lowered Shrine Attunement to 12 Aether and trimmed Watchpost reward values because the risk was service value and fast-clear farming, not a structural difficulty cliff.
 - Chapter 1 node records remain stable because no Chapter 1 values changed in this pass.
+
+## Second Chapter 2 Battle Balance Read - 2026-05-03
+
+Source: `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` generated after adding `cinderfen_watch`.
+
+- `cinderfen_watch` launches `cinderfen_watchpost`, a compact raised-road battle with three capture sites, two neutral camps, one central Watchtower objective, and no Cinder Shrine.
+- Current record: 25 wins / 0 defeats / 11 timeouts across 36 Watchpost runs, with no structural `too_easy` or `too_hard` flags.
+- Script read: Safe Beginner 12 wins / 0 defeats / 0 timeouts; Greedy Economy 3 wins / 0 defeats / 9 timeouts; Fast Army 10 wins / 0 defeats / 2 timeouts.
+- First enemy contact averages about 3:57, earlier than Crossing. The simulator still marks first attack timing fair, but human play should verify the Watch Road Toll and tower threat are readable.
+- Watchpost rewards are modest after the compact reward pass: full first clear grants 128 XP, 170 total campaign/battle resources, and one existing weighted item roll with affixes. There is no rival trophy-level reward.
+- Shrine Attunement is intentionally not consumed on Watchpost because the map has no `cinder_crossing` shrine site.
+- Chapter 1 values and telemetry remain unchanged by this addition.
 
 ## Reputation Hooks
 
@@ -687,6 +702,7 @@ Current reward pacing:
 - Broken Ford grants one weighted item roll, stronger resource payouts, 55 base victory XP, and a first-clear Fordbreaker Halberd plus 65 bonus XP. Its weighted pool gives a small bump to branch-defining trinkets and rare/epic excitement.
 - Ashen Outpost grants one weighted item roll, high milestone resources, 85 base victory XP, and a first-clear Ashbound Censer plus 95 bonus XP. The Ashen Outpost campaign node also grants a larger campaign-bank payout and an Oathbound Aegis for the milestone clear, so the weighted pool favors Starfall Prism slightly more than a duplicate Aegis.
 - Cinderfen Causeway grants one weighted affix-capable item roll, 30 base victory XP, and a modest first-clear battle bonus of 35 XP plus 30 Crowns, 20 Stone, 16 Iron, and 12 Aether. The `cinderfen_crossing` campaign node separately grants 60 XP, 40 Crowns, 20 Stone, 20 Iron, 12 Aether, and `Scout's Bow`, keeping the first Chapter 2 payoff useful but below both the Ashen Outpost milestone and the larger Chapter 1 branch spikes.
+- Cinderfen Watchpost grants one weighted affix-capable item roll and a modest first-clear battle reward of 66 XP plus 34 Crowns, 20 Stone, 16 Iron, and 10 Aether. The `cinderfen_watch` campaign node separately grants 62 XP, 40 Crowns, 22 Stone, 18 Iron, and 10 Aether, keeping the second Chapter 2 first-clear read at 128 XP / 170 resources without a trophy-level reward.
 - The Cinder Shrine's +20 Aether surge is battle-only tactical tempo, not a Results reward or campaign-bank payout. It is intentionally smaller than several seconds of normal site income and cannot be farmed through repeated recapture by the same team.
 - Weighted item rolls prefer unowned catalog items when possible. Non-unique duplicate rewards remain separate instances. Unique duplicate rewards convert into campaign resources: common/uncommon items convert to Crowns, while rare/epic/legendary items convert to Aether.
 
@@ -706,6 +722,13 @@ Cinderfen Overlook event costs:
 - Aid the Marsh Refugees: 55 Crowns for Inspired Militia, 25 XP, 10 Iron, +6 Common Folk reputation, and +2 Free Marches reputation.
 - Study the Cinders: 24 Aether for Blessed Road, 20 XP, Emberglass Wand, +5 Old Faith reputation, and -2 Ashen Covenant reputation.
 - Raise Malrec's Standard: requires `trophy_malrec_outpost_standard`, costs no resources, grants Well Rested, 10 XP, and +3 Free Marches reputation. It completes Cinderfen Overlook, so it replaces the other preparation choices rather than stacking with them.
+
+Cinderfen Waystation service costs:
+
+- Marsh Guides: 35 Crowns for Marsh Guides, a next-Cinderfen-battle modifier that adds +60 player-building vision and +20 seconds of enemy warning lead.
+- Ash Filters: 35 Crowns and 15 Aether for Ash Filters, a next-Cinderfen-battle +8% hero maximum HP and Mana modifier.
+- Refugee Scouts: 25 Crowns, one-time, for 10 XP and +2 Common Folk reputation. It previews the Cinder Shrine / central guardian route through service copy rather than adding a reveal system.
+- Shrine Attunement: 12 Aether for Shrine Attunement, a next-Cinderfen-battle modifier that increases the Cinder Shrine Surge from +20 Aether to +25 Aether on first player capture.
 - Emberglass Wand: 60 Crowns, one-time common weapon purchase.
 - Marcher Plate: 75 Crowns and 15 Iron, one-time uncommon armor purchase.
 - Green Chapel Icon: 85 Crowns and 16 Aether, one-time trinket purchase.

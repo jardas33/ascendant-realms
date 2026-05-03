@@ -1,5 +1,6 @@
 import type {
   BattleDifficulty,
+  CampaignModifierId,
   EnemyAIPersonalityId,
   Position,
   ResourceBag,
@@ -23,7 +24,8 @@ export type PlaytestStrongholdProfileId =
   | "retinue_veteran_ranger"
   | "retinue_mixed_veterans"
   | "retinue_training_yard_path"
-  | "retinue_quartermaster_path";
+  | "retinue_quartermaster_path"
+  | "waystation_shrine_attunement";
 
 export interface PlaytestScenarioDefinition {
   nodeId: string;
@@ -36,6 +38,7 @@ export interface PlaytestStrongholdProfileDefinition {
   description: string;
   targetUpgradeIds: StrongholdUpgradeId[];
   retinueUnits?: RetinueUnitSaveData[];
+  campaignModifierIds?: CampaignModifierId[];
 }
 
 export interface PlaytestStrongholdNodePlan {
@@ -45,6 +48,7 @@ export interface PlaytestStrongholdNodePlan {
   purchasedUpgradeIds: StrongholdUpgradeId[];
   purchaseNotes: string[];
   retinueUnits: RetinueUnitSaveData[];
+  campaignModifierIds: CampaignModifierId[];
 }
 
 export interface PlaytestRewardTelemetry {

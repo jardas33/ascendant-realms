@@ -44,7 +44,12 @@ import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
 import { applySecondaryObjectiveBattleEffect } from "../battle/SecondaryObjectiveEffects";
 import { spawnBattleScenario, type NeutralCampLabel } from "../battle/BattleSceneSpawner";
-import { createBattleFogOfWar, createBattleSceneSystems, type BattleSceneSystems } from "../battle/BattleSceneSystems";
+import {
+  applyFirstCaptureBonusAdditions,
+  createBattleFogOfWar,
+  createBattleSceneSystems,
+  type BattleSceneSystems
+} from "../battle/BattleSceneSystems";
 import {
   appendMinimapPing,
   firstBattleTutorialHint,
@@ -1101,6 +1106,10 @@ export class BattleScene extends Phaser.Scene {
           this.resourceSystem.update(step, [site], this.units);
         }
         this.refreshBattleHud(0);
+        const strongholdEffects = getStrongholdBattleEffects(this.launch.request.modifiers);
+        const firstCaptureBonus = site.definition.firstCaptureBonus
+          ? applyFirstCaptureBonusAdditions(site.definition.id, "player", site.definition.firstCaptureBonus, strongholdEffects)
+          : undefined;
         return {
           siteId: site.definition.id,
           owner: site.owner,
@@ -1108,11 +1117,11 @@ export class BattleScene extends Phaser.Scene {
           afterResources: { ...this.resources.player },
           completedObjectiveIds: [...this.runtime.stats.completedObjectiveIds],
           status: this.statusMessage,
-          firstCaptureBonus: site.definition.firstCaptureBonus
+          firstCaptureBonus: firstCaptureBonus
             ? {
-                id: site.definition.firstCaptureBonus.id,
-                label: site.definition.firstCaptureBonus.label,
-                resources: { ...site.definition.firstCaptureBonus.resources }
+                id: firstCaptureBonus.id,
+                label: firstCaptureBonus.label,
+                resources: { ...firstCaptureBonus.resources }
               }
             : undefined
         };

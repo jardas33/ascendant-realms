@@ -209,6 +209,51 @@ describe("results reward flow", () => {
     expect(tips[0]).toContain("Brute");
   });
 
+  it("adds Cinderfen Watch objective tips before generic defeat advice", () => {
+    const stats: BattleStats = {
+      unitsKilled: 6,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 1,
+      buildingsBuilt: 2,
+      builtBuildingIds: ["barracks", "watchtower"],
+      unitsTrained: 5,
+      trainedUnitIds: ["militia", "ranger", "militia", "militia", "ranger"],
+      enemyWavesSurvived: 1,
+      xpGained: 0,
+      timeSeconds: 390,
+      completedObjectiveIds: [],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "cinderfen_watchpost", campaignNodeId: "cinderfen_watch" });
+
+    expect(tips[0]).toContain("Cinderfen Watch");
+    expect(tips[0]).toContain("Watch Road Toll");
+    expect(tips[0]).toContain("fog");
+  });
+
+  it("advances Cinderfen Watch defeat advice after the road is captured", () => {
+    const stats: BattleStats = {
+      unitsKilled: 7,
+      buildingsDestroyed: 0,
+      resourcesCaptured: 2,
+      buildingsBuilt: 3,
+      builtBuildingIds: ["barracks", "mystic_lodge", "watchtower"],
+      unitsTrained: 7,
+      trainedUnitIds: ["militia", "ranger", "militia", "ranger", "acolyte", "militia", "ranger"],
+      enemyWavesSurvived: 2,
+      xpGained: 0,
+      timeSeconds: 520,
+      completedObjectiveIds: ["capture_watch_road"],
+      outcome: "defeat"
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "cinderfen_watchpost" });
+
+    expect(tips[0]).toContain("Marsh Raider Camp");
+    expect(tips[0]).toContain("Brute");
+  });
+
   it("saves campaign node completion and does not grant the same node reward twice", () => {
     const campaign = createStartedCampaignSave();
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");

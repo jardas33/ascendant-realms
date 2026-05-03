@@ -7,7 +7,8 @@ export const BATTLE_NODE_IDS = [
   "aether_well_ruins",
   "bandit_hillfort",
   "ashen_outpost",
-  "cinderfen_crossing"
+  "cinderfen_crossing",
+  "cinderfen_watch"
 ] as const;
 
 export const DEFAULT_PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = BATTLE_NODE_IDS.map((nodeId) => {

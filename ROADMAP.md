@@ -25,14 +25,19 @@ Completed v0.2.1 stabilization:
 
 Next phase:
 
-- **v0.3 proposed milestone: Chapter 2 vertical slice**.
+- **v0.3 current milestone: Chapter 2 Cinderfen two-battle slice implemented; next candidate is human verification plus one small non-battle consequence**.
 - Planning spec: `docs/CHAPTER_2_PLAN.md`.
 - First playable implementation spec: `docs/CHAPTER_2_IMPLEMENTATION_SPEC.md`.
-- First playable slice status: `cinderfen_crossing` now launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map after `ashen_outpost`; `cinderfen_overlook` remains a non-playable future event placeholder.
-- Working proposal: The Cinderfen Road, a small ash-glass wetland/causeway chapter that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
-- Scope target: keep the shipped first slice to one new battle map and one playable Chapter 2 battle node; later Chapter 2 expansion may add one event node, one town/service addition, one returning-rival consequence, and at most one new enemy unit type only if existing Ashen units cannot carry the map identity.
+- Current slice report: `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`.
+- Implemented Chapter 2 event gate: `cinderfen_overlook` is now a playable Cinderfen Overlook preparation event after `ashen_outpost`, with three baseline choices plus the optional Malrec trophy consequence.
+- Implemented Chapter 2 support node: `cinderfen_waystation` is now a compact town/service node after `cinderfen_overlook`, with Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement using existing campaign choice/modifier/save rules.
+- Implemented Chapter 2 battle node: `cinderfen_crossing` is now playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map.
+- Implemented second Chapter 2 battle node: `cinderfen_watch` is now playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watchpost** battle map.
+- Implemented Cinderfen identity hook: the Cinder Shrine first-capture Aether surge exists as a small battle-local tactical feature.
+- Working proposal: The Cinderfen Road remains a small ash-glass wetland/causeway chapter that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
+- Next scope target: verify the two-battle Cinderfen route through full gates and human readability, then consider one compact non-battle consequence if the slice stays green.
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
-- First playable slice result: `cinderfen_crossing` is playable on `Cinderfen Causeway`, uses existing Ashen Covenant units and the Hexfire Cult AI personality, has map/objective/reward validation, appears in e2e coverage, and is included as the first Chapter 2 simulator scenario. No event conversion, returning rival, new unit, worker, enemy construction, diplomacy, procedural generation, or crafting was added.
+- Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, and `cinderfen_watch` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, and both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
 
 Must be stable before implementation:
 
@@ -52,9 +57,9 @@ Explicitly postponed for v0.3:
 - Full trophy room.
 - Broad army-management or retinue replacement systems.
 
-Recommended focus before new Chapter 2 gameplay:
+Recommended focus before the next Chapter 2 addition:
 
-- Keep v0.3 planning compact and data-driven. Define the next chapter's smallest playable vertical slice before adding broad systems.
+- Keep v0.3 compact and data-driven. The next milestone is human verification of the two-battle Cinderfen route plus one small non-battle consequence only after the slice remains green and readable.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
@@ -63,7 +68,7 @@ Recommended focus before new Chapter 2 gameplay:
 - Keep bonuses modest, visible in UI, and represented in telemetry.
 - Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, `RivalRules`, and `CampaignRules`.
-- Do not move into workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as part of this baseline.
+- Do not move into workers, enemy construction, new factions, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as part of this baseline.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation
@@ -84,7 +89,7 @@ Recommended focus before new Chapter 2 gameplay:
 - Basic buildings.
 - Enemy AI.
 - Win/loss.
-- Four authored battlefields now prove the map pipeline: First Claim, Broken Ford, Ashen Outpost, and the Chapter 2 Cinderfen Causeway.
+- Five authored battlefields now prove the map pipeline: First Claim, Broken Ford, Ashen Outpost, Chapter 2 Cinderfen Causeway, and Chapter 2 Cinderfen Watchpost.
 - Ashen Outpost serves as the first campaign milestone/boss-style fortress assault, with secondary objective tracking for map-specific goals.
 
 ## Phase 2: Hero RPG Depth
@@ -126,7 +131,10 @@ Recommended focus before new Chapter 2 gameplay:
 - Rival Rewards and Trophies V1 with data-driven first-defeat XP/resource/reputation/item rewards, duplicate prevention, save-backed trophy records, Campaign Map trophy display, Results reward/trophy copy, and playtest telemetry fields.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
-- Chapter 2 has its first playable battle slice: `cinderfen_crossing` unlocks after Ashen Outpost and launches `Cinderfen Causeway` while the surrounding Chapter 2 event/content remains future work.
+- Chapter 2 has a compact playable Cinderfen slice: `cinderfen_overlook` is the implemented event gate after Ashen Outpost, `cinderfen_crossing` unlocks after that event to launch `Cinderfen Causeway`, and `cinderfen_watch` unlocks after Cinderfen Crossing to launch `Cinderfen Watchpost`.
+- `cinderfen_waystation` is the implemented Chapter 2 support/town node after Cinderfen Overlook. It spends campaign resources on modest Cinderfen-only preparation without adding a broad shop, new faction, workers, enemy construction, diplomacy, procedural generation, or crafting.
+- Cinderfen Causeway uses the Cinder Shrine first-capture Aether surge as its compact battle-local tactical identity feature.
+- The only returning-rival consequence in Chapter 2 is the optional Malrec trophy event choice; there is no new Chapter 2 rival system.
 - Quests.
 - Shops.
 - Temples.

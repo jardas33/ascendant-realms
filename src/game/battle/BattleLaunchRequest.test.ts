@@ -154,6 +154,27 @@ describe("BattleLaunchRequest", () => {
     }
   });
 
+  it("resolves the second playable Chapter 2 battle map", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "cinderfen_watch");
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request).toMatchObject({
+      mode: "campaign_node",
+      campaignNodeId: "cinderfen_watch",
+      mapId: "cinderfen_watchpost",
+      difficulty: "normal",
+      enemyProfileId: "ashen_covenant",
+      aiPersonalityId: "hexfire_cult"
+    });
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.map.name).toBe("Cinderfen Watchpost");
+      expect(resolved.launch.rewardTable.id).toBe("cinderfen_watchpost_rewards");
+      expect(resolved.launch.request.enemyHeroId).toBeUndefined();
+    }
+  });
+
   it("carries sanitized retinue units on campaign launches", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "border_village", {

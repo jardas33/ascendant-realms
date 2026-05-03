@@ -1,10 +1,10 @@
-# Chapter 2 Implementation Spec - Event Gate And First Playable Battle Slice
+# Chapter 2 Implementation Spec - Cinderfen Event, Support, And Two Battle Slice
 
-Status: event gate, first playable battle slice, compact Malrec trophy consequence, and one Cinderfen-specific tactical feature implemented.
+Status: event gate, compact support/town node, two compact playable battle nodes, compact Malrec trophy consequence, and one Cinderfen-specific tactical feature implemented.
 
 Date: 2026-05-03
 
-This document records the smallest implemented Chapter 2 slice for Ascendant Realms. It intentionally stops at one playable event node, one playable battle node, and one authored map that already existed in the Chapter 2 battle slice. It does not implement full Chapter 2.
+This document records the current compact Chapter 2 slice for Ascendant Realms. It intentionally stops at one playable event node, one support/town node, and two playable battle nodes using existing units and systems. It does not implement full Chapter 2.
 
 ## Scope Lock
 
@@ -12,9 +12,11 @@ Chapter title: **Chapter 2: Cinderfen Road**.
 
 Playable event node: `cinderfen_overlook`.
 
-Playable battle node: `cinderfen_crossing`.
+Playable battle nodes: `cinderfen_crossing` and `cinderfen_watch`.
 
-Battle map: **Cinderfen Causeway** with map id `cinderfen_causeway`.
+Playable support node: `cinderfen_waystation`.
+
+Battle maps: **Cinderfen Causeway** with map id `cinderfen_causeway`, and **Cinderfen Watchpost** with map id `cinderfen_watchpost`.
 
 Enemy content: existing Ashen Covenant units, existing Ashen structures, and existing `hexfire_cult` AI personality.
 
@@ -22,7 +24,11 @@ Event gate: `cinderfen_overlook` is a playable preparation event using the exist
 
 Tactical identity feature: the central `cinder_crossing` capture site is the **Cinder Shrine**. First capture by a side grants a one-time battle-local +20 Aether `Cinder Shrine Surge`; recaptures by the same team do not duplicate the surge.
 
-Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chapter 1 nodes, maps, rewards, and launch path. `cinderfen_overlook` unlocks only after `ashen_outpost`; `cinderfen_crossing` unlocks only after `cinderfen_overlook` is completed.
+Support node: `cinderfen_waystation` is a compact town/service node using existing campaign choice infrastructure. It unlocks after `cinderfen_overlook`, stays open, and offers Cinderfen-only preparation without adding a large shop or new system.
+
+Second battle node: `cinderfen_watch` unlocks after `cinderfen_crossing` victory and launches the compact `cinderfen_watchpost` map. It reuses existing Ashen units, structures, objective types, reward rules, minimap/fog behavior, and simulator/e2e hooks.
+
+Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chapter 1 nodes, maps, rewards, and launch path. `cinderfen_overlook` unlocks only after `ashen_outpost`; `cinderfen_waystation` and `cinderfen_crossing` unlock only after `cinderfen_overlook` is completed; `cinderfen_watch` unlocks only after `cinderfen_crossing` is completed.
 
 ## Hard Non-Goals
 
@@ -37,19 +43,23 @@ Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chap
 - No Chapter 1 retuning.
 - No broad retinue management, wounded timers, or replacement UI.
 - No new full rival system, Chapter 2 named rival, or rematch logic. The only returning-rival consequence is one existing-trophy-gated event choice.
-- No additional Chapter 2 maps.
+- No additional Chapter 2 maps beyond the compact Cinderfen Causeway and Cinderfen Watchpost battle maps in this slice.
 
 ## Implemented Node Chain
 
 | Order | Node id | Type | Current role |
 | --- | --- | --- | --- |
-| 1 | `cinderfen_overlook` | Event | Playable preparation gate. It unlocks after `ashen_outpost`, resolves one of three choices, and then unlocks `cinderfen_crossing`. |
-| 2 | `cinderfen_crossing` | Battle | First playable Chapter 2 battle. It unlocks after `cinderfen_overlook` and launches `cinderfen_causeway`. |
+| 1 | `cinderfen_overlook` | Event | Playable preparation gate. It unlocks after `ashen_outpost`, resolves one baseline or conditional choice, and then unlocks `cinderfen_waystation` and `cinderfen_crossing`. |
+| 2 | `cinderfen_waystation` | Town | Optional support node. It unlocks after `cinderfen_overlook`, stays open, and sells modest Cinderfen-specific preparation services. |
+| 3 | `cinderfen_crossing` | Battle | First playable Chapter 2 battle. It unlocks after `cinderfen_overlook` and launches `cinderfen_causeway`. |
+| 4 | `cinderfen_watch` | Battle | Second compact Chapter 2 battle. It unlocks after `cinderfen_crossing` victory and launches `cinderfen_watchpost`. |
 
 Unlock rules:
 
 - `cinderfen_overlook` unlocks after `ashen_outpost`.
+- `cinderfen_waystation` unlocks after completed `cinderfen_overlook`.
 - `cinderfen_crossing` unlocks after `ashen_outpost` and completed `cinderfen_overlook`.
+- `cinderfen_watch` unlocks after completed `cinderfen_crossing`.
 - No Chapter 2 node is available in a fresh Chapter 1 save.
 
 ## Cinderfen Overlook Event
@@ -77,6 +87,35 @@ Implementation notes:
 - Raise Malrec's Standard is a compact returning-rival consequence: it checks `campaign.rivalTrophies`, grants an existing next-battle modifier, and does not create a new save field.
 - Scout copy gives battle warning/intel through the choice description and Local Support modifier; Study the Cinders warns that no named Ashen rival commands the crossing yet.
 - Duplicate rewards are prevented because a completed node and claimed once-only choice both block repeat application.
+
+## Cinderfen Waystation Support Node
+
+Node id: `cinderfen_waystation`.
+
+Display name: **Cinderfen Waystation**.
+
+Node type: `town`.
+
+Unlock: completed `cinderfen_overlook`.
+
+Purpose: a small frontier stop where the player spends campaign resources for Cinderfen-specific preparation. It reuses existing town-service choice cards, campaign costs, modifiers, reputation rewards, use counts, and save/load behavior.
+
+Services:
+
+| Service | Repeatability | Cost | Effect | Completion |
+| --- | --- | --- | --- | --- |
+| Marsh Guides | Repeatable | 35 Crowns | Grants `marsh_guides` for the next Cinderfen battle: +60 player-building vision and +20s enemy warning lead. | Keeps node open |
+| Ash Filters | Repeatable | 35 Crowns, 15 Aether | Grants `ash_filters` for the next Cinderfen battle: +8% hero HP and Mana. | Keeps node open |
+| Refugee Scouts | Once-only | 25 Crowns | Grants 10 XP and +2 Common Folk reputation; copy previews the Cinder Shrine and central guardians. | Keeps node open |
+| Shrine Attunement | Repeatable | 18 Aether | Grants `shrine_attunement` for the next Cinderfen battle: Cinder Shrine Surge grants +5 extra Aether on first player capture. | Keeps node open |
+
+Implementation notes:
+
+- `next_cinderfen_battle` campaign modifiers are consumed only by battle nodes in `cinderfen_road`.
+- The service node does not complete itself and does not gate Cinderfen Crossing.
+- Repeatable services increment `townServiceUseCounts`; one-time Refugee Scouts also persists in `choiceIdsClaimed` and `townServiceClaimedIds`.
+- Shrine Attunement modifies the existing Cinder Shrine first-capture bonus at battle runtime and in the simulator; it does not add campaign-bank rewards or save schema.
+- Marsh Guides and Ash Filters use existing battle launch effect paths for vision/warning and hero HP/Mana.
 
 ## Cinderfen Causeway Map
 
@@ -131,19 +170,76 @@ Neutral camps:
 | `sunken_hexfire_pickets` | Sunken Hexfire Pickets | Raider, Hexer | Southern route pressure. |
 | `cinder_guardians` | Cinder Guardians | Hexer, Brute, Raider | Central contested camp for the secondary objective. |
 
+## Cinderfen Watchpost Map
+
+Map id: `cinderfen_watchpost`.
+
+Display name: **Cinderfen Watchpost**.
+
+Size: `2400 x 1550`.
+
+Theme: an Ashen watchpost controlling a raised road through the cinder marsh.
+
+Player start:
+
+- Southwest road shelf around `(285, 1285)`.
+- Starts with a Command Hall, hero, three Militia, one Ranger, and 500 Crowns, 335 Stone, 205 Iron, and 115 Aether.
+- The opening is a little better supplied than Cinderfen Crossing because this is the second Chapter 2 battle, but the route has no Cinder Shrine surge.
+
+Enemy start:
+
+- Northeast watchpost camp around `(2145, 285)`.
+- Uses existing `enemy_stronghold`, `enemy_barracks`, one central `watchtower`, Raiders, Hexer, and generic `enemy_commander`.
+- Starts with 280 Crowns, 210 Stone, 155 Iron, and 110 Aether.
+- Uses `hexfire_cult` personality and no named rival.
+- Current watchpost pacing uses 80 / 40 / 36 / 30 income per tick, 6.4s training, 195s first attack delay, 74s attack interval, 6-unit attack wave target, and 4-unit defense squad. This keeps the node harder than Cinderfen Crossing in aggregate but below Ashen Outpost.
+
+Routes:
+
+- Raised watch road: main southwest-to-northeast route and safest first capture.
+- Blackreed stone path: side Stone route before the central push.
+- Ash cistern spur: exposed Aether route near the watchtower.
+
+Capture sites:
+
+| Site id | Name | Resource | Role |
+| --- | --- | --- | --- |
+| `watch_road_toll` | Watch Road Toll | 28 Crowns / 5s | Primary road economy objective and secondary capture target. |
+| `blackreed_stonecut` | Blackreed Stonecut | 20 Stone / 6s | Safer staging income before the watchtower. |
+| `ash_cistern` | Ash Cistern | 14 Aether / 6s | Exposed Aether income near the central route. |
+
+Neutral camps:
+
+| Camp id | Name | Units | Role |
+| --- | --- | --- | --- |
+| `marsh_raider_camp` | Marsh Raider Camp | Raider, Brute | Lower-road camp and secondary objective anchor. |
+| `watch_road_pickets` | Watch Road Pickets | Raider, Hexer | Central road pressure near the watchtower approach. |
+
 ## Objectives
 
-Primary:
+`cinderfen_crossing` primary:
 
 - Destroy the enemy stronghold.
 
-Secondaries:
+`cinderfen_crossing` secondaries:
 
 - Claim the Cinder Shrine.
 - Clear the Cinder Guardians by defeating the Brute anchor.
 - Destroy the Enemy Barracks.
 
 The Cinder Shrine objective uses the existing capture-site flow plus the optional `firstCaptureBonus` capture-site data field. The +20 Aether surge is battle-local, applies once per team per battle, and does not add save schema or campaign rewards. The neutral-camp objective uses the existing `defeat_unit` objective type. Validation now allows a `defeat_unit` target to be present in either scenario unit spawns or neutral camp unit lists. Defeat tips now point failed Cinderfen runs toward side income, the Cinder Shrine, the Cinder Guardians, and Enemy Barracks sequencing.
+
+`cinderfen_watch` primary:
+
+- Destroy the Ashen Watchpost Stronghold.
+
+`cinderfen_watch` secondaries:
+
+- Capture the Watch Road.
+- Clear the Marsh Raider Camp by defeating the Brute anchor.
+- Destroy the Watchpost Tower.
+
+Watchpost defeat tips point players toward the Watch Road Toll, the Marsh Raider Camp/Brute, and destroying the Watchpost Tower before the final Stronghold assault.
 
 ## Rewards
 
@@ -162,15 +258,32 @@ Battle reward table: `cinderfen_causeway_rewards`.
 
 This is deliberately below the Ashen Outpost milestone reward level.
 
+Campaign node reward for `cinderfen_watch`:
+
+- 68 XP.
+- 45 Crowns, 25 Stone, 20 Iron, 12 Aether.
+
+Battle reward table: `cinderfen_watchpost_rewards`.
+
+- One affix-capable weighted item roll from existing catalog items.
+- Base victory reward: 34 XP plus 20 Crowns, 12 Stone, 10 Iron, 6 Aether.
+- First-clear bonus: 38 XP plus 18 Crowns, 12 Stone, 10 Iron, 6 Aether.
+- Repeat-clear reward: 5 XP plus 8 Crowns, 4 Iron, 2 Aether.
+
+The full first-clear Watchpost read is 140 XP, 196 total campaign/battle resources, and one existing weighted item roll. It is useful but not trophy-level, and it does not add a named rival reward.
+
 ## Chapter 2 Balance Pass
 
-The 2026-05-03 telemetry pass kept the map structurally reasonable while trimming farm pressure.
+The 2026-05-03 telemetry pass kept the Cinderfen battles structurally reasonable while trimming farm pressure.
 
-- Cinderfen Crossing remained 24 wins / 0 defeats / 12 timeouts across the 216-run suite.
+- The current simulator suite covers 255 deterministic runs across 85 campaign battle node/profile summaries.
+- Cinderfen Crossing remains structurally reasonable at 26 wins / 0 defeats / 13 timeouts.
+- Cinderfen Watch is structurally reasonable at 25 wins / 0 defeats / 11 timeouts, making it slightly harder than Crossing and slightly easier than Ashen Outpost's 22 wins / 0 defeats / 14 timeouts.
 - Safe Beginner stayed 12 wins / 0 defeats / 0 timeouts with fair first contact around 4:16.
-- Greedy Economy stayed mostly timeout-prone, preserving the staging lesson.
-- Fast Army stayed the main rush/readability watchpoint, so first-clear XP/resources and event payouts were reduced instead of adding new systems or units.
-- Retinue + Training Yard II remained the strongest profile at 3 wins / 0 defeats / 0 timeouts and stays a human-review watchpoint.
+- Cinderfen Watch first contact averages about 3:57; Barracks timing and first-wave survival stay fair in the simulator, but the earlier pressure is a human-play readability watchpoint.
+- Greedy Economy stays mostly timeout-prone, preserving the staging lesson.
+- Fast Army stays the main rush/readability watchpoint, so first-clear XP/resources stay modest instead of adding new systems or units.
+- Retinue + Training Yard II remains the strongest Chapter 2 profile at 6 wins / 0 defeats / 0 timeouts across the two Cinderfen battles and stays a human-review watchpoint.
 - No Cinderfen battle runs applied rival modifiers because this slice has no named Chapter 2 rival. The Malrec trophy choice is a campaign-event consequence and is covered by unit/e2e save flow rather than the baseline simulator.
 - The later Cinder Shrine addition now grants only +20 battle Aether on first capture after the post-feature telemetry pass trimmed it from +24. It is simulator-modeled as tactical tempo, not a campaign reward, and should be watched mainly for route readability rather than long-term economy snowball.
 - Chapter 1 values were not changed.
@@ -183,6 +296,8 @@ Campaign Map must show:
 - `Cinderfen Road` / `cinderfen_overlook` as an available event when `ashen_outpost` is complete.
 - Three baseline event choices with costs, rewards, reputation changes, completion outcome, and granted modifiers.
 - The conditional Raise Malrec's Standard choice, including its trophy requirement when absent and its XP, reputation, Well Rested modifier, and completion outcome when present.
+- `Cinderfen Waystation` as locked until `cinderfen_overlook` is completed and available afterward.
+- Four Waystation services with costs, one-time/repeatable state, granted modifiers or reputation, and "keeps this node open" outcome copy.
 - `Cinderfen Crossing` as locked until `cinderfen_overlook` is completed.
 - `Cinderfen Crossing` as playable after the event choice is made.
 - Map name `Cinderfen Causeway`.
@@ -191,6 +306,11 @@ Campaign Map must show:
 - Reward preview including XP, campaign resources, and `Scout's Bow`.
 - Battle HUD objective copy for `Claim the Cinder Shrine`, including `Cinder Shrine Surge (+20 Aether once)`.
 - Battle status/floating copy when the shrine surge is granted, plus a minimap ping labeled `Cinder Shrine Surge`.
+- `Cinderfen Watch` as locked until `cinderfen_crossing` is completed.
+- `Cinderfen Watch` as playable after Cinderfen Crossing victory.
+- Map name `Cinderfen Watchpost`.
+- Watchpost objective copy for destroying the Ashen Watchpost Stronghold, capturing the Watch Road, clearing the Marsh Raider Camp, and destroying the Watchpost Tower.
+- Watchpost reward preview with modest XP/resources and no trophy-level reward.
 
 Existing campaign node panel code already supports this through node/map/reward/choice data. Tests assert the Chapter 2 card, event choice summaries, and Cinderfen node preview.
 
@@ -215,48 +335,61 @@ E2E coverage:
 - Verifies `cinderfen_overlook` becomes playable while `cinderfen_crossing` remains locked.
 - Makes one Cinderfen Overlook choice.
 - Verifies cost payment, reward grant, reputation changes, modifier persistence, duplicate prevention, and node completion in localStorage.
+- Opens Cinderfen Waystation after the event, buys Shrine Attunement, verifies Aether cost, active modifier persistence, town service use count, and open node state.
 - Verifies `cinderfen_crossing` becomes playable after the event.
 - Launches `Cinderfen Causeway`.
 - Verifies BattleScene loads with map name, objective text, resources, Cinder Shrine first-capture bonus data, and minimap markers.
-- Uses a safe test hook to capture the Cinder Shrine, verifies the +20 Aether surge, verifies the status/HUD copy, and verifies repeating the hook does not duplicate the bonus.
+- Uses a safe test hook to capture the Cinder Shrine, verifies the attuned +25 Aether surge, verifies the status/HUD copy, and verifies repeating the hook does not duplicate the bonus.
 - Verifies the chosen next-battle modifier reaches launch and is consumed from the campaign save.
 - Seeds Malrec's trophy state, verifies the conditional Raise Malrec's Standard choice appears and is available, applies it once, and verifies reward/modifier/reputation persistence.
-- Does not require full victory.
+- Seeds post-Crossing Chapter 2 progress.
+- Verifies `cinderfen_watch` unlocks only after `cinderfen_crossing`.
+- Launches `Cinderfen Watchpost`.
+- Verifies BattleScene loads with map name, objective text, resources, minimap markers, difficulty, and any relevant Waystation launch effect.
+- Uses safe hooks to capture the Watch Road Toll, clear the Marsh Raider Camp, destroy the Watchpost Tower, destroy the enemy Stronghold, and complete victory.
+- Verifies Results map/node copy, XP/resources/item reward, objective summary, return-to-campaign flow, campaign completion, and no duplicate reward on revisit.
 
 Simulator coverage:
 
-- Includes `cinderfen_crossing` as the first Chapter 2 scripted scenario.
+- Includes `cinderfen_crossing` and `cinderfen_watch` as Chapter 2 scripted scenarios.
 - Keeps three scripts per scenario: Safe Beginner, Greedy Economy, and Fast Army.
 - Reports Chapter 2 separately in the Markdown table.
 - Models `firstCaptureBonus` on captured sites, so the Greedy Economy Cinderfen script records `Cinder Shrine Surge: 20 Aether` when it reaches the shrine.
-- Cinderfen event-choice launch modifiers, including the Malrec trophy Well Rested path, are noted as future simulator profile work; the current simulator models battle-local shrine effects while unit/e2e coverage verifies live event effects.
+- Adds one `Waystation: Shrine Attunement` profile that applies only to Cinderfen battles that contain the `cinder_crossing` shrine site; it records `Cinder Shrine Surge: 25 Aether` on Cinderfen Crossing and intentionally does not spend the modifier on Cinderfen Watchpost.
+- Cinderfen event-choice launch modifiers, including the Malrec trophy Well Rested path, remain covered by unit/e2e save flow rather than the baseline simulator.
 - Preserves the no structural `too_hard` and no structural `too_easy` gates.
 
 Regression gates:
 
-- `npm test`: PASS, 37 test files and 233 tests.
+- `npm test`: PASS after the Cinderfen Watchpost pass with 37 test files and 250 tests.
 - `npm run build`: PASS, known Vite large-chunk warning only.
-- `npm run test:e2e -- --reporter=line`: PASS, 51 Playwright tests in 21.9m on the clean full rerun.
-- `npm run playtest:sim`: PASS, 216 deterministic battle runs across 72 campaign battle node/profile summaries.
+- `npm run test:e2e -- --reporter=line`: PASS, 52 Playwright tests in 23.5m on the clean full rerun.
+- `npm run playtest:sim`: PASS, 255 deterministic battle runs across 85 campaign battle node/profile summaries after adding Cinderfen Watch.
 
 ## Deferred Chapter 2 Work
 
 - Add any further returning-rival consequence only if it stays at this scale, reuses existing rival state, and keeps duplicate first-defeat rewards blocked.
-- Add any later Chapter 2 town/service node only after the first battle slice remains green.
-- Do not add workers, enemy construction, full new factions, diplomacy, procedural generation, crafting, or a second Chapter 2 map as part of this slice.
+- Add any later Chapter 2 town/service node or battle only after the current two-battle slice remains green.
+- Do not add workers, enemy construction, full new factions, diplomacy, procedural generation, crafting, or another Chapter 2 map as part of this slice.
 
 ## Acceptance Criteria
 
 - `cinderfen_overlook` is a playable event node with three clear baseline choices and one clear optional Malrec trophy choice.
+- `cinderfen_waystation` is a playable town/support node with clear services, costs, effects, and persistence.
+- At least three Waystation services exist; Marsh Guides, Ash Filters, and Shrine Attunement apply real effects through existing launch/modifier paths.
 - Choice costs, rewards, reputation changes, completion behavior, and modifiers are visible on the Campaign Map.
 - Event choice rewards do not duplicate after save/load.
 - `cinderfen_causeway` exists and is registered.
 - `cinderfen_crossing` launches the new map.
 - `cinderfen_crossing` requires `cinderfen_overlook`.
+- `cinderfen_watchpost` exists and is registered.
+- `cinderfen_watch` launches Cinderfen Watchpost.
+- `cinderfen_watch` requires `cinderfen_crossing`.
 - Chapter 1 flow still works.
 - No missing-map launch path remains.
 - Existing Ashen units and existing AI personality drive the enemy setup.
 - Objectives, rewards, capture sites, neutral camps, and enemy references validate.
 - Cinder Shrine gives Chapter 2 one distinct tactical identity without adding a new faction, map, unit, worker loop, enemy construction, diplomacy, procedural generation, or crafting.
 - Cinder Shrine Surge is readable in objective/status copy, grants its +20 Aether once, and does not duplicate on recapture.
+- Cinderfen Watch uses existing systems only, has three capture sites, two neutral camps, one central watchpost/tower objective, fog/minimap readability, and modest rewards.
 - Unit tests, build, e2e, and playtest simulator pass.

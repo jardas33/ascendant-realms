@@ -43,19 +43,25 @@ export function createPlaytestHeroForNode(nodeId: string): HeroSaveData {
       stats: { ...hero.stats, might: hero.stats.might + 2, command: hero.stats.command + 1 }
     };
   }
-  if (nodeId === "cinderfen_crossing") {
+  if (nodeId === "cinderfen_crossing" || nodeId === "cinderfen_watch") {
     return {
       ...hero,
       level: 4,
-      xp: 520,
+      xp: nodeId === "cinderfen_watch" ? 645 : 520,
       skillPoints: 3,
-      completedBattles: 5,
-      clearedMapIds: ["first_claim", "broken_ford", "ashen_outpost"],
+      completedBattles: nodeId === "cinderfen_watch" ? 6 : 5,
+      clearedMapIds:
+        nodeId === "cinderfen_watch"
+          ? ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway"]
+          : ["first_claim", "broken_ford", "ashen_outpost"],
       inventory: [
         { instanceId: "sim-weathered-sword", itemId: "weathered_command_sword", acquiredAt: "sim", source: "playtest", affixes: [] },
         { instanceId: "sim-fordbreaker", itemId: "fordbreaker_halberd", acquiredAt: "sim", source: "playtest", affixes: [] },
         { instanceId: "sim-captains-seal", itemId: "captains_seal", acquiredAt: "sim", source: "playtest", affixes: [] },
-        { instanceId: "sim-oathbound-aegis", itemId: "oathbound_aegis", acquiredAt: "sim", source: "playtest", affixes: [] }
+        { instanceId: "sim-oathbound-aegis", itemId: "oathbound_aegis", acquiredAt: "sim", source: "playtest", affixes: [] },
+        ...(nodeId === "cinderfen_watch"
+          ? [{ instanceId: "sim-scouts-bow", itemId: "scouts_bow", acquiredAt: "sim", source: "playtest", affixes: [] }]
+          : [])
       ],
       stats: { ...hero.stats, might: hero.stats.might + 3, command: hero.stats.command + 2 }
     };
@@ -135,7 +141,10 @@ export function cloneStrongholdBattleEffects(effects: StrongholdBattleEffects): 
     enemyWarningLeadSeconds: effects.enemyWarningLeadSeconds,
     watchtowerRangeMultiplier: effects.watchtowerRangeMultiplier,
     firstBuildingConstructionTimeMultiplier: effects.firstBuildingConstructionTimeMultiplier,
-    unitTrainingTimeMultipliers: { ...effects.unitTrainingTimeMultipliers }
+    unitTrainingTimeMultipliers: { ...effects.unitTrainingTimeMultipliers },
+    firstCaptureBonusResourceAdditions: Object.fromEntries(
+      Object.entries(effects.firstCaptureBonusResourceAdditions).map(([siteId, resources]) => [siteId, { ...resources }])
+    )
   };
 }
 

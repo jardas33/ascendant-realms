@@ -176,7 +176,23 @@ function addObjectiveDefeatTips(
 ): void {
   const isAshenOutpost = options.mapId === "ashen_outpost" || options.campaignNodeId === "ashen_outpost";
   const isCinderfenCrossing = options.mapId === "cinderfen_causeway" || options.campaignNodeId === "cinderfen_crossing";
-  if (!isAshenOutpost && !isCinderfenCrossing) {
+  const isCinderfenWatch = options.mapId === "cinderfen_watchpost" || options.campaignNodeId === "cinderfen_watch";
+  if (!isAshenOutpost && !isCinderfenCrossing && !isCinderfenWatch) {
+    return;
+  }
+
+  if (isCinderfenWatch) {
+    if (!stats.completedObjectiveIds.includes("capture_watch_road")) {
+      tips.push("On Cinderfen Watch, capture the Watch Road Toll before pushing through fog toward the tower.");
+      return;
+    }
+    if (!stats.completedObjectiveIds.includes("clear_marsh_raider_camp")) {
+      tips.push("Clear the Marsh Raider Camp before the tower push so the Brute cannot split your line.");
+      return;
+    }
+    if (!stats.completedObjectiveIds.includes("destroy_watchpost_tower")) {
+      tips.push("Destroy the Watchpost Tower before committing to the Ashen Stronghold.");
+    }
     return;
   }
 

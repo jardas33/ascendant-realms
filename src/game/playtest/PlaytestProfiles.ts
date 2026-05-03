@@ -92,6 +92,13 @@ export const DEFAULT_PLAYTEST_STRONGHOLD_PROFILES: PlaytestStrongholdProfileDefi
       createSimRetinueUnit("sim-retinue-quartermaster-militia", "militia", "veteran", 140, 3),
       createSimRetinueUnit("sim-retinue-quartermaster-ranger", "ranger", "seasoned", 65, 1)
     ]
+  },
+  {
+    id: "waystation_shrine_attunement",
+    name: "Waystation: Shrine Attunement",
+    description: "Models the Cinderfen Waystation Shrine Attunement service on Chapter 2 battles only.",
+    targetUpgradeIds: [],
+    campaignModifierIds: ["shrine_attunement"]
   }
 ];
 
@@ -114,4 +121,3 @@ function createSimRetinueUnit(
     status: "active"
   };
 }
-
