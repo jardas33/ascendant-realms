@@ -325,6 +325,95 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("+90 XP, +20 Aether");
     expect(summaryHtml).toContain("Trophy earned");
     expect(summaryHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
+    expect(summaryHtml).toContain("Rival state persists on the campaign save");
+  });
+
+  it("explains repeat rival defeats without duplicating first-defeat rewards", () => {
+    const data = createResultsData({
+      stats: {
+        ...baseStats(),
+        enemyHeroId: "gorak_emberhand",
+        enemyHeroName: "Gorak Emberhand",
+        enemyHeroDefeated: true
+      },
+      rivalResult: {
+        enemyHeroId: "gorak_emberhand",
+        name: "Gorak Emberhand",
+        title: "Ashen Raider Captain",
+        lastOutcome: "defeated",
+        outcomeLabel: "Defeated",
+        previousDisposition: "humiliated",
+        disposition: "enraged",
+        dispositionLabel: "Enraged",
+        encounters: 3,
+        defeats: 2,
+        victoriesAgainstPlayer: 0,
+        consequenceText: "Gorak withdraws with wounded pride. Their first-defeat reward was already claimed.",
+        firstDefeatRewardEarned: false,
+        duplicateFirstDefeatRewardPrevented: true,
+        rewardXp: 0,
+        activeModifiers: []
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Rival Defeated");
+    expect(summaryHtml).toContain("Gorak Emberhand");
+    expect(summaryHtml).toContain("Enraged");
+    expect(summaryHtml).toContain("One-time first-defeat reward");
+    expect(summaryHtml).toContain("Already claimed for this campaign");
+  });
+
+  it("explains rival triumph defeats and preserves retry/prep actions", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost"
+      }),
+      stats: {
+        ...baseStats(),
+        outcome: "defeat",
+        enemyHeroId: "captain_malrec",
+        enemyHeroName: "Captain Malrec",
+        enemyHeroDefeated: false
+      },
+      rivalResult: {
+        enemyHeroId: "captain_malrec",
+        name: "Captain Malrec",
+        title: "Outpost Commander",
+        lastOutcome: "triumphant",
+        outcomeLabel: "Triumphant",
+        previousDisposition: "wary",
+        disposition: "emboldened",
+        dispositionLabel: "Emboldened",
+        encounters: 1,
+        defeats: 0,
+        victoriesAgainstPlayer: 1,
+        consequenceText: "Captain Malrec is emboldened after driving you back.",
+        firstDefeatRewardEarned: false,
+        duplicateFirstDefeatRewardPrevented: false,
+        rewardXp: 0,
+        activeModifiers: ["rival_emboldened_damage_5"]
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+    const actionsHtml = renderPrimaryActions(data);
+
+    expect(summaryHtml).toContain("Rival Outcome");
+    expect(summaryHtml).toContain("Captain Malrec");
+    expect(summaryHtml).toContain("Triumphant");
+    expect(summaryHtml).toContain("Emboldened");
+    expect(summaryHtml).toContain("Captain Malrec is emboldened after driving you back.");
+    expect(summaryHtml).toContain("triumphant rivals gain +5% damage");
+    expect(actionsHtml).toContain("Retry");
+    expect(actionsHtml).toContain("Open Hero Inventory");
+    expect(actionsHtml).toContain("Campaign Map");
   });
 });
 

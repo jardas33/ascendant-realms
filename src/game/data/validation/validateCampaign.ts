@@ -1,4 +1,5 @@
 import { BATTLE_DIFFICULTIES } from "../battlePacing";
+import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { MAPS } from "../maps";
@@ -13,8 +14,16 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
     if (!node.name.trim() || !node.description.trim()) {
       errors.push(`Campaign node ${node.id} needs name and description.`);
     }
-    if (!MAPS.some((map) => map.id === node.mapId)) {
+    if (!node.chapterId) {
+      errors.push(`Campaign node ${node.id} needs a campaign chapter.`);
+    } else if (!context.campaignChapterIds.has(node.chapterId)) {
+      errors.push(`Campaign node ${node.id} references missing chapter ${node.chapterId}.`);
+    }
+    if (!MAPS.some((map) => map.id === node.mapId) && !node.isPlaceholder) {
       errors.push(`Campaign node ${node.id} references missing map ${node.mapId}.`);
+    }
+    if (node.isPlaceholder && (!node.placeholderLabel?.trim() || !node.placeholderDescription?.trim())) {
+      errors.push(`Campaign node ${node.id} is a placeholder without placeholder copy.`);
     }
     if (!context.factionIds.has(node.enemyFactionId)) {
       errors.push(`Campaign node ${node.id} references missing enemy faction ${node.enemyFactionId}.`);
@@ -59,6 +68,33 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
   });
   if (!CAMPAIGN_NODES.some((node) => node.prerequisites.length === 0)) {
     errors.push("Campaign needs at least one starting node.");
+  }
+}
+
+export function validateCampaignChapters(errors: string[], context: ValidationContext): void {
+  CAMPAIGN_CHAPTERS.forEach((chapter) => {
+    if (!chapter.title.trim() || !chapter.shortDescription.trim()) {
+      errors.push(`Campaign chapter ${chapter.id} needs title and short description.`);
+    }
+    chapter.nodeIds.forEach((nodeId) => {
+      if (!context.campaignNodeIds.has(nodeId)) {
+        errors.push(`Campaign chapter ${chapter.id} references missing node ${nodeId}.`);
+      }
+    });
+    chapter.unlockPrerequisiteNodeIds.forEach((nodeId) => {
+      if (!context.campaignNodeIds.has(nodeId)) {
+        errors.push(`Campaign chapter ${chapter.id} requires missing node ${nodeId}.`);
+      }
+    });
+    const chapterNodes = CAMPAIGN_NODES.filter((node) => node.chapterId === chapter.id).map((node) => node.id);
+    chapterNodes.forEach((nodeId) => {
+      if (!chapter.nodeIds.includes(nodeId)) {
+        errors.push(`Campaign chapter ${chapter.id} omits node ${nodeId}.`);
+      }
+    });
+  });
+  if (!CAMPAIGN_CHAPTERS.some((chapter) => chapter.unlockPrerequisiteNodeIds.length === 0 && !chapter.isUpcoming)) {
+    errors.push("Campaign needs at least one unlocked current chapter.");
   }
 }
 

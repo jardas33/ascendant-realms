@@ -1,6 +1,6 @@
 # Release Checklist
 
-Use this checklist for the v0.2 prototype baseline and future prototype checkpoints. Run commands from the project root:
+Use this checklist for the v0.2.1 prototype baseline candidate and future prototype checkpoints. Run commands from the project root:
 
 ```text
 D:\Code for projects\WB game like\ascendant-realms
@@ -49,7 +49,7 @@ npm run test:e2e -- --reporter=line
 Expected current prototype result:
 
 ```text
-PASS: 45 Playwright tests
+PASS: 49 Playwright tests
 ```
 
 Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 23 minutes on this machine.
@@ -86,7 +86,7 @@ Open the local preview URL and confirm:
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
-Browser Use preview sanity is optional after the automated suite. The latest expected visible sanity check is the production preview at `http://127.0.0.1:4182/` with the v0.2 main menu visible and browser console errors at 0.
+Browser Use preview sanity is optional after the automated suite. The latest expected visible sanity check is the production preview at `http://127.0.0.1:4182/` with the v0.2 main menu visible and browser console errors at 0. The release baseline candidate is `v0.2.1`, while the visible product copy remains `Prototype v0.2`.
 
 ## Manual QA Areas Not Fully Automated
 
@@ -96,6 +96,8 @@ Browser Use preview sanity is optional after the automated suite. The latest exp
 - Stronghold Tier I and II purchase feel in a real campaign economy, especially Watch Post II and Quartermaster Stores II.
 - Reputation hooks in normal campaign flow: Common Folk Marcher Camp discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
+- Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
+- HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.
 - Audio behavior with human ears.
 - Visual polish across generated/manual UI-kit assets.
 - Production preview sanity after release packaging.
@@ -104,5 +106,5 @@ Browser Use preview sanity is optional after the automated suite. The latest exp
 
 - `CHANGELOG.md` describes the current feature baseline.
 - `README.md` has current setup, feature summary, known limitations, and verification counts.
-- `ROADMAP.md` names the next milestone as Rival Rewards Balance And Readability Review.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.2 prototype baseline plus Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1.
+- `ROADMAP.md` marks Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish as completed, with the next phase set to `v0.3 planning: Chapter 2 vertical slice`.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.2.1 baseline candidate on top of Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, the CampaignRules split, and HUD/fog polish.

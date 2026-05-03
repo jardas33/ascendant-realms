@@ -5,6 +5,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "border_village",
     name: "Border Village",
     description: "Tutorial battle. Secure a Free Marches village by learning the core loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
+    chapterId: "border_marches",
     nodeType: "battle",
     difficulty: "easy",
     mapId: "first_claim",
@@ -24,6 +25,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "old_stone_road",
     name: "Old Stone Road",
     description: "First real battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner expansion and better use of your hero rewards.",
+    chapterId: "border_marches",
     nodeType: "battle",
     difficulty: "easy",
     mapId: "first_claim",
@@ -43,6 +45,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     name: "Marcher Camp",
     description:
       "Allied town node. Spend campaign resources between battles for rest, volunteers, supplies, or a small fixed stock of early equipment. Services keep the camp open for later visits.",
+    chapterId: "border_marches",
     nodeType: "town",
     difficulty: "story",
     mapId: "first_claim",
@@ -131,6 +134,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "aether_well_ruins",
     name: "Aether Well Ruins",
     description: "Harder battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero before taking the well.",
+    chapterId: "border_marches",
     nodeType: "battle",
     difficulty: "normal",
     mapId: "broken_ford",
@@ -151,6 +155,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "bandit_hillfort",
     name: "Bandit Hillfort",
     description: "Harder battle. A raider-backed hillfort checks whether you can build a stable army while holding resources under pressure.",
+    chapterId: "border_marches",
     nodeType: "battle",
     difficulty: "normal",
     mapId: "broken_ford",
@@ -171,6 +176,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "chapel_of_the_marches",
     name: "Chapel of the Marches",
     description: "Campaign choice node. A roadside chapel shelters wounded scouts and old oaths. Choose a blessing, spend campaign resources, or ask for guidance before the next fight.",
+    chapterId: "border_marches",
     nodeType: "shrine",
     difficulty: "story",
     mapId: "first_claim",
@@ -232,6 +238,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     id: "refugee_caravan",
     name: "Refugee Caravan",
     description: "Campaign choice node. A weary caravan carries news, hungry families, and a few hands still able to hold a spear. Your decision trades resources, reputation, and rewards.",
+    chapterId: "border_marches",
     nodeType: "event",
     difficulty: "story",
     mapId: "first_claim",
@@ -294,6 +301,7 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     name: "Ashen Outpost",
     description:
       "Milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, break enemy production, and destroy the fortified Stronghold.",
+    chapterId: "border_marches",
     nodeType: "battle",
     difficulty: "normal",
     mapId: "ashen_outpost",
@@ -309,5 +317,51 @@ export const CAMPAIGN_NODES: CampaignNodeDefinition[] = [
     unlocks: [],
     x: 88,
     y: 54
+  },
+  {
+    id: "cinderfen_overlook",
+    name: "Cinderfen Road",
+    description:
+      "Chapter 2 scaffold. Scouts can see the ash-glass wetlands beyond Ashen Outpost, but this route is not playable in the current prototype.",
+    chapterId: "cinderfen_road",
+    nodeType: "event",
+    difficulty: "story",
+    mapId: "cinderfen_causeway",
+    enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "hexfire_cult",
+    isPlaceholder: true,
+    placeholderLabel: "Chapter 2 upcoming",
+    placeholderDescription:
+      "The Cinderfen Road will become the v0.3 Chapter 2 vertical slice. This placeholder is visible for planning only and cannot be resolved yet.",
+    futureMapName: "Cinderfen Causeway",
+    prerequisites: ["ashen_outpost"],
+    rewards: {},
+    eventText:
+      "Black reeds bend around a glassy causeway. Marcher scouts mark a future route, but the campaign does not enter the Cinderfen yet.",
+    unlocks: ["cinderfen_crossing"],
+    x: 72,
+    y: 84
+  },
+  {
+    id: "cinderfen_crossing",
+    name: "Cinderfen Crossing",
+    description:
+      "Future Chapter 2 battle placeholder. The planned Cinderfen Causeway map is intentionally not implemented yet, so this node stays locked and cannot launch combat.",
+    chapterId: "cinderfen_road",
+    nodeType: "battle",
+    difficulty: "normal",
+    mapId: "cinderfen_causeway",
+    enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "hexfire_cult",
+    isPlaceholder: true,
+    placeholderLabel: "Future battle locked",
+    placeholderDescription:
+      "Requires the future Cinderfen Causeway battle map. This node exists only so Chapter 2 can be previewed safely before content implementation.",
+    futureMapName: "Cinderfen Causeway",
+    prerequisites: ["ashen_outpost", "cinderfen_overlook"],
+    rewards: {},
+    unlocks: [],
+    x: 82,
+    y: 70
   }
 ];

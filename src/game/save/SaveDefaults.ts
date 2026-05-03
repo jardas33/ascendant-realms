@@ -1,4 +1,5 @@
 import { normalizeSettingsData } from "../core/Settings";
+import { DEFAULT_CAMPAIGN_CHAPTER_ID } from "../data/campaignChapters";
 import type { CampaignSaveData, CurrentStoredGameSave, HeroSaveData, SaveSettingsData } from "./SaveTypes";
 
 export const CURRENT_SAVE_VERSION = 2;
@@ -87,6 +88,7 @@ export function createFallbackCampaignSave(): CampaignSaveData {
     strongholdUpgradeRanks: {},
     retinueUnits: [],
     rivals: [],
-    rivalTrophies: []
+    rivalTrophies: [],
+    selectedChapterId: DEFAULT_CAMPAIGN_CHAPTER_ID
   };
 }

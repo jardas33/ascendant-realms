@@ -133,6 +133,22 @@ describe("BattleLaunchRequest", () => {
     }
   });
 
+  it("keeps future Chapter 2 placeholder battles from resolving missing maps", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "cinderfen_crossing");
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request).toMatchObject({
+      mode: "campaign_node",
+      campaignNodeId: "cinderfen_crossing",
+      mapId: "cinderfen_causeway"
+    });
+    expect(resolved.ok).toBe(false);
+    if (!resolved.ok) {
+      expect(resolved.errors).toContain("Battle launch request references missing map cinderfen_causeway.");
+    }
+  });
+
   it("carries sanitized retinue units on campaign launches", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "border_village", {

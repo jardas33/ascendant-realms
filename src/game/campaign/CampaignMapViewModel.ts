@@ -1,4 +1,4 @@
-import { getCampaignNodeStatus, getCampaignProgressSummary } from "../core/CampaignRules";
+import { getCampaignChapterViewModels, getCampaignNodeStatus, getCampaignProgressSummary } from "../core/CampaignRules";
 import { getKnownRivalIntel, getRivalTrophyIntel } from "../core/RivalRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { FACTION_BY_ID } from "../data/contentIndex";
@@ -27,6 +27,7 @@ export function createCampaignMapViewModel(input: CampaignMapViewModelInput): Ca
       status: getCampaignNodeStatus(node, input.campaignSave),
       selected: node.id === input.selectedNodeId
     })),
+    chapters: getCampaignChapterViewModels(input.campaignSave),
     progressSummary: getCampaignProgressSummary(input.campaignSave),
     campaignStateLabel: input.campaignSave.started ? "Live" : "New",
     reputation: createCampaignReputationViewModel(input.heroSave),

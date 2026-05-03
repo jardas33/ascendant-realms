@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createStartedCampaignSave } from "../core/CampaignRules";
+import { createStartedCampaignSave, getCampaignChapterStatus } from "../core/CampaignRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { createNewHeroSave } from "../data/heroes";
 import { formatChoiceModifierSummary, formatChoiceReputationSummary, formatChoiceRewardSummary } from "./CampaignChoicePanel";
+import { canStartCampaignNode } from "./CampaignNavigation";
 import { createCampaignMapViewModel } from "./CampaignMapViewModel";
 import { renderNodeDetails } from "./CampaignNodePanel";
 import { formatResourceRewards } from "./CampaignResourcePanel";
@@ -27,6 +28,71 @@ describe("campaign map presentation helpers", () => {
       selected: true
     });
     expect(viewModel.nodes.find((entry) => entry.node.id === "old_stone_road")?.status).toBe("locked");
+    expect(viewModel.chapters.find((entry) => entry.chapter.id === "border_marches")).toMatchObject({
+      status: "unlocked",
+      completedNodeCount: 0,
+      currentNodeCount: 8
+    });
+    expect(viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")).toMatchObject({
+      status: "locked",
+      completedNodeCount: 0,
+      currentNodeCount: 0
+    });
+  });
+
+  it("shows Chapter 2 as an upcoming scaffold while keeping future nodes unlaunchable", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing"
+      ],
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_crossing"
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+
+    const viewModel = createCampaignMapViewModel({
+      heroSave: hero,
+      campaignSave: campaign,
+      selectedNodeId: "cinderfen_crossing"
+    });
+    const chapterTwo = viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")!;
+    const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
+
+    expect(getCampaignChapterStatus(chapterTwo.chapter, campaign)).toBe("upcoming");
+    expect(chapterTwo).toMatchObject({
+      status: "upcoming",
+      completedNodeCount: 0,
+      currentNodeCount: 0
+    });
+    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_crossing")).toMatchObject({
+      status: "locked",
+      selected: true
+    });
+    expect(canStartCampaignNode(node, campaign)).toBe(false);
+    expect(html).toContain("Future battle locked");
+    expect(html).toContain("Requires the future Cinderfen Causeway battle map");
+    expect(html).toContain("No battle launch");
+    expect(html).toContain("Cinderfen Causeway");
   });
 
   it("shows reputation ranks and active reputation effects in the view model", () => {
@@ -121,9 +187,34 @@ describe("campaign map presentation helpers", () => {
     expect(panelHtml).toContain("+5% HP next encounter");
     expect(panelHtml).toContain("One-time first-defeat reward: Claimed");
     expect(panelHtml).toContain("Rival Trophies");
+    expect(panelHtml).toContain("First-defeat trophies are cosmetic records claimed once");
     expect(panelHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
+    expect(panelHtml).toContain("First defeat claimed: +20 Aether");
     expect(nodeHtml).toContain("Rival Status");
+    expect(nodeHtml).toContain("Enemy Commander");
+    expect(nodeHtml).toContain("Veyra of the Cinders, Hexfire Seer");
+    expect(nodeHtml).toContain("Hexfire Bolt");
     expect(nodeHtml).toContain("Escaped - Wary");
+  });
+
+  it("previews first-encounter rival commander copy before the rival is known", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "bandit_hillfort"]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "bandit_hillfort")!;
+
+    const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
+
+    expect(html).toContain("Enemy Commander");
+    expect(html).toContain("Gorak Emberhand, Ashen Raider Captain");
+    expect(html).toContain("Rival Status");
+    expect(html).toContain("Unseen rival - first encounter");
+    expect(html).toContain("First encounter: no rival modifier is active.");
+    expect(html).toContain("Ember Strike");
+    expect(html).toContain("Rally Raiders");
   });
 
   it("formats resource and choice reward summaries without scene state", () => {

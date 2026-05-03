@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BATTLE_DIFFICULTIES } from "./battlePacing";
+import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_NODES } from "./campaignNodes";
 import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
@@ -61,7 +62,9 @@ describe("content validation", () => {
   });
 
   it("defines the first mini-campaign chain", () => {
-    expect(CAMPAIGN_NODES.map((node) => node.id)).toEqual(
+    const chapterOneNodeIds = CAMPAIGN_NODES.filter((node) => node.chapterId === "border_marches").map((node) => node.id);
+
+    expect(chapterOneNodeIds).toEqual(
       expect.arrayContaining([
         "border_village",
         "old_stone_road",
@@ -73,10 +76,36 @@ describe("content validation", () => {
         "ashen_outpost"
       ])
     );
-    expect(CAMPAIGN_NODES).toHaveLength(8);
+    expect(chapterOneNodeIds).toHaveLength(8);
     expect(CAMPAIGN_NODES.find((node) => node.id === "chapel_of_the_marches")?.choices?.length).toBeGreaterThanOrEqual(3);
     expect(CAMPAIGN_NODES.find((node) => node.id === "refugee_caravan")?.choices?.length).toBeGreaterThanOrEqual(3);
     expect(CAMPAIGN_NODES.find((node) => node.id === "marcher_camp")?.choices?.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it("defines a harmless Chapter 2 scaffold without a launchable battle map", () => {
+    const chapterTwo = CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "cinderfen_road");
+    const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook");
+    const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing");
+
+    expect(CAMPAIGN_CHAPTERS.map((chapter) => chapter.id)).toEqual(["border_marches", "cinderfen_road"]);
+    expect(chapterTwo).toMatchObject({
+      title: "Chapter 2: The Cinderfen Road",
+      nodeIds: ["cinderfen_overlook", "cinderfen_crossing"],
+      unlockPrerequisiteNodeIds: ["ashen_outpost"],
+      isUpcoming: true
+    });
+    expect(overlook).toMatchObject({
+      nodeType: "event",
+      chapterId: "cinderfen_road",
+      isPlaceholder: true
+    });
+    expect(crossing).toMatchObject({
+      nodeType: "battle",
+      chapterId: "cinderfen_road",
+      mapId: "cinderfen_causeway",
+      isPlaceholder: true
+    });
+    expect(MAPS.some((map) => map.id === "cinderfen_causeway")).toBe(false);
   });
 
   it("assigns valid AI personalities to battle nodes", () => {

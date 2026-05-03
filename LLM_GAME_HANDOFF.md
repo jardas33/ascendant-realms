@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-02 23:00 -04:00
+Last updated: 2026-05-03 01:19 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -16,9 +16,9 @@ The current playable loop:
 4. Resolve victory or defeat through the shared Results scene.
 5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, retinue units, rival state, rival trophy records, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is now v0.2+ with Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, and Rival Rewards and Trophies V1. It is still a prototype, but it has a broad playable RTS/RPG spine with Stronghold Tier I telemetry-response changes, Stronghold Development Tier II, campaign consequence/reputation hooks, randomized item affixes V1, battle-local unit XP/ranks/results summaries, compact save-backed retinue persistence, named Ashen rival commanders on important campaign battles, save-backed rival outcomes/modifiers, one-time rival first-defeat rewards, save-backed trophy records, a conservative rival persistence balance/readability pass, regenerated telemetry, safe HeroProgressionRules and CampaignRules module splits, release documentation, updated balance/docs notes, and a targeted HUD interaction / captured-site fog polish pass after player-reported hover flicker, scroll snap-back, and conquered-mine fog issues. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is now a v0.2.1 prototype baseline candidate. The visible in-game menu still says `Prototype v0.2`, while v0.2.1 documents the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, and permanent Playwright regression coverage for the reported HUD/fog issues. It is still a prototype, but it has a broad playable RTS/RPG spine and a clearer verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The next recommended milestone is a human-paced v0.2+ campaign readability and balance review now that full automated verification is green. Focus on retinue usefulness, rival readability, rival rewards/trophies, HUD hover/scroll feel, captured-site fog readability, and Ashen Outpost pressure. Keep follow-up compact; do not move to workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems yet.
+The next recommended phase is **v0.3 planning: Chapter 2 vertical slice**. A minimal Chapter 2 scaffold has been started: chapter metadata plus locked/upcoming Cinderfen Road placeholder nodes that cannot launch a missing map. Before adding Chapter 2 gameplay, do a human-paced v0.2.1 readability and balance review focused on retinue usefulness, rival readability, rival rewards/trophies, HUD hover/scroll feel, captured-site fog readability, and Ashen Outpost pressure. Keep follow-up compact; do not move to workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems yet.
 
 ## Current Git State
 
@@ -37,17 +37,17 @@ main
 Latest checkpoint feature commit:
 
 ```text
-59113746a09f5f1c2cbf053c640a24ab21e92b9b
+c277675
 ```
 
 Recent checkpoint stack:
 
 ```text
+c277675 Update handoff checkpoint stack
 4fb085a Finalize checkpoint sync metadata
 386afa9 Record checkpoint metadata
 5911374 Checkpoint rival persistence rewards and HUD fog polish
 6c210c2 Clarify checkpoint sync metadata
-86ad394 Update checkpoint sync metadata
 ```
 
 Known shell/tool note:
@@ -58,10 +58,10 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-## main...origin/main after pushing checkpoint commit 59113746a09f5f1c2cbf053c640a24ab21e92b9b and checkpoint metadata
+## main...origin/main with intentional uncommitted v0.2.1 docs, HUD/fog regression coverage edits, and minimal Chapter 2 scaffold work
 ```
 
-The checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was created with message `Checkpoint rival persistence rewards and HUD fog polish` and pushed successfully with `git push origin main`. Before commit, `git status -sb` reported `## main...origin/main` with intentional dirty code, tests, telemetry, and documentation edits for Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, HUD interaction/captured-site fog polish, and this checkpoint documentation. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was created with message `Checkpoint rival persistence rewards and HUD fog polish` and pushed successfully with `git push origin main`. A later handoff metadata commit `c277675` is the current HEAD. The current worktree contains intentional uncommitted edits for permanent HUD/fog Playwright regression coverage, the small HUD refresh behavior needed by that coverage, the v0.2.1 documentation/readability pass, and the minimal Chapter 2 scaffold. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
@@ -72,10 +72,87 @@ Feature checkpoint commit:
 Current branch sync status:
 
 ```text
-Checkpoint commit pushed to origin/main; checkpoint metadata follow-up was also pushed. Final `git status -sb` reported `## main...origin/main`.
+Last checkpoint and metadata commits are synced with origin/main. Current `git status -sb` is dirty from intentional v0.2.1 docs, HUD/fog regression coverage edits, readability report/planning docs, and Chapter 2 scaffold edits.
 ```
 
-The worktree is clean after the verified checkpoint push and metadata push. Preserve future edits unless the user explicitly asks for a different git action.
+The worktree is not clean during the v0.2.1 baseline candidate pass. Preserve the dirty work unless the user explicitly asks for a different git action.
+
+## v0.2.1 Prototype Baseline Candidate - 2026-05-03
+
+Scope: document the v0.2.1 baseline candidate after v0.2 features, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, the CampaignRules module split, HUD/fog polish, and permanent HUD/fog regression coverage.
+
+What v0.2.1 means:
+
+- No gameplay, balance, save format, faction, worker, enemy construction, diplomacy, crafting, or map content was added for this release-baseline pass.
+- The visible product copy remains `Prototype v0.2`; v0.2.1 is the release/checkpoint label for docs, verification expectations, and stability work.
+- Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish are completed baseline work, not open next milestones.
+- The next recommended phase is `v0.3 planning: Chapter 2 vertical slice`.
+
+Latest verification status:
+
+```text
+npm test
+Latest result after minimal Chapter 2 scaffold: PASS, 36 test files and 217 tests.
+
+npm run build
+Expected/current v0.2.1 result: PASS, known Vite large-chunk warning only.
+
+npm run test:e2e -- --reporter=line
+Latest full recorded result after HUD/fog regression coverage: PASS, 49 Playwright tests.
+
+npm run playtest:sim
+Latest simulator baseline: PASS, 180 deterministic runs; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings.
+```
+
+Known risks for v0.2.1:
+
+- Human-style readability still matters: retinue recruitment, rival/trophy rewards, HUD hover feel, side-panel scrolling, captured-site fog readability, and Ashen Outpost pressure need human-paced review even with automated coverage.
+- The Vite production build still reports the known large Phaser chunk warning.
+- Full e2e is slow and should be run with a long timeout.
+- `BattleScene`, `HUD`, `battle-hud.css`, `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RivalRules.ts`, and reward/results save paths remain the areas to treat carefully.
+
+Recommended next milestones:
+
+1. Human-paced v0.2.1 campaign readability and balance review before adding Chapter 2 gameplay content.
+2. v0.3 Chapter 2 vertical slice implementation only after the scaffold remains green.
+3. Keep future additions compact and data-driven; avoid workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.
+
+## Minimal Chapter 2 Scaffold - 2026-05-03
+
+Scope: add only a harmless Chapter 2 campaign scaffold so the map can preview the next phase without disturbing the Border Marches mini-campaign.
+
+What changed:
+
+- Added chapter metadata for `border_marches` and `cinderfen_road`.
+- Added campaign-map chapter cards and save normalization for `selectedChapterId`.
+- Added `cinderfen_overlook` as a non-playable Chapter 2 event placeholder.
+- Added `cinderfen_crossing` as a locked future battle placeholder that names the future `Cinderfen Causeway` map but cannot launch it.
+- Kept playable Chapter 1 progress at 8 current nodes; placeholder nodes are excluded from current progress and playtest scenarios.
+- Added content validation and tests for chapter/node references, old-save normalization, placeholder launch blocking, and browser smoke visibility.
+- No Chapter 2 battle map, units, full faction, workers, enemy construction, diplomacy, procedural generation, crafting, or balance changes were added.
+
+Verification:
+
+```text
+npm test
+PASS: 36 test files, 217 tests
+
+npm run build
+PASS: known Vite large-chunk warning only
+
+npm run test:e2e -- --reporter=line
+PASS: 49 Playwright tests
+
+npm run playtest:sim
+PASS: 180 deterministic simulated runs
+```
+
+Recommended next milestones:
+
+1. Keep the scaffold harmless and green.
+2. Human-paced v0.2.1 campaign readability and balance review before adding Chapter 2 gameplay content.
+3. v0.3 Chapter 2 vertical slice implementation only after the scaffold remains green.
+4. Keep future additions compact and data-driven; avoid workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.
 
 ## Full Verification Checkpoint - 2026-05-02 22:56 -04:00
 
@@ -139,7 +216,7 @@ Browser Use status check at http://127.0.0.1:4182/
 PASS: current in-app browser tab title Ascendant Realms; browser console errors 0
 ```
 
-Full Playwright e2e and `npm run playtest:sim` were rerun during the 2026-05-02 22:56 checkpoint after the HUD stale-refresh fix above. Latest full verification: 45 Playwright tests passed and the simulator passed 180 runs.
+Full Playwright e2e and `npm run playtest:sim` were rerun during the 2026-05-02 22:56 checkpoint after the HUD stale-refresh fix above. A later permanent-regression coverage pass expanded the full suite to 49 Playwright tests, and that full suite passed. Latest simulator baseline remains 180 passing runs.
 
 ## CampaignRules Module Split - 2026-05-02
 
@@ -635,7 +712,7 @@ Goal: align release, roadmap, README, QA, telemetry, and handoff docs after Enem
 What changed:
 
 - Updated `CHANGELOG.md`, `README.md`, `RELEASE_CHECKLIST.md`, `ROADMAP.md`, `QA_RUN.md`, `PLAYTEST_TELEMETRY.md`, and this handoff so they consistently describe the v0.2+ state with Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Stronghold Tier II, reputation hooks, and randomized item affixes V1.
-- Set the next recommended feature milestone to Rival/Nemesis Persistence V1.
+- Set the then-current recommended feature milestone to Rival/Nemesis Persistence V1. This is historical; Rival/Nemesis Persistence V1 has since shipped, and the current next phase is v0.3 planning: Chapter 2 vertical slice.
 - Reiterated that the next slice should not move into workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, or broad army-management systems.
 - Added a short current enemy-hero telemetry read to `PLAYTEST_TELEMETRY.md`.
 
@@ -657,8 +734,8 @@ What changed:
 
 - Re-ran the required verification suite: unit tests, production build, full Playwright e2e, and playtest simulator.
 - Hardened the `selectPlayerCommandHallFromScene` e2e helper after the first full Playwright run exposed a slow Command Hall side-panel refresh. This is test-only; no gameplay behavior changed.
-- Updated `DEVELOPMENT_CHECKPOINT.md` and this handoff with checkpoint verification status and the next recommended milestone.
-- Next recommended milestone is Rival/Nemesis Persistence V1.
+- Updated `DEVELOPMENT_CHECKPOINT.md` and this handoff with checkpoint verification status and the then-current recommended milestone.
+- Historical next recommended milestone at that checkpoint was Rival/Nemesis Persistence V1. This has since shipped; the current next phase is v0.3 planning: Chapter 2 vertical slice.
 
 Verification:
 
@@ -1005,7 +1082,7 @@ npm run playtest:sim
 PASS: 105 simulated runs across 35 campaign battle nodes
 ```
 
-Next recommended work after Unit Veterancy plus Retinue was human-paced campaign balance and readability review. Enemy Hero / Rival Commander V1 has since shipped; the current next feature milestone is Rival/Nemesis Persistence V1, with that human campaign balance/readability review still recommended before or alongside the feature.
+Next recommended work after Unit Veterancy plus Retinue was human-paced campaign balance and readability review. Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 have since shipped; the current next phase is v0.3 planning: Chapter 2 vertical slice, with human campaign balance/readability review still recommended before new gameplay.
 
 ### v0.2 Prototype Baseline Documentation - 2026-05-02
 
@@ -1016,7 +1093,7 @@ What changed:
 - Created `CHANGELOG.md` with the v0.2 prototype baseline summary: campaign/skirmish structure, hero progression, construction/training/upgrades, fog/minimap, Stronghold Tier I/II, reputation effects, randomized item affixes V1, automated playtest simulator, and current verification status.
 - Created `RELEASE_CHECKLIST.md` with required release commands, expected v0.2 results, the known Vite chunk warning, optional preview check, and manual QA areas that remain outside automation.
 - Updated `README.md` so setup, feature summary, known limitations, and next-feature prompts match the current baseline instead of older Tier I/early simulator status.
-- Updated `ROADMAP.md` to name Retinue and Unit Veterancy V1 as the next feature milestone at the time of the v0.2 baseline. Retinue Camp V1 and Enemy Hero / Rival Commander V1 have since been implemented, so the current next milestone is Rival/Nemesis Persistence V1.
+- Updated `ROADMAP.md` to name Retinue and Unit Veterancy V1 as the next feature milestone at the time of the v0.2 baseline. Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 have since been implemented, so the current next phase is v0.3 planning: Chapter 2 vertical slice.
 - Marked this handoff as the v0.2 prototype baseline and corrected the published branch status to `main...origin/main` at `9cd3205e3d1be23ed967bd51f315bab3d39cc52e`.
 
 Verification passed for this docs-only pass: `npm test` and `npm run build`.
@@ -2686,23 +2763,24 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Recommended Next Priorities
 
-1. Next recommended pass: do a human-paced v0.2+ campaign readability and balance review. Start with the just-fixed battle HUD hover/scroll behavior and captured-site fog behavior, then continue through retinue, rival, rival reward/trophy, and Ashen Outpost readability. Keep it compact and do not add gameplay during the review.
-2. Before expanding rival rewards or persistence, play with Retinue Camp V1 and Enemy Hero / Rival Commander V1 included. Test no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
-3. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, first attack contact, and whether retinue trivializes the opener.
-4. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
-5. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, Captain Malrec readability, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
-6. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
-7. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
-8. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
-9. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, and Rival Rewards and Trophies V1 are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, new maps, broad loot complexity, full trophy rooms, or broad city-builder systems yet.
-10. Treat the next technical risks as `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `BattleScene`, `HUD`, `battle-hud.css`, `contentValidation`, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and the reputation helper/rule hooks. `ScriptedBattlePlaytest.ts`, `HeroProgressionRules.ts`, and `CampaignRules.ts` are now compatibility barrels.
-11. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+1. Next recommended phase: v0.3 planning for a Chapter 2 vertical slice. Keep it compact, data-driven, and scoped before adding any new gameplay.
+2. Before expanding into Chapter 2 content, do a human-paced v0.2.1 campaign readability and balance review. Start with the battle HUD hover/scroll behavior and captured-site fog behavior, then continue through retinue, rival, rival reward/trophy, and Ashen Outpost readability.
+3. Before expanding rival rewards or persistence, play with Retinue Camp V1 and Enemy Hero / Rival Commander V1 included. Test no retinue, one Veteran Militia, one Veteran Ranger, mixed Veteran Militia plus Seasoned Ranger, mixed retinue plus Training Yard II, and mixed retinue plus Quartermaster II.
+4. Do a human-paced Border Village and Old Stone Road playtest on Easy, timing the first warning, Barracks completion, first trained unit, first attack contact, and whether retinue trivializes the opener.
+5. Play both Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save.
+6. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, Captain Malrec readability, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
+7. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
+8. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
+9. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
+10. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, and Rival Rewards and Trophies V1 are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, broad loot complexity, full trophy rooms, or broad city-builder systems yet.
+11. Treat the next technical risks as `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `BattleScene`, `HUD`, `battle-hud.css`, `contentValidation`, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and the reputation helper/rule hooks. `ScriptedBattlePlaytest.ts`, `HeroProgressionRules.ts`, and `CampaignRules.ts` are now compatibility barrels.
+12. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
 ## Guidance For Future LLMs
 
-- Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, and HUD/fog polish edits are intentional. The latest checkpoint commit/push metadata is recorded near the top of this handoff after the checkpoint is created.
-- Treat the current docs as the v0.2 prototype baseline. Use `CHANGELOG.md` and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
-- The next named milestone is human campaign balance/readability review before deeper systems. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
+- Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, HUD/fog polish, permanent HUD/fog regression coverage, and v0.2.1 docs edits are intentional.
+- Treat the current docs as the v0.2.1 prototype baseline candidate. Use `CHANGELOG.md` and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
+- The next named phase is v0.3 planning: Chapter 2 vertical slice, with a human campaign balance/readability review before new gameplay. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - `src/game/core/HeroProgressionRules.ts` is intentionally a compatibility barrel. Preserve it for old imports and put future hero progression work in the focused modules under `src/game/core/progression/`.

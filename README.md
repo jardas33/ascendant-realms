@@ -1,10 +1,10 @@
 # Ascendant Realms
 
-Ascendant Realms is a v0.2 prototype baseline for a long-term fantasy RTS/RPG hybrid. The visible main menu labels this baseline as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a v0.2.1 prototype baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu still labels the playable build as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`; v0.2.1 packages the v0.2 feature set with the CampaignRules split, HUD/fog polish, and permanent regression coverage. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
-Current v0.2+ feature snapshot:
+Current v0.2.1 feature snapshot:
 
 - Named enemy heroes/rival commanders on important Ashen campaign battles, with compact persistent rival state.
 - Rival Rewards and Trophies V1 with once-only first-defeat rewards and cosmetic trophy records.
@@ -13,6 +13,8 @@ Current v0.2+ feature snapshot:
 - Stronghold Development Tier II with compact persistent upgrade effects.
 - Randomized item affixes V1 on reward-generated item instances.
 - Reputation hooks for modest campaign choice consequences and preparation effects.
+- CampaignRules split into focused pure-rule modules behind a compatibility facade.
+- HUD/fog polish for stable command hover, side-panel scroll preservation, and captured-site local reveal behavior.
 
 ## Design Pillars
 
@@ -53,7 +55,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.2 baseline status, 2026-05-02: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.2.1 baseline-candidate status, 2026-05-03: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -63,7 +65,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest status after Rival Rewards and Trophies V1, 2026-05-02: `npm test` passes with 36 test files and 210 tests, including Retinue rules, enemy hero/rival reward data validation, campaign launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
+Latest v0.2.1 baseline-candidate status, 2026-05-03: `npm test` passes with 36 test files and 210 tests, including Retinue rules, enemy hero/rival reward data validation, campaign launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
 
 ## Browser Smoke Tests
 
@@ -73,7 +75,7 @@ npm run test:e2e
 
 The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.2` label, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest run passed 45 Playwright tests.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest full run passed 49 Playwright tests after adding permanent HUD hover, side-panel scroll, captured-site fog, and desktop/tablet/mobile command-reachability regression coverage.
 
 For a visible browser run:
 

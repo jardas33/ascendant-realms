@@ -91,7 +91,6 @@ async function expectBattleCommandButtonsReachable(page: Page, actions: string[]
     if (!panel) {
       return { count: 0, offenders: ["missing side panel"], labels: [] };
     }
-    const panelRect = panel.getBoundingClientRect();
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const buttons = requestedActions.flatMap((action) =>
@@ -99,13 +98,15 @@ async function expectBattleCommandButtonsReachable(page: Page, actions: string[]
     );
     const offenders = buttons
       .map((button) => {
+        button.scrollIntoView({ block: "nearest", inline: "nearest" });
         const rect = button.getBoundingClientRect();
+        const nextPanelRect = panel.getBoundingClientRect();
         const label = button.getAttribute("aria-label") ?? button.textContent?.replace(/\s+/g, " ").trim() ?? "";
         const problems = [];
         if (rect.left < -1 || rect.right > viewportWidth + 1) {
           problems.push("outside viewport width");
         }
-        if (rect.top < panelRect.top - 1 || rect.bottom > panelRect.bottom + 1 || rect.top < -1 || rect.bottom > viewportHeight + 1) {
+        if (rect.top < nextPanelRect.top - 1 || rect.bottom > nextPanelRect.bottom + 1 || rect.top < -1 || rect.bottom > viewportHeight + 1) {
           problems.push("not visible in command panel");
         }
         if (rect.width < 72 || rect.height < 40) {
@@ -139,7 +140,7 @@ async function selectBattleBuilding(page: Page, buildingId: string, expectedName
     }
     scene.cameraSystem.centerOn(building.position);
     scene.selectionSystem.setSelection([building]);
-    scene.update(performance.now(), 200);
+    scene.refreshBattleHud?.(0);
   }, { buildingId });
   await expect(page.locator(".side-panel")).toContainText(expectedName);
 }
@@ -172,7 +173,7 @@ async function createCompletedBarracksAndSelect(page: Page): Promise<void> {
     scene.buildingSystem.update((barracks.definition.constructionTimeSeconds ?? 25) + 1);
     scene.cameraSystem.centerOn(barracks.position);
     scene.selectionSystem.setSelection([barracks]);
-    scene.update(performance.now(), 200);
+    scene.refreshBattleHud?.(0);
   });
   await expect(page.locator(".side-panel")).toContainText("Barracks");
 }
@@ -333,6 +334,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   }
 
   for (const viewport of [
+    { width: 1366, height: 768, label: "desktop" },
     { width: 820, height: 620, label: "tablet-short" },
     { width: 390, height: 844, label: "mobile-tall" },
     { width: 360, height: 640, label: "mobile-short" }

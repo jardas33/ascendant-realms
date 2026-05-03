@@ -25,6 +25,7 @@ interface RenderNodeDetailsOptions {
 
 export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
   const { node, status, selected } = nodeView;
+  const statusLabel = node.isPlaceholder ? "Upcoming" : titleCase(status);
   return `
       <button
         class="campaign-node ${status} ${selected ? "selected" : ""}"
@@ -33,7 +34,7 @@ export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
         style="--node-x: ${node.x}%; --node-y: ${node.y}%"
       >
         <strong>${escapeHtml(node.name)}</strong>
-        <span>${titleCase(node.nodeType)} - ${titleCase(status)}</span>
+        <span>${titleCase(node.nodeType)} - ${statusLabel}</span>
       </button>
     `;
 }
@@ -47,14 +48,25 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const enemyHero = node.enemyHeroId ? ENEMY_HERO_BY_ID[node.enemyHeroId] : undefined;
   const rivalPreview = getRivalNodePreview(campaignSave, node);
   const nodeGuidance = getCampaignNodeGuidance(node.id);
+  const mapLabel = node.isPlaceholder ? (node.futureMapName ?? "Future map not implemented") : (map?.name ?? node.mapId);
   return `
       <div class="campaign-node-details ${status}">
-        <p class="eyebrow">${titleCase(node.nodeType)} - ${titleCase(status)}</p>
+        <p class="eyebrow">${titleCase(node.nodeType)} - ${node.isPlaceholder ? "Upcoming" : titleCase(status)}</p>
         <h3>${escapeHtml(node.name)}</h3>
         <p>${escapeHtml(node.description)}</p>
+        ${
+          node.isPlaceholder
+            ? renderGuidanceMessage(
+                node.placeholderLabel ?? "Chapter scaffold",
+                node.placeholderDescription ?? "This campaign node is visible for future planning and cannot be launched yet.",
+                ["No battle launch", "Future v0.3 content"],
+                "compact"
+              )
+            : ""
+        }
         ${renderGuidanceMessage(nodeGuidance.title, nodeGuidance.body, nodeGuidance.actions, "compact")}
         <div class="results-grid compact">
-          <span>Map</span><strong>${escapeHtml(map?.name ?? node.mapId)}</strong>
+          <span>Map</span><strong>${escapeHtml(mapLabel)}</strong>
           <span>Difficulty</span><strong>${titleCase(node.difficulty)}</strong>
           <span>Enemy</span><strong>${escapeHtml(faction?.name ?? node.enemyFactionId)}</strong>
           <span>Enemy Style</span><strong>${escapeHtml(personality ? `${personality.name}: ${personality.shortDescription}` : "Balanced Warlord: Mixed expansion and attacks.")}</strong>

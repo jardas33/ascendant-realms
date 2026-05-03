@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.2.1 Prototype Baseline Candidate - 2026-05-03
+
+This checkpoint packages the v0.2 feature baseline with the follow-up technical and UX stabilization work. It does not add gameplay or change balance. The visible in-game menu still labels the playable prototype as `Prototype v0.2`; `v0.2.1` is the release-baseline candidate for the current docs, verification expectations, refactor state, and HUD/fog regression coverage.
+
+### Completed Since v0.2
+
+- CampaignRules module split completed: `CampaignRules.ts` is now a compatibility facade over focused pure campaign modules for nodes, choices, rewards, reputation, modifiers, town services, and rival hooks.
+- HUD interaction polish completed: battle command hover no longer flickers under routine HUD refresh, and long side-panel scroll positions are preserved across refreshes.
+- Captured-site fog polish completed: player-owned captured resource sites remain locally revealed after the capturing units move away.
+- Permanent Playwright regression coverage added for command hover stability, side-panel scroll preservation, captured resource-site fog visibility, and desktop/tablet/mobile battle command reachability.
+- Rival/Nemesis Persistence V1 and Rival Rewards and Trophies V1 are part of the completed v0.2.1 baseline rather than the next milestone.
+
+### Current Release Verification Expectations
+
+- `npm test`: expected to pass with 36 test files and 210 tests.
+- `npm run build`: expected to pass with the known Vite large-chunk warning only.
+- `npm run test:e2e -- --reporter=line`: latest full suite passed with 49 Playwright tests after the HUD/fog regression coverage was added.
+- `npm run playtest:sim`: latest simulator baseline passed with 180 deterministic runs, no structural too-hard nodes, no structural too-easy nodes, Ashen Outpost beatable, and no Stronghold warnings.
+- Optional Browser Use preview sanity remains recommended for a visible production-preview check and browser console-error check.
+
+### Next Phase
+
+- Next phase: **v0.3 planning: Chapter 2 vertical slice**.
+- Before adding Chapter 2 content, do a human-paced readability pass on retinue, rival rewards/trophies, HUD hover/scroll feel, captured-site fog readability, and Ashen Outpost pressure.
+- Continue to avoid workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless explicitly requested.
+
 ## v0.2 Prototype Baseline - 2026-05-02
 
 This release baseline captures the current playable Ascendant Realms prototype so it is easier to share, test, and continue from. It does not represent a content-complete game; it is the stable RTS/RPG campaign spine with Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 included.
@@ -75,9 +101,9 @@ This release baseline captures the current playable Ascendant Realms prototype s
 - Telemetry includes assigned rival commander id, defeated state, attack-join timing, losses involving the rival, objective completion, rival state before/after, rival outcome, active rival modifiers, first-defeat reward state, duplicate prevention, and trophy-earned state.
 - Latest simulator status: no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, and no Stronghold warnings.
 
-### Current Verification Status
+### Historical Verification Status
 
-Latest full verification recorded after Rival Rewards and Trophies V1:
+Latest full verification recorded at the v0.2 point after Rival Rewards and Trophies V1:
 
 - `npm test`: 36 test files, 210 tests passing.
 - `npm run build`: passing with the known Vite large-chunk warning.
@@ -86,7 +112,7 @@ Latest full verification recorded after Rival Rewards and Trophies V1:
 
 Known release caveat: the Vite production build reports that the main Phaser bundle is larger than the default 500 kB chunk warning threshold. This is tracked as a warning, not a failure.
 
-### Next Milestone
+### Historical Next Milestone
 
-- Next recommended pass: Rival Rewards Balance And Readability Review, focused on whether first-defeat rewards and trophies feel satisfying without becoming mandatory progression.
-- Keep the next slice compact. Do not move into workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, or broad army-management systems yet.
+- At the v0.2 baseline point, the next recommended pass was Rival Rewards Balance And Readability Review.
+- This is now superseded by the v0.2.1 baseline candidate above; the current next phase is `v0.3 planning: Chapter 2 vertical slice`.

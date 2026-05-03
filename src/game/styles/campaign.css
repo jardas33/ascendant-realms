@@ -277,6 +277,10 @@
   border-color: rgba(143, 216, 155, 0.64);
 }
 
+.campaign-node.locked span {
+  color: #aeb6ad;
+}
+
 .campaign-node.selected {
   border-color: #f0d978;
   box-shadow:
@@ -309,6 +313,49 @@
   color: #c8d0bd;
   line-height: 1.45;
   overflow-wrap: anywhere;
+}
+
+.chapter-list {
+  display: grid;
+  gap: 10px;
+}
+
+.chapter-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid rgba(246, 237, 180, 0.18);
+  background: rgba(8, 12, 12, 0.34);
+}
+
+.chapter-card > div {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chapter-card strong {
+  color: #f6edb4;
+}
+
+.chapter-card span,
+.chapter-card small {
+  color: #c8d0bd;
+}
+
+.chapter-card p {
+  margin: 0;
+  color: #d7e8de;
+  line-height: 1.4;
+}
+
+.chapter-card.upcoming {
+  border-color: rgba(116, 211, 242, 0.36);
+}
+
+.chapter-card.locked {
+  filter: grayscale(0.35);
 }
 
 .event-text {

@@ -183,9 +183,18 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   test("new campaign flow opens the campaign map and blocks locked nodes", async ({ page }) => {
     await startNewCampaign(page);
 
+    await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
+    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
+    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: The Cinderfen Road");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
     await page.getByTestId("campaign-node-aether_well_ruins").click();
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Upcoming/i);
+    await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await expect(page.locator(".campaign-node-details")).toContainText("Future battle locked");
+    await expect(page.locator(".campaign-node-details")).toContainText("No battle launch");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
   });
 

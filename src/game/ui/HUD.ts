@@ -13,7 +13,6 @@ export class HUD {
   private deferredMarkup = "";
   private pointerInsideStablePanel = false;
   private forceNextUpdate = false;
-  private deferredFlushId: number | undefined;
 
   constructor(callbacks: HUDCallbacks) {
     const root = document.getElementById("ui-root");
@@ -72,6 +71,7 @@ export class HUD {
       }
       if (handled) {
         this.deferredMarkup = "";
+        this.pointerInsideStablePanel = false;
         this.forceNextUpdate = true;
       }
     };
@@ -118,7 +118,6 @@ export class HUD {
     this.root.removeEventListener("click", this.clickHandler);
     this.root.removeEventListener("pointerover", this.pointerOverHandler);
     this.root.removeEventListener("pointerout", this.pointerOutHandler);
-    this.clearDeferredFlush();
     this.root.className = "ui-root";
     this.root.innerHTML = "";
     this.lastMarkup = "";
@@ -148,26 +147,9 @@ export class HUD {
 
   private deferMarkup(markup: string): void {
     this.deferredMarkup = markup;
-    if (this.deferredFlushId !== undefined) {
-      return;
-    }
-
-    this.deferredFlushId = window.setTimeout(() => {
-      this.deferredFlushId = undefined;
-      this.flushDeferredMarkup();
-    }, 180);
-  }
-
-  private clearDeferredFlush(): void {
-    if (this.deferredFlushId === undefined) {
-      return;
-    }
-    window.clearTimeout(this.deferredFlushId);
-    this.deferredFlushId = undefined;
   }
 
   private applyMarkup(markup: string): void {
-    this.clearDeferredFlush();
     const scrollState = captureScrollState(this.root);
     this.root.className = "ui-root battle-ui";
     this.root.innerHTML = markup;

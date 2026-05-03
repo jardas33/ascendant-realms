@@ -2,6 +2,7 @@ import { ABILITIES } from "../abilities";
 import { AI_PERSONALITIES } from "../aiPersonalities";
 import { BUILDINGS } from "../buildings";
 import { CAMPAIGN_NODES } from "../campaignNodes";
+import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "../enemyHeroes";
 import { FACTIONS } from "../factions";
@@ -19,7 +20,7 @@ import { idsFor, type ValidationContext } from "./ValidationTypes";
 import { validateAbilities, validateHeroClasses, validateSkillNodes } from "./validateAbilities";
 import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
-import { validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
+import { validateCampaignChapters, validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
 import { validateEnemyHeroes } from "./validateEnemyHeroes";
 import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
@@ -47,6 +48,7 @@ export function validateContent(): string[] {
     rewardTableIds: idsFor(REWARD_TABLES, "reward table", errors),
     upgradeIds: idsFor(UPGRADES, "upgrade", errors),
     strongholdUpgradeIds: idsFor(STRONGHOLD_UPGRADES, "stronghold upgrade", errors),
+    campaignChapterIds: idsFor(CAMPAIGN_CHAPTERS, "campaign chapter", errors),
     campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors),
     aiPersonalityIds: idsFor(AI_PERSONALITIES, "AI personality", errors),
     campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
@@ -67,6 +69,7 @@ export function validateContent(): string[] {
   validateRewardTables(errors, context);
   validateRivalRewards(errors, context);
   validateStrongholdUpgrades(errors, context);
+  validateCampaignChapters(errors, context);
   validateCampaignNodes(errors, context);
   validateReputationEffects(errors, context);
   validateUpgrades(errors, context);

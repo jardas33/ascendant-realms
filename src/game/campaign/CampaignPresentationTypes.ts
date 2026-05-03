@@ -1,5 +1,6 @@
-import type { CampaignNodeDefinition, CampaignNodeStatus } from "../core/GameTypes";
+import type { CampaignChapterStatus, CampaignNodeDefinition, CampaignNodeStatus } from "../core/GameTypes";
 import type { RivalIntelEntry, RivalTrophyIntelEntry } from "../core/RivalRules";
+import type { CampaignChapterViewModel as CampaignChapterRulesViewModel } from "../core/campaign/CampaignChapterRules";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 export interface CampaignNodeViewModel {
@@ -28,11 +29,16 @@ export interface CampaignReputationViewModel {
   activeEffects: CampaignReputationEffectViewModel[];
 }
 
+export interface CampaignChapterViewModel extends CampaignChapterRulesViewModel {
+  status: CampaignChapterStatus;
+}
+
 export interface CampaignMapViewModel {
   heroSave: HeroSaveData;
   campaignSave: CampaignSaveData;
   selectedNode?: CampaignNodeDefinition;
   nodes: CampaignNodeViewModel[];
+  chapters: CampaignChapterViewModel[];
   progressSummary: string;
   campaignStateLabel: string;
   reputation: CampaignReputationViewModel;

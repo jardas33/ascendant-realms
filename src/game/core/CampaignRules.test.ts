@@ -5,7 +5,8 @@ import {
   completeCampaignNodeWithRewards,
   createStartedCampaignSave,
   getCampaignChoiceAvailability,
-  getCampaignNodeStatus
+  getCampaignNodeStatus,
+  getCampaignProgressSummary
 } from "./CampaignRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
@@ -20,6 +21,40 @@ describe("campaign rules", () => {
 
     expect(borderVillage && getCampaignNodeStatus(borderVillage, campaign)).toBe("available");
     expect(oldRoad && getCampaignNodeStatus(oldRoad, campaign)).toBe("locked");
+  });
+
+  it("keeps Chapter 2 placeholder nodes locked outside playable progress", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing"
+      ]
+    });
+    const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook")!;
+    const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing")!;
+
+    expect(getCampaignNodeStatus(overlook, campaign)).toBe("locked");
+    expect(getCampaignNodeStatus(crossing, campaign)).toBe("locked");
+    expect(getCampaignProgressSummary(campaign)).toBe("8/8 nodes completed");
   });
 
   it("calculates reputation ranks from simple thresholds", () => {

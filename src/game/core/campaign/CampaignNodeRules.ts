@@ -17,6 +17,9 @@ export function createStartedCampaignSave(
 }
 
 export function getCampaignNodeStatus(node: CampaignNodeDefinition, save: CampaignSaveData): CampaignNodeStatus {
+  if (node.isPlaceholder) {
+    return "locked";
+  }
   if (save.completedNodeIds.includes(node.id)) {
     return "completed";
   }
@@ -70,6 +73,7 @@ export function completeCampaignNode(
 }
 
 export function getCampaignProgressSummary(save: CampaignSaveData, nodes: CampaignNodeDefinition[] = CAMPAIGN_NODES): string {
-  const completed = nodes.filter((node) => save.completedNodeIds.includes(node.id)).length;
-  return `${completed}/${nodes.length} nodes completed`;
+  const currentNodes = nodes.filter((node) => !node.isPlaceholder);
+  const completed = currentNodes.filter((node) => save.completedNodeIds.includes(node.id)).length;
+  return `${completed}/${currentNodes.length} nodes completed`;
 }

@@ -1,5 +1,6 @@
 import type {
   BattleDifficulty,
+  CampaignChapterId,
   EquipmentSlot,
   HeroPrimaryStats,
   ItemInstance,
@@ -127,5 +128,6 @@ export interface CampaignSaveData {
   retinueUnits: RetinueUnitSaveData[];
   rivals: CampaignRivalSaveData[];
   rivalTrophies: RivalTrophySaveData[];
+  selectedChapterId: CampaignChapterId;
   selectedNodeId?: string;
 }

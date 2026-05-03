@@ -761,6 +761,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       rank: "Veteran",
       xp: 140
     });
+    await expect(page.getByTestId("battle-status")).toContainText("reached Veteran");
     await expect(page.locator(".stat-list")).toContainText("Rank Veteran");
     await expect(page.getByTestId("selected-unit-stats")).toContainText("XP 140/230 XP to Elite");
     await expect(page.locator(".stat-list")).toContainText("Kills 0");
@@ -979,11 +980,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("rival-intel-panel")).toContainText("+5% HP next encounter");
     await page.getByTestId("campaign-node-aether_well_ruins").click();
     await expect(page.locator(".campaign-node-details")).toContainText("Rival Status");
+    await expect(page.locator(".campaign-node-details")).toContainText("Enemy Commander");
+    await expect(page.locator(".campaign-node-details")).toContainText("Veyra of the Cinders, Hexfire Seer");
     await expect(page.locator(".campaign-node-details")).toContainText("Escaped - Wary");
 
     await page.getByTestId("campaign-start-node").click();
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Enemy commander: Veyra of the Cinders, Hexfire Seer");
     await expect(page.getByTestId("battle-status")).toContainText("Rival warning: Veyra of the Cinders returns with +5% HP");
 
     const defeated = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.defeatEnemyHero?.());
@@ -1354,6 +1358,179 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await page.keyboard.press("Escape");
     await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
+  });
+
+  test("battle HUD keeps hovered command buttons stable across routine refreshes", async ({ page }) => {
+    await startFirstClaimSkirmish(page, "Hover QA");
+    await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
+    await selectPlayerCommandHallFromScene(page);
+
+    const barracksButton = page.locator("button[data-action='build'][data-id='barracks']");
+    await expect(barracksButton).toBeEnabled();
+    const hoverPoint = await barracksButton.evaluate((button) => {
+      (button as HTMLButtonElement & { __hudStableSentinel?: string }).__hudStableSentinel = "barracks-build-hover";
+      const rect = button.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    });
+
+    await barracksButton.hover();
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.resources.player.crowns += 1;
+      scene.statusMessage = "HUD hover stability refresh";
+      (window as any).__hudHoverRefreshAt = performance.now();
+      scene.refreshBattleHud(0.11);
+    });
+    await page.waitForFunction(() => performance.now() - ((window as any).__hudHoverRefreshAt ?? 0) > 260);
+
+    const hoverState = await page.evaluate((point) => {
+      const button = document.querySelector<HTMLButtonElement>("button[data-action='build'][data-id='barracks']");
+      const hit = document.elementFromPoint(point.x, point.y)?.closest("button[data-action='build'][data-id='barracks']");
+      return {
+        sameNode: Boolean((button as (HTMLButtonElement & { __hudStableSentinel?: string }) | null)?.__hudStableSentinel === "barracks-build-hover"),
+        pointerStillOnButton: Boolean(button && hit === button),
+        enabled: Boolean(button && !button.disabled),
+        label: button?.getAttribute("aria-label") ?? ""
+      };
+    }, hoverPoint);
+    expect(hoverState.sameNode).toBe(true);
+    expect(hoverState.pointerStillOnButton).toBe(true);
+    expect(hoverState.enabled).toBe(true);
+    expect(hoverState.label).toContain("Build Barracks");
+
+    await barracksButton.click();
+    await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
+  });
+
+  test("battle HUD preserves side-panel scroll across forced refreshes", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 640 });
+    await startFirstClaimSkirmish(page, "Scroll QA");
+    await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
+    await selectPlayerCommandHallFromScene(page);
+
+    const before = await page.evaluate(() => {
+      const panel = document.querySelector<HTMLElement>(".side-panel");
+      if (!panel) {
+        throw new Error("Missing battle side panel.");
+      }
+      const maxScrollTop = panel.scrollHeight - panel.clientHeight;
+      panel.scrollTop = Math.min(160, maxScrollTop);
+      return {
+        scrollTop: panel.scrollTop,
+        scrollHeight: panel.scrollHeight,
+        clientHeight: panel.clientHeight,
+        text: panel.textContent ?? ""
+      };
+    });
+    expect(before.text).toContain("Command Hall");
+    expect(before.scrollHeight).toBeGreaterThan(before.clientHeight);
+    expect(before.scrollTop).toBeGreaterThan(0);
+
+    const after = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.resources.player.crowns += 1;
+      scene.refreshBattleHud(0);
+      const panel = document.querySelector<HTMLElement>(".side-panel");
+      if (!panel) {
+        throw new Error("Missing battle side panel after refresh.");
+      }
+      return {
+        scrollTop: panel.scrollTop,
+        scrollHeight: panel.scrollHeight,
+        clientHeight: panel.clientHeight,
+        text: panel.textContent ?? ""
+      };
+    });
+    expect(after.text).toContain("Command Hall");
+    expect(after.scrollHeight).toBeGreaterThan(after.clientHeight);
+    expect(after.scrollTop).toBeGreaterThanOrEqual(before.scrollTop - 2);
+  });
+
+  test("captured resource sites stay locally visible under fog after units leave", async ({ page }) => {
+    await startFirstClaimSkirmish(page, "Fog Capture QA");
+
+    const siteVisibility = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const site = scene.captureSites.find((entry: any) => entry.definition.id === "stone_quarry");
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!site || !commandHall) {
+        throw new Error("Expected Stone Quarry and player Command Hall.");
+      }
+
+      const moveAway = { x: commandHall.position.x, y: commandHall.position.y };
+      scene.units
+        .filter((unit: any) => unit.team === "player" && unit.alive)
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(moveAway.x + index * 12, moveAway.y + 120 + index * 8);
+          unit.moveTarget = undefined;
+          unit.attackTargetId = undefined;
+        });
+      scene.hero.setPosition(moveAway.x, moveAway.y + 80);
+      site.owner = "player";
+      site.capturingTeam = undefined;
+      site.captureProgress = 0;
+
+      scene.updateFogOfWar(0, true);
+      scene.refreshBattleHud(0);
+
+      const minimap = scene.createMinimapSnapshot();
+      const siteMarker = minimap.markers.find((marker: any) => marker.id === site.id);
+      const nearbyPlayerUnitCount = scene.units.filter(
+        (unit: any) =>
+          unit.team === "player" &&
+          unit.alive &&
+          Math.hypot(unit.position.x - site.position.x, unit.position.y - site.position.y) <= site.definition.radius + 180
+      ).length;
+
+      return {
+        fogActive: scene.isFogActive(),
+        siteId: site.id,
+        owner: site.owner,
+        nearbyPlayerUnitCount,
+        siteViewVisible: Boolean(site.view?.visible),
+        siteFogVisible: scene.fogOfWar?.isEntityVisible(site.position, site.definition.radius) ?? false,
+        siteCellState: scene.fogOfWar?.stateAt(site.position) ?? "missing",
+        minimapFogActive: minimap.fog.enabled,
+        minimapMarker: siteMarker
+          ? {
+              id: siteMarker.id,
+              kind: siteMarker.kind,
+              team: siteMarker.team,
+              resource: siteMarker.resource
+            }
+          : undefined,
+        renderedSiteMarkers: document.querySelectorAll(".minimap-site").length
+      };
+    });
+
+    expect(siteVisibility.fogActive).toBe(true);
+    expect(siteVisibility.minimapFogActive).toBe(true);
+    expect(siteVisibility.owner).toBe("player");
+    expect(siteVisibility.nearbyPlayerUnitCount).toBe(0);
+    expect(siteVisibility.siteViewVisible).toBe(true);
+    expect(siteVisibility.siteFogVisible).toBe(true);
+    expect(siteVisibility.siteCellState).toBe("visible");
+    expect(siteVisibility.minimapMarker).toMatchObject({
+      id: siteVisibility.siteId,
+      kind: "capture-site",
+      team: "player",
+      resource: "stone"
+    });
+    expect(siteVisibility.renderedSiteMarkers).toBeGreaterThan(0);
   });
 
   test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input", async ({ page }) => {

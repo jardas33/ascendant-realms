@@ -5,6 +5,7 @@ import {
   isRivalModifierId
 } from "../core/RivalRules";
 import { isCampaignModifierId } from "../data/campaignModifiers";
+import { DEFAULT_CAMPAIGN_CHAPTER_ID, isCampaignChapterId } from "../data/campaignChapters";
 import { CAMPAIGN_NODE_BY_ID, ENEMY_HERO_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { isStrongholdUpgradeId } from "../data/strongholdUpgrades";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
@@ -146,6 +147,7 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     retinueUnits: normalizeRetinueUnits(value.retinueUnits),
     rivals: normalizeRivalStates(value.rivals),
     rivalTrophies: normalizeRivalTrophies(value.rivalTrophies),
+    selectedChapterId: isCampaignChapterId(value.selectedChapterId) ? value.selectedChapterId : DEFAULT_CAMPAIGN_CHAPTER_ID,
     selectedNodeId: typeof value.selectedNodeId === "string" ? value.selectedNodeId : undefined
   };
 }

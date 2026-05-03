@@ -3,6 +3,7 @@ import type {
   BattleMapDefinition,
   BuildingDefinition,
   CampaignNodeDefinition,
+  CampaignChapterDefinition,
   FactionDefinition,
   EnemyHeroAbilityDefinition,
   EnemyHeroDefinition,
@@ -21,6 +22,7 @@ import { ABILITIES } from "./abilities";
 import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BUILDINGS } from "./buildings";
 import { CAMPAIGN_NODES } from "./campaignNodes";
+import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "./enemyHeroes";
 import { FACTIONS } from "./factions";
@@ -45,6 +47,7 @@ export const HERO_CLASS_BY_ID: Record<string, HeroClassDefinition> = toIndex(HER
 export const ORIGIN_BY_ID: Record<string, OriginDefinition> = toIndex(ORIGINS);
 export const MAP_BY_ID: Record<string, BattleMapDefinition> = toIndex(MAPS);
 export const CAMPAIGN_NODE_BY_ID: Record<string, CampaignNodeDefinition> = toIndex(CAMPAIGN_NODES);
+export const CAMPAIGN_CHAPTER_BY_ID: Record<string, CampaignChapterDefinition> = toIndex(CAMPAIGN_CHAPTERS);
 export const FACTION_BY_ID: Record<string, FactionDefinition> = toIndex(FACTIONS);
 export const ENEMY_HERO_BY_ID: Record<string, EnemyHeroDefinition> = toIndex(ENEMY_HEROES);
 export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition> = toIndex(ENEMY_HERO_ABILITIES);
@@ -116,6 +119,14 @@ export function requireCampaignNode(id: string): CampaignNodeDefinition {
   const definition = CAMPAIGN_NODE_BY_ID[id];
   if (!definition) {
     throw new Error(`Unknown campaign node id: ${id}`);
+  }
+  return definition;
+}
+
+export function requireCampaignChapter(id: string): CampaignChapterDefinition {
+  const definition = CAMPAIGN_CHAPTER_BY_ID[id];
+  if (!definition) {
+    throw new Error(`Unknown campaign chapter id: ${id}`);
   }
   return definition;
 }

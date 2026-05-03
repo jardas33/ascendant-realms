@@ -21,6 +21,7 @@ import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { getReputationBattleLaunchModifiers } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 import { formatChoiceCostSummary, formatChoiceRewardSummary } from "../campaign/CampaignChoicePanel";
+import { renderCampaignChapterPanel } from "../campaign/CampaignChapterPanel";
 import { createCampaignMapViewModel } from "../campaign/CampaignMapViewModel";
 import {
   canStartCampaignNode,
@@ -84,7 +85,12 @@ export class CampaignMapScene extends Phaser.Scene {
       const nodeButton = target.closest<HTMLButtonElement>("button[data-campaign-node]");
       if (nodeButton) {
         this.selectedNodeId = nodeButton.dataset.campaignNode ?? this.selectedNodeId;
-        this.campaignSave = { ...this.campaignSave, selectedNodeId: this.selectedNodeId };
+        const selectedNode = this.selectedNode();
+        this.campaignSave = {
+          ...this.campaignSave,
+          selectedNodeId: this.selectedNodeId,
+          selectedChapterId: selectedNode?.chapterId ?? this.campaignSave.selectedChapterId
+        };
         SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
         this.render();
         return;
@@ -134,6 +140,11 @@ export class CampaignMapScene extends Phaser.Scene {
       return;
     }
     const status = getCampaignNodeStatus(node, this.campaignSave);
+    if (node.isPlaceholder) {
+      this.message = node.placeholderDescription ?? "That campaign node is a future placeholder.";
+      this.render();
+      return;
+    }
     if (status !== "available") {
       this.message = "That node is not available yet.";
       this.render();
@@ -275,6 +286,8 @@ export class CampaignMapScene extends Phaser.Scene {
               ${renderReputation(viewModel.reputation)}
               <h2>Active Modifiers</h2>
               ${renderActiveModifiers(this.campaignSave)}
+              <h2>Campaign Chapters</h2>
+              ${renderCampaignChapterPanel(viewModel.chapters)}
               <h2>Nodes</h2>
               <div class="campaign-map-grid">
                 ${viewModel.nodes.map((node) => renderNodeButton(node)).join("")}

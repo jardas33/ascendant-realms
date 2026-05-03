@@ -1028,6 +1028,9 @@ export class BattleScene extends Phaser.Scene {
     if (x !== undefined && y !== undefined) {
       FloatingText.show(this, message, x, y, color);
     }
+    if (this.uiSystem && this.hero && !this.runtime.ended) {
+      this.refreshBattleHud(0);
+    }
   }
 
   private installTestHooks(): void {

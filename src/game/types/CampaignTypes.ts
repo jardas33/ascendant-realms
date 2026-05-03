@@ -13,6 +13,19 @@ export type CampaignModifierTrigger = "next_battle" | "next_ashen_battle" | "nex
 
 export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
 
+export type CampaignChapterId = "border_marches" | "cinderfen_road";
+
+export type CampaignChapterStatus = "unlocked" | "locked" | "upcoming";
+
+export interface CampaignChapterDefinition {
+  id: CampaignChapterId;
+  title: string;
+  shortDescription: string;
+  nodeIds: string[];
+  unlockPrerequisiteNodeIds: string[];
+  isUpcoming?: boolean;
+}
+
 export interface CampaignModifierDefinition {
   id: CampaignModifierId;
   name: string;
@@ -72,12 +85,17 @@ export interface CampaignNodeDefinition {
   id: string;
   name: string;
   description: string;
+  chapterId?: CampaignChapterId;
   nodeType: CampaignNodeType;
   difficulty: BattleDifficulty;
   mapId: string;
   enemyFactionId: string;
   aiPersonalityId?: EnemyAIPersonalityId;
   enemyHeroId?: string;
+  isPlaceholder?: boolean;
+  placeholderLabel?: string;
+  placeholderDescription?: string;
+  futureMapName?: string;
   prerequisites: string[];
   rewards: CampaignNodeRewardDefinition;
   eventText?: string;

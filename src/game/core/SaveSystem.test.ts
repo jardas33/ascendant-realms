@@ -229,6 +229,7 @@ describe("calculateLevelFromXp", () => {
       ],
       resources: { crowns: 25, stone: -5, iron: 12.8, aether: 3 },
       resourcesSpent: { crowns: 60, stone: -4, iron: 2, aether: 1 },
+      selectedChapterId: "missing_chapter",
       selectedNodeId: "old_stone_road"
     });
 
@@ -279,6 +280,7 @@ describe("calculateLevelFromXp", () => {
         effect: "First defeat claimed."
       }
     ]);
+    expect(normalized?.selectedChapterId).toBe("border_marches");
     expect(normalized?.selectedNodeId).toBe("old_stone_road");
     expect(normalized?.resourcesSpent).toEqual({ crowns: 60, stone: 0, iron: 2, aether: 1 });
   });
@@ -303,6 +305,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.retinueUnits).toEqual([]);
     expect(normalized?.rivals).toEqual([]);
     expect(normalized?.rivalTrophies).toEqual([]);
+    expect(normalized?.selectedChapterId).toBe("border_marches");
   });
 
   it("migrates legacy stronghold upgrade ids into rank data", () => {

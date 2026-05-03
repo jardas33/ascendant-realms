@@ -17,7 +17,7 @@ export function selectedCampaignNode(selectedNodeId: string): CampaignNodeDefini
 }
 
 export function canStartCampaignNode(node: CampaignNodeDefinition | undefined, campaignSave: CampaignSaveData): boolean {
-  return Boolean(node && !node.choices?.length && getCampaignNodeStatus(node, campaignSave) === "available");
+  return Boolean(node && !node.isPlaceholder && !node.choices?.length && getCampaignNodeStatus(node, campaignSave) === "available");
 }
 
 export function formatCampaignNodeList(nodeIds: string[]): string {

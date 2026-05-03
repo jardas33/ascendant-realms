@@ -2,34 +2,34 @@
 
 Run date: 2026-04-26 onward
 
-Last updated: 2026-05-02 20:32 -04:00
+Last updated: 2026-05-03 00:16 -04:00
 
 Scope: consolidated manual notes, automated verification, Browser Use sanity checks, and remaining manual-only QA areas for `LLM_GAME_HANDOFF.md`.
 
 Tester: Codex.
 
-## Latest Automated Verification - 2026-05-02 v0.2+ Rival Rewards and Trophies V1
+## Latest Automated Verification - 2026-05-03 v0.2.1 Baseline Candidate
 
-These are the current authoritative automated results after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, and the latest docs/checkpoint consolidation. Older per-pass results remain below as historical notes.
+These are the current authoritative automated results after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Tier II, reputation hooks, randomized item affixes V1, the CampaignRules split, HUD/fog polish, and permanent HUD/fog regression coverage. Older per-pass results remain below as historical notes.
 
 ```text
 npm test
-PASS: 36 test files passed, 210 tests passed during the Rival Rewards and Trophies V1 pass
+PASS: 36 test files passed, 210 tests passed during the v0.2.1 baseline candidate docs pass
 
 npm run build
-PASS: TypeScript compile passed, Vite production build passed during the Rival Rewards and Trophies V1 pass
+PASS: TypeScript compile passed, Vite production build passed during the v0.2.1 baseline candidate docs pass
 Known warning: main Phaser bundle exceeds Vite's 500 kB chunk warning threshold. This is not a failure.
 
 npm run test:e2e -- --reporter=line
-PASS: 45 Playwright tests passed in 23.0m. The e2e suite is slow; use a long timeout.
+Latest full recorded result: 49 Playwright tests passed after adding permanent HUD hover, side-panel scroll, captured-site fog, and command-reachability regression coverage. The e2e suite is slow; use a long timeout.
 
 npm run playtest:sim
-PASS: regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json cover 180 simulated runs across 60 campaign battle node/profile summaries; no too-easy nodes; no structural too-hard nodes; Ashen Outpost beatable: yes; no Stronghold warnings
+Latest simulator baseline: regenerated PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json cover 180 simulated runs across 60 campaign battle node/profile summaries; no too-easy nodes; no structural too-hard nodes; Ashen Outpost beatable: yes; no Stronghold warnings
 ```
 
-Current feature coverage includes Retinue rules/deployment/readability, Unit Veterancy rank/results display, Stronghold Tier II launch effects, affixed rewards and inventory stat contribution, reputation effects, enemy hero data validation, campaign node enemy-hero references, rival commander objective/results credit, persistent rival state normalization, campaign rival intel preview, Results rival outcome copy, battle-launch rival modifiers, first-defeat rival rewards, duplicate reward prevention, trophy save/load normalization, Campaign Map trophy display, Results trophy copy, and simulator telemetry for rival state before/after, outcome, modifiers, join timing, losses involving the rival, first-defeat rewards, duplicate prevention, and trophies.
+Current feature coverage includes Retinue rules/deployment/readability, Unit Veterancy rank/results display, Stronghold Tier II launch effects, affixed rewards and inventory stat contribution, reputation effects, enemy hero data validation, campaign node enemy-hero references, rival commander objective/results credit, persistent rival state normalization, campaign rival intel preview, Results rival outcome copy, battle-launch rival modifiers, first-defeat rival rewards, duplicate reward prevention, trophy save/load normalization, Campaign Map trophy display, Results trophy copy, CampaignRules facade/module behavior, HUD command hover stability, side-panel scroll preservation, captured-site fog visibility, desktop/tablet/mobile command reachability, and simulator telemetry for rival state before/after, outcome, modifiers, join timing, losses involving the rival, first-defeat rewards, duplicate prevention, and trophies.
 
-The checkpoint containing Enemy Hero / Rival Commander V1 and v0.2 polish was committed and pushed. Before this docs-consolidation pass, `main` and `origin/main` were synced at `6c210c2d2a463cffec182ebb78cdcbf102b4d666`.
+The checkpoint containing Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish was committed and pushed. Current HEAD before this v0.2.1 docs pass was `c277675`; the worktree also contained intentional uncommitted HUD/fog regression coverage and HUD refresh edits.
 
 Do not reset, checkout, delete, or revert work unless the user explicitly asks. Future dirty work should be treated as intentional until proven otherwise.
 
@@ -60,6 +60,8 @@ Earlier manual/browser method:
 - Human-paced Normal branch checks for Aether Well Ruins and Bandit Hillfort from a typical early campaign save, including Veyra and Gorak readability.
 - Human-paced Ashen Outpost assault with fog on, including Burned Shrine route readability, Captain Malrec/Hold the Line readability, fortress/tower pressure, and full-fight HUD clarity.
 - Subjective campaign choice feel: Marcher Camp spending, Chapel preparation, reputation hooks, Retinue Camp choices, rival commander rewards/trophies, and whether Stronghold purchases make early campaign prep feel too generous or just meaningfully strategic.
+- Rival and retinue readability still needs human-style review or additional automated surrogate tests around decision clarity, satisfaction, and whether rewards feel optional rather than mandatory.
+- HUD hover/scroll feel and captured-site fog visibility now have automated regression checks, but the original bug was tactile and still deserves a human mouse-driven preview before release packaging.
 - Mixed retinue and mixed retinue plus Training Yard II/Quartermaster II on Ashen Outpost need human review because telemetry flags them as strong but not structurally too easy.
 
 No critical failures are currently known from automated verification.
