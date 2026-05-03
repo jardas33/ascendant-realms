@@ -58,7 +58,7 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-Checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1 preserves the Chapter 2 Cinderfen two-battle slice. The only post-checkpoint edits in this pass are DEVELOPMENT_CHECKPOINT.md and LLM_GAME_HANDOFF.md metadata updates recording the exact checkpoint hash and verification results. Preserve the checkpoint unless the user explicitly asks for a reset/revert.
+Checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1 preserves the Chapter 2 Cinderfen two-battle slice. The checkpoint and metadata follow-ups are pushed to origin/main. Preserve the checkpoint unless the user explicitly asks for a reset/revert.
 ```
 
 The checkpoint commit `e52636729f05f0b54c2896200aa57ceebc13e6b1` was created with message `Checkpoint Cinderfen two-battle Chapter 2 slice`. This metadata follow-up records that checkpoint. Do not reset or revert future edits unless the user explicitly asks.
@@ -72,7 +72,7 @@ e52636729f05f0b54c2896200aa57ceebc13e6b1
 Current branch sync status:
 
 ```text
-Before checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. After creating the checkpoint commit, `git status -sb` reported `## main...origin/main [ahead 1]` and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`. Push the checkpoint commit together with this metadata follow-up, then verify `git status -sb` reports `## main...origin/main` and `git rev-list --left-right --count origin/main...HEAD` reports `0 0`.
+Before checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. The checkpoint commit and metadata follow-ups were pushed to origin/main. Final post-push `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
 The pushed checkpoint preserves the Chapter 2 battle-slice edits. Preserve future dirty work unless the user explicitly asks for a different git action.
@@ -103,7 +103,7 @@ Branch and commit status:
 Pre-checkpoint sync check: `origin/main...HEAD` reported `0 0`.
 Checkpoint commit: e52636729f05f0b54c2896200aa57ceebc13e6b1
 Checkpoint message: Checkpoint Cinderfen two-battle Chapter 2 slice
-Post-checkpoint/pre-metadata status: `main...origin/main [ahead 1]`, with `origin/main...HEAD` reporting `0 1`.
+Post-push status: `main...origin/main`, with `origin/main...HEAD` reporting `0 0`.
 ```
 
 Remaining known risks:

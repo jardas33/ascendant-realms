@@ -123,8 +123,8 @@ Branch sync status:
 
 ```text
 Before the checkpoint commit, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
-Checkpoint commit `e52636729f05f0b54c2896200aa57ceebc13e6b1` was created locally, after which `git status -sb` reported `## main...origin/main [ahead 1]` and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`.
-This metadata follow-up is intended to be pushed together with the checkpoint commit. After the push, verify `git status -sb` reports `## main...origin/main` and `git rev-list --left-right --count origin/main...HEAD` reports `0 0`.
+Checkpoint commit `e52636729f05f0b54c2896200aa57ceebc13e6b1` was pushed successfully to `origin/main` with the checkpoint metadata follow-ups.
+Final post-push `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
 ## Remaining Known Risks
