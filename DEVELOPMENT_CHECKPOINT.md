@@ -121,7 +121,7 @@ Branch sync status:
 ```text
 Before the checkpoint commit, `git fetch origin main` completed and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` was pushed successfully to `origin/main`.
-This documentation follow-up records the pushed checkpoint hash and verification results.
+The checkpoint metadata follow-up was pushed successfully. Final `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
 ## Remaining Known Risks

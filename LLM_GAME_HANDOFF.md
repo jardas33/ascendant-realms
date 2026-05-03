@@ -72,7 +72,7 @@ Feature checkpoint commit:
 Current branch sync status:
 
 ```text
-Before the checkpoint commit, `git fetch origin main` completed and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` is pushed to origin/main. This metadata follow-up records that pushed checkpoint and should be pushed after the docs update.
+Before the checkpoint commit, `git fetch origin main` completed and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Checkpoint commit `6543f212431e18a5cbe916f9984797313513fe57` is pushed to origin/main. The checkpoint metadata follow-up was pushed successfully; final `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
 The pushed checkpoint preserves the Chapter 2 battle-slice edits. Preserve future dirty work unless the user explicitly asks for a different git action.
