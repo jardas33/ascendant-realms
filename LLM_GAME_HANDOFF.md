@@ -72,10 +72,10 @@ Feature checkpoint commit:
 Current branch sync status:
 
 ```text
-Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` is pushed to origin/main. After this metadata follow-up is pushed, final `git status -sb` should report `## main...origin/main`.
+Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` is pushed to origin/main. The checkpoint metadata follow-up was also pushed successfully, and final `git status -sb` reported `## main...origin/main`.
 ```
 
-The worktree is expected to be clean after the checkpoint metadata follow-up push. Preserve future dirty work unless the user explicitly asks for a different git action.
+The worktree is clean after the checkpoint metadata follow-up push. Preserve future dirty work unless the user explicitly asks for a different git action.
 
 ## v0.2.1 Prototype Baseline Candidate - 2026-05-03
 
@@ -150,7 +150,7 @@ Branch sync status:
 ```text
 `git fetch origin` completed before commit, and `main` was aligned with `origin/main`.
 Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was pushed successfully to `origin/main`.
-This metadata follow-up should be pushed after this section is committed; final expected status is `## main...origin/main`.
+The checkpoint metadata follow-up was pushed successfully; final `git status -sb` reported `## main...origin/main`.
 ```
 
 Remaining known risks:

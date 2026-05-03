@@ -119,7 +119,7 @@ Branch sync status at verification time:
 ```text
 Before the checkpoint commit, `git fetch origin` completed and `git status -sb` reported `## main...origin/main` with intentional dirty v0.2.1 docs, HUD/fog regression coverage edits, readability/planning docs, and Chapter 2 scaffold edits.
 Checkpoint commit `2d5b0cd58da7ed61967d41b02c3b17b28c1fcbf2` was pushed successfully to `origin/main`.
-This metadata follow-up records the pushed checkpoint. After the metadata follow-up is pushed, final `git status -sb` should report `## main...origin/main`.
+The checkpoint metadata follow-up was pushed successfully. Final `git status -sb` reported `## main...origin/main`.
 ```
 
 ## Remaining Known Risks
