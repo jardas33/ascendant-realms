@@ -58,7 +58,7 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-## main...origin/main after pushing checkpoint commit 59113746a09f5f1c2cbf053c640a24ab21e92b9b
+## main...origin/main after pushing checkpoint commit 59113746a09f5f1c2cbf053c640a24ab21e92b9b and checkpoint metadata
 ```
 
 The checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was created with message `Checkpoint rival persistence rewards and HUD fog polish` and pushed successfully with `git push origin main`. Before commit, `git status -sb` reported `## main...origin/main` with intentional dirty code, tests, telemetry, and documentation edits for Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, HUD interaction/captured-site fog polish, and this checkpoint documentation. Do not reset or revert future edits unless the user explicitly asks.
@@ -72,10 +72,10 @@ Feature checkpoint commit:
 Current branch sync status:
 
 ```text
-Checkpoint commit pushed to origin/main; `git status -sb` reported `## main...origin/main` immediately after that push. This metadata follow-up should be pushed after commit.
+Checkpoint commit pushed to origin/main; checkpoint metadata follow-up was also pushed. Final `git status -sb` reported `## main...origin/main`.
 ```
 
-The worktree now contains only this metadata follow-up after the verified checkpoint push. Preserve future edits unless the user explicitly asks for a different git action.
+The worktree is clean after the verified checkpoint push and metadata push. Preserve future edits unless the user explicitly asks for a different git action.
 
 ## Full Verification Checkpoint - 2026-05-02 22:56 -04:00
 
@@ -533,7 +533,7 @@ Checkpoint commit
 59113746a09f5f1c2cbf053c640a24ab21e92b9b
 
 Branch sync
-Checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was pushed successfully to `origin/main`. After that push, `git status -sb` reported `## main...origin/main`; this metadata follow-up should be pushed immediately after commit.
+Checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was pushed successfully to `origin/main`. The checkpoint metadata follow-up was also pushed; final `git status -sb` reported `## main...origin/main`.
 
 Focused item-affix verification on 2026-05-02 during this pass:
 

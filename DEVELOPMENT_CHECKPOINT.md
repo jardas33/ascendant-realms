@@ -120,7 +120,7 @@ Branch sync status at verification time:
 Before the checkpoint commit, git status reported `## main...origin/main` with intentional dirty code, test, telemetry, and documentation edits.
 Checkpoint commit `59113746a09f5f1c2cbf053c640a24ab21e92b9b` was pushed successfully to `origin/main`.
 After that push, `git status -sb` reported `## main...origin/main`.
-This metadata follow-up records the created checkpoint hash and should be pushed immediately after commit.
+The checkpoint metadata follow-up was also pushed; final `git status -sb` reported `## main...origin/main`.
 ```
 
 ## Remaining Known Risks
