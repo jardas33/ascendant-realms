@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-04 19:53 -04:00
+Updated: 2026-05-04 19:54 -04:00
 
 ## Checkpoint Scope
 
@@ -113,7 +113,7 @@ Checkpoint Cinderfen route reward audit and e2e helper cleanup
 Checkpoint commit hash:
 
 ```text
-PENDING: record after checkpoint commit is created.
+b8ab7e0e474f6020a2823cabfadd8b2a3e20f919
 ```
 
 Branch:
@@ -127,7 +127,8 @@ Branch sync status:
 ```text
 Before the checkpoint commit, `git status -sb` reported `## main...origin/main`.
 Before the checkpoint commit, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
-PENDING: record post-push branch sync after the checkpoint commit and metadata update are pushed.
+After the checkpoint commit and before this metadata update, `git status -sb` reported `## main...origin/main [ahead 1]`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`.
+PENDING: record final post-push branch sync after the checkpoint commit and metadata update are pushed.
 ```
 
 ## Remaining Known Risks
