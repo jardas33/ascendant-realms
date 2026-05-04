@@ -188,8 +188,85 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
       xp: 62,
       resources: { crowns: 40, stone: 22, iron: 18, aether: 10 }
     },
-    unlocks: [],
+    unlocks: ["cinderfen_aftermath"],
     x: 92,
     y: 32
+  },
+  {
+    id: "cinderfen_aftermath",
+    name: "Cinderfen Aftermath",
+    description:
+      "Chapter 2 aftermath event. With the watch road captured, decide how the army secures the route and answers the scars left in the cinder marsh.",
+    chapterId: "cinderfen_road",
+    nodeType: "event",
+    difficulty: "story",
+    mapId: "cinderfen_watchpost",
+    enemyFactionId: "ashen_covenant",
+    aiPersonalityId: "hexfire_cult",
+    prerequisites: ["cinderfen_watch"],
+    rewards: {},
+    eventText:
+      "Ash cools on the raised road. Ashen stragglers have scattered into the reeds, and the captured watch route can become a lifeline, a refuge, or a warning about what poisoned the fen.",
+    choices: [
+      {
+        id: "secure_watch_road",
+        label: "Secure the Watch Road",
+        description:
+          "Spend coin and stone on barricades, signal fires, and a basic fortified route. The Free Marches gain a steadier roadhead and local haulers promise support for the next campaign reward.",
+        costs: { crowns: 45, stone: 18 },
+        rewards: {
+          xp: 12,
+          resources: { stone: 10 },
+          modifierIds: ["local_support"],
+          reputationChanges: { free_marches: 4 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "aid_the_fenfolk",
+        label: "Aid the Fenfolk",
+        description:
+          "Turn captured stores toward refugees, reedcutters, and guides displaced by Ashen raids. The locals cannot spare soldiers, but they send salvage and names of safe paths.",
+        costs: { crowns: 40 },
+        rewards: {
+          xp: 12,
+          resources: { iron: 8 },
+          reputationChanges: { common_folk: 5 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "study_ashen_marks",
+        label: "Study the Ashen Marks",
+        description:
+          "Offer Aether to Old Faith readers and catalogue the burned sigils on the watch stones. They recover a pilgrim focus and a small reserve of clean Aether from the corrupted marsh.",
+        costs: { aether: 18 },
+        rewards: {
+          xp: 12,
+          resources: { aether: 6 },
+          itemIds: ["pilgrim_crook"],
+          reputationChanges: { old_faith: 4, ashen_covenant: -1 }
+        },
+        onceOnly: true,
+        completesNode: true
+      },
+      {
+        id: "display_malrecs_standard",
+        label: "Display Malrec's Standard",
+        description:
+          "Set Malrec's captured standard above the watch road. Scattered Ashen stragglers recognize the fallen banner and keep their distance from the new route.",
+        requirements: { rivalTrophyIds: ["trophy_malrec_outpost_standard"] },
+        rewards: {
+          reputationChanges: { free_marches: 1 }
+        },
+        onceOnly: true,
+        completesNode: true
+      }
+    ],
+    unlocks: [],
+    x: 88,
+    y: 14
   }
 ];

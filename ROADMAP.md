@@ -25,7 +25,7 @@ Completed v0.2.1 stabilization:
 
 Next phase:
 
-- **v0.3 current milestone: Chapter 2 Cinderfen two-battle slice implemented; next candidate is human verification plus one small non-battle consequence**.
+- **v0.3 current milestone: Chapter 2 Cinderfen two-battle slice plus one aftermath event implemented; next candidate is human verification before more content**.
 - Planning spec: `docs/CHAPTER_2_PLAN.md`.
 - First playable implementation spec: `docs/CHAPTER_2_IMPLEMENTATION_SPEC.md`.
 - Current slice report: `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`.
@@ -33,11 +33,12 @@ Next phase:
 - Implemented Chapter 2 support node: `cinderfen_waystation` is now a compact town/service node after `cinderfen_overlook`, with Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement using existing campaign choice/modifier/save rules.
 - Implemented Chapter 2 battle node: `cinderfen_crossing` is now playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map.
 - Implemented second Chapter 2 battle node: `cinderfen_watch` is now playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watchpost** battle map.
+- Implemented Chapter 2 aftermath node: `cinderfen_aftermath` is now a compact non-battle event after `cinderfen_watch`, with three modest baseline once-only choices plus a tiny optional Malrec trophy reputation choice using existing resource, reward, reputation, modifier, save, and duplicate-prevention rules.
 - Implemented Cinderfen identity hook: the Cinder Shrine first-capture Aether surge exists as a small battle-local tactical feature.
 - Working proposal: The Cinderfen Road remains a small ash-glass wetland/causeway chapter that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
-- Next scope target: verify the two-battle Cinderfen route through full gates and human readability, then consider one compact non-battle consequence if the slice stays green.
+- Next scope target: verify the Cinderfen route through full gates, two battles, aftermath, and human readability before considering any additional Chapter 2 content.
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
-- Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, and `cinderfen_watch` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, and both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
+- Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile, and the aftermath is event-only. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
 
 Must be stable before implementation:
 
@@ -59,7 +60,7 @@ Explicitly postponed for v0.3:
 
 Recommended focus before the next Chapter 2 addition:
 
-- Keep v0.3 compact and data-driven. The next milestone is human verification of the two-battle Cinderfen route plus one small non-battle consequence only after the slice remains green and readable.
+- Keep v0.3 compact and data-driven. The next milestone is human verification of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
@@ -131,7 +132,7 @@ Recommended focus before the next Chapter 2 addition:
 - Rival Rewards and Trophies V1 with data-driven first-defeat XP/resource/reputation/item rewards, duplicate prevention, save-backed trophy records, Campaign Map trophy display, Results reward/trophy copy, and playtest telemetry fields.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
-- Chapter 2 has a compact playable Cinderfen slice: `cinderfen_overlook` is the implemented event gate after Ashen Outpost, `cinderfen_crossing` unlocks after that event to launch `Cinderfen Causeway`, and `cinderfen_watch` unlocks after Cinderfen Crossing to launch `Cinderfen Watchpost`.
+- Chapter 2 has a compact playable Cinderfen slice: `cinderfen_overlook` is the implemented event gate after Ashen Outpost, `cinderfen_crossing` unlocks after that event to launch `Cinderfen Causeway`, `cinderfen_watch` unlocks after Cinderfen Crossing to launch `Cinderfen Watchpost`, and `cinderfen_aftermath` unlocks after Cinderfen Watch as a non-battle consequence node.
 - `cinderfen_waystation` is the implemented Chapter 2 support/town node after Cinderfen Overlook. It spends campaign resources on modest Cinderfen-only preparation without adding a broad shop, new faction, workers, enemy construction, diplomacy, procedural generation, or crafting.
 - Cinderfen Causeway uses the Cinder Shrine first-capture Aether surge as its compact battle-local tactical identity feature.
 - The only returning-rival consequence in Chapter 2 is the optional Malrec trophy event choice; there is no new Chapter 2 rival system.

@@ -122,17 +122,24 @@ describe("content validation", () => {
     expect(CAMPAIGN_NODES.find((node) => node.id === "marcher_camp")?.choices?.length).toBeGreaterThanOrEqual(6);
   });
 
-  it("defines Chapter 2 with a playable event gate, support node, and two compact battle maps", () => {
+  it("defines Chapter 2 with a playable event gate, support node, two compact battle maps, and aftermath event", () => {
     const chapterTwo = CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "cinderfen_road");
     const overlook = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_overlook");
     const waystation = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_waystation");
     const crossing = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_crossing");
     const watch = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_watch");
+    const aftermath = CAMPAIGN_NODES.find((node) => node.id === "cinderfen_aftermath");
 
     expect(CAMPAIGN_CHAPTERS.map((chapter) => chapter.id)).toEqual(["border_marches", "cinderfen_road"]);
     expect(chapterTwo).toMatchObject({
       title: "Chapter 2: Cinderfen Road",
-      nodeIds: ["cinderfen_overlook", "cinderfen_waystation", "cinderfen_crossing", "cinderfen_watch"],
+      nodeIds: [
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
       unlockPrerequisiteNodeIds: ["ashen_outpost"]
     });
     expect(overlook).toMatchObject({
@@ -196,12 +203,53 @@ describe("content validation", () => {
       difficulty: "normal",
       aiPersonalityId: "hexfire_cult",
       prerequisites: ["cinderfen_crossing"],
+      unlocks: ["cinderfen_aftermath"],
       rewards: {
         xp: 62,
         resources: { crowns: 40, stone: 22, iron: 18, aether: 10 }
       }
     });
     expect(MAPS.some((map) => map.id === "cinderfen_watchpost")).toBe(true);
+    expect(aftermath).toMatchObject({
+      nodeType: "event",
+      chapterId: "cinderfen_road",
+      mapId: "cinderfen_watchpost",
+      difficulty: "story",
+      prerequisites: ["cinderfen_watch"],
+      unlocks: []
+    });
+    expect(aftermath?.choices?.map((choice) => choice.id)).toEqual([
+      "secure_watch_road",
+      "aid_the_fenfolk",
+      "study_ashen_marks",
+      "display_malrecs_standard"
+    ]);
+    expect(aftermath?.choices?.find((choice) => choice.id === "secure_watch_road")).toMatchObject({
+      costs: { crowns: 45, stone: 18 },
+      rewards: {
+        xp: 12,
+        resources: { stone: 10 },
+        modifierIds: ["local_support"],
+        reputationChanges: { free_marches: 4 }
+      },
+      completesNode: true
+    });
+    expect(aftermath?.choices?.find((choice) => choice.id === "study_ashen_marks")).toMatchObject({
+      costs: { aether: 18 },
+      rewards: {
+        xp: 12,
+        resources: { aether: 6 },
+        itemIds: ["pilgrim_crook"],
+        reputationChanges: { old_faith: 4, ashen_covenant: -1 }
+      }
+    });
+    expect(aftermath?.choices?.find((choice) => choice.id === "display_malrecs_standard")).toMatchObject({
+      requirements: { rivalTrophyIds: ["trophy_malrec_outpost_standard"] },
+      rewards: {
+        reputationChanges: { free_marches: 1 }
+      },
+      completesNode: true
+    });
   });
 
   it("assigns valid AI personalities to battle nodes", () => {

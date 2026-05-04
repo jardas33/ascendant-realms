@@ -1,16 +1,18 @@
 # Chapter 2 Implementation Spec - Cinderfen Event, Support, And Two Battle Slice
 
-Status: event gate, compact support/town node, two compact playable battle nodes, compact Malrec trophy consequence, and one Cinderfen-specific tactical feature implemented.
+Status: event gate, compact support/town node, two compact playable battle nodes, compact aftermath event, compact Malrec trophy consequence, and one Cinderfen-specific tactical feature implemented.
 
 Date: 2026-05-03
 
-This document records the current compact Chapter 2 slice for Ascendant Realms. It intentionally stops at one playable event node, one support/town node, and two playable battle nodes using existing units and systems. It does not implement full Chapter 2.
+This document records the current compact Chapter 2 slice for Ascendant Realms. It intentionally stops at one playable preparation event node, one support/town node, two playable battle nodes, and one non-battle aftermath event using existing systems. It does not implement full Chapter 2.
 
 ## Scope Lock
 
 Chapter title: **Chapter 2: Cinderfen Road**.
 
 Playable event node: `cinderfen_overlook`.
+
+Playable aftermath event node: `cinderfen_aftermath`.
 
 Playable battle nodes: `cinderfen_crossing` and `cinderfen_watch`.
 
@@ -28,7 +30,9 @@ Support node: `cinderfen_waystation` is a compact town/service node using existi
 
 Second battle node: `cinderfen_watch` unlocks after `cinderfen_crossing` victory and launches the compact `cinderfen_watchpost` map. It reuses existing Ashen units, structures, objective types, reward rules, minimap/fog behavior, and simulator/e2e hooks.
 
-Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chapter 1 nodes, maps, rewards, and launch path. `cinderfen_overlook` unlocks only after `ashen_outpost`; `cinderfen_waystation` and `cinderfen_crossing` unlock only after `cinderfen_overlook` is completed; `cinderfen_watch` unlocks only after `cinderfen_crossing` is completed.
+Aftermath event: `cinderfen_aftermath` unlocks after `cinderfen_watch` victory, uses the existing event/choice system, completes after one once-only choice, and does not launch a battle.
+
+Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chapter 1 nodes, maps, rewards, and launch path. `cinderfen_overlook` unlocks only after `ashen_outpost`; `cinderfen_waystation` and `cinderfen_crossing` unlock only after `cinderfen_overlook` is completed; `cinderfen_watch` unlocks only after `cinderfen_crossing` is completed; `cinderfen_aftermath` unlocks only after `cinderfen_watch` is completed.
 
 ## Hard Non-Goals
 
@@ -53,6 +57,7 @@ Chapter 1 remains unchanged in flow: Border Marches still uses the existing Chap
 | 2 | `cinderfen_waystation` | Town | Optional support node. It unlocks after `cinderfen_overlook`, stays open, and sells modest Cinderfen-specific preparation services. |
 | 3 | `cinderfen_crossing` | Battle | First playable Chapter 2 battle. It unlocks after `cinderfen_overlook` and launches `cinderfen_causeway`. |
 | 4 | `cinderfen_watch` | Battle | Second compact Chapter 2 battle. It unlocks after `cinderfen_crossing` victory and launches `cinderfen_watchpost`. |
+| 5 | `cinderfen_aftermath` | Event | Compact non-battle consequence node. It unlocks after `cinderfen_watch`, resolves one modest choice, and does not launch combat. |
 
 Unlock rules:
 
@@ -60,6 +65,7 @@ Unlock rules:
 - `cinderfen_waystation` unlocks after completed `cinderfen_overlook`.
 - `cinderfen_crossing` unlocks after `ashen_outpost` and completed `cinderfen_overlook`.
 - `cinderfen_watch` unlocks after completed `cinderfen_crossing`.
+- `cinderfen_aftermath` unlocks after completed `cinderfen_watch`.
 - No Chapter 2 node is available in a fresh Chapter 1 save.
 
 ## Cinderfen Overlook Event
@@ -107,7 +113,7 @@ Services:
 | Marsh Guides | Repeatable | 35 Crowns | Grants `marsh_guides` for the next Cinderfen battle: +60 player-building vision and +20s enemy warning lead. | Keeps node open |
 | Ash Filters | Repeatable | 35 Crowns, 15 Aether | Grants `ash_filters` for the next Cinderfen battle: +8% hero HP and Mana. | Keeps node open |
 | Refugee Scouts | Once-only | 25 Crowns | Grants 10 XP and +2 Common Folk reputation; copy previews the Cinder Shrine and central guardians. | Keeps node open |
-| Shrine Attunement | Repeatable | 18 Aether | Grants `shrine_attunement` for the next Cinderfen battle: Cinder Shrine Surge grants +5 extra Aether on first player capture. | Keeps node open |
+| Shrine Attunement | Repeatable | 12 Aether | Grants `shrine_attunement` for the next Cinderfen battle: Cinder Shrine Surge grants +5 extra Aether on first player capture. | Keeps node open |
 
 Implementation notes:
 
@@ -241,6 +247,35 @@ The Cinder Shrine objective uses the existing capture-site flow plus the optiona
 
 Watchpost defeat tips point players toward the Watch Road Toll, the Marsh Raider Camp/Brute, and destroying the Watchpost Tower before the final Stronghold assault.
 
+## Cinderfen Aftermath Event
+
+Node id: `cinderfen_aftermath`.
+
+Display name: **Cinderfen Aftermath**.
+
+Node type: `event`.
+
+Unlock: completed `cinderfen_watch`.
+
+Purpose: a compact consequence node where the player decides what to do with the captured Cinderfen watch route. It reuses the existing event choice system and does not launch a battle.
+
+Choices:
+
+| Choice | Cost | Reward | Reputation | Modifier | Completion |
+| --- | --- | --- | --- | --- | --- |
+| Secure the Watch Road | 45 Crowns, 18 Stone | 12 XP, 10 Stone | +4 Free Marches | Local Support | Completes node |
+| Aid the Fenfolk | 40 Crowns | 12 XP, 8 Iron | +5 Common Folk | None | Completes node |
+| Study the Ashen Marks | 18 Aether | 12 XP, 6 Aether, Pilgrim Crook | +4 Old Faith, -1 Ashen Covenant | None | Completes node |
+| Display Malrec's Standard | Requires `trophy_malrec_outpost_standard` | None | +1 Free Marches | None | Completes node |
+
+Implementation notes:
+
+- All choices are `onceOnly` and persist through `choiceIdsClaimed`.
+- Completing any choice adds `cinderfen_aftermath` to `completedNodeIds`.
+- Rewards are intentionally modest and do not add a new loot system.
+- Secure the Watch Road uses the existing Local Support modifier instead of adding a new next-Cinderfen-battle modifier, because the current slice has no future Cinderfen battle after Watchpost.
+- The node is event-only and excluded from battle simulator profiles.
+
 ## Rewards
 
 Campaign node reward for `cinderfen_crossing`:
@@ -266,11 +301,11 @@ Campaign node reward for `cinderfen_watch`:
 Battle reward table: `cinderfen_watchpost_rewards`.
 
 - One affix-capable weighted item roll from existing catalog items.
-- Base victory reward: 34 XP plus 20 Crowns, 12 Stone, 10 Iron, 6 Aether.
-- First-clear bonus: 38 XP plus 18 Crowns, 12 Stone, 10 Iron, 6 Aether.
-- Repeat-clear reward: 5 XP plus 8 Crowns, 4 Iron, 2 Aether.
+- Base victory reward: 32 XP plus 18 Crowns, 10 Stone, 8 Iron, 5 Aether.
+- First-clear bonus: 34 XP plus 16 Crowns, 10 Stone, 8 Iron, 5 Aether.
+- Repeat-clear reward: 3 XP plus 5 Crowns, 2 Iron, 1 Aether.
 
-The full first-clear Watchpost read is 140 XP, 196 total campaign/battle resources, and one existing weighted item roll. It is useful but not trophy-level, and it does not add a named rival reward.
+The full first-clear Watchpost read is 128 XP, 170 total campaign/battle resources, and one existing weighted item roll. It is useful but not trophy-level, and it does not add a named rival reward.
 
 ## Chapter 2 Balance Pass
 
@@ -361,10 +396,10 @@ Simulator coverage:
 
 Regression gates:
 
-- `npm test`: PASS after the Cinderfen Watchpost pass with 37 test files and 250 tests.
+- `npm test`: PASS after the Cinderfen Aftermath pass with 37 test files and 258 tests.
 - `npm run build`: PASS, known Vite large-chunk warning only.
-- `npm run test:e2e -- --reporter=line`: PASS, 52 Playwright tests in 23.5m on the clean full rerun.
-- `npm run playtest:sim`: PASS, 255 deterministic battle runs across 85 campaign battle node/profile summaries after adding Cinderfen Watch.
+- `npm run test:e2e -- --reporter=line`: PASS, 52 Playwright tests in 20.9m on the clean full rerun, including Aftermath unlock, choice, reward, reputation, completion, and duplicate-prevention coverage.
+- `npm run playtest:sim`: PASS, 255 deterministic battle runs across 85 campaign battle node/profile summaries. Cinderfen Aftermath is event-only and does not add a battle simulator profile.
 
 ## Deferred Chapter 2 Work
 

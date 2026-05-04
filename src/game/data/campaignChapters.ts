@@ -24,8 +24,14 @@ export const CAMPAIGN_CHAPTERS: CampaignChapterDefinition[] = [
     id: "cinderfen_road",
     title: "Chapter 2: Cinderfen Road",
     shortDescription:
-      "The first playable v0.3 road beyond Ashen Outpost: one compact event gate, one waystation support node, and two Cinderfen battles.",
-    nodeIds: ["cinderfen_overlook", "cinderfen_waystation", "cinderfen_crossing", "cinderfen_watch"],
+      "The first playable v0.3 road beyond Ashen Outpost: one compact event gate, one waystation support node, two Cinderfen battles, and one aftermath event.",
+    nodeIds: [
+      "cinderfen_overlook",
+      "cinderfen_waystation",
+      "cinderfen_crossing",
+      "cinderfen_watch",
+      "cinderfen_aftermath"
+    ],
     unlockPrerequisiteNodeIds: ["ashen_outpost"]
   }
 ];

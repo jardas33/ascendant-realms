@@ -167,20 +167,20 @@ export const CINDERFEN_ROAD_REWARD_TABLES: RewardTableDefinition[] = [
     ],
     rolls: 1,
     weightedItemPool: [
-      { itemId: "aether_lens", weight: 18, mapIds: ["cinderfen_causeway"] },
-      { itemId: "ashbound_censer", weight: 16, mapIds: ["cinderfen_causeway"] },
-      { itemId: "captains_seal", weight: 14, mapIds: ["cinderfen_causeway"] },
-      { itemId: "green_chapel_icon", weight: 10, mapIds: ["cinderfen_causeway"] },
-      { itemId: "fordbreaker_halberd", weight: 9, mapIds: ["cinderfen_causeway"] },
-      { itemId: "starfall_prism", weight: 4, mapIds: ["cinderfen_causeway"] }
+      { itemId: "aether_lens", weight: 18, mapIds: ["cinderfen_causeway"], firstClearOnly: true },
+      { itemId: "ashbound_censer", weight: 16, mapIds: ["cinderfen_causeway"], firstClearOnly: true },
+      { itemId: "captains_seal", weight: 14, mapIds: ["cinderfen_causeway"], firstClearOnly: true },
+      { itemId: "green_chapel_icon", weight: 10, mapIds: ["cinderfen_causeway"], firstClearOnly: true },
+      { itemId: "fordbreaker_halberd", weight: 9, mapIds: ["cinderfen_causeway"], firstClearOnly: true },
+      { itemId: "starfall_prism", weight: 4, mapIds: ["cinderfen_causeway"], firstClearOnly: true }
     ],
     resourceRewards: [
-      { resource: "crowns", amount: 16 },
-      { resource: "stone", amount: 10 },
-      { resource: "iron", amount: 8 },
-      { resource: "aether", amount: 6 }
+      { resource: "crowns", amount: 16, firstClearOnly: true },
+      { resource: "stone", amount: 10, firstClearOnly: true },
+      { resource: "iron", amount: 8, firstClearOnly: true },
+      { resource: "aether", amount: 6, firstClearOnly: true }
     ],
-    xpRewards: [{ amount: 30 }],
+    xpRewards: [{ amount: 30, firstClearOnly: true }],
     firstClearBonus: {
       resources: {
         crowns: 14,
@@ -212,20 +212,20 @@ export const CINDERFEN_ROAD_REWARD_TABLES: RewardTableDefinition[] = [
     ],
     rolls: 1,
     weightedItemPool: [
-      { itemId: "ashbound_censer", weight: 17, mapIds: ["cinderfen_watchpost"] },
-      { itemId: "aether_lens", weight: 16, mapIds: ["cinderfen_watchpost"] },
-      { itemId: "captains_seal", weight: 13, mapIds: ["cinderfen_watchpost"] },
-      { itemId: "scouts_bow", weight: 12, mapIds: ["cinderfen_watchpost"] },
-      { itemId: "green_chapel_icon", weight: 10, mapIds: ["cinderfen_watchpost"] },
-      { itemId: "fordbreaker_halberd", weight: 5, mapIds: ["cinderfen_watchpost"] }
+      { itemId: "ashbound_censer", weight: 17, mapIds: ["cinderfen_watchpost"], firstClearOnly: true },
+      { itemId: "aether_lens", weight: 16, mapIds: ["cinderfen_watchpost"], firstClearOnly: true },
+      { itemId: "captains_seal", weight: 13, mapIds: ["cinderfen_watchpost"], firstClearOnly: true },
+      { itemId: "scouts_bow", weight: 12, mapIds: ["cinderfen_watchpost"], firstClearOnly: true },
+      { itemId: "green_chapel_icon", weight: 10, mapIds: ["cinderfen_watchpost"], firstClearOnly: true },
+      { itemId: "fordbreaker_halberd", weight: 5, mapIds: ["cinderfen_watchpost"], firstClearOnly: true }
     ],
     resourceRewards: [
-      { resource: "crowns", amount: 18 },
-      { resource: "stone", amount: 10 },
-      { resource: "iron", amount: 8 },
-      { resource: "aether", amount: 5 }
+      { resource: "crowns", amount: 18, firstClearOnly: true },
+      { resource: "stone", amount: 10, firstClearOnly: true },
+      { resource: "iron", amount: 8, firstClearOnly: true },
+      { resource: "aether", amount: 5, firstClearOnly: true }
     ],
-    xpRewards: [{ amount: 32 }],
+    xpRewards: [{ amount: 32, firstClearOnly: true }],
     firstClearBonus: {
       resources: {
         crowns: 16,

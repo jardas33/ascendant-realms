@@ -123,6 +123,42 @@ describe("hero RPG progression rules", () => {
     expect(reward.xp).toBe(10);
   });
 
+  it("honors first-clear item pools on deterministic repeat rewards", () => {
+    const firstClearReward = rollBattleRewards({
+      table: REWARD_TABLE_BY_ID.cinderfen_causeway_rewards,
+      completedBattlesBeforeVictory: 5,
+      inventory: [],
+      deterministic: true,
+      isFirstClear: true,
+      mapId: "cinderfen_causeway"
+    });
+    const repeatReward = rollBattleRewards({
+      table: REWARD_TABLE_BY_ID.cinderfen_causeway_rewards,
+      completedBattlesBeforeVictory: 6,
+      inventory: [],
+      deterministic: true,
+      isFirstClear: false,
+      mapId: "cinderfen_causeway"
+    });
+
+    expect(firstClearReward.itemIds).toHaveLength(1);
+    expect(firstClearReward.xp).toBe(65);
+    expect(firstClearReward.resources).toMatchObject({
+      crowns: 30,
+      stone: 20,
+      iron: 16,
+      aether: 12
+    });
+    expect(repeatReward.itemIds).toEqual([]);
+    expect(repeatReward.xp).toBe(4);
+    expect(repeatReward.resources).toMatchObject({
+      crowns: 6,
+      iron: 3,
+      aether: 2
+    });
+    expect(repeatReward.resources.stone).toBeUndefined();
+  });
+
   it("grants reward XP, item instances, and per-map first-clear history", () => {
     const hero = {
       ...createNewHeroSave("Vale", "warlord", "exiled_noble"),

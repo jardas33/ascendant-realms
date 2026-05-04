@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-03 19:28 -04:00
+Last updated: 2026-05-04 19:53 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a v0.2.1 prototype baseline candidate. The visible in-game menu still says `Prototype v0.2`, while v0.2.1 documents the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, and permanent Playwright regression coverage for the reported HUD/fog issues. It is still a prototype, but it has a broad playable RTS/RPG spine and a clearer verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The next recommended milestone is **human-verifying the current Chapter 2 Cinderfen two-battle slice, then adding only one compact non-battle consequence if the slice stays green**. Chapter metadata exists, `cinderfen_overlook` is now a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, and `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory. Chapter/campaign data is now split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Keep further Chapter 2 implementation compact; do not move to workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems.
+The next recommended milestone is **human-verifying the current Chapter 2 Cinderfen route including the new aftermath event before adding more content**. Chapter metadata exists, `cinderfen_overlook` is now a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. Chapter/campaign data is now split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Keep further Chapter 2 implementation compact; do not move to workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems.
 
 ## Current Git State
 
@@ -58,7 +58,9 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-Checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1 preserves the Chapter 2 Cinderfen two-battle slice. The checkpoint and metadata follow-ups are pushed to origin/main. Preserve the checkpoint unless the user explicitly asks for a reset/revert.
+Checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1 preserves the Chapter 2 Cinderfen two-battle slice and remains the latest named checkpoint. The checkpoint and metadata follow-ups are pushed to origin/main.
+
+As of 2026-05-04 19:20 -04:00, the worktree is intentionally dirty with the Chapter 2 reward-economy audit, regenerated telemetry, docs/report updates, and the Chapter 2 Playwright helper cleanup. New files include docs/CINDERFEN_AUTOMATED_REVIEW.md and tests/e2e/chapter2-helpers.ts. Preserve these dirty changes unless the user explicitly asks for a reset/revert.
 ```
 
 The checkpoint commit `e52636729f05f0b54c2896200aa57ceebc13e6b1` was created with message `Checkpoint Cinderfen two-battle Chapter 2 slice`. This metadata follow-up records that checkpoint. Do not reset or revert future edits unless the user explicitly asks.
@@ -76,6 +78,147 @@ Before checkpoint commit e52636729f05f0b54c2896200aa57ceebc13e6b1, `git rev-list
 ```
 
 The pushed checkpoint preserves the Chapter 2 battle-slice edits. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Clean Checkpoint - 2026-05-04 19:53 -04:00
+
+Scope: create a clean checkpoint for the current Chapter 2 Cinderfen route reward audit and Chapter 2 Playwright helper cleanup. No gameplay, balance, maps, units, factions, UI behavior, systems, resets, checkouts, deletes, or reverts were added during the checkpoint pass.
+
+Current preserved dirty-work scope:
+
+- Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, and Cinderfen Aftermath exist and remain the current Chapter 2 route.
+- Chapter 2 reward-economy audit is preserved: Cinderfen first clears stay useful, while repeat clears pay only tiny XP/resources and no repeat battle item roll.
+- Chapter 2 Playwright helper cleanup is preserved in `tests/e2e/chapter2-helpers.ts`; smoke specs retain the meaningful copy, reward, save, and duplicate-prevention assertions.
+- Regenerated telemetry, balance docs, Cinderfen route reports, reward tests, campaign data updates, and e2e updates are preserved.
+- Chapter 1 remains unchanged by this checkpoint pass.
+
+Verification completed:
+
+```text
+npm test
+PASS: 37 test files, 259 tests, 18.56s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-MCPD5UO4.js, 1,914.22 kB minified / 456.45 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 24.2m. Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+```
+
+Branch and commit status:
+
+```text
+Pre-checkpoint `git status -sb`: ## main...origin/main
+Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
+Checkpoint commit message: Checkpoint Cinderfen route reward audit and e2e helper cleanup
+Checkpoint commit hash: PENDING until checkpoint commit is created.
+Post-push branch sync: PENDING until checkpoint commit and metadata update are pushed.
+```
+
+Remaining known risks:
+
+- Human playtesting is still needed for the full Cinderfen route with no retinue, light retinue, Training Yard II, Quartermaster II, and mixed Chapter 1 upgrade states.
+- Fast Army and retinue plus Training Yard II can still clear Cinderfen quickly; repeat farming value is reduced, but quick clear feel still needs human review.
+- Cinder Shrine, Shrine Attunement, Cinderfen Waystation, and Cinderfen Aftermath need live browser/mobile readability review.
+- `tests/e2e/chapter2-helpers.ts` should stay a setup/fast-forward helper module; future specs should keep behavior and reward assertions visible in spec files.
+- The known Vite large chunk warning remains.
+- Full Playwright e2e remains slow.
+
+Next recommended milestone: human-verify the current Cinderfen route end to end: Overlook, Waystation, Crossing, Cinder Shrine surge/attunement, Watch, Aftermath, Results, and return-to-campaign persistence. Add no further Chapter 2 content until the current route stays green in human readability and balance review.
+
+## Chapter 2 Reward Economy Audit - 2026-05-04
+
+Scope: audit Chapter 2 rewards after the current Cinderfen chain: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, and Cinderfen Aftermath. No systems, maps, units, factions, broad loot mechanics, enemy construction, or Chapter 1 values were added or changed.
+
+Reward read:
+
+- Cinderfen Crossing first clear remains 125 XP / 170 campaign+battle resources, one first-clear battle item roll, and fixed `Scout's Bow`.
+- Cinderfen Watch first clear remains 128 XP / 170 campaign+battle resources and one first-clear battle item roll.
+- The two mandatory Cinderfen battle/node first clears therefore grant 253 XP and 340 resources before event choices.
+- With one normal Overlook choice and one normal Aftermath choice, the route grants 285-290 gross XP and 346-360 gross rewarded resources before Waystation service spending. After event costs, the same normal-choice route nets about 242-306 resources depending on choices.
+- Waystation service costs stayed unchanged: Marsh Guides 35 Crowns, Ash Filters 35 Crowns + 15 Aether, Refugee Scouts 25 Crowns once, Shrine Attunement 12 Aether.
+- Aftermath choice rewards stayed unchanged and modest: each normal choice grants 12 XP plus a small resource/reputation result; Display Malrec's Standard grants only +1 Free Marches.
+
+Telemetry read:
+
+- Cinderfen Crossing remains structurally reasonable at 26 wins / 0 defeats / 13 timeouts.
+- Cinderfen Watch remains structurally reasonable at 25 wins / 0 defeats / 11 timeouts.
+- Fast Army remains the repeat-farm risk: 12/13 Crossing wins at about 98.8s average winning duration, and 10/12 Watch wins at about 86.8s average winning duration.
+- Retinue + Training Yard II remains the strongest Chapter 2 profile at 6 wins / 0 defeats / 0 timeouts across the current Cinderfen battle pair.
+- Chapter 1 telemetry remains stable and no Chapter 1 data was touched.
+
+Tuning applied:
+
+- `src/game/data/campaignRewards.ts`: Cinderfen battle weighted item pools and base battle XP/resources are now first-clear-only.
+- Repeat clears now pay only the explicit repeat bonus: Cinderfen Crossing 4 XP / 11 resources / no battle item roll; Cinderfen Watch 3 XP / 8 resources / no battle item roll.
+- `src/game/core/progression/ItemRewardRules.ts`: deterministic reward selection now respects existing weighted-pool first/repeat metadata, so simulator/test paths match live reward filtering.
+- `src/game/playtest/PlaytestReportWriter.ts`: regenerated telemetry copy now calls out the reward-economy audit and reduced repeat value.
+- `src/game/core/HeroProgressionRules.test.ts`: added coverage proving Cinderfen first clears keep their useful reward while repeat deterministic rewards grant no item and only the tiny repeat bonus.
+
+Verification completed:
+
+```text
+npm test
+PASS: 37 test files, 259 tests, 7.77s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-MCPD5UO4.js, 1,914.22 kB minified / 456.45 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 22.6m.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+```
+
+Remaining risks:
+
+- Fast Army still clears Cinderfen quickly; the farm payout is reduced, but human play should still verify whether quick clears feel too dominant.
+- Retinue + Training Yard II is still the strongest Chapter 2 profile and should not receive more reward-adjacent buffs before human review.
+- Cinderfen Waystation, Cinderfen Aftermath, and Cinder Shrine readability still deserve a live mobile/browser pass.
+- Keep future Chapter 2 rewards modest until another sink or consequence exists.
+
+## Chapter 2 Playwright Helper Cleanup - 2026-05-04
+
+Scope: clean up duplicated Chapter 2 e2e setup without changing gameplay, balance, maps, units, factions, intentional UI behavior, selectors, or test IDs.
+
+What changed:
+
+- Added `tests/e2e/chapter2-helpers.ts`.
+- Moved repeated post-Ashen and post-Crossing localStorage seed setup into explicit test-only helper functions.
+- Moved Cinderfen Overlook choice clicks, Cinderfen Waystation service purchases, Cinderfen Crossing launch, and Cinderfen Watch launch into UI-path helpers that keep using the same stable Playwright test IDs and `data-campaign-choice` selectors.
+- Moved the Cinder Shrine capture into `captureCinderShrineWithHook`, which uses the existing safe Playwright-only `__ASCENDANT_TEST_HOOKS__.captureSite` hook.
+- Moved the Cinderfen Crossing and Cinderfen Watch battle fast-forwards into clearly commented test-only helpers. These still directly mutate `BattleScene` state only after launch/map/objective assertions have covered the relevant gameplay wiring.
+- Updated `tests/e2e/smoke.spec.ts` to use the helpers while keeping meaningful coverage in the spec: Chapter 2 copy, lock/unlock state, Waystation costs, reward values, active-modifier consumption, Cinder Shrine first-capture and duplicate prevention, Results copy, save persistence, and Aftermath duplicate prevention remain asserted.
+
+Verification completed after the helper cleanup:
+
+```text
+npm test
+PASS: 37 test files, 259 tests, 9.30s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-MCPD5UO4.js, 1,914.22 kB minified / 456.45 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.3m. The Chapter 2 smoke flows pass using the extracted helpers.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated by the command.
+```
+
+Current e2e file shape:
+
+- `tests/e2e/smoke.spec.ts`: 754 lines after moving duplicated Chapter 2 helpers out of the spec.
+- `tests/e2e/chapter2-helpers.ts`: 454 lines, purpose-built for Chapter 2 e2e setup and fast-forward helpers.
+
+Remaining risks:
+
+- The helpers intentionally make the smoke spec easier to maintain, but they should not absorb gameplay assertions. Future tests should keep behavior, reward, and persistence checks in the spec.
+- The direct victory helpers are test-only shortcuts, not gameplay APIs. Use them only after the test has asserted that the correct Cinderfen battle loaded.
+- If Chapter 2 node IDs, reward IDs, or Cinderfen objective IDs change later, update the helper and the visible assertions together.
 
 ## Clean Checkpoint - 2026-05-03 19:28 -04:00
 
@@ -117,7 +260,7 @@ Remaining known risks:
 - The known Vite large chunk warning remains.
 - Full Playwright e2e remains slow at about 21-22 minutes.
 
-Next recommended milestone: human-verify the current Cinderfen two-battle slice end to end, then add only one compact non-battle Chapter 2 consequence at a time if the slice stays green. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
+Next recommended milestone: human-verify the current Cinderfen route end to end, including Cinderfen Aftermath, before adding more Chapter 2 content. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
 
 ## Clean Checkpoint - 2026-05-03 14:31 -04:00
 
@@ -157,11 +300,54 @@ Remaining known risks:
 - The known Vite large chunk warning remains.
 - Full Playwright e2e remains slow at about 22 minutes.
 
-Next recommended milestone: human-play the Cinderfen vertical slice, then add only one compact Chapter 2 follow-up at a time. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
+Next recommended milestone: human-play the current Cinderfen vertical slice, including Cinderfen Aftermath, before adding more Chapter 2 content. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
+
+## Chapter 2 Aftermath Event - 2026-05-03
+
+Scope: add one compact non-battle Chapter 2 aftermath node after Cinderfen Watch. No map, worker, enemy construction, faction, diplomacy, procedural generation, crafting, broad loot, or save-format changes were added.
+
+What changed:
+
+- Added `cinderfen_aftermath` / **Cinderfen Aftermath** in `src/game/data/cinderfenRoadNodes.ts`.
+- `cinderfen_watch` now unlocks `cinderfen_aftermath` after Watchpost victory.
+- `campaignChapters.ts` now lists the Chapter 2 chain as Overlook, Waystation, Crossing, Watch, and Aftermath.
+- The node uses the existing event/choice system and does not launch a battle.
+- Added three baseline once-only completing choices:
+  - Secure the Watch Road: costs 45 Crowns and 18 Stone; grants 12 XP, 10 Stone, +4 Free Marches reputation, and the existing Local Support modifier.
+  - Aid the Fenfolk: costs 40 Crowns; grants 12 XP, 8 Iron, and +5 Common Folk reputation.
+  - Study the Ashen Marks: costs 18 Aether; grants 12 XP, 6 Aether, Pilgrim Crook, +4 Old Faith reputation, and -1 Ashen Covenant reputation.
+- Added one optional Malrec trophy aftermath choice, Display Malrec's Standard, gated by `trophy_malrec_outpost_standard`; it grants only +1 Free Marches reputation and completes the node.
+- Secure the Watch Road intentionally uses `local_support` rather than a new next-Cinderfen-battle modifier because there is no third Cinderfen battle in the current slice. The aftermath node is event-only and excluded from battle simulator profiles.
+- Added/updated unit tests for unlock, availability, cost payment, insufficient resources, reward grant, reputation changes, duplicate prevention, presentation, content validation, and save/load.
+- Extended Cinderfen Playwright smoke coverage so Watch victory unlocks Aftermath, one Aftermath choice resolves, rewards/reputation persist, and revisiting the completed node does not duplicate rewards.
+
+Verification for this pass:
+
+```text
+npm test
+PASS: 37 test files, 258 tests, latest duration 7.25s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 20.9m, including the Cinderfen Aftermath unlock/choice/duplicate-prevention flow.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. Aftermath is event-only and did not add a battle simulator profile.
+```
+
+Remaining known risks:
+
+- Cinderfen Aftermath adds another event-choice panel after a dense Chapter 2 route, so human mobile/scroll readability still needs review.
+- Secure the Watch Road can leave Local Support active until a later resource-reward node exists. That is intentional for now and should be rechecked when adding the next Chapter 2 node.
+- Rewards are deliberately modest; do not inflate aftermath payouts until Fast Army and retinue plus Training Yard II are human-reviewed.
+
+Next recommended milestone: human-verify the current Cinderfen route end to end before adding any more Chapter 2 content.
 
 ## Chapter 2 Event Gate, Support, And Two Battle Slice - 2026-05-03
 
-Scope: implement the playable `cinderfen_overlook` event gate, optional `cinderfen_waystation` support node, `cinderfen_crossing` on `cinderfen_causeway` / **Cinderfen Causeway**, and `cinderfen_watch` on `cinderfen_watchpost` / **Cinderfen Watchpost**. This is not full Chapter 2.
+Scope: implement the playable `cinderfen_overlook` event gate, optional `cinderfen_waystation` support node, `cinderfen_crossing` on `cinderfen_causeway` / **Cinderfen Causeway**, `cinderfen_watch` on `cinderfen_watchpost` / **Cinderfen Watchpost**, and the later compact `cinderfen_aftermath` event. This is not full Chapter 2.
 
 What changed:
 
@@ -200,16 +386,16 @@ Verification for this slice should include:
 
 ```text
 npm test
-PASS: 37 test files, 251 tests after the Chapter 2 data-organization cleanup.
+Latest PASS: 37 test files, 259 tests after the Chapter 2 reward-economy audit and Playwright helper cleanup.
 
 npm run build
 PASS: TypeScript compile and Vite production build; known large-chunk warning only.
 
 npm run test:e2e -- --reporter=line
-PASS: 52 Playwright tests in 21.5m on the clean full rerun, including Cinderfen Overlook choice flow, Malrec trophy consequence coverage, Cinderfen Waystation Shrine Attunement coverage, Cinderfen Crossing launch/victory coverage, Cinder Shrine +25 attuned first-capture coverage, and Cinderfen Watch launch/victory/reward persistence coverage.
+Latest PASS: 52 Playwright tests in 21.3m after the helper cleanup, including Cinderfen Overlook choice flow, Malrec trophy consequence coverage, Cinderfen Waystation Shrine Attunement coverage, Cinderfen Crossing launch/victory coverage, Cinder Shrine +25 attuned first-capture coverage, Cinderfen Watch launch/victory/reward persistence coverage, and Cinderfen Aftermath unlock/choice/duplicate-prevention coverage.
 
 npm run playtest:sim
-PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. Cinderfen Overlook and Waystation services remain covered by unit/e2e save flow, including the Malrec trophy option and Shrine Attunement, while Cinderfen Crossing and Cinderfen Watch are both in the Chapter 2 simulator baseline.
+Latest PASS: 255 deterministic battle runs across 85 campaign battle node/profile summaries. Cinderfen Overlook, Waystation services, and Aftermath remain covered by unit/e2e save flow, including the Malrec trophy option and Shrine Attunement, while Cinderfen Crossing and Cinderfen Watch are both in the Chapter 2 simulator baseline.
 ```
 
 ## Chapter 2 Telemetry Balance Pass - 2026-05-03
@@ -284,22 +470,22 @@ What v0.2.1 means:
 - No gameplay, balance, save format, faction, worker, enemy construction, diplomacy, crafting, or map content was added for this release-baseline pass.
 - The visible product copy remains `Prototype v0.2`; v0.2.1 is the release/checkpoint label for docs, verification expectations, and stability work.
 - Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish are completed baseline work, not open next milestones.
-- The v0.3 Chapter 2 Cinderfen vertical slice is now underway: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, Cinder Shrine, and the Malrec trophy consequence exist. The current next phase is human verification and one compact non-battle follow-up at a time, not broad system work.
+- The v0.3 Chapter 2 Cinderfen vertical slice is now underway: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, Cinderfen Aftermath, Cinder Shrine, and the Malrec trophy consequence exist. The current next phase is human verification of the route, not broad system work.
 
 Latest verification status:
 
 ```text
 npm test
-Latest result after the 2026-05-03 19:28 checkpoint run: PASS, 37 test files and 251 tests.
+Latest result after the 2026-05-04 reward audit and Chapter 2 helper cleanup: PASS, 37 test files and 259 tests.
 
 npm run build
-Latest result after the 2026-05-03 19:28 checkpoint run: PASS, known Vite large-chunk warning only.
+Latest result after the 2026-05-04 reward audit and Chapter 2 helper cleanup: PASS, known Vite large-chunk warning only.
 
 npm run test:e2e -- --reporter=line
-Latest full recorded result after Cinderfen Overlook, Malrec trophy consequence, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, and Cinderfen Watch e2e coverage: PASS, 52 Playwright tests in 21.5m on the clean full rerun.
+Latest full recorded result after Cinderfen Overlook, Malrec trophy consequence, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Cinderfen Watch, Cinderfen Aftermath, and Chapter 2 helper extraction: PASS, 52 Playwright tests in 21.3m.
 
 npm run playtest:sim
-Latest simulator baseline after the 2026-05-03 19:28 checkpoint run: PASS, 255 deterministic runs across 85 campaign battle node/profile summaries; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings; Cinder Shrine first-capture bonuses modeled at +20 Aether and +25 Aether when Shrine Attunement is active.
+Latest simulator baseline after the 2026-05-04 reward audit/helper cleanup run: PASS, 255 deterministic runs across 85 campaign battle node/profile summaries; no structural too-hard nodes; no structural too-easy nodes; Ashen Outpost beatable; no Stronghold warnings; Cinder Shrine first-capture bonuses modeled at +20 Aether and +25 Aether when Shrine Attunement is active; Cinderfen repeat clears now pay only tiny XP/resources and no battle item roll.
 ```
 
 Known risks for v0.2.1:
@@ -311,8 +497,8 @@ Known risks for v0.2.1:
 
 Recommended next milestones:
 
-1. Human-verify the current Chapter 2 Cinderfen two-battle slice in the browser before adding more content.
-2. Add only one compact Chapter 2 follow-up at a time if the slice stays green.
+1. Human-verify the current Chapter 2 Cinderfen route in the browser before adding more content: Overlook, Waystation, Crossing, Shrine/Attunement, Watch, and Aftermath.
+2. Add no further Chapter 2 content until the current route stays green in human readability and balance review.
 3. Keep human-paced v0.2.1 campaign readability and balance review in mind while implementing Chapter 2 content, especially retinue, rival/trophy, HUD/fog, and Ashen Outpost readability.
 4. Avoid workers, enemy construction, full new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems.
 
@@ -2599,16 +2785,16 @@ Battle helpers live in `src/game/battle/`:
 - `BattleSceneSpawner.ts`
 - `BattleSceneSystems.ts`
 
-Several battle helpers changed during earlier checkpoint work and the current uncommitted Retinue/Unit Veterancy stack. Preserve future dirty edits unless the user explicitly asks for a reset or revert.
+Several battle helpers changed during earlier checkpoint work, and the current dirty stack includes Chapter 2 reward-economy and Playwright-helper cleanup edits. Preserve future dirty edits unless the user explicitly asks for a reset or revert.
 
 ## Current Tests
 
-Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, the conservative retinue balance pass, the enemy hero balance pass, the readability UX pass, and the HeroProgressionRules refactor:
+Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, the conservative retinue balance pass, the enemy hero balance pass, the readability UX pass, the HeroProgressionRules refactor, the Chapter 2 reward-economy audit, and the Chapter 2 Playwright helper cleanup:
 
-- `npm test`: passed, 35 test files, 200 tests.
+- `npm test`: passed, 37 test files, 259 tests.
 - `npm run build`: passed with the known Vite large-chunk warning, which is not a failure.
-- `npm run test:e2e -- --reporter=line`: passed, 44 Playwright tests in 21.5m. Use a long timeout.
-- `npm run playtest:sim`: passed, 180 simulated runs across 60 campaign battle node/profile summaries, with no structural `too_hard` nodes, no `too_easy` nodes, Ashen Outpost beatable, and no Stronghold warnings.
+- `npm run test:e2e -- --reporter=line`: passed, 52 Playwright tests in 21.3m. Use a long timeout.
+- `npm run playtest:sim`: passed, 255 simulated runs across 85 campaign battle node/profile summaries, with no structural `too_hard` nodes, no `too_easy` nodes, Ashen Outpost beatable, no Stronghold warnings, and Cinderfen repeat rewards reduced to tiny XP/resources with no repeat item roll.
 
 Current unit/pure test files:
 
@@ -3016,15 +3202,15 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Recommended Next Priorities
 
-1. Human-verify the current Chapter 2 Cinderfen slice end to end: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine surge/attunement, Malrec trophy consequence, Cinderfen Watch, Results, and return-to-campaign persistence.
-2. Add only one compact non-battle Chapter 2 consequence at a time after the current slice stays green. Do not start a broad Chapter 2 campaign arc yet.
-3. Keep Chapter 2 reward pacing modest: Fast Army and retinue plus Training Yard II remain the main reward-farm watchpoints.
+1. Human-verify the current Chapter 2 Cinderfen slice end to end: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine surge/attunement, Malrec trophy consequence, Cinderfen Watch, Cinderfen Aftermath, Results, and return-to-campaign persistence.
+2. Add no further Chapter 2 content until the current route stays green in human readability and balance review. Do not start a broad Chapter 2 campaign arc yet.
+3. Keep Chapter 2 reward pacing modest: Fast Army and retinue plus Training Yard II remain the main reward-farm watchpoints, even though Cinderfen repeat clears now pay only tiny XP/resources and no battle item roll.
 4. Do a human-paced Chapter 1 regression pass after any Chapter 2 content change: Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Marcher Camp, Refugee Caravan, Chapel, and Ashen Outpost should remain unchanged.
 5. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, Captain Malrec readability, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
 6. Human-review affixed rewards in Results and Inventory to make sure base/affix/total stat copy is readable without crowding the equipment flow.
 7. Human-review reputation hooks in actual campaign flow: Common Folk service discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, Ashen Covenant Hostile pressure, and Cinderfen event/service effects.
 8. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
-9. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Cinderfen Overlook, Cinderfen Waystation, Cinder Shrine, and Cinderfen Watch are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, broad loot complexity, full trophy rooms, or broad city-builder systems yet.
+9. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Cinderfen Overlook, Cinderfen Waystation, Cinder Shrine, Cinderfen Watch, and Cinderfen Aftermath are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, broad loot complexity, full trophy rooms, or broad city-builder systems yet.
 10. Treat the next technical risks as `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `BattleScene`, `HUD`, `battle-hud.css`, content validation, focused campaign data modules, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and reputation helper/rule hooks. `ScriptedBattlePlaytest.ts`, `HeroProgressionRules.ts`, `CampaignRules.ts`, `campaignNodes.ts`, and `rewards.ts` are now compatibility barrels.
 11. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
 
@@ -3032,10 +3218,12 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 - Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, HUD/fog polish, permanent HUD/fog regression coverage, Chapter 2 Cinderfen slice, Cinderfen Watchpost map, Chapter 2 docs/report updates, and campaign data-organization cleanup are intentional.
 - Treat the current docs as the v0.2.1 prototype baseline candidate. Use `CHANGELOG.md` and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
-- The current named phase is the v0.3 Chapter 2 Cinderfen slice. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, and Cinderfen Watch are implemented; next work should be human verification and one compact non-battle follow-up at a time. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
+- The current named phase is the v0.3 Chapter 2 Cinderfen slice. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, Cinderfen Watch, and Cinderfen Aftermath are implemented; next work should be human verification before any additional Chapter 2 content. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - For campaign content, keep `src/game/data/campaignNodes.ts` and `src/game/data/rewards.ts` as compatibility barrels. Add/edit Chapter 1 nodes in `borderMarchesNodes.ts`, current Chapter 2 nodes in `cinderfenRoadNodes.ts`, chapter metadata in `campaignChapters.ts`, and campaign battle reward tables in `campaignRewards.ts`.
+- For Cinderfen rewards specifically, preserve the first-clear-only flags on Chapter 2 battle item pools and base battle XP/resources unless a future economy pass adds a real repeat-clear sink or consequence.
+- For Chapter 2 Playwright coverage, reuse `tests/e2e/chapter2-helpers.ts` for post-Ashen/post-Crossing seeds, Waystation service clicks, Cinderfen launches, safe Cinder Shrine capture hook calls, and test-only victory fast-forwards. Keep assertions for copy, rewards, save state, and duplicate prevention in the specs.
 - `src/game/core/HeroProgressionRules.ts` is intentionally a compatibility barrel. Preserve it for old imports and put future hero progression work in the focused modules under `src/game/core/progression/`.
 - Add or update tests for persistent save fields and data contracts.
 - Use Playwright for browser verification when UI/gameplay changes.

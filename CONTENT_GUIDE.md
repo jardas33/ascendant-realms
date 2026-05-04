@@ -245,11 +245,12 @@ Campaign node definitions are split by chapter. `src/game/data/campaignNodes.ts`
 Current campaign battle assignments:
 
 - Chapter 1 Border Marches uses First Claim, Broken Ford, and Ashen Outpost across its battle nodes.
-- Chapter 2 Cinderfen Road currently has one playable event gate, one compact support/town node, and two playable battle nodes.
+- Chapter 2 Cinderfen Road currently has one playable event gate, one compact support/town node, two playable battle nodes, and one compact aftermath event.
 - `cinderfen_overlook` unlocks after `ashen_outpost` and offers three baseline one-time preparation choices using existing campaign resources, reputation, item rewards, and campaign modifiers. If the hero has `trophy_malrec_outpost_standard`, it also offers the optional Raise Malrec's Standard choice for a small morale-style modifier and reputation reward.
 - `cinderfen_waystation` unlocks after `cinderfen_overlook` and stays open as a small support node. It offers Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement through the existing town-service choice UI, resource costs, modifiers, reputation, and save/duplicate-prevention rules.
 - `cinderfen_crossing` launches `cinderfen_causeway` only after `cinderfen_overlook` is completed. Its only Cinderfen-specific tactical feature is the Cinder Shrine: a first-capture +20 Aether battle-local surge on the existing central Aether site.
 - `cinderfen_watch` launches `cinderfen_watchpost` only after `cinderfen_crossing` is completed. It reuses existing Ashen units, structures, objective types, rewards, fog/minimap behavior, and simulator/e2e hooks; it has no named rival and no Cinder Shrine.
+- `cinderfen_aftermath` unlocks only after `cinderfen_watch` is completed. It is a non-battle event with three baseline once-only choices: Secure the Watch Road, Aid the Fenfolk, and Study the Ashen Marks. If the hero has `trophy_malrec_outpost_standard`, it also offers Display Malrec's Standard for a tiny Free Marches reputation consequence. Keep aftermath-style nodes modest, event-only, and backed by `choiceIdsClaimed` duplicate prevention.
 - Do not make additional Chapter 2 nodes playable unless the task explicitly scopes them.
 
 Campaign choices support:
@@ -262,6 +263,7 @@ Campaign choices support:
 - `reputationChanges` and `unlockNodeIds` as direct choice effects when that reads cleaner than nesting under `rewards`.
 - `onceOnly` to save a claim ID in `choiceIdsClaimed`.
 - `completesNode: false` when the choice should leave the node open for a later choice.
+- For aftermath or consequence events that complete after one choice, use `onceOnly: true` and let the node complete so rewards cannot be claimed twice. Prefer small campaign-bank resources, XP, reputation, and existing campaign modifiers over new mechanics.
 
 Reputation guidance:
 

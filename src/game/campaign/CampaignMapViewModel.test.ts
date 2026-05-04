@@ -36,7 +36,7 @@ describe("campaign map presentation helpers", () => {
     expect(viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")).toMatchObject({
       status: "locked",
       completedNodeCount: 0,
-      currentNodeCount: 4
+      currentNodeCount: 5
     });
   });
 
@@ -71,6 +71,7 @@ describe("campaign map presentation helpers", () => {
     const waystationNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
     const battleNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
     const watchNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_watch")!;
+    const aftermathNode = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_aftermath")!;
 
     const viewModel = createCampaignMapViewModel({
       heroSave: hero,
@@ -84,7 +85,7 @@ describe("campaign map presentation helpers", () => {
     expect(chapterTwo).toMatchObject({
       status: "unlocked",
       completedNodeCount: 0,
-      currentNodeCount: 4
+      currentNodeCount: 5
     });
     expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_overlook")).toMatchObject({
       status: "available",
@@ -102,10 +103,15 @@ describe("campaign map presentation helpers", () => {
       status: "locked",
       selected: false
     });
+    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_aftermath")).toMatchObject({
+      status: "locked",
+      selected: false
+    });
     expect(canStartCampaignNode(eventNode, campaign)).toBe(false);
     expect(canStartCampaignNode(waystationNode, campaign)).toBe(false);
     expect(canStartCampaignNode(battleNode, campaign)).toBe(false);
     expect(canStartCampaignNode(watchNode, campaign)).toBe(false);
+    expect(canStartCampaignNode(aftermathNode, campaign)).toBe(false);
     expect(html).toContain("Scout the Causeway");
     expect(html).toContain("Aid the Marsh Refugees");
     expect(html).toContain("Study the Cinders");
@@ -288,15 +294,80 @@ describe("campaign map presentation helpers", () => {
     expect(canStartCampaignNode(node, campaign)).toBe(false);
     expect(html).toContain("Town Services");
     expect(html).toContain("Marsh Guides");
+    expect(html).toContain("The next Cinderfen battle gains earlier enemy warnings and wider base vision.");
     expect(html).toContain("Cost: 35 Crowns");
     expect(html).toContain("Modifiers: Gain Marsh Guides");
     expect(html).toContain("Ash Filters");
+    expect(html).toContain("The next Cinderfen battle starts your hero with a small HP and Mana buffer.");
     expect(html).toContain("Cost: 35 Crowns, 15 Aether");
     expect(html).toContain("Refugee Scouts");
+    expect(html).toContain("They confirm the Cinder Shrine and central guardians");
     expect(html).toContain("Reputation: +2 Common Folk");
     expect(html).toContain("Shrine Attunement");
+    expect(html).toContain("Cinder Shrine Surge grants +5 extra Aether on first capture");
     expect(html).toContain("Modifiers: Gain Shrine Attunement");
     expect(html).toContain("Outcome: Keeps this node open.");
+    expect(html).toContain("Repeatable service.");
+    expect(html).toContain("Purchase once.");
+  });
+
+  it("shows Cinderfen Aftermath choices after Cinderfen Watch is completed", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing",
+        "cinderfen_watch"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      resources: { crowns: 80, stone: 40, iron: 0, aether: 30 },
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_aftermath"
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_aftermath")!;
+
+    const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
+
+    expect(canStartCampaignNode(node, campaign)).toBe(false);
+    expect(html).toContain("Cinderfen Aftermath");
+    expect(html).toContain("Ashen stragglers have scattered");
+    expect(html).toContain("Secure the Watch Road");
+    expect(html).toContain("Cost: 45 Crowns, 18 Stone");
+    expect(html).toContain("Rewards: 12 XP, 10 Stone");
+    expect(html).toContain("Reputation: +4 The Free Marches");
+    expect(html).toContain("Modifiers: Gain Local Support");
+    expect(html).toContain("Aid the Fenfolk");
+    expect(html).toContain("Cost: 40 Crowns");
+    expect(html).toContain("Reputation: +5 Common Folk");
+    expect(html).toContain("Study the Ashen Marks");
+    expect(html).toContain("Cost: 18 Aether");
+    expect(html).toContain("Pilgrim Crook");
+    expect(html).toContain("Reputation: +4 Old Faith");
+    expect(html).toContain("Display Malrec&#039;s Standard");
+    expect(html).toContain("Requires trophy Malrec&#039;s Outpost Standard");
+    expect(html).toContain("Outcome: Completes this node.");
   });
 
   it("shows reputation ranks and active reputation effects in the view model", () => {

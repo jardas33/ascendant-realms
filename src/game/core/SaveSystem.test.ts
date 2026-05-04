@@ -551,6 +551,62 @@ describe("save version migration", () => {
     expect(repeated.hero.xp).toBe(hero.xp + 10);
   });
 
+  it("saves and loads Cinderfen Aftermath choice state without duplicating rewards", () => {
+    const hero = createFallbackHeroSave();
+    const campaign = createStartedCampaignSave({
+      ...createFallbackCampaignSave(),
+      resources: { crowns: 100, stone: 50, iron: 0, aether: 25 },
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing",
+        "cinderfen_watch"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_aftermath")!;
+    const choice = node.choices!.find((entry) => entry.id === "aid_the_fenfolk")!;
+    const applied = applyCampaignChoice({ campaign, hero, node, choice });
+
+    expect(applied.ok).toBe(true);
+    expect(SaveSystem.saveGame(applied.hero, applied.campaign)).toBe(true);
+    const loaded = SaveSystem.load();
+    const repeated = applyCampaignChoice({ campaign: loaded!.campaign, hero: loaded!.hero, node, choice });
+
+    expect(loaded?.campaign.completedNodeIds).toContain("cinderfen_aftermath");
+    expect(loaded?.campaign.choiceIdsClaimed).toContain("cinderfen_aftermath:aid_the_fenfolk");
+    expect(loaded?.campaign.resources).toMatchObject({ crowns: 60, iron: 8 });
+    expect(loaded?.campaign.resourcesSpent.crowns).toBe(40);
+    expect(loaded?.hero.factionReputation.common_folk).toBe(hero.factionReputation.common_folk + 5);
+    expect(loaded?.hero.xp).toBe(hero.xp + 12);
+    expect(repeated.ok).toBe(false);
+    expect(repeated.reason).toContain("Node completed");
+    expect(repeated.reason).toContain("Already chosen");
+    expect(repeated.campaign.resources).toMatchObject({ crowns: 60, iron: 8 });
+    expect(repeated.hero.xp).toBe(hero.xp + 12);
+  });
+
   it("loads V2 saves and normalizes settings", () => {
     const v2 = {
       version: 2,

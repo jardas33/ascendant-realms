@@ -1,6 +1,7 @@
 # Chapter 2 Cinderfen Slice Report
 
 Date: 2026-05-03
+Reward economy audit update: 2026-05-04
 
 Scope: clean v0.3 Chapter 2 slice report for the current Cinderfen Road implementation. This report records the current content only; it does not itself add gameplay, change balance, or add units, factions, workers, enemy construction, diplomacy, crafting, or procedural generation.
 
@@ -21,8 +22,8 @@ Chapter metadata:
 - Chapter id: `cinderfen_road`.
 - Chapter title: `Chapter 2: Cinderfen Road`.
 - Current role: compact v0.3 vertical slice after `ashen_outpost`.
-- Implemented node chain: `cinderfen_overlook` event gate, optional `cinderfen_waystation` support node, `cinderfen_crossing` battle node, then `cinderfen_watch` battle node.
-- Unlock shape: Chapter 2 remains unavailable in a fresh Chapter 1 save; Cinderfen Overlook unlocks after `ashen_outpost`; Cinderfen Waystation and Cinderfen Crossing unlock after Cinderfen Overlook is completed; Cinderfen Watch unlocks after Cinderfen Crossing victory. The Waystation helps preparation but does not block either battle.
+- Implemented node chain: `cinderfen_overlook` event gate, optional `cinderfen_waystation` support node, `cinderfen_crossing` battle node, `cinderfen_watch` battle node, then `cinderfen_aftermath` event node.
+- Unlock shape: Chapter 2 remains unavailable in a fresh Chapter 1 save; Cinderfen Overlook unlocks after `ashen_outpost`; Cinderfen Waystation and Cinderfen Crossing unlock after Cinderfen Overlook is completed; Cinderfen Watch unlocks after Cinderfen Crossing victory; Cinderfen Aftermath unlocks after Cinderfen Watch victory. The Waystation helps preparation but does not block either battle.
 
 Cinderfen Overlook event gate:
 
@@ -81,6 +82,21 @@ Cinderfen Watch battle node:
 - Enemy content: existing Ashen Covenant units and structures, no named Chapter 2 rival.
 - Campaign node reward: 62 XP, 40 Crowns, 22 Stone, 18 Iron, and 10 Aether.
 
+Cinderfen Aftermath event node:
+
+- Node id: `cinderfen_aftermath`.
+- Display name: `Cinderfen Aftermath`.
+- Type: event.
+- Status: playable after Cinderfen Watch victory.
+- System use: existing campaign event/choice, resource, reward, reputation, modifier, save, and duplicate-prevention rules.
+- Choices:
+  - `Secure the Watch Road`: costs 45 Crowns and 18 Stone; grants 12 XP, 10 Stone, +4 Free Marches, and Local Support.
+  - `Aid the Fenfolk`: costs 40 Crowns; grants 12 XP, 8 Iron, and +5 Common Folk.
+  - `Study the Ashen Marks`: costs 18 Aether; grants 12 XP, 6 Aether, Pilgrim Crook, +4 Old Faith, and -1 Ashen Covenant.
+  - Optional `Display Malrec's Standard`: requires `trophy_malrec_outpost_standard`; grants +1 Free Marches reputation and no resource, item, XP, or modifier reward.
+- Each choice is once-only, completes the node, and persists through `choiceIdsClaimed`.
+- The node does not launch a battle. Secure the Watch Road uses the existing Local Support resource-reward modifier instead of adding a new next-Cinderfen-battle modifier, because the current slice has no third Cinderfen battle.
+
 Cinderfen Causeway map:
 
 - Map id: `cinderfen_causeway`.
@@ -119,11 +135,12 @@ Current objectives:
 Current reward table:
 
 - Reward table id: `cinderfen_causeway_rewards`.
-- Weighted reward: one affix-capable existing item roll.
-- Base victory reward: 30 XP plus 16 Crowns, 10 Stone, 8 Iron, 6 Aether.
+- Weighted reward: one first-clear-only affix-capable existing item roll.
+- Base victory reward: first-clear-only 30 XP plus 16 Crowns, 10 Stone, 8 Iron, 6 Aether.
 - First-clear bonus: 35 XP plus 14 Crowns, 10 Stone, 8 Iron, 6 Aether.
 - Repeat-clear reward: 4 XP plus 6 Crowns, 3 Iron, 2 Aether.
 - Full first-clear read with campaign node reward: 125 XP, 170 total resources, one weighted battle item roll, and `Scout's Bow`.
+- Full repeat-clear read after the reward-economy audit: 4 XP, 11 total resources, and no battle item roll.
 
 Cinderfen Watchpost map:
 
@@ -154,11 +171,12 @@ Watchpost objectives:
 Watchpost reward table:
 
 - Reward table id: `cinderfen_watchpost_rewards`.
-- Weighted reward: one affix-capable existing item roll.
-- Base victory reward: 32 XP plus 18 Crowns, 10 Stone, 8 Iron, 5 Aether.
+- Weighted reward: one first-clear-only affix-capable existing item roll.
+- Base victory reward: first-clear-only 32 XP plus 18 Crowns, 10 Stone, 8 Iron, 5 Aether.
 - First-clear bonus: 34 XP plus 16 Crowns, 10 Stone, 8 Iron, 5 Aether.
 - Repeat-clear reward: 3 XP plus 5 Crowns, 2 Iron, 1 Aether.
 - Full first-clear read with campaign node reward: 128 XP, 170 total resources, and one weighted battle item roll.
+- Full repeat-clear read after the reward-economy audit: 3 XP, 8 total resources, and no battle item roll.
 
 ## 2. Explicit Non-Implementation
 
@@ -175,7 +193,7 @@ Explicitly not implemented:
 - No procedural maps.
 - No crafting, durability, affix rerolling, or broader loot complexity.
 - No third Chapter 2 battle map yet.
-- No full Chapter 2 route beyond Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, and Cinderfen Watch.
+- No full Chapter 2 route beyond Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, and Cinderfen Aftermath.
 - No new unit types.
 - No Chapter 2 named rival.
 - No new rival system.
@@ -192,6 +210,8 @@ Latest simulator scope:
 - No structural `too_hard` flags.
 - No Stronghold warnings.
 - Cinderfen Crossing and Cinderfen Watch are included as Chapter 2 battle scenarios, with one additional Waystation: Shrine Attunement simulator profile that applies only when the Cinder Shrine exists.
+- Cinderfen Aftermath is event-only and excluded from battle simulator profiles.
+- Reward-economy audit note: Cinderfen first-clear telemetry remains the key usefulness read, while repeat-clear farm value is now controlled in data by making Cinderfen base battle payouts and weighted battle item pools first-clear-only.
 
 Cinderfen Crossing overall:
 
@@ -267,16 +287,26 @@ Chapter 1 regression status:
 - Current structural read still reports no `too_easy` and no `too_hard` nodes.
 - Ashen Outpost remains beatable.
 
+Chapter 2 reward economy audit:
+
+- Mandatory Cinderfen battle/node first clears grant 253 XP and 340 campaign/battle resources before event choices: Crossing contributes 125 XP / 170 resources and Watch contributes 128 XP / 170 resources.
+- With one normal Cinderfen Overlook preparation and one normal Cinderfen Aftermath resolution, the route grants 285-290 gross XP and 346-360 gross rewarded resources before Waystation spending. After event costs, the same normal-choice route nets about 242-306 resources depending on the chosen preparation and aftermath resolution.
+- Mandatory item frequency is now two first-clear battle item rolls across Crossing and Watch plus fixed `Scout's Bow` from Crossing. `Study the Cinders` and `Study the Ashen Marks` can add one common item each, but they are once-only event choices.
+- Repeat values are now deliberately tiny: Crossing repeats pay 4 XP / 11 resources and Watch repeats pay 3 XP / 8 resources, with no battle item roll from either table.
+- Waystation services remain unchanged as resource sinks: Marsh Guides costs 35 Crowns, Ash Filters costs 35 Crowns and 15 Aether, Refugee Scouts costs 25 Crowns once, and Shrine Attunement costs 12 Aether.
+- Aftermath rewards remain unchanged and modest: each normal choice grants 12 XP, a small resource return, and reputation; Display Malrec's Standard grants only +1 Free Marches.
+
 ## 4. Current Risks
 
 Fast Army farming risk:
 
 - Fast Army remains strong: it wins 12 of 13 Cinderfen Crossing runs and 10 of 12 Cinderfen Watch runs, often before first-wave pressure fully matters.
-- Rewards were trimmed to reduce farming pressure, but future Chapter 2 rewards should stay modest until another sink or consequence exists.
+- The 2026-05-04 reward-economy tune reduces farm value directly: repeat clears no longer roll Cinderfen battle items or base battle XP/resources, leaving only 4 XP / 11 resources on Crossing and 3 XP / 8 resources on Watch.
+- Future Chapter 2 rewards should still stay modest until another sink or consequence exists, because Fast Army can clear the maps quickly even after repeat value is reduced.
 
 Retinue + Training Yard II strength:
 
-- Retinue + Training Yard II sweeps Cinderfen at 3 wins / 0 defeats / 0 timeouts.
+- Retinue + Training Yard II sweeps the current Cinderfen battle pair at 6 wins / 0 defeats / 0 timeouts.
 - This is a human-play watchpoint before adding more Chapter 2 player power.
 
 Cinder Shrine readability:
@@ -302,23 +332,30 @@ Waystation service clarity:
 Chapter 2 reward pacing:
 
 - First-clear rewards are useful but below Ashen Outpost; Watchpost now reads as 128 XP / 170 resources on a full first clear.
-- Adding more Chapter 2 payout before a fresh sink or consequence could reopen the reward-farm risk.
+- Cinderfen Aftermath adds a modest post-Watch event payout and also spends resources, so it should not become a large power spike.
+- Cinderfen repeat clears are now intentionally poor farms because they pay only the explicit repeat bonus and no battle item roll.
+- Adding more Chapter 2 payout before another sink or consequence could reopen the reward-farm risk.
+
+Aftermath event clarity:
+
+- Cinderfen Aftermath choices show costs, rewards, reputation, modifiers where present, and completion state through the same event-choice panel as Overlook.
+- Automated coverage verifies one choice resolves, persists, and does not duplicate on revisit; human mobile readability still needs a spot check.
 
 E2E suite runtime:
 
-- Full Playwright coverage is green but slow at roughly 23.5 minutes.
+- Full Playwright coverage is green but slow at roughly 20.9 minutes.
 - Keep full e2e for checkpoints; use focused tests while iterating on narrow docs or UI-only changes.
 
 ## 5. Recommended Next Work
 
 Recommend two small follow-ups:
 
-1. Human-verify the two-battle Cinderfen route.
-   - Purpose: confirm Waystation service readability, Cinder Shrine readability, Watchpost fog/tower readability, and campaign reward pacing in the live browser flow.
+1. Human-verify the Cinderfen route.
+   - Purpose: confirm Waystation service readability, Cinder Shrine readability, Watchpost fog/tower readability, Aftermath choice readability, and campaign reward pacing in the live browser flow.
    - Scope: no new gameplay systems; use existing tests and a short browser pass.
 
-2. Add one compact non-battle Chapter 2 consequence only after the two-battle route remains green.
-   - Purpose: make the route feel reactive without adding a broad system.
-   - Scope: one small event, warning, or town-service consequence using existing campaign resources, reputation, modifiers, and duplicate-prevention rules.
+2. Reassess whether Chapter 2 needs another node only after the current route remains green.
+   - Purpose: avoid turning the slice into a broad campaign before readability and reward pacing are proven.
+   - Scope: one small support/event candidate at most; no new map until explicitly scoped.
 
 Keep the boundary firm: no workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, another battle map, or broad army-management systems yet.

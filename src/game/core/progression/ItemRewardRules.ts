@@ -169,7 +169,12 @@ export function grantBattleRewards(
 }
 
 function pickDeterministicRewards(options: RollBattleRewardOptions, count: number, addItem: (itemId: string) => boolean): void {
-  const orderedIds = options.table.deterministicItemIds ?? options.table.weightedItemPool.map((entry) => entry.itemId);
+  const isFirstClear = options.isFirstClear ?? options.completedBattlesBeforeVictory === 0;
+  const poolEntryById = new Map(options.table.weightedItemPool.map((entry) => [entry.itemId, entry]));
+  const orderedIds = (options.table.deterministicItemIds ?? options.table.weightedItemPool.map((entry) => entry.itemId)).filter((itemId) => {
+    const entry = poolEntryById.get(itemId);
+    return !entry || (entry.weight > 0 && rewardPoolEntryApplies(entry, isFirstClear, options.mapId));
+  });
   if (orderedIds.length === 0 || count <= 0) {
     return;
   }

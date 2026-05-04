@@ -1,6 +1,6 @@
 import type { ResourceBag, StrongholdUpgradeId } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
-import { CAMPAIGN_CHAPTER_BY_ID, CAMPAIGN_NODE_BY_ID } from "../data/contentIndex";
+import { CAMPAIGN_CHAPTER_BY_ID, CAMPAIGN_NODE_BY_ID, REWARD_TABLE_BY_ID } from "../data/contentIndex";
 import { STRONGHOLD_UPGRADE_BY_ID, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { formatSummaryLabel } from "./PlaytestAnalyzer";
 import { formatResources } from "./PlaytestTelemetry";
@@ -56,6 +56,7 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- The post-feature Chapter 2 balance pass trims the Cinder Shrine from +24 to +20 battle-local Aether after telemetry showed it was useful in staged routes but not the cause of fast rush wins.");
   lines.push("- Cinderfen Watchpost is the second compact Chapter 2 battle map: it uses existing Ashen units and systems, a raised-road watchtower, three capture sites, two neutral camps, and no Cinder Shrine.");
   lines.push("- The post-Waystation/Watchpost balance pass keeps Chapter 2 enemy pacing unchanged, lowers Shrine Attunement to 12 Aether, trims Cinderfen Watchpost first-clear rewards, and reduces Watchpost repeat-clear payout.");
+  lines.push("- The Chapter 2 reward-economy audit keeps Cinderfen first-clear rewards unchanged, but makes Cinderfen battle item rolls and base battle XP/resources first-clear-only so repeat clears pay only the tiny repeat bonus.");
   lines.push("- Cinderfen-specific defeat tips now point players toward side income, the Cinder Shrine, Cinder Guardians, and Enemy Barracks sequencing before generic retry advice.");
   lines.push("");
   lines.push("## Chapter 2 Balance Pass Result");
@@ -369,6 +370,11 @@ function renderChapterTwoBalanceLines(telemetry: PlaytestTelemetry[]): string[] 
           ...watchReward.campaignItemIds
         ].join(", ")}.`
       : "- Cinderfen Watchpost normal first-clear reward read: no winning baseline run found.",
+    `- Cinderfen repeat-clear value after the reward-economy audit: Crossing ${formatRepeatRewardRead(
+      "cinderfen_causeway_rewards"
+    )}; Watchpost ${formatRepeatRewardRead(
+      "cinderfen_watchpost_rewards"
+    )}. The Cinderfen weighted battle item pools are first-clear-only, reducing Fast Army farm value without changing first-clear usefulness.`,
     "- Chapter 1 telemetry remains unchanged by this pass because tuning touches only Cinderfen battle data, Cinderfen reward/service values, battle-local capture-site rules, simulator modeling, and Cinderfen-specific result copy."
   ];
 }
@@ -407,6 +413,11 @@ function formatAverageTime(values: Array<number | null>): string {
 
 function sumResources(resources: Partial<ResourceBag>): number {
   return Object.values(resources).reduce((total, amount) => total + (amount ?? 0), 0);
+}
+
+function formatRepeatRewardRead(tableId: string): string {
+  const reward = REWARD_TABLE_BY_ID[tableId]?.repeatClearReward;
+  return `${reward?.xp ?? 0} XP / ${sumResources(reward?.resources ?? {})} resources / no battle item roll`;
 }
 
 function formatChapterLabel(nodeId: string): string {
