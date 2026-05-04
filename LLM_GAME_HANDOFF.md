@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-04 19:54 -04:00
+Last updated: 2026-05-04 19:55 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -116,7 +116,7 @@ Checkpoint commit message: Checkpoint Cinderfen route reward audit and e2e helpe
 Checkpoint commit hash: b8ab7e0e474f6020a2823cabfadd8b2a3e20f919
 Post-checkpoint, pre-metadata `git status -sb`: ## main...origin/main [ahead 1]
 Post-checkpoint, pre-metadata `git rev-list --left-right --count origin/main...HEAD`: 0 1
-Post-push branch sync: PENDING until checkpoint commit and metadata update are pushed.
+Post-push branch sync: after pushing the checkpoint and metadata update, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
 Remaining known risks:
