@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a v0.3 Cinderfen route baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu still labels the playable build as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`; v0.3 promotes the compact Chapter 2 Cinderfen route on top of the v0.2.1 technical baseline. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a v0.3 Cinderfen route baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -57,7 +57,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.3 baseline-candidate status, 2026-05-04: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.3 baseline-candidate status, 2026-05-05: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -67,7 +67,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest v0.3 baseline-candidate status, 2026-05-04: `npm test` passes with 37 test files and 259 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
+Latest v0.3 baseline-candidate status, 2026-05-05: `npm test` passes with 38 test files and 268 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, and simulator coverage.
 
 ## Browser Smoke Tests
 
@@ -75,7 +75,7 @@ Latest v0.3 baseline-candidate status, 2026-05-04: `npm test` passes with 37 tes
 npm run test:e2e
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.2` label, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, Ashen Outpost, Cinderfen Causeway, and Cinderfen Watchpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, Cinderfen Overlook, Waystation services, Cinderfen Crossing, Cinder Shrine duplicate prevention, Cinderfen Watch, Cinderfen Aftermath, Malrec trophy consequences, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.3` label and `Cinderfen Route Baseline` subtitle, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, Ashen Outpost, Cinderfen Causeway, and Cinderfen Watchpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, Cinderfen Overlook, Waystation services, Cinderfen Crossing, Cinder Shrine duplicate prevention, Cinderfen Watch, Cinderfen Aftermath, Malrec trophy consequences, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
 The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest full run passed 52 Playwright tests after the Chapter 2 Cinderfen helper cleanup.
 
@@ -91,7 +91,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.3 baseline-candidate status, 2026-05-04: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.3 baseline-candidate status, 2026-05-05: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
 
 ## Preview A Build
 

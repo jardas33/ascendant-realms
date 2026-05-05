@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-05 17:35 -04:00
+Last updated: 2026-05-05 18:39 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -16,9 +16,9 @@ The current playable loop:
 4. Resolve victory or defeat through the shared Results scene.
 5. Persist hero XP, skill points, inventory item instances with affixes, equipment, campaign node progress, event choices, town purchases, Stronghold upgrades, retinue units, rival state, rival trophy records, campaign modifiers, campaign resources, settings, and save migrations in localStorage.
 
-The project is now a **v0.3 Cinderfen route baseline candidate**. The visible in-game menu still says `Prototype v0.2`, while v0.3 documents the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. It is still a prototype, but it has a broad playable RTS/RPG spine and a clearer verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
+The project is now a **frozen v0.3 Cinderfen Route Baseline** and the final automated v0.3 release-candidate verification is green. The visible in-game menu says `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 freezes the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. It is still a prototype, but it has a broad playable RTS/RPG spine and a clear frozen verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The next recommended milestone is **automated route readiness + polish freeze**. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. Best current work is verification, readability, UX, copy clarity, mobile density checks, and controlled polish. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation now has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Do not add broad systems yet: no workers, enemy construction, full new factions, new maps, new units, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems unless the user explicitly asks.
+The final automated route-readiness gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. Best current work is **v0.3.1 polish and human readability review**: UX hierarchy, copy clarity, mobile density checks, small bug fixes, and controlled polish on the existing frozen route. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation now has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
 
 ## Current Git State
 
@@ -34,7 +34,7 @@ Current branch:
 main
 ```
 
-Latest checkpoint feature commit:
+Latest pre-freeze checkpoint feature commit:
 
 ```text
 f644bb6dc6b09d529a249321fd70563fa44748e1
@@ -55,7 +55,7 @@ e526367 Checkpoint Cinderfen two-battle Chapter 2 slice
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest user-provided in-app browser context for this handoff refresh was `http://127.0.0.1:4186/`. This handoff refresh was doc-only and did not manipulate the open browser tab. The previous Browser Use smoke check after the Cinderfen balance pass saw title `Ascendant Realms`, main menu present, and browser console errors at 0. Playwright remains the deterministic browser verification surface for gameplay flows.
+- Latest user-provided in-app browser context was `http://127.0.0.1:4186/`. The final v0.3 release-candidate preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:4187/`, saw title `Ascendant Realms`, verified `Prototype v0.3` / `Cinderfen Route Baseline`, checked New Campaign, Continue Campaign, Skirmish Setup, and Campaign Map, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
 
 Current branch status for this handoff update:
 
@@ -79,7 +79,83 @@ Current branch sync status:
 Before the v0.3 polish-freeze checkpoint, `git status -sb` reported `## main...origin/main` with the expected dirty v0.3 stack, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. After checkpoint commit f644bb6dc6b09d529a249321fd70563fa44748e1 and before metadata, the branch reported `[ahead 1]` / `0 1`. After pushing the checkpoint and metadata update, branch sync reported `## main...origin/main` and `0 0`.
 ```
 
-The pushed checkpoint preserves the v0.3 Cinderfen route polish-freeze edits. Preserve future dirty work unless the user explicitly asks for a different git action.
+The pushed checkpoint preserves the v0.3 Cinderfen route polish-freeze edits. The freeze pass records the frozen baseline in `CHANGELOG.md`, `ROADMAP.md`, and this handoff, and is intended to be committed with message `Freeze v0.3 Cinderfen route baseline`. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Frozen v0.3 Baseline - 2026-05-05 18:39 -04:00
+
+Scope: freeze the current v0.3 Cinderfen Route Baseline after final automated verification. No gameplay, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, refactors, or broad systems were added in the freeze pass.
+
+Frozen route:
+
+```text
+Ashen Outpost
+Cinderfen Overlook
+Cinderfen Waystation
+Cinderfen Crossing
+Cinderfen Watch
+Cinderfen Aftermath
+```
+
+Current release status: frozen v0.3 baseline. Next recommended phase: `v0.3.1 polish and human readability review`.
+
+Allowed next work:
+
+- Copy clarity.
+- UX hierarchy.
+- Mobile and browser readability checks.
+- Small bug fixes.
+- Controlled polish on existing Cinderfen route surfaces.
+
+Postponed next work:
+
+- Workers.
+- Enemy construction.
+- New factions.
+- New maps.
+- Diplomacy.
+- Procedural generation.
+- Crafting.
+- Broad new systems or broad loot/army-management expansion.
+
+## Final v0.3 Release-Candidate Verification - 2026-05-05 18:36 -04:00
+
+Scope: final automated release-candidate verification for the current v0.3 Cinderfen route. No gameplay, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad systems were added. Only release-candidate documentation was updated.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 7.40s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.9m.
+Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json were regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 4187
+PASS: Browser Use smoke at http://127.0.0.1:4187/
+PASS: main menu loaded with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached hero creation and Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the smoke save existed.
+PASS: Skirmish Setup opened and listed the current maps.
+PASS: browser console errors stayed at 0.
+```
+
+Final release decision: v0.3 is frozen as the `Prototype v0.3` / `Cinderfen Route Baseline` release candidate. Remaining known risks are human readability/feel checks only: mobile density, Cinder Shrine salience, Waystation/Aftermath choice density, retinue/rival/trophy panel hierarchy, and full human-paced Cinderfen route feel.
 
 ## Clean Checkpoint - 2026-05-05 17:35 -04:00
 
@@ -137,6 +213,33 @@ Remaining known risks:
 - Full Playwright e2e remains slow.
 
 Next recommended milestone: human-readable v0.3 freeze review. Play the current Cinderfen route end to end with the main retinue/Stronghold profiles, check mobile/browser density for Overlook, Waystation, Crossing, Watch, Aftermath, Results, and route-complete campaign-map copy, and add no new Chapter 2 content until that review is green.
+
+## Product Version Copy Consistency - 2026-05-05 18:04 -04:00
+
+Scope: align visible product/version copy with the v0.3 Cinderfen route baseline candidate. No gameplay, balance, save format, campaign rules, map content, unit content, faction content, or unrelated systems were changed.
+
+What changed:
+
+- Main menu eyebrow now says `Prototype v0.3`.
+- Main menu subtitle now says `Cinderfen Route Baseline`.
+- Playwright smoke coverage now asserts `Prototype v0.3` and `Cinderfen Route Baseline` are visible, and that the old `Prototype v0.2` / `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue` menu copy is absent.
+- Current docs now describe v0.2 as the previous systems baseline and v0.3 as the visible Cinderfen route baseline candidate.
+- Historical v0.2 changelog/handoff entries remain historical records, not current visible UI expectations.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 7.87s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.0m. The main-menu smoke asserts the v0.3 copy and absence of the old v0.2 visible menu copy.
+```
+
+`npm run playtest:sim` was not part of this copy-only request and was not rerun in this pass; the latest simulator baseline remains the 2026-05-05 polish-freeze checkpoint.
 
 ## Clean Checkpoint - 2026-05-04 19:53 -04:00
 
@@ -606,7 +709,7 @@ Scope: document the v0.2.1 baseline candidate after v0.2 features, Rival/Nemesis
 What v0.2.1 means:
 
 - No gameplay, balance, save format, faction, worker, enemy construction, diplomacy, crafting, or map content was added for this release-baseline pass.
-- The visible product copy remains `Prototype v0.2`; v0.2.1 is the release/checkpoint label for docs, verification expectations, and stability work.
+- At that historical checkpoint, the visible product copy remained `Prototype v0.2`; v0.2.1 was the release/checkpoint label for docs, verification expectations, and stability work. The current visible product copy is now `Prototype v0.3`.
 - Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish are completed baseline work, not open next milestones.
 - The v0.3 Chapter 2 Cinderfen vertical slice is now underway: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinderfen Watch, Cinderfen Aftermath, Cinder Shrine, and the Malrec trophy consequence exist. The current next phase is human verification of the route, not broad system work.
 
@@ -1121,6 +1224,21 @@ Notes:
 
 ## Latest Verified Status
 
+Latest copy-only product-version verification completed on 2026-05-05 at 18:04 -04:00:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 7.87s.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning. Latest output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.0m. Main menu asserts `Prototype v0.3`, `Cinderfen Route Baseline`, and absence of old v0.2 menu copy.
+```
+
+The latest full verification including simulator remains the 2026-05-05 17:35 -04:00 v0.3 Cinderfen route polish-freeze checkpoint:
+
 Latest full verification completed on 2026-05-05 at 17:35 -04:00 for the v0.3 Cinderfen route polish-freeze checkpoint:
 
 ```text
@@ -1500,7 +1618,7 @@ npm run playtest:sim
 PASS: 180 simulated runs across 60 campaign battle node/profile summaries; too_easy none, too_hard none, Ashen Outpost beatable yes, Stronghold warnings none
 
 Browser Use preview smoke at http://127.0.0.1:4182/
-PASS: main menu visible, browser console errors: 0; current expected menu label is `Prototype v0.2`
+PASS: main menu visible, browser console errors: 0; historical expected menu label at that checkpoint was `Prototype v0.2`
 ```
 
 Checkpoint commit:
@@ -1551,7 +1669,7 @@ git diff --check
 PASS: no whitespace errors; existing `.gitignore` CRLF warning only
 
 Browser Use preview smoke at http://127.0.0.1:4182/
-PASS: main menu visible, browser console errors: 0; current expected menu label is `Prototype v0.2`
+PASS: main menu visible, browser console errors: 0; historical expected menu label at that checkpoint was `Prototype v0.2`
 ```
 
 ### Retinue Telemetry Balance Pass - 2026-05-02
@@ -2984,7 +3102,7 @@ Current e2e files:
 
 Browser-level tests currently cover:
 
-- Main menu boot, including visible `Prototype v0.2` label and v0.2 subtitle copy.
+- Main menu boot, including visible `Prototype v0.3` label, `Cinderfen Route Baseline` subtitle copy, and absence of the old v0.2 menu copy.
 - Settings persistence, including floating text, reduced motion, fog override, colorblind minimap persistence, and rendered player/enemy colorblind minimap colors.
 - Hero creation.
 - Campaign map and locked-node behavior.
@@ -3345,9 +3463,9 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Recommended Next Priorities
 
-1. Treat the next phase as automated route readiness + polish freeze for the v0.3 Cinderfen route baseline candidate.
+1. Treat the next phase as v0.3.1 polish and human readability review for the frozen Cinderfen route baseline.
 2. Human-verify the current Chapter 2 Cinderfen slice end to end: Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine surge/attunement, Malrec trophy consequence, Cinderfen Watch, Cinderfen Aftermath, Results, and return-to-campaign persistence.
-3. Add no further Chapter 2 content until the current route stays green in automation, human readability, UX, and balance review. Do not start a broad Chapter 2 campaign arc yet.
+3. Add no further Chapter 2 content until the current route stays green in human readability, UX, and balance review. The final automated gate is already green; do not start a broad Chapter 2 campaign arc yet.
 4. Keep Chapter 2 reward pacing modest: Fast Army and retinue plus Training Yard II remain the main reward-farm watchpoints, even though Cinderfen repeat clears now pay only tiny XP/resources and no battle item roll.
 5. Do a human-paced Chapter 1 regression pass after any Chapter 2 content change: Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Marcher Camp, Refugee Caravan, Chapel, and Ashen Outpost should remain unchanged.
 6. Play Ashen Outpost with and without Chapel repair to validate fortress pressure, Captain Malrec readability, final approach readability, tower pressure, upper-left objective-panel placement, and whether mixed or Stronghold-backed retinue feels helpful or mandatory.
@@ -3360,9 +3478,10 @@ Run this before a checkpoint commit after gameplay/UI changes:
 
 ## Guidance For Future LLMs
 
-- Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, HUD/fog polish, permanent HUD/fog regression coverage, Chapter 2 Cinderfen route, reward-economy audit, Chapter 2 Playwright helper cleanup, v0.3 baseline/readiness/preview docs, route-complete copy, campaign-map presentation helper cleanup, and campaign data-organization cleanup are intentional.
-- Treat the current docs as the v0.3 Cinderfen route baseline candidate. Use `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `CHANGELOG.md`, and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
-- The current named phase is automated route readiness + polish freeze. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, Cinderfen Watch, and Cinderfen Aftermath are implemented; next work should be verification, readability, UX, copy clarity, and controlled polish before any additional Chapter 2 content. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
+- Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, HUD/fog polish, permanent HUD/fog regression coverage, Chapter 2 Cinderfen route, reward-economy audit, Chapter 2 Playwright helper cleanup, v0.3 baseline/readiness/preview docs, route-complete copy, campaign-map presentation helper cleanup, campaign data-organization cleanup, and frozen v0.3 release docs are intentional.
+- Treat the current docs as the frozen v0.3 Cinderfen Route Baseline. Use `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `docs/V03_RELEASE_CANDIDATE_REPORT.md`, `CHANGELOG.md`, and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
+- The automated route-readiness gate is green, and the next named phase is v0.3.1 polish and human readability review. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, Cinderfen Watch, and Cinderfen Aftermath are implemented and frozen; next work should be readability, UX, copy clarity, mobile density, controlled polish, or small bug fixes before any additional Chapter 2 content. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
+- Explicitly postpone workers, enemy construction, new factions, new maps, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks for them.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.
 - For campaign content, keep `src/game/data/campaignNodes.ts` and `src/game/data/rewards.ts` as compatibility barrels. Add/edit Chapter 1 nodes in `borderMarchesNodes.ts`, current Chapter 2 nodes in `cinderfenRoadNodes.ts`, chapter metadata in `campaignChapters.ts`, and campaign battle reward tables in `campaignRewards.ts`.

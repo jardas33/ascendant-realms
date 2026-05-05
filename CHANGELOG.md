@@ -1,12 +1,34 @@
 # Changelog
 
+## v0.3 Cinderfen Route Baseline Frozen - 2026-05-05
+
+The v0.3 Cinderfen Route Baseline is now frozen. This freeze does not add gameplay, change balance, refactor code, or add maps, factions, units, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad loot systems.
+
+### Freeze Verification
+
+- `npm test`: passed with 38 test files and 268 tests.
+- `npm run build`: passed with the known Vite large-chunk warning only.
+- `npm run test:e2e -- --reporter=line`: passed with 52 Playwright tests.
+- `npm run playtest:sim`: passed with 255 deterministic runs across 85 campaign battle node/profile summaries.
+- `git diff --check`: passed with no whitespace errors.
+- Production preview smoke: passed at `http://127.0.0.1:4187/`; main menu loaded with `Prototype v0.3` / `Cinderfen Route Baseline`, New Campaign, Continue Campaign, Skirmish Setup, and Campaign Map did not crash, and browser console errors stayed at 0.
+
+### Frozen Scope
+
+- Frozen route: Chapter 1 through `ashen_outpost`, then `cinderfen_overlook`, optional `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath`.
+- Cinderfen Aftermath remains the end of the current playable v0.3 slice.
+- Next phase: **v0.3.1 polish and human readability review**.
+- Allowed next work: copy clarity, UX hierarchy, mobile/readability checks, small bug fixes, and controlled polish on the existing frozen route.
+- Postponed next work: workers, enemy construction, new factions, diplomacy, procedural generation, crafting, new maps, and broad systems.
+
 ## v0.3 Cinderfen Route Baseline Candidate - 2026-05-04
 
-This checkpoint promotes the current Cinderfen route to the v0.3 vertical-slice baseline candidate. It does not add gameplay, change balance, or add maps, factions, units, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad loot systems. The visible in-game menu still labels the playable build as `Prototype v0.2`; `v0.3` is the release-facing route baseline for the current Cinderfen documentation, verification expectations, and polish-freeze posture.
+This checkpoint promotes the current Cinderfen route to the v0.3 vertical-slice baseline candidate. It does not add gameplay, change balance, or add maps, factions, units, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad loot systems. The visible in-game menu now labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline.
 
 ### Route Baseline
 
 - Current playable route: Chapter 1 through `ashen_outpost`, then `cinderfen_overlook`, optional `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath`.
+- Main menu product copy is aligned with the current route baseline: `Prototype v0.3` / `Cinderfen Route Baseline`.
 - `docs/V03_CINDERFEN_ROUTE_BASELINE.md` records the current route order, rewards summary, simulator summary, e2e summary, known risks, forbidden next steps, and recommended next steps.
 - The Chapter 2 reward-economy audit is complete: first clears remain useful, repeat clears now pay only tiny XP/resources, and repeat battle item rolls are disabled for the Cinderfen battles.
 - Chapter 2 Playwright helper cleanup is complete in `tests/e2e/chapter2-helpers.ts`, with behavior-preserving helpers for post-Ashen setup, Waystation service flows, Crossing/Watch launch, shrine capture, and test-only victory fast-forwards.
@@ -14,7 +36,7 @@ This checkpoint promotes the current Cinderfen route to the v0.3 vertical-slice 
 
 ### Current Release Verification Expectations
 
-- `npm test`: latest checkpoint passed with 37 test files and 259 tests.
+- `npm test`: latest checkpoint passed with 38 test files and 268 tests.
 - `npm run build`: latest checkpoint passed with the known Vite large-chunk warning only.
 - `npm run test:e2e -- --reporter=line`: latest full suite passed with 52 Playwright tests.
 - `npm run playtest:sim`: latest simulator baseline passed with 255 deterministic runs across 85 campaign battle node/profile summaries, no structural too-hard nodes, no structural too-easy nodes, Ashen Outpost beatable, no Stronghold warnings, and Cinderfen repeat rewards reduced to tiny non-item payouts.
@@ -28,7 +50,7 @@ This checkpoint promotes the current Cinderfen route to the v0.3 vertical-slice 
 
 ## v0.2.1 Prototype Baseline Candidate - 2026-05-03
 
-This checkpoint packages the v0.2 feature baseline with the follow-up technical and UX stabilization work. It does not add gameplay or change balance. The visible in-game menu still labels the playable prototype as `Prototype v0.2`; `v0.2.1` is the release-baseline candidate for the current docs, verification expectations, refactor state, and HUD/fog regression coverage.
+This checkpoint packages the v0.2 feature baseline with the follow-up technical and UX stabilization work. It does not add gameplay or change balance. At that historical checkpoint, the visible in-game menu labeled the playable prototype as `Prototype v0.2`; `v0.2.1` was the release-baseline candidate for docs, verification expectations, refactor state, and HUD/fog regression coverage.
 
 ### Completed Since v0.2
 

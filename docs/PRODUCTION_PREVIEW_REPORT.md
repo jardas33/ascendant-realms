@@ -40,7 +40,7 @@ Smoke flow results:
 
 | Area | Result | Notes |
 | --- | --- | --- |
-| Main menu loads | PASS | Title was `Ascendant Realms`; main menu rendered `Prototype v0.2` and the current v0.2 subtitle. |
+| Main menu loads | PASS | Title was `Ascendant Realms`; at the time of this preview report, the main menu rendered the historical `Prototype v0.2` product copy. After the v0.3 product-copy alignment, the expected visible copy is `Prototype v0.3` / `Cinderfen Route Baseline`. |
 | New Campaign works | PASS | `New Campaign` opened hero creation, `Begin Campaign` created a Warlord save, and the campaign map loaded. |
 | Continue Campaign does not crash | PASS | Reloaded to main menu after creating a save; `Continue Campaign` reopened the campaign map. |
 | Skirmish setup opens | PASS | `Skirmish` opened setup with current maps, including Cinderfen Causeway and Cinderfen Watchpost. |

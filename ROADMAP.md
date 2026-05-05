@@ -11,11 +11,11 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current release baseline candidate is **v0.3 Cinderfen route baseline candidate**. It packages the v0.2.1 technical baseline plus the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath.
+The current release baseline is **v0.3 Cinderfen Route Baseline - frozen**. It packages the v0.2.1 technical baseline plus the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
-The current visible product baseline is `Prototype v0.2` with the menu subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
+The current visible product baseline is `Prototype v0.3` with the menu subtitle `Cinderfen Route Baseline`. v0.2 remains the previous systems baseline; v0.3 is the frozen Cinderfen route baseline.
 
 Completed v0.2.1 stabilization remains part of the baseline:
 
@@ -42,18 +42,18 @@ Completed v0.3 Cinderfen route:
 
 Next phase:
 
-- **Automated route readiness + polish freeze**.
-- Best current work is verification, readability, UX, copy clarity, mobile density checks, and controlled polish on the existing route.
+- **v0.3.1 polish and human readability review**.
+- Best current work is readability, UX, copy clarity, mobile density checks, small bug fixes, and controlled polish on the existing frozen route.
 - Route-complete guidance after Cinderfen Aftermath should remain clear: Cinderfen route secured, Chapter 2 slice complete, and more Cinderfen content coming later.
 
-Must remain stable during the polish freeze:
+Must remain stable after the v0.3 freeze:
 
 - v0.3 automated baseline should stay green: `npm test`, `npm run build`, full Playwright e2e, and `npm run playtest:sim`.
 - Rival/retinue readability review remains current, including capacity, death/removal, deployed retinue identity, rival preview, duplicate reward prevention, trophies, and defeat/readiness copy.
 - HUD command hover stability, side-panel scroll preservation, and captured-site fog visibility remain covered by permanent e2e regression tests.
 - Ashen Outpost, mixed retinue, Training Yard II, Quartermaster II, rival rewards, and first-defeat trophy clarity remain under human-review watch before numeric tuning.
 
-Explicitly postponed during the v0.3 polish freeze:
+Explicitly postponed after the v0.3 freeze:
 
 - Workers.
 - Enemy construction or rebuilding.
@@ -64,9 +64,9 @@ Explicitly postponed during the v0.3 polish freeze:
 - Full trophy room.
 - Broad army-management or retinue replacement systems.
 
-Recommended focus during the polish freeze:
+Recommended focus for v0.3.1 polish and human readability review:
 
-- Keep v0.3 compact and data-driven. The next milestone is automated route readiness plus human verification of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
+- Keep v0.3 frozen, compact, and data-driven. The next milestone is human verification and polish of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.

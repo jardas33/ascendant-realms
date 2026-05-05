@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 37 test files, 259 tests
+PASS: 38 test files, 268 tests
 ```
 
 2. Production build:
@@ -83,11 +83,11 @@ npm run preview
 
 Open the local preview URL and confirm:
 
-- Main menu renders `Prototype v0.2` and `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
+- Main menu renders `Prototype v0.3` and `Cinderfen Route Baseline`.
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
-Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with the v0.2 main menu visible and browser console errors at 0. The release baseline candidate is `v0.3 Cinderfen route baseline candidate`, while the visible product copy remains `Prototype v0.2`.
+Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The release baseline candidate is `v0.3 Cinderfen route baseline candidate`, and the visible product copy is `Prototype v0.3`.
 
 ## Manual QA Areas Not Fully Automated
 

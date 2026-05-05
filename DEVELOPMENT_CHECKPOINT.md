@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-05-05 17:35 -04:00
+Updated: 2026-05-05 18:36 -04:00
+
+## Final v0.3 Release-Candidate Verification - 2026-05-05 18:36 -04:00
+
+Scope: final automated verification for the v0.3 Cinderfen route release-candidate freeze. No features, gameplay behavior, balance values, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad systems were added. The only changes in this pass are release-candidate documentation updates.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 7.40s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.9m.
+Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json were regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 4187
+PASS: Browser Use smoke at http://127.0.0.1:4187/
+PASS: main menu loaded with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached hero creation and Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the smoke save existed.
+PASS: Skirmish Setup opened and listed the current maps.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. Final freeze decision: v0.3 is ready to freeze as the Cinderfen Route Baseline prototype release candidate, with remaining known risks limited to human readability/feel watch items.
 
 ## Checkpoint Scope
 

@@ -95,9 +95,9 @@ export class MainMenuScene extends Phaser.Scene {
       <main class="menu-shell asset-screen-bg" data-testid="main-menu" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
         <section class="menu-panel">
           ${emblem}
-          <p class="eyebrow">Prototype v0.2</p>
+          <p class="eyebrow">Prototype v0.3</p>
           <h1>Ascendant Realms</h1>
-          <p class="menu-copy">v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue</p>
+          <p class="menu-copy">Cinderfen Route Baseline</p>
           <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
           <div class="menu-actions">
             <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
