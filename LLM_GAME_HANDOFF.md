@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-04 21:40 -04:00
+Last updated: 2026-05-05 17:35 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -37,12 +37,13 @@ main
 Latest checkpoint feature commit:
 
 ```text
-b8ab7e0e474f6020a2823cabfadd8b2a3e20f919
+f644bb6dc6b09d529a249321fd70563fa44748e1
 ```
 
 Recent checkpoint stack:
 
 ```text
+f644bb6 Checkpoint v0.3 Cinderfen route polish freeze
 499938e Record Cinderfen route checkpoint push status
 a17b678 Record Cinderfen route checkpoint metadata
 b8ab7e0 Checkpoint Cinderfen route reward audit and e2e helper cleanup
@@ -59,26 +60,83 @@ Known shell/tool note:
 Current branch status for this handoff update:
 
 ```text
-Checkpoint commit b8ab7e0e474f6020a2823cabfadd8b2a3e20f919 preserves the Chapter 2 Cinderfen route reward audit and Chapter 2 Playwright helper cleanup. The checkpoint and metadata follow-ups are pushed to origin/main.
+Checkpoint commit f644bb6dc6b09d529a249321fd70563fa44748e1 preserves the v0.3 Cinderfen route polish-freeze baseline: v0.3 docs, readiness/preview reports, route-complete polish, reward-audit/test updates, Chapter 2 e2e helper cleanup, and campaign map presentation helper cleanup.
 
-As of this handoff refresh, `git status -sb` reports `## main...origin/main` with intentional dirty work from the v0.3 baseline docs, readiness/preview/route-complete polish, reward-audit/test updates, and the campaign map presentation helper cleanup. New campaign presentation files include `CampaignChapterPanelViewModel.ts`, `CampaignChoiceResultMessage.ts`, `CampaignChoiceViewModel.ts`, `CampaignNodeCardViewModel.ts`, `CampaignPresentationViewModels.test.ts`, and `CampaignRouteStatusViewModel.ts`. Preserve these dirty changes unless the user explicitly asks for a reset/revert.
+After pushing the checkpoint and metadata update, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Preserve this checkpoint unless the user explicitly asks for a reset/revert.
 ```
 
-The checkpoint commit `b8ab7e0e474f6020a2823cabfadd8b2a3e20f919` was created with message `Checkpoint Cinderfen route reward audit and e2e helper cleanup`. Do not reset or revert future edits unless the user explicitly asks.
+The checkpoint commit `f644bb6dc6b09d529a249321fd70563fa44748e1` was created with message `Checkpoint v0.3 Cinderfen route polish freeze`. Do not reset or revert future edits unless the user explicitly asks.
 
 Feature checkpoint commit:
 
 ```text
-b8ab7e0e474f6020a2823cabfadd8b2a3e20f919
+f644bb6dc6b09d529a249321fd70563fa44748e1
 ```
 
 Current branch sync status:
 
 ```text
-Before this v0.3 documentation pass, `git status -sb` reported `## main...origin/main`. The latest pushed checkpoint stack includes b8ab7e0e474f6020a2823cabfadd8b2a3e20f919 plus metadata commits a17b678 and 499938e.
+Before the v0.3 polish-freeze checkpoint, `git status -sb` reported `## main...origin/main` with the expected dirty v0.3 stack, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. After checkpoint commit f644bb6dc6b09d529a249321fd70563fa44748e1 and before metadata, the branch reported `[ahead 1]` / `0 1`. After pushing the checkpoint and metadata update, branch sync reported `## main...origin/main` and `0 0`.
 ```
 
-The pushed checkpoint preserves the Chapter 2 reward-audit and e2e-helper cleanup edits. The current dirty stack now includes later v0.3 docs, readiness/preview/route-complete polish, and campaign presentation helper cleanup work. Preserve future dirty work unless the user explicitly asks for a different git action.
+The pushed checkpoint preserves the v0.3 Cinderfen route polish-freeze edits. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Clean Checkpoint - 2026-05-05 17:35 -04:00
+
+Scope: create a clean checkpoint for the v0.3 Cinderfen route polish-freeze baseline before new work. No reset, checkout, delete, revert, gameplay addition, balance change, save-format change, campaign-rule change, map addition, unit addition, faction addition, or battle-logic change was made during the checkpoint pass.
+
+Current preserved scope:
+
+- v0.3 Cinderfen route baseline candidate remains the current state.
+- Chapter 2 current playable route remains `cinderfen_overlook` -> optional `cinderfen_waystation` -> `cinderfen_crossing` -> `cinderfen_watch` -> `cinderfen_aftermath`.
+- v0.3 baseline/readiness docs are preserved: `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `docs/CINDERFEN_ROUTE_READINESS_GATE.md`, and `docs/PRODUCTION_PREVIEW_REPORT.md`.
+- Route-complete polish is preserved: after Cinderfen Aftermath, the campaign map/return flow clearly communicates that the Cinderfen route is secured and the Chapter 2 slice is complete.
+- Chapter 2 reward-economy audit and e2e helper cleanup are preserved.
+- Campaign map presentation/view-model cleanup is preserved through focused helpers for chapter cards, node cards, route status, event/town choice summaries, and result copy.
+- Chapter 1 remains unchanged by this checkpoint pass.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 10.77s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only. Latest output: assets/index-CIosN5VC.js, 1,917.97 kB minified / 457.58 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.4m. Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic battle runs across 85 campaign battle nodes. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Branch and commit status:
+
+```text
+Pre-checkpoint `git status -sb`: ## main...origin/main with the expected dirty v0.3 polish-freeze stack.
+Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
+Checkpoint commit message: Checkpoint v0.3 Cinderfen route polish freeze
+Checkpoint commit hash: f644bb6dc6b09d529a249321fd70563fa44748e1
+Post-checkpoint, pre-metadata `git status -sb`: ## main...origin/main [ahead 1]
+Post-checkpoint, pre-metadata `git rev-list --left-right --count origin/main...HEAD`: 0 1
+Post-push branch sync after checkpoint and metadata update: `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
+```
+
+Remaining known risks:
+
+- Human playtesting is still needed for the full Cinderfen route with no retinue, light retinue, Training Yard II, Quartermaster II, and mixed Chapter 1 upgrade states.
+- Fast Army and retinue plus Training Yard II can still clear Cinderfen quickly. Repeat farming value is tiny, but quick-clear feel still needs human review.
+- Cinder Shrine, Shrine Attunement, Cinderfen Waystation, Cinderfen Aftermath, and route-complete copy need live browser/mobile readability review.
+- Campaign map presentation helpers should stay presentation-only; do not move campaign rules, save mutation, or battle launch logic into the helper layer.
+- `tests/e2e/chapter2-helpers.ts` should stay a setup/fast-forward helper module; future specs should keep behavior and reward assertions visible in spec files.
+- The known Vite large chunk warning remains.
+- Full Playwright e2e remains slow.
+
+Next recommended milestone: human-readable v0.3 freeze review. Play the current Cinderfen route end to end with the main retinue/Stronghold profiles, check mobile/browser density for Overlook, Waystation, Crossing, Watch, Aftermath, Results, and route-complete campaign-map copy, and add no new Chapter 2 content until that review is green.
 
 ## Clean Checkpoint - 2026-05-04 19:53 -04:00
 
@@ -1063,11 +1121,11 @@ Notes:
 
 ## Latest Verified Status
 
-Latest full verification completed on 2026-05-04 at 21:40 -04:00 after the campaign-map presentation helper cleanup:
+Latest full verification completed on 2026-05-05 at 17:35 -04:00 for the v0.3 Cinderfen route polish-freeze checkpoint:
 
 ```text
 npm test
-PASS: 38 test files, 268 tests, 8.19s.
+PASS: 38 test files, 268 tests, 10.77s.
 
 npm run build
 PASS: TypeScript compile and Vite production build with the known Vite large-chunk warning. Latest output: assets/index-CIosN5VC.js, 1,917.97 kB minified / 457.58 kB gzip.
@@ -1076,7 +1134,7 @@ npm run test:e2e -- --reporter=line
 PASS: 52 Playwright tests in 21.4m. Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
 
 npm run playtest:sim
-PASS: 255 simulated runs across 85 campaign battle node/profile summaries. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+PASS: 255 simulated runs across 85 campaign battle nodes. PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
 
 git diff --check
 PASS: no whitespace errors.
@@ -1085,7 +1143,7 @@ PASS: no whitespace errors.
 Latest Browser Use status:
 
 ```text
-The latest user-provided in-app browser context for this handoff refresh was http://127.0.0.1:4186/. This doc refresh did not inspect or manipulate the open tab. The latest deterministic browser gameplay verification is the Playwright suite above.
+The latest user-provided in-app browser context for this checkpoint request was http://127.0.0.1:4186/. This checkpoint did not inspect or manipulate the open tab. The latest deterministic browser gameplay verification is the Playwright suite above.
 ```
 
 Enemy Hero V1 result

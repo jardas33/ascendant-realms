@@ -1,10 +1,10 @@
 # Development Checkpoint
 
-Updated: 2026-05-04 19:55 -04:00
+Updated: 2026-05-05 17:35 -04:00
 
 ## Checkpoint Scope
 
-This checkpoint records the verified Chapter 2 Cinderfen route reward audit and Chapter 2 Playwright helper cleanup. It preserves the current dirty work as a checkpoint commit without adding gameplay during the checkpoint pass.
+This checkpoint records the verified v0.3 Cinderfen route polish-freeze baseline. It preserves the v0.3 baseline docs, readiness/preview reports, route-complete polish, reward-audit/test updates, Chapter 2 e2e helper cleanup, and campaign map presentation helper cleanup without adding gameplay during the checkpoint pass.
 
 Included in this checkpoint:
 
@@ -16,9 +16,12 @@ Included in this checkpoint:
 - `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch.
 - The compact Malrec trophy consequence is visible through the existing rival/trophy state.
 - Chapter/campaign data is split into focused node and reward modules with compatibility barrels preserved.
-- Chapter 2 reward-economy audit changes are preserved: Cinderfen repeat clears now pay only tiny XP/resources and no repeat battle item roll while first clears remain useful.
+- Chapter 2 reward-economy audit changes are preserved: Cinderfen repeat clears pay only tiny XP/resources and no repeat battle item roll while first clears remain useful.
 - Chapter 2 Playwright setup cleanup is preserved in `tests/e2e/chapter2-helpers.ts`; smoke specs keep the meaningful reward, copy, persistence, and duplicate-prevention assertions.
-- Chapter 2 event, support, battle, aftermath, reward, persistence, simulator, e2e, telemetry, balance, report, and documentation changes from the current route are preserved.
+- v0.3 baseline/readiness documentation is preserved in `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `docs/CINDERFEN_ROUTE_READINESS_GATE.md`, and `docs/PRODUCTION_PREVIEW_REPORT.md`.
+- Route-complete polish is preserved: completing Cinderfen Aftermath makes the campaign map/return flow clearly communicate that the playable Cinderfen route is secured and the Chapter 2 slice is complete.
+- Campaign map presentation cleanup is preserved with focused helpers for chapter cards, node cards, route status, event/town choice summaries, and result copy.
+- Chapter 2 event, support, battle, aftermath, reward, persistence, simulator, e2e, telemetry, balance, report, production-preview, and documentation changes from the current route are preserved.
 - Chapter 1 remains stable in tests, e2e, and simulator telemetry.
 
 No gameplay behavior was changed during this checkpoint request. The only post-verification edits are this checkpoint record and the corresponding handoff update.
@@ -37,9 +40,9 @@ Result:
 
 ```text
 PASS
-37 test files passed
-259 tests passed
-Latest duration: 18.56s
+38 test files passed
+268 tests passed
+Latest duration: 10.77s
 ```
 
 ### Production Build
@@ -56,7 +59,7 @@ Result:
 PASS
 TypeScript compile passed
 Vite production build passed
-Latest output: assets/index-MCPD5UO4.js, 1,914.22 kB minified / 456.45 kB gzip.
+Latest output: assets/index-CIosN5VC.js, 1,917.97 kB minified / 457.58 kB gzip.
 ```
 
 Known build warning:
@@ -78,11 +81,11 @@ Result:
 ```text
 PASS
 52 Playwright tests passed
-Total duration: 24.2m
+Total duration: 21.4m
 Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts
 ```
 
-Coverage includes Chapter 2 browser flows that resolve Cinderfen Overlook, use Cinderfen Waystation Shrine Attunement, win Cinderfen Crossing, verify Cinder Shrine rewards do not duplicate, win Cinderfen Watch, verify rewards persist once, resolve Cinderfen Aftermath, verify Aftermath rewards do not duplicate, and verify the Malrec trophy consequence. The Chapter 2 smoke flows now use the extracted helper module.
+Coverage includes Chapter 2 browser flows that resolve Cinderfen Overlook, use Cinderfen Waystation Shrine Attunement, win Cinderfen Crossing, verify Cinder Shrine rewards do not duplicate, win Cinderfen Watch, verify rewards persist once, resolve Cinderfen Aftermath, verify route-complete copy, verify future Chapter 2 nodes remain upcoming/locked, verify Aftermath rewards do not duplicate, and verify the Malrec trophy consequence. The Chapter 2 smoke flows use the extracted helper module.
 
 ### Playtest Simulation
 
@@ -102,18 +105,33 @@ Chapter 1 telemetry remains stable.
 Cinderfen Crossing and Cinderfen Watch remain structurally reasonable.
 ```
 
+### Git Diff Check
+
+Command:
+
+```bash
+git diff --check
+```
+
+Result:
+
+```text
+PASS
+No whitespace errors.
+```
+
 ## Git And Branch Status
 
 Checkpoint commit message:
 
 ```text
-Checkpoint Cinderfen route reward audit and e2e helper cleanup
+Checkpoint v0.3 Cinderfen route polish freeze
 ```
 
 Checkpoint commit hash:
 
 ```text
-b8ab7e0e474f6020a2823cabfadd8b2a3e20f919
+f644bb6dc6b09d529a249321fd70563fa44748e1
 ```
 
 Branch:
@@ -125,9 +143,9 @@ main tracking origin/main
 Branch sync status:
 
 ```text
-Before the checkpoint commit, `git status -sb` reported `## main...origin/main`.
+Before the checkpoint commit, `git status -sb` reported `## main...origin/main` with the expected dirty v0.3 polish-freeze stack.
 Before the checkpoint commit, `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
-After the checkpoint commit and before this metadata update, `git status -sb` reported `## main...origin/main [ahead 1]`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`.
+After checkpoint commit `f644bb6dc6b09d529a249321fd70563fa44748e1` and before this metadata update, `git status -sb` reported `## main...origin/main [ahead 1]`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 1`.
 After pushing the checkpoint and metadata update, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`.
 ```
 
@@ -138,6 +156,7 @@ After pushing the checkpoint and metadata update, `git status -sb` reported `## 
 - Cinder Shrine and Shrine Attunement are intentionally modest, but human players may overvalue or miss the first-capture Aether surge without a live readability pass.
 - Cinderfen Overlook, Waystation, and Aftermath choice/service copy is covered by tests, but mobile UI density should still be spot-checked in the browser.
 - The Chapter 2 Playwright helper file should stay a setup/fast-forward helper only; future specs should keep meaningful gameplay assertions in the spec files.
+- Campaign map presentation helpers should stay presentation-only; do not move campaign rules, save mutation, or battle launch logic into the view-model helper layer.
 - Rival impact is intentionally compact and Malrec-trophy-gated; broader returning-rival arcs remain future work.
 - Chapter/campaign content now depends on focused data modules and compatibility barrels staying aligned.
 - Vite still reports the known large Phaser bundle warning.
@@ -145,4 +164,4 @@ After pushing the checkpoint and metadata update, `git status -sb` reported `## 
 
 ## Recommended Next Milestone
 
-Human-verify the current Cinderfen route end to end: Overlook, Waystation, Crossing, Cinder Shrine surge/attunement, Watch, Aftermath, Results, and return-to-campaign persistence. Add no further Chapter 2 content until the current route stays green in human readability and balance review. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
+Human-verify the v0.3 Cinderfen route freeze candidate end to end: Overlook, Waystation, Crossing, Cinder Shrine surge/attunement, Watch, Aftermath, Results, route-complete campaign-map copy, and return-to-campaign persistence. Add no further Chapter 2 content until the route stays green in human readability and balance review. Avoid workers, enemy construction, new factions, diplomacy, procedural generation, crafting, and broad army-management systems.
