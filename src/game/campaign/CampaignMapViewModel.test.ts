@@ -5,7 +5,8 @@ import { createNewHeroSave } from "../data/heroes";
 import { formatChoiceModifierSummary, formatChoiceReputationSummary, formatChoiceRewardSummary } from "./CampaignChoicePanel";
 import { canStartCampaignNode } from "./CampaignNavigation";
 import { createCampaignMapViewModel } from "./CampaignMapViewModel";
-import { renderNodeDetails } from "./CampaignNodePanel";
+import { createCampaignNodeCardViewModel } from "./CampaignNodeCardViewModel";
+import { renderNodeButton, renderNodeDetails } from "./CampaignNodePanel";
 import { formatResourceRewards } from "./CampaignResourcePanel";
 import { renderRivalIntelPanel } from "./RivalIntelPanel";
 import { renderRetinuePanel } from "./RetinuePanel";
@@ -368,6 +369,99 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("Display Malrec&#039;s Standard");
     expect(html).toContain("Requires trophy Malrec&#039;s Outpost Standard");
     expect(html).toContain("Outcome: Completes this node.");
+  });
+
+  it("shows Cinderfen route completion while leaving Chapter 1 stable", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_aftermath"
+    });
+
+    const viewModel = createCampaignMapViewModel({
+      heroSave: hero,
+      campaignSave: campaign,
+      selectedNodeId: "cinderfen_aftermath"
+    });
+    const chapterOne = viewModel.chapters.find((entry) => entry.chapter.id === "border_marches")!;
+    const chapterTwo = viewModel.chapters.find((entry) => entry.chapter.id === "cinderfen_road")!;
+
+    expect(viewModel.progressSummary).toBe("12/13 nodes completed");
+    expect(chapterOne).toMatchObject({
+      status: "unlocked",
+      completedNodeCount: 8,
+      currentNodeCount: 8
+    });
+    expect(chapterTwo).toMatchObject({
+      status: "unlocked",
+      completedNodeCount: 4,
+      currentNodeCount: 5
+    });
+    expect(viewModel.nodes.find((entry) => entry.node.id === "border_village")?.status).toBe("completed");
+    expect(viewModel.nodes.find((entry) => entry.node.id === "cinderfen_aftermath")).toMatchObject({
+      status: "completed",
+      selected: true
+    });
+  });
+
+  it("keeps future placeholder nodes upcoming and impossible to launch", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["cinderfen_aftermath"],
+      unlockedNodeIds: ["cinderfen_future_spur"]
+    });
+    const placeholderNode = {
+      ...CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_aftermath")!,
+      id: "cinderfen_future_spur",
+      name: "Cinderfen Future Spur",
+      description: "Future Chapter 2 content placeholder.",
+      isPlaceholder: true,
+      placeholderDescription: "More Cinderfen content coming later.",
+      prerequisites: ["cinderfen_aftermath"],
+      choices: undefined,
+      unlocks: []
+    };
+    const status = "locked" as const;
+
+    const buttonHtml = renderNodeButton(createCampaignNodeCardViewModel({ node: placeholderNode, status, selected: false }));
+    const detailsHtml = renderNodeDetails({ node: placeholderNode, campaignSave: campaign, heroSave: hero });
+
+    expect(canStartCampaignNode(placeholderNode, campaign)).toBe(false);
+    expect(buttonHtml).toContain("Event - Upcoming");
+    expect(detailsHtml).toContain("Event - Upcoming");
+    expect(detailsHtml).toContain("No battle launch");
+    expect(detailsHtml).toContain("More Cinderfen content coming later.");
   });
 
   it("shows reputation ranks and active reputation effects in the view model", () => {

@@ -16,17 +16,16 @@ import { getRivalBattleLaunchModifiers } from "../core/RivalRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
-import { CAMPAIGN_MODIFIER_BY_ID, HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
+import { HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { getReputationBattleLaunchModifiers } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
-import { formatChoiceCostSummary, formatChoiceRewardSummary } from "../campaign/CampaignChoicePanel";
+import { formatCampaignChoiceResultMessage } from "../campaign/CampaignChoiceResultMessage";
 import { renderCampaignChapterPanel } from "../campaign/CampaignChapterPanel";
 import { createCampaignMapViewModel } from "../campaign/CampaignMapViewModel";
 import {
   canStartCampaignNode,
   firstAvailableNodeId,
-  formatCampaignNodeList,
   messageForCampaignMapData,
   selectedCampaignNode
 } from "../campaign/CampaignNavigation";
@@ -235,13 +234,7 @@ export class CampaignMapScene extends Phaser.Scene {
 
     this.heroSave = result.hero;
     this.campaignSave = result.campaign;
-    const rewards = formatChoiceRewardSummary(choice, this.heroSave, node);
-    const costs = formatChoiceCostSummary({ node, choice, heroSave: this.heroSave });
-    const unlocked = result.unlockedNodeIds.map((nodeId) => formatCampaignNodeList([nodeId]) || nodeId);
-    const locked = result.lockedNodeIds.map((nodeId) => formatCampaignNodeList([nodeId]) || nodeId);
-    const modifiers = result.grantedModifierIds.map((modifierId) => CAMPAIGN_MODIFIER_BY_ID[modifierId]?.name ?? modifierId);
-    const verb = node.nodeType === "town" ? "used" : "chosen";
-    this.message = `${choice.label} ${verb}.${costs !== "None" ? ` Spent ${costs}.` : ""}${rewards ? ` ${rewards}.` : ""}${modifiers.length > 0 ? ` Modifier gained: ${modifiers.join(", ")}.` : ""}${unlocked.length > 0 ? ` New path: ${unlocked.join(", ")}.` : ""}${locked.length > 0 ? ` Path closed: ${locked.join(", ")}.` : ""}`;
+    this.message = formatCampaignChoiceResultMessage({ node, choice, heroSave: this.heroSave, result });
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }

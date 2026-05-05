@@ -2,7 +2,9 @@
 
 Generated: 2026-05-03 19:34 -04:00
 
-Sources read: `LLM_GAME_HANDOFF.md`, `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`, `PLAYTEST_TELEMETRY.md`, `PLAYTEST_TELEMETRY.json`, `BALANCE.md`, and `QA_RUN.md`.
+Current status note, 2026-05-04: this review is now part of the v0.3 Cinderfen route baseline candidate. For the newest route-baseline summary, including Aftermath, reward-audit results, current verification counts, and forbidden next steps, use `docs/V03_CINDERFEN_ROUTE_BASELINE.md`.
+
+Sources read: `LLM_GAME_HANDOFF.md`, `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`, `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `PLAYTEST_TELEMETRY.md`, `PLAYTEST_TELEMETRY.json`, `BALANCE.md`, and `QA_RUN.md`.
 
 Scope: automated review only. This pass uses campaign view-model tests, pure rules, Playwright flows, deterministic telemetry, and docs. It does not include manual playtesting and makes no gameplay or balance changes.
 
@@ -10,11 +12,12 @@ Scope: automated review only. This pass uses campaign view-model tests, pure rul
 
 | Area | Verdict | Evidence |
 | --- | --- | --- |
-| Chapter 2 progression clarity | Pass | View-model, rules, and e2e cover Overlook, Waystation, Crossing, and Watch unlock order. |
+| Chapter 2 progression clarity | Pass | View-model, rules, and e2e cover Overlook, Waystation, Crossing, Watch, and Aftermath unlock order. |
 | Cinderfen Overlook clarity | Pass | Costs, rewards, reputation, modifiers, Malrec trophy condition, completion, and duplicate prevention are covered. |
 | Cinderfen Waystation clarity | Pass with added coverage | This pass adds view-model assertions for service effect text and repeatable/one-time labels. |
 | Cinderfen Crossing readability | Pass with watchpoint | E2E verifies map name, objectives, minimap, resources, Cinder Shrine +25 attuned surge, and duplicate prevention. Human review is still useful for shrine visual salience. |
 | Cinderfen Watch readability | Pass with watchpoint | E2E verifies map name, objectives, minimap, resources, Marsh Guides modifier, victory, rewards, and persistence. |
+| Cinderfen Aftermath clarity | Pass with watchpoint | E2E and route docs cover the compact post-Watch consequence choices and duplicate prevention; mobile density still wants human review. |
 | Telemetry balance | Reasonable | No `too_easy` or `too_hard` automated flags. Safe Beginner wins both Chapter 2 battles; Greedy Economy timeouts remain a routing/pacing watchpoint. |
 | Chapter 1 regression | Stable | Telemetry keeps Chapter 1 in the same verdict bands, with no Chapter 2 balance changes in this pass. |
 
@@ -28,12 +31,13 @@ Current implemented chain:
 | 2 | `cinderfen_waystation` | Town/service node unlocks after Overlook and stays open. |
 | 3 | `cinderfen_crossing` | Battle node unlocks after Overlook and launches `cinderfen_causeway`. |
 | 4 | `cinderfen_watch` | Battle node unlocks after Crossing victory and launches `cinderfen_watchpost`. |
+| 5 | `cinderfen_aftermath` | Event node unlocks after Watch victory and completes the compact Cinderfen route. |
 
 Automated evidence:
 
-- `CampaignMapViewModel.test.ts` verifies Chapter 2 appears after Ashen Outpost, Overlook is playable, Waystation and Crossing unlock after Overlook, and Watch unlocks after Crossing.
+- `CampaignMapViewModel.test.ts` verifies Chapter 2 appears after Ashen Outpost, Overlook is playable, Waystation and Crossing unlock after Overlook, Watch unlocks after Crossing, and Aftermath unlocks after Watch.
 - `CampaignRules.test.ts` verifies node unlocks, choice gating, insufficient-resource cases, and completion/unlock effects.
-- `smoke.spec.ts` seeds Chapter 2 state, opens the Chapter 2 map, resolves the event/service steps, launches both Cinderfen battles, and returns to campaign.
+- `smoke.spec.ts` seeds Chapter 2 state, opens the Chapter 2 map, resolves the event/service steps, launches both Cinderfen battles, resolves Aftermath, and returns to campaign.
 - Chapter 1 nodes remain present in the same campaign presentation flows; no Chapter 1 map or reward data changed in this review.
 
 Locked/unavailable states are clear enough for the current slice: locked nodes remain disabled until prerequisites resolve, upcoming/scaffold content is not launchable, and the Waystation clearly presents as services rather than a battle.
@@ -128,7 +132,24 @@ Risk:
 
 - Fog and raised-road theme are text/objective/readability covered, but not visually reviewed in this pass.
 
-## 6. Telemetry Summary
+## 6. Cinderfen Aftermath Clarity
+
+Event read:
+
+- Node: `cinderfen_aftermath`
+- Type: compact non-battle consequence event after `cinderfen_watch`.
+- Choices remain modest once-only follow-ups: secure the road, aid Fenfolk, study Ashen marks, or display Malrec's standard when the trophy requirement is met.
+
+Automated evidence:
+
+- E2E covers unlocking Aftermath after Watch, selecting a consequence, reward/cost application, save persistence, and duplicate prevention.
+- The v0.3 baseline document and slice report keep Aftermath framed as a small route close, not a new broad Chapter 2 system.
+
+Risk:
+
+- The choice set is readable in text assertions, but real mobile density and choice-comparison comfort still need human review.
+
+## 7. Telemetry Summary
 
 Current deterministic telemetry: 255 total runs, 75 Chapter 2 battle runs, 180 Chapter 1/earlier-node runs.
 
@@ -166,7 +187,7 @@ Strategic risk read:
 - Automated warnings: no `too_easy`, no `too_hard`, no unfair first attack nodes, no weak reward nodes, and no Stronghold warnings.
 - Chapter 1 regression stability: telemetry still reports Chapter 1 nodes in their prior bands, with Safe Beginner able to stabilize milestone content.
 
-## 7. Missing Coverage And Actions
+## 8. Missing Coverage And Actions
 
 Added in this review:
 
@@ -174,12 +195,12 @@ Added in this review:
 
 Important coverage already present:
 
-- Unlock/select event node, Overlook choices, Malrec condition, Waystation service use, Crossing victory/reward/return, Watch victory/reward/return, reward duplicate prevention, Cinder Shrine surge rules, and save/load behavior.
+- Unlock/select event node, Overlook choices, Malrec condition, Waystation service use, Crossing victory/reward/return, Watch victory/reward/return, Aftermath choice/reward/duplicate-prevention behavior, reward duplicate prevention, Cinder Shrine surge rules, and save/load behavior.
 
 Remaining non-blocking gaps:
 
 - No screenshot-based visual assertion for Cinder Shrine salience, fog mood, or raised-road readability.
-- No mobile-specific Waystation density check.
+- No mobile-specific Waystation or Aftermath density check.
 - No manual feel pass on whether Greedy Economy timeouts are frustrating or simply a valid strategic failure.
 
 Recommendation:
@@ -190,7 +211,7 @@ Recommendation:
 
 Commands completed for this pass:
 
-- `npm test` - passed, 251 tests.
+- `npm test` - latest route checkpoint passed, 259 tests.
 - `npm run build` - passed; Vite emitted the existing large-chunk warning.
 - `npm run test:e2e -- --reporter=line` - passed, 52 Playwright tests in about 21.4 minutes.
 - `npm run playtest:sim` - passed, 255 deterministic runs across 85 campaign battle summaries.

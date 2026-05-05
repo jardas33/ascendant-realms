@@ -348,13 +348,19 @@ E2E suite runtime:
 
 ## 5. Recommended Next Work
 
-Recommend two small follow-ups:
+Next phase: automated route readiness + polish freeze.
 
-1. Human-verify the Cinderfen route.
+Recommended follow-ups:
+
+1. Verify the Cinderfen route end to end.
    - Purpose: confirm Waystation service readability, Cinder Shrine readability, Watchpost fog/tower readability, Aftermath choice readability, and campaign reward pacing in the live browser flow.
    - Scope: no new gameplay systems; use existing tests and a short browser pass.
 
-2. Reassess whether Chapter 2 needs another node only after the current route remains green.
+2. Polish only where verification shows friction.
+   - Purpose: keep the v0.3 route baseline readable and stable without changing the content footprint.
+   - Scope: copy clarity, layout density, UX affordances, and controlled polish.
+
+3. Reassess whether Chapter 2 needs another node only after the current route remains green.
    - Purpose: avoid turning the slice into a broad campaign before readability and reward pacing are proven.
    - Scope: one small support/event candidate at most; no new map until explicitly scoped.
 

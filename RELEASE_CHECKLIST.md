@@ -1,6 +1,6 @@
 # Release Checklist
 
-Use this checklist for the v0.2.1 prototype baseline candidate and future prototype checkpoints. Run commands from the project root:
+Use this checklist for the v0.3 Cinderfen route baseline candidate and future prototype checkpoints. Run commands from the project root:
 
 ```text
 D:\Code for projects\WB game like\ascendant-realms
@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 36 test files, 210 tests
+PASS: 37 test files, 259 tests
 ```
 
 2. Production build:
@@ -49,10 +49,10 @@ npm run test:e2e -- --reporter=line
 Expected current prototype result:
 
 ```text
-PASS: 49 Playwright tests
+PASS: 52 Playwright tests
 ```
 
-Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 23 minutes on this machine.
+Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 24 minutes on this machine.
 
 4. Deterministic playtest simulator:
 
@@ -63,11 +63,12 @@ npm run playtest:sim
 Expected current prototype result:
 
 ```text
-PASS: 180 simulated runs across 60 campaign battle node/profile summaries
+PASS: 255 simulated runs across 85 campaign battle node/profile summaries
 No too-easy nodes
 No structural too-hard nodes
 Ashen Outpost beatable
 No Stronghold warnings
+Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 ```
 
 This command regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
@@ -86,7 +87,7 @@ Open the local preview URL and confirm:
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
-Browser Use preview sanity is optional after the automated suite. The latest expected visible sanity check is the production preview at `http://127.0.0.1:4182/` with the v0.2 main menu visible and browser console errors at 0. The release baseline candidate is `v0.2.1`, while the visible product copy remains `Prototype v0.2`.
+Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with the v0.2 main menu visible and browser console errors at 0. The release baseline candidate is `v0.3 Cinderfen route baseline candidate`, while the visible product copy remains `Prototype v0.2`.
 
 ## Manual QA Areas Not Fully Automated
 
@@ -97,6 +98,7 @@ Browser Use preview sanity is optional after the automated suite. The latest exp
 - Reputation hooks in normal campaign flow: Common Folk Marcher Camp discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
 - Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
+- Full human-paced Cinderfen route from Ashen Outpost through Overlook, Waystation, Crossing, Watch, and Aftermath, including Cinder Shrine surge/attunement readability and modest reward feel.
 - HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.
 - Audio behavior with human ears.
 - Visual polish across generated/manual UI-kit assets.
@@ -106,5 +108,6 @@ Browser Use preview sanity is optional after the automated suite. The latest exp
 
 - `CHANGELOG.md` describes the current feature baseline.
 - `README.md` has current setup, feature summary, known limitations, and verification counts.
-- `ROADMAP.md` marks Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, CampaignRules split, and HUD/fog polish as completed, with the next phase set to `v0.3 planning: Chapter 2 vertical slice`.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.2.1 baseline candidate on top of Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, the CampaignRules split, and HUD/fog polish.
+- `docs/V03_CINDERFEN_ROUTE_BASELINE.md` records the current route, rewards, simulator/e2e summaries, known risks, forbidden next steps, and recommended next steps.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to `automated route readiness + polish freeze`.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.3 Cinderfen route baseline candidate and warns future sessions not to add broad systems before verification/readability/UX polish.

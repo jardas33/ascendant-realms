@@ -643,6 +643,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Reputation: +5 Common Folk");
     await page.locator("button[data-campaign-choice='aid_the_fenfolk']").click();
     await expect(page.getByTestId("campaign-status")).toContainText("Aid the Fenfolk chosen");
+    await expect(page.getByTestId("campaign-status")).toContainText("Cinderfen route secured");
+    await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 slice complete");
+    await expect(page.getByTestId("campaign-status")).toContainText("More Cinderfen content coming later");
+    await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
+      "Chapter 2 slice complete"
+    );
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Completed/i);
     save = await readStoredSave(page);
     expect(save.campaign.completedNodeIds).toContain("cinderfen_aftermath");

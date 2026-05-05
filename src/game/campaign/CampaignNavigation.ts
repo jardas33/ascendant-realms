@@ -29,6 +29,12 @@ export function formatCampaignNodeList(nodeIds: string[]): string {
 export function messageForCampaignMapData(data: CampaignMessageData): string {
   if (data.completedNodeId) {
     const node = CAMPAIGN_NODES.find((entry) => entry.id === data.completedNodeId);
+    if (data.completedNodeId === "cinderfen_watch") {
+      return "Cinderfen Watch secured. Cinderfen Aftermath is the final event in the current playable Cinderfen route.";
+    }
+    if (data.completedNodeId === "cinderfen_aftermath") {
+      return "Cinderfen route secured. Chapter 2 slice complete. More Cinderfen content coming later.";
+    }
     return node ? `${node.name} completed. New paths may be available.` : "Campaign progress saved.";
   }
   if (data.stats?.outcome === "defeat") {

@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.3 Cinderfen Route Baseline Candidate - 2026-05-04
+
+This checkpoint promotes the current Cinderfen route to the v0.3 vertical-slice baseline candidate. It does not add gameplay, change balance, or add maps, factions, units, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad loot systems. The visible in-game menu still labels the playable build as `Prototype v0.2`; `v0.3` is the release-facing route baseline for the current Cinderfen documentation, verification expectations, and polish-freeze posture.
+
+### Route Baseline
+
+- Current playable route: Chapter 1 through `ashen_outpost`, then `cinderfen_overlook`, optional `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath`.
+- `docs/V03_CINDERFEN_ROUTE_BASELINE.md` records the current route order, rewards summary, simulator summary, e2e summary, known risks, forbidden next steps, and recommended next steps.
+- The Chapter 2 reward-economy audit is complete: first clears remain useful, repeat clears now pay only tiny XP/resources, and repeat battle item rolls are disabled for the Cinderfen battles.
+- Chapter 2 Playwright helper cleanup is complete in `tests/e2e/chapter2-helpers.ts`, with behavior-preserving helpers for post-Ashen setup, Waystation service flows, Crossing/Watch launch, shrine capture, and test-only victory fast-forwards.
+- Chapter 1 reward values and route stability remain unchanged.
+
+### Current Release Verification Expectations
+
+- `npm test`: latest checkpoint passed with 37 test files and 259 tests.
+- `npm run build`: latest checkpoint passed with the known Vite large-chunk warning only.
+- `npm run test:e2e -- --reporter=line`: latest full suite passed with 52 Playwright tests.
+- `npm run playtest:sim`: latest simulator baseline passed with 255 deterministic runs across 85 campaign battle node/profile summaries, no structural too-hard nodes, no structural too-easy nodes, Ashen Outpost beatable, no Stronghold warnings, and Cinderfen repeat rewards reduced to tiny non-item payouts.
+- Optional `npm run preview` plus Browser Use smoke remains useful for a visible production-preview check and browser console-error check.
+
+### Next Phase
+
+- Next phase: **automated route readiness + polish freeze**.
+- Best current work is verification, readability, UX, copy clarity, mobile density checks, and controlled polish on the existing route.
+- Continue to avoid workers, enemy construction, new factions, new maps, new units, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless explicitly requested.
+
 ## v0.2.1 Prototype Baseline Candidate - 2026-05-03
 
 This checkpoint packages the v0.2 feature baseline with the follow-up technical and UX stabilization work. It does not add gameplay or change balance. The visible in-game menu still labels the playable prototype as `Prototype v0.2`; `v0.2.1` is the release-baseline candidate for the current docs, verification expectations, refactor state, and HUD/fog regression coverage.
@@ -12,7 +38,7 @@ This checkpoint packages the v0.2 feature baseline with the follow-up technical 
 - Permanent Playwright regression coverage added for command hover stability, side-panel scroll preservation, captured resource-site fog visibility, and desktop/tablet/mobile battle command reachability.
 - Rival/Nemesis Persistence V1 and Rival Rewards and Trophies V1 are part of the completed v0.2.1 baseline rather than the next milestone.
 
-### Current Release Verification Expectations
+### Historical v0.2.1 Verification Expectations
 
 - `npm test`: expected to pass with 36 test files and 210 tests.
 - `npm run build`: expected to pass with the known Vite large-chunk warning only.
@@ -20,9 +46,9 @@ This checkpoint packages the v0.2 feature baseline with the follow-up technical 
 - `npm run playtest:sim`: latest simulator baseline passed with 180 deterministic runs, no structural too-hard nodes, no structural too-easy nodes, Ashen Outpost beatable, and no Stronghold warnings.
 - Optional Browser Use preview sanity remains recommended for a visible production-preview check and browser console-error check.
 
-### Next Phase
+### Historical Next Phase
 
-- Next phase: **v0.3 planning: Chapter 2 vertical slice**.
+- This milestone is superseded by the v0.3 Cinderfen route baseline candidate above.
 - Before adding Chapter 2 content, do a human-paced readability pass on retinue, rival rewards/trophies, HUD hover/scroll feel, captured-site fog readability, and Ashen Outpost pressure.
 - Continue to avoid workers, enemy construction, new factions, diplomacy, procedural campaign, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless explicitly requested.
 
@@ -115,4 +141,4 @@ Known release caveat: the Vite production build reports that the main Phaser bun
 ### Historical Next Milestone
 
 - At the v0.2 baseline point, the next recommended pass was Rival Rewards Balance And Readability Review.
-- This is now superseded by the v0.2.1 baseline candidate above; the current next phase is `v0.3 planning: Chapter 2 vertical slice`.
+- This is now superseded by the v0.3 Cinderfen route baseline candidate above; the current next phase is `automated route readiness + polish freeze`.

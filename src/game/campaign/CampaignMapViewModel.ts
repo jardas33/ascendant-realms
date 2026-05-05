@@ -1,4 +1,4 @@
-import { getCampaignChapterViewModels, getCampaignNodeStatus, getCampaignProgressSummary } from "../core/CampaignRules";
+import { getCampaignProgressSummary } from "../core/CampaignRules";
 import { getKnownRivalIntel, getRivalTrophyIntel } from "../core/RivalRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { FACTION_BY_ID } from "../data/contentIndex";
@@ -9,6 +9,9 @@ import {
 } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 import type { CampaignMapViewModel, CampaignReputationViewModel } from "./CampaignPresentationTypes";
+import { createCampaignChapterPanelViewModels } from "./CampaignChapterPanelViewModel";
+import { createCampaignNodeCardViewModels } from "./CampaignNodeCardViewModel";
+import { createCampaignRouteStatusViewModel } from "./CampaignRouteStatusViewModel";
 
 interface CampaignMapViewModelInput {
   heroSave: HeroSaveData;
@@ -17,19 +20,17 @@ interface CampaignMapViewModelInput {
 }
 
 export function createCampaignMapViewModel(input: CampaignMapViewModelInput): CampaignMapViewModel {
-  const selectedNode = CAMPAIGN_NODES.find((node) => node.id === input.selectedNodeId) ?? CAMPAIGN_NODES[0];
+  const nodes = createCampaignNodeCardViewModels(input.campaignSave, input.selectedNodeId);
+  const selectedNode = nodes.find((entry) => entry.selected)?.node ?? CAMPAIGN_NODES[0];
   return {
     heroSave: input.heroSave,
     campaignSave: input.campaignSave,
     selectedNode,
-    nodes: CAMPAIGN_NODES.map((node) => ({
-      node,
-      status: getCampaignNodeStatus(node, input.campaignSave),
-      selected: node.id === input.selectedNodeId
-    })),
-    chapters: getCampaignChapterViewModels(input.campaignSave),
+    nodes,
+    chapters: createCampaignChapterPanelViewModels(input.campaignSave),
     progressSummary: getCampaignProgressSummary(input.campaignSave),
     campaignStateLabel: input.campaignSave.started ? "Live" : "New",
+    routeStatus: createCampaignRouteStatusViewModel(input.campaignSave),
     reputation: createCampaignReputationViewModel(input.heroSave),
     rivalIntel: getKnownRivalIntel(input.campaignSave),
     rivalTrophies: getRivalTrophyIntel(input.campaignSave)

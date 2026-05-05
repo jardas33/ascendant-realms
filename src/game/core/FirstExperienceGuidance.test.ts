@@ -73,6 +73,64 @@ describe("first experience guidance", () => {
     expect(resultGuidance.actions.join(" ")).toContain("Old Stone Road");
   });
 
+  it("marks the Cinderfen route complete after Aftermath", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = {
+      ...createStartedCampaignSave(createFallbackCampaignSave()),
+      completedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      unlockedNodeIds: [
+        "border_village",
+        "old_stone_road",
+        "marcher_camp",
+        "aether_well_ruins",
+        "bandit_hillfort",
+        "chapel_of_the_marches",
+        "refugee_caravan",
+        "ashen_outpost",
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ]
+    };
+
+    const guidance = getCampaignNextAction(campaign, hero);
+
+    expect(guidance.title).toBe("Cinderfen route secured");
+    expect(guidance.body).toContain("Chapter 2 slice complete");
+    expect(guidance.body).toContain("more Cinderfen content coming later");
+  });
+
+  it("points Watch victory toward the final Cinderfen aftermath event", () => {
+    const guidance = getResultsGuidance({
+      outcome: "victory",
+      completedNodeId: "cinderfen_watch",
+      completedNodeName: "Cinderfen Watch",
+      unlockedNodeNames: ["Cinderfen Aftermath"],
+      rewardItemCount: 0,
+      skillPointsGained: 0
+    });
+
+    expect(guidance.title).toBe("Cinderfen Watch Secured");
+    expect(guidance.body).toContain("Cinderfen Aftermath");
+    expect(guidance.body).toContain("v0.3 Chapter 2 slice");
+    expect(guidance.actions).toContain("Chapter 2 slice ends there");
+  });
+
   it("prompts inventory and skill spending when both are available", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),

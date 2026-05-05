@@ -1,5 +1,5 @@
 import type { CampaignChapterViewModel } from "./CampaignPresentationTypes";
-import { escapeHtml, titleCase } from "./CampaignPresentationTypes";
+import { escapeHtml } from "./CampaignPresentationTypes";
 
 export function renderCampaignChapterPanel(chapters: CampaignChapterViewModel[]): string {
   return `
@@ -10,18 +10,14 @@ export function renderCampaignChapterPanel(chapters: CampaignChapterViewModel[])
 }
 
 function renderCampaignChapterCard(entry: CampaignChapterViewModel): string {
-  const currentProgress =
-    entry.currentNodeCount > 0
-      ? `${entry.completedNodeCount}/${entry.currentNodeCount} current nodes complete`
-      : "Future content scaffold";
   return `
-      <article class="chapter-card ${entry.status}" data-testid="campaign-chapter-${entry.chapter.id}">
+      <article class="${entry.cssClass}" data-testid="${entry.testId}">
         <div>
           <strong>${escapeHtml(entry.chapter.title)}</strong>
-          <span>${titleCase(entry.status)}</span>
+          <span>${escapeHtml(entry.statusLabel)}</span>
         </div>
         <p>${escapeHtml(entry.chapter.shortDescription)}</p>
-        <small>${escapeHtml(currentProgress)}</small>
+        <small>${escapeHtml(entry.progressText)}</small>
       </article>
     `;
 }

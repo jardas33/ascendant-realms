@@ -11,11 +11,13 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current release baseline candidate is **v0.2.1**. It packages the v0.2 feature baseline with completed Rival/Nemesis Persistence V1, Rival Rewards and Trophies V1, the CampaignRules module split, and the HUD/fog polish pass.
+The current release baseline candidate is **v0.3 Cinderfen route baseline candidate**. It packages the v0.2.1 technical baseline plus the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath.
+
+The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
 The current visible product baseline is `Prototype v0.2` with the menu subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`.
 
-Completed v0.2.1 stabilization:
+Completed v0.2.1 stabilization remains part of the baseline:
 
 - Rival/Nemesis Persistence V1: completed.
 - Rival Rewards and Trophies V1: completed.
@@ -23,31 +25,35 @@ Completed v0.2.1 stabilization:
 - HUD/fog polish for command hover stability, side-panel scroll preservation, and captured resource-site visibility: completed.
 - Permanent Playwright regression coverage for the HUD/fog polish: completed.
 
-Next phase:
+Completed v0.3 Cinderfen route:
 
-- **v0.3 current milestone: Chapter 2 Cinderfen two-battle slice plus one aftermath event implemented; next candidate is human verification before more content**.
-- Planning spec: `docs/CHAPTER_2_PLAN.md`.
-- First playable implementation spec: `docs/CHAPTER_2_IMPLEMENTATION_SPEC.md`.
-- Current slice report: `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`.
-- Implemented Chapter 2 event gate: `cinderfen_overlook` is now a playable Cinderfen Overlook preparation event after `ashen_outpost`, with three baseline choices plus the optional Malrec trophy consequence.
-- Implemented Chapter 2 support node: `cinderfen_waystation` is now a compact town/service node after `cinderfen_overlook`, with Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement using existing campaign choice/modifier/save rules.
-- Implemented Chapter 2 battle node: `cinderfen_crossing` is now playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map.
-- Implemented second Chapter 2 battle node: `cinderfen_watch` is now playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watchpost** battle map.
-- Implemented Chapter 2 aftermath node: `cinderfen_aftermath` is now a compact non-battle event after `cinderfen_watch`, with three modest baseline once-only choices plus a tiny optional Malrec trophy reputation choice using existing resource, reward, reputation, modifier, save, and duplicate-prevention rules.
+- [x] Cinderfen Overlook: `cinderfen_overlook` is a playable Chapter 2 preparation event after `ashen_outpost`, with three baseline choices plus the optional Malrec trophy consequence.
+- [x] Cinderfen Waystation: `cinderfen_waystation` is a compact town/service node after `cinderfen_overlook`, with Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement using existing campaign choice/modifier/save rules.
+- [x] Cinderfen Crossing: `cinderfen_crossing` is playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map.
+- [x] Cinderfen Watch: `cinderfen_watch` is playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watchpost** battle map.
+- [x] Cinderfen Aftermath: `cinderfen_aftermath` is a compact non-battle event after `cinderfen_watch`, with three modest baseline once-only choices plus a tiny optional Malrec trophy reputation choice using existing resource, reward, reputation, modifier, save, and duplicate-prevention rules. It is the end of the current playable Cinderfen route.
 - Implemented Cinderfen identity hook: the Cinder Shrine first-capture Aether surge exists as a small battle-local tactical feature.
-- Working proposal: The Cinderfen Road remains a small ash-glass wetland/causeway chapter that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
-- Next scope target: verify the Cinderfen route through full gates, two battles, aftermath, and human readability before considering any additional Chapter 2 content.
+- Baseline document: `docs/V03_CINDERFEN_ROUTE_BASELINE.md`.
+- Slice report: `docs/CHAPTER_2_CINDERFEN_SLICE_REPORT.md`.
+- Automated review: `docs/CINDERFEN_AUTOMATED_REVIEW.md`.
+- Working proposal: The Cinderfen Road remains a small ash-glass wetland/causeway route that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
 - Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile, and the aftermath is event-only. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
 
-Must be stable before implementation:
+Next phase:
 
-- v0.2.1 automated baseline remains green: `npm test`, `npm run build`, full Playwright e2e, and `npm run playtest:sim`.
+- **Automated route readiness + polish freeze**.
+- Best current work is verification, readability, UX, copy clarity, mobile density checks, and controlled polish on the existing route.
+- Route-complete guidance after Cinderfen Aftermath should remain clear: Cinderfen route secured, Chapter 2 slice complete, and more Cinderfen content coming later.
+
+Must remain stable during the polish freeze:
+
+- v0.3 automated baseline should stay green: `npm test`, `npm run build`, full Playwright e2e, and `npm run playtest:sim`.
 - Rival/retinue readability review remains current, including capacity, death/removal, deployed retinue identity, rival preview, duplicate reward prevention, trophies, and defeat/readiness copy.
 - HUD command hover stability, side-panel scroll preservation, and captured-site fog visibility remain covered by permanent e2e regression tests.
 - Ashen Outpost, mixed retinue, Training Yard II, Quartermaster II, rival rewards, and first-defeat trophy clarity remain under human-review watch before numeric tuning.
 
-Explicitly postponed for v0.3:
+Explicitly postponed during the v0.3 polish freeze:
 
 - Workers.
 - Enemy construction or rebuilding.
@@ -58,9 +64,9 @@ Explicitly postponed for v0.3:
 - Full trophy room.
 - Broad army-management or retinue replacement systems.
 
-Recommended focus before the next Chapter 2 addition:
+Recommended focus during the polish freeze:
 
-- Keep v0.3 compact and data-driven. The next milestone is human verification of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
+- Keep v0.3 compact and data-driven. The next milestone is automated route readiness plus human verification of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.

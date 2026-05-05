@@ -1,11 +1,12 @@
 # Ascendant Realms
 
-Ascendant Realms is a v0.2.1 prototype baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu still labels the playable build as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`; v0.2.1 packages the v0.2 feature set with the CampaignRules split, HUD/fog polish, and permanent regression coverage. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a v0.3 Cinderfen route baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu still labels the playable build as `Prototype v0.2` with the subtitle `v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue`; v0.3 promotes the compact Chapter 2 Cinderfen route on top of the v0.2.1 technical baseline. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
-Current v0.2.1 feature snapshot:
+Current v0.3 feature snapshot:
 
+- Compact Chapter 2 Cinderfen route after Ashen Outpost: Overlook, optional Waystation, Crossing, Watch, and Aftermath. The current playable v0.3 slice ends at Cinderfen Aftermath; more Cinderfen content is upcoming.
 - Named enemy heroes/rival commanders on important Ashen campaign battles, with compact persistent rival state.
 - Rival Rewards and Trophies V1 with once-only first-defeat rewards and cosmetic trophy records.
 - Retinue Camp V1 for a small save-backed roster of surviving veteran units.
@@ -15,6 +16,7 @@ Current v0.2.1 feature snapshot:
 - Reputation hooks for modest campaign choice consequences and preparation effects.
 - CampaignRules split into focused pure-rule modules behind a compatibility facade.
 - HUD/fog polish for stable command hover, side-panel scroll preservation, and captured-site local reveal behavior.
+- Cinderfen reward-economy audit and Chapter 2 Playwright helper cleanup, with first-clear rewards useful and repeat rewards kept tiny.
 
 ## Design Pillars
 
@@ -55,7 +57,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.2.1 baseline-candidate status, 2026-05-03: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.3 baseline-candidate status, 2026-05-04: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -65,7 +67,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest v0.2.1 baseline-candidate status, 2026-05-03: `npm test` passes with 36 test files and 210 tests, including Retinue rules, enemy hero/rival reward data validation, campaign launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
+Latest v0.3 baseline-candidate status, 2026-05-04: `npm test` passes with 37 test files and 259 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, save/load, launch, retry, Results trophy display, and simulator coverage.
 
 ## Browser Smoke Tests
 
@@ -73,9 +75,9 @@ Latest v0.2.1 baseline-candidate status, 2026-05-03: `npm test` passes with 36 t
 npm run test:e2e
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.2` label, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, and Ashen Outpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
+The browser suite uses Playwright and starts the Vite dev server automatically. It verifies that the main menu boots with the `Prototype v0.2` label, Settings opens and persists accessibility options, new campaign creation reaches the campaign map, locked campaign nodes cannot launch, Border Village starts a battle, Skirmish Setup lists First Claim, Broken Ford, Ashen Outpost, Cinderfen Causeway, and Cinderfen Watchpost, maps launch, and Hero Inventory opens without crashing. It also checks campaign choices, Marcher Camp services and purchases, Cinderfen Overlook, Waystation services, Cinderfen Crossing, Cinder Shrine duplicate prevention, Cinderfen Watch, Cinderfen Aftermath, Malrec trophy consequences, inventory equip/unequip, skill spending, ResultsScene Equip Now, defeat tips, live BattleScene victory/defeat resolution into Results, minimap clicks, fog toggle, building placement cancellation feedback, and a first-battle RTS loop that selects the hero, moves to the Crown Shrine, starts capture, places and completes a Barracks, queues Militia, sets a rally point, verifies the trained unit moves to it, and confirms campaign victory rewards save. Responsive layout reachability and horizontal overflow are also checked across desktop, tablet, and mobile viewports for the main menu, hero creation, campaign map, setup, inventory, asset gallery, battle HUD, and results.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest full run passed 49 Playwright tests after adding permanent HUD hover, side-panel scroll, captured-site fog, and desktop/tablet/mobile command-reachability regression coverage.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. It can be slow; use a long command timeout. The latest full run passed 52 Playwright tests after the Chapter 2 Cinderfen helper cleanup.
 
 For a visible browser run:
 
@@ -89,7 +91,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest Rival Rewards and Trophies V1 status, 2026-05-02: passed with 180 simulated runs across 60 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, and enemy hero/rival telemetry including first-defeat rewards, duplicate prevention, and trophy-earned fields.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.3 baseline-candidate status, 2026-05-04: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
 
 ## Preview A Build
 
@@ -180,6 +182,16 @@ The first skeleton campaign has eight nodes:
 - Refugee Caravan.
 - Ashen Outpost.
 
+After Ashen Outpost, the current v0.3 baseline adds the compact Cinderfen route:
+
+- Cinderfen Overlook.
+- Cinderfen Waystation.
+- Cinderfen Crossing.
+- Cinderfen Watch.
+- Cinderfen Aftermath.
+
+Cinderfen Aftermath is the end of the current playable v0.3 Chapter 2 slice. Completing it should leave the campaign map in a clear route-secured state; any later Cinderfen nodes should remain upcoming/locked until their maps and content exist.
+
 Chapel of the Marches and Refugee Caravan use simple data-driven choices. Marcher Camp is the first town sink: it stays available after Old Stone Road and lets you spend campaign Crowns on rest, volunteers, supplies, and a small fixed item stock. The Campaign Map also includes the Stronghold panel, where two tiers of persistent upgrades spend Crowns, Stone, Iron, and Aether and apply to later battle launches. Choices can be locked by resource costs, hero level, ownership, previous purchase, or faction reputation; pay from the campaign resource bank; grant XP/items/resources; change faction reputation; unlock nodes; and save once-only claims. Reputation ranks and active effects are visible before the player commits.
 
 Skirmish mode remains separate through the `Skirmish` button.
@@ -213,7 +225,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Main menu, hero creation, campaign map, skirmish setup, reset save, credits/info.
 - Settings screen for audio, reduced motion, floating text, UI scale, fog override, colorblind minimap colors, and keyboard controls.
 - Lightweight generated WebAudio cues for UI clicks, selection, build start/complete, unit trained, ability cast, victory, and defeat. Audio fails silently when the browser or test environment blocks it.
-- Eight-node campaign skeleton with locked, available, completed, town-service, and choice-driven node states.
+- Eight-node Chapter 1 campaign skeleton plus the compact Chapter 2 Cinderfen route with locked, available, completed, town-service, choice-driven node states, and route-complete copy after Cinderfen Aftermath.
 - Persistent campaign resource bank for node rewards, event choice costs, Marcher Camp services, and Stronghold upgrades.
 - Stronghold Development panel with five Tier I upgrades and five matching Tier II upgrades, prerequisite locks, campaign-resource costs, and battle-launch effects.
 - Reputation ranks for Free Marches, Common Folk, Old Faith, Ashen Covenant, and Sylvan Concord placeholder, with small active effects for Marcher Camp discounts, Stronghold Crown discounts, Chapel Aether bonuses, and Ashen hostile pressure.
@@ -227,7 +239,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Rarity-weighted item rewards after victory.
 - Randomized item affixes V1 with slot-filtered stat packages, deterministic test generation, save persistence, equipment stat contribution, and Results/Inventory display.
 - Equipment slots: weapon, armor, trinket.
-- Three playable skirmish maps: First Claim, Broken Ford, and Ashen Outpost.
+- Five playable skirmish/campaign battle maps: First Claim, Broken Ford, Ashen Outpost, Cinderfen Causeway, and Cinderfen Watchpost.
 - Player base, enemy base, neutral camps, and capturable resource sites.
 - Four resources: Crowns, Stone, Iron, Aether.
 - Building placement for Barracks, Mystic Lodge, and Watchtower with valid/invalid previews.
@@ -249,7 +261,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - `BattleLaunchRequest` contract so skirmish, campaign nodes, and future scenario missions can all start battles through one clean pathway.
 - Clean procedural UI skin for menus, result panels, HUD panels, and info boxes.
 - Optional dedicated UI-kit assets for panel frames, button states, resource frames, dividers, tooltip frames, minimap frame, ability slot frame, inventory slot frame, victory panel, and defeat panel.
-- Automated playtest simulator coverage for no-upgrade, Tier I Stronghold, and Tier II Quartermaster campaign paths.
+- Automated playtest simulator coverage for no-upgrade, Tier I Stronghold, Tier II Quartermaster, Retinue/Training Yard II, and Chapter 2 Cinderfen campaign paths.
 
 ## Known Limitations
 
@@ -258,7 +270,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Fog of war is grid-based and does not do line-of-sight around blockers yet. Story difficulty disables it; other difficulties can tune it through `fogOfWarEnabled`.
 - Workers, broad vendors, full diplomacy, and enemy construction are postponed.
 - Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival/Nemesis Persistence V1, and Rival Rewards and Trophies V1 are intentionally small: no replacement UI, wounded timers, deep nemesis branches, unit biographies, scars/titles, full trophy room, crafting, durability, broad loot complexity, broad army management, enemy construction, or raid-boss layer yet.
-- Campaign is a skeleton only: Marcher Camp, Stronghold Development, and reputation effects prove small resource sinks and consequences, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
+- Campaign is a skeleton only: Marcher Camp, Stronghold Development, Cinderfen Waystation, Cinderfen Aftermath, and reputation effects prove small resource sinks and consequences, but there is no full diplomacy, procedural random event system, invasion layer, or world simulation yet.
 - Skill choices do not support respec yet.
 - AI personalities change timing and composition, but AI is still intentionally simple and predictable compared with a full scouting/counter-build system.
 - Balance is prototype-only and expected to change often.
@@ -270,6 +282,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 
 Good next prompts are specific and small. Examples:
 
+- "Verify the v0.3 Cinderfen route end to end and polish readability without adding gameplay or changing balance."
 - "Human-review Border Village through Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue."
 - "Tune Retinue Camp V1 if saved veterans trivialize early nodes or feel mandatory for Ashen Outpost."
 - "Human-review Stronghold Tier II, reputation effects, retinue, rival commanders, and affixed reward readability in the current campaign."

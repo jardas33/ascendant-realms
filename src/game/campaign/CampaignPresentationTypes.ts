@@ -7,6 +7,11 @@ export interface CampaignNodeViewModel {
   node: CampaignNodeDefinition;
   status: CampaignNodeStatus;
   selected: boolean;
+  nodeTypeLabel: string;
+  statusLabel: string;
+  testId: string;
+  cssClass: string;
+  style: string;
 }
 
 export interface CampaignReputationRowViewModel {
@@ -31,6 +36,18 @@ export interface CampaignReputationViewModel {
 
 export interface CampaignChapterViewModel extends CampaignChapterRulesViewModel {
   status: CampaignChapterStatus;
+  statusLabel: string;
+  progressText: string;
+  testId: string;
+  cssClass: string;
+}
+
+export interface CampaignRouteStatusViewModel {
+  isComplete: boolean;
+  title: string;
+  body: string;
+  actions: string[];
+  statusMessage: string;
 }
 
 export interface CampaignMapViewModel {
@@ -41,6 +58,7 @@ export interface CampaignMapViewModel {
   chapters: CampaignChapterViewModel[];
   progressSummary: string;
   campaignStateLabel: string;
+  routeStatus?: CampaignRouteStatusViewModel;
   reputation: CampaignReputationViewModel;
   rivalIntel: RivalIntelEntry[];
   rivalTrophies: RivalTrophyIntelEntry[];

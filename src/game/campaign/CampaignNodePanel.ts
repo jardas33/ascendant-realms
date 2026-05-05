@@ -24,17 +24,16 @@ interface RenderNodeDetailsOptions {
 }
 
 export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
-  const { node, status, selected } = nodeView;
-  const statusLabel = node.isPlaceholder ? "Upcoming" : titleCase(status);
+  const { node } = nodeView;
   return `
       <button
-        class="campaign-node ${status} ${selected ? "selected" : ""}"
-        data-testid="campaign-node-${node.id}"
+        class="${escapeHtml(nodeView.cssClass)}"
+        data-testid="${escapeHtml(nodeView.testId)}"
         data-campaign-node="${node.id}"
-        style="--node-x: ${node.x}%; --node-y: ${node.y}%"
+        style="${escapeHtml(nodeView.style)}"
       >
         <strong>${escapeHtml(node.name)}</strong>
-        <span>${titleCase(node.nodeType)} - ${statusLabel}</span>
+        <span>${escapeHtml(nodeView.nodeTypeLabel)} - ${escapeHtml(nodeView.statusLabel)}</span>
       </button>
     `;
 }
@@ -57,9 +56,9 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${
           node.isPlaceholder
             ? renderGuidanceMessage(
-                node.placeholderLabel ?? "Chapter scaffold",
+                node.placeholderLabel ?? "Upcoming",
                 node.placeholderDescription ?? "This campaign node is visible for future planning and cannot be launched yet.",
-                ["No battle launch", "Future v0.3 content"],
+                ["Upcoming", "No battle launch", "More content coming later"],
                 "compact"
               )
             : ""

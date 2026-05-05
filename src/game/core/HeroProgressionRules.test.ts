@@ -123,8 +123,8 @@ describe("hero RPG progression rules", () => {
     expect(reward.xp).toBe(10);
   });
 
-  it("honors first-clear item pools on deterministic repeat rewards", () => {
-    const firstClearReward = rollBattleRewards({
+  it("honors first-clear item pools on deterministic Cinderfen repeat rewards", () => {
+    const causewayFirstClearReward = rollBattleRewards({
       table: REWARD_TABLE_BY_ID.cinderfen_causeway_rewards,
       completedBattlesBeforeVictory: 5,
       inventory: [],
@@ -132,7 +132,7 @@ describe("hero RPG progression rules", () => {
       isFirstClear: true,
       mapId: "cinderfen_causeway"
     });
-    const repeatReward = rollBattleRewards({
+    const causewayRepeatReward = rollBattleRewards({
       table: REWARD_TABLE_BY_ID.cinderfen_causeway_rewards,
       completedBattlesBeforeVictory: 6,
       inventory: [],
@@ -140,23 +140,55 @@ describe("hero RPG progression rules", () => {
       isFirstClear: false,
       mapId: "cinderfen_causeway"
     });
+    const watchFirstClearReward = rollBattleRewards({
+      table: REWARD_TABLE_BY_ID.cinderfen_watchpost_rewards,
+      completedBattlesBeforeVictory: 6,
+      inventory: [],
+      deterministic: true,
+      isFirstClear: true,
+      mapId: "cinderfen_watchpost"
+    });
+    const watchRepeatReward = rollBattleRewards({
+      table: REWARD_TABLE_BY_ID.cinderfen_watchpost_rewards,
+      completedBattlesBeforeVictory: 7,
+      inventory: [],
+      deterministic: true,
+      isFirstClear: false,
+      mapId: "cinderfen_watchpost"
+    });
 
-    expect(firstClearReward.itemIds).toHaveLength(1);
-    expect(firstClearReward.xp).toBe(65);
-    expect(firstClearReward.resources).toMatchObject({
+    expect(causewayFirstClearReward.itemIds).toHaveLength(1);
+    expect(causewayFirstClearReward.xp).toBe(65);
+    expect(causewayFirstClearReward.resources).toMatchObject({
       crowns: 30,
       stone: 20,
       iron: 16,
       aether: 12
     });
-    expect(repeatReward.itemIds).toEqual([]);
-    expect(repeatReward.xp).toBe(4);
-    expect(repeatReward.resources).toMatchObject({
+    expect(causewayRepeatReward.itemIds).toEqual([]);
+    expect(causewayRepeatReward.xp).toBe(4);
+    expect(causewayRepeatReward.resources).toMatchObject({
       crowns: 6,
       iron: 3,
       aether: 2
     });
-    expect(repeatReward.resources.stone).toBeUndefined();
+    expect(causewayRepeatReward.resources.stone).toBeUndefined();
+    expect(watchFirstClearReward.itemIds).toHaveLength(1);
+    expect(watchFirstClearReward.xp).toBe(66);
+    expect(watchFirstClearReward.resources).toMatchObject({
+      crowns: 34,
+      stone: 20,
+      iron: 16,
+      aether: 10
+    });
+    expect(watchRepeatReward.itemIds).toEqual([]);
+    expect(watchRepeatReward.xp).toBe(3);
+    expect(watchRepeatReward.resources).toMatchObject({
+      crowns: 5,
+      iron: 2,
+      aether: 1
+    });
+    expect(watchRepeatReward.resources.stone).toBeUndefined();
   });
 
   it("grants reward XP, item instances, and per-map first-clear history", () => {
