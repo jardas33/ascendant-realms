@@ -34,15 +34,16 @@ Current branch:
 main
 ```
 
-Latest pre-freeze checkpoint feature commit:
+Latest v0.3.1 checkpoint feature commit:
 
 ```text
-f644bb6dc6b09d529a249321fd70563fa44748e1
+53fa85671dd5668b6654abfd01aeed857bf49ab2
 ```
 
 Recent checkpoint stack:
 
 ```text
+53fa856 Checkpoint v0.3.1 polish readability and e2e cleanup
 f644bb6 Checkpoint v0.3 Cinderfen route polish freeze
 499938e Record Cinderfen route checkpoint push status
 a17b678 Record Cinderfen route checkpoint metadata
@@ -127,8 +128,10 @@ Branch and checkpoint status:
 Pre-checkpoint `git status -sb`: ## main...origin/main with the expected dirty v0.3.1 polish/audit/helper stack.
 Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
 Checkpoint commit message: Checkpoint v0.3.1 polish readability and e2e cleanup
-Checkpoint commit hash: PENDING_CHECKPOINT_COMMIT_HASH
-Post-checkpoint branch sync status: PENDING_BRANCH_SYNC_STATUS
+Checkpoint commit hash: 53fa85671dd5668b6654abfd01aeed857bf49ab2
+Post-checkpoint, pre-metadata `git status -sb`: ## main...origin/main [ahead 1]
+Post-checkpoint, pre-metadata `git rev-list --left-right --count origin/main...HEAD`: 0 1
+Push status: pending metadata update and push.
 ```
 
 Current guidance: v0.3.1 polish/audit/helper cleanup is complete and verified. Remaining known risks are human readability/feel on the frozen Cinderfen route, the known Vite large-chunk warning, and the still-long full Playwright runtime. Next recommended milestone is a human browser read/play pass on the frozen route plus a later decision on default-vs-release-gate e2e lanes. Do not start new Chapter 2 content or broad systems until the existing route stays green in human review.

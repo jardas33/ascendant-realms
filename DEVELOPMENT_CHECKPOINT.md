@@ -45,8 +45,10 @@ Git and branch status:
 Pre-checkpoint `git status -sb`: ## main...origin/main with the expected dirty v0.3.1 polish/audit/helper stack.
 Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
 Checkpoint commit message: Checkpoint v0.3.1 polish readability and e2e cleanup
-Checkpoint commit hash: PENDING_CHECKPOINT_COMMIT_HASH
-Post-checkpoint branch sync status: PENDING_BRANCH_SYNC_STATUS
+Checkpoint commit hash: 53fa85671dd5668b6654abfd01aeed857bf49ab2
+Post-checkpoint, pre-metadata `git status -sb`: ## main...origin/main [ahead 1]
+Post-checkpoint, pre-metadata `git rev-list --left-right --count origin/main...HEAD`: 0 1
+Push status: pending metadata update and push.
 ```
 
 Remaining known risks:
