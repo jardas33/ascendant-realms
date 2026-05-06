@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.3.1 Polish Release Frozen - 2026-05-06
+
+The v0.3.1 polish release is now frozen. v0.3 remains the Cinderfen Route Baseline content release; v0.3.1 is a polish/readability/performance-audit/test-maintenance release on top of that baseline. This freeze does not add gameplay, change balance, refactor code, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad systems.
+
+### Freeze Verification
+
+- `npm test`: passed with 38 test files and 270 tests.
+- `npm run build`: passed with the known Vite large-chunk warning only.
+- `npm run test:e2e -- --reporter=line`: passed with 59 Playwright tests in 28.6m.
+- `npm run playtest:sim`: passed with 255 deterministic runs across 85 campaign battle node/profile summaries.
+- `git diff --check`: passed with no whitespace errors.
+- Production preview smoke: passed at `http://127.0.0.1:4188/`; main menu loaded with `Prototype v0.3` / `Cinderfen Route Baseline`, New Campaign reached Campaign Map, Continue Campaign returned to Campaign Map, Skirmish Setup opened, and browser console errors stayed at 0.
+
+### Frozen Scope
+
+- v0.3.1 preserves the frozen v0.3 Cinderfen content route: Chapter 1 through `ashen_outpost`, then `cinderfen_overlook`, optional `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath`.
+- v0.3.1 includes mobile/readability audit coverage, Cinderfen copy/hierarchy polish, route-complete clarity, Results copy improvements, performance/bundle audit documentation, e2e runtime audit documentation, and safe shared e2e helper cleanup.
+- No risky bundle optimization or test coverage reduction was implemented.
+- Release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
+- Next phase: **v0.4 planning or technical optimization**.
+- Recommended next work: human readability review of the frozen route, measurement-first performance optimization, or explicit e2e default/release-gate script planning.
+- Postponed next work: workers, enemy construction, new factions, new maps, new units, diplomacy, procedural systems, crafting, durability, and broad systems.
+
 ## v0.3 Cinderfen Route Baseline Frozen - 2026-05-05
 
 The v0.3 Cinderfen Route Baseline is now frozen. This freeze does not add gameplay, change balance, refactor code, or add maps, factions, units, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad loot systems.

@@ -11,11 +11,11 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current release baseline is **v0.3 Cinderfen Route Baseline - frozen**. It packages the v0.2.1 technical baseline plus the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath.
+The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
-The current visible product baseline is `Prototype v0.3` with the menu subtitle `Cinderfen Route Baseline`. v0.2 remains the previous systems baseline; v0.3 is the frozen Cinderfen route baseline.
+The current visible product baseline remains `Prototype v0.3` with the menu subtitle `Cinderfen Route Baseline`. v0.2 remains the previous systems baseline; v0.3 is the frozen Cinderfen route baseline; v0.3.1 is the frozen polish and verification layer for that route.
 
 Completed v0.2.1 stabilization remains part of the baseline:
 
@@ -42,10 +42,20 @@ Completed v0.3 Cinderfen route:
 
 Next phase:
 
-- **v0.3.1 polish and human readability review**.
-- Best current work is readability, UX, copy clarity, mobile density checks, small bug fixes, and controlled polish on the existing frozen route.
+- **v0.4 planning or technical optimization**.
+- Best current work is planning the next content milestone, running human readability review on the frozen route, or doing safe measurement-first technical optimization.
 - v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
+- v0.3.1 release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
 - Route-complete guidance after Cinderfen Aftermath should remain clear: Cinderfen route secured, Chapter 2 slice complete, and more Cinderfen content coming later.
+
+Completed v0.3.1 polish release:
+
+- [x] v0.3.1 polish release is frozen.
+- [x] Mobile/readability audit completed for Cinderfen menu, campaign, battle HUD, and Results surfaces.
+- [x] Existing Cinderfen copy/hierarchy polished for Overlook, Waystation, Crossing, Watch, Aftermath, route-complete guidance, and Results.
+- [x] Performance bundle audit completed for the known Vite large-chunk warning; no risky optimization implemented.
+- [x] E2E runtime audit completed; safe shared setup/helper cleanup applied without deleting meaningful coverage.
+- [x] Final automated verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, `npm run playtest:sim`, `git diff --check`, and production preview smoke.
 
 Must remain stable after the v0.3 freeze:
 
@@ -65,12 +75,12 @@ Explicitly postponed after the v0.3 freeze:
 - Full trophy room.
 - Broad army-management or retinue replacement systems.
 
-Recommended focus for v0.3.1 polish and human readability review:
+Recommended focus after the v0.3.1 freeze:
 
-- Keep v0.3 frozen, compact, and data-driven. The next milestone is human verification and polish of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
-- Improve UX readability only: campaign map panels, event/service cards, Results, route-complete copy, and mobile density.
-- Investigate performance/build-size options for the known Vite large-chunk warning, but do not implement bundle changes unless they are scoped and verified.
-- Investigate e2e runtime improvements for the slow `deep-flow.spec.ts` and `layout.spec.ts` files while preserving meaningful coverage.
+- Keep v0.3 and v0.3.1 frozen, compact, and data-driven.
+- Choose between v0.4 planning and safe technical optimization.
+- If planning v0.4, start from the frozen route's human-readability findings rather than adding broad systems immediately.
+- If optimizing technically, start with measurement-only bundle analysis or explicit default-vs-release-gate e2e script planning before changing runtime architecture.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
@@ -79,7 +89,7 @@ Recommended focus for v0.3.1 polish and human readability review:
 - Keep bonuses modest, visible in UI, and represented in telemetry.
 - Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, `RivalRules`, and `CampaignRules`.
-- Do not move into workers, enemy construction, new factions, new maps, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as part of v0.3.1.
+- Do not move into workers, enemy construction, new factions, new maps, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as an immediate post-freeze step.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation

@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-05-06 17:52:05 -04:00
+Updated: 2026-05-06 18:30:40 -04:00
+
+## Final v0.3.1 Polish Release Verification - 2026-05-06 18:30:40 -04:00
+
+Scope: final automated verification for the v0.3.1 polish release. No features, gameplay behavior, balance values, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad systems were added. The only changes after verification are release-documentation updates.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 7.56s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 59 Playwright tests in 28.6m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.3m and tests/e2e/deep-flow.spec.ts 11.4m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 4188
+PASS: Browser Use smoke at http://127.0.0.1:4188/
+PASS: page title was Ascendant Realms.
+PASS: main menu loaded with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the smoke save existed.
+PASS: Skirmish Setup opened and listed the current maps.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. Final v0.3.1 decision: frozen as the polish release for the frozen Cinderfen Route Baseline, with remaining known risks limited to human readability/feel, mobile density, Cinder Shrine salience, retinue/rival/trophy hierarchy, the long Playwright release-gate runtime, and the accepted Vite large-chunk warning.
 
 ## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
 
