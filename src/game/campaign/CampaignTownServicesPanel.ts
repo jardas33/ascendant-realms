@@ -9,5 +9,8 @@ export function townServiceActionLabel(hasStockItem: boolean): string {
 }
 
 export function repeatabilityLabel(choice: NonNullable<CampaignNodeDefinition["choices"]>[number]): string {
-  return choice.onceOnly ? "Purchase once." : "Repeatable service.";
+  if (!choice.onceOnly) {
+    return "Repeatable service.";
+  }
+  return choice.stockItemId ? "Purchase once." : "One-time service.";
 }

@@ -104,7 +104,7 @@ describe("campaign presentation view models", () => {
     expect(createCampaignRouteStatusViewModel(complete)).toMatchObject({
       isComplete: true,
       title: "Cinderfen route secured",
-      statusMessage: "Cinderfen route secured. Chapter 2 slice complete. More Cinderfen content coming later."
+      statusMessage: "Cinderfen route secured. Chapter 2 route complete; future Cinderfen roads will open later."
     });
   });
 });

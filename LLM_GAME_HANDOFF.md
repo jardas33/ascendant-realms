@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-05 18:39 -04:00
+Last updated: 2026-05-06 17:49:49 -04:00
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a **frozen v0.3 Cinderfen Route Baseline** and the final automated v0.3 release-candidate verification is green. The visible in-game menu says `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 freezes the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. It is still a prototype, but it has a broad playable RTS/RPG spine and a clear frozen verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The final automated route-readiness gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. Best current work is **v0.3.1 polish and human readability review**: UX hierarchy, copy clarity, mobile density checks, small bug fixes, and controlled polish on the existing frozen route. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation now has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
+The final automated route-readiness gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. Best current work is **v0.3.1 polish and human readability review** as defined in `docs/V031_POLISH_PLAN.md`: UX hierarchy, copy clarity, mobile density checks, route-complete clarity, performance/build-size investigation, e2e runtime investigation, small bug fixes, and controlled polish on the existing frozen route. Recent v0.3.1 passes tightened existing route copy/hierarchy only, documented the Vite bundle warning, and applied the safest e2e runtime/helper cleanup. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, and seeded only layout/smoke cases that were not testing the full creation path; Playwright still reports 59 tests and passed in 28.7m in the latest checkpoint run. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation now has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
 
 ## Current Git State
 
@@ -57,13 +57,26 @@ Known shell/tool note:
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
 - Latest user-provided in-app browser context was `http://127.0.0.1:4186/`. The final v0.3 release-candidate preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:4187/`, saw title `Ascendant Realms`, verified `Prototype v0.3` / `Cinderfen Route Baseline`, checked New Campaign, Continue Campaign, Skirmish Setup, and Campaign Map, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
 
-Current branch status for this handoff update:
+Last committed checkpoint status:
 
 ```text
 Checkpoint commit f644bb6dc6b09d529a249321fd70563fa44748e1 preserves the v0.3 Cinderfen route polish-freeze baseline: v0.3 docs, readiness/preview reports, route-complete polish, reward-audit/test updates, Chapter 2 e2e helper cleanup, and campaign map presentation helper cleanup.
 
 After pushing the checkpoint and metadata update, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Preserve this checkpoint unless the user explicitly asks for a reset/revert.
 ```
+
+Current uncommitted state after the v0.3.1 polish/audit work:
+
+```text
+git status -sb
+## main...origin/main
+dirty work is intentional
+
+git rev-list --left-right --count origin/main...HEAD
+0 0
+```
+
+The dirty work includes v0.3.1 polish plan/audit docs, mobile/readability e2e helper updates, the UX copy/hierarchy source/test pass, the performance bundle audit, and the e2e runtime/helper cleanup. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` were regenerated by `npm run playtest:sim` during the latest pass but have no git diff. Preserve this dirty work unless the user explicitly asks for checkpoint/commit/reset behavior.
 
 The checkpoint commit `f644bb6dc6b09d529a249321fd70563fa44748e1` was created with message `Checkpoint v0.3 Cinderfen route polish freeze`. Do not reset or revert future edits unless the user explicitly asks.
 
@@ -80,6 +93,45 @@ Before the v0.3 polish-freeze checkpoint, `git status -sb` reported `## main...o
 ```
 
 The pushed checkpoint preserves the v0.3 Cinderfen route polish-freeze edits. The freeze pass records the frozen baseline in `CHANGELOG.md`, `ROADMAP.md`, and this handoff, and is intended to be committed with message `Freeze v0.3 Cinderfen route baseline`. Preserve future dirty work unless the user explicitly asks for a different git action.
+
+## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
+
+Scope: checkpoint the completed v0.3.1 polish, mobile/readability audit, performance bundle audit, e2e runtime audit, and safe Playwright helper cleanup before any new work. No reset, checkout, delete, revert, gameplay addition, balance change, map addition, unit addition, faction addition, workers, enemy construction, diplomacy, procedural generation, crafting, or broad refactor was performed.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 8.21s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 59 Playwright tests in 28.7m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.4m and tests/e2e/deep-flow.spec.ts 11.5m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Branch and checkpoint status:
+
+```text
+Pre-checkpoint `git status -sb`: ## main...origin/main with the expected dirty v0.3.1 polish/audit/helper stack.
+Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
+Checkpoint commit message: Checkpoint v0.3.1 polish readability and e2e cleanup
+Checkpoint commit hash: PENDING_CHECKPOINT_COMMIT_HASH
+Post-checkpoint branch sync status: PENDING_BRANCH_SYNC_STATUS
+```
+
+Current guidance: v0.3.1 polish/audit/helper cleanup is complete and verified. Remaining known risks are human readability/feel on the frozen Cinderfen route, the known Vite large-chunk warning, and the still-long full Playwright runtime. Next recommended milestone is a human browser read/play pass on the frozen route plus a later decision on default-vs-release-gate e2e lanes. Do not start new Chapter 2 content or broad systems until the existing route stays green in human review.
 
 ## Frozen v0.3 Baseline - 2026-05-05 18:39 -04:00
 
@@ -116,6 +168,163 @@ Postponed next work:
 - Procedural generation.
 - Crafting.
 - Broad new systems or broad loot/army-management expansion.
+
+## v0.3.1 Polish Kickoff - 2026-05-05 19:07 -04:00
+
+Scope: start the v0.3.1 polish phase safely after confirming the frozen v0.3 baseline is still clean and synced. No gameplay, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, broad systems, reset, checkout, delete, or revert was performed.
+
+Pre-doc verification:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 10.14s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 52 Playwright tests in 21.9m.
+Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts and tests/e2e/layout.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Branch state before docs:
+
+```text
+git status -sb
+## main...origin/main
+
+git rev-list --left-right --count origin/main...HEAD
+0 0
+```
+
+Docs started:
+
+- Created `docs/V031_POLISH_PLAN.md`.
+- Updated `ROADMAP.md` so v0.3 stays frozen and v0.3.1 is clearly polish-only.
+- Updated this handoff so future work stays in the v0.3.1 polish lane.
+
+Post-doc verification:
+
+```text
+npm test
+PASS: 38 test files, 268 tests, 7.87s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BRMcmX2c.js, 1,917.92 kB minified / 457.57 kB gzip.
+```
+
+v0.3.1 definition:
+
+- UX readability polish.
+- Mobile density checks.
+- Cinderfen route copy clarity.
+- Route completion clarity.
+- Performance/build-size investigation.
+- E2e runtime improvement investigation.
+- No new gameplay content.
+
+Forbidden during v0.3.1 unless explicitly requested:
+
+- New gameplay content.
+- New maps, units, factions, workers, or enemy construction.
+- Diplomacy or procedural generation.
+- Crafting, durability, broad loot, or broad army-management systems.
+- Balance changes, except for a documented genuine blocking bug.
+
+## v0.3.1 UX Copy And Hierarchy Polish - 2026-05-05 21:02 -04:00
+
+Scope: polish only the existing v0.3 Cinderfen route copy and presentation hierarchy. No gameplay, balance, rewards, costs, maps, units, factions, resources, mechanics, systems, save format, campaign rules, or battle logic were added or changed.
+
+What changed:
+
+- Renamed the visible `cinderfen_overlook` node from `Cinderfen Road` to `Cinderfen Overlook`; the chapter remains `Chapter 2: Cinderfen Road`.
+- Tightened Cinderfen Overlook choice descriptions, including clearer optional/modest Malrec trophy copy.
+- Shortened Cinderfen Waystation service copy so Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement are easier to scan on mobile.
+- Made one-time non-stock town services display `One-time service.` while stock purchases still display `Purchase once.` and repeat services still display `Repeatable service.`
+- Reordered event/town choice cards into a compact description, metadata grid, and footer while preserving existing selectors and `data-campaign-choice` ids.
+- Clarified Cinder Shrine first-capture surge/objective copy, Cinderfen Crossing defeat tips, Cinderfen Watch raised-road/watchpost copy, and Watch defeat tips.
+- Clarified Cinderfen Aftermath as the current v0.3 route finale and updated route-complete copy to `Cinderfen route secured` plus future Cinderfen roads later.
+- Improved Results copy so first campaign clears feel explicit and repeat clears say reduced repeat rewards apply without weighted item rolls or duplicate campaign node rewards.
+
+Verification:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 11.66s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 59 Playwright tests in 31.4m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts and tests/e2e/deep-flow.spec.ts.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Current known risk after this pass: the automated suite verifies text presence, clickability, and horizontal-overflow guards, but a human/browser readability pass is still the next best work for density and feel.
+
+## v0.3.1 E2E Runtime Helper Cleanup - 2026-05-05 21:57 -04:00
+
+Scope: apply only the safest e2e runtime/helper improvements from `docs/E2E_RUNTIME_AUDIT.md`. No gameplay, balance, UI behavior, selectors, test IDs, maps, units, factions, or release-critical coverage were removed or changed.
+
+What changed:
+
+- Added `tests/e2e/shared-helpers.ts` for shared fresh-menu boot, hero creation, New Campaign setup, seeded default campaign saves, and Continue Campaign setup.
+- Updated `tests/e2e/smoke.spec.ts` to use the shared setup helpers. The full New Campaign smoke, Border Village campaign launch, settings-to-battle path, skirmish setup creation path, Chapter 2 route assertions, reward assertions, save assertions, and duplicate-prevention assertions remain visible in the spec file.
+- Updated `tests/e2e/layout.spec.ts` to seed a default campaign save where the test is checking layout/reachability instead of the full New Campaign path.
+- Updated layout Ashen Outpost checks and smoke difficulty/inventory checks to seed a hero/campaign where those tests are about layout, difficulty state, or inventory reachability rather than hero creation.
+- Kept `tests/e2e/deep-flow.spec.ts` intact, including the full first campaign battle path and live victory/defeat result wiring.
+
+Runtime result:
+
+```text
+npx playwright test --list
+PASS: same 59 Playwright tests in 3 spec files.
+
+npx playwright test tests/e2e/layout.spec.ts -g "campaign, setup|battle HUD and results" --reporter=line
+PASS: 8 focused layout tests in 4.1m.
+
+npx playwright test tests/e2e/smoke.spec.ts -g "skirmish difficulty|inventory screen" --reporter=line
+PASS: 2 focused smoke tests in 41.4s.
+```
+
+Required verification:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 7.95s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 59 Playwright tests in 28.6m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.4m and tests/e2e/deep-flow.spec.ts 11.5m.
+This is no slower than the previous 59-test v0.3.1 baseline of 31.4m and is about 2.8m faster on this machine.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+```
+
+Current guidance: keep `shared-helpers.ts` setup-only. Do not hide Chapter 2 behavior/reward/save assertions in helpers. Future runtime reductions should prefer explicit default/release-gate scripts or carefully reviewed layout matrix splits, not deleting meaningful coverage.
 
 ## Final v0.3 Release-Candidate Verification - 2026-05-05 18:36 -04:00
 
@@ -3049,11 +3258,11 @@ Several battle helpers changed during earlier checkpoint work, and the current d
 
 ## Current Tests
 
-Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, the conservative retinue balance pass, the enemy hero balance pass, the readability UX pass, the HeroProgressionRules refactor, the Chapter 2 reward-economy audit, the Chapter 2 Playwright helper cleanup, v0.3 route-complete polish, and the campaign-map presentation helper cleanup:
+Latest verified suite status, refreshed after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, the conservative retinue balance pass, the enemy hero balance pass, the readability UX pass, the HeroProgressionRules refactor, the Chapter 2 reward-economy audit, the Chapter 2 Playwright helper cleanup, v0.3 route-complete polish, the campaign-map presentation helper cleanup, v0.3.1 copy/readability polish, and the e2e runtime helper cleanup:
 
-- `npm test`: passed, 38 test files, 268 tests.
-- `npm run build`: passed with the known Vite large-chunk warning, which is not a failure. Latest output: assets/index-CIosN5VC.js, 1,917.97 kB minified / 457.58 kB gzip.
-- `npm run test:e2e -- --reporter=line`: passed, 52 Playwright tests in 21.4m. Use a long timeout.
+- `npm test`: passed, 38 test files, 270 tests.
+- `npm run build`: passed with the known Vite large-chunk warning, which is not a failure. Latest output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+- `npm run test:e2e -- --reporter=line`: passed, 59 Playwright tests in 28.6m. Use a long timeout.
 - `npm run playtest:sim`: passed, 255 simulated runs across 85 campaign battle node/profile summaries, with no structural `too_hard` nodes, no `too_easy` nodes, Ashen Outpost beatable, no Stronghold warnings, and Cinderfen repeat rewards reduced to tiny XP/resources with no repeat item roll.
 
 Current unit/pure test files:
@@ -3479,8 +3688,8 @@ Run this before a checkpoint commit after gameplay/UI changes:
 ## Guidance For Future LLMs
 
 - Preserve current dirty work unless explicitly told to reset/revert. The current Stronghold Tier I telemetry-response, Stronghold Tier II, campaign reputation/consequence, item affix V1, Unit Veterancy V1, Retinue Camp V1, retinue balance, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, HeroProgressionRules refactor, CampaignRules refactor, HUD/fog polish, permanent HUD/fog regression coverage, Chapter 2 Cinderfen route, reward-economy audit, Chapter 2 Playwright helper cleanup, v0.3 baseline/readiness/preview docs, route-complete copy, campaign-map presentation helper cleanup, campaign data-organization cleanup, and frozen v0.3 release docs are intentional.
-- Treat the current docs as the frozen v0.3 Cinderfen Route Baseline. Use `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `docs/V03_RELEASE_CANDIDATE_REPORT.md`, `CHANGELOG.md`, and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
-- The automated route-readiness gate is green, and the next named phase is v0.3.1 polish and human readability review. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, Cinderfen Watch, and Cinderfen Aftermath are implemented and frozen; next work should be readability, UX, copy clarity, mobile density, controlled polish, or small bug fixes before any additional Chapter 2 content. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
+- Treat the current docs as the frozen v0.3 Cinderfen Route Baseline plus the v0.3.1 polish plan. Use `docs/V03_CINDERFEN_ROUTE_BASELINE.md`, `docs/V03_RELEASE_CANDIDATE_REPORT.md`, `docs/V031_POLISH_PLAN.md`, `CHANGELOG.md`, and `RELEASE_CHECKLIST.md` for release-facing summaries and verification commands.
+- The automated route-readiness gate is green, and the next named phase is v0.3.1 polish and human readability review. Cinderfen Overlook, Cinderfen Waystation, Cinderfen Crossing, Cinder Shrine, Malrec trophy consequence, Cinderfen Watch, and Cinderfen Aftermath are implemented and frozen; next work should be readability, UX, copy clarity, mobile density, route completion clarity, performance/build-size investigation, e2e runtime investigation, controlled polish, or small bug fixes before any additional Chapter 2 content. Do not reopen completed Stronghold Tier II, reputation, item-affix V1, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, retinue balance, HeroProgressionRules refactor, CampaignRules refactor, or HUD/fog polish work unless the user asks for a targeted pass.
 - Explicitly postpone workers, enemy construction, new factions, new maps, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks for them.
 - Keep campaign and skirmish separate entry flows that share `BattleLaunchRequest`.
 - Prefer data tuning in `src/game/data` and pure rules in `src/game/core` or `src/game/systems`.

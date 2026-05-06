@@ -44,6 +44,7 @@ Next phase:
 
 - **v0.3.1 polish and human readability review**.
 - Best current work is readability, UX, copy clarity, mobile density checks, small bug fixes, and controlled polish on the existing frozen route.
+- v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
 - Route-complete guidance after Cinderfen Aftermath should remain clear: Cinderfen route secured, Chapter 2 slice complete, and more Cinderfen content coming later.
 
 Must remain stable after the v0.3 freeze:
@@ -67,6 +68,9 @@ Explicitly postponed after the v0.3 freeze:
 Recommended focus for v0.3.1 polish and human readability review:
 
 - Keep v0.3 frozen, compact, and data-driven. The next milestone is human verification and polish of the Cinderfen route including Overlook, Waystation, Crossing, Watch, and Aftermath.
+- Improve UX readability only: campaign map panels, event/service cards, Results, route-complete copy, and mobile density.
+- Investigate performance/build-size options for the known Vite large-chunk warning, but do not implement bundle changes unless they are scoped and verified.
+- Investigate e2e runtime improvements for the slow `deep-flow.spec.ts` and `layout.spec.ts` files while preserving meaningful coverage.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
@@ -75,7 +79,7 @@ Recommended focus for v0.3.1 polish and human readability review:
 - Keep bonuses modest, visible in UI, and represented in telemetry.
 - Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, `RivalRules`, and `CampaignRules`.
-- Do not move into workers, enemy construction, new factions, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as part of this baseline.
+- Do not move into workers, enemy construction, new factions, new maps, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as part of v0.3.1.
 - Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation

@@ -1,4 +1,15 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import {
+  completeCinderfenOverlookChoice,
+  completeCinderfenWatchVictory,
+  launchCinderfenCrossing,
+  launchCinderfenWatch,
+  openCinderfenWaystation,
+  seedCompletedCinderfenRouteCampaign,
+  seedPostAshenCampaign,
+  seedPostCinderfenCrossingCampaign
+} from "./chapter2-helpers";
+import { continueSavedCampaign, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
 
 const LAYOUT_VIEWPORTS = [
   { width: 1366, height: 768, label: "desktop" },
@@ -6,26 +17,17 @@ const LAYOUT_VIEWPORTS = [
   { width: 390, height: 844, label: "mobile-tall" },
   { width: 360, height: 640, label: "mobile-short" }
 ];
-
-async function openFreshMainMenu(page: Page): Promise<void> {
-  await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
-}
-
-async function createHero(page: Page, name: string): Promise<void> {
-  await expect(page.getByTestId("hero-creation")).toBeVisible();
-  await page.getByTestId("hero-name-input").fill(name);
-  await page.getByTestId("hero-start").click();
-}
-
-async function startNewCampaign(page: Page): Promise<void> {
-  await openFreshMainMenu(page);
-  await page.getByTestId("menu-new-campaign").click();
-  await createHero(page, "Layout Campaign");
-  await expect(page.getByTestId("campaign-map")).toBeVisible();
-}
+const CINDERFEN_READABILITY_VIEWPORTS = [
+  { width: 1366, height: 768, label: "desktop" },
+  { width: 820, height: 620, label: "tablet" },
+  { width: 390, height: 844, label: "mobile portrait" },
+  { width: 844, height: 390, label: "mobile landscape" }
+];
+const CINDERFEN_BATTLE_READABILITY_VIEWPORTS = [
+  { width: 1366, height: 768, label: "desktop" },
+  { width: 390, height: 844, label: "mobile portrait" },
+  { width: 844, height: 390, label: "mobile landscape" }
+];
 
 async function expectNoHorizontalOverflow(page: Page, label: string): Promise<void> {
   const result = await page.evaluate(() => {
@@ -83,6 +85,40 @@ async function expectInViewport(page: Page, locator: Locator, label: string): Pr
   expect(box.x + box.width, `${label} right edge`).toBeLessThanOrEqual(viewport.width + 2);
   expect(box.y, `${label} top edge`).toBeGreaterThanOrEqual(-2);
   expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(viewport.height + 2);
+}
+
+async function expectWithinViewportWidth(page: Page, locator: Locator, label: string): Promise<void> {
+  await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
+  const box = await locator.boundingBox();
+  expect(box, `${label} has a layout box`).not.toBeNull();
+  const viewport = page.viewportSize();
+  expect(viewport, `${label} viewport exists`).not.toBeNull();
+  if (!box || !viewport) {
+    return;
+  }
+  expect(box.x, `${label} left edge`).toBeGreaterThanOrEqual(-2);
+  expect(box.x + box.width, `${label} right edge`).toBeLessThanOrEqual(viewport.width + 2);
+}
+
+async function expectReachableButton(
+  page: Page,
+  locator: Locator,
+  label: string,
+  options: { enabled?: boolean } = {}
+): Promise<void> {
+  await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
+  await expect(locator, `${label} visible`).toBeVisible();
+  if (options.enabled !== false) {
+    await expect(locator, `${label} enabled`).toBeEnabled();
+  }
+  await expectInViewport(page, locator, label);
+  const box = await locator.boundingBox();
+  expect(box, `${label} has button dimensions`).not.toBeNull();
+  if (!box) {
+    return;
+  }
+  expect(box.width, `${label} tap width`).toBeGreaterThanOrEqual(40);
+  expect(box.height, `${label} tap height`).toBeGreaterThanOrEqual(32);
 }
 
 async function expectBattleCommandButtonsReachable(page: Page, actions: string[], label: string): Promise<void> {
@@ -181,6 +217,42 @@ async function createCompletedBarracksAndSelect(page: Page): Promise<void> {
 async function expectBottomActionReachable(page: Page, locator: Locator, label: string): Promise<void> {
   await scrollMainToBottom(page);
   await expectInViewport(page, locator, label);
+}
+
+async function expectCampaignSupportPanelsReadable(page: Page, label: string): Promise<void> {
+  for (const [testId, expectedText] of [
+    ["campaign-bank", "Crowns"],
+    ["stronghold-panel", "Stronghold"],
+    ["retinue-panel", "Retinue"],
+    ["rival-intel-panel", "Rival Intel"],
+    ["campaign-reputation", "Common Folk"]
+  ] as const) {
+    const panel = page.getByTestId(testId);
+    await expect(panel, `${label} ${testId}`).toContainText(expectedText);
+    await expectWithinViewportWidth(page, panel, `${label} ${testId}`);
+  }
+}
+
+async function expectCinderfenBattleHudReadable(
+  page: Page,
+  label: string,
+  expected: { mapName: string; objectiveTexts: string[] }
+): Promise<void> {
+  await expect(page.getByTestId("battle-status")).toContainText(expected.mapName);
+  for (const objectiveText of expected.objectiveTexts) {
+    await expect(page.getByTestId("battle-objectives")).toContainText(objectiveText);
+  }
+  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
+  await expect(page.getByTestId("battle-resources")).toContainText("Aether");
+  await expect(page.getByTestId("battle-minimap")).toBeVisible();
+  await expect(page.getByTestId("minimap")).toBeVisible();
+  await expectNoHorizontalOverflow(page, `${label} battle hud`);
+  await expectWithinViewportWidth(page, page.getByTestId("battle-objectives"), `${label} objectives panel`);
+  await expectWithinViewportWidth(page, page.locator(".side-panel"), `${label} command panel`);
+  await expectWithinViewportWidth(page, page.getByTestId("battle-minimap"), `${label} minimap`);
+  await selectBattleBuilding(page, "command_hall", "Command Hall");
+  await expectNoHorizontalOverflow(page, `${label} command hall commands`);
+  await expectBattleCommandButtonsReachable(page, ["build", "upgrade"], `${label} command hall`);
 }
 
 async function showVictoryResults(page: Page): Promise<void> {
@@ -283,9 +355,8 @@ async function showVictoryResults(page: Page): Promise<void> {
 }
 
 async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<void> {
-  await openFreshMainMenu(page);
+  await seedCampaignSave(page, { hero: { heroName } });
   await page.getByTestId("menu-skirmish").click();
-  await createHero(page, heroName);
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await page.getByTestId("setup-map-ashen_outpost").click();
   await page.getByTestId("setup-difficulty-normal").click();
@@ -309,7 +380,8 @@ test.describe("Ascendant Realms responsive layout", () => {
 
     test(`campaign, setup, inventory, and asset gallery remain reachable on ${viewport.label}`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await startNewCampaign(page);
+      await seedCampaignSave(page, { hero: { heroName: `Layout ${viewport.label}` } });
+      await continueSavedCampaign(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} campaign map`);
       await expectBottomActionReachable(page, page.getByTestId("campaign-main-menu"), `${viewport.label} campaign actions`);
 
@@ -342,7 +414,8 @@ test.describe("Ascendant Realms responsive layout", () => {
     test(`battle HUD and results layout stay inside the viewport on ${viewport.label}`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await startNewCampaign(page);
+      await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
+      await continueSavedCampaign(page);
       await page.getByTestId("campaign-node-border_village").click();
       await page.getByTestId("campaign-start-node").click();
       await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
@@ -363,6 +436,132 @@ test.describe("Ascendant Realms responsive layout", () => {
         page.locator(".results-panel").getByRole("button", { name: "Main Menu" }),
         `${viewport.label} results main menu`
       );
+    });
+  }
+
+  for (const viewport of CINDERFEN_READABILITY_VIEWPORTS) {
+    test(`v0.3 Cinderfen menu and campaign readability fit ${viewport.label}`, async ({ page }) => {
+      test.setTimeout(90_000);
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
+      await expect(page.getByText("Prototype v0.3", { exact: true })).toBeVisible();
+      await expect(page.getByText("Cinderfen Route Baseline", { exact: true })).toBeVisible();
+      await expectNoHorizontalOverflow(page, `${viewport.label} main menu`);
+      await expectReachableButton(page, page.getByTestId("menu-new-campaign"), `${viewport.label} New Campaign`);
+      await expectReachableButton(page, page.getByTestId("menu-continue-campaign"), `${viewport.label} Continue Campaign`);
+      await expectReachableButton(page, page.getByTestId("menu-skirmish"), `${viewport.label} Skirmish`);
+
+      await continueSavedCampaign(page);
+      await expectNoHorizontalOverflow(page, `${viewport.label} post-Ashen campaign map`);
+      await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: Border Marches");
+      await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
+      await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Completed/i);
+      await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
+      await expectCampaignSupportPanelsReadable(page, `${viewport.label} campaign map`);
+
+      await page.getByTestId("campaign-node-cinderfen_overlook").click();
+      await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Overlook");
+      await expect(page.locator(".campaign-node-details")).toContainText("Aid the Marsh Refugees");
+      await expect(page.locator(".campaign-node-details")).toContainText("Study the Cinders");
+      await expect(page.locator(".campaign-node-details")).toContainText("Raise Malrec's Standard");
+      const standardChoice = page.locator("button[data-campaign-choice='raise_malrecs_standard']");
+      await expect(standardChoice).toContainText("Cost: None");
+      await expect(standardChoice).toContainText("Rewards: 10 XP");
+      await expect(standardChoice).toContainText("Reputation: +3 The Free Marches");
+      await expect(standardChoice).toContainText("Modifiers: Gain Well Rested");
+      await expectReachableButton(page, standardChoice, `${viewport.label} Malrec trophy choice`);
+      await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Overlook details`);
+
+      await completeCinderfenOverlookChoice(page, "raise_malrecs_standard", "Raise Malrec's Standard chosen");
+      await openCinderfenWaystation(page);
+      await expect(page.locator(".campaign-node-details")).toContainText("Town Services");
+      await expect(page.locator("button[data-campaign-choice='marsh_guides']")).toContainText("Cost: 35 Crowns");
+      await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText("Cost: 12 Aether");
+      await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText(
+        "Modifiers: Gain Shrine Attunement"
+      );
+      await expect(page.locator("button[data-campaign-choice='shrine_attunement']")).toContainText("Keeps this node open");
+      await expectReachableButton(
+        page,
+        page.locator("button[data-campaign-choice='marsh_guides']"),
+        `${viewport.label} Marsh Guides service`
+      );
+      await expectReachableButton(
+        page,
+        page.locator("button[data-campaign-choice='shrine_attunement']"),
+        `${viewport.label} Shrine Attunement service`
+      );
+      await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Waystation details`);
+
+      await page.getByTestId("campaign-node-cinderfen_crossing").click();
+      await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
+      await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
+      await expectReachableButton(page, page.getByTestId("campaign-start-node"), `${viewport.label} Crossing start`);
+
+      await seedCompletedCinderfenRouteCampaign(page);
+      await continueSavedCampaign(page);
+      await expectNoHorizontalOverflow(page, `${viewport.label} completed Cinderfen campaign map`);
+      await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Completed/i);
+      await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
+        "Chapter 2 route complete"
+      );
+      await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
+        "future Cinderfen roads"
+      );
+      await page.getByTestId("campaign-node-cinderfen_aftermath").click();
+      await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
+      await expect(page.locator(".campaign-node-details")).toContainText("Secure the Watch Road");
+      await expect(page.locator(".campaign-node-details")).toContainText("Aid the Fenfolk");
+      await expect(page.locator(".campaign-node-details")).toContainText("Study the Ashen Marks");
+      await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Already chosen");
+      await expectReachableButton(
+        page,
+        page.locator("button[data-campaign-choice='aid_the_fenfolk']"),
+        `${viewport.label} completed Aftermath choice`,
+        { enabled: false }
+      );
+      await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Aftermath details`);
+    });
+  }
+
+  for (const viewport of CINDERFEN_BATTLE_READABILITY_VIEWPORTS) {
+    test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label}`, async ({ page }) => {
+      test.setTimeout(viewport.label === "mobile portrait" ? 120_000 : 90_000);
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await seedPostAshenCampaign(page);
+      await continueSavedCampaign(page);
+      await page.getByTestId("campaign-node-cinderfen_overlook").click();
+      await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
+      await launchCinderfenCrossing(page);
+      await expectCinderfenBattleHudReadable(page, `${viewport.label} Crossing`, {
+        mapName: "Cinderfen Causeway",
+        objectiveTexts: ["Claim the Cinder Shrine", "Cinder Shrine Surge", "Clear Cinder Guardians", "Destroy Enemy Barracks"]
+      });
+
+      await seedPostCinderfenCrossingCampaign(page);
+      await continueSavedCampaign(page);
+      await launchCinderfenWatch(page);
+      await expectCinderfenBattleHudReadable(page, `${viewport.label} Watch`, {
+        mapName: "Cinderfen Watchpost",
+        objectiveTexts: ["Capture the Watch Road", "Clear the Marsh Raider Camp", "Destroy the Watchpost Tower"]
+      });
+
+      if (viewport.label === "mobile portrait") {
+        await completeCinderfenWatchVictory(page);
+        const resultsPanel = page.locator(".results-panel");
+        await expect(resultsPanel).toContainText("Victory");
+        await expect(resultsPanel).toContainText("Cinderfen Watchpost");
+        await expect(resultsPanel).toContainText("Reward XP");
+        await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Aftermath");
+        await expect(page.locator(".special-objectives")).toContainText("Capture the Watch Road");
+        await expect(page.locator(".special-objectives")).toContainText("Destroy the Watchpost Tower");
+        await expectNoHorizontalOverflow(page, "mobile portrait Cinderfen Watch results");
+        await expectReachableButton(
+          page,
+          page.locator(".results-panel").getByRole("button", { name: "Campaign Map" }),
+          "mobile portrait results Campaign Map"
+        );
+      }
     });
   }
 

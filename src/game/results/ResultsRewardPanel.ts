@@ -14,6 +14,7 @@ import {
 } from "./ResultsFormatting";
 import { renderCampaignRewards } from "./ResultsCampaignFlow";
 import type { ResultsData } from "./ResultsTypes";
+import { isRepeatBattleClear } from "./ResultsViewModel";
 
 export interface RewardRenderContext {
   currentItemInSlot: (slot: EquipmentSlot) => ItemDefinition | undefined;
@@ -43,11 +44,22 @@ export function renderVictoryRewards(data: ResultsData, context: Omit<RewardRend
           <span>Resource awards</span><strong>${escapeHtml(formatResourceRewards(reward.resources))}</strong>
           <span>Duplicate conversion</span><strong>${escapeHtml(formatDuplicateConversions(reward.duplicateConversions ?? []))}</strong>
         </div>
+        ${renderBattleRewardNote(data)}
         ${rewardContext.renderRewardItems(battleItems)}
       </section>
       ${renderCampaignRewards(data, reward.itemIds, rewardContext)}
     </div>
   `;
+}
+
+function renderBattleRewardNote(data: ResultsData): string {
+  if (isRepeatBattleClear(data)) {
+    return `<p class="quiet reward-note">Repeat clear: reduced repeat rewards only. Weighted item rolls and campaign node rewards are not duplicated.</p>`;
+  }
+  if (data.launchRequest?.mode === "campaign_node") {
+    return `<p class="quiet reward-note">First clear: battle rewards are saved here, with campaign node rewards listed below.</p>`;
+  }
+  return `<p class="quiet reward-note">First clear: full battle reward table applied.</p>`;
 }
 
 export function renderRewardItems(

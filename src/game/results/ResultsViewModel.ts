@@ -82,8 +82,20 @@ export function initialResultsStatus(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
     return "No victory rewards or battle XP were saved. Retry when ready, or return and adjust your plan.";
   }
-  const rewardCount = (data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0) + (data.campaignResult?.nodeReward.itemIds.length ?? 0);
-  const skillPointsGained = (data.rewardLevelUp?.skillPointsGained ?? 0) + (data.campaignResult?.nodeLevelUp.skillPointsGained ?? 0);
+  if (isRepeatBattleClear(data)) {
+    return "Repeat clear complete. Reduced repeat rewards were applied; weighted item rolls and campaign node rewards do not duplicate.";
+  }
+  if (data.campaignResult?.completedNodeId === "cinderfen_crossing") {
+    return "Cinderfen Crossing secured. First-clear battle rewards and Cinderfen Crossing node rewards were applied; Cinderfen Watch is now open.";
+  }
+  if (data.campaignResult?.completedNodeId === "cinderfen_watch") {
+    return "Cinderfen Watch secured. First-clear battle rewards and node rewards were applied; resolve Cinderfen Aftermath to finish the current v0.3 route.";
+  }
+  if (data.campaignResult) {
+    return `${data.campaignResult.completedNodeName} secured. First-clear battle rewards and campaign node rewards were applied.`;
+  }
+  const rewardCount = data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0;
+  const skillPointsGained = data.rewardLevelUp?.skillPointsGained ?? 0;
   if (rewardCount > 0 && skillPointsGained > 0) {
     return "You received an item and gained a skill point. Equip the reward and open hero progression before the next node.";
   }
@@ -93,4 +105,9 @@ export function initialResultsStatus(data: ResultsData): string {
   return rewardCount > 0
     ? "You received an item. It was added to inventory; equip it now to improve your hero."
     : "Victory rewards were applied. No new equipment dropped this time.";
+}
+
+export function isRepeatBattleClear(data: ResultsData): boolean {
+  const mapId = data.launchRequest?.mapId;
+  return data.stats.outcome === "victory" && Boolean(mapId && data.startingHeroSave?.clearedMapIds.includes(mapId));
 }

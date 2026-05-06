@@ -30,8 +30,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (completed.has("cinderfen_aftermath")) {
     return {
       title: "Cinderfen route secured",
-      body: "Chapter 2 slice complete. The current playable Cinderfen route ends at Aftermath, with more Cinderfen content coming later.",
-      actions: ["Review rewards", "Try Skirmish maps", "Wait for the next Cinderfen expansion"]
+      body: "Chapter 2 route complete. The Watch Road is held; future Cinderfen roads will open in a later prototype.",
+      actions: ["Review rewards", "Try Skirmish maps", "Future Cinderfen roads pending"]
     };
   }
 
@@ -101,8 +101,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (unlocked.has("cinderfen_aftermath") && !completed.has("cinderfen_aftermath")) {
     return {
       title: "Final Cinderfen Event",
-      body: "Cinderfen Aftermath is the last playable node in the current v0.3 Chapter 2 slice. Resolve one consequence choice to secure the route.",
-      actions: ["Select Cinderfen Aftermath", "Choose one outcome", "Finish the current Cinderfen route"]
+      body: "Cinderfen Aftermath is the last playable node in the current v0.3 route. Resolve one modest consequence choice to secure the Watch Road.",
+      actions: ["Select Cinderfen Aftermath", "Choose one outcome", "Secure the Cinderfen route"]
     };
   }
 
@@ -117,16 +117,16 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (unlocked.has("cinderfen_crossing") && !completed.has("cinderfen_crossing")) {
     return {
       title: "Force The Crossing",
-      body: "Cinderfen Crossing is the first Chapter 2 battle. Claim the Cinder Shrine, clear the guardians, and break the Ashen camp.",
-      actions: ["Use Waystation support if needed", "Launch Cinderfen Crossing", "Watch the Cinder Shrine surge"]
+      body: "Cinderfen Crossing is the first Chapter 2 battle. Take side income, use the Cinder Shrine surge, clear the guardians, and break the Ashen camp.",
+      actions: ["Use Waystation support if needed", "Launch Cinderfen Crossing", "Claim the Cinder Shrine"]
     };
   }
 
   if (unlocked.has("cinderfen_overlook") && !completed.has("cinderfen_overlook")) {
     return {
-      title: "Chapter 2 Begins",
-      body: "Cinderfen Overlook opens the current Chapter 2 route. Pick one preparation choice to unlock the Waystation and Crossing.",
-      actions: ["Select Cinderfen Road", "Compare choice costs", "Unlock the Crossing"]
+      title: "Cinderfen Route Playable",
+      body: "The v0.3 Cinderfen route is open. Start at Cinderfen Overlook, pick one preparation, then Waystation and Crossing become playable.",
+      actions: ["Select Cinderfen Overlook", "Compare choice costs", "Unlock the Crossing"]
     };
   }
 
@@ -223,8 +223,8 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.completedNodeId === "cinderfen_watch") {
     return {
       title: "Cinderfen Watch Secured",
-      body: "The last current Cinderfen battle is complete. Return to the campaign map and resolve Cinderfen Aftermath to finish the v0.3 Chapter 2 slice.",
-      actions: ["Return to Campaign Map", "Resolve Cinderfen Aftermath", "Chapter 2 slice ends there"]
+      body: "The Watch Road is won. Return to the campaign map and resolve Cinderfen Aftermath to secure the current v0.3 route.",
+      actions: ["Return to Campaign Map", "Resolve Cinderfen Aftermath", "Route ends after Aftermath"]
     };
   }
 

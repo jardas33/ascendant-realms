@@ -31,15 +31,19 @@ export function renderEventChoices(options: RenderEventChoicesOptions): string {
             return `
               <button class="choice event-choice ${choiceView.locked ? "locked" : ""}" data-campaign-choice="${choiceView.choice.id}" ${choiceView.locked ? "disabled" : ""}>
                 <strong>${escapeHtml(choiceView.choice.label)}</strong>
-                <span>${escapeHtml(choiceView.choice.description)}</span>
-                ${choiceView.stock ? `<small>Stock: ${escapeHtml(choiceView.stock.name)} - ${escapeHtml(choiceView.stock.rarityLabel)} ${escapeHtml(choiceView.stock.slotLabel)}</small>` : ""}
-                <small>Cost: ${escapeHtml(choiceView.costSummary)}</small>
-                <small>Rewards: ${escapeHtml(choiceView.rewardSummary || "None")}</small>
-                <small>Reputation: ${escapeHtml(choiceView.reputationSummary || "No reputation change")}</small>
-                <small>Modifiers: ${escapeHtml(choiceView.modifierSummary || "None")}</small>
-                <small>Outcome: ${escapeHtml(choiceView.outcomeSummary)}</small>
-                <small>${escapeHtml(choiceView.availabilityLabel)}</small>
-                <span class="choice-cta">${escapeHtml(choiceView.ctaLabel)}</span>
+                <span class="choice-description">${escapeHtml(choiceView.choice.description)}</span>
+                <span class="choice-meta-grid">
+                  ${choiceView.stock ? `<small>Stock: ${escapeHtml(choiceView.stock.name)} - ${escapeHtml(choiceView.stock.rarityLabel)} ${escapeHtml(choiceView.stock.slotLabel)}</small>` : ""}
+                  <small>Cost: ${escapeHtml(choiceView.costSummary)}</small>
+                  <small>Rewards: ${escapeHtml(choiceView.rewardSummary || "None")}</small>
+                  <small>Reputation: ${escapeHtml(choiceView.reputationSummary || "No reputation change")}</small>
+                  <small>Modifiers: ${escapeHtml(choiceView.modifierSummary || "None")}</small>
+                  <small>Outcome: ${escapeHtml(choiceView.outcomeSummary)}</small>
+                </span>
+                <span class="choice-footer">
+                  <small class="choice-state">${escapeHtml(choiceView.availabilityLabel)}</small>
+                  <span class="choice-cta">${escapeHtml(choiceView.ctaLabel)}</span>
+                </span>
               </button>
             `;
           })

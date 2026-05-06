@@ -134,6 +134,10 @@
     grid-template-columns: 1fr;
   }
 
+  .choice-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
   .progression-title-row {
     align-items: flex-start;
   }

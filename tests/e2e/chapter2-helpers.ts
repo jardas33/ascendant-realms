@@ -201,6 +201,151 @@ export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<voi
   await expect(page.getByTestId("main-menu")).toBeVisible();
 }
 
+// Test-only seed helper: creates a frozen v0.3 route-complete save for readability checks without replaying battles.
+export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<void> {
+  await page.goto("/");
+  await page.evaluate(
+    ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
+      localStorage.setItem(
+        key,
+        JSON.stringify({
+          version: 2,
+          createdAt: "2026-05-05T23:00:00.000Z",
+          updatedAt: "2026-05-05T23:00:00.000Z",
+          hero: {
+            heroName: "E2E Route Complete",
+            classId: "warlord",
+            originId: "exiled_noble",
+            level: 4,
+            xp: 810,
+            skillPoints: 3,
+            unlockedAbilities: ["rally_banner"],
+            completedBattles: 7,
+            clearedMapIds: ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway", "cinderfen_watchpost"],
+            inventory: [
+              {
+                instanceId: "e2e-weathered-command-sword",
+                itemId: "weathered_command_sword",
+                acquiredAt: "2026-05-05T23:00:00.000Z",
+                source: "e2e_seed",
+                affixes: []
+              },
+              {
+                instanceId: "e2e-scouts-bow",
+                itemId: "scouts_bow",
+                acquiredAt: "2026-05-05T23:05:00.000Z",
+                source: "campaign:cinderfen_crossing",
+                affixes: []
+              }
+            ],
+            equipment: {},
+            allocatedSkills: {},
+            factionReputation: {
+              free_marches: 27,
+              ashen_covenant: -50,
+              sylvan_concord: 0,
+              common_folk: 36,
+              old_faith: 25
+            },
+            stats: { might: 11, command: 10, arcana: 2, faith: 3 }
+          },
+          campaign: {
+            started: true,
+            difficulty: "normal",
+            resources: { crowns: 210, stone: 222, iron: 176, aether: 90 },
+            resourcesSpent: { ...emptyResources, crowns: 130, aether: 12 },
+            completedNodeIds,
+            unlockedNodeIds,
+            lockedNodeIds: [],
+            nodeRewardsClaimedIds: completedNodeIds,
+            choiceIdsClaimed: ["cinderfen_overlook:aid_marsh_refugees", "cinderfen_aftermath:aid_the_fenfolk"],
+            townServiceClaimedIds: [],
+            townServiceUseCounts: {
+              "cinderfen_waystation:marsh_guides": 1,
+              "cinderfen_waystation:shrine_attunement": 1
+            },
+            activeModifierIds: [],
+            strongholdUpgradeRanks: { training_yard_i: 1, training_yard_ii: 1 },
+            retinueUnits: [
+              {
+                retinueUnitId: "retinue:e2e:cinderfen_militia",
+                unitTypeId: "militia",
+                name: "Cinderfen Militia",
+                rank: "veteran",
+                xp: 140,
+                kills: 3,
+                sourceBattleId: "cinderfen_watch",
+                acquiredAt: "2026-05-05T23:08:00.000Z",
+                status: "active"
+              },
+              {
+                retinueUnitId: "retinue:e2e:cinderfen_ranger",
+                unitTypeId: "ranger",
+                name: "Fen Road Ranger",
+                rank: "seasoned",
+                xp: 80,
+                kills: 2,
+                sourceBattleId: "cinderfen_crossing",
+                acquiredAt: "2026-05-05T23:06:00.000Z",
+                status: "active"
+              }
+            ],
+            rivals: [
+              {
+                enemyHeroId: "captain_malrec",
+                encounters: 1,
+                defeats: 1,
+                victoriesAgainstPlayer: 0,
+                lastEncounterNodeId: "ashen_outpost",
+                lastOutcome: "defeated",
+                disposition: "humiliated",
+                activeModifiers: [],
+                isKnownToPlayer: true
+              }
+            ],
+            rivalTrophies: [
+              {
+                trophyId: "trophy_malrec_outpost_standard",
+                enemyHeroId: "captain_malrec",
+                earnedAt: "2026-05-05T23:00:00.000Z",
+                sourceNodeId: "ashen_outpost",
+                label: "Malrec's Outpost Standard",
+                description: "The torn fortress standard of Captain Malrec's Ashen Outpost command.",
+                effect: "Milestone one-time first-defeat reward claimed."
+              }
+            ],
+            selectedChapterId: "cinderfen_road",
+            selectedNodeId: "cinderfen_aftermath"
+          },
+          settings: {},
+          statistics: {}
+        })
+      );
+    },
+    {
+      key: SAVE_KEY,
+      completedNodeIds: [
+        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+        "cinderfen_overlook",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      unlockedNodeIds: [
+        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+        "cinderfen_overlook",
+        "cinderfen_waystation",
+        "cinderfen_crossing",
+        "cinderfen_watch",
+        "cinderfen_aftermath"
+      ],
+      emptyResources: EMPTY_RESOURCES
+    }
+  );
+  await page.reload();
+  await expect(page.getByTestId("main-menu")).toBeVisible();
+}
+
 // Test-only save reader used by Chapter 2 persistence assertions.
 export async function readStoredSave(page: Page): Promise<any> {
   return page.evaluate((key) => {

@@ -32,7 +32,7 @@ export function renderCampaignRewards(
         <span>Duplicate conversion</span><strong>${escapeHtml(formatDuplicateConversions(campaign.nodeReward.duplicateConversions ?? []))}</strong>
         <span>Campaign bank</span><strong>${escapeHtml(formatResourceRewards(campaign.campaignResources))}</strong>
       </div>
-      <p class="quiet reward-note">Node resources were added to the persistent campaign bank. Shops, mercenaries, repairs, upgrades, node choices, and stronghold development can spend this bank in future systems.</p>
+      <p class="quiet reward-note">Node resources were added to the persistent campaign bank. Existing town services, event choices, and stronghold upgrades can spend this bank.</p>
       ${context.renderRewardItems(items)}
     </section>
   `;

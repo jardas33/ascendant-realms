@@ -5,9 +5,9 @@ export const CINDERFEN_WATCHPOST_MAP: BattleMapDefinition = {
   name: "Cinderfen Watchpost",
   role: "Chapter 2 ash-marsh watchpost",
   description:
-    "A raised road through the cinder marsh, watched by an Ashen tower and a compact staging camp on the far bank.",
+    "A raised road through the cinder marsh, guarded by an Ashen watchtower and a compact fortified camp on the far bank.",
   strategicNotes: [
-    "The raised watch road is the safest first capture and gives enough Crowns to prepare before the tower push.",
+    "The raised watch road is the safest first capture and gives enough Crowns to prepare before the fortified tower push.",
     "Fog hides the central watchtower and the marsh raider camp until scouts commit to the road.",
     "Waystation services are useful preparation here, especially earlier warnings, wider base vision, and the hero buffer, but the battle does not require them."
   ],
@@ -151,7 +151,7 @@ export const CINDERFEN_WATCHPOST_MAP: BattleMapDefinition = {
         {
           id: "capture_watch_road",
           name: "Capture the Watch Road",
-          description: "Claim the raised-road toll before pushing into the fog around the watchtower.",
+          description: "Claim the raised-road toll first; it funds the push into fog around the watchtower.",
           type: "capture_site",
           targetId: "watch_road_toll"
         },

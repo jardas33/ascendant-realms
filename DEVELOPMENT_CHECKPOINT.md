@@ -1,6 +1,64 @@
 # Development Checkpoint
 
-Updated: 2026-05-05 18:36 -04:00
+Updated: 2026-05-06 17:49:49 -04:00
+
+## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
+
+Scope: create a clean checkpoint for the completed v0.3.1 polish, readability, audit, and safe e2e helper work before any new feature work. No reset, checkout, delete, revert, gameplay addition, balance change, map addition, unit addition, faction addition, worker system, enemy construction, diplomacy, procedural generation, crafting, or broad refactor was performed during this checkpoint pass.
+
+Preserved current dirty work:
+
+- v0.3.1 polish plan and route readability documentation.
+- UX copy and hierarchy polish for the existing frozen Cinderfen route.
+- Mobile/readability audit coverage and documentation.
+- Performance bundle audit documenting the known Vite large-chunk warning.
+- E2E runtime audit plus the safest helper cleanup.
+- Shared Playwright setup helpers for smoke/layout setup while keeping release-critical full-flow coverage visible in specs.
+- All existing gameplay behavior, route content, selectors, and balance.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 8.21s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+Output: assets/index-BlnznQM_.js, 1,918.65 kB minified / 457.79 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+
+npm run test:e2e -- --reporter=line
+PASS: 59 Playwright tests in 28.7m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.4m and tests/e2e/deep-flow.spec.ts 11.5m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle node/profile summaries.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Git and branch status:
+
+```text
+Pre-checkpoint `git status -sb`: ## main...origin/main with the expected dirty v0.3.1 polish/audit/helper stack.
+Pre-checkpoint `git rev-list --left-right --count origin/main...HEAD`: 0 0
+Checkpoint commit message: Checkpoint v0.3.1 polish readability and e2e cleanup
+Checkpoint commit hash: PENDING_CHECKPOINT_COMMIT_HASH
+Post-checkpoint branch sync status: PENDING_BRANCH_SYNC_STATUS
+```
+
+Remaining known risks:
+
+- Human readability and feel still need review on the frozen Cinderfen route, especially Cinderfen Overlook, Waystation, Cinder Shrine, Watch, Aftermath, Results, and mobile density.
+- Vite still reports the known large Phaser/main-bundle warning; the performance audit recommends documentation and safe future options only, with no risky optimization implemented for v0.3.1.
+- Full Playwright e2e remains slow at roughly 29 minutes. The helper cleanup held coverage steady and avoided brittle shortcuts; deeper runtime reductions should use explicit release-gate/default split decisions later.
+- Fast Army, retinue, and Training Yard II profiles remain campaign pacing watchpoints during human playtesting.
+
+Recommended next milestone:
+
+Human-verify v0.3.1 polish on the frozen Cinderfen route in a browser, then decide whether to keep the full Playwright suite as a release gate and add a smaller default smoke lane. Do not start new Chapter 2 content or broad systems until the existing route stays green in human readability, UX, and balance review.
 
 ## Final v0.3 Release-Candidate Verification - 2026-05-05 18:36 -04:00
 

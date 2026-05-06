@@ -12,29 +12,9 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
+import { createHero, openFreshMainMenu, SAVE_KEY, seedCampaignSave, startNewCampaign } from "./shared-helpers";
 
-const SAVE_KEY = "ascendant-realms-save-v1";
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
-
-async function openFreshMainMenu(page: Page): Promise<void> {
-  await page.goto("/");
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
-}
-
-async function createHero(page: Page, name: string): Promise<void> {
-  await expect(page.getByTestId("hero-creation")).toBeVisible();
-  await page.getByTestId("hero-name-input").fill(name);
-  await page.getByTestId("hero-start").click();
-}
-
-async function startNewCampaign(page: Page): Promise<void> {
-  await openFreshMainMenu(page);
-  await page.getByTestId("menu-new-campaign").click();
-  await createHero(page, "E2E Campaign");
-  await expect(page.getByTestId("campaign-map")).toBeVisible();
-}
 
 async function expectBattleLoaded(page: Page): Promise<void> {
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
@@ -45,9 +25,8 @@ async function expectBattleLoaded(page: Page): Promise<void> {
 }
 
 async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, heroName: string): Promise<void> {
-  await openFreshMainMenu(page);
+  await seedCampaignSave(page, { hero: { heroName } });
   await page.getByTestId("menu-skirmish").click();
-  await createHero(page, heroName);
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await page.getByTestId(`setup-difficulty-${difficulty}`).click();
   await page.getByTestId("setup-start-battle").click();
@@ -196,7 +175,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("new campaign flow opens the campaign map and blocks locked nodes", async ({ page }) => {
-    await startNewCampaign(page);
+    await startNewCampaign(page, "E2E Campaign");
 
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
@@ -224,7 +203,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("campaign Border Village launches a battle scene", async ({ page }) => {
-    await startNewCampaign(page);
+    await startNewCampaign(page, "E2E Campaign");
 
     await page.getByTestId("campaign-node-border_village").click();
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
@@ -646,10 +625,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await page.locator("button[data-campaign-choice='aid_the_fenfolk']").click();
     await expect(page.getByTestId("campaign-status")).toContainText("Aid the Fenfolk chosen");
     await expect(page.getByTestId("campaign-status")).toContainText("Cinderfen route secured");
-    await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 slice complete");
-    await expect(page.getByTestId("campaign-status")).toContainText("More Cinderfen content coming later");
+    await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 route complete");
+    await expect(page.getByTestId("campaign-status")).toContainText("future Cinderfen roads");
     await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
-      "Chapter 2 slice complete"
+      "Chapter 2 route complete"
     );
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Completed/i);
     save = await readStoredSave(page);
@@ -745,12 +724,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("inventory screen opens without crashing", async ({ page }) => {
-    await openFreshMainMenu(page);
-    await page.getByTestId("menu-skirmish").click();
-    await createHero(page, "E2E Inventory");
-    await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-    await page.getByTestId("setup-back").click();
-    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await seedCampaignSave(page, { hero: { heroName: "E2E Inventory" } });
 
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();
     await page.getByTestId("menu-inventory").click();

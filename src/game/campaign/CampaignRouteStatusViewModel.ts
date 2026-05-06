@@ -2,9 +2,9 @@ import type { CampaignSaveData } from "../save/SaveTypes";
 
 export const CINDERFEN_ROUTE_COMPLETE_TITLE = "Cinderfen route secured";
 export const CINDERFEN_ROUTE_COMPLETE_BODY =
-  "Chapter 2 slice complete. The current playable Cinderfen route ends at Aftermath, with more Cinderfen content coming later.";
+  "Chapter 2 route complete. The Watch Road is held; future Cinderfen roads will open in a later prototype.";
 export const CINDERFEN_ROUTE_COMPLETE_STATUS =
-  "Cinderfen route secured. Chapter 2 slice complete. More Cinderfen content coming later.";
+  "Cinderfen route secured. Chapter 2 route complete; future Cinderfen roads will open later.";
 
 export function createCampaignRouteStatusViewModel(campaignSave: CampaignSaveData) {
   if (!campaignSave.completedNodeIds.includes("cinderfen_aftermath")) {
@@ -14,7 +14,7 @@ export function createCampaignRouteStatusViewModel(campaignSave: CampaignSaveDat
     isComplete: true,
     title: CINDERFEN_ROUTE_COMPLETE_TITLE,
     body: CINDERFEN_ROUTE_COMPLETE_BODY,
-    actions: ["Review rewards", "Try Skirmish maps", "Wait for the next Cinderfen expansion"],
+    actions: ["Review rewards", "Try Skirmish maps", "Future Cinderfen roads pending"],
     statusMessage: CINDERFEN_ROUTE_COMPLETE_STATUS
   };
 }

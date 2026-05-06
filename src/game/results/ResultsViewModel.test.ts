@@ -9,7 +9,7 @@ import { createInventorySceneData, createRetryBattleData, renderPrimaryActions }
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
 import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
 import type { ResultsData } from "./ResultsTypes";
-import { createResultsViewModel, initialResultsStatus } from "./ResultsViewModel";
+import { createResultsViewModel, initialResultsStatus, isRepeatBattleClear } from "./ResultsViewModel";
 
 describe("results scene helpers", () => {
   it("builds the same high-level status and subtitle data outside ResultsScene", () => {
@@ -168,6 +168,51 @@ describe("results scene helpers", () => {
     expect(viewModel.xp.levelsGained).toBe(0);
     expect(viewModel.xp.skillPointsGained).toBe(0);
     expect(viewModel.skillPointsGained).toBe(0);
+  });
+
+  it("labels repeat battle clears as reduced rewards", () => {
+    const startingHero = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      clearedMapIds: ["first_claim"]
+    };
+    const data = createResultsData({
+      startingHeroSave: startingHero,
+      heroSave: startingHero,
+      launchRequest: createSkirmishBattleLaunchRequest(startingHero, {
+        mapId: "first_claim",
+        difficulty: "easy"
+      })
+    });
+
+    expect(isRepeatBattleClear(data)).toBe(true);
+    expect(initialResultsStatus(data)).toContain("Repeat clear complete");
+    expect(initialResultsStatus(data)).toContain("weighted item rolls");
+  });
+
+  it("points Cinderfen Watch results toward route completion", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "cinderfen_watchpost",
+        difficulty: "normal",
+        campaignNodeId: "cinderfen_watch"
+      }),
+      campaignResult: {
+        completedNodeId: "cinderfen_watch",
+        completedNodeName: "Cinderfen Watch",
+        unlockedNodeIds: ["cinderfen_aftermath"],
+        unlockedNodeNames: ["Cinderfen Aftermath"],
+        nodeReward: { itemIds: [], resources: {}, xp: 62 },
+        nodeLevelUp: { previousLevel: 1, newLevel: 1, levelsGained: 0, skillPointsGained: 0 },
+        campaignResources: { crowns: 0, stone: 0, iron: 0, aether: 0 }
+      }
+    });
+
+    expect(initialResultsStatus(data)).toContain("Cinderfen Watch secured");
+    expect(initialResultsStatus(data)).toContain("resolve Cinderfen Aftermath");
   });
 
   it("reports when a victory reward is intentionally kept in inventory", () => {

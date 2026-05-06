@@ -295,21 +295,21 @@ describe("campaign map presentation helpers", () => {
     expect(canStartCampaignNode(node, campaign)).toBe(false);
     expect(html).toContain("Town Services");
     expect(html).toContain("Marsh Guides");
-    expect(html).toContain("The next Cinderfen battle gains earlier enemy warnings and wider base vision.");
+    expect(html).toContain("Next Cinderfen battle: wider base vision and earlier enemy warnings.");
     expect(html).toContain("Cost: 35 Crowns");
     expect(html).toContain("Modifiers: Gain Marsh Guides");
     expect(html).toContain("Ash Filters");
-    expect(html).toContain("The next Cinderfen battle starts your hero with a small HP and Mana buffer.");
+    expect(html).toContain("Next Cinderfen battle: the hero starts with a small HP and Mana buffer.");
     expect(html).toContain("Cost: 35 Crowns, 15 Aether");
     expect(html).toContain("Refugee Scouts");
-    expect(html).toContain("They confirm the Cinder Shrine and central guardians");
+    expect(html).toContain("Local scouts confirm the Cinder Shrine and central guardians");
     expect(html).toContain("Reputation: +2 Common Folk");
     expect(html).toContain("Shrine Attunement");
-    expect(html).toContain("Cinder Shrine Surge grants +5 extra Aether on first capture");
+    expect(html).toContain("Cinder Shrine Surge grants +5 extra Aether");
     expect(html).toContain("Modifiers: Gain Shrine Attunement");
     expect(html).toContain("Outcome: Keeps this node open.");
     expect(html).toContain("Repeatable service.");
-    expect(html).toContain("Purchase once.");
+    expect(html).toContain("One-time service.");
   });
 
   it("shows Cinderfen Aftermath choices after Cinderfen Watch is completed", () => {
@@ -353,7 +353,7 @@ describe("campaign map presentation helpers", () => {
 
     expect(canStartCampaignNode(node, campaign)).toBe(false);
     expect(html).toContain("Cinderfen Aftermath");
-    expect(html).toContain("Ashen stragglers have scattered");
+    expect(html).toContain("One modest settlement choice");
     expect(html).toContain("Secure the Watch Road");
     expect(html).toContain("Cost: 45 Crowns, 18 Stone");
     expect(html).toContain("Rewards: 12 XP, 10 Stone");

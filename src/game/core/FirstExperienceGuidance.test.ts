@@ -111,8 +111,8 @@ describe("first experience guidance", () => {
     const guidance = getCampaignNextAction(campaign, hero);
 
     expect(guidance.title).toBe("Cinderfen route secured");
-    expect(guidance.body).toContain("Chapter 2 slice complete");
-    expect(guidance.body).toContain("more Cinderfen content coming later");
+    expect(guidance.body).toContain("Chapter 2 route complete");
+    expect(guidance.body).toContain("future Cinderfen roads");
   });
 
   it("points Watch victory toward the final Cinderfen aftermath event", () => {
@@ -127,8 +127,8 @@ describe("first experience guidance", () => {
 
     expect(guidance.title).toBe("Cinderfen Watch Secured");
     expect(guidance.body).toContain("Cinderfen Aftermath");
-    expect(guidance.body).toContain("v0.3 Chapter 2 slice");
-    expect(guidance.actions).toContain("Chapter 2 slice ends there");
+    expect(guidance.body).toContain("current v0.3 route");
+    expect(guidance.actions).toContain("Route ends after Aftermath");
   });
 
   it("prompts inventory and skill spending when both are available", () => {

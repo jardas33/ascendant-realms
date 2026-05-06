@@ -5,10 +5,10 @@ export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
     name: "Cinderfen Causeway",
     role: "Chapter 2 ash-marsh crossing",
     description:
-      "A burned road through ash marsh and cinder pools, with one contested Cinder Shrine and a safer reed-shelf route for staged expansion.",
+      "A burned road through ash marsh and cinder pools, with side economy routes and one contested Cinder Shrine at the crossing.",
     strategicNotes: [
-      "The Cinder Shrine is the central aether prize: first capture releases a small one-time Aether surge, but rushing it exposes the army to neutral guardians and Ashen pressure.",
-      "The northern reed shelf gives a safer Stone route before the final push across the causeway; the southern iron cache is useful but slower to secure.",
+      "The Cinder Shrine is a tempo prize: first capture releases a small one-time Aether surge, then the site becomes normal Aether income.",
+      "The northern reed shelf gives a safer Stone route before the final push; the southern iron cache is useful but slower to secure.",
       "Swamp and ashglass pools shape the lanes without adding new terrain systems, workers, enemy construction, or new factions."
     ],
     width: 2600,
@@ -121,7 +121,7 @@ export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
         firstCaptureBonus: {
           id: "cinder_shrine_surge",
           label: "Cinder Shrine Surge",
-          description: "The first claim releases +20 Aether; recaptures only restore the normal shrine income.",
+          description: "First claim grants +20 Aether once; Shrine Attunement raises that first surge to +25. Later captures only restart normal income.",
           resources: { aether: 20 }
         }
       }
@@ -188,7 +188,7 @@ export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
           {
             id: "capture_cinder_crossing",
             name: "Claim the Cinder Shrine",
-            description: "Capture the central shrine to trigger Cinder Shrine Surge (+20 Aether once), then hold it for Aether income.",
+            description: "Capture side income first if needed, then claim the shrine for Cinder Shrine Surge (+20 Aether once) and hold it for Aether income.",
             type: "capture_site",
             targetId: "cinder_crossing"
           },

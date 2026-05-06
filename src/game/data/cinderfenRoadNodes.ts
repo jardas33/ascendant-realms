@@ -3,9 +3,9 @@ import type { CampaignNodeDefinition } from "../core/GameTypes";
 export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
   {
     id: "cinderfen_overlook",
-    name: "Cinderfen Road",
+    name: "Cinderfen Overlook",
     description:
-      "Chapter 2 event. From the last dry rise before the ash marsh, choose how the army prepares for the Cinderfen Causeway.",
+      "Chapter 2 opens here. Pick one preparation from the dry overlook before the army forces the Cinderfen Crossing.",
     chapterId: "cinderfen_road",
     nodeType: "event",
     difficulty: "story",
@@ -15,13 +15,13 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     prerequisites: ["ashen_outpost"],
     rewards: {},
     eventText:
-      "Black reeds bend around a glassy causeway. The scouts have found Ashen carts, refugee tracks, and old cinder-signs in the same marsh. There is time for one preparation before forcing the crossing.",
+      "Black reeds bend around a glassy causeway. Scouts report Ashen carts, refugee tracks, and old cinder-signs in the same marsh. There is time for one clear preparation.",
     choices: [
       {
         id: "scout_the_causeway",
         label: "Scout the Causeway",
         description:
-          "Pay outriders to mark the burned road and Ashen supply caches. Their report warns of Hexfire cultists, a towered camp, and a central aether crossing worth holding.",
+          "Pay outriders to mark side paths, Ashen caches, and the central Aether crossing. Best for safer route knowledge before the first battle.",
         costs: { crowns: 30 },
         rewards: {
           xp: 20,
@@ -36,7 +36,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "aid_marsh_refugees",
         label: "Aid the Marsh Refugees",
         description:
-          "Spend coin and food to move stranded families off the blackwater path. A few local guides and spearhands pledge to march for one battle.",
+          "Move stranded families off the blackwater path. Local guides and spearhands return the favor for one battle.",
         costs: { crowns: 55 },
         rewards: {
           xp: 25,
@@ -51,7 +51,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "study_the_cinders",
         label: "Study the Cinders",
         description:
-          "Offer Aether to the Old Faith readers and sift the hexfire residue. They find a safe omen, a reclaimed focus, and signs that no named Ashen rival commands the crossing yet.",
+          "Let Old Faith readers sift the hexfire residue. They recover a focus, a safe omen, and signs that no named Ashen rival commands the crossing.",
         costs: { aether: 24 },
         rewards: {
           xp: 20,
@@ -66,7 +66,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "raise_malrecs_standard",
         label: "Raise Malrec's Standard",
         description:
-          "Unfurl Malrec's captured outpost banner at the marsh edge. The Ashen scouts remember the fortress falling, and the column marches with steadier hearts.",
+          "Optional trophy use. Raise Malrec's captured banner for a modest morale boost; it costs nothing and replaces the other preparations.",
         requirements: { rivalTrophyIds: ["trophy_malrec_outpost_standard"] },
         rewards: {
           xp: 10,
@@ -85,7 +85,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     id: "cinderfen_waystation",
     name: "Cinderfen Waystation",
     description:
-      "Chapter 2 support node. A cramped frontier stop trades marsh maps, ash filters, scouts, and shrine rites for one-battle Cinderfen preparation.",
+      "Chapter 2 support stop. Buy short, one-battle Cinderfen preparations before Crossing or Watch.",
     chapterId: "cinderfen_road",
     nodeType: "town",
     difficulty: "story",
@@ -95,13 +95,13 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     prerequisites: ["cinderfen_overlook"],
     rewards: {},
     eventText:
-      "Lanterns burn behind reed screens while guides argue over drowned paths. The waystation can ready the army for Cinderfen, but every favor costs coin, Aether, or trust.",
+      "Lanterns burn behind reed screens. Each service is brief and clear: some can be bought again, one scout report can only be claimed once.",
     choices: [
       {
         id: "marsh_guides",
         label: "Marsh Guides",
         description:
-          "Hire local pathfinders to mark firm ground and signal Ashen movement. The next Cinderfen battle gains earlier enemy warnings and wider base vision.",
+          "Repeatable. Mark firm ground and Ashen movement. Next Cinderfen battle: wider base vision and earlier enemy warnings.",
         costs: { crowns: 35 },
         rewards: {
           modifierIds: ["marsh_guides"]
@@ -113,7 +113,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "ash_filters",
         label: "Ash Filters",
         description:
-          "Fit the hero's guard with charcoal charms and gauze masks. The next Cinderfen battle starts your hero with a small HP and Mana buffer.",
+          "Repeatable. Fit masks and charcoal charms. Next Cinderfen battle: the hero starts with a small HP and Mana buffer.",
         costs: { crowns: 35, aether: 15 },
         rewards: {
           modifierIds: ["ash_filters"]
@@ -125,7 +125,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "refugee_scouts",
         label: "Refugee Scouts",
         description:
-          "Pay the families who know which causeway stones still hold. They confirm the Cinder Shrine and central guardians, and the Common Folk remember the help.",
+          "One-time. Local scouts confirm the Cinder Shrine and central guardians, then spread word that the army paid fairly.",
         costs: { crowns: 25 },
         rewards: {
           xp: 10,
@@ -138,7 +138,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "shrine_attunement",
         label: "Shrine Attunement",
         description:
-          "Let Old Faith readers tune the army's focus to the ash-glass shrine. The next Cinderfen battle's Cinder Shrine Surge grants +5 extra Aether on first capture.",
+          "Repeatable. Tune the first Cinder Shrine capture. Next Cinderfen battle: Cinder Shrine Surge grants +5 extra Aether.",
         costs: { aether: 12 },
         rewards: {
           modifierIds: ["shrine_attunement"]
@@ -155,7 +155,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     id: "cinderfen_crossing",
     name: "Cinderfen Crossing",
     description:
-      "First Chapter 2 battle. Cross the ash-glass wetlands, claim the Cinder Shrine for a one-time Aether surge, clear the central guardians, and break the Ashen staging camp across the causeway.",
+      "First Chapter 2 battle. Secure side income, claim the Cinder Shrine for its first-capture Aether surge, then break the Ashen staging camp.",
     chapterId: "cinderfen_road",
     nodeType: "battle",
     difficulty: "normal",
@@ -176,7 +176,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     id: "cinderfen_watch",
     name: "Cinderfen Watch",
     description:
-      "Second Chapter 2 battle. Break an Ashen watchpost on the raised road, using fog scouting, the watch-road toll, and Waystation preparation to blunt a slightly stronger staging camp.",
+      "Second Chapter 2 battle. Hold the raised road, scout the enemy watchpost, and break the fortified camp before the tower grinds down the push.",
     chapterId: "cinderfen_road",
     nodeType: "battle",
     difficulty: "normal",
@@ -196,7 +196,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     id: "cinderfen_aftermath",
     name: "Cinderfen Aftermath",
     description:
-      "Chapter 2 aftermath event. With the watch road captured, decide how the army secures the route and answers the scars left in the cinder marsh.",
+      "Current v0.3 route finale. Choose how the Watch Road is secured after the second Cinderfen battle.",
     chapterId: "cinderfen_road",
     nodeType: "event",
     difficulty: "story",
@@ -206,13 +206,13 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     prerequisites: ["cinderfen_watch"],
     rewards: {},
     eventText:
-      "Ash cools on the raised road. Ashen stragglers have scattered into the reeds, and the captured watch route can become a lifeline, a refuge, or a warning about what poisoned the fen.",
+      "Ash cools on the raised road. One modest settlement choice will secure the route and close the current playable Cinderfen arc.",
     choices: [
       {
         id: "secure_watch_road",
         label: "Secure the Watch Road",
         description:
-          "Spend coin and stone on barricades, signal fires, and a basic fortified route. The Free Marches gain a steadier roadhead and local haulers promise support for the next campaign reward.",
+          "Build barricades and signal fires. The Watch Road becomes a steadier Free Marches foothold, with a little local support banked.",
         costs: { crowns: 45, stone: 18 },
         rewards: {
           xp: 12,
@@ -227,7 +227,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "aid_the_fenfolk",
         label: "Aid the Fenfolk",
         description:
-          "Turn captured stores toward refugees, reedcutters, and guides displaced by Ashen raids. The locals cannot spare soldiers, but they send salvage and names of safe paths.",
+          "Turn captured stores toward reedcutters and refugees. They cannot spare soldiers, but they send salvage and safer path names.",
         costs: { crowns: 40 },
         rewards: {
           xp: 12,
@@ -241,7 +241,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "study_ashen_marks",
         label: "Study the Ashen Marks",
         description:
-          "Offer Aether to Old Faith readers and catalogue the burned sigils on the watch stones. They recover a pilgrim focus and a small reserve of clean Aether from the corrupted marsh.",
+          "Let Old Faith readers catalogue the burned watch-stone sigils. They recover a pilgrim focus and a little clean Aether.",
         costs: { aether: 18 },
         rewards: {
           xp: 12,
@@ -256,7 +256,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "display_malrecs_standard",
         label: "Display Malrec's Standard",
         description:
-          "Set Malrec's captured standard above the watch road. Scattered Ashen stragglers recognize the fallen banner and keep their distance from the new route.",
+          "Optional trophy use. Raise Malrec's captured banner over the road as a small warning to Ashen stragglers, not a major payout.",
         requirements: { rivalTrophyIds: ["trophy_malrec_outpost_standard"] },
         rewards: {
           reputationChanges: { free_marches: 1 }

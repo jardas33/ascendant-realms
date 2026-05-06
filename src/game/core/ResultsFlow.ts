@@ -183,30 +183,30 @@ function addObjectiveDefeatTips(
 
   if (isCinderfenWatch) {
     if (!stats.completedObjectiveIds.includes("capture_watch_road")) {
-      tips.push("On Cinderfen Watch, capture the Watch Road Toll before pushing through fog toward the tower.");
+      tips.push("On Cinderfen Watch, claim Watch Road Toll first; it funds the raised-road push through fog toward the tower.");
       return;
     }
     if (!stats.completedObjectiveIds.includes("clear_marsh_raider_camp")) {
-      tips.push("Clear the Marsh Raider Camp before the tower push so the Brute cannot split your line.");
+      tips.push("Clear the Marsh Raider Camp before the tower push; the Brute can split your line on the lower road.");
       return;
     }
     if (!stats.completedObjectiveIds.includes("destroy_watchpost_tower")) {
-      tips.push("Destroy the Watchpost Tower before committing to the Ashen Stronghold.");
+      tips.push("Destroy the Watchpost Tower before committing to the fortified Ashen Stronghold.");
     }
     return;
   }
 
   if (isCinderfenCrossing) {
     if (!stats.completedObjectiveIds.includes("capture_cinder_crossing")) {
-      tips.push("On Cinderfen Crossing, secure the Causeway Toll or Reedcut Quarry before claiming the Cinder Shrine for its one-time Aether surge.");
+      tips.push("On Cinderfen Crossing, secure Causeway Toll or Reedcut Quarry first, then claim the Cinder Shrine for its one-time Aether surge.");
       return;
     }
     if (!stats.completedObjectiveIds.includes("clear_cinder_guardians")) {
-      tips.push("Clear the Cinder Guardians before the final push so the Brute and Hexer do not split your army.");
+      tips.push("After the Shrine, clear the Cinder Guardians so the Brute and Hexer stop splitting your army.");
       return;
     }
     if (!stats.completedObjectiveIds.includes("destroy_cinderfen_barracks")) {
-      tips.push("Destroy Enemy Barracks before burning down the Cinderfen Stronghold.");
+      tips.push("Destroy Enemy Barracks before the Stronghold; it is safer than rushing the main fort.");
     }
     return;
   }
