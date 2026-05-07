@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-06 v0.4 technical groundwork checkpoint
+Last updated: 2026-05-07 v0.4 technical groundwork verification refresh
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -361,6 +361,49 @@ PASS: no whitespace errors after checkpoint metadata update.
 E2E note: the first full `test:e2e:release` run in this checkpoint pass had one timeout in the deep-flow rally movement assertion while 58 tests passed. The targeted case passed immediately on rerun, and the full release gate then passed without code changes. Treat it as a transient timing miss unless it recurs.
 
 Next recommended milestone: choose one focused v0.4 follow-up, preferably analyzer-guided performance measurement, a second carefully scoped optimization, or human readability/accessibility review of the frozen Cinderfen route. Continue postponing workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, and broad gameplay systems.
+
+## v0.4 Technical Groundwork Verification Refresh - 2026-05-07 17:58:57 -04:00
+
+Scope: clean post-checkpoint verification before further work. This refresh did not reset, checkout, delete, revert, add gameplay, add content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign rules. The repository was clean and synced before this metadata update.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 11.23s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite large-chunk warning remains because vendor-phaser exceeds 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.7m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 28.1m.
+Slow files remain tests/e2e/layout.spec.ts at 12.0m and tests/e2e/deep-flow.spec.ts at 11.5m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors before this metadata update.
+```
+
+Branch status before this metadata update:
+
+```text
+git status -sb
+## main...origin/main
+
+git rev-list --left-right --count origin/main...HEAD
+0 0
+```
+
+Next recommended milestone remains analyzer-guided performance measurement, one carefully scoped technical optimization, or human readability/accessibility review of the frozen Cinderfen route. Do not add workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, or broad gameplay systems as the next default move.
 
 ## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
 

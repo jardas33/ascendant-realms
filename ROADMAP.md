@@ -13,6 +13,8 @@ Every phase should protect these long-term pillars:
 
 The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The first v0.4 technical groundwork checkpoint is now the active post-freeze technical baseline.
 
+Latest verification refresh: 2026-05-07. `npm test`, `npm run build`, `npm run test:e2e:smoke`, `npm run test:e2e:release`, `npm run playtest:sim`, and `git diff --check` passed. The branch was clean and synced before the metadata refresh. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, or crafting was added.
+
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
 The current visible product baseline remains `Prototype v0.3` with the menu subtitle `Cinderfen Route Baseline`. v0.2 remains the previous systems baseline; v0.3 is the frozen Cinderfen route baseline; v0.3.1 is the frozen polish and verification layer for that route.
@@ -68,6 +70,7 @@ Completed v0.4 technical groundwork:
 - [x] First approved optimization implemented: Phaser is split into a `vendor-phaser` chunk through Vite/Rollup `manualChunks`.
 - [x] Bundle result documented: app JS is about 435.50 kB / 116.99 kB gzip; Phaser vendor JS is about 1,481.79 kB / 339.86 kB gzip; the known Vite warning remains on the vendor chunk.
 - [x] Checkpoint verification passed: `npm test`, `npm run build`, `npm run test:e2e:smoke`, final `npm run test:e2e:release` rerun, `npm run playtest:sim`, and `git diff --check`.
+- [x] Clean verification refresh passed on 2026-05-07: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 28.1m, `npm run playtest:sim` 255 deterministic runs, and `git diff --check`.
 
 Must remain stable after the v0.3 freeze:
 

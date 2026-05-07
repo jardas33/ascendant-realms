@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-06 21:25:41 -04:00
+Updated: 2026-05-07 17:58:57 -04:00
+
+## v0.4 Technical Groundwork Verification Refresh - 2026-05-07 17:58:57 -04:00
+
+Scope: clean post-checkpoint verification before further work. No reset, checkout, delete, revert, gameplay addition, content addition, balance change, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, or broad systems were added. The repository was clean and synced before this metadata refresh.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 11.23s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-TotuX8zG.js, 435.50 kB minified / 116.99 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.7m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 28.1m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.0m and tests/e2e/deep-flow.spec.ts 11.5m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors before this metadata refresh.
+```
+
+Branch status before this metadata refresh:
+
+```text
+git status -sb
+## main...origin/main
+
+git rev-list --left-right --count origin/main...HEAD
+0 0
+```
+
+Recommended next milestone remains unchanged: choose one focused v0.4 follow-up, preferably analyzer-guided performance measurement, a second carefully scoped optimization, or human readability/accessibility review of the frozen Cinderfen route. Continue postponing workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, and broad gameplay systems.
 
 ## v0.4 Technical Test And Performance Groundwork Checkpoint - 2026-05-06 21:25:41 -04:00
 
