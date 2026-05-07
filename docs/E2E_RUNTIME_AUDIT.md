@@ -10,11 +10,24 @@ Source files in `tests/e2e`:
 | --- | --- | ---: | ---: |
 | `tests/e2e/chapter2-helpers.ts` | Shared Chapter 2 seeding, save reading, route launching, and test-only victory fast-forward helpers | 571 | 0 |
 | `tests/e2e/deep-flow.spec.ts` | Release-style gameplay, save, battle, results, HUD, minimap, retinue, rival, and campaign progression flows | 2,211 | 28 |
-| `tests/e2e/layout.spec.ts` | Responsive reachability/readability, battle HUD layout, Cinderfen layout, Ashen Outpost HUD/fog checks | 711 | 20 |
+| `tests/e2e/layout.spec.ts` | Responsive reachability/readability, battle HUD layout, Cinderfen layout, Ashen Outpost HUD/fog checks | 711 | 21 |
 | `tests/e2e/shared-helpers.ts` | General e2e setup helpers for fresh menu boot, hero creation, seeded default campaign saves, and continuing seeded campaigns | 117 | 0 |
-| `tests/e2e/smoke.spec.ts` | Default browser smoke, settings, campaign launch, Chapter 2 smoke, skirmish, inventory | 683 | 11 |
+| `tests/e2e/smoke.spec.ts` | Default browser smoke, settings, campaign launch, Chapter 2 smoke, skirmish, inventory | 683 | 10 |
 
 `npx playwright test --list` currently reports 59 tests in 3 spec files. `chapter2-helpers.ts` is not a spec file.
+
+## Explicit Test Lanes
+
+The v0.4 test-lane pass keeps the existing file-level coverage intact and adds npm scripts for explicit lanes. No tests were deleted, no assertions were moved into helpers, and `npm run test:e2e` remains the full Playwright suite.
+
+| Lane | Command | Files | Current tests | Intended use |
+| --- | --- | --- | ---: | --- |
+| Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | 10 | Frequent browser iteration. Covers boot, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention flow, skirmish, difficulty, and inventory smoke. |
+| Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | 21 | Targeted responsive and mobile/readability checks. Keep available for UI/layout work and release review. |
+| Deep-flow | `npm run test:e2e:deep` | `tests/e2e/deep-flow.spec.ts` | 28 | Release-critical full-flow gameplay, save, Results, HUD, minimap, retinue, rival, first-battle, and BattleScene result wiring checks. |
+| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | all e2e specs | 59 | Full checkpoint/freeze gate. This preserves the previous complete suite. |
+
+This split uses simple file-level scripts rather than tags, grep, projects, sharding, or extra workers. That keeps the classification easy to inspect and avoids changing Playwright's current single-worker stability posture.
 
 ## Runtime Baseline
 
@@ -27,6 +40,7 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-05 release-candidate gate | 52 | 21.9m | Slow files: `deep-flow.spec.ts`, `layout.spec.ts`. |
 | 2026-05-05 v0.3.1 UX polish pass | 59 | 31.4m | Slow files: `layout.spec.ts`, `deep-flow.spec.ts`; extra responsive/Cinderfen tests account for the larger current count. |
 | 2026-05-05 safe helper pass | 59 | 28.6m | Same test count and coverage shape; slow files: `layout.spec.ts` 12.4m, `deep-flow.spec.ts` 11.5m. |
+| 2026-05-06 explicit lane split | 10 smoke / 59 release | 5.4m smoke / 29.0m release | New `test:e2e:smoke` fast lane and `test:e2e:release` full gate; slow files still `layout.spec.ts` and `deep-flow.spec.ts`. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
@@ -37,7 +51,7 @@ The suite is slow for expected reasons:
 - Phaser scene boot is repeated many times, and each test starts from a browser page rather than a cheaper pure-rule boundary.
 - The suite is single-worker by design, so deep battle tests and generated viewport layout tests cannot overlap.
 - `deep-flow.spec.ts` contains many release-gate checks with high per-test timeouts: 15 calls to `test.setTimeout`, several at 60-90 seconds.
-- `layout.spec.ts` generates 20 tests from viewport loops. The Cinderfen readability section alone runs 4 campaign-map route checks plus 3 battle-HUD checks across desktop/mobile sizes.
+- `layout.spec.ts` generates 21 tests from viewport loops. The Cinderfen readability section alone runs 4 campaign-map route checks plus 3 battle-HUD checks across desktop/mobile sizes.
 - Chapter 2 smoke flows are intentionally broad: one post-Ashen test walks Overlook -> Waystation -> Crossing -> Results -> reload persistence, and one post-Crossing test walks Watch -> Results -> Aftermath -> duplicate prevention.
 - Some tests still replay hero creation or campaign entry where a seeded save would prove the same layout or reachability contract.
 - Several tests wait on live Phaser state via `waitForFunction`; that is correct for gameplay assertions, but slower than direct save/data assertions.
@@ -146,7 +160,7 @@ Keep these as full-flow or release-gate coverage because they protect real playe
 | Split `layout.spec.ts` into default smoke layout and release-gate layout matrices | Medium | Keeps default e2e faster while preserving full coverage on release runs | Use Playwright grep/project tags or npm scripts; do not delete tests. |
 | Split `deep-flow.spec.ts` into topical specs | Medium | Easier slow-file diagnosis and targeted runs | Structural only; avoid changing assertions while splitting. |
 | Mark ultra-deep tests as release-gate only | Medium-high | Large default runtime reduction | Appropriate only after a default smoke suite still covers menu, campaign launch, one battle, Results, Cinderfen route, and key responsive checks. |
-| Keep current smoke tests as default | Low | Protects current frozen route | Do this now; the suite is slow but trustworthy. |
+| Keep current smoke tests as default | Low | Protects current frozen route | Applied through `npm run test:e2e:smoke`; the full suite remains available as `test:e2e` and `test:e2e:release`. |
 | Try more workers | Medium-high | Potential wall-clock reduction | Not first choice because Phaser/localStorage/browser-state isolation can become flaky. Revisit only after specs are cleanly isolated. |
 
 ## Recommendation For v0.3.1
@@ -162,6 +176,24 @@ Recommended path:
 5. Move only clearly ultra-deep matrices behind a release-gate command, and document that release runs still execute them before checkpointing.
 
 The safe helper pass has now applied the lowest-risk setup/seeding changes. Further runtime reductions should be script/profile splits or carefully reviewed release-gate separation, not coverage deletion.
+
+## v0.4 Lane Split Result
+
+The first v0.4 e2e runtime action is now complete at the script/documentation level:
+
+- `test:e2e:smoke` is the fast default lane and runs only `smoke.spec.ts`.
+- `test:e2e:layout` isolates responsive/mobile/readability checks.
+- `test:e2e:deep` isolates the release-critical deep gameplay flows.
+- `test:e2e:release` runs the full 59-test suite with line reporter.
+- `test:e2e` still works and remains the full suite under the existing Playwright convention.
+
+Coverage preservation notes:
+
+- At least one full New Campaign path remains in the smoke/default lane and deep-flow suite.
+- The full first-battle campaign path remains in `deep-flow.spec.ts`.
+- Chapter 2 reward, save, and duplicate-prevention assertions remain visible in `smoke.spec.ts`.
+- Layout/mobile checks remain available in `layout.spec.ts`.
+- No release-critical test was deleted or hidden inside helpers.
 
 ## Verification
 
@@ -181,4 +213,22 @@ Slow files: tests/e2e/layout.spec.ts 12.4m, tests/e2e/deep-flow.spec.ts 11.5m
 
 npm run playtest:sim
 PASS: 255 simulated runs across 85 campaign battle nodes
+```
+
+Lane-split verification after adding explicit npm scripts:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 11.25s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 5.4m.
+Slow test file: tests/e2e/smoke.spec.ts, 5.2m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.0m.
+Slow files: tests/e2e/layout.spec.ts, 12.3m; tests/e2e/deep-flow.spec.ts, 12.1m.
 ```

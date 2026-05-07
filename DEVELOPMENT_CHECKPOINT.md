@@ -1,6 +1,65 @@
 # Development Checkpoint
 
-Updated: 2026-05-06 18:30:40 -04:00
+Updated: 2026-05-06 21:25:41 -04:00
+
+## v0.4 Technical Test And Performance Groundwork Checkpoint - 2026-05-06 21:25:41 -04:00
+
+Scope: checkpoint the v0.4 technical groundwork after the explicit e2e lane split and the first measured performance optimization. This checkpoint does not add gameplay content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, or alter campaign content.
+
+Included technical groundwork:
+
+- Added explicit Playwright lanes while preserving the full release gate: `test:e2e:smoke`, `test:e2e:layout`, `test:e2e:deep`, and `test:e2e:release`.
+- Kept `npm run test:e2e` as the full Playwright suite.
+- Added v0.4 planning docs for direction and performance implementation.
+- Implemented only the first approved performance optimization: Vite/Rollup splits `node_modules/phaser` into `vendor-phaser`.
+- Documented before/after bundle numbers and the remaining Phaser vendor large-chunk warning.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.18s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-TotuX8zG.js, 435.50 kB minified / 116.99 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.8m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.0m on final full-suite rerun.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.4m and tests/e2e/deep-flow.spec.ts 11.8m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors after checkpoint metadata update.
+```
+
+E2E note: the first full release-gate run had one transient timeout in the deep-flow rally movement assertion, while 58 tests passed. The targeted failed case then passed in 38.1s without code changes, and the full release gate passed on rerun. No gameplay or test semantics were changed in response.
+
+Checkpoint commit message:
+
+```text
+Checkpoint v0.4 technical test and performance groundwork
+```
+
+Remaining known risks:
+
+- Full Playwright release gate is still slow at roughly 29 minutes.
+- The fast smoke lane is useful for iteration but is not a release-gate replacement.
+- Vite still reports a large-chunk warning because Phaser remains a large vendor chunk.
+- Further performance work should be analyzer-guided and limited to one explicit optimization at a time.
+- Human readability and mobile-density review of the frozen Cinderfen route remains valuable before new content.
+
+Recommended next milestone:
+
+Choose a focused v0.4 follow-up: analyzer-guided performance measurement, a second carefully scoped optimization, or human readability/accessibility review of the frozen Cinderfen route. Continue postponing workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, and broad gameplay systems.
 
 ## Final v0.3.1 Polish Release Verification - 2026-05-06 18:30:40 -04:00
 

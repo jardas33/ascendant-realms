@@ -11,7 +11,7 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline.
+The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The first v0.4 technical groundwork checkpoint is now the active post-freeze technical baseline.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
@@ -42,10 +42,12 @@ Completed v0.3 Cinderfen route:
 
 Next phase:
 
-- **v0.4 planning or technical optimization**.
-- Best current work is planning the next content milestone, running human readability review on the frozen route, or doing safe measurement-first technical optimization.
+- **v0.4 planning, analyzer-guided technical optimization, or human readability/accessibility review**.
+- Best current work is choosing one focused follow-up: analyzer-guided performance measurement, a second safe optimization, or a human readability pass on the frozen route.
 - v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
 - v0.3.1 release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
+- v0.4 direction brief: `docs/V04_DIRECTION_BRIEF.md`.
+- v0.4 performance plan: `docs/V04_PERFORMANCE_IMPLEMENTATION_PLAN.md`.
 - Route-complete guidance after Cinderfen Aftermath should remain clear: Cinderfen route secured, Chapter 2 slice complete, and more Cinderfen content coming later.
 
 Completed v0.3.1 polish release:
@@ -56,6 +58,16 @@ Completed v0.3.1 polish release:
 - [x] Performance bundle audit completed for the known Vite large-chunk warning; no risky optimization implemented.
 - [x] E2E runtime audit completed; safe shared setup/helper cleanup applied without deleting meaningful coverage.
 - [x] Final automated verification passed: `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, `npm run playtest:sim`, `git diff --check`, and production preview smoke.
+
+Completed v0.4 technical groundwork:
+
+- [x] Direction brief created comparing performance optimization, e2e lane split, human readability/accessibility polish, and small content continuation.
+- [x] Explicit Playwright lanes added: `test:e2e:smoke`, `test:e2e:layout`, `test:e2e:deep`, and `test:e2e:release`.
+- [x] Full release-gate e2e coverage preserved at 59 tests; smoke lane is available for frequent iteration but does not replace the release gate.
+- [x] Performance implementation plan created for measured bundle optimization.
+- [x] First approved optimization implemented: Phaser is split into a `vendor-phaser` chunk through Vite/Rollup `manualChunks`.
+- [x] Bundle result documented: app JS is about 435.50 kB / 116.99 kB gzip; Phaser vendor JS is about 1,481.79 kB / 339.86 kB gzip; the known Vite warning remains on the vendor chunk.
+- [x] Checkpoint verification passed: `npm test`, `npm run build`, `npm run test:e2e:smoke`, final `npm run test:e2e:release` rerun, `npm run playtest:sim`, and `git diff --check`.
 
 Must remain stable after the v0.3 freeze:
 
@@ -78,9 +90,10 @@ Explicitly postponed after the v0.3 freeze:
 Recommended focus after the v0.3.1 freeze:
 
 - Keep v0.3 and v0.3.1 frozen, compact, and data-driven.
-- Choose between v0.4 planning and safe technical optimization.
+- Use the v0.4 technical groundwork checkpoint as the new technical baseline.
+- Choose between analyzer-guided performance measurement, a second safe optimization, and human readability/accessibility review.
 - If planning v0.4, start from the frozen route's human-readability findings rather than adding broad systems immediately.
-- If optimizing technically, start with measurement-only bundle analysis or explicit default-vs-release-gate e2e script planning before changing runtime architecture.
+- If optimizing technically, change only one measured optimization at a time and keep release-gate e2e green.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.
 - Specifically watch Gorak Emberhand, Veyra of the Cinders, and Captain Malrec for scout readability, nameplate clarity, ability readability, XP/objective payoff, first-defeat trophy clarity, late-attack fairness, and whether +5% rematch modifiers are noticeable without feeling mandatory.
 - Confirm Retinue feels helpful without becoming mandatory, especially on Ashen Outpost.
@@ -90,7 +103,7 @@ Recommended focus after the v0.3.1 freeze:
 - Human-paced campaign QA should still review Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, rival commanders, the two-tier Stronghold paths, reputation hooks, and affixed reward readability before larger balance changes.
 - Keep technical risk work scoped around `HUD`, `contentValidation`, `BattleScene`, `src/game/core/progression/ItemRewardRules.ts`, `RetinueRules`, `RivalRules`, and `CampaignRules`.
 - Do not move into workers, enemy construction, new factions, new maps, diplomacy, procedural campaign, procedural maps, crafting, durability, broad loot complexity, full trophy rooms, or broad army-management systems as an immediate post-freeze step.
-- Treat the Vite large-chunk warning as a known build warning, not a failing roadmap item, unless bundle optimization becomes the explicit task.
+- Treat the remaining Vite large-chunk warning as a known Phaser vendor warning, not a failing roadmap item, unless a second focused bundle optimization becomes the explicit task.
 
 ## Phase 0: Project Foundation
 

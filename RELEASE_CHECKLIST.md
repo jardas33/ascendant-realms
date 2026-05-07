@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 38 test files, 268 tests
+PASS: 38 test files, 270 tests
 ```
 
 2. Production build:
@@ -30,6 +30,10 @@ Expected current prototype result:
 
 ```text
 PASS: TypeScript compile and Vite production build
+Current output shape after the v0.4 Phaser vendor split:
+- app JS chunk: assets/index-*.js, about 435.50 kB / gzip 116.99 kB
+- Phaser vendor chunk: assets/vendor-phaser-*.js, about 1,481.79 kB / gzip 339.86 kB
+- CSS chunk: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB
 ```
 
 Known warning:
@@ -38,23 +42,46 @@ Known warning:
 Some chunks are larger than 500 kB after minification.
 ```
 
-This Vite warning is expected for the current Phaser bundle and is not a release blocker unless bundle optimization is the explicit release goal.
+This Vite warning is expected for the current Phaser vendor chunk and is not a release blocker unless a later optimization explicitly targets lazy scene/data loading or warning-policy cleanup. The app chunk is below the default 500 kB threshold after the v0.4 vendor split; the warning remains because Phaser itself is still large.
 
-3. Browser e2e suite:
+3. Fast default browser smoke lane:
 
 ```bash
-npm run test:e2e -- --reporter=line
+npm run test:e2e:smoke
 ```
 
 Expected current prototype result:
 
 ```text
-PASS: 52 Playwright tests
+PASS: 10 Playwright tests
 ```
 
-Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 24 minutes on this machine.
+This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible.
 
-4. Deterministic playtest simulator:
+4. Full browser release-gate suite:
+
+```bash
+npm run test:e2e:release
+```
+
+Expected current prototype result:
+
+```text
+PASS: 59 Playwright tests
+```
+
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 29 minutes on this machine.
+
+5. Optional focused e2e lanes:
+
+```bash
+npm run test:e2e:layout
+npm run test:e2e:deep
+```
+
+`test:e2e:layout` runs responsive/mobile/readability coverage. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
+
+6. Deterministic playtest simulator:
 
 ```bash
 npm run playtest:sim
@@ -88,6 +115,8 @@ Open the local preview URL and confirm:
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
 Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The release baseline candidate is `v0.3 Cinderfen route baseline candidate`, and the visible product copy is `Prototype v0.3`.
+
+After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, and browser console errors stay at 0.
 
 ## Manual QA Areas Not Fully Automated
 

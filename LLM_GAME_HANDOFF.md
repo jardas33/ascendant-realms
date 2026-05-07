@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-06 v0.3.1 freeze
+Last updated: 2026-05-06 v0.4 technical groundwork checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a **frozen v0.3.1 polish release** on top of the **frozen v0.3 Cinderfen Route Baseline**. The visible in-game menu still says `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.3 is the content baseline, while v0.3.1 is the polish/readability/performance-audit/test-maintenance layer. v0.3 froze the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. v0.3.1 froze mobile/readability audit coverage, Cinderfen copy/hierarchy polish, route-complete clarity, Results copy improvements, the performance bundle audit, the e2e runtime audit, and safe shared e2e helper cleanup without changing gameplay or balance. It is still a prototype, but it has a broad playable RTS/RPG spine and a clear frozen verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, and seeded only layout/smoke cases that were not testing the full creation path; Playwright still reports 59 tests and passed in 28.6m in the final verification run. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is v0.4 planning, measurement-first performance optimization, explicit e2e default/release-gate planning, or human readability review of the frozen route. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
+The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, seeded only layout/smoke cases that were not testing the full creation path, and the later v0.4 lane split preserved the 59-test release gate while adding a faster smoke lane. The first v0.4 performance optimization split Phaser into a vendor chunk without changing gameplay. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is analyzer-guided performance measurement, human readability review, or broader v0.4 planning. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
 
 ## Current Git State
 
@@ -184,6 +184,183 @@ PASS: http://127.0.0.1:4188/ loaded, Prototype v0.3 / Cinderfen Route Baseline c
 ```
 
 Next recommended work: choose v0.4 planning, safe technical optimization, explicit e2e default/release-gate planning, or human readability review. Do not add workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, or broad new systems as an immediate post-freeze step.
+
+## v0.4 E2E Test Lane Split - 2026-05-06 19:33:18 -04:00
+
+Scope: create explicit Playwright lanes after the v0.3.1 freeze. This pass did not change gameplay, UI behavior, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, or broad systems. No tests were deleted and no behavior assertions were moved into helpers.
+
+New npm scripts:
+
+```text
+npm run test:e2e:smoke
+Runs tests/e2e/smoke.spec.ts, currently 10 tests.
+
+npm run test:e2e:layout
+Runs tests/e2e/layout.spec.ts, currently 21 responsive/mobile/readability tests.
+
+npm run test:e2e:deep
+Runs tests/e2e/deep-flow.spec.ts, currently 28 release-critical deep-flow tests.
+
+npm run test:e2e:release
+Runs the full Playwright release gate with line reporter, currently 59 tests.
+
+npm run test:e2e
+Still runs the full Playwright suite under the existing convention.
+```
+
+Coverage preserved:
+
+- At least one full New Campaign path remains visible in e2e coverage.
+- The full first campaign battle path remains in `deep-flow.spec.ts`.
+- Chapter 2 reward, save, and duplicate-prevention assertions remain visible in `smoke.spec.ts`.
+- Layout/mobile checks remain available in `layout.spec.ts`.
+- Release-critical deep-flow coverage remains available through `test:e2e:release` and `test:e2e:deep`.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 11.25s.
+
+npm run build
+PASS: TypeScript compile and Vite production build; known large-chunk warning only.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 5.4m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.0m.
+Slow files remain tests/e2e/layout.spec.ts at 12.3m and tests/e2e/deep-flow.spec.ts at 12.1m.
+```
+
+Current guidance: use `test:e2e:smoke` for frequent browser iteration and `test:e2e:release` or `test:e2e` for checkpoint/freeze gates. Use `test:e2e:layout` or `test:e2e:deep` for targeted work. Do not treat the smoke lane as a release substitute.
+
+## v0.4 Phaser Vendor Chunk Split - 2026-05-06 19:40:44 -04:00
+
+Scope: implement only the first safe optimization from `docs/V04_PERFORMANCE_IMPLEMENTATION_PLAN.md`. This pass changed Vite chunking only; it did not add gameplay, change balance, alter save format, change campaign rules, change scene loading, change data loading, change e2e semantics, remove test hooks, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, or add crafting.
+
+Implementation:
+
+```text
+vite.config.ts
+Added a Rollup manualChunks rule that places node_modules/phaser in vendor-phaser.
+No chunkSizeWarningLimit override was added.
+```
+
+Build comparison:
+
+```text
+Before split:
+dist/index.html                 0.45 kB | gzip:   0.29 kB
+dist/assets/index-CIXXIuKP.css  41.86 kB | gzip:   8.71 kB
+dist/assets/index-BlnznQM_.js   1,918.65 kB | gzip: 457.79 kB
+JS chunks: 1
+CSS chunks: 1
+Vite large-chunk warning: present
+
+After split:
+dist/index.html                        0.54 kB | gzip:   0.32 kB
+dist/assets/index-CIXXIuKP.css         41.86 kB | gzip:   8.71 kB
+dist/assets/index-TotuX8zG.js          435.50 kB | gzip: 116.99 kB
+dist/assets/vendor-phaser-B61OQUcB.js  1,481.79 kB | gzip: 339.86 kB
+JS chunks: 2
+CSS chunks: 1
+Vite large-chunk warning: still present because vendor-phaser exceeds 500 kB
+```
+
+Interpretation: the app chunk is now below Vite's default large-chunk threshold, while Phaser is isolated as an explicit vendor cost. Total JS size is essentially unchanged, which is expected for vendor chunking. This was a cache-shape and measurement optimization, not a warning-suppression pass.
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.91s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite large-chunk warning remains because vendor-phaser exceeds 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.6m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.1m.
+Slow files remain tests/e2e/layout.spec.ts at 12.9m and tests/e2e/deep-flow.spec.ts at 11.6m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 4189 --strictPort.
+PASS: title Ascendant Realms.
+PASS: Prototype v0.3 / Cinderfen Route Baseline copy visible.
+PASS: New Campaign opened hero creation and Begin Campaign reached Campaign Map.
+PASS: Continue Campaign reached Campaign Map after the smoke save existed.
+PASS: Skirmish Setup opened and listed maps.
+PASS: browser console errors stayed at 0.
+Preview server was stopped after the smoke.
+```
+
+## v0.4 Technical Groundwork Checkpoint - 2026-05-06 21:25:41 -04:00
+
+Scope: checkpoint the v0.4 technical groundwork after the e2e lane split and first measured performance optimization. This checkpoint does not add gameplay, add content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign rules.
+
+Checkpoint scope:
+
+```text
+E2E lanes:
+- npm run test:e2e:smoke
+- npm run test:e2e:layout
+- npm run test:e2e:deep
+- npm run test:e2e:release
+- npm run test:e2e remains the full Playwright suite
+
+Performance:
+- Vite/Rollup splits node_modules/phaser into vendor-phaser.
+- App chunk is below 500 kB after minification.
+- Remaining Vite warning is the known Phaser vendor warning.
+
+Docs:
+- v0.4 direction brief and performance implementation plan are recorded.
+- Performance bundle audit and e2e runtime audit reflect the technical groundwork.
+```
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.18s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite large-chunk warning remains because vendor-phaser exceeds 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.8m.
+
+npx playwright test tests/e2e/deep-flow.spec.ts -g "first campaign battle path covers capture" --reporter=line
+PASS: targeted rerun of a transient rally wait timeout in 38.1s.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.0m on final full-suite rerun.
+Slow files remain tests/e2e/layout.spec.ts at 12.4m and tests/e2e/deep-flow.spec.ts at 11.8m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors after checkpoint metadata update.
+```
+
+E2E note: the first full `test:e2e:release` run in this checkpoint pass had one timeout in the deep-flow rally movement assertion while 58 tests passed. The targeted case passed immediately on rerun, and the full release gate then passed without code changes. Treat it as a transient timing miss unless it recurs.
+
+Next recommended milestone: choose one focused v0.4 follow-up, preferably analyzer-guided performance measurement, a second carefully scoped optimization, or human readability/accessibility review of the frozen Cinderfen route. Continue postponing workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, and broad gameplay systems.
 
 ## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
 
@@ -3779,7 +3956,7 @@ Run this before a checkpoint commit after gameplay/UI changes:
 9. Human-review the full two-tier Stronghold set in actual fog/build-order play, especially whether Training Yard II's retinue capacity, Watch Post II's earlier warning/tower reach, and Quartermaster II's broader starter package feel helpful without becoming mandatory.
 10. Reputation hooks, item affixes V1, Stronghold Tier II, battle-local Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Cinderfen Overlook, Cinderfen Waystation, Cinder Shrine, Cinderfen Watch, and Cinderfen Aftermath are compact slices; future campaign-depth work should stay compact. Do not move into workers, enemy construction, crafting, durability, affix rerolling, diplomacy, broad loot complexity, full trophy rooms, or broad city-builder systems yet.
 11. Treat the next technical risks as `PlaytestRunner.ts`, `PlaytestAnalyzer.ts`, `BattleScene`, `HUD`, `battle-hud.css`, content validation, focused campaign data modules, `CampaignChoiceRules.ts`, `CampaignRewardRules.ts`, `RetinueRules`, `src/game/core/progression/ItemRewardRules.ts`, `itemAffixes`, and reputation helper/rule hooks. `ScriptedBattlePlaytest.ts`, `HeroProgressionRules.ts`, `CampaignRules.ts`, `campaignNodes.ts`, and `rewards.ts` are now compatibility barrels.
-12. Keep Vite chunk-size warning as a known build warning unless the user asks for bundle optimization.
+12. Keep the remaining Vite chunk-size warning as a known Phaser vendor warning unless the user asks for a second, focused optimization pass.
 
 ## Guidance For Future LLMs
 
