@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell planning started
+Last updated: 2026-05-08 Tutorial / Proving Grounds metadata validation upgraded
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -34,6 +34,19 @@ Phase 1 Tutorial playable shell implementation plan:
 - Planned validation, unit/view-model, e2e, save-pollution, and layout/readability coverage.
 - No source code, gameplay behavior, launch path, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, or broad system changed in this phase.
 - Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `git diff --check` PASS.
+- Commit: `3e4446e Checkpoint tutorial playable shell plan`.
+
+Phase 2 tutorial metadata validation:
+
+- Upgraded `src/game/types/TutorialTypes.ts` with `playable` status support, `launchMode`, `mapId`, `noReward`, granular step types, instructions, objective types, required actions, hints, and existing-content references.
+- Upgraded `src/game/data/tutorials.ts` from a broad planned outline into a scaffolded, non-launching, no-reward metadata sequence for `proving_grounds_basics` on the existing `first_claim` map.
+- Added granular steps for camera controls, hero selection, hero movement, Crown Shrine capture, Crown income, Command Hall selection, Barracks construction, Militia training, Barracks rally, Rally Banner use, safe pressure, and no-reward finish.
+- Hardened `src/game/data/validation/validateTutorials.ts` for valid statuses, launch mode, map references, playable map requirement, initial tutorial no-reward policy, step copy, step type, objective type, required action, content references, and capture-site/map consistency.
+- Updated `src/game/data/contentValidation.test.ts` for the scaffolded metadata and new validator failure cases.
+- Updated `CONTENT_GUIDE.md` with tutorial metadata editing rules, allowed step types, no-reward policy, required fields, reference validation, and hard content/system prohibitions.
+- No launch UI, scene, gameplay behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
+- Verification: focused `npm test -- src/game/data/contentValidation.test.ts` PASS, 26 tests; `npm test` PASS, 40 files / 299 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS.
+- Current build output after metadata upgrade: app JS `assets/index-C_lFSGkR.js`, 450.59 kB / gzip 121.15 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

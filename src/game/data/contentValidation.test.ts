@@ -29,26 +29,50 @@ describe("content validation", () => {
     expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
     expect(TUTORIALS[0]).toMatchObject({
       title: "Tutorial / Proving Grounds",
-      status: "planned"
+      status: "scaffolded",
+      launchMode: "battle",
+      mapId: "first_claim",
+      noReward: true
     });
     expect(TUTORIALS[0].steps.map((step) => step.id)).toEqual([
-      "camera_and_selection",
-      "move_and_capture",
-      "resources_and_building",
-      "train_and_rally",
-      "ability_and_pressure",
-      "victory_results_persistence"
+      "camera_controls",
+      "select_hero",
+      "move_hero",
+      "capture_crown_shrine",
+      "gather_crowns",
+      "select_command_hall",
+      "build_barracks",
+      "train_militia",
+      "set_barracks_rally",
+      "use_rally_banner",
+      "hold_safe_pressure",
+      "finish_training"
     ]);
+    expect(TUTORIALS[0].steps.every((step) => step.instruction.trim().length > 0)).toBe(true);
   });
 
   it("rejects invalid tutorial metadata references before a launch path exists", () => {
     const tutorial = TUTORIALS[0];
     const originalStatus = tutorial.status;
+    const originalLaunchMode = tutorial.launchMode;
+    const originalMapId = tutorial.mapId;
+    const originalNoReward = tutorial.noReward;
     const firstStep = tutorial.steps[0];
     const originalReferences = firstStep.references;
+    const originalInstruction = firstStep.instruction;
+    const originalType = firstStep.type;
+    const originalObjectiveType = firstStep.objectiveType;
+    const originalRequiredAction = firstStep.requiredAction;
     tutorial.status = "playable" as typeof tutorial.status;
+    tutorial.launchMode = "missing_mode" as typeof tutorial.launchMode;
+    tutorial.mapId = "missing_map";
+    tutorial.noReward = false;
+    firstStep.instruction = "";
+    firstStep.type = "bad_step" as typeof firstStep.type;
+    firstStep.objectiveType = "bad_objective" as typeof firstStep.objectiveType;
+    firstStep.requiredAction = "bad_action" as typeof firstStep.requiredAction;
     firstStep.references = {
-      mapIds: ["missing_map"],
+      mapIds: ["missing_step_map"],
       unitIds: ["missing_unit"],
       buildingIds: ["missing_building"],
       abilityIds: ["missing_ability"],
@@ -59,19 +83,54 @@ describe("content validation", () => {
     try {
       expect(validateContent()).toEqual(
         expect.arrayContaining([
-          "Tutorial proving_grounds_basics has invalid status playable.",
-          "Duplicate Tutorial proving_grounds_basics step id: camera_and_selection",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing map missing_map.",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing unit missing_unit.",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing building missing_building.",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing ability missing_ability.",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing resource missing_resource.",
-          "Tutorial proving_grounds_basics step camera_and_selection references missing capture site missing_site."
+          "Tutorial proving_grounds_basics has invalid launch mode missing_mode.",
+          "Tutorial proving_grounds_basics references missing map missing_map.",
+          "Tutorial proving_grounds_basics must keep noReward true.",
+          "Duplicate Tutorial proving_grounds_basics step id: camera_controls",
+          "Tutorial proving_grounds_basics step camera_controls needs title, description, and instruction.",
+          "Tutorial proving_grounds_basics step camera_controls has invalid type bad_step.",
+          "Tutorial proving_grounds_basics step camera_controls has invalid objective type bad_objective.",
+          "Tutorial proving_grounds_basics step camera_controls has invalid required action bad_action.",
+          "Tutorial proving_grounds_basics step camera_controls references missing map missing_step_map.",
+          "Tutorial proving_grounds_basics step camera_controls references missing unit missing_unit.",
+          "Tutorial proving_grounds_basics step camera_controls references missing building missing_building.",
+          "Tutorial proving_grounds_basics step camera_controls references missing ability missing_ability.",
+          "Tutorial proving_grounds_basics step camera_controls references missing resource missing_resource.",
+          "Tutorial proving_grounds_basics step camera_controls references missing capture site missing_site."
         ])
       );
     } finally {
       tutorial.steps.pop();
       firstStep.references = originalReferences;
+      firstStep.instruction = originalInstruction;
+      firstStep.type = originalType;
+      firstStep.objectiveType = originalObjectiveType;
+      firstStep.requiredAction = originalRequiredAction;
+      tutorial.launchMode = originalLaunchMode;
+      tutorial.mapId = originalMapId;
+      tutorial.noReward = originalNoReward;
+      tutorial.status = originalStatus;
+    }
+  });
+
+  it("requires playable tutorial metadata to point at a map and keep at least one step", () => {
+    const tutorial = TUTORIALS[0];
+    const originalStatus = tutorial.status;
+    const originalMapId = tutorial.mapId;
+    const originalSteps = tutorial.steps;
+    tutorial.status = "playable";
+    tutorial.mapId = undefined;
+    tutorial.steps = [];
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Playable tutorial proving_grounds_basics must include mapId.",
+          "Tutorial proving_grounds_basics needs at least one planned step."
+        ])
+      );
+    } finally {
+      tutorial.steps = originalSteps;
+      tutorial.mapId = originalMapId;
       tutorial.status = originalStatus;
     }
   });

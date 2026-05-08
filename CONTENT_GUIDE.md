@@ -14,6 +14,21 @@ It runs the same content validator used by the pure test suite without opening t
 
 Follow it with `npm test` for save fixture coverage, pure rules, view models, and simulator unit coverage. Use e2e and `npm run playtest:sim` when the edited content can affect campaign flow, battle launch, rewards, rival state, or route balance.
 
+## Edit Tutorial Metadata
+
+Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game/types/TutorialTypes.ts` and validation in `src/game/data/validation/validateTutorials.ts`.
+
+1. Keep `proving_grounds_basics` non-rewarding. Its `noReward` field must stay `true`.
+2. Use `status: "planned"` for rough future notes, `status: "scaffolded"` for validated metadata that still has no launch path, and `status: "playable"` only after a safe runtime shell exists.
+3. Use `launchMode: "battle"` only when the tutorial will reuse the current battle scene systems.
+4. If a tutorial is playable, give it a valid `mapId`. The first shell should reuse `first_claim`.
+5. Keep steps short and linear. Current supported step types are `info`, `selectHero`, `moveHero`, `captureSite`, `gatherResources`, `selectBuilding`, `buildStructure`, `trainUnit`, `setRally`, `useHeroAbility`, `defeatEnemy`, and `finish`.
+6. Every step needs a concise `title`, `description`, `instruction`, `objectiveType`, and `requiredAction`.
+7. Use `hint` for optional help, not for mandatory long-form tutorial text.
+8. Put referenced maps, units, buildings, abilities, resources, and capture sites in `references` so validation catches typos before the game launches.
+9. Do not use tutorial metadata to add maps, units, factions, rewards, campaign node completion, save fields, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, or external assets.
+10. Run `npm run validate:content` and `npm test` after edits.
+
 ## Add A New Unit
 
 1. Open `src/game/data/units.ts`.
