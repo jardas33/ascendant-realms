@@ -1,6 +1,85 @@
 # Development Checkpoint
 
-Updated: 2026-05-07 23:40:55 -04:00
+Updated: 2026-05-08 03:58:50 -04:00
+
+## v0.4 Overnight Autonomous Progress Checkpoint - 2026-05-08 03:58:50 -04:00
+
+Scope: checkpoint the extended v0.4 overnight autonomous goal. This pass preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign rules.
+
+Included work:
+
+- Reconfirmed repository integrity and kept every phase checkpoint committed only after green verification.
+- Refreshed bundle analysis, production test/dev hook audit, analyzer-backed no-op optimization decision, and e2e sharding documentation.
+- Hardened one test-only rally movement wait in `tests/e2e/deep-flow.spec.ts`; no gameplay code changed.
+- Applied copy-only Settings readability polish for colorblind minimap and small-screen command-panel guidance.
+- Added `docs/SAVE_COMPATIBILITY_AUDIT.md` and one save test preserving valid Chapter 2 selected chapter/node state.
+- Added `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`.
+- Expanded `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` to cover all fifteen future-system planning tracks.
+- Added `docs/V04_POLISH_BACKLOG.md`.
+
+Checkpoint commits created in this overnight continuation:
+
+```text
+5459857 Checkpoint v0.4 bundle analysis
+e393dd5 Checkpoint v0.4 test hook audit
+5748857 Checkpoint v0.4 measured performance optimization
+614a9ba Checkpoint v0.4 e2e sharding groundwork
+ce1bc23 Checkpoint v0.4 e2e flake hardening
+c302c34 Checkpoint v0.4 accessibility readability polish
+7d156c6 Checkpoint v0.4 save compatibility audit
+718820e Checkpoint v0.4 route feel surrogate review
+cb333c5 Checkpoint full-game roadmap architecture
+4b21824 Checkpoint v0.4 polish backlog
+```
+
+Final verification results:
+
+```text
+npm test
+PASS: 38 test files, 271 tests, 7.35s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-90WGArXv.js, 436.35 kB minified / 117.34 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB minified / 8.74 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.6m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 27.8m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.1m and tests/e2e/deep-flow.spec.ts 11.1m.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 23.0m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 4.2m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 57911 --strictPort
+PASS: Browser Use smoke at http://127.0.0.1:57911/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened and listed current maps.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. The next recommended long-running goal is the v0.5 save/content-validation gate: fixture-based save migration tests, stricter future content validation rules, deterministic command-log feasibility notes, and one explicitly approved vertical-slice candidate. Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, monetization code, and broad army-management systems until their gates are explicit and green.
 
 ## v0.4 Autonomous Goal Progress Checkpoint - 2026-05-07 23:40:55 -04:00
 

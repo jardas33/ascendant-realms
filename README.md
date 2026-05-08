@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a v0.3 Cinderfen route baseline candidate for a long-term fantasy RTS/RPG hybrid. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer and v0.4 now serving as technical, UX, save-safety, and planning groundwork. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -57,7 +57,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.3.1 frozen-polish status, 2026-05-06: build passes. Vite may warn that the main Phaser chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.4 overnight checkpoint status, 2026-05-08: build passes. App JS is about 436.35 kB / 117.34 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 42.04 kB / 8.74 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -67,7 +67,7 @@ npm run test
 
 Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
 
-Latest v0.3.1 frozen-polish status, 2026-05-06: `npm test` passes with 38 test files and 270 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, and simulator coverage.
+Latest v0.4 overnight checkpoint status, 2026-05-08: `npm test` passes with 38 test files and 271 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
 
 ## Browser E2E Test Lanes
 
@@ -87,7 +87,7 @@ npm run test:e2e:release
 
 `test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest continuation verification passed 10 smoke tests in 4.2 minutes and 59 full release-gate tests in 27.4 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest final verification passed 10 smoke tests in 4.6 minutes and 59 full release-gate tests in 27.8 minutes.
 
 For CI, the full release gate can also be split into two Playwright shards:
 
@@ -98,7 +98,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest local shard verification, 2026-05-08: smoke passed 10 tests in 4.2 minutes, release shard 1 passed 49 tests in 23.0 minutes, and release shard 2 passed 10 tests in 4.2 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest local shard verification, 2026-05-08: smoke passed 10 tests in 4.6 minutes, release shard 1 passed 49 tests in 23.0 minutes, and release shard 2 passed 10 tests in 4.2 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 
@@ -112,7 +112,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.3 baseline-candidate status, 2026-05-05: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.4 overnight checkpoint status, 2026-05-08: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
 
 ## Preview A Build
 

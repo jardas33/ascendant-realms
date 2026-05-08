@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.4 overnight continuation polish backlog checkpoint
+Last updated: 2026-05-08 v0.4 overnight autonomous progress final checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,9 +10,9 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
-The active overnight continuation is preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. So far it has not added gameplay content, changed balance, changed save format, added maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad army-management systems.
+The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
 
-Completed continuation phases so far:
+Completed continuation phases:
 
 ```text
 Phase 0 repository integrity: clean/synced at start, 0 ahead / 0 behind, npm test PASS, npm run build PASS.
@@ -26,6 +26,7 @@ Phase 7 save compatibility audit: added `docs/SAVE_COMPATIBILITY_AUDIT.md` and o
 Phase 8 route-feel surrogate review: added `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`, no code changes, no gameplay changes, no new tests needed.
 Phase 9 full-game roadmap architecture: refreshed `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` with all fifteen future-system planning tracks, including modding/data-driven content, tutorial/onboarding, monetization/packaging, and recommended order.
 Phase 10 optional polish backlog: added `docs/V04_POLISH_BACKLOG.md` with safe/medium-risk/high-risk/blocked triage across UI copy, e2e stability, performance, accessibility, save safety, docs, telemetry, and future content planning.
+Phase 11 final verification and handoff: full release gate, both release shards, simulator, diff check, production preview smoke, and final docs refresh completed.
 ```
 
 Current build/performance numbers:
@@ -118,7 +119,21 @@ npm run build: PASS with the known Phaser vendor warning.
 
 Phase 10 backlog read: safe items are mostly copy, docs, measurement, and non-blocking review work; medium-risk items need targeted e2e and a short plan; high-risk/blocked items must not be implemented inside v0.4 polish. Balance tuning for Fast Army or retinue plus Training Yard II remains blocked without human feel review or a clear bug.
 
-Next active phase after this checkpoint: Phase 11 final overnight goal verification and handoff. Run the full release gate, shard scripts or document why not, production preview smoke if feasible, update checkpoint docs, commit final handoff, then push if safe.
+Phase 11 final verification:
+
+```text
+npm test: PASS, 38 files / 271 tests in 7.35s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:smoke: PASS, 10 tests in 4.6m.
+npm run test:e2e:release: PASS, 59 tests in 27.8m.
+npm run test:e2e:release:shard1: PASS, 49 tests in 23.0m.
+npm run test:e2e:release:shard2: PASS, 10 tests in 4.2m.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+Production preview smoke: PASS at http://127.0.0.1:57911/ through the in-app Browser. Title was Ascendant Realms, Prototype v0.3 / Cinderfen Route Baseline copy was visible, New Campaign reached Campaign Map, Continue Campaign returned to Campaign Map after the preview save existed, Skirmish Setup opened, and browser console errors stayed at 0.
+```
+
+Next recommended long-running goal: v0.5 save/content-validation gate. Add fixture-based migration tests, stricter future content validation rules, deterministic command-log feasibility notes, and one explicitly approved vertical-slice candidate. Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, monetization code, and broad army-management systems until their gates are explicit and green.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 
@@ -190,49 +205,53 @@ Current branch:
 main
 ```
 
-Latest checkpoint commit:
+Latest completed phase checkpoint before the final handoff commit:
 
 ```text
-677acc2eeba0329b4d1e4a80517fb89f9216517c
+4b21824 Checkpoint v0.4 polish backlog
 ```
 
-Recent checkpoint stack:
+Recent overnight checkpoint stack:
 
 ```text
-677acc2 Checkpoint v0.4 autonomous goal progress
-29ec5b6 Checkpoint full-game roadmap architecture
-9934fb6 Checkpoint v0.4 accessibility readability polish
-c463546 Checkpoint v0.4 performance and e2e sharding groundwork
-926c9cb Checkpoint v0.4 technical test and performance groundwork
-6c7a1b7 Checkpoint v0.4 technical test and performance groundwork
-405128b Freeze v0.3.1 polish release
-29af452 Record v0.3.1 checkpoint push status
+4b21824 Checkpoint v0.4 polish backlog
+cb333c5 Checkpoint full-game roadmap architecture
+718820e Checkpoint v0.4 route feel surrogate review
+7d156c6 Checkpoint v0.4 save compatibility audit
+c302c34 Checkpoint v0.4 accessibility readability polish
+ce1bc23 Checkpoint v0.4 e2e flake hardening
+614a9ba Checkpoint v0.4 e2e sharding groundwork
+5748857 Checkpoint v0.4 measured performance optimization
+e393dd5 Checkpoint v0.4 test hook audit
+5459857 Checkpoint v0.4 bundle analysis
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest production preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:57705/`, saw title `Ascendant Realms`, verified the main menu with `Prototype v0.3` / `Cinderfen Route Baseline`, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
+- Latest production preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:57911/`, saw title `Ascendant Realms`, verified the main menu with `Prototype v0.3` / `Cinderfen Route Baseline`, reached Campaign Map through New Campaign, returned to Campaign Map through Continue Campaign after the preview save existed, opened Skirmish Setup, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
 
-Last committed checkpoint status:
+Final handoff commit status:
 
 ```text
-Checkpoint commit 677acc2eeba0329b4d1e4a80517fb89f9216517c records the v0.4 autonomous goal progress handoff: Settings readability/accessibility polish, full-game planning docs, final verification, production preview smoke, and branch sync status.
+The final docs/handoff update should be committed with:
+Checkpoint v0.4 overnight autonomous progress
 
-After pushing the v0.4 autonomous goal stack, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Preserve this checkpoint unless the user explicitly asks for a reset/revert.
+Before that final commit, the branch was ahead of origin/main by 10 commits and clean after generated telemetry checks.
+After the final commit and push, use `git status -sb` and `git rev-list --left-right --count origin/main...HEAD` for the exact synced state.
 ```
 
-Current clean checkpoint state:
+Current pre-final-commit branch state:
 
 ```text
 git status -sb
-## main...origin/main
+## main...origin/main [ahead 10]
 
 git rev-list --left-right --count origin/main...HEAD
-0 0
+0 10
 ```
 
-The latest checkpoint includes the v0.4 Settings readability/accessibility polish, `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`, `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, `docs/V05_SYSTEMS_DESIGN_BRIEF.md`, and updated checkpoint docs. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` were regenerated by `npm run playtest:sim` during the latest pass but had no git diff. Preserve this checkpoint unless the user explicitly asks for reset/revert behavior.
+The latest checkpoint includes the v0.4 Settings readability/accessibility polish, `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`, `docs/SAVE_COMPATIBILITY_AUDIT.md`, `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`, `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, `docs/V05_SYSTEMS_DESIGN_BRIEF.md`, `docs/V04_POLISH_BACKLOG.md`, and updated checkpoint docs. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` were regenerated by `npm run playtest:sim` during the latest pass but had no git diff. Preserve this checkpoint unless the user explicitly asks for reset/revert behavior.
 
 Older sections below are historical checkpoint records. Treat the current v0.4 autonomous goal checkpoint above as authoritative when it conflicts with older v0.3/v0.3.1 notes.
 

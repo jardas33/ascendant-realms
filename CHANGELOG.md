@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.4 Overnight Autonomous Progress Checkpoint - 2026-05-08
+
+This checkpoint completes the extended v0.4 technical, UX, save-safety, route-review, and planning pass while preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It does not add gameplay, change balance, alter save format, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad systems.
+
+### Included
+
+- Bundle analyzer report refreshed and the current production chunks documented.
+- Test/dev hook production audit refreshed; no accidental large production leak was found.
+- Analyzer-backed optimization decision recorded as no additional code optimization.
+- E2E sharding plan and scripts verified while preserving the full 59-test release gate.
+- One test-only rally wait in `tests/e2e/deep-flow.spec.ts` hardened against timing flake without changing gameplay.
+- Settings readability copy clarified for colorblind minimap team markers and small-screen command-panel guidance.
+- Save compatibility audited in `docs/SAVE_COMPATIBILITY_AUDIT.md`, with one new test preserving valid Chapter 2 selected chapter/node state.
+- Automated route-feel surrogate review added in `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`.
+- Full-game architecture docs expanded for fifteen future-system tracks, including modding/data-driven content, tutorial/onboarding, monetization/packaging, and recommended order.
+- Tiny no-gameplay polish backlog added in `docs/V04_POLISH_BACKLOG.md`.
+
+### Verification
+
+- `npm test`: passed with 38 test files and 271 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run test:e2e:smoke`: passed with 10 Playwright tests in 4.6m.
+- `npm run test:e2e:release`: passed with 59 Playwright tests in 27.8m.
+- `npm run test:e2e:release:shard1`: passed with 49 Playwright tests in 23.0m.
+- `npm run test:e2e:release:shard2`: passed with 10 Playwright tests in 4.2m.
+- `npm run playtest:sim`: passed with 255 deterministic runs across 85 campaign battle nodes.
+- `git diff --check`: passed.
+- Production preview smoke: passed at `http://127.0.0.1:57911/`; main menu, New Campaign, Continue Campaign, Skirmish Setup, and browser console error checks passed.
+
+### Next
+
+- Recommended next long-running goal: v0.5 save/content-validation gate.
+- Add fixture-based migration tests, future content validation rules, deterministic command-log feasibility notes, and one explicitly approved vertical-slice candidate before broad mechanics.
+- Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, monetization code, and broad army-management systems until their gates are explicit and green.
+
 ## v0.4 Autonomous Goal Progress Checkpoint - 2026-05-07
 
 This checkpoint advances v0.4 technical/readability planning while preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It does not add gameplay, change balance, alter saves, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad systems.

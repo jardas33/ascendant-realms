@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 38 test files, 270 tests
+PASS: 38 test files, 271 tests
 ```
 
 2. Production build:
@@ -31,7 +31,7 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-*.js, about 436.32 kB / gzip 117.33 kB
+- app JS chunk: assets/index-90WGArXv.js, 436.35 kB / gzip 117.34 kB
 - Phaser vendor chunk: assets/vendor-phaser-*.js, about 1,481.79 kB / gzip 339.86 kB
 - CSS chunk: assets/index-*.css, about 42.04 kB / gzip 8.74 kB
 ```
@@ -134,12 +134,15 @@ Open the local preview URL and confirm:
 
 Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
 
-Latest production preview smoke, 2026-05-07:
+Latest production preview smoke, 2026-05-08:
 
 ```text
-PASS: http://127.0.0.1:57705/
+PASS: http://127.0.0.1:57911/
 PASS: page title was Ascendant Realms.
 PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened and listed current maps.
 PASS: browser console errors stayed at 0.
 ```
 
@@ -166,6 +169,9 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `README.md` has current setup, feature summary, known limitations, and verification counts.
 - `docs/V03_CINDERFEN_ROUTE_BASELINE.md` records the current route, rewards, simulator/e2e summaries, known risks, forbidden next steps, and recommended next steps.
 - `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md` records the v0.4 Settings readability/accessibility pass.
+- `docs/SAVE_COMPATIBILITY_AUDIT.md` records current save version 2 behavior and v0.4 compatibility coverage.
+- `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md` records the automated route-feel surrogate review and remaining human-feel watch items.
 - `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` plan future systems without implementing them.
+- `docs/V04_POLISH_BACKLOG.md` records safe/medium-risk/high-risk/blocked tiny polish candidates.
 - `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to the v0.5 save/content-validation gate.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.4 autonomous goal progress checkpoint and warns future sessions not to add broad systems before their gates are explicit and green.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.4 overnight autonomous progress checkpoint and warns future sessions not to add broad systems before their gates are explicit and green.
