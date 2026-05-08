@@ -68,6 +68,15 @@ Phase 5 content validation audit:
 - Identified safe Phase 6 candidates including duplicate chapter node IDs, campaign modifier capture-site references, Cinderfen modifier scope, enemy AI building-spawn consistency, repeat reward policy, event/town choice visible effects, and battle node map reward table linkage.
 - No validator code, content data, gameplay, balance, save behavior, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
 - Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `40a0997 Checkpoint v0.5 content validation audit`.
+
+Phase 6 stricter content validation rules:
+
+- Hardened validators for duplicate chapter node/prerequisite entries, campaign battle node map reward table linkage, campaign modifier capture-site/resource/Cinderfen scope, costed campaign choices with no visible saved effect, reward table repeat policy and duplicate item pools, and map enemy-AI building spawn consistency.
+- Added six focused validator regression tests in `src/game/data/contentValidation.test.ts`.
+- No content data, gameplay, balance, save behavior, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 290 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run test:e2e:smoke` PASS, 10 tests in 4.5m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
+- Current build output after validator code change: app JS `assets/index-BMQ_4xND.js`, 439.61 kB / gzip 118.07 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 

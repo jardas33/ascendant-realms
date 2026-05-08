@@ -19,8 +19,14 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
     } else if (!context.campaignChapterIds.has(node.chapterId)) {
       errors.push(`Campaign node ${node.id} references missing chapter ${node.chapterId}.`);
     }
-    if (!MAPS.some((map) => map.id === node.mapId) && !node.isPlaceholder) {
+    const referencedMap = MAPS.find((map) => map.id === node.mapId);
+    if (!referencedMap && !node.isPlaceholder) {
       errors.push(`Campaign node ${node.id} references missing map ${node.mapId}.`);
+    }
+    if (node.nodeType === "battle" && referencedMap && !context.rewardTableIds.has(referencedMap.scenario.rewardTableId)) {
+      errors.push(
+        `Campaign battle node ${node.id} uses map ${referencedMap.id} with missing reward table ${referencedMap.scenario.rewardTableId}.`
+      );
     }
     if (node.isPlaceholder && (!node.placeholderLabel?.trim() || !node.placeholderDescription?.trim())) {
       errors.push(`Campaign node ${node.id} is a placeholder without placeholder copy.`);
@@ -76,6 +82,8 @@ export function validateCampaignChapters(errors: string[], context: ValidationCo
     if (!chapter.title.trim() || !chapter.shortDescription.trim()) {
       errors.push(`Campaign chapter ${chapter.id} needs title and short description.`);
     }
+    validateUniqueChapterNodeList(chapter.id, "node", chapter.nodeIds, errors);
+    validateUniqueChapterNodeList(chapter.id, "unlock prerequisite", chapter.unlockPrerequisiteNodeIds, errors);
     chapter.nodeIds.forEach((nodeId) => {
       if (!context.campaignNodeIds.has(nodeId)) {
         errors.push(`Campaign chapter ${chapter.id} references missing node ${nodeId}.`);
@@ -120,6 +128,7 @@ export function validateCampaignModifiers(errors: string[], context: ValidationC
     if (modifier.effects.campaignResourceRewardMultiplier !== undefined && modifier.effects.campaignResourceRewardMultiplier <= 0) {
       errors.push(`Campaign modifier ${modifier.id} has invalid resource reward multiplier.`);
     }
+    validateCampaignModifierCaptureBonuses(modifier, errors, context);
   });
 }
 
@@ -184,6 +193,7 @@ function validateCampaignChoice(
       modifierIds?: string[];
       removeModifierIds?: string[];
       reputationChanges?: Record<string, number>;
+      recoverHero?: boolean;
     };
     stockItemId?: string;
     reputationChanges?: Record<string, number>;
@@ -191,6 +201,7 @@ function validateCampaignChoice(
     lockNodeIds?: string[];
     modifierIds?: string[];
     removeModifierIds?: string[];
+    completesNode?: boolean;
   },
   errors: string[],
   context: ValidationContext
@@ -201,6 +212,9 @@ function validateCampaignChoice(
   validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} cost`, choice.costs, errors, context);
   validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} resource requirement`, choice.requirements?.resources, errors, context);
   validateCampaignResourceBag(`Campaign choice ${nodeId}:${choice.id} reward`, choice.rewards?.resources, errors, context);
+  if (Object.keys(choice.costs ?? {}).length > 0 && !campaignChoiceHasVisibleEffect(choice)) {
+    errors.push(`Campaign choice ${nodeId}:${choice.id} has a cost but no visible saved effect.`);
+  }
   if (choice.requirements?.heroLevel !== undefined && choice.requirements.heroLevel <= 0) {
     errors.push(`Campaign choice ${nodeId}:${choice.id} has invalid hero level requirement.`);
   }
@@ -260,6 +274,81 @@ function validateCampaignChoice(
       errors.push(`Campaign choice ${nodeId}:${choice.id} changes missing faction reputation ${factionId}.`);
     }
   });
+}
+
+function validateUniqueChapterNodeList(chapterId: string, label: string, nodeIds: string[], errors: string[]): void {
+  const seen = new Set<string>();
+  nodeIds.forEach((nodeId) => {
+    if (seen.has(nodeId)) {
+      errors.push(`Campaign chapter ${chapterId} lists ${label} ${nodeId} more than once.`);
+    }
+    seen.add(nodeId);
+  });
+}
+
+function validateCampaignModifierCaptureBonuses(
+  modifier: (typeof CAMPAIGN_MODIFIERS)[number],
+  errors: string[],
+  context: ValidationContext
+): void {
+  const additions = modifier.effects.firstCaptureBonusResourceAdditions ?? {};
+  if (Object.keys(additions).length === 0) {
+    return;
+  }
+  const cinderfenBattleMapIds = new Set(
+    CAMPAIGN_NODES.filter((node) => node.nodeType === "battle" && node.chapterId === "cinderfen_road").map((node) => node.mapId)
+  );
+
+  Object.entries(additions).forEach(([captureSiteId, resources]) => {
+    const mapsWithSite = MAPS.filter((map) => map.captureSites.some((site) => site.id === captureSiteId));
+    if (mapsWithSite.length === 0) {
+      errors.push(`Campaign modifier ${modifier.id} targets missing capture site ${captureSiteId}.`);
+    }
+    if (modifier.trigger === "next_cinderfen_battle") {
+      const nonCinderfenMaps = mapsWithSite.filter((map) => !cinderfenBattleMapIds.has(map.id));
+      if (nonCinderfenMaps.length > 0) {
+        errors.push(
+          `Campaign modifier ${modifier.id} targets non-Cinderfen capture site ${captureSiteId} on ${nonCinderfenMaps
+            .map((map) => map.id)
+            .join(", ")}.`
+        );
+      }
+    }
+    Object.entries(resources).forEach(([resource, amount]) => {
+      if (!context.resourceIds.has(resource)) {
+        errors.push(`Campaign modifier ${modifier.id} capture bonus ${captureSiteId} references missing resource ${resource}.`);
+      }
+      if ((amount ?? 0) <= 0) {
+        errors.push(`Campaign modifier ${modifier.id} capture bonus ${captureSiteId} must grant positive ${resource}.`);
+      }
+    });
+  });
+}
+
+function campaignChoiceHasVisibleEffect(choice: Parameters<typeof validateCampaignChoice>[1]): boolean {
+  const rewards = choice.rewards;
+  return Boolean(
+    choice.completesNode ||
+      choice.stockItemId ||
+      (rewards?.xp ?? 0) > 0 ||
+      hasNonZeroRecord(rewards?.resources) ||
+      (rewards?.itemIds?.length ?? 0) > 0 ||
+      (rewards?.unlockNodeIds?.length ?? 0) > 0 ||
+      (rewards?.lockNodeIds?.length ?? 0) > 0 ||
+      (rewards?.modifierIds?.length ?? 0) > 0 ||
+      (rewards?.removeModifierIds?.length ?? 0) > 0 ||
+      hasNonZeroRecord(rewards?.reputationChanges) ||
+      rewards?.recoverHero === true ||
+      (choice.unlockNodeIds?.length ?? 0) > 0 ||
+      (choice.lockNodeIds?.length ?? 0) > 0 ||
+      (choice.modifierIds?.length ?? 0) > 0 ||
+      (choice.removeModifierIds?.length ?? 0) > 0 ||
+      hasNonZeroRecord(choice.reputationChanges)
+  );
+}
+
+function hasNonZeroRecord(record: Partial<Record<string, number>> | undefined): boolean {
+  return Object.values(record ?? {}).some((amount) => (amount ?? 0) !== 0);
 }
 
 function validateCampaignResourceBag(

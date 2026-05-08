@@ -214,6 +214,52 @@ Safest next validation rules:
 - Event/town choices with costs have at least one visible effect: XP, resources, item, modifier, reputation change, unlock/lock, recovery, stock item, or completion behavior.
 - Battle campaign nodes resolve to maps with reward tables.
 
+## Phase 6 Implementation Update
+
+Implemented safe validator rules:
+
+- Campaign chapters now reject duplicate `nodeIds` and duplicate `unlockPrerequisiteNodeIds`.
+- Campaign battle nodes now report when their map resolves to a missing reward table.
+- Campaign modifiers now validate `firstCaptureBonusResourceAdditions` capture site IDs, resource IDs, positive resource amounts, and Cinderfen-only capture site scope for `next_cinderfen_battle` modifiers.
+- Costed campaign choices now require at least one visible saved effect, such as XP, resources, item, modifier, reputation, unlock/lock, recovery, stock item, or completion.
+- Reward tables now require an explicit `repeatClearReward`.
+- Reward tables now reject duplicate deterministic item IDs, duplicate weighted item IDs, and weighted entries marked both `firstClearOnly` and `repeatClearOnly`.
+- Map enemy AI base/production building IDs must be spawned for the enemy team, and AI attack target building IDs must be spawned for the player team.
+
+Tests added in `src/game/data/contentValidation.test.ts`:
+
+- Duplicate chapter node and prerequisite entries.
+- Missing and non-Cinderfen capture-bonus modifier targets.
+- Map AI building references absent from expected team spawns.
+- Reward table missing repeat policy and duplicate weighted pool entries.
+- Costed campaign choices with no visible saved effect.
+- Battle nodes whose maps resolve to missing reward tables.
+
+No content data, gameplay, balance, save format, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+
+Phase 6 verification:
+
+```text
+npm test
+PASS: 40 test files, 290 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-BMQ_4xND.js, 439.61 kB / gzip 118.07 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.5m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+```
+
 Defer until Phase 8:
 
 - Full campaign graph reachability.

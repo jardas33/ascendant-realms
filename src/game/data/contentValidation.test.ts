@@ -3,6 +3,7 @@ import { AI_PERSONALITIES } from "./aiPersonalities";
 import { BATTLE_DIFFICULTIES } from "./battlePacing";
 import { BORDER_MARCHES_NODES } from "./borderMarchesNodes";
 import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
+import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { CAMPAIGN_NODES } from "./campaignNodes";
 import { BORDER_MARCHES_REWARD_TABLES, CINDERFEN_ROAD_REWARD_TABLES } from "./campaignRewards";
 import { CINDERFEN_ROAD_NODES } from "./cinderfenRoadNodes";
@@ -21,6 +22,104 @@ import { UNIT_BY_ID } from "./contentIndex";
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
     expect(validateContent()).toEqual([]);
+  });
+
+  it("rejects duplicate chapter node and prerequisite entries", () => {
+    const chapter = CAMPAIGN_CHAPTERS[0];
+    chapter.nodeIds.push(chapter.nodeIds[0]);
+    chapter.unlockPrerequisiteNodeIds.push("border_village", "border_village");
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          `Campaign chapter ${chapter.id} lists node ${chapter.nodeIds[0]} more than once.`,
+          "Campaign chapter border_marches lists unlock prerequisite border_village more than once."
+        ])
+      );
+    } finally {
+      chapter.nodeIds.pop();
+      chapter.unlockPrerequisiteNodeIds.pop();
+      chapter.unlockPrerequisiteNodeIds.pop();
+    }
+  });
+
+  it("rejects Cinderfen capture-bonus modifiers that target missing or non-Cinderfen sites", () => {
+    const modifier = CAMPAIGN_MODIFIERS.find((entry) => entry.id === "shrine_attunement")!;
+    const originalAdditions = modifier.effects.firstCaptureBonusResourceAdditions;
+    modifier.effects.firstCaptureBonusResourceAdditions = {
+      missing_site: { aether: 5 },
+      crown_shrine: { crowns: 5 },
+      cinder_crossing: { aether: 0 }
+    };
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Campaign modifier shrine_attunement targets missing capture site missing_site.",
+          "Campaign modifier shrine_attunement targets non-Cinderfen capture site crown_shrine on first_claim.",
+          "Campaign modifier shrine_attunement capture bonus cinder_crossing must grant positive aether."
+        ])
+      );
+    } finally {
+      modifier.effects.firstCaptureBonusResourceAdditions = originalAdditions;
+    }
+  });
+
+  it("rejects map AI building references that are not spawned for the expected team", () => {
+    const map = MAPS.find((entry) => entry.id === "first_claim")!;
+    const originalBaseBuildingId = map.scenario.enemyAI.baseBuildingId;
+    map.scenario.enemyAI.baseBuildingId = "command_hall";
+    try {
+      expect(validateContent()).toContain(
+        "Map first_claim AI references enemy building command_hall that is not spawned for the enemy team."
+      );
+    } finally {
+      map.scenario.enemyAI.baseBuildingId = originalBaseBuildingId;
+    }
+  });
+
+  it("rejects reward tables without explicit repeat policy or with duplicate item pools", () => {
+    const table = REWARD_TABLES[0];
+    const originalRepeatClearReward = table.repeatClearReward;
+    table.repeatClearReward = undefined;
+    table.weightedItemPool.push({ ...table.weightedItemPool[0] });
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          `Reward table ${table.id} needs an explicit repeat-clear reward.`,
+          `Reward table ${table.id} duplicates weighted item ${table.weightedItemPool[0].itemId}.`
+        ])
+      );
+    } finally {
+      table.weightedItemPool.pop();
+      table.repeatClearReward = originalRepeatClearReward;
+    }
+  });
+
+  it("rejects costed campaign choices that have no visible saved effect", () => {
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
+    const choice = node.choices!.find((entry) => entry.id === "ash_filters")!;
+    const originalRewards = choice.rewards;
+    choice.rewards = undefined;
+    try {
+      expect(validateContent()).toContain("Campaign choice cinderfen_waystation:ash_filters has a cost but no visible saved effect.");
+    } finally {
+      choice.rewards = originalRewards;
+    }
+  });
+
+  it("rejects battle campaign nodes whose maps resolve to missing reward tables", () => {
+    const map = MAPS.find((entry) => entry.id === "first_claim")!;
+    const originalRewardTableId = map.scenario.rewardTableId;
+    map.scenario.rewardTableId = "missing_reward_table";
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Campaign battle node border_village uses map first_claim with missing reward table missing_reward_table.",
+          "Map first_claim references missing reward table missing_reward_table."
+        ])
+      );
+    } finally {
+      map.scenario.rewardTableId = originalRewardTableId;
+    }
   });
 
   it("keeps focused chapter data modules wired through public data barrels", () => {

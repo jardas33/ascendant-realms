@@ -15,12 +15,20 @@ export function validateRewardTables(errors: string[], context: ValidationContex
     if (guaranteedItemIds.length === 0 && weightedItemPool.length === 0) {
       errors.push(`Reward table ${table.id} must include guaranteed items or a weighted item pool.`);
     }
+    if (!table.repeatClearReward) {
+      errors.push(`Reward table ${table.id} needs an explicit repeat-clear reward.`);
+    }
     guaranteedItemIds.forEach((itemId) => validateRewardItemReference(table.id, itemId, errors, context));
+    validateUniqueItemIds(table.id, "deterministic item", table.deterministicItemIds ?? [], errors);
     table.deterministicItemIds?.forEach((itemId) => validateRewardItemReference(table.id, itemId, errors, context));
+    validateUniqueItemIds(table.id, "weighted item", weightedItemPool.map((entry) => entry.itemId), errors);
     weightedItemPool.forEach((entry) => {
       validateRewardItemReference(table.id, entry.itemId, errors, context);
       if (entry.weight <= 0) {
         errors.push(`Reward table ${table.id} has non-positive weight for ${entry.itemId}.`);
+      }
+      if (entry.firstClearOnly && entry.repeatClearOnly) {
+        errors.push(`Reward table ${table.id} marks ${entry.itemId} as both first-clear-only and repeat-clear-only.`);
       }
       entry.mapIds?.forEach((mapId) => {
         if (!MAPS.some((map) => map.id === mapId)) {
@@ -86,6 +94,16 @@ export function validateRivalRewards(errors: string[], context: ValidationContex
     if (!firstDefeat.trophy.label.trim() || !firstDefeat.trophy.description.trim()) {
       errors.push(`Rival reward ${reward.enemyHeroId} trophy needs label and description.`);
     }
+  });
+}
+
+function validateUniqueItemIds(tableId: string, label: string, itemIds: string[], errors: string[]): void {
+  const seen = new Set<string>();
+  itemIds.forEach((itemId) => {
+    if (seen.has(itemId)) {
+      errors.push(`Reward table ${tableId} duplicates ${label} ${itemId}.`);
+    }
+    seen.add(itemId);
   });
 }
 

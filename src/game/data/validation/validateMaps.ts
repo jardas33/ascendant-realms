@@ -166,6 +166,20 @@ function validateMap(map: BattleMapDefinition, errors: string[], context: Valida
       }
     }
   );
+  const enemySpawnBuildingIds = new Set(
+    scenario.buildingSpawns.filter((spawn) => spawn.team === "enemy").map((spawn) => spawn.buildingId)
+  );
+  const playerSpawnBuildingIds = new Set(
+    scenario.buildingSpawns.filter((spawn) => spawn.team === "player").map((spawn) => spawn.buildingId)
+  );
+  [scenario.enemyAI.baseBuildingId, scenario.enemyAI.productionBuildingId].forEach((buildingId) => {
+    if (context.buildingIds.has(buildingId) && !enemySpawnBuildingIds.has(buildingId)) {
+      errors.push(`Map ${map.id} AI references enemy building ${buildingId} that is not spawned for the enemy team.`);
+    }
+  });
+  if (context.buildingIds.has(scenario.enemyAI.attackTargetBuildingId) && !playerSpawnBuildingIds.has(scenario.enemyAI.attackTargetBuildingId)) {
+    errors.push(`Map ${map.id} AI attack target ${scenario.enemyAI.attackTargetBuildingId} is not spawned for the player team.`);
+  }
   if (!context.rewardTableIds.has(scenario.rewardTableId)) {
     errors.push(`Map ${map.id} references missing reward table ${scenario.rewardTableId}.`);
   }
