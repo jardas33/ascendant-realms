@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.4 overnight continuation route-feel surrogate checkpoint
+Last updated: 2026-05-08 v0.4 overnight continuation full-game roadmap checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,6 +24,7 @@ Phase 5 e2e flake hardening: test-only rally wait robustness in `tests/e2e/deep-
 Phase 6 accessibility/readability continuation: copy-only Settings clarifications for colorblind minimap team markers and small-screen command-panel guidance.
 Phase 7 save compatibility audit: added `docs/SAVE_COMPATIBILITY_AUDIT.md` and one narrow unit test preserving valid Chapter 2 selected chapter/node state.
 Phase 8 route-feel surrogate review: added `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`, no code changes, no gameplay changes, no new tests needed.
+Phase 9 full-game roadmap architecture: refreshed `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` with all fifteen future-system planning tracks, including modding/data-driven content, tutorial/onboarding, monetization/packaging, and recommended order.
 ```
 
 Current build/performance numbers:
@@ -98,7 +99,16 @@ git diff --check: PASS.
 
 Phase 8 surrogate read: `watch, not blocked`. Existing telemetry and e2e coverage are strong enough for the requested automated surrogate review. Remaining watch items are subjective feel/readability risks: Cinder Shrine salience, Waystation service scan quality, Aftermath density, Fast Army clear speed, and retinue plus Training Yard II strength. Do not change balance from this surrogate review alone.
 
-Next active phase after this checkpoint: Phase 9 full-game roadmap architecture. This phase is planning only; do not implement future systems.
+Phase 9 verification:
+
+```text
+npm test: PASS, 38 files / 271 tests in 7.16s.
+npm run build: PASS with the known Phaser vendor warning.
+```
+
+Phase 9 planning read: the long-term architecture docs now cover workers/economy, enemy construction, faction expansion, campaign chapter expansion, diplomacy/reputation, tutorial/onboarding, crafting/affix rerolling, asset pipeline, performance, AI personality expansion, procedural/skirmish maps, modding/data-driven content, monetization/packaging, multiplayer feasibility, and the save/content-validation gate. Do not implement these systems from the planning docs alone.
+
+Next active phase after this checkpoint: Phase 10 optional tiny no-gameplay polish backlog. This phase is docs-only unless a future prompt explicitly asks to implement a safe backlog item.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 

@@ -1,6 +1,6 @@
 # Full Game Roadmap
 
-Date: 2026-05-07
+Date: 2026-05-08
 
 Scope: planning only. This roadmap prepares Ascendant Realms for long-term growth into a polished, original fantasy RTS/RPG without adding systems, maps, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad army-management behavior in this checkpoint.
 
@@ -26,7 +26,7 @@ Future work should protect save compatibility, deterministic tests, release-gate
 | v0.7 | Enemy construction prototype | Future | Worker/economy model stable, battle pacing telemetry expanded, no save migration ambiguity. |
 | v0.8 | First fully distinct faction expansion | Future | Faction identity doc, content validation, asset pipeline constraints, and release e2e coverage. |
 | v0.9 | Campaign chapter expansion | Future | Chapter model stable, route-complete UX stable, map/test budget approved. |
-| v1.x | Skirmish, procedural, diplomacy, crafting, and multiplayer investigations | Future | Each system requires its own gate, prototype, and rollback plan. |
+| v1.x | Tutorial hardening, skirmish, procedural, modding, packaging, and multiplayer investigations | Future | Each system requires its own gate, prototype, and rollback plan. |
 
 ## System Expansion Order
 
@@ -38,11 +38,15 @@ Recommended order:
 4. Faction expansion only after economy and enemy behavior can express asymmetry.
 5. Campaign chapter model once route and faction assumptions are stable.
 6. Diplomacy/reputation expansion after campaign state transitions are better versioned.
-7. Crafting/affix rerolling only after item economy and duplicate-prevention rules are audited.
-8. Procedural/skirmish maps after authored map validation is stricter.
-9. AI personality expansion after worker/enemy construction telemetry exists.
-10. Asset pipeline hardening before large content drops.
-11. Multiplayer feasibility last, after deterministic simulation and input/state boundaries are understood.
+7. Tutorial/onboarding improvements after the route-readability baseline is stable.
+8. Crafting/affix rerolling only after item economy and duplicate-prevention rules are audited.
+9. Asset pipeline hardening before large content drops.
+10. Performance passes after each meaningful content expansion, always analyzer-backed.
+11. AI personality expansion after worker/enemy construction telemetry exists.
+12. Procedural/skirmish maps after authored map validation is stricter.
+13. Modding/data-driven content only after strict schemas, ID namespaces, and asset allowlists exist.
+14. Monetization/packaging planning only after the single-player identity is stronger.
+15. Multiplayer feasibility last, after deterministic simulation and input/state boundaries are understood.
 
 ## System Snapshot
 
@@ -60,6 +64,9 @@ Recommended order:
 | AI personalities | Makes enemies more memorable. | Medium-high | Expand current personality data with telemetry-only labels before new orders. |
 | Save migration | Protects existing players and checkpoints. | Very high | Versioned migration tests for no-op current saves and one mock future field. |
 | Performance | Keeps the game responsive as content grows. | Medium-high | One measured optimization at a time, analyzer first, release gate before commit. |
+| Modding/data-driven content | Keeps future content extensible and potentially community-friendly. | High | Internal schema hardening and validation, no public mod import yet. |
+| Tutorial/onboarding | Helps new players learn the current RTS/RPG loop and route boundaries. | Medium | Non-blocking help/reference polish using current first-experience guidance. |
+| Monetization/packaging | Defines how the game could eventually ship without warping design. | Medium-high | Documentation-only packaging options, no code unlocks or paid services. |
 
 ## Content And Lore Direction
 

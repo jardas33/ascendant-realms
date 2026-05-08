@@ -1,6 +1,6 @@
 # Systems Expansion Risk Register
 
-Date: 2026-05-07
+Date: 2026-05-08
 
 Scope: planning only. This register identifies future-system risks and gates for Ascendant Realms. It does not authorize implementation in the current checkpoint.
 
@@ -29,6 +29,9 @@ Scope: planning only. This register identifies future-system risks and gates for
 | AI personality expansion | New personalities can look flavorful but produce unfair or broken battles. | Medium-high | Enemy AI controller, pacing data, telemetry labels, map constraints. | AI tests, simulator profiles, smoke/deep e2e for affected encounters. | `src/game/data/aiPersonalities.ts`, `src/game/ai/*`, `src/game/playtest/*`, `src/game/data/battlePacing.ts`. | Telemetry-only personality label expansion before new tactical behavior. | Do not add broad scouting, counter-builds, or retreat logic before economy/enemy construction gates. |
 | Save migration | Future fields can corrupt existing v0.3/v0.3.1 saves if added casually. | Very high | Save versioning policy, defaults, normalization, import/export tests. | Migration tests for old/current/future mock saves, import/export tests, campaign flow e2e. | `src/game/save/SaveMigrations.ts`, `src/game/save/SaveDefaults.ts`, `src/game/save/SaveNormalization.ts`, `src/game/save/SaveTypes.ts`, `src/game/core/SaveSystem.ts`. | Versioned no-op migration test plus one mock optional future field. | Do not rename existing keys, change reward IDs, or require players to restart saves. |
 | Performance | Content growth can make chunking, boot, e2e runtime, and asset delivery worse. | Medium-high | Bundle analyzer, test lanes, production preview, asset audit. | `npm run build:analyze`, build, smoke/release e2e, simulator, preview smoke. | `vite.config.ts`, `src/game/config.ts`, `src/game/data/contentIndex.ts`, `src/game/scenes/*`, `docs/*`. | One analyzer-backed optimization at a time with before/after numbers. | Do not hide warnings, lazy-load battle/campaign scenes casually, or mix multiple optimizations. |
+| Modding/data-driven content | Untrusted or loosely validated data can break saves, assets, balance, and security assumptions. | High | Strict schemas, ID namespace policy, asset allowlists, save/import trust boundary. | Schema validation, invalid mod rejection, duplicate-ID tests, asset allowlist tests, save/import safety tests. | `src/game/data/validation/*`, `src/game/data/contentIndex.ts`, `src/game/types/*`, `src/game/save/*`, future `src/game/modding/*`, `docs/*`. | Internal schema hardening only, with no public mod import and no runtime code execution. | Do not execute imported scripts, load arbitrary remote assets, mutate saves from mod data, or promise public mod support early. |
+| Tutorial/onboarding | Guidance can become intrusive, brittle, or a parallel campaign if it grows too quickly. | Medium | First-experience guidance, settings/readability work, route-complete copy, input clarity. | Guidance rule tests, smoke e2e for first-run prompts, layout e2e for help/reference surfaces, save tests if dismissal persists. | `src/game/core/FirstExperienceGuidance.ts`, `src/game/scenes/MainMenuScene.ts`, `src/game/scenes/CampaignMapScene.ts`, `src/game/ui/*`, `src/game/save/*`, `tests/e2e/*`. | Non-blocking reference/help copy using current systems. | Do not add a separate tutorial campaign, new maps, mandatory pop-up chains, or hidden save state first. |
+| Monetization/packaging | Shipping plans can distort balance, save shape, release scope, and user trust. | Medium-high | Product positioning, offline package plan, save/export trust, asset licensing policy, platform requirements. | Package/build smoke, save import/export tests, offline boot test if packaged, entitlement-free behavior tests if unlock flags ever exist. | `package.json`, `vite.config.ts`, `src/game/scenes/MainMenuScene.ts`, `src/game/save/*`, release docs, future packaging scripts. | Documentation-only packaging options with no code unlocks or paid services. | Do not add microtransactions, paid APIs, online entitlement checks, pay-to-win progression, or monetization-gated balance. |
 
 ## Cross-System Watch Items
 
@@ -36,8 +39,31 @@ Scope: planning only. This register identifies future-system risks and gates for
 - Enemy construction depends on worker/economy clarity; implementing it first would produce unstable pacing.
 - Faction expansion should not begin as a full roster. It should begin as identity, validation, and one tiny vertical slice.
 - Procedural maps should not become a replacement for authored maps until deterministic validation is strong.
+- Modding should start as internal schema hardening, not public user-imported content.
+- Tutorial/onboarding should use existing guidance surfaces before it becomes a new mode.
+- Monetization/packaging should remain documentation-only until the single-player game identity is stronger.
 - Multiplayer should remain research until battle simulation is deterministic enough to replay from command logs.
 - Performance work should stay measured. The existing Phaser vendor warning is known and should not be hidden as a cosmetic fix.
+
+## Recommended Expansion Order
+
+| Order | System | Why here |
+| --- | --- | --- |
+| 1 | Save migration and content validation | It protects every later persistent field and data contract. |
+| 2 | Workers/economy | It is the first broad RTS foundation that future AI and faction work depend on. |
+| 3 | Enemy construction | It depends on player economy clarity and should not precede it. |
+| 4 | Faction expansion | Asymmetry needs stable economy, AI, validation, and asset boundaries. |
+| 5 | Campaign chapter expansion | New chapters should wait for stable route, faction, and reward assumptions. |
+| 6 | Diplomacy/reputation | It becomes safer once campaign chapter and faction state are clearer. |
+| 7 | Tutorial/onboarding | It can teach the stable loop without creating broad mechanics. |
+| 8 | Crafting/affix rerolling | It should wait for save fixtures and item identity safeguards. |
+| 9 | Asset pipeline | It should precede large content drops and new faction art demands. |
+| 10 | Performance | It repeats after each content expansion and remains analyzer-backed. |
+| 11 | AI personality expansion | It needs worker/enemy construction telemetry before tactical behavior grows. |
+| 12 | Procedural/skirmish maps | It needs stronger authored-map validation and deterministic checks first. |
+| 13 | Modding/data-driven content | It should begin as internal schema hardening before public import. |
+| 14 | Monetization/packaging | It should stay planning-only until the game identity and package target are clearer. |
+| 15 | Multiplayer feasibility | It is last because determinism, networking, and deployment are the highest-risk shift. |
 
 ## Gate Recommendation
 
