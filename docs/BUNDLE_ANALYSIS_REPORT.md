@@ -194,6 +194,8 @@ Not recommended as the immediate next optimization:
 
 Date: 2026-05-07
 
+Continuation confirmation: 2026-05-08. Revalidated the analyzer-backed decision after the bundle-analysis refresh and test/dev hook audit refresh. The selected option remains Option D - no code optimization. The current app chunk is still below Vite's warning threshold, the remaining warning is still isolated to `vendor-phaser`, Asset Gallery remains too small to justify a scene-loading change, and the production hook audit still found intentional small e2e hooks rather than an accidental bundled test suite.
+
 Chosen option: Option D - no code optimization.
 
 Reason:
@@ -290,4 +292,39 @@ Production preview smoke
 PASS: npm run preview -- --host 127.0.0.1 --port 4190 --strictPort.
 PASS: main menu loaded, Prototype v0.3 / Cinderfen Route Baseline copy visible, New Campaign reached Campaign Map, Continue Campaign reached Campaign Map, Skirmish Setup opened, and console errors stayed at 0.
 Note: Browser Use reached the local URL and saw 0 console errors, but its DOM/screenshot surface was blank for this app tab; a Playwright fallback completed the production preview smoke.
+```
+
+Second optimization continuation verification, 2026-05-08:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 9.19s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+Initial background release attempt was stopped after two early test-level timeouts. Both timed-out tests passed on targeted foreground rerun:
+- main menu / info / hero creation / gallery navigation: PASS in 50.6s.
+- stronghold upgrades apply to later battles: PASS in 25.2s.
+Full foreground release rerun: PASS, 59 Playwright tests in 27.4m.
+Slow files: tests/e2e/layout.spec.ts 12.0m and tests/e2e/deep-flow.spec.ts 11.1m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 57901 --strictPort.
+PASS: Browser in-app preview smoke loaded title Ascendant Realms, saw PROTOTYPE V0.3 / Cinderfen Route Baseline main-menu copy, reached Campaign Map through New Campaign, reached Campaign Map through Continue Campaign, opened Skirmish Setup, and saw 0 browser console errors.
+Preview server was stopped after the smoke.
 ```

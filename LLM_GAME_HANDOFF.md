@@ -1,12 +1,51 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-07 v0.4 autonomous goal progress checkpoint handoff refresh
+Last updated: 2026-05-08 v0.4 overnight continuation performance checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
+
+The active overnight continuation is preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. So far it has not added gameplay content, changed balance, changed save format, added maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad army-management systems.
+
+Completed continuation phases so far:
+
+```text
+Phase 0 repository integrity: clean/synced at start, 0 ahead / 0 behind, npm test PASS, npm run build PASS.
+Phase 1 bundle analyzer refresh: committed 5459857 Checkpoint v0.4 bundle analysis.
+Phase 2 test/dev hook audit refresh: committed e393dd5 Checkpoint v0.4 test hook audit.
+Phase 3 analyzer-backed optimization decision: Option D, no code optimization, docs refreshed with current evidence.
+```
+
+Current Phase 3 build/performance numbers:
+
+```text
+npm run build: PASS.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+```
+
+Phase 3 verification:
+
+```text
+npm test: PASS, 38 files / 270 tests in 9.19s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:smoke: PASS, 10 tests in 4.2m.
+npm run test:e2e:release: PASS, 59 tests in 27.4m after targeted transient reruns.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+Production preview smoke: PASS at http://127.0.0.1:57901/ through the in-app Browser, with title Ascendant Realms, PROTOTYPE V0.3 / Cinderfen Route Baseline copy visible, New Campaign and Continue Campaign reaching Campaign Map, Skirmish Setup opening, and browser console errors at 0.
+```
+
+Transient note for the current continuation: a first background `npm run test:e2e:release` attempt was stopped after two early test-level timeouts. The timed-out tests were `main menu, info, hero creation selections, reset state, and gallery navigation work` and `stronghold upgrades spend campaign resources and apply to later battles`. Both passed on targeted foreground rerun, then the full foreground release lane passed. Treat these as slow-run/transient evidence, not a gameplay failure, unless they recur in a normal foreground lane.
+
+Next active phase after this checkpoint: Phase 4, e2e sharding plan/scripts refresh. Preserve all existing release coverage.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 

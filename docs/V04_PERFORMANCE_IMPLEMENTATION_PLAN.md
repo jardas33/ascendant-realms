@@ -4,6 +4,8 @@ Date: 2026-05-06
 
 Scope: original measured implementation plan only. The later implementation update records the single approved first optimization and does not change gameplay, change balance, refactor broad systems, alter scene loading, change data loading, remove test hooks, or adjust chunk warning limits.
 
+Continuation update: on 2026-05-08, the overnight pass revalidated the analyzer-backed second optimization decision with refreshed bundle and hook-audit evidence. The selected option remains Option D - no code optimization. The current app chunk is `assets/index-Bi19pD8P.js` at 436.32 kB / gzip 117.33 kB, Phaser remains isolated in `assets/vendor-phaser-B61OQUcB.js` at 1,481.79 kB / gzip 339.86 kB, CSS is `assets/index-CeqfGaMI.css` at 42.04 kB / gzip 8.74 kB, and the known Vite warning remains the accepted Phaser vendor warning.
+
 ## Current Bundle State
 
 Current production build output from `docs/PERFORMANCE_BUNDLE_AUDIT.md`:
@@ -419,9 +421,9 @@ Before/after bundle numbers:
 | --- | ---: | ---: |
 | JS chunks | 2 | 2 |
 | CSS chunks | 1 | 1 |
-| App JS | `assets/index-TotuX8zG.js` 435.50 kB / gzip 116.99 kB | unchanged |
+| App JS | `assets/index-Bi19pD8P.js` 436.32 kB / gzip 117.33 kB | unchanged |
 | Phaser vendor JS | `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / gzip 339.86 kB | unchanged |
-| CSS | `assets/index-CIXXIuKP.css` 41.86 kB / gzip 8.71 kB | unchanged |
+| CSS | `assets/index-CeqfGaMI.css` 42.04 kB / gzip 8.74 kB | unchanged |
 | Vite warning | Present for `vendor-phaser` | unchanged |
 
 No implementation was made in this pass. The next optimization should be a separately scoped task, most likely either a test-harness build mode for intentional hooks or a build/test content-validation path. Do not combine those with scene lazy loading or data chunk splitting.
@@ -453,4 +455,33 @@ Production preview smoke
 PASS: npm run preview -- --host 127.0.0.1 --port 4190 --strictPort.
 PASS: main menu loaded, Prototype v0.3 / Cinderfen Route Baseline copy visible, New Campaign reached Campaign Map, Continue Campaign reached Campaign Map, Skirmish Setup opened, and browser console errors stayed at 0.
 Note: Browser Use reached the local URL and saw 0 console errors, but its DOM/screenshot surface was blank for this app tab; a Playwright fallback completed the production preview smoke.
+```
+
+Continuation verification on 2026-05-08:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 9.19s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+Initial background release attempt was stopped after two early test-level timeouts. Targeted foreground reruns passed for both timed-out tests, then the full foreground release rerun passed: 59 Playwright tests in 27.4m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+
+Production preview smoke
+PASS: Browser in-app preview smoke at http://127.0.0.1:57901/ loaded the built app, saw PROTOTYPE V0.3 / Cinderfen Route Baseline main-menu copy, reached Campaign Map through New Campaign and Continue Campaign, opened Skirmish Setup, and saw 0 browser console errors.
 ```

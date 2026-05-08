@@ -8,6 +8,8 @@ Update: on 2026-05-06, the first v0.4 performance pass implemented only the appr
 
 Update: on 2026-05-07, the analyzer-backed second optimization decision chose Option D, no code optimization. Asset Gallery is too small to justify a scene-loading change, the hook audit found no accidental large test/dev leakage, and there is no second obvious runtime vendor chunk beyond Phaser.
 
+Update: on 2026-05-08, the overnight continuation revalidated the no-code second optimization decision with refreshed analyzer output and refreshed hook-audit evidence. The current app chunk remains `assets/index-Bi19pD8P.js` at 436.32 kB / gzip 117.33 kB, the Phaser vendor chunk remains `assets/vendor-phaser-B61OQUcB.js` at 1,481.79 kB / gzip 339.86 kB, CSS is `assets/index-CeqfGaMI.css` at 42.04 kB / gzip 8.74 kB, and the known Vite warning remains isolated to `vendor-phaser`.
+
 ## Current Build Output
 
 Command:
@@ -163,6 +165,17 @@ The copied `manual` asset folder is large, around 83.77 MB. This does not trigge
 
 Status: safe for prototype; first v0.4 optimization implemented.
 
+Current continuation production build snapshot:
+
+```text
+dist/index.html                        0.54 kB | gzip:   0.32 kB
+dist/assets/index-CeqfGaMI.css         42.04 kB | gzip:   8.74 kB
+dist/assets/index-Bi19pD8P.js          436.32 kB | gzip: 117.33 kB
+dist/assets/vendor-phaser-B61OQUcB.js  1,481.79 kB | gzip: 339.86 kB
+```
+
+Warning status remains unchanged: the app chunk is below 500 kB, and the Vite warning is still the accepted Phaser vendor warning.
+
 The warning is acceptable for the current frozen v0.3 route baseline and v0.3.1 polish layer because:
 
 - The build passes.
@@ -219,9 +232,9 @@ Before/after numbers for this decision:
 | --- | ---: | ---: |
 | JS chunks | 2 | 2 |
 | CSS chunks | 1 | 1 |
-| App JS | `assets/index-TotuX8zG.js` 435.50 kB / gzip 116.99 kB | unchanged |
+| App JS | `assets/index-Bi19pD8P.js` 436.32 kB / gzip 117.33 kB | unchanged |
 | Phaser vendor JS | `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / gzip 339.86 kB | unchanged |
-| CSS | `assets/index-CIXXIuKP.css` 41.86 kB / gzip 8.71 kB | unchanged |
+| CSS | `assets/index-CeqfGaMI.css` 42.04 kB / gzip 8.74 kB | unchanged |
 | Vite warning | Present for `vendor-phaser` | unchanged |
 
 No gameplay, balance, scene loading, data loading, save behavior, e2e behavior, or warning limit changed.
@@ -306,4 +319,35 @@ Production preview smoke
 PASS: npm run preview -- --host 127.0.0.1 --port 4190 --strictPort.
 PASS: main menu loaded, Prototype v0.3 / Cinderfen Route Baseline copy visible, New Campaign reached Campaign Map, Continue Campaign reached Campaign Map, Skirmish Setup opened, and browser console errors stayed at 0.
 Note: Browser Use reached the local URL and saw 0 console errors, but its DOM/screenshot surface was blank for this app tab; a Playwright fallback completed the production preview smoke. Preview server was stopped after the smoke.
+```
+
+2026-05-08 continuation verification:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 9.19s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+Initial background release attempt was stopped after two early test-level timeouts. Both timed-out tests passed on targeted foreground rerun, and the full foreground release rerun passed: 59 Playwright tests in 27.4m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 57901 --strictPort.
+PASS: Browser in-app preview smoke loaded title Ascendant Realms, saw PROTOTYPE V0.3 / Cinderfen Route Baseline main-menu copy, reached Campaign Map through New Campaign, reached Campaign Map through Continue Campaign, opened Skirmish Setup, and saw 0 browser console errors.
+Preview server was stopped after the smoke.
 ```
