@@ -43,7 +43,8 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-06 explicit lane split | 10 smoke / 59 release | 5.4m smoke / 29.0m release | New `test:e2e:smoke` fast lane and `test:e2e:release` full gate; slow files still `layout.spec.ts` and `deep-flow.spec.ts`. |
 | 2026-05-08 overnight continuation | 10 smoke / 59 release / 49 shard1 / 10 shard2 | 4.2m smoke / 27.4m release / 23.0m shard1 / 4.2m shard2 | Existing 2-shard scripts reverified. Shard 1 remains uneven because it carries `deep-flow.spec.ts` and `layout.spec.ts`. |
 | 2026-05-08 tutorial playable shell | 12 smoke / 61 release | 5.4m smoke / 32.1m release | Added Tutorial / Proving Grounds completion and exit coverage. The completion smoke has a local 75s timeout because it drives the full 12-step tutorial path. |
-| 2026-05-08 tutorial readability review | 12 smoke / 25 layout / 65 expected release | 5.0m smoke / 13.1m layout | Added four Tutorial / Proving Grounds overlay layout checks across desktop, tablet, mobile-tall, and mobile-short. Full release should be refreshed in the final gate. |
+| 2026-05-08 tutorial readability review | 12 smoke / 25 layout / 65 expected release | 5.0m smoke / 13.1m layout | Added four Tutorial / Proving Grounds overlay layout checks across desktop, tablet, mobile-tall, and mobile-short. Followed by the final full-gate row below. |
+| 2026-05-08 final tutorial shell gate | 12 smoke / 65 release / 53 shard1 / 12 shard2 | 5.2m smoke / 28.5m release / 24.4m shard1 / 4.9m shard2 | Full final gate after tutorial shell documentation. Slow files remain layout and deep-flow. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
@@ -332,4 +333,22 @@ PASS: 12 Playwright tests in 5.0m.
 
 npm run test:e2e:layout
 PASS: 25 Playwright tests in 13.1m.
+```
+
+Final tutorial-shell gate, 2026-05-08:
+
+```text
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.2m.
+
+npm run test:e2e:release
+PASS: 65 Playwright tests in 28.5m.
+Slow files: tests/e2e/layout.spec.ts 12.3m and tests/e2e/deep-flow.spec.ts 11.2m.
+
+npm run test:e2e:release:shard1
+PASS: 53 Playwright tests in 24.4m.
+Slow files: tests/e2e/layout.spec.ts 12.7m and tests/e2e/deep-flow.spec.ts 11.4m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in 4.9m.
 ```

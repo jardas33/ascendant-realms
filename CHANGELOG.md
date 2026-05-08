@@ -19,13 +19,17 @@ This checkpoint implements the first playable Tutorial / Proving Grounds shell o
 
 ### Verification
 
-- Phase 12 report verification passed.
+- Phase 12 report verification and final full gate passed.
 - `npm test`: passed with 42 test files and 315 tests.
 - `npm run build`: passed with the known Phaser vendor large-chunk warning.
 - `npm run validate:content`: passed.
-- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 4.8m.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.2m.
+- `npm run test:e2e:release`: passed with 65 Playwright tests in 28.5m.
+- `npm run test:e2e:release:shard1`: passed with 53 Playwright tests in 24.4m.
+- `npm run test:e2e:release:shard2`: passed with 12 Playwright tests in 4.9m.
 - `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes and no telemetry diff.
 - `git diff --check`: passed.
+- Production preview smoke: passed at `http://127.0.0.1:57916/`; title, main menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 
 ### Next
 

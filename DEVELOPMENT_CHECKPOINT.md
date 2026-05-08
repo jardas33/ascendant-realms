@@ -1,6 +1,72 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 18:11:29 -04:00
+Updated: 2026-05-08 19:21:40 -04:00
+
+## Final Tutorial / Proving Grounds Playable Shell Gate - 2026-05-08 19:21:40 -04:00
+
+Scope: final verification and handoff for the first playable Tutorial / Proving Grounds shell. This pass preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate. It did not add maps, units, factions, rewards, save-version changes, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Completed phases:
+
+- Phase 0 repository integrity through Phase 12 release report completed and committed.
+- Phase 13 optional polish skipped intentionally; the next changes should come from human tutorial feel review.
+- Phase 14 final full verification completed.
+
+Final verification results:
+
+```text
+npm test
+PASS: 42 test files, 315 tests, 11.45s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-BArZgVc-.js, 459.27 kB minified / 123.49 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-EaFx5BCM.css, 43.77 kB minified / 9.02 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.2m.
+
+npm run test:e2e:release
+PASS: 65 Playwright tests in 28.5m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.3m and tests/e2e/deep-flow.spec.ts 11.2m.
+
+npm run test:e2e:release:shard1
+PASS: 53 Playwright tests in 24.4m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.7m and tests/e2e/deep-flow.spec.ts 11.4m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in 4.9m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 57916 --strictPort
+PASS: Browser smoke at http://127.0.0.1:57916/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: Tutorial / Proving Grounds launched and exited without crashing.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened.
+PASS: browser console errors stayed at 0.
+```
+
+Preview note: an initial ad hoc headless launch without the project's Chromium SwiftShader args reported `Framebuffer Unsupported`. The preview smoke was rerun with the same Chromium args used by Playwright, passed with zero console errors, and the preview server was stopped afterward.
+
+Recommended next milestone: human-play Tutorial / Proving Grounds, then do only small tutorial polish around copy, overlay hierarchy, completion clarity, and layout spacing unless a verified bug requires a narrow fix.
 
 ## Tutorial / Proving Grounds Playable Shell Report Checkpoint - 2026-05-08 18:11:29 -04:00
 

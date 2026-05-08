@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell report added
+Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell final gate green
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -164,6 +164,55 @@ Phase 12 Tutorial release report:
 - Current recommended next work after the final full gate is human-paced Tutorial / Proving Grounds review and small tutorial polish, not content expansion.
 - No gameplay behavior, save behavior, rewards, campaign progression, map, unit, faction, balance, worker, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external asset, or broad system changed in this phase.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes with no telemetry diff.
+
+Phase 13 optional polish:
+
+- Skipped intentionally. The shell is green, and the readability review recommends human tutorial feel review before copy/layout changes.
+
+Phase 14 final full verification:
+
+- `npm test` PASS, 42 files / 315 tests.
+- `npm run build` PASS with the known Phaser vendor chunk warning. App JS `assets/index-BArZgVc-.js`, 459.27 kB / gzip 123.49 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-EaFx5BCM.css`, 43.77 kB / gzip 9.02 kB.
+- `npm run validate:content` PASS.
+- `npm run test:e2e:smoke` PASS, 12 tests in 5.2m.
+- `npm run test:e2e:release` PASS, 65 tests in 28.5m; slow files were `tests/e2e/layout.spec.ts` 12.3m and `tests/e2e/deep-flow.spec.ts` 11.2m.
+- `npm run test:e2e:release:shard1` PASS, 53 tests in 24.4m; slow files were `tests/e2e/layout.spec.ts` 12.7m and `tests/e2e/deep-flow.spec.ts` 11.4m.
+- `npm run test:e2e:release:shard2` PASS, 12 tests in 4.9m.
+- `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; telemetry regenerated with no git diff.
+- `git diff --check` PASS.
+- Production preview smoke PASS at `http://127.0.0.1:57916/`: title `Ascendant Realms`, `Prototype v0.3` / `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors. An initial ad hoc headless preview launch without the project's Chromium SwiftShader args reported `Framebuffer Unsupported`; rerunning with the project Playwright args passed, and the preview server was stopped.
+- Current git status before final handoff commit: `## main...origin/main [ahead 12]`.
+
+Tutorial goal commits created so far:
+
+```text
+3e4446e Checkpoint tutorial playable shell plan
+a51fba5 Checkpoint tutorial metadata validation
+49ede36 Checkpoint tutorial launch surface
+8dfc4a1 Checkpoint tutorial scene shell
+1d4dac0 Checkpoint tutorial guided objective model
+b6e8061 Checkpoint tutorial UI overlay
+ad1df87 Checkpoint tutorial playable shell
+eb67b50 Checkpoint tutorial e2e coverage
+cb5e5f4 Checkpoint tutorial save persistence audit
+103e6c5 Checkpoint tutorial content validation gate
+c58f3f5 Checkpoint tutorial readability surrogate review
+485b43e Checkpoint tutorial playable shell report
+```
+
+Remaining tutorial risks:
+
+- Human-paced tutorial length and feel are not yet verified.
+- Mobile-short overlay is width-safe in Playwright but still needs human readability review.
+- No-reward completion is explicit in copy and tests, but players may click through it quickly.
+- Release/shard lanes are green but still slow; shard 1 carries the layout and deep-flow-heavy side.
+- Known Phaser vendor chunk warning remains.
+
+Next recommended long-running goal:
+
+- Human-play Tutorial / Proving Grounds and do a small tutorial polish pass only where real play shows friction.
+- Allowed next work should be copy tightening, overlay hierarchy, completion clarity, layout spacing, and targeted bug fixes.
+- Continue postponing rewards, campaign integration, save persistence, new maps, new units, new factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, and broad systems.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

@@ -2,7 +2,7 @@
 
 Date: 2026-05-07
 
-Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests and the full release lane from 59 to 61 tests without changing the shard scripts. The Phase 11 tutorial readability pass added four layout tests, so the expected full release lane is now 65 tests before the final full-gate rerun.
+Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests, and the Phase 11 tutorial readability pass added four layout tests. The final tutorial-shell gate now reports 65 release tests.
 
 Scope: plan and minimal script implementation for CI sharding of the full Playwright release gate. This pass does not change tests, remove coverage, change gameplay, change UI behavior, change selectors, or change Playwright configuration.
 
@@ -35,10 +35,10 @@ Recent recorded runtimes:
 
 | Lane | Tests | Runtime | Notes |
 | --- | ---: | ---: | --- |
-| Smoke/default | 12 | 5.4m in the latest tutorial-shell run | Good frequent iteration lane, but not a release substitute. Includes the first full tutorial completion smoke. |
-| Release gate | 65 expected | 32.1m in the latest 61-test tutorial-shell release rerun before Phase 11 layout additions | Suitable for freeze/checkpoint gates but slow for CI feedback. Refresh in the final full gate. |
-| Release shard 1 | 49 | 23.0m in the latest pre-tutorial local verification run | Contains the deep-flow and layout-heavy side of the split; useful in CI, not a local speedup when run sequentially. Rerun after tutorial-shell hardening to refresh. |
-| Release shard 2 | 10 | 4.2m in the latest pre-tutorial local verification run | Previously mapped to the smoke side of the split. Expected to grow after the tutorial smoke additions. |
+| Smoke/default | 12 | 5.2m in the latest final tutorial-shell gate | Good frequent iteration lane, but not a release substitute. Includes the first full tutorial completion smoke. |
+| Release gate | 65 | 28.5m in the latest final tutorial-shell gate | Suitable for freeze/checkpoint gates but slow for CI feedback. |
+| Release shard 1 | 53 | 24.4m in the latest final tutorial-shell gate | Contains the deep-flow and layout-heavy side of the split; useful in CI, not a local speedup when run sequentially. |
+| Release shard 2 | 12 | 4.9m in the latest final tutorial-shell gate | Currently maps to the smoke side of the split. |
 | Layout/responsive | 25 | 13.1m in the latest tutorial readability run | Slowest file family along with deep-flow. |
 | Deep-flow | 28 | 10.8-11.1m inside the latest shard/release runs | Slowest file family along with layout. |
 

@@ -187,3 +187,39 @@ npm run playtest:sim
 PASS: 255 simulated runs across 85 campaign battle nodes.
 Telemetry regenerated with no git diff.
 ```
+
+## Final Gate Verification
+
+```text
+npm test
+PASS: 42 test files, 315 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor warning.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.2m.
+
+npm run test:e2e:release
+PASS: 65 Playwright tests in 28.5m.
+
+npm run test:e2e:release:shard1
+PASS: 53 Playwright tests in 24.4m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in 4.9m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+Telemetry regenerated with no git diff.
+
+git diff --check
+PASS.
+
+Production preview smoke
+PASS: http://127.0.0.1:57916/
+PASS: title Ascendant Realms, Prototype v0.3 / Cinderfen Route Baseline copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors.
+```
