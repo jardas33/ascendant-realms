@@ -2,6 +2,8 @@
 
 Date: 2026-05-07
 
+Continuation refresh: 2026-05-08. Re-ran source and production-bundle hook scans after the v0.4 accessibility/readability polish and bundle-analysis refresh. This refresh updates emitted asset names, sizes, and explicit hook string counts only; no gameplay, balance, save format, e2e semantics, or runtime behavior changed.
+
 ## Scope
 
 This audit checks whether the current v0.4 technical baseline accidentally ships test-only or dev-only surfaces in the production browser bundle. It is documentation-only: no gameplay, balance, save format, e2e semantics, or runtime behavior changed.
@@ -27,11 +29,11 @@ Inputs reviewed:
 
 ## Bundle Scan
 
-Current production app chunk from the prior bundle analysis:
+Current production app chunk from the latest bundle analysis:
 
-- App chunk: `dist/assets/index-TotuX8zG.js`, 435.50 kB, gzip 116.99 kB
+- App chunk: `dist/assets/index-Bi19pD8P.js`, 436.32 kB, gzip 117.33 kB
 - Phaser vendor chunk: `dist/assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB, gzip 339.86 kB
-- CSS: `dist/assets/index-CIXXIuKP.css`, 41.86 kB, gzip 8.71 kB
+- CSS: `dist/assets/index-CeqfGaMI.css`, 42.04 kB, gzip 8.74 kB
 
 Targeted production bundle string scan:
 
@@ -43,6 +45,17 @@ Targeted production bundle string scan:
 | `PlaytestRunner` / `ScriptedBattlePlaytest` / `playtest` | 0 | 0 | Deterministic simulator code is not in the production app chunk. |
 | `chapter2-helpers` / `deep_e2e` / `e2e_seed` | 0 | 0 | E2E helper and seed literals are not in the production app chunk. |
 | `vitest` / `describe(` | 0 | 0 | Unit-test framework code is not in the production app chunk. |
+| `waitForTimeout` | 0 | 0 | Arbitrary Playwright timeout helper does not appear in production. |
+
+Explicit hook-name scan of `dist/assets/index-Bi19pD8P.js`:
+
+| Pattern | Matches | Read |
+| --- | ---: | --- |
+| `forceBattleVictory` | 2 | Present only through the intentional BattleScene hook type/registry. |
+| `captureSite` | 36 | Mostly normal gameplay capture-site strings plus the intentional hook; not an e2e helper import. |
+| `scoutEnemyHero` | 2 | Present only through the intentional BattleScene hook type/registry. |
+| `defeatEnemyHero` | 2 | Present only through the intentional BattleScene hook type/registry. |
+| `grantSelectedUnitVeterancyXp` | 2 | Present only through the intentional BattleScene hook type/registry. |
 
 ## Classification
 
@@ -96,3 +109,19 @@ This should be treated as a dedicated technical-hardening task because it touche
 For the current v0.4 technical baseline, do not change runtime behavior yet. Document the intentional production-included test surfaces and keep the suite stable.
 
 Recommended next single optimization, if chosen after this audit: create a dedicated test-harness build mode that gates `__ASCENDANT_TEST_HOOKS__` first. That is safer than deleting hooks because it preserves Playwright coverage while allowing the normal production build to become cleaner.
+
+## Continuation Verification
+
+2026-05-08 refresh verification:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 6.94s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.3m.
+```
