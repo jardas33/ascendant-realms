@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 40 test files, 298 tests
+PASS: 42 test files, 314 tests
 ```
 
 2. Standalone content validation:
@@ -32,7 +32,7 @@ Expected current prototype result:
 PASS: Ascendant Realms content validation passed.
 ```
 
-This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, and future expansion metadata.
+This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, and future expansion metadata.
 
 3. Production build:
 
@@ -45,9 +45,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-Caz7zKca.js, 445.42 kB / gzip 119.69 kB
+- app JS chunk: assets/index-BArZgVc-.js, 459.27 kB / gzip 123.49 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB
+- CSS chunk: assets/index-EaFx5BCM.css, 43.77 kB / gzip 9.02 kB
 ```
 
 Known warning:
@@ -67,10 +67,10 @@ npm run test:e2e:smoke
 Expected current prototype result:
 
 ```text
-PASS: 10 Playwright tests
+PASS: 12 Playwright tests
 ```
 
-This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible.
+This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible.
 
 5. Full browser release-gate suite:
 
@@ -81,10 +81,10 @@ npm run test:e2e:release
 Expected current prototype result:
 
 ```text
-PASS: 59 Playwright tests
+PASS: 61 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 27-29 minutes on this machine.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 32 minutes on this machine after adding the playable tutorial smoke path.
 
 6. Optional CI sharded release gate:
 
@@ -95,14 +95,14 @@ npm run test:e2e:release:shard2
 
 Both shards must pass to equal the full release gate. Keep `npm run test:e2e:release` as the canonical one-command local release check; the shard scripts are mainly for CI matrix jobs where they can run in parallel. If run sequentially on a local machine, the total runtime may not be better than the full suite and reports are split by shard.
 
-Latest local shard verification, 2026-05-08:
+Latest local shard verification before the playable tutorial shell, 2026-05-08:
 
 ```text
 Shard 1: passed, 49 Playwright tests in 23.9m.
 Shard 2: passed, 10 Playwright tests in 4.4m.
 ```
 
-The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
+The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow. Rerun both shards after tutorial-shell release hardening to refresh the post-tutorial counts.
 
 7. Optional focused e2e lanes:
 

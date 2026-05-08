@@ -118,6 +118,16 @@ Phase 7 First playable tutorial flow:
 - The first full smoke attempt timed out while `npm run playtest:sim` was running concurrently, and a targeted rerun showed the tutorial completion test needed more than the default 35s local budget. The tutorial completion smoke now has a local 75s timeout; the full lane passes sequentially.
 - Verification: focused tutorial completion/exit smoke PASS, 2 tests in 1.1m; `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 6.5m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 - Current build output after playable tutorial flow: app JS `assets/index-BArZgVc-.js`, 459.27 kB / gzip 123.49 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-EaFx5BCM.css`, 43.77 kB / gzip 9.02 kB.
+- Commit: `ad1df87 Checkpoint tutorial playable shell`.
+
+Phase 8 Tutorial e2e and layout coverage:
+
+- Kept the full tutorial completion path in `tests/e2e/smoke.spec.ts` because the lane remains acceptable at 12 tests in 5.4m on the latest Phase 8 rerun.
+- Split the tutorial Exit path into its own short smoke test so the completion test does not spend time relaunching the shell after completing all twelve steps.
+- Added a local 75s timeout to the tutorial completion smoke only; the test drives the full guided flow and took 38.9s in focused verification.
+- Verified the full release lane after the tutorial smoke additions: `npm run test:e2e:release` PASS, 61 Playwright tests in 32.1m. Slow files: `deep-flow.spec.ts` 13.9m, `layout.spec.ts` 12.9m, `smoke.spec.ts` 5.0m.
+- Phase 8 verification: `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `npm run test:e2e:release` PASS, 61 tests in 32.1m; `git diff --check` PASS.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, `docs/E2E_RUNTIME_AUDIT.md`, and `docs/E2E_CI_SHARDING_PLAN.md` with the 12-test smoke lane, 61-test release lane, tutorial coverage, and current runtime expectations.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

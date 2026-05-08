@@ -9,12 +9,12 @@ Source files in `tests/e2e`:
 | File | Role | Lines | Generated Playwright tests |
 | --- | --- | ---: | ---: |
 | `tests/e2e/chapter2-helpers.ts` | Shared Chapter 2 seeding, save reading, route launching, and test-only victory fast-forward helpers | 571 | 0 |
-| `tests/e2e/deep-flow.spec.ts` | Release-style gameplay, save, battle, results, HUD, minimap, retinue, rival, and campaign progression flows | 2,211 | 28 |
+| `tests/e2e/deep-flow.spec.ts` | Release-style gameplay, save, battle, results, HUD, minimap, retinue, rival, and campaign progression flows | 2,241 | 28 |
 | `tests/e2e/layout.spec.ts` | Responsive reachability/readability, battle HUD layout, Cinderfen layout, Ashen Outpost HUD/fog checks | 711 | 21 |
 | `tests/e2e/shared-helpers.ts` | General e2e setup helpers for fresh menu boot, hero creation, seeded default campaign saves, and continuing seeded campaigns | 117 | 0 |
-| `tests/e2e/smoke.spec.ts` | Default browser smoke, settings, campaign launch, Chapter 2 smoke, skirmish, inventory | 683 | 10 |
+| `tests/e2e/smoke.spec.ts` | Default browser smoke, tutorial completion/exit, settings, campaign launch, Chapter 2 smoke, skirmish, inventory | 925 | 12 |
 
-`npx playwright test --list` currently reports 59 tests in 3 spec files. `chapter2-helpers.ts` is not a spec file.
+`npx playwright test --list` currently reports 61 tests in 3 spec files. `chapter2-helpers.ts` is not a spec file.
 
 ## Explicit Test Lanes
 
@@ -22,10 +22,10 @@ The v0.4 test-lane pass keeps the existing file-level coverage intact and adds n
 
 | Lane | Command | Files | Current tests | Intended use |
 | --- | --- | --- | ---: | --- |
-| Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | 10 | Frequent browser iteration. Covers boot, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention flow, skirmish, difficulty, and inventory smoke. |
+| Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | 12 | Frequent browser iteration. Covers boot, Tutorial / Proving Grounds completion/exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention flow, skirmish, difficulty, and inventory smoke. |
 | Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | 21 | Targeted responsive and mobile/readability checks. Keep available for UI/layout work and release review. |
 | Deep-flow | `npm run test:e2e:deep` | `tests/e2e/deep-flow.spec.ts` | 28 | Release-critical full-flow gameplay, save, Results, HUD, minimap, retinue, rival, first-battle, and BattleScene result wiring checks. |
-| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | all e2e specs | 59 | Full checkpoint/freeze gate. This preserves the previous complete suite. |
+| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | all e2e specs | 61 | Full checkpoint/freeze gate. This preserves the previous complete suite and adds the tutorial shell smoke path. |
 
 This split uses simple file-level scripts rather than tags, grep, projects, sharding, or extra workers. That keeps the classification easy to inspect and avoids changing Playwright's current single-worker stability posture.
 
@@ -42,6 +42,7 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-05 safe helper pass | 59 | 28.6m | Same test count and coverage shape; slow files: `layout.spec.ts` 12.4m, `deep-flow.spec.ts` 11.5m. |
 | 2026-05-06 explicit lane split | 10 smoke / 59 release | 5.4m smoke / 29.0m release | New `test:e2e:smoke` fast lane and `test:e2e:release` full gate; slow files still `layout.spec.ts` and `deep-flow.spec.ts`. |
 | 2026-05-08 overnight continuation | 10 smoke / 59 release / 49 shard1 / 10 shard2 | 4.2m smoke / 27.4m release / 23.0m shard1 / 4.2m shard2 | Existing 2-shard scripts reverified. Shard 1 remains uneven because it carries `deep-flow.spec.ts` and `layout.spec.ts`. |
+| 2026-05-08 tutorial playable shell | 12 smoke / 61 release | 5.4m smoke / 32.1m release | Added Tutorial / Proving Grounds completion and exit coverage. The completion smoke has a local 75s timeout because it drives the full 12-step tutorial path. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
@@ -87,14 +88,16 @@ This file is slow because it multiplies expensive flows across viewport matrices
 
 This is useful coverage, but it is the most obvious area to separate default smoke from release-gate depth.
 
-### Chapter 2 Smoke Flows
+### Smoke Flows
 
-`smoke.spec.ts` uses shared Chapter 2 helpers and already avoids replaying Chapter 1. The two longest current smoke flows are still broad:
+`smoke.spec.ts` uses shared Chapter 2 helpers and already avoids replaying Chapter 1. The tutorial shell now adds one full no-reward completion smoke and one lightweight exit smoke. The two longest Chapter 2 smoke flows are still broad:
 
 - `post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards`
 - `post-Crossing campaign launches Cinderfen Watch and persists completion`
 
 They are valuable default smoke coverage because the current release baseline is the frozen Cinderfen route. They should stay in the default suite until a smaller default/release split exists.
+
+The tutorial completion path is also valuable default smoke coverage for now because it is the first onboarding vertical slice and verifies no save, no XP, no campaign reward, and no campaign progression pollution. If the smoke lane grows materially beyond the current 6-7 minute range, move the deeper tutorial completion path to deep/release coverage and keep only launch/exit in smoke.
 
 ## Remaining Duplicated Setup
 
@@ -223,7 +226,7 @@ The first v0.4 e2e runtime action is now complete at the script/documentation le
 - `test:e2e:smoke` is the fast default lane and runs only `smoke.spec.ts`.
 - `test:e2e:layout` isolates responsive/mobile/readability checks.
 - `test:e2e:deep` isolates the release-critical deep gameplay flows.
-- `test:e2e:release` runs the full 59-test suite with line reporter.
+- `test:e2e:release` runs the full 61-test suite with line reporter.
 - `test:e2e` still works and remains the full suite under the existing Playwright convention.
 
 Coverage preservation notes:
@@ -300,4 +303,18 @@ PASS: 10 Playwright tests in 4.2m.
 
 npm run playtest:sim
 PASS: 255 deterministic runs across 85 campaign battle nodes.
+```
+
+Tutorial playable-shell e2e update, 2026-05-08:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts -g "tutorial entry launches|tutorial exit returns"
+PASS: 2 Playwright tests in 1.1m.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.4m.
+
+npm run test:e2e:release
+PASS: 61 Playwright tests in 32.1m.
+Slow files: tests/e2e/deep-flow.spec.ts 13.9m, tests/e2e/layout.spec.ts 12.9m, tests/e2e/smoke.spec.ts 5.0m.
 ```
