@@ -1,12 +1,39 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.5 save/content validation gate complete
+Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell planning started
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
+
+Mission: implement the first playable Tutorial / Proving Grounds shell using existing content only while preserving the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content/determinism safety gate. Do not add campaign rewards, tutorial rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external generated assets, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 40 files / 298 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-Caz7zKca.js, 445.42 kB / gzip 119.69 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 Tutorial playable shell implementation plan:
+
+- Added `docs/TUTORIAL_PLAYABLE_SHELL_PLAN.md`.
+- Selected a modest main-menu Tutorial / Proving Grounds launch surface, independent of campaign progression and saves.
+- Chose a small tutorial battle launch path that reuses `BattleScene` systems with explicit tutorial/no-reward handling rather than duplicating the RTS loop.
+- Planned reuse of the existing `first_claim` map, transient existing hero data, existing units/buildings/abilities, and a no-reward completion surface.
+- Planned a linear guided flow for camera/selection/movement/capture/resources/Command Hall/Barracks/Militia/rally/hero ability/safe pressure/finish, with permission to postpone fragile beats rather than add content.
+- Planned validation, unit/view-model, e2e, save-pollution, and layout/readability coverage.
+- No source code, gameplay behavior, launch path, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, or broad system changed in this phase.
+- Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 
