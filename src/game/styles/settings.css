@@ -39,6 +39,20 @@
   grid-template-columns: minmax(130px, 1fr) auto;
 }
 
+.settings-control small,
+.settings-toggle small,
+.settings-note {
+  grid-column: 1 / -1;
+  margin: -4px 0 0;
+  color: #cfd7c4;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.settings-note {
+  margin: 12px 0 0;
+}
+
 .settings-control input[type="range"] {
   width: 100%;
   accent-color: #74d3f2;

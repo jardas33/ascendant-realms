@@ -99,7 +99,7 @@ export class SettingsScene extends Phaser.Scene {
         <section class="menu-panel extra-wide settings-panel">
           <p class="eyebrow">Settings</p>
           <h1>Audio & Accessibility</h1>
-          <p class="menu-copy">Tune volume, motion, visibility, and interface scale for this local profile.</p>
+          <p class="menu-copy">Tune volume, motion, visibility, interface scale, and battle controls for this local profile.</p>
           <div class="status-box" data-testid="settings-status">${escapeHtml(this.status)}</div>
           <div class="settings-layout">
             <section class="settings-section">
@@ -110,10 +110,34 @@ export class SettingsScene extends Phaser.Scene {
             </section>
             <section class="settings-section">
               <h2>Accessibility</h2>
-              ${this.renderToggle("Reduced Motion", "reducedMotionEnabled", this.settings.reducedMotionEnabled, "settings-reduced-motion")}
-              ${this.renderToggle("Floating Text", "floatingTextEnabled", this.settings.floatingTextEnabled, "settings-floating-text")}
-              ${this.renderToggle("Screen Shake", "screenShakeEnabled", this.settings.screenShakeEnabled, "settings-screen-shake")}
-              ${this.renderToggle("Colorblind Minimap Palette", "colorblindMinimapPalette", this.settings.colorblindMinimapPalette, "settings-colorblind-minimap")}
+              ${this.renderToggle(
+                "Reduced Motion",
+                "reducedMotionEnabled",
+                this.settings.reducedMotionEnabled,
+                "settings-reduced-motion",
+                "Quiets non-essential motion and keeps battle feedback calmer."
+              )}
+              ${this.renderToggle(
+                "Combat Floating Text",
+                "floatingTextEnabled",
+                this.settings.floatingTextEnabled,
+                "settings-floating-text",
+                "Shows damage and healing numbers above units."
+              )}
+              ${this.renderToggle(
+                "Screen Shake Feedback",
+                "screenShakeEnabled",
+                this.settings.screenShakeEnabled,
+                "settings-screen-shake",
+                "Adds impact shake during battle hits and warnings."
+              )}
+              ${this.renderToggle(
+                "Colorblind Minimap Palette",
+                "colorblindMinimapPalette",
+                this.settings.colorblindMinimapPalette,
+                "settings-colorblind-minimap",
+                "Uses stronger blue and orange unit markers on the minimap."
+              )}
               ${this.renderScaleSlider()}
               ${this.renderFogOverride()}
             </section>
@@ -121,7 +145,9 @@ export class SettingsScene extends Phaser.Scene {
               <h2>Keyboard Reference</h2>
               <div class="control-grid">
                 <span>Left click / drag</span><strong>Select units</strong>
-                <span>Right click ground</span><strong>Move or set rally point</strong>
+                <span>Shift + left click</span><strong>Add to selection</strong>
+                <span>Right click ground</span><strong>Move units or set rally point</strong>
+                <span>Right click enemy</span><strong>Attack target</strong>
                 <span>Shift+A then right click</span><strong>Attack-move</strong>
                 <span>H / Space</span><strong>Select or center hero</strong>
                 <span>1, 2, 3</span><strong>Cast hero abilities</strong>
@@ -129,6 +155,7 @@ export class SettingsScene extends Phaser.Scene {
                 <span>Esc</span><strong>Cancel placement or clear selection</strong>
                 <span>WASD / arrows</span><strong>Pan camera</strong>
               </div>
+              <p class="settings-note">On small screens, use the command panel buttons first; these keys are the fastest fallback for battle control.</p>
             </section>
           </div>
           <div class="menu-actions row">
@@ -157,15 +184,17 @@ export class SettingsScene extends Phaser.Scene {
         <span>UI Scale</span>
         <input data-testid="settings-ui-scale" data-setting="uiScale" type="range" min="0.85" max="1.25" step="0.05" value="${this.settings.uiScale}" />
         <strong>${Math.round(this.settings.uiScale * 100)}%</strong>
+        <small>Scales menus, route panels, and the battle HUD together.</small>
       </label>
     `;
   }
 
-  private renderToggle(label: string, key: keyof SaveSettingsData, value: boolean, testId: string): string {
+  private renderToggle(label: string, key: keyof SaveSettingsData, value: boolean, testId: string, hint?: string): string {
     return `
       <label class="settings-toggle">
         <span>${escapeHtml(label)}</span>
         <input data-testid="${testId}" data-setting="${String(key)}" type="checkbox" ${value ? "checked" : ""} />
+        ${hint ? `<small>${escapeHtml(hint)}</small>` : ""}
       </label>
     `;
   }
@@ -173,13 +202,17 @@ export class SettingsScene extends Phaser.Scene {
   private renderFogOverride(): string {
     return `
       <label class="settings-control">
-        <span>Fog of War</span>
+        <span>Fog of War Override</span>
         <select data-testid="settings-fog-override" data-setting="fogEnabledOverride">
           ${(["default", "enabled", "disabled"] as FogEnabledOverride[])
-            .map((value) => `<option value="${value}" ${value === this.settings.fogEnabledOverride ? "selected" : ""}>${titleCase(value)}</option>`)
+            .map(
+              (value) =>
+                `<option value="${value}" ${value === this.settings.fogEnabledOverride ? "selected" : ""}>${fogOverrideLabel(value)}</option>`
+            )
             .join("")}
         </select>
-        <strong>${titleCase(this.settings.fogEnabledOverride)}</strong>
+        <strong>${fogOverrideLabel(this.settings.fogEnabledOverride)}</strong>
+        <small>Use map default for normal play; override only for visibility or testing.</small>
       </label>
     `;
   }
@@ -193,8 +226,14 @@ export class SettingsScene extends Phaser.Scene {
   }
 }
 
-function titleCase(value: string): string {
-  return value.charAt(0).toUpperCase() + value.slice(1).replaceAll("_", " ");
+function fogOverrideLabel(value: FogEnabledOverride): string {
+  if (value === "default") {
+    return "Use map default";
+  }
+  if (value === "enabled") {
+    return "Always on";
+  }
+  return "Always off";
 }
 
 function escapeHtml(value: string): string {
