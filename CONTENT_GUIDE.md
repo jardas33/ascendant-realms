@@ -2,6 +2,18 @@
 
 Most prototype content lives in `src/game/data`. Change one small thing at a time, run the game, and keep a backup before large balance edits.
 
+## Validation Gates
+
+Run this after any data edit before launching broad e2e or simulator checks:
+
+```bash
+npm run validate:content
+```
+
+It runs the same content validator used by the pure test suite without opening the game UI. It should fail with direct messages for duplicate IDs, missing references, unsafe campaign graph links, invalid reward references, broken map objective references, and Cinderfen-specific modifier leakage.
+
+Follow it with `npm test` for save fixture coverage, pure rules, view models, and simulator unit coverage. Use e2e and `npm run playtest:sim` when the edited content can affect campaign flow, battle launch, rewards, rival state, or route balance.
+
 ## Add A New Unit
 
 1. Open `src/game/data/units.ts`.
@@ -10,7 +22,7 @@ Most prototype content lives in `src/game/data`. Change one small thing at a tim
 4. Edit name, cost, HP, damage, range, speed, armor, train time, color, and XP value.
 5. To train it from a building, add the unit `id` to that building's `trainOptions` in `src/game/data/buildings.ts`.
 6. Add `prerequisites` if it should require a completed building or researched upgrade.
-7. Run `npm run test` to make sure the new ID is valid everywhere.
+7. Run `npm run validate:content` and `npm run test` to make sure the new ID is valid everywhere.
 
 ## Tune Unit Veterancy
 
@@ -53,7 +65,7 @@ Current V1 behavior:
 6. Make sure the assigned map spawns `enemy_commander` for that difficulty, or the named hero will have no live commander slot to replace.
 7. If the hero should count for a secondary objective, point the map objective at `enemy_commander` and use node/map copy for the named commander.
 8. Update `src/game/data/contentValidation.test.ts`, `BattleLaunchRequest` tests, Playwright commander coverage, and playtest simulator telemetry expectations.
-9. Run `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, and `npm run playtest:sim`.
+9. Run `npm run validate:content`, `npm test`, `npm run build`, `npm run test:e2e -- --reporter=line`, and `npm run playtest:sim`.
 
 Current Enemy Hero V1 assignments:
 
@@ -95,7 +107,7 @@ Current Enemy Hero V1 assignments:
 4. Set name, description, cost, `researchTimeSeconds`, prerequisites, and effects.
 5. Add the upgrade `id` to a building's `upgradeOptions` in `src/game/data/buildings.ts`.
 6. Supported effect types currently modify unit stats or hero mana regeneration. New effect types need code in the battle systems.
-7. Run `npm run test`.
+7. Run `npm run validate:content` and `npm run test`.
 
 ## Add A New Hero Class
 

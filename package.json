@@ -10,6 +10,7 @@
     "build:analyze": "tsc -p tsconfig.json && vite build --mode analyze",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
+    "validate:content": "tsx tools/validateContent.ts",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts --reporter=line",
     "test:e2e:layout": "playwright test tests/e2e/layout.spec.ts --reporter=line",

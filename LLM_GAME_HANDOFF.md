@@ -78,6 +78,15 @@ Phase 6 stricter content validation rules:
 - Verification: `npm test` PASS, 40 files / 290 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run test:e2e:smoke` PASS, 10 tests in 4.5m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
 - Current build output after validator code change: app JS `assets/index-BMQ_4xND.js`, 439.61 kB / gzip 118.07 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
 
+Phase 7 content validation script:
+
+- Added `tools/validateContent.ts`, a standalone Node/tsx CLI that runs the same `validateContent()` path used by the pure test suite and prints direct validation errors without opening the game UI.
+- Added `npm run validate:content`.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, and `CONTENT_GUIDE.md` so content editors and release runners use the standalone gate before broader tests, e2e, or simulator checks.
+- No validator behavior, content data, gameplay, balance, save behavior, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 290 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.5m; `git diff --check` PASS.
+- Commit: `Checkpoint v0.5 content validation script`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.

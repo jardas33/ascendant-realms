@@ -17,10 +17,24 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 38 test files, 271 tests
+PASS: 40 test files, 290 tests
 ```
 
-2. Production build:
+2. Standalone content validation:
+
+```bash
+npm run validate:content
+```
+
+Expected current prototype result:
+
+```text
+PASS: Ascendant Realms content validation passed.
+```
+
+This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, and future expansion metadata.
+
+3. Production build:
 
 ```bash
 npm run build
@@ -31,9 +45,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-90WGArXv.js, 436.35 kB / gzip 117.34 kB
-- Phaser vendor chunk: assets/vendor-phaser-*.js, about 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-*.css, about 42.04 kB / gzip 8.74 kB
+- app JS chunk: assets/index-BMQ_4xND.js, 439.61 kB / gzip 118.07 kB
+- Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
+- CSS chunk: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB
 ```
 
 Known warning:
@@ -44,7 +58,7 @@ Some chunks are larger than 500 kB after minification.
 
 This Vite warning is expected for the current Phaser vendor chunk and is not a release blocker unless a later optimization explicitly targets lazy scene/data loading or warning-policy cleanup. The app chunk is below the default 500 kB threshold after the v0.4 vendor split; the warning remains because Phaser itself is still large.
 
-3. Fast default browser smoke lane:
+4. Fast default browser smoke lane:
 
 ```bash
 npm run test:e2e:smoke
@@ -58,7 +72,7 @@ PASS: 10 Playwright tests
 
 This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible.
 
-4. Full browser release-gate suite:
+5. Full browser release-gate suite:
 
 ```bash
 npm run test:e2e:release
@@ -72,7 +86,7 @@ PASS: 59 Playwright tests
 
 `npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 27-29 minutes on this machine.
 
-5. Optional CI sharded release gate:
+6. Optional CI sharded release gate:
 
 ```bash
 npm run test:e2e:release:shard1
@@ -90,7 +104,7 @@ Shard 2: passed, 10 Playwright tests in 4.2m.
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
 
-6. Optional focused e2e lanes:
+7. Optional focused e2e lanes:
 
 ```bash
 npm run test:e2e:layout
@@ -99,7 +113,7 @@ npm run test:e2e:deep
 
 `test:e2e:layout` runs responsive/mobile/readability coverage. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
 
-7. Deterministic playtest simulator:
+8. Deterministic playtest simulator:
 
 ```bash
 npm run playtest:sim

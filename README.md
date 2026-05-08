@@ -57,17 +57,18 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.4 overnight checkpoint status, 2026-05-08: build passes. App JS is about 436.35 kB / 117.34 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 42.04 kB / 8.74 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.5 gate checkpoint status, 2026-05-08: build passes. App JS is about 439.61 kB / 118.07 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 42.04 kB / 8.74 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
 ```bash
+npm run validate:content
 npm run test
 ```
 
-Run this after changing data files. It checks the level curve, hero progression rules, building placement rules, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, and AI plans reference valid IDs.
+Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
 
-Latest v0.4 overnight checkpoint status, 2026-05-08: `npm test` passes with 38 test files and 271 tests, including Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
+Latest v0.5 gate checkpoint status, 2026-05-08: `npm run validate:content` passes, and `npm test` passes with 40 test files and 290 tests, including save fixture migration coverage, Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
 
 ## Browser E2E Test Lanes
 
