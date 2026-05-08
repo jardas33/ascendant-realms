@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds metadata validation upgraded
+Last updated: 2026-05-08 Tutorial / Proving Grounds launch placeholder added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -47,6 +47,21 @@ Phase 2 tutorial metadata validation:
 - No launch UI, scene, gameplay behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
 - Verification: focused `npm test -- src/game/data/contentValidation.test.ts` PASS, 26 tests; `npm test` PASS, 40 files / 299 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS.
 - Current build output after metadata upgrade: app JS `assets/index-C_lFSGkR.js`, 450.59 kB / gzip 121.15 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
+- Commit: `a51fba5 Checkpoint tutorial metadata validation`.
+
+Phase 3 Tutorial launch surface:
+
+- Added a visible `Tutorial` button to `src/game/scenes/MainMenuScene.ts`.
+- The button opens a safe, reversible Proving Grounds information panel instead of starting gameplay in this phase.
+- The panel explains the intended learning scope: camera, selection, movement, capture, building, training, rally points, and hero basics.
+- The panel explicitly says the playable tutorial is coming next and will not grant rewards or campaign progress.
+- Added a `Back to Menu` action that re-renders the main menu without leaving the scene.
+- Added small CSS in `src/game/styles/main-menu.css` for the tutorial info panel.
+- Added Playwright smoke coverage in `tests/e2e/smoke.spec.ts` proving the Tutorial entry is visible, clicking it does not open BattleScene or Skirmish Setup, it does not create localStorage save data, and returning to the menu works.
+- Updated `README.md` so the smoke lane count and coverage list include the new Tutorial placeholder.
+- No playable tutorial, battle launch, scene, gameplay behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
+- Verification: `npm test` PASS, 40 files / 299 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 11 tests in 4.9m.
+- Current build output after launch placeholder: app JS `assets/index-ffv06-io.js`, 451.27 kB / gzip 121.34 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-D-nj7b-a.css`, 42.21 kB / gzip 8.79 kB.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

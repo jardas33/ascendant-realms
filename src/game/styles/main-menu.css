@@ -67,3 +67,22 @@
 .menu-panel.extra-wide {
   width: min(1180px, 100%);
 }
+
+.tutorial-info {
+  display: grid;
+  gap: 9px;
+}
+
+.tutorial-info strong {
+  color: #f6e49a;
+}
+
+.tutorial-info p {
+  margin: 0;
+}
+
+.tutorial-info button {
+  width: fit-content;
+  min-width: 132px;
+  margin-top: 4px;
+}

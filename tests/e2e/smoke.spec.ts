@@ -65,11 +65,32 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByText("v0.2 Prototype - Campaign, Stronghold, Affixes, Veterancy and Retinue")).toHaveCount(0);
     await expect(page.getByText("Prototype v0.1", { exact: true })).toHaveCount(0);
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
+    await expect(page.getByTestId("menu-tutorial")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
     await expect(page.getByTestId("menu-inventory")).toBeVisible();
     await expect(page.getByTestId("menu-asset-gallery")).toBeVisible();
     await expect(page.getByTestId("menu-settings")).toBeVisible();
     await expect(page.getByTestId("menu-reset-save")).toBeVisible();
+  });
+
+  test("tutorial entry opens a safe placeholder and returns to menu", async ({ page }) => {
+    await openFreshMainMenu(page);
+
+    await page.getByTestId("menu-tutorial").click();
+    await expect(page.getByTestId("tutorial-info-panel")).toBeVisible();
+    await expect(page.getByTestId("tutorial-info-panel")).toContainText(
+      "Learn camera, selection, movement, capture, building, training, rally points, and hero basics."
+    );
+    await expect(page.getByTestId("tutorial-info-panel")).toContainText("Playable tutorial coming next");
+    await expect(page.getByTestId("battle-hud")).toHaveCount(0);
+    await expect(page.getByTestId("skirmish-setup")).toHaveCount(0);
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
+
+    await page.getByTestId("tutorial-info-back").click();
+    await expect(page.getByTestId("tutorial-info-panel")).toHaveCount(0);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
+    await expect(page.getByTestId("menu-skirmish")).toBeVisible();
   });
 
   test("settings screen persists accessibility options", async ({ page }) => {

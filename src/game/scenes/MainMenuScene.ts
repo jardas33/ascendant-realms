@@ -69,6 +69,12 @@ export class MainMenuScene extends Phaser.Scene {
         SaveSystem.reset();
         this.render();
       }
+      if (action === "tutorial") {
+        this.render(false, true);
+      }
+      if (action === "menu-home") {
+        this.render();
+      }
       if (action === "settings") {
         this.scene.start(SCENE_KEYS.settings);
       }
@@ -81,7 +87,7 @@ export class MainMenuScene extends Phaser.Scene {
     this.render();
   }
 
-  private render(showInfo = false): void {
+  private render(showInfo = false, showTutorialInfo = false): void {
     const save = SaveSystem.load();
     const hasSave = Boolean(save && !SaveSystem.isSettingsOnlySave(save));
     const hasAnySave = Boolean(save);
@@ -102,6 +108,7 @@ export class MainMenuScene extends Phaser.Scene {
           <div class="menu-actions">
             <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
             <button data-testid="menu-continue-campaign" data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
+            <button data-testid="menu-tutorial" data-menu-action="tutorial">Tutorial</button>
             <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
             <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
             <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
@@ -112,6 +119,16 @@ export class MainMenuScene extends Phaser.Scene {
           ${
             showInfo
               ? `<div class="info-box">Original prototype inspired by classic RTS/RPG hybrids. Normal units gain ranks during battle; selected surviving Seasoned or better veterans can be saved to the Retinue Camp after campaign victories, then persist into future campaign battles. Retinue death is permanent in V1. Uses local manual art when files exist, then falls back to placeholders. No copyrighted assets, names, factions, maps, music, or API image calls are included.</div>`
+              : ""
+          }
+          ${
+            showTutorialInfo
+              ? `<div class="info-box tutorial-info" data-testid="tutorial-info-panel">
+                  <strong>Proving Grounds</strong>
+                  <p>Learn camera, selection, movement, capture, building, training, rally points, and hero basics.</p>
+                  <p>Playable tutorial coming next. This training path will not grant rewards or campaign progress.</p>
+                  <button data-testid="tutorial-info-back" data-menu-action="menu-home">Back to Menu</button>
+                </div>`
               : ""
           }
         </section>
