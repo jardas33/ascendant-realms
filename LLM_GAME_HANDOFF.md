@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds overlay added
+Last updated: 2026-05-08 Tutorial / Proving Grounds playable flow added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -105,6 +105,19 @@ Phase 6 Tutorial UI overlay:
 - No automatic step progression, full tutorial completion flow, gameplay balance change, campaign reward, tutorial reward, save field, save version, map, unit, faction, campaign progression, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
 - Verification: focused overlay/model tests PASS, 9 tests; `npm test` PASS, 42 files / 311 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; focused tutorial smoke PASS, 1 test in 24.1s; `npm run test:e2e:smoke` PASS, 11 tests in 6.0m.
 - Current build output after tutorial overlay: app JS `assets/index-BJCK4qGY.js`, 456.57 kB / gzip 122.91 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-EaFx5BCM.css`, 43.77 kB / gzip 9.02 kB.
+
+Phase 7 First playable tutorial flow:
+
+- Added linear tutorial advancement to `BattleScene` using the existing `TutorialStepModel` view model and live battle state signals.
+- The tutorial now advances through Camera Controls, Select Hero, Move Hero, Capture Crown Shrine, Gather Resources, Select Command Hall, Build Barracks, Train Militia, Set Rally Point, Use Hero Ability, Hold Safe Pressure, and Finish Training.
+- The overlay now shows `Next Objective` for completed non-final steps and `Complete Tutorial` on the final step.
+- Completion returns directly to the main menu because the tutorial has no reward or campaign state to show in Results.
+- Kept tutorial completion non-persistent: no save field, no save-version bump, no campaign node completion, no hero-save write, no localStorage save creation, no XP, no items, no campaign resources, no retinue/rival/trophy state.
+- Prevented rewards-disabled battle launches from awarding live hero XP or unit veterancy XP on kills.
+- Added smoke coverage for the full twelve-step tutorial path, no-reward/no-save/no-XP assertions, and a separate Exit Tutorial path.
+- The first full smoke attempt timed out while `npm run playtest:sim` was running concurrently, and a targeted rerun showed the tutorial completion test needed more than the default 35s local budget. The tutorial completion smoke now has a local 75s timeout; the full lane passes sequentially.
+- Verification: focused tutorial completion/exit smoke PASS, 2 tests in 1.1m; `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 6.5m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+- Current build output after playable tutorial flow: app JS `assets/index-BArZgVc-.js`, 459.27 kB / gzip 123.49 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-EaFx5BCM.css`, 43.77 kB / gzip 9.02 kB.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

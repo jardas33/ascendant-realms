@@ -5,7 +5,7 @@ export const TUTORIALS: TutorialDefinition[] = [
     id: "proving_grounds_basics",
     title: "Tutorial / Proving Grounds",
     description:
-      "Scaffolded optional onboarding path for existing camera, selection, movement, capture, building, training, rally, hero ability, safe pressure, and no-reward completion. This metadata is not launchable yet.",
+      "Playable optional onboarding path for existing camera, selection, movement, capture, building, training, rally, hero ability, safe pressure, and no-reward completion.",
     status: "playable",
     launchMode: "battle",
     mapId: "first_claim",
@@ -165,7 +165,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "finish",
         title: "Finish Training",
         description: "End the tutorial without campaign rewards, hero XP, items, or campaign node completion.",
-        instruction: "Finish the Proving Grounds and return to the main menu.",
+        instruction: "Training complete. Return to the main menu; no rewards or campaign progress were granted.",
         objectiveType: "finish",
         requiredAction: "finish",
         hint: "Training completion is non-persistent for the first shell."

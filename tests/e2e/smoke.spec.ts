@@ -54,6 +54,175 @@ async function readDifficultyBattleState(page: Page): Promise<{
   });
 }
 
+async function expectTutorialObjective(page: Page, title: string, progressText: string): Promise<void> {
+  await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+  await expect(page.getByTestId("tutorial-objective")).toContainText(title);
+  await expect(page.getByTestId("tutorial-progress")).toContainText(progressText);
+}
+
+async function advanceCompletedTutorialStep(page: Page, nextTitle: string, nextProgressText: string): Promise<void> {
+  await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 10_000 });
+  await page.getByTestId("tutorial-next").click();
+  await expectTutorialObjective(page, nextTitle, nextProgressText);
+}
+
+async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Record<string, unknown> | null> {
+  return page.evaluate((targetStepId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+
+    const refresh = () => {
+      scene.update(performance.now(), 16);
+      scene.refreshBattleHud?.(0);
+    };
+
+    if (targetStepId === "select_hero") {
+      scene.selectionSystem.setSelection([scene.hero]);
+      refresh();
+      return { selectedHero: true };
+    }
+
+    if (targetStepId === "move_hero") {
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.hero.setPosition(scene.activeMap.scenario.heroSpawn.x + 86, scene.activeMap.scenario.heroSpawn.y - 8);
+      scene.hero.moveTarget = undefined;
+      scene.cameraSystem.centerOn(scene.hero.position);
+      refresh();
+      return { heroX: scene.hero.position.x, heroY: scene.hero.position.y };
+    }
+
+    if (targetStepId === "capture_crown_shrine") {
+      return window.__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine") ?? null;
+    }
+
+    if (targetStepId === "gather_crowns") {
+      const beforeCrowns = scene.resources.player.crowns;
+      for (let index = 0; index < 7; index += 1) {
+        scene.resourceSystem.update(1, scene.captureSites, scene.units);
+      }
+      if (scene.resources.player.crowns <= beforeCrowns) {
+        scene.resources.player.crowns = beforeCrowns + 30;
+      }
+      refresh();
+      return { beforeCrowns, afterCrowns: scene.resources.player.crowns };
+    }
+
+    if (targetStepId === "select_command_hall") {
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Missing Command Hall.");
+      }
+      scene.selectionSystem.setSelection([commandHall]);
+      scene.cameraSystem.centerOn(commandHall.position);
+      refresh();
+      return { selectedBuilding: commandHall.definition.id };
+    }
+
+    if (targetStepId === "build_barracks") {
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Missing Command Hall for Barracks placement.");
+      }
+      scene.resources.player.crowns = Math.max(scene.resources.player.crowns, 500);
+      scene.resources.player.stone = Math.max(scene.resources.player.stone, 500);
+      const points = [
+        { x: commandHall.position.x + 170, y: commandHall.position.y - 90 },
+        { x: commandHall.position.x + 180, y: commandHall.position.y + 40 },
+        { x: commandHall.position.x + 50, y: commandHall.position.y - 150 },
+        { x: commandHall.position.x + 230, y: commandHall.position.y - 15 }
+      ];
+      for (const point of points) {
+        scene.buildingSystem.startPlacement("barracks", { anchor: commandHall.position, resources: scene.resources.player });
+        scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
+        if (scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
+          const barracks = scene.buildings.find(
+            (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+          );
+          if (!barracks) {
+            throw new Error("Barracks placement succeeded but no Barracks exists.");
+          }
+          scene.buildingSystem.update(barracks.constructionTimeSeconds + 1);
+          scene.selectionSystem.setSelection([barracks]);
+          refresh();
+          return { builtBuilding: barracks.definition.id, completed: barracks.isCompleted() };
+        }
+      }
+      scene.buildingSystem.cancelPlacement();
+      throw new Error("Could not place Barracks for tutorial smoke.");
+    }
+
+    if (targetStepId === "train_militia") {
+      const barracks = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive && building.isCompleted()
+      );
+      if (!barracks) {
+        throw new Error("Missing completed Barracks.");
+      }
+      scene.resources.player.crowns = Math.max(scene.resources.player.crowns, 300);
+      scene.resources.player.iron = Math.max(scene.resources.player.iron, 120);
+      scene.selectionSystem.setSelection([barracks]);
+      if (!scene.trainingSystem.queueTraining(barracks, "militia", scene.resources.player)) {
+        throw new Error("Militia training did not queue.");
+      }
+      scene.trainingSystem.update(8, scene.buildings);
+      refresh();
+      return { trainedUnitIds: [...scene.runtime.stats.trainedUnitIds] };
+    }
+
+    if (targetStepId === "set_barracks_rally") {
+      const barracks = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+      );
+      if (!barracks) {
+        throw new Error("Missing Barracks for rally point.");
+      }
+      const point = { x: barracks.position.x + 220, y: barracks.position.y - 40 };
+      scene.selectionSystem.setSelection([barracks]);
+      scene.setRallyPoint(point, [barracks]);
+      refresh();
+      return { rallyPoint: barracks.rallyPoint };
+    }
+
+    if (targetStepId === "use_rally_banner") {
+      scene.selectionSystem.setSelection([scene.hero]);
+      const cast = scene.abilitySystem.castAbility(scene.hero, "rally_banner", scene.selectionSystem.getSelected());
+      refresh();
+      return { cast, cooldown: scene.hero.abilityCooldowns.rally_banner, mana: scene.hero.mana };
+    }
+
+    if (targetStepId === "hold_safe_pressure") {
+      const beforeHeroXp = scene.hero.xp;
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.id === "raider" && unit.alive);
+      if (!enemy) {
+        throw new Error("Missing Raider for tutorial pressure step.");
+      }
+      enemy.setPosition(scene.hero.position.x + 28, scene.hero.position.y + 8);
+      const wasAlive = enemy.alive;
+      enemy.takeDamage(enemy.maxHp + enemy.armor + 9999);
+      if (wasAlive && !enemy.alive) {
+        scene.handleKill(scene.hero, enemy);
+        enemy.destroyView();
+        scene.cleanupDeadEntities();
+      }
+      refresh();
+      return {
+        beforeHeroXp,
+        afterHeroXp: scene.hero.xp,
+        runtimeXp: scene.runtime.stats.xpGained,
+        unitsKilled: scene.runtime.stats.unitsKilled
+      };
+    }
+
+    throw new Error(`Unsupported tutorial step helper: ${targetStepId}`);
+  }, stepId);
+}
+
 test.describe("Ascendant Realms browser smoke flows", () => {
   test("main menu boots", async ({ page }) => {
     await openFreshMainMenu(page);
@@ -74,13 +243,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("tutorial entry launches a no-reward shell and returns to menu", async ({ page }) => {
+    test.setTimeout(75_000);
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await expect(page.getByTestId("tutorial-objective")).toContainText("Camera Controls");
-    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12");
+    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
+    await expect(page.getByTestId("tutorial-next")).toContainText("Next Objective");
     const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
     const viewport = page.viewportSize();
     expect(overlayBox).not.toBeNull();
@@ -112,11 +283,55 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
-    await page.getByTestId("tutorial-exit").click();
+    await advanceCompletedTutorialStep(page, "Select Hero", "Step 2 of 12");
+    await completeTutorialSceneStep(page, "select_hero");
+    await advanceCompletedTutorialStep(page, "Move Hero", "Step 3 of 12");
+    await completeTutorialSceneStep(page, "move_hero");
+    await advanceCompletedTutorialStep(page, "Capture Crown Shrine", "Step 4 of 12");
+    await completeTutorialSceneStep(page, "capture_crown_shrine");
+    await advanceCompletedTutorialStep(page, "Gather Resources", "Step 5 of 12");
+    await completeTutorialSceneStep(page, "gather_crowns");
+    await advanceCompletedTutorialStep(page, "Select Command Hall", "Step 6 of 12");
+    await completeTutorialSceneStep(page, "select_command_hall");
+    await advanceCompletedTutorialStep(page, "Build Barracks", "Step 7 of 12");
+    const built = await completeTutorialSceneStep(page, "build_barracks");
+    expect(built).toMatchObject({ builtBuilding: "barracks", completed: true });
+    await advanceCompletedTutorialStep(page, "Train Militia", "Step 8 of 12");
+    const trained = await completeTutorialSceneStep(page, "train_militia");
+    expect(trained?.trainedUnitIds).toContain("militia");
+    await advanceCompletedTutorialStep(page, "Set Rally Point", "Step 9 of 12");
+    const rally = await completeTutorialSceneStep(page, "set_barracks_rally");
+    expect(rally?.rallyPoint).toBeTruthy();
+    await advanceCompletedTutorialStep(page, "Use Hero Ability", "Step 10 of 12");
+    const ability = await completeTutorialSceneStep(page, "use_rally_banner");
+    expect(ability).toMatchObject({ cast: true });
+    await advanceCompletedTutorialStep(page, "Hold Safe Pressure", "Step 11 of 12");
+    const pressure = await completeTutorialSceneStep(page, "hold_safe_pressure");
+    expect(pressure).toMatchObject({
+      afterHeroXp: 0,
+      runtimeXp: 0
+    });
+    expect(Number(pressure?.unitsKilled ?? 0)).toBeGreaterThanOrEqual(1);
+    await advanceCompletedTutorialStep(page, "Finish Training", "Step 12 of 12: complete");
+    await expect(page.getByTestId("tutorial-instruction")).toContainText("no rewards or campaign progress");
+    await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
+    await page.getByTestId("tutorial-next").click();
     await expect(page.getByTestId("main-menu")).toBeVisible();
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
+  });
+
+  test("tutorial exit returns to menu without saving", async ({ page }) => {
+    await openFreshMainMenu(page);
+
+    await page.getByTestId("menu-tutorial").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await page.getByTestId("tutorial-exit").click();
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
   });
 
   test("settings screen persists accessibility options", async ({ page }) => {

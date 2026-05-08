@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: design plus first playable shell and overlay. The current Tutorial / Proving Grounds path defines validated metadata and launches a no-reward shell on existing First Claim content with a lightweight objective overlay, but it does not yet implement automatic step progression, full tutorial completion, new maps, new units, rewards, save fields, or persisted completion.
+Status: design plus first playable shell. The current Tutorial / Proving Grounds path defines validated metadata and launches a no-reward shell on existing First Claim content with a lightweight objective overlay, linear step progression, and a non-persistent completion path. It still does not add new maps, new units, rewards, save fields, persisted completion, or campaign progression.
 
 ## 1. Purpose
 
@@ -124,7 +124,7 @@ Phase B: Metadata only, optional later.
 - Implemented in Phase 13 as `src/game/data/tutorials.ts`, `src/game/types/TutorialTypes.ts`, and `src/game/data/validation/validateTutorials.ts`.
 - Metadata includes `id`, `title`, `description`, `status`, and planned step definitions.
 - Validation checks unique IDs, valid status, valid step types, and optional references.
-- No playable launch path exists.
+- At that metadata-only phase, no playable launch path existed.
 - No save fields were added.
 
 Phase C: Shell only.
@@ -139,13 +139,15 @@ Phase C: Shell only.
 
 Phase D: First guided objective.
 
-- Teach selection, movement, and capture on existing data.
+- Implemented as the same linear overlay model used by the playable shell.
+- Teach camera/readiness, selection, movement, and capture on existing data.
 - Keep prompts short and non-blocking.
 - Add focused unit/view-model tests and one smoke e2e.
 
 Phase E: Full tutorial completion.
 
-- Add build, train, rally, ability, small pressure, victory, and results steps.
+- Implemented as a no-reward completion path that returns directly to the main menu rather than normal campaign Results.
+- Add build, train, rally, ability, small pressure, and finish steps.
 - Keep it optional and clearly separate from the frozen Cinderfen route.
 
 ## 6. Tests
@@ -172,7 +174,7 @@ E2E tutorial completion:
 - Player can train Militia.
 - Player can set rally point.
 - Player can cast one ability.
-- Player can finish tutorial and reach Results or a completion panel.
+- Player can finish tutorial and return to the main menu without save pollution.
 
 No break to campaign/skirmish:
 
@@ -197,11 +199,12 @@ Validation should fail before UI exposes a broken tutorial.
 
 Current metadata/runtime status:
 
-- `proving_grounds_basics` is `playable` as a shell.
+- `proving_grounds_basics` is `playable` as the first onboarding shell.
 - It is selectable from the main menu through the Tutorial button.
 - It launches existing `first_claim` battle content in tutorial mode with rewards disabled.
-- It shows the first guided objective overlay.
-- It does not yet advance through or complete the full step sequence.
+- It shows a guided objective overlay with Next Objective and Complete Tutorial actions.
+- It advances through camera, hero selection, hero movement, Crown Shrine capture, resource income, Command Hall selection, Barracks construction, Militia training, rally point, Rally Banner, safe pressure, and finish steps.
+- It returns to the main menu instead of campaign Results because there are no rewards to show and no campaign state to apply.
 - It does not grant rewards.
 - It does not persist progress.
 
@@ -234,14 +237,15 @@ False confidence:
 ## 9. Future Implementation Phases
 
 1. Docs only.
-2. Tutorial metadata and validation, no launch path.
-3. Tutorial scene/mode shell or battle setup shell, no rewards and no save change.
-4. First guided objective: selection, movement, capture.
-5. Construction/training/rally objective.
-6. Hero ability and small enemy pressure objective.
-7. Tutorial completion and results path.
-8. Telemetry and e2e hardening.
-9. Human readability pass.
+1. Docs only. Completed.
+2. Tutorial metadata and validation, no launch path. Completed.
+3. Tutorial scene/mode shell or battle setup shell, no rewards and no save change. Completed.
+4. First guided objective: selection, movement, capture. Completed inside the playable shell.
+5. Construction/training/rally objective. Completed inside the playable shell.
+6. Hero ability and small enemy pressure objective. Completed inside the playable shell.
+7. Tutorial completion path. Completed as a direct return to main menu with no rewards.
+8. Telemetry and e2e hardening. Future work.
+9. Human readability pass. Future work.
 
 ## Non-Negotiables
 

@@ -78,7 +78,14 @@ import type { HeroSaveData } from "../save/SaveTypes";
 import type { SaveSettingsData } from "../save/SaveTypes";
 import { FloatingText } from "../ui/FloatingText";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
-import { createTutorialStepViewModel, firstTutorialStepId, type TutorialStepViewModel } from "../tutorial/TutorialStepModel";
+import {
+  advanceTutorialStep,
+  createTutorialStepViewModel,
+  firstTutorialStepId,
+  type TutorialCompletionSignals,
+  type TutorialStepViewModel
+} from "../tutorial/TutorialStepModel";
+import type { TutorialDefinition } from "../core/GameTypes";
 import { AudioManager } from "../systems/AudioManager";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
@@ -160,6 +167,7 @@ export class BattleScene extends Phaser.Scene {
   private statusTimer = 4;
   private tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
   private tutorialStepId?: string;
+  private tutorialDefeatedUnitIds = new Set<string>();
   private commandHallWarningCooldown = 0;
   private minimapPings: MinimapPing[] = [];
   private nextMinimapPingId = 1;
@@ -274,6 +282,7 @@ export class BattleScene extends Phaser.Scene {
     this.statusTimer = 4;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
+    this.tutorialDefeatedUnitIds = new Set<string>();
     this.commandHallWarningCooldown = 0;
     this.minimapPings = [];
     this.nextMinimapPingId = 1;
@@ -338,6 +347,7 @@ export class BattleScene extends Phaser.Scene {
       findWorldEntityAt: (point) => this.findWorldEntityAt(point),
       centerCameraFromMinimap: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
+      advanceTutorialStep: () => this.advanceTutorialStep(),
       toggleFogDebug: () => this.toggleFogDebug(),
       getTechState: (team) => this.getTechState(team),
       isUpgradeResearched: (team, upgradeId) => this.isUpgradeResearched(team, upgradeId),
@@ -697,17 +707,22 @@ export class BattleScene extends Phaser.Scene {
       } else if (target instanceof Unit) {
         this.runtime.recordUnitKilled();
         this.completeSecondaryObjective("defeat_unit", target.definition.id, target.position);
+        if (this.launch.request.mode === "tutorial") {
+          this.tutorialDefeatedUnitIds.add(target.definition.id);
+        }
         if (target.enemyHeroId) {
           this.runtime.recordEnemyHeroDefeated(target.enemyHeroId, target.enemyHeroName, this.runtime.elapsedSeconds);
         }
       }
     }
-    if (target.team !== "player" && killer instanceof Unit && this.isUnitVeterancyEligible(killer)) {
+    if (!this.launch.request.rewardsDisabled && target.team !== "player" && killer instanceof Unit && this.isUnitVeterancyEligible(killer)) {
       killer.veterancy = recordUnitVeterancyKill(killer.veterancy);
       const xpValue = target instanceof Unit || target instanceof Building ? target.definition.xpValue : 0;
       this.awardUnitVeterancyXp(killer, getUnitVeterancyXpForKill(xpValue));
     }
-    this.xpSystem.awardForKill(killer, target);
+    if (!this.launch.request.rewardsDisabled) {
+      this.xpSystem.awardForKill(killer, target);
+    }
   }
 
   private applyEnemyHeroDamage(source: Unit, target: BaseEntity, amount: number): void {
@@ -1026,12 +1041,83 @@ export class BattleScene extends Phaser.Scene {
     if (this.launch.request.mode !== "tutorial") {
       return undefined;
     }
-    const tutorial = TUTORIALS.find((entry) => entry.id === this.launch.request.sourceId) ?? TUTORIALS[0];
+    const tutorial = this.activeTutorial();
     const stepId = this.tutorialStepId ?? firstTutorialStepId(tutorial);
     if (!stepId) {
       return undefined;
     }
-    return createTutorialStepViewModel(tutorial, stepId);
+    return createTutorialStepViewModel(tutorial, stepId, this.createTutorialCompletionSignals(tutorial, stepId));
+  }
+
+  private activeTutorial(): TutorialDefinition {
+    return TUTORIALS.find((entry) => entry.id === this.launch.request.sourceId) ?? TUTORIALS[0];
+  }
+
+  private createTutorialCompletionSignals(tutorial: TutorialDefinition, stepId?: string): TutorialCompletionSignals {
+    const step = tutorial.steps.find((entry) => entry.id === stepId);
+    const selected = this.selectionSystem?.getSelected() ?? [];
+    const movedDistance = this.hero
+      ? Phaser.Math.Distance.Between(
+          this.hero.position.x,
+          this.hero.position.y,
+          this.activeMap.scenario.heroSpawn.x,
+          this.activeMap.scenario.heroSpawn.y
+        )
+      : 0;
+
+    return {
+      acknowledged: step?.requiredAction === "readInstructions",
+      heroSelected: selected.some((entity) => entity === this.hero || entity instanceof Hero),
+      heroMoved: movedDistance >= 48,
+      capturedSiteIds: this.captureSites
+        .filter((site) => site.owner === "player")
+        .map((site) => site.definition.id),
+      resourceAmounts: {
+        crowns: this.resources.player.crowns - this.activeMap.scenario.startingResources.player.crowns,
+        stone: this.resources.player.stone - this.activeMap.scenario.startingResources.player.stone,
+        iron: this.resources.player.iron - this.activeMap.scenario.startingResources.player.iron,
+        aether: this.resources.player.aether - this.activeMap.scenario.startingResources.player.aether
+      },
+      selectedBuildingIds: selected
+        .filter((entity): entity is Building => entity instanceof Building)
+        .map((building) => building.definition.id),
+      completedBuildingIds: this.buildings
+        .filter((building) => building.alive && building.team === "player" && building.isCompleted())
+        .map((building) => building.definition.id),
+      trainedUnitIds: [...this.runtime.stats.trainedUnitIds],
+      rallyBuildingIds: this.buildings
+        .filter((building) => building.alive && building.team === "player" && Boolean(building.rallyPoint))
+        .map((building) => building.definition.id),
+      usedAbilityIds: Object.entries(this.hero?.abilityCooldowns ?? {})
+        .filter(([, remainingSeconds]) => remainingSeconds > 0)
+        .map(([abilityId]) => abilityId),
+      defeatedUnitIds: [...this.tutorialDefeatedUnitIds],
+      finished: step?.requiredAction === "finish"
+    };
+  }
+
+  private advanceTutorialStep(): void {
+    if (this.launch.request.mode !== "tutorial") {
+      return;
+    }
+    const tutorial = this.activeTutorial();
+    const stepId = this.tutorialStepId ?? firstTutorialStepId(tutorial);
+    if (!stepId) {
+      return;
+    }
+    const viewModel = createTutorialStepViewModel(tutorial, stepId, this.createTutorialCompletionSignals(tutorial, stepId));
+    if (!viewModel.isComplete) {
+      this.showMessage(viewModel.completionConditionLabel);
+      return;
+    }
+    if (viewModel.isFinalStep) {
+      this.showMessage("Training complete. No rewards or campaign progress granted.");
+      this.scene.start(SCENE_KEYS.mainMenu);
+      return;
+    }
+    this.tutorialStepId = advanceTutorialStep(tutorial, stepId);
+    this.showMessage("Tutorial objective updated");
+    this.refreshBattleHud(0);
   }
 
   private warnIfCommandHallUnderAttack(target: BaseEntity): void {

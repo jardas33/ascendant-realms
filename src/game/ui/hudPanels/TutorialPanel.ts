@@ -16,6 +16,13 @@ export function renderTutorialPanel(step: TutorialStepViewModel | undefined): st
       ${step.hint ? `<small data-testid="tutorial-hint">${escapeHtml(step.hint)}</small>` : ""}
       <div class="tutorial-panel-footer">
         <span data-testid="tutorial-condition">${escapeHtml(step.completionConditionLabel)}</span>
+        ${
+          step.isComplete
+            ? `<button class="hud-button compact" data-testid="tutorial-next" data-action="tutorial-next">${escapeHtml(
+                step.advanceActionLabel
+              )}</button>`
+            : ""
+        }
         <button class="hud-button compact" data-testid="tutorial-exit" data-action="menu">Exit Tutorial</button>
       </div>
     </section>

@@ -27,6 +27,7 @@ export interface TutorialStepViewModel {
   progressLabel: string;
   isComplete: boolean;
   isFinalStep: boolean;
+  advanceActionLabel: string;
   nextStepId?: string;
 }
 
@@ -75,6 +76,7 @@ export function createTutorialStepViewModel(
     progressLabel: createProgressLabel(stepNumber, totalSteps, isComplete),
     isComplete,
     isFinalStep: nextStepId === undefined,
+    advanceActionLabel: nextStepId === undefined ? "Complete Tutorial" : "Next Objective",
     nextStepId
   };
 }

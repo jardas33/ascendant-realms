@@ -17,7 +17,7 @@ Current v0.3 feature snapshot:
 - CampaignRules split into focused pure-rule modules behind a compatibility facade.
 - HUD/fog polish for stable command hover, side-panel scroll preservation, and captured-site local reveal behavior.
 - Cinderfen reward-economy audit and Chapter 2 Playwright helper cleanup, with first-clear rewards useful and repeat rewards kept tiny.
-- v0.5 save fixture tests, standalone content validation, campaign graph/reward validation, simulator determinism checks, and a non-playable Tutorial / Proving Grounds metadata scaffold for future onboarding work.
+- v0.5 save fixture tests, standalone content validation, campaign graph/reward validation, simulator determinism checks, and a first playable no-reward Tutorial / Proving Grounds shell for future onboarding work.
 
 ## Design Pillars
 
@@ -58,7 +58,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.5 gate checkpoint status, 2026-05-08: build passes. App JS is about 445.42 kB / 119.69 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 42.04 kB / 8.74 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest tutorial shell checkpoint status, 2026-05-08: build passes. App JS is about 459.27 kB / 123.49 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 43.77 kB / 9.02 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -69,7 +69,7 @@ npm run test
 
 Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
 
-Latest v0.5 gate checkpoint status, 2026-05-08: `npm run validate:content` passes, and `npm test` passes with 40 test files and 298 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation, Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
+Latest tutorial shell checkpoint status, 2026-05-08: `npm run validate:content` passes, and `npm test` passes with 42 test files and 314 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
 
 ## Browser E2E Test Lanes
 
@@ -77,7 +77,7 @@ Latest v0.5 gate checkpoint status, 2026-05-08: `npm run validate:content` passe
 npm run test:e2e:smoke
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. The fast default lane runs `tests/e2e/smoke.spec.ts` and currently covers 11 tests: main menu boot, Tutorial / Proving Grounds no-reward shell launch, Settings persistence, New Campaign into Campaign Map, locked-node blocking, Border Village battle launch, Cinderfen Overlook/Waystation/Crossing reward persistence, Cinderfen Watch and Aftermath completion, Malrec trophy event behavior, skirmish launch, difficulty/fog setup, and inventory reachability.
+The browser suite uses Playwright and starts the Vite dev server automatically. The fast default lane runs `tests/e2e/smoke.spec.ts` and currently covers 12 tests: main menu boot, Tutorial / Proving Grounds no-reward completion, Tutorial exit without saving, Settings persistence, New Campaign into Campaign Map, locked-node blocking, Border Village battle launch, Cinderfen Overlook/Waystation/Crossing reward persistence, Cinderfen Watch and Aftermath completion, Malrec trophy event behavior, skirmish launch, difficulty/fog setup, and inventory reachability.
 
 Additional lanes keep the slower coverage available without making it the default frequent-iteration command:
 
@@ -89,7 +89,7 @@ npm run test:e2e:release
 
 `test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial overlay smoke check passed 11 tests in 6.0 minutes, and the latest full v0.5 release-gate verification passed 59 tests in 28.4 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial playable-shell smoke check passed 12 tests in 6.5 minutes, and the latest full v0.5 release-gate verification passed 59 tests in 28.4 minutes.
 
 For CI, the full release gate can also be split into two Playwright shards:
 

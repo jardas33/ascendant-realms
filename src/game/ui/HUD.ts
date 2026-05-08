@@ -65,6 +65,10 @@ export class HUD {
         callbacks.onAbility(id);
         handled = true;
       }
+      if (action === "tutorial-next") {
+        callbacks.onTutorialNext();
+        handled = true;
+      }
       if (action === "menu") {
         callbacks.onMenu();
         handled = true;

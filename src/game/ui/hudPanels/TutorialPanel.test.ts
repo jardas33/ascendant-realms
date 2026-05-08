@@ -15,7 +15,22 @@ describe("TutorialPanel", () => {
     expect(html).toContain("Press H or click the hero");
     expect(html).toContain("Step 2 of 12");
     expect(html).toContain("Select the hero");
+    expect(html).not.toContain("Next Objective");
     expect(html).toContain("Exit Tutorial");
+  });
+
+  it("renders the next action only after a step is complete", () => {
+    const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "select_hero", { heroSelected: true }));
+
+    expect(html).toContain('data-testid="tutorial-next"');
+    expect(html).toContain("Next Objective");
+  });
+
+  it("renders completion copy for the final step", () => {
+    const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "finish_training", { finished: true }));
+
+    expect(html).toContain("Complete Tutorial");
+    expect(html).toContain("no rewards or campaign progress");
   });
 
   it("renders nothing outside tutorial mode", () => {

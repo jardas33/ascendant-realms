@@ -85,6 +85,7 @@ interface CreateBattleSceneSystemsOptions {
   findWorldEntityAt: (point: Position) => BaseEntity | undefined;
   centerCameraFromMinimap: (normalizedX: number, normalizedY: number) => void;
   castAbilitySlot: (slot: number) => void;
+  advanceTutorialStep: () => void;
   toggleFogDebug: () => void;
   getTechState: (team: Team) => TechState;
   isUpgradeResearched: (team: Team, upgradeId: string) => boolean;
@@ -127,6 +128,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     findWorldEntityAt,
     centerCameraFromMinimap,
     castAbilitySlot,
+    advanceTutorialStep,
     toggleFogDebug,
     getTechState,
     isUpgradeResearched,
@@ -319,6 +321,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
           AudioManager.play("ability_cast");
         }
       },
+      onTutorialNext: advanceTutorialStep,
       onMinimapMove: centerCameraFromMinimap,
       onMenu: openMainMenu
     })

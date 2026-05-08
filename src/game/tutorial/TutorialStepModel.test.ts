@@ -41,6 +41,7 @@ describe("TutorialStepModel", () => {
       totalSteps: 12,
       isComplete: false,
       isFinalStep: false,
+      advanceActionLabel: "Next Objective",
       nextStepId: "move_hero"
     });
     expect(viewModel.instruction).toContain("Select Aster");
@@ -65,6 +66,13 @@ describe("TutorialStepModel", () => {
 
     expect(viewModel.isComplete).toBe(true);
     expect(viewModel.progressLabel).toBe("Step 2 of 12: complete");
+  });
+
+  it("labels final-step advancement as tutorial completion", () => {
+    const viewModel = createTutorialStepViewModel(tutorial, "finish_training", { finished: true });
+
+    expect(viewModel.isFinalStep).toBe(true);
+    expect(viewModel.advanceActionLabel).toBe("Complete Tutorial");
   });
 
   it("evaluates simple completion conditions by required action and references", () => {

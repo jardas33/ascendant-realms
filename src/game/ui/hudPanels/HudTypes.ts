@@ -13,6 +13,7 @@ export interface HUDCallbacks {
   onUpgrade: (upgradeId: string, sourceBuildingId: string) => void;
   onCancelUpgrade: (sourceBuildingId: string, queueIndex: number) => void;
   onAbility: (abilityId: string) => void;
+  onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;
 }
