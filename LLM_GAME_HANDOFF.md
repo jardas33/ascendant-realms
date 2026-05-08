@@ -108,6 +108,16 @@ Phase 9 command-log replay feasibility:
 - Verification: `npm test` PASS, 40 files / 294 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 - Commit: `Checkpoint v0.5 command log feasibility`.
 
+Phase 10 simulator determinism gate:
+
+- Added `docs/SIMULATOR_DETERMINISM_GATE.md`.
+- Added two focused tests in `src/game/playtest/ScriptedBattlePlaytest.test.ts` to keep the simulator matrix/schema explicit and compare a stable deterministic summary across repeated full suite runs.
+- Documented where simulator behavior is deterministic, where production reward/affix randomness still exists, how Cinder Shrine and campaign modifiers are modeled, what telemetry can be trusted, and what still requires human review.
+- `npm run playtest:sim` regenerated `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` with no telemetry diff.
+- No gameplay, balance, save behavior, save version, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
+- Commit: `Checkpoint v0.5 simulator determinism gate`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.

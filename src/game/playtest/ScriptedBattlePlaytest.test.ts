@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_PLAYTEST_STRONGHOLD_PROFILES,
+  DEFAULT_PLAYTEST_SCRIPTS,
   DEFAULT_PLAYTEST_SCENARIOS,
   analyzePlaytestTelemetry,
   renderPlaytestMarkdownReport,
@@ -48,6 +49,40 @@ describe("ScriptedBattlePlaytest", () => {
       ])
     );
     expect(report.telemetry.some((run) => run.retinueUnits.includes("Veteran Militia"))).toBe(true);
+  });
+
+  it("keeps the simulator matrix explicit and telemetry schema populated", () => {
+    const report = runScriptedPlaytestSuite();
+
+    expect(DEFAULT_PLAYTEST_SCENARIOS).toHaveLength(7);
+    expect(DEFAULT_PLAYTEST_SCRIPTS).toEqual(["safe_beginner", "greedy_economy", "fast_army"]);
+    expect(DEFAULT_PLAYTEST_STRONGHOLD_PROFILES).toHaveLength(13);
+    expect(report.schemaVersion).toBe(2);
+    expect(report.generatedBy).toBe("Ascendant Realms deterministic scripted playtest v2");
+    expect(report.analysis.tooEasyNodes).toEqual([]);
+    expect(report.analysis.tooHardNodes).toEqual([]);
+    expect(report.analysis.strongholdWarnings).toEqual([]);
+    report.telemetry.forEach((run) => {
+      expect(run.nodeId).toBeTruthy();
+      expect(run.nodeName).toBeTruthy();
+      expect(run.mapId).toBeTruthy();
+      expect(run.aiPersonality).toBeTruthy();
+      expect(run.playerScript).toBeTruthy();
+      expect(run.strongholdProfileId).toBeTruthy();
+      expect(run.commandLog.length).toBeGreaterThan(0);
+      expect(Array.isArray(run.structuralNotes)).toBe(true);
+      if (run.rewardResult) {
+        expect(Number.isFinite(run.rewardResult.battleXp)).toBe(true);
+        expect(Number.isFinite(run.rewardResult.campaignXp)).toBe(true);
+      }
+    });
+  });
+
+  it("produces a stable deterministic summary across repeated full simulator runs", () => {
+    const first = summarizeDeterminism(runScriptedPlaytestSuite());
+    const second = summarizeDeterminism(runScriptedPlaytestSuite());
+
+    expect(second).toEqual(first);
   });
 
   it("includes the playable Chapter 2 battle while excluding non-battle event nodes", () => {
@@ -292,3 +327,40 @@ describe("ScriptedBattlePlaytest", () => {
     expect(report.analysis.tooEasyNodes).toEqual([]);
   });
 });
+
+function summarizeDeterminism(report: ReturnType<typeof runScriptedPlaytestSuite>): unknown {
+  return {
+    schemaVersion: report.schemaVersion,
+    generatedBy: report.generatedBy,
+    telemetry: report.telemetry.map((run) => ({
+      strongholdProfileId: run.strongholdProfileId,
+      nodeId: run.nodeId,
+      mapId: run.mapId,
+      playerScript: run.playerScript,
+      battleResult: run.battleResult,
+      battleDurationSeconds: run.battleDurationSeconds,
+      unitsTrained: run.unitsTrained,
+      unitsLost: run.unitsLost,
+      finalArmySize: run.finalArmySize,
+      commandLog: run.commandLog,
+      structuralNotes: run.structuralNotes,
+      rewardResult: run.rewardResult
+    })),
+    analysis: {
+      tooEasyNodes: report.analysis.tooEasyNodes,
+      tooHardNodes: report.analysis.tooHardNodes,
+      strongholdWarnings: report.analysis.strongholdWarnings,
+      nodeSummaries: report.analysis.nodeSummaries.map((summary) => ({
+        strongholdProfileId: summary.strongholdProfileId,
+        nodeId: summary.nodeId,
+        mapId: summary.mapId,
+        victories: summary.victories,
+        defeats: summary.defeats,
+        timeouts: summary.timeouts,
+        averageDurationSeconds: summary.averageDurationSeconds,
+        verdict: summary.verdict,
+        notes: summary.notes
+      }))
+    }
+  };
+}

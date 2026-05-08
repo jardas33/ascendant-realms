@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 40 test files, 294 tests
+PASS: 40 test files, 296 tests
 ```
 
 2. Standalone content validation:
