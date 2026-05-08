@@ -1,12 +1,34 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.4 overnight autonomous progress final checkpoint
+Last updated: 2026-05-08 v0.5 save/content validation gate in progress
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
+
+Mission: build a serious v0.5 safety foundation before any broad mechanics or new content expansion. This goal must preserve the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. Do not add gameplay content, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, broad loot complexity, or broad army-management systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 38 files / 271 tests.
+npm run build: PASS with the known Phaser vendor warning.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 save fixture inventory/design:
+
+- Added `docs/V05_SAVE_FIXTURE_PLAN.md`.
+- Planned a test-only save fixture directory at `tests/fixtures/saves/`.
+- Planned fixtures for V1 migration, settings-only V2 saves, current V2 campaign progress, affixed inventory, legacy equipment references, retinue/rivals/Cinderfen route state, missing optional V2 fields, future-ish unknown fields, and malformed JSON.
+- No fixtures, production code, save behavior, save version, gameplay, or balance changed in this phase.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
