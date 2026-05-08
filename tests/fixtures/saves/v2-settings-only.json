@@ -1,0 +1,76 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T01:00:00.000Z",
+  "updatedAt": "2026-05-08T01:00:00.000Z",
+  "hero": {
+    "heroName": "Aster",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 1,
+    "xp": 0,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 0,
+    "clearedMapIds": [],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 10,
+      "ashen_covenant": -10,
+      "sylvan_concord": 0,
+      "common_folk": 0,
+      "old_faith": 0
+    },
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": false,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 0,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "resourcesSpent": {
+      "crowns": 0,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": [],
+    "unlockedNodeIds": [],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": [],
+    "choiceIdsClaimed": [],
+    "townServiceClaimedIds": [],
+    "townServiceUseCounts": {},
+    "activeModifierIds": [],
+    "strongholdUpgradeRanks": {},
+    "retinueUnits": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "border_marches"
+  },
+  "settings": {
+    "masterVolume": 0.35,
+    "musicVolume": 0.25,
+    "sfxVolume": 0.45,
+    "screenShakeEnabled": false,
+    "floatingTextEnabled": false,
+    "fogEnabledOverride": "enabled",
+    "reducedMotionEnabled": true,
+    "uiScale": 1.15,
+    "colorblindMinimapPalette": true
+  },
+  "statistics": {
+    "settingsOnly": true,
+    "fixture": "settings-only"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "hero": {
+    "heroName": "Sparse Save",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 2,
+    "xp": 100,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 1,
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy"
+  }
+}

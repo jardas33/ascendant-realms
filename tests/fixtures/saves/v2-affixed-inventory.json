@@ -1,0 +1,98 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T03:00:00.000Z",
+  "updatedAt": "2026-05-08T03:00:00.000Z",
+  "hero": {
+    "heroName": "Affix Keeper",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 3,
+    "xp": 240,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 3,
+    "clearedMapIds": ["first_claim"],
+    "inventory": [
+      {
+        "instanceId": "fixture:captains_seal:1",
+        "itemId": "captains_seal",
+        "acquiredAt": "2026-05-03T00:00:00.000Z",
+        "source": "battle_reward:bandit_hillfort",
+        "affixes": ["commanding", "sturdy", "commanding"],
+        "locked": true,
+        "favorite": true
+      },
+      {
+        "instanceId": "fixture:emberglass_wand:1",
+        "itemId": "emberglass_wand",
+        "acquiredAt": "2026-05-03T01:00:00.000Z",
+        "source": "town_service:marcher_camp",
+        "affixes": ["sharp", "aether_touched"],
+        "locked": false,
+        "favorite": false
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:emberglass_wand:1",
+      "trinket": "fixture:captains_seal:1"
+    },
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 15,
+      "ashen_covenant": -12,
+      "sylvan_concord": 0,
+      "common_folk": 0,
+      "old_faith": 0
+    },
+    "stats": {
+      "might": 8,
+      "command": 10,
+      "arcana": 4,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 45,
+      "stone": 25,
+      "iron": 12,
+      "aether": 6
+    },
+    "resourcesSpent": {
+      "crowns": 60,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": ["border_village", "old_stone_road"],
+    "unlockedNodeIds": ["border_village", "old_stone_road", "marcher_camp"],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": ["border_village"],
+    "choiceIdsClaimed": [],
+    "townServiceClaimedIds": ["marcher_camp:purchase_emberglass_wand"],
+    "townServiceUseCounts": {
+      "marcher_camp:purchase_emberglass_wand": 1
+    },
+    "activeModifierIds": [],
+    "strongholdUpgradeRanks": {},
+    "retinueUnits": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "marcher_camp"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

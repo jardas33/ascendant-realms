@@ -1,0 +1,74 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T03:30:00.000Z",
+  "updatedAt": "2026-05-08T03:30:00.000Z",
+  "hero": {
+    "heroName": "Legacy Equipment Bearer",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 2,
+    "xp": 110,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 1,
+    "clearedMapIds": ["first_claim"],
+    "inventory": ["captains_seal"],
+    "equipment": {
+      "trinket": "captains_seal",
+      "weapon": "scouts_bow"
+    },
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 12,
+      "ashen_covenant": -10
+    },
+    "stats": {
+      "might": 8,
+      "command": 9,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 20,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "resourcesSpent": {
+      "crowns": 0,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": ["border_village"],
+    "unlockedNodeIds": ["border_village", "old_stone_road"],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": ["border_village"],
+    "choiceIdsClaimed": [],
+    "townServiceClaimedIds": [],
+    "townServiceUseCounts": {},
+    "activeModifierIds": [],
+    "strongholdUpgradeRanks": {},
+    "retinueUnits": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "old_stone_road"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

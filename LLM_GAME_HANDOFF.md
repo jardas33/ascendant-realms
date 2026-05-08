@@ -39,6 +39,15 @@ Phase 2 save fixture harness:
 - Added `tests/fixtures/saves/SaveFixtureTestUtils.test.ts` to exercise the harness before real fixture files are introduced.
 - No real save fixtures, production runtime imports, save behavior, save version, gameplay, or balance changed in this phase.
 - Verification: `npm test` PASS, 39 files / 274 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `9a51780 Checkpoint v0.5 save fixture harness`.
+
+Phase 3 fixture-based migration and normalization tests:
+
+- Added save fixtures under `tests/fixtures/saves/`: `v1-basic-hero.json`, `v2-settings-only.json`, `v2-campaign-progress.json`, `v2-affixed-inventory.json`, `v2-legacy-equipment-catalog-id.json`, `v2-retinue-rivals-cinderfen.json`, `v2-missing-optional-fields.json`, `v2-future-extra-fields.json`, and `invalid-json.txt`.
+- Added `tests/fixtures/saves/SaveMigrationFixtures.test.ts`.
+- Covered invalid JSON/import safety, settings-only non-playable saves, V1 to V2 migration, V2 campaign progress, resources, event choices, town purchases, Stronghold upgrades, affixed item instances, legacy equipment catalog IDs, retinue, rival state, rival trophies, Cinderfen route progress, selected Chapter 2 state, missing optional fields, future-ish unknown fields, and a fixture sweep proving every current fixture loads through the migration path.
+- No production save behavior, save version, gameplay, balance, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run test:e2e:smoke` PASS, 10 tests in 4.7m; `git diff --check` PASS.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 

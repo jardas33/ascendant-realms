@@ -1,0 +1,201 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T04:00:00.000Z",
+  "updatedAt": "2026-05-08T04:45:00.000Z",
+  "hero": {
+    "heroName": "Watch Road Victor",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 5,
+    "xp": 620,
+    "skillPoints": 3,
+    "unlockedAbilities": ["rally_banner", "banner_guard"],
+    "completedBattles": 8,
+    "clearedMapIds": ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway", "cinderfen_watchpost"],
+    "inventory": [
+      {
+        "instanceId": "fixture:weathered_command_sword:1",
+        "itemId": "weathered_command_sword",
+        "acquiredAt": "2026-05-01T00:00:00.000Z",
+        "source": "battle_reward:border_village",
+        "affixes": [],
+        "locked": false,
+        "favorite": false
+      },
+      {
+        "instanceId": "fixture:scouts_bow:1",
+        "itemId": "scouts_bow",
+        "acquiredAt": "2026-05-08T04:10:00.000Z",
+        "source": "battle_reward:cinderfen_crossing",
+        "affixes": ["rangers"],
+        "locked": false,
+        "favorite": true
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:scouts_bow:1"
+    },
+    "allocatedSkills": {
+      "combat_drill": 2
+    },
+    "factionReputation": {
+      "free_marches": 31,
+      "ashen_covenant": -22,
+      "sylvan_concord": 0,
+      "common_folk": 16,
+      "old_faith": 8
+    },
+    "stats": {
+      "might": 10,
+      "command": 12,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "resources": {
+      "crowns": 62,
+      "stone": 44,
+      "iron": 36,
+      "aether": 29
+    },
+    "resourcesSpent": {
+      "crowns": 210,
+      "stone": 73,
+      "iron": 70,
+      "aether": 30
+    },
+    "completedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "chapel_of_the_marches",
+      "refugee_caravan",
+      "ashen_outpost",
+      "cinderfen_overlook",
+      "cinderfen_crossing",
+      "cinderfen_watch",
+      "cinderfen_aftermath"
+    ],
+    "unlockedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "chapel_of_the_marches",
+      "refugee_caravan",
+      "ashen_outpost",
+      "cinderfen_overlook",
+      "cinderfen_waystation",
+      "cinderfen_crossing",
+      "cinderfen_watch",
+      "cinderfen_aftermath"
+    ],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": [
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost",
+      "cinderfen_crossing",
+      "cinderfen_watch"
+    ],
+    "choiceIdsClaimed": [
+      "chapel_of_the_marches:repair_chapel",
+      "cinderfen_overlook:raise_malrecs_standard",
+      "cinderfen_waystation:refugee_scouts",
+      "cinderfen_aftermath:aid_the_fenfolk"
+    ],
+    "townServiceClaimedIds": ["cinderfen_waystation:refugee_scouts"],
+    "townServiceUseCounts": {
+      "cinderfen_waystation:marsh_guides": 1,
+      "cinderfen_waystation:ash_filters": 1,
+      "cinderfen_waystation:shrine_attunement": 1
+    },
+    "activeModifierIds": ["well_rested", "local_support"],
+    "strongholdUpgradeRanks": {
+      "training_yard_i": 1,
+      "training_yard_ii": 1,
+      "watch_post_i": 1
+    },
+    "retinueUnits": [
+      {
+        "retinueUnitId": "retinue:border_village:militia-1",
+        "unitTypeId": "militia",
+        "name": "Gate Militia",
+        "rank": "seasoned",
+        "xp": 88,
+        "kills": 4,
+        "sourceBattleId": "border_village",
+        "acquiredAt": "2026-05-02T12:00:00.000Z",
+        "status": "active"
+      },
+      {
+        "retinueUnitId": "retinue:cinderfen_crossing:ranger-1",
+        "unitTypeId": "ranger",
+        "name": "Causeway Ranger",
+        "rank": "veteran",
+        "xp": 155,
+        "kills": 6,
+        "sourceBattleId": "cinderfen_crossing",
+        "acquiredAt": "2026-05-08T04:15:00.000Z",
+        "status": "active"
+      }
+    ],
+    "rivals": [
+      {
+        "enemyHeroId": "captain_malrec",
+        "encounters": 1,
+        "defeats": 1,
+        "victoriesAgainstPlayer": 0,
+        "lastEncounterNodeId": "ashen_outpost",
+        "lastOutcome": "defeated",
+        "disposition": "humiliated",
+        "activeModifiers": [],
+        "isKnownToPlayer": true
+      },
+      {
+        "enemyHeroId": "veyra_cinders",
+        "encounters": 2,
+        "defeats": 1,
+        "victoriesAgainstPlayer": 1,
+        "lastEncounterNodeId": "aether_well_ruins",
+        "lastOutcome": "triumphant",
+        "disposition": "emboldened",
+        "activeModifiers": ["rival_emboldened_damage_5"],
+        "isKnownToPlayer": true
+      }
+    ],
+    "rivalTrophies": [
+      {
+        "trophyId": "trophy_malrec_outpost_standard",
+        "enemyHeroId": "captain_malrec",
+        "earnedAt": "2026-05-03T12:00:00.000Z",
+        "sourceNodeId": "ashen_outpost",
+        "label": "Malrec's Outpost Standard",
+        "description": "The torn fortress standard of Captain Malrec's Ashen Outpost command.",
+        "effect": "First defeat claimed."
+      }
+    ],
+    "selectedChapterId": "cinderfen_road",
+    "selectedNodeId": "cinderfen_aftermath"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

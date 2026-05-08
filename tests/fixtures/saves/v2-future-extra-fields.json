@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T05:00:00.000Z",
+  "updatedAt": "2026-05-08T05:00:00.000Z",
+  "futureExpansion": {
+    "saveVersionPreview": 3,
+    "notes": "ignored by current normalization"
+  },
+  "hero": {
+    "heroName": "Future Tolerant",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 4,
+    "xp": 410,
+    "skillPoints": 2,
+    "futureHeroField": {
+      "unused": true
+    },
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 4,
+    "clearedMapIds": ["first_claim"],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 22,
+      "common_folk": 5,
+      "future_faction": 7
+    },
+    "stats": {
+      "might": 8,
+      "command": 9,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "hard",
+    "futureCampaignField": {
+      "upcomingWorkers": 3
+    },
+    "resources": {
+      "crowns": 77,
+      "stone": 33,
+      "iron": 21,
+      "aether": 9,
+      "crystals": 999
+    },
+    "resourcesSpent": {
+      "crowns": 10,
+      "stone": 0,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": ["border_village"],
+    "unlockedNodeIds": ["border_village", "old_stone_road"],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": ["border_village"],
+    "choiceIdsClaimed": [],
+    "townServiceClaimedIds": [],
+    "townServiceUseCounts": {},
+    "activeModifierIds": [],
+    "strongholdUpgradeRanks": {},
+    "retinueUnits": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "old_stone_road"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {
+    "futureTelemetryOptIn": false,
+    "fixture": "future-extra-fields"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "updatedAt": "2026-01-01T00:00:00.000Z",
+  "hero": {
+    "heroName": "Legacy Aster",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 3,
+    "xp": 220,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 2,
+    "clearedMapIds": ["first_claim"],
+    "inventory": ["weathered_command_sword"],
+    "equipment": {
+      "weapon": "weathered_command_sword"
+    },
+    "allocatedSkills": {
+      "combat_drill": 1
+    },
+    "factionReputation": {
+      "free_marches": 18,
+      "ashen_covenant": -12
+    },
+    "stats": {
+      "might": 9,
+      "command": 9,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 60,
+      "stone": 20,
+      "iron": 5,
+      "aether": 2
+    },
+    "completedNodeIds": ["border_village"],
+    "unlockedNodeIds": ["border_village", "old_stone_road"],
+    "nodeRewardsClaimedIds": ["border_village"],
+    "choiceIdsClaimed": ["chapel_of_the_marches:pray_for_strength"]
+  }
+}

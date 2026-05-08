@@ -1,0 +1,129 @@
+{
+  "version": 2,
+  "createdAt": "2026-05-08T02:00:00.000Z",
+  "updatedAt": "2026-05-08T02:30:00.000Z",
+  "hero": {
+    "heroName": "Cinderfen Marshal",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 4,
+    "xp": 360,
+    "skillPoints": 2,
+    "unlockedAbilities": ["rally_banner", "banner_guard"],
+    "completedBattles": 5,
+    "clearedMapIds": ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway"],
+    "inventory": [
+      {
+        "instanceId": "fixture:weathered_command_sword:1",
+        "itemId": "weathered_command_sword",
+        "acquiredAt": "2026-05-01T00:00:00.000Z",
+        "source": "legacy_reward",
+        "affixes": [],
+        "locked": false,
+        "favorite": false
+      },
+      {
+        "instanceId": "fixture:emberglass_wand:1",
+        "itemId": "emberglass_wand",
+        "acquiredAt": "2026-05-02T00:00:00.000Z",
+        "source": "town_service:marcher_camp",
+        "affixes": ["aether_touched"],
+        "locked": false,
+        "favorite": true
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:weathered_command_sword:1"
+    },
+    "allocatedSkills": {
+      "combat_drill": 2
+    },
+    "factionReputation": {
+      "free_marches": 26,
+      "ashen_covenant": -18,
+      "sylvan_concord": 0,
+      "common_folk": 8,
+      "old_faith": 5
+    },
+    "stats": {
+      "might": 10,
+      "command": 11,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "resources": {
+      "crowns": 90,
+      "stone": 34,
+      "iron": 22,
+      "aether": 17
+    },
+    "resourcesSpent": {
+      "crowns": 150,
+      "stone": 50,
+      "iron": 35,
+      "aether": 12
+    },
+    "completedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "chapel_of_the_marches",
+      "ashen_outpost",
+      "cinderfen_overlook",
+      "cinderfen_crossing"
+    ],
+    "unlockedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "chapel_of_the_marches",
+      "refugee_caravan",
+      "ashen_outpost",
+      "cinderfen_overlook",
+      "cinderfen_waystation",
+      "cinderfen_crossing",
+      "cinderfen_watch"
+    ],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": ["border_village", "old_stone_road", "ashen_outpost", "cinderfen_crossing"],
+    "choiceIdsClaimed": [
+      "chapel_of_the_marches:pray_for_strength",
+      "cinderfen_overlook:aid_marsh_refugees",
+      "cinderfen_waystation:refugee_scouts"
+    ],
+    "townServiceClaimedIds": ["marcher_camp:purchase_emberglass_wand", "cinderfen_waystation:refugee_scouts"],
+    "townServiceUseCounts": {
+      "marcher_camp:buy_supplies": 2,
+      "cinderfen_waystation:shrine_attunement": 1
+    },
+    "activeModifierIds": ["inspired_militia", "shrine_attunement"],
+    "strongholdUpgradeRanks": {
+      "training_yard_i": 1,
+      "quartermaster_stores_i": 1,
+      "quartermaster_stores_ii": 1
+    },
+    "retinueUnits": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "cinderfen_road",
+    "selectedNodeId": "cinderfen_watch"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}
