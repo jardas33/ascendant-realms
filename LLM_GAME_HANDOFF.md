@@ -22,6 +22,7 @@ Phase 3 analyzer-backed optimization decision: committed 5748857 Checkpoint v0.4
 Phase 4 e2e sharding refresh: existing 2-shard scripts verified, docs refreshed, no package/test/script coverage change.
 Phase 5 e2e flake hardening: test-only rally wait robustness in `tests/e2e/deep-flow.spec.ts`, no gameplay or coverage change.
 Phase 6 accessibility/readability continuation: copy-only Settings clarifications for colorblind minimap team markers and small-screen command-panel guidance.
+Phase 7 save compatibility audit: added `docs/SAVE_COMPATIBILITY_AUDIT.md` and one narrow unit test preserving valid Chapter 2 selected chapter/node state.
 ```
 
 Current Phase 6 build/performance numbers:
@@ -75,7 +76,15 @@ npm run test:e2e:layout: PASS, 21 tests in 11.9m.
 npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
 ```
 
-Next active phase after this checkpoint: Phase 7 save compatibility audit. Do not change the save version or save format unless a real bug is found and tested.
+Phase 7 verification:
+
+```text
+npm test: PASS, 38 files / 271 tests in 8.51s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:smoke: PASS, 10 tests in 4.4m.
+```
+
+Next active phase after this checkpoint: Phase 8 automated full-route human-surrogate review. Do not change balance unless a clear bug is found.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 

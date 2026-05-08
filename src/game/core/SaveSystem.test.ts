@@ -310,6 +310,21 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.selectedChapterId).toBe("border_marches");
   });
 
+  it("preserves valid Chapter 2 selected chapter and node state", () => {
+    const normalized = normalizeCampaignSaveData({
+      ...createFallbackCampaignSave(),
+      started: true,
+      difficulty: "easy",
+      completedNodeIds: ["ashen_outpost", "cinderfen_overlook", "cinderfen_crossing"],
+      unlockedNodeIds: ["cinderfen_overlook", "cinderfen_waystation", "cinderfen_crossing", "cinderfen_watch"],
+      selectedChapterId: "cinderfen_road",
+      selectedNodeId: "cinderfen_watch"
+    });
+
+    expect(normalized?.selectedChapterId).toBe("cinderfen_road");
+    expect(normalized?.selectedNodeId).toBe("cinderfen_watch");
+  });
+
   it("migrates legacy stronghold upgrade ids into rank data", () => {
     const normalized = normalizeCampaignSaveData({
       ...createFallbackCampaignSave(),
