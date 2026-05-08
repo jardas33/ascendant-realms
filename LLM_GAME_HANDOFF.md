@@ -29,6 +29,16 @@ Phase 1 save fixture inventory/design:
 - Planned a test-only save fixture directory at `tests/fixtures/saves/`.
 - Planned fixtures for V1 migration, settings-only V2 saves, current V2 campaign progress, affixed inventory, legacy equipment references, retinue/rivals/Cinderfen route state, missing optional V2 fields, future-ish unknown fields, and malformed JSON.
 - No fixtures, production code, save behavior, save version, gameplay, or balance changed in this phase.
+- Verification: `npm test` PASS, 38 files / 271 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `da87513 Checkpoint v0.5 save fixture plan`.
+
+Phase 2 save fixture harness:
+
+- Added `tests/fixtures/saves/README.md`.
+- Added `tests/fixtures/saves/SaveFixtureTestUtils.ts` with test-only fixture path, raw text/JSON loading, deep clone, migration/parse helpers, no-crash wrapper, and focused assertions for hero, resources, campaign progress, item instances, retinue, rivals, and trophies.
+- Added `tests/fixtures/saves/SaveFixtureTestUtils.test.ts` to exercise the harness before real fixture files are introduced.
+- No real save fixtures, production runtime imports, save behavior, save version, gameplay, or balance changed in this phase.
+- Verification: `npm test` PASS, 39 files / 274 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
