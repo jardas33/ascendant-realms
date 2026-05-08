@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds no-reward shell added
+Last updated: 2026-05-08 Tutorial / Proving Grounds guided objective model added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -79,6 +79,16 @@ Phase 4 Tutorial scene/mode shell:
 - No guided overlay, full step completion flow, campaign rewards, tutorial rewards, save field, save version, map, unit, faction, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
 - Verification: focused launch/runtime/content tests PASS, 49 tests; `npm test` PASS, 40 files / 302 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 11 tests in 5.1m.
 - Current build output after tutorial shell: app JS `assets/index-ClE4dIBw.js`, 452.17 kB / gzip 121.63 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-D-nj7b-a.css`, 42.21 kB / gzip 8.79 kB.
+- Commit: `8dfc4a1 Checkpoint tutorial scene shell`.
+
+Phase 5 guided objective model:
+
+- Added `src/game/tutorial/TutorialStepModel.ts`.
+- Added pure helpers for first/current step lookup, invalid step handling, next-step transition, view-model creation, completion condition labels, progress labels, and simple completion checks.
+- Supported only the scoped linear step/action set: info/read instructions, select hero, move hero, capture site, gather resources, select building, build structure, train unit, set rally, use hero ability, defeat enemy, and finish.
+- Added `src/game/tutorial/TutorialStepModel.test.ts` with seven tests covering step ordering, current-step view models, next-step transition, final-step behavior, invalid step IDs, progress labels, simple completion signals, and readable labels.
+- No UI overlay, gameplay behavior, launch behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system changed in this phase.
+- Verification: focused `npm test -- src/game/tutorial/TutorialStepModel.test.ts` PASS, 7 tests; `npm test` PASS, 41 files / 309 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 
