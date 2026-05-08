@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.4 overnight continuation performance checkpoint
+Last updated: 2026-05-08 v0.4 overnight continuation route-feel surrogate checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -23,9 +23,10 @@ Phase 4 e2e sharding refresh: existing 2-shard scripts verified, docs refreshed,
 Phase 5 e2e flake hardening: test-only rally wait robustness in `tests/e2e/deep-flow.spec.ts`, no gameplay or coverage change.
 Phase 6 accessibility/readability continuation: copy-only Settings clarifications for colorblind minimap team markers and small-screen command-panel guidance.
 Phase 7 save compatibility audit: added `docs/SAVE_COMPATIBILITY_AUDIT.md` and one narrow unit test preserving valid Chapter 2 selected chapter/node state.
+Phase 8 route-feel surrogate review: added `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`, no code changes, no gameplay changes, no new tests needed.
 ```
 
-Current Phase 6 build/performance numbers:
+Current build/performance numbers:
 
 ```text
 npm run build: PASS.
@@ -84,7 +85,20 @@ npm run build: PASS with the known Phaser vendor warning.
 npm run test:e2e:smoke: PASS, 10 tests in 4.4m.
 ```
 
-Next active phase after this checkpoint: Phase 8 automated full-route human-surrogate review. Do not change balance unless a clear bug is found.
+Phase 8 verification:
+
+```text
+npm test: PASS, 38 files / 271 tests in 7.10s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:smoke: PASS, 10 tests in 4.5m.
+npm run test:e2e:layout: PASS, 21 tests in 12.0m.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+```
+
+Phase 8 surrogate read: `watch, not blocked`. Existing telemetry and e2e coverage are strong enough for the requested automated surrogate review. Remaining watch items are subjective feel/readability risks: Cinder Shrine salience, Waystation service scan quality, Aftermath density, Fast Army clear speed, and retinue plus Training Yard II strength. Do not change balance from this surrogate review alone.
+
+Next active phase after this checkpoint: Phase 9 full-game roadmap architecture. This phase is planning only; do not implement future systems.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 
