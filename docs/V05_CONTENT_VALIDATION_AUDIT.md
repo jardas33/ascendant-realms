@@ -267,6 +267,52 @@ Defer until Phase 8:
 - Repeat reward economy thresholds.
 - Fast Army and Retinue + Training Yard II farming watch.
 
+## Phase 8 Implementation Update
+
+Implemented the campaign graph and reward-economy gate in code, tests, and `docs/CAMPAIGN_GRAPH_REWARD_GATE.md`.
+
+Additional validator coverage:
+
+- Current chapters must be reachable from their entry and chapter prerequisite graph.
+- Chapter node lists cannot point at nodes from another chapter.
+- Battle nodes must have at least one direct unlock, dependent prerequisite node, or chapter-continuation role.
+- Non-town choices with `completesNode: false` must still unlock or lock a path.
+- One-time town item services must use `stockItemId` as a duplicate guard.
+- Direct repeat-clear bonus item grants are rejected.
+- Repeat-clear XP and resources cannot exceed matching first-clear bonuses.
+
+Additional tests in `src/game/data/contentValidation.test.ts`:
+
+- Repeat-clear direct item grants and excessive repeat XP/resources.
+- Unreachable chapter graph plus isolated battle-node continuation.
+- Non-town no-complete choices without path flow and one-time town item services without stock guards.
+- Reputation effects that reference missing tracked factions.
+
+No content data, gameplay, balance, save format, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+
+Phase 8 verification:
+
+```text
+npm test
+PASS: 40 test files, 294 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-X0lfuOZ2.js, 442.16 kB / gzip 118.76 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run validate:content
+PASS.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+```
+
 ## Verification
 
 Planned verification for this docs-only audit:

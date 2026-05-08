@@ -87,6 +87,18 @@ Phase 7 content validation script:
 - Verification: `npm test` PASS, 40 files / 290 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.5m; `git diff --check` PASS.
 - Commit: `Checkpoint v0.5 content validation script`.
 
+Phase 8 campaign graph and reward gate:
+
+- Added `docs/CAMPAIGN_GRAPH_REWARD_GATE.md`.
+- Hardened campaign validation for current chapter reachability, chapter node/chapter mismatches, battle-node continuation, non-town no-complete choices with no path flow, and one-time town item services without stock guards.
+- Hardened reward validation so direct repeat-clear bonus items are rejected and repeat-clear XP/resources cannot exceed matching first-clear bonuses.
+- Added four focused validator regression tests in `src/game/data/contentValidation.test.ts`.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, and `docs/V05_CONTENT_VALIDATION_AUDIT.md` with the new 294-test count and current build output.
+- No content data, gameplay, balance, save behavior, save version, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 294 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
+- Current build output after graph/reward validator code change: app JS `assets/index-X0lfuOZ2.js`, 442.16 kB / gzip 118.76 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
+- Commit: `Checkpoint v0.5 campaign graph reward gate`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.

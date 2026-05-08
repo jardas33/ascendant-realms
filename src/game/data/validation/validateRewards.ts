@@ -1,6 +1,7 @@
 import { MAPS } from "../maps";
 import { REWARD_TABLES } from "../rewards";
 import { RIVAL_REWARDS } from "../rivalRewards";
+import type { RewardTableDefinition } from "../../core/GameTypes";
 import type { ValidationContext } from "./ValidationTypes";
 
 export function validateRewardTables(errors: string[], context: ValidationContext): void {
@@ -51,6 +52,7 @@ export function validateRewardTables(errors: string[], context: ValidationContex
     });
     validateRewardBonus(table.id, "first-clear bonus", table.firstClearBonus, errors, context);
     validateRewardBonus(table.id, "repeat-clear reward", table.repeatClearReward, errors, context);
+    validateRepeatClearRewardScale(table, errors);
   });
 }
 
@@ -137,4 +139,23 @@ function validateRewardBonus(
   if ((bonus?.xp ?? 0) < 0) {
     errors.push(`Reward table ${tableId} ${label} has negative XP reward.`);
   }
+}
+
+function validateRepeatClearRewardScale(table: RewardTableDefinition, errors: string[]): void {
+  const repeat = table.repeatClearReward;
+  if (!repeat) {
+    return;
+  }
+  if ((repeat.itemIds?.length ?? 0) > 0) {
+    errors.push(`Reward table ${table.id} repeat-clear reward must not grant direct items.`);
+  }
+  if (table.firstClearBonus?.xp !== undefined && repeat.xp !== undefined && repeat.xp > table.firstClearBonus.xp) {
+    errors.push(`Reward table ${table.id} repeat-clear XP exceeds first-clear XP.`);
+  }
+  Object.entries(repeat.resources ?? {}).forEach(([resource, amount]) => {
+    const firstClearAmount = table.firstClearBonus?.resources?.[resource as keyof NonNullable<typeof table.firstClearBonus.resources>];
+    if (firstClearAmount !== undefined && (amount ?? 0) > firstClearAmount) {
+      errors.push(`Reward table ${table.id} repeat-clear ${resource} exceeds first-clear ${resource}.`);
+    }
+  });
 }

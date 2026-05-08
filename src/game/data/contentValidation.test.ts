@@ -94,6 +94,57 @@ describe("content validation", () => {
     }
   });
 
+  it("rejects repeat-clear rewards that exceed first-clear rewards or grant direct items", () => {
+    const table = REWARD_TABLES.find((entry) => entry.id === "cinderfen_causeway_rewards")!;
+    const originalRepeatClearReward = table.repeatClearReward;
+    table.repeatClearReward = {
+      itemIds: ["scouts_bow"],
+      resources: { crowns: 999 },
+      xp: 999
+    };
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Reward table cinderfen_causeway_rewards repeat-clear reward must not grant direct items.",
+          "Reward table cinderfen_causeway_rewards repeat-clear XP exceeds first-clear XP.",
+          "Reward table cinderfen_causeway_rewards repeat-clear crowns exceeds first-clear crowns."
+        ])
+      );
+    } finally {
+      table.repeatClearReward = originalRepeatClearReward;
+    }
+  });
+
+  it("rejects unreachable chapter graphs and battle nodes without any continuation", () => {
+    const chapter = CAMPAIGN_CHAPTERS.find((entry) => entry.id === "cinderfen_road")!;
+    const overlook = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_overlook")!;
+    const originalPrerequisites = overlook.prerequisites;
+    const borderMarches = CAMPAIGN_CHAPTERS.find((entry) => entry.id === "border_marches")!;
+    const orphanBattle = {
+      ...CAMPAIGN_NODES.find((entry) => entry.id === "border_village")!,
+      id: "orphan_battle",
+      prerequisites: ["border_village"],
+      unlocks: []
+    };
+    overlook.prerequisites = ["cinderfen_watch"];
+    CAMPAIGN_NODES.push(orphanBattle);
+    borderMarches.nodeIds.push(orphanBattle.id);
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Campaign chapter cinderfen_road has no reachable entry node.",
+          "Campaign chapter cinderfen_road cannot reach node cinderfen_overlook from its chapter entry/prerequisite graph.",
+          "Campaign battle node orphan_battle has no unlock, prerequisite dependent, or chapter continuation."
+        ])
+      );
+      expect(chapter.nodeIds).toContain("cinderfen_overlook");
+    } finally {
+      borderMarches.nodeIds.pop();
+      CAMPAIGN_NODES.pop();
+      overlook.prerequisites = originalPrerequisites;
+    }
+  });
+
   it("rejects costed campaign choices that have no visible saved effect", () => {
     const node = CAMPAIGN_NODES.find((entry) => entry.id === "cinderfen_waystation")!;
     const choice = node.choices!.find((entry) => entry.id === "ash_filters")!;
@@ -103,6 +154,29 @@ describe("content validation", () => {
       expect(validateContent()).toContain("Campaign choice cinderfen_waystation:ash_filters has a cost but no visible saved effect.");
     } finally {
       choice.rewards = originalRewards;
+    }
+  });
+
+  it("rejects non-town no-complete choices without path flow and one-time town item services without stock guards", () => {
+    const chapel = CAMPAIGN_NODES.find((entry) => entry.id === "chapel_of_the_marches")!;
+    const guidance = chapel.choices!.find((entry) => entry.id === "ask_for_guidance")!;
+    const originalGuidanceRewards = guidance.rewards;
+    guidance.rewards = { xp: 15 };
+
+    const town = CAMPAIGN_NODES.find((entry) => entry.id === "marcher_camp")!;
+    const purchase = town.choices!.find((entry) => entry.id === "purchase_emberglass_wand")!;
+    const originalStockItemId = purchase.stockItemId;
+    purchase.stockItemId = undefined;
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Campaign choice chapel_of_the_marches:ask_for_guidance does not complete the node and has no unlock or lock effect.",
+          "Campaign town choice marcher_camp:purchase_emberglass_wand grants one-time items without a stockItemId duplicate guard."
+        ])
+      );
+    } finally {
+      purchase.stockItemId = originalStockItemId;
+      guidance.rewards = originalGuidanceRewards;
     }
   });
 
@@ -448,6 +522,17 @@ describe("content validation", () => {
       "old_faith_friendly_chapel",
       "ashen_covenant_hostile_pressure"
     ]);
+  });
+
+  it("rejects reputation effects that reference missing tracked factions", () => {
+    const effect = REPUTATION_EFFECTS[0];
+    const originalFactionId = effect.factionId;
+    effect.factionId = "missing_faction" as typeof effect.factionId;
+    try {
+      expect(validateContent()).toContain("Reputation effect common_folk_friendly_services references missing faction missing_faction.");
+    } finally {
+      effect.factionId = originalFactionId;
+    }
   });
 
   it("defines the first compact item affix set", () => {

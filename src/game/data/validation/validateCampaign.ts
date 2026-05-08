@@ -4,6 +4,7 @@ import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { MAPS } from "../maps";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "../reputation";
+import type { CampaignNodeChoiceDefinition, CampaignNodeDefinition } from "../../core/GameTypes";
 import { assertUniqueIds, type ValidationContext } from "./ValidationTypes";
 
 export function validateCampaignNodes(errors: string[], context: ValidationContext): void {
@@ -70,11 +71,12 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
       errors.push(`Campaign node ${node.id} has negative XP reward.`);
     }
     assertUniqueIds(node.choices ?? [], `Campaign node ${node.id} choice`, errors);
-    node.choices?.forEach((choice) => validateCampaignChoice(node.id, choice, errors, context));
+    node.choices?.forEach((choice) => validateCampaignChoice(node, choice, errors, context));
   });
   if (!CAMPAIGN_NODES.some((node) => node.prerequisites.length === 0)) {
     errors.push("Campaign needs at least one starting node.");
   }
+  validateCampaignGraph(errors);
 }
 
 export function validateCampaignChapters(errors: string[], context: ValidationContext): void {
@@ -87,6 +89,11 @@ export function validateCampaignChapters(errors: string[], context: ValidationCo
     chapter.nodeIds.forEach((nodeId) => {
       if (!context.campaignNodeIds.has(nodeId)) {
         errors.push(`Campaign chapter ${chapter.id} references missing node ${nodeId}.`);
+      } else {
+        const node = CAMPAIGN_NODES.find((entry) => entry.id === nodeId);
+        if (node?.chapterId !== chapter.id) {
+          errors.push(`Campaign chapter ${chapter.id} lists node ${nodeId} from chapter ${node?.chapterId ?? "unknown"}.`);
+        }
       }
     });
     chapter.unlockPrerequisiteNodeIds.forEach((nodeId) => {
@@ -170,42 +177,12 @@ export function validateReputationEffects(errors: string[], context: ValidationC
 }
 
 function validateCampaignChoice(
-  nodeId: string,
-  choice: {
-    id: string;
-    label: string;
-    description: string;
-    requirements?: {
-      resources?: Partial<Record<string, number>>;
-      heroLevel?: number;
-      completedNodeIds?: string[];
-      itemIds?: string[];
-      rivalTrophyIds?: string[];
-      factionReputation?: Record<string, number>;
-    };
-    costs?: Partial<Record<string, number>>;
-    rewards?: {
-      itemIds?: string[];
-      resources?: Partial<Record<string, number>>;
-      xp?: number;
-      unlockNodeIds?: string[];
-      lockNodeIds?: string[];
-      modifierIds?: string[];
-      removeModifierIds?: string[];
-      reputationChanges?: Record<string, number>;
-      recoverHero?: boolean;
-    };
-    stockItemId?: string;
-    reputationChanges?: Record<string, number>;
-    unlockNodeIds?: string[];
-    lockNodeIds?: string[];
-    modifierIds?: string[];
-    removeModifierIds?: string[];
-    completesNode?: boolean;
-  },
+  node: CampaignNodeDefinition,
+  choice: CampaignNodeChoiceDefinition,
   errors: string[],
   context: ValidationContext
 ): void {
+  const nodeId = node.id;
   if (!choice.id.trim() || !choice.label.trim() || !choice.description.trim()) {
     errors.push(`Campaign node ${nodeId} has a choice missing id, label, or description.`);
   }
@@ -215,6 +192,10 @@ function validateCampaignChoice(
   if (Object.keys(choice.costs ?? {}).length > 0 && !campaignChoiceHasVisibleEffect(choice)) {
     errors.push(`Campaign choice ${nodeId}:${choice.id} has a cost but no visible saved effect.`);
   }
+  if (node.nodeType !== "town" && choice.completesNode === false && !campaignChoiceHasNodeFlowEffect(choice)) {
+    errors.push(`Campaign choice ${nodeId}:${choice.id} does not complete the node and has no unlock or lock effect.`);
+  }
+  validateOneTimeTownItemService(node, choice, errors);
   if (choice.requirements?.heroLevel !== undefined && choice.requirements.heroLevel <= 0) {
     errors.push(`Campaign choice ${nodeId}:${choice.id} has invalid hero level requirement.`);
   }
@@ -286,6 +267,59 @@ function validateUniqueChapterNodeList(chapterId: string, label: string, nodeIds
   });
 }
 
+function validateCampaignGraph(errors: string[]): void {
+  const nodeById = new Map(CAMPAIGN_NODES.map((node) => [node.id, node]));
+  const nodeIdsRequiredByOtherNodes = new Set<string>();
+  const chapterUnlockPrerequisiteNodeIds = new Set<string>();
+
+  CAMPAIGN_NODES.forEach((node) => {
+    node.prerequisites.forEach((nodeId) => nodeIdsRequiredByOtherNodes.add(nodeId));
+  });
+  CAMPAIGN_CHAPTERS.forEach((chapter) => {
+    chapter.unlockPrerequisiteNodeIds.forEach((nodeId) => chapterUnlockPrerequisiteNodeIds.add(nodeId));
+  });
+
+  CAMPAIGN_CHAPTERS.filter((chapter) => !chapter.isUpcoming).forEach((chapter) => {
+    const chapterNodeIds = new Set(chapter.nodeIds);
+    const reachable = new Set<string>();
+    let changed = true;
+
+    while (changed) {
+      changed = false;
+      chapter.nodeIds.forEach((nodeId) => {
+        const node = nodeById.get(nodeId);
+        if (!node || reachable.has(nodeId)) {
+          return;
+        }
+        const prerequisitesReachable = node.prerequisites.every((prerequisiteId) =>
+          chapterNodeIds.has(prerequisiteId) ? reachable.has(prerequisiteId) : chapter.unlockPrerequisiteNodeIds.includes(prerequisiteId)
+        );
+        if (prerequisitesReachable) {
+          reachable.add(nodeId);
+          changed = true;
+        }
+      });
+    }
+
+    if (chapter.nodeIds.length > 0 && reachable.size === 0) {
+      errors.push(`Campaign chapter ${chapter.id} has no reachable entry node.`);
+    }
+    chapter.nodeIds.forEach((nodeId) => {
+      if (nodeById.has(nodeId) && !reachable.has(nodeId)) {
+        errors.push(`Campaign chapter ${chapter.id} cannot reach node ${nodeId} from its chapter entry/prerequisite graph.`);
+      }
+    });
+  });
+
+  CAMPAIGN_NODES.forEach((node) => {
+    const hasContinuation =
+      node.unlocks.length > 0 || nodeIdsRequiredByOtherNodes.has(node.id) || chapterUnlockPrerequisiteNodeIds.has(node.id);
+    if (node.nodeType === "battle" && !node.isPlaceholder && !hasContinuation) {
+      errors.push(`Campaign battle node ${node.id} has no unlock, prerequisite dependent, or chapter continuation.`);
+    }
+  });
+}
+
 function validateCampaignModifierCaptureBonuses(
   modifier: (typeof CAMPAIGN_MODIFIERS)[number],
   errors: string[],
@@ -345,6 +379,33 @@ function campaignChoiceHasVisibleEffect(choice: Parameters<typeof validateCampai
       (choice.removeModifierIds?.length ?? 0) > 0 ||
       hasNonZeroRecord(choice.reputationChanges)
   );
+}
+
+function campaignChoiceHasNodeFlowEffect(choice: CampaignNodeChoiceDefinition): boolean {
+  return Boolean(
+    (choice.unlockNodeIds?.length ?? 0) > 0 ||
+      (choice.lockNodeIds?.length ?? 0) > 0 ||
+      (choice.rewards?.unlockNodeIds?.length ?? 0) > 0 ||
+      (choice.rewards?.lockNodeIds?.length ?? 0) > 0
+  );
+}
+
+function validateOneTimeTownItemService(
+  node: CampaignNodeDefinition,
+  choice: CampaignNodeChoiceDefinition,
+  errors: string[]
+): void {
+  const itemIds = choice.rewards?.itemIds ?? [];
+  if (node.nodeType !== "town" || !choice.onceOnly || itemIds.length === 0) {
+    return;
+  }
+  if (!choice.stockItemId) {
+    errors.push(`Campaign town choice ${node.id}:${choice.id} grants one-time items without a stockItemId duplicate guard.`);
+    return;
+  }
+  if (!itemIds.includes(choice.stockItemId)) {
+    errors.push(`Campaign town choice ${node.id}:${choice.id} stock item ${choice.stockItemId} is not in its item rewards.`);
+  }
 }
 
 function hasNonZeroRecord(record: Partial<Record<string, number>> | undefined): boolean {

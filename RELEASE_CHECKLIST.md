@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 40 test files, 290 tests
+PASS: 40 test files, 294 tests
 ```
 
 2. Standalone content validation:
@@ -45,7 +45,7 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-BMQ_4xND.js, 439.61 kB / gzip 118.07 kB
+- app JS chunk: assets/index-X0lfuOZ2.js, 442.16 kB / gzip 118.76 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
 - CSS chunk: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB
 ```
