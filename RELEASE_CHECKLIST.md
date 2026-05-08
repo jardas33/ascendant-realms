@@ -143,6 +143,7 @@ npm run preview
 Open the local preview URL and confirm:
 
 - Main menu renders `Prototype v0.3` and `Cinderfen Route Baseline`.
+- Tutorial / Proving Grounds launches and exits without crashing.
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
@@ -172,6 +173,7 @@ After build-output or chunking changes, run a production preview smoke when feas
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
 - Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
 - Full human-paced Cinderfen route from Ashen Outpost through Overlook, Waystation, Crossing, Watch, and Aftermath, including Cinder Shrine surge/attunement readability and modest reward feel.
+- Full human-paced Tutorial / Proving Grounds run, especially twelve-step length, mobile-short overlay readability, building/training/rally timing, and no-reward completion clarity.
 - HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.
 - Audio behavior with human ears.
 - Visual polish across generated/manual UI-kit assets.
@@ -188,5 +190,6 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` plan future systems without implementing them.
 - `docs/V04_POLISH_BACKLOG.md` records safe/medium-risk/high-risk/blocked tiny polish candidates.
 - `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md` summarizes the v0.5 save, content-validation, determinism, and expansion-readiness gate.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to the Tutorial / Proving Grounds playable shell after the full v0.5 gate is green.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.5 safety gate and warns future sessions not to add broad systems before their gates are explicit and green.
+- `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`, `docs/TUTORIAL_SAVE_PERSISTENCE_AUDIT.md`, `docs/TUTORIAL_CONTENT_VALIDATION_GATE.md`, and `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` summarize the first playable Tutorial / Proving Grounds shell.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, and the first no-reward Tutorial / Proving Grounds shell as done, with the next phase set to human-paced tutorial review and small polish.
+- `LLM_GAME_HANDOFF.md` marks the current state as the playable tutorial shell on top of the v0.5 safety gate and warns future sessions not to add broad systems before their gates are explicit and green.

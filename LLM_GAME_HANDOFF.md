@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds readability review added
+Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell report added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -155,6 +155,15 @@ Phase 11 Tutorial readability/mobile surrogate review:
 - Updated e2e lane docs for the new 25-test layout lane and the expected 65-test full release gate after Phase 11.
 - No gameplay behavior, save behavior, rewards, campaign progression, map, unit, faction, balance, worker, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external asset, or broad system changed.
 - Verification: focused `npm run test:e2e:layout -- --grep "tutorial entry"` PASS, 4 tests in 48.0s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run test:e2e:layout` PASS, 25 tests in 13.1m.
+
+Phase 12 Tutorial release report:
+
+- Added `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, and this handoff so the playable no-reward tutorial shell is the current post-v0.5 vertical slice.
+- Documented the launch path, reused content, twelve steps, no-reward policy, save/persistence policy, tests added, e2e lane impact, known risks, next recommended improvement, and explicitly postponed systems.
+- Current recommended next work after the final full gate is human-paced Tutorial / Proving Grounds review and small tutorial polish, not content expansion.
+- No gameplay behavior, save behavior, rewards, campaign progression, map, unit, faction, balance, worker, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external asset, or broad system changed in this phase.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes with no telemetry diff.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 
@@ -371,19 +380,19 @@ git status -sb: ## main...origin/main [ahead 15]
 git rev-list --left-right --count origin/main...HEAD: 0 15
 ```
 
-Remaining risks:
+Remaining v0.5-era risks, superseded by the playable tutorial shell status above:
 
 - Human route feel/readability still needs review, especially Cinder Shrine salience, Waystation/Aftermath density, and route-complete clarity.
 - Fast Army quick-clear feel and Retinue plus Training Yard II strength remain human-playtest watch items.
 - The known Phaser vendor chunk warning remains.
 - Playwright release lane is green but still slow; shard 1 remains the long shard.
-- Tutorial / Proving Grounds is selected and scaffolded as metadata only; it is not playable yet.
+- Tutorial / Proving Grounds was selected and scaffolded as metadata only at v0.5 final, and has since been implemented as the playable no-reward shell described above.
 
-Next recommended long-running goal:
+Completed v0.5-era recommended long-running goal:
 
-- Implement the first Tutorial / Proving Grounds playable shell using existing content only.
-- Keep it non-rewarding at first, validation-first, and save-compatible.
-- Add no new map, unit, faction, worker system, enemy construction, crafting, diplomacy, procedural generation, multiplayer, broad loot complexity, or save-version bump.
+- The first Tutorial / Proving Grounds playable shell has been implemented using existing content only.
+- It remains non-rewarding, validation-first, save-compatible, and non-persistent.
+- It added no new map, unit, faction, worker system, enemy construction, crafting, diplomacy, procedural generation, multiplayer, broad loot complexity, or save-version bump.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 

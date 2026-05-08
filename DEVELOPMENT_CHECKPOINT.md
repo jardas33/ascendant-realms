@@ -1,6 +1,43 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 14:54:30 -04:00
+Updated: 2026-05-08 18:11:29 -04:00
+
+## Tutorial / Proving Grounds Playable Shell Report Checkpoint - 2026-05-08 18:11:29 -04:00
+
+Scope: checkpoint the first playable Tutorial / Proving Grounds shell documentation before the final full release-style verification. This pass preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate. It did not add maps, units, factions, rewards, save-version changes, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Included work:
+
+- Added `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`.
+- Updated README, roadmap, release checklist, changelog, and handoff status for the no-reward playable tutorial shell.
+- Documented launch path, reused content, twelve tutorial steps, no-reward policy, save/persistence policy, tests added, e2e lane impact, known risks, and next recommended improvement.
+- Confirmed the next recommended work is human-paced tutorial review and small polish, not content expansion.
+
+Phase 12 report verification:
+
+```text
+npm test
+PASS: 42 test files, 315 tests, 10.70s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-BArZgVc-.js, 459.27 kB minified / 123.49 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-EaFx5BCM.css, 43.77 kB minified / 9.02 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 4.8m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+```
+
+Recommended next milestone after the final full gate: human-play Tutorial / Proving Grounds, then do only small tutorial polish around copy, overlay hierarchy, completion clarity, and layout spacing unless a verified bug requires a narrow fix.
 
 ## Final v0.5 Save Content Validation Gate - 2026-05-08 14:54:30 -04:00
 

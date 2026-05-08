@@ -1,5 +1,38 @@
 # Changelog
 
+## Tutorial / Proving Grounds Playable Shell - 2026-05-08
+
+This checkpoint implements the first playable Tutorial / Proving Grounds shell on top of the v0.5 safety gate. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate. It does not add rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, campaign progression, or broad systems.
+
+### Included
+
+- Main-menu Tutorial launch surface.
+- Validated playable tutorial metadata for `proving_grounds_basics`.
+- Dedicated `tutorial` battle launch mode with rewards disabled.
+- Existing-content Tutorial / Proving Grounds shell on `first_claim` using transient Warlord Aster data.
+- Lightweight tutorial HUD overlay with current objective, instruction, hint, progress, completion condition, Next Objective, Complete Tutorial, and Exit Tutorial.
+- Linear twelve-step objective model for camera, selection, movement, capture, resources, Command Hall, Barracks, Militia, rally point, Rally Banner, safe pressure, and completion.
+- Non-persistent no-reward completion and exit paths back to the main menu.
+- XP/veterancy guard for rewards-disabled tutorial kills.
+- Save/persistence audit, tutorial content-validation gate, readability surrogate review, and playable-shell report.
+- Unit, content-validation, smoke e2e, and layout e2e coverage for the tutorial shell.
+
+### Verification
+
+- Phase 12 report verification passed.
+- `npm test`: passed with 42 test files and 315 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run validate:content`: passed.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 4.8m.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes and no telemetry diff.
+- `git diff --check`: passed.
+
+### Next
+
+- Human-play Tutorial / Proving Grounds for length, clarity, mobile readability, building/training/rally timing, and no-reward completion clarity.
+- Keep follow-up polish small: copy tightening, overlay hierarchy, completion clarity, and layout spacing only.
+- Continue postponing rewards, campaign integration, save persistence, new maps, new units, new factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, and broad systems until their gates are explicit and green.
+
 ## v0.5 Save Content Validation Gate - 2026-05-08
 
 This checkpoint builds the v0.5 safety foundation before broad mechanics or new content expansion. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. It does not add playable tutorial content, gameplay balance changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
