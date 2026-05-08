@@ -78,6 +78,17 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await expect(page.getByTestId("tutorial-objective")).toContainText("Camera Controls");
+    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12");
+    const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
+    const viewport = page.viewportSize();
+    expect(overlayBox).not.toBeNull();
+    expect(viewport).not.toBeNull();
+    if (overlayBox && viewport) {
+      expect(overlayBox.x).toBeGreaterThanOrEqual(-2);
+      expect(overlayBox.x + overlayBox.width).toBeLessThanOrEqual(viewport.width + 2);
+    }
     await expect(page.getByTestId("tutorial-info-panel")).toHaveCount(0);
     await expect(page.getByTestId("skirmish-setup")).toHaveCount(0);
     const tutorialLaunch = await page.evaluate(() => {
@@ -101,7 +112,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
-    await page.locator('button[data-action="menu"]').click();
+    await page.getByTestId("tutorial-exit").click();
     await expect(page.getByTestId("main-menu")).toBeVisible();
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();

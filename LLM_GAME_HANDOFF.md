@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds guided objective model added
+Last updated: 2026-05-08 Tutorial / Proving Grounds overlay added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -89,6 +89,22 @@ Phase 5 guided objective model:
 - Added `src/game/tutorial/TutorialStepModel.test.ts` with seven tests covering step ordering, current-step view models, next-step transition, final-step behavior, invalid step IDs, progress labels, simple completion signals, and readable labels.
 - No UI overlay, gameplay behavior, launch behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system changed in this phase.
 - Verification: focused `npm test -- src/game/tutorial/TutorialStepModel.test.ts` PASS, 7 tests; `npm test` PASS, 41 files / 309 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS.
+- Commit: `1d4dac0 Checkpoint tutorial guided objective model`.
+
+Phase 6 Tutorial UI overlay:
+
+- Added `src/game/ui/hudPanels/TutorialPanel.ts` and `TutorialPanel.test.ts`.
+- Extended HUD snapshots with an optional tutorial step view model and render the tutorial panel only in tutorial mode.
+- Added a lightweight overlay that shows Proving Grounds, current objective, instruction, optional hint, progress, completion condition, and Exit Tutorial.
+- Kept the overlay pointer-light so only the Exit Tutorial button consumes pointer input; canvas controls remain reachable around the panel.
+- Wired `BattleScene` to create the current tutorial step snapshot from `proving_grounds_basics` metadata when `launch.request.mode === "tutorial"`.
+- Added responsive CSS in `battle-feedback.css` for desktop/tablet/mobile width constraints.
+- Updated smoke coverage to assert the overlay is visible, starts at Camera Controls, shows Step 1 of 12, stays within viewport width, and exits through the explicit `tutorial-exit` button.
+- The first smoke run exposed a deterministic test selector issue because both the top HUD Menu and overlay Exit Tutorial used `data-action="menu"`. The test was fixed to click `tutorial-exit`; focused tutorial smoke then passed, followed by the full smoke lane.
+- Updated `README.md` and `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md` to describe the overlay status.
+- No automatic step progression, full tutorial completion flow, gameplay balance change, campaign reward, tutorial reward, save field, save version, map, unit, faction, campaign progression, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
+- Verification: focused overlay/model tests PASS, 9 tests; `npm test` PASS, 42 files / 311 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; focused tutorial smoke PASS, 1 test in 24.1s; `npm run test:e2e:smoke` PASS, 11 tests in 6.0m.
+- Current build output after tutorial overlay: app JS `assets/index-BJCK4qGY.js`, 456.57 kB / gzip 122.91 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-EaFx5BCM.css`, 43.77 kB / gzip 9.02 kB.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

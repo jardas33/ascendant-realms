@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: design plus first playable shell. The current Tutorial / Proving Grounds path defines validated metadata and launches a no-reward shell on existing First Claim content, but it does not yet implement the full guided overlay/objective flow, add a map, add units, add rewards, add save fields, or persist completion.
+Status: design plus first playable shell and overlay. The current Tutorial / Proving Grounds path defines validated metadata and launches a no-reward shell on existing First Claim content with a lightweight objective overlay, but it does not yet implement automatic step progression, full tutorial completion, new maps, new units, rewards, save fields, or persisted completion.
 
 ## 1. Purpose
 
@@ -200,7 +200,8 @@ Current metadata/runtime status:
 - `proving_grounds_basics` is `playable` as a shell.
 - It is selectable from the main menu through the Tutorial button.
 - It launches existing `first_claim` battle content in tutorial mode with rewards disabled.
-- It does not yet show the full guided tutorial overlay or complete the full step sequence.
+- It shows the first guided objective overlay.
+- It does not yet advance through or complete the full step sequence.
 - It does not grant rewards.
 - It does not persist progress.
 

@@ -95,3 +95,110 @@
   backdrop-filter: blur(5px);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }
+
+.tutorial-panel {
+  position: absolute;
+  left: 50%;
+  top: 106px;
+  width: min(460px, calc(100vw - 420px));
+  min-width: 280px;
+  transform: translateX(-50%);
+  display: grid;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid rgba(240, 217, 120, 0.38);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.12), rgba(6, 9, 9, 0.72), rgba(240, 217, 120, 0.1)),
+    linear-gradient(180deg, rgba(255, 246, 200, 0.08), rgba(5, 8, 8, 0.58)),
+    rgba(12, 15, 15, 0.84);
+  color: #eef2df;
+  font-size: 12px;
+  line-height: 1.28;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 200, 0.12),
+    0 12px 30px rgba(0, 0, 0, 0.34);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(5px);
+  pointer-events: none;
+}
+
+.tutorial-panel-header,
+.tutorial-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tutorial-panel-header span,
+.tutorial-panel-footer span {
+  color: #aee6d7;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tutorial-panel-header b {
+  color: #f6e49a;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tutorial-panel strong {
+  color: #f6edb4;
+  font-size: 15px;
+  line-height: 1.12;
+}
+
+.tutorial-panel p,
+.tutorial-panel small {
+  margin: 0;
+  color: #d9eee8;
+}
+
+.tutorial-panel small {
+  color: #c7d6cb;
+}
+
+.tutorial-panel button {
+  pointer-events: auto;
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+@media (max-width: 980px) {
+  .tutorial-panel {
+    width: min(460px, calc(100vw - 32px));
+  }
+}
+
+@media (max-width: 520px) {
+  .tutorial-panel {
+    top: 112px;
+    width: min(360px, calc(100vw - 160px));
+    min-width: 0;
+    max-height: 146px;
+    overflow: auto;
+    padding: 8px;
+    gap: 5px;
+    font-size: 11px;
+  }
+
+  .tutorial-panel-header,
+  .tutorial-panel-footer {
+    align-items: start;
+    display: grid;
+    gap: 4px;
+  }
+
+  .tutorial-panel strong {
+    font-size: 13px;
+  }
+
+  .tutorial-panel button {
+    min-height: 32px;
+    padding: 6px 8px;
+  }
+}

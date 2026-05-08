@@ -25,6 +25,7 @@ import { ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
+import { TUTORIALS } from "../data/tutorials";
 import {
   UNIT_VETERANCY_XP_RULES,
   createUnitVeterancyBattleSummary,
@@ -77,6 +78,7 @@ import type { HeroSaveData } from "../save/SaveTypes";
 import type { SaveSettingsData } from "../save/SaveTypes";
 import { FloatingText } from "../ui/FloatingText";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
+import { createTutorialStepViewModel, firstTutorialStepId, type TutorialStepViewModel } from "../tutorial/TutorialStepModel";
 import { AudioManager } from "../systems/AudioManager";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
@@ -157,6 +159,7 @@ export class BattleScene extends Phaser.Scene {
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
   private tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
+  private tutorialStepId?: string;
   private commandHallWarningCooldown = 0;
   private minimapPings: MinimapPing[] = [];
   private nextMinimapPingId = 1;
@@ -270,6 +273,7 @@ export class BattleScene extends Phaser.Scene {
     this.statusMessage = "Capture resource sites to grow your army.";
     this.statusTimer = 4;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
+    this.tutorialStepId = undefined;
     this.commandHallWarningCooldown = 0;
     this.minimapPings = [];
     this.nextMinimapPingId = 1;
@@ -810,6 +814,7 @@ export class BattleScene extends Phaser.Scene {
       isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
       status: this.statusMessage,
       hint: this.tutorialHint,
+      tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot()
@@ -1015,6 +1020,18 @@ export class BattleScene extends Phaser.Scene {
       unitsTrained: this.runtime.stats.unitsTrained,
       enemyWavesSurvived: this.runtime.stats.enemyWavesSurvived
     });
+  }
+
+  private createTutorialStepSnapshot(): TutorialStepViewModel | undefined {
+    if (this.launch.request.mode !== "tutorial") {
+      return undefined;
+    }
+    const tutorial = TUTORIALS.find((entry) => entry.id === this.launch.request.sourceId) ?? TUTORIALS[0];
+    const stepId = this.tutorialStepId ?? firstTutorialStepId(tutorial);
+    if (!stepId) {
+      return undefined;
+    }
+    return createTutorialStepViewModel(tutorial, stepId);
   }
 
   private warnIfCommandHallUnderAttack(target: BaseEntity): void {

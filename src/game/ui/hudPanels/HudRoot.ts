@@ -12,6 +12,7 @@ import { renderObjectives } from "./ObjectivePanel";
 import { renderPlacementBanner } from "./PlacementPanel";
 import { renderResources } from "./ResourceBar";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
+import { renderTutorialPanel } from "./TutorialPanel";
 
 export function renderHud(snapshot: HUDSnapshot): string {
   const selected = snapshot.selected.filter((entity) => entity.alive);
@@ -35,6 +36,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
     </div>
     ${renderMinimapPanel(snapshot.minimap)}
     ${renderObjectives(snapshot.objectives)}
+    ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPlacementBanner(snapshot.isPlacing)}
     ${renderStatusLine(snapshot.status, snapshot.isPlacing)}
     ${renderHintLine(snapshot.hint)}
