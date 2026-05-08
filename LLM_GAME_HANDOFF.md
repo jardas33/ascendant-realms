@@ -1,12 +1,37 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds playable shell final gate green
+Last updated: 2026-05-08 v0.6 tutorial onboarding foundation in progress
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.6 Tutorial Onboarding Foundation Goal - 2026-05-08
+
+Mission: polish and harden the playable Tutorial / Proving Grounds shell, add a test-only semantic command-log V1 foundation if safe, and document long-term desktop/2026 visual direction without implementing desktop packaging, new visuals, rewards, campaign integration, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, external assets, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 42 files / 315 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-BArZgVc-.js, 459.27 kB / gzip 123.49 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-EaFx5BCM.css, 43.77 kB / gzip 9.02 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 Tutorial human-feel surrogate audit:
+
+- Added `docs/V06_TUTORIAL_FEEL_AUDIT.md`.
+- Reviewed the playable tutorial using metadata, step-model, overlay, CSS, smoke e2e, layout e2e, no-reward tests, and release docs rather than manual play.
+- Current evidence: one playable tutorial, 12 steps, noReward true, longest instruction 16 words / 89 characters, longest hint 13 words / 82 characters, full tutorial smoke coverage, and first-overlay layout coverage across desktop/tablet/mobile-short/mobile-tall.
+- Main findings: the tutorial order is coherent, e2e coverage is useful, no-reward/no-save behavior is well protected, but first-contact length, player-facing safe-pressure copy, no-reward completion satisfaction, and mobile-short readability still need human review and small polish.
+- No code, gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed in this phase.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
