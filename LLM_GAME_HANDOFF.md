@@ -129,6 +129,15 @@ Phase 8 Tutorial e2e and layout coverage:
 - Phase 8 verification: `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `npm run test:e2e:release` PASS, 61 tests in 32.1m; `git diff --check` PASS.
 - Updated `README.md`, `RELEASE_CHECKLIST.md`, `docs/E2E_RUNTIME_AUDIT.md`, and `docs/E2E_CI_SHARDING_PLAN.md` with the 12-test smoke lane, 61-test release lane, tutorial coverage, and current runtime expectations.
 
+Phase 9 Tutorial save/persistence audit:
+
+- Added `docs/TUTORIAL_SAVE_PERSISTENCE_AUDIT.md`.
+- Audited tutorial launch, runtime, completion, Results bypass, settings reads, and save-writing surfaces.
+- Current tutorial behavior is non-persistent: it creates only transient Aster launch data, reads but does not write settings, returns to the main menu on completion/exit, and does not write hero, campaign, inventory, equipment, XP, skills, resources, event choices, town services, Stronghold upgrades, retinue, rivals, trophies, or save-version state.
+- Existing coverage was sufficient for current scope: launch request tests enforce rewards-disabled tutorial launches, runtime tests prove no-reward completion returns the starting hero and zero XP/rewards, and smoke e2e proves tutorial completion/exit do not create localStorage saves and tutorial pressure grants no live hero XP.
+- Documented the future gap to test settings-only preservation if tutorial completion ever becomes persistent.
+- Verification: `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
+
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 
 Mission: build a serious v0.5 safety foundation before any broad mechanics or new content expansion. This goal must preserve the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. Do not add gameplay content, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, broad loot complexity, or broad army-management systems.
