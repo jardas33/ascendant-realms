@@ -65,10 +65,10 @@ tests/fixtures/saves/
 
 This keeps fixtures out of the production source tree and makes it obvious that production code must not import them.
 
-Because `tsconfig.json` currently includes only `src`, fixture helper code should live under `src` only if it is test utility code used by Vitest and is not imported by runtime modules. The preferred implementation is:
+Because `tsconfig.json` currently includes only `src`, the implemented fixture helper code lives beside the fixtures under `tests/fixtures/saves/`:
 
 ```text
-src/game/save/SaveFixtureTestUtils.ts
+tests/fixtures/saves/SaveFixtureTestUtils.ts
 ```
 
 Runtime code must not import `SaveFixtureTestUtils.ts`, and fixture JSON must remain under `tests/fixtures/saves/`.

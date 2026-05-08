@@ -48,6 +48,16 @@ Phase 3 fixture-based migration and normalization tests:
 - Covered invalid JSON/import safety, settings-only non-playable saves, V1 to V2 migration, V2 campaign progress, resources, event choices, town purchases, Stronghold upgrades, affixed item instances, legacy equipment catalog IDs, retinue, rival state, rival trophies, Cinderfen route progress, selected Chapter 2 state, missing optional fields, future-ish unknown fields, and a fixture sweep proving every current fixture loads through the migration path.
 - No production save behavior, save version, gameplay, balance, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
 - Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run test:e2e:smoke` PASS, 10 tests in 4.7m; `git diff --check` PASS.
+- Commit: `67a8b82 Checkpoint v0.5 migration fixture tests`.
+
+Phase 4 save compatibility report:
+
+- Updated `docs/SAVE_COMPATIBILITY_AUDIT.md` for the v0.5 fixture gate.
+- Added `docs/V05_SAVE_FIXTURE_REPORT.md`.
+- Corrected `docs/V05_SAVE_FIXTURE_PLAN.md` so the implemented helper location matches `tests/fixtures/saves/SaveFixtureTestUtils.ts`.
+- Documented the fixture list, covered migration paths, unsupported old save shapes, current save version policy, future migration fixture procedure, save-version bump requirements, protected retinue/rival/affix/Chapter 2 domains, and remaining future fixture gaps.
+- No code, fixtures, save behavior, save version, gameplay, balance, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
