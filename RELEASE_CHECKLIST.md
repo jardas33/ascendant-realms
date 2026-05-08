@@ -187,5 +187,6 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md` records the automated route-feel surrogate review and remaining human-feel watch items.
 - `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` plan future systems without implementing them.
 - `docs/V04_POLISH_BACKLOG.md` records safe/medium-risk/high-risk/blocked tiny polish candidates.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to the v0.5 save/content-validation gate.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.4 overnight autonomous progress checkpoint and warns future sessions not to add broad systems before their gates are explicit and green.
+- `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md` summarizes the v0.5 save, content-validation, determinism, and expansion-readiness gate.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to the Tutorial / Proving Grounds playable shell after the full v0.5 gate is green.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.5 safety gate and warns future sessions not to add broad systems before their gates are explicit and green.

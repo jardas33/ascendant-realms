@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.5 Save Content Validation Gate - 2026-05-08
+
+This checkpoint builds the v0.5 safety foundation before broad mechanics or new content expansion. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. It does not add playable tutorial content, gameplay balance changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
+
+### Included
+
+- File-backed save fixtures and test utilities under `tests/fixtures/saves/`.
+- Fixture-based save migration and normalization tests for V1, V2, settings-only, invalid JSON, affixed inventory, legacy equipment, campaign progress, retinue, rivals, trophies, Chapter 2, and Cinderfen route state.
+- Expanded save compatibility documentation and current save-version policy; save version remains `2`.
+- Stronger content validation for campaign graph references, maps, reward tables, repeat rewards, event/town effects, modifiers, map objectives, enemy AI references, and tutorial metadata.
+- Standalone `npm run validate:content` gate.
+- Campaign graph and reward economy report.
+- Command-log replay feasibility study recommending a future test-only semantic replay slice, not production replay.
+- Simulator determinism report and tests locking the simulator matrix/schema and deterministic summary behavior.
+- Candidate A, Tutorial / Proving Grounds, selected as the future vertical-slice candidate.
+- Tutorial / Proving Grounds design brief plus a non-playable metadata-only scaffold.
+
+### Verification
+
+- Phase 14 documentation-gate verification passed.
+- `npm test`: passed with 40 test files and 298 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run validate:content`: passed.
+- `npm run test:e2e:smoke`: passed with 10 Playwright tests in 4.7m.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: passed.
+- Phase 15 will run the full release gate, release shards, simulator, diff check, and production preview smoke.
+
+### Next
+
+- Recommended next long-running goal after full v0.5 verification: implement the first Tutorial / Proving Grounds playable shell using existing content only.
+- Keep the first tutorial implementation non-rewarding, validation-first, and save-compatible.
+- Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, monetization code, and broad army-management systems until their gates are explicit and green.
+
 ## v0.4 Overnight Autonomous Progress Checkpoint - 2026-05-08
 
 This checkpoint completes the extended v0.4 technical, UX, save-safety, route-review, and planning pass while preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It does not add gameplay, change balance, alter save format, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad systems.

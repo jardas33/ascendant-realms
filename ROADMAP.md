@@ -11,23 +11,26 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest checkpoint is **v0.4 overnight autonomous progress** on 2026-05-08. It preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release while strengthening measurement docs, e2e sharding docs, test-only flake hardening, Settings readability copy, save compatibility coverage, route-feel surrogate review, full-game architecture planning, and the tiny polish backlog.
+The latest checkpoint is the **v0.5 save/content-validation gate** on 2026-05-08. It preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork while adding save fixtures, stronger content validation, a standalone content validation script, campaign graph/reward checks, command-log feasibility planning, simulator determinism checks, and one approved future vertical-slice candidate.
 
-New v0.4 planning/readability docs:
+New v0.5 gate docs:
 
-- `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`
 - `docs/SAVE_COMPATIBILITY_AUDIT.md`
-- `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`
-- `docs/FULL_GAME_ROADMAP.md`
-- `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`
-- `docs/V05_SYSTEMS_DESIGN_BRIEF.md`
-- `docs/V04_POLISH_BACKLOG.md`
+- `docs/V05_SAVE_FIXTURE_PLAN.md`
+- `docs/V05_SAVE_FIXTURE_REPORT.md`
+- `docs/V05_CONTENT_VALIDATION_AUDIT.md`
+- `docs/CAMPAIGN_GRAPH_REWARD_GATE.md`
+- `docs/COMMAND_LOG_REPLAY_FEASIBILITY.md`
+- `docs/SIMULATOR_DETERMINISM_GATE.md`
+- `docs/V05_VERTICAL_SLICE_CANDIDATE.md`
+- `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md`
+- `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md`
 
-Latest final verification: `npm test` 271 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 27.8m, `npm run test:e2e:release:shard1` 49 tests, `npm run test:e2e:release:shard2` 10 tests, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 436.35 kB / 117.34 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
+Latest Phase 14 documentation-gate verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.7m, `npm run playtest:sim` 255 deterministic runs, and `git diff --check` passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
-Recommended next phase: **v0.5 save/content-validation gate**. Prepare save migration tests, future content validation plans, deterministic command-log feasibility notes, and one approved vertical-slice candidate before implementing broad mechanics.
+Recommended next phase after final v0.5 verification: **Tutorial / Proving Grounds playable shell**, using existing systems only and starting with no rewards, no save-version bump, no new map, no new units, and no new faction.
 
-The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.4 overnight autonomous progress checkpoint is now the active post-freeze technical/planning baseline.
+The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is now the active post-freeze safety/planning baseline.
 
 Latest checkpoint verification: 2026-05-08. `npm test`, `npm run build`, `npm run test:e2e:smoke`, `npm run test:e2e:release`, `npm run test:e2e:release:shard1`, `npm run test:e2e:release:shard2`, `npm run playtest:sim`, `git diff --check`, and production preview smoke passed. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, monetization code, or multiplayer was added.
 
@@ -60,8 +63,8 @@ Completed v0.3 Cinderfen route:
 
 Next phase:
 
-- **v0.4 planning, analyzer-guided technical optimization, or human readability/accessibility review**.
-- Best current work is choosing one focused follow-up: analyzer-guided performance measurement, a second safe optimization, or a human readability pass on the frozen route.
+- **Tutorial / Proving Grounds playable shell**, only after the full v0.5 gate is green.
+- Best current work is a narrow onboarding shell that reuses current maps/units/buildings if feasible and does not add new broad systems.
 - v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
 - v0.3.1 release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
 - v0.4 direction brief: `docs/V04_DIRECTION_BRIEF.md`.

@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer and v0.4 now serving as technical, UX, save-safety, and planning groundwork. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
+Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, and v0.5 adding a save, content-validation, determinism, and expansion-readiness gate. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -17,6 +17,7 @@ Current v0.3 feature snapshot:
 - CampaignRules split into focused pure-rule modules behind a compatibility facade.
 - HUD/fog polish for stable command hover, side-panel scroll preservation, and captured-site local reveal behavior.
 - Cinderfen reward-economy audit and Chapter 2 Playwright helper cleanup, with first-clear rewards useful and repeat rewards kept tiny.
+- v0.5 save fixture tests, standalone content validation, campaign graph/reward validation, simulator determinism checks, and a non-playable Tutorial / Proving Grounds metadata scaffold for future onboarding work.
 
 ## Design Pillars
 
@@ -113,7 +114,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.4 overnight checkpoint status, 2026-05-08: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.5 gate checkpoint status, 2026-05-08: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, Cinderfen Crossing and Cinderfen Watch covered, and Cinderfen repeat rewards reduced to tiny non-item payouts.
 
 ## Preview A Build
 
@@ -314,6 +315,7 @@ Good next prompts are specific and small. Examples:
 - "Split maps.ts into one file per map without changing map behavior."
 - "Improve formation movement and dynamic path blockers without changing combat balance."
 - "Add a respec button to the hero progression screen."
+- "Implement the first Tutorial / Proving Grounds playable shell using existing content only, with no rewards and no save-version bump."
 
 ## Troubleshooting
 

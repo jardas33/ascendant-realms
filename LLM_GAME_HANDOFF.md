@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.5 save/content validation gate in progress
+Last updated: 2026-05-08 v0.5 save/content validation gate Phase 14 documentation checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -146,6 +146,14 @@ Phase 13 metadata-only tutorial scaffold:
 - Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.6m; `git diff --check` PASS.
 - Current build output after metadata scaffold: app JS `assets/index-Caz7zKca.js`, 445.42 kB / gzip 119.69 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
 - Commit: `Checkpoint tutorial metadata scaffold`.
+
+Phase 14 v0.5 gate documentation:
+
+- Added `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, and this handoff so the v0.5 safety gate is the current post-freeze baseline.
+- Documented save fixtures, validation rules, standalone validation script, campaign graph/reward checks, command-log feasibility conclusion, simulator determinism conclusion, Tutorial / Proving Grounds selection/brief, skipped broad systems, and the next recommended `/goal`.
+- No gameplay, balance, save version, playable tutorial, UI launch path, map, unit, faction, worker, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad system was added.
+- Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.7m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 

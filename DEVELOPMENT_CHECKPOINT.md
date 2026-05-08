@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 03:58:50 -04:00
+Updated: 2026-05-08 13:50:00 -04:00
+
+## v0.5 Save Content Validation Gate Documentation Checkpoint - 2026-05-08 13:50:00 -04:00
+
+Scope: checkpoint the v0.5 save, content-validation, determinism, and expansion-readiness gate documentation before the final full release-style verification. This pass preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. It did not add playable tutorial content, change gameplay balance, bump the save version, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, add multiplayer, or add broad systems.
+
+Included work:
+
+- Added fixture-based save migration and normalization coverage for legacy V1, V2 campaign progress, settings-only saves, invalid JSON, affixed inventory, legacy equipment, retinue, rivals, trophies, Chapter 2 selection, Cinderfen route progress, missing optional fields, and future-ish unknown fields.
+- Added stronger content validation and `npm run validate:content`.
+- Added campaign graph/reward validation and documentation.
+- Added command-log replay feasibility documentation recommending a future test-only semantic replay slice.
+- Added simulator determinism documentation and tests.
+- Selected Candidate A, Tutorial / Proving Grounds, for future planning.
+- Added the Tutorial / Proving Grounds design brief and a non-playable metadata-only scaffold.
+- Added `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md`.
+
+Phase 14 documentation verification:
+
+```text
+npm test
+PASS: 40 test files, 298 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-Caz7zKca.js, 445.42 kB minified / 119.69 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB minified / 8.74 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.7m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Recommended next milestone after the full v0.5 final gate: implement the first Tutorial / Proving Grounds playable shell using existing content only, with no rewards, no save-version bump, no new map, no new units, no new faction, and no broad systems.
 
 ## v0.4 Overnight Autonomous Progress Checkpoint - 2026-05-08 03:58:50 -04:00
 
