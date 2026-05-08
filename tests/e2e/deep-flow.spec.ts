@@ -1900,18 +1900,48 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       },
       { unitId: trainedMilitiaId, target: rallyPoint }
     );
-    await page.waitForFunction(
-      ({ unitId, target, startDistance }) => {
-        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-        const unit = scene?.units.find((entry: any) => entry.id === unitId);
-        if (!unit) {
-          return false;
+    await advanceBattleSimulation(page, 1, 0.1);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(
+            ({ unitId, target, startDistance }) => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              const unit = scene?.units.find((entry: any) => entry.id === unitId);
+              if (!unit) {
+                return {
+                  found: false,
+                  hasRallyOrder: false,
+                  movedTowardRally: false
+                };
+              }
+              const distanceToRally = Math.hypot(unit.position.x - target.x, unit.position.y - target.y);
+              const moveTargetDistance = unit.moveTarget
+                ? Math.hypot(unit.moveTarget.x - target.x, unit.moveTarget.y - target.y)
+                : undefined;
+              return {
+                found: true,
+                distanceToRally,
+                moveTargetDistance,
+                hasRallyOrder:
+                  moveTargetDistance === undefined ? distanceToRally < 24 : moveTargetDistance < 8,
+                movedTowardRally: distanceToRally < startDistance - 2
+              };
+            },
+            { unitId: trainedMilitiaId, target: rallyPoint, startDistance: startingRallyDistance }
+          ),
+        {
+          message: "Expected the trained militia to keep its Barracks rally order and move toward the rally point.",
+          timeout: 8_000
         }
-        return Math.hypot(unit.position.x - target.x, unit.position.y - target.y) < startDistance - 2;
-      },
-      { unitId: trainedMilitiaId, target: rallyPoint, startDistance: startingRallyDistance },
-      { timeout: 5_000 }
-    );
+      )
+      .toEqual(
+        expect.objectContaining({
+          found: true,
+          hasRallyOrder: true,
+          movedTowardRally: true
+        })
+      );
 
     snapshot = await getBattleSnapshot(page);
     const barracks = snapshot.buildings.find((building: any) => building.team === "player" && building.buildingId === "barracks");

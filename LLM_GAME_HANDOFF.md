@@ -20,6 +20,7 @@ Phase 1 bundle analyzer refresh: committed 5459857 Checkpoint v0.4 bundle analys
 Phase 2 test/dev hook audit refresh: committed e393dd5 Checkpoint v0.4 test hook audit.
 Phase 3 analyzer-backed optimization decision: committed 5748857 Checkpoint v0.4 measured performance optimization. Option D, no code optimization, docs refreshed with current evidence.
 Phase 4 e2e sharding refresh: existing 2-shard scripts verified, docs refreshed, no package/test/script coverage change.
+Phase 5 e2e flake hardening: test-only rally wait robustness in `tests/e2e/deep-flow.spec.ts`, no gameplay or coverage change.
 ```
 
 Current Phase 3 build/performance numbers:
@@ -53,7 +54,17 @@ npm run test:e2e:release:shard1: PASS, 49 tests in 23.0m.
 npm run test:e2e:release:shard2: PASS, 10 tests in 4.2m.
 ```
 
-Next active phase after this checkpoint: Phase 5, e2e flake hardening focused on wait robustness only. Preserve all existing release coverage and do not change gameplay.
+Phase 5 verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts -g "first campaign battle path covers capture" --reporter=line: PASS, 1 test in 30.6s.
+npm test: PASS, 38 files / 270 tests in 9.70s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:deep: PASS, 28 tests in 11.3m.
+npm run test:e2e:release: PASS, 59 tests in 27.1m.
+```
+
+Next active phase after this checkpoint: Phase 6, accessibility/readability polish. Keep changes low risk, avoid balance/progression changes, and do not redesign the UI.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 

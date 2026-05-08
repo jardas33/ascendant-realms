@@ -107,6 +107,44 @@ They are valuable default smoke coverage because the current release baseline is
 
 This duplication increases maintenance risk and makes it harder to optimize setup consistently.
 
+## v0.4 Flake Hardening Continuation
+
+Date: 2026-05-08
+
+Scope: test-only wait robustness in `tests/e2e/deep-flow.spec.ts`. This pass did not change gameplay, balance, production code, selectors, save behavior, campaign rules, or release coverage.
+
+Change made:
+
+- The first campaign battle path still trains a Militia, sets a Barracks rally point, verifies the trained unit keeps the rally order, and verifies the trained unit moves toward the rally point.
+- The fragile final movement wait now advances the battle simulation deterministically for one simulated second after training completes, then uses `expect.poll` to report a clearer failure state.
+- The assertion now checks both the rally order and actual movement, rather than only relying on a short browser-frame-loop `waitForFunction` to observe a two-pixel distance change.
+
+Why this is safer:
+
+- It does not bypass the trained-unit rally behavior being tested.
+- It reduces dependence on live frame timing in a busy Playwright run.
+- It keeps the full deep-flow path intact and leaves coverage in the same spec.
+
+Verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts -g "first campaign battle path covers capture" --reporter=line
+PASS: 1 Playwright test in 30.6s.
+
+npm test
+PASS: 38 test files, 270 tests, 9.70s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:deep
+PASS: 28 Playwright tests in 11.3m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 27.1m.
+```
+
 ## Applied Safe Improvements
 
 Applied in the safe helper pass:
