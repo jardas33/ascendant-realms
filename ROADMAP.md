@@ -11,6 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
+The latest checkpoint is **v0.4 autonomous goal progress** on 2026-05-07. It preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release while adding low-risk Settings readability/accessibility polish and planning-only full-game architecture docs.
+
+New v0.4 planning/readability docs:
+
+- `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`
+- `docs/FULL_GAME_ROADMAP.md`
+- `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`
+- `docs/V05_SYSTEMS_DESIGN_BRIEF.md`
+
+Latest final verification: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 26.1m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 436.32 kB / 117.33 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
+
+Recommended next phase: **v0.5 save/content-validation gate**. Prepare save migration tests, future content validation plans, deterministic command-log feasibility notes, and one approved vertical-slice candidate before implementing broad mechanics.
+
 The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.4 performance, measurement, and e2e sharding groundwork checkpoint is now the active post-freeze technical baseline.
 
 Latest checkpoint verification: 2026-05-07. `npm test`, `npm run build`, `npm run test:e2e:smoke`, `npm run test:e2e:release`, `npm run test:e2e:release:shard1`, `npm run test:e2e:release:shard2`, `npm run playtest:sim`, `git diff --check`, and production preview smoke passed. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, or crafting was added.
@@ -76,6 +89,8 @@ Completed v0.4 technical groundwork:
 - [x] Checkpoint verification passed: `npm test`, `npm run build`, `npm run test:e2e:smoke`, final `npm run test:e2e:release` rerun, `npm run playtest:sim`, and `git diff --check`.
 - [x] Clean verification refresh passed on 2026-05-07: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 28.1m, `npm run playtest:sim` 255 deterministic runs, and `git diff --check`.
 - [x] v0.4 performance/e2e sharding checkpoint passed on 2026-05-07: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 28.8m, both release shards, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke.
+- [x] v0.4 accessibility/readability polish completed for Settings labels, setting hints, UI Scale explanation, Fog of War Override labels, and keyboard/control reference without gameplay or save changes.
+- [x] Full-game roadmap architecture docs created for future workers/economy, enemy construction, faction expansion, campaign chapters, diplomacy/reputation, procedural/skirmish maps, crafting/affix rerolling, multiplayer feasibility, asset pipeline, AI personality expansion, save migration risk, and performance risk.
 
 Must remain stable after the v0.3 freeze:
 

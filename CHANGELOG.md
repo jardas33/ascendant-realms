@@ -1,5 +1,34 @@
 # Changelog
 
+## v0.4 Autonomous Goal Progress Checkpoint - 2026-05-07
+
+This checkpoint advances v0.4 technical/readability planning while preserving the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It does not add gameplay, change balance, alter saves, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad systems.
+
+### Included
+
+- Settings readability/accessibility polish: clearer toggle labels and hints, UI Scale explanation, Fog of War Override labels, and a broader keyboard/control reference.
+- New accessibility plan: `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`.
+- New planning-only full-game architecture docs:
+  - `docs/FULL_GAME_ROADMAP.md`
+  - `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`
+  - `docs/V05_SYSTEMS_DESIGN_BRIEF.md`
+- Existing bundle analyzer, hook audit, no-op second optimization decision, and e2e shard scripts were validated and left behavior-preserving.
+
+### Verification
+
+- `npm test`: passed with 38 test files and 270 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run test:e2e:smoke`: passed with 10 Playwright tests.
+- `npm run test:e2e:release`: passed with 59 Playwright tests in 26.1m.
+- `npm run playtest:sim`: passed with 255 deterministic runs across 85 campaign battle nodes.
+- `git diff --check`: passed.
+- Production preview smoke: passed at `http://127.0.0.1:57705/`; main menu loaded and browser console errors stayed at 0.
+
+### Next
+
+- Recommended next milestone: v0.5 save/content-validation gate before broad mechanics.
+- Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, and broad army-management systems until their gates are explicit and green.
+
 ## v0.3.1 Polish Release Frozen - 2026-05-06
 
 The v0.3.1 polish release is now frozen. v0.3 remains the Cinderfen Route Baseline content release; v0.3.1 is a polish/readability/performance-audit/test-maintenance release on top of that baseline. This freeze does not add gameplay, change balance, refactor code, or add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, durability, or broad systems.

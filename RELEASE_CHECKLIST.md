@@ -31,9 +31,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-*.js, about 435.50 kB / gzip 116.99 kB
+- app JS chunk: assets/index-*.js, about 436.32 kB / gzip 117.33 kB
 - Phaser vendor chunk: assets/vendor-phaser-*.js, about 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB
+- CSS chunk: assets/index-*.css, about 42.04 kB / gzip 8.74 kB
 ```
 
 Known warning:
@@ -84,8 +84,10 @@ Both shards must pass to equal the full release gate. Keep `npm run test:e2e:rel
 Latest local shard verification, 2026-05-07:
 
 ```text
-PASS: shard 1, 49 Playwright tests in 21.9m
-PASS: shard 2, 10 Playwright tests in 5.0m
+Shard 1 first run: one transient deep-flow rally movement timeout.
+Targeted failed test: passed without code changes.
+Shard 1 rerun: passed, 49 Playwright tests in 22.7m.
+Shard 2: passed, 10 Playwright tests in 4.0m.
 ```
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
@@ -132,7 +134,16 @@ Open the local preview URL and confirm:
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
-Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The release baseline candidate is `v0.3 Cinderfen route baseline candidate`, and the visible product copy is `Prototype v0.3`.
+Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
+
+Latest production preview smoke, 2026-05-07:
+
+```text
+PASS: http://127.0.0.1:57705/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: browser console errors stayed at 0.
+```
 
 After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, and browser console errors stay at 0.
 
@@ -156,5 +167,7 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `CHANGELOG.md` describes the current feature baseline.
 - `README.md` has current setup, feature summary, known limitations, and verification counts.
 - `docs/V03_CINDERFEN_ROUTE_BASELINE.md` records the current route, rewards, simulator/e2e summaries, known risks, forbidden next steps, and recommended next steps.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to `automated route readiness + polish freeze`.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.3 Cinderfen route baseline candidate and warns future sessions not to add broad systems before verification/readability/UX polish.
+- `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md` records the v0.4 Settings readability/accessibility pass.
+- `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` plan future systems without implementing them.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, and Aftermath as done, with the next phase set to the v0.5 save/content-validation gate.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.4 autonomous goal progress checkpoint and warns future sessions not to add broad systems before their gates are explicit and green.

@@ -1,6 +1,79 @@
 # Development Checkpoint
 
-Updated: 2026-05-07 21:23:29 -04:00
+Updated: 2026-05-07 23:40:55 -04:00
+
+## v0.4 Autonomous Goal Progress Checkpoint - 2026-05-07 23:40:55 -04:00
+
+Scope: checkpoint the autonomous v0.4 goal pass. This pass preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign rules.
+
+Included work:
+
+- Confirmed the repo started clean and synced with `origin/main`.
+- Re-ran and validated the existing bundle analyzer, bundle report, test/dev hook audit, analyzer-backed no-op optimization decision, and e2e release shard scripts.
+- Added low-risk Settings readability/accessibility polish: clearer accessibility toggle labels, concise setting hints, UI Scale explanation, clearer Fog of War Override labels, and a broader keyboard/control reference.
+- Added `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`.
+- Added planning-only full-game architecture docs:
+  - `docs/FULL_GAME_ROADMAP.md`
+  - `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`
+  - `docs/V05_SYSTEMS_DESIGN_BRIEF.md`
+
+Commits created before this final docs checkpoint:
+
+```text
+9934fb6 Checkpoint v0.4 accessibility readability polish
+29ec5b6 Checkpoint full-game roadmap architecture
+```
+
+Phase 4 shard note:
+
+```text
+npm run test:e2e:release:shard1
+First run: one transient timeout in tests/e2e/deep-flow.spec.ts around the first campaign rally movement assertion.
+Follow-up: the exact failed test passed without code changes, then the full shard1 rerun passed with 49 tests.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests.
+```
+
+Final verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 7.15s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-Bi19pD8P.js, 436.32 kB minified / 117.33 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB minified / 8.74 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 26.1m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 11.3m and tests/e2e/deep-flow.spec.ts 10.7m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 57705
+PASS: Browser Use smoke at http://127.0.0.1:57705/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. The next recommended milestone is a v0.5 save/content-validation gate before any broad mechanics implementation: save migration tests, future content validation rules, a deterministic command-log feasibility note, and one explicitly approved vertical-slice candidate.
 
 ## v0.4 Performance And E2E Sharding Groundwork Checkpoint - 2026-05-07 21:23:29 -04:00
 

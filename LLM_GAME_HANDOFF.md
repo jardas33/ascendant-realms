@@ -1,12 +1,53 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-07 v0.4 performance and e2e sharding checkpoint
+Last updated: 2026-05-07 v0.4 autonomous goal progress checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
+
+The latest autonomous pass preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, broad army-management systems, or save-format changes.
+
+New checkpoint commits:
+
+```text
+9934fb6 Checkpoint v0.4 accessibility readability polish
+29ec5b6 Checkpoint full-game roadmap architecture
+```
+
+The final documentation checkpoint should be committed with:
+
+```text
+Checkpoint v0.4 autonomous goal progress
+```
+
+What changed:
+
+- Settings readability/accessibility polish: clearer toggle labels and hints, UI Scale explanation, Fog of War Override labels, and a broader keyboard/control reference.
+- `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md` records the low-risk accessibility/readability pass and verification.
+- `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` plan future systems without implementing them.
+- Existing bundle analyzer, hook audit, no-op second optimization decision, and e2e shard scripts were validated rather than changed.
+
+Important verification notes:
+
+```text
+npm test: PASS, 38 files / 270 tests.
+npm run build: PASS; app JS 436.32 kB / 117.33 kB gzip, vendor-phaser 1,481.79 kB / 339.86 kB gzip, CSS 42.04 kB / 8.74 kB gzip. Known Phaser vendor warning remains.
+npm run test:e2e:smoke: PASS, 10 tests in 4.2m.
+npm run test:e2e:layout: PASS, 21 tests in 11.4m during Phase 5.
+npm run test:e2e:release: PASS, 59 tests in 26.1m.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+Production preview smoke: PASS at http://127.0.0.1:57705/, main menu visible, console errors 0.
+```
+
+Transient note: during Phase 4 shard validation, the first `npm run test:e2e:release:shard1` run had one timeout in the deep-flow first campaign rally movement assertion. The exact failed test passed without code changes, then the full shard1 rerun passed. Do not change gameplay to mask that historical flake.
+
+Next recommended milestone: v0.5 save/content-validation gate before broad mechanics. Add migration tests, future content validation plans, a deterministic command-log feasibility note, and only then choose a single vertical-slice candidate. Continue postponing workers, enemy construction, full new factions, new maps, diplomacy, procedural generation, crafting, multiplayer, and broad army-management systems until their gates are explicit and green.
 
 The current playable loop:
 
