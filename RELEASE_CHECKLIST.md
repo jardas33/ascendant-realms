@@ -98,8 +98,8 @@ Both shards must pass to equal the full release gate. Keep `npm run test:e2e:rel
 Latest local shard verification, 2026-05-08:
 
 ```text
-Shard 1: passed, 49 Playwright tests in 23.0m.
-Shard 2: passed, 10 Playwright tests in 4.2m.
+Shard 1: passed, 49 Playwright tests in 23.9m.
+Shard 2: passed, 10 Playwright tests in 4.4m.
 ```
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
@@ -151,7 +151,7 @@ Browser Use preview sanity is optional after the automated suite. Use the local 
 Latest production preview smoke, 2026-05-08:
 
 ```text
-PASS: http://127.0.0.1:57911/
+PASS: http://127.0.0.1:57915/
 PASS: page title was Ascendant Realms.
 PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
 PASS: New Campaign reached Campaign Map.

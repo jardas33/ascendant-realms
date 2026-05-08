@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: Phase 14 documentation checkpoint complete. The full final release-style verification remains a separate Phase 15 gate.
+Status: complete. The full final release-style verification passed on 2026-05-08.
 
 ## Purpose
 
@@ -139,7 +139,22 @@ Phase 14 documentation-gate verification passed:
 - `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: PASS.
 
-Phase 15 will run the full release gate, release shards, simulator, diff check, and production preview smoke.
+## Phase 15 Final Verification
+
+Final verification passed:
+
+- `npm test`: PASS, 40 test files / 298 tests.
+- `npm run build`: PASS with the known Phaser vendor warning. App JS `assets/index-Caz7zKca.js`, 445.42 kB / gzip 119.69 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
+- `npm run validate:content`: PASS.
+- `npm run test:e2e:smoke`: PASS, 10 Playwright tests in 4.5m.
+- `npm run test:e2e:release`: PASS, 59 Playwright tests in 28.4m.
+- `npm run test:e2e:release:shard1`: PASS, 49 Playwright tests in 23.9m.
+- `npm run test:e2e:release:shard2`: PASS, 10 Playwright tests in 4.4m.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+- Production preview smoke: PASS at `http://127.0.0.1:57915/` with title `Ascendant Realms`, `Prototype v0.3` / `Cinderfen Route Baseline` visible, New Campaign reaching Campaign Map, Continue Campaign returning to Campaign Map without crashing, Skirmish Setup opening, and browser console errors at 0.
+
+No transient reruns were needed in Phase 15.
 
 ## Next Recommended Goal
 

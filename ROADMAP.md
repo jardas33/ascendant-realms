@@ -26,7 +26,7 @@ New v0.5 gate docs:
 - `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md`
 - `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md`
 
-Latest Phase 14 documentation-gate verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.7m, `npm run playtest:sim` 255 deterministic runs, and `git diff --check` passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
+Latest final v0.5 verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.5m, `npm run test:e2e:release` 59 tests in 28.4m, `npm run test:e2e:release:shard1` 49 tests in 23.9m, `npm run test:e2e:release:shard2` 10 tests in 4.4m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
 Recommended next phase after final v0.5 verification: **Tutorial / Proving Grounds playable shell**, using existing systems only and starting with no rewards, no save-version bump, no new map, no new units, and no new faction.
 

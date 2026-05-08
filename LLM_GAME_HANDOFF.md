@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.5 save/content validation gate Phase 14 documentation checkpoint
+Last updated: 2026-05-08 v0.5 save/content validation gate complete
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -154,6 +154,88 @@ Phase 14 v0.5 gate documentation:
 - Documented save fixtures, validation rules, standalone validation script, campaign graph/reward checks, command-log feasibility conclusion, simulator determinism conclusion, Tutorial / Proving Grounds selection/brief, skipped broad systems, and the next recommended `/goal`.
 - No gameplay, balance, save version, playable tutorial, UI launch path, map, unit, faction, worker, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad system was added.
 - Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.7m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
+
+Phase 15 full final verification:
+
+- `npm test`: PASS, 40 files / 298 tests in 9.84s.
+- `npm run build`: PASS with the known Phaser vendor warning. App JS `assets/index-Caz7zKca.js`, 445.42 kB / gzip 119.69 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
+- `npm run validate:content`: PASS.
+- `npm run test:e2e:smoke`: PASS, 10 tests in 4.5m.
+- `npm run test:e2e:release`: PASS, 59 tests in 28.4m. Slow files: `tests/e2e/layout.spec.ts` 12.6m and `tests/e2e/deep-flow.spec.ts` 11.0m.
+- `npm run test:e2e:release:shard1`: PASS, 49 tests in 23.9m.
+- `npm run test:e2e:release:shard2`: PASS, 10 tests in 4.4m.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` regenerated with no git diff.
+- `git diff --check`: PASS.
+- Production preview smoke: PASS at `http://127.0.0.1:57915/` through the in-app Browser. Title was `Ascendant Realms`; `Prototype v0.3` / `Cinderfen Route Baseline` copy was visible; New Campaign reached Campaign Map; Continue Campaign returned to Campaign Map without crashing after the preview save existed; Skirmish Setup opened and listed current maps; browser console errors stayed at 0. Preview server was stopped.
+- No Phase 15 transient reruns were needed.
+
+Completed v0.5 phases:
+
+- Phase 0 repository integrity: completed, no commit needed.
+- Phase 1 save fixture plan: committed.
+- Phase 2 save fixture harness: committed.
+- Phase 3 migration fixture tests: committed.
+- Phase 4 save compatibility report: committed.
+- Phase 5 content validation audit: committed.
+- Phase 6 content validation hardening: committed.
+- Phase 7 content validation script: committed.
+- Phase 8 campaign graph/reward gate: committed.
+- Phase 9 command-log feasibility: committed.
+- Phase 10 simulator determinism gate: committed.
+- Phase 11 vertical-slice candidate: committed.
+- Phase 12 Tutorial / Proving Grounds brief: committed.
+- Phase 13 tutorial metadata scaffold: committed.
+- Phase 14 v0.5 gate documentation: committed.
+- Phase 15 final verification/handoff: this final checkpoint commit.
+
+Skipped/risk-limited systems:
+
+- No gameplay balance changes.
+- No save version bump.
+- No playable tutorial or tutorial launch path.
+- No maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, broad loot complexity, full trophy room, or broad army-management systems.
+- Production command replay was not implemented; the recommendation is a future test-only semantic command-log V1.
+
+Commits created in this v0.5 gate:
+
+```text
+da87513 Checkpoint v0.5 save fixture plan
+9a51780 Checkpoint v0.5 save fixture harness
+67a8b82 Checkpoint v0.5 migration fixture tests
+fc01c48 Checkpoint v0.5 save compatibility report
+40a0997 Checkpoint v0.5 content validation audit
+0b83678 Checkpoint v0.5 content validation hardening
+c4cf1e8 Checkpoint v0.5 content validation script
+4e0a19d Checkpoint v0.5 campaign graph reward gate
+4627668 Checkpoint v0.5 command log feasibility
+5a576e3 Checkpoint v0.5 simulator determinism gate
+8403620 Checkpoint v0.5 vertical slice candidate
+1eaf408 Checkpoint tutorial proving grounds design brief
+bbc3092 Checkpoint tutorial metadata scaffold
+e2ccde5 Checkpoint v0.5 gate documentation
+Checkpoint v0.5 save content validation gate
+```
+
+Current git status after the final handoff commit and before push:
+
+```text
+git status -sb: ## main...origin/main [ahead 15]
+git rev-list --left-right --count origin/main...HEAD: 0 15
+```
+
+Remaining risks:
+
+- Human route feel/readability still needs review, especially Cinder Shrine salience, Waystation/Aftermath density, and route-complete clarity.
+- Fast Army quick-clear feel and Retinue plus Training Yard II strength remain human-playtest watch items.
+- The known Phaser vendor chunk warning remains.
+- Playwright release lane is green but still slow; shard 1 remains the long shard.
+- Tutorial / Proving Grounds is selected and scaffolded as metadata only; it is not playable yet.
+
+Next recommended long-running goal:
+
+- Implement the first Tutorial / Proving Grounds playable shell using existing content only.
+- Keep it non-rewarding at first, validation-first, and save-compatible.
+- Add no new map, unit, faction, worker system, enemy construction, crafting, diplomacy, procedural generation, multiplayer, broad loot complexity, or save-version bump.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 

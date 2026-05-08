@@ -1,6 +1,64 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 13:50:00 -04:00
+Updated: 2026-05-08 14:54:30 -04:00
+
+## Final v0.5 Save Content Validation Gate - 2026-05-08 14:54:30 -04:00
+
+Scope: final verification and handoff for the v0.5 save, content-validation, determinism, and expansion-readiness gate. This pass did not add gameplay content, change balance, bump the save version, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, add multiplayer, or add broad systems.
+
+Final verification results:
+
+```text
+npm test
+PASS: 40 test files, 298 tests, 9.84s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-Caz7zKca.js, 445.42 kB minified / 119.69 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB minified / 8.74 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.5m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 28.4m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.6m and tests/e2e/deep-flow.spec.ts 11.0m.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 23.9m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 4.4m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 57915 --strictPort
+PASS: Browser smoke at http://127.0.0.1:57915/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened and listed current maps.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. No Phase 15 transient reruns were needed.
+
+Recommended next milestone: implement the first Tutorial / Proving Grounds playable shell using existing content only, with no rewards, no save-version bump, no new map, no new units, no new faction, and no broad systems.
 
 ## v0.5 Save Content Validation Gate Documentation Checkpoint - 2026-05-08 13:50:00 -04:00
 

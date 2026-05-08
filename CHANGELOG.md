@@ -23,10 +23,13 @@ This checkpoint builds the v0.5 safety foundation before broad mechanics or new 
 - `npm test`: passed with 40 test files and 298 tests.
 - `npm run build`: passed with the known Phaser vendor large-chunk warning.
 - `npm run validate:content`: passed.
-- `npm run test:e2e:smoke`: passed with 10 Playwright tests in 4.7m.
+- `npm run test:e2e:smoke`: passed with 10 Playwright tests in 4.5m.
+- `npm run test:e2e:release`: passed with 59 Playwright tests in 28.4m.
+- `npm run test:e2e:release:shard1`: passed with 49 Playwright tests in 23.9m.
+- `npm run test:e2e:release:shard2`: passed with 10 Playwright tests in 4.4m.
 - `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: passed.
-- Phase 15 will run the full release gate, release shards, simulator, diff check, and production preview smoke.
+- Production preview smoke: passed at `http://127.0.0.1:57915/`; title, main menu copy, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 
 ### Next
 
