@@ -138,6 +138,14 @@ Phase 9 Tutorial save/persistence audit:
 - Documented the future gap to test settings-only preservation if tutorial completion ever becomes persistent.
 - Verification: `npm test` PASS, 42 files / 314 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
 
+Phase 10 Tutorial content validation gate:
+
+- Added `docs/TUTORIAL_CONTENT_VALIDATION_GATE.md`.
+- Updated `CONTENT_GUIDE.md` with explicit tutorial metadata launch safety, no-reward, no playable-without-steps, and reference-validation rules.
+- Added a focused duplicate tutorial ID regression to `src/game/data/contentValidation.test.ts`; the tutorial validation suite now has 27 tests.
+- Existing tutorial validation already covered duplicate step IDs, playable tutorial without map/steps, invalid step type/objective/action, invalid map and content references, and `noReward: false` rejection for `proving_grounds_basics`.
+- Verification: focused `npm test -- src/game/data/contentValidation.test.ts` PASS, 27 tests; `npm run validate:content` PASS; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 
 Mission: build a serious v0.5 safety foundation before any broad mechanics or new content expansion. This goal must preserve the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork. Do not add gameplay content, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, broad loot complexity, or broad army-management systems.

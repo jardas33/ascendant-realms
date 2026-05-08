@@ -26,8 +26,10 @@ Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game
 6. Every step needs a concise `title`, `description`, `instruction`, `objectiveType`, and `requiredAction`.
 7. Use `hint` for optional help, not for mandatory long-form tutorial text.
 8. Put referenced maps, units, buildings, abilities, resources, and capture sites in `references` so validation catches typos before the game launches.
-9. Do not use tutorial metadata to add maps, units, factions, rewards, campaign node completion, save fields, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, or external assets.
-10. Run `npm run validate:content` and `npm test` after edits.
+9. Do not expose a tutorial launch path unless `npm run validate:content` passes with a valid playable tutorial, valid map reference, and at least one step.
+10. Do not add a playable tutorial without steps, set `noReward` false for the first shell, or point a step at missing map/unit/building/ability/resource/capture-site IDs.
+11. Do not use tutorial metadata to add maps, units, factions, rewards, campaign node completion, save fields, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, or external assets.
+12. Run `npm run validate:content` and `npm test` after edits.
 
 ## Add A New Unit
 

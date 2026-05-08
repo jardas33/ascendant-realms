@@ -25,7 +25,7 @@ describe("content validation", () => {
     expect(validateContent()).toEqual([]);
   });
 
-  it("defines a non-playable Tutorial / Proving Grounds metadata scaffold", () => {
+  it("defines the playable Tutorial / Proving Grounds metadata shell", () => {
     expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
     expect(TUTORIALS[0]).toMatchObject({
       title: "Tutorial / Proving Grounds",
@@ -49,6 +49,15 @@ describe("content validation", () => {
       "finish_training"
     ]);
     expect(TUTORIALS[0].steps.every((step) => step.instruction.trim().length > 0)).toBe(true);
+  });
+
+  it("rejects duplicate tutorial ids", () => {
+    TUTORIALS.push({ ...TUTORIALS[0], steps: [...TUTORIALS[0].steps] });
+    try {
+      expect(validateContent()).toEqual(expect.arrayContaining(["Duplicate tutorial id: proving_grounds_basics"]));
+    } finally {
+      TUTORIALS.pop();
+    }
   });
 
   it("rejects invalid tutorial metadata references before a launch path exists", () => {
