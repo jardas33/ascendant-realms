@@ -118,6 +118,15 @@ Phase 10 simulator determinism gate:
 - Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; `git diff --check` PASS.
 - Commit: `Checkpoint v0.5 simulator determinism gate`.
 
+Phase 11 vertical-slice candidate selection:
+
+- Added `docs/V05_VERTICAL_SLICE_CANDIDATE.md`.
+- Compared Candidate A Tutorial / Proving Grounds, Candidate B Workerless Enemy Construction Prototype, Candidate C Micro-Faction Prototype, and Candidate D Cinderfen Epilogue Node.
+- Selected Candidate A, Tutorial / Proving Grounds, for future planning only.
+- Explicitly did not implement a tutorial, metadata scaffold, map, unit, faction, worker, enemy construction, diplomacy, procedural generation, crafting, multiplayer, save field, or gameplay/content change.
+- Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `Checkpoint v0.5 vertical slice candidate`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
