@@ -2,6 +2,8 @@
 
 Date: 2026-05-07
 
+Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. No tests, selectors, Playwright configuration, gameplay, UI behavior, package scripts, or coverage were changed.
+
 Scope: plan and minimal script implementation for CI sharding of the full Playwright release gate. This pass does not change tests, remove coverage, change gameplay, change UI behavior, change selectors, or change Playwright configuration.
 
 ## Current E2E Lanes
@@ -33,12 +35,12 @@ Recent recorded runtimes:
 
 | Lane | Tests | Runtime | Notes |
 | --- | ---: | ---: | --- |
-| Smoke/default | 10 | Around 4.4-5.4m | Good frequent iteration lane, but not a release substitute. |
-| Release gate | 59 | Around 28.6-29.1m | Suitable for freeze/checkpoint gates but slow for CI feedback. |
-| Release shard 1 | 49 | 21.9m in the local verification run | Contains the deep-flow and layout-heavy side of the split; useful in CI, not a local speedup when run sequentially. |
-| Release shard 2 | 10 | 5.0m in the local verification run | Currently maps to the smoke side of the split. |
-| Layout/responsive | 21 | Around 12-13m inside release runs | Slowest file family along with deep-flow. |
-| Deep-flow | 28 | Around 11-12m inside release runs | Slowest file family along with layout. |
+| Smoke/default | 10 | 4.2m in the latest continuation run | Good frequent iteration lane, but not a release substitute. |
+| Release gate | 59 | 27.4m in the latest foreground release rerun | Suitable for freeze/checkpoint gates but slow for CI feedback. |
+| Release shard 1 | 49 | 23.0m in the latest local verification run | Contains the deep-flow and layout-heavy side of the split; useful in CI, not a local speedup when run sequentially. |
+| Release shard 2 | 10 | 4.2m in the latest local verification run | Currently maps to the smoke side of the split. |
+| Layout/responsive | 21 | 12.0m inside the latest shard/release runs | Slowest file family along with deep-flow. |
+| Deep-flow | 28 | 10.8-11.1m inside the latest shard/release runs | Slowest file family along with layout. |
 
 The long runtime is expected because the suite intentionally runs with one worker, repeats Phaser scene boot, uses live campaign/battle flows, and keeps layout/deep coverage broad.
 
@@ -287,26 +289,30 @@ Result:
 
 ```text
 npm test
-PASS: 38 test files, 270 tests, 10.09s.
+PASS: 38 test files, 270 tests, 9.19s.
 
 npm run build
 PASS: TypeScript compile and Vite production build.
-App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
 Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
-CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
 Known Vite warning remains for vendor-phaser.
 
 npm run test:e2e:smoke
-PASS: 10 Playwright tests in 4.5m.
+PASS: 10 Playwright tests in 4.2m.
 
 npm run test:e2e:release:shard1
-PASS: 49 Playwright tests in 21.9m.
+PASS: 49 Playwright tests in 23.0m.
+Slow files: tests/e2e/layout.spec.ts 12.0m and tests/e2e/deep-flow.spec.ts 10.8m.
 
 npm run test:e2e:release:shard2
-PASS: 10 Playwright tests in 5.0m.
+PASS: 10 Playwright tests in 4.2m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
 
 git diff --check
-PASS: no whitespace errors. Git emitted the existing LF-to-CRLF working-copy warning for .gitignore.
+PASS.
 ```
 
 Local verification note: the 2-shard split is coverage-preserving but uneven on this suite because Playwright's first shard currently receives the deep-flow and layout-heavy files. Treat the shard scripts as CI matrix tools first. Running both shards sequentially on a local machine is not expected to beat the one-piece release gate.

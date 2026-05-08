@@ -41,6 +41,7 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-05 v0.3.1 UX polish pass | 59 | 31.4m | Slow files: `layout.spec.ts`, `deep-flow.spec.ts`; extra responsive/Cinderfen tests account for the larger current count. |
 | 2026-05-05 safe helper pass | 59 | 28.6m | Same test count and coverage shape; slow files: `layout.spec.ts` 12.4m, `deep-flow.spec.ts` 11.5m. |
 | 2026-05-06 explicit lane split | 10 smoke / 59 release | 5.4m smoke / 29.0m release | New `test:e2e:smoke` fast lane and `test:e2e:release` full gate; slow files still `layout.spec.ts` and `deep-flow.spec.ts`. |
+| 2026-05-08 overnight continuation | 10 smoke / 59 release / 49 shard1 / 10 shard2 | 4.2m smoke / 27.4m release / 23.0m shard1 / 4.2m shard2 | Existing 2-shard scripts reverified. Shard 1 remains uneven because it carries `deep-flow.spec.ts` and `layout.spec.ts`. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
@@ -231,4 +232,34 @@ Slow test file: tests/e2e/smoke.spec.ts, 5.2m.
 npm run test:e2e:release
 PASS: 59 Playwright tests in 29.0m.
 Slow files: tests/e2e/layout.spec.ts, 12.3m; tests/e2e/deep-flow.spec.ts, 12.1m.
+```
+
+2-shard continuation verification, 2026-05-08:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 9.19s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 27.4m on foreground rerun after targeted transient reruns.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 23.0m.
+Slow files: tests/e2e/layout.spec.ts 12.0m and tests/e2e/deep-flow.spec.ts 10.8m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 4.2m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
 ```

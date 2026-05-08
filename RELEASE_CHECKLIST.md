@@ -70,7 +70,7 @@ Expected current prototype result:
 PASS: 59 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 29 minutes on this machine.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 27-29 minutes on this machine.
 
 5. Optional CI sharded release gate:
 
@@ -81,13 +81,11 @@ npm run test:e2e:release:shard2
 
 Both shards must pass to equal the full release gate. Keep `npm run test:e2e:release` as the canonical one-command local release check; the shard scripts are mainly for CI matrix jobs where they can run in parallel. If run sequentially on a local machine, the total runtime may not be better than the full suite and reports are split by shard.
 
-Latest local shard verification, 2026-05-07:
+Latest local shard verification, 2026-05-08:
 
 ```text
-Shard 1 first run: one transient deep-flow rally movement timeout.
-Targeted failed test: passed without code changes.
-Shard 1 rerun: passed, 49 Playwright tests in 22.7m.
-Shard 2: passed, 10 Playwright tests in 4.0m.
+Shard 1: passed, 49 Playwright tests in 23.0m.
+Shard 2: passed, 10 Playwright tests in 4.2m.
 ```
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.

@@ -18,7 +18,8 @@ Completed continuation phases so far:
 Phase 0 repository integrity: clean/synced at start, 0 ahead / 0 behind, npm test PASS, npm run build PASS.
 Phase 1 bundle analyzer refresh: committed 5459857 Checkpoint v0.4 bundle analysis.
 Phase 2 test/dev hook audit refresh: committed e393dd5 Checkpoint v0.4 test hook audit.
-Phase 3 analyzer-backed optimization decision: Option D, no code optimization, docs refreshed with current evidence.
+Phase 3 analyzer-backed optimization decision: committed 5748857 Checkpoint v0.4 measured performance optimization. Option D, no code optimization, docs refreshed with current evidence.
+Phase 4 e2e sharding refresh: existing 2-shard scripts verified, docs refreshed, no package/test/script coverage change.
 ```
 
 Current Phase 3 build/performance numbers:
@@ -45,7 +46,14 @@ Production preview smoke: PASS at http://127.0.0.1:57901/ through the in-app Bro
 
 Transient note for the current continuation: a first background `npm run test:e2e:release` attempt was stopped after two early test-level timeouts. The timed-out tests were `main menu, info, hero creation selections, reset state, and gallery navigation work` and `stronghold upgrades spend campaign resources and apply to later battles`. Both passed on targeted foreground rerun, then the full foreground release lane passed. Treat these as slow-run/transient evidence, not a gameplay failure, unless they recur in a normal foreground lane.
 
-Next active phase after this checkpoint: Phase 4, e2e sharding plan/scripts refresh. Preserve all existing release coverage.
+Phase 4 shard verification:
+
+```text
+npm run test:e2e:release:shard1: PASS, 49 tests in 23.0m.
+npm run test:e2e:release:shard2: PASS, 10 tests in 4.2m.
+```
+
+Next active phase after this checkpoint: Phase 5, e2e flake hardening focused on wait robustness only. Preserve all existing release coverage and do not change gameplay.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 
