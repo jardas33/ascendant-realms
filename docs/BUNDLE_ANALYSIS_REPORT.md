@@ -2,6 +2,8 @@
 
 Date: 2026-05-07
 
+Continuation refresh: 2026-05-08. Re-ran `npm run build:analyze` after the v0.4 accessibility/readability polish and handoff refresh. This refresh updates emitted asset names and sizes only; it does not change gameplay, balance, chunking, scene loading, data loading, test hooks, save format, campaign rules, or warning policy.
+
 Scope: measurement only for the current v0.4 technical baseline. This pass added an analyzer script and local report artifact path, but did not change gameplay, balance, chunking behavior, scene loading, data loading, test hooks, save format, campaign rules, or the Vite chunk warning limit.
 
 ## Analyzer Setup
@@ -34,8 +36,8 @@ Analyzer run result:
 
 ```text
 dist/index.html                        0.54 kB | gzip:   0.32 kB
-dist/assets/index-CIXXIuKP.css         41.86 kB | gzip:   8.71 kB
-dist/assets/index-TotuX8zG.js          435.50 kB | gzip: 116.99 kB
+dist/assets/index-CeqfGaMI.css         42.04 kB | gzip:   8.74 kB
+dist/assets/index-Bi19pD8P.js          436.32 kB | gzip: 117.33 kB
 dist/assets/vendor-phaser-B61OQUcB.js  1,481.79 kB | gzip: 339.86 kB
 ```
 
@@ -43,10 +45,10 @@ Raw file sizes from `dist/`:
 
 | Output | Bytes | Gzip bytes | Vite size |
 | --- | ---: | ---: | ---: |
-| `dist/index.html` | 538 | 324 | 0.54 kB / gzip 0.32 kB |
-| `dist/assets/index-CIXXIuKP.css` | 41,862 | 8,711 | 41.86 kB / gzip 8.71 kB |
-| `dist/assets/index-TotuX8zG.js` | 435,496 | 116,991 | 435.50 kB / gzip 116.99 kB |
-| `dist/assets/vendor-phaser-B61OQUcB.js` | 1,481,792 | 339,855 | 1,481.79 kB / gzip 339.86 kB |
+| `dist/index.html` | 538 | 325 | 0.54 kB / gzip 0.32 kB |
+| `dist/assets/index-CeqfGaMI.css` | 42,038 | 8,780 | 42.04 kB / gzip 8.74 kB |
+| `dist/assets/index-Bi19pD8P.js` | 436,317 | 117,258 | 436.32 kB / gzip 117.33 kB |
+| `dist/assets/vendor-phaser-B61OQUcB.js` | 1,481,792 | 337,882 | 1,481.79 kB / gzip 339.86 kB |
 
 Current chunk count:
 
@@ -76,25 +78,26 @@ These numbers come from `bundle-analysis/stats.json`. They are visualizer module
 | 12 | `src/game/systems/PathfindingGrid.ts` | 9,953 | 2,771 |
 | 13 | `src/game/ai/EnemyAIController.ts` | 9,348 | 2,394 |
 | 14 | `src/game/data/cinderfenRoadNodes.ts` | 8,885 | 2,314 |
-| 15 | `src/game/systems/AbilitySystem.ts` | 8,558 | 1,925 |
+| 15 | `src/game/scenes/SettingsScene.ts` | 8,620 | 2,560 |
+| 16 | `src/game/systems/AbilitySystem.ts` | 8,558 | 1,925 |
 
 Largest app-level groups:
 
 | Group | Rendered bytes | Gzip bytes | Modules |
 | --- | ---: | ---: | ---: |
 | `src/game/data/` | 208,553 | 55,170 | 48 |
-| `src/game/scenes/` | 97,606 | 26,489 | 10 |
+| `src/game/scenes/` | 98,683 | 26,840 | 10 |
 | `src/game/systems/` | 76,251 | 21,701 | 23 |
-| `src/game/core/` | 76,004 | 23,083 | 23 |
+| `src/game/core/` | 76,004 | 23,081 | 23 |
 | `src/game/battle/` | 52,068 | 14,330 | 10 |
 | `src/game/ui/` | 32,405 | 10,554 | 18 |
-| `src/game/campaign/` | 31,302 | 10,803 | 16 |
-| `src/game/results/` | 29,049 | 9,375 | 8 |
+| `src/game/campaign/` | 31,302 | 10,801 | 16 |
+| `src/game/results/` | 29,033 | 9,368 | 8 |
 | `src/game/save/` | 19,811 | 5,186 | 5 |
 
 ## Test And Dev Code Check
 
-String scan of `dist/assets/index-TotuX8zG.js`:
+String scan of `dist/assets/index-Bi19pD8P.js`:
 
 | Pattern | Matches | Interpretation |
 | --- | ---: | --- |
@@ -149,8 +152,8 @@ Scene module contributions:
 | `BattleScene.ts` | 38,780 | 8,748 |
 | `CampaignMapScene.ts` | 10,680 | 2,775 |
 | `HeroProgressionScene.ts` | 10,417 | 2,966 |
+| `SettingsScene.ts` | 8,620 | 2,560 |
 | `SkirmishSetupScene.ts` | 7,843 | 2,254 |
-| `SettingsScene.ts` | 7,543 | 2,209 |
 | `ResultsScene.ts` | 6,047 | 1,828 |
 | `HeroCreationScene.ts` | 5,324 | 1,756 |
 | `MainMenuScene.ts` | 5,095 | 1,672 |
@@ -206,9 +209,9 @@ Before/after for this decision:
 | --- | ---: | ---: |
 | JS chunks | 2 | 2 |
 | CSS chunks | 1 | 1 |
-| App JS | `assets/index-TotuX8zG.js` 435.50 kB / gzip 116.99 kB | unchanged |
+| App JS | `assets/index-Bi19pD8P.js` 436.32 kB / gzip 117.33 kB | unchanged |
 | Phaser vendor JS | `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / gzip 339.86 kB | unchanged |
-| CSS | `assets/index-CIXXIuKP.css` 41.86 kB / gzip 8.71 kB | unchanged |
+| CSS | `assets/index-CeqfGaMI.css` 42.04 kB / gzip 8.74 kB | unchanged |
 | Vite warning | Present for `vendor-phaser` | unchanged |
 
 No source optimization was implemented. This is the safest analyzer-backed outcome for the current baseline.
@@ -223,6 +226,26 @@ PASS: generated bundle-analysis/stats.html and bundle-analysis/stats.json.
 Known Vite warning remains for vendor-phaser.
 ```
 
+Continuation refresh verification, 2026-05-08:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 7.37s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run build:analyze
+PASS: generated bundle-analysis/stats.html and bundle-analysis/stats.json.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.4m.
+```
+
 Required verification for this measurement pass is tracked separately:
 
 ```text
@@ -231,9 +254,9 @@ PASS: 38 test files, 270 tests, 10.12s.
 
 npm run build
 PASS: TypeScript compile and Vite production build.
-App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
 Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
-CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
 Known Vite warning remains for vendor-phaser.
 
 npm run test:e2e:smoke
@@ -248,9 +271,9 @@ PASS: 38 test files, 270 tests, 8.76s.
 
 npm run build
 PASS: TypeScript compile and Vite production build.
-App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
 Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
-CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
 Known Vite warning remains for vendor-phaser.
 
 npm run test:e2e:smoke
