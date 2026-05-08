@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-07 v0.4 autonomous goal progress checkpoint
+Last updated: 2026-05-07 v0.4 autonomous goal progress checkpoint handoff refresh
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -15,14 +15,17 @@ The latest autonomous pass preserved the frozen v0.3 Cinderfen Route Baseline an
 New checkpoint commits:
 
 ```text
-9934fb6 Checkpoint v0.4 accessibility readability polish
+677acc2 Checkpoint v0.4 autonomous goal progress
 29ec5b6 Checkpoint full-game roadmap architecture
+9934fb6 Checkpoint v0.4 accessibility readability polish
 ```
 
-The final documentation checkpoint should be committed with:
+Full commit hashes:
 
 ```text
-Checkpoint v0.4 autonomous goal progress
+677acc2eeba0329b4d1e4a80517fb89f9216517c Checkpoint v0.4 autonomous goal progress
+29ec5b6548fce92ce4c57b30f5302e7ac066bd51 Checkpoint full-game roadmap architecture
+9934fb6b8b6dbd236677aac9e558e375a0304f03 Checkpoint v0.4 accessibility readability polish
 ```
 
 What changed:
@@ -59,7 +62,7 @@ The current playable loop:
 
 The project is now a **frozen v0.3.1 polish release** on top of the **frozen v0.3 Cinderfen Route Baseline**. The visible in-game menu still says `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.3 is the content baseline, while v0.3.1 is the polish/readability/performance-audit/test-maintenance layer. v0.3 froze the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. v0.3.1 froze mobile/readability audit coverage, Cinderfen copy/hierarchy polish, route-complete clarity, Results copy improvements, the performance bundle audit, the e2e runtime audit, and safe shared e2e helper cleanup without changing gameplay or balance. It is still a prototype, but it has a broad playable RTS/RPG spine and a clear frozen verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, seeded only layout/smoke cases that were not testing the full creation path, and the later v0.4 lane split preserved the 59-test release gate while adding a faster smoke lane. Minimal v0.4 Playwright release sharding scripts now exist for CI: `test:e2e:release:shard1` and `test:e2e:release:shard2`; the full `test:e2e:release` and `test:e2e` commands remain intact. The first v0.4 performance optimization split Phaser into a vendor chunk without changing gameplay. The analyzer-backed second optimization decision chose Option D, no code optimization, because Asset Gallery is too small, no accidental test/dev bundle leak was found, and no second stable vendor chunk exists. The v0.4 performance/e2e sharding checkpoint verified the full release gate, both shard scripts, simulator, diff check, and production preview smoke. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is CI workflow wiring for release shards, human readability/accessibility review, a dedicated test-harness hardening plan, or a build/test content-validation plan. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
+The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, seeded only layout/smoke cases that were not testing the full creation path, and the later v0.4 lane split preserved the 59-test release gate while adding a faster smoke lane. Minimal v0.4 Playwright release sharding scripts now exist for CI: `test:e2e:release:shard1` and `test:e2e:release:shard2`; the full `test:e2e:release` and `test:e2e` commands remain intact. The first v0.4 performance optimization split Phaser into a vendor chunk without changing gameplay. The analyzer-backed second optimization decision chose Option D, no code optimization, because Asset Gallery is too small, no accidental test/dev bundle leak was found, and no second stable vendor chunk exists. The v0.4 performance/e2e sharding checkpoint verified the full release gate, both shard scripts, simulator, diff check, and production preview smoke. The v0.4 autonomous goal pass then added low-risk Settings readability/accessibility polish plus full-game planning docs. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is the v0.5 save/content-validation gate. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, multiplayer, and broad army-management systems unless their gates are explicit and green.
 
 ## Current Git State
 
@@ -75,40 +78,39 @@ Current branch:
 main
 ```
 
-Latest v0.3.1 checkpoint feature commit:
+Latest checkpoint commit:
 
 ```text
-53fa85671dd5668b6654abfd01aeed857bf49ab2
+677acc2eeba0329b4d1e4a80517fb89f9216517c
 ```
 
 Recent checkpoint stack:
 
 ```text
-eaacdea Record v0.3.1 checkpoint metadata
-53fa856 Checkpoint v0.3.1 polish readability and e2e cleanup
-f644bb6 Checkpoint v0.3 Cinderfen route polish freeze
-499938e Record Cinderfen route checkpoint push status
-a17b678 Record Cinderfen route checkpoint metadata
-b8ab7e0 Checkpoint Cinderfen route reward audit and e2e helper cleanup
-03753b9 Record Cinderfen checkpoint sync status
-ded9547 Record Cinderfen checkpoint metadata
-e526367 Checkpoint Cinderfen two-battle Chapter 2 slice
+677acc2 Checkpoint v0.4 autonomous goal progress
+29ec5b6 Checkpoint full-game roadmap architecture
+9934fb6 Checkpoint v0.4 accessibility readability polish
+c463546 Checkpoint v0.4 performance and e2e sharding groundwork
+926c9cb Checkpoint v0.4 technical test and performance groundwork
+6c7a1b7 Checkpoint v0.4 technical test and performance groundwork
+405128b Freeze v0.3.1 polish release
+29af452 Record v0.3.1 checkpoint push status
 ```
 
 Known shell/tool note:
 
 - `rg.exe` has returned access-denied errors in this workspace. Use PowerShell `Select-String`, `Get-ChildItem`, and targeted `Get-Content` if `rg` fails.
-- Latest user-provided in-app browser context was `http://127.0.0.1:4186/`. The final v0.3 release-candidate preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:4187/`, saw title `Ascendant Realms`, verified `Prototype v0.3` / `Cinderfen Route Baseline`, checked New Campaign, Continue Campaign, Skirmish Setup, and Campaign Map, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
+- Latest production preview smoke used Browser Use against a fresh `npm run preview` server at `http://127.0.0.1:57705/`, saw title `Ascendant Realms`, verified the main menu with `Prototype v0.3` / `Cinderfen Route Baseline`, and found browser console errors at 0. The preview server was stopped after the smoke. Playwright remains the deterministic browser verification surface for gameplay flows.
 
 Last committed checkpoint status:
 
 ```text
-Checkpoint commit 53fa85671dd5668b6654abfd01aeed857bf49ab2 preserves the v0.3.1 polish/readability/audit/helper baseline: v0.3.1 docs, UX copy/hierarchy polish, mobile/readability audit, performance bundle audit, e2e runtime audit, safe Playwright helper cleanup, and all existing frozen route behavior.
+Checkpoint commit 677acc2eeba0329b4d1e4a80517fb89f9216517c records the v0.4 autonomous goal progress handoff: Settings readability/accessibility polish, full-game planning docs, final verification, production preview smoke, and branch sync status.
 
-Metadata commit eaacdeaf4370005bf791d5bc2023d86b4b31503e records the checkpoint hash and verification metadata. After pushing the checkpoint and metadata commits, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Preserve this checkpoint unless the user explicitly asks for a reset/revert.
+After pushing the v0.4 autonomous goal stack, `git status -sb` reported `## main...origin/main`, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. Preserve this checkpoint unless the user explicitly asks for a reset/revert.
 ```
 
-Current clean checkpoint state after the v0.3.1 polish/audit work:
+Current clean checkpoint state:
 
 ```text
 git status -sb
@@ -118,36 +120,9 @@ git rev-list --left-right --count origin/main...HEAD
 0 0
 ```
 
-The checkpoint includes v0.3.1 polish plan/audit docs, mobile/readability e2e helper updates, the UX copy/hierarchy source/test pass, the performance bundle audit, and the e2e runtime/helper cleanup. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` were regenerated by `npm run playtest:sim` during the latest pass but had no git diff. Preserve this checkpoint unless the user explicitly asks for reset/revert behavior.
+The latest checkpoint includes the v0.4 Settings readability/accessibility polish, `docs/V04_ACCESSIBILITY_READABILITY_PLAN.md`, `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, `docs/V05_SYSTEMS_DESIGN_BRIEF.md`, and updated checkpoint docs. `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` were regenerated by `npm run playtest:sim` during the latest pass but had no git diff. Preserve this checkpoint unless the user explicitly asks for reset/revert behavior.
 
-The checkpoint commit `53fa85671dd5668b6654abfd01aeed857bf49ab2` was created with message `Checkpoint v0.3.1 polish readability and e2e cleanup`. Do not reset or revert future edits unless the user explicitly asks.
-
-Feature checkpoint commit:
-
-```text
-53fa85671dd5668b6654abfd01aeed857bf49ab2
-```
-
-Current branch sync status:
-
-```text
-Before the v0.3.1 polish checkpoint, `git status -sb` reported `## main...origin/main` with the expected dirty v0.3.1 stack, and `git rev-list --left-right --count origin/main...HEAD` reported `0 0`. After checkpoint commit 53fa85671dd5668b6654abfd01aeed857bf49ab2 and before metadata, the branch reported `[ahead 1]` / `0 1`. After metadata commit eaacdeaf4370005bf791d5bc2023d86b4b31503e and push, branch sync reported `## main...origin/main` and `0 0`. After this push-status update is pushed, the branch should remain synced with origin/main.
-```
-
-The pushed checkpoint preserves the v0.3.1 polish/readability/audit/helper cleanup edits on top of the frozen v0.3 Cinderfen route baseline. Preserve future work unless the user explicitly asks for a different git action.
-
-Current uncommitted state for the v0.3.1 freeze pass:
-
-```text
-Expected dirty docs only until the freeze commit is made:
-CHANGELOG.md
-ROADMAP.md
-DEVELOPMENT_CHECKPOINT.md
-LLM_GAME_HANDOFF.md
-docs/V031_POLISH_RELEASE_REPORT.md
-```
-
-No gameplay, balance, map, unit, faction, worker, enemy construction, diplomacy, procedural generation, crafting, durability, or broad-system files were changed during the final verification/reporting pass.
+Older sections below are historical checkpoint records. Treat the current v0.4 autonomous goal checkpoint above as authoritative when it conflicts with older v0.3/v0.3.1 notes.
 
 ## Final v0.3.1 Polish Release Verification - 2026-05-06 18:30:40 -04:00
 
@@ -2001,7 +1976,7 @@ git diff --check
 PASS: no whitespace errors.
 ```
 
-Latest Browser Use status:
+Historical Browser Use status for that checkpoint:
 
 ```text
 The latest user-provided in-app browser context for this checkpoint request was http://127.0.0.1:4186/. This checkpoint did not inspect or manipulate the open tab. The latest deterministic browser gameplay verification is the Playwright suite above.
