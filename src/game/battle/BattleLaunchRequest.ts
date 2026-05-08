@@ -20,7 +20,7 @@ import { DEFAULT_MAP_ID } from "../data/maps";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
 import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
 
-export type BattleLaunchMode = "skirmish" | "campaign_node" | "scenario_mission";
+export type BattleLaunchMode = "skirmish" | "campaign_node" | "scenario_mission" | "tutorial";
 
 export interface BattleLaunchModifier {
   id: string;
@@ -42,6 +42,7 @@ export interface BattleLaunchRequest {
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
+  rewardsDisabled?: boolean;
 }
 
 export interface ResolvedBattleLaunch {
@@ -74,6 +75,7 @@ export interface CreateBattleLaunchRequestOptions {
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
+  rewardsDisabled?: boolean;
 }
 
 const defaultIndexes: BattleLaunchIndexes = {
@@ -86,6 +88,19 @@ export function createSkirmishBattleLaunchRequest(
   options: CreateBattleLaunchRequestOptions = {}
 ): BattleLaunchRequest {
   return createBattleLaunchRequest(heroSave, { ...options, mode: options.mode ?? "skirmish" });
+}
+
+export function createTutorialBattleLaunchRequest(
+  heroSave: HeroSaveData,
+  options: CreateBattleLaunchRequestOptions = {}
+): BattleLaunchRequest {
+  return createBattleLaunchRequest(heroSave, {
+    ...options,
+    mode: "tutorial",
+    sourceId: options.sourceId ?? "proving_grounds_basics",
+    difficulty: options.difficulty ?? "story",
+    rewardsDisabled: true
+  });
 }
 
 export function createCampaignBattleLaunchRequest(
@@ -122,6 +137,7 @@ export function createBattleLaunchRequest(
   const mode = options.mode ?? "skirmish";
   const mapId = options.mapId ?? DEFAULT_MAP_ID;
   const sourceId = options.sourceId ?? mode;
+  const rewardsDisabled = options.rewardsDisabled ?? (mode === "tutorial" ? true : undefined);
   return {
     requestId: options.requestId ?? buildBattleLaunchRequestId(mode, mapId, sourceId),
     mode,
@@ -136,7 +152,8 @@ export function createBattleLaunchRequest(
     enemyHeroId: options.enemyHeroId,
     campaignNodeId: options.campaignNodeId,
     scenarioMissionId: options.scenarioMissionId,
-    retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits)
+    retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits),
+    rewardsDisabled
   };
 }
 
@@ -190,6 +207,9 @@ export function resolveBattleLaunchRequest(
   if (request.mode === "scenario_mission" && !request.scenarioMissionId) {
     errors.push("Scenario mission battle launch requests must include scenarioMissionId.");
   }
+  if (request.mode === "tutorial" && request.rewardsDisabled !== true) {
+    errors.push("Tutorial battle launch requests must disable rewards.");
+  }
   if (!isBattleDifficulty(request.difficulty)) {
     errors.push(`Battle launch request references missing difficulty ${request.difficulty}.`);
   }
@@ -218,7 +238,8 @@ export function resolveBattleLaunchRequest(
         modifiers: request.modifiers ?? [],
         aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
         enemyHeroId: request.enemyHeroId,
-        retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits)
+        retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
+        rewardsDisabled: request.rewardsDisabled
       },
       map,
       rewardTable,

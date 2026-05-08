@@ -29,7 +29,7 @@ describe("content validation", () => {
     expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
     expect(TUTORIALS[0]).toMatchObject({
       title: "Tutorial / Proving Grounds",
-      status: "scaffolded",
+      status: "playable",
       launchMode: "battle",
       mapId: "first_claim",
       noReward: true
@@ -63,7 +63,7 @@ describe("content validation", () => {
     const originalType = firstStep.type;
     const originalObjectiveType = firstStep.objectiveType;
     const originalRequiredAction = firstStep.requiredAction;
-    tutorial.status = "playable" as typeof tutorial.status;
+    tutorial.status = "missing_status" as typeof tutorial.status;
     tutorial.launchMode = "missing_mode" as typeof tutorial.launchMode;
     tutorial.mapId = "missing_map";
     tutorial.noReward = false;
@@ -84,6 +84,7 @@ describe("content validation", () => {
       expect(validateContent()).toEqual(
         expect.arrayContaining([
           "Tutorial proving_grounds_basics has invalid launch mode missing_mode.",
+          "Tutorial proving_grounds_basics has invalid status missing_status.",
           "Tutorial proving_grounds_basics references missing map missing_map.",
           "Tutorial proving_grounds_basics must keep noReward true.",
           "Duplicate Tutorial proving_grounds_basics step id: camera_controls",

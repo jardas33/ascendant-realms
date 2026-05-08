@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: design plus metadata-only scaffold. The Phase 13 scaffold defines planned Tutorial / Proving Grounds metadata and validation, but it does not implement a playable tutorial, add a map, add units, add rewards, add a scene, add save fields, or expose a launch path.
+Status: design plus first playable shell. The current Tutorial / Proving Grounds path defines validated metadata and launches a no-reward shell on existing First Claim content, but it does not yet implement the full guided overlay/objective flow, add a map, add units, add rewards, add save fields, or persist completion.
 
 ## 1. Purpose
 
@@ -127,10 +127,11 @@ Phase B: Metadata only, optional later.
 - No playable launch path exists.
 - No save fields were added.
 
-Phase C: Shell only, optional later.
+Phase C: Shell only.
 
-- Use existing units, buildings, abilities, and map data.
-- Prefer an existing map or a safe battle setup variant before authoring any new map.
+- Implemented as a main-menu Tutorial launch into `BattleScene` with tutorial mode.
+- Uses existing units, buildings, abilities, and map data.
+- Reuses `first_claim` with a transient existing Warlord hero.
 - No new assets.
 - No new faction.
 - No new campaign rewards.
@@ -194,11 +195,12 @@ Future validation should cover:
 
 Validation should fail before UI exposes a broken tutorial.
 
-Current metadata status:
+Current metadata/runtime status:
 
-- `proving_grounds_basics` is `planned`.
-- It is not selectable in UI.
-- It is not playable.
+- `proving_grounds_basics` is `playable` as a shell.
+- It is selectable from the main menu through the Tutorial button.
+- It launches existing `first_claim` battle content in tutorial mode with rewards disabled.
+- It does not yet show the full guided tutorial overlay or complete the full step sequence.
 - It does not grant rewards.
 - It does not persist progress.
 

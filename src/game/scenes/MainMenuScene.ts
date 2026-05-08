@@ -1,10 +1,13 @@
 import Phaser from "phaser";
 import { ASSET_IDS } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
+import { createTutorialBattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import { createStartedCampaignSave } from "../core/CampaignRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
+import { createNewHeroSave } from "../data/heroes";
+import { TUTORIALS } from "../data/tutorials";
 import { AudioManager } from "../systems/AudioManager";
 
 export class MainMenuScene extends Phaser.Scene {
@@ -70,7 +73,7 @@ export class MainMenuScene extends Phaser.Scene {
         this.render();
       }
       if (action === "tutorial") {
-        this.render(false, true);
+        this.startTutorial();
       }
       if (action === "menu-home") {
         this.render();
@@ -134,6 +137,20 @@ export class MainMenuScene extends Phaser.Scene {
         </section>
       </main>
     `;
+  }
+
+  private startTutorial(): void {
+    const tutorial = TUTORIALS.find((entry) => entry.id === "proving_grounds_basics");
+    if (!tutorial || tutorial.status !== "playable") {
+      this.render(false, true);
+      return;
+    }
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const launchRequest = createTutorialBattleLaunchRequest(heroSave, {
+      mapId: tutorial.mapId,
+      sourceId: tutorial.id
+    });
+    this.scene.start(SCENE_KEYS.battle, { heroSave, launchRequest });
   }
 
   private cleanup(): void {

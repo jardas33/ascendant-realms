@@ -20,11 +20,17 @@ interface BattleSceneResultsOptions {
 export function endBattleAndOpenResults(options: BattleSceneResultsOptions): void {
   const { scene, runtime, hero, launch, outcome } = options;
   const startingHeroSave = launch.request.heroSave;
+  const rewardsDisabled = launch.request.mode === "tutorial" || launch.request.rewardsDisabled === true;
   const completion = runtime.completeBattle({
     outcome,
-    heroSave: hero.toSaveData()
+    heroSave: hero.toSaveData(),
+    rewardsDisabled
   });
   if (!completion) {
+    return;
+  }
+  if (launch.request.mode === "tutorial") {
+    scene.scene.start(SCENE_KEYS.mainMenu);
     return;
   }
   const resultsHeroSave = outcome === "victory" ? completion.heroSave : startingHeroSave;

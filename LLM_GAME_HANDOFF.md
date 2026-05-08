@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds launch placeholder added
+Last updated: 2026-05-08 Tutorial / Proving Grounds no-reward shell added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -62,6 +62,23 @@ Phase 3 Tutorial launch surface:
 - No playable tutorial, battle launch, scene, gameplay behavior, map, unit, faction, reward, save field, save version, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
 - Verification: `npm test` PASS, 40 files / 299 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 11 tests in 4.9m.
 - Current build output after launch placeholder: app JS `assets/index-ffv06-io.js`, 451.27 kB / gzip 121.34 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-D-nj7b-a.css`, 42.21 kB / gzip 8.79 kB.
+- Commit: `49ede36 Checkpoint tutorial launch surface`.
+
+Phase 4 Tutorial scene/mode shell:
+
+- Added `tutorial` as an explicit `BattleLaunchMode`.
+- Added `createTutorialBattleLaunchRequest()` for the Proving Grounds shell. It defaults to `first_claim`, Story difficulty, source `proving_grounds_basics`, and `rewardsDisabled: true`.
+- Added battle-launch validation that rejects tutorial launch requests unless rewards are disabled.
+- Added no-reward completion support in `BattleRuntime`: tutorial completion returns empty rewards, zero reported XP gain, `shouldSaveHero: false`, and the starting hero data instead of any temporary tutorial battle progress.
+- Updated `BattleSceneResults` so tutorial battles bypass normal Results/campaign reward flow and return to the main menu on battle completion.
+- Updated `MainMenuScene` so the Tutorial button now launches the shell using a transient existing Warlord hero named Aster and the validated tutorial metadata.
+- Updated `src/game/data/tutorials.ts` so `proving_grounds_basics` is `playable` as a shell.
+- Added unit coverage for no-reward tutorial launch requests and no-reward tutorial runtime completion.
+- Updated Playwright smoke coverage to verify Tutorial launches BattleScene in tutorial mode, uses `first_claim`, has rewards disabled, uses transient Aster with zero completed battles, exits through the HUD Menu button, and does not create localStorage save data.
+- Updated `README.md` and `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md` so the docs describe the no-reward shell instead of a placeholder.
+- No guided overlay, full step completion flow, campaign rewards, tutorial rewards, save field, save version, map, unit, faction, campaign progression, balance, worker, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external asset, or broad system was added.
+- Verification: focused launch/runtime/content tests PASS, 49 tests; `npm test` PASS, 40 files / 302 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 11 tests in 5.1m.
+- Current build output after tutorial shell: app JS `assets/index-ClE4dIBw.js`, 452.17 kB / gzip 121.63 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-D-nj7b-a.css`, 42.21 kB / gzip 8.79 kB.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

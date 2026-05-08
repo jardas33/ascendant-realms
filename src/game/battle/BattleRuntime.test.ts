@@ -8,7 +8,7 @@ import {
 import { createFallbackHeroSave } from "../core/SaveSystem";
 import { MAPS } from "../data/maps";
 import { requireRewardTable } from "../data/contentIndex";
-import { createSkirmishBattleLaunchRequest, requireBattleLaunch } from "./BattleLaunchRequest";
+import { createSkirmishBattleLaunchRequest, createTutorialBattleLaunchRequest, requireBattleLaunch } from "./BattleLaunchRequest";
 
 const testMap = MAPS[0];
 const testHeroSave = createFallbackHeroSave();
@@ -216,6 +216,44 @@ describe("BattleRuntime", () => {
     expect(result.heroSave).toBe(heroSave);
     expect(result.heroSave.inventory).toEqual(heroSave.inventory);
     expect(result.heroSave.completedBattles).toBe(heroSave.completedBattles);
+  });
+
+  it("keeps tutorial completion no-reward and returns the starting hero", () => {
+    const startingHero = createFallbackHeroSave();
+    const runtime = createBattleRuntime({ launch: requireBattleLaunch(createTutorialBattleLaunchRequest(startingHero)) });
+    runtime.recordXpGained(80);
+    const changedHero = {
+      ...startingHero,
+      xp: 999,
+      completedBattles: 3,
+      inventory: [
+        {
+          instanceId: "tutorial-should-not-persist",
+          itemId: "weathered_command_sword",
+          acquiredAt: "2026-05-08T00:00:00.000Z",
+          source: "tutorial",
+          affixes: []
+        }
+      ],
+      clearedMapIds: ["first_claim"]
+    };
+
+    const result = runtime.completeBattle({ outcome: "victory", heroSave: changedHero });
+
+    expect(result?.shouldSaveHero).toBe(false);
+    expect(result?.rewardItemIds).toEqual([]);
+    expect(result?.reward).toEqual({ itemIds: [], resources: {}, xp: 0 });
+    expect(result?.rewardLevelUp).toEqual({
+      previousLevel: startingHero.level,
+      newLevel: startingHero.level,
+      levelsGained: 0,
+      skillPointsGained: 0
+    });
+    expect(result?.stats.xpGained).toBe(0);
+    expect(result?.heroSave).toEqual(startingHero);
+    expect(result?.heroSave.inventory).toEqual([]);
+    expect(result?.heroSave.completedBattles).toBe(0);
+    expect(result?.heroSave.clearedMapIds).toEqual([]);
   });
 
   it("allows the runtime to complete only once", () => {

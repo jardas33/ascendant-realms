@@ -77,7 +77,7 @@ Latest v0.5 gate checkpoint status, 2026-05-08: `npm run validate:content` passe
 npm run test:e2e:smoke
 ```
 
-The browser suite uses Playwright and starts the Vite dev server automatically. The fast default lane runs `tests/e2e/smoke.spec.ts` and currently covers 11 tests: main menu boot, Tutorial / Proving Grounds placeholder safety, Settings persistence, New Campaign into Campaign Map, locked-node blocking, Border Village battle launch, Cinderfen Overlook/Waystation/Crossing reward persistence, Cinderfen Watch and Aftermath completion, Malrec trophy event behavior, skirmish launch, difficulty/fog setup, and inventory reachability.
+The browser suite uses Playwright and starts the Vite dev server automatically. The fast default lane runs `tests/e2e/smoke.spec.ts` and currently covers 11 tests: main menu boot, Tutorial / Proving Grounds no-reward shell launch, Settings persistence, New Campaign into Campaign Map, locked-node blocking, Border Village battle launch, Cinderfen Overlook/Waystation/Crossing reward persistence, Cinderfen Watch and Aftermath completion, Malrec trophy event behavior, skirmish launch, difficulty/fog setup, and inventory reachability.
 
 Additional lanes keep the slower coverage available without making it the default frequent-iteration command:
 
@@ -89,7 +89,7 @@ npm run test:e2e:release
 
 `test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial launch-surface smoke check passed 11 tests in 4.9 minutes, and the latest full v0.5 release-gate verification passed 59 tests in 28.4 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial shell smoke check passed 11 tests in 5.1 minutes, and the latest full v0.5 release-gate verification passed 59 tests in 28.4 minutes.
 
 For CI, the full release gate can also be split into two Playwright shards:
 

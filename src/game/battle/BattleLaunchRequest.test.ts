@@ -4,6 +4,7 @@ import {
   cloneBattleLaunchRequestWithHero,
   createCampaignBattleLaunchRequest,
   createBattleLaunchRequest,
+  createTutorialBattleLaunchRequest,
   createSkirmishBattleLaunchRequest,
   resolveBattleLaunchRequest
 } from "./BattleLaunchRequest";
@@ -35,6 +36,26 @@ describe("BattleLaunchRequest", () => {
       expect(resolved.launch.rewardTable.id).toBe("first_claim_rewards");
       expect(resolved.launch.request.difficulty).toBe("hard");
       expect(resolved.launch.request.heroSave.level).toBe(1);
+    }
+  });
+
+  it("creates a no-reward tutorial launch request for the Proving Grounds shell", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createTutorialBattleLaunchRequest(heroSave);
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request).toMatchObject({
+      requestId: "tutorial:proving_grounds_basics:first_claim",
+      mode: "tutorial",
+      mapId: "first_claim",
+      sourceId: "proving_grounds_basics",
+      difficulty: "story",
+      rewardsDisabled: true
+    });
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.request.rewardsDisabled).toBe(true);
+      expect(resolved.launch.rewardTable.id).toBe("first_claim_rewards");
     }
   });
 
@@ -95,6 +116,20 @@ describe("BattleLaunchRequest", () => {
 
     expect(campaign.ok).toBe(false);
     expect(scenario.ok).toBe(false);
+  });
+
+  it("rejects tutorial launch requests that can grant rewards", () => {
+    const request = createBattleLaunchRequest(createFallbackHeroSave(), {
+      mode: "tutorial",
+      sourceId: "proving_grounds_basics",
+      rewardsDisabled: false
+    });
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(resolved.ok).toBe(false);
+    if (!resolved.ok) {
+      expect(resolved.errors).toContain("Tutorial battle launch requests must disable rewards.");
+    }
   });
 
   it("creates a campaign battle launch from node data", () => {

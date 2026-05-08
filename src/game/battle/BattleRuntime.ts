@@ -55,6 +55,7 @@ export interface BattleCompletionInput {
   heroSave: HeroSaveData;
   startingHeroSave?: HeroSaveData;
   deterministicRewards?: boolean;
+  rewardsDisabled?: boolean;
   rng?: () => number;
 }
 
@@ -190,6 +191,7 @@ export class BattleRuntime {
     return completeBattle({
       ...input,
       startingHeroSave: this.launch.request.heroSave,
+      rewardsDisabled: input.rewardsDisabled ?? this.launch.request.rewardsDisabled,
       rewardTable: this.launch.rewardTable,
       stats: this.stats,
       mapId: this.launch.map.id
@@ -282,22 +284,26 @@ export function completeBattle(
     lossesInvolvingEnemyHero: input.stats.lossesInvolvingEnemyHero ?? 0,
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
+  const baselineHero = input.startingHeroSave ?? input.heroSave;
+  if (input.rewardsDisabled) {
+    stats.xpGained = 0;
+  }
   const emptyReward: BattleRewardResult = {
     itemIds: [],
     resources: {},
     xp: 0
   };
   const emptyLevelUp: RewardLevelUpSummary = {
-    previousLevel: input.heroSave.level,
-    newLevel: input.heroSave.level,
+    previousLevel: baselineHero.level,
+    newLevel: baselineHero.level,
     levelsGained: 0,
     skillPointsGained: 0
   };
-  if (input.outcome !== "victory") {
+  if (input.outcome !== "victory" || input.rewardsDisabled) {
     return {
       outcome: input.outcome,
       stats,
-      heroSave: input.heroSave,
+      heroSave: input.rewardsDisabled ? baselineHero : input.heroSave,
       rewardItemIds: [],
       reward: emptyReward,
       rewardLevelUp: emptyLevelUp,
@@ -325,7 +331,6 @@ export function completeBattle(
     deterministicAffixes: input.deterministicRewards,
     rng: input.rng
   });
-  const baselineHero = input.startingHeroSave ?? input.heroSave;
   const levelUp: RewardLevelUpSummary = {
     previousLevel: baselineHero.level,
     newLevel: granted.hero.level,

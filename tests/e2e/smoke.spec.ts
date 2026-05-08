@@ -73,22 +73,37 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-reset-save")).toBeVisible();
   });
 
-  test("tutorial entry opens a safe placeholder and returns to menu", async ({ page }) => {
+  test("tutorial entry launches a no-reward shell and returns to menu", async ({ page }) => {
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-tutorial").click();
-    await expect(page.getByTestId("tutorial-info-panel")).toBeVisible();
-    await expect(page.getByTestId("tutorial-info-panel")).toContainText(
-      "Learn camera, selection, movement, capture, building, training, rally points, and hero basics."
-    );
-    await expect(page.getByTestId("tutorial-info-panel")).toContainText("Playable tutorial coming next");
-    await expect(page.getByTestId("battle-hud")).toHaveCount(0);
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-info-panel")).toHaveCount(0);
     await expect(page.getByTestId("skirmish-setup")).toHaveCount(0);
+    const tutorialLaunch = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return {
+        mode: scene?.launch?.request?.mode,
+        mapId: scene?.launch?.request?.mapId,
+        sourceId: scene?.launch?.request?.sourceId,
+        rewardsDisabled: scene?.launch?.request?.rewardsDisabled,
+        heroName: scene?.heroSave?.heroName,
+        completedBattles: scene?.heroSave?.completedBattles
+      };
+    });
+    expect(tutorialLaunch).toMatchObject({
+      mode: "tutorial",
+      mapId: "first_claim",
+      sourceId: "proving_grounds_basics",
+      rewardsDisabled: true,
+      heroName: "Aster",
+      completedBattles: 0
+    });
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
-    await page.getByTestId("tutorial-info-back").click();
-    await expect(page.getByTestId("tutorial-info-panel")).toHaveCount(0);
+    await page.locator('button[data-action="menu"]').click();
     await expect(page.getByTestId("main-menu")).toBeVisible();
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
   });

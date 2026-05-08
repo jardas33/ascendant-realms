@@ -6,7 +6,7 @@ export const TUTORIALS: TutorialDefinition[] = [
     title: "Tutorial / Proving Grounds",
     description:
       "Scaffolded optional onboarding path for existing camera, selection, movement, capture, building, training, rally, hero ability, safe pressure, and no-reward completion. This metadata is not launchable yet.",
-    status: "scaffolded",
+    status: "playable",
     launchMode: "battle",
     mapId: "first_claim",
     noReward: true,
