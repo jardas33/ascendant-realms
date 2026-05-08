@@ -87,9 +87,9 @@ npm run test:e2e:deep
 npm run test:e2e:release
 ```
 
-`test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
+`test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial playable-shell smoke check passed 12 tests in 5.4 minutes, and the latest full tutorial-shell release verification passed 61 tests in 32.1 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest tutorial readability pass kept smoke at 12 tests in 5.0 minutes and raised the layout lane to 25 tests in 13.1 minutes. The latest one-piece release verification before the layout additions passed 61 tests in 32.1 minutes; the next full gate should report 65 tests.
 
 For CI, the full release gate can also be split into two Playwright shards:
 
@@ -100,7 +100,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest tutorial-shell e2e verification, 2026-05-08: smoke passed 12 tests in 5.4 minutes, and the one-piece release lane passed 61 tests in 32.1 minutes. The last full-shard verification was before the playable tutorial shell: shard 1 passed 49 tests in 23.9 minutes, and shard 2 passed 10 tests in 4.4 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest tutorial-shell e2e verification, 2026-05-08: smoke passed 12 tests in 5.0 minutes, the layout lane passed 25 tests in 13.1 minutes, and the last one-piece release lane before the Phase 11 tutorial layout additions passed 61 tests in 32.1 minutes. The last full-shard verification was before the playable tutorial shell: shard 1 passed 49 tests in 23.9 minutes, and shard 2 passed 10 tests in 4.4 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 

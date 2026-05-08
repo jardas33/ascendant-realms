@@ -81,10 +81,10 @@ npm run test:e2e:release
 Expected current prototype result:
 
 ```text
-PASS: 61 Playwright tests
+PASS: 65 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 32 minutes on this machine after adding the playable tutorial smoke path.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. It took about 32 minutes on this machine after adding the playable tutorial smoke path; the Phase 11 tutorial layout guard raised the expected full count to 65 tests and should be refreshed in the final full gate.
 
 6. Optional CI sharded release gate:
 
@@ -111,7 +111,7 @@ npm run test:e2e:layout
 npm run test:e2e:deep
 ```
 
-`test:e2e:layout` runs responsive/mobile/readability coverage. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
+`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
 
 8. Deterministic playtest simulator:
 

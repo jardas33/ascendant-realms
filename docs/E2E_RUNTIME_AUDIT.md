@@ -10,11 +10,11 @@ Source files in `tests/e2e`:
 | --- | --- | ---: | ---: |
 | `tests/e2e/chapter2-helpers.ts` | Shared Chapter 2 seeding, save reading, route launching, and test-only victory fast-forward helpers | 571 | 0 |
 | `tests/e2e/deep-flow.spec.ts` | Release-style gameplay, save, battle, results, HUD, minimap, retinue, rival, and campaign progression flows | 2,241 | 28 |
-| `tests/e2e/layout.spec.ts` | Responsive reachability/readability, battle HUD layout, Cinderfen layout, Ashen Outpost HUD/fog checks | 711 | 21 |
+| `tests/e2e/layout.spec.ts` | Responsive reachability/readability, Tutorial overlay layout, battle HUD layout, Cinderfen layout, Ashen Outpost HUD/fog checks | 731 | 25 |
 | `tests/e2e/shared-helpers.ts` | General e2e setup helpers for fresh menu boot, hero creation, seeded default campaign saves, and continuing seeded campaigns | 117 | 0 |
 | `tests/e2e/smoke.spec.ts` | Default browser smoke, tutorial completion/exit, settings, campaign launch, Chapter 2 smoke, skirmish, inventory | 925 | 12 |
 
-`npx playwright test --list` currently reports 61 tests in 3 spec files. `chapter2-helpers.ts` is not a spec file.
+`npx playwright test --list` currently reports 65 tests in 3 spec files. `chapter2-helpers.ts` is not a spec file.
 
 ## Explicit Test Lanes
 
@@ -23,9 +23,9 @@ The v0.4 test-lane pass keeps the existing file-level coverage intact and adds n
 | Lane | Command | Files | Current tests | Intended use |
 | --- | --- | --- | ---: | --- |
 | Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | 12 | Frequent browser iteration. Covers boot, Tutorial / Proving Grounds completion/exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention flow, skirmish, difficulty, and inventory smoke. |
-| Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | 21 | Targeted responsive and mobile/readability checks. Keep available for UI/layout work and release review. |
+| Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | 25 | Targeted responsive and mobile/readability checks, including Tutorial / Proving Grounds overlay reachability. Keep available for UI/layout work and release review. |
 | Deep-flow | `npm run test:e2e:deep` | `tests/e2e/deep-flow.spec.ts` | 28 | Release-critical full-flow gameplay, save, Results, HUD, minimap, retinue, rival, first-battle, and BattleScene result wiring checks. |
-| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | all e2e specs | 61 | Full checkpoint/freeze gate. This preserves the previous complete suite and adds the tutorial shell smoke path. |
+| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | all e2e specs | 65 | Full checkpoint/freeze gate. This preserves the previous complete suite and adds the tutorial shell smoke and layout paths. |
 
 This split uses simple file-level scripts rather than tags, grep, projects, sharding, or extra workers. That keeps the classification easy to inspect and avoids changing Playwright's current single-worker stability posture.
 
@@ -43,6 +43,7 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-06 explicit lane split | 10 smoke / 59 release | 5.4m smoke / 29.0m release | New `test:e2e:smoke` fast lane and `test:e2e:release` full gate; slow files still `layout.spec.ts` and `deep-flow.spec.ts`. |
 | 2026-05-08 overnight continuation | 10 smoke / 59 release / 49 shard1 / 10 shard2 | 4.2m smoke / 27.4m release / 23.0m shard1 / 4.2m shard2 | Existing 2-shard scripts reverified. Shard 1 remains uneven because it carries `deep-flow.spec.ts` and `layout.spec.ts`. |
 | 2026-05-08 tutorial playable shell | 12 smoke / 61 release | 5.4m smoke / 32.1m release | Added Tutorial / Proving Grounds completion and exit coverage. The completion smoke has a local 75s timeout because it drives the full 12-step tutorial path. |
+| 2026-05-08 tutorial readability review | 12 smoke / 25 layout / 65 expected release | 5.0m smoke / 13.1m layout | Added four Tutorial / Proving Grounds overlay layout checks across desktop, tablet, mobile-tall, and mobile-short. Full release should be refreshed in the final gate. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
@@ -53,7 +54,7 @@ The suite is slow for expected reasons:
 - Phaser scene boot is repeated many times, and each test starts from a browser page rather than a cheaper pure-rule boundary.
 - The suite is single-worker by design, so deep battle tests and generated viewport layout tests cannot overlap.
 - `deep-flow.spec.ts` contains many release-gate checks with high per-test timeouts: 15 calls to `test.setTimeout`, several at 60-90 seconds.
-- `layout.spec.ts` generates 21 tests from viewport loops. The Cinderfen readability section alone runs 4 campaign-map route checks plus 3 battle-HUD checks across desktop/mobile sizes.
+- `layout.spec.ts` generates 25 tests from viewport loops. The tutorial overlay section runs 4 launch/readability checks, and the Cinderfen readability section runs 4 campaign-map route checks plus 3 battle-HUD checks across desktop/mobile sizes.
 - Chapter 2 smoke flows are intentionally broad: one post-Ashen test walks Overlook -> Waystation -> Crossing -> Results -> reload persistence, and one post-Crossing test walks Watch -> Results -> Aftermath -> duplicate prevention.
 - Some tests still replay hero creation or campaign entry where a seeded save would prove the same layout or reachability contract.
 - Several tests wait on live Phaser state via `waitForFunction`; that is correct for gameplay assertions, but slower than direct save/data assertions.
@@ -81,6 +82,7 @@ This file is slow because it multiplies expensive flows across viewport matrices
 
 - 4 viewport checks for menu/hero creation.
 - 4 viewport checks for campaign/setup/inventory/asset-gallery reachability.
+- 4 viewport checks for Tutorial / Proving Grounds entry and first objective overlay reachability.
 - 4 viewport checks for battle HUD plus synthetic Results layout.
 - 4 viewport checks for v0.3 Cinderfen campaign readability, including post-Ashen seed, Overlook choice, Waystation, Crossing details, route-complete seed, and Aftermath details.
 - 3 viewport checks for Cinderfen Crossing and Watch battle-HUD readability; mobile portrait also completes Watch and checks Results.
@@ -224,9 +226,9 @@ The safe helper pass has now applied the lowest-risk setup/seeding changes. Furt
 The first v0.4 e2e runtime action is now complete at the script/documentation level:
 
 - `test:e2e:smoke` is the fast default lane and runs only `smoke.spec.ts`.
-- `test:e2e:layout` isolates responsive/mobile/readability checks.
+- `test:e2e:layout` isolates responsive/mobile/readability checks, including the Tutorial / Proving Grounds overlay guard.
 - `test:e2e:deep` isolates the release-critical deep gameplay flows.
-- `test:e2e:release` runs the full 61-test suite with line reporter.
+- `test:e2e:release` runs the full 65-test suite with line reporter.
 - `test:e2e` still works and remains the full suite under the existing Playwright convention.
 
 Coverage preservation notes:
@@ -317,4 +319,17 @@ PASS: 12 Playwright tests in 5.4m.
 npm run test:e2e:release
 PASS: 61 Playwright tests in 32.1m.
 Slow files: tests/e2e/deep-flow.spec.ts 13.9m, tests/e2e/layout.spec.ts 12.9m, tests/e2e/smoke.spec.ts 5.0m.
+```
+
+Tutorial readability surrogate update, 2026-05-08:
+
+```text
+npm run test:e2e:layout -- --grep "tutorial entry"
+PASS: 4 Playwright tests in 48.0s.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.0m.
+
+npm run test:e2e:layout
+PASS: 25 Playwright tests in 13.1m.
 ```

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 Tutorial / Proving Grounds playable flow added
+Last updated: 2026-05-08 Tutorial / Proving Grounds readability review added
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -145,6 +145,16 @@ Phase 10 Tutorial content validation gate:
 - Added a focused duplicate tutorial ID regression to `src/game/data/contentValidation.test.ts`; the tutorial validation suite now has 27 tests.
 - Existing tutorial validation already covered duplicate step IDs, playable tutorial without map/steps, invalid step type/objective/action, invalid map and content references, and `noReward: false` rejection for `proving_grounds_basics`.
 - Verification: focused `npm test -- src/game/data/contentValidation.test.ts` PASS, 27 tests; `npm run validate:content` PASS; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+
+Phase 11 Tutorial readability/mobile surrogate review:
+
+- Added `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md`.
+- Reviewed the main-menu Tutorial entry, overlay density, step copy, hint usefulness, desktop/tablet/mobile layout, Skip/Exit clarity, battle HUD interference, no-reward behavior, completion copy, and tutorial length.
+- Added responsive Playwright layout coverage in `tests/e2e/layout.spec.ts` for the Tutorial entry and first objective overlay across desktop, tablet-short, mobile-tall, and mobile-short viewports.
+- The layout guard verifies the Tutorial button is reachable, launches the tutorial shell, the first overlay objective/instruction/progress/buttons are visible, the overlay stays within viewport bounds, no horizontal overflow appears, and the battle command panel remains width-safe.
+- Updated e2e lane docs for the new 25-test layout lane and the expected 65-test full release gate after Phase 11.
+- No gameplay behavior, save behavior, rewards, campaign progression, map, unit, faction, balance, worker, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external asset, or broad system changed.
+- Verification: focused `npm run test:e2e:layout -- --grep "tutorial entry"` PASS, 4 tests in 48.0s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run test:e2e:layout` PASS, 25 tests in 13.1m.
 
 ## Current v0.5 Save, Content Validation, Determinism, and Expansion Readiness Gate - 2026-05-08
 

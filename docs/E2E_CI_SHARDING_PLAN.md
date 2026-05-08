@@ -2,7 +2,7 @@
 
 Date: 2026-05-07
 
-Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests and the full release lane from 59 to 61 tests without changing the shard scripts.
+Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests and the full release lane from 59 to 61 tests without changing the shard scripts. The Phase 11 tutorial readability pass added four layout tests, so the expected full release lane is now 65 tests before the final full-gate rerun.
 
 Scope: plan and minimal script implementation for CI sharding of the full Playwright release gate. This pass does not change tests, remove coverage, change gameplay, change UI behavior, change selectors, or change Playwright configuration.
 
@@ -13,9 +13,9 @@ The current npm scripts already split local/test intent by file:
 | Lane | Command | Files | Current role |
 | --- | --- | --- | --- |
 | Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | Fastest frequent browser iteration lane. Covers boot, Tutorial / Proving Grounds completion/exit, Settings, campaign launch, Cinderfen route smoke, skirmish, difficulty, and inventory. |
-| Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | Responsive, mobile density, readability, battle HUD, Results, Asset Gallery reachability, and Ashen/Cinderfen layout checks. |
+| Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | Responsive, mobile density, Tutorial overlay readability, battle HUD, Results, Asset Gallery reachability, and Ashen/Cinderfen layout checks. |
 | Deep-flow | `npm run test:e2e:deep` | `tests/e2e/deep-flow.spec.ts` | Release-critical gameplay, save, campaign, Results, HUD, minimap, retinue, rival, and first-battle full-flow coverage. |
-| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | All e2e specs | Full 61-test release/checkpoint gate. |
+| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | All e2e specs | Full 65-test release/checkpoint gate. |
 | Release shard 1 | `npm run test:e2e:release:shard1` | Playwright shard `1/2` | First half of the full release gate for CI matrix usage. |
 | Release shard 2 | `npm run test:e2e:release:shard2` | Playwright shard `2/2` | Second half of the full release gate for CI matrix usage. |
 
@@ -36,10 +36,10 @@ Recent recorded runtimes:
 | Lane | Tests | Runtime | Notes |
 | --- | ---: | ---: | --- |
 | Smoke/default | 12 | 5.4m in the latest tutorial-shell run | Good frequent iteration lane, but not a release substitute. Includes the first full tutorial completion smoke. |
-| Release gate | 61 | 32.1m in the latest tutorial-shell release rerun | Suitable for freeze/checkpoint gates but slow for CI feedback. |
+| Release gate | 65 expected | 32.1m in the latest 61-test tutorial-shell release rerun before Phase 11 layout additions | Suitable for freeze/checkpoint gates but slow for CI feedback. Refresh in the final full gate. |
 | Release shard 1 | 49 | 23.0m in the latest pre-tutorial local verification run | Contains the deep-flow and layout-heavy side of the split; useful in CI, not a local speedup when run sequentially. Rerun after tutorial-shell hardening to refresh. |
 | Release shard 2 | 10 | 4.2m in the latest pre-tutorial local verification run | Previously mapped to the smoke side of the split. Expected to grow after the tutorial smoke additions. |
-| Layout/responsive | 21 | 12.0m inside the latest shard/release runs | Slowest file family along with deep-flow. |
+| Layout/responsive | 25 | 13.1m in the latest tutorial readability run | Slowest file family along with deep-flow. |
 | Deep-flow | 28 | 10.8-11.1m inside the latest shard/release runs | Slowest file family along with layout. |
 
 The long runtime is expected because the suite intentionally runs with one worker, repeats Phaser scene boot, uses live campaign/battle flows, and keeps layout/deep coverage broad.
@@ -59,7 +59,7 @@ npx playwright test --reporter=line --shard=2/2
 
 Expected behavior:
 
-- Both shards together preserve the full 61-test release gate.
+- Both shards together preserve the full 65-test release gate.
 - Each shard keeps `workers: 1` inside the shard, preserving the current stability posture.
 - CI wall-clock should trend toward roughly half of the release gate, but not exactly half because tests differ in cost and Playwright distributes tests rather than equalizing runtime perfectly.
 - Local behavior stays unchanged unless a developer explicitly runs a shard command.

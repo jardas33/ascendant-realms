@@ -121,6 +121,15 @@ async function expectReachableButton(
   expect(box.height, `${label} tap height`).toBeGreaterThanOrEqual(32);
 }
 
+async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
+  await openFreshMainMenu(page);
+  await expectNoHorizontalOverflow(page, `${label} main menu`);
+  await expectReachableButton(page, page.getByTestId("menu-tutorial"), `${label} Tutorial`);
+  await page.getByTestId("menu-tutorial").click();
+  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+}
+
 async function expectBattleCommandButtonsReachable(page: Page, actions: string[], label: string): Promise<void> {
   const result = await page.evaluate((requestedActions) => {
     const panel = document.querySelector<HTMLElement>(".side-panel");
@@ -402,6 +411,19 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expect(page.getByText("Asset Gallery")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} asset gallery`);
       await expectInViewport(page, page.getByRole("button", { name: "Back" }), `${viewport.label} asset gallery back`);
+    });
+
+    test(`tutorial entry and first objective overlay stay readable on ${viewport.label}`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await launchTutorialOverlay(page, viewport.label);
+      await expect(page.getByTestId("tutorial-objective")).toContainText("Camera Controls");
+      await expect(page.getByTestId("tutorial-instruction")).toContainText("Pan with WASD or arrow keys");
+      await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
+      await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);
+      await expectInViewport(page, page.getByTestId("tutorial-overlay"), `${viewport.label} tutorial overlay`);
+      await expectReachableButton(page, page.getByTestId("tutorial-next"), `${viewport.label} tutorial next`);
+      await expectReachableButton(page, page.getByTestId("tutorial-exit"), `${viewport.label} tutorial exit`);
+      await expectWithinViewportWidth(page, page.locator(".side-panel"), `${viewport.label} battle command panel`);
     });
   }
 
