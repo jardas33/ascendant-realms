@@ -136,7 +136,7 @@ export class SettingsScene extends Phaser.Scene {
                 "colorblindMinimapPalette",
                 this.settings.colorblindMinimapPalette,
                 "settings-colorblind-minimap",
-                "Uses stronger blue and orange unit markers on the minimap."
+                "Uses stronger blue and orange team markers on the minimap."
               )}
               ${this.renderScaleSlider()}
               ${this.renderFogOverride()}
@@ -155,7 +155,7 @@ export class SettingsScene extends Phaser.Scene {
                 <span>Esc</span><strong>Cancel placement or clear selection</strong>
                 <span>WASD / arrows</span><strong>Pan camera</strong>
               </div>
-              <p class="settings-note">On small screens, use the command panel buttons first; these keys are the fastest fallback for battle control.</p>
+              <p class="settings-note">On small screens, use command panel buttons for build, train, research, and abilities; hotkeys remain available when a keyboard is present.</p>
             </section>
           </div>
           <div class="menu-actions row">

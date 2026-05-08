@@ -2,6 +2,8 @@
 
 Date: 2026-05-07
 
+Continuation refresh: 2026-05-08. Re-read the v0.3.1 mobile/readability audit, polish release report, Cinderfen readiness gate, release candidate report, current Settings scene, and current control/input references. This continuation keeps the phase low risk: copy-only Settings clarifications, no gameplay, balance, save, selector, layout, or route-rule changes.
+
 Scope: focused accessibility and human-readability polish for the frozen `Prototype v0.3` / `Cinderfen Route Baseline` and frozen `v0.3.1` polish layer. This pass does not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, or new gameplay systems.
 
 ## Baseline Read
@@ -56,6 +58,11 @@ Implemented in this pass:
   - Shift+A then right click for attack-move
 - A compact mobile note points players toward command panel buttons first on small screens.
 
+Continuation copy refinements:
+
+- Colorblind minimap hint now says it uses stronger blue/orange team markers, matching the actual minimap team palette behavior.
+- Small-screen command-panel note now names build, train, research, and ability buttons so the advice is easier to act on without changing controls or layout.
+
 ## Explicit Non-Goals
 
 - No gameplay behavior changes.
@@ -95,5 +102,14 @@ Phase verification completed:
 - `npm run build` - passed; known Vite warning remains for the intentionally isolated `vendor-phaser` chunk.
 - `npm run test:e2e:smoke` - passed, 10 tests.
 - `npm run test:e2e:layout` - passed, 21 tests.
+- `npm run playtest:sim` - passed, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check` - passed.
+
+Continuation verification, 2026-05-08:
+
+- `npm test` - passed, 38 test files / 270 tests in 8.92s.
+- `npm run build` - passed; app JS `assets/index-90WGArXv.js` 436.35 kB / gzip 117.34 kB, CSS `assets/index-CeqfGaMI.css` 42.04 kB / gzip 8.74 kB, `vendor-phaser` 1,481.79 kB / gzip 339.86 kB, known Vite warning remains.
+- `npm run test:e2e:smoke` - passed, 10 tests in 4.3m.
+- `npm run test:e2e:layout` - passed, 21 tests in 11.9m.
 - `npm run playtest:sim` - passed, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check` - passed.

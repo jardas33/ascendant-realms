@@ -21,13 +21,14 @@ Phase 2 test/dev hook audit refresh: committed e393dd5 Checkpoint v0.4 test hook
 Phase 3 analyzer-backed optimization decision: committed 5748857 Checkpoint v0.4 measured performance optimization. Option D, no code optimization, docs refreshed with current evidence.
 Phase 4 e2e sharding refresh: existing 2-shard scripts verified, docs refreshed, no package/test/script coverage change.
 Phase 5 e2e flake hardening: test-only rally wait robustness in `tests/e2e/deep-flow.spec.ts`, no gameplay or coverage change.
+Phase 6 accessibility/readability continuation: copy-only Settings clarifications for colorblind minimap team markers and small-screen command-panel guidance.
 ```
 
-Current Phase 3 build/performance numbers:
+Current Phase 6 build/performance numbers:
 
 ```text
 npm run build: PASS.
-App JS: assets/index-Bi19pD8P.js, 436.32 kB / gzip 117.33 kB.
+App JS: assets/index-90WGArXv.js, 436.35 kB / gzip 117.34 kB.
 Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
 CSS: assets/index-CeqfGaMI.css, 42.04 kB / gzip 8.74 kB.
 Known Vite warning remains for vendor-phaser.
@@ -64,7 +65,17 @@ npm run test:e2e:deep: PASS, 28 tests in 11.3m.
 npm run test:e2e:release: PASS, 59 tests in 27.1m.
 ```
 
-Next active phase after this checkpoint: Phase 6, accessibility/readability polish. Keep changes low risk, avoid balance/progression changes, and do not redesign the UI.
+Phase 6 verification:
+
+```text
+npm test: PASS, 38 files / 270 tests in 8.92s.
+npm run build: PASS with the known Phaser vendor warning.
+npm run test:e2e:smoke: PASS, 10 tests in 4.3m.
+npm run test:e2e:layout: PASS, 21 tests in 11.9m.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+```
+
+Next active phase after this checkpoint: Phase 7 save compatibility audit. Do not change the save version or save format unless a real bug is found and tested.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 
