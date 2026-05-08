@@ -13,7 +13,7 @@ if (errors.length > 0) {
       "Checked units, buildings, abilities, hero classes, skills, items, affixes, origins,",
       "resources, factions, reward tables, rival rewards, Stronghold upgrades, campaign chapters,",
       "campaign nodes, reputation effects, upgrades, difficulties, AI personalities, campaign",
-      "modifiers, enemy heroes, and maps."
+      "modifiers, enemy heroes, maps, and tutorial metadata."
     ].join(" ")
   );
 }

@@ -348,3 +348,9 @@ Recommended order:
 Select Candidate A, Tutorial / Proving Grounds, for future planning.
 
 Do not implement it inside the v0.5 safety-gate goal. The next phase should create a dedicated tutorial/proving grounds design brief. A metadata-only scaffold may be considered afterward only if it remains non-playable, validation-first, and does not add maps, units, rewards, save versioning, or launch paths to missing content.
+
+Phase 13 follow-up:
+
+- A metadata-only scaffold was added after the design brief.
+- The scaffold is validation-first and non-playable.
+- No map, unit, reward, save field, scene, UI launch path, or gameplay behavior was added.

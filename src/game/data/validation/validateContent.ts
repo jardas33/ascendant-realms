@@ -15,6 +15,7 @@ import { RESOURCE_DEFINITIONS } from "../resources";
 import { RIVAL_REWARDS } from "../rivalRewards";
 import { SKILL_NODES, SKILL_TREES } from "../skillTrees";
 import { STRONGHOLD_UPGRADES } from "../strongholdUpgrades";
+import { TUTORIALS } from "../tutorials";
 import { UNITS } from "../units";
 import { UPGRADES } from "../upgrades";
 import { idsFor, type ValidationContext } from "./ValidationTypes";
@@ -29,6 +30,7 @@ import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
 import { validateRewardTables, validateRivalRewards } from "./validateRewards";
 import { validateStrongholdUpgrades } from "./validateStronghold";
+import { validateTutorials } from "./validateTutorials";
 import { validateUnits } from "./validateUnits";
 import { validateUpgrades } from "./validateUpgrades";
 
@@ -55,6 +57,7 @@ export function validateContent(): string[] {
     campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
     enemyHeroIds: idsFor(ENEMY_HEROES, "enemy hero", errors),
     enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors),
+    tutorialIds: idsFor(TUTORIALS, "tutorial", errors),
     rivalTrophyIds: new Set(RIVAL_REWARDS.map((reward) => reward.firstDefeat.trophy.trophyId))
   };
 
@@ -80,5 +83,6 @@ export function validateContent(): string[] {
   validateCampaignModifiers(errors, context);
   validateEnemyHeroes(errors, context);
   validateMaps(errors, context);
+  validateTutorials(errors, context);
   return errors;
 }

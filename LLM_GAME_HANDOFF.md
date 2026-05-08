@@ -135,6 +135,18 @@ Phase 12 Tutorial / Proving Grounds design brief:
 - Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 - Commit: `Checkpoint tutorial proving grounds design brief`.
 
+Phase 13 metadata-only tutorial scaffold:
+
+- Added `src/game/types/TutorialTypes.ts`.
+- Added `src/game/data/tutorials.ts` with one non-playable `planned` Tutorial / Proving Grounds metadata entry: `proving_grounds_basics`.
+- Added `src/game/data/validation/validateTutorials.ts` and wired it into `validateContent()`.
+- Added two content-validation tests for the planned metadata and invalid tutorial references/status/duplicate step IDs.
+- Updated `tools/validateContent.ts`, `README.md`, `RELEASE_CHECKLIST.md`, `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md`, and `docs/V05_VERTICAL_SLICE_CANDIDATE.md`.
+- No playable tutorial, UI launch path, scene, map, unit, reward, save field, gameplay behavior, balance change, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, or broad system was added.
+- Verification: `npm test` PASS, 40 files / 298 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 10 tests in 4.6m; `git diff --check` PASS.
+- Current build output after metadata scaffold: app JS `assets/index-Caz7zKca.js`, 445.42 kB / gzip 119.69 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
+- Commit: `Checkpoint tutorial metadata scaffold`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.

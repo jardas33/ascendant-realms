@@ -16,12 +16,64 @@ import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation
 import { REWARD_TABLES } from "./rewards";
 import { RIVAL_REWARDS } from "./rivalRewards";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
+import { TUTORIALS } from "./tutorials";
 import { validateContent } from "./contentValidation";
 import { UNIT_BY_ID } from "./contentIndex";
 
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
     expect(validateContent()).toEqual([]);
+  });
+
+  it("defines a non-playable Tutorial / Proving Grounds metadata scaffold", () => {
+    expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
+    expect(TUTORIALS[0]).toMatchObject({
+      title: "Tutorial / Proving Grounds",
+      status: "planned"
+    });
+    expect(TUTORIALS[0].steps.map((step) => step.id)).toEqual([
+      "camera_and_selection",
+      "move_and_capture",
+      "resources_and_building",
+      "train_and_rally",
+      "ability_and_pressure",
+      "victory_results_persistence"
+    ]);
+  });
+
+  it("rejects invalid tutorial metadata references before a launch path exists", () => {
+    const tutorial = TUTORIALS[0];
+    const originalStatus = tutorial.status;
+    const firstStep = tutorial.steps[0];
+    const originalReferences = firstStep.references;
+    tutorial.status = "playable" as typeof tutorial.status;
+    firstStep.references = {
+      mapIds: ["missing_map"],
+      unitIds: ["missing_unit"],
+      buildingIds: ["missing_building"],
+      abilityIds: ["missing_ability"],
+      resourceIds: ["missing_resource"],
+      captureSiteIds: ["missing_site"]
+    };
+    tutorial.steps.push({ ...firstStep });
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Tutorial proving_grounds_basics has invalid status playable.",
+          "Duplicate Tutorial proving_grounds_basics step id: camera_and_selection",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing map missing_map.",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing unit missing_unit.",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing building missing_building.",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing ability missing_ability.",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing resource missing_resource.",
+          "Tutorial proving_grounds_basics step camera_and_selection references missing capture site missing_site."
+        ])
+      );
+    } finally {
+      tutorial.steps.pop();
+      firstStep.references = originalReferences;
+      tutorial.status = originalStatus;
+    }
   });
 
   it("rejects duplicate chapter node and prerequisite entries", () => {

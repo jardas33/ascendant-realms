@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: design only. This brief does not implement a tutorial, add a map, add units, add rewards, add a scene, add save fields, or expose a playable launch path.
+Status: design plus metadata-only scaffold. The Phase 13 scaffold defines planned Tutorial / Proving Grounds metadata and validation, but it does not implement a playable tutorial, add a map, add units, add rewards, add a scene, add save fields, or expose a launch path.
 
 ## 1. Purpose
 
@@ -121,10 +121,11 @@ Phase A: Docs only.
 
 Phase B: Metadata only, optional later.
 
-- Add tutorial/proving grounds metadata with `id`, `title`, `description`, `status`, and step definitions.
-- Validate metadata.
-- Do not expose a playable launch path yet.
-- Do not add save fields.
+- Implemented in Phase 13 as `src/game/data/tutorials.ts`, `src/game/types/TutorialTypes.ts`, and `src/game/data/validation/validateTutorials.ts`.
+- Metadata includes `id`, `title`, `description`, `status`, and planned step definitions.
+- Validation checks unique IDs, valid status, valid step types, and optional references.
+- No playable launch path exists.
+- No save fields were added.
 
 Phase C: Shell only, optional later.
 
@@ -192,6 +193,14 @@ Future validation should cover:
 - Tutorial status values are limited, for example `planned`, `scaffolded`, and later `playable`.
 
 Validation should fail before UI exposes a broken tutorial.
+
+Current metadata status:
+
+- `proving_grounds_basics` is `planned`.
+- It is not selectable in UI.
+- It is not playable.
+- It does not grant rewards.
+- It does not persist progress.
 
 ## 8. Risks
 
