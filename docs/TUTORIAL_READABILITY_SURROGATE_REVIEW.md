@@ -49,13 +49,15 @@ Recommendation: keep the button label short for now. If a future pass adds a men
 
 The overlay shows one objective title, one instruction sentence, one optional hint, one condition label, progress text, and controls. That is the right amount for a first playable shell and avoids turning the tutorial into a modal reading sequence.
 
+Phase 2 copy polish shortened the longest prompts and removed test-hook language from the player-facing pressure hint.
+
 Risk: on the 360 x 640 mobile-short viewport the overlay intentionally becomes narrow and scrollable. This preserves viewport safety but can make long instructions feel dense.
 
 Recommendation: keep each future step to one short instruction and one short hint. Do not add paragraphs, lore, or multi-branch text inside the overlay.
 
 ### Step Text Length
 
-Most current step instructions are single action sentences. The longest texts are the safe-pressure and finish steps, which are still acceptable because they explain unusual shell behavior: hook-assisted pressure and no reward persistence.
+Most current step instructions are single action sentences. After the v0.6 copy polish, the longest prompt is the final no-reward completion line because it deliberately names XP, items, resources, and campaign progress.
 
 Risk: the tutorial has twelve steps, which is long for first contact if a player is already familiar with RTS controls.
 
@@ -65,7 +67,7 @@ Recommendation: keep Skip / Exit visible, and consider a later optional "Basics 
 
 Hints are practical and tied to existing inputs: H, Space, right-click movement, Esc placement cancel, rally behavior, mana/cooldown, and no-reward persistence.
 
-Risk: a few hints explain systems that the player may not have reached yet, such as battle resources resetting after battle.
+Risk: a few hints still explain systems that the player may not have fully internalized yet, such as battle resources versus campaign-bank rewards.
 
 Recommendation: keep the current hints, but prefer input/action hints over system disclaimers in future copy edits.
 
@@ -103,7 +105,7 @@ Recommendation: keep the final step copy as-is for the shell. If human playtesti
 
 ### Completion Copy
 
-The final copy is clear and intentionally plain: "Training complete. Return to the main menu; no rewards or campaign progress were granted."
+The final copy is clear and intentionally plain: "Training complete. No rewards: no XP, items, resources, or campaign progress were granted."
 
 Risk: it is functional rather than celebratory.
 

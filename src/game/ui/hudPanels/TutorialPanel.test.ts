@@ -12,7 +12,7 @@ describe("TutorialPanel", () => {
     expect(html).toContain("Proving Grounds");
     expect(html).toContain("Select Hero");
     expect(html).toContain("Select Aster");
-    expect(html).toContain("Press H or click the hero");
+    expect(html).toContain("Press H or click Aster");
     expect(html).toContain("Step 2 of 12");
     expect(html).toContain("Select the hero");
     expect(html).not.toContain("Next Objective");
@@ -30,7 +30,7 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "finish_training", { finished: true }));
 
     expect(html).toContain("Complete Tutorial");
-    expect(html).toContain("no rewards or campaign progress");
+    expect(html).toContain("No rewards: no XP, items, resources, or campaign progress");
   });
 
   it("renders nothing outside tutorial mode", () => {

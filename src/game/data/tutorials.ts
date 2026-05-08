@@ -16,10 +16,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "info",
         title: "Camera Controls",
         description: "Introduce camera panning, hero centering, and the minimap without blocking battle controls.",
-        instruction: "Pan with WASD or arrow keys, then center on Aster with Space when you are ready.",
+        instruction: "Pan with WASD or arrow keys. Press Space to center on Aster when ready.",
         objectiveType: "acknowledge",
         requiredAction: "readInstructions",
-        hint: "H selects the hero. Space centers the camera on the hero.",
+        hint: "H selects Aster. Space recenters the camera.",
         references: {
           mapIds: ["first_claim"]
         }
@@ -29,17 +29,17 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "selectHero",
         title: "Select Hero",
         description: "Teach selecting the hero before issuing orders.",
-        instruction: "Select Aster so the command panel shows the hero card.",
+        instruction: "Select Aster to show hero commands.",
         objectiveType: "selectHero",
         requiredAction: "selectHero",
-        hint: "Press H or click the hero near your Command Hall."
+        hint: "Press H or click Aster near the Command Hall."
       },
       {
         id: "move_hero",
         type: "moveHero",
         title: "Move Hero",
         description: "Teach right-click movement using the existing hero and battlefield.",
-        instruction: "Right-click near the road to move Aster toward the center.",
+        instruction: "Right-click the road ahead to move Aster.",
         objectiveType: "moveHero",
         requiredAction: "moveHero",
         hint: "Right-click ground to move selected units."
@@ -49,7 +49,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "captureSite",
         title: "Capture Crown Shrine",
         description: "Teach capture-site ownership with the safest existing First Claim opening.",
-        instruction: "Move your hero and soldiers onto the Crown Shrine and hold until it turns blue.",
+        instruction: "Move hero and soldiers into the Crown Shrine ring until it turns blue.",
         objectiveType: "captureSite",
         requiredAction: "captureSite",
         hint: "Keep units inside the shrine ring until capture completes.",
@@ -64,10 +64,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "gatherResources",
         title: "Gather Resources",
         description: "Teach that captured sites generate temporary battle resources.",
-        instruction: "Hold the Crown Shrine long enough to see Crowns increase.",
+        instruction: "Hold the Crown Shrine and watch Crowns tick upward.",
         objectiveType: "resourceThreshold",
         requiredAction: "waitForIncome",
-        hint: "Battle resources reset after battle and are not campaign-bank rewards.",
+        hint: "Crowns here are battle resources, not campaign-bank rewards.",
         references: {
           mapIds: ["first_claim"],
           captureSiteIds: ["crown_shrine"],
@@ -79,7 +79,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "selectBuilding",
         title: "Select Command Hall",
         description: "Teach selecting the starting Command Hall to access construction.",
-        instruction: "Select your Command Hall near the starting base.",
+        instruction: "Select your Command Hall to open build commands.",
         objectiveType: "selectBuilding",
         requiredAction: "selectBuilding",
         hint: "The Command Hall can start Barracks construction.",
@@ -93,10 +93,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "buildStructure",
         title: "Build Barracks",
         description: "Teach Barracks placement and completed construction using existing build rules.",
-        instruction: "Use the Build Barracks command and place it on clear ground near your base.",
+        instruction: "Build a Barracks on clear ground near your base.",
         objectiveType: "buildStructure",
         requiredAction: "buildStructure",
-        hint: "Esc cancels placement if the first spot is blocked.",
+        hint: "If a spot is blocked, press Esc and try nearby.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["command_hall", "barracks"]
@@ -107,7 +107,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "trainUnit",
         title: "Train Militia",
         description: "Teach basic unit training from a completed Barracks.",
-        instruction: "Select the completed Barracks and train one Militia.",
+        instruction: "Select the completed Barracks and train a Militia.",
         objectiveType: "trainUnit",
         requiredAction: "trainUnit",
         hint: "The unit joins your army when the training queue finishes.",
@@ -123,7 +123,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "setRally",
         title: "Set Rally Point",
         description: "Teach rallying trained units toward a safe staging point.",
-        instruction: "With the Barracks selected, right-click a safe ground point near the road.",
+        instruction: "With Barracks selected, right-click safe ground near the road.",
         objectiveType: "setRally",
         requiredAction: "setRally",
         hint: "Rally points help new units gather without extra selection work.",
@@ -137,7 +137,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "useHeroAbility",
         title: "Use Hero Ability",
         description: "Teach the first Warlord ability without adding a new ability or class.",
-        instruction: "Select Aster and use Rally Banner from the command panel or press 1.",
+        instruction: "Select Aster and cast Rally Banner, or press 1.",
         objectiveType: "useHeroAbility",
         requiredAction: "useHeroAbility",
         hint: "Abilities spend mana and then enter cooldown.",
@@ -151,10 +151,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "defeatEnemy",
         title: "Hold Safe Pressure",
         description: "Teach that a staged force handles small existing enemy contact better than rushing alone.",
-        instruction: "Group your hero and troops, then defeat the small pressure force when it appears.",
+        instruction: "Keep hero and troops together, then defeat the small Raider pressure.",
         objectiveType: "defeatEnemy",
         requiredAction: "defeatEnemy",
-        hint: "This beat may stay hook-assisted until the playable shell proves timing is stable.",
+        hint: "A staged force should handle this safely.",
         references: {
           mapIds: ["first_claim"],
           unitIds: ["raider"]
@@ -165,10 +165,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "finish",
         title: "Finish Training",
         description: "End the tutorial without campaign rewards, hero XP, items, or campaign node completion.",
-        instruction: "Training complete. Return to the main menu; no rewards or campaign progress were granted.",
+        instruction: "Training complete. No rewards: no XP, items, resources, or campaign progress were granted.",
         objectiveType: "finish",
         requiredAction: "finish",
-        hint: "Training completion is non-persistent for the first shell."
+        hint: "Exit to the main menu when ready; nothing is saved."
       }
     ]
   }

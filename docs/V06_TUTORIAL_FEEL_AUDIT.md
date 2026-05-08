@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. This phase does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
+Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. Phase 2 applied copy-only polish based on this audit. This work does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
 
 ## Scope
 
@@ -28,8 +28,8 @@ Current metadata shape:
 | Map | existing `first_claim` |
 | Reward policy | `noReward: true` |
 | Step count | 12 |
-| Longest instruction | 16 words / 89 characters |
-| Longest hint | 13 words / 82 characters |
+| Longest instruction | 14 words / 90 characters after Phase 2 copy polish |
+| Longest hint | 10 words / 64 characters after Phase 2 copy polish |
 | Unit coverage | `TutorialStepModel`, `TutorialPanel`, content validation, launch/runtime no-reward tests |
 | Smoke coverage | Full launch, twelve-step completion, no-save/no-XP assertions, and exit path |
 | Layout coverage | First objective overlay on desktop, tablet-short, mobile-tall, and mobile-short |
@@ -38,18 +38,18 @@ Current step order:
 
 | # | Step | Required action | Instruction words | Hint words |
 | ---: | --- | --- | ---: | ---: |
-| 1 | Camera Controls | read instructions | 16 | 11 |
-| 2 | Select Hero | select hero | 10 | 10 |
-| 3 | Move Hero | move hero | 10 | 6 |
-| 4 | Capture Crown Shrine | capture site | 15 | 9 |
-| 5 | Gather Resources | wait for income | 10 | 10 |
+| 1 | Camera Controls | read instructions | 14 | 7 |
+| 2 | Select Hero | select hero | 6 | 9 |
+| 3 | Move Hero | move hero | 7 | 6 |
+| 4 | Capture Crown Shrine | capture site | 13 | 9 |
+| 5 | Gather Resources | wait for income | 9 | 8 |
 | 6 | Select Command Hall | select building | 8 | 7 |
-| 7 | Build Barracks | build structure | 14 | 9 |
+| 7 | Build Barracks | build structure | 9 | 10 |
 | 8 | Train Militia | train unit | 8 | 10 |
-| 9 | Set Rally Point | set rally | 12 | 10 |
-| 10 | Use Hero Ability | use hero ability | 13 | 7 |
-| 11 | Hold Safe Pressure | defeat enemy | 14 | 13 |
-| 12 | Finish Training | finish | 14 | 8 |
+| 9 | Set Rally Point | set rally | 9 | 10 |
+| 10 | Use Hero Ability | use hero ability | 9 | 7 |
+| 11 | Hold Safe Pressure | defeat enemy | 11 | 7 |
+| 12 | Finish Training | finish | 13 | 10 |
 
 ## Findings
 
@@ -71,19 +71,19 @@ Recommendation: treat twelve as the soft maximum for this shell. Future improvem
 
 ### 3. Step Text Length
 
-Instruction copy is mostly compact. The longest instruction is the final no-reward statement at 89 characters, and the longest gameplay instruction is safe-pressure at 81 characters. Hints are similarly short.
+Instruction copy is compact after Phase 2. The longest line by character count is the final no-reward statement because it intentionally names XP, items, resources, and campaign progress. Hints are ten words or fewer.
 
 Risk: the mobile-short overlay has a low max height and scrolls. Even short text can feel dense when header, progress, condition, and two buttons are visible at once.
 
-Recommendation: Phase 2 should tighten the longest instruction/hint lines, especially Camera Controls, Capture Crown Shrine, Build Barracks, Hold Safe Pressure, and Finish Training.
+Recommendation: copy is now within a good automated budget. Next readability work should focus on hierarchy and live pacing, not more text.
 
 ### 4. Hint Clarity
 
 Most hints are practical input or expectation hints: H, Space, right-click, Esc, rally behavior, mana/cooldown, and non-persistence.
 
-Risk: the safe-pressure hint says the beat may stay hook-assisted. That is useful for agent/test context, but it is not player-facing tutorial language.
+Phase 2 removed test-hook language from the safe-pressure hint and replaced it with player-facing staging guidance.
 
-Recommendation: replace hook/testing language with player-facing safety language in the copy polish phase.
+Recommendation: keep future hints player-facing. Put test-hook notes in docs or tests, not overlay copy.
 
 ### 5. Objective Progression Understandability
 
@@ -111,7 +111,7 @@ Recommendation: keep ability late for now. It is safer to teach ability after ba
 
 ### 7. No-Reward Completion Clarity
 
-The final instruction explicitly says no rewards or campaign progress were granted. Smoke coverage verifies no localStorage save is created, no live hero XP is granted from the pressure kill, and no runtime XP appears.
+The final instruction explicitly says no XP, items, resources, or campaign progress were granted. Smoke coverage verifies no localStorage save is created, no live hero XP is granted from the pressure kill, and no runtime XP appears.
 
 Risk: completion immediately returns to the main menu after the player clicks Complete Tutorial. Players can click through the message before absorbing it.
 

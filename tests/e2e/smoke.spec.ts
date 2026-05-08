@@ -313,7 +313,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(Number(pressure?.unitsKilled ?? 0)).toBeGreaterThanOrEqual(1);
     await advanceCompletedTutorialStep(page, "Finish Training", "Step 12 of 12: complete");
-    await expect(page.getByTestId("tutorial-instruction")).toContainText("no rewards or campaign progress");
+    await expect(page.getByTestId("tutorial-instruction")).toContainText("No rewards:");
+    await expect(page.getByTestId("tutorial-instruction")).toContainText("campaign progress");
     await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
     await page.getByTestId("tutorial-next").click();

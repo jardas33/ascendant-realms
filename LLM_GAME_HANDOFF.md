@@ -32,6 +32,16 @@ Phase 1 Tutorial human-feel surrogate audit:
 - Main findings: the tutorial order is coherent, e2e coverage is useful, no-reward/no-save behavior is well protected, but first-contact length, player-facing safe-pressure copy, no-reward completion satisfaction, and mobile-short readability still need human review and small polish.
 - No code, gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed in this phase.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `git diff --check` PASS.
+- Commit: `9382673 Checkpoint v0.6 tutorial feel audit`.
+
+Phase 2 Tutorial copy and hierarchy polish:
+
+- Tightened player-facing tutorial instructions and hints in `src/game/data/tutorials.ts` without adding/removing steps or changing completion requirements.
+- Removed test-hook language from the safe-pressure hint and replaced it with player-facing staging guidance.
+- Updated the final step to say `No rewards: no XP, items, resources, or campaign progress were granted.`
+- Updated exact-copy unit/e2e assertions and refreshed `docs/V06_TUTORIAL_FEEL_AUDIT.md` plus `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` with the post-polish copy metrics.
+- No gameplay behavior, save behavior, rewards, campaign progression, persistence, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed in this phase.
+- Verification: focused tutorial/content tests PASS, 39 tests; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning and app JS `assets/index-BoideHCz.js`, 459.06 kB / gzip 123.40 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
