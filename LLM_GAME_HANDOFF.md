@@ -58,6 +58,16 @@ Phase 4 save compatibility report:
 - Documented the fixture list, covered migration paths, unsupported old save shapes, current save version policy, future migration fixture procedure, save-version bump requirements, protected retinue/rival/affix/Chapter 2 domains, and remaining future fixture gaps.
 - No code, fixtures, save behavior, save version, gameplay, balance, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
 - Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `fc01c48 Checkpoint v0.5 save compatibility report`.
+
+Phase 5 content validation audit:
+
+- Added `docs/V05_CONTENT_VALIDATION_AUDIT.md`.
+- Audited existing validators under `src/game/data/validation/`, the boot-time validation path, and `src/game/data/contentValidation.test.ts`.
+- Documented validators that exist, weak/missing rules, high-risk references, duplicate ID risks, dangling reference risks, reward/economy risks, map objective risks, campaign unlock graph risks, future Chapter 3/new faction risks, and a recommended hardening order.
+- Identified safe Phase 6 candidates including duplicate chapter node IDs, campaign modifier capture-site references, Cinderfen modifier scope, enemy AI building-spawn consistency, repeat reward policy, event/town choice visible effects, and battle node map reward table linkage.
+- No validator code, content data, gameplay, balance, save behavior, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, or broad systems changed.
+- Verification: `npm test` PASS, 40 files / 284 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
