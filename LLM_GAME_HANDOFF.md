@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.4 overnight continuation full-game roadmap checkpoint
+Last updated: 2026-05-08 v0.4 overnight continuation polish backlog checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -25,6 +25,7 @@ Phase 6 accessibility/readability continuation: copy-only Settings clarification
 Phase 7 save compatibility audit: added `docs/SAVE_COMPATIBILITY_AUDIT.md` and one narrow unit test preserving valid Chapter 2 selected chapter/node state.
 Phase 8 route-feel surrogate review: added `docs/V04_ROUTE_FEEL_SURROGATE_REVIEW.md`, no code changes, no gameplay changes, no new tests needed.
 Phase 9 full-game roadmap architecture: refreshed `docs/FULL_GAME_ROADMAP.md`, `docs/SYSTEMS_EXPANSION_RISK_REGISTER.md`, and `docs/V05_SYSTEMS_DESIGN_BRIEF.md` with all fifteen future-system planning tracks, including modding/data-driven content, tutorial/onboarding, monetization/packaging, and recommended order.
+Phase 10 optional polish backlog: added `docs/V04_POLISH_BACKLOG.md` with safe/medium-risk/high-risk/blocked triage across UI copy, e2e stability, performance, accessibility, save safety, docs, telemetry, and future content planning.
 ```
 
 Current build/performance numbers:
@@ -108,7 +109,16 @@ npm run build: PASS with the known Phaser vendor warning.
 
 Phase 9 planning read: the long-term architecture docs now cover workers/economy, enemy construction, faction expansion, campaign chapter expansion, diplomacy/reputation, tutorial/onboarding, crafting/affix rerolling, asset pipeline, performance, AI personality expansion, procedural/skirmish maps, modding/data-driven content, monetization/packaging, multiplayer feasibility, and the save/content-validation gate. Do not implement these systems from the planning docs alone.
 
-Next active phase after this checkpoint: Phase 10 optional tiny no-gameplay polish backlog. This phase is docs-only unless a future prompt explicitly asks to implement a safe backlog item.
+Phase 10 verification:
+
+```text
+npm test: PASS, 38 files / 271 tests in 7.05s.
+npm run build: PASS with the known Phaser vendor warning.
+```
+
+Phase 10 backlog read: safe items are mostly copy, docs, measurement, and non-blocking review work; medium-risk items need targeted e2e and a short plan; high-risk/blocked items must not be implemented inside v0.4 polish. Balance tuning for Fast Army or retinue plus Training Yard II remains blocked without human feel review or a clear bug.
+
+Next active phase after this checkpoint: Phase 11 final overnight goal verification and handoff. Run the full release gate, shard scripts or document why not, production preview smoke if feasible, update checkpoint docs, commit final handoff, then push if safe.
 
 ## Current v0.4 Autonomous Goal Checkpoint - 2026-05-07
 
