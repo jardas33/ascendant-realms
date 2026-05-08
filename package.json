@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -p tsconfig.json && vite build",
+    "build:analyze": "tsc -p tsconfig.json && vite build --mode analyze",
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -14,6 +15,8 @@
     "test:e2e:layout": "playwright test tests/e2e/layout.spec.ts --reporter=line",
     "test:e2e:deep": "playwright test tests/e2e/deep-flow.spec.ts --reporter=line",
     "test:e2e:release": "playwright test --reporter=line",
+    "test:e2e:release:shard1": "playwright test --reporter=line --shard=1/2",
+    "test:e2e:release:shard2": "playwright test --reporter=line --shard=2/2",
     "test:e2e:headed": "playwright test --headed",
     "playtest:sim": "tsx tools/runPlaytestSim.ts",
     "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
@@ -29,6 +32,7 @@
   "devDependencies": {
     "@playwright/test": "^1.59.1",
     "@types/node": "^22.10.2",
+    "rollup-plugin-visualizer": "^7.0.1",
     "tsx": "^4.20.6",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",

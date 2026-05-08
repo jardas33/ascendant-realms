@@ -11,9 +11,9 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The first v0.4 technical groundwork checkpoint is now the active post-freeze technical baseline.
+The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.4 performance, measurement, and e2e sharding groundwork checkpoint is now the active post-freeze technical baseline.
 
-Latest verification refresh: 2026-05-07. `npm test`, `npm run build`, `npm run test:e2e:smoke`, `npm run test:e2e:release`, `npm run playtest:sim`, and `git diff --check` passed. The branch was clean and synced before the metadata refresh. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, or crafting was added.
+Latest checkpoint verification: 2026-05-07. `npm test`, `npm run build`, `npm run test:e2e:smoke`, `npm run test:e2e:release`, `npm run test:e2e:release:shard1`, `npm run test:e2e:release:shard2`, `npm run playtest:sim`, `git diff --check`, and production preview smoke passed. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, or crafting was added.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
@@ -68,9 +68,14 @@ Completed v0.4 technical groundwork:
 - [x] Full release-gate e2e coverage preserved at 59 tests; smoke lane is available for frequent iteration but does not replace the release gate.
 - [x] Performance implementation plan created for measured bundle optimization.
 - [x] First approved optimization implemented: Phaser is split into a `vendor-phaser` chunk through Vite/Rollup `manualChunks`.
+- [x] Bundle analyzer script and report added for the v0.4 technical baseline.
+- [x] Test/dev hook audit completed; no accidental large production leak was found.
+- [x] Analyzer-backed second optimization decision recorded as no additional code optimization.
+- [x] Minimal 2-shard Playwright release-gate scripts added for CI: `test:e2e:release:shard1` and `test:e2e:release:shard2`.
 - [x] Bundle result documented: app JS is about 435.50 kB / 116.99 kB gzip; Phaser vendor JS is about 1,481.79 kB / 339.86 kB gzip; the known Vite warning remains on the vendor chunk.
 - [x] Checkpoint verification passed: `npm test`, `npm run build`, `npm run test:e2e:smoke`, final `npm run test:e2e:release` rerun, `npm run playtest:sim`, and `git diff --check`.
 - [x] Clean verification refresh passed on 2026-05-07: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 28.1m, `npm run playtest:sim` 255 deterministic runs, and `git diff --check`.
+- [x] v0.4 performance/e2e sharding checkpoint passed on 2026-05-07: `npm test` 270 tests, `npm run build`, `npm run test:e2e:smoke` 10 tests, `npm run test:e2e:release` 59 tests in 28.8m, both release shards, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke.
 
 Must remain stable after the v0.3 freeze:
 
@@ -94,7 +99,7 @@ Recommended focus after the v0.3.1 freeze:
 
 - Keep v0.3 and v0.3.1 frozen, compact, and data-driven.
 - Use the v0.4 technical groundwork checkpoint as the new technical baseline.
-- Choose between analyzer-guided performance measurement, a second safe optimization, and human readability/accessibility review.
+- Choose between CI workflow wiring for the shard scripts, human readability/accessibility review, and a separate test-harness/content-validation hardening plan.
 - If planning v0.4, start from the frozen route's human-readability findings rather than adding broad systems immediately.
 - If optimizing technically, change only one measured optimization at a time and keep release-gate e2e green.
 - Play Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost with no retinue, one Veteran Militia, one Veteran Ranger, and mixed retinue.

@@ -398,4 +398,59 @@ Proceed to implementation only if the task explicitly asks for it. The safe firs
 Read docs/V04_PERFORMANCE_IMPLEMENTATION_PLAN.md and docs/PERFORMANCE_BUNDLE_AUDIT.md. Implement only the Phaser vendor chunk split in Vite config. Do not change gameplay, balance, scene loading, data loading, test hooks, or chunk warning limits. Record exact before/after build output and run npm test, npm run build, npm run test:e2e:smoke, npm run test:e2e:release, npm run playtest:sim, and production preview smoke.
 ```
 
-Current plan status: first optimization implemented. Do not implement a second optimization without a new explicit request.
+Current plan status: first optimization implemented. A later analyzer-backed second-decision pass chose Option D, no code optimization, because the available options were not safe enough or meaningful enough for a second runtime change.
+
+## Second Optimization Decision - 2026-05-07
+
+Chosen option: Option D - no code optimization.
+
+Decision matrix:
+
+| Option | Decision | Reason |
+| --- | --- | --- |
+| Option A - Lazy-load Asset Gallery | Skip | Analyzer shows `AssetGalleryScene.ts` is only about 4,125 rendered bytes / 1,502 gzip bytes. It is isolated, but the payoff does not justify changing Phaser scene registration now. |
+| Option B - Production-gate accidental test/dev code | Skip | The hook audit found no accidental large test/dev bundle leak. Existing hooks/selectors are intentional and e2e-critical. |
+| Option C - Split another stable vendor/tool chunk | Skip | Phaser is already isolated. No other large stable runtime dependency exists. |
+| Option D - No code optimization | Chosen | Safest outcome. Preserve the current green baseline and plan any broader content-validation, data-splitting, or scene-loading work as a dedicated pass. |
+
+Before/after bundle numbers:
+
+| Metric | Before decision | After decision |
+| --- | ---: | ---: |
+| JS chunks | 2 | 2 |
+| CSS chunks | 1 | 1 |
+| App JS | `assets/index-TotuX8zG.js` 435.50 kB / gzip 116.99 kB | unchanged |
+| Phaser vendor JS | `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / gzip 339.86 kB | unchanged |
+| CSS | `assets/index-CIXXIuKP.css` 41.86 kB / gzip 8.71 kB | unchanged |
+| Vite warning | Present for `vendor-phaser` | unchanged |
+
+No implementation was made in this pass. The next optimization should be a separately scoped task, most likely either a test-harness build mode for intentional hooks or a build/test content-validation path. Do not combine those with scene lazy loading or data chunk splitting.
+
+Verification for the no-code decision:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 8.76s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite warning remains because vendor-phaser is over 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.4m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.1m.
+Slow files: tests/e2e/layout.spec.ts 12.8m and tests/e2e/deep-flow.spec.ts 11.4m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 4190 --strictPort.
+PASS: main menu loaded, Prototype v0.3 / Cinderfen Route Baseline copy visible, New Campaign reached Campaign Map, Continue Campaign reached Campaign Map, Skirmish Setup opened, and browser console errors stayed at 0.
+Note: Browser Use reached the local URL and saw 0 console errors, but its DOM/screenshot surface was blank for this app tab; a Playwright fallback completed the production preview smoke.
+```

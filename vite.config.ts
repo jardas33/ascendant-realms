@@ -1,6 +1,25 @@
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vitest/config";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  plugins:
+    mode === "analyze"
+      ? [
+          visualizer({
+            filename: "bundle-analysis/stats.html",
+            gzipSize: true,
+            brotliSize: true,
+            template: "treemap",
+            title: "Ascendant Realms Bundle Analysis"
+          }),
+          visualizer({
+            filename: "bundle-analysis/stats.json",
+            gzipSize: true,
+            brotliSize: true,
+            template: "raw-data"
+          })
+        ]
+      : [],
   build: {
     rollupOptions: {
       output: {
@@ -21,4 +40,4 @@ export default defineConfig({
   test: {
     exclude: ["node_modules/**", "dist/**", "tests/e2e/**"]
   }
-});
+}));

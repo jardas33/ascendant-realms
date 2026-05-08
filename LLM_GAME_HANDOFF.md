@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-07 v0.4 technical groundwork verification refresh
+Last updated: 2026-05-07 v0.4 performance and e2e sharding checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -18,7 +18,7 @@ The current playable loop:
 
 The project is now a **frozen v0.3.1 polish release** on top of the **frozen v0.3 Cinderfen Route Baseline**. The visible in-game menu still says `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.3 is the content baseline, while v0.3.1 is the polish/readability/performance-audit/test-maintenance layer. v0.3 froze the current release baseline after Unit Veterancy V1, Retinue Camp V1, Enemy Hero / Rival Commander V1, Rival / Nemesis Persistence V1, Rival Rewards and Trophies V1, Stronghold Development Tier II, reputation hooks, randomized item affixes V1, safe HeroProgressionRules and CampaignRules module splits, HUD interaction polish, captured-site fog polish, permanent Playwright regression coverage, and the compact Chapter 2 Cinderfen route through Overlook, Waystation, Crossing, Watch, and Aftermath. v0.3.1 froze mobile/readability audit coverage, Cinderfen copy/hierarchy polish, route-complete clarity, Results copy improvements, the performance bundle audit, the e2e runtime audit, and safe shared e2e helper cleanup without changing gameplay or balance. It is still a prototype, but it has a broad playable RTS/RPG spine and a clear frozen verification baseline. Preserve that work. Do not reset, delete, checkout, or revert changes unless the user explicitly asks.
 
-The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, seeded only layout/smoke cases that were not testing the full creation path, and the later v0.4 lane split preserved the 59-test release gate while adding a faster smoke lane. The first v0.4 performance optimization split Phaser into a vendor chunk without changing gameplay. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is analyzer-guided performance measurement, human readability review, or broader v0.4 planning. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
+The final automated v0.3.1 freeze gate is complete. Chapter metadata exists, `cinderfen_overlook` is a playable preparation event after `ashen_outpost`, `cinderfen_waystation` is a compact town/support node after the event, `cinderfen_crossing` launches the authored `Cinderfen Causeway` map after the event is completed, `cinderfen_watch` launches the compact `Cinderfen Watchpost` map after Cinderfen Crossing victory, and `cinderfen_aftermath` is a compact non-battle consequence event after Cinderfen Watch. `docs/V031_POLISH_RELEASE_REPORT.md` classifies v0.3.1 as `ready to freeze`, and this freeze pass records it as frozen. The e2e helper pass added `tests/e2e/shared-helpers.ts`, reused setup helpers in smoke/layout specs, seeded only layout/smoke cases that were not testing the full creation path, and the later v0.4 lane split preserved the 59-test release gate while adding a faster smoke lane. Minimal v0.4 Playwright release sharding scripts now exist for CI: `test:e2e:release:shard1` and `test:e2e:release:shard2`; the full `test:e2e:release` and `test:e2e` commands remain intact. The first v0.4 performance optimization split Phaser into a vendor chunk without changing gameplay. The analyzer-backed second optimization decision chose Option D, no code optimization, because Asset Gallery is too small, no accidental test/dev bundle leak was found, and no second stable vendor chunk exists. The v0.4 performance/e2e sharding checkpoint verified the full release gate, both shard scripts, simulator, diff check, and production preview smoke. Chapter/campaign data is split into focused node and reward modules, with `campaignNodes.ts` and `rewards.ts` kept as compatibility barrels. Campaign map presentation has focused pure view-model helpers for chapter cards, node cards, choice/service cards, route-complete status, and choice-result copy; preserve selectors and behavior when touching those files. Next recommended work is CI workflow wiring for release shards, human readability/accessibility review, a dedicated test-harness hardening plan, or a build/test content-validation plan. Explicitly postpone workers, enemy construction, new factions, new maps, new units, diplomacy, procedural generation, crafting, durability, broad loot complexity, full trophy rooms, and broad army-management systems unless the user explicitly asks.
 
 ## Current Git State
 
@@ -404,6 +404,183 @@ git rev-list --left-right --count origin/main...HEAD
 ```
 
 Next recommended milestone remains analyzer-guided performance measurement, one carefully scoped technical optimization, or human readability/accessibility review of the frozen Cinderfen route. Do not add workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, or broad gameplay systems as the next default move.
+
+## v0.4 Second Optimization Decision - 2026-05-07
+
+Scope: choose exactly one analyzer-backed optimization option after reading the bundle analysis, test/dev hook audit, and v0.4 performance implementation plan. This pass chose Option D, no code optimization, and changed docs only. It did not add gameplay, change balance, add content, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, change save behavior, change scene loading, change data loading, change test hooks, or suppress the Vite warning.
+
+Decision:
+
+```text
+Option A - Lazy-load Asset Gallery: skipped because AssetGalleryScene is only about 4.13 kB rendered / 1.50 kB gzip, not enough to justify Phaser scene-loading changes.
+Option B - Production-gate accidental test/dev code: skipped because the hook audit found intentional e2e/test surfaces but no accidental large Playwright, Vitest, e2e-helper, or simulator leak.
+Option C - Split another vendor/tool chunk: skipped because Phaser is already isolated and there is no other large stable runtime dependency.
+Option D - No code optimization: chosen.
+```
+
+Bundle before/after:
+
+```text
+Before decision:
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+JS chunks: 2. CSS chunks: 1. Vite warning present for vendor-phaser.
+
+After decision:
+Unchanged. No source optimization was implemented.
+```
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 8.76s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite large-chunk warning remains because vendor-phaser exceeds 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.4m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 29.1m.
+Slow files remain tests/e2e/layout.spec.ts at 12.8m and tests/e2e/deep-flow.spec.ts at 11.4m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 4190 --strictPort.
+PASS: main menu loaded, Prototype v0.3 / Cinderfen Route Baseline copy visible, New Campaign reached Campaign Map, Continue Campaign reached Campaign Map, Skirmish Setup opened, and browser console errors stayed at 0.
+Note: Browser Use reached the local URL and saw 0 console errors, but its DOM/screenshot surface was blank for this app tab; a Playwright fallback completed the production preview smoke. Preview server was stopped after the smoke.
+```
+
+Next recommended milestone: keep the current performance baseline as-is. If optimization continues, use a dedicated planning pass for either a test-harness build mode around intentional hooks or a build/test content-validation path. Do not combine those with lazy scene loading or data splitting.
+
+## v0.4 Playwright Release Sharding Scripts - 2026-05-07
+
+Scope: add minimal package scripts for the recommended 2-shard Playwright release gate. This pass did not remove tests, reduce coverage, change gameplay, change UI behavior, change selectors, change Playwright configuration, make sharding mandatory for local developers, or replace the full release-gate command.
+
+Scripts added:
+
+```text
+npm run test:e2e:release:shard1
+Runs: playwright test --reporter=line --shard=1/2
+
+npm run test:e2e:release:shard2
+Runs: playwright test --reporter=line --shard=2/2
+```
+
+Preserved scripts:
+
+```text
+npm run test:e2e
+npm run test:e2e:smoke
+npm run test:e2e:layout
+npm run test:e2e:deep
+npm run test:e2e:release
+```
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.09s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Known Vite warning remains for vendor-phaser.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.5m.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 21.9m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 5.0m.
+
+git diff --check
+PASS: no whitespace errors. Git emitted the existing LF-to-CRLF working-copy warning for .gitignore.
+```
+
+Runtime note: the current 2-shard split is coverage-preserving but uneven because shard 1 receives the deep-flow and layout-heavy side of the suite while shard 2 maps to smoke. This is acceptable for a minimal CI-first implementation; running both shards sequentially on a local machine is not expected to improve total runtime. Next safe follow-up is CI workflow wiring with per-shard artifacts, or a separate balancing plan if CI data shows shard 1 remains too slow.
+
+## v0.4 Performance And E2E Sharding Checkpoint - 2026-05-07 21:23:29 -04:00
+
+Scope: checkpoint the v0.4 measurement, performance, test/dev hook audit, and e2e sharding groundwork. This checkpoint does not add gameplay, add content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign content.
+
+Checkpoint scope:
+
+```text
+Performance:
+- build:analyze exists and produces a local bundle report artifact.
+- docs/BUNDLE_ANALYSIS_REPORT.md records emitted chunks, largest app modules, and lazy-load candidates.
+- Phaser remains split into vendor-phaser through Vite manualChunks.
+- No second optimization was implemented after analysis; no accidental production leak was found.
+
+Test/dev hooks:
+- docs/TEST_DEV_HOOK_AUDIT.md records intentional runtime/test/dev hook surfaces.
+- No large Playwright, Vitest, e2e-helper, or simulator code was found leaking into production.
+
+E2E:
+- smoke/layout/deep/release lanes remain.
+- release shard scripts exist for CI: test:e2e:release:shard1 and test:e2e:release:shard2.
+- test:e2e and test:e2e:release still run the full release gate.
+```
+
+Verification completed:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.38s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+App JS: assets/index-TotuX8zG.js, 435.50 kB / gzip 116.99 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB / gzip 8.71 kB.
+Vite large-chunk warning remains because vendor-phaser exceeds 500 kB.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 28.8m.
+Slow files remain tests/e2e/deep-flow.spec.ts at 12.1m and tests/e2e/layout.spec.ts at 12.0m.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 24.0m.
+Slow files remain tests/e2e/layout.spec.ts at 12.5m and tests/e2e/deep-flow.spec.ts at 11.2m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 4.3m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors. Git emitted the existing .gitignore LF-to-CRLF working-copy warning.
+
+Production preview smoke
+PASS: npm run preview -- --host 127.0.0.1 --port 4191 --strictPort.
+PASS: title Ascendant Realms.
+PASS: Prototype v0.3 / Cinderfen Route Baseline copy visible.
+PASS: New Campaign reached Campaign Map, Continue Campaign reached Campaign Map after the smoke save existed, Skirmish Setup opened, and browser console errors stayed at 0.
+Preview server was stopped after the smoke.
+```
+
+Runtime note: shard verification was run even though the full release gate passed. The current 2-shard split is coverage-preserving but locally uneven; shard 1 carries deep-flow and layout-heavy coverage while shard 2 maps to smoke. Treat the shard scripts as CI matrix tools rather than a mandatory local workflow.
+
+Next recommended milestone: wire the shard scripts into CI with per-shard artifacts, or choose a separate human readability/accessibility review or test-harness/content-validation hardening pass. Do not add workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, or broad gameplay systems as the immediate next step.
 
 ## Clean v0.3.1 Polish Checkpoint - 2026-05-06 17:49:49 -04:00
 

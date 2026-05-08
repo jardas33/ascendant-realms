@@ -1,6 +1,88 @@
 # Development Checkpoint
 
-Updated: 2026-05-07 17:58:57 -04:00
+Updated: 2026-05-07 21:23:29 -04:00
+
+## v0.4 Performance And E2E Sharding Groundwork Checkpoint - 2026-05-07 21:23:29 -04:00
+
+Scope: checkpoint the v0.4 measurement, performance, and e2e sharding groundwork. This checkpoint does not add gameplay content, change balance, add maps, add units, add factions, add workers, add enemy construction, add diplomacy, add procedural generation, add crafting, alter save format, or change campaign content.
+
+Included technical groundwork:
+
+- Bundle analyzer script and report added for the current v0.4 technical baseline.
+- Test/dev hook audit completed; no accidental large Playwright, Vitest, e2e-helper, or simulator leak was found in the production bundle.
+- Phaser remains split into the `vendor-phaser` Vite/Rollup chunk.
+- Analyzer-backed second optimization decision chose no additional code optimization; Asset Gallery was too small, no safe accidental production leakage was found, and no second stable vendor chunk exists.
+- Explicit Playwright lanes remain available: `test:e2e:smoke`, `test:e2e:layout`, `test:e2e:deep`, and `test:e2e:release`.
+- Minimal 2-shard release-gate scripts were added for CI: `test:e2e:release:shard1` and `test:e2e:release:shard2`.
+- Full `npm run test:e2e` and `npm run test:e2e:release` remain the canonical complete release-gate commands.
+
+Verification results:
+
+```text
+npm test
+PASS: 38 test files, 270 tests, 10.38s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-TotuX8zG.js, 435.50 kB minified / 116.99 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-CIXXIuKP.css, 41.86 kB minified / 8.71 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run test:e2e:smoke
+PASS: 10 Playwright tests in 4.2m.
+
+npm run test:e2e:release
+PASS: 59 Playwright tests in 28.8m.
+Slow files noted by Playwright: tests/e2e/deep-flow.spec.ts 12.1m and tests/e2e/layout.spec.ts 12.0m.
+
+npm run test:e2e:release:shard1
+PASS: 49 Playwright tests in 24.0m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.5m and tests/e2e/deep-flow.spec.ts 11.2m.
+
+npm run test:e2e:release:shard2
+PASS: 10 Playwright tests in 4.3m.
+
+npm run playtest:sim
+PASS: 255 deterministic runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated.
+
+git diff --check
+PASS: no whitespace errors. Git emitted the existing .gitignore LF-to-CRLF working-copy warning.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 4191 --strictPort
+PASS: Browser Use smoke at http://127.0.0.1:4191/
+PASS: page title was Ascendant Realms.
+PASS: main menu loaded with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: New Campaign created a preview-smoke hero and reached Campaign Map.
+PASS: Continue Campaign returned to Campaign Map after the smoke save existed.
+PASS: Skirmish Setup opened and listed current maps.
+PASS: browser console errors stayed at 0.
+```
+
+The preview server was stopped after the smoke pass. The shard scripts were run even though the full release gate also passed; the current split is coverage-preserving but locally uneven, with shard 1 carrying deep-flow and layout-heavy coverage. The shard scripts are primarily for CI matrix wall-clock reduction, not mandatory local iteration.
+
+Checkpoint commit message:
+
+```text
+Checkpoint v0.4 performance and e2e sharding groundwork
+```
+
+Remaining known risks:
+
+- Full Playwright release gate is still slow at roughly 29 minutes.
+- The 2-shard split is currently uneven; shard 1 remains the long shard.
+- Vite still reports a large-chunk warning because Phaser remains a large vendor chunk.
+- Browser readability, mobile density, retinue/rival/trophy hierarchy, and Cinder Shrine salience still deserve human review before new content.
+- Further performance work should remain analyzer-guided and limited to one explicit optimization at a time.
+
+Recommended next milestone:
+
+Use this checkpoint as the v0.4 technical baseline, then choose one focused follow-up: CI workflow wiring for the shard scripts, human readability/accessibility review of the frozen Cinderfen route, or a separate test-harness/content-validation hardening plan. Continue postponing workers, enemy construction, new factions, new maps, crafting, diplomacy, procedural systems, and broad gameplay systems.
 
 ## v0.4 Technical Groundwork Verification Refresh - 2026-05-07 17:58:57 -04:00
 

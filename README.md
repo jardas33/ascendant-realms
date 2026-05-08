@@ -89,6 +89,17 @@ npm run test:e2e:release
 
 The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest lane-split verification passed 10 smoke tests in 5.4 minutes and 59 full release-gate tests in 29.0 minutes.
 
+For CI, the full release gate can also be split into two Playwright shards:
+
+```bash
+npm run test:e2e:release:shard1
+npm run test:e2e:release:shard2
+```
+
+Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
+
+Latest local shard verification, 2026-05-07: smoke passed 10 tests in 4.5 minutes, release shard 1 passed 49 tests in 21.9 minutes, and release shard 2 passed 10 tests in 5.0 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+
 For a visible browser run:
 
 ```bash

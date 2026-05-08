@@ -72,7 +72,25 @@ PASS: 59 Playwright tests
 
 `npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability and currently takes about 29 minutes on this machine.
 
-5. Optional focused e2e lanes:
+5. Optional CI sharded release gate:
+
+```bash
+npm run test:e2e:release:shard1
+npm run test:e2e:release:shard2
+```
+
+Both shards must pass to equal the full release gate. Keep `npm run test:e2e:release` as the canonical one-command local release check; the shard scripts are mainly for CI matrix jobs where they can run in parallel. If run sequentially on a local machine, the total runtime may not be better than the full suite and reports are split by shard.
+
+Latest local shard verification, 2026-05-07:
+
+```text
+PASS: shard 1, 49 Playwright tests in 21.9m
+PASS: shard 2, 10 Playwright tests in 5.0m
+```
+
+The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
+
+6. Optional focused e2e lanes:
 
 ```bash
 npm run test:e2e:layout
@@ -81,7 +99,7 @@ npm run test:e2e:deep
 
 `test:e2e:layout` runs responsive/mobile/readability coverage. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
 
-6. Deterministic playtest simulator:
+7. Deterministic playtest simulator:
 
 ```bash
 npm run playtest:sim

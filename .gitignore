@@ -4,6 +4,7 @@ dist/
 playwright-report/
 test-results/
 blob-report/
+bundle-analysis/
 *.log
 .preview-server.pid
 .retinue-preview.pid
