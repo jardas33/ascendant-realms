@@ -127,6 +127,14 @@ Phase 11 vertical-slice candidate selection:
 - Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
 - Commit: `Checkpoint v0.5 vertical slice candidate`.
 
+Phase 12 Tutorial / Proving Grounds design brief:
+
+- Added `docs/TUTORIAL_PROVING_GROUNDS_BRIEF.md`.
+- Defined purpose, target player, taught systems, non-goals, minimal implementation phases, tests, content validation needs, risks, and future phase order.
+- Kept the brief design-only. No tutorial implementation, metadata scaffold, playable launch path, scene, map, unit, reward, save field, gameplay, or UI change was added.
+- Verification: `npm test` PASS, 40 files / 296 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `Checkpoint tutorial proving grounds design brief`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
