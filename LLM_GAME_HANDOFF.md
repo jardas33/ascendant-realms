@@ -99,6 +99,15 @@ Phase 8 campaign graph and reward gate:
 - Current build output after graph/reward validator code change: app JS `assets/index-X0lfuOZ2.js`, 442.16 kB / gzip 118.76 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-CeqfGaMI.css`, 42.04 kB / gzip 8.74 kB.
 - Commit: `Checkpoint v0.5 campaign graph reward gate`.
 
+Phase 9 command-log replay feasibility:
+
+- Added `docs/COMMAND_LOG_REPLAY_FEASIBILITY.md`.
+- Studied current player-facing battle commands, campaign commands, Playwright scene helpers, safe test hooks, and scripted playtest driver commands.
+- Recommended a future test-only semantic command-log V1 targeting the existing first-campaign-battle deep-flow path.
+- Explicitly did not implement production replay, command-log runtime wiring, save fields, schemas in source, gameplay changes, or UI changes.
+- Verification: `npm test` PASS, 40 files / 294 tests; `npm run build` PASS with the known Phaser vendor warning; `git diff --check` PASS.
+- Commit: `Checkpoint v0.5 command log feasibility`.
+
 ## Current v0.4 Overnight Continuation Checkpoint - 2026-05-08
 
 The overnight continuation preserved the frozen v0.3 Cinderfen Route Baseline and frozen v0.3.1 polish release. It did not add gameplay content, change balance, change save format, add maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, monetization code, or broad army-management systems.
