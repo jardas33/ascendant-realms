@@ -64,6 +64,15 @@ Phase 4 Cinderfen Watch pressure review:
 - Decision: no Watch copy, timing, status-duration, telemetry, defeat-tip, e2e, gameplay, save, reward, map, unit, faction, worker, construction, economy AI, live reinforcement, route-contest AI, or defensive-hold change was justified in Phase 4. The warning is early but player-triggered by Watch Road capture and telemetry shows no pressure-caused defeat spike.
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.9m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
+Phase 5 pressure readability polish:
+
+- Added `docs/V072_PRESSURE_READABILITY_POLISH_DECISION.md`.
+- Reviewed the Phase 3 Crossing review, Phase 4 Watch review, v0.7.1 warning visibility audit, v0.7.1 pressure feel report, telemetry, and local screenshot evidence.
+- Decision: no pressure warning copy, stage timing, warning timing, status duration, defeat-tip text, telemetry label, e2e coverage, pressure-plan scope, or existing-wave timing nudge change is justified.
+- Rationale: Crossing protects `Cinder Shrine Surge` with objective priority and shows the delayed pressure warning clearly; Watch shows both immediate and delayed pressure warnings clearly and pressure priority protects the delayed warning from ordinary status churn. Remaining questions are human attention and strategy extremes, not a proven copy/timing bug.
+- Stronger actions remain warning/telemetry-only: `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold`.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
 Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
