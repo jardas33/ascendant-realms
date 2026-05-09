@@ -70,7 +70,7 @@ Expected current prototype result:
 PASS: 12 Playwright tests
 ```
 
-This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.6 tutorial e2e runtime review keeps full tutorial completion in smoke while the lane remains around 5 minutes; move it deeper only if smoke repeatedly grows beyond the 6-7 minute watch band. v0.7.2 pressure play review does not add smoke tests or change lane counts.
+This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.6 tutorial e2e runtime review keeps full tutorial completion in smoke while the lane remains around 5 minutes; move it deeper only if smoke repeatedly grows beyond the 6-7 minute watch band. v0.7.3 pressure playtest does not add smoke tests or change lane counts.
 
 5. Full browser release-gate suite:
 
@@ -104,7 +104,7 @@ Shard 2: passed, 12 Playwright tests in 5.0m.
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
 
-v0.7.2 is a docs/evidence pressure review gate and keeps the same e2e lane shape. Its final full verification should still run the full release lane and both shards before push.
+v0.7.3 is a docs/evidence pressure playtest gate and keeps the same e2e lane shape. Its final full verification should still run the full release lane and both shards before push.
 
 7. Optional focused e2e lanes:
 
@@ -141,7 +141,7 @@ Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 
 This command regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
 
-Latest v0.7.2 pressure-play-review interpretation: no balance tuning is applied. Cinderfen Crossing and Cinderfen Watch pressure remain scoped, readable in seeded browser review, and warning/telemetry-only for `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold`.
+Latest v0.7.3 pressure-playtest interpretation: no balance tuning is applied. Cinderfen Crossing and Cinderfen Watch pressure remain scoped, readable in controlled browser-input review, and warning/telemetry-only for `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold`. Emmanuel's manual checklist remains the missing direct human evidence before any simulator-only reinforcement experiment.
 
 ## Optional Preview Check
 
@@ -182,7 +182,7 @@ After build-output or chunking changes, run a production preview smoke when feas
 - Aether Well Ruins and Bandit Hillfort on Normal from a typical early campaign save, including Veyra of the Cinders and Gorak Emberhand scout/readability checks.
 - Ashen Outpost with and without Chapel repair, including Captain Malrec readability, Hold the Line ability readability, final approach readability, tower pressure, and objective-panel placement.
 - Stronghold Tier I and II purchase feel in a real campaign economy, especially Watch Post II and Quartermaster Stores II.
-- v0.7.2 follow-up: real-input Cinderfen Crossing and Cinderfen Watch pressure playtest, especially warning noticeability during actual unit commands, Cinder Shrine salience, Watch Road fairness, Greedy Economy timeout clarity, Fast Army quick-clear feel, and Retinue + Training Yard II power.
+- v0.7.3 follow-up: Emmanuel's manual Cinderfen Crossing and Cinderfen Watch pressure checklist, especially warning noticeability during actual unit commands, Cinder Shrine salience, Watch Road fairness, Greedy Economy timeout clarity, Fast Army quick-clear feel, and Retinue + Training Yard II power.
 - Reputation hooks in normal campaign flow: Common Folk Marcher Camp discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
 - Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
@@ -206,5 +206,5 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/V04_POLISH_BACKLOG.md` records safe/medium-risk/high-risk/blocked tiny polish candidates.
 - `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md` summarizes the v0.5 save, content-validation, determinism, and expansion-readiness gate.
 - `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`, `docs/TUTORIAL_SAVE_PERSISTENCE_AUDIT.md`, `docs/TUTORIAL_CONTENT_VALIDATION_GATE.md`, and `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` summarize the first playable Tutorial / Proving Grounds shell.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, and the first no-reward Tutorial / Proving Grounds shell as done, with the next phase set to human-paced tutorial review and small polish.
-- `LLM_GAME_HANDOFF.md` marks the current state as the playable tutorial shell on top of the v0.5 safety gate and warns future sessions not to add broad systems before their gates are explicit and green.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, and the v0.7.3 pressure playtest gate as done, with the next phase set to technical performance/e2e runtime work unless manual pressure feedback redirects it.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.7.3 real-input pressure playtest gate on top of the v0.7 pressure foundation and warns future sessions not to add broad systems before their gates are explicit and green.

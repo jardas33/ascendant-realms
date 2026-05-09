@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.7.3 Real-Input Cinderfen Pressure Playtest - 2026-05-09
+
+This checkpoint reviews Cinderfen pressure with controlled browser input and simulator evidence without expanding Enemy Strategic Pressure into workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.
+
+### Included
+
+- Real-input pressure playtest protocol and seeded browser setup notes.
+- Controlled browser-input review for Cinderfen Crossing, including natural Cinder Shrine capture and seeded delayed-warning visibility evidence.
+- Controlled browser-input review for Cinderfen Watch, including natural Watch Road capture, immediate warning visibility, delayed warning visibility, and pressure-priority protection against generic status churn.
+- Strategy-profile pressure review for Safe Beginner, Greedy Economy, Fast Army, and Retinue + Training Yard II.
+- Manual Cinderfen pressure checklist for Emmanuel with 1 to 5 ratings for warning clarity, timing, fairness, usefulness, fun, and frustration.
+- Explicit evidence-backed no-change decision: no pressure copy, timing, status-duration, defeat-tip, telemetry, e2e, scope, wave-nudge, or balance change.
+- v0.8 direction brief recommending technical performance/e2e runtime work before any pressure-specific simulator-only reinforcement experiment.
+- v0.7.3 report: `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_REPORT.md`.
+
+### Verification
+
+- `npm test`: passed with 45 test files and 334 tests during phase gates.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during phase gates.
+- `npm run validate:content`: passed during phase gates.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests during pressure review/polish/report gates.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during pressure review/polish/report gates.
+- Pressure telemetry remains 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 12 quiet/untriggered pressure runs, 149 warnings, 147 losses after pressure, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
+- `git diff --check`: passed during phase gates.
+
+### Next
+
+- Recommended next goal: v0.8 technical performance/e2e runtime pass, with Tutorial v2 onboarding refinement as the safer player-facing alternative.
+- Emmanuel should still run the manual pressure checklist before any pressure-specific v0.8 work.
+- If pressure work resumes, start with simulator-only `reinforce_next_wave`; do not promote live reinforcement, route contesting, defensive hold behavior, workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save changes, or broad systems.
+
 ## v0.7.2 Human-Paced Cinderfen Pressure Review - 2026-05-09
 
 This checkpoint reviews Cinderfen pressure feel and warning readability without expanding Enemy Strategic Pressure into workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.

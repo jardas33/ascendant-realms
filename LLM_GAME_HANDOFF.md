@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 v0.8 direction brief
+Last updated: 2026-05-09 v0.7.3 pressure playtest report
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -92,6 +92,14 @@ Phase 8 v0.8 direction brief:
 - Recommendation: Option C technical performance/e2e runtime pass first, then Option D tutorial v2 onboarding refinement if player-facing work is preferred.
 - Rationale: v0.7.3 still lacks Emmanuel's direct manual pressure ratings. Option A should wait until manual checklist evidence confirms pressure warning salience and fairness; Option B should wait because more content increases review surface before pressure feel fully settles.
 - Guardrail: if manual pressure evidence later gives confidence, the first pressure-specific v0.8 should be a simulator-only `reinforce_next_wave` experiment, not live reinforcement, capture-site contest AI, defensive hold behavior, workers, construction, economy AI, new maps, new units, new factions, rewards, saves, or campaign progression changes.
+
+Phase 9 pressure playtest report and docs:
+
+- Added `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `BALANCE.md`, and `DEVELOPMENT_CHECKPOINT.md` for the v0.7.3 real-input pressure playtest gate.
+- Report conclusion: Cinderfen Crossing and Cinderfen Watch pressure remain readable enough to keep unchanged; no tiny pressure polish was justified; Emmanuel's manual checklist is still the missing direct human evidence.
+- v0.8 recommendation: technical performance/e2e runtime pass first, Tutorial v2 onboarding refinement as the safer player-facing alternative, and any pressure-specific work deferred until manual checklist feedback supports at most a simulator-only `reinforce_next_wave` experiment.
+- No gameplay, data, copy, timing, status-duration, telemetry, defeat-tip, e2e, scope, wave-nudge, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change was made.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 

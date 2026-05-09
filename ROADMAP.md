@@ -11,11 +11,11 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.7.2 Human-Paced Cinderfen Pressure Review** on 2026-05-09. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, and v0.7.1 pressure warning polish while reviewing Cinderfen pressure readability with seeded browser evidence and simulator slices. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, broad systems, live reinforcements, capture-site contest AI, or defensive-hold behavior.
+The latest feature checkpoint is **v0.7.3 Real-Input Cinderfen Pressure Playtest** on 2026-05-09. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, and v0.7.2 pressure feel review while adding controlled browser-input review, a human manual checklist, and a v0.8 direction brief. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, broad systems, live reinforcements, capture-site contest AI, or defensive-hold behavior.
 
-The next recommended phase is **v0.7.3 real-input Cinderfen pressure playtest**, with special attention to whether real players notice pressure warnings while issuing commands, whether Cinder Shrine and Watch Road pressure feel fair, whether Greedy Economy timeout guidance needs clearer Results copy, whether Fast Army quick-clear feel remains satisfying, and whether Retinue + Training Yard II strength is fun or flattening. Keep follow-up limited to docs, copy, timing, telemetry, or results guidance unless human evidence is overwhelming. Only after that should a future v0.8 consider a simulator-only `reinforce_next_wave` experiment.
+The next recommended phase is **v0.8 technical performance/e2e runtime pass** before any pressure mechanics expansion. Focus on the known Phaser vendor chunk warning, slow-but-green release lanes, preview/runtime evidence, and coverage-preserving cleanup. If player-facing work is preferred, Tutorial v2 onboarding refinement is the safer alternative. A pressure-specific v0.8 should wait for Emmanuel's manual checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
 
-New v0.7/v0.7.1/v0.7.2 pressure docs:
+New v0.7/v0.7.1/v0.7.2/v0.7.3 pressure docs:
 
 - `docs/V07_ENEMY_PRESSURE_RESEARCH_AUDIT.md`
 - `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`
@@ -33,6 +33,15 @@ New v0.7/v0.7.1/v0.7.2 pressure docs:
 - `docs/V072_GREEDY_FAST_PRESSURE_REVIEW.md`
 - `docs/V072_PRESSURE_NEXT_ACTION_DECISION.md`
 - `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`
+- `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_PROTOCOL.md`
+- `docs/V073_PRESSURE_REVIEW_SETUP.md`
+- `docs/V073_CINDERFEN_CROSSING_REAL_INPUT_REVIEW.md`
+- `docs/V073_CINDERFEN_WATCH_REAL_INPUT_REVIEW.md`
+- `docs/V073_STRATEGY_PROFILE_PRESSURE_REVIEW.md`
+- `docs/V073_MANUAL_PRESSURE_PLAYTEST_CHECKLIST.md`
+- `docs/V073_EVIDENCE_BACKED_PRESSURE_POLISH_DECISION.md`
+- `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_REPORT.md`
+- `docs/V08_DIRECTION_DECISION_BRIEF.md`
 
 Recent tutorial shell docs:
 
@@ -65,11 +74,11 @@ New v0.5 gate docs:
 
 Latest final v0.5 verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.5m, `npm run test:e2e:release` 59 tests in 28.4m, `npm run test:e2e:release:shard1` 49 tests in 23.9m, `npm run test:e2e:release:shard2` 10 tests in 4.4m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
-Recommended next phase after v0.7.2: **real-input Cinderfen pressure playtest**, keeping pressure scoped to existing Cinderfen battles and avoiding workers, construction, new units, new maps, rewards, save changes, stronger pressure actions, and broad AI systems.
+Recommended next phase after v0.7.3: **technical performance/e2e runtime pass**, keeping gameplay unchanged and avoiding workers, construction, new units, new maps, rewards, save changes, stronger pressure actions, and broad AI systems.
 
 The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is the active post-freeze safety/planning baseline, and the Tutorial / Proving Grounds shell is the first safe onboarding vertical slice on top of it.
 
-Latest checkpoint verification: 2026-05-09 v0.7.2 pressure play review report gate. `npm test` passed with 45 files / 334 tests, `npm run build` passed with the known Phaser vendor warning, `npm run validate:content` passed, `npm run test:e2e:smoke` passed with 12 tests in 5.2m, `npm run playtest:sim` passed with 255 runs, and `git diff --check` passed. The latest full release lane verification remains the v0.7.1 final gate until the v0.7.2 final full gate completes. No workers, real enemy construction, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, external assets, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems were added.
+Latest checkpoint verification: 2026-05-09 v0.7.3 pressure playtest report gate. `npm test` passed with 45 files / 334 tests, `npm run build` passed with the known Phaser vendor warning, `npm run validate:content` passed, `npm run test:e2e:smoke` passed with 12 tests, `npm run playtest:sim` passed with 255 runs, and `git diff --check` passed. Full release lane verification is reserved for the v0.7.3 final gate. No workers, real enemy construction, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, external assets, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems were added.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
