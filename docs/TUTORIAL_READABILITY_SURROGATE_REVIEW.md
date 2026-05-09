@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: automated surrogate review for the first playable Tutorial / Proving Grounds shell.
+Status: automated surrogate review for the first playable Tutorial / Proving Grounds shell. v0.6.1 adds a visible Browser feel pass and a small mobile-short overlay priority fix.
 
 ## Scope
 
@@ -51,6 +51,8 @@ The overlay shows one objective title, one instruction sentence, one optional hi
 
 Phase 2 copy polish shortened the longest prompts and removed test-hook language from the player-facing pressure hint. Phase 3 layout polish widened the mobile-short tutorial panel, tightened footer button placement, and added a layout assertion so the overlay cannot regress into the old narrow mobile strip.
 
+The v0.6.1 Browser pass found that the battle status banner could paint over the tutorial overlay at 360 x 640. The tutorial panel now renders above transient battle feedback, and the responsive tutorial entry test protects that visual priority.
+
 Risk: on the 360 x 640 mobile-short viewport the overlay remains compact and scrollable when text wraps, but it now has enough width for normal prompt scanning.
 
 Recommendation: keep each future step to one short instruction and one short hint. Do not add paragraphs, lore, or multi-branch text inside the overlay.
@@ -74,6 +76,8 @@ Recommendation: keep the current hints, but prefer input/action hints over syste
 ### Desktop, Tablet, and Mobile Layout
 
 The new layout guard passed on desktop, tablet-short, mobile-tall, and mobile-short. The overlay stays within viewport width, and the battle command panel remains width-safe.
+
+v0.6.1 adds a second tutorial layout guard for visual priority: the tutorial overlay must render above battle status feedback. This protects the mobile-short first objective from the status banner overlap found during the Browser feel pass.
 
 Risk: the overlay is deliberately positioned near the top-center, while battle HUD panels also occupy the top and side regions. It currently fits, but future HUD additions could crowd it.
 
@@ -140,6 +144,13 @@ Phase 11 focused precheck:
 ```text
 npm run test:e2e:layout -- --grep "tutorial entry"
 PASS: 4 Playwright tests in 48.0s.
+```
+
+v0.6.1 focused layout priority check:
+
+```text
+npm run test:e2e:layout -- --grep "tutorial entry"
+PASS: 4 Playwright tests in 43.2s.
 ```
 
 Full Phase 11 gate should run:

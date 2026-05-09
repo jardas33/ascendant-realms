@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.6.1 Tutorial Feel Polish - 2026-05-09
+
+This checkpoint finishes a small Browser-evidenced Tutorial / Proving Grounds feel pass. It preserves the existing no-reward, non-persistent tutorial shell and does not add maps, units, factions, rewards, save-version changes, tutorial persistence, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+### Included
+
+- Visible Browser review of main-menu Tutorial entry, desktop first objective, mobile-short first objective, Exit Tutorial, and console output.
+- New review doc: `docs/V061_TUTORIAL_FEEL_REVIEW.md`.
+- Mobile-short overlay priority polish so the tutorial panel renders above transient battle feedback instead of being interrupted by the battle status banner.
+- Responsive layout assertion that protects tutorial overlay z-index priority over battle status feedback.
+- v0.6.1 updates to the tutorial polish plan, readability surrogate review, and tutorial feel audit.
+
+### Verification
+
+- `npm test`: passed with 42 test files and 315 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run validate:content`: passed.
+- `npm run test:e2e:layout -- --grep "tutorial entry"`: passed with 4 Playwright tests in 43.2s.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 4.9m.
+- `npm run test:e2e:layout`: passed with 25 Playwright tests in 12.4m.
+- Production preview Browser smoke: passed at `http://127.0.0.1:57919/`; title, Tutorial launch/exit, first overlay, and zero browser warnings/errors were verified.
+
+### Next
+
+- Human-play the full twelve-step tutorial at normal speed before adding any tutorial content.
+- Keep future follow-up limited to readability, overlay hierarchy, and no-reward completion clarity unless a narrow verified bug appears.
+- Continue postponing rewards, campaign integration, save persistence, new maps, new units, new factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, and broad systems.
+
 ## v0.6 Tutorial Onboarding And Testing Foundation - 2026-05-08
 
 This checkpoint polishes and hardens the playable Tutorial / Proving Grounds shell while preserving the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, and no-reward tutorial policy. It does not add rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, campaign progression, or broad systems.

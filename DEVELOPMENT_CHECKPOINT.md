@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 final v0.6 tutorial onboarding foundation gate
+Updated: 2026-05-09 v0.6.1 tutorial feel polish gate
+
+## v0.6.1 Tutorial Feel Polish Gate - 2026-05-09
+
+Scope: finish a small Browser-evidenced Tutorial / Proving Grounds feel polish pass on top of the final v0.6 onboarding foundation. This pass preserved the existing no-reward, non-persistent tutorial shell and did not add maps, units, factions, rewards, save-version changes, tutorial persistence, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Included work:
+
+- Added `docs/V061_TUTORIAL_FEEL_REVIEW.md`.
+- Used Browser to review the main-menu Tutorial entry, desktop first objective overlay, 360 x 640 mobile-short first objective overlay, Exit Tutorial return, and console output.
+- Found that the mobile-short battle status banner could paint over the tutorial overlay and interrupt the first objective text.
+- Added explicit overlay z-index priority in `src/game/styles/battle-feedback.css` so `.tutorial-panel` renders above transient battle feedback.
+- Added responsive Playwright coverage in `tests/e2e/layout.spec.ts` asserting the tutorial overlay renders above battle status feedback.
+- Updated v0.6.1 planning/readability/audit docs and changelog.
+
+Verification results:
+
+```text
+npm run test:e2e:layout -- --grep "tutorial entry"
+PASS: 4 Playwright tests in 43.2s.
+
+npm test
+PASS: 42 test files, 315 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-BCE05t_6.js, 459.85 kB minified / 123.62 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 4.9m.
+
+npm run test:e2e:layout
+PASS: 25 Playwright tests in 12.4m.
+
+Production preview Browser smoke
+PASS: http://127.0.0.1:57919/
+PASS: page title was Ascendant Realms.
+PASS: Tutorial / Proving Grounds launched, showed the first overlay, and exited to the main menu.
+PASS: browser console warnings/errors stayed at 0.
+```
+
+Recommended next milestone: human-play the twelve-step Tutorial / Proving Grounds at normal speed. Keep any follow-up limited to readability, overlay hierarchy, and no-reward completion clarity unless a narrow verified bug appears.
 
 ## Final v0.6 Tutorial Onboarding Foundation Gate - 2026-05-08
 

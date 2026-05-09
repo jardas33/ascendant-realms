@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. Phase 2 applied copy-only polish based on this audit, and Phase 3 applied responsive overlay layout polish. This work does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
+Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. Phase 2 applied copy-only polish based on this audit, Phase 3 applied responsive overlay layout polish, and v0.6.1 applied a small Browser-evidenced mobile-short overlay priority fix. This work does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
 
 ## Scope
 
@@ -133,13 +133,15 @@ Risk: the mobile-short CSS currently narrows the overlay to `calc(100vw - 160px)
 
 Phase 3 improved small-screen hierarchy by making the narrow overlay use the available mobile width, wrapping text safely, and keeping footer controls in a compact two-button row.
 
+v0.6.1 found one Browser-visible mobile-short issue: the battle status banner could paint over the first tutorial objective at 360 x 640. The tutorial panel now renders above transient battle feedback, and the responsive layout lane asserts that priority.
+
 Recommendation: keep testing mobile-short width and reachability before adding more overlay content.
 
 ### 10. HUD And Overlay Attention Competition
 
 The overlay is pointer-light, and only its buttons consume pointer input. The layout guard checks the side command panel remains within viewport width after tutorial launch.
 
-Risk: visually, the tutorial overlay competes with battle status, objective, resource, minimap, and command panels. Automated layout tests do not measure attention or stress.
+Risk: visually, the tutorial overlay competes with battle status, objective, resource, minimap, and command panels. v0.6.1 prevents battle status from painting over the overlay, but automated layout tests still do not measure attention or stress.
 
 Recommendation: keep one tutorial overlay only. Avoid adding banners, modals, or extra tutorial callouts until human play shows a need.
 

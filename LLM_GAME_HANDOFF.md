@@ -1,12 +1,47 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 final v0.6 tutorial onboarding foundation gate
+Last updated: 2026-05-09 v0.6.1 tutorial feel polish gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
+
+Mission: continue from the final v0.6 gate with a small human-feel Tutorial / Proving Grounds polish pass. This goal must stay existing-content-only, no-reward, non-persistent, and must not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, save-version changes, campaign progression, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 42 files / 315 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-DN-Hs_qy.js, 459.85 kB / gzip 123.62 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-BzEbtAWy.css, 44.19 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 evidence-based polish plan:
+
+- Added `docs/V061_TUTORIAL_FEEL_POLISH_PLAN.md`.
+- Scoped v0.6.1 to visible tutorial feel review, possible tiny copy/layout/no-reward clarity polish, and verification/handoff only.
+- Explicitly preserved no rewards, no persistence, no save-version bump, no campaign progression, no new content, no desktop implementation, and no broad systems.
+- Current risk map: twelve-step length, mobile-short comfort, no-reward completion satisfaction, overlay/HUD attention, young command-log V1, and slow-but-green release lanes.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
+Phase 2-4 visible review, polish, and verification:
+
+- Added `docs/V061_TUTORIAL_FEEL_REVIEW.md`.
+- Browser review covered the main-menu Tutorial entry, desktop first objective overlay, 360 x 640 mobile-short first objective overlay, Exit Tutorial return, and console output.
+- Finding: on mobile-short, the battle status banner could paint over the tutorial overlay and interrupt the first objective text.
+- Fix: `src/game/styles/battle-feedback.css` now gives `.tutorial-panel` explicit visual priority over status, placement, and hint feedback overlays.
+- Coverage: `tests/e2e/layout.spec.ts` now asserts tutorial overlay z-index priority over battle status feedback in the responsive tutorial entry lane.
+- No tutorial copy, step order, gameplay behavior, rewards, persistence, campaign state, save version, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, or broad systems changed.
+- Verification: focused `npm run test:e2e:layout -- --grep "tutorial entry"` PASS, 4 tests in 43.2s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BCE05t_6.js`, 459.85 kB / gzip 123.62 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.9m; `npm run test:e2e:layout` PASS, 25 tests in 12.4m; production preview Browser smoke PASS at `http://127.0.0.1:57919/` with title, Tutorial launch/exit, first overlay, and zero browser warnings/errors.
+- Remaining recommendation: human-play the full twelve-step tutorial at normal speed before adding content; keep follow-up limited to readability, overlay hierarchy, and no-reward completion clarity unless a narrow verified bug appears.
 
 ## Current v0.6 Tutorial Onboarding Foundation Goal - 2026-05-08
 

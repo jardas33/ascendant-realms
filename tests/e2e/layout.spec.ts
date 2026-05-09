@@ -87,6 +87,28 @@ async function expectInViewport(page: Page, locator: Locator, label: string): Pr
   expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(viewport.height + 2);
 }
 
+async function expectTutorialOverlayHasFeedbackPriority(page: Page, label: string): Promise<void> {
+  const result = await page.evaluate(() => {
+    const tutorial = document.querySelector<HTMLElement>("[data-testid='tutorial-overlay']");
+    const status = document.querySelector<HTMLElement>("[data-testid='battle-status']");
+    if (!tutorial || !status) {
+      return { present: false, tutorialZIndex: NaN, statusZIndex: NaN };
+    }
+    return {
+      present: true,
+      tutorialZIndex: Number(window.getComputedStyle(tutorial).zIndex),
+      statusZIndex: Number(window.getComputedStyle(status).zIndex)
+    };
+  });
+
+  expect(result.present, `${label} tutorial and status feedback are present`).toBe(true);
+  expect(Number.isFinite(result.tutorialZIndex), `${label} tutorial z-index is explicit`).toBe(true);
+  expect(Number.isFinite(result.statusZIndex), `${label} status z-index is explicit`).toBe(true);
+  expect(result.tutorialZIndex, `${label} tutorial should render above battle status feedback`).toBeGreaterThan(
+    result.statusZIndex
+  );
+}
+
 async function expectWithinViewportWidth(page: Page, locator: Locator, label: string): Promise<void> {
   await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
   const box = await locator.boundingBox();
@@ -421,6 +443,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
       await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);
       await expectInViewport(page, page.getByTestId("tutorial-overlay"), `${viewport.label} tutorial overlay`);
+      await expectTutorialOverlayHasFeedbackPriority(page, `${viewport.label} tutorial overlay`);
       const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
       expect(overlayBox, `${viewport.label} tutorial overlay has width`).not.toBeNull();
       if (overlayBox) {
