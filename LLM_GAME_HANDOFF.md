@@ -41,6 +41,18 @@ Phase 2 browser pressure review notes:
 - No new helper or broad e2e test was added in Phase 2 because existing helpers are enough for review entry and because v0.7.2 should avoid harness churn until evidence proves a gap.
 - Noted that Playwright is the repeatable seeded review harness, while the in-app Browser surface remains best for visible preview smoke because it does not expose the same seeded localStorage/test-hook surface.
 
+Phase 3 Cinderfen Crossing pressure review:
+
+- Added `docs/V072_CINDERFEN_CROSSING_PRESSURE_REVIEW.md`.
+- Ran a seeded Playwright/browser surrogate from a post-Overlook campaign state into `cinderfen_crossing` / `cinderfen_causeway`.
+- Confirmed launch pressure plan wiring: campaign mode, node `cinderfen_crossing`, map `cinderfen_causeway`, plan `causeway_contest_pressure`, no triggered stages at load, warnings 0, and reinforcement-applied false.
+- Captured `cinder_crossing` through the existing test hook. `Cinder Shrine Surge: +20 Aether` remained the status line with `objective` priority, while pressure stage `shrine_route_warning` triggered and warnings increased to 1.
+- Corrected an early exploratory timing check that advanced runtime without advancing `BattleScene` status timers. Final review evidence used real `BattleScene.update(..., 1000)` steps.
+- At ~30.8s, the delayed pressure warning `Ashen scouts mark the center road. Expect faster pressure after the shrine.` appeared with `pressure` priority, about 4.48s remaining on the status timer, two pressure warnings shown, stages `shrine_route_warning` and `causeway_contest` completed, and reinforcement-applied still false.
+- Screenshot inspection showed the pressure banner readable at the top of the playfield without obscuring objectives, resources, minimap, or selected-unit UI. Browser console errors were 0.
+- Decision: no Crossing copy, timing, status-duration, telemetry, defeat-tip, e2e, gameplay, save, reward, map, unit, faction, worker, construction, economy AI, live reinforcement, route-contest AI, or defensive-hold change was justified in Phase 3.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
 Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
