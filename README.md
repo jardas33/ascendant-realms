@@ -92,9 +92,9 @@ npm run test:e2e:deep
 npm run test:e2e:release
 ```
 
-`test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
+`test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. Enemy Strategic Pressure V1 has targeted release coverage in `tests/e2e/enemy-pressure.spec.ts`, keeping pressure warnings and tutorial/skirmish no-pressure guards out of the smoke lane. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest final tutorial-shell gate passed smoke with 12 tests in 5.2 minutes and the one-piece release lane with 65 tests in 28.5 minutes.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; after v0.7 Enemy Strategic Pressure V1 coverage, `npx playwright test --list` reports 67 tests across 4 spec files while the smoke lane remains 12 tests.
 
 Tutorial e2e placement review: `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md`. The v0.6 review keeps full Tutorial / Proving Grounds completion in smoke for now because the lane remains around 5 minutes and the test protects no-save/no-XP/no-reward behavior. Move completion deeper only if smoke repeatedly grows beyond the 6-7 minute watch band.
 

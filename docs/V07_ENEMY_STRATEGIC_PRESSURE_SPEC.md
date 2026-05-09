@@ -410,3 +410,12 @@ Phase 7 mirrors V1 pressure in the deterministic playtest simulator:
 - `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` now separate baseline no-pressure runs from pressure-enabled Cinderfen Crossing and Cinderfen Watch runs.
 
 Current generated telemetry shows 180 baseline runs without pressure, 75 pressure-enabled Cinderfen runs, 63 runs with at least one triggered pressure stage, 149 pressure warnings, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
+
+## Phase 8 E2E Checkpoint
+
+Phase 8 adds a targeted release-suite spec instead of expanding smoke:
+
+- Added `tests/e2e/enemy-pressure.spec.ts`.
+- Positive coverage launches `cinderfen_watch`, verifies the explicit `ashen_watch_captain_pressure` campaign attachment, captures `watch_road_toll`, checks pressure telemetry/stats, and asserts the delayed Watch Road pressure warning reaches the existing battle status surface.
+- Negative coverage launches Tutorial / Proving Grounds and Cinderfen Watchpost skirmish, then verifies no pressure plan id, no triggered stages, and no pressure warning after a skirmish site capture.
+- The full Playwright release suite now lists 67 tests across 4 spec files. The smoke lane remains unchanged at 12 tests.

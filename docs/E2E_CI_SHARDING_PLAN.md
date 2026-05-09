@@ -2,7 +2,7 @@
 
 Date: 2026-05-07
 
-Continuation refresh: 2026-05-08. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests, and the Phase 11 tutorial readability pass added four layout tests. The final tutorial-shell gate now reports 65 release tests.
+Continuation refresh: 2026-05-09. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests, the Phase 11 tutorial readability pass added four layout tests, and v0.7 Enemy Strategic Pressure V1 added two targeted release tests. The current release gate lists 67 tests across 4 spec files.
 
 Scope: plan and minimal script implementation for CI sharding of the full Playwright release gate. This pass does not change tests, remove coverage, change gameplay, change UI behavior, change selectors, or change Playwright configuration.
 
@@ -15,7 +15,8 @@ The current npm scripts already split local/test intent by file:
 | Smoke/default | `npm run test:e2e:smoke` | `tests/e2e/smoke.spec.ts` | Fastest frequent browser iteration lane. Covers boot, Tutorial / Proving Grounds completion/exit, Settings, campaign launch, Cinderfen route smoke, skirmish, difficulty, and inventory. |
 | Layout/responsive | `npm run test:e2e:layout` | `tests/e2e/layout.spec.ts` | Responsive, mobile density, Tutorial overlay readability, battle HUD, Results, Asset Gallery reachability, and Ashen/Cinderfen layout checks. |
 | Deep-flow | `npm run test:e2e:deep` | `tests/e2e/deep-flow.spec.ts` | Release-critical gameplay, save, campaign, Results, HUD, minimap, retinue, rival, and first-battle full-flow coverage. |
-| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | All e2e specs | Full 65-test release/checkpoint gate. |
+| Enemy pressure | `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line` | `tests/e2e/enemy-pressure.spec.ts` | Targeted v0.7 pressure warning and tutorial/skirmish no-pressure guard. |
+| Release gate | `npm run test:e2e:release` or `npm run test:e2e` | All e2e specs | Full 67-test release/checkpoint gate. |
 | Release shard 1 | `npm run test:e2e:release:shard1` | Playwright shard `1/2` | First half of the full release gate for CI matrix usage. |
 | Release shard 2 | `npm run test:e2e:release:shard2` | Playwright shard `2/2` | Second half of the full release gate for CI matrix usage. |
 

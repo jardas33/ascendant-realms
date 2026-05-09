@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure simulator gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure e2e gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -98,6 +98,15 @@ Phase 7 playtest simulator integration:
 - Regenerated `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
 - Current telemetry: 255 runs across 85 campaign battle node/profile summaries; 180 baseline runs without pressure; 75 pressure-enabled Cinderfen runs; 63 pressure runs triggered at least one stage; 149 pressure warnings; 0 simulated reinforcement applications; 147 unit losses after pressure; no enemy-pressure analyzer warnings.
 - Verification: focused `npm test -- src/game/playtest/ScriptedBattlePlaytest.test.ts` PASS, 14 tests; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
+Phase 8 enemy pressure e2e coverage:
+
+- Added `tests/e2e/enemy-pressure.spec.ts` as a targeted release-suite lane, not a smoke-lane expansion.
+- Positive coverage launches campaign `cinderfen_watch`, verifies the explicit `ashen_watch_captain_pressure` launch/stats attachment, captures `watch_road_toll`, checks pressure telemetry/stats, and asserts the delayed Watch Road warning reaches the existing battle status surface.
+- Negative coverage launches Tutorial / Proving Grounds and Cinderfen Watchpost skirmish, verifying no pressure plan id, no triggered stages, no warnings, and no pressure activation after a skirmish site capture.
+- Early focused attempts showed normal battle status messages can overwrite an immediate pressure warning in the visible surface; the final test keeps immediate assertions on telemetry/stats and uses a delayed pressure runtime tick for visible warning coverage. No gameplay was changed to hide that ordering.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, `docs/E2E_CI_SHARDING_PLAN.md`, `docs/E2E_RUNTIME_AUDIT.md`, and `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md` for the 67-test / 4-spec release suite and focused pressure lane.
+- Verification: focused `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line` PASS, 2 tests in 49.4s; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `npm run test:e2e:release` PASS, 67 tests in 29.4m.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 

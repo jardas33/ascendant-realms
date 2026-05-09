@@ -81,10 +81,10 @@ npm run test:e2e:release
 Expected current prototype result:
 
 ```text
-PASS: 65 Playwright tests
+PASS: 67 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The latest v0.6 final gate passed 65 tests in 28.9m.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7 pressure e2e checkpoint: smoke PASS, 12 tests in 5.2m; release PASS, 67 tests in 29.4m.
 
 6. Optional CI sharded release gate:
 
@@ -111,7 +111,7 @@ npm run test:e2e:layout
 npm run test:e2e:deep
 ```
 
-`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability, the v0.6 overlay width guard, and accessibility-era overlay layout checks across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
+`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability, the v0.6 overlay width guard, and accessibility-era overlay layout checks across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. Enemy Strategic Pressure V1 coverage lives in the full release suite via `tests/e2e/enemy-pressure.spec.ts`; use `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line` for a focused pressure lane. These focused lanes are available for targeted work; they do not replace the full release gate.
 
 8. Deterministic playtest simulator:
 
