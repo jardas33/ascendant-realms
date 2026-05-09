@@ -113,6 +113,15 @@ Phase 9 Tutorial accessibility checks:
 - Updated `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` with the accessibility findings.
 - No gameplay behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
 - Verification: focused `npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts` PASS, 4 tests; `npm run validate:content` PASS; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run test:e2e:layout` PASS, 25 tests in 12.5m; `git diff --check` PASS.
+- Commit: `e055564 Checkpoint v0.6 tutorial accessibility checks`.
+
+Phase 10 Desktop 2026 visual direction plan:
+
+- Added `docs/DESKTOP_2026_VISUAL_DIRECTION.md`.
+- Documented the long-term desktop-quality RTS/RPG aspiration, browser prototype proof gates, possible future routes, visual pillars, original-IP guardrails, future asset-pipeline needs, and what not to do now.
+- Recommended a future desktop prototype spike only after the browser gameplay, tutorial, save/content validation, command-log testing, performance, and originality direction are stronger.
+- This phase was planning only: no desktop packaging, engine switch, 3D rewrite, asset production dependency, external generated assets, paid APIs, gameplay behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, or broad systems changed.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
