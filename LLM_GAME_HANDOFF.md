@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 strategy-profile pressure review
+Last updated: 2026-05-09 v0.7.3 manual pressure checklist
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -69,6 +69,14 @@ Phase 5 strategy-profile pressure review:
 - Fast Army read: Crossing 12 wins / 1 timeout with pressure triggering in only 1/13 runs; Watch 10 wins / 2 timeouts with pressure triggering in 12/12 runs. This remains acceptable strategy expression.
 - Retinue + Training Yard II read: 6 wins / 0 defeats / 0 timeouts across Cinderfen pressure nodes, 5 pressure-triggered runs, 9 warnings, and 0 simulated reinforcement applications. This remains a saved-progress power watchpoint, not a reason to escalate pressure.
 - Decision: no strategy-profile gameplay, data, copy, timing, status-duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified.
+
+Phase 6 manual pressure playtest checklist:
+
+- Added `docs/V073_MANUAL_PRESSURE_PLAYTEST_CHECKLIST.md`.
+- The checklist is written for Emmanuel as a player, not a developer, and asks for normal mouse/keyboard play notes on Cinderfen Crossing and Cinderfen Watch.
+- It asks for 1 to 5 ratings on warning clarity, warning timing, pressure fairness, strategic usefulness, fun, and frustration.
+- It asks for route, units used, whether the warning was noticed, whether it changed the player's decision, whether the battle felt better/worse/unchanged, and optional screenshots if something looked confusing or clear.
+- It explicitly tells the player not to inspect code, logs, telemetry, tests, save files, or internal debug state.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
