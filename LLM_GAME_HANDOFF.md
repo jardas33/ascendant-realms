@@ -94,6 +94,15 @@ Phase 7 Test-only semantic command-log V1 implementation:
 - Updated `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` with the actual implementation result.
 - The command-log helper remains test-only; production code does not import it, and it adds no save fields, no replay UI, no gameplay behavior, no rewards, no persistence, no maps, no units, no factions, and no broad systems.
 - Verification: focused tutorial smoke PASS, 1 test in 26.5s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run test:e2e:release` PASS, 65 tests in 28.8m; `git diff --check` PASS.
+- Commit: `261d5b5 Checkpoint v0.6 test-only command log V1`.
+
+Phase 8 Tutorial command-log report:
+
+- Added `docs/COMMAND_LOG_V1_REPORT.md`.
+- Documented what the semantic command-log helper implemented, which tutorial smoke path uses it, what it makes clearer, what it does not solve, why it should remain test-only, and what risks/guardrails apply.
+- Recommendation: do not expand immediately. Keep V1 at one consumer through the final v0.6 gate; the next candidate later is the existing deep-flow capture/build/train/rally/victory reward path.
+- No source code, gameplay behavior, UI behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
