@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.6 tutorial onboarding foundation in progress
+Last updated: 2026-05-08 v0.6 tutorial e2e runtime review checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -62,6 +62,17 @@ Phase 4 No-reward completion clarity:
 - Updated the tutorial save/persistence audit, playable shell report, readability review, and v0.6 feel audit.
 - No rewards, save-version changes, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
 - Verification: focused runtime/tutorial smoke checks PASS, 29 tests plus 2 Playwright tutorial tests; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.1m; `git diff --check` PASS.
+- Commit: `5fe5152 Checkpoint v0.6 tutorial no-reward clarity`.
+
+Phase 5 Tutorial e2e runtime placement review:
+
+- Added `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md`.
+- Reviewed smoke, layout, deep, release, and shard lane placement after the tutorial copy, layout, and no-reward completion notice changes.
+- Kept full Tutorial / Proving Grounds completion in smoke because the lane remains around 5 minutes and the test protects the launch, full guided path, completion notice, no-save, no-XP, and no-reward contracts.
+- Documented the 6-7 minute smoke watch band and the future fallback policy: if smoke repeatedly exceeds that band or becomes flaky, keep a lightweight tutorial launch/overlay/exit smoke and move full completion to deeper release coverage.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, and `docs/E2E_RUNTIME_AUDIT.md` with the placement decision and latest runtimes.
+- No coverage was removed, and no gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.3m; `npm run test:e2e:release` PASS, 65 tests in 28.1m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

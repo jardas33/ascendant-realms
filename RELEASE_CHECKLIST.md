@@ -70,7 +70,7 @@ Expected current prototype result:
 PASS: 12 Playwright tests
 ```
 
-This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible.
+This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.6 tutorial e2e runtime review keeps full tutorial completion in smoke while the lane remains around 5 minutes; move it deeper only if smoke repeatedly grows beyond the 6-7 minute watch band.
 
 5. Full browser release-gate suite:
 
@@ -111,7 +111,7 @@ npm run test:e2e:layout
 npm run test:e2e:deep
 ```
 
-`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
+`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability and the v0.6 overlay width guard across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
 
 8. Deterministic playtest simulator:
 

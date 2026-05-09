@@ -93,6 +93,8 @@ npm run test:e2e:release
 
 The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; the latest final tutorial-shell gate passed smoke with 12 tests in 5.2 minutes and the one-piece release lane with 65 tests in 28.5 minutes.
 
+Tutorial e2e placement review: `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md`. The v0.6 review keeps full Tutorial / Proving Grounds completion in smoke for now because the lane remains around 5 minutes and the test protects no-save/no-XP/no-reward behavior. Move completion deeper only if smoke repeatedly grows beyond the 6-7 minute watch band.
+
 For CI, the full release gate can also be split into two Playwright shards:
 
 ```bash
@@ -102,7 +104,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest tutorial-shell e2e verification, 2026-05-08: smoke passed 12 tests in 5.2 minutes, the one-piece release lane passed 65 tests in 28.5 minutes, shard 1 passed 53 tests in 24.4 minutes, and shard 2 passed 12 tests in 4.9 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest tutorial-shell e2e verification, 2026-05-08: smoke passed 12 tests in 5.1 minutes after the v0.6 no-reward completion notice, layout passed 25 tests in 13.0 minutes after the overlay width guard, the prior one-piece release lane passed 65 tests in 28.5 minutes, shard 1 passed 53 tests in 24.4 minutes, and shard 2 passed 12 tests in 4.9 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 

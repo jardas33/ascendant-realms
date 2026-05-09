@@ -45,6 +45,7 @@ Recent recorded runtimes in `LLM_GAME_HANDOFF.md`:
 | 2026-05-08 tutorial playable shell | 12 smoke / 61 release | 5.4m smoke / 32.1m release | Added Tutorial / Proving Grounds completion and exit coverage. The completion smoke has a local 75s timeout because it drives the full 12-step tutorial path. |
 | 2026-05-08 tutorial readability review | 12 smoke / 25 layout / 65 expected release | 5.0m smoke / 13.1m layout | Added four Tutorial / Proving Grounds overlay layout checks across desktop, tablet, mobile-tall, and mobile-short. Followed by the final full-gate row below. |
 | 2026-05-08 final tutorial shell gate | 12 smoke / 65 release / 53 shard1 / 12 shard2 | 5.2m smoke / 28.5m release / 24.4m shard1 / 4.9m shard2 | Full final gate after tutorial shell documentation. Slow files remain layout and deep-flow. |
+| 2026-05-08 v0.6 tutorial polish | 12 smoke / 25 layout | 5.1m smoke / 13.0m layout | Copy, overlay layout, and session-only no-reward completion notice polish. `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md` keeps full tutorial completion in smoke while the lane stays near 5 minutes. |
 
 `playwright.config.ts` intentionally runs with `workers: 1`, `fullyParallel: false`, one Chromium project, and SwiftShader launch args. That is stable for a Phaser canvas/WebGL game, but it means every slow scene boot and every multi-step campaign flow is paid serially.
 
