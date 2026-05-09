@@ -8,6 +8,32 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
+## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
+
+Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 45 files / 334 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-CC1M6Mg7.js, 476.83 kB / gzip 127.77 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 real-input playtest protocol:
+
+- Added `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_PROTOCOL.md`.
+- The protocol defines v0.7.3 as a human-noticeability and feel review, not simulator-only balance or a mechanics expansion.
+- Evidence must be labeled as real-input manual evidence, controlled browser-input evidence, seeded surrogate evidence, or simulator evidence.
+- Review targets remain only `cinderfen_crossing` / `cinderfen_causeway` and `cinderfen_watch` / `cinderfen_watchpost`.
+- Review lenses are Safe Beginner, Greedy Economy, Fast Army, and Retinue + Training Yard II.
+- The change threshold defaults to no change and allows only tiny copy, timing, status-duration, defeat-tip, docs, or e2e-observability polish if a clear review problem is found.
+- Non-goals explicitly preserve no live reinforcement promotion, no capture-site contest AI, no defensive hold behavior, no workers/construction/economy AI, no new units/maps/factions/plans/stages, no rewards, no save changes, no campaign progression changes, no pressure on Ashen Outpost or Chapter 1, no new UI panel, and no broad BattleScene rewrite.
+
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
 Mission: run a human-paced Cinderfen pressure play review, gather evidence, and make only tiny evidence-backed polish changes. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, or broad systems.
