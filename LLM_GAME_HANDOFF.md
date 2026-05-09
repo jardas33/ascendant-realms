@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure report gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -127,6 +127,54 @@ Phase 10 enemy pressure report:
 - Documented what V1 implemented, what it deliberately did not implement, why it is not full enemy construction, the two scoped nodes/maps, allowed and forbidden actions, telemetry results, e2e coverage, balance status, remaining risks, and the next recommended human pressure-feel review.
 - Release docs now reflect the current 44-file / 328-test unit suite, 67-test Playwright release suite, current build chunk sizes, pressure plan validation, and simulator pressure read.
 - Verification: `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `git diff --check` PASS.
+
+Phase 11 optional safe polish:
+
+- Skipped intentionally. All required v0.7 phases were green, the report/docs were current, and no extra copy/test-helper polish was needed without risking new scope.
+
+Phase 12 final full verification:
+
+- Completed phases: Phase 0 through Phase 10, plus Phase 12 final verification.
+- Skipped phases: Phase 11 only, because it was optional and no safe, necessary polish remained after the report gate.
+- Commits created before the final handoff commit:
+  - `98f9fd2 Checkpoint v0.7 enemy pressure research`
+  - `a5f085e Checkpoint v0.7 enemy pressure design`
+  - `cb9db66 Checkpoint v0.7 enemy pressure data model`
+  - `5b2a43e Checkpoint v0.7 enemy pressure validation`
+  - `cea718f Checkpoint v0.7 enemy pressure runtime`
+  - `8e5871c Checkpoint v0.7 enemy pressure feedback`
+  - `76331fd Checkpoint v0.7 enemy pressure simulator`
+  - `978bce8 Checkpoint v0.7 enemy pressure e2e coverage`
+  - `2bedd2a Checkpoint v0.7 enemy pressure balance gate`
+  - `65fca10 Checkpoint v0.7 enemy pressure report`
+  - Final handoff commit planned from this update: `Checkpoint v0.7 enemy strategic pressure V1`.
+- Final unit/content/build gate:
+  - `npm test`: PASS, 44 files / 328 tests.
+  - `npm run build`: PASS with the known Phaser vendor warning. App JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB.
+  - `npm run validate:content`: PASS and includes enemy pressure plan validation.
+  - `git diff --check`: PASS.
+- Final e2e and simulator gate:
+  - `npm run test:e2e:smoke`: PASS, 12 tests in 5.3m.
+  - `npm run test:e2e:release`: PASS, 67 tests in 32.5m.
+  - `npm run test:e2e:release:shard1`: PASS, 55 tests in 25.8m.
+  - `npm run test:e2e:release:shard2`: PASS, 12 tests in 5.2m.
+  - `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes.
+  - No final-gate e2e transient was observed, so no targeted rerun note was needed.
+- Production preview smoke:
+  - PASS at `http://127.0.0.1:57920/` using a fresh `npm run preview` server and the in-app Browser.
+  - Verified title `Ascendant Realms`, main-menu `Prototype v0.3` and `Cinderfen Route Baseline` copy, Tutorial / Proving Grounds launch and exit, New Campaign reaching Campaign Map, Continue Campaign returning to Campaign Map, Skirmish Setup opening, and browser console errors at 0.
+  - The short preview route did not separately launch a pressure-enabled campaign battle because that would require seeded Cinderfen campaign state; the targeted release e2e pressure lane did launch Cinderfen Watch with `ashen_watch_captain_pressure` and passed. The preview server was stopped afterward.
+- Current git status before this final handoff commit:
+  - `git status -sb`: `## main...origin/main [ahead 10]`
+  - `git rev-list --left-right --count origin/main...HEAD`: `0 10`
+  - No dirty files before this handoff edit.
+- v0.7 final scope summary: Enemy Strategic Pressure V1 is a campaign-only, data-driven pressure-plan prototype on `cinderfen_crossing` and `cinderfen_watch`. It validates pressure metadata, attaches plans only through campaign node data, records runtime and simulator telemetry, exposes restrained warning copy, and keeps live combat effects limited to a small existing-wave timing nudge. It adds no workers, enemy workers, real enemy construction, build placement, harvesting, enemy economy, new units, new maps, new factions, new rewards, save-version changes, tutorial rewards, or campaign progression changes.
+- Remaining risks:
+  - Pressure warning salience still needs human playtesting in Cinderfen Crossing and Cinderfen Watch.
+  - `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only until human feel and fairness are confirmed.
+  - Fast Army quick-clear, Retinue plus Training Yard II strength, Greedy Economy timeout rate, Cinder Shrine salience, Waystation/Aftermath density, and the known Phaser vendor chunk warning remain watchpoints.
+  - Full release e2e remains slow, especially the layout and deep-flow specs, but it passed cleanly in the final gate.
+- Next recommended long-running goal: run a human-paced v0.7 pressure-feel review across Cinderfen Crossing and Cinderfen Watch, then make only small, telemetry-supported tuning to warning timing, plan scope, or the existing-wave timing nudge. Do not promote live reinforcements, capture-site contest AI, defensive holds, workers, construction, economy, new maps, new units, new factions, or reward changes until that review proves they are necessary and safe.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
