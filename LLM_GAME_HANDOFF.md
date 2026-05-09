@@ -33,6 +33,14 @@ Phase 1 human-paced pressure review plan:
 - Evidence sources include browser/play-like flows, existing pressure e2e, simulator telemetry, battle status messages, and Results/defeat tips.
 - Non-goals explicitly preserve no live reinforcement promotion, no capture-site contest AI, no defensive hold behavior, no workers/construction/economy AI, no new units/maps/factions, no rewards, no save changes, and no pressure on Ashen Outpost, Chapter 1, Tutorial, or Skirmish.
 
+Phase 2 browser pressure review notes:
+
+- Added `docs/V072_PRESSURE_BROWSER_REVIEW_NOTES.md`.
+- Reviewed existing Playwright Cinderfen helpers, pressure e2e helpers, shared save seeding helpers, and battle test hooks.
+- Existing helpers can seed post-Ashen Crossing availability, post-Crossing Watch availability, launch both pressure battles through campaign UI, capture `cinder_crossing` and `watch_road_toll`, read pressure stats, and advance delayed warnings.
+- No new helper or broad e2e test was added in Phase 2 because existing helpers are enough for review entry and because v0.7.2 should avoid harness churn until evidence proves a gap.
+- Noted that Playwright is the repeatable seeded review harness, while the in-app Browser surface remains best for visible preview smoke because it does not expose the same seeded localStorage/test-hook surface.
+
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
 Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
