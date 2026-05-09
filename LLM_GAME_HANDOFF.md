@@ -92,6 +92,16 @@ Phase 7 Greedy Economy and Fast Army pressure review:
 - Interpretation: Greedy Economy loses to clock/closure after surviving the first wave, not a sudden pressure defeat spike. Fast Army bypass on Crossing is acceptable strategy expression, while Watch already proves Fast Army can trigger pressure and still win.
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
+Phase 8 pressure next-action decision:
+
+- Added `docs/V072_PRESSURE_NEXT_ACTION_DECISION.md`.
+- Decision: keep `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` warning/telemetry-only for v0.7.2.
+- Future recommendation: if v0.8 tests stronger pressure at all, start with a simulator-only `reinforce_next_wave` experiment on one node, with existing unit ids, tiny scope, explicit warning lead time, and no live runtime behavior until simulator plus human play both pass.
+- `contest_capture_site` remains blocked from live implementation because it would require route/pathing/site-ownership behavior and risks hidden spawning or broad AI changes.
+- `defensive_hold` remains blocked from live implementation because it risks turtling, longer Greedy Economy timeouts, and broad defense behavior changes.
+- No source, runtime, simulator, e2e, content data, map, unit, faction, reward, save, worker, construction, economy AI, live reinforcement, route-contest AI, defensive-hold, or campaign progression change was made.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
 Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
