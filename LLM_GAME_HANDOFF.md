@@ -103,6 +103,16 @@ Phase 8 Tutorial command-log report:
 - Recommendation: do not expand immediately. Keep V1 at one consumer through the final v0.6 gate; the next candidate later is the existing deep-flow capture/build/train/rally/victory reward path.
 - No source code, gameplay behavior, UI behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+- Commit: `d106bba Checkpoint v0.6 command log V1 report`.
+
+Phase 9 Tutorial accessibility checks:
+
+- Added polite live-region semantics to the tutorial overlay and attached its instruction/condition text through `aria-describedby`.
+- Added explicit accessible labels for `Next Objective` / `Complete Tutorial` buttons, `Exit Tutorial`, the main-menu Tutorial button, and the session-only completion notice.
+- Updated `TutorialPanel` unit coverage for the new ARIA/live-region attributes.
+- Updated `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` with the accessibility findings.
+- No gameplay behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
+- Verification: focused `npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts` PASS, 4 tests; `npm run validate:content` PASS; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run test:e2e:layout` PASS, 25 tests in 12.5m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

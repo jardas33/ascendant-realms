@@ -9,6 +9,8 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(step);
 
     expect(html).toContain('data-testid="tutorial-overlay"');
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('aria-label="Exit Tutorial and return to main menu"');
     expect(html).toContain("Proving Grounds");
     expect(html).toContain("Select Hero");
     expect(html).toContain("Select Aster");
@@ -23,6 +25,7 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "select_hero", { heroSelected: true }));
 
     expect(html).toContain('data-testid="tutorial-next"');
+    expect(html).toContain('aria-label="Next Objective from Select Hero"');
     expect(html).toContain("Next Objective");
   });
 

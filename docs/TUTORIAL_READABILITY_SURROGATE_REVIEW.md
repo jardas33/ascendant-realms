@@ -83,6 +83,8 @@ Recommendation: any future tutorial overlay changes should rerun `npm run test:e
 
 Exit Tutorial is always visible in the overlay and returns to the main menu without saving. Full smoke coverage verifies that exit does not create a save.
 
+Phase 9 accessibility polish added an explicit button label for Exit Tutorial: "Exit Tutorial and return to main menu". The main-menu Tutorial button also exposes "Start Tutorial / Proving Grounds" as its accessible label.
+
 Risk: the top HUD Menu button and overlay Exit Tutorial both return to the menu. This is acceptable, but tests should keep using the explicit `tutorial-exit` test id for clarity.
 
 Recommendation: keep Exit Tutorial visible and stable. Do not hide it behind a menu or modal until tutorial persistence exists.
@@ -90,6 +92,8 @@ Recommendation: keep Exit Tutorial visible and stable. Do not hide it behind a m
 ### Battle HUD Interference
 
 The overlay is pointer-light: the panel does not block core canvas controls, while its buttons remain clickable. The new layout guard also checks the side command panel remains inside viewport width after tutorial launch.
+
+The overlay is now a polite live region with instruction and condition text attached through `aria-describedby`, so objective changes are easier for assistive technology to announce without changing the visual layout.
 
 Risk: the overlay can still visually compete with objectives/status text on smaller screens.
 

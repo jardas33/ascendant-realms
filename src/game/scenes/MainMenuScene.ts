@@ -120,7 +120,7 @@ export class MainMenuScene extends Phaser.Scene {
           <div class="menu-actions">
             <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
             <button data-testid="menu-continue-campaign" data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
-            <button data-testid="menu-tutorial" data-menu-action="tutorial">Tutorial</button>
+            <button data-testid="menu-tutorial" data-menu-action="tutorial" aria-label="Start Tutorial / Proving Grounds">Tutorial</button>
             <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
             <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
             <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
@@ -135,7 +135,7 @@ export class MainMenuScene extends Phaser.Scene {
           }
           ${
             this.tutorialCompletionNotice
-              ? `<div class="info-box tutorial-complete" data-testid="tutorial-complete-notice" role="status">
+              ? `<div class="info-box tutorial-complete" data-testid="tutorial-complete-notice" role="status" aria-live="polite">
                   <strong>Training complete</strong>
                   <p>No XP, items, resources, or campaign progress were granted. Nothing was saved.</p>
                 </div>`
