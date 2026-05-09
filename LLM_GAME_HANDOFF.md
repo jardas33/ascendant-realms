@@ -34,6 +34,17 @@ Phase 1 enemy pressure research audit:
 - Safe V1 shape: explicit data attachment, warning copy, telemetry, and only a modest existing-system runtime effect if it does not require workers, construction, new content, pathfinding changes, or a broad `BattleScene` rewrite.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BCE05t_6.js`, 459.85 kB / gzip 123.62 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
+Phase 2 enemy strategic pressure design spec:
+
+- Added `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`.
+- Defined `EnemyStrategicPressurePlan` and `PressureStage` as data-driven content metadata, not save data.
+- Allowed V1 triggers are battle time, player site capture, player structure destruction, player first army unit, supported enemy hero events, and late battle time.
+- Allowed V1 actions are warning copy, telemetry, modest existing-wave timing pressure, modest existing-unit reinforcement only if safe, local defense/rally behavior, and existing-unit capture-site contesting only if safe.
+- Forbidden V1 actions remain workers, harvesting, build placement, real enemy construction, dynamic enemy economy, new maps, new units, new factions, save changes, campaign reward changes, tutorial rewards, and broad `BattleScene` rewrites.
+- Selected exactly two initial data candidates for Phase 3: `ashen_watch_captain_pressure` on `cinderfen_watch` / `cinderfen_watchpost` and `causeway_contest_pressure` on `cinderfen_crossing` / `cinderfen_causeway`.
+- Kept Ashen Outpost excluded from V1 runtime attachment.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BCE05t_6.js`, 459.85 kB / gzip 123.62 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
 Mission: continue from the final v0.6 gate with a small human-feel Tutorial / Proving Grounds polish pass. This goal must stay existing-content-only, no-reward, non-persistent, and must not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, save-version changes, campaign progression, or broad systems.
