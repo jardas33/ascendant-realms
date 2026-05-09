@@ -56,6 +56,15 @@ Phase 3 pressure warning visibility:
 - A first Phase 3 smoke run failed because pressure priority hid `Cinder Shrine Surge` in the Cinderfen Crossing smoke path. This was a real regression, not a transient. The fix added objective priority and forwarded status options through `BattleSceneSystems`; the targeted failing test then passed and full smoke passed.
 - Verification: focused `npm test -- src/game/battle/BattleStatusPriority.test.ts src/game/battle/EnemyPressureRuntime.test.ts` PASS, 8 tests; targeted `npx playwright test tests/e2e/smoke.spec.ts --reporter=line -g "post-Ashen campaign resolves Cinderfen Overlook"` PASS, 1 test in 1.2m after the fix; `npm test` PASS, 45 files / 333 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
 
+Phase 4 pressure e2e hardening:
+
+- Hardened `tests/e2e/enemy-pressure.spec.ts` so the positive Cinderfen Watch pressure test now verifies that an active pressure warning remains visible after a generic normal status message tries to replace it.
+- Kept the coverage in the targeted release-suite pressure spec; smoke count did not increase.
+- Tutorial and Cinderfen Watchpost skirmish no-pressure guards remain in the same spec.
+- Updated `docs/V071_PRESSURE_WARNING_VISIBILITY_AUDIT.md` to record the release-suite priority assertion.
+- No full victory requirement, no new smoke test, no gameplay mechanic change, no live reinforcement, no route-contest AI, no defensive hold behavior, no workers/construction/economy AI, and no map/unit/faction/reward/save change was added.
+- Verification: focused `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line` PASS, 2 tests in 43.1s; `npm test` PASS, 45 files / 333 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.1m; `npm run test:e2e:release` PASS, 67 tests in 33.1m; `git diff --check` PASS.
+
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
 Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.

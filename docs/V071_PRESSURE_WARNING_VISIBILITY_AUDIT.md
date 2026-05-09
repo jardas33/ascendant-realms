@@ -70,6 +70,8 @@ Added `src/game/battle/BattleStatusPriority.test.ts`:
 
 Existing smoke coverage still validates the broader browser routes after this status presentation change.
 
+Phase 4 also hardened `tests/e2e/enemy-pressure.spec.ts` so the targeted pressure browser lane verifies that an active pressure warning remains visible after a generic normal status message attempts to replace it. Tutorial and skirmish no-pressure guards remain in the same release-suite spec.
+
 ## Remaining Human-Play Risk
 
 The warning is more durable now, but human play still needs to judge:

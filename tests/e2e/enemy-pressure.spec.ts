@@ -76,6 +76,18 @@ async function advancePressureRuntime(page: Page, seconds: number): Promise<stri
   }, seconds);
 }
 
+async function showNormalStatusMessage(page: Page, message: string): Promise<string> {
+  return page.evaluate((statusMessage) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.showMessage(statusMessage);
+    scene.refreshBattleHud?.(0);
+    return scene.statusMessage;
+  }, message);
+}
+
 test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
   test("campaign Cinderfen Watch shows scoped pressure warning after Watch Road capture", async ({ page }) => {
     attachConsoleFailure(page);
@@ -108,9 +120,12 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     expect(pressureState.completedStageIds).toEqual(expect.arrayContaining(["watch_road_response"]));
     expect(pressureState.pressureWarningsShown).toBe(1);
 
-    expect(await advancePressureRuntime(page, 36)).toBe("Enemy horns answer your advance. Expect faster pressure on the raised road.");
+    const pressureWarning = "Enemy horns answer your advance. Expect faster pressure on the raised road.";
+    expect(await advancePressureRuntime(page, 36)).toBe(pressureWarning);
+    await expect(page.getByTestId("battle-status")).toContainText(pressureWarning);
+    expect(await showNormalStatusMessage(page, "Generic battle update")).toBe(pressureWarning);
     await expect(page.getByTestId("battle-status")).toContainText(
-      "Enemy horns answer your advance. Expect faster pressure on the raised road."
+      pressureWarning
     );
     pressureState = await readPressureState(page);
     expect(pressureState.triggeredStageIds).toEqual(expect.arrayContaining(["watch_road_response", "watch_road_reinforcement"]));
