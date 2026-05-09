@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 Cinderfen Watch real-input review
+Last updated: 2026-05-09 v0.7.3 strategy-profile pressure review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -59,6 +59,16 @@ Phase 4 Cinderfen Watch real-input review:
 - The delayed warning `Enemy horns answer your advance. Expect faster pressure on the raised road.` appeared in real time at about 42.1 battle seconds with `pressure` priority, stages `watch_road_response` and `watch_road_reinforcement` completed, warnings increased to 2, and `pressureReinforcementApplied` stayed false.
 - A generic normal status update attempted after the delayed warning did not overwrite the active pressure warning. Screenshot evidence was recorded in temp files including `ascendant-v073-watch-immediate-warning.png` and `ascendant-v073-watch-delayed-warning.png`.
 - Decision: no Watch gameplay, data, warning copy, warning timing, status duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified. The warning is early but player-triggered, readable, and protected from ordinary status churn.
+
+Phase 5 strategy-profile pressure review:
+
+- Added `docs/V073_STRATEGY_PROFILE_PRESSURE_REVIEW.md`.
+- Combined v0.7.3 Crossing/Watch controlled browser-input observations with current simulator telemetry and v0.7.2 strategy reviews.
+- Safe Beginner read: Crossing 13/13 wins with pressure triggered in 13/13, Watch 12/12 wins with pressure triggered in 12/12; pressure teaches caution without producing structural difficulty.
+- Greedy Economy read: Crossing 1 win / 12 timeouts and Watch 3 wins / 9 timeouts, with pressure triggering in 25/25 pressure-node runs, 71 total warnings, and 0 defeats. This remains a closure/build-order timeout pattern, not a pressure spike.
+- Fast Army read: Crossing 12 wins / 1 timeout with pressure triggering in only 1/13 runs; Watch 10 wins / 2 timeouts with pressure triggering in 12/12 runs. This remains acceptable strategy expression.
+- Retinue + Training Yard II read: 6 wins / 0 defeats / 0 timeouts across Cinderfen pressure nodes, 5 pressure-triggered runs, 9 warnings, and 0 simulated reinforcement applications. This remains a saved-progress power watchpoint, not a reason to escalate pressure.
+- Decision: no strategy-profile gameplay, data, copy, timing, status-duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
