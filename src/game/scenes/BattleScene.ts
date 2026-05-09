@@ -40,6 +40,12 @@ import {
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
 import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
+import {
+  battleStatusDurationSeconds,
+  shouldReplaceBattleStatus,
+  type BattleStatusOptions,
+  type BattleStatusPriority
+} from "../battle/BattleStatusPriority";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
@@ -167,6 +173,7 @@ export class BattleScene extends Phaser.Scene {
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
+  private statusPriority: BattleStatusPriority = "normal";
   private tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
   private tutorialStepId?: string;
   private tutorialDefeatedUnitIds = new Set<string>();
@@ -234,6 +241,7 @@ export class BattleScene extends Phaser.Scene {
       this.statusMessage = this.buildingSystem.pendingBuildingId
         ? this.buildingSystem.placementMessage || "Click valid ground near your base to place the building."
         : `AI: ${this.aiSystem.state} - Time ${formatTime(this.runtime.elapsedSeconds)}`;
+      this.statusPriority = "normal";
     }
 
     this.cameraSystem.update(deltaSeconds);
@@ -284,6 +292,7 @@ export class BattleScene extends Phaser.Scene {
     this.neutralCampLabels = [];
     this.statusMessage = "Capture resource sites to grow your army.";
     this.statusTimer = 4;
+    this.statusPriority = "normal";
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
     this.tutorialDefeatedUnitIds = new Set<string>();
@@ -339,7 +348,7 @@ export class BattleScene extends Phaser.Scene {
       addUnit: (unit) => this.addUnit(unit),
       addBuilding: (building) => this.addBuilding(building),
       addProjectile: (projectile) => this.projectiles.push(projectile),
-      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color),
+      showMessage: (message, x, y, color, options) => this.showMessage(message, x, y, color, options),
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
       warnIfCommandHallUnderAttack: (target) => this.warnIfCommandHallUnderAttack(target),
       handleUnitDamage: (source, target, amount) => this.handleUnitDamage(source, target, amount),
@@ -387,7 +396,8 @@ export class BattleScene extends Phaser.Scene {
       mapId: this.activeMap.id,
       campaignNodeId: this.launch.request.campaignNodeId,
       runtime: this.runtime,
-      showWarning: (message) => this.showMessage(message, this.hero.position.x, this.hero.position.y - 112, "#f6e27d"),
+      showWarning: (message) =>
+        this.showMessage(message, this.hero.position.x, this.hero.position.y - 112, "#f6e27d", { priority: "pressure" }),
       adjustNextWaveTiming: (seconds) => this.aiSystem.adjustNextAttackTiming(seconds)
     });
   }
@@ -1161,13 +1171,22 @@ export class BattleScene extends Phaser.Scene {
     return `#${color.toString(16).padStart(6, "0")}`;
   }
 
-  private showMessage(message: string, x?: number, y?: number, color = "#f5efc2"): void {
-    this.statusMessage = message;
-    this.statusTimer = 2.5;
+  private showMessage(message: string, x?: number, y?: number, color = "#f5efc2", options: BattleStatusOptions = {}): void {
+    const priority = options.priority ?? "normal";
+    const replaceStatus = shouldReplaceBattleStatus({
+      currentPriority: this.statusPriority,
+      currentTimerSeconds: this.statusTimer,
+      incomingPriority: priority
+    });
+    if (replaceStatus) {
+      this.statusMessage = message;
+      this.statusTimer = options.durationSeconds ?? battleStatusDurationSeconds(priority);
+      this.statusPriority = priority;
+    }
     if (x !== undefined && y !== undefined) {
       FloatingText.show(this, message, x, y, color);
     }
-    if (this.uiSystem && this.hero && !this.runtime.ended) {
+    if (replaceStatus && this.uiSystem && this.hero && !this.runtime.ended) {
       this.refreshBattleHud(0);
     }
   }

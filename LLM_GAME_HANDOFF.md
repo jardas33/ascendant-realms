@@ -45,6 +45,17 @@ Phase 2 pressure warning copy polish:
 - Updated `CONTENT_GUIDE.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, and `docs/V071_ENEMY_PRESSURE_FEEL_AUDIT.md` with the copy guidance.
 - Verification: focused `npm test -- src/game/battle/EnemyPressureRuntime.test.ts src/game/core/ResultsFlow.test.ts src/game/data/enemyPressurePlans.test.ts` PASS, 19 tests; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-Lz0Ve4wS.js`, 476.30 kB / gzip 127.58 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `git diff --check` PASS.
 
+Phase 3 pressure warning visibility:
+
+- Added `docs/V071_PRESSURE_WARNING_VISIBILITY_AUDIT.md`.
+- Added `src/game/battle/BattleStatusPriority.ts` and `src/game/battle/BattleStatusPriority.test.ts`.
+- Pressure warnings now use a `pressure` status priority and a 4.5 second read window, so active pressure warnings do not instantly lose to ordinary normal status messages.
+- Added `objective` priority for critical capture/objective feedback such as `Cinder Shrine Surge`, so pressure visibility does not hide immediate reward/status clarity.
+- Updated `BattleScene` and `BattleSceneSystems` wiring to preserve the optional status priority argument while leaving floating text feedback intact.
+- No HUD panel, overlay redesign, tutorial behavior, pressure trigger/action/timing change, reinforcement promotion, route-contest AI, defensive hold behavior, save change, reward change, unit/map/faction change, worker, construction, or economy AI was added.
+- A first Phase 3 smoke run failed because pressure priority hid `Cinder Shrine Surge` in the Cinderfen Crossing smoke path. This was a real regression, not a transient. The fix added objective priority and forwarded status options through `BattleSceneSystems`; the targeted failing test then passed and full smoke passed.
+- Verification: focused `npm test -- src/game/battle/BattleStatusPriority.test.ts src/game/battle/EnemyPressureRuntime.test.ts` PASS, 8 tests; targeted `npx playwright test tests/e2e/smoke.spec.ts --reporter=line -g "post-Ashen campaign resolves Cinderfen Overlook"` PASS, 1 test in 1.2m after the fix; `npm test` PASS, 45 files / 333 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
+
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
 Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.

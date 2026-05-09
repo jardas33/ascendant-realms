@@ -39,6 +39,7 @@ import { FloatingText } from "../ui/FloatingText";
 import { HUD } from "../ui/HUD";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
+import type { BattleStatusOptions } from "./BattleStatusPriority";
 
 const BATTLE_FOG_CELL_SIZE = 96;
 
@@ -73,7 +74,7 @@ interface CreateBattleSceneSystemsOptions {
   addUnit: (unit: Unit) => void;
   addBuilding: (building: Building) => void;
   addProjectile: (projectile: Projectile) => void;
-  showMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string, options?: BattleStatusOptions) => void;
   addMinimapPing: (x: number, y: number, color: string, label: string) => void;
   warnIfCommandHallUnderAttack: (target: BaseEntity) => void;
   handleUnitDamage: (source: Unit, target: BaseEntity, amount: number) => void;
@@ -253,7 +254,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         const resourceText = formatResourceBonus(bonus.resources);
         const message = resourceText ? `${bonus.label}: ${resourceText}` : bonus.label;
         addMinimapPing(site.position.x, site.position.y, "#f6e27d", bonus.label);
-        showMessage(message, site.position.x, site.position.y - 96, "#f6e27d");
+        showMessage(message, site.position.x, site.position.y - 96, "#f6e27d", { priority: "objective" });
       }
     },
     adjustFirstCaptureBonus: (site, owner, bonus) => {
