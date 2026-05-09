@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, and v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
+Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype, and v0.7.1 polishing pressure warning feel and visibility. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -20,6 +20,7 @@ Current v0.3 feature snapshot:
 - v0.5 save fixture tests, standalone content validation, campaign graph/reward validation, simulator determinism checks, and a first playable no-reward Tutorial / Proving Grounds shell for onboarding work.
 - v0.6 tutorial polish, e2e runtime review, test-only semantic command-log V1, tutorial accessibility checks, and desktop/2026 visual-direction planning.
 - v0.7 Enemy Strategic Pressure V1: campaign-scoped pressure plans on Cinderfen Crossing and Cinderfen Watch, content validation, warning/telemetry runtime, simulator reporting, and targeted release e2e coverage without workers, enemy construction, new maps, new units, new factions, rewards, save changes, or broad AI economy.
+- v0.7.1 Enemy Pressure Feel Review: clearer pressure warnings and defeat tips, longer prioritized pressure status messages, objective feedback priority above pressure, hardened pressure visibility e2e coverage, clearer simulator reporting, no balance tuning, and no promotion of live reinforcements, route contesting, or defensive hold behavior.
 
 ## Design Pillars
 
@@ -60,7 +61,7 @@ http://localhost:5173
 npm run build
 ```
 
-Latest v0.7 pressure checkpoint status, 2026-05-09: build passes. App JS is about 476.13 kB / 127.51 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 44.23 kB / 9.11 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
+Latest v0.7.1 pressure-feel checkpoint status, 2026-05-09: build passes. App JS is about 476.83 kB / 127.77 kB gzip, `vendor-phaser` is about 1,481.79 kB / 339.86 kB gzip, and CSS is about 44.23 kB / 9.11 kB gzip. Vite may warn that the Phaser vendor chunk is larger than 500 kB; that warning is known and is not a build failure.
 
 ## Test Content And Pure Rules
 
@@ -71,11 +72,11 @@ npm run test
 
 Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
 
-Latest v0.7 pressure checkpoint status, 2026-05-09: `npm run validate:content` passes, and `npm test` passes with 44 test files and 328 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, enemy pressure data/validation/runtime coverage, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
+Latest v0.7.1 pressure-feel checkpoint status, 2026-05-09: `npm run validate:content` passes, and `npm test` passes with 45 test files and 334 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, enemy pressure data/validation/runtime/status-priority/reporting coverage, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
 
 Tutorial / Proving Grounds report: `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`. v0.6 onboarding/testing report: `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`. The current shell launches from the main menu, reuses existing First Claim content, has no rewards, does not persist completion, and returns to the main menu on completion or exit.
 
-Command-log V1 docs: `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` and `docs/COMMAND_LOG_V1_REPORT.md`. The helper is test-only and currently used by one Tutorial / Proving Grounds smoke path. Enemy Strategic Pressure V1 docs: `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md` and `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`. Desktop future-direction planning lives in `docs/DESKTOP_2026_VISUAL_DIRECTION.md`; no desktop packaging or engine-port code has been added.
+Command-log V1 docs: `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` and `docs/COMMAND_LOG_V1_REPORT.md`. The helper is test-only and currently used by one Tutorial / Proving Grounds smoke path. Enemy Strategic Pressure V1 docs: `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`, and `docs/V071_ENEMY_PRESSURE_FEEL_REPORT.md`. Desktop future-direction planning lives in `docs/DESKTOP_2026_VISUAL_DIRECTION.md`; no desktop packaging or engine-port code has been added.
 
 ## Browser E2E Test Lanes
 
@@ -108,7 +109,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest v0.7 pressure e2e verification, 2026-05-09: smoke passed 12 tests in 5.4 minutes during the balance gate, the focused pressure spec passed 2 tests in 49.4 seconds, and the one-piece release lane passed 67 tests in 29.4 minutes during the e2e coverage gate. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest v0.7.1 pressure-feel e2e verification, 2026-05-09: smoke passed 12 tests in 5.2 minutes during the report gate, the focused pressure spec passed 2 tests in 43.1 seconds during visibility hardening, and the one-piece release lane passed 67 tests in 33.1 minutes during the e2e hardening gate. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 
@@ -122,7 +123,7 @@ npm run test:e2e:headed
 npm run playtest:sim
 ```
 
-This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.7 pressure checkpoint status, 2026-05-09: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, no enemy-pressure warnings, 75 pressure-enabled Cinderfen runs, 63 runs with triggered pressure, 149 pressure warnings, and 0 simulated reinforcement applications.
+This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`. Latest v0.7.1 pressure-feel checkpoint status, 2026-05-09: passed with 255 simulated runs across 85 campaign battle node/profile summaries, no too-easy nodes, no structural too-hard nodes, Ashen Outpost beatable, no Stronghold warnings, no enemy-pressure warnings, 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 12 quiet/untriggered pressure runs, 149 pressure warnings, 147 losses after pressure, and 0 simulated reinforcement applications.
 
 ## Preview A Build
 

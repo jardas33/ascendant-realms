@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 44 test files, 328 tests
+PASS: 45 test files, 334 tests
 ```
 
 2. Standalone content validation:
@@ -45,7 +45,7 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-B8rnpsai.js, 476.13 kB / gzip 127.51 kB
+- app JS chunk: assets/index-CC1M6Mg7.js, 476.83 kB / gzip 127.77 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
 - CSS chunk: assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB
 ```
@@ -84,7 +84,7 @@ Expected current prototype result:
 PASS: 67 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7 pressure e2e checkpoint: smoke PASS, 12 tests in 5.2m; release PASS, 67 tests in 29.4m.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7.1 pressure-feel e2e checkpoint: smoke PASS, 12 tests in 5.2m during the report gate; focused pressure spec PASS, 2 tests in 43.1s during visibility hardening; release PASS, 67 tests in 33.1m during the e2e hardening gate.
 
 6. Optional CI sharded release gate:
 
@@ -130,7 +130,9 @@ No Stronghold warnings
 No enemy-pressure warnings
 75 pressure-enabled Cinderfen runs
 63 triggered pressure runs
+12 quiet/untriggered pressure runs
 149 pressure warnings
+147 losses after pressure
 0 simulated reinforcement applications
 Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 ```
@@ -178,6 +180,7 @@ After build-output or chunking changes, run a production preview smoke when feas
 - Reputation hooks in normal campaign flow: Common Folk Marcher Camp discounts, Free Marches Stronghold discounts, Old Faith Chapel Aether bonus, and Ashen Covenant Hostile pressure.
 - Affixed reward readability in Results and Inventory, including base/affix/total stat copy.
 - Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
+- Cinderfen pressure feel in normal human-paced play, including whether pressure warnings are noticed, whether Cinder Shrine and Watch Road responses feel fair, and whether stronger actions should remain warning/telemetry-only.
 - Full human-paced Cinderfen route from Ashen Outpost through Overlook, Waystation, Crossing, Watch, and Aftermath, including Cinder Shrine surge/attunement readability and modest reward feel.
 - Full human-paced Tutorial / Proving Grounds run, especially twelve-step length, mobile-short overlay readability, building/training/rally timing, and no-reward completion clarity.
 - HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.

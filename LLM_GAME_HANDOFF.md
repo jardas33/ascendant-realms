@@ -93,6 +93,14 @@ Phase 7 pressure action promotion gate:
 - No runtime behavior, simulator behavior, pressure timing/scope/nudge change, live reinforcement, route-contest AI, defensive hold behavior, workers/construction/economy AI, map/unit/faction/reward/save/progression change, or campaign/skirmish/tutorial behavior change was added.
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
+Phase 8 pressure-feel release report:
+
+- Added `docs/V071_ENEMY_PRESSURE_FEEL_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `BALANCE.md`, and `DEVELOPMENT_CHECKPOINT.md` for the v0.7.1 pressure-feel gate.
+- The release docs now describe clearer pressure warnings and defeat tips, pressure status priority, objective priority above pressure, focused e2e visibility coverage, clearer simulator reporting, the no-tuning balance decision, and the action-promotion decision to keep `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` warning/telemetry-only.
+- No runtime behavior, simulator behavior, pressure timing/scope/nudge change, live reinforcement, route-contest AI, defensive hold behavior, workers/construction/economy AI, map/unit/faction/reward/save/progression change, or campaign/skirmish/tutorial behavior change was added.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
 Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.
