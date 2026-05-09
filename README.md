@@ -109,7 +109,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest v0.7.1 pressure-feel e2e verification, 2026-05-09: smoke passed 12 tests in 5.2 minutes during the report gate, the focused pressure spec passed 2 tests in 43.1 seconds during visibility hardening, and the one-piece release lane passed 67 tests in 33.1 minutes during the e2e hardening gate. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest v0.7.1 pressure-feel final verification, 2026-05-09: smoke passed 12 tests in 5.3 minutes, the focused pressure spec passed 2 tests in 43.1 seconds during visibility hardening, the one-piece release lane passed 67 tests in 32.9 minutes, shard 1 passed 55 tests in 28.2 minutes, and shard 2 passed 12 tests in 5.0 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 
@@ -130,6 +130,8 @@ This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_
 ```bash
 npm run preview
 ```
+
+Latest v0.7.1 production preview smoke, 2026-05-09: Browser smoke passed at `http://127.0.0.1:57931/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 
 ## Manual Asset Workflow (No API Costs)
 

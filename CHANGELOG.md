@@ -21,11 +21,14 @@ This checkpoint reviews, polishes, and hardens Enemy Strategic Pressure V1 witho
 - `npm test`: passed with 45 test files and 334 tests.
 - `npm run build`: passed with the known Phaser vendor large-chunk warning.
 - `npm run validate:content`: passed.
-- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.2m during the report gate.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.3m during the final gate.
 - Focused pressure e2e: passed with 2 Playwright tests in 43.1s during visibility hardening.
-- `npm run test:e2e:release`: passed with 67 Playwright tests in 33.1m during the e2e hardening gate.
+- `npm run test:e2e:release`: passed with 67 Playwright tests in 32.9m during the final gate.
+- `npm run test:e2e:release:shard1`: passed with 55 Playwright tests in 28.2m during the final gate.
+- `npm run test:e2e:release:shard2`: passed with 12 Playwright tests in 5.0m during the final gate.
 - `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes.
 - Pressure telemetry: 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 12 quiet/untriggered pressure runs, 149 warnings, 147 losses after pressure, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
+- Production preview smoke: passed at `http://127.0.0.1:57931/`; title, main menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 - `git diff --check`: passed.
 
 ### Next

@@ -84,7 +84,7 @@ Expected current prototype result:
 PASS: 67 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7.1 pressure-feel e2e checkpoint: smoke PASS, 12 tests in 5.2m during the report gate; focused pressure spec PASS, 2 tests in 43.1s during visibility hardening; release PASS, 67 tests in 33.1m during the e2e hardening gate.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7.1 pressure-feel final checkpoint: smoke PASS, 12 tests in 5.3m; focused pressure spec PASS, 2 tests in 43.1s during visibility hardening; release PASS, 67 tests in 32.9m.
 
 6. Optional CI sharded release gate:
 
@@ -95,11 +95,11 @@ npm run test:e2e:release:shard2
 
 Both shards must pass to equal the full release gate. Keep `npm run test:e2e:release` as the canonical one-command local release check; the shard scripts are mainly for CI matrix jobs where they can run in parallel. If run sequentially on a local machine, the total runtime may not be better than the full suite and reports are split by shard.
 
-Latest local shard verification after the v0.6 final gate, 2026-05-08:
+Latest local shard verification after the v0.7.1 final gate, 2026-05-09:
 
 ```text
-Shard 1: passed, 53 Playwright tests in 24.0m.
-Shard 2: passed, 12 Playwright tests in 4.9m.
+Shard 1: passed, 55 Playwright tests in 28.2m.
+Shard 2: passed, 12 Playwright tests in 5.0m.
 ```
 
 The current 2-shard split is coverage-preserving but uneven because shard 1 includes the deep-flow and layout-heavy side of the suite. Keep this as a CI wall-clock optimization, not a mandatory local workflow.
@@ -156,17 +156,18 @@ Open the local preview URL and confirm:
 
 Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
 
-Latest production preview smoke, 2026-05-08:
+Latest production preview smoke, 2026-05-09:
 
 ```text
-PASS: http://127.0.0.1:57918/
+PASS: http://127.0.0.1:57931/
 PASS: page title was Ascendant Realms.
 PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
 PASS: Tutorial / Proving Grounds launched and exited without crashing.
 PASS: New Campaign reached Campaign Map.
 PASS: Continue Campaign reached Campaign Map after the preview save existed.
-PASS: Skirmish Setup opened and listed current maps.
+PASS: Skirmish Setup opened.
 PASS: browser console errors stayed at 0.
+NOTE: pressure-enabled battle launch was covered by targeted release e2e; the production preview smoke did not force a deep Cinderfen save state.
 ```
 
 After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, and browser console errors stay at 0.

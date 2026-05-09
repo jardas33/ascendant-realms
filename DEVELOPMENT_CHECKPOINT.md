@@ -1,8 +1,8 @@
 # Development Checkpoint
 
-Updated: 2026-05-09 v0.7.1 enemy pressure feel report gate
+Updated: 2026-05-09 v0.7.1 enemy pressure feel final gate
 
-## v0.7.1 Enemy Pressure Feel Report Gate - 2026-05-09
+## v0.7.1 Enemy Pressure Feel Final Gate - 2026-05-09
 
 Scope: review, polish, and harden Enemy Strategic Pressure V1 without expanding into workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.
 
@@ -32,10 +32,16 @@ npm run validate:content
 PASS.
 
 npm run test:e2e:smoke
-PASS: 12 Playwright tests in 5.2m.
+PASS: 12 Playwright tests in 5.3m.
 
 npm run test:e2e:release
-PASS: 67 Playwright tests in 33.1m during the Phase 4 e2e hardening gate.
+PASS: 67 Playwright tests in 32.9m.
+
+npm run test:e2e:release:shard1
+PASS: 55 Playwright tests in 28.2m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in 5.0m.
 
 npm run playtest:sim
 PASS: 255 simulated runs across 85 campaign battle nodes.
@@ -43,6 +49,17 @@ Pressure read: 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 1
 
 git diff --check
 PASS: no whitespace errors.
+
+Production preview smoke
+PASS: Browser smoke at http://127.0.0.1:57931/
+PASS: title was Ascendant Realms.
+PASS: main menu copy showed Prototype v0.3 and Cinderfen Route Baseline.
+PASS: Tutorial / Proving Grounds launched and exited without crashing.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign reached Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened.
+PASS: browser console errors stayed at 0.
+NOTE: pressure-enabled battle launch was covered by targeted release e2e; the preview smoke did not force a deep Cinderfen save state.
 ```
 
 Recommended next milestone: human-paced Cinderfen pressure play review. Focus on whether warnings are noticed and understood during real play, whether Cinder Shrine and Watch Road pressure feel fair, whether Fast Army and Greedy Economy outcomes read clearly, and whether Retinue + Training Yard II strength needs a separate human balance pass before any stronger enemy pressure action is promoted.
