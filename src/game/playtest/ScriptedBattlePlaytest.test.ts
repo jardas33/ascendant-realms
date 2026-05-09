@@ -219,6 +219,7 @@ describe("ScriptedBattlePlaytest", () => {
     expect(analysis.suggestedTuningChanges.length).toBeGreaterThan(0);
     expect(markdown).toContain("# Automated Playtest Telemetry");
     expect(markdown).toContain("Enemy Strategic Pressure Telemetry Read");
+    expect(markdown).toContain("Enemy Strategic Pressure Balance Gate");
     expect(markdown).toContain("## Suggested Tuning Changes");
     expect(markdown).toContain("Ashen Outpost");
   });

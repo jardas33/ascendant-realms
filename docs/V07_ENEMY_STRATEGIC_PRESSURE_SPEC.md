@@ -2,7 +2,7 @@
 
 Date: 2026-05-09
 
-Status: Phase 7 simulator checkpoint. The implemented V1 scope is data-driven pressure metadata, validation, campaign-only runtime warning/telemetry, one safe next-wave timing adjustment, small defeat-tip feedback, and simulator telemetry. It still does not add workers, real enemy construction, new maps, new units, new factions, dynamic enemy economy, save fields, save-version changes, campaign reward changes, tutorial rewards, or broad systems.
+Status: Phase 9 balance checkpoint. The implemented V1 scope is data-driven pressure metadata, validation, campaign-only runtime warning/telemetry, one safe next-wave timing adjustment, small defeat-tip feedback, simulator telemetry, and targeted e2e coverage. The Phase 9 telemetry gate applies no tuning. It still does not add workers, real enemy construction, new maps, new units, new factions, dynamic enemy economy, save fields, save-version changes, campaign reward changes, tutorial rewards, or broad systems.
 
 ## Purpose
 
@@ -419,3 +419,16 @@ Phase 8 adds a targeted release-suite spec instead of expanding smoke:
 - Positive coverage launches `cinderfen_watch`, verifies the explicit `ashen_watch_captain_pressure` campaign attachment, captures `watch_road_toll`, checks pressure telemetry/stats, and asserts the delayed Watch Road pressure warning reaches the existing battle status surface.
 - Negative coverage launches Tutorial / Proving Grounds and Cinderfen Watchpost skirmish, then verifies no pressure plan id, no triggered stages, and no pressure warning after a skirmish site capture.
 - The full Playwright release suite now lists 67 tests across 4 spec files. The smoke lane remains unchanged at 12 tests.
+
+## Phase 9 Balance Checkpoint
+
+Phase 9 reads the simulator output as a no-tuning gate:
+
+- Enemy-pressure analyzer warnings: none.
+- Pressure-enabled Cinderfen runs: 75; 63 triggered at least one stage; 149 warnings were shown; 0 simulated reinforcements were applied.
+- Cinderfen Crossing remains 26 wins / 0 defeats / 13 timeouts. Safe Beginner wins 13/13, Greedy Economy remains timeout-prone at 1 win / 12 timeouts, and Fast Army still wins 12/13 with pressure mostly bypassed by the quick clear.
+- Cinderfen Watch remains 25 wins / 0 defeats / 11 timeouts. Watch pressure triggers in 36/36 runs, Safe Beginner wins 12/12, Greedy Economy remains 3 wins / 9 timeouts, and Fast Army wins 10/12.
+- Ashen Outpost is not attached to pressure and remains 22 wins / 0 defeats / 14 timeouts.
+- Retinue + Training Yard II remains a strong Cinderfen human-review profile at 6 wins / 0 defeats / 0 timeouts across Crossing and Watch, but it is not a pressure-specific problem.
+
+Decision: keep the two V1 pressure plans scoped and unchanged. Do not promote `reinforce_next_wave`, `contest_capture_site`, or `defensive_hold` into real combat effects until a human play pass confirms warning salience and fairness.

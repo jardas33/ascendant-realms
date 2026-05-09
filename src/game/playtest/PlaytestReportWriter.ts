@@ -69,6 +69,10 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("");
   renderEnemyPressureTelemetryLines(report.telemetry).forEach((line) => lines.push(line));
   lines.push("");
+  lines.push("## Enemy Strategic Pressure Balance Gate");
+  lines.push("");
+  renderEnemyPressureBalanceGateLines(report).forEach((line) => lines.push(line));
+  lines.push("");
   lines.push("## Current Enemy Hero Telemetry Read");
   lines.push("");
   lines.push("- Enemy Hero / Rival Commander V1 is represented in telemetry through `enemyHeroId`, defeated state, first attack-join timing, and losses involving the rival.");
@@ -225,6 +229,56 @@ function renderEnemyPressureTelemetryLines(runs: PlaytestTelemetry[]): string[] 
   return lines;
 }
 
+function renderEnemyPressureBalanceGateLines(report: PlaytestReport): string[] {
+  const runs = report.telemetry;
+  const pressureRuns = runs.filter((run) => run.enemyPressurePlanId);
+  const crossingRuns = runs.filter((run) => run.nodeId === "cinderfen_crossing");
+  const watchRuns = runs.filter((run) => run.nodeId === "cinderfen_watch");
+  const ashenRuns = runs.filter((run) => run.nodeId === "ashen_outpost");
+  const retinueTrainingYardRuns = pressureRuns.filter((run) => run.strongholdProfileId === "retinue_training_yard_path");
+  const greedyPressureRuns = pressureRuns.filter((run) => run.playerScript === "greedy_economy");
+  const triggeredPressureRuns = pressureRuns.filter((run) => run.triggeredStages.length > 0);
+  const warningCount = pressureRuns.reduce((total, run) => total + run.pressureWarningsShown, 0);
+  const reinforcementRuns = pressureRuns.filter((run) => run.reinforcementApplied).length;
+
+  return [
+    `- Phase 9 applies no tuning. The analyzer reports ${noneOr(report.analysis.enemyPressureWarnings)} enemy-pressure warnings, ${noneOr(
+      report.analysis.tooEasyNodes
+    )} structural \`too_easy\`, ${noneOr(report.analysis.tooHardNodes)} structural \`too_hard\`, ${noneOr(
+      report.analysis.strongholdWarnings
+    )} Stronghold warnings, and ${reinforcementRuns} pressure reinforcement applications.`,
+    `- Pressure-enabled Cinderfen runs: ${pressureRuns.length}; ${triggeredPressureRuns.length} triggered at least one stage; ${warningCount} warnings were shown.`,
+    `- Cinderfen Crossing stays structurally reasonable at ${formatRunRecord(crossingRuns)}. ${formatScriptPressureRead(
+      crossingRuns,
+      "safe_beginner"
+    )}, ${formatScriptPressureRead(crossingRuns, "greedy_economy")}, and ${formatScriptPressureRead(
+      crossingRuns,
+      "fast_army"
+    )}.`,
+    `- Cinderfen Watch stays structurally reasonable at ${formatRunRecord(watchRuns)}. The Watch pressure triggers in ${countTriggered(
+      watchRuns
+    )}/${watchRuns.length} runs, ${formatScriptPressureRead(watchRuns, "safe_beginner")}, ${formatScriptPressureRead(
+      watchRuns,
+      "greedy_economy"
+    )}, and ${formatScriptPressureRead(watchRuns, "fast_army")}.`,
+    `- Ashen Outpost is unaffected by Enemy Strategic Pressure V1 and remains ${formatRunRecord(
+      ashenRuns
+    )}, with Safe Beginner still winning ${countWins(ashenRuns.filter((run) => run.playerScript === "safe_beginner"))}/${
+      ashenRuns.filter((run) => run.playerScript === "safe_beginner").length
+    }.`,
+    `- Retinue + Training Yard II remains the strongest Cinderfen watchpoint at ${formatRunRecord(
+      retinueTrainingYardRuns
+    )} across Crossing and Watch, with ${retinueTrainingYardRuns.reduce(
+      (total, run) => total + run.lossesAfterPressure,
+      0
+    )} losses after pressure. That strength predates pressure and stays a human-review item rather than a pressure tuning reason.`,
+    `- Greedy Economy pressure-node timeouts are still pacing/readability signals, not new defeat spikes: across Crossing and Watch it records ${formatRunRecord(
+      greedyPressureRuns
+    )} while triggering pressure in ${countTriggered(greedyPressureRuns)}/${greedyPressureRuns.length} runs.`,
+    "- Conclusion: V1 pressure is visible through warning/telemetry and safe enough to keep scoped to the two selected Cinderfen nodes. Do not add live reinforcement, route contesting, defensive-hold behavior, or broader AI changes until human play confirms the warnings feel fair and readable."
+  ];
+}
+
 
 function renderRivalPersistenceBalanceLines(runs: PlaytestTelemetry[]): string[] {
   const rivalRuns = runs.filter((run) => run.enemyHeroId);
@@ -375,6 +429,10 @@ function listLine(label: string, values: string[]): string {
   return `- ${label}: ${unique.length > 0 ? unique.join(", ") : "none"}`;
 }
 
+function noneOr(values: string[]): string {
+  return values.length > 0 ? values.join(", ") : "no";
+}
+
 function renderChapterTwoBalanceLines(telemetry: PlaytestTelemetry[]): string[] {
   const crossingRuns = telemetry.filter((run) => run.nodeId === "cinderfen_crossing");
   const watchRuns = telemetry.filter((run) => run.nodeId === "cinderfen_watch");
@@ -442,6 +500,25 @@ function renderCinderfenScriptRead(label: string, runs: PlaytestTelemetry[]): st
     );
   });
   return scriptLines;
+}
+
+function formatScriptPressureRead(runs: PlaytestTelemetry[], scriptId: PlaytestScriptId): string {
+  const scriptRuns = runs.filter((run) => run.playerScript === scriptId);
+  const triggered = countTriggered(scriptRuns);
+  if (scriptId === "fast_army") {
+    const quickClearRead =
+      triggered === 0 ? "with pressure bypassed" : `while triggering pressure in ${triggered}/${scriptRuns.length} runs`;
+    return `${formatScriptName(scriptId)} still wins ${countWins(scriptRuns)}/${scriptRuns.length} ${quickClearRead}`;
+  }
+  return `${formatScriptName(scriptId)} records ${formatRunRecord(scriptRuns)} while triggering pressure in ${triggered}/${scriptRuns.length} runs`;
+}
+
+function countTriggered(runs: PlaytestTelemetry[]): number {
+  return runs.filter((run) => run.triggeredStages.length > 0).length;
+}
+
+function countWins(runs: PlaytestTelemetry[]): number {
+  return runs.filter((run) => run.battleResult === "victory").length;
 }
 
 function formatRunRecord(runs: PlaytestTelemetry[]): string {
