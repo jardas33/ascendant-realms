@@ -1,12 +1,37 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.1 pressure feel final gate
+Last updated: 2026-05-09 v0.7.2 pressure play review plan
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
+
+Mission: run a human-paced Cinderfen pressure play review, gather evidence, and make only tiny evidence-backed polish changes. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 45 files / 334 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-CC1M6Mg7.js, 476.83 kB / gzip 127.77 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 human-paced pressure review plan:
+
+- Added `docs/V072_PRESSURE_PLAY_REVIEW_PLAN.md`.
+- The plan defines the v0.7.2 review goal as human-perceived pressure feel, not simulator-only balance.
+- Review targets are only `cinderfen_crossing` / `cinderfen_causeway` and `cinderfen_watch` / `cinderfen_watchpost`.
+- Review lenses are Safe Beginner, Greedy Economy, Fast Army, and Retinue + Training Yard II.
+- Evidence sources include browser/play-like flows, existing pressure e2e, simulator telemetry, battle status messages, and Results/defeat tips.
+- Non-goals explicitly preserve no live reinforcement promotion, no capture-site contest AI, no defensive hold behavior, no workers/construction/economy AI, no new units/maps/factions, no rewards, no save changes, and no pressure on Ashen Outpost, Chapter 1, Tutorial, or Skirmish.
 
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
