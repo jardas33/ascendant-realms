@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 evidence-backed pressure polish decision
+Last updated: 2026-05-09 v0.7.3 v0.8 direction brief
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -84,6 +84,14 @@ Phase 7 evidence-backed pressure polish:
 - Reviewed the v0.7.3 Crossing/Watch real-input reviews, the strategy-profile review, the manual checklist, and current telemetry.
 - Decision: no pressure warning copy, warning timing, pressure status duration, defeat-tip wording, e2e assertion, telemetry label, pressure-plan data, existing-wave timing nudge, reward, save, map, unit, faction, worker, construction, enemy economy, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified.
 - Rationale: the current evidence shows readable Crossing and Watch warnings, protected Watch pressure priority, Safe Beginner stability, Greedy timeout patterns without defeats, acceptable Fast Army strategy expression, and Retinue + Training Yard II as a saved-progress power watchpoint. Any further tweak should wait for Emmanuel's manual checklist feedback.
+
+Phase 8 v0.8 direction brief:
+
+- Added `docs/V08_DIRECTION_DECISION_BRIEF.md`.
+- Compared exactly four options: simulator-only reinforcement experiment, Chapter 2 content continuation, technical performance/e2e runtime pass, and Tutorial v2 onboarding refinement.
+- Recommendation: Option C technical performance/e2e runtime pass first, then Option D tutorial v2 onboarding refinement if player-facing work is preferred.
+- Rationale: v0.7.3 still lacks Emmanuel's direct manual pressure ratings. Option A should wait until manual checklist evidence confirms pressure warning salience and fairness; Option B should wait because more content increases review surface before pressure feel fully settles.
+- Guardrail: if manual pressure evidence later gives confidence, the first pressure-specific v0.8 should be a simulator-only `reinforce_next_wave` experiment, not live reinforcement, capture-site contest AI, defensive hold behavior, workers, construction, economy AI, new maps, new units, new factions, rewards, saves, or campaign progression changes.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
