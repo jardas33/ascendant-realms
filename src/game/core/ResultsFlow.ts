@@ -175,14 +175,14 @@ function addEnemyPressureDefeatTip(stats: BattleStats, tips: string[]): void {
     return;
   }
   if (stats.enemyPressurePlanId === "ashen_watch_captain_pressure") {
-    tips.push("Enemy pressure reinforced the Watch Road. Leave a small guard near captured income before committing to the tower push.");
+    tips.push("The Watch Captain answered your road capture. Keep a guard near income, then push the tower after the next wave breaks.");
     return;
   }
   if (stats.enemyPressurePlanId === "causeway_contest_pressure") {
-    tips.push("Enemy pressure answered the Cinder Shrine. Regroup after the Aether surge before following the center road.");
+    tips.push("The Ashen host answered the Cinder Shrine. Hold the shrine route, regroup after the Aether surge, then push the center road.");
     return;
   }
-  tips.push("Enemy commander pressure triggered this fight. Watch for the warning, regroup, then push after the next wave breaks.");
+  tips.push("The enemy commander reacted during this fight. Watch the warning line, regroup around income, then push after the next wave breaks.");
 }
 
 function addObjectiveDefeatTips(

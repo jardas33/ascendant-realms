@@ -102,7 +102,7 @@ Enemy Strategic Pressure V1 metadata lives in `src/game/data/enemyPressurePlans.
 6. Use only the V1 action types: `show_warning`, `mark_telemetry`, `adjust_next_wave_timing`, `reinforce_next_wave`, `defensive_hold`, and `contest_capture_site`.
 7. If a trigger, condition, or action references a capture site, it must exist on one of the plan's allowed maps.
 8. If an action references units, they must be existing unit IDs.
-9. Keep warning copy short and tactical. Prefer clear messages like `Enemy commander is reinforcing the watch road.`
+9. Keep warning copy short and tactical. Prefer clear messages like `The Watch Captain tightens the road guard. Keep income protected.`
 10. Do not add fields for workers, harvesting, construction, placement, or economy. Validation rejects pressure metadata with forbidden worker/construction/economy-style field names.
 11. Do not use pressure metadata to add maps, units, factions, rewards, save fields, campaign progression, workers, enemy construction, diplomacy, crafting, procedural generation, multiplayer, desktop packaging, or external assets.
 12. Run `npm run validate:content`, `npm test`, and `npm run build` after edits. If a plan is attached to a live campaign node or its timing changes, also run `npm run test:e2e:smoke`, `npm run playtest:sim`, and the focused pressure lane: `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line`.

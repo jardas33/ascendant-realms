@@ -35,6 +35,16 @@ Phase 1 pressure feel audit:
 - Recommendation: Phase 2 should polish copy to avoid implying live reinforcement/route-contest behavior, and Phase 3 should evaluate a small status priority/duration guard.
 - Verification: `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
+Phase 2 pressure warning copy polish:
+
+- Updated pressure warning copy in `src/game/data/enemyPressurePlans.ts` to be clearer and more player-facing while keeping the same triggers, actions, timings, telemetry labels, and plan scope.
+- Watch copy now points to the Watch Captain tightening the road guard, faster pressure on the raised road, and regrouping before the tower push instead of implying live reinforcement.
+- Crossing copy now points to enemy horns answering the Cinder Shrine, holding the route, faster pressure after the shrine, and breaking the next wave before a late push instead of implying live capture-site contest AI.
+- Updated pressure-specific defeat tips in `src/game/core/ResultsFlow.ts` so the practical answer is clearer: guard income, hold the shrine route, regroup after the Aether surge, and push after a wave breaks.
+- Updated copy assertions in `EnemyPressureRuntime`, `ResultsFlow`, and `tests/e2e/enemy-pressure.spec.ts`.
+- Updated `CONTENT_GUIDE.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, and `docs/V071_ENEMY_PRESSURE_FEEL_AUDIT.md` with the copy guidance.
+- Verification: focused `npm test -- src/game/battle/EnemyPressureRuntime.test.ts src/game/core/ResultsFlow.test.ts src/game/data/enemyPressurePlans.test.ts` PASS, 19 tests; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-Lz0Ve4wS.js`, 476.30 kB / gzip 127.58 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `git diff --check` PASS.
+
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
 Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.

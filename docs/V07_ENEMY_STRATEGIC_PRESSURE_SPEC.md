@@ -148,8 +148,8 @@ Planned stages:
 
 Example warning copy:
 
-- `Enemy commander is reinforcing the watch road.`
-- `Ashen patrols are contesting the raised road.`
+- `The Watch Captain tightens the road guard. Keep income protected.`
+- `Enemy horns answer your advance. Expect faster pressure on the raised road.`
 
 Reason for inclusion:
 
@@ -177,8 +177,8 @@ Planned stages:
 
 Example warning copy:
 
-- `Ashen patrols are contesting the shrine route.`
-- `The causeway commander is pressing the center road.`
+- `Enemy horns answer the Cinder Shrine. Hold the route before pushing on.`
+- `Ashen scouts mark the center road. Expect faster pressure after the shrine.`
 
 Reason for inclusion:
 

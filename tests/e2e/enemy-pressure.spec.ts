@@ -108,8 +108,10 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     expect(pressureState.completedStageIds).toEqual(expect.arrayContaining(["watch_road_response"]));
     expect(pressureState.pressureWarningsShown).toBe(1);
 
-    expect(await advancePressureRuntime(page, 36)).toBe("Ashen patrols are contesting the raised road.");
-    await expect(page.getByTestId("battle-status")).toContainText("Ashen patrols are contesting the raised road.");
+    expect(await advancePressureRuntime(page, 36)).toBe("Enemy horns answer your advance. Expect faster pressure on the raised road.");
+    await expect(page.getByTestId("battle-status")).toContainText(
+      "Enemy horns answer your advance. Expect faster pressure on the raised road."
+    );
     pressureState = await readPressureState(page);
     expect(pressureState.triggeredStageIds).toEqual(expect.arrayContaining(["watch_road_response", "watch_road_reinforcement"]));
     expect(pressureState.completedStageIds).toEqual(expect.arrayContaining(["watch_road_response", "watch_road_reinforcement"]));
@@ -131,7 +133,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     expect(pressureState.statsPressurePlanId).toBeUndefined();
     expect(pressureState.triggeredStageIds).toEqual([]);
     expect(pressureState.pressureWarningsShown).toBe(0);
-    await expect(page.getByTestId("battle-status")).not.toContainText("Enemy commander is reinforcing the watch road.");
+    await expect(page.getByTestId("battle-status")).not.toContainText("The Watch Captain tightens the road guard.");
 
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
@@ -149,7 +151,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     expect(pressureState.triggeredStageIds).toEqual([]);
 
     await captureSiteWithHook(page, "watch_road_toll");
-    await expect(page.getByTestId("battle-status")).not.toContainText("Enemy commander is reinforcing the watch road.");
+    await expect(page.getByTestId("battle-status")).not.toContainText("The Watch Captain tightens the road guard.");
     pressureState = await readPressureState(page);
     expect(pressureState.triggeredStageIds).toEqual([]);
     expect(pressureState.pressureWarningsShown).toBe(0);

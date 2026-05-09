@@ -73,7 +73,7 @@ Cinderfen Crossing is not over-triggering. It is route-dependent and can be bypa
 
 Partly.
 
-The trigger is tied to `cinder_crossing`, the Cinder Shrine route. This supports the map identity because the shrine is already a known point of interest. The current warning copy says Ashen patrols are contesting the shrine route and that the causeway commander is pressing the center road, which points at the right geography.
+The trigger is tied to `cinder_crossing`, the Cinder Shrine route. This supports the map identity because the shrine is already a known point of interest. At audit time, the warning copy said Ashen patrols were contesting the shrine route and that the causeway commander was pressing the center road, which pointed at the right geography.
 
 Readability gap: the live V1 does not actually send patrols to contest the shrine route. That is acceptable because route contesting is intentionally warning/telemetry-only, but the copy should avoid implying a precise live movement behavior the player will not see.
 
@@ -81,7 +81,7 @@ Readability gap: the live V1 does not actually send patrols to contest the shrin
 
 Mostly, but it needs clearer player-facing language.
 
-The Watch Road Toll is concrete, objective-aligned, and visible in the node identity. The current copy says the enemy commander is reinforcing the watch road and that Ashen patrols are contesting the raised road.
+The Watch Road Toll is concrete, objective-aligned, and visible in the node identity. At audit time, the copy said the enemy commander was reinforcing the watch road and that Ashen patrols were contesting the raised road.
 
 Readability gap: "reinforcing" can sound like live unit reinforcement, while `reinforce_next_wave` is intentionally not applied. The warning should communicate "the enemy is reacting and pressure will arrive sooner" without promising new spawned units.
 
@@ -89,7 +89,7 @@ Readability gap: "reinforcing" can sound like live unit reinforcement, while `re
 
 Only partially.
 
-Current copy names the geography, but it does not consistently state the player impact:
+Audit-time copy named the geography, but it did not consistently state the player impact:
 
 - "Enemy commander is reinforcing the watch road." explains enemy intent but not what the player should expect.
 - "Ashen patrols are contesting the shrine route." explains contested territory but may imply visible route-contest behavior.
@@ -211,3 +211,7 @@ Recommended copy goals:
 - Keep player-facing text free of "pressure plan" or telemetry language.
 
 Proceed to Phase 3 after copy polish to decide whether the shared status line needs a small pressure priority/duration guard.
+
+## Phase 2 Copy Polish Note
+
+Phase 2 updated player-facing pressure copy to name the route and state the practical consequence without implying real enemy construction, live reinforcement, or capture-site contest AI. The new copy favors "expect faster pressure," "keep income protected," "hold the route," and "break the next wave" over technical or system-facing language.

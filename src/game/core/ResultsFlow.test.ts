@@ -274,7 +274,8 @@ describe("results reward flow", () => {
 
     const tips = createDefeatTips(stats, { mapId: "cinderfen_watchpost", campaignNodeId: "cinderfen_watch" });
 
-    expect(tips.join(" ")).toContain("Enemy pressure reinforced the Watch Road");
+    expect(tips.join(" ")).toContain("Watch Captain answered your road capture");
+    expect(tips.join(" ")).toContain("guard near income");
   });
 
   it("saves campaign node completion and does not grant the same node reward twice", () => {
