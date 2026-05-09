@@ -199,27 +199,40 @@ function renderEnemyPressureTelemetryLines(runs: PlaytestTelemetry[]): string[] 
   const pressureRuns = runs.filter((run) => run.enemyPressurePlanId);
   const baselineRuns = runs.length - pressureRuns.length;
   const triggeredRuns = pressureRuns.filter((run) => run.triggeredStages.length > 0);
+  const quietRuns = pressureRuns.length - triggeredRuns.length;
   const warningCount = pressureRuns.reduce((total, run) => total + run.pressureWarningsShown, 0);
   const lossesAfterPressure = pressureRuns.reduce((total, run) => total + run.lossesAfterPressure, 0);
   const reinforcementRuns = pressureRuns.filter((run) => run.reinforcementApplied).length;
   const lines: string[] = [];
   lines.push(
-    `- Baseline without pressure: ${baselineRuns} runs. Pressure-enabled Cinderfen runs: ${pressureRuns.length}; ${triggeredRuns.length} triggered at least one stage.`
+    `- Baseline no-pressure runs: ${baselineRuns}. Pressure-enabled scoped Cinderfen runs: ${pressureRuns.length}; triggered pressure runs: ${triggeredRuns.length}; quiet/untriggered pressure runs: ${quietRuns}.`
   );
   lines.push(
-    `- Pressure feedback: ${warningCount} warnings shown, ${reinforcementRuns} simulated reinforcement applications, ${lossesAfterPressure} player unit losses after pressure triggered.`
+    `- Feedback totals for pressure-enabled runs: ${warningCount} warnings shown, ${reinforcementRuns} simulated reinforcement applications, ${lossesAfterPressure} player unit losses recorded after pressure triggers.`
   );
   uniqueValues(pressureRuns.map((run) => run.enemyPressurePlanId).filter((planId): planId is string => Boolean(planId))).forEach(
     (planId) => {
       const planRuns = pressureRuns.filter((run) => run.enemyPressurePlanId === planId);
       const stageIds = uniqueValues(planRuns.flatMap((run) => run.triggeredStages));
+      const triggeredPlanRuns = planRuns.filter((run) => run.triggeredStages.length > 0);
       lines.push(
-        `- ${planId}: ${planRuns.length} runs, ${planRuns.filter((run) => run.triggeredStages.length > 0).length} triggered, first pressure ${formatAverageTime(
+        `- ${formatPressurePlanLabel(planId)} (${planId}): ${planRuns.length} runs, ${triggeredPlanRuns.length} triggered, ${
+          planRuns.length - triggeredPlanRuns.length
+        } quiet, ${formatRunRecord(planRuns)}, average first pressure ${formatAverageTime(
           planRuns.map((run) => run.firstPressureTime)
-        )}, warnings ${planRuns.reduce((total, run) => total + run.pressureWarningsShown, 0)}, losses after pressure ${planRuns.reduce(
+        )}.`
+      );
+      lines.push(
+        `  - Visibility: ${planRuns.reduce((total, run) => total + run.pressureWarningsShown, 0)} warnings shown, ${planRuns.reduce(
           (total, run) => total + run.lossesAfterPressure,
           0
-        )}, stages ${stageIds.length > 0 ? stageIds.join(", ") : "none"}.`
+        )} losses after pressure, readable stages ${formatPressureStageLabels(stageIds)}.`
+      );
+      lines.push(
+        `  - Strategy read: ${formatScriptPressureRead(planRuns, "safe_beginner")}; ${formatScriptPressureRead(
+          planRuns,
+          "greedy_economy"
+        )}; ${formatScriptPressureRead(planRuns, "fast_army")}.`
       );
     }
   );
@@ -417,11 +430,13 @@ function formatEnemyPressureTelemetry(run: PlaytestTelemetry): string {
     return "-";
   }
   if (run.triggeredStages.length === 0) {
-    return `${run.enemyPressurePlanId} not triggered`;
+    return `${formatPressurePlanLabel(run.enemyPressurePlanId)} not triggered`;
   }
   const first = run.firstPressureTime === null ? "time -" : `first ${formatTime(run.firstPressureTime)}`;
   const losses = run.lossesAfterPressure > 0 ? `, losses ${run.lossesAfterPressure}` : "";
-  return `${run.enemyPressurePlanId}: ${run.triggeredStages.join(", ")}, ${first}, warnings ${run.pressureWarningsShown}${losses}`;
+  return `${formatPressurePlanLabel(run.enemyPressurePlanId)}: ${formatPressureStageLabels(
+    run.triggeredStages
+  )}, ${first}, warnings ${run.pressureWarningsShown}${losses}`;
 }
 
 function listLine(label: string, values: string[]): string {
@@ -559,6 +574,33 @@ function formatScriptName(scriptId: PlaytestScriptId): string {
     .split("_")
     .map((part) => part[0].toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+function formatPressurePlanLabel(planId: string): string {
+  const labels: Record<string, string> = {
+    ashen_watch_captain_pressure: "Ashen Watch Captain pressure",
+    causeway_contest_pressure: "Causeway Contest pressure"
+  };
+  return labels[planId] ?? titleCase(planId);
+}
+
+function formatPressureStageLabels(stageIds: string[]): string {
+  if (stageIds.length === 0) {
+    return "none";
+  }
+  return stageIds.map(formatPressureStageLabel).join(", ");
+}
+
+function formatPressureStageLabel(stageId: string): string {
+  const labels: Record<string, string> = {
+    shrine_route_warning: "Shrine route warning",
+    causeway_contest: "Causeway contest timing",
+    late_causeway_push: "Late causeway push warning",
+    watch_road_response: "Watch road response",
+    watch_road_reinforcement: "Raised-road pressure warning",
+    late_watch_hold: "Late watch hold warning"
+  };
+  return labels[stageId] ?? titleCase(stageId);
 }
 
 function titleCase(value: string): string {

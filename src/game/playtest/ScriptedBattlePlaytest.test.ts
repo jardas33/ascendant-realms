@@ -147,6 +147,25 @@ describe("ScriptedBattlePlaytest", () => {
     expect(oldRoad.pressureWarningsShown).toBe(0);
   });
 
+  it("renders readable enemy pressure telemetry labels in the markdown report", () => {
+    const report = runScriptedPlaytestSuite({
+      scenarios: [
+        { nodeId: "cinderfen_crossing", expectedDifficulty: "normal" },
+        { nodeId: "cinderfen_watch", expectedDifficulty: "normal" }
+      ],
+      scripts: ["safe_beginner", "greedy_economy", "fast_army"],
+      strongholdProfiles: [noStrongholdProfile]
+    });
+    const markdown = renderPlaytestMarkdownReport(report);
+
+    expect(markdown).toContain("Baseline no-pressure runs");
+    expect(markdown).toContain("triggered pressure runs");
+    expect(markdown).toContain("Causeway Contest pressure");
+    expect(markdown).toContain("Shrine route warning");
+    expect(markdown).toContain("Ashen Watch Captain pressure");
+    expect(markdown).toContain("Raised-road pressure warning");
+  });
+
   it("models the Cinderfen Waystation Shrine Attunement service in the simulator", () => {
     const waystationProfile = DEFAULT_PLAYTEST_STRONGHOLD_PROFILES.find(
       (profile) => profile.id === "waystation_shrine_attunement"
