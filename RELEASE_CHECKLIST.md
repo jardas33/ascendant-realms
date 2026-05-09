@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 42 test files, 315 tests
+PASS: 44 test files, 328 tests
 ```
 
 2. Standalone content validation:
@@ -32,7 +32,7 @@ Expected current prototype result:
 PASS: Ascendant Realms content validation passed.
 ```
 
-This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, and future expansion metadata.
+This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, enemy pressure plans, and future expansion metadata.
 
 3. Production build:
 
@@ -45,9 +45,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-DN-Hs_qy.js, 459.85 kB / gzip 123.62 kB
+- app JS chunk: assets/index-B8rnpsai.js, 476.13 kB / gzip 127.51 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-BzEbtAWy.css, 44.19 kB / gzip 9.11 kB
+- CSS chunk: assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB
 ```
 
 Known warning:
@@ -127,6 +127,11 @@ No too-easy nodes
 No structural too-hard nodes
 Ashen Outpost beatable
 No Stronghold warnings
+No enemy-pressure warnings
+75 pressure-enabled Cinderfen runs
+63 triggered pressure runs
+149 pressure warnings
+0 simulated reinforcement applications
 Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 ```
 

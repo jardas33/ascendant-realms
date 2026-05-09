@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure balance gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -119,6 +119,14 @@ Phase 9 enemy pressure balance gate:
 - Retinue + Training Yard II remains the strongest Cinderfen watchpoint at 6 wins / 0 defeats / 0 timeouts with 0 losses after pressure; this predates pressure and remains a human-review item rather than a pressure tuning reason.
 - Decision: keep both V1 plans scoped and unchanged. Do not promote `reinforce_next_wave`, `contest_capture_site`, or `defensive_hold` into live combat effects until a human play pass confirms warning salience and perceived fairness.
 - Verification: focused `npm test -- src/game/playtest/ScriptedBattlePlaytest.test.ts` PASS, 14 tests; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `git diff --check` PASS.
+
+Phase 10 enemy pressure report:
+
+- Added `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `CONTENT_GUIDE.md`, and `DEVELOPMENT_CHECKPOINT.md` for v0.7 Enemy Strategic Pressure V1.
+- Documented what V1 implemented, what it deliberately did not implement, why it is not full enemy construction, the two scoped nodes/maps, allowed and forbidden actions, telemetry results, e2e coverage, balance status, remaining risks, and the next recommended human pressure-feel review.
+- Release docs now reflect the current 44-file / 328-test unit suite, 67-test Playwright release suite, current build chunk sizes, pressure plan validation, and simulator pressure read.
+- Verification: `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `git diff --check` PASS.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 

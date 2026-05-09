@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.7 Enemy Strategic Pressure V1 - 2026-05-09
+
+This checkpoint adds the first controlled enemy commander pressure prototype. It preserves the frozen v0.3 Cinderfen Route Baseline, v0.3.1 polish layer, v0.4 technical groundwork, v0.5 safety gate, v0.6 tutorial foundation, and v0.6.1 tutorial feel polish. It does not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+### Included
+
+- Enemy Strategic Pressure research audit, design spec, and final report.
+- Data model and metadata for `causeway_contest_pressure` and `ashen_watch_captain_pressure`.
+- Content validation for pressure plan ids, stage ids, map/node references, trigger/action types, unit references, capture-site references, and forbidden worker/construction/economy fields.
+- Campaign-only runtime pressure tracker for Cinderfen Crossing and Cinderfen Watch.
+- Existing battle status warning copy and pressure-specific battle stats/telemetry.
+- One safe existing-wave timing nudge; reinforcement, contest, and defensive-hold actions remain warning/telemetry-only.
+- Pressure-aware defeat tip copy only when pressure actually triggered.
+- Simulator telemetry and generated pressure balance-gate reporting.
+- Targeted Playwright release coverage for Cinderfen Watch pressure and Tutorial/skirmish no-pressure guards.
+
+### Verification
+
+- `npm test`: passed with 44 test files and 328 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run validate:content`: passed.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.4m during the balance gate.
+- Focused pressure e2e: passed with 2 Playwright tests in 49.4s.
+- `npm run test:e2e:release`: passed with 67 Playwright tests in 29.4m during the e2e coverage gate.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes.
+- Pressure telemetry: 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 149 warnings, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
+- `git diff --check`: passed.
+
+### Next
+
+- Human-play Cinderfen Crossing and Cinderfen Watch for pressure warning salience and fairness.
+- Keep follow-up limited to copy, timing, scope, telemetry, or a tiny combat effect only if human evidence justifies it.
+- Continue postponing workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save changes, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, and broad systems.
+
 ## v0.6.1 Tutorial Feel Polish - 2026-05-09
 
 This checkpoint finishes a small Browser-evidenced Tutorial / Proving Grounds feel pass. It preserves the existing no-reward, non-persistent tutorial shell and does not add maps, units, factions, rewards, save-version changes, tutorial persistence, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.

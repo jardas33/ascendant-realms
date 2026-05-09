@@ -105,7 +105,15 @@ Enemy Strategic Pressure V1 metadata lives in `src/game/data/enemyPressurePlans.
 9. Keep warning copy short and tactical. Prefer clear messages like `Enemy commander is reinforcing the watch road.`
 10. Do not add fields for workers, harvesting, construction, placement, or economy. Validation rejects pressure metadata with forbidden worker/construction/economy-style field names.
 11. Do not use pressure metadata to add maps, units, factions, rewards, save fields, campaign progression, workers, enemy construction, diplomacy, crafting, procedural generation, multiplayer, desktop packaging, or external assets.
-12. Run `npm run validate:content`, `npm test`, and `npm run build` after edits.
+12. Run `npm run validate:content`, `npm test`, and `npm run build` after edits. If a plan is attached to a live campaign node or its timing changes, also run `npm run test:e2e:smoke`, `npm run playtest:sim`, and the focused pressure lane: `npx playwright test tests/e2e/enemy-pressure.spec.ts --reporter=line`.
+
+Current V1 status:
+
+- `causeway_contest_pressure` is attached only to `cinderfen_crossing` on `cinderfen_causeway`.
+- `ashen_watch_captain_pressure` is attached only to `cinderfen_watch` on `cinderfen_watchpost`.
+- Tutorial and skirmish launches must stay pressure-free unless a future task explicitly scopes otherwise.
+- `reinforce_next_wave`, `defensive_hold`, and `contest_capture_site` are currently warning/telemetry-only. Do not promote them into real combat effects without a human playtest finding and a new simulator/e2e gate.
+- Latest telemetry shows 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 149 warnings, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
 
 ## Tune Rival / Nemesis Persistence
 

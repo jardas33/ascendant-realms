@@ -11,11 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is the **v0.6 Tutorial Onboarding and Testing Foundation** on 2026-05-08. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate while polishing the safe no-reward Tutorial / Proving Grounds shell, adding a test-only semantic command-log V1 helper, and documenting desktop/2026 visual direction without implementing broad systems.
+The latest feature checkpoint is **v0.7 Enemy Strategic Pressure V1** on 2026-05-09. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, and v0.6 Tutorial / Proving Grounds foundation while adding a controlled, data-driven enemy commander pressure prototype to selected existing Cinderfen battles. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
 
-The next recommended phase is **human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish**, with no new maps, units, factions, rewards, save-version changes, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, or broad systems.
+The next recommended phase is **human-paced Cinderfen pressure feel review**, with special attention to warning salience, Cinder Shrine contest readability, Watch Road timing, Fast Army quick-clear feel, Greedy Economy timeout clarity, and Retinue + Training Yard II strength. Keep follow-up limited to copy, timing, scope, telemetry, or a clearly justified tiny combat effect.
 
-New tutorial shell docs:
+New v0.7 pressure docs:
+
+- `docs/V07_ENEMY_PRESSURE_RESEARCH_AUDIT.md`
+- `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`
+- `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`
+
+Recent tutorial shell docs:
 
 - `docs/TUTORIAL_PLAYABLE_SHELL_PLAN.md`
 - `docs/TUTORIAL_SAVE_PERSISTENCE_AUDIT.md`
@@ -46,11 +52,11 @@ New v0.5 gate docs:
 
 Latest final v0.5 verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.5m, `npm run test:e2e:release` 59 tests in 28.4m, `npm run test:e2e:release:shard1` 49 tests in 23.9m, `npm run test:e2e:release:shard2` 10 tests in 4.4m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
-Recommended next phase after v0.6: **human-paced Tutorial / Proving Grounds review and small tutorial feel polish**, keeping the shell existing-content-only, no-reward, and non-persistent.
+Recommended next phase after v0.7: **human-paced Cinderfen pressure feel review**, keeping pressure scoped to existing Cinderfen battles and avoiding workers, construction, new units, new maps, rewards, save changes, and broad AI systems.
 
 The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is the active post-freeze safety/planning baseline, and the Tutorial / Proving Grounds shell is the first safe onboarding vertical slice on top of it.
 
-Latest checkpoint verification: 2026-05-08 final v0.6 gate. `npm test` passed with 42 files / 315 tests, `npm run build` passed with the known Phaser vendor warning, `npm run validate:content` passed, `npm run test:e2e:smoke` passed with 12 tests in 4.8m, `npm run test:e2e:release` passed with 65 tests in 28.9m, release shard 1 passed with 53 tests in 24.0m, release shard 2 passed with 12 tests in 4.9m, `npm run playtest:sim` passed with 255 runs, `git diff --check` passed, and production preview smoke passed. No gameplay, content, balance, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, external assets, rewards, or save-version changes were added.
+Latest checkpoint verification: 2026-05-09 v0.7 pressure balance gate. `npm test` passed with 44 files / 328 tests, `npm run build` passed with the known Phaser vendor warning, `npm run validate:content` passed, `npm run test:e2e:smoke` passed with 12 tests in 5.4m, the focused pressure spec passed 2 tests in 49.4s, `npm run test:e2e:release` passed with 67 tests in 29.4m during the e2e coverage gate, `npm run playtest:sim` passed with 255 runs, and `git diff --check` passed. No workers, real enemy construction, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, external assets, or broad systems were added.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 
@@ -94,10 +100,22 @@ Completed Tutorial / Proving Grounds shell and v0.6 onboarding foundation:
 - [x] Desktop/2026 visual direction plan, planning only.
 - [x] v0.6 onboarding/testing report: `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`.
 
+Completed v0.7 Enemy Strategic Pressure V1:
+
+- [x] Research audit of current enemy AI, waves, personalities, maps, and simulator telemetry.
+- [x] Tight design spec for data-driven pressure plans, allowed triggers/actions, forbidden actions, tests, simulator, e2e, and rollback.
+- [x] Data model and two V1 plans: `causeway_contest_pressure` and `ashen_watch_captain_pressure`.
+- [x] Content validation for plan references and forbidden worker/construction/economy fields.
+- [x] Campaign-only runtime tracker, battle warning copy, pressure telemetry, and one safe next-wave timing nudge.
+- [x] Pressure-aware defeat advice only after a triggered pressure stage.
+- [x] Simulator telemetry and generated pressure balance gate.
+- [x] Targeted e2e release coverage for Cinderfen Watch pressure and Tutorial/skirmish no-pressure guards.
+- [x] v0.7 report: `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`.
+
 Next phase:
 
-- **Human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish.**
-- Best current work is real input feel, copy clarity, overlay hierarchy, completion clarity, and command-log stability review. Do not add broad systems.
+- **Human-paced Cinderfen pressure feel review.**
+- Best current work is real input feel for pressure warnings, Cinder Shrine salience, Watch Road timing, Fast Army quick-clear feel, Greedy Economy timeout clarity, and Retinue + Training Yard II strength. Do not add broad systems.
 - v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
 - v0.3.1 release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
 - v0.4 direction brief: `docs/V04_DIRECTION_BRIEF.md`.

@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-05-09 v0.6.1 tutorial feel polish gate
+Updated: 2026-05-09 v0.7 enemy strategic pressure report gate
+
+## v0.7 Enemy Strategic Pressure V1 Report Gate - 2026-05-09
+
+Scope: implement and document the first controlled enemy commander pressure prototype. This pass preserved existing maps, units, factions, buildings, campaign progression, save compatibility, Tutorial / Proving Grounds no-reward behavior, and the browser-prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Included work:
+
+- Added `docs/V07_ENEMY_PRESSURE_RESEARCH_AUDIT.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, and `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`.
+- Added data-driven pressure plan types, metadata, content validation, campaign-only runtime resolution, battle warning copy, telemetry fields, simulator reporting, targeted e2e coverage, and release docs.
+- Scoped active plans to `cinderfen_crossing` / `cinderfen_causeway` and `cinderfen_watch` / `cinderfen_watchpost`.
+- Kept Ashen Outpost excluded from V1 pressure.
+- Kept `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` warning/telemetry-only; the only live/sim effect is an existing next-wave timing nudge.
+- Applied no balance tuning after telemetry showed no enemy-pressure analyzer warnings and no structural `too_easy` or `too_hard` nodes.
+
+Latest verification results:
+
+```text
+npm test
+PASS: 44 test files, 328 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-B8rnpsai.js, 476.13 kB minified / 127.51 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.4m.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in 29.4m during the Phase 8 e2e coverage gate.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+Pressure read: 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 149 warnings, 0 simulated reinforcement applications, no enemy-pressure analyzer warnings.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Recommended next milestone: human-paced Cinderfen pressure feel review. Focus on warning salience, Cinder Shrine contest readability, Watch Road timing, Fast Army quick-clear feel, Greedy Economy timeout clarity, and Retinue + Training Yard II strength before adding real reinforcement, route contesting, defensive-hold combat behavior, workers, construction, economy, new content, or broad AI systems.
 
 ## v0.6.1 Tutorial Feel Polish Gate - 2026-05-09
 
