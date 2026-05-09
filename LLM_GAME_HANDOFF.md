@@ -1,12 +1,39 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure final gate
+Last updated: 2026-05-09 v0.7.1 pressure feel audit gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
+
+Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 44 files / 328 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-B8rnpsai.js, 476.13 kB / gzip 127.51 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 pressure feel audit:
+
+- Added `docs/V071_ENEMY_PRESSURE_FEEL_AUDIT.md`.
+- Audit read the v0.7 pressure report/spec/research audit, telemetry markdown/JSON, balance and release docs, pressure plan data, runtime, Results defeat tips, battle status surface, and targeted pressure e2e coverage.
+- Current read: 75 pressure-enabled Cinderfen runs, 63 triggered runs, 149 warnings, 0 simulated reinforcement applications, 147 losses after pressure, and no enemy-pressure analyzer warnings.
+- Cinderfen Watch pressure is measurable but may be too early/quiet for human readability: 36/36 runs trigger, average first pressure 0:19, and some strong profiles trigger around 0:07.
+- Cinderfen Crossing pressure supports shrine identity, but Fast Army bypasses it in 12/13 runs; this is acceptable for V1 but needs human feel review.
+- Audit found the main risk is not fairness, but salience: warnings use the shared `battle-status` line for 2.5 seconds and can be overwritten by ordinary battle messages.
+- Recommendation: Phase 2 should polish copy to avoid implying live reinforcement/route-contest behavior, and Phase 3 should evaluate a small status priority/duration guard.
+- Verification: `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
