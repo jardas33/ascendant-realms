@@ -1,12 +1,38 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.6.1 tutorial feel polish gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure research gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
+
+Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+Port 127.0.0.1:5173: no active listener found, so no prior dev server was reused.
+npm test: PASS, 42 files / 315 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-BCE05t_6.js, 459.85 kB / gzip 123.62 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 enemy pressure research audit:
+
+- Added `docs/V07_ENEMY_PRESSURE_RESEARCH_AUDIT.md`.
+- Research found that `EnemyAIController` already owns fixed enemy income, existing-building training, timed attack waves, expansion-to-capture-site pressure, defense behavior, AI personality modifiers, first-battle protection, and optional commander participation.
+- Recommended Cinderfen Watch and Cinderfen Crossing as the two safest V1 pressure candidates because they are current Chapter 2 battles with clear strategic sites and no named rival commander.
+- Recommended keeping Ashen Outpost as a reference only for V1 because Captain Malrec, rival rewards, milestone pacing, objective effects, and retinue/Training Yard II risks make it too loaded for the first pressure prototype.
+- Safe V1 shape: explicit data attachment, warning copy, telemetry, and only a modest existing-system runtime effect if it does not require workers, construction, new content, pathfinding changes, or a broad `BattleScene` rewrite.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BCE05t_6.js`, 459.85 kB / gzip 123.62 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
