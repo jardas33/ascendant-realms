@@ -55,6 +55,17 @@ Phase 3 enemy pressure data model:
 - No campaign node attachment, runtime behavior, tutorial behavior, skirmish behavior, simulator behavior, save field, reward, map, unit, faction, worker, construction, or balance change was made in this phase.
 - Verification: focused `npm test -- src/game/data/enemyPressurePlans.test.ts` PASS, 4 tests; `npm test` PASS, 43 files / 319 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BjtSjRRN.js`, 462.84 kB / gzip 124.33 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
+Phase 4 enemy pressure validation:
+
+- Added `src/game/data/validation/validateEnemyPressurePlans.ts`.
+- Extended validation context and `validateContent` to include enemy pressure plan ids.
+- Validation now checks unique pressure plan ids, unique stage ids, valid scopes, boolean `enabledByDefault`, valid allowed maps/nodes, campaign node map compatibility, valid AI personality tags, trigger types, condition types, action types, unit references, capture-site references within allowed maps, timing fields, positive reinforcement/defense values, and forbidden worker/construction/economy-style fields.
+- Updated `tools/validateContent.ts` so the CLI output includes enemy pressure plans.
+- Added focused mutation coverage in `src/game/data/contentValidation.test.ts`.
+- Updated `CONTENT_GUIDE.md` and `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md` with the pressure validation guardrails.
+- No runtime behavior, campaign node attachment, tutorial behavior, skirmish behavior, simulator behavior, save field, reward, map, unit, faction, worker, construction, or balance change was made in this phase.
+- Verification: focused `npm test -- src/game/data/contentValidation.test.ts src/game/data/enemyPressurePlans.test.ts` PASS, 33 tests; `npm test` PASS, 43 files / 321 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DHD-CO29.js`, 468.78 kB / gzip 125.69 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS and now reports enemy pressure plans; `git diff --check` PASS.
+
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
 Mission: continue from the final v0.6 gate with a small human-feel Tutorial / Proving Grounds polish pass. This goal must stay existing-content-only, no-reward, non-persistent, and must not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, save-version changes, campaign progression, or broad systems.

@@ -11,6 +11,7 @@ import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
 import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
+import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
@@ -120,6 +121,75 @@ describe("content validation", () => {
       tutorial.mapId = originalMapId;
       tutorial.noReward = originalNoReward;
       tutorial.status = originalStatus;
+    }
+  });
+
+  it("rejects invalid enemy pressure plan references and stage metadata", () => {
+    const plan = ENEMY_PRESSURE_PLANS[0];
+    const originalScope = plan.scope;
+    const originalAllowedMapIds = plan.allowedMapIds;
+    const originalAllowedNodeIds = plan.allowedNodeIds;
+    const originalPersonalityTags = plan.personalityTags;
+    const originalStages = plan.stages;
+    const firstStage = plan.stages[0];
+    const originalTrigger = firstStage.trigger;
+    const originalAction = firstStage.action;
+    plan.scope = "bad_scope" as typeof plan.scope;
+    plan.allowedMapIds = ["missing_map"];
+    plan.allowedNodeIds = ["missing_node"];
+    plan.personalityTags = ["missing_personality" as never];
+    firstStage.trigger = { type: "missing_trigger" as never, captureSiteId: "missing_site" };
+    firstStage.action = { type: "missing_action" as never, unitIds: ["missing_unit"], captureSiteId: "missing_site" };
+    plan.stages = [...plan.stages, { ...firstStage }];
+    ENEMY_PRESSURE_PLANS.push({ ...plan, stages: [...plan.stages] });
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Duplicate enemy pressure plan id: ashen_watch_captain_pressure",
+          "Enemy pressure plan ashen_watch_captain_pressure has invalid scope bad_scope.",
+          "Enemy pressure plan ashen_watch_captain_pressure references missing map missing_map.",
+          "Enemy pressure plan ashen_watch_captain_pressure references missing campaign node missing_node.",
+          "Enemy pressure plan ashen_watch_captain_pressure references missing AI personality missing_personality.",
+          "Duplicate Enemy pressure plan ashen_watch_captain_pressure stage id: watch_road_response",
+          "Enemy pressure plan ashen_watch_captain_pressure stage watch_road_response has invalid trigger missing_trigger.",
+          "Enemy pressure plan ashen_watch_captain_pressure stage watch_road_response has invalid action missing_action."
+        ])
+      );
+    } finally {
+      ENEMY_PRESSURE_PLANS.pop();
+      plan.stages = originalStages;
+      firstStage.trigger = originalTrigger;
+      firstStage.action = originalAction;
+      plan.personalityTags = originalPersonalityTags;
+      plan.allowedNodeIds = originalAllowedNodeIds;
+      plan.allowedMapIds = originalAllowedMapIds;
+      plan.scope = originalScope;
+    }
+  });
+
+  it("rejects forbidden worker construction or economy fields in pressure plans", () => {
+    const plan = ENEMY_PRESSURE_PLANS[0] as typeof ENEMY_PRESSURE_PLANS[number] & {
+      workerUnitIds?: string[];
+    };
+    const action = plan.stages[0].action as typeof plan.stages[0]["action"] & {
+      constructionBuildingId?: string;
+      economyBudget?: number;
+    };
+    plan.workerUnitIds = ["peasant"];
+    action.constructionBuildingId = "barracks";
+    action.economyBudget = 100;
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Enemy pressure plan ashen_watch_captain_pressure contains forbidden worker/construction/economy field workerUnitIds.",
+          "Enemy pressure plan ashen_watch_captain_pressure contains forbidden worker/construction/economy field stages.0.action.constructionBuildingId.",
+          "Enemy pressure plan ashen_watch_captain_pressure contains forbidden worker/construction/economy field stages.0.action.economyBudget."
+        ])
+      );
+    } finally {
+      delete action.economyBudget;
+      delete action.constructionBuildingId;
+      delete plan.workerUnitIds;
     }
   });
 

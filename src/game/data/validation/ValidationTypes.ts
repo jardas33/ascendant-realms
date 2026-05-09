@@ -21,6 +21,7 @@ export interface ValidationContext {
   campaignModifierIds: Set<string>;
   enemyHeroIds: Set<string>;
   enemyHeroAbilityIds: Set<string>;
+  enemyPressurePlanIds: Set<string>;
   tutorialIds: Set<string>;
   rivalTrophyIds: Set<string>;
 }

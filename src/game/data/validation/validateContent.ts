@@ -5,6 +5,7 @@ import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "../enemyHeroes";
+import { ENEMY_PRESSURE_PLANS } from "../enemyPressurePlans";
 import { FACTIONS } from "../factions";
 import { HERO_CLASSES } from "../heroClasses";
 import { ITEM_AFFIXES } from "../itemAffixes";
@@ -24,6 +25,7 @@ import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
 import { validateCampaignChapters, validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
 import { validateEnemyHeroes } from "./validateEnemyHeroes";
+import { validateEnemyPressurePlans } from "./validateEnemyPressurePlans";
 import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
 import { validateMaps } from "./validateMaps";
@@ -57,6 +59,7 @@ export function validateContent(): string[] {
     campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
     enemyHeroIds: idsFor(ENEMY_HEROES, "enemy hero", errors),
     enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors),
+    enemyPressurePlanIds: idsFor(ENEMY_PRESSURE_PLANS, "enemy pressure plan", errors),
     tutorialIds: idsFor(TUTORIALS, "tutorial", errors),
     rivalTrophyIds: new Set(RIVAL_REWARDS.map((reward) => reward.firstDefeat.trophy.trophyId))
   };
@@ -82,6 +85,7 @@ export function validateContent(): string[] {
   validateAIPersonalities(errors, context);
   validateCampaignModifiers(errors, context);
   validateEnemyHeroes(errors, context);
+  validateEnemyPressurePlans(errors, context);
   validateMaps(errors, context);
   validateTutorials(errors, context);
   return errors;

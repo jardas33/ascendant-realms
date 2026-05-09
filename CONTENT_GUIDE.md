@@ -10,7 +10,7 @@ Run this after any data edit before launching broad e2e or simulator checks:
 npm run validate:content
 ```
 
-It runs the same content validator used by the pure test suite without opening the game UI. It should fail with direct messages for duplicate IDs, missing references, unsafe campaign graph links, invalid reward references, broken map objective references, and Cinderfen-specific modifier leakage.
+It runs the same content validator used by the pure test suite without opening the game UI. It should fail with direct messages for duplicate IDs, missing references, unsafe campaign graph links, invalid reward references, broken map objective references, invalid enemy pressure plan references, and Cinderfen-specific modifier leakage.
 
 Follow it with `npm test` for save fixture coverage, pure rules, view models, and simulator unit coverage. Use e2e and `npm run playtest:sim` when the edited content can affect campaign flow, battle launch, rewards, rival state, or route balance.
 
@@ -89,6 +89,23 @@ Current Enemy Hero V1 assignments:
 - `gorak_emberhand`: Gorak Emberhand, Ashen Raider Captain, assigned to Bandit Hillfort.
 - `veyra_cinders`: Veyra of the Cinders, Hexfire Seer, assigned to Aether Well Ruins.
 - `captain_malrec`: Captain Malrec, Outpost Commander, assigned to Ashen Outpost and the `Defeat Captain Malrec` objective.
+
+## Add Or Tune Enemy Strategic Pressure Plans
+
+Enemy Strategic Pressure V1 metadata lives in `src/game/data/enemyPressurePlans.ts`, with types in `src/game/types/EnemyPressureTypes.ts` and validation in `src/game/data/validation/validateEnemyPressurePlans.ts`.
+
+1. Keep V1 scoped to existing campaign battle nodes and maps. Current initial plans are `ashen_watch_captain_pressure` for `cinderfen_watch` and `causeway_contest_pressure` for `cinderfen_crossing`.
+2. Use existing map IDs in `allowedMapIds` and existing campaign node IDs in `allowedNodeIds`.
+3. Keep `scope: "campaign_node"` for active candidates or `scope: "disabled"` for parked metadata.
+4. Use existing AI personality IDs in `personalityTags`.
+5. Use only the V1 trigger types: `battle_start_time`, `player_captures_site`, `player_destroys_structure`, `player_trains_first_army_unit`, `enemy_hero_damaged`, `enemy_hero_defeated`, and `late_battle_time`.
+6. Use only the V1 action types: `show_warning`, `mark_telemetry`, `adjust_next_wave_timing`, `reinforce_next_wave`, `defensive_hold`, and `contest_capture_site`.
+7. If a trigger, condition, or action references a capture site, it must exist on one of the plan's allowed maps.
+8. If an action references units, they must be existing unit IDs.
+9. Keep warning copy short and tactical. Prefer clear messages like `Enemy commander is reinforcing the watch road.`
+10. Do not add fields for workers, harvesting, construction, placement, or economy. Validation rejects pressure metadata with forbidden worker/construction/economy-style field names.
+11. Do not use pressure metadata to add maps, units, factions, rewards, save fields, campaign progression, workers, enemy construction, diplomacy, crafting, procedural generation, multiplayer, desktop packaging, or external assets.
+12. Run `npm run validate:content`, `npm test`, and `npm run build` after edits.
 
 ## Tune Rival / Nemesis Persistence
 

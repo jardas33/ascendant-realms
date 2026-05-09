@@ -346,3 +346,23 @@ Phase 3 added the inert TypeScript data model and initial V1 pressure metadata:
 - Pure metadata tests: `src/game/data/enemyPressurePlans.test.ts`.
 
 The two initial plans are still metadata only. They do not attach to campaign launch requests, do not affect runtime behavior, do not alter saves, and do not change tutorial, campaign, skirmish, or simulator results until later gated phases wire them in deliberately.
+
+## Phase 4 Validation Checkpoint
+
+Phase 4 added content validation for enemy strategic pressure plans:
+
+- Unique plan ids.
+- Unique stage ids within each plan.
+- Valid plan scope.
+- Boolean `enabledByDefault`.
+- Valid allowed map ids and campaign node ids.
+- Campaign node map compatibility with each plan's allowed maps.
+- Valid AI personality tags.
+- Valid trigger, condition, and action types.
+- Existing unit references for trigger/action unit ids.
+- Capture-site references constrained to the plan's allowed maps.
+- Finite, non-negative stage delay and battle-time fields.
+- Positive reinforcement counts and defensive hold radii.
+- Forbidden worker, harvesting, construction, placement, and economy field names.
+
+This validation still does not attach plans to runtime. It exists to make later data edits fail before launch if they drift into missing content, hidden construction concepts, or unsafe scope.
