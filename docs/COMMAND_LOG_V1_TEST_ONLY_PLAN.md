@@ -173,3 +173,17 @@ Do not add a second command-log consumer until the first report answers:
 - Is the vocabulary stable enough for one campaign deep-flow candidate?
 
 Likely next candidate after review: a campaign deep-flow path that already uses deterministic setup and safe hooks. Do not expand into production replay.
+
+## Phase 7 Implementation Result
+
+Implemented in the v0.6 test-only command-log checkpoint:
+
+- Added `tests/e2e/semantic-command-log.ts`.
+- Defined `SemanticCommand`, `SemanticCommandAction`, `SemanticCommandTargetType`, and a sequential `runSemanticCommandLog` helper.
+- The runner validates stable command ids, rejects duplicate ids, wraps each command in `test.step`, and returns per-command results for visible assertions.
+- Refactored exactly one first-adopter test: the Tutorial / Proving Grounds full completion smoke path.
+- Kept launch assertions, no-save assertions, build/train/rally/ability results, no-XP pressure assertions, final no-reward copy assertions, completion notice assertions, and main-menu return assertions visible in `tests/e2e/smoke.spec.ts`.
+- No production code imports the helper.
+- No gameplay behavior, UI behavior, save format, tutorial rewards, persistence, campaign progression, maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, or broad systems changed.
+
+Phase 7 verification result: focused tutorial smoke passed with the command-log helper, full smoke passed with 12 tests in 4.8 minutes, and the full release e2e lane passed with 65 tests in 28.8 minutes.

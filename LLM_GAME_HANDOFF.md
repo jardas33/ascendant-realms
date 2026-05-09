@@ -83,6 +83,17 @@ Phase 6 Test-only semantic command-log V1 plan:
 - Planned one first adopter test that keeps tutorial launch, step order, no-save, no-XP, no-reward copy, completion notice, and return-to-menu assertions readable.
 - No source code, gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+- Commit: `7200364 Checkpoint v0.6 command log V1 plan`.
+
+Phase 7 Test-only semantic command-log V1 implementation:
+
+- Added `tests/e2e/semantic-command-log.ts`.
+- Defined a test-only semantic command vocabulary and sequential `runSemanticCommandLog` helper with stable id validation, duplicate-id detection, `test.step` labels, and per-command result capture.
+- Refactored exactly one first-adopter test: the Tutorial / Proving Grounds full completion smoke path in `tests/e2e/smoke.spec.ts`.
+- Kept tutorial launch assertions, build/train/rally/ability result assertions, pressure no-XP assertions, no-save assertions, final no-reward copy assertions, completion notice assertions, and main-menu return assertions visible in the smoke test.
+- Updated `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` with the actual implementation result.
+- The command-log helper remains test-only; production code does not import it, and it adds no save fields, no replay UI, no gameplay behavior, no rewards, no persistence, no maps, no units, no factions, and no broad systems.
+- Verification: focused tutorial smoke PASS, 1 test in 26.5s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run test:e2e:release` PASS, 65 tests in 28.8m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

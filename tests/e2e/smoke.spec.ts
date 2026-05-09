@@ -12,6 +12,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
+import { runSemanticCommandLog, type SemanticCommand } from "./semantic-command-log";
 import { createHero, openFreshMainMenu, SAVE_KEY, seedCampaignSave, startNewCampaign } from "./shared-helpers";
 
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
@@ -58,12 +59,6 @@ async function expectTutorialObjective(page: Page, title: string, progressText: 
   await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
   await expect(page.getByTestId("tutorial-objective")).toContainText(title);
   await expect(page.getByTestId("tutorial-progress")).toContainText(progressText);
-}
-
-async function advanceCompletedTutorialStep(page: Page, nextTitle: string, nextProgressText: string): Promise<void> {
-  await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 10_000 });
-  await page.getByTestId("tutorial-next").click();
-  await expectTutorialObjective(page, nextTitle, nextProgressText);
 }
 
 async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Record<string, unknown> | null> {
@@ -223,6 +218,224 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
   }, stepId);
 }
 
+const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
+  {
+    id: "advance-select-hero",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Select Hero", progress: "Step 2 of 12" },
+    debugLabel: "Advance to Select Hero"
+  },
+  {
+    id: "select-hero",
+    action: "selectHero",
+    target: { type: "battleEntity", id: "hero" },
+    debugLabel: "Select Aster"
+  },
+  {
+    id: "advance-move-hero",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Move Hero", progress: "Step 3 of 12" },
+    debugLabel: "Advance to Move Hero"
+  },
+  {
+    id: "move-hero",
+    action: "moveHeroToSemanticLocation",
+    target: { type: "semanticLocation", id: "road_ahead" },
+    debugLabel: "Move Aster to the road"
+  },
+  {
+    id: "advance-capture-site",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Capture Crown Shrine", progress: "Step 4 of 12" },
+    debugLabel: "Advance to Capture Crown Shrine"
+  },
+  {
+    id: "capture-crown-shrine",
+    action: "captureSite",
+    target: { type: "battleEntity", id: "crown_shrine" },
+    debugLabel: "Capture Crown Shrine"
+  },
+  {
+    id: "advance-gather-resources",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Gather Resources", progress: "Step 5 of 12" },
+    debugLabel: "Advance to Gather Resources"
+  },
+  {
+    id: "gather-crowns",
+    action: "captureSite",
+    target: { type: "battleEntity", id: "gather_crowns" },
+    debugLabel: "Tick Crown income"
+  },
+  {
+    id: "advance-command-hall",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Select Command Hall", progress: "Step 6 of 12" },
+    debugLabel: "Advance to Select Command Hall"
+  },
+  {
+    id: "select-command-hall",
+    action: "selectBuilding",
+    target: { type: "battleEntity", id: "command_hall" },
+    debugLabel: "Select Command Hall"
+  },
+  {
+    id: "advance-build-barracks",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Build Barracks", progress: "Step 7 of 12" },
+    debugLabel: "Advance to Build Barracks"
+  },
+  {
+    id: "build-barracks",
+    action: "buildBarracks",
+    target: { type: "battleEntity", id: "barracks" },
+    debugLabel: "Build Barracks"
+  },
+  {
+    id: "advance-train-militia",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Train Militia", progress: "Step 8 of 12" },
+    debugLabel: "Advance to Train Militia"
+  },
+  {
+    id: "train-militia",
+    action: "trainMilitia",
+    target: { type: "battleEntity", id: "militia" },
+    debugLabel: "Train Militia"
+  },
+  {
+    id: "advance-set-rally",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Set Rally Point", progress: "Step 9 of 12" },
+    debugLabel: "Advance to Set Rally Point"
+  },
+  {
+    id: "set-rally",
+    action: "setRally",
+    target: { type: "semanticLocation", id: "forward_safe" },
+    debugLabel: "Set Barracks rally point"
+  },
+  {
+    id: "advance-use-ability",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Use Hero Ability", progress: "Step 10 of 12" },
+    debugLabel: "Advance to Use Hero Ability"
+  },
+  {
+    id: "use-rally-banner",
+    action: "useHeroAbility",
+    target: { type: "battleEntity", id: "rally_banner" },
+    debugLabel: "Use Rally Banner"
+  },
+  {
+    id: "advance-safe-pressure",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Hold Safe Pressure", progress: "Step 11 of 12" },
+    debugLabel: "Advance to Hold Safe Pressure"
+  },
+  {
+    id: "defeat-safe-pressure",
+    action: "defeatEnemy",
+    target: { type: "battleEntity", id: "raider" },
+    debugLabel: "Defeat safe Raider pressure"
+  },
+  {
+    id: "advance-finish-training",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Finish Training", progress: "Step 12 of 12: complete", text: "No rewards:" },
+    debugLabel: "Advance to Finish Training"
+  },
+  {
+    id: "assert-no-save-before-complete",
+    action: "assertNoSavePollution",
+    debugLabel: "Assert tutorial has not written a save"
+  }
+];
+
+async function executeTutorialCommand(command: SemanticCommand, page: Page): Promise<unknown> {
+  if (command.action === "clickTestId") {
+    if (!command.target?.id) {
+      throw new Error(`Command ${command.id} is missing a test id target.`);
+    }
+    await page.getByTestId(command.target.id).click({ timeout: command.timeoutMs });
+    await expectTutorialCommandState(page, command);
+    return null;
+  }
+
+  if (command.action === "clickText") {
+    if (!command.target?.id) {
+      throw new Error(`Command ${command.id} is missing a text target.`);
+    }
+    await page.getByText(command.target.id).click({ timeout: command.timeoutMs });
+    await expectTutorialCommandState(page, command);
+    return null;
+  }
+
+  if (command.action === "waitForStepText") {
+    await expectTutorialCommandState(page, command);
+    return null;
+  }
+
+  if (command.action === "assertNoSavePollution") {
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
+    return null;
+  }
+
+  const stepId = tutorialStepForCommand(command);
+  return completeTutorialSceneStep(page, stepId);
+}
+
+async function expectTutorialCommandState(page: Page, command: SemanticCommand): Promise<void> {
+  if (command.expected?.title || command.expected?.progress) {
+    await expectTutorialObjective(page, command.expected.title ?? "", command.expected.progress ?? "");
+  }
+  if (command.expected?.text) {
+    await expect(page.getByTestId("tutorial-instruction")).toContainText(command.expected.text);
+  }
+}
+
+function tutorialStepForCommand(command: SemanticCommand): string {
+  if (command.action === "selectHero") {
+    return "select_hero";
+  }
+  if (command.action === "moveHeroToSemanticLocation") {
+    return "move_hero";
+  }
+  if (command.action === "captureSite") {
+    return command.target?.id === "gather_crowns" ? "gather_crowns" : "capture_crown_shrine";
+  }
+  if (command.action === "selectBuilding") {
+    return "select_command_hall";
+  }
+  if (command.action === "buildBarracks") {
+    return "build_barracks";
+  }
+  if (command.action === "trainMilitia") {
+    return "train_militia";
+  }
+  if (command.action === "setRally") {
+    return "set_barracks_rally";
+  }
+  if (command.action === "useHeroAbility") {
+    return "use_rally_banner";
+  }
+  if (command.action === "defeatEnemy") {
+    return "hold_safe_pressure";
+  }
+  throw new Error(`Unsupported tutorial command action: ${command.action}`);
+}
+
 test.describe("Ascendant Realms browser smoke flows", () => {
   test("main menu boots", async ({ page }) => {
     await openFreshMainMenu(page);
@@ -283,36 +496,22 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
-    await advanceCompletedTutorialStep(page, "Select Hero", "Step 2 of 12");
-    await completeTutorialSceneStep(page, "select_hero");
-    await advanceCompletedTutorialStep(page, "Move Hero", "Step 3 of 12");
-    await completeTutorialSceneStep(page, "move_hero");
-    await advanceCompletedTutorialStep(page, "Capture Crown Shrine", "Step 4 of 12");
-    await completeTutorialSceneStep(page, "capture_crown_shrine");
-    await advanceCompletedTutorialStep(page, "Gather Resources", "Step 5 of 12");
-    await completeTutorialSceneStep(page, "gather_crowns");
-    await advanceCompletedTutorialStep(page, "Select Command Hall", "Step 6 of 12");
-    await completeTutorialSceneStep(page, "select_command_hall");
-    await advanceCompletedTutorialStep(page, "Build Barracks", "Step 7 of 12");
-    const built = await completeTutorialSceneStep(page, "build_barracks");
+    const commandResults = await runSemanticCommandLog(page, tutorialCompletionCommandLog, executeTutorialCommand);
+    const built = commandResults.get("build-barracks") as Record<string, unknown> | null;
+    const trained = commandResults.get("train-militia") as Record<string, unknown> | null;
+    const rally = commandResults.get("set-rally") as Record<string, unknown> | null;
+    const ability = commandResults.get("use-rally-banner") as Record<string, unknown> | null;
+    const pressure = commandResults.get("defeat-safe-pressure") as Record<string, unknown> | null;
+
     expect(built).toMatchObject({ builtBuilding: "barracks", completed: true });
-    await advanceCompletedTutorialStep(page, "Train Militia", "Step 8 of 12");
-    const trained = await completeTutorialSceneStep(page, "train_militia");
     expect(trained?.trainedUnitIds).toContain("militia");
-    await advanceCompletedTutorialStep(page, "Set Rally Point", "Step 9 of 12");
-    const rally = await completeTutorialSceneStep(page, "set_barracks_rally");
     expect(rally?.rallyPoint).toBeTruthy();
-    await advanceCompletedTutorialStep(page, "Use Hero Ability", "Step 10 of 12");
-    const ability = await completeTutorialSceneStep(page, "use_rally_banner");
     expect(ability).toMatchObject({ cast: true });
-    await advanceCompletedTutorialStep(page, "Hold Safe Pressure", "Step 11 of 12");
-    const pressure = await completeTutorialSceneStep(page, "hold_safe_pressure");
     expect(pressure).toMatchObject({
       afterHeroXp: 0,
       runtimeXp: 0
     });
     expect(Number(pressure?.unitsKilled ?? 0)).toBeGreaterThanOrEqual(1);
-    await advanceCompletedTutorialStep(page, "Finish Training", "Step 12 of 12: complete");
     await expect(page.getByTestId("tutorial-instruction")).toContainText("No rewards:");
     await expect(page.getByTestId("tutorial-instruction")).toContainText("campaign progress");
     await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
