@@ -421,6 +421,13 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
       await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);
       await expectInViewport(page, page.getByTestId("tutorial-overlay"), `${viewport.label} tutorial overlay`);
+      const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
+      expect(overlayBox, `${viewport.label} tutorial overlay has width`).not.toBeNull();
+      if (overlayBox) {
+        expect(overlayBox.width, `${viewport.label} tutorial overlay stays readable`).toBeGreaterThanOrEqual(
+          Math.min(320, viewport.width - 24) - 2
+        );
+      }
       await expectReachableButton(page, page.getByTestId("tutorial-next"), `${viewport.label} tutorial next`);
       await expectReachableButton(page, page.getByTestId("tutorial-exit"), `${viewport.label} tutorial exit`);
       await expectWithinViewportWidth(page, page.locator(".side-panel"), `${viewport.label} battle command panel`);

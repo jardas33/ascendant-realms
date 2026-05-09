@@ -2,7 +2,7 @@
 
 Date: 2026-05-08
 
-Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. Phase 2 applied copy-only polish based on this audit. This work does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
+Status: automated human-feel surrogate audit for the playable Tutorial / Proving Grounds shell. Phase 2 applied copy-only polish based on this audit, and Phase 3 applied responsive overlay layout polish. This work does not change tutorial logic, rewards, save behavior, campaign progression, maps, units, factions, balance, desktop packaging, or broad systems.
 
 ## Scope
 
@@ -32,7 +32,7 @@ Current metadata shape:
 | Longest hint | 10 words / 64 characters after Phase 2 copy polish |
 | Unit coverage | `TutorialStepModel`, `TutorialPanel`, content validation, launch/runtime no-reward tests |
 | Smoke coverage | Full launch, twelve-step completion, no-save/no-XP assertions, and exit path |
-| Layout coverage | First objective overlay on desktop, tablet-short, mobile-tall, and mobile-short |
+| Layout coverage | First objective overlay on desktop, tablet-short, mobile-tall, and mobile-short, including a minimum-width guard |
 
 Current step order:
 
@@ -131,7 +131,9 @@ The layout lane verifies the first tutorial overlay stays within the viewport an
 
 Risk: the mobile-short CSS currently narrows the overlay to `calc(100vw - 160px)`, which protects other HUD space but can make the tutorial text feel cramped. The test proves width safety, not comfort or readability.
 
-Recommendation: Phase 3 should improve small-screen hierarchy/spacing if it can be done without covering the command panel or core controls.
+Phase 3 improved small-screen hierarchy by making the narrow overlay use the available mobile width, wrapping text safely, and keeping footer controls in a compact two-button row.
+
+Recommendation: keep testing mobile-short width and reachability before adding more overlay content.
 
 ### 10. HUD And Overlay Attention Competition
 

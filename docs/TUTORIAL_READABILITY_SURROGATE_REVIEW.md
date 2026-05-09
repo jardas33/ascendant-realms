@@ -49,9 +49,9 @@ Recommendation: keep the button label short for now. If a future pass adds a men
 
 The overlay shows one objective title, one instruction sentence, one optional hint, one condition label, progress text, and controls. That is the right amount for a first playable shell and avoids turning the tutorial into a modal reading sequence.
 
-Phase 2 copy polish shortened the longest prompts and removed test-hook language from the player-facing pressure hint.
+Phase 2 copy polish shortened the longest prompts and removed test-hook language from the player-facing pressure hint. Phase 3 layout polish widened the mobile-short tutorial panel, tightened footer button placement, and added a layout assertion so the overlay cannot regress into the old narrow mobile strip.
 
-Risk: on the 360 x 640 mobile-short viewport the overlay intentionally becomes narrow and scrollable. This preserves viewport safety but can make long instructions feel dense.
+Risk: on the 360 x 640 mobile-short viewport the overlay remains compact and scrollable when text wraps, but it now has enough width for normal prompt scanning.
 
 Recommendation: keep each future step to one short instruction and one short hint. Do not add paragraphs, lore, or multi-branch text inside the overlay.
 
@@ -77,7 +77,7 @@ The new layout guard passed on desktop, tablet-short, mobile-tall, and mobile-sh
 
 Risk: the overlay is deliberately positioned near the top-center, while battle HUD panels also occupy the top and side regions. It currently fits, but future HUD additions could crowd it.
 
-Recommendation: any future tutorial overlay changes should rerun `npm run test:e2e:layout -- --grep "tutorial entry"` before the full layout lane.
+Recommendation: any future tutorial overlay changes should rerun `npm run test:e2e:layout -- --grep "tutorial entry"` before the full layout lane. Preserve the overlay width guard added in v0.6 unless a better responsive layout replaces it.
 
 ### Skip / Exit Clarity
 

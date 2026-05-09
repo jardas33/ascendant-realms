@@ -42,6 +42,15 @@ Phase 2 Tutorial copy and hierarchy polish:
 - Updated exact-copy unit/e2e assertions and refreshed `docs/V06_TUTORIAL_FEEL_AUDIT.md` plus `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` with the post-polish copy metrics.
 - No gameplay behavior, save behavior, rewards, campaign progression, persistence, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed in this phase.
 - Verification: focused tutorial/content tests PASS, 39 tests; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning and app JS `assets/index-BoideHCz.js`, 459.06 kB / gzip 123.40 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `git diff --check` PASS.
+- Commit: `a713239 Checkpoint v0.6 tutorial copy polish`.
+
+Phase 3 Tutorial overlay layout polish:
+
+- Updated `src/game/styles/battle-feedback.css` so the tutorial overlay has safer max-width wrapping, a wider mobile-short layout, and a compact two-button footer row on narrow screens.
+- Added a Playwright layout assertion that the tutorial overlay stays at least 320px wide when viewport width allows, preventing regression to the old narrow mobile strip.
+- Updated tutorial readability/audit docs to record the v0.6 overlay layout polish.
+- Preserved existing tutorial selectors, no-reward behavior, save behavior, campaign/skirmish launch behavior, maps, units, factions, and balance.
+- Verification: focused `npm run test:e2e:layout -- --grep "tutorial entry"` PASS, 4 tests in 44.4s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BxXzmjnC.js`, 459.06 kB / gzip 123.40 kB, CSS `assets/index-B3bNAHeO.css`, 43.96 kB / gzip 9.05 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run test:e2e:layout` PASS, 25 tests in 13.0m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
