@@ -34,6 +34,14 @@ Phase 1 real-input playtest protocol:
 - The change threshold defaults to no change and allows only tiny copy, timing, status-duration, defeat-tip, docs, or e2e-observability polish if a clear review problem is found.
 - Non-goals explicitly preserve no live reinforcement promotion, no capture-site contest AI, no defensive hold behavior, no workers/construction/economy AI, no new units/maps/factions/plans/stages, no rewards, no save changes, no campaign progression changes, no pressure on Ashen Outpost or Chapter 1, no new UI panel, and no broad BattleScene rewrite.
 
+Phase 2 pressure review setup:
+
+- Added `docs/V073_PRESSURE_REVIEW_SETUP.md`.
+- Reviewed `tests/e2e/chapter2-helpers.ts`, `tests/e2e/enemy-pressure.spec.ts`, package scripts, and pressure-related helper/test-hook references.
+- Existing helpers already support post-Ashen seeding, post-Crossing seeding, campaign-UI launch for Cinderfen Crossing and Cinderfen Watch, Cinder Shrine capture via a test hook, Watch Road capture via the generic capture hook, and pressure state reads in the targeted pressure e2e.
+- No new test helper or review command was added. The setup document explicitly labels helper-driven paths as seeded surrogate evidence rather than true manual play.
+- The setup document records app launch options, Crossing and Watch review entry paths, console-error capture expectations, and the current Retinue + Training Yard II automation limitation.
+
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
 Mission: run a human-paced Cinderfen pressure play review, gather evidence, and make only tiny evidence-backed polish changes. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, or broad systems.
