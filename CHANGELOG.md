@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.7.2 Human-Paced Cinderfen Pressure Review - 2026-05-09
+
+This checkpoint reviews Cinderfen pressure feel and warning readability without expanding Enemy Strategic Pressure into workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.
+
+### Included
+
+- Human-paced pressure review protocol and browser review notes.
+- Seeded browser evidence and screenshot inspection for Cinderfen Crossing pressure warnings.
+- Seeded browser evidence and screenshot inspection for Cinderfen Watch pressure warnings.
+- Explicit no-change pressure readability decision: no warning copy, timing, status-duration, defeat-tip, telemetry, e2e, scope, or wave-nudge change.
+- Retinue + Training Yard II pressure review documented as a saved-progress power watchpoint, not a pressure bug.
+- Greedy Economy and Fast Army pressure review with no tuning applied.
+- Fresh next-action decision keeping `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` warning/telemetry-only.
+- v0.7.2 report: `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`.
+
+### Verification
+
+- `npm test`: passed with 45 test files and 334 tests during the report gate.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during the report gate.
+- `npm run validate:content`: passed during the report gate.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.2m during the report gate.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during the report gate.
+- Pressure telemetry remains 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 12 quiet/untriggered pressure runs, 149 warnings, 147 losses after pressure, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.
+- `git diff --check`: passed during the report gate.
+
+### Next
+
+- Recommended next goal: v0.7.3 real-input Cinderfen pressure playtest.
+- Focus on warning noticeability during actual unit commands, Cinder Shrine salience, Watch Road fairness, Greedy Economy timeout clarity, Fast Army quick-clear feel, and Retinue + Training Yard II power.
+- Only after stronger human evidence should v0.8 consider a simulator-only `reinforce_next_wave` experiment.
+- Continue postponing workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save changes, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, broad systems, live reinforcements, capture-site contest AI, and defensive-hold behavior.
+
 ## v0.7.1 Enemy Pressure Feel Review and Warning Polish - 2026-05-09
 
 This checkpoint reviews, polishes, and hardens Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.

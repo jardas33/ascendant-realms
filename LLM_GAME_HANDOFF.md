@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.2 pressure play review plan
+Last updated: 2026-05-09 v0.7.2 pressure play review report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -101,6 +101,15 @@ Phase 8 pressure next-action decision:
 - `defensive_hold` remains blocked from live implementation because it risks turtling, longer Greedy Economy timeouts, and broad defense behavior changes.
 - No source, runtime, simulator, e2e, content data, map, unit, faction, reward, save, worker, construction, economy AI, live reinforcement, route-contest AI, defensive-hold, or campaign progression change was made.
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
+Phase 9 pressure play review report and docs:
+
+- Added `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `BALANCE.md`, and `DEVELOPMENT_CHECKPOINT.md` for v0.7.2.
+- Report conclusion: Cinderfen Crossing and Cinderfen Watch pressure warnings are readable enough to keep unchanged; Retinue + Training Yard II remains a saved-progress power watchpoint; Greedy Economy remains a timeout/closure read; Fast Army bypass remains acceptable strategy expression.
+- Decision: no pressure copy, timing, status-duration, defeat-tip, telemetry, e2e, pressure plan scope, existing-wave timing nudge, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, route-contest AI, defensive-hold, or campaign progression change was made.
+- Next recommended goal: v0.7.3 real-input Cinderfen pressure playtest before any v0.8 simulator-only reinforcement experiment.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.2m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 

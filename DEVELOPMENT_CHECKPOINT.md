@@ -1,6 +1,45 @@
 # Development Checkpoint
 
-Updated: 2026-05-09 v0.7.1 enemy pressure feel final gate
+Updated: 2026-05-09 v0.7.2 pressure play review report gate
+
+## v0.7.2 Human-Paced Cinderfen Pressure Review Report Gate - 2026-05-09
+
+Scope: review Cinderfen Crossing and Cinderfen Watch pressure feel/readability without expanding into workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.
+
+Included work:
+
+- Added `docs/V072_PRESSURE_PLAY_REVIEW_PLAN.md`, `docs/V072_PRESSURE_BROWSER_REVIEW_NOTES.md`, `docs/V072_CINDERFEN_CROSSING_PRESSURE_REVIEW.md`, `docs/V072_CINDERFEN_WATCH_PRESSURE_REVIEW.md`, `docs/V072_PRESSURE_READABILITY_POLISH_DECISION.md`, `docs/V072_RETINUE_TRAINING_YARD_PRESSURE_REVIEW.md`, `docs/V072_GREEDY_FAST_PRESSURE_REVIEW.md`, `docs/V072_PRESSURE_NEXT_ACTION_DECISION.md`, and `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`.
+- Used seeded browser/Playwright review and screenshot inspection to confirm Crossing and Watch warnings remain readable.
+- Applied no pressure copy, timing, status-duration, telemetry, defeat-tip, e2e, scope, wave-nudge, balance, reward, save, map, unit, faction, worker, construction, economy AI, or campaign progression change.
+- Documented Retinue + Training Yard II as a saved-progress power watchpoint rather than a pressure bug.
+- Documented Greedy Economy as a timeout/closure read and Fast Army as acceptable quick-clear expression.
+- Kept `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` warning/telemetry-only. Future stronger pressure should start with simulator-only `reinforce_next_wave` only after real-input human evidence.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 45 test files, 334 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-CC1M6Mg7.js, 476.83 kB minified / 127.77 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.2m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
 
 ## v0.7.1 Enemy Pressure Feel Final Gate - 2026-05-09
 
