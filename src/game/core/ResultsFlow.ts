@@ -149,6 +149,7 @@ export function createDefeatTips(
   if ((stats.lossesInvolvingEnemyHero ?? 0) > 0 && stats.enemyHeroName) {
     tips.push(`${stats.enemyHeroName} drove the pressure. Scout the commander, clear escorts first, and pull wounded troops back before re-engaging.`);
   }
+  addEnemyPressureDefeatTip(stats, tips);
   if (stats.resourcesCaptured === 0) {
     tips.push("Capture the Crown Shrine early so your economy starts before the first wave.");
   }
@@ -167,6 +168,21 @@ export function createDefeatTips(
   }
   tips.push("Use hero abilities during the first wave and retreat wounded heroes or troops toward the Command Hall.");
   return [...new Set(tips)].slice(0, 4);
+}
+
+function addEnemyPressureDefeatTip(stats: BattleStats, tips: string[]): void {
+  if (!stats.enemyPressurePlanId || (stats.enemyPressureTriggeredStageIds?.length ?? 0) === 0) {
+    return;
+  }
+  if (stats.enemyPressurePlanId === "ashen_watch_captain_pressure") {
+    tips.push("Enemy pressure reinforced the Watch Road. Leave a small guard near captured income before committing to the tower push.");
+    return;
+  }
+  if (stats.enemyPressurePlanId === "causeway_contest_pressure") {
+    tips.push("Enemy pressure answered the Cinder Shrine. Regroup after the Aether surge before following the center road.");
+    return;
+  }
+  tips.push("Enemy commander pressure triggered this fight. Watch for the warning, regroup, then push after the next wave breaks.");
 }
 
 function addObjectiveDefeatTips(

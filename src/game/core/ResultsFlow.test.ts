@@ -254,6 +254,29 @@ describe("results reward flow", () => {
     expect(tips[0]).toContain("Brute");
   });
 
+  it("adds enemy pressure defeat advice only after pressure triggers", () => {
+    const stats: BattleStats = {
+      unitsKilled: 7,
+      buildingsDestroyed: 1,
+      resourcesCaptured: 2,
+      buildingsBuilt: 2,
+      builtBuildingIds: ["barracks", "watchtower"],
+      unitsTrained: 5,
+      trainedUnitIds: ["militia", "ranger", "militia", "militia", "ranger"],
+      enemyWavesSurvived: 1,
+      xpGained: 0,
+      timeSeconds: 420,
+      completedObjectiveIds: ["capture_watch_road"],
+      outcome: "defeat",
+      enemyPressurePlanId: "ashen_watch_captain_pressure",
+      enemyPressureTriggeredStageIds: ["watch_road_response"]
+    };
+
+    const tips = createDefeatTips(stats, { mapId: "cinderfen_watchpost", campaignNodeId: "cinderfen_watch" });
+
+    expect(tips.join(" ")).toContain("Enemy pressure reinforced the Watch Road");
+  });
+
   it("saves campaign node completion and does not grant the same node reward twice", () => {
     const campaign = createStartedCampaignSave();
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");

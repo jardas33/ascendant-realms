@@ -80,6 +80,14 @@ Phase 5 runtime integration:
 - No save field, save-version change, reward, map, unit, faction, worker, real enemy construction, enemy economy, tutorial reward, campaign progression change, or broad `BattleScene` rewrite was added.
 - Verification: focused battle/content tests PASS, 60 tests; `npm test` PASS, 44 files / 326 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CFJmFaPd.js`, 475.49 kB / gzip 127.29 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.9m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
 
+Phase 6 enemy pressure feedback:
+
+- Kept pressure feedback on the existing battle message surface; no new HUD panel, cinematic, icon, art, overlay system, or tutorial UI change was added.
+- Added pressure-aware defeat tips in `src/game/core/ResultsFlow.ts` that appear only when an enemy pressure plan actually triggered.
+- Added `ResultsFlow` coverage for pressure-triggered Cinderfen Watch advice.
+- Tutorial remains protected because Tutorial / Proving Grounds cannot create the pressure runtime.
+- Verification: focused `npm test -- src/game/core/ResultsFlow.test.ts src/game/battle/EnemyPressureRuntime.test.ts` PASS, 15 tests; `npm test` PASS, 44 files / 327 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `git diff --check` PASS.
+
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
 Mission: continue from the final v0.6 gate with a small human-feel Tutorial / Proving Grounds polish pass. This goal must stay existing-content-only, no-reward, non-persistent, and must not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, save-version changes, campaign progression, or broad systems.

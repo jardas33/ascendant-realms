@@ -385,3 +385,14 @@ Runtime behavior remains deliberately narrow:
 - `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only in Phase 5. They are intentionally not applied yet because live reinforcement or route contesting needs more evidence to avoid becoming hidden spawning, construction, or pathing work.
 
 No save fields, save-version changes, rewards, maps, units, factions, workers, real enemy construction, enemy economy, tutorial rewards, campaign progression changes, or broad `BattleScene` rewrite were added.
+
+## Phase 6 Feedback Checkpoint
+
+Phase 6 keeps player feedback intentionally small:
+
+- Pressure warnings continue to use the existing battle message surface.
+- No new HUD panel, cinematic, icon, art, or overlay system was added.
+- Tutorial / Proving Grounds still cannot create a pressure runtime, so tutorial overlay priority is unaffected.
+- Defeat tips now add one pressure-specific retry note only when pressure actually triggered during the battle.
+
+The result is readable but quiet: players get the warning during the fight and a short retry hint after a pressure-influenced defeat, without adding persistent UI or new tutorial/campaign behavior.
