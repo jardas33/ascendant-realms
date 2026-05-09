@@ -99,9 +99,11 @@ Recommendation: do not add extra tutorial panels or banners in the first shell. 
 
 The finish step explicitly says no rewards or campaign progress were granted. The save audit and smoke tests verify no localStorage save, hero XP, or runtime XP is created during the tutorial completion path.
 
-Risk: because completion returns directly to the main menu rather than a Results screen, some players may miss the no-reward message if they click quickly.
+Phase 4 added a session-only main-menu completion notice after successful tutorial completion. It repeats that no XP, items, resources, or campaign progress were granted and that nothing was saved.
 
-Recommendation: keep the final step copy as-is for the shell. If human playtesting shows confusion, add a compact non-modal completion toast before returning to menu, still with no save/write path.
+Risk: players may still miss or undervalue the notice if they are focused on returning to campaign/skirmish.
+
+Recommendation: keep the notice non-persistent. Human play should verify whether this is enough before adding any stronger completion surface.
 
 ### Completion Copy
 

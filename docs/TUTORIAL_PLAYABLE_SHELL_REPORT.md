@@ -22,7 +22,7 @@ This is a tutorial shell, not a campaign expansion. It does not add maps, units,
 - Live tutorial completion signals for hero selection, hero movement, capture site ownership, resource income, building selection, Barracks construction, Militia training, rally point setting, Rally Banner use, safe Raider pressure, and finish.
 - No-reward runtime completion path that returns the starting hero data, zero XP, and empty rewards.
 - XP/veterancy guard for rewards-disabled tutorial kills.
-- Direct main-menu return on tutorial completion and exit.
+- Direct main-menu return on tutorial completion and exit, with a session-only completion notice after successful completion.
 - Smoke, layout, unit, content-validation, and save-persistence coverage.
 
 ## What Was Not Implemented
@@ -91,7 +91,7 @@ Tutorial / Proving Grounds is a training mode. It must not award:
 - Reputation changes.
 - Stronghold changes.
 
-The final overlay step explicitly tells the player that no rewards or campaign progress were granted. Current e2e coverage checks that tutorial completion and exit do not create a save, and the safe-pressure step does not grant hero XP or runtime XP.
+The final overlay step explicitly tells the player that no rewards or campaign progress were granted. After completion, the main menu shows a session-only notice that repeats that no XP, items, resources, or campaign progress were granted and that nothing was saved. Current e2e coverage checks that tutorial completion and exit do not create a save, and the safe-pressure step does not grant hero XP or runtime XP.
 
 ## Save And Persistence Policy
 
@@ -127,7 +127,7 @@ If smoke runtime grows materially beyond the current 6-7 minute range, move the 
 
 - The tutorial is twelve steps long and may feel slow in human-paced play.
 - The mobile-short overlay is width-safe and scrollable, but it should still be human-reviewed on a real device-sized viewport.
-- Completion returns directly to the main menu; some players may miss the no-reward completion message if they click quickly.
+- Completion returns directly to the main menu with a session-only no-reward notice; human play should still verify that the notice is noticed and feels satisfying.
 - The safe-pressure step is intentionally small and may still rely on stable existing Raider behavior.
 - The tutorial overlay shares the battle HUD space, so future HUD additions could crowd it.
 - Smoke/release runtime increased and should be watched before adding more tutorial e2e depth.

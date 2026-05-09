@@ -10,12 +10,21 @@ import { createNewHeroSave } from "../data/heroes";
 import { TUTORIALS } from "../data/tutorials";
 import { AudioManager } from "../systems/AudioManager";
 
+interface MainMenuSceneData {
+  tutorialCompleted?: boolean;
+}
+
 export class MainMenuScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
+  private tutorialCompletionNotice = false;
 
   constructor() {
     super(SCENE_KEYS.mainMenu);
+  }
+
+  init(data?: MainMenuSceneData): void {
+    this.tutorialCompletionNotice = Boolean(data?.tutorialCompleted);
   }
 
   create(): void {
@@ -122,6 +131,14 @@ export class MainMenuScene extends Phaser.Scene {
           ${
             showInfo
               ? `<div class="info-box">Original prototype inspired by classic RTS/RPG hybrids. Normal units gain ranks during battle; selected surviving Seasoned or better veterans can be saved to the Retinue Camp after campaign victories, then persist into future campaign battles. Retinue death is permanent in V1. Uses local manual art when files exist, then falls back to placeholders. No copyrighted assets, names, factions, maps, music, or API image calls are included.</div>`
+              : ""
+          }
+          ${
+            this.tutorialCompletionNotice
+              ? `<div class="info-box tutorial-complete" data-testid="tutorial-complete-notice" role="status">
+                  <strong>Training complete</strong>
+                  <p>No XP, items, resources, or campaign progress were granted. Nothing was saved.</p>
+                </div>`
               : ""
           }
           ${

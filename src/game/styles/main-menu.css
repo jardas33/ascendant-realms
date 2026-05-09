@@ -73,11 +73,25 @@
   gap: 9px;
 }
 
+.tutorial-complete {
+  display: grid;
+  gap: 7px;
+  border-color: rgba(156, 247, 177, 0.38);
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.1), transparent 44%, rgba(156, 247, 177, 0.08)),
+    var(--plate-bg);
+}
+
 .tutorial-info strong {
   color: #f6e49a;
 }
 
-.tutorial-info p {
+.tutorial-complete strong {
+  color: #9cf7b1;
+}
+
+.tutorial-info p,
+.tutorial-complete p {
   margin: 0;
 }
 

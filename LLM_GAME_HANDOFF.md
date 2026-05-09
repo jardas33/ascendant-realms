@@ -51,6 +51,17 @@ Phase 3 Tutorial overlay layout polish:
 - Updated tutorial readability/audit docs to record the v0.6 overlay layout polish.
 - Preserved existing tutorial selectors, no-reward behavior, save behavior, campaign/skirmish launch behavior, maps, units, factions, and balance.
 - Verification: focused `npm run test:e2e:layout -- --grep "tutorial entry"` PASS, 4 tests in 44.4s; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BxXzmjnC.js`, 459.06 kB / gzip 123.40 kB, CSS `assets/index-B3bNAHeO.css`, 43.96 kB / gzip 9.05 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run test:e2e:layout` PASS, 25 tests in 13.0m; `git diff --check` PASS.
+- Commit: `19a365c Checkpoint v0.6 tutorial layout polish`.
+
+Phase 4 No-reward completion clarity:
+
+- Added a session-only main-menu completion notice after successful Tutorial / Proving Grounds completion.
+- The notice says `Training complete` and repeats that no XP, items, resources, or campaign progress were granted and nothing was saved.
+- The notice is passed through Phaser scene data only; it does not write settings, localStorage, save fields, campaign state, hero state, inventory, XP, retinue, rivals, trophies, or a tutorial completion flag.
+- Updated smoke e2e to assert the notice appears after completion, does not appear after Exit Tutorial, and localStorage remains empty.
+- Updated the tutorial save/persistence audit, playable shell report, readability review, and v0.6 feel audit.
+- No rewards, save-version changes, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
+- Verification: focused runtime/tutorial smoke checks PASS, 29 tests plus 2 Playwright tutorial tests; `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.1m; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

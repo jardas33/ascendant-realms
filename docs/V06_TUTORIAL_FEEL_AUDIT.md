@@ -111,11 +111,11 @@ Recommendation: keep ability late for now. It is safer to teach ability after ba
 
 ### 7. No-Reward Completion Clarity
 
-The final instruction explicitly says no XP, items, resources, or campaign progress were granted. Smoke coverage verifies no localStorage save is created, no live hero XP is granted from the pressure kill, and no runtime XP appears.
+The final instruction explicitly says no XP, items, resources, or campaign progress were granted. Phase 4 also adds a session-only main-menu completion notice that repeats that nothing was saved. Smoke coverage verifies no localStorage save is created, no live hero XP is granted from the pressure kill, and no runtime XP appears.
 
-Risk: completion immediately returns to the main menu after the player clicks Complete Tutorial. Players can click through the message before absorbing it.
+Risk: completion still returns to the main menu instead of a dedicated Results screen. Players may miss or undervalue the session-only notice.
 
-Recommendation: Phase 4 should consider a clearer transient completion state or warmer final copy while still avoiding save/localStorage writes.
+Recommendation: keep the notice transient and non-persistent. Use human play to decide whether a future stronger completion surface is needed.
 
 ### 8. Exit Tutorial Clarity
 

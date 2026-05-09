@@ -22,7 +22,7 @@ Tutorial runtime reads settings through `SaveSystem.load()?.settings` so existin
 
 Tutorial runtime does not create a campaign save. It does not call campaign node completion, campaign reward, retinue update, rival update, trophy update, town service, event choice, Stronghold, or campaign resource write paths.
 
-Tutorial completion uses `BattleScene.advanceTutorialStep()` for the final step and returns directly to the main menu. It does not enter normal Results reward/equip/campaign-return actions.
+Tutorial completion uses `BattleScene.advanceTutorialStep()` for the final step and returns directly to the main menu with session-only Phaser scene data that shows a transient completion notice. It does not enter normal Results reward/equip/campaign-return actions, and it does not write the notice to localStorage or save data.
 
 If a tutorial battle ever reaches normal battle end conditions, `endBattleAndOpenResults()` treats tutorial launches as rewards-disabled and returns to the main menu before normal save writes.
 
@@ -42,19 +42,20 @@ If a tutorial battle ever reaches normal battle end conditions, `endBattleAndOpe
 | Rival state | No rival state changes. | Tutorial has no campaign node/enemy hero reward context and bypasses rival updates. |
 | Rival trophies | No trophy records are created. | Trophy grants only happen through campaign/rival reward flows. |
 | Save version | No new save fields or migration are required. | Tutorial completion is non-persistent for this shell. |
+| Completion notice | A session-only main-menu notice can appear after completion. | The notice is passed through scene data only; smoke e2e still asserts `localStorage` remains empty. |
 
 ## Existing Tests
 
 - `src/game/battle/BattleLaunchRequest.test.ts` verifies tutorial launch requests are rewards-disabled and rejects tutorial requests that could grant rewards.
 - `src/game/battle/BattleRuntime.test.ts` verifies tutorial completion returns the starting hero, zero XP, empty rewards, no inventory, no completed battles, and `shouldSaveHero: false`.
-- `tests/e2e/smoke.spec.ts` verifies the playable tutorial launch/completion path leaves `localStorage.getItem(SAVE_KEY)` null and that defeating the tutorial pressure Raider grants no live hero XP or runtime XP.
+- `tests/e2e/smoke.spec.ts` verifies the playable tutorial launch/completion path leaves `localStorage.getItem(SAVE_KEY)` null, that defeating the tutorial pressure Raider grants no live hero XP or runtime XP, and that the completion notice appears only after completion.
 - `tests/e2e/smoke.spec.ts` separately verifies Exit Tutorial returns to main menu without saving.
 
 ## Gaps
 
 - There is no dedicated browser test for launching the tutorial while a settings-only save already exists. Current code only reads settings during tutorial launch/runtime, and `SaveSystem` already has settings-only coverage, but a future persistence pass should add this if tutorial completion state is ever stored.
 - There is no persistent tutorial-completed flag yet. This is intentional for the first shell.
-- There is no ResultsScene tutorial-specific no-reward panel. This is intentional because the current final step returns directly to the main menu.
+- There is no ResultsScene tutorial-specific no-reward panel. This is intentional because the current final step returns directly to the main menu and uses a transient menu notice instead.
 
 ## Policy
 
