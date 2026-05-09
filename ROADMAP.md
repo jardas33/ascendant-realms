@@ -11,9 +11,9 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is the **Tutorial / Proving Grounds playable shell** on 2026-05-08. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate while adding a safe no-reward onboarding shell that reuses existing First Claim content.
+The latest feature checkpoint is the **v0.6 Tutorial Onboarding and Testing Foundation** on 2026-05-08. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate while polishing the safe no-reward Tutorial / Proving Grounds shell, adding a test-only semantic command-log V1 helper, and documenting desktop/2026 visual direction without implementing broad systems.
 
-The next recommended phase is **human-paced Tutorial / Proving Grounds review and small tutorial polish**, with no new maps, units, factions, rewards, save-version changes, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, or broad systems.
+The next recommended phase is **human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish**, with no new maps, units, factions, rewards, save-version changes, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, or broad systems.
 
 New tutorial shell docs:
 
@@ -22,6 +22,12 @@ New tutorial shell docs:
 - `docs/TUTORIAL_CONTENT_VALIDATION_GATE.md`
 - `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md`
 - `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`
+- `docs/V06_TUTORIAL_FEEL_AUDIT.md`
+- `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md`
+- `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md`
+- `docs/COMMAND_LOG_V1_REPORT.md`
+- `docs/DESKTOP_2026_VISUAL_DIRECTION.md`
+- `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`
 
 The prior safety checkpoint is the **v0.5 save/content-validation gate** on 2026-05-08. It preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork while adding save fixtures, stronger content validation, a standalone content validation script, campaign graph/reward checks, command-log feasibility planning, simulator determinism checks, and one approved future vertical-slice candidate.
 
@@ -40,7 +46,7 @@ New v0.5 gate docs:
 
 Latest final v0.5 verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.5m, `npm run test:e2e:release` 59 tests in 28.4m, `npm run test:e2e:release:shard1` 49 tests in 23.9m, `npm run test:e2e:release:shard2` 10 tests in 4.4m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
-Recommended next phase after the playable tutorial shell: **human-paced Tutorial / Proving Grounds review and small tutorial polish**, keeping the shell existing-content-only and no-reward.
+Recommended next phase after v0.6: **human-paced Tutorial / Proving Grounds review and small tutorial feel polish**, keeping the shell existing-content-only, no-reward, and non-persistent.
 
 The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is the active post-freeze safety/planning baseline, and the Tutorial / Proving Grounds shell is the first safe onboarding vertical slice on top of it.
 
@@ -73,7 +79,7 @@ Completed v0.3 Cinderfen route:
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
 - Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile, and the aftermath is event-only. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
 
-Completed Tutorial / Proving Grounds shell:
+Completed Tutorial / Proving Grounds shell and v0.6 onboarding foundation:
 
 - [x] Main-menu Tutorial launch surface.
 - [x] Validated playable tutorial metadata for `proving_grounds_basics`.
@@ -82,11 +88,16 @@ Completed Tutorial / Proving Grounds shell:
 - [x] No-reward, non-persistent completion and exit back to main menu.
 - [x] Smoke, layout, content-validation, unit, and save-persistence coverage.
 - [x] Tutorial report: `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`.
+- [x] v0.6 copy/layout/no-reward clarity polish.
+- [x] Test-only semantic command-log V1 for one tutorial completion smoke path.
+- [x] Tutorial accessibility checks for live-region semantics and explicit button labels.
+- [x] Desktop/2026 visual direction plan, planning only.
+- [x] v0.6 onboarding/testing report: `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`.
 
 Next phase:
 
-- **Human-paced Tutorial / Proving Grounds review and small tutorial polish.**
-- Best current work is copy clarity, overlay hierarchy, completion clarity, and real input feel. Do not add broad systems.
+- **Human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish.**
+- Best current work is real input feel, copy clarity, overlay hierarchy, completion clarity, and command-log stability review. Do not add broad systems.
 - v0.3.1 plan: `docs/V031_POLISH_PLAN.md`.
 - v0.3.1 release report: `docs/V031_POLISH_RELEASE_REPORT.md`.
 - v0.4 direction brief: `docs/V04_DIRECTION_BRIEF.md`.

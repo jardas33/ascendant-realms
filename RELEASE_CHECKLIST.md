@@ -45,9 +45,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-BArZgVc-.js, 459.27 kB / gzip 123.49 kB
+- app JS chunk: assets/index-DN-Hs_qy.js, 459.85 kB / gzip 123.62 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-EaFx5BCM.css, 43.77 kB / gzip 9.02 kB
+- CSS chunk: assets/index-BzEbtAWy.css, 44.19 kB / gzip 9.11 kB
 ```
 
 Known warning:
@@ -84,7 +84,7 @@ Expected current prototype result:
 PASS: 65 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The latest final tutorial-shell gate passed 65 tests in 28.5m.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The latest v0.6 command-log gate passed 65 tests in 28.8m.
 
 6. Optional CI sharded release gate:
 
@@ -111,7 +111,7 @@ npm run test:e2e:layout
 npm run test:e2e:deep
 ```
 
-`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability and the v0.6 overlay width guard across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
+`test:e2e:layout` runs responsive/mobile/readability coverage, including Tutorial / Proving Grounds overlay reachability, the v0.6 overlay width guard, and accessibility-era overlay layout checks across desktop, tablet, and mobile viewports. `test:e2e:deep` runs release-critical deep gameplay and save-flow coverage. These focused lanes are available for targeted work; they do not replace the full release gate.
 
 8. Deterministic playtest simulator:
 

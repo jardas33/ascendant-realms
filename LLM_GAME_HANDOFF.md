@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.6 tutorial e2e runtime review checkpoint
+Last updated: 2026-05-08 v0.6 tutorial onboarding report checkpoint
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -122,6 +122,16 @@ Phase 10 Desktop 2026 visual direction plan:
 - Recommended a future desktop prototype spike only after the browser gameplay, tutorial, save/content validation, command-log testing, performance, and originality direction are stronger.
 - This phase was planning only: no desktop packaging, engine switch, 3D rewrite, asset production dependency, external generated assets, paid APIs, gameplay behavior, save behavior, rewards, persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, or broad systems changed.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+- Commit: `b1cc95b Checkpoint desktop 2026 visual direction plan`.
+
+Phase 11 v0.6 tutorial/onboarding release report:
+
+- Added `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, and this handoff for the v0.6 onboarding/testing foundation.
+- Documented tutorial polish, overlay/accessibility improvements, no-reward policy, save/persistence safety, command-log V1 status, e2e lane impact, desktop future-direction planning, remaining risks, and the next recommended goal.
+- Current next recommended long-running goal: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish; do not add content or broad systems.
+- No gameplay behavior, save behavior, rewards, tutorial persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, multiplayer, or broad systems changed.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

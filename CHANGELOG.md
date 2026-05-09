@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.6 Tutorial Onboarding And Testing Foundation - 2026-05-08
+
+This checkpoint polishes and hardens the playable Tutorial / Proving Grounds shell while preserving the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, and no-reward tutorial policy. It does not add rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, campaign progression, or broad systems.
+
+### Included
+
+- Tutorial human-feel surrogate audit.
+- Tutorial copy tightening and hierarchy polish.
+- Mobile-short overlay width and footer layout polish.
+- Session-only no-reward completion notice on the main menu.
+- Tutorial e2e runtime placement review keeping full completion in smoke for now.
+- Test-only semantic command-log V1 helper used by exactly one tutorial completion smoke path.
+- Command-log V1 plan and report.
+- Tutorial accessibility checks for polite live-region semantics, described instruction/condition text, and explicit button labels.
+- Desktop/2026 visual-direction plan, planning only.
+- v0.6 onboarding/testing foundation report.
+
+### Verification
+
+- Phase 11 report gate passed before final full verification.
+- `npm test`: passed with 42 test files and 315 tests.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning.
+- `npm run validate:content`: passed.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.0m during the report gate.
+- `npm run test:e2e:layout`: passed with 25 Playwright tests in 12.5m after accessibility polish.
+- `npm run test:e2e:release`: passed with 65 Playwright tests in 28.8m after command-log V1.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes and no telemetry diff.
+- `git diff --check`: passed.
+
+### Next
+
+- Run final full verification for v0.6.
+- Recommended next long-running goal after the final gate: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish.
+- Keep command-log V1 test-only and at one consumer unless a concrete second test path needs it.
+- Continue postponing rewards, campaign integration, save persistence, new maps, new units, new factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, and broad systems until their gates are explicit and green.
+
 ## Tutorial / Proving Grounds Playable Shell - 2026-05-08
 
 This checkpoint implements the first playable Tutorial / Proving Grounds shell on top of the v0.5 safety gate. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content-validation gate. It does not add rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, campaign progression, or broad systems.

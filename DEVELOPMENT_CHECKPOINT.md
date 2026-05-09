@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 19:21:40 -04:00
+Updated: 2026-05-08 v0.6 tutorial onboarding report checkpoint
+
+## v0.6 Tutorial Onboarding Foundation Report Checkpoint - 2026-05-08
+
+Scope: checkpoint the v0.6 tutorial onboarding/testing foundation before the final full release-style verification. This pass preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, and no-reward playable Tutorial / Proving Grounds shell. It did not add maps, units, factions, rewards, save-version changes, tutorial persistence, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Included work:
+
+- Added the v0.6 tutorial feel audit.
+- Polished tutorial copy, overlay layout, no-reward completion clarity, and accessibility semantics.
+- Reviewed tutorial e2e lane placement and kept full completion in smoke while it remains near 5 minutes.
+- Added test-only semantic command-log V1 for exactly one tutorial completion smoke path.
+- Added command-log V1 plan and report.
+- Added desktop/2026 visual-direction planning without implementation.
+- Added `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`.
+
+Phase 11 report verification:
+
+```text
+npm test
+PASS: 42 test files, 315 tests, 11.35s.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-DN-Hs_qy.js, 459.85 kB minified / 123.62 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BzEbtAWy.css, 44.19 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.0m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Recommended next milestone after the final full gate: human-play Tutorial / Proving Grounds, then do only small v0.6.1 tutorial feel polish around real input feel, copy clarity, overlay hierarchy, completion clarity, and command-log stability review.
 
 ## Final Tutorial / Proving Grounds Playable Shell Gate - 2026-05-08 19:21:40 -04:00
 
