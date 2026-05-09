@@ -2,7 +2,9 @@ import type {
   BattleMapDefinition,
   CampaignNodeDefinition,
   EnemyAIPersonalityId,
+  EnemyStrategicPressurePlanDefinition,
   Position,
+  PressureStageDefinition,
   ResourceBag,
   StrongholdUpgradeId
 } from "../core/GameTypes";
@@ -29,7 +31,14 @@ import {
 } from "../data/aiPersonalities";
 import { FIRST_MATCH_TUTORIAL_PROTECTION, getBattleDifficulty, getBattlePhase } from "../data/battlePacing";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
-import { requireBuilding, requireCampaignNode, requireEnemyHero, requireUnit, requireUpgrade } from "../data/contentIndex";
+import {
+  ENEMY_PRESSURE_PLAN_BY_ID,
+  requireBuilding,
+  requireCampaignNode,
+  requireEnemyHero,
+  requireUnit,
+  requireUpgrade
+} from "../data/contentIndex";
 import { getStrongholdBattleEffects, strongholdLaunchModifierId, STRONGHOLD_UPGRADE_BY_ID } from "../data/strongholdUpgrades";
 import { createFallbackCampaignSave } from "../save/SaveDefaults";
 import type { CampaignRivalSaveData, HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
@@ -78,6 +87,11 @@ interface CapturedSite {
   nextIncomeAt: number;
 }
 
+interface PendingPressureStage {
+  stage: PressureStageDefinition;
+  fireAtSeconds: number;
+}
+
 interface BattleDriverState {
   node: CampaignNodeDefinition;
   map: BattleMapDefinition;
@@ -99,6 +113,10 @@ interface BattleDriverState {
   completedBuildings: string[];
   researchedUpgrades: string[];
   pendingContacts: PendingEnemyContact[];
+  pressurePlan?: EnemyStrategicPressurePlanDefinition;
+  triggeredPressureStageIds: string[];
+  completedPressureStageIds: string[];
+  pendingPressureStages: PendingPressureStage[];
   nextEnemyTrainAt: number;
   nextEnemyWaveAt: number;
   nextUnitPlanIndex: number;
@@ -146,8 +164,8 @@ export function runScriptedPlaytestSuite(options: {
     return scripts.map((scriptId) => runScriptedBattlePlaytest({ scenario, scriptId, strongholdPlan }));
   });
   return {
-    schemaVersion: 2,
-    generatedBy: "Ascendant Realms deterministic scripted playtest v2",
+    schemaVersion: 3,
+    generatedBy: "Ascendant Realms deterministic scripted playtest v3",
     telemetry,
     analysis: analyzePlaytestTelemetry(telemetry)
   };
@@ -294,6 +312,23 @@ function deployableRetinueForProfile(
   return retinueUnits.filter((unit) => unit.status === "active").slice(0, capacity);
 }
 
+function resolveSimulationPressurePlan(
+  node: CampaignNodeDefinition,
+  map: BattleMapDefinition
+): EnemyStrategicPressurePlanDefinition | undefined {
+  if (!node.enemyPressurePlanId) {
+    return undefined;
+  }
+  const plan = ENEMY_PRESSURE_PLAN_BY_ID[node.enemyPressurePlanId];
+  if (!plan || plan.scope !== "campaign_node" || !plan.enabledByDefault) {
+    return undefined;
+  }
+  if (!plan.allowedNodeIds.includes(node.id) || !plan.allowedMapIds.includes(map.id)) {
+    return undefined;
+  }
+  return plan;
+}
+
 
 class ScriptedBattleDriver implements PlaytestStrategyDriver {
   private readonly state: BattleDriverState;
@@ -327,6 +362,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
     options.strongholdPlan.retinueUnits.forEach((unit) => {
       startingUnits[unit.unitTypeId] = (startingUnits[unit.unitTypeId] ?? 0) + 1;
     });
+    const pressurePlan = resolveSimulationPressurePlan(options.node, options.map);
     const retinueStrengthBonus = options.strongholdPlan.retinueUnits.reduce(
       (total, unit) => total + retinueStrengthBonusForUnit(unit),
       0
@@ -353,6 +389,10 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       completedBuildings: ["command_hall"],
       researchedUpgrades: [],
       pendingContacts: [],
+      pressurePlan,
+      triggeredPressureStageIds: [],
+      completedPressureStageIds: [],
+      pendingPressureStages: [],
       nextEnemyTrainAt: enemyConfig.trainInterval,
       nextEnemyWaveAt: firstAttackTime(options.node, enemyConfig.initialAttackDelay),
       nextUnitPlanIndex: 0,
@@ -395,6 +435,12 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
         timeFirstUnitTrained: null,
         timeFirstEnemyWarning: null,
         timeFirstEnemyContact: null,
+        enemyPressurePlanId: pressurePlan?.id ?? null,
+        triggeredStages: [],
+        reinforcementApplied: false,
+        firstPressureTime: null,
+        pressureWarningsShown: 0,
+        lossesAfterPressure: 0,
         firstWaveSurvived: false,
         unitsTrained: 0,
         unitsLost: 0,
@@ -447,6 +493,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
     this.state.telemetry.timeFirstSiteCaptured ??= Math.round(this.state.time);
     this.log(`captured ${site.name}`);
     this.applyFirstCaptureBonus(site);
+    this.recordEnemyPressureCapture(site.id);
   }
 
   moveHeroAndUnitsToPreferredCapturePoint(options: { preferredIds?: string[]; resources?: Array<keyof ResourceBag> }): void {
@@ -536,6 +583,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
     this.state.telemetry.unitsTrained += 1;
     this.state.telemetry.timeFirstUnitTrained ??= Math.round(this.state.time);
     this.log(`trained ${unit.name}`);
+    this.recordEnemyPressureUnitTrained(unitId);
     return true;
   }
 
@@ -599,6 +647,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       this.defeatEnemyHeroIfPresent();
       this.completeSecondaryObjectivesForVictory();
       this.log("destroyed enemy Stronghold");
+      this.recordEnemyPressureStructureDestroyed("enemy_stronghold");
       return;
     }
 
@@ -710,6 +759,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       this.completeReadyBuildings();
       this.updateEnemyTraining();
       this.updateEnemyWarning();
+      this.updateEnemyPressure();
       this.updateEnemyWaves();
       this.resolveEnemyContacts();
     }
@@ -786,6 +836,162 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       this.state.telemetry.timeFirstEnemyWarning = Math.round(this.state.time);
       this.log("enemy forces warning");
     }
+  }
+
+  private updateEnemyPressure(): void {
+    const plan = this.state.pressurePlan;
+    if (!plan) {
+      return;
+    }
+    plan.stages.forEach((stage) => {
+      if (this.state.triggeredPressureStageIds.includes(stage.id)) {
+        return;
+      }
+      if (this.isPressureTimeTriggerReady(stage)) {
+        this.queueEnemyPressureStage(stage);
+      }
+    });
+    this.flushEnemyPressureStages();
+  }
+
+  private recordEnemyPressureCapture(captureSiteId: string): void {
+    const plan = this.state.pressurePlan;
+    if (!plan) {
+      return;
+    }
+    plan.stages.forEach((stage) => {
+      if (
+        stage.trigger.type === "player_captures_site" &&
+        stage.trigger.captureSiteId === captureSiteId &&
+        !this.state.triggeredPressureStageIds.includes(stage.id)
+      ) {
+        this.queueEnemyPressureStage(stage);
+      }
+    });
+  }
+
+  private recordEnemyPressureStructureDestroyed(buildingId: string): void {
+    const plan = this.state.pressurePlan;
+    if (!plan) {
+      return;
+    }
+    plan.stages.forEach((stage) => {
+      if (
+        stage.trigger.type === "player_destroys_structure" &&
+        stage.trigger.buildingId === buildingId &&
+        !this.state.triggeredPressureStageIds.includes(stage.id)
+      ) {
+        this.queueEnemyPressureStage(stage);
+      }
+    });
+  }
+
+  private recordEnemyPressureUnitTrained(unitId: string): void {
+    const plan = this.state.pressurePlan;
+    if (!plan || this.state.telemetry.unitsTrained !== 1) {
+      return;
+    }
+    plan.stages.forEach((stage) => {
+      const matchesUnit = !stage.trigger.unitIds || stage.trigger.unitIds.includes(unitId);
+      if (
+        stage.trigger.type === "player_trains_first_army_unit" &&
+        matchesUnit &&
+        !this.state.triggeredPressureStageIds.includes(stage.id)
+      ) {
+        this.queueEnemyPressureStage(stage);
+      }
+    });
+  }
+
+  private recordEnemyPressureEnemyHeroDefeated(enemyHeroId: string): void {
+    const plan = this.state.pressurePlan;
+    if (!plan) {
+      return;
+    }
+    plan.stages.forEach((stage) => {
+      const matchesHero = !stage.trigger.enemyHeroId || stage.trigger.enemyHeroId === enemyHeroId;
+      if (
+        stage.trigger.type === "enemy_hero_defeated" &&
+        matchesHero &&
+        !this.state.triggeredPressureStageIds.includes(stage.id)
+      ) {
+        this.queueEnemyPressureStage(stage);
+      }
+    });
+  }
+
+  private isPressureTimeTriggerReady(stage: PressureStageDefinition): boolean {
+    if (stage.trigger.type === "battle_start_time") {
+      return this.state.time >= (stage.battleTimeSeconds ?? stage.delaySeconds ?? 0);
+    }
+    if (stage.trigger.type === "late_battle_time") {
+      return this.state.time >= (stage.battleTimeSeconds ?? Number.POSITIVE_INFINITY);
+    }
+    return false;
+  }
+
+  private queueEnemyPressureStage(stage: PressureStageDefinition): void {
+    if (this.state.triggeredPressureStageIds.includes(stage.id)) {
+      return;
+    }
+    this.state.triggeredPressureStageIds.push(stage.id);
+    this.state.pendingPressureStages.push({
+      stage,
+      fireAtSeconds: this.state.time + (stage.delaySeconds ?? 0)
+    });
+    this.flushEnemyPressureStages();
+  }
+
+  private flushEnemyPressureStages(): void {
+    const ready = this.state.pendingPressureStages.filter((entry) => entry.fireAtSeconds <= this.state.time);
+    if (ready.length === 0) {
+      return;
+    }
+    this.state.pendingPressureStages = this.state.pendingPressureStages.filter((entry) => entry.fireAtSeconds > this.state.time);
+    ready.forEach((entry) => this.completeEnemyPressureStage(entry.stage));
+  }
+
+  private completeEnemyPressureStage(stage: PressureStageDefinition): void {
+    if (this.state.completedPressureStageIds.includes(stage.id) || !this.isPressureConditionMet(stage)) {
+      return;
+    }
+    this.state.completedPressureStageIds.push(stage.id);
+    this.state.telemetry.triggeredStages.push(stage.id);
+    this.state.telemetry.firstPressureTime ??= Math.round(this.state.time);
+    if (stage.warningCopy) {
+      this.state.telemetry.pressureWarningsShown += 1;
+      this.log(`enemy pressure warning: ${stage.warningCopy}`);
+    }
+    if (this.applyEnemyPressureAction(stage)) {
+      this.state.telemetry.reinforcementApplied = true;
+    }
+  }
+
+  private isPressureConditionMet(stage: PressureStageDefinition): boolean {
+    const condition = stage.condition;
+    if (!condition) {
+      return true;
+    }
+    if (condition.type === "stage_completed") {
+      return Boolean(condition.stageId && this.state.completedPressureStageIds.includes(condition.stageId));
+    }
+    if (condition.type === "capture_site_not_enemy_owned") {
+      return Boolean(condition.captureSiteId && this.hasCaptured(condition.captureSiteId));
+    }
+    return true;
+  }
+
+  private applyEnemyPressureAction(stage: PressureStageDefinition): boolean {
+    if (stage.action.type === "adjust_next_wave_timing" && Number.isFinite(stage.action.seconds)) {
+      const previousWaveAt = this.state.nextEnemyWaveAt;
+      this.state.nextEnemyWaveAt = Math.max(this.state.time, this.state.nextEnemyWaveAt + (stage.action.seconds ?? 0));
+      if (this.state.nextEnemyWaveAt !== previousWaveAt) {
+        this.log(`enemy pressure adjusted next wave timing by ${stage.action.seconds}s`);
+      }
+    }
+    // Reinforcement, contest, and defensive-hold stages stay telemetry/copy-only in the
+    // simulator, matching the live V1 runtime's no-construction/no-worker safety gate.
+    return false;
   }
 
   private updateEnemyWaves(): void {
@@ -978,6 +1184,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
       return;
     }
     this.state.telemetry.enemyHeroDefeated = true;
+    this.recordEnemyPressureEnemyHeroDefeated(this.state.node.enemyHeroId);
     const index = this.state.enemyArmy.indexOf("enemy_commander");
     if (index >= 0) {
       this.state.enemyArmy.splice(index, 1);
@@ -1034,6 +1241,7 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
 
   private loseUnits(count: number): void {
     let remaining = count;
+    const lossesBefore = this.state.telemetry.unitsLost;
     const lossOrder = ["militia", "ranger", "acolyte"];
     lossOrder.forEach((unitId) => {
       while (remaining > 0 && (this.state.playerUnits[unitId] ?? 0) > 0) {
@@ -1042,6 +1250,10 @@ class ScriptedBattleDriver implements PlaytestStrategyDriver {
         this.state.telemetry.unitsLost += 1;
       }
     });
+    const losses = this.state.telemetry.unitsLost - lossesBefore;
+    if (losses > 0 && this.state.telemetry.triggeredStages.length > 0) {
+      this.state.telemetry.lossesAfterPressure += losses;
+    }
   }
 
   private trainBestAvailableUnit(): boolean {

@@ -1,6 +1,7 @@
 import type {
   BattleDifficulty,
   CampaignModifierId,
+  EnemyStrategicPressurePlanId,
   EnemyAIPersonalityId,
   Position,
   ResourceBag,
@@ -84,6 +85,12 @@ export interface PlaytestTelemetry {
   timeFirstUnitTrained: number | null;
   timeFirstEnemyWarning: number | null;
   timeFirstEnemyContact: number | null;
+  enemyPressurePlanId: EnemyStrategicPressurePlanId | null;
+  triggeredStages: string[];
+  reinforcementApplied: boolean;
+  firstPressureTime: number | null;
+  pressureWarningsShown: number;
+  lossesAfterPressure: number;
   firstWaveSurvived: boolean;
   unitsTrained: number;
   unitsLost: number;
@@ -155,13 +162,14 @@ export interface PlaytestAnalysis {
   weakRewardNodes: string[];
   ashenOutpostBeatable: boolean;
   strongholdWarnings: string[];
+  enemyPressureWarnings: string[];
   suggestedTuningChanges: string[];
   strongholdProfileSummaries: PlaytestStrongholdProfileSummary[];
   nodeSummaries: PlaytestNodeSummary[];
 }
 
 export interface PlaytestReport {
-  schemaVersion: 2;
+  schemaVersion: 3;
   generatedBy: string;
   telemetry: PlaytestTelemetry[];
   analysis: PlaytestAnalysis;

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure runtime gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure simulator gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -87,6 +87,17 @@ Phase 6 enemy pressure feedback:
 - Added `ResultsFlow` coverage for pressure-triggered Cinderfen Watch advice.
 - Tutorial remains protected because Tutorial / Proving Grounds cannot create the pressure runtime.
 - Verification: focused `npm test -- src/game/core/ResultsFlow.test.ts src/game/battle/EnemyPressureRuntime.test.ts` PASS, 15 tests; `npm test` PASS, 44 files / 327 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `git diff --check` PASS.
+
+Phase 7 playtest simulator integration:
+
+- Bumped scripted playtest report schema to version 3 and updated `generatedBy` to `Ascendant Realms deterministic scripted playtest v3`.
+- Added simulator telemetry for `enemyPressurePlanId`, `triggeredStages`, `reinforcementApplied`, `firstPressureTime`, `pressureWarningsShown`, and `lossesAfterPressure`.
+- The scripted driver now resolves pressure only from explicit campaign node attachments, mirrors capture-site, first-unit, structure-destroyed, enemy-hero-defeated, and battle-time triggers, and applies the same safe `adjust_next_wave_timing` nudge as live runtime.
+- `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only in simulator output; no new units, workers, construction, economy simulation, or route/pathing behavior was added.
+- Analyzer/report output now separates baseline no-pressure runs from pressure-enabled Cinderfen Crossing and Cinderfen Watch runs and warns if pressure is trivial, invisible, or structurally too punishing.
+- Regenerated `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
+- Current telemetry: 255 runs across 85 campaign battle node/profile summaries; 180 baseline runs without pressure; 75 pressure-enabled Cinderfen runs; 63 pressure runs triggered at least one stage; 149 pressure warnings; 0 simulated reinforcement applications; 147 unit losses after pressure; no enemy-pressure analyzer warnings.
+- Verification: focused `npm test -- src/game/playtest/ScriptedBattlePlaytest.test.ts` PASS, 14 tests; `npm test` PASS, 44 files / 328 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-B8rnpsai.js`, 476.13 kB / gzip 127.51 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 

@@ -32,6 +32,7 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push(listLine("Useful rewards observed", report.analysis.usefulRewardNodes));
   lines.push(`- Ashen Outpost beatable: ${report.analysis.ashenOutpostBeatable ? "yes" : "no"}`);
   lines.push(listLine("Stronghold warnings", report.analysis.strongholdWarnings));
+  lines.push(listLine("Enemy pressure warnings", report.analysis.enemyPressureWarnings));
   lines.push("");
   lines.push("## Tuning Applied");
   lines.push("");
@@ -58,10 +59,15 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("- The post-Waystation/Watchpost balance pass keeps Chapter 2 enemy pacing unchanged, lowers Shrine Attunement to 12 Aether, trims Cinderfen Watchpost first-clear rewards, and reduces Watchpost repeat-clear payout.");
   lines.push("- The Chapter 2 reward-economy audit keeps Cinderfen first-clear rewards unchanged, but makes Cinderfen battle item rolls and base battle XP/resources first-clear-only so repeat clears pay only the tiny repeat bonus.");
   lines.push("- Cinderfen-specific defeat tips now point players toward side income, the Cinder Shrine, Cinder Guardians, and Enemy Barracks sequencing before generic retry advice.");
+  lines.push("- Enemy Strategic Pressure V1 telemetry now tracks scoped pressure plan ids, triggered stages, warning counts, next-wave timing adjustments, and losses after pressure without modeling workers, construction, economy, or new units.");
   lines.push("");
   lines.push("## Chapter 2 Balance Pass Result");
   lines.push("");
   renderChapterTwoBalanceLines(report.telemetry).forEach((line) => lines.push(line));
+  lines.push("");
+  lines.push("## Enemy Strategic Pressure Telemetry Read");
+  lines.push("");
+  renderEnemyPressureTelemetryLines(report.telemetry).forEach((line) => lines.push(line));
   lines.push("");
   lines.push("## Current Enemy Hero Telemetry Read");
   lines.push("");
@@ -135,14 +141,14 @@ export function renderPlaytestMarkdownReport(report: PlaytestReport): string {
   lines.push("## Scenario Runs");
   lines.push("");
   lines.push(
-    "| Profile | Chapter | Node | Script | Upgrades | Retinue | Enemy hero | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
+    "| Profile | Chapter | Node | Script | Upgrades | Retinue | Enemy hero | Enemy pressure | Launch effects | Starting units | Starting resources | Result | Duration | First wave | Floated resources | Objectives | Rewards |"
   );
-  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
+  lines.push("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---: | --- | --- | --- | --- |");
   report.telemetry.forEach((run) => {
     lines.push(
       `| ${run.strongholdProfileName} | ${formatChapterLabel(run.nodeId)} | ${run.nodeName} | ${formatScriptName(run.playerScript)} | ${formatUpgradeList(
         run.strongholdUpgradeIds
-      )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatEnemyHeroTelemetry(run)} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
+      )} | ${run.retinueUnits.length > 0 ? run.retinueUnits.join(", ") : "-"} | ${formatEnemyHeroTelemetry(run)} | ${formatEnemyPressureTelemetry(run)} | ${formatStrongholdEffectTelemetry(run.strongholdEffects)} | ${formatUnitCounts(run.startingUnits)} | ${formatResources(
         run.startingResources
       )} | ${run.battleResult} | ${formatTime(run.battleDurationSeconds)} | ${
         run.firstWaveSurvived ? "yes" : "no"
@@ -183,6 +189,40 @@ function formatReward(reward: PlaytestRewardTelemetry | null): string {
     Object.values(reward.battleResources).reduce((total, amount) => total + (amount ?? 0), 0) +
     Object.values(reward.campaignResources).reduce((total, amount) => total + (amount ?? 0), 0);
   return `${reward.battleXp + reward.campaignXp} XP, ${resourceTotal} resources${itemText ? `, ${itemText}` : ""}`;
+}
+
+function renderEnemyPressureTelemetryLines(runs: PlaytestTelemetry[]): string[] {
+  const pressureRuns = runs.filter((run) => run.enemyPressurePlanId);
+  const baselineRuns = runs.length - pressureRuns.length;
+  const triggeredRuns = pressureRuns.filter((run) => run.triggeredStages.length > 0);
+  const warningCount = pressureRuns.reduce((total, run) => total + run.pressureWarningsShown, 0);
+  const lossesAfterPressure = pressureRuns.reduce((total, run) => total + run.lossesAfterPressure, 0);
+  const reinforcementRuns = pressureRuns.filter((run) => run.reinforcementApplied).length;
+  const lines: string[] = [];
+  lines.push(
+    `- Baseline without pressure: ${baselineRuns} runs. Pressure-enabled Cinderfen runs: ${pressureRuns.length}; ${triggeredRuns.length} triggered at least one stage.`
+  );
+  lines.push(
+    `- Pressure feedback: ${warningCount} warnings shown, ${reinforcementRuns} simulated reinforcement applications, ${lossesAfterPressure} player unit losses after pressure triggered.`
+  );
+  uniqueValues(pressureRuns.map((run) => run.enemyPressurePlanId).filter((planId): planId is string => Boolean(planId))).forEach(
+    (planId) => {
+      const planRuns = pressureRuns.filter((run) => run.enemyPressurePlanId === planId);
+      const stageIds = uniqueValues(planRuns.flatMap((run) => run.triggeredStages));
+      lines.push(
+        `- ${planId}: ${planRuns.length} runs, ${planRuns.filter((run) => run.triggeredStages.length > 0).length} triggered, first pressure ${formatAverageTime(
+          planRuns.map((run) => run.firstPressureTime)
+        )}, warnings ${planRuns.reduce((total, run) => total + run.pressureWarningsShown, 0)}, losses after pressure ${planRuns.reduce(
+          (total, run) => total + run.lossesAfterPressure,
+          0
+        )}, stages ${stageIds.length > 0 ? stageIds.join(", ") : "none"}.`
+      );
+    }
+  );
+  lines.push(
+    "- Reinforcement, contest, and defensive-hold stages remain telemetry/copy-only in V1; the simulator only applies the safe next-wave timing adjustment already mirrored by the live runtime."
+  );
+  return lines;
 }
 
 
@@ -316,6 +356,18 @@ function formatEnemyHeroTelemetry(run: PlaytestTelemetry): string {
   const reward = run.rivalFirstDefeatRewardEarned ? ", one-time reward" : run.rivalDuplicateRewardPrevented ? ", duplicate prevented" : "";
   const trophy = run.rivalTrophyEarned ? `, trophy ${run.rivalTrophyEarned}` : "";
   return `${run.enemyHeroId} ${defeated}, ${joined}${losses}${rival}${reward}${trophy}`;
+}
+
+function formatEnemyPressureTelemetry(run: PlaytestTelemetry): string {
+  if (!run.enemyPressurePlanId) {
+    return "-";
+  }
+  if (run.triggeredStages.length === 0) {
+    return `${run.enemyPressurePlanId} not triggered`;
+  }
+  const first = run.firstPressureTime === null ? "time -" : `first ${formatTime(run.firstPressureTime)}`;
+  const losses = run.lossesAfterPressure > 0 ? `, losses ${run.lossesAfterPressure}` : "";
+  return `${run.enemyPressurePlanId}: ${run.triggeredStages.join(", ")}, ${first}, warnings ${run.pressureWarningsShown}${losses}`;
 }
 
 function listLine(label: string, values: string[]): string {

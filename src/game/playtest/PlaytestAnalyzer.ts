@@ -41,6 +41,7 @@ export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAna
   const ashenOutpostBeatable = runs.some((run) => run.nodeId === "ashen_outpost" && run.battleResult === "victory");
   const strongholdProfileSummaries = summarizeStrongholdProfiles(runs);
   const strongholdWarnings = strongholdProfileSummaries.flatMap((summary) => summary.warnings);
+  const enemyPressureWarnings = buildEnemyPressureWarnings(runs, nodeSummaries);
 
   return {
     tooEasyNodes: [...new Set(tooEasyNodes)],
@@ -53,6 +54,7 @@ export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAna
     weakRewardNodes: [...new Set(weakRewardNodes)],
     ashenOutpostBeatable,
     strongholdWarnings,
+    enemyPressureWarnings,
     suggestedTuningChanges: buildSuggestedTuningChanges({
       nodeSummaries,
       tooEasyNodes,
@@ -61,7 +63,8 @@ export function analyzePlaytestTelemetry(runs: PlaytestTelemetry[]): PlaytestAna
       barracksLateBeforePressure,
       weakRewardNodes,
       ashenOutpostBeatable,
-      strongholdWarnings
+      strongholdWarnings,
+      enemyPressureWarnings
     }),
     strongholdProfileSummaries,
     nodeSummaries
@@ -279,6 +282,7 @@ function buildSuggestedTuningChanges(input: {
   weakRewardNodes: string[];
   ashenOutpostBeatable: boolean;
   strongholdWarnings: string[];
+  enemyPressureWarnings: string[];
 }): string[] {
   const suggestions: string[] = [];
   const humanReviewNodes = input.nodeSummaries
@@ -318,8 +322,44 @@ function buildSuggestedTuningChanges(input: {
     suggestions.push("Ashen Outpost was not beaten by the scripted suite; inspect fortress assault requirements before any deeper structural tuning.");
   }
   input.strongholdWarnings.forEach((warning) => suggestions.push(warning));
+  input.enemyPressureWarnings.forEach((warning) => suggestions.push(warning));
   suggestions.push("Use this bot to guide conservative numeric passes, and reserve deeper map or objective changes for a later review.");
   return suggestions;
+}
+
+function buildEnemyPressureWarnings(runs: PlaytestTelemetry[], nodeSummaries: PlaytestNodeSummary[]): string[] {
+  const pressureRuns = runs.filter((run) => run.enemyPressurePlanId);
+  if (pressureRuns.length === 0) {
+    return [];
+  }
+  return uniqueValues(
+    pressureRuns
+      .map((run) => run.enemyPressurePlanId)
+      .filter((planId): planId is string => Boolean(planId))
+  ).flatMap((planId) => {
+    const planRuns = pressureRuns.filter((run) => run.enemyPressurePlanId === planId);
+    const warnings: string[] = [];
+    const triggeredRuns = planRuns.filter((run) => run.triggeredStages.length > 0);
+    if (triggeredRuns.length === 0) {
+      warnings.push(`${planId}: pressure trivial risk; no simulated stages triggered.`);
+    }
+    if (triggeredRuns.length > 0 && triggeredRuns.every((run) => run.pressureWarningsShown === 0)) {
+      warnings.push(`${planId}: pressure invisible risk; stages triggered without warning telemetry.`);
+    }
+    const tooHardSummaries = nodeSummaries.filter(
+      (summary) =>
+        summary.verdict === "too_hard" &&
+        planRuns.some((run) => run.nodeId === summary.nodeId && run.strongholdProfileId === summary.strongholdProfileId)
+    );
+    if (tooHardSummaries.length > 0) {
+      warnings.push(
+        `${planId}: pressure too-punishing risk; structural too-hard appeared on ${tooHardSummaries
+          .map(formatSummaryLabel)
+          .join(", ")}.`
+      );
+    }
+    return warnings;
+  });
 }
 
 function safeBeginnerWon(runs: PlaytestTelemetry[]): boolean {

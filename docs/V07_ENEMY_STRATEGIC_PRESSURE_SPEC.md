@@ -2,7 +2,7 @@
 
 Date: 2026-05-09
 
-Status: Phase 2 design spec. This document defines the planned v0.7 system shape before implementation. It does not add runtime behavior, source types, content validation, simulator changes, balance changes, campaign progression, rewards, maps, units, factions, workers, real enemy construction, enemy economy, or save changes.
+Status: Phase 7 simulator checkpoint. The implemented V1 scope is data-driven pressure metadata, validation, campaign-only runtime warning/telemetry, one safe next-wave timing adjustment, small defeat-tip feedback, and simulator telemetry. It still does not add workers, real enemy construction, new maps, new units, new factions, dynamic enemy economy, save fields, save-version changes, campaign reward changes, tutorial rewards, or broad systems.
 
 ## Purpose
 
@@ -396,3 +396,17 @@ Phase 6 keeps player feedback intentionally small:
 - Defeat tips now add one pressure-specific retry note only when pressure actually triggered during the battle.
 
 The result is readable but quiet: players get the warning during the fight and a short retry hint after a pressure-influenced defeat, without adding persistent UI or new tutorial/campaign behavior.
+
+## Phase 7 Simulator Checkpoint
+
+Phase 7 mirrors V1 pressure in the deterministic playtest simulator:
+
+- `PlaytestTelemetry` schema version 3 now records `enemyPressurePlanId`, `triggeredStages`, `reinforcementApplied`, `firstPressureTime`, `pressureWarningsShown`, and `lossesAfterPressure`.
+- The simulator resolves pressure only from explicit campaign node attachments and fails closed for non-pressure nodes.
+- Capture-site, first-trained-unit, structure-destroyed, enemy-hero-defeated, and battle-time triggers are represented in the scripted driver.
+- `adjust_next_wave_timing` applies the same safe next-wave timing nudge as the live runtime.
+- `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only in simulator output, matching the live V1 safety gate.
+- Analyzer output now warns if pressure never triggers, becomes invisible, or coincides with structural too-hard summaries.
+- `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json` now separate baseline no-pressure runs from pressure-enabled Cinderfen Crossing and Cinderfen Watch runs.
+
+Current generated telemetry shows 180 baseline runs without pressure, 75 pressure-enabled Cinderfen runs, 63 runs with at least one triggered pressure stage, 149 pressure warnings, 0 simulated reinforcement applications, and no enemy-pressure analyzer warnings.

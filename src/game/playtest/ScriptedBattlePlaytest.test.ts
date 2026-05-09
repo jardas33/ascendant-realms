@@ -57,11 +57,12 @@ describe("ScriptedBattlePlaytest", () => {
     expect(DEFAULT_PLAYTEST_SCENARIOS).toHaveLength(7);
     expect(DEFAULT_PLAYTEST_SCRIPTS).toEqual(["safe_beginner", "greedy_economy", "fast_army"]);
     expect(DEFAULT_PLAYTEST_STRONGHOLD_PROFILES).toHaveLength(13);
-    expect(report.schemaVersion).toBe(2);
-    expect(report.generatedBy).toBe("Ascendant Realms deterministic scripted playtest v2");
+    expect(report.schemaVersion).toBe(3);
+    expect(report.generatedBy).toBe("Ascendant Realms deterministic scripted playtest v3");
     expect(report.analysis.tooEasyNodes).toEqual([]);
     expect(report.analysis.tooHardNodes).toEqual([]);
     expect(report.analysis.strongholdWarnings).toEqual([]);
+    expect(report.analysis.enemyPressureWarnings).toEqual([]);
     report.telemetry.forEach((run) => {
       expect(run.nodeId).toBeTruthy();
       expect(run.nodeName).toBeTruthy();
@@ -69,6 +70,9 @@ describe("ScriptedBattlePlaytest", () => {
       expect(run.aiPersonality).toBeTruthy();
       expect(run.playerScript).toBeTruthy();
       expect(run.strongholdProfileId).toBeTruthy();
+      expect(Array.isArray(run.triggeredStages)).toBe(true);
+      expect(Number.isInteger(run.pressureWarningsShown)).toBe(true);
+      expect(Number.isInteger(run.lossesAfterPressure)).toBe(true);
       expect(run.commandLog.length).toBeGreaterThan(0);
       expect(Array.isArray(run.structuralNotes)).toBe(true);
       if (run.rewardResult) {
@@ -113,6 +117,34 @@ describe("ScriptedBattlePlaytest", () => {
 
     expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("captured Cinder Shrine")]));
     expect(run.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("Cinder Shrine Surge: 20 Aether")]));
+  });
+
+  it("records scoped enemy strategic pressure telemetry for the Cinderfen battles", () => {
+    const crossing = runScriptedBattlePlaytest({
+      scenario: { nodeId: "cinderfen_crossing", expectedDifficulty: "normal" },
+      scriptId: "greedy_economy"
+    });
+    const watch = runScriptedBattlePlaytest({
+      scenario: { nodeId: "cinderfen_watch", expectedDifficulty: "normal" },
+      scriptId: "safe_beginner"
+    });
+    const oldRoad = runScriptedBattlePlaytest({
+      scenario: { nodeId: "old_stone_road", expectedDifficulty: "easy" },
+      scriptId: "safe_beginner"
+    });
+
+    expect(crossing.enemyPressurePlanId).toBe("causeway_contest_pressure");
+    expect(crossing.triggeredStages).toEqual(expect.arrayContaining(["shrine_route_warning", "causeway_contest"]));
+    expect(crossing.firstPressureTime).toBeGreaterThan(0);
+    expect(crossing.pressureWarningsShown).toBeGreaterThan(0);
+    expect(crossing.reinforcementApplied).toBe(false);
+    expect(crossing.commandLog).toEqual(expect.arrayContaining([expect.stringContaining("enemy pressure warning")]));
+    expect(watch.enemyPressurePlanId).toBe("ashen_watch_captain_pressure");
+    expect(watch.triggeredStages).toEqual(expect.arrayContaining(["watch_road_response", "watch_road_reinforcement"]));
+    expect(watch.pressureWarningsShown).toBeGreaterThan(0);
+    expect(oldRoad.enemyPressurePlanId).toBeNull();
+    expect(oldRoad.triggeredStages).toEqual([]);
+    expect(oldRoad.pressureWarningsShown).toBe(0);
   });
 
   it("models the Cinderfen Waystation Shrine Attunement service in the simulator", () => {
@@ -186,6 +218,7 @@ describe("ScriptedBattlePlaytest", () => {
     expect(analysis.nodeSummaries).toHaveLength(1);
     expect(analysis.suggestedTuningChanges.length).toBeGreaterThan(0);
     expect(markdown).toContain("# Automated Playtest Telemetry");
+    expect(markdown).toContain("Enemy Strategic Pressure Telemetry Read");
     expect(markdown).toContain("## Suggested Tuning Changes");
     expect(markdown).toContain("Ashen Outpost");
   });
@@ -341,6 +374,10 @@ function summarizeDeterminism(report: ReturnType<typeof runScriptedPlaytestSuite
       battleDurationSeconds: run.battleDurationSeconds,
       unitsTrained: run.unitsTrained,
       unitsLost: run.unitsLost,
+      enemyPressurePlanId: run.enemyPressurePlanId,
+      triggeredStages: run.triggeredStages,
+      pressureWarningsShown: run.pressureWarningsShown,
+      lossesAfterPressure: run.lossesAfterPressure,
       finalArmySize: run.finalArmySize,
       commandLog: run.commandLog,
       structuralNotes: run.structuralNotes,
@@ -350,6 +387,7 @@ function summarizeDeterminism(report: ReturnType<typeof runScriptedPlaytestSuite
       tooEasyNodes: report.analysis.tooEasyNodes,
       tooHardNodes: report.analysis.tooHardNodes,
       strongholdWarnings: report.analysis.strongholdWarnings,
+      enemyPressureWarnings: report.analysis.enemyPressureWarnings,
       nodeSummaries: report.analysis.nodeSummaries.map((summary) => ({
         strongholdProfileId: summary.strongholdProfileId,
         nodeId: summary.nodeId,
