@@ -215,3 +215,16 @@ Proceed to Phase 3 after copy polish to decide whether the shared status line ne
 ## Phase 2 Copy Polish Note
 
 Phase 2 updated player-facing pressure copy to name the route and state the practical consequence without implying real enemy construction, live reinforcement, or capture-site contest AI. The new copy favors "expect faster pressure," "keep income protected," "hold the route," and "break the next wave" over technical or system-facing language.
+
+## Phase 6 Balance Review Note
+
+No tuning was applied in Phase 6. Regenerated telemetry still reports 255 runs, 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 149 pressure warnings, 0 simulated reinforcement applications, no enemy-pressure analyzer warnings, no structural `too_easy` nodes, and no structural `too_hard` nodes.
+
+The pressure pattern remains fair enough for v0.7.1:
+
+- Cinderfen Crossing stays at 26 wins / 0 defeats / 13 timeouts, with Fast Army bypassing most shrine pressure but not creating a reward or difficulty reason to buff the plan.
+- Cinderfen Watch stays at 25 wins / 0 defeats / 11 timeouts, with 36/36 pressure triggers and no defeat spike.
+- Greedy Economy remains timeout-prone across pressure nodes, but the failures are pacing/readability signals rather than pressure-caused defeats.
+- Retinue + Training Yard II still trivializes many Cinderfen risks, but that strength predates pressure and should be handled through human retinue/Stronghold review, not by making enemy pressure harsher.
+
+The correct v0.7.1 decision is to keep pressure scope, timings, and the next-wave timing nudge unchanged while improving warning readability, status salience, report clarity, and human-review guidance.

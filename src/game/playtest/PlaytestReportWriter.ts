@@ -255,7 +255,7 @@ function renderEnemyPressureBalanceGateLines(report: PlaytestReport): string[] {
   const reinforcementRuns = pressureRuns.filter((run) => run.reinforcementApplied).length;
 
   return [
-    `- Phase 9 applies no tuning. The analyzer reports ${noneOr(report.analysis.enemyPressureWarnings)} enemy-pressure warnings, ${noneOr(
+    `- v0.7.1 applies no balance tuning. The analyzer reports ${noneOr(report.analysis.enemyPressureWarnings)} enemy-pressure warnings, ${noneOr(
       report.analysis.tooEasyNodes
     )} structural \`too_easy\`, ${noneOr(report.analysis.tooHardNodes)} structural \`too_hard\`, ${noneOr(
       report.analysis.strongholdWarnings

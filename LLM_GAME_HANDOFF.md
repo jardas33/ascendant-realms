@@ -74,6 +74,16 @@ Phase 5 pressure telemetry review:
 - No simulator behavior, live pressure behavior, reinforcement promotion, route-contest AI, defensive hold behavior, workers/construction/economy AI, map/unit/faction/reward/save/progression change, or balance tuning was added.
 - Verification: focused `npm test -- src/game/playtest/ScriptedBattlePlaytest.test.ts` PASS, 15 tests; `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
+Phase 6 pressure balance review:
+
+- Reviewed `PLAYTEST_TELEMETRY.md`, `PLAYTEST_TELEMETRY.json`, `BALANCE.md`, and `docs/V071_ENEMY_PRESSURE_FEEL_AUDIT.md`.
+- No tuning was applied. The evidence still shows 75 pressure-enabled Cinderfen runs, 63 triggered pressure runs, 149 warnings, 0 simulated reinforcement applications, no enemy-pressure analyzer warnings, no structural `too_easy`, and no structural `too_hard`.
+- Cinderfen Crossing remains 26 wins / 0 defeats / 13 timeouts; Cinderfen Watch remains 25 wins / 0 defeats / 11 timeouts; Ashen Outpost remains unaffected by pressure at 22 wins / 0 defeats / 14 timeouts.
+- Greedy Economy timeouts remain pacing/readability watchpoints rather than pressure-caused defeat spikes, Fast Army still bypasses most Crossing shrine pressure without justifying a pressure buff, and Retinue + Training Yard II strength predates pressure.
+- Updated `BALANCE.md`, `docs/V071_ENEMY_PRESSURE_FEEL_AUDIT.md`, and the generated `PLAYTEST_TELEMETRY.md` wording to explicitly state that v0.7.1 applies no balance tuning.
+- No pressure timing/scope/nudge change, live reinforcement, route-contest AI, defensive hold behavior, workers/construction/economy AI, map/unit/faction/reward/save/progression change, or campaign/skirmish/tutorial behavior change was added.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.8m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
 ## Current v0.7 Enemy Strategic Pressure V1 Goal - 2026-05-09
 
 Mission: implement the first controlled Enemy Strategic Pressure V1 prototype. This goal must make selected enemies feel more strategic through small data-driven pressure plans while preserving existing maps, units, factions, buildings, campaign progression, save compatibility, tutorial no-reward behavior, and the browser-prototype scope. It must not add workers, enemy workers, real enemy construction, gather/build AI, new maps, new units, new factions, diplomacy, crafting, procedural generation, desktop packaging, external generated assets, campaign rewards, save-version changes, or broad systems.
