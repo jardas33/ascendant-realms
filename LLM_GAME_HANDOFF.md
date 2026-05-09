@@ -74,6 +74,16 @@ Phase 5 Tutorial e2e runtime placement review:
 - No coverage was removed, and no gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.3m; `npm run test:e2e:release` PASS, 65 tests in 28.1m; `git diff --check` PASS.
 
+Phase 6 Test-only semantic command-log V1 plan:
+
+- Added `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md`.
+- Chose Tutorial / Proving Grounds completion as the first command-log target because the playable tutorial now exists, is no-reward/non-persistent, starts from main menu, uses fixed existing content, and aligns with the v0.6 onboarding/testing foundation.
+- Defined a test-only semantic command record shape with stable command ids, actions, optional targets, optional expected state, timeouts, and debug labels.
+- Scoped V1 to a tiny Playwright/helper runner under `tests/e2e/` with no production imports, no save fields, no replay UI, no frame-perfect input replay, and no replacement of visible e2e assertions.
+- Planned one first adopter test that keeps tutorial launch, step order, no-save, no-XP, no-reward copy, completion notice, and return-to-menu assertions readable.
+- No source code, gameplay behavior, save behavior, rewards, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, or broad systems changed.
+- Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BU3yhAtG.js`, 459.51 kB / gzip 123.51 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 
 Mission: implement the first playable Tutorial / Proving Grounds shell using existing content only while preserving the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, and v0.5 save/content/determinism safety gate. Do not add campaign rewards, tutorial rewards, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external generated assets, or broad systems.
