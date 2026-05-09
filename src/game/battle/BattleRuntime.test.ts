@@ -108,6 +108,38 @@ describe("BattleRuntime", () => {
     });
   });
 
+  it("records battle-only enemy pressure telemetry without save output", () => {
+    const runtime = createBattleRuntime({ launch: createTestLaunch() });
+
+    expect(
+      runtime.recordEnemyPressureStage({
+        planId: "causeway_contest_pressure",
+        stageId: "shrine_route_warning",
+        telemetryLabel: "shrine_route_warning",
+        warningShown: true,
+        completedAtSeconds: 88
+      })
+    ).toBe(true);
+    expect(
+      runtime.recordEnemyPressureStage({
+        planId: "causeway_contest_pressure",
+        stageId: "shrine_route_warning",
+        telemetryLabel: "shrine_route_warning",
+        warningShown: true,
+        completedAtSeconds: 90
+      })
+    ).toBe(false);
+
+    expect(runtime.stats).toMatchObject({
+      enemyPressurePlanId: "causeway_contest_pressure",
+      enemyPressureTriggeredStageIds: ["shrine_route_warning"],
+      enemyPressureCompletedStageIds: ["shrine_route_warning"],
+      enemyPressureTelemetryLabels: ["shrine_route_warning"],
+      enemyPressureWarningsShown: 1,
+      enemyPressureFirstTriggeredAtSeconds: 88
+    });
+  });
+
   it("preserves battle-only veteran summaries without changing save output", () => {
     const runtime = createBattleRuntime({ launch: createTestLaunch() });
     runtime.recordVeterancySummary({

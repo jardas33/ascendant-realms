@@ -146,4 +146,11 @@ export interface BattleStats {
   enemyHeroDefeatedAtSeconds?: number;
   enemyHeroJoinedAttackAtSeconds?: number;
   lossesInvolvingEnemyHero?: number;
+  enemyPressurePlanId?: string;
+  enemyPressureTriggeredStageIds?: string[];
+  enemyPressureCompletedStageIds?: string[];
+  enemyPressureTelemetryLabels?: string[];
+  enemyPressureWarningsShown?: number;
+  enemyPressureFirstTriggeredAtSeconds?: number;
+  enemyPressureReinforcementApplied?: boolean;
 }

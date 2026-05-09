@@ -2,6 +2,7 @@ import { BATTLE_DIFFICULTIES } from "../battlePacing";
 import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
+import { ENEMY_PRESSURE_PLANS } from "../enemyPressurePlans";
 import { MAPS } from "../maps";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "../reputation";
 import type { CampaignNodeChoiceDefinition, CampaignNodeDefinition } from "../../core/GameTypes";
@@ -43,6 +44,19 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
     }
     if (node.enemyHeroId && !context.enemyHeroIds.has(node.enemyHeroId)) {
       errors.push(`Campaign node ${node.id} references missing enemy hero ${node.enemyHeroId}.`);
+    }
+    if (node.enemyPressurePlanId) {
+      if (node.nodeType !== "battle") {
+        errors.push(`Campaign node ${node.id} uses enemy pressure plan ${node.enemyPressurePlanId} outside a battle node.`);
+      }
+      if (!context.enemyPressurePlanIds.has(node.enemyPressurePlanId)) {
+        errors.push(`Campaign node ${node.id} references missing enemy pressure plan ${node.enemyPressurePlanId}.`);
+      } else {
+        const plan = ENEMY_PRESSURE_PLANS.find((entry) => entry.id === node.enemyPressurePlanId);
+        if (plan && (!plan.allowedNodeIds.includes(node.id) || !plan.allowedMapIds.includes(node.mapId))) {
+          errors.push(`Campaign node ${node.id} uses enemy pressure plan ${node.enemyPressurePlanId} outside its allowed nodes or maps.`);
+        }
+      }
     }
     node.prerequisites.forEach((nodeId) => {
       if (!context.campaignNodeIds.has(nodeId)) {

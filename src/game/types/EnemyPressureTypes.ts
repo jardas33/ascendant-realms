@@ -1,5 +1,6 @@
 import type { EnemyAIPersonalityId } from "./CombatTypes";
 
+export type EnemyStrategicPressurePlanId = string;
 export type EnemyStrategicPressureScope = "campaign_node" | "disabled";
 export type EnemyPressureIntensity = "minor" | "moderate";
 
@@ -58,7 +59,7 @@ export interface PressureStageDefinition {
 }
 
 export interface EnemyStrategicPressurePlanDefinition {
-  id: string;
+  id: EnemyStrategicPressurePlanId;
   name: string;
   description: string;
   scope: EnemyStrategicPressureScope;

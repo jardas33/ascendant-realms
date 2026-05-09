@@ -39,6 +39,7 @@ import {
 } from "../data/unitVeterancy";
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
+import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
 import { drawBattleMap } from "../battle/BattleSceneMapRenderer";
 import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
@@ -162,6 +163,7 @@ export class BattleScene extends Phaser.Scene {
   private uiSystem!: BattleSceneSystems["uiSystem"];
   private xpSystem!: BattleSceneSystems["xpSystem"];
   private aiSystem!: BattleSceneSystems["aiSystem"];
+  private enemyPressureRuntime?: EnemyPressureRuntime;
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
@@ -245,6 +247,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateResourceSiteWarnings(deltaSeconds);
     this.trainingSystem.update(deltaSeconds, this.buildings);
     this.upgradeSystem.update(deltaSeconds, this.buildings);
+    this.enemyPressureRuntime?.update();
     this.aiSystem.update(deltaSeconds);
     this.cleanupDeadEntities();
     this.updateTrackedEnemyWaves();
@@ -272,6 +275,7 @@ export class BattleScene extends Phaser.Scene {
     this.fogDebugDisabled = false;
     this.lastSelectionAudioKey = "";
     this.runtime = createBattleRuntime({ launch: this.launch });
+    this.enemyPressureRuntime = undefined;
     this.resources = this.runtime.resources;
     this.units = [];
     this.buildings = [];
@@ -358,6 +362,8 @@ export class BattleScene extends Phaser.Scene {
       findPlayerBaseBuilding: () => this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player"),
       trackEnemyWave: (units) => this.trackEnemyWave(units),
       showBattleStartSummary: () => this.showBattleStartSummary(),
+      onPlayerCapturedSite: (siteId) => this.enemyPressureRuntime?.recordPlayerCapturedSite(siteId),
+      onPlayerUnitTrained: (unitId) => this.enemyPressureRuntime?.recordPlayerTrainedUnit(unitId),
       openMainMenu: () => this.scene.start(SCENE_KEYS.mainMenu)
     });
 
@@ -375,6 +381,15 @@ export class BattleScene extends Phaser.Scene {
     this.uiSystem = systems.uiSystem;
     this.xpSystem = systems.xpSystem;
     this.aiSystem = systems.aiSystem;
+    this.enemyPressureRuntime = createEnemyPressureRuntime({
+      planId: this.launch.request.enemyPressurePlanId,
+      mode: this.launch.request.mode,
+      mapId: this.activeMap.id,
+      campaignNodeId: this.launch.request.campaignNodeId,
+      runtime: this.runtime,
+      showWarning: (message) => this.showMessage(message, this.hero.position.x, this.hero.position.y - 112, "#f6e27d"),
+      adjustNextWaveTiming: (seconds) => this.aiSystem.adjustNextAttackTiming(seconds)
+    });
   }
 
   private showBattleStartSummary(): void {
@@ -703,6 +718,7 @@ export class BattleScene extends Phaser.Scene {
     if (target.team !== "player") {
       if (target instanceof Building) {
         this.runtime.recordBuildingDestroyed();
+        this.enemyPressureRuntime?.recordPlayerDestroyedStructure(target.definition.id);
         this.completeSecondaryObjective("destroy_building", target.definition.id, target.position);
       } else if (target instanceof Unit) {
         this.runtime.recordUnitKilled();
@@ -712,6 +728,7 @@ export class BattleScene extends Phaser.Scene {
         }
         if (target.enemyHeroId) {
           this.runtime.recordEnemyHeroDefeated(target.enemyHeroId, target.enemyHeroName, this.runtime.elapsedSeconds);
+          this.enemyPressureRuntime?.recordEnemyHeroDefeated(target.enemyHeroId);
         }
       }
     }

@@ -88,7 +88,8 @@ describe("BattleLaunchRequest", () => {
       ...request,
       heroSave: { ...request.heroSave, level: "bad" } as never,
       difficulty: "nightmare" as never,
-      aiPersonalityId: "missing_personality" as never
+      aiPersonalityId: "missing_personality" as never,
+      enemyPressurePlanId: "missing_pressure"
     });
 
     expect(resolved.ok).toBe(false);
@@ -99,6 +100,7 @@ describe("BattleLaunchRequest", () => {
           "Battle launch request references missing reward table missing_rewards.",
           "Battle launch request references missing difficulty nightmare.",
           "Battle launch request references missing AI personality missing_personality.",
+          "Battle launch request references missing enemy pressure plan missing_pressure.",
           "Battle launch request includes invalid hero save data."
         ])
       );
@@ -179,7 +181,8 @@ describe("BattleLaunchRequest", () => {
       mapId: "cinderfen_causeway",
       difficulty: "normal",
       enemyProfileId: "ashen_covenant",
-      aiPersonalityId: "hexfire_cult"
+      aiPersonalityId: "hexfire_cult",
+      enemyPressurePlanId: "causeway_contest_pressure"
     });
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
@@ -200,7 +203,8 @@ describe("BattleLaunchRequest", () => {
       mapId: "cinderfen_watchpost",
       difficulty: "normal",
       enemyProfileId: "ashen_covenant",
-      aiPersonalityId: "hexfire_cult"
+      aiPersonalityId: "hexfire_cult",
+      enemyPressurePlanId: "ashen_watch_captain_pressure"
     });
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {

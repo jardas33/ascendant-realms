@@ -1,5 +1,6 @@
 import type { BattleDifficulty, EnemyAIPersonalityId } from "./CombatTypes";
 import type { Cost, ResourceBag } from "./EconomyTypes";
+import type { EnemyStrategicPressurePlanId } from "./EnemyPressureTypes";
 
 export type CampaignModifierId =
   | "inspired_militia"
@@ -103,6 +104,7 @@ export interface CampaignNodeDefinition {
   enemyFactionId: string;
   aiPersonalityId?: EnemyAIPersonalityId;
   enemyHeroId?: string;
+  enemyPressurePlanId?: EnemyStrategicPressurePlanId;
   isPlaceholder?: boolean;
   placeholderLabel?: string;
   placeholderDescription?: string;

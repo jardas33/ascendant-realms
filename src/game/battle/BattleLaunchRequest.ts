@@ -11,6 +11,7 @@ import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePac
 import {
   CAMPAIGN_NODE_BY_ID,
   ENEMY_HERO_BY_ID,
+  ENEMY_PRESSURE_PLAN_BY_ID,
   FACTION_BY_ID,
   MAP_BY_ID,
   REWARD_TABLE_BY_ID,
@@ -39,6 +40,7 @@ export interface BattleLaunchRequest {
   enemyProfileId?: string;
   aiPersonalityId?: EnemyAIPersonalityId;
   enemyHeroId?: string;
+  enemyPressurePlanId?: string;
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
@@ -72,6 +74,7 @@ export interface CreateBattleLaunchRequestOptions {
   enemyProfileId?: string;
   aiPersonalityId?: EnemyAIPersonalityId;
   enemyHeroId?: string;
+  enemyPressurePlanId?: string;
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
@@ -125,6 +128,7 @@ export function createCampaignBattleLaunchRequest(
     enemyProfileId: options.enemyProfileId ?? definition.enemyFactionId,
     aiPersonalityId: options.aiPersonalityId ?? definition.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     enemyHeroId: options.enemyHeroId ?? definition.enemyHeroId,
+    enemyPressurePlanId: options.enemyPressurePlanId ?? definition.enemyPressurePlanId,
     campaignNodeId: definition.id,
     sourceId: options.sourceId ?? `campaign_${definition.id}`
   });
@@ -150,6 +154,7 @@ export function createBattleLaunchRequest(
     enemyProfileId: options.enemyProfileId,
     aiPersonalityId: options.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     enemyHeroId: options.enemyHeroId,
+    enemyPressurePlanId: options.enemyPressurePlanId,
     campaignNodeId: options.campaignNodeId,
     scenarioMissionId: options.scenarioMissionId,
     retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits),
@@ -222,6 +227,9 @@ export function resolveBattleLaunchRequest(
   if (request.enemyHeroId && !ENEMY_HERO_BY_ID[request.enemyHeroId]) {
     errors.push(`Battle launch request references missing enemy hero ${request.enemyHeroId}.`);
   }
+  if (request.enemyPressurePlanId && !ENEMY_PRESSURE_PLAN_BY_ID[request.enemyPressurePlanId]) {
+    errors.push(`Battle launch request references missing enemy pressure plan ${request.enemyPressurePlanId}.`);
+  }
 
   if (errors.length > 0 || !map || !rewardTable || !heroSave) {
     return { ok: false, errors };
@@ -238,6 +246,7 @@ export function resolveBattleLaunchRequest(
         modifiers: request.modifiers ?? [],
         aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
         enemyHeroId: request.enemyHeroId,
+        enemyPressurePlanId: request.enemyPressurePlanId,
         retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
         rewardsDisabled: request.rewardsDisabled
       },

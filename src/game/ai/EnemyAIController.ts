@@ -71,6 +71,13 @@ export class EnemyAIController {
     this.attackTimer = 0;
   }
 
+  adjustNextAttackTiming(seconds: number): void {
+    if (!Number.isFinite(seconds) || seconds === 0) {
+      return;
+    }
+    this.attackTimer = Math.max(0, this.attackTimer - seconds);
+  }
+
   update(deltaSeconds: number): void {
     const enemyBuildings = this.options.getBuildings().filter((building) => building.alive && building.team === "enemy");
     if (enemyBuildings.length === 0) {

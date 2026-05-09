@@ -48,6 +48,7 @@ export interface BattleSetupSnapshot {
     enemyBase: string;
   };
   enemyHeroId?: string;
+  enemyPressurePlanId?: string;
 }
 
 export interface BattleCompletionInput {
@@ -169,6 +170,39 @@ export class BattleRuntime {
     this.stats.lossesInvolvingEnemyHero = (this.stats.lossesInvolvingEnemyHero ?? 0) + 1;
   }
 
+  recordEnemyPressurePlan(planId: string | undefined): void {
+    if (!planId) {
+      return;
+    }
+    this.stats.enemyPressurePlanId = planId;
+  }
+
+  recordEnemyPressureStage(options: {
+    planId: string;
+    stageId: string;
+    telemetryLabel: string;
+    warningShown?: boolean;
+    reinforcementApplied?: boolean;
+    completedAtSeconds?: number;
+  }): boolean {
+    this.recordEnemyPressurePlan(options.planId);
+    const triggered = (this.stats.enemyPressureTriggeredStageIds ??= []);
+    if (triggered.includes(options.stageId)) {
+      return false;
+    }
+    triggered.push(options.stageId);
+    (this.stats.enemyPressureCompletedStageIds ??= []).push(options.stageId);
+    (this.stats.enemyPressureTelemetryLabels ??= []).push(options.telemetryLabel);
+    this.stats.enemyPressureFirstTriggeredAtSeconds ??= Math.max(0, options.completedAtSeconds ?? this.elapsedSeconds);
+    if (options.warningShown) {
+      this.stats.enemyPressureWarningsShown = (this.stats.enemyPressureWarningsShown ?? 0) + 1;
+    }
+    if (options.reinforcementApplied) {
+      this.stats.enemyPressureReinforcementApplied = true;
+    }
+    return true;
+  }
+
   recordSecondaryObjective(objectiveId: string): boolean {
     if (this.stats.completedObjectiveIds.includes(objectiveId)) {
       return false;
@@ -258,7 +292,8 @@ export function createBattleSetupSnapshot(launch: ResolvedBattleLaunch): BattleS
       playerBase: map.scenario.objectives.playerBaseBuildingId,
       enemyBase: map.scenario.objectives.enemyBaseBuildingId
     },
-    enemyHeroId: request.enemyHeroId
+    enemyHeroId: request.enemyHeroId,
+    enemyPressurePlanId: request.enemyPressurePlanId
   };
 }
 
@@ -282,6 +317,12 @@ export function completeBattle(
     retinueUnitIdsLost: [...(input.stats.retinueUnitIdsLost ?? [])],
     enemyHeroDefeated: input.stats.enemyHeroDefeated ?? false,
     lossesInvolvingEnemyHero: input.stats.lossesInvolvingEnemyHero ?? 0,
+    enemyPressureTriggeredStageIds: [...(input.stats.enemyPressureTriggeredStageIds ?? [])],
+    enemyPressureCompletedStageIds: [...(input.stats.enemyPressureCompletedStageIds ?? [])],
+    enemyPressureTelemetryLabels: [...(input.stats.enemyPressureTelemetryLabels ?? [])],
+    enemyPressureWarningsShown: input.stats.enemyPressureWarningsShown ?? 0,
+    enemyPressureFirstTriggeredAtSeconds: input.stats.enemyPressureFirstTriggeredAtSeconds,
+    enemyPressureReinforcementApplied: input.stats.enemyPressureReinforcementApplied ?? false,
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const baselineHero = input.startingHeroSave ?? input.heroSave;

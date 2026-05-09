@@ -366,3 +366,22 @@ Phase 4 added content validation for enemy strategic pressure plans:
 - Forbidden worker, harvesting, construction, placement, and economy field names.
 
 This validation still does not attach plans to runtime. It exists to make later data edits fail before launch if they drift into missing content, hidden construction concepts, or unsafe scope.
+
+## Phase 5 Runtime Checkpoint
+
+Phase 5 attaches the two V1 plans through transient campaign battle launch metadata:
+
+- `cinderfen_crossing` uses `causeway_contest_pressure`.
+- `cinderfen_watch` uses `ashen_watch_captain_pressure`.
+
+Runtime behavior remains deliberately narrow:
+
+- Tutorial and skirmish launches do not create a pressure runtime.
+- Campaign nodes without an explicit `enemyPressurePlanId` do not create a pressure runtime.
+- The runtime tracks active plan id, triggered stage ids, completed stage ids, telemetry labels, first trigger time, warning count, and whether reinforcement was applied.
+- Capture-site, structure-destroyed, unit-trained, enemy-hero-defeated, and battle-time triggers can be observed.
+- Warning copy is shown through the existing battle message surface.
+- `adjust_next_wave_timing` is the only runtime effect applied in Phase 5, because it reuses the existing enemy wave timer.
+- `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only in Phase 5. They are intentionally not applied yet because live reinforcement or route contesting needs more evidence to avoid becoming hidden spawning, construction, or pathing work.
+
+No save fields, save-version changes, rewards, maps, units, factions, workers, real enemy construction, enemy economy, tutorial rewards, campaign progression changes, or broad `BattleScene` rewrite were added.

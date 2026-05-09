@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7 enemy strategic pressure research gate
+Last updated: 2026-05-09 v0.7 enemy strategic pressure runtime gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -65,6 +65,20 @@ Phase 4 enemy pressure validation:
 - Updated `CONTENT_GUIDE.md` and `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md` with the pressure validation guardrails.
 - No runtime behavior, campaign node attachment, tutorial behavior, skirmish behavior, simulator behavior, save field, reward, map, unit, faction, worker, construction, or balance change was made in this phase.
 - Verification: focused `npm test -- src/game/data/contentValidation.test.ts src/game/data/enemyPressurePlans.test.ts` PASS, 33 tests; `npm test` PASS, 43 files / 321 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DHD-CO29.js`, 468.78 kB / gzip 125.69 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS and now reports enemy pressure plans; `git diff --check` PASS.
+
+Phase 5 runtime integration:
+
+- Added transient `enemyPressurePlanId` support on campaign node definitions and battle launch requests.
+- Attached `causeway_contest_pressure` to `cinderfen_crossing` and `ashen_watch_captain_pressure` to `cinderfen_watch`.
+- Added `src/game/battle/EnemyPressureRuntime.ts` with a fail-closed campaign-only runtime tracker.
+- Runtime records active plan id, triggered/completed stage ids, telemetry labels, first trigger time, warning count, and reinforcement-applied state on battle stats only.
+- Tutorial and skirmish launches do not create an enemy pressure runtime, and campaign nodes without explicit pressure metadata stay unaffected.
+- Player site captures, structure destruction, first trained unit, enemy hero defeat, and battle time can trigger stages.
+- Warning copy is emitted through the existing battle message surface.
+- `adjust_next_wave_timing` is the only Phase 5 runtime effect, implemented through the existing enemy attack timer.
+- `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold` remain warning/telemetry-only because live reinforcement or route contesting would need more evidence before touching unit spawning, movement/pathing, or defense behavior.
+- No save field, save-version change, reward, map, unit, faction, worker, real enemy construction, enemy economy, tutorial reward, campaign progression change, or broad `BattleScene` rewrite was added.
+- Verification: focused battle/content tests PASS, 60 tests; `npm test` PASS, 44 files / 326 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CFJmFaPd.js`, 475.49 kB / gzip 127.29 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.9m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
 
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 

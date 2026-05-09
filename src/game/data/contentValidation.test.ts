@@ -193,6 +193,26 @@ describe("content validation", () => {
     }
   });
 
+  it("rejects campaign pressure plan attachments outside their allowed nodes or missing ids", () => {
+    const crossing = CINDERFEN_ROAD_NODES.find((entry) => entry.id === "cinderfen_crossing")!;
+    const road = BORDER_MARCHES_NODES.find((entry) => entry.id === "old_stone_road")!;
+    const originalCrossingPlan = crossing.enemyPressurePlanId;
+    const originalRoadPlan = road.enemyPressurePlanId;
+    crossing.enemyPressurePlanId = "missing_pressure_plan";
+    road.enemyPressurePlanId = "causeway_contest_pressure";
+    try {
+      expect(validateContent()).toEqual(
+        expect.arrayContaining([
+          "Campaign node cinderfen_crossing references missing enemy pressure plan missing_pressure_plan.",
+          "Campaign node old_stone_road uses enemy pressure plan causeway_contest_pressure outside its allowed nodes or maps."
+        ])
+      );
+    } finally {
+      road.enemyPressurePlanId = originalRoadPlan;
+      crossing.enemyPressurePlanId = originalCrossingPlan;
+    }
+  });
+
   it("requires playable tutorial metadata to point at a map and keep at least one step", () => {
     const tutorial = TUTORIALS[0];
     const originalStatus = tutorial.status;

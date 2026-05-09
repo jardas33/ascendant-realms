@@ -7,6 +7,10 @@ export class AISystem {
     this.controller.update(deltaSeconds);
   }
 
+  adjustNextAttackTiming(seconds: number): void {
+    this.controller.adjustNextAttackTiming(seconds);
+  }
+
   get state(): string {
     return this.controller.state.current;
   }

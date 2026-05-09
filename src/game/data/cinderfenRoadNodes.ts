@@ -162,6 +162,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     mapId: "cinderfen_causeway",
     enemyFactionId: "ashen_covenant",
     aiPersonalityId: "hexfire_cult",
+    enemyPressurePlanId: "causeway_contest_pressure",
     prerequisites: ["ashen_outpost", "cinderfen_overlook"],
     rewards: {
       xp: 60,
@@ -183,6 +184,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
     mapId: "cinderfen_watchpost",
     enemyFactionId: "ashen_covenant",
     aiPersonalityId: "hexfire_cult",
+    enemyPressurePlanId: "ashen_watch_captain_pressure",
     prerequisites: ["cinderfen_crossing"],
     rewards: {
       xp: 62,

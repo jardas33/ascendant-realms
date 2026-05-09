@@ -96,6 +96,8 @@ interface CreateBattleSceneSystemsOptions {
   findPlayerBaseBuilding: () => Building | undefined;
   trackEnemyWave: (units: Unit[]) => void;
   showBattleStartSummary: () => void;
+  onPlayerCapturedSite?: (siteId: string) => void;
+  onPlayerUnitTrained?: (unitId: string) => void;
   openMainMenu: () => void;
 }
 
@@ -139,6 +141,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     findPlayerBaseBuilding,
     trackEnemyWave,
     showBattleStartSummary,
+    onPlayerCapturedSite,
+    onPlayerUnitTrained,
     openMainMenu
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
@@ -163,6 +167,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onUnitTrained: (unit) => {
       if (unit.team === "player") {
         runtime.recordUnitTrained(unit.definition.id);
+        onPlayerUnitTrained?.(unit.definition.id);
         AudioManager.play("unit_trained");
       }
     },
@@ -229,6 +234,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onCapture: (site, owner) => {
       if (owner === "player") {
         runtime.recordResourceCaptured(site.definition.id);
+        onPlayerCapturedSite?.(site.definition.id);
         showMessage(`${site.definition.name} captured`, site.position.x, site.position.y - 70, "#aef7b7");
         completeSecondaryObjective("capture_site", site.definition.id, site.position);
         return;
