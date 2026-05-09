@@ -107,7 +107,7 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest v0.6 onboarding e2e verification, 2026-05-08: smoke passed 12 tests in 5.0 minutes during the report gate, layout passed 25 tests in 12.5 minutes after accessibility polish, the one-piece release lane passed 65 tests in 28.8 minutes after command-log V1, and the prior final tutorial-shell shard runs passed shard 1 with 53 tests in 24.4 minutes and shard 2 with 12 tests in 4.9 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+Latest v0.6 onboarding e2e verification, 2026-05-08: smoke passed 12 tests in 4.8 minutes, layout passed 25 tests in 12.5 minutes after accessibility polish, the one-piece release lane passed 65 tests in 28.9 minutes, shard 1 passed 53 tests in 24.0 minutes, and shard 2 passed 12 tests in 4.9 minutes. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
 
 For a visible browser run:
 

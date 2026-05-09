@@ -189,3 +189,51 @@ Telemetry regenerated with no git diff.
 git diff --check
 PASS.
 ```
+
+## Final Full Verification
+
+```text
+npm test
+PASS: 42 files / 315 tests.
+
+npm run build
+PASS with the known Phaser vendor warning.
+App JS: assets/index-DN-Hs_qy.js, 459.85 kB / gzip 123.62 kB.
+CSS: assets/index-BzEbtAWy.css, 44.19 kB / gzip 9.11 kB.
+Vendor JS: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 tests in 4.8m.
+
+npm run test:e2e:release
+PASS: 65 tests in 28.9m.
+
+npm run test:e2e:release:shard1
+PASS: 53 tests in 24.0m.
+
+npm run test:e2e:release:shard2
+PASS: 12 tests in 4.9m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+Telemetry regenerated with no git diff.
+
+git diff --check
+PASS.
+```
+
+Production preview smoke:
+
+```text
+PASS: http://127.0.0.1:57918/
+PASS: page title was Ascendant Realms.
+PASS: main menu showed Prototype v0.3 and Cinderfen Route Baseline.
+PASS: Tutorial / Proving Grounds launched and exited.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign reached Campaign Map.
+PASS: Skirmish Setup opened.
+PASS: browser console errors stayed at 0.
+```

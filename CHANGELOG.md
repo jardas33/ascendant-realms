@@ -19,20 +19,22 @@ This checkpoint polishes and hardens the playable Tutorial / Proving Grounds she
 
 ### Verification
 
-- Phase 11 report gate passed before final full verification.
+- Phase 11 report gate and final full verification passed.
 - `npm test`: passed with 42 test files and 315 tests.
 - `npm run build`: passed with the known Phaser vendor large-chunk warning.
 - `npm run validate:content`: passed.
-- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 5.0m during the report gate.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 4.8m during the final gate.
 - `npm run test:e2e:layout`: passed with 25 Playwright tests in 12.5m after accessibility polish.
-- `npm run test:e2e:release`: passed with 65 Playwright tests in 28.8m after command-log V1.
+- `npm run test:e2e:release`: passed with 65 Playwright tests in 28.9m during the final gate.
+- `npm run test:e2e:release:shard1`: passed with 53 Playwright tests in 24.0m.
+- `npm run test:e2e:release:shard2`: passed with 12 Playwright tests in 4.9m.
 - `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes and no telemetry diff.
 - `git diff --check`: passed.
+- Production preview smoke: passed at `http://127.0.0.1:57918/`; title, main menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 
 ### Next
 
-- Run final full verification for v0.6.
-- Recommended next long-running goal after the final gate: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish.
+- Recommended next long-running goal: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish.
 - Keep command-log V1 test-only and at one consumer unless a concrete second test path needs it.
 - Continue postponing rewards, campaign integration, save persistence, new maps, new units, new factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, and broad systems until their gates are explicit and green.
 

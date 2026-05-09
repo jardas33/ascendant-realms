@@ -84,7 +84,7 @@ Expected current prototype result:
 PASS: 65 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The latest v0.6 command-log gate passed 65 tests in 28.8m.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The latest v0.6 final gate passed 65 tests in 28.9m.
 
 6. Optional CI sharded release gate:
 
@@ -95,10 +95,10 @@ npm run test:e2e:release:shard2
 
 Both shards must pass to equal the full release gate. Keep `npm run test:e2e:release` as the canonical one-command local release check; the shard scripts are mainly for CI matrix jobs where they can run in parallel. If run sequentially on a local machine, the total runtime may not be better than the full suite and reports are split by shard.
 
-Latest local shard verification after the playable tutorial shell, 2026-05-08:
+Latest local shard verification after the v0.6 final gate, 2026-05-08:
 
 ```text
-Shard 1: passed, 53 Playwright tests in 24.4m.
+Shard 1: passed, 53 Playwright tests in 24.0m.
 Shard 2: passed, 12 Playwright tests in 4.9m.
 ```
 
@@ -152,12 +152,12 @@ Browser Use preview sanity is optional after the automated suite. Use the local 
 Latest production preview smoke, 2026-05-08:
 
 ```text
-PASS: http://127.0.0.1:57916/
+PASS: http://127.0.0.1:57918/
 PASS: page title was Ascendant Realms.
 PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
 PASS: Tutorial / Proving Grounds launched and exited without crashing.
 PASS: New Campaign reached Campaign Map.
-PASS: Continue Campaign returned to Campaign Map after the preview save existed.
+PASS: Continue Campaign reached Campaign Map after the preview save existed.
 PASS: Skirmish Setup opened and listed current maps.
 PASS: browser console errors stayed at 0.
 ```

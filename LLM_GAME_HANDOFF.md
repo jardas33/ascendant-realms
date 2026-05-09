@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-08 v0.6 tutorial onboarding report checkpoint
+Last updated: 2026-05-08 final v0.6 tutorial onboarding foundation gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -11,6 +11,17 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 ## Current v0.6 Tutorial Onboarding Foundation Goal - 2026-05-08
 
 Mission: polish and harden the playable Tutorial / Proving Grounds shell, add a test-only semantic command-log V1 foundation if safe, and document long-term desktop/2026 visual direction without implementing desktop packaging, new visuals, rewards, campaign integration, save-version changes, maps, units, factions, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, external assets, or broad systems.
+
+Final v0.6 status:
+
+- Completed phases: Phase 0 through Phase 12.
+- Skipped phases: none. There was no optional v0.6 polish phase in this goal; all requested phases completed.
+- Commits created: `9382673` tutorial feel audit; `a713239` tutorial copy polish; `19a365c` tutorial layout polish; `5fe5152` tutorial no-reward clarity; `5855941` tutorial e2e runtime review; `7200364` command log V1 plan; `261d5b5` test-only command log V1; `d106bba` command log V1 report; `e055564` tutorial accessibility checks; `b1cc95b` desktop 2026 visual direction plan; `94e4331` v0.6 tutorial onboarding report.
+- Final verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 4.8m; `npm run test:e2e:release` PASS, 65 tests in 28.9m; `npm run test:e2e:release:shard1` PASS, 53 tests in 24.0m; `npm run test:e2e:release:shard2` PASS, 12 tests in 4.9m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
+- Production preview smoke: PASS at `http://127.0.0.1:57918/`; title was Ascendant Realms; main menu showed `Prototype v0.3` and `Cinderfen Route Baseline`; Tutorial / Proving Grounds launched and exited; New Campaign reached Campaign Map; Continue Campaign reached Campaign Map; Skirmish Setup opened; browser console errors were zero. Preview server stopped afterward.
+- Current git status at final handoff update: final handoff commit pending; before this update the branch was clean and 11 commits ahead of `origin/main`.
+- Remaining risks: human tutorial feel, twelve-step length, mobile-short real-input readability, no-reward completion satisfaction, young command-log helper, slow-but-green release/layout/deep lanes, known Phaser vendor warning, and future desktop/visual ambition staying planning-only until browser gameplay proves itself.
+- Next recommended long-running goal: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish. Keep it existing-content-only, no-reward, non-persistent, and avoid maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, and broad systems.
 
 Phase 0 repository integrity:
 
@@ -132,6 +143,23 @@ Phase 11 v0.6 tutorial/onboarding release report:
 - Current next recommended long-running goal: human-paced Tutorial / Proving Grounds review and small v0.6.1 tutorial feel polish; do not add content or broad systems.
 - No gameplay behavior, save behavior, rewards, tutorial persistence, campaign progression, maps, units, factions, balance, workers, enemy construction, crafting, diplomacy, procedural generation, desktop packaging, external assets, multiplayer, or broad systems changed.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB, CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.0m; `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
+- Commit: `94e4331 Checkpoint v0.6 tutorial onboarding report`.
+
+Phase 12 final full verification:
+
+- Ran the full final gate after the report commit.
+- `npm test` PASS, 42 files / 315 tests.
+- `npm run build` PASS with the known Phaser vendor warning; app JS `assets/index-DN-Hs_qy.js`, 459.85 kB / gzip 123.62 kB; CSS `assets/index-BzEbtAWy.css`, 44.19 kB / gzip 9.11 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB.
+- `npm run validate:content` PASS.
+- `npm run test:e2e:smoke` PASS, 12 tests in 4.8m.
+- `npm run test:e2e:release` PASS, 65 tests in 28.9m.
+- `npm run test:e2e:release:shard1` PASS, 53 tests in 24.0m.
+- `npm run test:e2e:release:shard2` PASS, 12 tests in 4.9m.
+- `npm run playtest:sim` PASS, 255 simulated runs across 85 campaign battle nodes; telemetry regenerated with no git diff.
+- `git diff --check` PASS.
+- Production preview smoke PASS at `http://127.0.0.1:57918/`; verified title Ascendant Realms, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial / Proving Grounds launch and exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, and zero browser console errors. Preview server stopped afterward.
+- No transients or reruns were needed.
+- Final handoff commit pending with message `Checkpoint v0.6 tutorial onboarding foundation`.
 
 ## Current Tutorial / Proving Grounds Playable Shell Goal - 2026-05-08
 

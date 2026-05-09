@@ -1,6 +1,70 @@
 # Development Checkpoint
 
-Updated: 2026-05-08 v0.6 tutorial onboarding report checkpoint
+Updated: 2026-05-08 final v0.6 tutorial onboarding foundation gate
+
+## Final v0.6 Tutorial Onboarding Foundation Gate - 2026-05-08
+
+Scope: final verification and handoff for the v0.6 tutorial onboarding/testing foundation. This pass preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, and no-reward playable Tutorial / Proving Grounds shell. It did not add maps, units, factions, rewards, save-version changes, tutorial persistence, campaign progression, workers, enemy construction, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, or broad systems.
+
+Completed phases:
+
+- Phase 0 repository integrity through Phase 12 final full verification completed.
+- No phases were skipped.
+
+Final verification results:
+
+```text
+npm test
+PASS: 42 test files, 315 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-DN-Hs_qy.js, 459.85 kB minified / 123.62 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BzEbtAWy.css, 44.19 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 4.8m.
+
+npm run test:e2e:release
+PASS: 65 Playwright tests in 28.9m.
+Slow files noted by Playwright: tests/e2e/layout.spec.ts 12.4m and tests/e2e/deep-flow.spec.ts 11.4m.
+
+npm run test:e2e:release:shard1
+PASS: 53 Playwright tests in 24.0m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in 4.9m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Production preview smoke:
+
+```text
+npm run preview -- --host 127.0.0.1 --port 57918 --strictPort
+PASS: Browser smoke at http://127.0.0.1:57918/
+PASS: page title was Ascendant Realms.
+PASS: main menu was visible with Prototype v0.3 and Cinderfen Route Baseline copy.
+PASS: Tutorial / Proving Grounds launched and exited without crashing.
+PASS: New Campaign reached Campaign Map.
+PASS: Continue Campaign reached Campaign Map after the preview save existed.
+PASS: Skirmish Setup opened.
+PASS: browser console errors stayed at 0.
+```
+
+Preview server was stopped after the smoke pass. No e2e transients or reruns were needed.
+
+Recommended next milestone: human-play Tutorial / Proving Grounds, then do only small v0.6.1 tutorial feel polish around real input feel, copy clarity, overlay hierarchy, completion clarity, and command-log stability review.
 
 ## v0.6 Tutorial Onboarding Foundation Report Checkpoint - 2026-05-08
 
