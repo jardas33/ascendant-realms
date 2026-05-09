@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.2 Cinderfen pressure play review final gate
+Last updated: 2026-05-09 v0.7.3 Cinderfen Crossing real-input review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -41,6 +41,15 @@ Phase 2 pressure review setup:
 - Existing helpers already support post-Ashen seeding, post-Crossing seeding, campaign-UI launch for Cinderfen Crossing and Cinderfen Watch, Cinder Shrine capture via a test hook, Watch Road capture via the generic capture hook, and pressure state reads in the targeted pressure e2e.
 - No new test helper or review command was added. The setup document explicitly labels helper-driven paths as seeded surrogate evidence rather than true manual play.
 - The setup document records app launch options, Crossing and Watch review entry paths, console-error capture expectations, and the current Retinue + Training Yard II automation limitation.
+
+Phase 3 Cinderfen Crossing real-input review:
+
+- Added `docs/V073_CINDERFEN_CROSSING_REAL_INPUT_REVIEW.md`.
+- Used controlled browser-input evidence to seed a post-Ashen campaign state, continue through visible campaign UI, choose the `aid_marsh_refugees` Overlook option, launch `cinderfen_crossing`, center the Cinder Shrine area, and issue a real browser right-click move order.
+- One controlled browser-input pass naturally captured `cinder_crossing` at about 19 seconds. `Cinder Shrine Surge: +20 Aether` appeared with `objective` priority, `capture_cinder_crossing` completed, `shrine_route_warning` completed, warnings increased to 1, `pressureReinforcementApplied` stayed false, and console errors were 0.
+- Used seeded surrogate evidence for the delayed pressure warning because repeated automated movement to the shrine was not stable enough to call full human play. The delayed warning `Ashen scouts mark the center road. Expect faster pressure after the shrine.` appeared with `pressure` priority, stages `shrine_route_warning` and `causeway_contest` completed, warnings increased to 2, `pressureReinforcementApplied` stayed false, and console errors were 0.
+- Screenshot evidence was recorded in temp files including `ascendant-v073-crossing-launch.png`, `ascendant-v073-crossing-natural-shrine-surge.png`, and `ascendant-v073-crossing-pressure-warning.png`.
+- Decision: no Crossing gameplay, data, warning copy, warning timing, status duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified. Remaining uncertainty is human attention under real hand-play, so the later manual checklist remains important.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
