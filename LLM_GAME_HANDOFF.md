@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 Cinderfen Crossing real-input review
+Last updated: 2026-05-09 v0.7.3 Cinderfen Watch real-input review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -50,6 +50,15 @@ Phase 3 Cinderfen Crossing real-input review:
 - Used seeded surrogate evidence for the delayed pressure warning because repeated automated movement to the shrine was not stable enough to call full human play. The delayed warning `Ashen scouts mark the center road. Expect faster pressure after the shrine.` appeared with `pressure` priority, stages `shrine_route_warning` and `causeway_contest` completed, warnings increased to 2, `pressureReinforcementApplied` stayed false, and console errors were 0.
 - Screenshot evidence was recorded in temp files including `ascendant-v073-crossing-launch.png`, `ascendant-v073-crossing-natural-shrine-surge.png`, and `ascendant-v073-crossing-pressure-warning.png`.
 - Decision: no Crossing gameplay, data, warning copy, warning timing, status duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified. Remaining uncertainty is human attention under real hand-play, so the later manual checklist remains important.
+
+Phase 4 Cinderfen Watch real-input review:
+
+- Added `docs/V073_CINDERFEN_WATCH_REAL_INPUT_REVIEW.md`.
+- Used controlled browser-input evidence with the repo Playwright WebGL flags to seed a post-Crossing campaign state, continue through visible campaign UI, launch `cinderfen_watch`, and issue a real browser right-click order to the visible Watch Road Toll position.
+- Watch Road capture happened naturally with no capture hook. `The Watch Captain tightens the road guard. Keep income protected.` appeared with `pressure` priority at about 7.3 battle seconds, `capture_watch_road` completed, `watch_road_response` completed, warnings increased to 1, `pressureReinforcementApplied` stayed false, and console errors were 0 in the final evidence pass.
+- The delayed warning `Enemy horns answer your advance. Expect faster pressure on the raised road.` appeared in real time at about 42.1 battle seconds with `pressure` priority, stages `watch_road_response` and `watch_road_reinforcement` completed, warnings increased to 2, and `pressureReinforcementApplied` stayed false.
+- A generic normal status update attempted after the delayed warning did not overwrite the active pressure warning. Screenshot evidence was recorded in temp files including `ascendant-v073-watch-immediate-warning.png` and `ascendant-v073-watch-delayed-warning.png`.
+- Decision: no Watch gameplay, data, warning copy, warning timing, status duration, defeat-tip, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change is justified. The warning is early but player-triggered, readable, and protected from ordinary status churn.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
