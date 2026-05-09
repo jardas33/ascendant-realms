@@ -45,6 +45,16 @@ Phase 2 enemy strategic pressure design spec:
 - Kept Ashen Outpost excluded from V1 runtime attachment.
 - Verification: `npm test` PASS, 42 files / 315 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BCE05t_6.js`, 459.85 kB / gzip 123.62 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
 
+Phase 3 enemy pressure data model:
+
+- Added `src/game/types/EnemyPressureTypes.ts` for pressure plan, trigger, condition, action, stage, scope, and intensity types.
+- Added `src/game/data/enemyPressurePlans.ts` with two inert V1 plan definitions: `ashen_watch_captain_pressure` and `causeway_contest_pressure`.
+- Added `ENEMY_PRESSURE_PLAN_BY_ID` and `requireEnemyPressurePlan` in `src/game/data/contentIndex.ts`.
+- Added `src/game/data/enemyPressurePlans.test.ts` for pure metadata shape/reference checks.
+- The metadata explicitly says pressure events are not enemy construction, workers, harvesting, build placement, or save-affecting campaign progression.
+- No campaign node attachment, runtime behavior, tutorial behavior, skirmish behavior, simulator behavior, save field, reward, map, unit, faction, worker, construction, or balance change was made in this phase.
+- Verification: focused `npm test -- src/game/data/enemyPressurePlans.test.ts` PASS, 4 tests; `npm test` PASS, 43 files / 319 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-BjtSjRRN.js`, 462.84 kB / gzip 124.33 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `git diff --check` PASS.
+
 ## Current v0.6.1 Tutorial Feel Polish Goal - 2026-05-09
 
 Mission: continue from the final v0.6 gate with a small human-feel Tutorial / Proving Grounds polish pass. This goal must stay existing-content-only, no-reward, non-persistent, and must not add maps, units, factions, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, external assets, save-version changes, campaign progression, or broad systems.

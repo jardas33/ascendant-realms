@@ -335,3 +335,14 @@ Initial data should define exactly two V1 plans:
 - `causeway_contest_pressure` for `cinderfen_crossing` on `cinderfen_causeway`.
 
 Both plans should stay modest, use existing ids only, and carry explicit notes that they are pressure events, not enemy construction.
+
+## Phase 3 Metadata Checkpoint
+
+Phase 3 added the inert TypeScript data model and initial V1 pressure metadata:
+
+- Types: `src/game/types/EnemyPressureTypes.ts`.
+- Data: `src/game/data/enemyPressurePlans.ts`.
+- Indexing: `ENEMY_PRESSURE_PLAN_BY_ID` and `requireEnemyPressurePlan`.
+- Pure metadata tests: `src/game/data/enemyPressurePlans.test.ts`.
+
+The two initial plans are still metadata only. They do not attach to campaign launch requests, do not affect runtime behavior, do not alter saves, and do not change tutorial, campaign, skirmish, or simulator results until later gated phases wire them in deliberately.

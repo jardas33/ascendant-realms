@@ -7,6 +7,7 @@ import type {
   FactionDefinition,
   EnemyHeroAbilityDefinition,
   EnemyHeroDefinition,
+  EnemyStrategicPressurePlanDefinition,
   ItemAffixDefinition,
   HeroClassDefinition,
   ItemDefinition,
@@ -25,6 +26,7 @@ import { CAMPAIGN_NODES } from "./campaignNodes";
 import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "./enemyHeroes";
+import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
 import { ITEM_AFFIXES } from "./itemAffixes";
@@ -51,6 +53,7 @@ export const CAMPAIGN_CHAPTER_BY_ID: Record<string, CampaignChapterDefinition> =
 export const FACTION_BY_ID: Record<string, FactionDefinition> = toIndex(FACTIONS);
 export const ENEMY_HERO_BY_ID: Record<string, EnemyHeroDefinition> = toIndex(ENEMY_HEROES);
 export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition> = toIndex(ENEMY_HERO_ABILITIES);
+export const ENEMY_PRESSURE_PLAN_BY_ID: Record<string, EnemyStrategicPressurePlanDefinition> = toIndex(ENEMY_PRESSURE_PLANS);
 export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
 export const SKILL_NODE_BY_ID: Record<string, SkillNodeDefinition> = toIndex(SKILL_NODES);
@@ -159,6 +162,14 @@ export function requireEnemyHero(id: string): EnemyHeroDefinition {
   const definition = ENEMY_HERO_BY_ID[id];
   if (!definition) {
     throw new Error(`Unknown enemy hero id: ${id}`);
+  }
+  return definition;
+}
+
+export function requireEnemyPressurePlan(id: string): EnemyStrategicPressurePlanDefinition {
+  const definition = ENEMY_PRESSURE_PLAN_BY_ID[id];
+  if (!definition) {
+    throw new Error(`Unknown enemy pressure plan id: ${id}`);
   }
   return definition;
 }
