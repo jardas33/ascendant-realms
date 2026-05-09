@@ -53,6 +53,17 @@ Phase 3 Cinderfen Crossing pressure review:
 - Decision: no Crossing copy, timing, status-duration, telemetry, defeat-tip, e2e, gameplay, save, reward, map, unit, faction, worker, construction, economy AI, live reinforcement, route-contest AI, or defensive-hold change was justified in Phase 3.
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.4m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
 
+Phase 4 Cinderfen Watch pressure review:
+
+- Added `docs/V072_CINDERFEN_WATCH_PRESSURE_REVIEW.md`.
+- Ran a seeded Playwright/browser surrogate from a post-Crossing campaign state into `cinderfen_watch` / `cinderfen_watchpost`.
+- Confirmed launch pressure plan wiring: campaign mode, node `cinderfen_watch`, map `cinderfen_watchpost`, plan `ashen_watch_captain_pressure`, no triggered stages at load, warnings 0, and reinforcement-applied false.
+- Captured `watch_road_toll` through the existing test hook. The immediate warning `The Watch Captain tightens the road guard. Keep income protected.` appeared with `pressure` priority, stage `watch_road_response` completed, warnings increased to 1, and reinforcement-applied stayed false.
+- At ~37.0s, the delayed warning `Enemy horns answer your advance. Expect faster pressure on the raised road.` appeared with `pressure` priority, about 3.47s remaining on the status timer, stages `watch_road_response` and `watch_road_reinforcement` completed, warnings increased to 2, and reinforcement-applied stayed false.
+- A generic normal status update attempted after the delayed warning did not overwrite the active pressure banner. Screenshot inspection showed both Watch warnings readable without overlapping objectives, minimap, or selected-unit UI. Browser console errors were 0.
+- Decision: no Watch copy, timing, status-duration, telemetry, defeat-tip, e2e, gameplay, save, reward, map, unit, faction, worker, construction, economy AI, live reinforcement, route-contest AI, or defensive-hold change was justified in Phase 4. The warning is early but player-triggered by Watch Road capture and telemetry shows no pressure-caused defeat spike.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning, app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB, vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 5.9m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes; `git diff --check` PASS.
+
 ## Current v0.7.1 Enemy Pressure Feel Review Goal - 2026-05-09
 
 Mission: review, polish, and harden v0.7 Enemy Strategic Pressure V1 without expanding it into real enemy construction, workers, economy AI, live reinforcements, capture-site contest AI, defensive hold behavior, new units, new maps, new factions, rewards, save changes, or broad systems. This pass is about pressure readability, warning copy, message visibility, telemetry clarity, balance interpretation, action-promotion gating, and release confidence.
