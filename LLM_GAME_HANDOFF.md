@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 pressure playtest report
+Last updated: 2026-05-09 v0.7.3 real-input pressure playtest final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -100,6 +100,40 @@ Phase 9 pressure playtest report and docs:
 - Report conclusion: Cinderfen Crossing and Cinderfen Watch pressure remain readable enough to keep unchanged; no tiny pressure polish was justified; Emmanuel's manual checklist is still the missing direct human evidence.
 - v0.8 recommendation: technical performance/e2e runtime pass first, Tutorial v2 onboarding refinement as the safer player-facing alternative, and any pressure-specific work deferred until manual checklist feedback supports at most a simulator-only `reinforce_next_wave` experiment.
 - No gameplay, data, copy, timing, status-duration, telemetry, defeat-tip, e2e, scope, wave-nudge, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, or campaign progression change was made.
+
+Phase 10 optional cleanup:
+
+- Skipped intentionally. Phase 9 left the reports, checklist, and release docs coherent, and no doc-formatting or test-helper cleanup was worth additional churn.
+- No code, data, pressure-plan scope, warning copy, timing, status-duration, telemetry, e2e, balance, reward, save, map, unit, faction, worker, construction, economy AI, live reinforcement, capture-site contest AI, defensive-hold, campaign progression, tutorial, or skirmish change was made.
+
+Phase 11 final verification and handoff:
+
+- Completed phases: Phase 0 through Phase 9 plus Phase 11 final verification. Phase 10 was skipped for the no-cleanup reason above.
+- Commits created:
+  - `a776b6c Checkpoint v0.7.3 real-input playtest plan`
+  - `873d259 Checkpoint v0.7.3 pressure review setup`
+  - `54e87ce Checkpoint v0.7.3 Crossing real-input review`
+  - `d4edbec Checkpoint v0.7.3 Watch real-input review`
+  - `e170023 Checkpoint v0.7.3 strategy profile review`
+  - `85242c1 Checkpoint v0.7.3 manual pressure checklist`
+  - `f865434 Checkpoint v0.7.3 evidence-backed pressure polish`
+  - `6f0bd64 Checkpoint v0.7.3 v0.8 direction brief`
+  - `bff8d4d Checkpoint v0.7.3 pressure playtest report`
+  - Final handoff commit: `Checkpoint v0.7.3 real-input pressure playtest`
+- Final verification:
+  - `npm test`: PASS, 45 files / 334 tests in 8.68s.
+  - `npm run build`: PASS with the known Phaser vendor warning. App JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB.
+  - `npm run validate:content`: PASS.
+  - `npm run test:e2e:smoke`: PASS, 12 tests in 5.1m.
+  - `npm run test:e2e:release`: PASS, 67 tests in 30.1m.
+  - `npm run test:e2e:release:shard1`: PASS, 55 tests in 24.6m.
+  - `npm run test:e2e:release:shard2`: PASS, 12 tests in 5.1m.
+  - `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes.
+  - `git diff --check`: PASS.
+- Production preview smoke: PASS on `http://127.0.0.1:4173/`. Verified title `Ascendant Realms`, main-menu `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, and 0 browser console errors. The preview server was stopped afterward.
+- Current git status before this final handoff commit: clean worktree, `main` ahead of `origin/main` by 9 commits.
+- Remaining risks: Emmanuel's direct manual checklist feedback is still outstanding; a real human may still miss pressure warnings during full attention play; Greedy Economy timeout frustration may need future Results/copy review; Fast Army Crossing bypass can still feel clever or too cheap depending on player taste; Retinue + Training Yard II can flatten current pressure as saved-progress power; e2e release lanes are green but slow; the known Phaser vendor chunk warning remains.
+- Next recommended long-running goal: v0.8 technical performance/e2e runtime pass. If player-facing clarity is preferred, choose Tutorial v2 onboarding refinement instead. Do not resume pressure mechanics until Emmanuel's manual checklist feedback supports it; if pressure work resumes, start with a simulator-only `reinforce_next_wave` experiment, not live reinforcements, contest AI, defensive holds, workers, construction, economy AI, new maps, new units, new factions, rewards, save changes, or campaign progression changes.
 
 ## Current v0.7.2 Human-Paced Cinderfen Pressure Review Goal - 2026-05-09
 
