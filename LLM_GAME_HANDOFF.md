@@ -34,6 +34,16 @@ Phase 1 current performance and bundle audit refresh:
 - Test/dev scan found no accidental Playwright, Vitest, e2e-helper, simulator, or unit-test body leak in the production app chunk. `__ASCENDANT_TEST_HOOKS__` remains intentional and small.
 - Decision: no bundle optimization in this phase. The warning is still isolated to Phaser, and content-validation removal, data splitting, or scene lazy loading remain broader than v0.8's safe implementation scope.
 
+Phase 2 e2e runtime and shard imbalance audit:
+
+- Added `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`.
+- Inspected `package.json`, `playwright.config.ts`, `tests/e2e/*`, `docs/E2E_RUNTIME_AUDIT.md`, and `docs/E2E_CI_SHARDING_PLAN.md`.
+- Current release suite lists 67 tests in 4 spec files: `deep-flow.spec.ts` 28, `enemy-pressure.spec.ts` 2, `layout.spec.ts` 25, and `smoke.spec.ts` 12.
+- Current known v0.7.3 runtimes: smoke 12 tests in 5.1m; full release 67 tests in 30.1m; shard1 55 tests in 24.6m; shard2 12 tests in 5.1m.
+- The 2-shard imbalance is structural: `--shard=1/2` lists `deep-flow`, `enemy-pressure`, and `layout` together, while `--shard=2/2` lists only smoke.
+- A no-change 3-shard listing is more balanced by slow-file family: shard `1/3` lists 28 deep-flow tests, shard `2/3` lists 27 layout+pressure tests, and shard `3/3` lists 12 smoke tests.
+- Recommendation: if v0.8 implements one safe e2e runtime improvement, add 3-shard release scripts while preserving the existing full release, 2-shard, smoke, layout, and deep scripts. Do not change tests, workers, parallelism, serving mode, or coverage.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
