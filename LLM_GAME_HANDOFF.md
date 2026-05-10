@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9.1 future review brief
+Last updated: 2026-05-10 v0.9.1 controlled intake report
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,7 +24,7 @@ Phase status:
 - Phase 7 screenshot QA comparison plan: complete. Added `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md` mapping future candidate review to current visual QA surfaces including main menu, campaign map, Cinderfen Crossing tablet, Cinderfen pressure warnings, Cinderfen Watch defeat, Results, Inventory, and Asset Gallery. The plan keeps comparison human-reviewed and side-by-side, with no pixel-perfect baselines or visual harness changes.
 - Phase 8 manual asset preparation guide: complete. Added `docs/V091_MANUAL_STYLE_FRAME_PREPARATION_GUIDE.md` for Emmanuel, covering the first 1-3 terrain/shrine/outpost candidate images, which v0.9 prompt/spec docs to use, PNG/transparent-background guidance, required metadata, forbidden copyrighted/lookalike/unlicensed sources, inbox placement, what to send back, and the later review sequence.
 - Phase 9 future v0.9.2 style-frame review goal brief: complete. Added `docs/V092_STYLE_FRAME_REVIEW_GOAL_BRIEF.md` defining the future candidate-review goal, required inputs, review tasks, conservative stages, verification, stopping conditions, output docs, and forbidden final states. It explicitly does not implement the future review now.
-- Phase 10 controlled intake report and release docs: pending.
+- Phase 10 controlled intake report and release docs: complete. Added `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.9.1 as the current non-runtime style-frame intake milestone.
 - Phase 11 final full verification and push: pending.
 
 Current v0.9.1 verification:
@@ -58,6 +58,13 @@ Current v0.9.1 verification:
 - Phase 9 `npm run validate:content`: PASS.
 - Phase 9 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON template and 0 review manifest JSON files.
 - Phase 9 `git diff --check`: PASS.
+- Phase 10 `npm test`: PASS, 46 files / 351 tests.
+- Phase 10 `npm run build`: PASS with the known Phaser vendor warning.
+- Phase 10 `npm run validate:content`: PASS.
+- Phase 10 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+- Phase 10 `npm run visual:qa`: PASS, 1 visual QA capture test in about 3.6m.
+- Phase 10 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 10 `git diff --check`: PASS.
 
 Key constraints still active:
 

@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 45 test files, 340 tests
+PASS: 46 test files, 351 tests
 ```
 
 2. Standalone content validation:
@@ -191,7 +191,7 @@ Browser console errors recorded in the generated index: 0
 
 This v0.8.2 lane is optional and review-oriented. It captures main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
 
-Future Cinderfen visual work should also review `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md`. v0.9 keeps this lane as human-review evidence: no pixel-perfect diffing, no generated/imported runtime art, and no production approval without source/license metadata plus manifest validation.
+Future Cinderfen visual work should also review `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` and `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`. v0.9.1 keeps this lane as human-review evidence: no pixel-perfect diffing, no generated/imported runtime art, and no production approval without source/license metadata plus manifest validation.
 
 10. Whitespace diff check:
 
@@ -273,5 +273,6 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/V08_PERFORMANCE_AUDIT.md`, `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`, and `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md` summarize the v0.8 bundle/performance and e2e runtime work.
 - `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, and `docs/CINDERFEN_VISUAL_REWORK_SPEC.md` define the visual foundation without implementing a graphics overhaul.
 - `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md` summarizes the v0.8 technical and visual foundation gate.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, the v0.7.3 pressure playtest gate, and the v0.8 technical/visual foundation gate as done, with the next phase set to a v0.8.1 visual asset manifest and screenshot QA gate unless manual pressure or tutorial feedback redirects it.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.8 technical performance and visual foundation gate on top of the v0.7 pressure foundation and warns future sessions not to add broad systems before their gates are explicit and green.
+- `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md` summarizes the current non-runtime Cinderfen style-frame intake pipeline, including metadata templates, validation, scan results, screenshot comparison planning, and the future v0.9.2 review brief.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, the v0.7.3 pressure playtest gate, v0.8 technical/visual foundation gate, v0.8.1 manifest/screenshot gate, v0.8.2 source/license screenshot gate, v0.9 style-frame spec gate, and v0.9.1 intake gate as done, with the next recommended visual phase set to v0.9.2 candidate review only after Emmanuel provides source/license-documented candidates.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.9.1 controlled Cinderfen style-frame intake gate and warns future sessions not to add broad systems, generated art, imported art, or runtime visual replacement before their gates are explicit and green.

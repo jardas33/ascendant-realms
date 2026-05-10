@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-05-10 v0.9 controlled Cinderfen style-frame report gate
+Updated: 2026-05-10 v0.9.1 controlled Cinderfen style-frame intake report gate
+
+## v0.9.1 Controlled Cinderfen Style-Frame Intake Report Gate - 2026-05-10
+
+Scope: create a safe non-runtime intake pipeline for future Cinderfen style-frame candidates, source/license metadata, review manifests, screenshot QA mapping, and approval gates. This pass preserved gameplay, save compatibility, campaign progression, Tutorial / Proving Grounds behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, large candidate binaries, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md`, `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md`, `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md`, `docs/V091_CURRENT_STYLE_FRAME_CANDIDATE_SCAN.md`, `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`, `docs/V091_MANUAL_STYLE_FRAME_PREPARATION_GUIDE.md`, `docs/V092_STYLE_FRAME_REVIEW_GOAL_BRIEF.md`, and `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md`.
+- Added non-runtime review folders under `art-review/` and `art-review/cinderfen-style-frames/`.
+- Added source/license candidate metadata templates in Markdown and JSON.
+- Added tooling-only review manifest types under `tools/art-intake/`.
+- Added metadata-only `npm run validate:art-intake` validation and tests.
+- Scanned the repo and confirmed no Cinderfen style-frame candidate images currently exist in the review intake.
+- Mapped future candidate comparison to the existing 18-screenshot visual QA capture set.
+- Wrote Emmanuel-facing manual preparation guidance and a future v0.9.2 candidate-review brief.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests during phase/report gates.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-CC1M6Mg7.js, 476.83 kB minified / 127.77 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run visual:qa
+PASS: 1 Playwright capture test, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors during phase/report gates.
+```
+
+Recommended next milestone: v0.9.2 Controlled Cinderfen Style-Frame Candidate Review, only after Emmanuel provides source/license-documented candidate images. Keep it non-runtime first: validate metadata, reject unsafe or unknown-source candidates, catalogue safe candidates as reference/candidate only, run visual QA, and write a side-by-side human review. Do not wire assets into runtime until a later goal scopes one tiny replacement with source/license proof, manifest validation, before/after screenshot QA, and rollback.
 
 ## v0.9 Controlled Cinderfen Style-Frame Report Gate - 2026-05-10
 

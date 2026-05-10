@@ -11,9 +11,27 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.9 Controlled Cinderfen Style-Frame Sprint** on 2026-05-10. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, v0.7.2 pressure feel review, v0.7.3 real-input pressure playtest, v0.8 technical/visual foundation, v0.8.1 visual asset manifest/screenshot QA gate, and v0.8.2 source/license screenshot coverage gate while adding a docs/specs/prompts-only Cinderfen style-frame package. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, or a graphics overhaul.
+The latest feature checkpoint is **v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review** on 2026-05-10. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, v0.7.2 pressure feel review, v0.7.3 real-input pressure playtest, v0.8 technical/visual foundation, v0.8.1 visual asset manifest/screenshot QA gate, v0.8.2 source/license screenshot coverage gate, and v0.9 docs/specs/prompts-only Cinderfen style-frame package while adding a safe non-runtime intake pipeline for future style-frame candidates. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, or a graphics overhaul.
 
-The next recommended phase is **v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review**. Keep it non-runtime first: manually generate, commission, or obtain 1 to 3 style-frame candidates outside runtime; record source/license metadata; add review-only files only if explicitly approved; add manifest entries as reference/candidate only; run validation and visual QA; and write a human source/screenshot review. Do not wire new art into runtime until a later goal explicitly scopes one tiny replacement with source/license proof and before/after screenshot QA. If player-facing work is preferred, Tutorial v2 onboarding refinement remains the safer alternative. A pressure-specific follow-up should still wait for Emmanuel's manual checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
+The next recommended phase is **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides 1 to 3 source/license-documented candidate images per first-priority category. Keep it non-runtime: inspect candidate files, validate metadata, reject unsafe candidates, catalogue safe candidates as reference/candidate only, run visual QA, and write a side-by-side human source/screenshot review. Do not wire new art into runtime until a later goal explicitly scopes one tiny replacement with source/license proof and before/after screenshot QA. If player-facing work is preferred, Tutorial v2 onboarding refinement remains the safer alternative. A pressure-specific follow-up should still wait for Emmanuel's manual checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
+
+New v0.9.1 controlled intake docs and folders:
+
+- `art-review/README.md`
+- `art-review/cinderfen-style-frames/README.md`
+- `art-review/cinderfen-style-frames/metadata/CANDIDATE_METADATA_TEMPLATE.md`
+- `art-review/cinderfen-style-frames/metadata/CANDIDATE_METADATA_TEMPLATE.json`
+- `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md`
+- `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md`
+- `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md`
+- `docs/V091_CURRENT_STYLE_FRAME_CANDIDATE_SCAN.md`
+- `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`
+- `docs/V091_MANUAL_STYLE_FRAME_PREPARATION_GUIDE.md`
+- `docs/V092_STYLE_FRAME_REVIEW_GOAL_BRIEF.md`
+- `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md`
+- `tools/art-intake/StyleFrameReviewManifestTypes.ts`
+- `tools/art-intake/validateArtIntake.ts`
+- `tools/art-intake/validateArtIntake.test.ts`
 
 New v0.9 controlled style-frame docs:
 

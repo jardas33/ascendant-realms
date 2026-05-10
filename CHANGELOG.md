@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
+
+This checkpoint creates the safe non-runtime intake pipeline for future Cinderfen style-frame candidates. It adds review folders, source/license metadata templates, review manifest schema/types, metadata-only validation, a candidate scan, screenshot comparison planning, Emmanuel's manual preparation guide, and a future v0.9.2 review brief without adding generated art, imported assets, candidate binaries, runtime art, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
+
+### Included
+
+- Intake protocol: `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md`.
+- Non-runtime review folder structure under `art-review/`.
+- Source/license metadata guide and templates: `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md`, `art-review/cinderfen-style-frames/metadata/CANDIDATE_METADATA_TEMPLATE.md`, and `art-review/cinderfen-style-frames/metadata/CANDIDATE_METADATA_TEMPLATE.json`.
+- Review manifest schema and tooling-only types: `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md` and `tools/art-intake/StyleFrameReviewManifestTypes.ts`.
+- Metadata-only validation: `npm run validate:art-intake`, `tools/art-intake/validateArtIntake.ts`, and `tools/art-intake/validateArtIntake.test.ts`.
+- Current candidate scan: `docs/V091_CURRENT_STYLE_FRAME_CANDIDATE_SCAN.md`.
+- Screenshot comparison plan: `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`.
+- Manual preparation guide for Emmanuel: `docs/V091_MANUAL_STYLE_FRAME_PREPARATION_GUIDE.md`.
+- Future review brief: `docs/V092_STYLE_FRAME_REVIEW_GOAL_BRIEF.md`.
+- v0.9.1 report: `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md`.
+
+### Verification
+
+- Phase gates: `npm test` passed with 46 test files and 351 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `npm run validate:art-intake` passed with a template-only intake.
+- Report gate: `npm run visual:qa` passed with 18 indexed review screenshots and zero recorded browser console errors.
+- Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+- Phase/report gates: `git diff --check` passed.
+
+### Next
+
+- Recommended next goal: v0.9.2 Controlled Cinderfen Style-Frame Candidate Review, only after Emmanuel provides source/license-documented candidates.
+- Keep the next step non-runtime: validate metadata, reject unsafe candidates, catalogue safe candidates as reference/candidate only, run visual QA, and create a side-by-side human review.
+- Do not wire assets into runtime until a later goal scopes one tiny replacement with source/license proof, manifest validation, before/after screenshot QA, and rollback.
+
 ## v0.9 Controlled Cinderfen Style-Frame Sprint - 2026-05-10
 
 This checkpoint creates a docs/specs/prompts-only Cinderfen visual style-frame package before any art generation or runtime replacement. It defines the future ash-glass wetland identity, material language, shrine landmark direction, Ashen outpost architecture, unit/building scale standards, prompt pack, manifest templates, screenshot acceptance criteria, and future replacement sequence without adding generated art, imported assets, runtime art, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
