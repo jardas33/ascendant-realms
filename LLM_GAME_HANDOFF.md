@@ -21,6 +21,7 @@ Phase status:
 - Phase 4 manifest validation hardening: complete. Hardened validation for production approval, runtime/reference conflicts, candidate/final source safety, critical replacement notes, and review metadata. `npm test` now reports 45 files / 340 tests.
 - Phase 5 screenshot coverage expansion plan: complete. Added `docs/V082_SCREENSHOT_COVERAGE_EXPANSION_PLAN.md` to plan Results, Inventory, Asset Gallery, mobile/tablet battle, tutorial mobile, pressure-warning, route-complete, and defeat-tip coverage before editing the optional screenshot harness.
 - Phase 6 screenshot QA expansion: complete. Extended `tests/visual-qa/visual-qa.spec.ts` to capture Asset Gallery, Hero Inventory, tutorial mobile, route-complete campaign map, Cinderfen Crossing tablet, Crossing pressure warning, Cinderfen victory Results, and Cinderfen Watch defeat Results using existing Playwright helpers and ignored output.
+- Phase 7 extended screenshot QA review: complete. Added `docs/V082_EXTENDED_SCREENSHOT_QA_REVIEW.md` after inspecting the 18-screenshot capture set; the review documents 0 console errors, useful broader coverage, mobile HUD density, Results/Inventory/Gallery density, Cinderfen terrain debt, capture-site identity debt, and a no-visual-change decision.
 
 Commits created so far:
 
@@ -28,8 +29,10 @@ Commits created so far:
 - `49a88c9 Checkpoint v0.8.2 asset source license audit`
 - `65e6631 Checkpoint v0.8.2 manifest metadata refinement`
 - `2f1511b Checkpoint v0.8.2 manifest validation hardening`
+- `2834cbc Checkpoint v0.8.2 screenshot coverage plan`
+- `871929a Checkpoint v0.8.2 screenshot QA expansion`
 
-Current verification through Phase 6:
+Current verification through Phase 7:
 
 - `npm test`: PASS, 45 files / 340 tests.
 - `npm run build`: PASS with the known Phaser vendor warning.
