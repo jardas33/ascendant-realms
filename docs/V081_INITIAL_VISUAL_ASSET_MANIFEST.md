@@ -48,9 +48,11 @@ No audio, VFX, terrain tile, road/causeway tile, or Cinder Shrine landmark art f
 The manifest is intentionally conservative:
 
 - Current manually placed or processed image assets are generally marked with `sourceType: "manual"` and `licenseStatus: "unknown"`.
+- v0.8.2 adds `reviewStatus` and `sourceReviewNotes` so unknown-source images can be distinguished from owned prototype-only metadata.
+- Current unknown-license image assets are marked `reviewStatus: "needs-source-proof"`.
 - Runtime image assets with unknown license are marked `needsReview: true`.
 - Current runtime image assets are generally not marked `allowedInProduction`.
-- Locally authored procedural terrain and the prompt book are marked as owned/source-known, but procedural terrain remains a `placeholder` with `replacementPriority: "critical"`.
+- Locally authored procedural terrain and the prompt book are marked as owned/source-known and `reviewStatus: "approved-for-prototype"`, but procedural terrain remains a `placeholder` with `replacementPriority: "critical"`.
 
 This avoids treating the existing `public/assets/final/` folder name as proof of production-final art.
 
@@ -64,6 +66,8 @@ Most current runtime art is marked as:
 - `placeholder` for procedural terrain.
 
 No entry is marked `final` in this phase.
+
+No entry is marked `reviewStatus: "approved-for-production"` in v0.8.2 because the current file-backed image assets still lack explicit source/license evidence.
 
 ## Runtime Groups
 

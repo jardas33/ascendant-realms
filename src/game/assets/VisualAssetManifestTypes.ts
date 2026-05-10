@@ -53,6 +53,18 @@ export const VISUAL_ASSET_LICENSE_STATUSES = [
 
 export type VisualAssetLicenseStatus = (typeof VISUAL_ASSET_LICENSE_STATUSES)[number];
 
+export const VISUAL_ASSET_REVIEW_STATUSES = [
+  "approved-for-prototype",
+  "approved-for-production",
+  "needs-source-proof",
+  "generated-review-needed",
+  "reference-only",
+  "do-not-ship",
+  "deprecated"
+] as const;
+
+export type VisualAssetReviewStatus = (typeof VISUAL_ASSET_REVIEW_STATUSES)[number];
+
 export const VISUAL_ASSET_USAGES = [
   "runtime",
   "manual-reference",
@@ -101,6 +113,7 @@ export interface VisualAssetManifestEntry {
   currentStatus: VisualAssetStatus;
   sourceType: VisualAssetSourceType;
   licenseStatus: VisualAssetLicenseStatus;
+  reviewStatus: VisualAssetReviewStatus;
   usage: VisualAssetUsage;
   usedBy: string[];
   visualFamily: string;
@@ -111,6 +124,7 @@ export interface VisualAssetManifestEntry {
   styleConsistency: VisualAssetReviewRating;
   replacementPriority: VisualAssetReplacementPriority;
   notes: string;
+  sourceReviewNotes: string;
   allowedInProduction: boolean;
   needsReview: boolean;
   screenshotQaTargets?: string[];
@@ -122,4 +136,3 @@ export interface VisualAssetManifest {
   notes: string;
   assets: VisualAssetManifestEntry[];
 }
-

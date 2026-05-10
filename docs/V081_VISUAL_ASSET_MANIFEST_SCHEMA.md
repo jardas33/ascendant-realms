@@ -51,6 +51,7 @@ interface VisualAssetManifestEntry {
   currentStatus: VisualAssetStatus;
   sourceType: VisualAssetSourceType;
   licenseStatus: VisualAssetLicenseStatus;
+  reviewStatus: VisualAssetReviewStatus;
   usage: VisualAssetUsage;
   usedBy: string[];
   visualFamily: string;
@@ -61,6 +62,7 @@ interface VisualAssetManifestEntry {
   styleConsistency: VisualAssetReviewRating;
   replacementPriority: VisualAssetReplacementPriority;
   notes: string;
+  sourceReviewNotes: string;
   allowedInProduction: boolean;
   needsReview: boolean;
   screenshotQaTargets?: string[];
@@ -194,6 +196,36 @@ Guidance:
 - Runtime assets must not use `reference-only` or `do-not-ship`.
 - `final` assets cannot have unknown source or license.
 - `generated-review-needed` is allowed for prototypes but should not imply production readiness.
+
+### `reviewStatus`
+
+Allowed values:
+
+```text
+approved-for-prototype
+approved-for-production
+needs-source-proof
+generated-review-needed
+reference-only
+do-not-ship
+deprecated
+```
+
+Guidance:
+
+- `approved-for-prototype`: source is acceptable for current prototype use, but not necessarily for production.
+- `approved-for-production`: source/license/style evidence is strong enough for future shipping.
+- `needs-source-proof`: author, generation method, or license evidence is missing.
+- `generated-review-needed`: generation evidence exists, but prompt/tool/license review is not complete.
+- `reference-only`: may guide future art, but should not ship as runtime art.
+- `do-not-ship`: must not be runtime or production art.
+- `deprecated`: retained for history or migration only.
+
+v0.8.2 default policy:
+
+- Current unknown-license image assets use `needs-source-proof`.
+- Owned non-art metadata and owned procedural terrain may use `approved-for-prototype`.
+- No current entry should use `approved-for-production`.
 
 ### `usage`
 
@@ -334,6 +366,19 @@ Initial guidance:
 
 Short human-readable notes. Keep this concise enough to make manifest reviews practical.
 
+### `sourceReviewNotes`
+
+Human-readable source/license review notes.
+
+Use this for evidence or gaps such as:
+
+- No explicit author/source/license proof is attached.
+- Prompt-book workflow is suspected but unverified.
+- Owned local prompt/reference metadata, not runtime art.
+- Original project renderer code, source-safe for prototype use, but visually placeholder.
+
+This field separates legal/source review from the broader visual-quality `notes` field.
+
 ### `allowedInProduction`
 
 Boolean production gate.
@@ -404,15 +449,16 @@ Current validation checks:
 4. `currentStatus` is valid.
 5. `sourceType` is valid.
 6. `licenseStatus` is valid.
-7. `usage` is valid.
-8. Runtime assets cannot have `licenseStatus` `reference-only` or `do-not-ship`.
-9. Runtime assets with `licenseStatus` `unknown` must set `needsReview: true`.
-10. `final` assets cannot have unknown source or license.
-11. `intendedWorldHeightPx` must be positive when present.
-12. `currentRenderHeightPx` must be positive when present.
-13. `replacementPriority` is valid.
-14. Runtime assets should have non-empty `usedBy`.
-15. Deprecated assets should not be runtime-used.
+7. `reviewStatus` is valid.
+8. `usage` is valid.
+9. Runtime assets cannot have `licenseStatus` `reference-only` or `do-not-ship`.
+10. Runtime assets with `licenseStatus` `unknown` must set `needsReview: true`.
+11. `final` assets cannot have unknown source or license.
+12. `intendedWorldHeightPx` must be positive when present.
+13. `currentRenderHeightPx` must be positive when present.
+14. `replacementPriority` is valid.
+15. Runtime assets should have non-empty `usedBy`.
+16. Deprecated assets should not be runtime-used.
 
 Implementation files:
 

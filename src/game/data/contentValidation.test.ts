@@ -40,9 +40,12 @@ describe("content validation", () => {
     expect(VISUAL_ASSET_MANIFEST.assets).toHaveLength(89);
     expect(ids.size).toBe(VISUAL_ASSET_MANIFEST.assets.length);
     expect(VISUAL_ASSET_MANIFEST.assets.some((asset) => asset.currentStatus === "final")).toBe(false);
+    expect(VISUAL_ASSET_MANIFEST.assets.some((asset) => asset.reviewStatus === "approved-for-production")).toBe(false);
+    expect(VISUAL_ASSET_MANIFEST.assets.filter((asset) => asset.reviewStatus === "needs-source-proof")).toHaveLength(87);
     expect(VISUAL_ASSET_MANIFEST.assets.find((asset) => asset.id === "procedural_battle_terrain")).toMatchObject({
       category: "terrain",
       currentStatus: "placeholder",
+      reviewStatus: "approved-for-prototype",
       replacementPriority: "critical",
       usage: "runtime"
     });
@@ -66,6 +69,7 @@ describe("content validation", () => {
       currentStatus: "bad_status" as typeof asset.currentStatus,
       sourceType: "bad_source" as typeof asset.sourceType,
       licenseStatus: "bad_license" as typeof asset.licenseStatus,
+      reviewStatus: "bad_review" as typeof asset.reviewStatus,
       usage: "bad_usage" as typeof asset.usage,
       scaleClass: "bad_scale" as typeof asset.scaleClass,
       silhouetteReadability: "bad_silhouette" as typeof asset.silhouetteReadability,
@@ -79,6 +83,7 @@ describe("content validation", () => {
           "Visual asset bad_visual_asset_enums has invalid currentStatus bad_status.",
           "Visual asset bad_visual_asset_enums has invalid sourceType bad_source.",
           "Visual asset bad_visual_asset_enums has invalid licenseStatus bad_license.",
+          "Visual asset bad_visual_asset_enums has invalid reviewStatus bad_review.",
           "Visual asset bad_visual_asset_enums has invalid usage bad_usage.",
           "Visual asset bad_visual_asset_enums has invalid scaleClass bad_scale.",
           "Visual asset bad_visual_asset_enums has invalid silhouetteReadability bad_silhouette.",

@@ -21,15 +21,16 @@ Visual asset metadata lives in `src/game/assets/visualAssetManifest.ts`, with ty
 1. Add or edit manifest entries before treating any visual asset as part of the reviewed set.
 2. Keep `id` unique and stable. Runtime ids should match current `AssetKeys.ts` references when applicable.
 3. Use honest `currentStatus` values: most current assets are `placeholder`, `prototype`, `candidate`, or `reference`, not `final`.
-4. Use honest `sourceType` and `licenseStatus`. If source/license proof is unclear, keep `licenseStatus: "unknown"`, `needsReview: true`, and `allowedInProduction: false`.
+4. Use honest `sourceType`, `licenseStatus`, and `reviewStatus`. If source/license proof is unclear, keep `licenseStatus: "unknown"`, `reviewStatus: "needs-source-proof"`, `needsReview: true`, and `allowedInProduction: false`.
 5. Runtime assets must not use `reference-only` or `do-not-ship` license statuses.
 6. Runtime assets with unknown license must set `needsReview: true`.
 7. Final assets cannot have unknown source or unknown license.
 8. Runtime entries need non-empty `usedBy` so future reviewers understand why the asset ships.
 9. Keep `intendedWorldHeightPx` and `currentRenderHeightPx` positive when present.
-10. Use `replacementPriority` to guide backlog work, not to imply approval to replace assets.
-11. Do not add generated art, downloaded images, large binaries, or production claims without explicit approval and source/license metadata.
-12. Run `npm run validate:content` after edits; the CLI checks metadata and runtime visual file paths without bundling filesystem checks into browser boot.
+10. Use `sourceReviewNotes` for explicit evidence or gaps such as "No explicit author/source/license proof is attached."
+11. Use `replacementPriority` to guide backlog work, not to imply approval to replace assets.
+12. Do not add generated art, downloaded images, large binaries, or production claims without explicit approval and source/license metadata.
+13. Run `npm run validate:content` after edits; the CLI checks metadata and runtime visual file paths without bundling filesystem checks into browser boot.
 
 Optional screenshot QA for visual changes:
 

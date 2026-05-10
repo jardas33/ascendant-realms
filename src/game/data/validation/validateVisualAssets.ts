@@ -8,6 +8,7 @@ import {
   VISUAL_ASSET_LICENSE_STATUSES,
   VISUAL_ASSET_REPLACEMENT_PRIORITIES,
   VISUAL_ASSET_REVIEW_RATINGS,
+  VISUAL_ASSET_REVIEW_STATUSES,
   VISUAL_ASSET_SCALE_CLASSES,
   VISUAL_ASSET_SOURCE_TYPES,
   VISUAL_ASSET_STATUSES,
@@ -91,6 +92,9 @@ function validateVisualAsset(
   }
   if (!VISUAL_ASSET_LICENSE_STATUSES.includes(asset.licenseStatus)) {
     errors.push(`${label} has invalid licenseStatus ${asset.licenseStatus}.`);
+  }
+  if (!VISUAL_ASSET_REVIEW_STATUSES.includes(asset.reviewStatus)) {
+    errors.push(`${label} has invalid reviewStatus ${asset.reviewStatus}.`);
   }
   if (!VISUAL_ASSET_USAGES.includes(asset.usage)) {
     errors.push(`${label} has invalid usage ${asset.usage}.`);
