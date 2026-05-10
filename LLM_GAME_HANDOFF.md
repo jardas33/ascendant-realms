@@ -94,6 +94,16 @@ Phase 7 prototype-safe visual readability decision:
 - Considered selection ring size/opacity, label spacing, health bar offset, unit/building sprite scale, capture-site icon/ring tuning, minimap marker contrast/scale, and terrain overlay opacity.
 - Decision: no code or CSS change was applied. Current readability is functional, while the major visual problems are structural art-direction and asset-pipeline issues. A one-constant tweak would create screenshot/layout churn without enough evidence that it improves player comprehension.
 - Future trigger for a tiny visual fix: direct browser or human evidence that selection rings/bars are hidden, labels block command decisions, Cinder Shrine is missed despite copy/camera framing, minimap markers are indistinguishable, or HUD surfaces block important battle information.
+- Verification note: the first `npm run test:e2e:layout` attempt hit the command timeout with no failing-test output. Repo-local Playwright/Vite Node processes were cleaned up and the exact lane was rerun with a longer timeout; it passed 25 tests in 14.9m.
+
+Phase 8 2026 art direction bible:
+
+- Added `docs/ART_DIRECTION_2026_BIBLE.md`.
+- Defined the future visual promise as original dark heroic fantasy RTS/RPG, readable battlefield first, hero RPG identity, grounded tactical scale, and modern production values later.
+- Established visual pillars: silhouette clarity, readable tactical scale, grounded terrain, distinctive original factions, modern lighting/VFX later, and tactile UI.
+- Recorded explicit IP/legal guardrails: do not copy Warcraft, Warlords Battlecry, or any protected names, factions, units, maps, lore, UI, music, terrain, art, or other expression.
+- Defined future style targets for heroes, infantry, ranged units, brutes, casters, monsters, command halls, barracks, shrine/capture sites, enemy strongholds, roads, grass, marsh/Cinderfen, ruins, water, fog/shadow, and UI.
+- Compared future 2.5D and 3D visual options only as planning. No desktop packaging, engine switch, asset import, new art, shader, VFX system, or runtime visual implementation was made.
 
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
