@@ -122,3 +122,18 @@ Phase 7 should link expanded screenshots back to:
 ## Decision
 
 Proceed to Phase 6 with an optional screenshot QA harness expansion only. The first implementation should prefer stable, already-reachable screens over ambitious seeded states, and it should treat skipped targets as documented coverage gaps rather than failures.
+
+## Phase 6 Implemented Scope
+
+Phase 6 extends the optional `npm run visual:qa` harness with the safest planned targets:
+
+- Asset Gallery desktop.
+- Hero Inventory desktop.
+- Tutorial mobile overlay.
+- Completed Cinderfen route campaign map.
+- Cinderfen Crossing tablet battle HUD.
+- Cinderfen Crossing pressure warning.
+- Cinderfen Crossing victory Results.
+- Cinderfen Watch defeat Results and defeat tips.
+
+The harness still writes ignored review artifacts under `visual-qa/latest/`, still avoids pixel comparisons, and still uses existing Playwright-only helpers rather than adding production gameplay hooks.

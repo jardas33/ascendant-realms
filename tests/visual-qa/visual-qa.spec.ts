@@ -2,9 +2,11 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import {
+  completeCinderfenVictory,
   completeCinderfenOverlookChoice,
   launchCinderfenCrossing,
   launchCinderfenWatch,
+  seedCompletedCinderfenRouteCampaign,
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "../e2e/chapter2-helpers";
@@ -117,6 +119,40 @@ async function triggerWatchPressureWarning(page: Page): Promise<void> {
   await expect(page.getByTestId("battle-status")).toContainText("Enemy horns answer your advance");
 }
 
+async function triggerCrossingPressureWarning(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.enemyPressureRuntime?.update();
+    scene.update(performance.now(), 4500);
+    scene.update(performance.now() + 31_000, 31_000);
+    scene.enemyPressureRuntime?.update();
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("battle-status")).toContainText("Ashen scouts mark the center road");
+}
+
+async function forceBattleDefeat(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const objectiveId = scene.activeMap.scenario.objectives.playerBaseBuildingId;
+    const target = scene.buildings.find(
+      (building: any) => building.team === "player" && building.definition.id === objectiveId && building.alive
+    );
+    if (!target) {
+      throw new Error(`Could not find player objective building ${objectiveId}.`);
+    }
+    target.takeDamage(target.maxHp + target.armor + 10_000);
+    scene.checkEndConditions();
+  });
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+}
+
 async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Promise<void> {
   const lines = [
     "# Ascendant Realms Visual QA Capture",
@@ -147,8 +183,8 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
 }
 
 test.describe("Ascendant Realms visual QA capture", () => {
-  test("captures the current menu, campaign, tutorial, skirmish, and Cinderfen battle views", async ({ page }) => {
-    test.setTimeout(120_000);
+  test("captures the current menu, campaign, tutorial, results, inventory, gallery, and Cinderfen battle views", async ({ page }) => {
+    test.setTimeout(240_000);
     await mkdir(OUTPUT_DIR, { recursive: true });
     const records: CaptureRecord[] = [];
     const consoleErrors: string[] = [];
@@ -158,6 +194,10 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await openFreshMainMenu(page);
     await expect(page.getByTestId("main-menu")).toBeVisible();
     await captureView(page, records, "Main menu", "main-menu-desktop.png", DESKTOP, "Desktop title screen and primary navigation.");
+
+    await page.getByTestId("menu-asset-gallery").click();
+    await expect(page.locator(".asset-gallery-card").first()).toBeVisible();
+    await captureView(page, records, "Asset Gallery", "asset-gallery-desktop.png", DESKTOP, "Manual asset gallery and image-load status surface.");
 
     await useViewport(page, TABLET);
     await openFreshMainMenu(page);
@@ -170,16 +210,35 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await captureView(page, records, "Main menu mobile", "main-menu-mobile.png", MOBILE, "Mobile menu crop and scroll check.");
 
     await useViewport(page, DESKTOP);
+    await seedPostCinderfenCrossingCampaign(page);
+    await page.getByTestId("menu-inventory").click();
+    await expect(page.getByTestId("hero-inventory")).toBeVisible();
+    await captureView(page, records, "Hero Inventory", "hero-inventory-desktop.png", DESKTOP, "Saved hero equipment, inventory, stats, and skill panel.");
+
+    await useViewport(page, DESKTOP);
     await openFreshMainMenu(page);
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, records, "Tutorial launch", "tutorial-desktop.png", DESKTOP, "Proving Grounds tutorial overlay and battle HUD.");
 
+    await useViewport(page, MOBILE);
+    await openFreshMainMenu(page);
+    await page.getByTestId("menu-tutorial").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await captureView(page, records, "Tutorial launch mobile", "tutorial-mobile.png", MOBILE, "Mobile Proving Grounds overlay and battle HUD density.");
+
+    await useViewport(page, DESKTOP);
     await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
     await continueSavedCampaign(page);
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await captureView(page, records, "Campaign map", "campaign-map-desktop.png", DESKTOP, "Post-Ashen campaign map with Cinderfen route available.");
+
+    await seedCompletedCinderfenRouteCampaign(page);
+    await continueSavedCampaign(page);
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await captureView(page, records, "Campaign route complete", "campaign-route-complete-desktop.png", DESKTOP, "Completed Cinderfen route campaign map state.");
 
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
@@ -193,8 +252,15 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
     await launchCinderfenCrossing(page);
     await captureView(page, records, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Causeway initial battle view.");
+    await useViewport(page, TABLET);
+    await captureView(page, records, "Cinderfen Crossing tablet", "cinderfen-crossing-tablet.png", TABLET, "Tablet Cinderfen battle HUD density.");
+    await useViewport(page, DESKTOP);
     await centerCaptureSite(page, "cinder_crossing", true);
     await captureView(page, records, "Cinderfen Shrine captured", "cinderfen-crossing-shrine-desktop.png", DESKTOP, "Cinder Shrine centered after capture-site hook.");
+    await triggerCrossingPressureWarning(page);
+    await captureView(page, records, "Cinderfen Crossing pressure warning", "cinderfen-crossing-pressure-desktop.png", DESKTOP, "Causeway pressure status warning after Cinder Shrine capture.");
+    await completeCinderfenVictory(page);
+    await captureView(page, records, "Results victory", "results-victory-desktop.png", DESKTOP, "Cinderfen Crossing victory rewards and objective summary.");
 
     await seedPostCinderfenCrossingCampaign(page);
     await continueSavedCampaign(page);
@@ -202,6 +268,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await captureView(page, records, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watchpost initial battle view.");
     await triggerWatchPressureWarning(page);
     await captureView(page, records, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");
+    await forceBattleDefeat(page);
+    await captureView(page, records, "Results defeat", "results-defeat-desktop.png", DESKTOP, "Cinderfen Watch defeat results and guidance tips.");
 
     await writeIndex(records, consoleErrors);
     expect(consoleErrors, "visual QA should not record browser console errors").toEqual([]);
