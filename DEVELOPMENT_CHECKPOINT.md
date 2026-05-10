@@ -1,6 +1,65 @@
 # Development Checkpoint
 
-Updated: 2026-05-09 v0.7.3 real-input pressure playtest report gate
+Updated: 2026-05-10 v0.8 technical visual foundation report gate
+
+## v0.8 Technical Performance And Visual Foundation Report Gate - 2026-05-10
+
+Scope: refresh bundle/performance and e2e runtime facts while creating the visual debt, scale, art direction, asset pipeline, and Cinderfen visual foundation. This pass preserved gameplay, save compatibility, campaign progression, Tutorial / Proving Grounds behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, large binary assets, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V08_PERFORMANCE_AUDIT.md`, `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`, `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md`, `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, `docs/CINDERFEN_VISUAL_REWORK_SPEC.md`, and `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md`.
+- Refreshed current build output: app JS remains 476.83 kB / 127.77 kB gzip, Phaser vendor remains 1,481.79 kB / 339.86 kB gzip, CSS remains 44.23 kB / 9.11 kB gzip, and the known warning remains isolated to the Phaser vendor chunk.
+- Audited the 67-test Playwright release suite and confirmed the old 2-shard split is structurally imbalanced at 55 tests vs 12 tests.
+- Added additive optional 3-shard release scripts while preserving the full release lane and existing 2-shard scripts.
+- Verified the new 3-shard scripts locally: 28 tests in 12.3m, 27 tests in 14.9m, and 12 tests in 5.3m.
+- Audited visual debt across terrain, roads, water/swamp, capture sites, units, buildings, minimap, HUD, and style mismatch.
+- Audited current scale/readability rules for hero/unit/building/capture-site/minimap/camera/fog/pathfinding systems.
+- Applied no visual code or CSS tweak because current readability is functional and the major problems are structural art-direction and asset-pipeline issues.
+- Created the future 2026 art bible, asset pipeline plan, and Cinderfen visual rework spec without generating or committing art.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 45 test files, 334 tests during the report gate.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-CC1M6Mg7.js, 476.83 kB minified / 127.77 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 6.3m during the report gate.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes during the report gate.
+PLAYTEST_TELEMETRY.md and PLAYTEST_TELEMETRY.json regenerated with no git diff.
+
+npm run test:e2e:layout
+First attempt hit command timeout with no failing-test output.
+After cleaning repo-local leftover Playwright/Vite Node processes and rerunning with a longer timeout:
+PASS: 25 Playwright tests in 14.9m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in 12.3m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in 14.9m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in 5.3m.
+
+git diff --check
+PASS: no whitespace errors during phase gates.
+```
+
+Recommended next milestone: v0.8.1 Visual Asset Manifest and Screenshot QA Gate. Start with source/license/status/scale metadata for existing assets and a small screenshot review set. Do not add new art assets, graphics overhaul, desktop packaging, engine switching, workers, enemy construction, new maps, new units, new factions, rewards, save changes, pressure action promotion, or broad systems. If player-facing work is preferred, Tutorial v2 onboarding refinement is the safer alternative.
 
 ## v0.7.3 Real-Input Cinderfen Pressure Playtest Report Gate - 2026-05-09
 

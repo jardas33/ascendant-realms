@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8 e2e runtime improvement
+Last updated: 2026-05-10 v0.8 technical visual foundation report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -123,6 +123,15 @@ Phase 10 Cinderfen visual rework spec:
 - Documented gameplay readability requirements: obvious roads, capture sites that pop, readable enemy-base path, fog that does not hide ownership clarity, and units that remain visible on wetland/road/ash terrain.
 - Listed prototype-safe future improvements, production art requirements, and art prompt templates for Cinderfen terrain, Cinder Shrine, causeway, and Ashen outpost concepts.
 - No art was generated or committed, and no Cinderfen map data, rewards, pressure plans, campaign progression, units, buildings, renderer behavior, UI layout, or save format changed.
+
+Phase 11 v0.8 technical visual foundation report:
+
+- Added `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md`.
+- Updated `README.md`, `ROADMAP.md`, `RELEASE_CHECKLIST.md`, `CHANGELOG.md`, and `DEVELOPMENT_CHECKPOINT.md`.
+- Report summary: v0.8 refreshed bundle/performance facts, added optional coverage-preserving 3-shard release scripts, documented visual debt and scale facts, intentionally applied no visual code/CSS tweak, and created the 2026 art direction bible, asset pipeline plan, and Cinderfen visual rework spec.
+- Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 6.3m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
+- Recommended next long goal: v0.8.1 Visual Asset Manifest and Screenshot QA Gate. The safe alternative remains Tutorial v2 onboarding refinement if player-facing work is preferred.
+- Guardrails remain: no new art assets, no graphics overhaul, no desktop packaging, no engine switch, no workers, no enemy construction, no new maps/units/factions, no rewards/save changes, no campaign progression changes, no pressure action promotion, and no broad systems.
 
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 

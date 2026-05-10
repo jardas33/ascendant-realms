@@ -210,6 +210,8 @@ After build-output or chunking changes, run a production preview smoke when feas
 - HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.
 - Audio behavior with human ears.
 - Visual polish across generated/manual UI-kit assets.
+- v0.8 visual foundation follow-up: review current Cinderfen battlefield screenshots against `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, and `docs/CINDERFEN_VISUAL_REWORK_SPEC.md` before approving any art sprint.
+- Existing asset/source hygiene: future visual work should start with an asset manifest and source/license/status/scale metadata instead of importing new binaries directly.
 - Production preview sanity after release packaging.
 
 ## Release Notes To Check
@@ -224,5 +226,8 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/V04_POLISH_BACKLOG.md` records safe/medium-risk/high-risk/blocked tiny polish candidates.
 - `docs/V05_SAVE_CONTENT_VALIDATION_GATE_REPORT.md` summarizes the v0.5 save, content-validation, determinism, and expansion-readiness gate.
 - `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`, `docs/TUTORIAL_SAVE_PERSISTENCE_AUDIT.md`, `docs/TUTORIAL_CONTENT_VALIDATION_GATE.md`, and `docs/TUTORIAL_READABILITY_SURROGATE_REVIEW.md` summarize the first playable Tutorial / Proving Grounds shell.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, and the v0.7.3 pressure playtest gate as done, with the next phase set to technical performance/e2e runtime work unless manual pressure feedback redirects it.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.7.3 real-input pressure playtest gate on top of the v0.7 pressure foundation and warns future sessions not to add broad systems before their gates are explicit and green.
+- `docs/V08_PERFORMANCE_AUDIT.md`, `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`, and `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md` summarize the v0.8 bundle/performance and e2e runtime work.
+- `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, and `docs/CINDERFEN_VISUAL_REWORK_SPEC.md` define the visual foundation without implementing a graphics overhaul.
+- `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md` summarizes the v0.8 technical and visual foundation gate.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, the v0.7.3 pressure playtest gate, and the v0.8 technical/visual foundation gate as done, with the next phase set to a v0.8.1 visual asset manifest and screenshot QA gate unless manual pressure or tutorial feedback redirects it.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.8 technical performance and visual foundation gate on top of the v0.7 pressure foundation and warns future sessions not to add broad systems before their gates are explicit and green.

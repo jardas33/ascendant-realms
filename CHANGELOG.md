@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.8 Technical Performance, E2E Runtime, and Visual Foundation Gate - 2026-05-10
+
+This checkpoint refreshes technical performance/e2e runtime facts and creates a disciplined visual foundation without adding workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, desktop packaging, engine switching, external generated assets, large binary assets, a full UI redesign, a graphics overhaul, or broad systems.
+
+### Included
+
+- Refreshed performance and bundle audit with current app JS, Phaser vendor, CSS, gzip sizes, analyzer findings, and production-leak scan.
+- E2E runtime and shard imbalance audit for the 67-test release suite.
+- Additive optional 3-shard release scripts: `test:e2e:release:shard1of3`, `test:e2e:release:shard2of3`, and `test:e2e:release:shard3of3`.
+- Visual debt audit covering terrain, roads, water/swamp, capture sites, units, buildings, minimap, HUD, and style mismatch.
+- Visual scale/readability audit covering hero/unit/building/capture-site/minimap/camera/fog/pathfinding scale rules.
+- Explicit no-code visual readability decision for v0.8.
+- 2026 art direction bible for future original dark heroic fantasy RTS/RPG visuals.
+- Asset pipeline plan for future source/license/status/scale metadata.
+- Cinderfen visual rework spec with future identity, readability requirements, art prompt templates, and implementation phases.
+- v0.8 report: `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md`.
+
+### Verification
+
+- `npm test`: passed with 45 test files and 334 tests during phase gates.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during phase gates.
+- `npm run validate:content`: passed during phase gates.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests in 6.1m during the visual readability gate.
+- `npm run test:e2e:layout`: first attempt hit the command timeout with no failing-test output; after cleaning repo-local leftover Playwright/Vite Node processes and rerunning with a longer timeout, passed with 25 Playwright tests in 14.9m.
+- `npm run test:e2e:release:shard1of3`: passed with 28 Playwright tests in 12.3m.
+- `npm run test:e2e:release:shard2of3`: passed with 27 Playwright tests in 14.9m.
+- `npm run test:e2e:release:shard3of3`: passed with 12 Playwright tests in 5.3m.
+- Report-gate `npm run test:e2e:smoke`: passed with 12 Playwright tests in 6.3m.
+- Report-gate `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: passed during phase gates.
+
+### Next
+
+- Recommended next goal: v0.8.1 Visual Asset Manifest and Screenshot QA Gate, with no new assets or graphics overhaul.
+- Alternative player-facing goal: Tutorial v2 onboarding refinement.
+- Keep pressure-specific work blocked on manual feedback and simulator-only first experiments; do not promote live reinforcement, route contesting, or defensive hold behavior yet.
+
 ## v0.7.3 Real-Input Cinderfen Pressure Playtest - 2026-05-09
 
 This checkpoint reviews Cinderfen pressure with controlled browser input and simulator evidence without expanding Enemy Strategic Pressure into workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, or broad systems.
