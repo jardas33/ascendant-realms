@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage in progress
+Last updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,6 +24,8 @@ Phase status:
 - Phase 7 extended screenshot QA review: complete. Added `docs/V082_EXTENDED_SCREENSHOT_QA_REVIEW.md` after inspecting the 18-screenshot capture set; the review documents 0 console errors, useful broader coverage, mobile HUD density, Results/Inventory/Gallery density, Cinderfen terrain debt, capture-site identity debt, and a no-visual-change decision.
 - Phase 8 visual risk register: complete. Added `docs/VISUAL_RISK_REGISTER.md` with source/license, placeholder/final, style mismatch, scale, capture-site, HUD, mobile, minimap, Cinderfen terrain, generated-art, IP, binary-size, desktop-migration, and screenshot-staleness risks.
 - Phase 9 v0.9 controlled visual sprint brief: complete. Added `docs/V09_CONTROLLED_VISUAL_SPRINT_BRIEF.md` comparing Cinderfen style-frame sprint, terrain readability pass, scale normalization, and UI/HUD consistency pass. Recommendation is Option A: docs/specs/prompts only, no generated art and no runtime replacement.
+- Phase 10 visual QA release report: complete. Added `docs/V082_SOURCE_LICENSE_SCREENSHOT_COVERAGE_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.8.2 as the current source/license and screenshot coverage checkpoint.
+- Phase 11 final full verification: pending.
 
 Commits created so far:
 
@@ -35,6 +37,7 @@ Commits created so far:
 - `871929a Checkpoint v0.8.2 screenshot QA expansion`
 - `8d4b3e8 Checkpoint v0.8.2 extended screenshot review`
 - `5070211 Checkpoint v0.8.2 visual risk register`
+- `e51e785 Checkpoint v0.8.2 v0.9 visual sprint brief`
 
 Current verification through Phase 9:
 
@@ -43,6 +46,16 @@ Current verification through Phase 9:
 - `npm run validate:content`: PASS.
 - `npm run test:e2e:smoke`: PASS, 12 tests in about 5.0m.
 - `npm run visual:qa`: PASS, 18 screenshots in about 3.5m with 0 recorded browser console errors.
+- `git diff --check`: PASS.
+
+Phase 10 report gate verification:
+
+- `npm test`: PASS, 45 files / 340 tests.
+- `npm run build`: PASS with the known Phaser vendor warning.
+- `npm run validate:content`: PASS.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 5.4m.
+- `npm run visual:qa`: PASS, 1 Playwright capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: PASS.
 
 Key constraints still active:

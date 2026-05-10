@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion - 2026-05-10
+
+This checkpoint hardens the visual asset pipeline by reviewing source/license risk, adding conservative source-review metadata, strengthening manifest validation, expanding optional screenshot QA coverage, and preparing a safe v0.9 visual direction without adding art, generated images, external assets, large binaries, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
+
+### Included
+
+- Source/license review plan: `docs/V082_ASSET_SOURCE_LICENSE_REVIEW_PLAN.md`.
+- Asset source/license audit: `docs/V082_ASSET_SOURCE_LICENSE_AUDIT.md`.
+- Manifest metadata refinement with `reviewStatus` and `sourceReviewNotes`.
+- Manifest validation hardening for production approval, runtime/reference conflicts, deprecated runtime assets, critical replacement notes, and production-safe source/license requirements.
+- Screenshot coverage expansion plan: `docs/V082_SCREENSHOT_COVERAGE_EXPANSION_PLAN.md`.
+- Expanded optional `npm run visual:qa` harness from 10 to 18 indexed screenshots, including Asset Gallery, Hero Inventory, tutorial mobile, route-complete campaign map, Cinderfen Crossing tablet, Crossing pressure warning, victory Results, and defeat Results.
+- Extended screenshot review: `docs/V082_EXTENDED_SCREENSHOT_QA_REVIEW.md`.
+- Visual risk register: `docs/VISUAL_RISK_REGISTER.md`.
+- v0.9 controlled visual sprint brief: `docs/V09_CONTROLLED_VISUAL_SPRINT_BRIEF.md`.
+- v0.8.2 report: `docs/V082_SOURCE_LICENSE_SCREENSHOT_COVERAGE_REPORT.md`.
+
+### Verification
+
+- `npm test`: passed with 45 test files and 340 tests during phase/report gates.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during phase/report gates.
+- `npm run validate:content`: passed with gameplay content and hardened visual asset metadata validation.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests during screenshot/report gates.
+- `npm run visual:qa`: passed with 18 indexed review screenshots and zero recorded browser console errors.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during the report gate.
+- `git diff --check`: passed during phase/report gates.
+
+### Next
+
+- Recommended next goal: v0.9 Controlled Cinderfen Style-Frame Sprint.
+- Keep the first v0.9 visual step docs/specs/prompts-only: terrain material sheet, Cinder Shrine/capture-site landmark sheet, and Ashen outpost architecture sheet.
+- Do not generate, import, download, commit, or wire runtime art assets until a future goal explicitly scopes source/license metadata, manifest updates, validation, and before/after screenshot QA.
+
 ## v0.8.1 Visual Asset Manifest and Screenshot QA Gate - 2026-05-10
 
 This checkpoint creates the visual asset manifest, metadata validation, runtime asset cross-check, and non-brittle screenshot QA foundation without adding final art, generated art, external assets, large binaries, gameplay content, new maps, new units, new factions, workers, enemy construction, economy AI, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.

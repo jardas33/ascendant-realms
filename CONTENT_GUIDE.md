@@ -42,6 +42,16 @@ npm run visual:qa
 
 The output under `visual-qa/latest/` is ignored by git and is for human review only. Do not make pixel-perfect screenshot assertions in this workflow.
 
+Current v0.8.2 visual QA captures 18 indexed screenshots covering main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. Use `visual-qa/latest/index.md` as the source of truth because the ignored folder can contain older manual artifacts.
+
+Source/license review docs:
+
+- `docs/V082_ASSET_SOURCE_LICENSE_REVIEW_PLAN.md`
+- `docs/V082_ASSET_SOURCE_LICENSE_AUDIT.md`
+- `docs/VISUAL_RISK_REGISTER.md`
+
+Do not mark unknown-source assets production-safe. Do not treat the `public/assets/final/` folder name as legal proof.
+
 ## Edit Tutorial Metadata
 
 Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game/types/TutorialTypes.ts` and validation in `src/game/data/validation/validateTutorials.ts`.

@@ -17,7 +17,7 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 45 test files, 339 tests
+PASS: 45 test files, 340 tests
 ```
 
 2. Standalone content validation:
@@ -171,11 +171,11 @@ Expected current prototype result:
 
 ```text
 PASS: 1 Playwright visual QA capture test
-10 review screenshots generated under visual-qa/latest/
+18 review screenshots generated under visual-qa/latest/
 Browser console errors recorded in the generated index: 0
 ```
 
-This v0.8.1 lane is optional and review-oriented. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
+This v0.8.2 lane is optional and review-oriented. It captures main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
 
 10. Whitespace diff check:
 
