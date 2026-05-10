@@ -22,6 +22,7 @@
     "test:e2e:release:shard2of3": "playwright test --reporter=line --shard=2/3",
     "test:e2e:release:shard3of3": "playwright test --reporter=line --shard=3/3",
     "test:e2e:headed": "playwright test --headed",
+    "visual:qa": "playwright test --config=playwright.visual-qa.config.ts --reporter=line",
     "playtest:sim": "tsx tools/runPlaytestSim.ts",
     "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
     "assets:ui-kit": "tsx tools/manual-asset-pipeline/generateProceduralUiKit.ts",

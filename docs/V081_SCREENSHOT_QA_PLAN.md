@@ -1,7 +1,7 @@
 # v0.8.1 Screenshot QA Plan
 
 Date: 2026-05-10  
-Status: planning only. No screenshot capture harness or visual regression test is implemented in this phase.
+Status: Phase 6 planning document. Phase 7 implements the optional `npm run visual:qa` capture harness using this policy.
 
 ## Purpose
 
@@ -44,7 +44,7 @@ Use one optional package script:
 npm run visual:qa
 ```
 
-The script should run a focused Playwright capture spec or tool. It should be outside normal `npm test`, `npm run test:e2e:smoke`, and release lanes unless a later goal explicitly promotes it.
+The script runs a focused Playwright capture spec under `tests/visual-qa/` with `playwright.visual-qa.config.ts`. It is outside normal `npm test`, `npm run test:e2e:smoke`, and release lanes unless a later goal explicitly promotes it.
 
 ## Output Folder
 
@@ -72,7 +72,7 @@ The harness may overwrite `visual-qa/latest/` on each run. Screenshots should st
 
 ## Gitignore Policy
 
-Add these ignored paths when the capture harness is implemented:
+The capture harness ignores these generated paths:
 
 ```text
 visual-qa/
@@ -218,4 +218,4 @@ Until then, screenshot QA remains an optional evidence capture workflow.
 
 ## v0.8.1 Decision
 
-This phase only plans the screenshot workflow. The next phase may implement an optional capture harness, but it should stay outside normal test and release gates unless manually run.
+The screenshot workflow stays optional and review-oriented. `npm run visual:qa` may be run during visual QA phases and final verification, but it remains outside the normal smoke and release e2e lanes.
