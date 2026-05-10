@@ -17,12 +17,6 @@ npm test
 Expected current prototype result:
 
 ```text
-PASS: 45 test files, 334 tests
-```
-
-Current v0.8.1 runtime asset crosscheck phase result:
-
-```text
 PASS: 45 test files, 339 tests
 ```
 
@@ -166,6 +160,34 @@ Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 This command regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
 
 Latest v0.7.3 pressure-playtest interpretation: no balance tuning is applied. Cinderfen Crossing and Cinderfen Watch pressure remain scoped, readable in controlled browser-input review, and warning/telemetry-only for `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold`. Emmanuel's manual checklist remains the missing direct human evidence before any simulator-only reinforcement experiment.
+
+9. Optional visual screenshot QA:
+
+```bash
+npm run visual:qa
+```
+
+Expected current prototype result:
+
+```text
+PASS: 1 Playwright visual QA capture test
+10 review screenshots generated under visual-qa/latest/
+Browser console errors recorded in the generated index: 0
+```
+
+This v0.8.1 lane is optional and review-oriented. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
+
+10. Whitespace diff check:
+
+```bash
+git diff --check
+```
+
+Expected current prototype result:
+
+```text
+PASS: no whitespace errors
+```
 
 ## Optional Preview Check
 

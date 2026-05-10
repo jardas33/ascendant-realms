@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-10 v0.8 technical visual foundation report gate
+Updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA report gate
+
+## v0.8.1 Visual Asset Manifest And Screenshot QA Report Gate - 2026-05-10
+
+Scope: create a visual asset inventory, metadata manifest, validation gate, runtime asset usage cross-check, optional screenshot QA harness, screenshot review baseline, Cinderfen visual replacement backlog, and safe future asset prompt/spec templates. This pass preserved gameplay, save compatibility, campaign progression, Tutorial / Proving Grounds behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, large binary assets, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V081_EXISTING_ASSET_INVENTORY_AUDIT.md`, `docs/V081_VISUAL_ASSET_MANIFEST_SCHEMA.md`, `docs/V081_INITIAL_VISUAL_ASSET_MANIFEST.md`, `docs/V081_RUNTIME_ASSET_USAGE_CROSSCHECK.md`, `docs/V081_SCREENSHOT_QA_PLAN.md`, `docs/V081_SCREENSHOT_QA_REVIEW.md`, `docs/CINDERFEN_VISUAL_ASSET_REPLACEMENT_BACKLOG.md`, `docs/ASSET_PROMPT_TEMPLATES.md`, and `docs/V081_VISUAL_ASSET_SCREENSHOT_QA_REPORT.md`.
+- Added typed visual asset metadata in `src/game/assets/VisualAssetManifestTypes.ts`.
+- Added an initial 89-entry manifest in `src/game/assets/visualAssetManifest.ts`.
+- Integrated visual asset metadata validation into `npm run validate:content`.
+- Added runtime visual asset coverage checks for battle textures, ability icons, UI-kit CSS assets, faction emblem, and main/results backgrounds.
+- Added optional `npm run visual:qa` screenshot capture via `playwright.visual-qa.config.ts` and `tests/visual-qa/visual-qa.spec.ts`.
+- Added `/visual-qa/` to `.gitignore` for generated screenshot artifacts.
+- Captured and reviewed 10 screenshots with zero recorded browser console errors.
+- Applied no visual code/CSS/renderer/scale/asset change because the screenshot review confirmed structural asset/art-direction debt rather than a single safe readability bug.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 45 test files, 339 tests during phase gates.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-CC1M6Mg7.js, 476.83 kB minified / 127.77 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests during screenshot harness/review gates.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes during the report gate.
+
+npm run visual:qa
+PASS: 1 Playwright capture test, 10 screenshots, 0 recorded browser console errors.
+
+git diff --check
+PASS: no whitespace errors during phase gates.
+```
+
+Recommended next milestone: v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion. Focus on source/license proof for high-priority manifest entries and expand non-brittle screenshots to Results, Inventory, Asset Gallery, defeat tips, and one mobile/tablet battle view. Do not add new art assets, graphics overhaul, desktop packaging, engine switching, workers, enemy construction, new maps, new units, new factions, rewards, save changes, pressure action promotion, or broad systems unless explicitly scoped. If player-facing work is preferred, Tutorial v2 onboarding refinement remains the safer alternative.
 
 ## v0.8 Technical Performance And Visual Foundation Report Gate - 2026-05-10
 

@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8 technical performance visual foundation final gate
+Last updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.8.1 Visual Asset Manifest And Screenshot QA Gate - 2026-05-10
+
+Mission: create a serious visual asset inventory, metadata manifest, screenshot QA workflow, and review baseline before any graphics overhaul. This goal must not add final art, generated art, external assets, large binary assets, maps, units, factions, gameplay content, rewards, save changes, campaign progression, workers, enemy construction, economy AI, pressure action promotion, desktop packaging, engine switching, full UI redesign, broad BattleScene rewrites, or pixel-perfect screenshot tests.
+
+Phase status through the report gate:
+
+- Completed phases: Phase 0 through Phase 11.
+- Skipped phases: none.
+- No gameplay, save, map, unit, faction, reward, pressure, renderer, UI layout, or asset binary changes were made.
+- Screenshot artifacts are generated under `visual-qa/latest/` and ignored by git.
+
+Commits created so far:
+
+- `249e1be Checkpoint v0.8.1 asset inventory audit`
+- `43ff1a4 Checkpoint v0.8.1 visual asset manifest schema`
+- `1891ec1 Checkpoint v0.8.1 visual asset manifest`
+- `d519689 Checkpoint v0.8.1 asset manifest validation`
+- `41207b5 Checkpoint v0.8.1 runtime asset usage crosscheck`
+- `c296f86 Checkpoint v0.8.1 screenshot QA plan`
+- `6d9b0da Checkpoint v0.8.1 screenshot capture harness`
+- `7edec0f Checkpoint v0.8.1 screenshot QA review`
+- `9fd52bf Checkpoint v0.8.1 Cinderfen visual backlog`
+- `74a90ef Checkpoint v0.8.1 asset prompt templates`
+
+Key work completed:
+
+- Added a complete existing asset inventory audit.
+- Added `src/game/assets/VisualAssetManifestTypes.ts`.
+- Added an initial 89-entry visual asset manifest in `src/game/assets/visualAssetManifest.ts`.
+- Integrated visual asset metadata validation into `npm run validate:content` without bundling visual metadata into browser boot.
+- Added runtime asset usage cross-check coverage for current battle textures, ability icons, UI-kit CSS assets, faction emblem, and screen backgrounds.
+- Added optional `npm run visual:qa` via `playwright.visual-qa.config.ts` and `tests/visual-qa/visual-qa.spec.ts`.
+- Added `/visual-qa/` to `.gitignore`; generated screenshots are ignored.
+- Captured 10 review screenshots and wrote a screenshot QA review with no visual-code change decision.
+- Added a Cinderfen visual replacement backlog.
+- Added safe future asset prompt/spec templates.
+- Added report doc `docs/V081_VISUAL_ASSET_SCREENSHOT_QA_REPORT.md`.
+
+Important verification so far:
+
+- `npm test`: PASS, 45 files / 339 tests.
+- `npm run build`: PASS with the known Phaser vendor warning. App JS remains `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB.
+- `npm run validate:content`: PASS, now includes visual asset metadata validation.
+- `npm run test:e2e:smoke`: PASS with 12 Playwright tests during screenshot harness/review gates.
+- `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes during the report gate.
+- `npm run visual:qa`: PASS, 1 Playwright visual QA test, 10 screenshots, 0 recorded browser console errors.
+- `git diff --check`: PASS during phase gates.
+
+Notes:
+
+- The first Phase 7 `npm test` attempt failed because Vitest collected the new Playwright visual QA spec. Fixed by excluding `tests/visual-qa/**` in `vite.config.ts`; rerun passed.
+- The current screenshot review found readable prototype gameplay but structural visual debt: paint-like roads, blob-like water/swamp, icon/ring-led capture sites, style/scale mismatch, and text-heavy HUD identity. No one-off visual tweak was justified.
+- Next step is Phase 12 final full verification: full release, 2-shard and 3-shard e2e, simulator, visual QA, production preview smoke if feasible, final handoff update, final commit, and push if safe.
+- Recommended next long goal after v0.8.1: v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion. Safer player-facing alternative: Tutorial v2 onboarding refinement.
 
 ## Current v0.8 Technical Performance, E2E Runtime, and Visual Foundation Gate - 2026-05-10
 

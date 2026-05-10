@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.8.1 Visual Asset Manifest and Screenshot QA Gate - 2026-05-10
+
+This checkpoint creates the visual asset manifest, metadata validation, runtime asset cross-check, and non-brittle screenshot QA foundation without adding final art, generated art, external assets, large binaries, gameplay content, new maps, new units, new factions, workers, enemy construction, economy AI, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
+
+### Included
+
+- Existing asset inventory audit across `public/assets/`, manual/final/runtime assets, loader references, and source usage.
+- Typed visual asset manifest schema and 89-entry initial manifest covering runtime assets, manual source originals, procedural terrain debt, and future prompt/spec references.
+- Visual asset metadata validation integrated into `npm run validate:content`, including runtime file existence checks in the CLI path.
+- Runtime asset usage cross-check for battle textures, ability icons, UI-kit CSS assets, faction emblem, and screen backgrounds.
+- Optional screenshot QA harness: `npm run visual:qa`, backed by `playwright.visual-qa.config.ts` and `tests/visual-qa/visual-qa.spec.ts`.
+- Ignored screenshot output under `/visual-qa/`, with generated review index and zero pixel-perfect assertions.
+- Screenshot QA review for main menu, tutorial, campaign map, skirmish setup, Cinderfen Crossing, Cinder Shrine capture, Cinderfen Watch, and Watch pressure warning.
+- Cinderfen visual asset replacement backlog.
+- Safe future asset prompt/spec templates.
+- v0.8.1 report: `docs/V081_VISUAL_ASSET_SCREENSHOT_QA_REPORT.md`.
+
+### Verification
+
+- `npm test`: passed with 45 test files and 339 tests during phase gates.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during phase gates.
+- `npm run validate:content`: passed with gameplay content and visual asset metadata validation.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests during screenshot harness/review/report gates.
+- `npm run visual:qa`: passed with 10 generated review screenshots and zero recorded browser console errors.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during the report gate.
+- `git diff --check`: passed during phase gates.
+
+### Next
+
+- Recommended next goal: v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion.
+- Keep future visual work manifest-backed, source/license-reviewed, and screenshot-QA reviewed before committing binary replacements.
+- Tutorial v2 onboarding refinement remains the safest player-facing alternative.
+
 ## v0.8 Technical Performance, E2E Runtime, and Visual Foundation Gate - 2026-05-10
 
 This checkpoint refreshes technical performance/e2e runtime facts and creates a disciplined visual foundation without adding workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, live reinforcements, capture-site contest AI, defensive-hold behavior, desktop packaging, engine switching, external generated assets, large binary assets, a full UI redesign, a graphics overhaul, or broad systems.

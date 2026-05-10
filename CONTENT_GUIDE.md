@@ -14,6 +14,31 @@ It runs the same content validator used by the pure test suite without opening t
 
 Follow it with `npm test` for save fixture coverage, pure rules, view models, and simulator unit coverage. Use e2e and `npm run playtest:sim` when the edited content can affect campaign flow, battle launch, rewards, rival state, or route balance.
 
+## Edit Visual Asset Metadata
+
+Visual asset metadata lives in `src/game/assets/visualAssetManifest.ts`, with types in `src/game/assets/VisualAssetManifestTypes.ts` and validation in `src/game/data/validation/validateVisualAssets.ts`.
+
+1. Add or edit manifest entries before treating any visual asset as part of the reviewed set.
+2. Keep `id` unique and stable. Runtime ids should match current `AssetKeys.ts` references when applicable.
+3. Use honest `currentStatus` values: most current assets are `placeholder`, `prototype`, `candidate`, or `reference`, not `final`.
+4. Use honest `sourceType` and `licenseStatus`. If source/license proof is unclear, keep `licenseStatus: "unknown"`, `needsReview: true`, and `allowedInProduction: false`.
+5. Runtime assets must not use `reference-only` or `do-not-ship` license statuses.
+6. Runtime assets with unknown license must set `needsReview: true`.
+7. Final assets cannot have unknown source or unknown license.
+8. Runtime entries need non-empty `usedBy` so future reviewers understand why the asset ships.
+9. Keep `intendedWorldHeightPx` and `currentRenderHeightPx` positive when present.
+10. Use `replacementPriority` to guide backlog work, not to imply approval to replace assets.
+11. Do not add generated art, downloaded images, large binaries, or production claims without explicit approval and source/license metadata.
+12. Run `npm run validate:content` after edits; the CLI checks metadata and runtime visual file paths without bundling filesystem checks into browser boot.
+
+Optional screenshot QA for visual changes:
+
+```bash
+npm run visual:qa
+```
+
+The output under `visual-qa/latest/` is ignored by git and is for human review only. Do not make pixel-perfect screenshot assertions in this workflow.
+
 ## Edit Tutorial Metadata
 
 Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game/types/TutorialTypes.ts` and validation in `src/game/data/validation/validateTutorials.ts`.

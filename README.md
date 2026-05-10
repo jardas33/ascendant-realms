@@ -24,7 +24,7 @@ Current v0.3 feature snapshot:
 - v0.7.2 Human-Paced Cinderfen Pressure Review: seeded browser evidence for Crossing and Watch warning readability, no-change pressure readability decision, Retinue + Training Yard II watchpoint, Greedy/Fast strategy review, and a fresh decision to keep stronger actions warning/telemetry-only.
 - v0.7.3 Real-Input Cinderfen Pressure Playtest: controlled browser-input review for Crossing and Watch, manual playtest checklist for Emmanuel, strategy-profile no-change gate, and v0.8 direction brief recommending technical/e2e runtime work before any simulator-only reinforcement experiment.
 - v0.8 Technical Performance and Visual Foundation Gate: refreshed bundle/performance facts, e2e runtime/shard audit, additive optional 3-shard release scripts, visual debt audit, visual scale/readability audit, no-code visual readability decision, 2026 art direction bible, asset pipeline plan, Cinderfen visual rework spec, and no gameplay or asset expansion.
-- v0.8.1 Visual Asset Manifest and Screenshot QA Gate: initial visual asset inventory, typed visual metadata schema, populated 89-entry manifest covering runtime and manual-source assets, and visual metadata validation through `npm run validate:content`.
+- v0.8.1 Visual Asset Manifest and Screenshot QA Gate: initial visual asset inventory, typed visual metadata schema, populated 89-entry manifest covering runtime and manual-source assets, visual metadata validation through `npm run validate:content`, runtime asset usage cross-check, optional non-brittle `npm run visual:qa` screenshot harness, screenshot QA review, Cinderfen visual replacement backlog, and safe future asset prompt/spec templates.
 
 ## Design Pillars
 
@@ -76,11 +76,11 @@ npm run test
 
 Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
 
-Latest v0.8 technical/visual foundation checkpoint status, 2026-05-10: `npm run validate:content` passes, and `npm test` passes with 45 test files and 334 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, enemy pressure data/validation/runtime/status-priority/reporting coverage, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
+Latest v0.8.1 visual asset manifest checkpoint status, 2026-05-10: `npm run validate:content` passes, and `npm test` passes with 45 test files and 339 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, enemy pressure data/validation/runtime/status-priority/reporting coverage, visual asset manifest validation/runtime coverage, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation.
 
 Tutorial / Proving Grounds report: `docs/TUTORIAL_PLAYABLE_SHELL_REPORT.md`. v0.6 onboarding/testing report: `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`. The current shell launches from the main menu, reuses existing First Claim content, has no rewards, does not persist completion, and returns to the main menu on completion or exit.
 
-Command-log V1 docs: `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` and `docs/COMMAND_LOG_V1_REPORT.md`. The helper is test-only and currently used by one Tutorial / Proving Grounds smoke path. Enemy Strategic Pressure V1 docs: `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`, `docs/V071_ENEMY_PRESSURE_FEEL_REPORT.md`, `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`, and `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_REPORT.md`. Manual Cinderfen pressure playtest checklist: `docs/V073_MANUAL_PRESSURE_PLAYTEST_CHECKLIST.md`. v0.8 technical and visual foundation docs: `docs/V08_PERFORMANCE_AUDIT.md`, `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`, `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md`, `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, `docs/CINDERFEN_VISUAL_REWORK_SPEC.md`, and `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md`. Desktop future-direction planning lives in `docs/DESKTOP_2026_VISUAL_DIRECTION.md`; no desktop packaging or engine-port code has been added.
+Command-log V1 docs: `docs/COMMAND_LOG_V1_TEST_ONLY_PLAN.md` and `docs/COMMAND_LOG_V1_REPORT.md`. The helper is test-only and currently used by one Tutorial / Proving Grounds smoke path. Enemy Strategic Pressure V1 docs: `docs/V07_ENEMY_STRATEGIC_PRESSURE_SPEC.md`, `docs/V07_ENEMY_STRATEGIC_PRESSURE_REPORT.md`, `docs/V071_ENEMY_PRESSURE_FEEL_REPORT.md`, `docs/V072_PRESSURE_PLAY_REVIEW_REPORT.md`, and `docs/V073_REAL_INPUT_PRESSURE_PLAYTEST_REPORT.md`. Manual Cinderfen pressure playtest checklist: `docs/V073_MANUAL_PRESSURE_PLAYTEST_CHECKLIST.md`. v0.8 technical and visual foundation docs: `docs/V08_PERFORMANCE_AUDIT.md`, `docs/V08_E2E_RUNTIME_SHARD_AUDIT.md`, `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md`, `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, `docs/CINDERFEN_VISUAL_REWORK_SPEC.md`, and `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md`. v0.8.1 visual asset and screenshot QA docs: `docs/V081_EXISTING_ASSET_INVENTORY_AUDIT.md`, `docs/V081_VISUAL_ASSET_MANIFEST_SCHEMA.md`, `docs/V081_INITIAL_VISUAL_ASSET_MANIFEST.md`, `docs/V081_RUNTIME_ASSET_USAGE_CROSSCHECK.md`, `docs/V081_SCREENSHOT_QA_PLAN.md`, `docs/V081_SCREENSHOT_QA_REVIEW.md`, `docs/CINDERFEN_VISUAL_ASSET_REPLACEMENT_BACKLOG.md`, `docs/ASSET_PROMPT_TEMPLATES.md`, and `docs/V081_VISUAL_ASSET_SCREENSHOT_QA_REPORT.md`. Desktop future-direction planning lives in `docs/DESKTOP_2026_VISUAL_DIRECTION.md`; no desktop packaging or engine-port code has been added.
 
 ## Browser E2E Test Lanes
 
@@ -130,6 +130,16 @@ For a visible browser run:
 ```bash
 npm run test:e2e:headed
 ```
+
+## Visual Screenshot QA
+
+```bash
+npm run visual:qa
+```
+
+This optional v0.8.1 lane captures review screenshots into `visual-qa/latest/`, including main menu, Tutorial / Proving Grounds, campaign map, Skirmish Setup, Cinderfen Crossing, Cinder Shrine capture, Cinderfen Watch, and Watch pressure-warning views. The folder is ignored by git on purpose. The screenshots are human review artifacts, not pixel-perfect visual regression baselines.
+
+The visual QA policy and first review live in `docs/V081_SCREENSHOT_QA_PLAN.md` and `docs/V081_SCREENSHOT_QA_REVIEW.md`. Future asset replacements should update `src/game/assets/visualAssetManifest.ts`, pass `npm run validate:content`, run `npm run visual:qa`, and compare before/after screenshots before committing binaries.
 
 ## Playtest Simulation
 
