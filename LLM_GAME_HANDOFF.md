@@ -77,6 +77,17 @@ Phase 5 visual debt audit:
 - UI debt: the resource bar, objective panel, selected-unit panel, minimap, battle status banner, menus, and buttons are usable but still prototype-level and not yet a unified 2026-quality interface system.
 - Decision: no visual code change is justified by the debt audit alone. The debt is structural and pipeline-level; Phase 6 should define scale/readability facts, and Phase 7 should only apply a tiny readability fix if the evidence is stronger than the churn risk.
 
+Phase 6 visual scale and readability audit:
+
+- Added `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`.
+- Inspected `BaseEntity`, `Unit`, `Hero`, `Building`, `CaptureSite`, unit/building data, Cinderfen map data, map renderer, minimap snapshots/rendering, camera system, pathfinding grid, fog setup, game config, and constants.
+- Current tactical scale facts: default viewport is 1280 x 720 with resize mode; camera uses map bounds and default zoom; camera pan speed is 520; pathfinding cells are 80 world units; battle fog cells are 96; formation spacing is 34.
+- Unit scale facts: player hero radius 19 renders at about 82.65 px target height; common infantry radii 12-13 render about 43.8 to 47.45 px; brute radius 16 renders about 58.4 px; enemy commander radius 18 renders about 65.7 px.
+- Building scale facts: Command Hall is 96 x 82 with max rendered sprite box about 119 x 116; enemy stronghold is 104 x 88 with max sprite box about 129 x 125; production structures are smaller and clear.
+- Capture-site facts: current map radii are generally 74 to 86; runtime icon is 42 x 42 inside a much larger ring and ground treatment, so sites are readable but icon-led.
+- Main inconsistency: enemy commander is not on the same visual-height rule as the player hero, capture-site rings dominate their landmark cores, and labels/bars carry more identity than silhouette.
+- Decision: no scale code change is justified in Phase 6. Unit radii, building sizes, capture-site radii, camera zoom, pathfinding cell size, fog cell size, and map dimensions should remain unchanged for v0.8 unless Phase 7 finds a single tiny readability issue worth the extra layout checks.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
