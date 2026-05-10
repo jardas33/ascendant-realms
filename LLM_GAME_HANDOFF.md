@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9.1 candidate intake validation
+Last updated: 2026-05-10 v0.9.1 candidate intake scan
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -20,7 +20,7 @@ Phase status:
 - Phase 3 source/license metadata forms: complete. Added Markdown and JSON metadata templates under `art-review/cinderfen-style-frames/metadata/` plus `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md` explaining required fields, controlled values, approval rules, and why metadata does not approve runtime use by itself.
 - Phase 4 candidate review manifest schema: complete. Added `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md` and non-runtime tooling types in `tools/art-intake/StyleFrameReviewManifestTypes.ts`. The schema is explicitly separate from the runtime visual asset manifest and adds no candidate entries.
 - Phase 5 candidate intake validation: complete. Added metadata-only `npm run validate:art-intake`, validator tests in `tools/art-intake/validateArtIntake.test.ts`, and validation logic in `tools/art-intake/validateArtIntake.ts`. The gate passes with an empty intake, checks JSON metadata/review-manifest files under `art-review/cinderfen-style-frames/metadata/`, blocks missing candidate/source fields, blocks production approval for unknown source/license, blocks approval for high/unknown protected-IP risk, requires source/license fields for `approved-for-runtime-test`, requires rejection reasons, warns on missing related spec docs, and only requires image file existence when metadata marks a candidate as submitted.
-- Phase 6 candidate intake scan/report: pending.
+- Phase 6 candidate intake scan/report: complete. Added `docs/V091_CURRENT_STYLE_FRAME_CANDIDATE_SCAN.md`. The scan found 0 candidate image files in inbox/reviewed/rejected, templates only in metadata, 62 existing image files under `public/assets/manual/`, 25 existing image files under `public/assets/final/`, no new candidate-specific source/license unknowns, nothing eligible for candidate review, and nothing eligible for runtime use.
 - Phase 7 screenshot QA comparison plan: pending.
 - Phase 8 manual asset preparation guide: pending.
 - Phase 9 future v0.9.2 style-frame review goal brief: pending.
@@ -38,6 +38,11 @@ Current v0.9.1 verification:
 - Phase 5 `npm run validate:content`: PASS.
 - Phase 5 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON template and 0 review manifest JSON files.
 - Phase 5 `git diff --check`: PASS.
+- Phase 6 `npm test`: PASS, 46 files / 351 tests.
+- Phase 6 `npm run build`: PASS with the known Phaser vendor warning.
+- Phase 6 `npm run validate:content`: PASS.
+- Phase 6 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+- Phase 6 `git diff --check`: PASS.
 
 Key constraints still active:
 
