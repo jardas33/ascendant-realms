@@ -8,6 +8,42 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
+## Current v0.9 Controlled Cinderfen Style-Frame Sprint - 2026-05-10
+
+Mission: create a docs/specs/prompts-only Cinderfen visual style-frame package for future art generation and replacement work. This goal must not generate images, call image APIs, import assets, download images, add/move/delete/rename/replace runtime art files, mark unknown-source assets production-safe, change gameplay, change campaign progression, add maps, add units, add factions, add rewards, switch engines, implement desktop packaging, or perform a graphics overhaul.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
+- Phase 1 Cinderfen style-frame research packet: complete. Added `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md` defining current visual problems, desired ash-glass wetland identity, original-IP guardrails, allowed/avoided reference categories, words-only mood board, readability constraints, and non-goals.
+- Phase 2 Cinderfen visual pillars and style rules: pending.
+- Phase 3 terrain material sheet specification: pending.
+- Phase 4 Cinder Shrine/capture-site landmark specification: pending.
+- Phase 5 Ashen outpost architecture specification: pending.
+- Phase 6 unit/building scale reference: pending.
+- Phase 7 Cinderfen style-frame prompt pack: pending.
+- Phase 8 future Cinderfen manifest templates: pending.
+- Phase 9 screenshot acceptance criteria: pending.
+- Phase 10 future visual replacement implementation plan: pending.
+- Phase 11 controlled style-frame report and release docs: pending.
+- Phase 12 final full verification and push: pending.
+
+Current v0.9 verification:
+
+- Phase 0 `npm test`: PASS, 45 files / 340 tests.
+- Phase 0 `npm run build`: PASS with the known Phaser vendor warning.
+- Phase 0 `npm run validate:content`: PASS.
+- Phase 0 `git diff --check`: PASS.
+- Phase 1 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
+
+Key constraints still active:
+
+- This is docs/specs/prompts only.
+- Do not add generated art or call image-generation tools.
+- Do not add, move, delete, rename, replace, or wire runtime art files.
+- Do not add gameplay, maps, units, factions, rewards, campaign progression, save changes, pressure behavior, workers, construction, economy AI, desktop packaging, engine switching, or broad systems.
+- Unknown-source assets remain not production-safe.
+
 ## Current v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion - 2026-05-10
 
 Mission: harden the visual asset pipeline by reviewing source/license status, refining conservative manifest metadata, expanding optional screenshot QA coverage, documenting broader visual risk, and preparing for a future controlled visual sprint. This goal must not add gameplay, maps, units, factions, rewards, save changes, new art, generated art, external assets, desktop packaging, engine switching, a graphics overhaul, or brittle pixel-perfect screenshot tests.
