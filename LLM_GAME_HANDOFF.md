@@ -115,6 +115,15 @@ Phase 9 asset pipeline plan:
 - Documented Codex asset guardrails: write briefs/prompts/manifests/validation plans, but do not invent hidden copyrighted sources, commit large binaries without permission, require paid APIs, pull unlicensed web images, or treat generated images as production art without metadata.
 - No asset files were created, moved, deleted, renamed, generated, imported, or required.
 
+Phase 10 Cinderfen visual rework spec:
+
+- Added `docs/CINDERFEN_VISUAL_REWORK_SPEC.md`.
+- Defined current Cinderfen visual problems: paint-like roads, unclear terrain material, rough swamp/water areas, capture sites that are too icon-like, and unit/source-art scale mismatch.
+- Defined future Cinderfen identity as ash-glass wetland, blackened causeways, ember-lit shrine sites, wet reflective pools, dead reeds, ruined watch markers, and cinder fog.
+- Documented gameplay readability requirements: obvious roads, capture sites that pop, readable enemy-base path, fog that does not hide ownership clarity, and units that remain visible on wetland/road/ash terrain.
+- Listed prototype-safe future improvements, production art requirements, and art prompt templates for Cinderfen terrain, Cinder Shrine, causeway, and Ashen outpost concepts.
+- No art was generated or committed, and no Cinderfen map data, rewards, pressure plans, campaign progression, units, buildings, renderer behavior, UI layout, or save format changed.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
