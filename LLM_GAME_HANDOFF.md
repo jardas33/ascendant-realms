@@ -88,6 +88,13 @@ Phase 6 visual scale and readability audit:
 - Main inconsistency: enemy commander is not on the same visual-height rule as the player hero, capture-site rings dominate their landmark cores, and labels/bars carry more identity than silhouette.
 - Decision: no scale code change is justified in Phase 6. Unit radii, building sizes, capture-site radii, camera zoom, pathfinding cell size, fog cell size, and map dimensions should remain unchanged for v0.8 unless Phase 7 finds a single tiny readability issue worth the extra layout checks.
 
+Phase 7 prototype-safe visual readability decision:
+
+- Added `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`.
+- Considered selection ring size/opacity, label spacing, health bar offset, unit/building sprite scale, capture-site icon/ring tuning, minimap marker contrast/scale, and terrain overlay opacity.
+- Decision: no code or CSS change was applied. Current readability is functional, while the major visual problems are structural art-direction and asset-pipeline issues. A one-constant tweak would create screenshot/layout churn without enough evidence that it improves player comprehension.
+- Future trigger for a tiny visual fix: direct browser or human evidence that selection rings/bars are hidden, labels block command decisions, Cinder Shrine is missed despite copy/camera framing, minimap markers are indistinguishable, or HUD surfaces block important battle information.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
