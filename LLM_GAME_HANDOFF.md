@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage report gate
+Last updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,6 +14,8 @@ Mission: harden the visual asset pipeline by reviewing source/license status, re
 
 Phase status:
 
+- Completed phases: Phase 0 through Phase 11.
+- Skipped phases: none.
 - Phase 0 repository integrity: complete. `git status -sb` was clean on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
 - Phase 1 source/license review plan: complete. Added `docs/V082_ASSET_SOURCE_LICENSE_REVIEW_PLAN.md`.
 - Phase 2 asset source/license audit: complete. Added `docs/V082_ASSET_SOURCE_LICENSE_AUDIT.md`; current manifest remained conservative with no production-approved visual art.
@@ -25,7 +27,7 @@ Phase status:
 - Phase 8 visual risk register: complete. Added `docs/VISUAL_RISK_REGISTER.md` with source/license, placeholder/final, style mismatch, scale, capture-site, HUD, mobile, minimap, Cinderfen terrain, generated-art, IP, binary-size, desktop-migration, and screenshot-staleness risks.
 - Phase 9 v0.9 controlled visual sprint brief: complete. Added `docs/V09_CONTROLLED_VISUAL_SPRINT_BRIEF.md` comparing Cinderfen style-frame sprint, terrain readability pass, scale normalization, and UI/HUD consistency pass. Recommendation is Option A: docs/specs/prompts only, no generated art and no runtime replacement.
 - Phase 10 visual QA release report: complete. Added `docs/V082_SOURCE_LICENSE_SCREENSHOT_COVERAGE_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.8.2 as the current source/license and screenshot coverage checkpoint.
-- Phase 11 final full verification: pending.
+- Phase 11 final full verification: complete. Full local gate, release shard scripts, expanded visual QA, simulator, whitespace check, and production preview smoke all passed.
 
 Commits created so far:
 
@@ -38,6 +40,8 @@ Commits created so far:
 - `8d4b3e8 Checkpoint v0.8.2 extended screenshot review`
 - `5070211 Checkpoint v0.8.2 visual risk register`
 - `e51e785 Checkpoint v0.8.2 v0.9 visual sprint brief`
+- `27799b8 Checkpoint v0.8.2 visual source license screenshot report`
+- Final handoff commit: `Checkpoint v0.8.2 visual source license screenshot coverage gate`
 
 Current verification through Phase 9:
 
@@ -57,6 +61,36 @@ Phase 10 report gate verification:
 - `npm run visual:qa`: PASS, 1 Playwright capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
 - `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: PASS.
+
+Phase 11 final verification:
+
+- `npm test`: PASS, 45 files / 340 tests.
+- `npm run build`: PASS with the known Phaser vendor warning. Output remained `assets/index-CC1M6Mg7.js` 476.83 kB / 127.77 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-v9ZLtiOK.css` 44.23 kB / 9.11 kB gzip.
+- `npm run validate:content`: PASS.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 5.0m.
+- `npm run test:e2e:release`: PASS, 67 tests in about 30.3m.
+- `npm run test:e2e:release:shard1`: PASS, 55 tests in about 25.3m.
+- `npm run test:e2e:release:shard2`: PASS, 12 tests in about 5.1m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.7m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 13.4m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.0m.
+- `npm run visual:qa`: PASS, 1 Playwright capture test in about 3.3m, 18 indexed screenshots, 0 recorded browser console errors.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+- Production preview smoke: PASS at `http://127.0.0.1:57982/`. Verified title `Ascendant Realms`, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign to Campaign Map, Continue Campaign back to Campaign Map, Skirmish Setup, and 0 browser console errors. Preview server was shut down after the check.
+- Git status before this final handoff commit: `## main...origin/main [ahead 10]`; `git rev-list --left-right --count origin/main...HEAD`: `0 10`. After this final handoff commit, expect clean `main` ahead 11 pending push.
+
+Remaining v0.8.2 risks:
+
+- Current visuals remain prototype-level.
+- 59 runtime image assets still have unknown license/source proof and remain not production-safe.
+- No current file-backed image asset is production-approved.
+- Cinderfen terrain, capture-site landmarks, mobile battle HUD density, text-heavy Results/Inventory/Gallery surfaces, and minimap readability remain future visual-review risks.
+- Screenshot QA remains optional and non-pixel-perfect.
+- The known Phaser vendor chunk warning remains.
+- Full release e2e is still slow.
+
+Next recommended long-running goal: v0.9 Controlled Cinderfen Style-Frame Sprint. Keep it docs/specs/prompts-only at first: Cinderfen terrain material sheet, Cinder Shrine/capture-site landmark sheet, and Ashen outpost architecture sheet. Do not generate, import, download, commit, or wire runtime art assets until a future goal explicitly scopes source/license metadata, manifest updates, validation, and before/after screenshot QA. Safer player-facing alternative: Tutorial v2 onboarding refinement.
 
 Key constraints still active:
 
