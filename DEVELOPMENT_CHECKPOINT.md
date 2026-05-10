@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage report gate
+Updated: 2026-05-10 v0.9 controlled Cinderfen style-frame report gate
+
+## v0.9 Controlled Cinderfen Style-Frame Report Gate - 2026-05-10
+
+Scope: create a complete docs/specs/prompts-only Cinderfen visual style-frame package before any generated art, imported assets, or runtime visual replacement. This pass preserved gameplay, save compatibility, campaign progression, Tutorial / Proving Grounds behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, large binary assets, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md`, `docs/V09_CINDERFEN_VISUAL_PILLARS.md`, `docs/V09_CINDERFEN_TERRAIN_MATERIAL_SHEET_SPEC.md`, `docs/V09_CINDER_SHRINE_LANDMARK_SPEC.md`, `docs/V09_ASHEN_OUTPOST_ARCHITECTURE_SPEC.md`, `docs/V09_UNIT_BUILDING_SCALE_REFERENCE.md`, `docs/V09_CINDERFEN_STYLE_FRAME_PROMPT_PACK.md`, `docs/V09_FUTURE_CINDERFEN_MANIFEST_TEMPLATES.md`, `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md`, `docs/V09_CINDERFEN_VISUAL_REPLACEMENT_IMPLEMENTATION_PLAN.md`, and `docs/V09_CONTROLLED_CINDERFEN_STYLE_FRAME_REPORT.md`.
+- Defined the Cinderfen ash-glass wetland identity and original-IP guardrails.
+- Defined visual pillars for roads, shrines, units, wetland materials, Ashen architecture, player structures, fog, and UI label dependence.
+- Specified future terrain materials for causeways, ash mud, shallow water, deep pools, reeds, fog/shadow, ruined edging, and ember/scorch marks.
+- Specified Cinder Shrine landmark variants and Ashen outpost architecture categories.
+- Consolidated current unit/building/capture-site scale facts into future replacement standards without changing runtime scale.
+- Added a safe future prompt pack, manifest templates, screenshot acceptance criteria, and a future-only visual replacement sequence.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 45 test files, 340 tests during phase/report gates.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-CC1M6Mg7.js, 476.83 kB minified / 127.77 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-v9ZLtiOK.css, 44.23 kB minified / 9.11 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run visual:qa
+PASS: 1 Playwright capture test, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors during phase/report gates.
+```
+
+Recommended next milestone: v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review. Keep it non-runtime first: obtain 1 to 3 style-frame candidates, record source/license metadata, add review-only files only if explicitly approved, add manifest entries as reference/candidate only, run validation and visual QA, and write a human source/screenshot review. Do not wire assets into runtime until a later goal scopes one tiny replacement with source/license proof, manifest validation, before/after screenshot QA, and rollback.
 
 ## v0.8.2 Visual Source/License And Screenshot Coverage Report Gate - 2026-05-10
 

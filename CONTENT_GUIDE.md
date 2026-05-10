@@ -52,6 +52,21 @@ Source/license review docs:
 
 Do not mark unknown-source assets production-safe. Do not treat the `public/assets/final/` folder name as legal proof.
 
+v0.9 Cinderfen style-frame docs for future visual work:
+
+- `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md`
+- `docs/V09_CINDERFEN_VISUAL_PILLARS.md`
+- `docs/V09_CINDERFEN_TERRAIN_MATERIAL_SHEET_SPEC.md`
+- `docs/V09_CINDER_SHRINE_LANDMARK_SPEC.md`
+- `docs/V09_ASHEN_OUTPOST_ARCHITECTURE_SPEC.md`
+- `docs/V09_UNIT_BUILDING_SCALE_REFERENCE.md`
+- `docs/V09_CINDERFEN_STYLE_FRAME_PROMPT_PACK.md`
+- `docs/V09_FUTURE_CINDERFEN_MANIFEST_TEMPLATES.md`
+- `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md`
+- `docs/V09_CINDERFEN_VISUAL_REPLACEMENT_IMPLEMENTATION_PLAN.md`
+
+Use these as future planning inputs only. They do not authorize generated art, downloaded images, runtime asset replacement, production approval, or manifest runtime entries. A future Cinderfen asset must start outside runtime, record source/license metadata, enter the manifest as reference/candidate first, pass `npm run validate:content`, and receive human screenshot QA before any integration.
+
 ## Edit Tutorial Metadata
 
 Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game/types/TutorialTypes.ts` and validation in `src/game/data/validation/validateTutorials.ts`.

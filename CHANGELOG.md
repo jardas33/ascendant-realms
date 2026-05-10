@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.9 Controlled Cinderfen Style-Frame Sprint - 2026-05-10
+
+This checkpoint creates a docs/specs/prompts-only Cinderfen visual style-frame package before any art generation or runtime replacement. It defines the future ash-glass wetland identity, material language, shrine landmark direction, Ashen outpost architecture, unit/building scale standards, prompt pack, manifest templates, screenshot acceptance criteria, and future replacement sequence without adding generated art, imported assets, runtime art, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
+
+### Included
+
+- Cinderfen style-frame research packet: `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md`.
+- Cinderfen visual pillars: `docs/V09_CINDERFEN_VISUAL_PILLARS.md`.
+- Terrain material sheet spec: `docs/V09_CINDERFEN_TERRAIN_MATERIAL_SHEET_SPEC.md`.
+- Cinder Shrine/capture-site landmark spec: `docs/V09_CINDER_SHRINE_LANDMARK_SPEC.md`.
+- Ashen outpost architecture spec: `docs/V09_ASHEN_OUTPOST_ARCHITECTURE_SPEC.md`.
+- Unit/building scale reference: `docs/V09_UNIT_BUILDING_SCALE_REFERENCE.md`.
+- Cinderfen style-frame prompt pack: `docs/V09_CINDERFEN_STYLE_FRAME_PROMPT_PACK.md`.
+- Future Cinderfen manifest templates: `docs/V09_FUTURE_CINDERFEN_MANIFEST_TEMPLATES.md`.
+- Screenshot acceptance criteria: `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md`.
+- Future visual replacement implementation plan: `docs/V09_CINDERFEN_VISUAL_REPLACEMENT_IMPLEMENTATION_PLAN.md`.
+- v0.9 report: `docs/V09_CONTROLLED_CINDERFEN_STYLE_FRAME_REPORT.md`.
+
+### Verification
+
+- Phase gates: `npm test` passed with 45 test files and 340 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `git diff --check` passed.
+- Report gate: `npm run visual:qa` passed with 18 indexed review screenshots and zero recorded browser console errors.
+- Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+
+### Next
+
+- Recommended next goal: v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review.
+- Keep the next step non-runtime first: obtain 1 to 3 style-frame candidates, record source/license metadata, track as reference/candidate only, validate, run visual QA, and write a human source/screenshot review.
+- Do not wire assets into runtime until a later goal scopes one tiny replacement with source/license proof, manifest validation, before/after screenshot QA, and rollback.
+
 ## v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion - 2026-05-10
 
 This checkpoint hardens the visual asset pipeline by reviewing source/license risk, adding conservative source-review metadata, strengthening manifest validation, expanding optional screenshot QA coverage, and preparing a safe v0.9 visual direction without adding art, generated images, external assets, large binaries, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.
