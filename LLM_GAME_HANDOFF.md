@@ -105,6 +105,16 @@ Phase 8 2026 art direction bible:
 - Defined future style targets for heroes, infantry, ranged units, brutes, casters, monsters, command halls, barracks, shrine/capture sites, enemy strongholds, roads, grass, marsh/Cinderfen, ruins, water, fog/shadow, and UI.
 - Compared future 2.5D and 3D visual options only as planning. No desktop packaging, engine switch, asset import, new art, shader, VFX system, or runtime visual implementation was made.
 
+Phase 9 asset pipeline plan:
+
+- Added `docs/ASSET_PIPELINE_PLAN.md`.
+- Documented the current asset situation: runtime assets under `public/assets/final/`, manual/reference assets under `public/assets/manual/`, procedural map terrain, CSS/DOM UI, resource-icon capture sites, and mixed placeholder/final visual quality.
+- Defined future asset categories and metadata needs for unit sprites/models, building sprites/models, terrain tiles/materials, UI frames/icons, VFX, audio, and portraits.
+- Proposed future browser prototype conventions for naming, folder shape, atlas/spritesheet expectations, scale metadata, license/source tracking, and placeholder vs production tags.
+- Defined future desktop-pipeline considerations for concept art, 3D or high-resolution 2D, animation, material/VFX, and engine import without choosing an engine or implementing desktop work.
+- Documented Codex asset guardrails: write briefs/prompts/manifests/validation plans, but do not invent hidden copyrighted sources, commit large binaries without permission, require paid APIs, pull unlicensed web images, or treat generated images as production art without metadata.
+- No asset files were created, moved, deleted, renamed, generated, imported, or required.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
