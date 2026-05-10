@@ -44,6 +44,14 @@ Phase 2 e2e runtime and shard imbalance audit:
 - A no-change 3-shard listing is more balanced by slow-file family: shard `1/3` lists 28 deep-flow tests, shard `2/3` lists 27 layout+pressure tests, and shard `3/3` lists 12 smoke tests.
 - Recommendation: if v0.8 implements one safe e2e runtime improvement, add 3-shard release scripts while preserving the existing full release, 2-shard, smoke, layout, and deep scripts. Do not change tests, workers, parallelism, serving mode, or coverage.
 
+Phase 3 minimal e2e runtime improvement plan:
+
+- Added `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md`.
+- Compared five options: rebalance current 2 shards, add 3-shard release scripts, document longer full-release timeouts only, split file-based release groups, and change workers/parallelism.
+- Recommended first implementation: add 3-shard release scripts only, preserving all existing full release, 2-shard, smoke, layout, and deep scripts.
+- Rationale: additive, easy to verify, coverage-preserving, no Playwright config change, no serving-mode change, no test-body change, no gameplay change, and directly addresses the current 55/12 shard imbalance.
+- Explicitly rejected for v0.8: deleting tests, making smoke the only release gate, replacing full-flow tests with fake assertions, enabling more workers, changing `fullyParallel`, switching to preview serving, or restructuring deep-flow/layout specs in the same pass.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
