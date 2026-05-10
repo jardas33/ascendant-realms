@@ -11,3 +11,11 @@ bundle-analysis/
 .retinue-preview.pid
 .DS_Store
 Thumbs.db
+
+# Non-runtime art intake: track docs/templates/metadata, ignore raw candidate binaries by default.
+art-review/cinderfen-style-frames/inbox/*
+art-review/cinderfen-style-frames/reviewed/*
+art-review/cinderfen-style-frames/rejected/*
+!art-review/cinderfen-style-frames/inbox/.gitkeep
+!art-review/cinderfen-style-frames/reviewed/.gitkeep
+!art-review/cinderfen-style-frames/rejected/.gitkeep

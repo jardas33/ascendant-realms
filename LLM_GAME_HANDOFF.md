@@ -16,7 +16,7 @@ Phase status:
 
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
 - Phase 1 style-frame intake protocol: complete. Added `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md` defining allowed/forbidden candidate sources, required metadata before commit, review stages, human review checklist, and Codex responsibilities/limits.
-- Phase 2 non-runtime review folder structure: pending.
+- Phase 2 non-runtime review folder structure: complete. Added `art-review/` and `art-review/cinderfen-style-frames/` READMEs plus inbox/metadata/reviewed/rejected placeholders. Updated `.gitignore` so raw candidate binaries in intake/status folders are ignored by default while metadata/templates remain trackable.
 - Phase 3 source/license metadata forms: pending.
 - Phase 4 candidate review manifest schema: pending.
 - Phase 5 candidate intake validation: pending.
