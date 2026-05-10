@@ -20,6 +20,12 @@ Expected current prototype result:
 PASS: 45 test files, 334 tests
 ```
 
+Current v0.8.1 asset-manifest validation phase result:
+
+```text
+PASS: 45 test files, 338 tests
+```
+
 2. Standalone content validation:
 
 ```bash
@@ -32,7 +38,7 @@ Expected current prototype result:
 PASS: Ascendant Realms content validation passed.
 ```
 
-This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, enemy pressure plans, and future expansion metadata.
+This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, enemy pressure plans, visual asset metadata, and future expansion metadata. The CLI path also checks runtime visual asset file paths without bundling Node filesystem checks into the browser boot path.
 
 3. Production build:
 

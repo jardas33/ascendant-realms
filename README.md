@@ -1,6 +1,6 @@
 # Ascendant Realms
 
-Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype, v0.7.1 polishing pressure warning feel and visibility, v0.7.2 reviewing Cinderfen pressure feel without expanding mechanics, v0.7.3 adding closer-to-real browser-input pressure review plus a manual playtest checklist, and v0.8 refreshing technical/e2e runtime facts while creating a visual debt, scale, 2026 art direction, asset pipeline, and Cinderfen visual foundation gate. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
+Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype, v0.7.1 polishing pressure warning feel and visibility, v0.7.2 reviewing Cinderfen pressure feel without expanding mechanics, v0.7.3 adding closer-to-real browser-input pressure review plus a manual playtest checklist, v0.8 refreshing technical/e2e runtime facts while creating a visual debt, scale, 2026 art direction, asset pipeline, and Cinderfen visual foundation gate, and v0.8.1 adding the visual asset manifest and screenshot QA foundation. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -24,6 +24,7 @@ Current v0.3 feature snapshot:
 - v0.7.2 Human-Paced Cinderfen Pressure Review: seeded browser evidence for Crossing and Watch warning readability, no-change pressure readability decision, Retinue + Training Yard II watchpoint, Greedy/Fast strategy review, and a fresh decision to keep stronger actions warning/telemetry-only.
 - v0.7.3 Real-Input Cinderfen Pressure Playtest: controlled browser-input review for Crossing and Watch, manual playtest checklist for Emmanuel, strategy-profile no-change gate, and v0.8 direction brief recommending technical/e2e runtime work before any simulator-only reinforcement experiment.
 - v0.8 Technical Performance and Visual Foundation Gate: refreshed bundle/performance facts, e2e runtime/shard audit, additive optional 3-shard release scripts, visual debt audit, visual scale/readability audit, no-code visual readability decision, 2026 art direction bible, asset pipeline plan, Cinderfen visual rework spec, and no gameplay or asset expansion.
+- v0.8.1 Visual Asset Manifest and Screenshot QA Gate: initial visual asset inventory, typed visual metadata schema, populated 89-entry manifest covering runtime and manual-source assets, and visual metadata validation through `npm run validate:content`.
 
 ## Design Pillars
 
@@ -159,10 +160,12 @@ This project does not use paid image APIs. You can generate images manually in C
 7. Human-readable names such as `Warlord Hero Portrait.png` also work.
 8. Run `npm run assets:manifest` to let the project find the image.
 9. Run `npm run assets:validate` to check for missing or broken paths.
-10. Or run `npm run assets:refresh` to process battle sprites, rebuild the manifest, and validate everything at once.
-11. Run or refresh the game.
+10. Update `src/game/assets/visualAssetManifest.ts` with source/license/status/scale metadata before treating the asset as part of the current reviewed set.
+11. Run `npm run validate:content`; the CLI now validates visual asset metadata and runtime file paths in addition to gameplay content.
+12. Or run `npm run assets:refresh` to process battle sprites, rebuild the runtime manifest, and validate the manual asset pipeline before the content gate.
+13. Run or refresh the game.
 
-Asset priority is `final`, then `manual`, then `placeholders`, then built-in runtime fallbacks. Missing art is okay; the game should keep running.
+Asset priority is `final`, then `manual`, then `placeholders`, then built-in runtime fallbacks. Missing art is okay; the game should keep running. The visual metadata manifest is stricter: runtime entries need valid metadata, non-empty `usedBy`, safe status/license flags, and existing file paths when checked by the CLI.
 
 Use the `Asset Gallery` button on the main menu to confirm which images the game can see. Each card says `Image loaded` when the browser has actually loaded that file.
 
@@ -323,7 +326,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Balance is prototype-only and expected to change often.
 - Some engine classes still combine simulation data with Phaser visuals. That is acceptable for this slice, but should be split before multiplayer or replay work.
 - `BattleScene` is partly split into helper modules for spawning, map rendering, alerts, snapshots, objectives, and results. It still owns live Phaser orchestration and input, and live entity state is not fully serializable yet.
-- The UI-kit assets are optional and currently missing until generated manually. The game falls back to CSS styling when they are not present.
+- The UI-kit assets are optional runtime presentation assets. The game falls back to CSS styling when they are not present, and the v0.8.1 visual manifest tracks their current metadata/status separately from production readiness.
 
 ## How To Ask Codex For The Next Feature
 

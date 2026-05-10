@@ -20,10 +20,121 @@ import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { TUTORIALS } from "./tutorials";
 import { validateContent } from "./contentValidation";
 import { UNIT_BY_ID } from "./contentIndex";
+import { VISUAL_ASSET_MANIFEST } from "../assets/visualAssetManifest";
+import { validateVisualAssetManifest, type VisualAssetValidationOptions } from "./validation/validateVisualAssets";
+
+function validateVisualAssets(options: VisualAssetValidationOptions = {}): string[] {
+  const errors: string[] = [];
+  validateVisualAssetManifest(errors, options);
+  return errors;
+}
 
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
     expect(validateContent()).toEqual([]);
+  });
+
+  it("defines the initial visual asset metadata manifest without production-final claims", () => {
+    const ids = new Set(VISUAL_ASSET_MANIFEST.assets.map((asset) => asset.id));
+
+    expect(VISUAL_ASSET_MANIFEST.assets).toHaveLength(89);
+    expect(ids.size).toBe(VISUAL_ASSET_MANIFEST.assets.length);
+    expect(VISUAL_ASSET_MANIFEST.assets.some((asset) => asset.currentStatus === "final")).toBe(false);
+    expect(VISUAL_ASSET_MANIFEST.assets.find((asset) => asset.id === "procedural_battle_terrain")).toMatchObject({
+      category: "terrain",
+      currentStatus: "placeholder",
+      replacementPriority: "critical",
+      usage: "runtime"
+    });
+    expect(VISUAL_ASSET_MANIFEST.assets.find((asset) => asset.id === "crown_shrine_icon")).toMatchObject({
+      category: "capture-site-icon",
+      replacementPriority: "high",
+      needsReview: true
+    });
+    expect(VISUAL_ASSET_MANIFEST.assets.find((asset) => asset.id === "manual_source_militia_unit_sprite")).toMatchObject({
+      usage: "manual-reference",
+      currentStatus: "reference"
+    });
+  });
+
+  it("rejects invalid visual asset metadata enum values", () => {
+    const asset = VISUAL_ASSET_MANIFEST.assets[0];
+    VISUAL_ASSET_MANIFEST.assets.push({
+      ...asset,
+      id: "bad_visual_asset_enums",
+      category: "bad_category" as typeof asset.category,
+      currentStatus: "bad_status" as typeof asset.currentStatus,
+      sourceType: "bad_source" as typeof asset.sourceType,
+      licenseStatus: "bad_license" as typeof asset.licenseStatus,
+      usage: "bad_usage" as typeof asset.usage,
+      scaleClass: "bad_scale" as typeof asset.scaleClass,
+      silhouetteReadability: "bad_silhouette" as typeof asset.silhouetteReadability,
+      styleConsistency: "bad_style" as typeof asset.styleConsistency,
+      replacementPriority: "bad_priority" as typeof asset.replacementPriority
+    });
+    try {
+      expect(validateVisualAssets()).toEqual(
+        expect.arrayContaining([
+          "Visual asset bad_visual_asset_enums has invalid category bad_category.",
+          "Visual asset bad_visual_asset_enums has invalid currentStatus bad_status.",
+          "Visual asset bad_visual_asset_enums has invalid sourceType bad_source.",
+          "Visual asset bad_visual_asset_enums has invalid licenseStatus bad_license.",
+          "Visual asset bad_visual_asset_enums has invalid usage bad_usage.",
+          "Visual asset bad_visual_asset_enums has invalid scaleClass bad_scale.",
+          "Visual asset bad_visual_asset_enums has invalid silhouetteReadability bad_silhouette.",
+          "Visual asset bad_visual_asset_enums has invalid styleConsistency bad_style.",
+          "Visual asset bad_visual_asset_enums has invalid replacementPriority bad_priority."
+        ])
+      );
+    } finally {
+      VISUAL_ASSET_MANIFEST.assets.pop();
+    }
+  });
+
+  it("rejects unsafe visual asset metadata guards", () => {
+    const asset = VISUAL_ASSET_MANIFEST.assets[0];
+    const original = { ...asset, usedBy: [...asset.usedBy] };
+    VISUAL_ASSET_MANIFEST.assets.push({ ...asset, usedBy: [...asset.usedBy] });
+    asset.currentStatus = "final";
+    asset.sourceType = "unknown";
+    asset.licenseStatus = "unknown";
+    asset.usage = "runtime";
+    asset.usedBy = [];
+    asset.needsReview = false;
+    asset.allowedInProduction = true;
+    asset.intendedWorldHeightPx = 0;
+    asset.currentRenderHeightPx = -1;
+    try {
+      expect(validateVisualAssets()).toEqual(
+        expect.arrayContaining([
+          `Duplicate visual asset id: ${asset.id}`,
+          `Visual asset ${asset.id} runtime usage must include at least one usedBy reference.`,
+          `Visual asset ${asset.id} runtime asset with unknown license must set needsReview true.`,
+          `Visual asset ${asset.id} final asset cannot have unknown source or license.`,
+          `Visual asset ${asset.id} cannot be allowed in production with unknown source or license.`,
+          `Visual asset ${asset.id} intendedWorldHeightPx must be positive when present.`,
+          `Visual asset ${asset.id} currentRenderHeightPx must be positive when present.`
+        ])
+      );
+    } finally {
+      VISUAL_ASSET_MANIFEST.assets.pop();
+      Object.assign(asset, original);
+    }
+  });
+
+  it("checks runtime visual asset file paths when the CLI provides a file-existence callback", () => {
+    const asset = VISUAL_ASSET_MANIFEST.assets[0];
+    const originalFilePath = asset.filePath;
+    asset.filePath = "public/assets/final/units/missing_visual_asset.png";
+    try {
+      expect(
+        validateVisualAssets({
+          fileExists: (filePath) => filePath !== "public/assets/final/units/missing_visual_asset.png"
+        })
+      ).toContain(`Visual asset ${asset.id} runtime filePath does not exist: public/assets/final/units/missing_visual_asset.png`);
+    } finally {
+      asset.filePath = originalFilePath;
+    }
   });
 
   it("defines the playable Tutorial / Proving Grounds metadata shell", () => {

@@ -392,9 +392,11 @@ The schema also supports future desktop-quality work by:
 
 This does not authorize desktop packaging, engine switching, 3D rewrite, external generated assets, paid APIs, or large binary asset commits.
 
-## Validation Targets For Later Phases
+## Validation Gate
 
-Future validation should check:
+Phase 4 adds validation for this manifest through the `npm run validate:content` CLI path. The browser boot path still uses gameplay content validation only; the CLI invokes visual-asset validation separately so Node filesystem checks and the full visual metadata manifest do not inflate the runtime bundle.
+
+Current validation checks:
 
 1. Asset ids are unique.
 2. Runtime `filePath` entries exist unless explicitly procedural.
@@ -412,7 +414,13 @@ Future validation should check:
 14. Runtime assets should have non-empty `usedBy`.
 15. Deprecated assets should not be runtime-used.
 
-Phase 4 should integrate this validation into `npm run validate:content` if it can be done cleanly without broad pipeline churn.
+Implementation files:
+
+- `src/game/data/validation/validateVisualAssets.ts`
+- `tools/validateContent.ts`
+- `src/game/data/contentValidation.test.ts`
+
+The CLI file-existence check currently applies to runtime visual assets whose paths are not procedural placeholders.
 
 ## Non-Goals
 

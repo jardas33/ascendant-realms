@@ -401,6 +401,19 @@ New modifier types require code in combat or battle systems plus validation in `
 7. Put the image in the listed `public/assets/manual/...` folder.
 8. Exact snake_case filenames are best, but friendly display names also work.
 9. Run `npm run assets:refresh`.
+10. Add or update the matching entry in `src/game/assets/visualAssetManifest.ts`.
+11. Set honest metadata for `currentStatus`, `sourceType`, `licenseStatus`, `usage`, `usedBy`, scale/readability fields, `allowedInProduction`, and `needsReview`.
+12. Run `npm run validate:content`; this now validates visual asset metadata and CLI-side runtime asset file paths.
+
+Visual manifest rules:
+
+- Do not mark an asset `final` with unknown source or unknown license.
+- Runtime assets cannot use `licenseStatus` `reference-only` or `do-not-ship`.
+- Runtime assets with unknown license must set `needsReview: true`.
+- Runtime assets need non-empty `usedBy` references.
+- Positive `intendedWorldHeightPx` and `currentRenderHeightPx` are required when those fields are present.
+- Deprecated assets must not be runtime-used.
+- Manual source duplicates should usually be `usage: "manual-reference"` and `currentStatus: "reference"`.
 
 ## Add Or Replace UI Art Kit Images
 
