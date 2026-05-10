@@ -18,7 +18,7 @@ Phase status:
 - Phase 1 style-frame intake protocol: complete. Added `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md` defining allowed/forbidden candidate sources, required metadata before commit, review stages, human review checklist, and Codex responsibilities/limits.
 - Phase 2 non-runtime review folder structure: complete. Added `art-review/` and `art-review/cinderfen-style-frames/` READMEs plus inbox/metadata/reviewed/rejected placeholders. Updated `.gitignore` so raw candidate binaries in intake/status folders are ignored by default while metadata/templates remain trackable.
 - Phase 3 source/license metadata forms: complete. Added Markdown and JSON metadata templates under `art-review/cinderfen-style-frames/metadata/` plus `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md` explaining required fields, controlled values, approval rules, and why metadata does not approve runtime use by itself.
-- Phase 4 candidate review manifest schema: pending.
+- Phase 4 candidate review manifest schema: complete. Added `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md` and non-runtime tooling types in `tools/art-intake/StyleFrameReviewManifestTypes.ts`. The schema is explicitly separate from the runtime visual asset manifest and adds no candidate entries.
 - Phase 5 candidate intake validation: pending.
 - Phase 6 candidate intake scan/report: pending.
 - Phase 7 screenshot QA comparison plan: pending.
