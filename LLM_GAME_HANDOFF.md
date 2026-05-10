@@ -41,7 +41,8 @@ Commits created so far:
 - `5070211 Checkpoint v0.8.2 visual risk register`
 - `e51e785 Checkpoint v0.8.2 v0.9 visual sprint brief`
 - `27799b8 Checkpoint v0.8.2 visual source license screenshot report`
-- Final handoff commit: `Checkpoint v0.8.2 visual source license screenshot coverage gate`
+- `42a6ba1 Checkpoint v0.8.2 visual source license screenshot coverage gate`
+- Post-push status note: `Record v0.8.2 final sync status`
 
 Current verification through Phase 9:
 
@@ -78,7 +79,8 @@ Phase 11 final verification:
 - `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: PASS.
 - Production preview smoke: PASS at `http://127.0.0.1:57982/`. Verified title `Ascendant Realms`, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign to Campaign Map, Continue Campaign back to Campaign Map, Skirmish Setup, and 0 browser console errors. Preview server was shut down after the check.
-- Git status before this final handoff commit: `## main...origin/main [ahead 10]`; `git rev-list --left-right --count origin/main...HEAD`: `0 10`. After this final handoff commit, expect clean `main` ahead 11 pending push.
+- Git status before the final handoff commit: `## main...origin/main [ahead 10]`; `git rev-list --left-right --count origin/main...HEAD`: `0 10`.
+- Git status after pushing the final handoff commit: `## main...origin/main`; `git rev-list --left-right --count origin/main...HEAD`: `0 0`.
 
 Remaining v0.8.2 risks:
 
