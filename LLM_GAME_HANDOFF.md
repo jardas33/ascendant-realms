@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9 controlled Cinderfen style-frame report gate
+Last updated: 2026-05-10 v0.9 controlled Cinderfen style-frame sprint final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -14,6 +14,8 @@ Mission: create a docs/specs/prompts-only Cinderfen visual style-frame package f
 
 Phase status:
 
+- Completed phases: Phase 0 through Phase 12.
+- Skipped phases: none.
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
 - Phase 1 Cinderfen style-frame research packet: complete. Added `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md` defining current visual problems, desired ash-glass wetland identity, original-IP guardrails, allowed/avoided reference categories, words-only mood board, readability constraints, and non-goals.
 - Phase 2 Cinderfen visual pillars and style rules: complete. Added `docs/V09_CINDERFEN_VISUAL_PILLARS.md` with eight gameplay-first visual rules, color/material/lighting/scale direction, browser-prototype-safe scope, and future desktop-quality boundaries.
@@ -26,7 +28,22 @@ Phase status:
 - Phase 9 screenshot acceptance criteria: complete. Added `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` defining future pass/fail criteria for battlefield readability, roads, shrine visibility/states, unit silhouettes, enemy base, minimap, mobile/tablet HUD, affected UI surfaces, performance/bundle impact, source/license metadata, and screenshot QA coverage.
 - Phase 10 future visual replacement implementation plan: complete. Added `docs/V09_CINDERFEN_VISUAL_REPLACEMENT_IMPLEMENTATION_PLAN.md` defining future-only phases from style-frame creation through metadata, non-runtime review, candidate manifest entries, screenshot QA, one tiny runtime candidate, validation, full gate, and rollback planning for shrine, road, and Ashen stronghold candidates.
 - Phase 11 controlled style-frame report and release docs: complete. Added `docs/V09_CONTROLLED_CINDERFEN_STYLE_FRAME_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff for the v0.9 docs/specs/prompts-only checkpoint.
-- Phase 12 final full verification and push: pending.
+- Phase 12 final full verification and handoff: complete. Full local gate, release e2e lane, two-way release shards, three-way release shards, visual QA, simulator, whitespace check, and production preview smoke all passed. Final handoff commit and safe push follow this update.
+
+Commits created so far:
+
+- `df51729 Checkpoint v0.9 Cinderfen style-frame research`
+- `4f5751c Checkpoint v0.9 Cinderfen visual pillars`
+- `0b68724 Checkpoint v0.9 terrain material sheet spec`
+- `c9a08a8 Checkpoint v0.9 shrine landmark sheet spec`
+- `d95f795 Checkpoint v0.9 Ashen outpost architecture spec`
+- `40560b5 Checkpoint v0.9 unit building scale reference`
+- `262b9b4 Checkpoint v0.9 Cinderfen prompt pack`
+- `4a0af76 Checkpoint v0.9 future manifest templates`
+- `4a9289f Checkpoint v0.9 screenshot acceptance criteria`
+- `5402f29 Checkpoint v0.9 visual replacement plan`
+- `9551a99 Checkpoint v0.9 controlled Cinderfen style-frame report`
+- Final handoff commit: `Checkpoint v0.9 controlled Cinderfen style-frame sprint`
 
 Current v0.9 verification:
 
@@ -45,6 +62,34 @@ Current v0.9 verification:
 - Phase 9 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 - Phase 10 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 - Phase 11 docs plus screenshot QA gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `npm run visual:qa` PASS with 18 indexed screenshots and 0 console errors, `npm run playtest:sim` PASS with 255 runs / 85 campaign battle nodes, `git diff --check` PASS.
+- Phase 12 `npm test`: PASS, 45 files / 340 tests.
+- Phase 12 `npm run build`: PASS with the known Phaser vendor warning. Output remained `assets/index-CC1M6Mg7.js` 476.83 kB / 127.77 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-v9ZLtiOK.css` 44.23 kB / 9.11 kB gzip.
+- Phase 12 `npm run validate:content`: PASS.
+- Phase 12 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.5m.
+- Phase 12 `npm run test:e2e:release`: PASS, 67 tests in about 31.4m.
+- Phase 12 `npm run test:e2e:release:shard1`: PASS, 55 tests in about 25.3m.
+- Phase 12 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 5.3m.
+- Phase 12 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 13.0m.
+- Phase 12 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 15.5m.
+- Phase 12 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.7m.
+- Phase 12 `npm run visual:qa`: PASS, 1 Playwright visual QA capture test in about 4.1m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 12 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 12 `git diff --check`: PASS.
+- Phase 12 production preview smoke: PASS at `http://127.0.0.1:64597/`. Verified document title `Ascendant Realms`, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign reaching Campaign Map, Continue Campaign returning to Campaign Map, Skirmish Setup opening, and 0 browser console errors. Preview server was shut down after the check.
+- Git status before the final handoff commit: `## main...origin/main [ahead 11]`; `git rev-list --left-right --count origin/main...HEAD`: `0 11`; working tree clean.
+
+Remaining v0.9 risks:
+
+- Current visuals remain prototype-level; v0.9 intentionally defines direction only.
+- 59 runtime image assets still need source/license proof.
+- No file-backed image asset is production-approved.
+- Cinderfen terrain, roads/causeways, water/swamp, capture-site landmarks, Ashen buildings, unit/building scale, HUD density, minimap readability, and future generated-art provenance remain open visual risks.
+- Future art must stay original-IP, source/license documented, manifest validated, screenshot-reviewed, and human-approved before runtime use.
+- Screenshot QA remains non-pixel-perfect and still requires human review.
+- The known Phaser vendor chunk-size warning remains.
+- Full Playwright release lanes remain slow.
+
+Next recommended long-running goal: v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review. It should manually gather or generate candidate style frames outside runtime, record source/license metadata, place any reviewed outputs only in a non-runtime review area, add reference/candidate manifest metadata only after proof, and run visual QA before considering one tiny later runtime replacement. Do not import or wire production art until that later scope is explicit and green.
 
 Key constraints still active:
 
