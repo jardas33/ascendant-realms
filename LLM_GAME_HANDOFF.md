@@ -67,6 +67,16 @@ Phase 4 e2e runtime improvement:
   - `npm run test:e2e:release:shard3of3`: PASS, 12 tests in 5.3m.
   - `git diff --check`: PASS.
 
+Phase 5 visual debt audit:
+
+- Added `docs/V08_VISUAL_DEBT_AUDIT.md`.
+- Reviewed the current Cinderfen gameplay screenshot, `BattleSceneMapRenderer`, entity rendering classes, minimap rendering, HUD styles, Cinderfen map data, and runtime/manual/final asset folders.
+- Main finding: the prototype is playable and readable, but it has serious visual debt. Roads, water/swamp, fog, capture sites, bases, units, buildings, minimap, and HUD all work functionally but do not yet share a coherent final art language.
+- Terrain debt: Cinderfen roads are broad procedural strokes, water/swamp is ellipse-based, capture sites are more symbolic than environmental, and boundaries are functional rather than grounded.
+- Unit/building debt: sprites are scaled at runtime and readable through labels, health bars, and selection rings, but the source style, silhouette language, scale, and ground contact are inconsistent.
+- UI debt: the resource bar, objective panel, selected-unit panel, minimap, battle status banner, menus, and buttons are usable but still prototype-level and not yet a unified 2026-quality interface system.
+- Decision: no visual code change is justified by the debt audit alone. The debt is structural and pipeline-level; Phase 6 should define scale/readability facts, and Phase 7 should only apply a tiny readability fix if the evidence is stronger than the churn risk.
+
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
 Mission: run a closer-to-real Cinderfen pressure playtest using actual browser input where possible, label any automated or semi-automated evidence honestly, and apply only tiny evidence-backed polish if absolutely justified. This goal must not expand Enemy Strategic Pressure into live reinforcements, capture-site contest AI, defensive hold behavior, workers, enemy construction, economy AI, new maps, new units, new factions, rewards, save changes, campaign progression changes, pressure on Ashen Outpost or Chapter 1, new pressure UI panels, desktop packaging, engine switching, external assets, or broad systems.
