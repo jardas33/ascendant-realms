@@ -17,7 +17,7 @@ Phase status:
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
 - Phase 1 Cinderfen style-frame research packet: complete. Added `docs/V09_CINDERFEN_STYLE_FRAME_RESEARCH_PACKET.md` defining current visual problems, desired ash-glass wetland identity, original-IP guardrails, allowed/avoided reference categories, words-only mood board, readability constraints, and non-goals.
 - Phase 2 Cinderfen visual pillars and style rules: complete. Added `docs/V09_CINDERFEN_VISUAL_PILLARS.md` with eight gameplay-first visual rules, color/material/lighting/scale direction, browser-prototype-safe scope, and future desktop-quality boundaries.
-- Phase 3 terrain material sheet specification: pending.
+- Phase 3 terrain material sheet specification: complete. Added `docs/V09_CINDERFEN_TERRAIN_MATERIAL_SHEET_SPEC.md` specifying causeway, ash mud, shallow water, deep pools, dead reeds, cinder fog/shadow, ruined edging, and ember/scorch material rules with prompt fragments, metadata expectations, naming conventions, QA targets, and a no-runtime-import warning.
 - Phase 4 Cinder Shrine/capture-site landmark specification: pending.
 - Phase 5 Ashen outpost architecture specification: pending.
 - Phase 6 unit/building scale reference: pending.
@@ -36,6 +36,7 @@ Current v0.9 verification:
 - Phase 0 `git diff --check`: PASS.
 - Phase 1 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 - Phase 2 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
+- Phase 3 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 
 Key constraints still active:
 
