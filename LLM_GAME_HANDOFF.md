@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8 technical visual foundation report gate
+Last updated: 2026-05-10 v0.8 technical performance visual foundation final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -132,6 +132,57 @@ Phase 11 v0.8 technical visual foundation report:
 - Verification: `npm test` PASS, 45 files / 334 tests; `npm run build` PASS with the known Phaser vendor warning; `npm run validate:content` PASS; `npm run test:e2e:smoke` PASS, 12 tests in 6.3m; `npm run playtest:sim` PASS, 255 runs across 85 campaign battle nodes with no telemetry diff; `git diff --check` PASS.
 - Recommended next long goal: v0.8.1 Visual Asset Manifest and Screenshot QA Gate. The safe alternative remains Tutorial v2 onboarding refinement if player-facing work is preferred.
 - Guardrails remain: no new art assets, no graphics overhaul, no desktop packaging, no engine switch, no workers, no enemy construction, no new maps/units/factions, no rewards/save changes, no campaign progression changes, no pressure action promotion, and no broad systems.
+
+Phase 12 final full verification and handoff:
+
+- Completed phases: Phase 0 through Phase 12. No phase was skipped. Phase 7 intentionally applied no visual code/CSS tweak because the audits showed structural asset/art-direction debt rather than a single proven readability bug.
+- Commits created:
+  - `b32561b Checkpoint v0.8 performance audit`
+  - `8870808 Checkpoint v0.8 e2e runtime audit`
+  - `5f1a56c Checkpoint v0.8 e2e runtime plan`
+  - `9feb125 Checkpoint v0.8 e2e runtime improvement`
+  - `2b69a8b Checkpoint v0.8 visual debt audit`
+  - `89389e9 Checkpoint v0.8 visual scale audit`
+  - `64f67b6 Checkpoint v0.8 prototype visual readability tweak`
+  - `ef87c47 Checkpoint v0.8 art direction bible`
+  - `a4dc4a7 Checkpoint v0.8 asset pipeline plan`
+  - `c528c34 Checkpoint v0.8 Cinderfen visual rework spec`
+  - `5182720 Checkpoint v0.8 technical visual foundation report`
+- Final verification:
+  - `npm test`: PASS, 45 files / 334 tests.
+  - `npm run build`: PASS with the known Phaser vendor warning. Output remains app JS `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB.
+  - `npm run validate:content`: PASS.
+  - `npm run test:e2e:smoke`: PASS, 12 tests in 5.9m.
+  - `npm run test:e2e:release`: PASS, 67 tests in 31.8m.
+  - `npm run test:e2e:release:shard1`: PASS, 55 tests in 25.4m.
+  - `npm run test:e2e:release:shard2`: PASS, 12 tests in 5.7m.
+  - `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes; regenerated telemetry had no git diff.
+  - `git diff --check`: PASS.
+- Additional v0.8 lane verification:
+  - `npm run test:e2e:release:shard1of3`: PASS, 28 tests in 12.3m.
+  - `npm run test:e2e:release:shard2of3`: PASS, 27 tests in 14.9m.
+  - `npm run test:e2e:release:shard3of3`: PASS, 12 tests in 5.3m.
+  - `npm run test:e2e:layout`: first attempt hit the command timeout with no failing-test output; after cleaning repo-local leftover Playwright/Vite Node processes and rerunning with a longer timeout, PASS, 25 tests in 14.9m.
+- Production preview smoke:
+  - Started `npm run preview -- --host 127.0.0.1 --port 57932 --strictPort`.
+  - Browser title verified as `Ascendant Realms`.
+  - Main menu verified with `Prototype v0.3` and `Cinderfen Route Baseline`.
+  - Tutorial / Proving Grounds launched and exited back to main menu without crashing.
+  - New Campaign reached Campaign Map.
+  - Continue Campaign reached Campaign Map after the preview save existed.
+  - Skirmish Setup opened.
+  - Browser console errors stayed at 0.
+  - A pressure-enabled battle launch was covered by release e2e; preview did not force a deep Cinderfen campaign state.
+  - Preview server was stopped after the smoke check. Temporary preview logs are ignored files and not part of the git status.
+- Current git status before final handoff commit: `## main...origin/main [ahead 11]`; `git rev-list --left-right --count origin/main...HEAD` reported `0 11`.
+- Remaining risks:
+  - Full one-piece e2e release lane remains slow.
+  - Existing 2-shard split remains imbalanced, though the new optional 3-shard split is more balanced for CI.
+  - Known Phaser vendor chunk warning remains.
+  - Visual quality remains prototype-level; terrain, roads, water, capture sites, unit/building style, and UI need a real art pipeline.
+  - Cinder Shrine salience, human tutorial/pressure feel, Fast Army bypass, and Retinue + Training Yard II dominance remain human-play watchpoints.
+  - Future visual work must start with asset metadata and screenshot QA before new binaries or production art.
+- Next recommended long-running goal: v0.8.1 Visual Asset Manifest and Screenshot QA Gate. Add source/license/status/scale metadata for existing assets and a small screenshot review set, with no new art assets, no graphics overhaul, no desktop packaging, no engine switch, no gameplay expansion, and no broad systems. If the user wants a player-facing pass instead, Tutorial v2 onboarding refinement is the safer alternative.
 
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
