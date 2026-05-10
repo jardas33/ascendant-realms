@@ -11,6 +11,7 @@
     "preview": "vite preview --host 0.0.0.0",
     "test": "vitest run",
     "validate:content": "tsx tools/validateContent.ts",
+    "validate:art-intake": "tsx tools/art-intake/validateArtIntake.ts",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts --reporter=line",
     "test:e2e:layout": "playwright test tests/e2e/layout.spec.ts --reporter=line",

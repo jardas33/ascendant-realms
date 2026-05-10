@@ -8,9 +8,12 @@ Run this after any data edit before launching broad e2e or simulator checks:
 
 ```bash
 npm run validate:content
+npm run validate:art-intake
 ```
 
 It runs the same content validator used by the pure test suite without opening the game UI. It should fail with direct messages for duplicate IDs, missing references, unsafe campaign graph links, invalid reward references, broken map objective references, invalid enemy pressure plan references, and Cinderfen-specific modifier leakage.
+
+`npm run validate:art-intake` is only for non-runtime Cinderfen style-frame candidate metadata under `art-review/cinderfen-style-frames/metadata/`. It checks source/license fields, approval gates, protected-IP risk, related spec references, and submitted-file references without approving runtime use or requiring candidate image files for an empty intake.
 
 Follow it with `npm test` for save fixture coverage, pure rules, view models, and simulator unit coverage. Use e2e and `npm run playtest:sim` when the edited content can affect campaign flow, battle launch, rewards, rival state, or route balance.
 
@@ -66,6 +69,8 @@ v0.9 Cinderfen style-frame docs for future visual work:
 - `docs/V09_CINDERFEN_VISUAL_REPLACEMENT_IMPLEMENTATION_PLAN.md`
 
 Use these as future planning inputs only. They do not authorize generated art, downloaded images, runtime asset replacement, production approval, or manifest runtime entries. A future Cinderfen asset must start outside runtime, record source/license metadata, enter the manifest as reference/candidate first, pass `npm run validate:content`, and receive human screenshot QA before any integration.
+
+v0.9.1 adds a separate non-runtime intake lane for future style-frame candidates: `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md`, `docs/V091_SOURCE_LICENSE_METADATA_GUIDE.md`, `docs/V091_STYLE_FRAME_REVIEW_MANIFEST_SCHEMA.md`, and `art-review/cinderfen-style-frames/`. Fill candidate metadata before committing review materials, keep unknown-source or high-IP-risk candidates out of approval states, and run `npm run validate:art-intake` after metadata edits. This still does not authorize generated art, downloaded images, runtime replacement, or production approval.
 
 ## Edit Tutorial Metadata
 

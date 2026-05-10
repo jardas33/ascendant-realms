@@ -4,6 +4,7 @@ dist/
 playwright-report/
 test-results/
 blob-report/
+tmp-test-logs/
 bundle-analysis/
 /visual-qa/
 *.log

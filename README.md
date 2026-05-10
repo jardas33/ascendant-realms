@@ -73,10 +73,13 @@ Latest v0.8 technical/visual foundation checkpoint status, 2026-05-10: build pas
 
 ```bash
 npm run validate:content
+npm run validate:art-intake
 npm run test
 ```
 
 Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
+
+Run `npm run validate:art-intake` after adding or editing non-runtime Cinderfen style-frame metadata under `art-review/cinderfen-style-frames/metadata/`. It validates source/license and review-gate fields without requiring candidate image files unless a metadata record says the candidate file has been submitted. This is separate from the runtime visual asset manifest and does not approve or wire any art into the game.
 
 Latest v0.9 controlled Cinderfen style-frame checkpoint status, 2026-05-10: `npm run validate:content` passes, and `npm test` passes with 45 test files and 340 tests, including save fixture migration coverage, campaign graph/reward validation, simulator determinism checks, Tutorial / Proving Grounds metadata validation and step view-model coverage, Retinue rules, enemy hero/rival reward data validation, enemy pressure data/validation/runtime/status-priority/reporting coverage, hardened visual asset manifest validation/runtime/source-review coverage, Cinderfen reward and launch references, campaign presentation view-model coverage, save/load, launch, retry, Results trophy display, simulator coverage, and Chapter 2 selected chapter/node save preservation. v0.9 added only docs/specs/prompts for future Cinderfen visuals; it did not generate, import, or wire art assets.
 

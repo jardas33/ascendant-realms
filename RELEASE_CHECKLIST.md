@@ -34,6 +34,20 @@ PASS: Ascendant Realms content validation passed.
 
 This gate runs the content validator without opening the game UI. It should be used before trusting new or edited data for units, buildings, abilities, rewards, campaign nodes, maps, rivals, Stronghold upgrades, campaign modifiers, tutorial metadata, enemy pressure plans, visual asset metadata, and future expansion metadata. The CLI path also checks runtime visual asset file paths without bundling Node filesystem checks into the browser boot path.
 
+For future non-runtime Cinderfen style-frame intake metadata, also run:
+
+```bash
+npm run validate:art-intake
+```
+
+Expected current intake result:
+
+```text
+PASS: Art intake validation passed.
+```
+
+This gate validates JSON source/license metadata and any future review-manifest JSON under `art-review/cinderfen-style-frames/metadata/`. It is intentionally metadata-only, passes with an empty intake, does not require image files unless metadata marks a candidate as submitted, and does not make any candidate safe for runtime use by itself.
+
 3. Production build:
 
 ```bash
