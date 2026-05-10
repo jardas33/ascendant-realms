@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA report gate
+Updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA final gate
 
 ## v0.8.1 Visual Asset Manifest And Screenshot QA Report Gate - 2026-05-10
 
@@ -18,11 +18,11 @@ Included work:
 - Captured and reviewed 10 screenshots with zero recorded browser console errors.
 - Applied no visual code/CSS/renderer/scale/asset change because the screenshot review confirmed structural asset/art-direction debt rather than a single safe readability bug.
 
-Latest report-gate verification results:
+Latest final-gate verification results:
 
 ```text
 npm test
-PASS: 45 test files, 339 tests during phase gates.
+PASS: 45 test files, 339 tests.
 
 npm run build
 PASS: TypeScript compile and Vite production build.
@@ -35,7 +35,25 @@ npm run validate:content
 PASS.
 
 npm run test:e2e:smoke
-PASS: 12 Playwright tests during screenshot harness/review gates.
+PASS: 12 Playwright tests in about 4.9m.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 30.1m.
+
+npm run test:e2e:release:shard1
+PASS: 55 Playwright tests in about 25.1m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in about 4.7m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.8m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 13.4m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 4.7m.
 
 npm run playtest:sim
 PASS: 255 simulated runs across 85 campaign battle nodes during the report gate.
@@ -43,8 +61,11 @@ PASS: 255 simulated runs across 85 campaign battle nodes during the report gate.
 npm run visual:qa
 PASS: 1 Playwright capture test, 10 screenshots, 0 recorded browser console errors.
 
+production preview smoke
+PASS: http://127.0.0.1:57934/ verified title, Prototype v0.3 / Cinderfen Route Baseline menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors.
+
 git diff --check
-PASS: no whitespace errors during phase gates.
+PASS: no whitespace errors during the final gate.
 ```
 
 Recommended next milestone: v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion. Focus on source/license proof for high-priority manifest entries and expand non-brittle screenshots to Results, Inventory, Asset Gallery, defeat tips, and one mobile/tablet battle view. Do not add new art assets, graphics overhaul, desktop packaging, engine switching, workers, enemy construction, new maps, new units, new factions, rewards, save changes, pressure action promotion, or broad systems unless explicitly scoped. If player-facing work is preferred, Tutorial v2 onboarding refinement remains the safer alternative.

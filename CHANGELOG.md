@@ -19,13 +19,20 @@ This checkpoint creates the visual asset manifest, metadata validation, runtime 
 
 ### Verification
 
-- `npm test`: passed with 45 test files and 339 tests during phase gates.
-- `npm run build`: passed with the known Phaser vendor large-chunk warning during phase gates.
+- `npm test`: passed with 45 test files and 339 tests during the final gate.
+- `npm run build`: passed with the known Phaser vendor large-chunk warning during the final gate.
 - `npm run validate:content`: passed with gameplay content and visual asset metadata validation.
-- `npm run test:e2e:smoke`: passed with 12 Playwright tests during screenshot harness/review/report gates.
+- `npm run test:e2e:smoke`: passed with 12 Playwright tests during the final gate.
+- `npm run test:e2e:release`: passed with 67 Playwright tests during the final gate.
+- `npm run test:e2e:release:shard1`: passed with 55 Playwright tests during the final gate.
+- `npm run test:e2e:release:shard2`: passed with 12 Playwright tests during the final gate.
+- `npm run test:e2e:release:shard1of3`: passed with 28 Playwright tests during the final gate.
+- `npm run test:e2e:release:shard2of3`: passed with 27 Playwright tests during the final gate.
+- `npm run test:e2e:release:shard3of3`: passed with 12 Playwright tests during the final gate.
 - `npm run visual:qa`: passed with 10 generated review screenshots and zero recorded browser console errors.
-- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during the report gate.
-- `git diff --check`: passed during phase gates.
+- `npm run playtest:sim`: passed with 255 simulated runs across 85 campaign battle nodes during the final gate.
+- Production preview smoke: passed at `http://127.0.0.1:57934/` with title, main menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and zero browser console errors verified.
+- `git diff --check`: passed during the final gate.
 
 ### Next
 

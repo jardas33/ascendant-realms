@@ -217,13 +217,21 @@ No images were generated from these prompts.
 - Known Phaser vendor chunk warning remains.
 - Full release e2e remains slow.
 
-## Report Gate Verification
+## Final Gate Verification
 
 - `npm test`: PASS, 45 test files / 339 tests.
 - `npm run build`: PASS with the known Phaser vendor large-chunk warning.
 - `npm run validate:content`: PASS with visual asset metadata validation.
-- `npm run test:e2e:smoke`: PASS, 12 Playwright tests.
+- `npm run test:e2e:smoke`: PASS, 12 Playwright tests in about 4.9m.
+- `npm run test:e2e:release`: PASS, 67 Playwright tests in about 30.1m.
+- `npm run test:e2e:release:shard1`: PASS, 55 Playwright tests in about 25.1m.
+- `npm run test:e2e:release:shard2`: PASS, 12 Playwright tests in about 4.7m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 Playwright tests in about 11.8m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 Playwright tests in about 13.4m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 Playwright tests in about 4.7m.
+- `npm run visual:qa`: PASS, 1 Playwright visual QA capture test, 10 screenshots, 0 recorded browser console errors.
 - `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Production preview smoke at `http://127.0.0.1:57934/`: PASS, with title, main menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors verified.
 - `git diff --check`: PASS.
 
 ## Next Recommended Long Goal

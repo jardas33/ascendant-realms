@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA report gate
+Last updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -12,9 +12,9 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 Mission: create a serious visual asset inventory, metadata manifest, screenshot QA workflow, and review baseline before any graphics overhaul. This goal must not add final art, generated art, external assets, large binary assets, maps, units, factions, gameplay content, rewards, save changes, campaign progression, workers, enemy construction, economy AI, pressure action promotion, desktop packaging, engine switching, full UI redesign, broad BattleScene rewrites, or pixel-perfect screenshot tests.
 
-Phase status through the report gate:
+Phase status through the final gate:
 
-- Completed phases: Phase 0 through Phase 11.
+- Completed phases: Phase 0 through Phase 12.
 - Skipped phases: none.
 - No gameplay, save, map, unit, faction, reward, pressure, renderer, UI layout, or asset binary changes were made.
 - Screenshot artifacts are generated under `visual-qa/latest/` and ignored by git.
@@ -31,6 +31,8 @@ Commits created so far:
 - `7edec0f Checkpoint v0.8.1 screenshot QA review`
 - `9fd52bf Checkpoint v0.8.1 Cinderfen visual backlog`
 - `74a90ef Checkpoint v0.8.1 asset prompt templates`
+- `82067ff Checkpoint v0.8.1 visual QA report`
+- Final handoff commit: `Checkpoint v0.8.1 visual asset manifest screenshot QA gate`
 
 Key work completed:
 
@@ -46,21 +48,29 @@ Key work completed:
 - Added safe future asset prompt/spec templates.
 - Added report doc `docs/V081_VISUAL_ASSET_SCREENSHOT_QA_REPORT.md`.
 
-Important verification so far:
+Final verification:
 
 - `npm test`: PASS, 45 files / 339 tests.
 - `npm run build`: PASS with the known Phaser vendor warning. App JS remains `assets/index-CC1M6Mg7.js`, 476.83 kB / gzip 127.77 kB; vendor Phaser `assets/vendor-phaser-B61OQUcB.js`, 1,481.79 kB / gzip 339.86 kB; CSS `assets/index-v9ZLtiOK.css`, 44.23 kB / gzip 9.11 kB.
 - `npm run validate:content`: PASS, now includes visual asset metadata validation.
-- `npm run test:e2e:smoke`: PASS with 12 Playwright tests during screenshot harness/review gates.
-- `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes during the report gate.
+- `npm run test:e2e:smoke`: PASS, 12 Playwright tests in about 4.9m.
+- `npm run test:e2e:release`: PASS, 67 Playwright tests in about 30.1m.
+- `npm run test:e2e:release:shard1`: PASS, 55 Playwright tests in about 25.1m.
+- `npm run test:e2e:release:shard2`: PASS, 12 Playwright tests in about 4.7m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 Playwright tests in about 11.8m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 Playwright tests in about 13.4m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 Playwright tests in about 4.7m.
+- `npm run playtest:sim`: PASS, 255 runs across 85 campaign battle nodes.
 - `npm run visual:qa`: PASS, 1 Playwright visual QA test, 10 screenshots, 0 recorded browser console errors.
-- `git diff --check`: PASS during phase gates.
+- Production preview smoke at `http://127.0.0.1:57934/`: PASS. Verified title `Ascendant Realms`, `Prototype v0.3` / `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and 0 browser console errors. Captured ignored gameplay screenshot: `visual-qa/latest/preview-smoke-tutorial-gameplay.png`.
+- `git diff --check`: PASS.
+- Git status before this final handoff commit: `## main...origin/main [ahead 11]`, `git rev-list --left-right --count origin/main...HEAD`: `0 11`. After committing this handoff, expect ahead 12 pending push.
 
 Notes:
 
 - The first Phase 7 `npm test` attempt failed because Vitest collected the new Playwright visual QA spec. Fixed by excluding `tests/visual-qa/**` in `vite.config.ts`; rerun passed.
 - The current screenshot review found readable prototype gameplay but structural visual debt: paint-like roads, blob-like water/swamp, icon/ring-led capture sites, style/scale mismatch, and text-heavy HUD identity. No one-off visual tweak was justified.
-- Next step is Phase 12 final full verification: full release, 2-shard and 3-shard e2e, simulator, visual QA, production preview smoke if feasible, final handoff update, final commit, and push if safe.
+- Remaining risks: current visuals are still prototype-level; source/license status remains conservative and needs review; Cinder Shrine and Watch Road remain ring/icon/label-led; screenshot QA is optional and non-pixel-perfect; Results, Inventory, Asset Gallery, defeat tips, and mobile/tablet battle screenshots are not yet covered; the known Phaser vendor warning and slow release lane remain.
 - Recommended next long goal after v0.8.1: v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion. Safer player-facing alternative: Tutorial v2 onboarding refinement.
 
 ## Current v0.8 Technical Performance, E2E Runtime, and Visual Foundation Gate - 2026-05-10

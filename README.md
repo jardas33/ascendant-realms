@@ -123,7 +123,7 @@ npm run test:e2e:release:shard3of3
 
 All three 3-shard scripts together equal the same full release suite. They preserve the existing full release and 2-shard scripts; they do not change Playwright workers, parallelism, serving mode, or test coverage.
 
-Latest v0.8 3-shard verification: smoke passed 12 tests in 5.8 minutes; `shard1of3` passed 28 deep-flow tests in 12.3 minutes; `shard2of3` passed 27 layout+pressure tests in 14.9 minutes; `shard3of3` passed 12 smoke tests in 5.3 minutes. Latest one-piece full release verification remains the v0.7.3 pressure playtest final gate from 2026-05-09: 67 tests in 30.1 minutes. The split is intentionally optional; CI parallelism is the main benefit.
+Latest v0.8.1 final verification: smoke passed 12 tests in about 4.9 minutes; full release passed 67 tests in about 30.1 minutes; the existing 2-shard scripts passed 55 tests in about 25.1 minutes and 12 tests in about 4.7 minutes; `shard1of3` passed 28 tests in about 11.8 minutes; `shard2of3` passed 27 tests in about 13.4 minutes; `shard3of3` passed 12 tests in about 4.7 minutes. The split is intentionally optional; CI parallelism is the main benefit.
 
 For a visible browser run:
 
@@ -155,7 +155,7 @@ This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_
 npm run preview
 ```
 
-Latest v0.7.1 production preview smoke, 2026-05-09: Browser smoke passed at `http://127.0.0.1:57931/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
+Latest v0.8.1 production preview smoke, 2026-05-10: Browser smoke passed at `http://127.0.0.1:57934/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
 
 ## Manual Asset Workflow (No API Costs)
 
