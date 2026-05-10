@@ -111,7 +111,17 @@ npm run test:e2e:release:shard2
 
 Both shards together equal the full `test:e2e:release` suite; neither removes coverage. These scripts are mainly for CI matrix jobs. Running both sequentially on a local machine usually has similar total runtime to the full release gate and produces split logs, so local developers can keep using `test:e2e:smoke` for frequent checks and `test:e2e:release` for one-piece release verification.
 
-Latest full release verification remains the v0.7.1 pressure-feel final gate from 2026-05-09: smoke passed 12 tests in 5.3 minutes, the focused pressure spec passed 2 tests in 43.1 seconds during visibility hardening, the one-piece release lane passed 67 tests in 32.9 minutes, shard 1 passed 55 tests in 28.2 minutes, and shard 2 passed 12 tests in 5.0 minutes. The v0.7.2 report gate keeps the same lane counts and reran smoke with 12 tests in 5.2 minutes; final v0.7.2 full release verification is tracked in `LLM_GAME_HANDOFF.md`. The split is intentionally optional and currently uneven; CI parallelism is the main benefit.
+v0.8 also adds additive 3-shard release scripts for CI runs where the old 2-shard split is too lopsided:
+
+```bash
+npm run test:e2e:release:shard1of3
+npm run test:e2e:release:shard2of3
+npm run test:e2e:release:shard3of3
+```
+
+All three 3-shard scripts together equal the same full release suite. They preserve the existing full release and 2-shard scripts; they do not change Playwright workers, parallelism, serving mode, or test coverage.
+
+Latest v0.8 3-shard verification: smoke passed 12 tests in 5.8 minutes; `shard1of3` passed 28 deep-flow tests in 12.3 minutes; `shard2of3` passed 27 layout+pressure tests in 14.9 minutes; `shard3of3` passed 12 smoke tests in 5.3 minutes. Latest one-piece full release verification remains the v0.7.3 pressure playtest final gate from 2026-05-09: 67 tests in 30.1 minutes. The split is intentionally optional; CI parallelism is the main benefit.
 
 For a visible browser run:
 

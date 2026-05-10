@@ -2,7 +2,7 @@
 
 Date: 2026-05-10
 
-Scope: choose one safe e2e runtime/lane improvement after the v0.8 shard audit. This phase is planning-only. It does not change tests, scripts, Playwright config, helpers, assertions, gameplay, visuals, maps, units, factions, saves, rewards, pressure behavior, or serving mode.
+Scope: choose and implement one safe e2e runtime/lane improvement after the v0.8 shard audit. The implementation is limited to additive npm scripts and docs. It does not change tests, Playwright config, helpers, assertions, gameplay, visuals, maps, units, factions, saves, rewards, pressure behavior, or serving mode.
 
 ## Goals
 
@@ -139,6 +139,28 @@ Why this one:
 - It directly addresses the observed 55/12 two-shard imbalance.
 - It creates a future CI path where the slowest release shard is likely closer to 13-15 minutes than 24-25 minutes.
 
+## Implemented Change
+
+Added the following package scripts:
+
+```json
+"test:e2e:release:shard1of3": "playwright test --reporter=line --shard=1/3",
+"test:e2e:release:shard2of3": "playwright test --reporter=line --shard=2/3",
+"test:e2e:release:shard3of3": "playwright test --reporter=line --shard=3/3"
+```
+
+Preserved:
+
+- `test:e2e`
+- `test:e2e:smoke`
+- `test:e2e:layout`
+- `test:e2e:deep`
+- `test:e2e:release`
+- `test:e2e:release:shard1`
+- `test:e2e:release:shard2`
+
+No Playwright config, test body, helper, assertion, gameplay, runtime, or serving-mode change was made.
+
 ## Verification Plan
 
 After adding scripts:
@@ -193,5 +215,9 @@ If an actual test fails in a new shard:
 npm test: PASS, 45 files / 334 tests.
 npm run build: PASS with known Phaser vendor warning.
 npm run validate:content: PASS.
+npm run test:e2e:smoke: PASS, 12 tests in 5.8m.
+npm run test:e2e:release:shard1of3: PASS, 28 tests in 12.3m.
+npm run test:e2e:release:shard2of3: PASS, 27 tests in 14.9m.
+npm run test:e2e:release:shard3of3: PASS, 12 tests in 5.3m.
 git diff --check: PASS.
 ```

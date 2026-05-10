@@ -4,6 +4,8 @@ Date: 2026-05-07
 
 Continuation refresh: 2026-05-09. Re-verified the existing 2-shard scripts during the overnight continuation. The later Tutorial / Proving Grounds playable-shell pass raised the smoke lane from 10 to 12 tests, the Phase 11 tutorial readability pass added four layout tests, and v0.7 Enemy Strategic Pressure V1 added two targeted release tests. The current release gate lists 67 tests across 4 spec files.
 
+v0.8 update: on 2026-05-10, added additive 3-shard release scripts because the current 2-shard split remains coverage-preserving but uneven at 55 tests / 12 tests. The new 3-shard listing is 28 deep-flow tests, 27 layout+pressure tests, and 12 smoke tests. Existing full release, smoke, layout, deep, and 2-shard scripts remain unchanged.
+
 Scope: plan and minimal script implementation for CI sharding of the full Playwright release gate. This pass does not change tests, remove coverage, change gameplay, change UI behavior, change selectors, or change Playwright configuration.
 
 ## Current E2E Lanes
@@ -19,6 +21,9 @@ The current npm scripts already split local/test intent by file:
 | Release gate | `npm run test:e2e:release` or `npm run test:e2e` | All e2e specs | Full 67-test release/checkpoint gate. |
 | Release shard 1 | `npm run test:e2e:release:shard1` | Playwright shard `1/2` | First half of the full release gate for CI matrix usage. |
 | Release shard 2 | `npm run test:e2e:release:shard2` | Playwright shard `2/2` | Second half of the full release gate for CI matrix usage. |
+| Release shard 1 of 3 | `npm run test:e2e:release:shard1of3` | Playwright shard `1/3` | Additive v0.8 CI option; currently lists deep-flow. |
+| Release shard 2 of 3 | `npm run test:e2e:release:shard2of3` | Playwright shard `2/3` | Additive v0.8 CI option; currently lists layout plus enemy pressure. |
+| Release shard 3 of 3 | `npm run test:e2e:release:shard3of3` | Playwright shard `3/3` | Additive v0.8 CI option; currently lists smoke. |
 
 Current `playwright.config.ts` shape:
 
@@ -215,7 +220,7 @@ npx playwright test --reporter=line --shard=2/2
 
 Do not make these mandatory for local developers. `npm run test:e2e:release` and `npm run test:e2e` still run the complete suite in one command.
 
-Optional 3-shard scripts for a later pass, if CI data shows the 2-shard split is still too slow:
+Additive 3-shard scripts implemented in v0.8, if CI data shows the 2-shard split is too uneven:
 
 ```json
 {
@@ -225,7 +230,7 @@ Optional 3-shard scripts for a later pass, if CI data shows the 2-shard split is
 }
 ```
 
-Avoid adding the 3-shard scripts until there is CI evidence that they are needed.
+These scripts do not replace the full release gate or the existing 2-shard scripts. They are optional CI matrix tools that preserve the same suite when all three pass.
 
 Example CI matrix values:
 
@@ -256,14 +261,18 @@ npx playwright test --reporter=line --shard=$env:SHARD
 
 ## Recommendation
 
-Recommended smallest safe implementation:
+Recommended smallest safe implementation for v0.4 was the 2-shard split. The v0.8 additive update keeps that split and adds 3-shard scripts for a better-balanced CI option.
 
 1. Keep all current e2e tests and existing package scripts.
-2. Use the new 2-shard scripts for the full Playwright release gate in CI:
+2. Use either the 2-shard scripts or the 3-shard scripts for the full Playwright release gate in CI:
 
    ```bash
    npm run test:e2e:release:shard1
    npm run test:e2e:release:shard2
+
+   npm run test:e2e:release:shard1of3
+   npm run test:e2e:release:shard2of3
+   npm run test:e2e:release:shard3of3
    ```
 
 3. Keep `workers: 1` and `fullyParallel: false`.
@@ -317,3 +326,21 @@ PASS.
 ```
 
 Local verification note: the 2-shard split is coverage-preserving but uneven on this suite because Playwright's first shard currently receives the deep-flow and layout-heavy files. Treat the shard scripts as CI matrix tools first. Running both shards sequentially on a local machine is not expected to beat the one-piece release gate.
+
+v0.8 3-shard script verification:
+
+```text
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 5.8m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in 12.3m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in 14.9m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in 5.3m.
+```
+
+The new 3-shard option is coverage-preserving and materially less lopsided than the current 2-shard split. It remains an optional CI path; the canonical local release gate is still `npm run test:e2e:release`.

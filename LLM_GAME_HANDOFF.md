@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8 performance audit
+Last updated: 2026-05-10 v0.8 e2e runtime improvement
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -51,6 +51,21 @@ Phase 3 minimal e2e runtime improvement plan:
 - Recommended first implementation: add 3-shard release scripts only, preserving all existing full release, 2-shard, smoke, layout, and deep scripts.
 - Rationale: additive, easy to verify, coverage-preserving, no Playwright config change, no serving-mode change, no test-body change, no gameplay change, and directly addresses the current 55/12 shard imbalance.
 - Explicitly rejected for v0.8: deleting tests, making smoke the only release gate, replacing full-flow tests with fake assertions, enabling more workers, changing `fullyParallel`, switching to preview serving, or restructuring deep-flow/layout specs in the same pass.
+
+Phase 4 e2e runtime improvement:
+
+- Added additive 3-shard release scripts in `package.json`: `test:e2e:release:shard1of3`, `test:e2e:release:shard2of3`, and `test:e2e:release:shard3of3`.
+- Preserved all existing full release, 2-shard, smoke, layout, deep, and headed scripts. No Playwright config, test body, helper, assertion, gameplay, runtime, serving-mode, worker, parallelism, save, content, pressure, visual, map, unit, faction, worker, construction, economy AI, or campaign progression change was made.
+- Updated `README.md`, `RELEASE_CHECKLIST.md`, `docs/V08_E2E_RUNTIME_IMPROVEMENT_PLAN.md`, and `docs/E2E_CI_SHARDING_PLAN.md`.
+- Verification:
+  - `npm test`: PASS, 45 files / 334 tests.
+  - `npm run build`: PASS with the known Phaser vendor warning.
+  - `npm run validate:content`: PASS.
+  - `npm run test:e2e:smoke`: PASS, 12 tests in 5.8m.
+  - `npm run test:e2e:release:shard1of3`: PASS, 28 tests in 12.3m.
+  - `npm run test:e2e:release:shard2of3`: PASS, 27 tests in 14.9m.
+  - `npm run test:e2e:release:shard3of3`: PASS, 12 tests in 5.3m.
+  - `git diff --check`: PASS.
 
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
