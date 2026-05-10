@@ -1,12 +1,38 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-09 v0.7.3 real-input pressure playtest final gate
+Last updated: 2026-05-10 v0.8 performance audit
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.8 Technical Performance, E2E Runtime, and Visual Foundation Gate - 2026-05-10
+
+Mission: run the v0.8 technical performance/e2e runtime pass while creating a serious visual debt and 2026 art-direction foundation. This goal must not implement a full graphics overhaul, desktop port, engine switch, 3D rewrite, external generated assets, paid asset pipeline, large binary assets, full UI redesign, broad BattleScene rewrite, gameplay expansion, new maps, units, factions, workers, enemy construction, economy AI, rewards, save-version bump, campaign progression changes, or stronger enemy pressure actions.
+
+Phase 0 repository integrity:
+
+```text
+git status -sb: ## main...origin/main
+git rev-list --left-right --count origin/main...HEAD: 0 0
+npm test: PASS, 45 files / 334 tests.
+npm run build: PASS with the known Phaser vendor warning. App JS assets/index-CC1M6Mg7.js, 476.83 kB / gzip 127.77 kB; vendor Phaser assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB; CSS assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB.
+npm run validate:content: PASS.
+git diff --check: PASS.
+No dirty files and no commit required for Phase 0.
+```
+
+Phase 1 current performance and bundle audit refresh:
+
+- Added `docs/V08_PERFORMANCE_AUDIT.md`.
+- Re-ran `npm run build:analyze`; ignored analyzer artifacts were refreshed in `bundle-analysis/stats.html` and `bundle-analysis/stats.json`.
+- Current production output remains two JS chunks plus one CSS chunk: app JS `assets/index-CC1M6Mg7.js` 476.83 kB / gzip 127.77 kB, Phaser vendor `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / gzip 339.86 kB, CSS `assets/index-v9ZLtiOK.css` 44.23 kB / gzip 9.11 kB.
+- Compared with the 2026-05-08 bundle audit, the app JS grew by about 40.51 kB minified / 10.44 kB gzip and CSS grew by about 2.19 kB / 0.37 kB gzip; Phaser vendor is unchanged.
+- Analyzer read: pressure/tutorial systems add visible app-code size, especially `validateEnemyPressurePlans.ts`, `EnemyPressureRuntime.ts`, `enemyPressurePlans.ts`, `tutorials.ts`, `TutorialStepModel.ts`, and `validateTutorials.ts`, but the app chunk remains below Vite's default warning threshold.
+- Test/dev scan found no accidental Playwright, Vitest, e2e-helper, simulator, or unit-test body leak in the production app chunk. `__ASCENDANT_TEST_HOOKS__` remains intentional and small.
+- Decision: no bundle optimization in this phase. The warning is still isolated to Phaser, and content-validation removal, data splitting, or scene lazy loading remain broader than v0.8's safe implementation scope.
 
 ## Current v0.7.3 Real-Input Cinderfen Pressure Playtest Goal - 2026-05-09
 
