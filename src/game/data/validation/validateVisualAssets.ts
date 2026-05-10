@@ -28,6 +28,8 @@ const REQUIRED_RUNTIME_VISUAL_ASSET_IDS = new Set<string>([
   ASSET_IDS.ui.defeatScreenBackground
 ]);
 
+const PRODUCTION_SAFE_LICENSE_STATUSES = new Set(["owned", "licensed"]);
+
 export interface VisualAssetValidationOptions {
   fileExists?: (filePath: string) => boolean;
 }
@@ -78,6 +80,9 @@ function validateVisualAsset(
   if (!asset.notes.trim()) {
     errors.push(`${label} needs notes.`);
   }
+  if (!asset.sourceReviewNotes.trim()) {
+    errors.push(`${label} needs sourceReviewNotes.`);
+  }
   if (!asset.visualFamily.trim()) {
     errors.push(`${label} needs visualFamily.`);
   }
@@ -126,11 +131,23 @@ function validateVisualAsset(
   if (asset.usage === "runtime" && (asset.licenseStatus === "reference-only" || asset.licenseStatus === "do-not-ship")) {
     errors.push(`${label} runtime asset cannot use licenseStatus ${asset.licenseStatus}.`);
   }
+  if (asset.usage === "runtime" && (asset.reviewStatus === "reference-only" || asset.reviewStatus === "do-not-ship")) {
+    errors.push(`${label} runtime asset cannot use reviewStatus ${asset.reviewStatus}.`);
+  }
   if (asset.usage === "runtime" && asset.licenseStatus === "unknown" && !asset.needsReview) {
     errors.push(`${label} runtime asset with unknown license must set needsReview true.`);
   }
+  if (asset.needsReview && !asset.notes.trim() && !asset.sourceReviewNotes.trim()) {
+    errors.push(`${label} needs review and must include notes or sourceReviewNotes.`);
+  }
   if (asset.currentStatus === "final" && (asset.sourceType === "unknown" || asset.licenseStatus === "unknown")) {
     errors.push(`${label} final asset cannot have unknown source or license.`);
+  }
+  if (asset.currentStatus === "final" && !asset.allowedInProduction) {
+    errors.push(`${label} final asset must be allowed in production.`);
+  }
+  if (asset.currentStatus === "candidate" && (asset.sourceType === "unknown" || asset.licenseStatus === "unknown") && !asset.needsReview) {
+    errors.push(`${label} candidate asset with unknown source or license must set needsReview true.`);
   }
   if (asset.allowedInProduction && (asset.licenseStatus === "reference-only" || asset.licenseStatus === "do-not-ship")) {
     errors.push(`${label} cannot be allowed in production with licenseStatus ${asset.licenseStatus}.`);
@@ -138,8 +155,29 @@ function validateVisualAsset(
   if (asset.allowedInProduction && (asset.sourceType === "unknown" || asset.licenseStatus === "unknown")) {
     errors.push(`${label} cannot be allowed in production with unknown source or license.`);
   }
+  if (asset.allowedInProduction && !PRODUCTION_SAFE_LICENSE_STATUSES.has(asset.licenseStatus)) {
+    errors.push(`${label} cannot be allowed in production with licenseStatus ${asset.licenseStatus}.`);
+  }
+  if (asset.allowedInProduction && asset.sourceType === "external-reference") {
+    errors.push(`${label} cannot be allowed in production with sourceType external-reference.`);
+  }
+  if (asset.reviewStatus === "approved-for-production" && !asset.allowedInProduction) {
+    errors.push(`${label} approved-for-production review status requires allowedInProduction true.`);
+  }
+  if (asset.reviewStatus === "approved-for-production" && !PRODUCTION_SAFE_LICENSE_STATUSES.has(asset.licenseStatus)) {
+    errors.push(`${label} approved-for-production review status requires owned or licensed asset rights.`);
+  }
+  if (asset.reviewStatus === "approved-for-production" && (asset.sourceType === "unknown" || asset.sourceType === "external-reference")) {
+    errors.push(`${label} approved-for-production review status requires a non-reference known source.`);
+  }
   if (asset.currentStatus === "deprecated" && asset.usage === "runtime") {
     errors.push(`${label} deprecated asset must not be used by runtime.`);
+  }
+  if (asset.reviewStatus === "deprecated" && asset.usage === "runtime") {
+    errors.push(`${label} deprecated review status must not be used by runtime.`);
+  }
+  if (asset.replacementPriority === "critical" && (!asset.notes.trim() || !asset.sourceReviewNotes.trim())) {
+    errors.push(`${label} critical replacement priority must include notes and sourceReviewNotes.`);
   }
   if (asset.intendedWorldHeightPx !== undefined && (!Number.isFinite(asset.intendedWorldHeightPx) || asset.intendedWorldHeightPx <= 0)) {
     errors.push(`${label} intendedWorldHeightPx must be positive when present.`);

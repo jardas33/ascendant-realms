@@ -451,14 +451,20 @@ Current validation checks:
 6. `licenseStatus` is valid.
 7. `reviewStatus` is valid.
 8. `usage` is valid.
-9. Runtime assets cannot have `licenseStatus` `reference-only` or `do-not-ship`.
-10. Runtime assets with `licenseStatus` `unknown` must set `needsReview: true`.
-11. `final` assets cannot have unknown source or license.
-12. `intendedWorldHeightPx` must be positive when present.
-13. `currentRenderHeightPx` must be positive when present.
-14. `replacementPriority` is valid.
-15. Runtime assets should have non-empty `usedBy`.
-16. Deprecated assets should not be runtime-used.
+9. `sourceReviewNotes` is non-empty.
+10. Runtime assets cannot have `licenseStatus` `reference-only` or `do-not-ship`.
+11. Runtime assets cannot have `reviewStatus` `reference-only` or `do-not-ship`.
+12. Runtime assets with `licenseStatus` `unknown` must set `needsReview: true`.
+13. `final` assets cannot have unknown source or license.
+14. `final` assets must set `allowedInProduction: true`.
+15. `allowedInProduction: true` requires `licenseStatus` `owned` or `licensed`, no unknown source/license, and no external-reference source.
+16. `reviewStatus: "approved-for-production"` requires `allowedInProduction: true`, owned or licensed asset rights, and a known non-reference source.
+17. `intendedWorldHeightPx` must be positive when present.
+18. `currentRenderHeightPx` must be positive when present.
+19. `replacementPriority` is valid.
+20. `replacementPriority: "critical"` requires notes and source-review notes.
+21. Runtime assets should have non-empty `usedBy`.
+22. Deprecated assets should not be runtime-used.
 
 Implementation files:
 

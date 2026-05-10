@@ -162,6 +162,40 @@ describe("content validation", () => {
     }
   });
 
+  it("hardens visual source review and production approval metadata", () => {
+    const asset = VISUAL_ASSET_MANIFEST.assets.find((entry) => entry.id === "warlord_hero_battle_sprite")!;
+    const original = { ...asset, usedBy: [...asset.usedBy] };
+    try {
+      asset.reviewStatus = "reference-only";
+      asset.usage = "runtime";
+      expect(validateVisualAssets()).toContain(`Visual asset ${asset.id} runtime asset cannot use reviewStatus reference-only.`);
+
+      Object.assign(asset, original, { usedBy: [...original.usedBy] });
+      asset.currentStatus = "final";
+      asset.reviewStatus = "approved-for-production";
+      asset.sourceType = "external-reference";
+      asset.licenseStatus = "generated-review-needed";
+      asset.allowedInProduction = false;
+      asset.replacementPriority = "critical";
+      asset.notes = "";
+      asset.sourceReviewNotes = "";
+
+      expect(validateVisualAssets()).toEqual(
+        expect.arrayContaining([
+          `Visual asset ${asset.id} needs notes.`,
+          `Visual asset ${asset.id} needs sourceReviewNotes.`,
+          `Visual asset ${asset.id} final asset must be allowed in production.`,
+          `Visual asset ${asset.id} approved-for-production review status requires allowedInProduction true.`,
+          `Visual asset ${asset.id} approved-for-production review status requires owned or licensed asset rights.`,
+          `Visual asset ${asset.id} approved-for-production review status requires a non-reference known source.`,
+          `Visual asset ${asset.id} critical replacement priority must include notes and sourceReviewNotes.`
+        ])
+      );
+    } finally {
+      Object.assign(asset, original, { usedBy: [...original.usedBy] });
+    }
+  });
+
   it("defines the playable Tutorial / Proving Grounds metadata shell", () => {
     expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
     expect(TUTORIALS[0]).toMatchObject({

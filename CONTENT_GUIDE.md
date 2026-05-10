@@ -23,14 +23,16 @@ Visual asset metadata lives in `src/game/assets/visualAssetManifest.ts`, with ty
 3. Use honest `currentStatus` values: most current assets are `placeholder`, `prototype`, `candidate`, or `reference`, not `final`.
 4. Use honest `sourceType`, `licenseStatus`, and `reviewStatus`. If source/license proof is unclear, keep `licenseStatus: "unknown"`, `reviewStatus: "needs-source-proof"`, `needsReview: true`, and `allowedInProduction: false`.
 5. Runtime assets must not use `reference-only` or `do-not-ship` license statuses.
-6. Runtime assets with unknown license must set `needsReview: true`.
-7. Final assets cannot have unknown source or unknown license.
-8. Runtime entries need non-empty `usedBy` so future reviewers understand why the asset ships.
-9. Keep `intendedWorldHeightPx` and `currentRenderHeightPx` positive when present.
-10. Use `sourceReviewNotes` for explicit evidence or gaps such as "No explicit author/source/license proof is attached."
-11. Use `replacementPriority` to guide backlog work, not to imply approval to replace assets.
-12. Do not add generated art, downloaded images, large binaries, or production claims without explicit approval and source/license metadata.
-13. Run `npm run validate:content` after edits; the CLI checks metadata and runtime visual file paths without bundling filesystem checks into browser boot.
+6. Runtime assets must not use `reviewStatus: "reference-only"` or `reviewStatus: "do-not-ship"`.
+7. Runtime assets with unknown license must set `needsReview: true`.
+8. Final assets cannot have unknown source or unknown license, and must set `allowedInProduction: true`.
+9. `allowedInProduction: true` requires `licenseStatus: "owned"` or `licenseStatus: "licensed"` and a known non-reference source.
+10. Runtime entries need non-empty `usedBy` so future reviewers understand why the asset ships.
+11. Keep `intendedWorldHeightPx` and `currentRenderHeightPx` positive when present.
+12. Use `sourceReviewNotes` for explicit evidence or gaps such as "No explicit author/source/license proof is attached."
+13. Use `replacementPriority` to guide backlog work, not to imply approval to replace assets; critical replacements need clear notes.
+14. Do not add generated art, downloaded images, large binaries, or production claims without explicit approval and source/license metadata.
+15. Run `npm run validate:content` after edits; the CLI checks metadata and runtime visual file paths without bundling filesystem checks into browser boot.
 
 Optional screenshot QA for visual changes:
 
