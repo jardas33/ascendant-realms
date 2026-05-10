@@ -23,7 +23,7 @@ Phase status:
 - Phase 6 unit/building scale reference: complete. Added `docs/V09_UNIT_BUILDING_SCALE_REFERENCE.md` consolidating current unit/building/capture-site render sizes, future scale classes, selection ring/bar/label/minimap relationships, screenshot targets, replacement priorities, consistency rules, and future manifest scale metadata expectations with no runtime scaling change.
 - Phase 7 Cinderfen style-frame prompt pack: complete. Added `docs/V09_CINDERFEN_STYLE_FRAME_PROMPT_PACK.md` with safe future prompts for terrain, causeway, shrine, ownership states, Ashen stronghold/barracks/watchtower, props, minimap/material readability, and UI mood framing, plus global IP, metadata, manifest, and screenshot QA rules.
 - Phase 8 future Cinderfen manifest templates: complete. Added `docs/V09_FUTURE_CINDERFEN_MANIFEST_TEMPLATES.md` with documentation-only template entries for terrain style frames, causeway, Cinder Shrine states, Ashen concepts, prop sheet, and future terrain/material set, all conservative and not added to the runtime manifest.
-- Phase 9 screenshot acceptance criteria: pending.
+- Phase 9 screenshot acceptance criteria: complete. Added `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` defining future pass/fail criteria for battlefield readability, roads, shrine visibility/states, unit silhouettes, enemy base, minimap, mobile/tablet HUD, affected UI surfaces, performance/bundle impact, source/license metadata, and screenshot QA coverage.
 - Phase 10 future visual replacement implementation plan: pending.
 - Phase 11 controlled style-frame report and release docs: pending.
 - Phase 12 final full verification and push: pending.
@@ -42,6 +42,7 @@ Current v0.9 verification:
 - Phase 6 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 - Phase 7 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 - Phase 8 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
+- Phase 9 docs-only gate: `npm test` PASS, `npm run build` PASS with known Phaser vendor warning, `npm run validate:content` PASS, `git diff --check` PASS.
 
 Key constraints still active:
 
