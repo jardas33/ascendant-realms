@@ -1,12 +1,46 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.8.1 visual asset manifest screenshot QA final gate
+Last updated: 2026-05-10 v0.8.2 visual source/license screenshot coverage in progress
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.8.2 Visual Source/License Review and Screenshot Coverage Expansion - 2026-05-10
+
+Mission: harden the visual asset pipeline by reviewing source/license status, refining conservative manifest metadata, expanding optional screenshot QA coverage, documenting broader visual risk, and preparing for a future controlled visual sprint. This goal must not add gameplay, maps, units, factions, rewards, save changes, new art, generated art, external assets, desktop packaging, engine switching, a graphics overhaul, or brittle pixel-perfect screenshot tests.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. `git status -sb` was clean on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
+- Phase 1 source/license review plan: complete. Added `docs/V082_ASSET_SOURCE_LICENSE_REVIEW_PLAN.md`.
+- Phase 2 asset source/license audit: complete. Added `docs/V082_ASSET_SOURCE_LICENSE_AUDIT.md`; current manifest remained conservative with no production-approved visual art.
+- Phase 3 manifest metadata refinement: complete. Added `reviewStatus` and `sourceReviewNotes` metadata, refined manifest defaults, updated docs/tests, and kept all unknown-source runtime art prototype-only.
+- Phase 4 manifest validation hardening: complete. Hardened validation for production approval, runtime/reference conflicts, candidate/final source safety, critical replacement notes, and review metadata. `npm test` now reports 45 files / 340 tests.
+- Phase 5 screenshot coverage expansion plan: complete. Added `docs/V082_SCREENSHOT_COVERAGE_EXPANSION_PLAN.md` to plan Results, Inventory, Asset Gallery, mobile/tablet battle, tutorial mobile, pressure-warning, route-complete, and defeat-tip coverage before editing the optional screenshot harness.
+
+Commits created so far:
+
+- `a5d74a7 Checkpoint v0.8.2 source license review plan`
+- `49a88c9 Checkpoint v0.8.2 asset source license audit`
+- `65e6631 Checkpoint v0.8.2 manifest metadata refinement`
+- `2f1511b Checkpoint v0.8.2 manifest validation hardening`
+
+Current verification through Phase 5:
+
+- `npm test`: PASS, 45 files / 340 tests.
+- `npm run build`: PASS with the known Phaser vendor warning.
+- `npm run validate:content`: PASS.
+- `git diff --check`: PASS.
+
+Key constraints still active:
+
+- Do not mark unknown-source assets production-safe.
+- Do not add, generate, download, replace, move, delete, or commit art assets.
+- Do not make gameplay, campaign progression, reward, pressure, map, unit, faction, save, renderer-overhaul, or broad UI changes.
+- Keep screenshot QA optional, ignored under `visual-qa/`, and non-pixel-perfect.
 
 ## Current v0.8.1 Visual Asset Manifest And Screenshot QA Gate - 2026-05-10
 
