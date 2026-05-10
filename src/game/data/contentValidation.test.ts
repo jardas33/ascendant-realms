@@ -137,6 +137,26 @@ describe("content validation", () => {
     }
   });
 
+  it("keeps runtime asset references covered by the visual manifest", () => {
+    const asset = VISUAL_ASSET_MANIFEST.assets.find((entry) => entry.id === "warlord_hero_battle_sprite")!;
+    const originalId = asset.id;
+    const originalUsage = asset.usage;
+    asset.usage = "manual-reference";
+    try {
+      expect(validateVisualAssets()).toContain(
+        "Visual asset warlord_hero_battle_sprite is required by runtime asset references but has usage manual-reference."
+      );
+      asset.usage = originalUsage;
+      asset.id = "missing_warlord_manifest_entry";
+      expect(validateVisualAssets()).toContain(
+        "Runtime visual asset id warlord_hero_battle_sprite is missing from the visual asset manifest."
+      );
+    } finally {
+      asset.id = originalId;
+      asset.usage = originalUsage;
+    }
+  });
+
   it("defines the playable Tutorial / Proving Grounds metadata shell", () => {
     expect(TUTORIALS.map((tutorial) => tutorial.id)).toEqual(["proving_grounds_basics"]);
     expect(TUTORIALS[0]).toMatchObject({

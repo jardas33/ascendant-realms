@@ -20,10 +20,10 @@ Expected current prototype result:
 PASS: 45 test files, 334 tests
 ```
 
-Current v0.8.1 asset-manifest validation phase result:
+Current v0.8.1 runtime asset crosscheck phase result:
 
 ```text
-PASS: 45 test files, 338 tests
+PASS: 45 test files, 339 tests
 ```
 
 2. Standalone content validation:

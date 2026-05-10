@@ -1,4 +1,9 @@
 import {
+  ASSET_IDS,
+  BATTLE_TEXTURE_ASSET_IDS,
+  UI_KIT_CSS_VARIABLES
+} from "../../assets/AssetKeys";
+import {
   VISUAL_ASSET_CATEGORIES,
   VISUAL_ASSET_LICENSE_STATUSES,
   VISUAL_ASSET_REPLACEMENT_PRIORITIES,
@@ -11,6 +16,16 @@ import {
 } from "../../assets/VisualAssetManifestTypes";
 import { VISUAL_ASSET_MANIFEST } from "../../assets/visualAssetManifest";
 import { assertUniqueIds } from "./ValidationTypes";
+
+const REQUIRED_RUNTIME_VISUAL_ASSET_IDS = new Set<string>([
+  ...BATTLE_TEXTURE_ASSET_IDS,
+  ...Object.values(ASSET_IDS.abilities),
+  ...Object.keys(UI_KIT_CSS_VARIABLES),
+  ASSET_IDS.factions.freeMarches,
+  ASSET_IDS.ui.mainMenuBackground,
+  ASSET_IDS.ui.victoryScreenBackground,
+  ASSET_IDS.ui.defeatScreenBackground
+]);
 
 export interface VisualAssetValidationOptions {
   fileExists?: (filePath: string) => boolean;
@@ -31,7 +46,22 @@ export function validateVisualAssetManifest(
   }
 
   assertUniqueIds(VISUAL_ASSET_MANIFEST.assets, "visual asset", errors);
+  validateRuntimeVisualAssetCoverage(errors);
   VISUAL_ASSET_MANIFEST.assets.forEach((asset) => validateVisualAsset(asset, errors, options));
+}
+
+function validateRuntimeVisualAssetCoverage(errors: string[]): void {
+  const assetsById = new Map(VISUAL_ASSET_MANIFEST.assets.map((asset) => [asset.id, asset]));
+  REQUIRED_RUNTIME_VISUAL_ASSET_IDS.forEach((assetId) => {
+    const asset = assetsById.get(assetId);
+    if (!asset) {
+      errors.push(`Runtime visual asset id ${assetId} is missing from the visual asset manifest.`);
+      return;
+    }
+    if (asset.usage !== "runtime") {
+      errors.push(`Visual asset ${assetId} is required by runtime asset references but has usage ${asset.usage}.`);
+    }
+  });
 }
 
 function validateVisualAsset(
@@ -121,4 +151,3 @@ function validateVisualAsset(
 function shouldCheckRuntimeFile(filePath: string): boolean {
   return !filePath.startsWith("procedural:");
 }
-
