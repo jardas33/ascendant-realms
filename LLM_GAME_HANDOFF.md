@@ -1,12 +1,46 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9 controlled Cinderfen style-frame sprint final gate
+Last updated: 2026-05-10 v0.9.1 style-frame intake protocol
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
+
+Mission: create the safe non-runtime intake pipeline for future Cinderfen style-frame candidates, source/license metadata, review manifests, screenshot QA mapping, and approval gates. This goal must not generate images, call image APIs, download or scrape images, import unlicensed art, commit large binaries unless explicitly already present and intended for review, wire art into runtime, replace game assets, change gameplay, or mark unknown-source art production-safe.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, and `git diff --check` passed. No commit required.
+- Phase 1 style-frame intake protocol: complete. Added `docs/V091_STYLE_FRAME_INTAKE_PROTOCOL.md` defining allowed/forbidden candidate sources, required metadata before commit, review stages, human review checklist, and Codex responsibilities/limits.
+- Phase 2 non-runtime review folder structure: pending.
+- Phase 3 source/license metadata forms: pending.
+- Phase 4 candidate review manifest schema: pending.
+- Phase 5 candidate intake validation: pending.
+- Phase 6 candidate intake scan/report: pending.
+- Phase 7 screenshot QA comparison plan: pending.
+- Phase 8 manual asset preparation guide: pending.
+- Phase 9 future v0.9.2 style-frame review goal brief: pending.
+- Phase 10 controlled intake report and release docs: pending.
+- Phase 11 final full verification and push: pending.
+
+Current v0.9.1 verification:
+
+- Phase 0 `npm test`: PASS, 45 files / 340 tests.
+- Phase 0 `npm run build`: PASS with the known Phaser vendor warning.
+- Phase 0 `npm run validate:content`: PASS.
+- Phase 0 `git diff --check`: PASS.
+
+Key constraints still active:
+
+- This is a non-runtime intake pipeline goal.
+- Do not generate art or call image-generation tools.
+- Do not download, scrape, import, move, delete, rename, replace, or wire art assets.
+- Do not add gameplay, maps, units, factions, rewards, campaign progression, save changes, pressure behavior, workers, construction, economy AI, desktop packaging, engine switching, or broad systems.
+- Unknown-source assets remain not production-safe.
 
 ## Current v0.9 Controlled Cinderfen Style-Frame Sprint - 2026-05-10
 
