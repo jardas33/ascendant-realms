@@ -19,6 +19,7 @@ Phase status:
 - Phase 2 preview helper portability audit: complete. Reviewed `tools/smokePreview.ts`, Vite preview defaults, and v0.11 preview smoke notes. Added small helper portability improvements: validated port/timeout env handling, clearer startup-error reporting, optional CI timeout overrides, and POSIX helper-owned process-group shutdown. Added `docs/V111_PREVIEW_HELPER_PORTABILITY_AUDIT.md`.
 - Phase 3 CI release matrix plan: complete. Added `docs/V111_CI_RELEASE_MATRIX_PLAN.md` defining Tier 1 fast PR confidence, Tier 2 optional manual visual QA, and Tier 3 manual 3-way release matrix plus simulator, with trigger, cache, artifact, timeout, and duplicate-run guidance.
 - Phase 4 GitHub Actions release dry-run workflow: complete. Added a first conservative `.github/workflows/ci.yml` with always-on fast confidence for PRs/pushes/manual dispatch, manual optional visual QA, manual 3-way release shard matrix, manual release simulator, and manual full-release lane. The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts.
+- Phase 5 CI artifact strategy: complete. Added `docs/V111_CI_ARTIFACT_STRATEGY.md` to document Playwright diagnostics, visual QA screenshots, bundle-analysis handling, simulator telemetry, retention, artifact size risks, and source/license boundaries. No workflow adjustment was needed in this phase.
 
 Current v0.11.1 verification:
 
@@ -52,6 +53,11 @@ Current v0.11.1 verification:
 - Phase 4 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.8m.
 - Phase 4 `npm run smoke:preview`: PASS in about 25s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
 - Phase 4 `git diff --check`: PASS.
+- Phase 5 `npm test`: PASS, 46 files / 351 tests.
+- Phase 5 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 5 `npm run validate:content`: PASS.
+- Phase 5 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 5 `git diff --check`: PASS.
 
 Current v0.11.1 risks:
 
