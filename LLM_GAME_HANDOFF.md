@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9.1 controlled intake report
+Last updated: 2026-05-10 v0.9.1 final verification
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -25,7 +25,23 @@ Phase status:
 - Phase 8 manual asset preparation guide: complete. Added `docs/V091_MANUAL_STYLE_FRAME_PREPARATION_GUIDE.md` for Emmanuel, covering the first 1-3 terrain/shrine/outpost candidate images, which v0.9 prompt/spec docs to use, PNG/transparent-background guidance, required metadata, forbidden copyrighted/lookalike/unlicensed sources, inbox placement, what to send back, and the later review sequence.
 - Phase 9 future v0.9.2 style-frame review goal brief: complete. Added `docs/V092_STYLE_FRAME_REVIEW_GOAL_BRIEF.md` defining the future candidate-review goal, required inputs, review tasks, conservative stages, verification, stopping conditions, output docs, and forbidden final states. It explicitly does not implement the future review now.
 - Phase 10 controlled intake report and release docs: complete. Added `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.9.1 as the current non-runtime style-frame intake milestone.
-- Phase 11 final full verification and push: pending.
+- Phase 11 final full verification and push: complete through local verification and final preview smoke. Push follows the final handoff commit if the remote remains safe.
+
+Skipped phases: none.
+
+Commits created so far:
+
+- `7b7995d Checkpoint v0.9.1 style-frame intake protocol`
+- `89b68c2 Checkpoint v0.9.1 non-runtime review folder structure`
+- `0b84d9c Checkpoint v0.9.1 source license metadata forms`
+- `4b87b42 Checkpoint v0.9.1 candidate review manifest schema`
+- `3ac0352 Checkpoint v0.9.1 candidate intake validation`
+- `bc8d3cd Checkpoint v0.9.1 candidate intake scan`
+- `c431916 Checkpoint v0.9.1 screenshot comparison plan`
+- `fa50b6a Checkpoint v0.9.1 manual asset preparation guide`
+- `0489082 Checkpoint v0.9.1 future style-frame review brief`
+- `706de49 Checkpoint v0.9.1 controlled style-frame intake report`
+- Final handoff commit follows: `Checkpoint v0.9.1 controlled Cinderfen style-frame intake`
 
 Current v0.9.1 verification:
 
@@ -65,6 +81,36 @@ Current v0.9.1 verification:
 - Phase 10 `npm run visual:qa`: PASS, 1 visual QA capture test in about 3.6m.
 - Phase 10 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - Phase 10 `git diff --check`: PASS.
+- Phase 11 `npm test`: PASS, 46 files / 351 tests.
+- Phase 11 `npm run build`: PASS with the known Phaser vendor warning. Output remained `assets/index-CC1M6Mg7.js` 476.83 kB / 127.77 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-v9ZLtiOK.css` 44.23 kB / 9.11 kB gzip.
+- Phase 11 `npm run validate:content`: PASS.
+- Phase 11 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+- Phase 11 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.1m.
+- Phase 11 `npm run test:e2e:release`: PASS, 67 tests in about 31.1m.
+- Phase 11 `npm run test:e2e:release:shard1`: PASS, 55 tests in about 25.9m.
+- Phase 11 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 4.8m.
+- Phase 11 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.8m.
+- Phase 11 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 14.1m.
+- Phase 11 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.0m.
+- Phase 11 `npm run visual:qa`: PASS, 1 visual QA capture test in about 3.1m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 11 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 11 `git diff --check`: PASS.
+- Phase 11 production preview smoke: PASS at `http://127.0.0.1:4173/`. Verified document title `Ascendant Realms`, visible `Prototype v0.3`, visible `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign reaching Campaign Map, Continue Campaign returning to Campaign Map, Skirmish Setup opening, and 0 browser console errors on the passing run. Note: an earlier headless Chromium preview attempt emitted `Framebuffer status: Framebuffer Unsupported`; rerunning the same preview smoke with headless Chromium GPU disabled completed cleanly with 0 console errors, and the preview server was shut down after the check.
+- Git status before the final handoff commit: `## main...origin/main [ahead 10]`; `git rev-list --left-right --count origin/main...HEAD`: `0 10`; working tree clean. Expected after this final handoff commit: `## main...origin/main [ahead 11]` with a clean working tree.
+
+Remaining v0.9.1 risks:
+
+- Current visuals remain prototype-level; v0.9.1 creates intake gates only.
+- 59 runtime image assets still need source/license proof.
+- No file-backed image asset is production-approved.
+- No Cinderfen style-frame candidate images currently exist.
+- Future candidate art must be original-IP, source/license documented, metadata-valid, screenshot-reviewed, and human-approved before any runtime-test scope.
+- Screenshot QA remains non-pixel-perfect and still requires human review.
+- Candidate binaries are ignored by default and should only be committed with explicit approval and matching metadata.
+- The known Phaser vendor chunk-size warning remains.
+- Full Playwright release lanes remain slow.
+
+Next recommended long-running goal: v0.9.2 Controlled Cinderfen Style-Frame Candidate Review, only after Emmanuel provides source/license-documented candidate images. Keep it non-runtime: inspect candidate files, validate metadata, reject unsafe or unknown-source candidates, catalogue safe candidates as reference/candidate only, run visual QA, create a side-by-side human review document, and recommend at most one later runtime-test candidate without replacing runtime art.
 
 Key constraints still active:
 
