@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.11.1 CI release matrix dry-run in progress
+Last updated: 2026-05-11 v0.11.1 CI release matrix final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,6 +24,25 @@ Phase status:
 - Phase 7 release checklist and README update: complete. Updated README, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, and `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md` to point to `.github/workflows/ci.yml`, manual workflow inputs, v0.11.1 CI docs, preview helper portability, artifact handling, and the continued requirement that local final gates stay authoritative.
 - Phase 8 optional safe CI/tooling cleanup: skipped as a standalone phase because all prior phases were green and there was no extra docs link cleanup, YAML naming clarity change, timeout note change, or script description cleanup worth another churn cycle.
 - Phase 9 v0.11.1 CI reliability report: complete. Added `docs/V111_CI_RELEASE_MATRIX_REPORT.md` and updated roadmap, changelog, development checkpoint, and this handoff to document v0.11.1 as the CI release-matrix/portability milestone.
+- Phase 10 final full verification: complete. Full local gate passed: unit/build/validators, smoke, full release, 2-way shards, 3-way shards, visual QA, simulator, preview smoke helper, and whitespace/status checks. Final handoff commit follows with message `Checkpoint v0.11.1 CI release matrix dry-run`.
+
+Skipped phases: Phase 8 optional safe CI/tooling cleanup was skipped as a standalone commit because no additional safe cleanup was needed after the prior green phases.
+
+Commits created so far:
+
+- `959ac2b Checkpoint v0.11.1 CI matrix audit`
+- `6f2b442 Checkpoint v0.11.1 preview helper portability audit`
+- `c4391d4 Checkpoint v0.11.1 CI release matrix plan`
+- `87c4fab Checkpoint v0.11.1 GitHub Actions release dry-run`
+- `19a630d Checkpoint v0.11.1 CI artifact strategy`
+- `781a139 Checkpoint v0.11.1 CI local parity check`
+- `e723a71 Checkpoint v0.11.1 release docs update`
+- `d23a91d Checkpoint v0.11.1 CI reliability report`
+- Final handoff commit follows: `Checkpoint v0.11.1 CI release matrix dry-run`
+
+Workflow files changed:
+
+- Added `.github/workflows/ci.yml`.
 
 Current v0.11.1 verification:
 
@@ -81,15 +100,40 @@ Current v0.11.1 verification:
 - Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
 - Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - Phase 9 `git diff --check`: PASS.
+- Phase 10 `npm test`: PASS, 46 files / 351 tests.
+- Phase 10 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 10 `npm run validate:content`: PASS.
+- Phase 10 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 10 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.2m.
+- Phase 10 `npm run test:e2e:release`: PASS, 67 tests in about 29.9m.
+- Phase 10 `npm run test:e2e:release:shard1`: PASS, 55 tests in about 24.3m.
+- Phase 10 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 4.7m.
+- Phase 10 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.3m.
+- Phase 10 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 13.0m.
+- Phase 10 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.1m.
+- Phase 10 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 10 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 10 `npm run smoke:preview`: PASS in about 26s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
+- Phase 10 `git diff --check`: PASS.
+- Phase 10 pre-final-handoff git status: clean working tree, `main...origin/main [ahead 8]`.
 
 Current v0.11.1 risks:
 
-- No workflow has existed in this repo yet, so the first GitHub Actions workflow should be conservative and may need GitHub-side validation after push.
+- No workflow existed in this repo before v0.11.1, so `.github/workflows/ci.yml` still needs GitHub-side validation after push.
 - Full release e2e remains slow.
-- 2-way shard 1 remains much heavier than shard 2; 3-way shards remain the better CI split.
-- `npm run smoke:preview` is green locally but still needs explicit portability review.
+- 2-way shard 1 remains much heavier than shard 2; 3-way shards remain the better manual CI split.
+- 3-way shard timing on GitHub-hosted runners is still unmeasured.
+- `npm run smoke:preview` is green locally but still needs hosted Linux evidence from the first workflow run.
 - Visual QA remains optional, human-reviewed, and non-pixel-perfect.
 - The known Phaser vendor chunk-size warning remains.
+- v0.10.1 tutorial polish should wait for Emmanuel's manual tutorial feedback.
+- v0.9.2 visual candidate review should wait for source/license-documented candidate art.
+
+Next recommended long-running goal:
+
+- If Emmanuel provides tutorial feedback, run v0.10.1 Tutorial v2 Human-Feedback Polish.
+- If Emmanuel provides source/license-documented Cinderfen candidate images, run v0.9.2 Controlled Cinderfen Style-Frame Candidate Review.
+- If neither input is available, run v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning, limited to inspecting the pushed workflow run, documenting remote runner timing/artifacts, and making tiny CI-only fixes only if evidence requires them.
 
 ## Current v0.11 Technical Reliability Gate - 2026-05-11
 
