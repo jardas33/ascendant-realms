@@ -21,6 +21,7 @@ Phase status:
 - Phase 4 tutorial overlay hierarchy and layout refinement: complete. Reviewed existing visual QA tutorial desktop/mobile screenshots and tutorial readability docs, then made a small hierarchy pass in `TutorialPanel.ts` and `battle-feedback.css`: primary styling for Next/Complete, secondary styling for Exit, and slightly stronger panel/hint readability. Added `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`. No HUD relocation, gameplay, step, reward, save, art, or UI-system change.
 - Phase 5 tutorial completion and no-reward clarity: complete. Updated completion/menu copy so the final handoff says no rewards or save changes were granted, the session-only menu notice says nothing was saved, and New Campaign is the saved-run next step. Added `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md` and updated persistence/readability docs. No XP, items, resources, campaign progress, save flag, or save-version change.
 - Phase 6 tutorial e2e lane review: complete. Added `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md` after listing the current 67-test Playwright suite. Decision: keep full Tutorial / Proving Grounds completion in smoke for v0.10 because the latest smoke runtime remains inside the watch band and the test protects no-save/no-reward behavior. No tests or scripts moved.
+- Phase 7 tutorial visual QA review: complete. Ran `npm run visual:qa`, reviewed refreshed tutorial desktop/mobile screenshots, and added `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`. Decision: no further visual change in v0.10; mobile HUD density remains a known issue for a later scoped UI pass.
 
 Skipped phases: none so far.
 
@@ -72,6 +73,13 @@ Current v0.10 verification:
 - Phase 6 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.8m.
 - Phase 6 `npm run test:e2e:release`: PASS, 67 tests in about 28.0m.
 - Phase 6 `git diff --check`: PASS before verification-result doc note; rerun whitespace check before commit.
+- Phase 7 initial `npm run visual:qa`: PASS, 1 capture test in about 3.1m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 7 `npm test`: PASS, 46 files / 351 tests.
+- Phase 7 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 7 `npm run validate:content`: PASS.
+- Phase 7 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 7 final `npm run visual:qa`: PASS, 1 capture test in about 3.2m.
+- Phase 7 `git diff --check`: PASS.
 
 Current v0.10 risks:
 
@@ -80,7 +88,7 @@ Current v0.10 risks:
 - No-reward completion is clear but can feel plain; v0.10 may warm the copy while preserving no-save/no-reward guarantees.
 - Full tutorial completion remains in smoke for now; Phase 6 should revisit lane placement without removing coverage.
 
-Next v0.10 step: run visual QA review documentation.
+Next v0.10 step: create Emmanuel's manual Tutorial v2 playtest checklist.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 
