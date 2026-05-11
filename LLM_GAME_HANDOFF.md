@@ -1,12 +1,35 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.11.1 CI release matrix final gate
+Last updated: 2026-05-11 v0.11.2 remote CI observation in progress
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.2 GitHub Actions Remote CI Observation - 2026-05-11
+
+Mission: observe the first remote GitHub Actions evidence for the v0.11.1 workflow and make only tiny CI-only tuning changes if hosted-run evidence proves they are needed. This goal must not change gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, or coverage strength.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
+- Phase 1 remote CI observation capability: in progress. `gh` is not installed, the GitHub connector Actions path returned an expired-token error, and the unauthenticated GitHub REST Actions endpoint returned `404 Not Found` for `jardas33/ascendant-realms`. Added `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md` to document the limitation and the safe fallback to static workflow review plus local-equivalent verification.
+
+Current v0.11.2 verification:
+
+- Phase 0 `npm test`: PASS, 46 files / 351 tests.
+- Phase 0 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 0 `npm run validate:content`: PASS.
+- Phase 0 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 0 `git diff --check`: PASS.
+
+Current v0.11.2 risks:
+
+- Remote GitHub Actions evidence is not available from this environment because authenticated inspection is unavailable and unauthenticated Actions visibility is blocked.
+- Hosted Linux timing for `fast-confidence`, `npm run smoke:preview`, and manual release shards still requires Emmanuel's GitHub UI observation.
+- No CI-only workflow fix is justified until real hosted evidence identifies a concrete problem.
 
 ## Current v0.11.1 CI Release Matrix Dry-Run - 2026-05-11
 
