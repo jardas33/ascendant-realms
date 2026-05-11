@@ -223,8 +223,8 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-select-hero",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Select Hero", progress: "Step 2 of 12" },
-    debugLabel: "Advance to Select Hero"
+    expected: { title: "Select Aster", progress: "Step 2 of 12" },
+    debugLabel: "Advance to Select Aster"
   },
   {
     id: "select-hero",
@@ -236,7 +236,7 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-move-hero",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Move Hero", progress: "Step 3 of 12" },
+    expected: { title: "Move Aster", progress: "Step 3 of 12" },
     debugLabel: "Advance to Move Hero"
   },
   {
@@ -262,7 +262,7 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-gather-resources",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Gather Resources", progress: "Step 5 of 12" },
+    expected: { title: "Gather Battle Crowns", progress: "Step 5 of 12" },
     debugLabel: "Advance to Gather Resources"
   },
   {
@@ -327,8 +327,8 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-use-ability",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Use Hero Ability", progress: "Step 10 of 12" },
-    debugLabel: "Advance to Use Hero Ability"
+    expected: { title: "Cast Rally Banner", progress: "Step 10 of 12" },
+    debugLabel: "Advance to Cast Rally Banner"
   },
   {
     id: "use-rally-banner",
@@ -340,8 +340,8 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-safe-pressure",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Hold Safe Pressure", progress: "Step 11 of 12" },
-    debugLabel: "Advance to Hold Safe Pressure"
+    expected: { title: "Group Up And Hold", progress: "Step 11 of 12" },
+    debugLabel: "Advance to Group Up And Hold"
   },
   {
     id: "defeat-safe-pressure",
@@ -353,8 +353,8 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-finish-training",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Finish Training", progress: "Step 12 of 12: complete", text: "No rewards:" },
-    debugLabel: "Advance to Finish Training"
+    expected: { title: "Training Complete", progress: "Step 12 of 12: complete", text: "No rewards:" },
+    debugLabel: "Advance to Training Complete"
   },
   {
     id: "assert-no-save-before-complete",
@@ -462,7 +462,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await expect(page.getByTestId("tutorial-objective")).toContainText("Camera Controls");
+    await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
     await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
     await expect(page.getByTestId("tutorial-next")).toContainText("Next Objective");
     const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();

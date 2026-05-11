@@ -44,7 +44,7 @@ describe("TutorialStepModel", () => {
       advanceActionLabel: "Next Objective",
       nextStepId: "move_hero"
     });
-    expect(viewModel.instruction).toContain("Select Aster");
+    expect(viewModel.instruction).toContain("Click Aster");
     expect(viewModel.completionConditionLabel).toBe("Select the hero");
     expect(viewModel.progressLabel).toBe("Step 2 of 12");
   });

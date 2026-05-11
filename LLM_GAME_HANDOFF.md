@@ -17,6 +17,7 @@ Phase status:
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
 - Phase 1 tutorial v2 audit: complete. Added `docs/V10_TUTORIAL_V2_AUDIT.md` after reading the tutorial reports, current tutorial metadata, overlay renderer, step model, smoke/layout/visual QA coverage, and v0.9.1 style-frame preparation guidance. The audit keeps v0.10 in copy/layout/docs scope and recommends no step expansion.
 - Phase 2 tutorial pacing and scope plan: complete. Added `docs/V10_TUTORIAL_V2_PACING_PLAN.md` to keep the twelve-step sequence, preserve step ids/signals/no-reward/no-save policy, target only copy/hint/completion and tiny overlay hierarchy work, and keep full tutorial completion in smoke unless a measured runtime problem appears.
+- Phase 3 tutorial copy refinement: complete. Updated `src/game/data/tutorials.ts` copy to make instructions more concrete and action-oriented while preserving step ids, completion signals, map, launch mode, no-reward policy, no-save policy, and runtime behavior. Added `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md` and updated unit/e2e copy assertions without changing selectors.
 
 Skipped phases: none so far.
 
@@ -37,6 +38,13 @@ Current v0.10 verification:
 - Phase 2 `npm run validate:content`: PASS.
 - Phase 2 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 2 `git diff --check`: PASS.
+- Phase 3 focused tutorial checks: PASS, `npx vitest run src/game/tutorial/TutorialStepModel.test.ts src/game/ui/hudPanels/TutorialPanel.test.ts` ran 2 files / 12 tests; focused tutorial smoke grep passed.
+- Phase 3 `npm test`: PASS, 46 files / 351 tests.
+- Phase 3 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 3 `npm run validate:content`: PASS.
+- Phase 3 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 3 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.2m.
+- Phase 3 `git diff --check`: PASS.
 
 Current v0.10 risks:
 
@@ -45,7 +53,7 @@ Current v0.10 risks:
 - No-reward completion is clear but can feel plain; v0.10 may warm the copy while preserving no-save/no-reward guarantees.
 - Full tutorial completion remains in smoke for now; Phase 6 should revisit lane placement without removing coverage.
 
-Next v0.10 step: refine tutorial copy and matching tests without changing gameplay.
+Next v0.10 step: inspect overlay hierarchy and visual/layout safety.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 

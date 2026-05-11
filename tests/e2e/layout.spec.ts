@@ -438,7 +438,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     test(`tutorial entry and first objective overlay stay readable on ${viewport.label}`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await launchTutorialOverlay(page, viewport.label);
-      await expect(page.getByTestId("tutorial-objective")).toContainText("Camera Controls");
+      await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
       await expect(page.getByTestId("tutorial-instruction")).toContainText("Pan with WASD or arrow keys");
       await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
       await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);

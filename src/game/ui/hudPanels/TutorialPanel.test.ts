@@ -12,9 +12,9 @@ describe("TutorialPanel", () => {
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-label="Exit Tutorial and return to main menu"');
     expect(html).toContain("Proving Grounds");
-    expect(html).toContain("Select Hero");
     expect(html).toContain("Select Aster");
-    expect(html).toContain("Press H or click Aster");
+    expect(html).toContain("Click Aster");
+    expect(html).toContain("Selected units");
     expect(html).toContain("Step 2 of 12");
     expect(html).toContain("Select the hero");
     expect(html).not.toContain("Next Objective");
@@ -25,7 +25,7 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "select_hero", { heroSelected: true }));
 
     expect(html).toContain('data-testid="tutorial-next"');
-    expect(html).toContain('aria-label="Next Objective from Select Hero"');
+    expect(html).toContain('aria-label="Next Objective from Select Aster"');
     expect(html).toContain("Next Objective");
   });
 
@@ -33,6 +33,7 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "finish_training", { finished: true }));
 
     expect(html).toContain("Complete Tutorial");
+    expect(html).toContain("You practiced the core loop");
     expect(html).toContain("No rewards: no XP, items, resources, or campaign progress");
   });
 
