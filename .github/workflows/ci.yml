@@ -1,0 +1,244 @@
+name: CI Release Matrix Dry Run
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      run_visual_qa:
+        description: "Run optional visual QA and upload screenshot artifacts"
+        required: false
+        default: false
+        type: boolean
+      run_release_matrix:
+        description: "Run manual 3-way release shard matrix and simulator"
+        required: false
+        default: false
+        type: boolean
+      run_full_release:
+        description: "Run the full one-command release e2e lane"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-release-matrix-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+
+jobs:
+  fast-confidence:
+    name: Fast confidence
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Unit and pure-rule tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
+
+      - name: Content validation
+        run: npm run validate:content
+
+      - name: Art-intake validation
+        run: npm run validate:art-intake
+
+      - name: E2E smoke
+        run: npm run test:e2e:smoke
+
+      - name: Production preview smoke
+        run: npm run smoke:preview
+
+      - name: Upload Playwright failure artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-fast-confidence
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  visual-qa:
+    name: Optional visual QA
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_visual_qa }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Production build
+        run: npm run build
+
+      - name: Visual QA capture
+        run: npm run visual:qa
+
+      - name: Upload visual QA screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-qa-latest
+          path: visual-qa/latest/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload visual QA Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-visual-qa
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  release-shards:
+    name: Release matrix (${{ matrix.name }})
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_release_matrix }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: shard-1-of-3
+            command: npm run test:e2e:release:shard1of3
+          - name: shard-2-of-3
+            command: npm run test:e2e:release:shard2of3
+          - name: shard-3-of-3
+            command: npm run test:e2e:release:shard3of3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Production build
+        run: npm run build
+
+      - name: Run release shard
+        run: ${{ matrix.command }}
+
+      - name: Upload Playwright shard artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-release-${{ matrix.name }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  release-simulator:
+    name: Release simulator
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_release_matrix }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Playtest simulator
+        run: npm run playtest:sim
+
+  full-release:
+    name: Full release e2e
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_full_release }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Production build
+        run: npm run build
+
+      - name: Full release lane
+        run: npm run test:e2e:release
+
+      - name: Upload full release Playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-full-release
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
