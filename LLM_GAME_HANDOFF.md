@@ -1,12 +1,45 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-10 v0.9.1 final verification
+Last updated: 2026-05-11 v0.10 tutorial v2 audit
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.10 Tutorial v2 Onboarding Refinement - 2026-05-11
+
+Mission: improve Tutorial / Proving Grounds onboarding clarity, pacing, overlay readability, no-reward completion clarity, e2e lane documentation, and manual playtest guidance without adding maps, units, factions, rewards, save persistence, campaign progression, workers, enemy construction, economy AI, crafting, diplomacy, procedural generation, desktop packaging, generated art, runtime art replacement, a full UI redesign, or broad systems.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
+- Phase 1 tutorial v2 audit: complete. Added `docs/V10_TUTORIAL_V2_AUDIT.md` after reading the tutorial reports, current tutorial metadata, overlay renderer, step model, smoke/layout/visual QA coverage, and v0.9.1 style-frame preparation guidance. The audit keeps v0.10 in copy/layout/docs scope and recommends no step expansion.
+
+Skipped phases: none so far.
+
+Current v0.10 verification:
+
+- Phase 0 `npm test`: PASS, 46 files / 351 tests.
+- Phase 0 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 0 `npm run validate:content`: PASS.
+- Phase 0 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 0 `git diff --check`: PASS.
+- Phase 1 `npm test`: PASS, 46 files / 351 tests.
+- Phase 1 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 1 `npm run validate:content`: PASS.
+- Phase 1 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 1 `git diff --check`: PASS.
+
+Current v0.10 risks:
+
+- The tutorial remains twelve steps long and still needs human-paced play.
+- Mobile tutorial launch is width-safe but visually dense because the battle HUD and command panel share the small viewport.
+- No-reward completion is clear but can feel plain; v0.10 may warm the copy while preserving no-save/no-reward guarantees.
+- Full tutorial completion remains in smoke for now; Phase 6 should revisit lane placement without removing coverage.
+
+Next v0.10 step: create `docs/V10_TUTORIAL_V2_PACING_PLAN.md` before changing tutorial copy.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 
