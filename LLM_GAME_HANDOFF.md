@@ -1,12 +1,50 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.10 tutorial onboarding final gate
+Last updated: 2026-05-11 v0.11 e2e runtime audit refresh
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11 Technical Reliability Gate - 2026-05-11
+
+Mission: improve technical reliability, e2e runtime clarity, CI friendliness, preview smoke reliability, visual QA reliability, bundle/performance documentation, developer ergonomics, and release-gate maintainability without changing gameplay, content, tutorial behavior, visual assets, save format, campaign progression, or runtime art.
+
+Phase status:
+
+- Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; prior `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
+- Phase 1 e2e runtime audit refresh: complete. Current inventory remains 67 e2e tests across 4 files, with 2-way shards at 55/12 tests and 3-way shards at 28/27/12 tests. Added `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md` to document scripts, Playwright config, shard shape, known v0.10 runtimes, slow-lane causes, and safe v0.11 opportunities.
+
+Commits created so far:
+
+- None for v0.11 yet.
+
+Current v0.11 verification:
+
+- Phase 0 `npm test`: PASS, 46 files / 351 tests.
+- Phase 0 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 0 `npm run validate:content`: PASS.
+- Phase 0 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 0 `git diff --check`: PASS.
+- Phase 1 `npx playwright test --list`: 67 tests across 4 e2e files.
+- Phase 1 shard inventory: 2-way shards list 55 and 12 tests; 3-way shards list 28, 27, and 12 tests.
+- Phase 1 `npm test`: PASS, 46 files / 351 tests.
+- Phase 1 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 1 `npm run validate:content`: PASS.
+- Phase 1 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 1 `git diff --check`: PASS.
+
+Current risks:
+
+- Full release e2e remains slow.
+- 2-way shard 1 remains much heavier than shard 2.
+- The known Phaser vendor chunk-size warning remains.
+- Production preview smoke can require careful child-process cleanup.
+- Visual QA remains useful, optional, human-reviewed, and non-pixel-perfect.
+- v0.10.1 tutorial polish should wait for Emmanuel's manual feedback.
+- v0.9.2 visual candidate review should wait for source/license-documented candidate art.
 
 ## Current v0.10 Tutorial v2 Onboarding Refinement - 2026-05-11
 
