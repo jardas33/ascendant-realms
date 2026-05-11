@@ -54,6 +54,55 @@ git diff --check
 PASS: no whitespace errors during phase/report gates.
 ```
 
+Latest final-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 4.9m.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 29.0m.
+
+npm run test:e2e:release:shard1
+PASS: 55 Playwright tests in about 24.3m.
+
+npm run test:e2e:release:shard2
+PASS: 12 Playwright tests in about 4.8m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.5m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 12.9m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 4.9m.
+
+npm run visual:qa
+PASS: 1 Playwright capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+Production preview smoke
+PASS: http://127.0.0.1:4173/ verified title, Prototype v0.3 / Cinderfen Route Baseline menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, and zero browser console errors. A first preview harness attempt timed out because the preview child process stayed alive after the checks; repo-local preview processes were cleaned up and the rerun passed.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
 Recommended next milestone: v0.10.1 Tutorial v2 Human-Feedback Polish, only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. Keep it narrow and evidence-driven: clarify confusing steps or tiny overlay spacing only, preserve no rewards/no persistence/no campaign progression, and do not add maps, units, factions, generated art, runtime art replacement, or a full UI redesign. Visual work can instead return to v0.9.2 Controlled Cinderfen Style-Frame Candidate Review when source/license-documented candidates exist.
 
 ## v0.9.1 Controlled Cinderfen Style-Frame Intake Report Gate - 2026-05-10

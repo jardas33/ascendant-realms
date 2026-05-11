@@ -116,6 +116,24 @@ Phase 9 report gate after release-doc updates:
 - `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - `git diff --check`: PASS.
 
+Final release gate:
+
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke`: PASS, 12 Playwright tests in about 4.9m.
+- `npm run test:e2e:release`: PASS, 67 Playwright tests in about 29.0m.
+- `npm run test:e2e:release:shard1`: PASS, 55 Playwright tests in about 24.3m.
+- `npm run test:e2e:release:shard2`: PASS, 12 Playwright tests in about 4.8m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 Playwright tests in about 11.5m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 Playwright tests in about 12.9m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 Playwright tests in about 4.9m.
+- `npm run visual:qa`: PASS, 1 capture test in about 3.2m.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+- Production preview smoke: PASS at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and 0 browser console errors verified. A first preview harness attempt timed out because the preview child process stayed alive after the checks; repo-local preview processes were cleaned up, and the rerun passed with explicit process-tree shutdown.
+
 ## Next Recommended Long Goal
 
 If Emmanuel can play the tutorial, the next player-facing step should be a short v0.10.1 human-feedback polish pass based on `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`.

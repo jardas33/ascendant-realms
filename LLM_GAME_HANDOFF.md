@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.10 tutorial v2 report gate
+Last updated: 2026-05-11 v0.10 tutorial onboarding final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,8 +24,10 @@ Phase status:
 - Phase 7 tutorial visual QA review: complete. Ran `npm run visual:qa`, reviewed refreshed tutorial desktop/mobile screenshots, and added `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`. Decision: no further visual change in v0.10; mobile HUD density remains a known issue for a later scoped UI pass.
 - Phase 8 manual Tutorial v2 playtest checklist: complete. Added `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md` for Emmanuel with start steps, normal-speed play guidance, 1-5 ratings, confusion questions, screenshot/report prompts, and explicit out-of-scope requests.
 - Phase 9 tutorial v2 report and release docs: complete. Added `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.10 as the current tutorial onboarding refinement milestone.
+- Phase 10 optional safe cleanup: skipped as a standalone phase because there was no separate safe cleanup needing another verification cycle. The known Phase 9 commit hash and final gate results were folded into the final handoff update.
+- Phase 11 final full verification and push: complete through local verification and production preview smoke. Push follows the final handoff commit if the remote remains safe.
 
-Skipped phases: none so far.
+Skipped phases: Phase 10 optional safe cleanup was skipped as a standalone commit because no additional docs polish, copy consistency fix, or test helper cleanup was needed beyond the final handoff update.
 
 Commits created so far:
 
@@ -37,7 +39,8 @@ Commits created so far:
 - `c445641 Checkpoint v0.10 tutorial e2e refinement`
 - `7d9d748 Checkpoint v0.10 tutorial visual QA review`
 - `d28d6c4 Checkpoint v0.10 manual tutorial checklist`
-- Phase 9 commit follows: `Checkpoint v0.10 tutorial v2 report`
+- `9e63d80 Checkpoint v0.10 tutorial v2 report`
+- Final handoff commit follows: `Checkpoint v0.10 tutorial onboarding refinement`
 
 Current v0.10 verification:
 
@@ -107,6 +110,22 @@ Current v0.10 verification:
 - Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.0m.
 - Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - Phase 9 `git diff --check`: PASS.
+- Phase 11 `npm test`: PASS, 46 files / 351 tests.
+- Phase 11 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 11 `npm run validate:content`: PASS.
+- Phase 11 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 11 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.9m.
+- Phase 11 `npm run test:e2e:release`: PASS, 67 tests in about 29.0m.
+- Phase 11 `npm run test:e2e:release:shard1`: PASS, 55 tests in about 24.3m.
+- Phase 11 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 4.8m.
+- Phase 11 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.5m.
+- Phase 11 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 12.9m.
+- Phase 11 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 4.9m.
+- Phase 11 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 11 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 11 `git diff --check`: PASS.
+- Phase 11 production preview smoke: PASS at `http://127.0.0.1:4173/`. Verified document title `Ascendant Realms`, visible `Prototype v0.3`, visible `Cinderfen Route Baseline`, Tutorial / Proving Grounds launch and exit, New Campaign reaching Campaign Map, Continue Campaign returning to Campaign Map, Skirmish Setup opening, and 0 browser console errors on the passing run. Note: the first preview harness attempt timed out with no assertion-failure output because the preview child process stayed alive after checks; repo-local preview processes for port 4173 were cleaned up, then the same smoke reran with explicit process-tree shutdown and passed.
+- Git status before the final handoff commit: `## main...origin/main [ahead 9]`; `git rev-list --left-right --count origin/main...HEAD`: `0 9`; working tree had only final documentation/handoff updates. Expected after this final handoff commit: clean working tree and `## main...origin/main [ahead 10]` pending push.
 
 Current v0.10 risks:
 
@@ -114,8 +133,11 @@ Current v0.10 risks:
 - Mobile tutorial launch is width-safe but visually dense because the battle HUD and command panel share the small viewport.
 - No-reward completion is clearer but still needs Emmanuel's human reaction to confirm it feels satisfying enough.
 - Full tutorial completion remains in smoke for now; revisit lane placement only if the lane repeatedly exceeds the 6-7 minute watch band.
+- Current visuals remain prototype-level; v0.10 did not add generated art, imported art, candidate art, or runtime art replacement.
+- The known Phaser vendor chunk-size warning remains.
+- Full Playwright release lanes remain slow.
 
-Next v0.10 step: optional Phase 10 cleanup only if a tiny safe docs/copy issue appears; otherwise proceed to the Phase 11 final full verification.
+Next recommended long-running goal: v0.10.1 Tutorial v2 Human-Feedback Polish, only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. Keep it narrow and evidence-driven: clarify confusing copy, adjust tiny overlay spacing if needed, and preserve no rewards, no persistence, no campaign progression, no new maps, no new units, no new factions, no generated/imported art, no runtime art replacement, and no full UI redesign. If visual candidates are provided instead, return to v0.9.2 Controlled Cinderfen Style-Frame Candidate Review and keep that review non-runtime until a later explicit runtime-test scope exists.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 

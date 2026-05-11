@@ -130,7 +130,7 @@ npm run test:e2e:release:shard3of3
 
 All three 3-shard scripts together equal the same full release suite. They preserve the existing full release and 2-shard scripts; they do not change Playwright workers, parallelism, serving mode, or test coverage.
 
-Latest v0.10 e2e lane review: smoke passed 12 tests in about 4.8 minutes and full release passed 67 tests in about 28.0 minutes during Phase 6. The most recent full final-gate shard timings are recorded in `LLM_GAME_HANDOFF.md` and `RELEASE_CHECKLIST.md`. The split is intentionally optional; CI parallelism is the main benefit.
+Latest v0.10 final verification: smoke passed 12 tests in about 4.9 minutes; full release passed 67 tests in about 29.0 minutes; the existing 2-shard scripts passed 55 tests in about 24.3 minutes and 12 tests in about 4.8 minutes; `shard1of3` passed 28 tests in about 11.5 minutes; `shard2of3` passed 27 tests in about 12.9 minutes; `shard3of3` passed 12 tests in about 4.9 minutes. The split is intentionally optional; CI parallelism is the main benefit.
 
 For a visible browser run:
 
@@ -162,7 +162,7 @@ This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_
 npm run preview
 ```
 
-Latest v0.8.1 production preview smoke, 2026-05-10: Browser smoke passed at `http://127.0.0.1:57934/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign, Skirmish Setup, and zero browser console errors were verified.
+Latest v0.10 production preview smoke, 2026-05-11: Playwright preview smoke passed at `http://127.0.0.1:4173/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, and zero browser console errors were verified. A first preview harness attempt timed out because the preview child process stayed alive after checks; repo-local preview processes were cleaned up, then the same smoke reran with explicit process-tree shutdown and passed.
 
 ## Manual Asset Workflow (No API Costs)
 

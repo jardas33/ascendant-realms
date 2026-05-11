@@ -27,6 +27,7 @@ This checkpoint refines Tutorial / Proving Grounds onboarding clarity, pacing do
 - E2E lane review: `npm run test:e2e:release` passed with 67 Playwright tests.
 - Visual review: `npm run visual:qa` passed with 18 indexed review screenshots and zero recorded browser console errors.
 - Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+- Final gate: full smoke/release, 2-way shards, 3-way shards, visual QA, simulator, diff check, and production preview smoke passed.
 - Phase gates: `git diff --check` passed.
 
 ### Next
