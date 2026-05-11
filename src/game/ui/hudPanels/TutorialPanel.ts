@@ -18,14 +18,14 @@ export function renderTutorialPanel(step: TutorialStepViewModel | undefined): st
         <span data-testid="tutorial-condition" id="tutorial-condition">${escapeHtml(step.completionConditionLabel)}</span>
         ${
           step.isComplete
-            ? `<button class="hud-button compact" data-testid="tutorial-next" data-action="tutorial-next" aria-label="${escapeHtml(
+            ? `<button class="hud-button compact tutorial-primary" data-testid="tutorial-next" data-action="tutorial-next" aria-label="${escapeHtml(
                 `${step.advanceActionLabel} from ${step.title}`
               )}">${escapeHtml(
                 step.advanceActionLabel
               )}</button>`
             : ""
         }
-        <button class="hud-button compact" data-testid="tutorial-exit" data-action="menu" aria-label="Exit Tutorial and return to main menu">Exit Tutorial</button>
+        <button class="hud-button compact tutorial-secondary" data-testid="tutorial-exit" data-action="menu" aria-label="Exit Tutorial and return to main menu">Exit Tutorial</button>
       </div>
     </section>
   `;
