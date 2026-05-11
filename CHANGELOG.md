@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.11.1 CI Release Matrix Dry-Run and Preview Helper Portability - 2026-05-11
+
+This checkpoint adds a conservative GitHub Actions CI dry-run and CI/release documentation without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, maps, units, factions, rewards, Playwright coverage, or UI design.
+
+### Included
+
+- CI matrix audit: `docs/V111_CI_MATRIX_AUDIT.md`.
+- Preview helper portability audit: `docs/V111_PREVIEW_HELPER_PORTABILITY_AUDIT.md`.
+- Small `npm run smoke:preview` portability improvements in `tools/smokePreview.ts`.
+- CI release matrix plan: `docs/V111_CI_RELEASE_MATRIX_PLAN.md`.
+- Conservative GitHub Actions workflow: `.github/workflows/ci.yml`.
+- CI artifact strategy: `docs/V111_CI_ARTIFACT_STRATEGY.md`.
+- CI/local parity check: `docs/V111_CI_LOCAL_PARITY_CHECK.md`.
+- v0.11.1 report: `docs/V111_CI_RELEASE_MATRIX_REPORT.md`.
+- README, release checklist, developer command guide, roadmap, development checkpoint, and handoff updates.
+
+### Verification
+
+- Phase gates: `npm test` passed with 46 test files and 351 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `npm run validate:art-intake` passed.
+- Tooling gates: `npm run test:e2e:smoke` passed.
+- Preview helper gates: `npm run smoke:preview` passed with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+- Report gate: `npm run visual:qa` passed with 18 indexed screenshots and 0 recorded browser console errors.
+- Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+- Phase/report gates: `git diff --check` passed.
+
+### Next
+
+- Validate the pushed GitHub Actions workflow on GitHub before treating remote CI as proven.
+- If Emmanuel provides tutorial feedback, run v0.10.1 Tutorial v2 Human-Feedback Polish.
+- If source/license-documented candidate art exists, run v0.9.2 Controlled Cinderfen Style-Frame Candidate Review.
+- If neither is available, the next safe autonomous goal is v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning.
+
 ## v0.11 Technical Reliability, E2E Runtime, and Performance Gate - 2026-05-11
 
 This checkpoint improves release reliability documentation, e2e runtime clarity, preview smoke repeatability, optional visual QA reporting, bundle/performance measurement, developer command ergonomics, and release-checklist maintainability without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, maps, units, factions, rewards, or UI design.

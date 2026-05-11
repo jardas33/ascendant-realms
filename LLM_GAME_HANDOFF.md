@@ -22,6 +22,8 @@ Phase status:
 - Phase 5 CI artifact strategy: complete. Added `docs/V111_CI_ARTIFACT_STRATEGY.md` to document Playwright diagnostics, visual QA screenshots, bundle-analysis handling, simulator telemetry, retention, artifact size risks, and source/license boundaries. No workflow adjustment was needed in this phase.
 - Phase 6 CI/local command parity check: complete. Added `docs/V111_CI_LOCAL_PARITY_CHECK.md` comparing package scripts, the workflow, release checklist, developer command guide, and CI plan. Current mismatches are intentional: CI setup/browser install/artifacts/Node 22/35-minute first-pass timeout, no local `git diff --check` equivalent in Actions, and manual-only heavy lanes.
 - Phase 7 release checklist and README update: complete. Updated README, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, and `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md` to point to `.github/workflows/ci.yml`, manual workflow inputs, v0.11.1 CI docs, preview helper portability, artifact handling, and the continued requirement that local final gates stay authoritative.
+- Phase 8 optional safe CI/tooling cleanup: skipped as a standalone phase because all prior phases were green and there was no extra docs link cleanup, YAML naming clarity change, timeout note change, or script description cleanup worth another churn cycle.
+- Phase 9 v0.11.1 CI reliability report: complete. Added `docs/V111_CI_RELEASE_MATRIX_REPORT.md` and updated roadmap, changelog, development checkpoint, and this handoff to document v0.11.1 as the CI release-matrix/portability milestone.
 
 Current v0.11.1 verification:
 
@@ -70,6 +72,15 @@ Current v0.11.1 verification:
 - Phase 7 `npm run validate:content`: PASS.
 - Phase 7 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 7 `git diff --check`: PASS.
+- Phase 9 `npm test`: PASS, 46 files / 351 tests.
+- Phase 9 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 9 `npm run validate:content`: PASS.
+- Phase 9 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 9 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.9m.
+- Phase 9 `npm run smoke:preview`: PASS in about 25s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
+- Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 9 `git diff --check`: PASS.
 
 Current v0.11.1 risks:
 

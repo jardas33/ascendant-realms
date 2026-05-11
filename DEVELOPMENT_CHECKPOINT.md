@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-11 v0.11 technical reliability report gate
+Updated: 2026-05-11 v0.11.1 CI reliability report gate
+
+## v0.11.1 CI Release Matrix Report Gate - 2026-05-11
+
+Scope: add a conservative GitHub Actions CI dry-run, release matrix documentation, preview helper portability improvements, artifact strategy, CI/local parity checks, and release documentation updates. This pass preserved gameplay rules, save compatibility, campaign progression, tutorial behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, broad systems, or coverage reduction.
+
+Included work:
+
+- Added `docs/V111_CI_MATRIX_AUDIT.md`, `docs/V111_PREVIEW_HELPER_PORTABILITY_AUDIT.md`, `docs/V111_CI_RELEASE_MATRIX_PLAN.md`, `docs/V111_CI_ARTIFACT_STRATEGY.md`, `docs/V111_CI_LOCAL_PARITY_CHECK.md`, and `docs/V111_CI_RELEASE_MATRIX_REPORT.md`.
+- Added `.github/workflows/ci.yml` with automatic fast confidence and manual visual QA, 3-way release shard matrix, simulator, and full-release lanes.
+- Improved `tools/smokePreview.ts` with validated preview port/timeout env overrides, clearer startup errors, and POSIX helper-owned process-group shutdown.
+- Updated README, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`, roadmap, changelog, and handoff docs.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+Output: assets/index-DY-3qp2P.js, 477.04 kB minified / 127.86 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BiGdwuWI.css, 44.51 kB minified / 9.16 kB gzip.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS during workflow/tooling gates.
+
+npm run smoke:preview
+PASS during preview/workflow gates with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+
+npm run visual:qa
+PASS: 1 Playwright capture test, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Remaining watch items: the GitHub Actions workflow still needs remote validation after push, full release e2e remains slow, 2-way shards remain lopsided, 3-way shard CI timing is not yet measured remotely, the known Phaser vendor warning remains, and visual QA remains optional/human-reviewed.
 
 ## v0.11 Technical Reliability Report Gate - 2026-05-11
 
