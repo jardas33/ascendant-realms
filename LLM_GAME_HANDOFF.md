@@ -15,7 +15,8 @@ Mission: observe the first remote GitHub Actions evidence for the v0.11.1 workfl
 Phase status:
 
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
-- Phase 1 remote CI observation capability: in progress. `gh` is not installed, the GitHub connector Actions path returned an expired-token error, and the unauthenticated GitHub REST Actions endpoint returned `404 Not Found` for `jardas33/ascendant-realms`. Added `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md` to document the limitation and the safe fallback to static workflow review plus local-equivalent verification.
+- Phase 1 remote CI observation capability: complete. `gh` is not installed, the GitHub connector Actions path returned an expired-token error, and the unauthenticated GitHub REST Actions endpoint returned `404 Not Found` for `jardas33/ascendant-realms`. Added `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md` to document the limitation and the safe fallback to static workflow review plus local-equivalent verification.
+- Phase 2 GitHub Actions evidence report: in progress. Remote hosted-run evidence is not available from this environment, so `docs/V112_GITHUB_ACTIONS_EVIDENCE_REPORT.md` documents the exact access limitation, local substitute checks, expected push/manual jobs, expected pass/fail signals, and evidence Emmanuel should capture from the GitHub UI.
 
 Current v0.11.2 verification:
 
@@ -24,6 +25,11 @@ Current v0.11.2 verification:
 - Phase 0 `npm run validate:content`: PASS.
 - Phase 0 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 0 `git diff --check`: PASS.
+- Phase 1 `npm test`: PASS, 46 files / 351 tests.
+- Phase 1 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 1 `npm run validate:content`: PASS.
+- Phase 1 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 1 `git diff --check`: PASS.
 
 Current v0.11.2 risks:
 
