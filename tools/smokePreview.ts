@@ -5,16 +5,17 @@ import process from "node:process";
 import { chromium, type Browser, type Page } from "@playwright/test";
 
 const PREVIEW_HOST = process.env.ASCENDANT_PREVIEW_HOST ?? "127.0.0.1";
-const PREVIEW_PORT = Number(process.env.ASCENDANT_PREVIEW_PORT ?? "4173");
+const PREVIEW_PORT = readIntegerEnv("ASCENDANT_PREVIEW_PORT", 4173, 1, 65535);
 const PREVIEW_URL = `http://${PREVIEW_HOST}:${PREVIEW_PORT}/`;
-const SERVER_TIMEOUT_MS = 60_000;
-const ACTION_TIMEOUT_MS = 30_000;
+const SERVER_TIMEOUT_MS = readIntegerEnv("ASCENDANT_PREVIEW_TIMEOUT_MS", 60_000, 1_000, 300_000);
+const ACTION_TIMEOUT_MS = readIntegerEnv("ASCENDANT_PREVIEW_ACTION_TIMEOUT_MS", 30_000, 1_000, 120_000);
 const SAVE_KEY = "ascendant-realms-save-v1";
 
 type PreviewProcess = {
   child: ChildProcess;
   exited: boolean;
   exitCode: number | null;
+  startError?: Error;
 };
 
 async function main(): Promise<void> {
@@ -55,6 +56,7 @@ async function main(): Promise<void> {
 
 function startPreviewServer(): PreviewProcess {
   const viteCliPath = fileURLToPath(new URL("../node_modules/vite/bin/vite.js", import.meta.url));
+  const createProcessGroup = process.platform !== "win32";
   const child = spawn(
     process.execPath,
     [viteCliPath, "preview", "--host", PREVIEW_HOST, "--port", String(PREVIEW_PORT), "--strictPort"],
@@ -62,6 +64,7 @@ function startPreviewServer(): PreviewProcess {
       cwd: process.cwd(),
       env: process.env,
       stdio: ["ignore", "pipe", "pipe"],
+      detached: createProcessGroup,
       windowsHide: true
     }
   );
@@ -85,6 +88,11 @@ function startPreviewServer(): PreviewProcess {
     preview.exitCode = code;
   });
 
+  child.on("error", (error) => {
+    preview.exited = true;
+    preview.startError = error;
+  });
+
   return preview;
 }
 
@@ -93,6 +101,13 @@ async function waitForPreviewServer(preview: PreviewProcess): Promise<void> {
   let lastError = "";
 
   while (Date.now() - start < SERVER_TIMEOUT_MS) {
+    if (preview.startError) {
+      throw new Error(
+        `Failed to start Vite preview for ${PREVIEW_URL}: ${preview.startError.message}. ` +
+          "Run npm run build first and check that local dependencies are installed."
+      );
+    }
+
     if (preview.exited) {
       throw new Error(`Preview server exited before smoke checks started. Exit code: ${preview.exitCode ?? "unknown"}.`);
     }
@@ -110,7 +125,10 @@ async function waitForPreviewServer(preview: PreviewProcess): Promise<void> {
     await sleep(500);
   }
 
-  throw new Error(`Timed out waiting ${SERVER_TIMEOUT_MS}ms for ${PREVIEW_URL}. Last error: ${lastError}`);
+  throw new Error(
+    `Timed out waiting ${SERVER_TIMEOUT_MS}ms for ${PREVIEW_URL}. Last error: ${lastError}. ` +
+      "If CI is slow, retry with ASCENDANT_PREVIEW_TIMEOUT_MS set to a higher value."
+  );
 }
 
 function captureConsoleErrors(page: Page, consoleErrors: string[]): void {
@@ -191,10 +209,22 @@ async function stopPreviewServer(preview: PreviewProcess): Promise<void> {
     return;
   }
 
-  preview.child.kill("SIGTERM");
+  terminatePosixProcessGroup(preview, "SIGTERM");
   await Promise.race([once(preview.child, "exit"), sleep(5_000)]);
   if (!preview.exited) {
-    preview.child.kill("SIGKILL");
+    terminatePosixProcessGroup(preview, "SIGKILL");
+  }
+}
+
+function terminatePosixProcessGroup(preview: PreviewProcess, signal: NodeJS.Signals): void {
+  if (preview.child.pid === undefined) {
+    return;
+  }
+
+  try {
+    process.kill(-preview.child.pid, signal);
+  } catch {
+    preview.child.kill(signal);
   }
 }
 
@@ -211,6 +241,20 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+}
+
+function readIntegerEnv(name: string, fallback: number, min: number, max: number): number {
+  const raw = process.env[name];
+  if (raw === undefined || raw.trim() === "") {
+    return fallback;
+  }
+
+  const parsed = Number(raw);
+  if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
+    throw new Error(`${name} must be an integer between ${min} and ${max}; received "${raw}".`);
+  }
+
+  return parsed;
 }
 
 main().catch((error) => {
