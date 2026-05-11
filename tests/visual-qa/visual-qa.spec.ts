@@ -154,12 +154,20 @@ async function forceBattleDefeat(page: Page): Promise<void> {
 }
 
 async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Promise<void> {
+  const viewportSummary = [...new Set(records.map((record) => record.viewport))].join(", ");
   const lines = [
     "# Ascendant Realms Visual QA Capture",
     "",
     `Generated: ${new Date().toISOString()}`,
     "",
     "Output folder: `visual-qa/latest/`",
+    "",
+    "## Summary",
+    "",
+    `- Screenshot count: ${records.length}`,
+    `- Browser console error count: ${consoleErrors.length}`,
+    `- Viewports covered: ${viewportSummary}`,
+    "- Harness: `tests/visual-qa/visual-qa.spec.ts`",
     "",
     "## Captures",
     "",
@@ -180,6 +188,7 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
   ];
 
   await writeFile(path.join(OUTPUT_DIR, "index.md"), `${lines.join("\n")}\n`, "utf8");
+  console.log(`Visual QA wrote ${records.length} screenshot(s) to ${OUTPUT_DIR}. Browser console errors: ${consoleErrors.length}.`);
 }
 
 test.describe("Ascendant Realms visual QA capture", () => {
