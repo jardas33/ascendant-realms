@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.11 e2e runtime audit refresh
+Last updated: 2026-05-11 v0.11 technical reliability final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,6 +24,9 @@ Phase status:
 - Phase 7 release checklist tightening: complete. Updated `RELEASE_CHECKLIST.md` with explicit routine/docs/tutorial/UI/visual-intake/content/final-freeze gate selection, current visual QA summary expectations, 3-way shard guidance, known Phaser warning status, slow-release warning, and `npm run smoke:preview` preview-smoke guidance.
 - Phase 8 optional safe cleanup: skipped as a standalone phase because all prior phases were green and there was no extra script naming, helper cleanup, duplicate command consolidation, or docs polish worth another churn cycle.
 - Phase 9 v0.11 technical reliability report: complete. Added `docs/V11_TECHNICAL_RELIABILITY_REPORT.md` and updated README, roadmap, changelog, development checkpoint, and this handoff.
+- Phase 10 final full verification: complete. Full local gate passed: unit/build/validators, smoke, full release, 2-way shards, 3-way shards, visual QA, simulator, preview smoke helper, and whitespace/status checks. Final handoff commit follows with message `Checkpoint v0.11 technical reliability gate`.
+
+Skipped phases: Phase 8 optional safe tooling cleanup was skipped as a standalone commit because there was no additional safe cleanup needed after the prior green phases.
 
 Commits created so far:
 
@@ -34,6 +37,8 @@ Commits created so far:
 - `92b0afb Checkpoint v0.11 bundle performance refresh`
 - `b100f2d Checkpoint v0.11 developer command guide`
 - `15c9e8c Checkpoint v0.11 release checklist tightening`
+- `a266a17 Checkpoint v0.11 technical reliability report`
+- Final handoff commit follows: `Checkpoint v0.11 technical reliability gate`
 
 Current v0.11 verification:
 
@@ -94,13 +99,29 @@ Current v0.11 verification:
 - Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - Phase 9 `npm run smoke:preview`: PASS in about 29s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
 - Phase 9 `git diff --check`: PASS.
+- Phase 10 `npm test`: PASS, 46 files / 351 tests.
+- Phase 10 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 10 `npm run validate:content`: PASS.
+- Phase 10 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 10 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.9m.
+- Phase 10 `npm run test:e2e:release`: PASS, 67 tests in about 28.5m.
+- Phase 10 `npm run test:e2e:release:shard1`: PASS, 55 tests in about 24.0m.
+- Phase 10 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 5.6m.
+- Phase 10 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.6m.
+- Phase 10 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 13.2m.
+- Phase 10 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 4.6m.
+- Phase 10 `npm run visual:qa`: PASS, 1 capture test in about 3.3m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 10 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 10 `npm run smoke:preview`: PASS in about 34s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
+- Phase 10 `git diff --check`: PASS.
+- Phase 10 pre-final-handoff git status: clean working tree, `main...origin/main [ahead 8]`.
 
 Current risks:
 
 - Full release e2e remains slow.
 - 2-way shard 1 remains much heavier than shard 2.
 - The known Phaser vendor chunk-size warning remains.
-- Production preview smoke can require careful child-process cleanup.
+- Preview smoke helper is now reliable locally but should be watched for OS/CI portability.
 - Visual QA remains useful, optional, human-reviewed, and non-pixel-perfect.
 - v0.10.1 tutorial polish should wait for Emmanuel's manual feedback.
 - v0.9.2 visual candidate review should wait for source/license-documented candidate art.
