@@ -6,6 +6,8 @@ Use this checklist for the v0.3 Cinderfen route baseline candidate and future pr
 D:\Code for projects\WB game like\ascendant-realms
 ```
 
+For day-to-day command selection before the final freeze gate, see `docs/DEVELOPER_COMMAND_GUIDE.md`. The release checklist remains the stricter checkpoint/freeze reference.
+
 ## Required Automated Checks
 
 1. Unit and pure-rule tests:

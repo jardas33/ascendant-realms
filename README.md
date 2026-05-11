@@ -97,6 +97,8 @@ npm run test:e2e:smoke
 
 The browser suite uses Playwright and starts the Vite dev server automatically. The fast default lane runs `tests/e2e/smoke.spec.ts` and currently covers 12 tests: main menu boot, Tutorial / Proving Grounds no-reward completion, Tutorial exit without saving, Settings persistence, New Campaign into Campaign Map, locked-node blocking, Border Village battle launch, Cinderfen Overlook/Waystation/Crossing reward persistence, Cinderfen Watch and Aftermath completion, Malrec trophy event behavior, skirmish launch, difficulty/fog setup, and inventory reachability.
 
+For a work-type-to-command matrix, use `docs/DEVELOPER_COMMAND_GUIDE.md`. It explains the fast local gate, tutorial/UI checks, visual-intake validation, visual QA, release shards, preview smoke, bundle analysis, and simulator use.
+
 Additional lanes keep the slower coverage available without making it the default frequent-iteration command:
 
 ```bash
@@ -162,7 +164,13 @@ This runs the deterministic campaign battle simulator and regenerates `PLAYTEST_
 npm run preview
 ```
 
-Latest v0.10 production preview smoke, 2026-05-11: Playwright preview smoke passed at `http://127.0.0.1:4173/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, and zero browser console errors were verified. A first preview harness attempt timed out because the preview child process stayed alive after checks; repo-local preview processes were cleaned up, then the same smoke reran with explicit process-tree shutdown and passed.
+For automated production preview smoke after `npm run build`, use:
+
+```bash
+npm run smoke:preview
+```
+
+Latest v0.11 production preview smoke, 2026-05-11: `npm run smoke:preview` passed at `http://127.0.0.1:4173/`; title, `Prototype v0.3` / `Cinderfen Route Baseline` menu copy, Tutorial launch/exit, New Campaign to Campaign Map, Continue Campaign to Campaign Map, Skirmish Setup, zero browser console errors, and helper-owned process-tree shutdown were verified.
 
 ## Manual Asset Workflow (No API Costs)
 

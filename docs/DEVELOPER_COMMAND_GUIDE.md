@@ -1,0 +1,217 @@
+# Developer Command Guide
+
+Date: 2026-05-11
+
+Use this guide to pick the smallest useful verification gate during implementation while keeping the full release gate intact for checkpoints. Run commands from the project root:
+
+```text
+D:\Code for projects\WB game like\ascendant-realms
+```
+
+## Fast Local Confidence
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+git diff --check
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Docs-only work, small tooling docs, metadata docs, or before committing a narrow phase | About 30 to 60 seconds locally | Unit/pure rules, TypeScript build, production bundle creation, gameplay content validation, art-intake metadata validation, whitespace | Broken pure rule, TS error, content schema/reference error, unsafe art-intake metadata, or whitespace issue | `npm run build`; it catches production-only type/build issues and records the known Phaser warning state |
+
+## Tutorial-Related Changes
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run test:e2e:smoke
+git diff --check
+```
+
+Add layout and visual checks for overlay/layout changes:
+
+```bash
+npm run test:e2e:layout
+npm run visual:qa
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Tutorial copy, step metadata, no-reward clarity, tutorial launch/exit, or small overlay hierarchy work | Smoke about 5m; layout about 12 to 15m; visual QA about 3m | No-save/no-reward tutorial path, battle launch, menu return, tutorial metadata validation, responsive overlay readability | Broken tutorial signal, changed test copy, lost no-save/no-reward behavior, or layout overlap | `npm run test:e2e:smoke` for tutorial source changes; it carries the release-critical no-save/no-reward tutorial path |
+
+## Visual-Intake Changes
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+git diff --check
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Editing `art-review/`, Cinderfen candidate metadata, review manifests, or source/license docs | About 30 to 60 seconds locally | Source/license gates, unknown-source production denial, high-IP-risk approval denial, runtime manifest separation | Missing `candidateId`, missing source fields, unsafe approval state, bad submitted-file reference | `npm run validate:art-intake`; it is the safe empty-intake gate and should stay independent from runtime art |
+
+## Visual QA Changes
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run visual:qa
+git diff --check
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Editing screenshot QA harness, visual review docs, or a scoped UI/visual surface that needs screenshots | Visual QA about 3m | 18 screenshot capture flow, generated index, browser console error capture, review artifact consistency | App failed to reach a captured view, screenshot path issue, or browser console error | The human review policy; screenshots are artifacts, not pixel-perfect baselines |
+
+## Content/Data Changes
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run test:e2e:smoke
+npm run playtest:sim
+git diff --check
+```
+
+Add deeper coverage when content affects campaign flow, battle outcomes, rewards, pressure, or saves:
+
+```bash
+npm run test:e2e:deep
+npm run test:e2e:release
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Editing units, buildings, abilities, maps, campaign nodes, rewards, saves, rival state, retinue rules, pressure metadata, or balance-adjacent data | Smoke about 5m; simulator usually under 1m; deep/release much longer | Content references, save compatibility, campaign/battle launch, deterministic simulator balance checks | Bad ID/reference, changed reward persistence, broken save normalization, changed campaign outcome | `npm run validate:content` before broad browser checks; it catches many data mistakes cheaply |
+
+## E2E Release Verification
+
+Commands:
+
+```bash
+npm run test:e2e:smoke
+npm run test:e2e:release
+npm run test:e2e:release:shard1
+npm run test:e2e:release:shard2
+npm run test:e2e:release:shard1of3
+npm run test:e2e:release:shard2of3
+npm run test:e2e:release:shard3of3
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Full release about 29m; 2-way shards about 24m and 5m; 3-way shards about 11 to 13m, 13m, and 5m | Full browser behavior suite, shard distributability, smoke/deep/layout/pressure coverage | Real browser regression, shard-only scheduling issue, timeout or stale-process issue | Full release before major freezes; 3-way shards are balanced for CI but do not delete the one-command lane |
+
+Timeout policy lives in `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`.
+
+## Full Final Gate
+
+Commands:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run test:e2e:smoke
+npm run test:e2e:release
+npm run test:e2e:release:shard1
+npm run test:e2e:release:shard2
+npm run test:e2e:release:shard1of3
+npm run test:e2e:release:shard2of3
+npm run test:e2e:release:shard3of3
+npm run visual:qa
+npm run playtest:sim
+npm run smoke:preview
+git diff --check
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| End of a long goal or release handoff | More than an hour locally because release lanes are repeated in full and shards | Complete local release confidence, screenshot QA, simulator, production preview, whitespace | Any critical release surface may be broken or flaky | `git diff --check` at the end; it catches whitespace issues after docs edits |
+
+## Preview Smoke
+
+Commands:
+
+```bash
+npm run build
+npm run smoke:preview
+```
+
+Manual fallback:
+
+```bash
+npm run preview
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| After build-output/chunking/tooling changes, final gates, or preview reliability checks | `smoke:preview` about 30s after a build | Production `dist/` boot, title/menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, browser console errors, process cleanup | Missing build, port conflict, production-only crash, WebGL/headless issue, or process cleanup bug | `npm run build` first; preview serves `dist/` |
+
+The helper is documented in `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`.
+
+## Art-Intake Validation
+
+Command:
+
+```bash
+npm run validate:art-intake
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Editing future Cinderfen style-frame metadata or review manifests | A few seconds | Metadata completeness, source/license proof, approval gates, unknown-source/high-IP-risk denial | Unsafe candidate approval, missing source fields, rejected candidate without reason | This command after any `art-review/cinderfen-style-frames/metadata/` edit |
+
+## Bundle Analysis
+
+Commands:
+
+```bash
+npm run build
+npm run build:analyze
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Measuring bundle growth, warning policy, possible production leaks, or optimization candidates | Build about 15 to 30s; analyzer about 30 to 60s | Current chunk sizes, Phaser vendor warning state, analyzer artifacts under `bundle-analysis/` | Unexpected app/CSS growth, changed vendor chunk, accidental test/dev code in production | Measurement before optimization; do not lazy-load or change warning limits without evidence |
+
+The latest refresh is `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`.
+
+## Simulator
+
+Command:
+
+```bash
+npm run playtest:sim
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Campaign battle balance, pressure metadata, rewards, node/battle changes, or final gates | Usually under 1m | 255 scripted campaign battle runs across 85 node/profile summaries, deterministic telemetry, too-easy/too-hard warning signals | Balance regression, impossible route, pressure telemetry warning, structural campaign battle issue | Simulator after content changes that affect battle outcomes |
+
+## Default Rule
+
+When uncertain, run the fast local confidence set first. Add the browser, visual, simulator, release, or preview lanes according to the touched surface. Never reduce real coverage just to make a lane faster.
