@@ -16,10 +16,11 @@ Phase status:
 
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; prior `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
 - Phase 1 e2e runtime audit refresh: complete. Current inventory remains 67 e2e tests across 4 files, with 2-way shards at 55/12 tests and 3-way shards at 28/27/12 tests. Added `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md` to document scripts, Playwright config, shard shape, known v0.10 runtimes, slow-lane causes, and safe v0.11 opportunities.
+- Phase 2 release lane reliability plan: complete. Added `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md` to define smoke/full release/shard use, timeout handling, transient reruns, process cleanup, port-conflict handling, and no-coverage-reduction guardrails.
 
 Commits created so far:
 
-- None for v0.11 yet.
+- `96b9a3f Checkpoint v0.11 e2e runtime audit refresh`
 
 Current v0.11 verification:
 
@@ -35,6 +36,11 @@ Current v0.11 verification:
 - Phase 1 `npm run validate:content`: PASS.
 - Phase 1 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 1 `git diff --check`: PASS.
+- Phase 2 `npm test`: PASS, 46 files / 351 tests.
+- Phase 2 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 2 `npm run validate:content`: PASS.
+- Phase 2 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 2 `git diff --check`: PASS.
 
 Current risks:
 

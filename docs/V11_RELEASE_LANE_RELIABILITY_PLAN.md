@@ -1,0 +1,131 @@
+# v0.11 Release Lane Reliability Plan
+
+Date: 2026-05-11
+
+Scope: define how Ascendant Realms should use the current Playwright release lanes, how to handle timeouts and transients, and how to keep release verification useful without reducing coverage. This plan does not change tests, scripts, Playwright config, gameplay, content, save format, tutorial behavior, visual assets, or campaign progression.
+
+## Current Release Lanes
+
+| Lane | Command | Current count | Latest known runtime | Intended use |
+| --- | --- | ---: | --- | --- |
+| Smoke | `npm run test:e2e:smoke` | 12 tests | About 4.9m | Frequent browser confidence during implementation. |
+| Full release | `npm run test:e2e:release` | 67 tests | About 29.0m | Major checkpoints, final gates, and full pre-freeze confidence. |
+| 2-way shard 1 | `npm run test:e2e:release:shard1` | 55 tests | About 24.3m | Legacy 2-way split; currently heavy. |
+| 2-way shard 2 | `npm run test:e2e:release:shard2` | 12 tests | About 4.8m | Legacy 2-way split; currently smoke-sized. |
+| 3-way shard 1 | `npm run test:e2e:release:shard1of3` | 28 tests | About 11.5m | Deep-flow family. |
+| 3-way shard 2 | `npm run test:e2e:release:shard2of3` | 27 tests | About 12.9m | Layout plus enemy-pressure family. |
+| 3-way shard 3 | `npm run test:e2e:release:shard3of3` | 12 tests | About 4.9m | Smoke family. |
+| Layout | `npm run test:e2e:layout` | 25 tests | About 12.5m recently | Responsive UI/HUD/tutorial overlay confidence. |
+| Visual QA | `npm run visual:qa` | 1 capture test | About 3.2m | Optional indexed screenshots and console-error capture for human review. |
+
+## Recommended Use
+
+Use the smallest lane that protects the changed surface during implementation, then run broader gates at checkpoint boundaries.
+
+| Work type | Recommended verification |
+| --- | --- |
+| Docs-only | `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `git diff --check` |
+| Script/test tooling | Docs-only gate plus `npm run test:e2e:smoke` |
+| Tutorial or layout work | Add `npm run test:e2e:layout`; add `npm run visual:qa` when screenshots matter |
+| Visual-intake metadata | Docs-only gate plus `npm run validate:art-intake` |
+| Content/data/save/campaign work | Add focused unit tests, `npm run test:e2e:smoke`, relevant deep/release coverage, and `npm run playtest:sim` when campaign battle outcomes can change |
+| CI long checks | Prefer the 3-way shards for better balance |
+| Final freeze | Run the full final gate, including smoke, full release, 2-way shards, 3-way shards, visual QA, simulator, diff check, and production preview smoke |
+
+The full release lane should remain available even when 3-way shards are used in CI. The shards prove distributability and help CI scheduling; the full lane proves the suite also works in the single-command release path.
+
+## Timeout Policy
+
+Treat a timeout differently from a test assertion failure.
+
+1. If the command times out and there is no failing-test output, inspect whether a dev server, preview server, or Playwright browser process was left behind.
+2. Clean up only repo-local or clearly related processes. Do not blindly kill unrelated user Node processes.
+3. Rerun the same command with a longer command timeout when the previous output showed progress but the harness limit expired.
+4. If the rerun passes, document the first timeout as a command-limit or process-cleanup issue in `LLM_GAME_HANDOFF.md`.
+5. If the rerun times out again at the same point, treat it as a real reliability issue and investigate the focused spec first.
+
+Timeouts that still show a specific failing assertion, stack trace, or test name should follow the transient/failure policy below instead of being treated as pure command-limit events.
+
+## Transient Policy
+
+Use one focused retry path before changing code:
+
+1. Rerun the exact failed test once with the same reporter.
+2. If the targeted rerun passes, rerun the relevant lane once.
+3. If the relevant lane passes, document the transient in `LLM_GAME_HANDOFF.md` and continue.
+4. If either rerun fails, investigate the real failure.
+5. Do not change gameplay, waits, selectors, or assertions merely to hide a flaky symptom.
+
+Examples:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts -g "tutorial entry launches" --reporter=line
+npm run test:e2e:smoke
+```
+
+```text
+npx playwright test tests/e2e/layout.spec.ts -g "tutorial entry and first objective overlay" --reporter=line
+npm run test:e2e:layout
+```
+
+## Process Cleanup Policy
+
+The project uses Vite dev and preview servers during browser verification. Leftover processes can create port conflicts or keep a helper command alive after checks finish.
+
+Safe cleanup principles:
+
+- Prefer helpers that own the child process and shut down the full process tree when the run ends.
+- Before manual cleanup, identify process command lines and ports.
+- Clean only processes tied to the current repo, Playwright run, Vite dev server, or Vite preview server.
+- Avoid broad `node` process termination on a shared developer machine.
+- After cleanup, confirm the target port is free or the next command can reuse the intended server.
+
+Useful ports:
+
+| Port | Owner |
+| ---: | --- |
+| `5173` | Vite dev server used by Playwright e2e and visual QA |
+| `4173` | Vite preview server used by production preview smoke |
+
+## Port Conflict Policy
+
+If `5173` or `4173` is occupied:
+
+1. Check whether it is an intended existing server from this repo.
+2. If it is the intended server and local Playwright reuse is enabled, rerun the lane normally.
+3. If it is stale or from a failed helper, stop only that process tree.
+4. If it belongs to unrelated work, use a different preview port only for a manual investigation and document the deviation.
+
+## What Not To Do
+
+Do not improve release runtime by:
+
+- deleting tests for speed
+- replacing behavior checks with fake helper assertions
+- reducing full release coverage
+- disabling meaningful failure artifacts just to shorten runs
+- changing gameplay or content so tests become easier
+- making visual QA pixel-perfect
+- raising Vite warning thresholds to hide the known Phaser vendor warning
+- changing Playwright workers or parallelism without a dedicated stability pass
+
+## Recommended Safe v0.11 Improvements
+
+The v0.11 implementation should stay in the reliability/documentation lane:
+
+- Add or document a production preview smoke helper that owns preview startup, browser checks, console-error capture, and process-tree shutdown.
+- Document visual QA output behavior and, if tiny and safe, improve the screenshot index metadata or summary text.
+- Refresh bundle/performance facts after v0.10.
+- Add a developer command guide that maps work type to the correct verification gate.
+- Tighten `RELEASE_CHECKLIST.md` so final verification is clear without making routine iteration unnecessarily heavy.
+
+## Success Criteria
+
+The release lane process is healthy when:
+
+- smoke remains the default iteration browser gate
+- 3-way shards remain the preferred balanced CI split
+- full release remains available and green before major checkpoints
+- timeouts are documented and rerun with evidence
+- process cleanup is precise and does not disturb unrelated work
+- no test coverage is removed or weakened for speed
