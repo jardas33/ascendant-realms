@@ -20,6 +20,7 @@ Phase status:
 - Phase 3 workflow static review: complete. Inspected `.github/workflows/ci.yml`, `package.json`, Playwright configs, and `tools/smokePreview.ts`. Added `docs/V112_WORKFLOW_STATIC_REVIEW.md` and made no YAML change because static review found no concrete issue.
 - Phase 4 CI timeout tuning review: complete. Added `docs/V112_CI_TIMEOUT_TUNING_REVIEW.md` comparing local v0.11.1/v0.11.2 runtimes against workflow timeouts. No timeout changes are justified without hosted GitHub evidence.
 - Phase 5 preview helper remote portability review: complete. Added `docs/V112_PREVIEW_HELPER_REMOTE_PORTABILITY_REVIEW.md` to review `tools/smokePreview.ts` for hosted Linux behavior. No helper or workflow env change is justified without hosted failure evidence.
+- Phase 6 CI artifact remote review: complete. Added `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md` to review expected artifacts, visual QA output structure, Playwright diagnostics paths, retention, and source/license boundaries. No artifact YAML change is justified without hosted evidence.
 
 Current v0.11.2 verification:
 
@@ -57,6 +58,12 @@ Current v0.11.2 verification:
 - Phase 5 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.0m.
 - Phase 5 `npm run smoke:preview`: PASS in about 27s at `http://127.0.0.1:4173/`, with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
 - Phase 5 `git diff --check`: PASS.
+- Phase 6 `npm test`: PASS, 46 files / 351 tests.
+- Phase 6 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 6 `npm run validate:content`: PASS.
+- Phase 6 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 6 `npm run visual:qa`: PASS, 1 capture test in about 3.4m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 6 `git diff --check`: PASS.
 
 Current v0.11.2 risks:
 
