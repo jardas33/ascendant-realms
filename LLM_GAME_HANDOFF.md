@@ -19,12 +19,14 @@ Phase status:
 - Phase 2 release lane reliability plan: complete. Added `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md` to define smoke/full release/shard use, timeout handling, transient reruns, process cleanup, port-conflict handling, and no-coverage-reduction guardrails.
 - Phase 3 preview smoke reliability: complete. Added `npm run smoke:preview`, backed by `tools/smokePreview.ts`, plus `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`. The helper starts Vite preview on the standard port through the local Vite CLI, uses Playwright Chromium with the project GPU args, verifies production menu/tutorial/campaign/skirmish paths, captures browser console errors, and shuts down the preview process tree it started. An initial direct `npm.cmd` spawn attempt failed with `spawn EINVAL`; the helper was corrected before commit and the final preview smoke passed.
 - Phase 4 visual QA reliability: complete. Updated `tests/visual-qa/visual-qa.spec.ts` so the generated index and command output include screenshot count, console-error count, viewport coverage, and harness path. Added `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`. No pixel-perfect assertions, screenshot cleanup, art, gameplay, or runtime asset changes.
+- Phase 5 bundle and performance refresh: complete. Ran `npm run build` and `npm run build:analyze`; added `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`. Current app JS/CSS/vendor sizes are unchanged from v0.10, the known Phaser vendor warning remains, and production string scan shows no v0.11 preview/visual QA tooling leak.
 
 Commits created so far:
 
 - `96b9a3f Checkpoint v0.11 e2e runtime audit refresh`
 - `3e5205b Checkpoint v0.11 release lane reliability plan`
 - `713d1a8 Checkpoint v0.11 preview smoke reliability`
+- `e3c1ee8 Checkpoint v0.11 visual QA reliability`
 
 Current v0.11 verification:
 
@@ -59,6 +61,13 @@ Current v0.11 verification:
 - Phase 4 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 4 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors, and generated index summary shows screenshot count 18 / console error count 0 / desktop-tablet-mobile viewport coverage.
 - Phase 4 `git diff --check`: PASS.
+- Phase 5 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 5 `npm run build:analyze`: PASS with the same build outputs; regenerated ignored `bundle-analysis/stats.html` and `bundle-analysis/stats.json`.
+- Phase 5 `npm test`: PASS, 46 files / 351 tests.
+- Phase 5 `npm run validate:content`: PASS.
+- Phase 5 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 5 production string scan: `playwright`, `vitest`, `chapter2-helpers`, `ScriptedBattlePlaytest`, `PlaytestRunner`, `smokePreview`, and `visual-qa` all had 0 matches in production app JS; `__ASCENDANT_TEST_HOOKS__` remained at 8 expected matches and `data-testid` at 86 expected matches.
+- Phase 5 `git diff --check`: PASS.
 
 Current risks:
 
