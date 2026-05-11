@@ -200,6 +200,39 @@ npm run build:analyze
 
 The latest refresh is `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`.
 
+## GitHub Actions CI
+
+Workflow:
+
+```text
+.github/workflows/ci.yml
+```
+
+Automatic fast confidence runs on pull requests and pushes to `main`:
+
+```bash
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run test:e2e:smoke
+npm run smoke:preview
+```
+
+Manual workflow inputs:
+
+```text
+run_visual_qa
+run_release_matrix
+run_full_release
+```
+
+| Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
+| --- | --- | --- | --- | --- |
+| Remote PR/push confidence or manual release dry-runs | Fast CI is smoke-sized; manual release shards depend on the slowest 3-way shard | Clean install, build, validators, smoke, preview smoke, optional visual artifacts, optional release shards, optional simulator | Missing CI browser dependency, Linux/CI preview portability issue, real browser regression, shard-only failure, or artifact upload issue | Local final gate before handoff; CI supplements local release evidence and still needs GitHub-side validation after first push |
+
+CI design docs: `docs/V111_CI_MATRIX_AUDIT.md`, `docs/V111_CI_RELEASE_MATRIX_PLAN.md`, `docs/V111_CI_ARTIFACT_STRATEGY.md`, and `docs/V111_CI_LOCAL_PARITY_CHECK.md`.
+
 ## Simulator
 
 Command:

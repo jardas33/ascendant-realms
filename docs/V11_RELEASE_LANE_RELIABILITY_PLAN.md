@@ -34,6 +34,18 @@ Use the smallest lane that protects the changed surface during implementation, t
 
 The full release lane should remain available even when 3-way shards are used in CI. The shards prove distributability and help CI scheduling; the full lane proves the suite also works in the single-command release path.
 
+## v0.11.1 CI Dry-Run Follow-Up
+
+v0.11.1 adds `.github/workflows/ci.yml` as a conservative first GitHub Actions workflow:
+
+- automatic fast confidence on pull requests and pushes to `main`
+- manual optional visual QA with screenshot artifact upload
+- manual 3-way release shard matrix plus simulator
+- manual full-release e2e lane for major freezes
+- Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, and no paid services
+
+The CI workflow does not replace the local final gate. Treat the first pushed workflow run as a dry-run validation of GitHub syntax, runner timing, artifact behavior, Playwright browser installation, and `smoke:preview` portability.
+
 ## Timeout Policy
 
 Treat a timeout differently from a test assertion failure.

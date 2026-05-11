@@ -29,6 +29,7 @@ Known current realities:
 - The known Phaser vendor chunk warning remains expected and non-blocking.
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
+- GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs automatically, while visual QA, 3-way release shards, simulator, and full release remain manual `workflow_dispatch` options.
 
 ## Required Automated Checks
 
@@ -161,6 +162,33 @@ Shard 3 of 3: passed, 12 Playwright tests in about 4.9m.
 ```
 
 Final verification should still run the full release lane, both existing 2-shard scripts, and all three 3-shard scripts before push. The 3-shard scripts remain the additive CI option; they do not replace the canonical full release lane.
+
+## GitHub Actions CI Dry Run
+
+v0.11.1 adds `.github/workflows/ci.yml`.
+
+Automatic `pull_request` and `push` to `main` fast confidence runs:
+
+```text
+npm ci
+npx playwright install --with-deps chromium
+npm test
+npm run build
+npm run validate:content
+npm run validate:art-intake
+npm run test:e2e:smoke
+npm run smoke:preview
+```
+
+Manual `workflow_dispatch` inputs:
+
+| Input | Runs | Use when |
+| --- | --- | --- |
+| `run_visual_qa` | `npm run visual:qa` and uploads `visual-qa/latest/` | Human screenshot review is needed. |
+| `run_release_matrix` | 3-way release shard matrix plus `npm run playtest:sim` | CI release gate dry-run or pre-freeze confidence. |
+| `run_full_release` | `npm run test:e2e:release` | Major freeze or one-command release-lane confirmation in CI. |
+
+The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. GitHub-side syntax/runner behavior still needs validation after push; do not weaken local release gates until CI has proven itself on the remote.
 
 7. Optional focused e2e lanes:
 
