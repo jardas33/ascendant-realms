@@ -17,10 +17,12 @@ Phase status:
 - Phase 0 repository integrity: complete. Started clean and synced on `main...origin/main`; prior `git rev-list --left-right --count origin/main...HEAD` was `0 0`. Baseline `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, and `git diff --check` passed. No commit required.
 - Phase 1 e2e runtime audit refresh: complete. Current inventory remains 67 e2e tests across 4 files, with 2-way shards at 55/12 tests and 3-way shards at 28/27/12 tests. Added `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md` to document scripts, Playwright config, shard shape, known v0.10 runtimes, slow-lane causes, and safe v0.11 opportunities.
 - Phase 2 release lane reliability plan: complete. Added `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md` to define smoke/full release/shard use, timeout handling, transient reruns, process cleanup, port-conflict handling, and no-coverage-reduction guardrails.
+- Phase 3 preview smoke reliability: complete. Added `npm run smoke:preview`, backed by `tools/smokePreview.ts`, plus `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`. The helper starts Vite preview on the standard port through the local Vite CLI, uses Playwright Chromium with the project GPU args, verifies production menu/tutorial/campaign/skirmish paths, captures browser console errors, and shuts down the preview process tree it started. An initial direct `npm.cmd` spawn attempt failed with `spawn EINVAL`; the helper was corrected before commit and the final preview smoke passed.
 
 Commits created so far:
 
 - `96b9a3f Checkpoint v0.11 e2e runtime audit refresh`
+- `3e5205b Checkpoint v0.11 release lane reliability plan`
 
 Current v0.11 verification:
 
@@ -41,6 +43,14 @@ Current v0.11 verification:
 - Phase 2 `npm run validate:content`: PASS.
 - Phase 2 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 2 `git diff --check`: PASS.
+- Phase 3 `npm test`: PASS, 46 files / 351 tests.
+- Phase 3 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 3 `npm run validate:content`: PASS.
+- Phase 3 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 3 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.8m.
+- Phase 3 initial `npm run smoke:preview`: failed before app launch with `spawn EINVAL` when spawning `npm.cmd` directly on Windows; fixed by launching the local Vite CLI through the current Node executable.
+- Phase 3 final `npm run smoke:preview`: PASS in about 27s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
+- Phase 3 `git diff --check`: PASS.
 
 Current risks:
 

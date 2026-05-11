@@ -9,6 +9,7 @@
     "build": "tsc -p tsconfig.json && vite build",
     "build:analyze": "tsc -p tsconfig.json && vite build --mode analyze",
     "preview": "vite preview --host 0.0.0.0",
+    "smoke:preview": "tsx tools/smokePreview.ts",
     "test": "vitest run",
     "validate:content": "tsx tools/validateContent.ts",
     "validate:art-intake": "tsx tools/art-intake/validateArtIntake.ts",
