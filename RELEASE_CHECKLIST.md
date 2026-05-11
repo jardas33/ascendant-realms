@@ -8,6 +8,28 @@ D:\Code for projects\WB game like\ascendant-realms
 
 For day-to-day command selection before the final freeze gate, see `docs/DEVELOPER_COMMAND_GUIDE.md`. The release checklist remains the stricter checkpoint/freeze reference.
 
+## Gate Selection
+
+Use the focused gate that matches the changed surface during routine work, then run the final freeze gate before a release handoff.
+
+| Change type | Minimum gate | Additional focused gate |
+| --- | --- | --- |
+| Routine iteration | `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `git diff --check` | Add `npm run test:e2e:smoke` for source/tooling changes. |
+| Docs-only change | `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `git diff --check` | None unless docs describe a changed executable workflow. |
+| Tutorial/UI change | Routine gate plus `npm run test:e2e:smoke` | Add `npm run test:e2e:layout` and `npm run visual:qa` for overlay/layout/screenshot-relevant changes. |
+| Visual-intake change | Routine gate, especially `npm run validate:art-intake` | Add `npm run visual:qa` only when screenshot comparison docs or candidate-review evidence changes. |
+| Content/data change | Routine gate plus `npm run test:e2e:smoke` and `npm run playtest:sim` | Add `npm run test:e2e:deep` or full release for campaign, battle, save, reward, or pressure risk. |
+| Final freeze gate | Every required check below, all release lanes/shards, visual QA, simulator, preview smoke, and `git diff --check` | Push only after the repo is clean and synced or document the manual push command. |
+
+Known current realities:
+
+- `npm run validate:art-intake` is part of the routine gate and must remain safe with an empty intake.
+- `npm run visual:qa` is useful, optional, human-reviewed, and non-pixel-perfect.
+- The 3-way release shards are the better-balanced CI split, but they do not replace the full release lane.
+- The known Phaser vendor chunk warning remains expected and non-blocking.
+- Full release e2e is intentionally slow and should use a long timeout.
+- Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
+
 ## Required Automated Checks
 
 1. Unit and pure-rule tests:
@@ -195,6 +217,7 @@ Expected current prototype result:
 PASS: 1 Playwright visual QA capture test
 18 review screenshots generated under visual-qa/latest/
 Browser console errors recorded in the generated index: 0
+Generated index summary records screenshot count 18, console error count 0, and desktop/tablet/mobile viewport coverage
 ```
 
 This v0.8.2 lane is optional and review-oriented. It captures main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
@@ -215,7 +238,13 @@ PASS: no whitespace errors
 
 ## Optional Preview Check
 
-After `npm run build`, run:
+After `npm run build`, prefer the automated preview helper:
+
+```bash
+npm run smoke:preview
+```
+
+Manual fallback:
 
 ```bash
 npm run preview
@@ -228,7 +257,7 @@ Open the local preview URL and confirm:
 - Browser console has no new hard errors.
 - Continue/New Campaign, Skirmish, Hero Inventory, Settings, and Asset Gallery are reachable from an appropriate save state.
 
-Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
+Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite for a manual fallback; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
 
 Latest production preview smoke, 2026-05-11:
 
@@ -241,10 +270,11 @@ PASS: New Campaign reached Campaign Map.
 PASS: Continue Campaign reached Campaign Map.
 PASS: Skirmish Setup opened.
 PASS: browser console errors stayed at 0.
-NOTE: a first preview harness attempt timed out because the preview child process stayed alive after the checks; repo-local preview processes were cleaned up, then the same smoke reran with explicit process-tree shutdown and passed.
+PASS: helper-owned preview process tree shut down.
+NOTE: v0.11 added `npm run smoke:preview` after v0.10 exposed child-process cleanup friction. The final helper starts Vite preview through the local Vite CLI, uses the project Chromium GPU args, captures console errors, and shuts down the process tree it started.
 ```
 
-After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, and browser console errors stay at 0.
+After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, browser console errors stay at 0, and the preview process exits cleanly.
 
 ## Manual QA Areas Not Fully Automated
 

@@ -21,6 +21,7 @@ Phase status:
 - Phase 4 visual QA reliability: complete. Updated `tests/visual-qa/visual-qa.spec.ts` so the generated index and command output include screenshot count, console-error count, viewport coverage, and harness path. Added `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`. No pixel-perfect assertions, screenshot cleanup, art, gameplay, or runtime asset changes.
 - Phase 5 bundle and performance refresh: complete. Ran `npm run build` and `npm run build:analyze`; added `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`. Current app JS/CSS/vendor sizes are unchanged from v0.10, the known Phaser vendor warning remains, and production string scan shows no v0.11 preview/visual QA tooling leak.
 - Phase 6 developer command guide: complete. Added `docs/DEVELOPER_COMMAND_GUIDE.md` and linked it from README and `RELEASE_CHECKLIST.md` so future work can choose the right verification gate without weakening release checks.
+- Phase 7 release checklist tightening: complete. Updated `RELEASE_CHECKLIST.md` with explicit routine/docs/tutorial/UI/visual-intake/content/final-freeze gate selection, current visual QA summary expectations, 3-way shard guidance, known Phaser warning status, slow-release warning, and `npm run smoke:preview` preview-smoke guidance.
 
 Commits created so far:
 
@@ -29,6 +30,7 @@ Commits created so far:
 - `713d1a8 Checkpoint v0.11 preview smoke reliability`
 - `e3c1ee8 Checkpoint v0.11 visual QA reliability`
 - `92b0afb Checkpoint v0.11 bundle performance refresh`
+- `b100f2d Checkpoint v0.11 developer command guide`
 
 Current v0.11 verification:
 
@@ -75,6 +77,11 @@ Current v0.11 verification:
 - Phase 6 `npm run validate:content`: PASS.
 - Phase 6 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 6 `git diff --check`: PASS.
+- Phase 7 `npm test`: PASS, 46 files / 351 tests.
+- Phase 7 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 7 `npm run validate:content`: PASS.
+- Phase 7 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 7 `git diff --check`: PASS.
 
 Current risks:
 
