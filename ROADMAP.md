@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review** on 2026-05-10. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, v0.7.2 pressure feel review, v0.7.3 real-input pressure playtest, v0.8 technical/visual foundation, v0.8.1 visual asset manifest/screenshot QA gate, v0.8.2 source/license screenshot coverage gate, and v0.9 docs/specs/prompts-only Cinderfen style-frame package while adding a safe non-runtime intake pipeline for future style-frame candidates. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, or a graphics overhaul.
+The latest feature checkpoint is **v0.10 Tutorial v2 Onboarding Refinement** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, v0.7.2 pressure feel review, v0.7.3 real-input pressure playtest, v0.8 technical/visual foundation, v0.8.1 visual asset manifest/screenshot QA gate, v0.8.2 source/license screenshot coverage gate, v0.9 docs/specs/prompts-only Cinderfen style-frame package, and v0.9.1 non-runtime style-frame intake pipeline while improving Tutorial / Proving Grounds copy, hints, completion clarity, overlay hierarchy, e2e lane documentation, visual QA review, and manual playtest guidance. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, or a graphics overhaul.
 
-The next recommended phase is **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides 1 to 3 source/license-documented candidate images per first-priority category. Keep it non-runtime: inspect candidate files, validate metadata, reject unsafe candidates, catalogue safe candidates as reference/candidate only, run visual QA, and write a side-by-side human source/screenshot review. Do not wire new art into runtime until a later goal explicitly scopes one tiny replacement with source/license proof and before/after screenshot QA. If player-facing work is preferred, Tutorial v2 onboarding refinement remains the safer alternative. A pressure-specific follow-up should still wait for Emmanuel's manual checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
+The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. Keep it narrow: clarify confusing steps, adjust copy or tiny overlay spacing if evidence supports it, preserve no rewards/no persistence, and avoid new maps, units, factions, campaign progression, art replacement, or a UI redesign. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. A pressure-specific follow-up should still wait for Emmanuel's manual pressure checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
+
+New v0.10 tutorial onboarding docs:
+
+- `docs/V10_TUTORIAL_V2_AUDIT.md`
+- `docs/V10_TUTORIAL_V2_PACING_PLAN.md`
+- `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md`
+- `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`
+- `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`
+- `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`
+- `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md`
 
 New v0.9.1 controlled intake docs and folders:
 
@@ -125,6 +137,15 @@ Recent tutorial shell docs:
 - `docs/COMMAND_LOG_V1_REPORT.md`
 - `docs/DESKTOP_2026_VISUAL_DIRECTION.md`
 - `docs/V06_TUTORIAL_ONBOARDING_REPORT.md`
+- `docs/V10_TUTORIAL_V2_AUDIT.md`
+- `docs/V10_TUTORIAL_V2_PACING_PLAN.md`
+- `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md`
+- `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`
+- `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`
+- `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`
+- `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md`
 
 The prior safety checkpoint is the **v0.5 save/content-validation gate** on 2026-05-08. It preserved the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, and v0.4 technical groundwork while adding save fixtures, stronger content validation, a standalone content validation script, campaign graph/reward checks, command-log feasibility planning, simulator determinism checks, and one approved future vertical-slice candidate.
 
@@ -143,11 +164,11 @@ New v0.5 gate docs:
 
 Latest final v0.5 verification: `npm test` 298 tests, `npm run build`, `npm run validate:content`, `npm run test:e2e:smoke` 10 tests in 4.5m, `npm run test:e2e:release` 59 tests in 28.4m, `npm run test:e2e:release:shard1` 49 tests in 23.9m, `npm run test:e2e:release:shard2` 10 tests in 4.4m, `npm run playtest:sim` 255 deterministic runs, `git diff --check`, and production preview smoke passed. The current build output is app JS about 445.42 kB / 119.69 kB gzip, `vendor-phaser` about 1,481.79 kB / 339.86 kB gzip, and CSS about 42.04 kB / 8.74 kB gzip. The known Vite warning remains isolated to the Phaser vendor chunk.
 
-Recommended next phase after v0.9: **v0.9.1 controlled Cinderfen style-frame intake and source review**, keeping runtime gameplay unchanged and avoiding workers, construction, new units, new maps, rewards, save changes, stronger pressure actions, desktop packaging, engine switching, runtime art replacement, large binaries, and broad systems.
+Recommended visual follow-up after v0.9.1: **v0.9.2 controlled Cinderfen style-frame candidate review**, only after source/license-documented candidates are provided. Keep runtime gameplay unchanged and avoid workers, construction, new units, new maps, rewards, save changes, stronger pressure actions, desktop packaging, engine switching, runtime art replacement, large binaries, and broad systems.
 
-The current release baseline is **v0.3.1 Polish Release - frozen**. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is the active post-freeze safety/planning baseline, and the Tutorial / Proving Grounds shell is the first safe onboarding vertical slice on top of it.
+The current release baseline is still **v0.3.1 Polish Release - frozen** for content, with v0.10 as the latest player-facing onboarding refinement on top of the existing Tutorial / Proving Grounds shell. v0.3 remains the frozen Cinderfen Route Baseline content release; v0.3.1 is the polish/readability/performance-audit/test-maintenance release on top of that content baseline. The v0.5 gate is the active post-freeze safety/planning baseline, and the Tutorial / Proving Grounds shell is the first safe onboarding vertical slice on top of it.
 
-Latest checkpoint verification: 2026-05-10 v0.9 controlled Cinderfen style-frame report gate. Phase/report gates passed `npm test` with 45 files / 340 tests, `npm run build` with the known Phaser vendor warning, `npm run validate:content`, `npm run visual:qa` with 18 indexed review screenshots and zero recorded browser console errors, `npm run playtest:sim` with 255 runs across 85 campaign battle nodes, and `git diff --check`. No workers, real enemy construction, new maps, new units, new factions, rewards, save-version changes, campaign progression, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, engine switch, external assets, generated art, imported art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, graphics overhaul, or broad systems were added.
+Latest checkpoint verification before the v0.10 final release gate: 2026-05-11 v0.10 tutorial onboarding phase gates. Phase gates passed `npm test` with 46 files / 351 tests, `npm run build` with the known Phaser vendor warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke`, `npm run test:e2e:layout`, `npm run test:e2e:release`, `npm run visual:qa` with 18 indexed review screenshots and zero recorded browser console errors, and `git diff --check`. No workers, real enemy construction, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, monetization code, multiplayer, desktop packaging, engine switch, external assets, generated art, imported art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, graphics overhaul, full UI redesign, or broad systems were added.
 
 The current playable v0.3 Chapter 2 slice ends at Cinderfen Aftermath. Any later Cinderfen nodes should stay clearly marked as upcoming and must not launch missing maps or unimplemented content.
 

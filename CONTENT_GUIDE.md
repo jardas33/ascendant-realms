@@ -45,7 +45,7 @@ npm run visual:qa
 
 The output under `visual-qa/latest/` is ignored by git and is for human review only. Do not make pixel-perfect screenshot assertions in this workflow.
 
-Current v0.8.2 visual QA captures 18 indexed screenshots covering main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. Use `visual-qa/latest/index.md` as the source of truth because the ignored folder can contain older manual artifacts.
+Current visual QA captures 18 indexed screenshots covering main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. Use `visual-qa/latest/index.md` as the source of truth because the ignored folder can contain older manual artifacts. The v0.10 tutorial visual review lives in `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`.
 
 Source/license review docs:
 
@@ -88,6 +88,20 @@ Tutorial metadata lives in `src/game/data/tutorials.ts`, with types in `src/game
 10. Do not add a playable tutorial without steps, set `noReward` false for the first shell, or point a step at missing map/unit/building/ability/resource/capture-site IDs.
 11. Do not use tutorial metadata to add maps, units, factions, rewards, campaign node completion, save fields, workers, enemy construction, crafting, diplomacy, procedural generation, multiplayer, desktop packaging, or external assets.
 12. Run `npm run validate:content` and `npm test` after edits.
+
+v0.10 Tutorial v2 onboarding docs for future tutorial work:
+
+- `docs/V10_TUTORIAL_V2_AUDIT.md`
+- `docs/V10_TUTORIAL_V2_PACING_PLAN.md`
+- `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`
+- `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md`
+- `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`
+- `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`
+- `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`
+- `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md`
+
+Use these before changing tutorial copy or layout. v0.10 keeps the twelve-step shell, no-reward policy, no-save policy, existing map/content reuse, and smoke coverage. Future changes should stay evidence-driven, preferably from Emmanuel's manual checklist, and should not add persistence, campaign rewards, map changes, new content, or broad UI redesign.
 
 ## Add A New Unit
 

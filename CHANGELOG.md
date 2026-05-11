@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.10 Tutorial v2 Onboarding Refinement - 2026-05-11
+
+This checkpoint refines Tutorial / Proving Grounds onboarding clarity, pacing documentation, overlay hierarchy, no-reward completion messaging, e2e lane documentation, visual QA review, and Emmanuel's manual playtest checklist without adding maps, units, factions, workers, enemy construction, economy AI, rewards, save persistence, campaign progression, generated art, imported art, runtime art replacement, desktop packaging, engine switching, a graphics overhaul, or broad systems.
+
+### Included
+
+- Tutorial v2 audit: `docs/V10_TUTORIAL_V2_AUDIT.md`.
+- Tutorial pacing and scope plan: `docs/V10_TUTORIAL_V2_PACING_PLAN.md`.
+- Tutorial copy refinement in `src/game/data/tutorials.ts` plus `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md`.
+- Small tutorial overlay hierarchy refinement in `src/game/ui/hudPanels/TutorialPanel.ts` and `src/game/styles/battle-feedback.css` plus `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`.
+- Completion/no-reward clarity in the battle and main-menu handoff plus `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md`.
+- Tutorial e2e lane review: `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`.
+- Tutorial visual QA review: `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`.
+- Manual Tutorial v2 playtest checklist for Emmanuel: `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`.
+- v0.10 report: `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md`.
+
+### Verification
+
+- Phase gates: `npm test` passed with 46 test files and 351 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `npm run validate:art-intake` passed with the template-only empty intake.
+- Tutorial source/UI gates: `npm run test:e2e:smoke` passed.
+- Layout gate: `npm run test:e2e:layout` passed.
+- E2E lane review: `npm run test:e2e:release` passed with 67 Playwright tests.
+- Visual review: `npm run visual:qa` passed with 18 indexed review screenshots and zero recorded browser console errors.
+- Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+- Phase gates: `git diff --check` passed.
+
+### Next
+
+- Recommended immediate human step: Emmanuel should run `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md` and report confusing steps, screenshots, 1-5 ratings, and whether no-reward completion feels acceptable.
+- Recommended next player-facing goal after feedback: v0.10.1 Tutorial v2 human-feedback polish, still no rewards, persistence, maps, units, factions, art replacement, or broad UI redesign.
+- Recommended visual goal remains v0.9.2 Controlled Cinderfen Style-Frame Candidate Review only after source/license-documented candidate images exist.
+
 ## v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 
 This checkpoint creates the safe non-runtime intake pipeline for future Cinderfen style-frame candidates. It adds review folders, source/license metadata templates, review manifest schema/types, metadata-only validation, a candidate scan, screenshot comparison planning, Emmanuel's manual preparation guide, and a future v0.9.2 review brief without adding generated art, imported assets, candidate binaries, runtime art, gameplay content, new maps, new units, new factions, rewards, save changes, campaign progression, desktop packaging, engine switching, a graphics overhaul, or broad systems.

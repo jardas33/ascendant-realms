@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-05-10 v0.9.1 controlled Cinderfen style-frame intake report gate
+Updated: 2026-05-11 v0.10 tutorial v2 onboarding report gate
+
+## v0.10 Tutorial v2 Onboarding Report Gate - 2026-05-11
+
+Scope: refine the playable Tutorial / Proving Grounds onboarding experience through copy clarity, pacing documentation, overlay hierarchy, no-reward completion clarity, e2e lane review, visual QA review, and Emmanuel's manual playtest checklist. This pass preserved gameplay rules, save compatibility, campaign progression, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V10_TUTORIAL_V2_AUDIT.md`, `docs/V10_TUTORIAL_V2_PACING_PLAN.md`, `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md`, `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`, `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md`, `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`, `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`, `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`, and `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md`.
+- Updated tutorial copy in `src/game/data/tutorials.ts` to make the current twelve-step RTS/RPG loop clearer and more action-oriented.
+- Added small tutorial overlay hierarchy styling in `src/game/ui/hudPanels/TutorialPanel.ts` and `src/game/styles/battle-feedback.css`.
+- Clarified completion/menu copy so the player sees that training is complete, no rewards or save changes were granted, and New Campaign is the saved-run next step.
+- Kept the full tutorial completion path in smoke after reviewing current e2e lane costs and coverage value.
+- Reviewed refreshed visual QA tutorial screenshots and kept further UI work out of scope for v0.10.
+- Wrote a human playtest checklist for Emmanuel to collect actual first-time-player feedback.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests during phase gates.
+
+npm run build
+PASS: TypeScript compile and Vite production build.
+Output: assets/index-DY-3qp2P.js, 477.04 kB minified / 127.86 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BiGdwuWI.css, 44.51 kB minified / 9.16 kB gzip.
+Known warning remains because vendor-phaser is larger than 500 kB after minification.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 4.7m.
+
+npm run test:e2e:layout
+PASS: 25 Playwright tests during the overlay phase.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests during the e2e lane review phase, about 28.0m.
+
+npm run visual:qa
+PASS: 1 Playwright capture test in about 3.0m, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors during phase/report gates.
+```
+
+Recommended next milestone: v0.10.1 Tutorial v2 Human-Feedback Polish, only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. Keep it narrow and evidence-driven: clarify confusing steps or tiny overlay spacing only, preserve no rewards/no persistence/no campaign progression, and do not add maps, units, factions, generated art, runtime art replacement, or a full UI redesign. Visual work can instead return to v0.9.2 Controlled Cinderfen Style-Frame Candidate Review when source/license-documented candidates exist.
 
 ## v0.9.1 Controlled Cinderfen Style-Frame Intake Report Gate - 2026-05-10
 

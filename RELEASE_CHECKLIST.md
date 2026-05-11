@@ -59,9 +59,9 @@ Expected current prototype result:
 ```text
 PASS: TypeScript compile and Vite production build
 Current output shape after the v0.4 Phaser vendor split:
-- app JS chunk: assets/index-CC1M6Mg7.js, 476.83 kB / gzip 127.77 kB
+- app JS chunk: assets/index-DY-3qp2P.js, 477.04 kB / gzip 127.86 kB
 - Phaser vendor chunk: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB / gzip 339.86 kB
-- CSS chunk: assets/index-v9ZLtiOK.css, 44.23 kB / gzip 9.11 kB
+- CSS chunk: assets/index-BiGdwuWI.css, 44.51 kB / gzip 9.16 kB
 ```
 
 Known warning:
@@ -84,7 +84,7 @@ Expected current prototype result:
 PASS: 12 Playwright tests
 ```
 
-This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.6 tutorial e2e runtime review keeps full tutorial completion in smoke while the lane remains around 5 minutes; move it deeper only if smoke repeatedly grows beyond the 6-7 minute watch band. v0.7.3 pressure playtest does not add smoke tests or change lane counts.
+This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full tutorial completion in smoke while the lane remains inside the 6-7 minute watch band; move it deeper only if smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
 
 5. Full browser release-gate suite:
 
@@ -98,7 +98,7 @@ Expected current prototype result:
 PASS: 67 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.7.1 pressure-feel final checkpoint: smoke PASS, 12 tests in 5.3m; focused pressure spec PASS, 2 tests in 43.1s during visibility hardening; release PASS, 67 tests in 32.9m.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.10 lane review checkpoint: smoke PASS, 12 tests in about 4.8m; release PASS, 67 tests in about 28.0m.
 
 6. Optional CI sharded release gate:
 
@@ -173,6 +173,12 @@ Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 
 This command regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
 
+Latest v0.10 report-gate simulator verification, 2026-05-11:
+
+```text
+PASS: 255 simulated runs across 85 campaign battle node/profile summaries.
+```
+
 Latest v0.7.3 pressure-playtest interpretation: no balance tuning is applied. Cinderfen Crossing and Cinderfen Watch pressure remain scoped, readable in controlled browser-input review, and warning/telemetry-only for `reinforce_next_wave`, `contest_capture_site`, and `defensive_hold`. Emmanuel's manual checklist remains the missing direct human evidence before any simulator-only reinforcement experiment.
 
 9. Optional visual screenshot QA:
@@ -191,7 +197,7 @@ Browser console errors recorded in the generated index: 0
 
 This v0.8.2 lane is optional and review-oriented. It captures main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
 
-Future Cinderfen visual work should also review `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` and `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`. v0.9.1 keeps this lane as human-review evidence: no pixel-perfect diffing, no generated/imported runtime art, and no production approval without source/license metadata plus manifest validation.
+Future Cinderfen visual work should also review `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` and `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`. v0.9.1 keeps this lane as human-review evidence: no pixel-perfect diffing, no generated/imported runtime art, and no production approval without source/license metadata plus manifest validation. Tutorial-specific v0.10 observations live in `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`.
 
 10. Whitespace diff check:
 
@@ -250,7 +256,7 @@ After build-output or chunking changes, run a production preview smoke when feas
 - Retinue and rival readability in normal human-paced play, including whether first-defeat rewards and trophies feel satisfying without becoming mandatory.
 - Cinderfen pressure feel in normal human-paced play, including whether pressure warnings are noticed, whether Cinder Shrine and Watch Road responses feel fair, and whether stronger actions should remain warning/telemetry-only.
 - Full human-paced Cinderfen route from Ashen Outpost through Overlook, Waystation, Crossing, Watch, and Aftermath, including Cinder Shrine surge/attunement readability and modest reward feel.
-- Full human-paced Tutorial / Proving Grounds run, especially twelve-step length, mobile-short overlay readability, building/training/rally timing, and no-reward completion clarity.
+- Full human-paced Tutorial / Proving Grounds run using `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`, especially first-30-seconds clarity, twelve-step length, mobile-short overlay readability, building/training/rally timing, enemy pressure fairness, and no-reward completion satisfaction.
 - HUD hover/scroll feel and captured-site fog readability under real mouse movement, even though the regression paths now have Playwright coverage.
 - Audio behavior with human ears.
 - Visual polish across generated/manual UI-kit assets.
@@ -274,5 +280,6 @@ After build-output or chunking changes, run a production preview smoke when feas
 - `docs/V08_VISUAL_DEBT_AUDIT.md`, `docs/V08_VISUAL_SCALE_READABILITY_AUDIT.md`, `docs/V08_PROTOTYPE_VISUAL_READABILITY_DECISION.md`, `docs/ART_DIRECTION_2026_BIBLE.md`, `docs/ASSET_PIPELINE_PLAN.md`, and `docs/CINDERFEN_VISUAL_REWORK_SPEC.md` define the visual foundation without implementing a graphics overhaul.
 - `docs/V08_TECH_VISUAL_FOUNDATION_REPORT.md` summarizes the v0.8 technical and visual foundation gate.
 - `docs/V091_CONTROLLED_STYLE_FRAME_INTAKE_REPORT.md` summarizes the current non-runtime Cinderfen style-frame intake pipeline, including metadata templates, validation, scan results, screenshot comparison planning, and the future v0.9.2 review brief.
-- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, the v0.7.3 pressure playtest gate, v0.8 technical/visual foundation gate, v0.8.1 manifest/screenshot gate, v0.8.2 source/license screenshot gate, v0.9 style-frame spec gate, and v0.9.1 intake gate as done, with the next recommended visual phase set to v0.9.2 candidate review only after Emmanuel provides source/license-documented candidates.
-- `LLM_GAME_HANDOFF.md` marks the current state as the v0.9.1 controlled Cinderfen style-frame intake gate and warns future sessions not to add broad systems, generated art, imported art, or runtime visual replacement before their gates are explicit and green.
+- `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md` summarizes the current Tutorial v2 onboarding refinement, including copy, overlay, completion, e2e lane, visual QA, and manual playtest checklist results.
+- `ROADMAP.md` marks Cinderfen Overlook, Waystation, Crossing, Watch, Aftermath, the first no-reward Tutorial / Proving Grounds shell, the v0.7.3 pressure playtest gate, v0.8 technical/visual foundation gate, v0.8.1 manifest/screenshot gate, v0.8.2 source/license screenshot gate, v0.9 style-frame spec gate, v0.9.1 intake gate, and v0.10 Tutorial v2 refinement as done, with the next recommended player-facing phase set to v0.10.1 only after Emmanuel's manual checklist feedback.
+- `LLM_GAME_HANDOFF.md` marks the current state as the v0.10 tutorial onboarding refinement and warns future sessions not to add rewards, persistence, maps, units, factions, broad systems, generated art, imported art, or runtime visual replacement before their gates are explicit and green.

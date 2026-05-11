@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.10 tutorial v2 audit
+Last updated: 2026-05-11 v0.10 tutorial v2 report gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -23,8 +23,21 @@ Phase status:
 - Phase 6 tutorial e2e lane review: complete. Added `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md` after listing the current 67-test Playwright suite. Decision: keep full Tutorial / Proving Grounds completion in smoke for v0.10 because the latest smoke runtime remains inside the watch band and the test protects no-save/no-reward behavior. No tests or scripts moved.
 - Phase 7 tutorial visual QA review: complete. Ran `npm run visual:qa`, reviewed refreshed tutorial desktop/mobile screenshots, and added `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`. Decision: no further visual change in v0.10; mobile HUD density remains a known issue for a later scoped UI pass.
 - Phase 8 manual Tutorial v2 playtest checklist: complete. Added `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md` for Emmanuel with start steps, normal-speed play guidance, 1-5 ratings, confusion questions, screenshot/report prompts, and explicit out-of-scope requests.
+- Phase 9 tutorial v2 report and release docs: complete. Added `docs/V10_TUTORIAL_V2_ONBOARDING_REPORT.md` and updated README, roadmap, release checklist, changelog, content guide, development checkpoint, and this handoff to describe v0.10 as the current tutorial onboarding refinement milestone.
 
 Skipped phases: none so far.
+
+Commits created so far:
+
+- `5c91459 Checkpoint v0.10 tutorial v2 audit`
+- `648c6fb Checkpoint v0.10 tutorial pacing plan`
+- `4a9076e Checkpoint v0.10 tutorial copy refinement`
+- `9dc37b7 Checkpoint v0.10 tutorial overlay refinement`
+- `94e4236 Checkpoint v0.10 tutorial completion clarity`
+- `c445641 Checkpoint v0.10 tutorial e2e refinement`
+- `7d9d748 Checkpoint v0.10 tutorial visual QA review`
+- `d28d6c4 Checkpoint v0.10 manual tutorial checklist`
+- Phase 9 commit follows: `Checkpoint v0.10 tutorial v2 report`
 
 Current v0.10 verification:
 
@@ -86,15 +99,23 @@ Current v0.10 verification:
 - Phase 8 `npm run validate:content`: PASS.
 - Phase 8 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 8 `git diff --check`: PASS.
+- Phase 9 `npm test`: PASS, 46 files / 351 tests.
+- Phase 9 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 9 `npm run validate:content`: PASS.
+- Phase 9 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 9 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.7m.
+- Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.0m.
+- Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 9 `git diff --check`: PASS.
 
 Current v0.10 risks:
 
 - The tutorial remains twelve steps long and still needs human-paced play.
 - Mobile tutorial launch is width-safe but visually dense because the battle HUD and command panel share the small viewport.
-- No-reward completion is clear but can feel plain; v0.10 may warm the copy while preserving no-save/no-reward guarantees.
-- Full tutorial completion remains in smoke for now; Phase 6 should revisit lane placement without removing coverage.
+- No-reward completion is clearer but still needs Emmanuel's human reaction to confirm it feels satisfying enough.
+- Full tutorial completion remains in smoke for now; revisit lane placement only if the lane repeatedly exceeds the 6-7 minute watch band.
 
-Next v0.10 step: write the v0.10 Tutorial v2 report and release docs.
+Next v0.10 step: optional Phase 10 cleanup only if a tiny safe docs/copy issue appears; otherwise proceed to the Phase 11 final full verification.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 
