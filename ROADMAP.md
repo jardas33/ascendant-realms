@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.10 Tutorial v2 Onboarding Refinement** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.7.1 pressure warning polish, v0.7.2 pressure feel review, v0.7.3 real-input pressure playtest, v0.8 technical/visual foundation, v0.8.1 visual asset manifest/screenshot QA gate, v0.8.2 source/license screenshot coverage gate, v0.9 docs/specs/prompts-only Cinderfen style-frame package, and v0.9.1 non-runtime style-frame intake pipeline while improving Tutorial / Proving Grounds copy, hints, completion clarity, overlay hierarchy, e2e lane documentation, visual QA review, and manual playtest guidance. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, or a graphics overhaul.
+The latest feature checkpoint is **v0.11 Technical Reliability, E2E Runtime, and Performance Gate** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.8 technical/visual foundation, v0.9 docs/specs/prompts-only Cinderfen style-frame package, v0.9.1 non-runtime style-frame intake pipeline, and v0.10 Tutorial v2 onboarding refinement while improving release reliability documentation, preview smoke automation, visual QA reporting, bundle/performance measurement, command ergonomics, and release-checklist clarity. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, or a graphics overhaul.
 
-The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. Keep it narrow: clarify confusing steps, adjust copy or tiny overlay spacing if evidence supports it, preserve no rewards/no persistence, and avoid new maps, units, factions, campaign progression, art replacement, or a UI redesign. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. A pressure-specific follow-up should still wait for Emmanuel's manual pressure checklist feedback and start as simulator-only `reinforce_next_wave`, not live reinforcement.
+The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. If neither human tutorial feedback nor candidate art is available, the safest autonomous follow-up is **v0.11.1 CI Release Matrix Dry-Run and Preview Helper Portability**, focused on CI matrix examples and release tooling portability without gameplay/content/runtime changes.
+
+New v0.11 technical reliability docs and tooling:
+
+- `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md`
+- `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`
+- `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`
+- `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`
+- `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`
+- `docs/DEVELOPER_COMMAND_GUIDE.md`
+- `docs/V11_TECHNICAL_RELIABILITY_REPORT.md`
+- `tools/smokePreview.ts`
 
 New v0.10 tutorial onboarding docs:
 

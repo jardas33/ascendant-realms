@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-05-11 v0.10 tutorial v2 onboarding report gate
+Updated: 2026-05-11 v0.11 technical reliability report gate
+
+## v0.11 Technical Reliability Report Gate - 2026-05-11
+
+Scope: improve technical reliability, e2e runtime clarity, release-lane documentation, preview smoke reliability, optional visual QA reporting, bundle/performance measurement, developer command ergonomics, and release-checklist maintainability. This pass preserved gameplay rules, save compatibility, campaign progression, tutorial behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, or broad systems.
+
+Included work:
+
+- Added `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md`, `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`, `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`, `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`, `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, and `docs/V11_TECHNICAL_RELIABILITY_REPORT.md`.
+- Added `npm run smoke:preview` through `tools/smokePreview.ts` for repeatable production preview smoke with console-error capture and process-tree shutdown.
+- Improved `npm run visual:qa` reporting so the generated index and command output show screenshot count, browser console error count, viewport coverage, and harness path.
+- Refreshed bundle/performance facts and confirmed v0.11 tooling does not leak into production app JS.
+- Tightened `RELEASE_CHECKLIST.md` and linked command guidance from README.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+Output: assets/index-DY-3qp2P.js, 477.04 kB minified / 127.86 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BiGdwuWI.css, 44.51 kB minified / 9.16 kB gzip.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 5.1m.
+
+npm run visual:qa
+PASS: 1 Playwright capture test in about 3.3m, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+npm run smoke:preview
+PASS: http://127.0.0.1:4173/ verified title, Prototype v0.3 / Cinderfen Route Baseline menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and 0 browser console errors. The helper shut down the preview process tree.
+
+git diff --check
+PASS: no whitespace errors.
+```
 
 ## v0.10 Tutorial v2 Onboarding Report Gate - 2026-05-11
 

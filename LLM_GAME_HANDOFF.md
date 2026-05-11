@@ -22,6 +22,8 @@ Phase status:
 - Phase 5 bundle and performance refresh: complete. Ran `npm run build` and `npm run build:analyze`; added `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`. Current app JS/CSS/vendor sizes are unchanged from v0.10, the known Phaser vendor warning remains, and production string scan shows no v0.11 preview/visual QA tooling leak.
 - Phase 6 developer command guide: complete. Added `docs/DEVELOPER_COMMAND_GUIDE.md` and linked it from README and `RELEASE_CHECKLIST.md` so future work can choose the right verification gate without weakening release checks.
 - Phase 7 release checklist tightening: complete. Updated `RELEASE_CHECKLIST.md` with explicit routine/docs/tutorial/UI/visual-intake/content/final-freeze gate selection, current visual QA summary expectations, 3-way shard guidance, known Phaser warning status, slow-release warning, and `npm run smoke:preview` preview-smoke guidance.
+- Phase 8 optional safe cleanup: skipped as a standalone phase because all prior phases were green and there was no extra script naming, helper cleanup, duplicate command consolidation, or docs polish worth another churn cycle.
+- Phase 9 v0.11 technical reliability report: complete. Added `docs/V11_TECHNICAL_RELIABILITY_REPORT.md` and updated README, roadmap, changelog, development checkpoint, and this handoff.
 
 Commits created so far:
 
@@ -31,6 +33,7 @@ Commits created so far:
 - `e3c1ee8 Checkpoint v0.11 visual QA reliability`
 - `92b0afb Checkpoint v0.11 bundle performance refresh`
 - `b100f2d Checkpoint v0.11 developer command guide`
+- `15c9e8c Checkpoint v0.11 release checklist tightening`
 
 Current v0.11 verification:
 
@@ -82,6 +85,15 @@ Current v0.11 verification:
 - Phase 7 `npm run validate:content`: PASS.
 - Phase 7 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 7 `git diff --check`: PASS.
+- Phase 9 `npm test`: PASS, 46 files / 351 tests.
+- Phase 9 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 9 `npm run validate:content`: PASS.
+- Phase 9 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 9 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.1m.
+- Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.3m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 9 `npm run smoke:preview`: PASS in about 29s at `http://127.0.0.1:4173/`, with title, `Prototype v0.3`, `Cinderfen Route Baseline`, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, 0 browser console errors, and helper-owned process-tree shutdown.
+- Phase 9 `git diff --check`: PASS.
 
 Current risks:
 

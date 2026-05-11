@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.11 Technical Reliability, E2E Runtime, and Performance Gate - 2026-05-11
+
+This checkpoint improves release reliability documentation, e2e runtime clarity, preview smoke repeatability, optional visual QA reporting, bundle/performance measurement, developer command ergonomics, and release-checklist maintainability without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- E2E runtime audit refresh: `docs/V11_E2E_RUNTIME_AUDIT_REFRESH.md`.
+- Release lane reliability plan: `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`.
+- Automated production preview smoke helper: `npm run smoke:preview`, backed by `tools/smokePreview.ts`.
+- Preview smoke reliability notes: `docs/V11_PREVIEW_SMOKE_RELIABILITY_NOTES.md`.
+- Visual QA index/summary improvement plus `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`.
+- Bundle/performance refresh: `docs/V11_BUNDLE_PERFORMANCE_REFRESH.md`.
+- Developer command guide: `docs/DEVELOPER_COMMAND_GUIDE.md`.
+- Tightened release checklist and v0.11 report: `docs/V11_TECHNICAL_RELIABILITY_REPORT.md`.
+
+### Verification
+
+- Phase gates: `npm test` passed with 46 test files and 351 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `npm run validate:art-intake` passed with the template-only empty intake.
+- Preview helper gate: `npm run smoke:preview` passed with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+- Visual QA gate: `npm run visual:qa` passed with 18 indexed screenshots and 0 recorded browser console errors.
+- E2E smoke gate: `npm run test:e2e:smoke` passed.
+- Phase/report gates: `git diff --check` passed.
+
+### Next
+
+- If Emmanuel provides tutorial feedback, run v0.10.1 Tutorial v2 Human-Feedback Polish.
+- If source/license-documented candidate art exists, run v0.9.2 Controlled Cinderfen Style-Frame Candidate Review.
+- If neither is available, the next safe autonomous goal is v0.11.1 CI Release Matrix Dry-Run and Preview Helper Portability.
+
 ## v0.10 Tutorial v2 Onboarding Refinement - 2026-05-11
 
 This checkpoint refines Tutorial / Proving Grounds onboarding clarity, pacing documentation, overlay hierarchy, no-reward completion messaging, e2e lane documentation, visual QA review, and Emmanuel's manual playtest checklist without adding maps, units, factions, workers, enemy construction, economy AI, rewards, save persistence, campaign progression, generated art, imported art, runtime art replacement, desktop packaging, engine switching, a graphics overhaul, or broad systems.
