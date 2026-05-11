@@ -21,6 +21,7 @@ Phase status:
 - Phase 4 CI timeout tuning review: complete. Added `docs/V112_CI_TIMEOUT_TUNING_REVIEW.md` comparing local v0.11.1/v0.11.2 runtimes against workflow timeouts. No timeout changes are justified without hosted GitHub evidence.
 - Phase 5 preview helper remote portability review: complete. Added `docs/V112_PREVIEW_HELPER_REMOTE_PORTABILITY_REVIEW.md` to review `tools/smokePreview.ts` for hosted Linux behavior. No helper or workflow env change is justified without hosted failure evidence.
 - Phase 6 CI artifact remote review: complete. Added `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md` to review expected artifacts, visual QA output structure, Playwright diagnostics paths, retention, and source/license boundaries. No artifact YAML change is justified without hosted evidence.
+- Phase 7 manual GitHub Actions checklist: complete. Added `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` for Emmanuel to inspect the `CI Release Matrix Dry Run` workflow, record fast-confidence evidence, trigger optional visual QA and manual release shards, and report useful logs/artifacts.
 
 Current v0.11.2 verification:
 
@@ -64,6 +65,11 @@ Current v0.11.2 verification:
 - Phase 6 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
 - Phase 6 `npm run visual:qa`: PASS, 1 capture test in about 3.4m, 18 indexed screenshots, 0 recorded browser console errors.
 - Phase 6 `git diff --check`: PASS.
+- Phase 7 `npm test`: PASS, 46 files / 351 tests.
+- Phase 7 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 7 `npm run validate:content`: PASS.
+- Phase 7 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 7 `git diff --check`: PASS.
 
 Current v0.11.2 risks:
 
