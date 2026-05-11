@@ -520,6 +520,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("main-menu")).toBeVisible();
     await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Training complete");
     await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Nothing was saved");
+    await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Start New Campaign");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();

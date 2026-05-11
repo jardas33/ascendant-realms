@@ -19,6 +19,7 @@ Phase status:
 - Phase 2 tutorial pacing and scope plan: complete. Added `docs/V10_TUTORIAL_V2_PACING_PLAN.md` to keep the twelve-step sequence, preserve step ids/signals/no-reward/no-save policy, target only copy/hint/completion and tiny overlay hierarchy work, and keep full tutorial completion in smoke unless a measured runtime problem appears.
 - Phase 3 tutorial copy refinement: complete. Updated `src/game/data/tutorials.ts` copy to make instructions more concrete and action-oriented while preserving step ids, completion signals, map, launch mode, no-reward policy, no-save policy, and runtime behavior. Added `docs/V10_TUTORIAL_COPY_REFINEMENT_NOTES.md` and updated unit/e2e copy assertions without changing selectors.
 - Phase 4 tutorial overlay hierarchy and layout refinement: complete. Reviewed existing visual QA tutorial desktop/mobile screenshots and tutorial readability docs, then made a small hierarchy pass in `TutorialPanel.ts` and `battle-feedback.css`: primary styling for Next/Complete, secondary styling for Exit, and slightly stronger panel/hint readability. Added `docs/V10_TUTORIAL_OVERLAY_REFINEMENT_NOTES.md`. No HUD relocation, gameplay, step, reward, save, art, or UI-system change.
+- Phase 5 tutorial completion and no-reward clarity: complete. Updated completion/menu copy so the final handoff says no rewards or save changes were granted, the session-only menu notice says nothing was saved, and New Campaign is the saved-run next step. Added `docs/V10_TUTORIAL_COMPLETION_CLARITY_NOTES.md` and updated persistence/readability docs. No XP, items, resources, campaign progress, save flag, or save-version change.
 
 Skipped phases: none so far.
 
@@ -55,6 +56,13 @@ Current v0.10 verification:
 - Phase 4 `npm run test:e2e:layout`: PASS, 25 tests in about 12.5m.
 - Phase 4 `npm run visual:qa`: PASS, 1 capture test in about 3.2m, 18 indexed screenshots, 0 recorded browser console errors.
 - Phase 4 `git diff --check`: PASS before the verification-result doc note; rerun whitespace check before commit.
+- Phase 5 focused tutorial checks: PASS, focused tutorial smoke grep passed; focused tutorial unit tests ran 2 files / 12 tests.
+- Phase 5 `npm test`: PASS, 46 files / 351 tests.
+- Phase 5 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 5 `npm run validate:content`: PASS.
+- Phase 5 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 5 `npm run test:e2e:smoke`: PASS, 12 tests in about 4.9m.
+- Phase 5 `git diff --check`: PASS.
 
 Current v0.10 risks:
 
@@ -63,7 +71,7 @@ Current v0.10 risks:
 - No-reward completion is clear but can feel plain; v0.10 may warm the copy while preserving no-save/no-reward guarantees.
 - Full tutorial completion remains in smoke for now; Phase 6 should revisit lane placement without removing coverage.
 
-Next v0.10 step: refine completion/no-reward clarity.
+Next v0.10 step: review tutorial e2e lane placement.
 
 ## Current v0.9.1 Controlled Cinderfen Style-Frame Intake And Source Review - 2026-05-10
 

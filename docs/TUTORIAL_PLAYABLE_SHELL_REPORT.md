@@ -91,7 +91,7 @@ Tutorial / Proving Grounds is a training mode. It must not award:
 - Reputation changes.
 - Stronghold changes.
 
-The final overlay step explicitly tells the player that no rewards or campaign progress were granted. After completion, the main menu shows a session-only notice that repeats that no XP, items, resources, or campaign progress were granted and that nothing was saved. Current e2e coverage checks that tutorial completion and exit do not create a save, and the safe-pressure step does not grant hero XP or runtime XP.
+The final overlay step explicitly tells the player that no rewards or campaign progress were granted. v0.10 copy adds that the player practiced the core loop. After completion, the main menu shows a session-only notice that repeats that no XP, items, resources, or campaign progress were granted, that nothing was saved, and that New Campaign is the next saved run. Current e2e coverage checks that tutorial completion and exit do not create a save, and the safe-pressure step does not grant hero XP or runtime XP.
 
 ## Save And Persistence Policy
 

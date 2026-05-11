@@ -1138,7 +1138,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     if (viewModel.isFinalStep) {
-      this.showMessage("Training complete. No rewards or campaign progress granted.");
+      this.showMessage("Training complete. No rewards or save changes granted.");
       this.scene.start(SCENE_KEYS.mainMenu, { tutorialCompleted: true });
       return;
     }

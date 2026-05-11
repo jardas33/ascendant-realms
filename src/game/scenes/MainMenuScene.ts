@@ -137,7 +137,7 @@ export class MainMenuScene extends Phaser.Scene {
             this.tutorialCompletionNotice
               ? `<div class="info-box tutorial-complete" data-testid="tutorial-complete-notice" role="status" aria-live="polite">
                   <strong>Training complete</strong>
-                  <p>No XP, items, resources, or campaign progress were granted. Nothing was saved.</p>
+                  <p>Practice finished with no XP, items, resources, or campaign progress. Nothing was saved. Start New Campaign when ready.</p>
                 </div>`
               : ""
           }

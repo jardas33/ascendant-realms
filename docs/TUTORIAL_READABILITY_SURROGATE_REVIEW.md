@@ -105,9 +105,9 @@ Recommendation: do not add extra tutorial panels or banners in the first shell. 
 
 ### No-Reward Behavior
 
-The finish step explicitly says no rewards or campaign progress were granted. The save audit and smoke tests verify no localStorage save, hero XP, or runtime XP is created during the tutorial completion path.
+The finish step explicitly says no rewards or campaign progress were granted. The v0.10 copy also says the player practiced the core loop. The save audit and smoke tests verify no localStorage save, hero XP, or runtime XP is created during the tutorial completion path.
 
-Phase 4 added a session-only main-menu completion notice after successful tutorial completion. It repeats that no XP, items, resources, or campaign progress were granted and that nothing was saved.
+Phase 4 added a session-only main-menu completion notice after successful tutorial completion. v0.10 keeps it session-only and now states that practice finished with no XP, items, resources, or campaign progress, that nothing was saved, and that the player can start New Campaign when ready.
 
 Risk: players may still miss or undervalue the notice if they are focused on returning to campaign/skirmish.
 
@@ -115,11 +115,11 @@ Recommendation: keep the notice non-persistent. Human play should verify whether
 
 ### Completion Copy
 
-The final copy is clear and intentionally plain: "Training complete. No rewards: no XP, items, resources, or campaign progress were granted."
+The final overlay copy is: "Training complete. You practiced the core loop. No rewards: no XP, items, resources, or campaign progress were granted."
 
-Risk: it is functional rather than celebratory.
+Risk: it is still compact rather than celebratory.
 
-Recommendation: future polish can make the line warmer, but must keep the no-reward/no-progress policy explicit.
+Recommendation: keep the explicit no-reward/no-progress policy. Human play can decide whether the session-only menu notice is warm enough before any stronger completion surface is considered.
 
 ### Tutorial Length
 

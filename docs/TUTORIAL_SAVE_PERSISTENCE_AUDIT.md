@@ -24,6 +24,8 @@ Tutorial runtime does not create a campaign save. It does not call campaign node
 
 Tutorial completion uses `BattleScene.advanceTutorialStep()` for the final step and returns directly to the main menu with session-only Phaser scene data that shows a transient completion notice. It does not enter normal Results reward/equip/campaign-return actions, and it does not write the notice to localStorage or save data.
 
+v0.10 completion clarity keeps this path non-persistent. The final tutorial overlay states that no XP, items, resources, or campaign progress were granted. The session-only main-menu notice now says practice finished with no XP, items, resources, or campaign progress, that nothing was saved, and that the player can start New Campaign when ready.
+
 If a tutorial battle ever reaches normal battle end conditions, `endBattleAndOpenResults()` treats tutorial launches as rewards-disabled and returns to the main menu before normal save writes.
 
 ## Domain Audit
@@ -48,7 +50,7 @@ If a tutorial battle ever reaches normal battle end conditions, `endBattleAndOpe
 
 - `src/game/battle/BattleLaunchRequest.test.ts` verifies tutorial launch requests are rewards-disabled and rejects tutorial requests that could grant rewards.
 - `src/game/battle/BattleRuntime.test.ts` verifies tutorial completion returns the starting hero, zero XP, empty rewards, no inventory, no completed battles, and `shouldSaveHero: false`.
-- `tests/e2e/smoke.spec.ts` verifies the playable tutorial launch/completion path leaves `localStorage.getItem(SAVE_KEY)` null, that defeating the tutorial pressure Raider grants no live hero XP or runtime XP, and that the completion notice appears only after completion.
+- `tests/e2e/smoke.spec.ts` verifies the playable tutorial launch/completion path leaves `localStorage.getItem(SAVE_KEY)` null, that defeating the tutorial pressure Raider grants no live hero XP or runtime XP, and that the completion notice appears only after completion with no-save and New Campaign guidance.
 - `tests/e2e/smoke.spec.ts` separately verifies Exit Tutorial returns to main menu without saving.
 
 ## Gaps
