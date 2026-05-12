@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.11.4 GitHub Actions Smoke Seed/Reload Stability Fix - 2026-05-12
+
+This checkpoint stabilizes seeded campaign/skirmish smoke setup after the first v0.11.3 GitHub Actions `Fast confidence` rerun, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, workflow coverage, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Seed/reload smoke fix report: `docs/V114_FAST_CONFIDENCE_SEED_RELOAD_FIX.md`.
+- Stable seeded-save setup in `tests/e2e/shared-helpers.ts`: boot to a ready main menu before localStorage mutation, navigate with `page.goto("/")` after writing storage instead of `page.reload()`, and verify seeded saves enable Continue Campaign.
+- Chapter 2 seed helpers now use the same stable storage setup path for post-Ashen, post-Crossing, and completed-route saves.
+- A narrowly scoped 60s timeout for only `skirmish difficulty selection changes fog and starting pressure`, justified by hosted CI evidence and a local traced run that took 44.9s after the safer seeded setup.
+- Handoff, development checkpoint, and release-checklist updates.
+
+### Verification
+
+- Pre-fix local smoke passed: `npm run test:e2e:smoke`, 12 tests in about 5.0m.
+- Pre-fix targeted runs passed locally for the reported post-Ashen, post-Crossing, skirmish difficulty, Border Village, and Broken Ford smoke paths, supporting a seed/reload CI stability diagnosis rather than a deterministic gameplay failure.
+- Post-fix focused gate: `npx playwright test tests/e2e/smoke.spec.ts --grep "skirmish difficulty selection changes fog and starting pressure" --retries=1 --trace=on` passed in 44.9s during the first post-helper run and 32.7s during the final focused gate.
+- Required local gate: `npm test` passed with 46 files / 351 tests; build passed with the known Phaser warning; `validate:content`, `validate:art-intake`, all five reported focused smoke paths, `npm run test:e2e:smoke`, `npm run smoke:preview`, full release, 3-way release shards, `visual:qa`, `playtest:sim`, and `git diff --check` passed.
+- One first-pass local `release:shard2of3` run hit a timeout in the enemy-pressure tutorial/skirmish guard test after 26/27 tests passed; the exact test passed on targeted rerun and the full shard passed on rerun, so no coverage was changed for that release-lane transient.
+
+### Next
+
+- Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after this commit is pushed and confirm the seeded campaign/skirmish smoke paths no longer fail around localStorage seed/reload.
+- Treat the reported Border Village and Broken Ford failures as likely cascade/flaky context fallout unless the next hosted run shows fresh independent failures after seeded setup succeeds.
+
 ## v0.11.3 GitHub Actions Fast Confidence Smoke Fix - 2026-05-12
 
 This checkpoint fixes the first reported remote GitHub Actions `Fast confidence` smoke timeout without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, workflow coverage, maps, units, factions, rewards, or UI design.

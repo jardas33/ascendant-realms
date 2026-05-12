@@ -1,6 +1,6 @@
 import { expect, type Page } from "@playwright/test";
+import { openMainMenuAfterStorageSeed, openMainMenuForStorageSeed, SAVE_KEY } from "./shared-helpers";
 
-const SAVE_KEY = "ascendant-realms-save-v1";
 const EMPTY_RESOURCES = { crowns: 0, stone: 0, iron: 0, aether: 0 };
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
   "border_village",
@@ -23,7 +23,7 @@ type CinderfenWaystationServiceId = "ash_filters" | "marsh_guides" | "refugee_sc
 
 // Test-only seed helper: writes a known post-Ashen campaign save so Chapter 2 specs do not replay Chapter 1.
 export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOptions = {}): Promise<void> {
-  await page.goto("/");
+  await openMainMenuForStorageSeed(page, "seedPostAshenCampaign");
   await page.evaluate(
     ({ key, completedNodeIds, unlockedNodeIds, emptyResources, includeMalrecTrophy }) => {
       localStorage.setItem(
@@ -107,13 +107,12 @@ export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOp
       includeMalrecTrophy: options.includeMalrecTrophy === true
     }
   );
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await openMainMenuAfterStorageSeed(page, "seedPostAshenCampaign");
 }
 
 // Test-only seed helper: starts the Watch spec after Crossing rewards have already persisted.
 export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<void> {
-  await page.goto("/");
+  await openMainMenuForStorageSeed(page, "seedPostCinderfenCrossingCampaign");
   await page.evaluate(
     ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
       localStorage.setItem(
@@ -197,13 +196,12 @@ export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<voi
       emptyResources: EMPTY_RESOURCES
     }
   );
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await openMainMenuAfterStorageSeed(page, "seedPostCinderfenCrossingCampaign");
 }
 
 // Test-only seed helper: creates a frozen v0.3 route-complete save for readability checks without replaying battles.
 export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<void> {
-  await page.goto("/");
+  await openMainMenuForStorageSeed(page, "seedCompletedCinderfenRouteCampaign");
   await page.evaluate(
     ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
       localStorage.setItem(
@@ -342,8 +340,7 @@ export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<v
       emptyResources: EMPTY_RESOURCES
     }
   );
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await openMainMenuAfterStorageSeed(page, "seedCompletedCinderfenRouteCampaign");
 }
 
 // Test-only save reader used by Chapter 2 persistence assertions.

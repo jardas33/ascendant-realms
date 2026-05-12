@@ -23,6 +23,8 @@ const EMPTY_RESOURCES: CampaignResources = {
   aether: 0
 };
 
+const MAIN_MENU_BOOT_TIMEOUT_MS = 20_000;
+
 const BASE_HERO = {
   heroName: "E2E Seed",
   classId: "warlord",
@@ -70,11 +72,34 @@ const BASE_CAMPAIGN = {
   rivalTrophies: []
 };
 
+async function gotoReadyMainMenu(page: Page, context: string): Promise<void> {
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(
+    page.getByTestId("main-menu"),
+    `${context}: expected main menu after app boot`
+  ).toBeVisible({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
+  await expect(
+    page.getByTestId("menu-new-campaign"),
+    `${context}: expected main menu actions after app boot`
+  ).toBeVisible({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
+}
+
+export async function openMainMenuForStorageSeed(page: Page, context: string): Promise<void> {
+  await gotoReadyMainMenu(page, `${context} storage seed setup`);
+}
+
+export async function openMainMenuAfterStorageSeed(page: Page, context: string): Promise<void> {
+  await gotoReadyMainMenu(page, `${context} storage seed reload`);
+  await expect(
+    page.getByTestId("menu-continue-campaign"),
+    `${context}: expected seeded campaign save to enable Continue Campaign`
+  ).toBeEnabled({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
+}
+
 export async function openFreshMainMenu(page: Page): Promise<void> {
-  await page.goto("/");
+  await gotoReadyMainMenu(page, "fresh main menu before storage reset");
   await page.evaluate(() => localStorage.clear());
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await gotoReadyMainMenu(page, "fresh main menu after storage reset");
 }
 
 export async function createHero(page: Page, name: string): Promise<void> {
@@ -111,7 +136,7 @@ export async function seedCampaignSave(page: Page, options: SeedCampaignOptions 
     }
   };
 
-  await page.goto("/");
+  await openMainMenuForStorageSeed(page, "seedCampaignSave");
   await page.evaluate(
     ({ key, value }) => {
       localStorage.clear();
@@ -119,8 +144,7 @@ export async function seedCampaignSave(page: Page, options: SeedCampaignOptions 
     },
     { key: SAVE_KEY, value: save }
   );
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await openMainMenuAfterStorageSeed(page, "seedCampaignSave");
 }
 
 export async function continueSavedCampaign(page: Page): Promise<void> {

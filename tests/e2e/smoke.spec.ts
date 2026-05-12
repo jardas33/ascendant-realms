@@ -18,6 +18,7 @@ import { createHero, openFreshMainMenu, SAVE_KEY, seedCampaignSave, startNewCamp
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
 const SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS = 60_000;
+const SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS = 60_000;
 
 async function expectBattleLoaded(page: Page): Promise<void> {
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
@@ -1186,6 +1187,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("skirmish difficulty selection changes fog and starting pressure", async ({ page }) => {
+    // GitHub Actions evidence showed seeded skirmish setup can exceed the global 35s budget on
+    // hosted runners because this smoke path launches two seeded battles back-to-back.
+    test.setTimeout(SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS);
+
     await launchSkirmishBattle(page, "story", "E2E Story");
     const storyBattle = await readDifficultyBattleState(page);
     expect(storyBattle.difficulty).toBe("story");

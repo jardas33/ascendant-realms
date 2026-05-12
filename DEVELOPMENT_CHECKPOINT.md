@@ -1,6 +1,85 @@
 # Development Checkpoint
 
-Updated: 2026-05-12 v0.11.3 fast confidence smoke fix
+Updated: 2026-05-12 v0.11.4 fast confidence seed/reload fix
+
+## v0.11.4 Fast Confidence Seed/Reload Fix - 2026-05-12
+
+Scope: stabilize GitHub Actions smoke seeded-save setup after the v0.11.3 settings timeout fix while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, workflow coverage, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or speculative CI workflow churn.
+
+Included work:
+
+- Added `docs/V114_FAST_CONFIDENCE_SEED_RELOAD_FIX.md`.
+- Improved `tests/e2e/shared-helpers.ts` so seeded-save setup starts from a ready main menu, writes localStorage only after a stable app origin exists, uses deterministic `page.goto("/")` navigation after writing storage instead of `page.reload()`, and verifies seeded saves enable Continue Campaign.
+- Updated `tests/e2e/chapter2-helpers.ts` so post-Ashen, post-Crossing, and completed-route seeded saves use the same stable storage setup path.
+- Added a narrowly scoped 60s timeout for only `skirmish difficulty selection changes fog and starting pressure`; the test still launches both seeded skirmish battles and keeps the fog/pressure assertions.
+
+Latest verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS before the fix: 12 Playwright smoke tests in about 5.0m.
+PASS after the fix: 12 Playwright smoke tests in about 5.2m.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "post-Ashen campaign resolves Cinderfen Overlook" --retries=1 --trace=on
+PASS before the helper change: 1 test in 55.1s.
+PASS after the helper change: 1 test in about 1.1m.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "post-Crossing campaign launches Cinderfen Watch" --retries=1 --trace=on
+PASS before the helper change: 1 test in about 1.0m.
+PASS after the helper change: 1 test in 39.3s.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "skirmish difficulty selection changes fog and starting pressure" --retries=1 --trace=on
+PASS after the helper change: 1 test in 44.9s.
+PASS after final docs update: 1 test in 32.7s.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "campaign Border Village launches a battle scene" --retries=1 --trace=on
+PASS before the helper change: 1 test in 14.6s.
+PASS after the helper change: 1 test in 19.2s.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "skirmish setup lists maps and launches Broken Ford" --retries=1 --trace=on
+PASS before the helper change: 1 test in 14.3s.
+PASS after the helper change: 1 test in 16.8s.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 30.3m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 12.4m.
+
+npm run test:e2e:release:shard2of3
+First pass: one local timeout in `enemy-pressure.spec.ts` tutorial/skirmish pressure guard after 26/27 tests passed.
+Targeted rerun: PASS, 1 test in 29.1s.
+Full shard rerun: PASS, 27 Playwright tests in about 14.7m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 5.7m.
+
+npm run visual:qa
+PASS: 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Remaining watch items: Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after push. If any reported campaign/skirmish smoke path fails again after seeded setup succeeds, investigate that path independently rather than as seed/reload cascade.
 
 ## v0.11.3 Fast Confidence Smoke Fix - 2026-05-12
 

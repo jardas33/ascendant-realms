@@ -1,12 +1,82 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-12 v0.11.3 fast confidence smoke fix
+Last updated: 2026-05-12 v0.11.4 fast confidence seed/reload fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.4 GitHub Actions Smoke Seed/Reload Stability Fix - 2026-05-12
+
+Mission: stabilize the GitHub Actions `Fast confidence` smoke lane after v0.11.3, without changing gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, balance, CI coverage strength, maps, units, factions, rewards, or app runtime behavior.
+
+Remote evidence from Emmanuel:
+
+- Workflow: `CI Release Matrix Dry Run`.
+- Run: `Checkpoint v0.11.3 fast confidence smoke fix #3`.
+- Failed job/step: `Fast confidence` at `Run npm run test:e2e:smoke`.
+- Primary stack: `tests/e2e/shared-helpers.ts:114` inside `seedCampaignSave(page, ...)`, around localStorage seed setup.
+- Retry failure: `expect(page.getByTestId("main-menu")).toBeVisible()` timed out after `page.reload()`.
+- Reported failed tests: post-Ashen Cinderfen Crossing smoke, post-Crossing Cinderfen Watch smoke, and skirmish difficulty smoke.
+- Reported flaky tests: Border Village launch and Broken Ford skirmish launch.
+
+Files changed:
+
+- `tests/e2e/shared-helpers.ts`: `seedCampaignSave` and `openFreshMainMenu` now navigate to a ready main menu before storage mutation, use `page.goto("/")` after storage writes instead of `page.reload()`, wait for main-menu actions, and verify seeded saves enable Continue Campaign.
+- `tests/e2e/chapter2-helpers.ts`: post-Ashen, post-Crossing, and completed-route seeded saves now use the same stable storage setup path.
+- `tests/e2e/smoke.spec.ts`: added a narrow 60s timeout for only `skirmish difficulty selection changes fog and starting pressure`.
+- `docs/V114_FAST_CONFIDENCE_SEED_RELOAD_FIX.md`: added evidence, diagnosis, coverage notes, and next GitHub Actions checks.
+- `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, `RELEASE_CHECKLIST.md`, and this handoff: documented v0.11.4.
+
+Coverage status:
+
+- No smoke test was removed, skipped, or weakened.
+- `seedCampaignSave` changed from seed-then-`page.reload()` to stable-menu seed setup plus `page.goto("/")`.
+- The Chapter 2 seed helpers also moved from `page.reload()` to the stable `page.goto("/")` seed setup.
+- Only the skirmish difficulty smoke timeout changed in v0.11.4; post-Ashen/post-Crossing already had larger scoped budgets, and the v0.11.3 settings timeout remains unchanged.
+- Campaign/skirmish failures are treated as shared seed/reload instability unless the next hosted run shows an independent failure after seed setup succeeds.
+
+Current v0.11.4 focused verification:
+
+- Pre-fix `npm run test:e2e:smoke`: PASS, 12 tests in about 5.0m.
+- Pre-fix focused post-Ashen with trace: PASS, 1 test in 55.1s.
+- Pre-fix focused post-Crossing with trace: PASS, 1 test in about 1.0m.
+- Pre-fix focused skirmish difficulty with trace: PASS, 1 test in 26.7s.
+- Pre-fix focused Border Village with trace: PASS, 1 test in 14.6s.
+- Pre-fix focused Broken Ford with trace: PASS, 1 test in 14.3s.
+- Post-helper focused skirmish difficulty with trace: PASS, 1 test in 44.9s, confirming the scoped 60s budget is needed after safer setup.
+
+Current v0.11.4 full local verification:
+
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Post-fix focused post-Ashen with trace: PASS, 1 test in about 1.1m.
+- Post-fix focused post-Crossing with trace: PASS, 1 test in 39.3s.
+- Post-fix focused skirmish difficulty with trace: PASS, 1 test in 32.7s.
+- Post-fix focused Border Village with trace: PASS, 1 test in 19.2s.
+- Post-fix focused Broken Ford with trace: PASS, 1 test in 16.8s.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 5.2m.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- `npm run test:e2e:release`: PASS, 67 tests in about 30.3m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 12.4m.
+- `npm run test:e2e:release:shard2of3`: first pass hit one local timeout in `enemy-pressure.spec.ts` tutorial/skirmish pressure guard after 26/27 tests passed; targeted rerun of that exact test PASS in 29.1s; full shard rerun PASS, 27 tests in about 14.7m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.7m.
+- `npm run visual:qa`: PASS, 18 indexed screenshots and 0 recorded browser console errors.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+
+Current v0.11.4 remaining risks:
+
+- Hosted GitHub Actions timing still needs the next remote run to prove the seed/reload fix under Linux runner conditions.
+- If any reported campaign/skirmish smoke path fails again after seeded setup succeeds, investigate it independently rather than as seed/reload cascade.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.4 fast confidence seed reload fix`, push if safe, then ask Emmanuel to re-check the automatic GitHub Actions `Fast confidence` job.
 
 ## Current v0.11.3 GitHub Actions Fast Confidence Smoke Fix - 2026-05-12
 

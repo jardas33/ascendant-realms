@@ -113,6 +113,8 @@ This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser c
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
 
+v0.11.4 stabilizes seeded smoke setup by waiting for a ready main menu before localStorage mutation and navigating back to `/` after writing seeded saves instead of relying on `page.reload()`. `skirmish difficulty selection changes fog and starting pressure` now has a scoped 60s budget because it launches two seeded battles back-to-back and GitHub Actions evidence showed the seed/reload path could exceed the global timeout. The test remains in smoke and keeps its fog/pressure assertions.
+
 5. Full browser release-gate suite:
 
 ```bash
