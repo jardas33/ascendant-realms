@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.11.2 remote CI observation in progress
+Last updated: 2026-05-11 v0.11.2 remote CI observation final gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -24,6 +24,34 @@ Phase status:
 - Phase 7 manual GitHub Actions checklist: complete. Added `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` for Emmanuel to inspect the `CI Release Matrix Dry Run` workflow, record fast-confidence evidence, trigger optional visual QA and manual release shards, and report useful logs/artifacts.
 - Phase 8 CI-only tuning decision: complete. Added `docs/V112_CI_NO_FIX_DECISION.md` because no hosted failure evidence or static review issue justifies changing workflow YAML, helper code, timeouts, artifacts, scripts, app code, or tests.
 - Phase 9 v0.11.2 remote CI observation report: complete. Added `docs/V112_REMOTE_CI_OBSERVATION_REPORT.md` and updated README, roadmap, release checklist, changelog, development checkpoint, and this handoff to document v0.11.2 as a remote-observation/limitation milestone.
+- Phase 10 final full verification: complete. Full local gate passed: unit/build/validators, smoke, full release, 2-way shards, 3-way shards, visual QA, simulator, preview smoke helper, and whitespace check. One first-pass `shard1` attempt hit a likely local transient `net::ERR_NO_BUFFER_SPACE` WebSocket console error in the skirmish-launch test; the exact failed test passed on targeted rerun, then the full `shard1` lane passed on rerun, matching the documented transient policy.
+
+Skipped phases: none. Phase 8 intentionally produced a no-fix decision document instead of changing CI YAML/helper code because no hosted failure evidence was available.
+
+Commits created:
+
+- `45c11b7 Checkpoint v0.11.2 remote CI observation plan`
+- `8f32813 Checkpoint v0.11.2 GitHub Actions evidence report`
+- `4acf042 Checkpoint v0.11.2 workflow static review`
+- `06ee223 Checkpoint v0.11.2 CI timeout review`
+- `ce25d33 Checkpoint v0.11.2 preview helper remote review`
+- `92d02a5 Checkpoint v0.11.2 CI artifact remote review`
+- `e6b4214 Checkpoint v0.11.2 manual GitHub Actions checklist`
+- `4c290ad Checkpoint v0.11.2 CI-only tuning`
+- `23374d2 Checkpoint v0.11.2 CI observation report`
+- Final handoff commit follows: `Checkpoint v0.11.2 GitHub Actions remote CI observation`
+
+Workflow files changed:
+
+- None in v0.11.2. `.github/workflows/ci.yml` was reviewed but intentionally left unchanged.
+
+Remote CI observation status:
+
+- `gh` is unavailable locally.
+- GitHub connector Actions tooling returned an expired-token error.
+- Public GitHub Actions REST access returned `404 Not Found`.
+- Therefore no authenticated hosted-run job list, duration, or artifact list could be fetched in Codex.
+- Emmanuel-facing GitHub UI instructions live in `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`.
 
 Current v0.11.2 verification:
 
@@ -88,12 +116,35 @@ Current v0.11.2 verification:
 - Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.4m, 18 indexed screenshots, 0 recorded browser console errors.
 - Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
 - Phase 9 `git diff --check`: PASS.
+- Phase 10 `npm test`: PASS, 46 files / 351 tests.
+- Phase 10 `npm run build`: PASS with the known Phaser vendor chunk-size warning. Output: `assets/index-DY-3qp2P.js` 477.04 kB / 127.86 kB gzip, `assets/vendor-phaser-B61OQUcB.js` 1,481.79 kB / 339.86 kB gzip, and `assets/index-BiGdwuWI.css` 44.51 kB / 9.16 kB gzip.
+- Phase 10 `npm run validate:content`: PASS.
+- Phase 10 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 10 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.1m.
+- Phase 10 `npm run test:e2e:release`: PASS, 67 tests in about 29.5m.
+- Phase 10 `npm run test:e2e:release:shard1`: first pass FAIL on one likely local transient `net::ERR_NO_BUFFER_SPACE` console error in the skirmish-launch test after 54/55 other tests passed; targeted rerun of that exact test PASS in about 45s; full shard rerun PASS, 55 tests in about 24.3m.
+- Phase 10 `npm run test:e2e:release:shard2`: PASS, 12 tests in about 4.9m.
+- Phase 10 `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.3m.
+- Phase 10 `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 13.3m.
+- Phase 10 `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 4.7m.
+- Phase 10 `npm run visual:qa`: PASS, 1 capture test in about 3.3m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 10 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 10 `npm run smoke:preview`: PASS in about 29s at `http://127.0.0.1:4173/`, with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+- Phase 10 `git diff --check`: PASS.
+- Phase 10 pre-final-handoff git status: clean working tree, `main...origin/main [ahead 9]`; final handoff commit and push follow.
 
 Current v0.11.2 risks:
 
 - Remote GitHub Actions evidence is not available from this environment because authenticated inspection is unavailable and unauthenticated Actions visibility is blocked.
 - Hosted Linux timing for `fast-confidence`, `npm run smoke:preview`, and manual release shards still requires Emmanuel's GitHub UI observation.
 - No CI-only workflow fix is justified until real hosted evidence identifies a concrete problem.
+- Local `release:shard1` showed one transient WebSocket `net::ERR_NO_BUFFER_SPACE` failure during the final gate, but the targeted rerun and full shard rerun both passed. No app or CI change was made to hide it.
+
+Next recommended long-running goal:
+
+- If Emmanuel provides authenticated GitHub Actions screenshots/logs from `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`, run v0.11.3 GitHub Actions Evidence Follow-Up and Minimal Tuning.
+- If Emmanuel provides Tutorial v2 human playtest feedback, run v0.10.1 Tutorial v2 Human-Feedback Polish.
+- If Emmanuel provides source/license-documented Cinderfen candidate images, run v0.9.2 Controlled Cinderfen Style-Frame Candidate Review.
 
 ## Current v0.11.1 CI Release Matrix Dry-Run - 2026-05-11
 
