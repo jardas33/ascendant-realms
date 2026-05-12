@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-11 v0.11.1 CI reliability report gate
+Updated: 2026-05-11 v0.11.2 remote CI observation report gate
+
+## v0.11.2 Remote CI Observation Report Gate - 2026-05-11
+
+Scope: observe or document access to the first remote GitHub Actions run from v0.11.1, review likely CI timeout/portability/artifact risks, and make only tiny CI-only fixes if hosted evidence requires them. This pass preserved gameplay rules, save compatibility, campaign progression, tutorial behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, workflow coverage, and the current browser prototype scope. It did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, coverage reduction, secrets, paid services, or speculative CI tuning.
+
+Included work:
+
+- Added `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md`, `docs/V112_GITHUB_ACTIONS_EVIDENCE_REPORT.md`, `docs/V112_WORKFLOW_STATIC_REVIEW.md`, `docs/V112_CI_TIMEOUT_TUNING_REVIEW.md`, `docs/V112_PREVIEW_HELPER_REMOTE_PORTABILITY_REVIEW.md`, `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md`, `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`, `docs/V112_CI_NO_FIX_DECISION.md`, and `docs/V112_REMOTE_CI_OBSERVATION_REPORT.md`.
+- Confirmed `gh` is unavailable, the GitHub connector token is expired, and unauthenticated Actions API access returns `404 Not Found`.
+- Reviewed `.github/workflows/ci.yml` statically and found no concrete YAML/script/artifact/timeout issue.
+- Documented that no CI-only workflow/helper change is justified until authenticated GitHub UI evidence identifies a real hosted-run issue.
+
+Latest report-gate verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests during phase gates.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+Output: assets/index-DY-3qp2P.js, 477.04 kB minified / 127.86 kB gzip.
+Vendor: assets/vendor-phaser-B61OQUcB.js, 1,481.79 kB minified / 339.86 kB gzip.
+CSS: assets/index-BiGdwuWI.css, 44.51 kB minified / 9.16 kB gzip.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON template and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS during workflow/tooling gates.
+
+npm run smoke:preview
+PASS during preview/workflow gates with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+
+npm run visual:qa
+PASS: 1 Playwright capture test, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Remaining watch items: remote GitHub Actions evidence still needs authenticated GitHub UI observation, hosted Linux timing is unmeasured, hosted `smoke:preview` remains unconfirmed, manual visual/release artifacts remain unconfirmed, full release e2e remains slow, 2-way shards remain lopsided, and the known Phaser vendor warning remains.
 
 ## v0.11.1 CI Release Matrix Report Gate - 2026-05-11
 

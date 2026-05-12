@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning - 2026-05-11
+
+This checkpoint documents remote GitHub Actions observation limits and CI no-change decisions without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, workflow YAML, helper code, Playwright coverage, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Remote CI observation capability report: `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md`.
+- GitHub Actions evidence limitation report: `docs/V112_GITHUB_ACTIONS_EVIDENCE_REPORT.md`.
+- Static workflow review: `docs/V112_WORKFLOW_STATIC_REVIEW.md`.
+- CI timeout tuning review: `docs/V112_CI_TIMEOUT_TUNING_REVIEW.md`.
+- Preview helper remote portability review: `docs/V112_PREVIEW_HELPER_REMOTE_PORTABILITY_REVIEW.md`.
+- CI artifact remote review: `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md`.
+- Manual GitHub Actions checklist for Emmanuel: `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`.
+- CI no-fix decision: `docs/V112_CI_NO_FIX_DECISION.md`.
+- v0.11.2 report: `docs/V112_REMOTE_CI_OBSERVATION_REPORT.md`.
+- README, release checklist, roadmap, development checkpoint, and handoff updates.
+
+### Verification
+
+- Phase gates: `npm test` passed with 46 test files and 351 tests.
+- Phase gates: `npm run build` passed with the known Phaser vendor large-chunk warning.
+- Phase gates: `npm run validate:content` passed.
+- Phase gates: `npm run validate:art-intake` passed.
+- Tooling gates: `npm run test:e2e:smoke` passed.
+- Preview helper gates: `npm run smoke:preview` passed with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+- Artifact review/report gates: `npm run visual:qa` passed with 18 indexed screenshots and 0 recorded browser console errors.
+- Report gate: `npm run playtest:sim` passed with 255 simulated runs across 85 campaign battle nodes.
+- Phase/report gates: `git diff --check` passed.
+
+### Next
+
+- Emmanuel should use `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` to capture authenticated GitHub Actions evidence.
+- If GitHub UI evidence shows a real CI-only issue, run v0.11.3 GitHub Actions Evidence Follow-Up and Minimal Tuning.
+- If Emmanuel provides tutorial feedback, run v0.10.1 Tutorial v2 Human-Feedback Polish.
+- If source/license-documented candidate art exists, run v0.9.2 Controlled Cinderfen Style-Frame Candidate Review.
+
 ## v0.11.1 CI Release Matrix Dry-Run and Preview Helper Portability - 2026-05-11
 
 This checkpoint adds a conservative GitHub Actions CI dry-run and CI/release documentation without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, maps, units, factions, rewards, Playwright coverage, or UI design.

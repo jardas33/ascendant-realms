@@ -23,6 +23,7 @@ Phase status:
 - Phase 6 CI artifact remote review: complete. Added `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md` to review expected artifacts, visual QA output structure, Playwright diagnostics paths, retention, and source/license boundaries. No artifact YAML change is justified without hosted evidence.
 - Phase 7 manual GitHub Actions checklist: complete. Added `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` for Emmanuel to inspect the `CI Release Matrix Dry Run` workflow, record fast-confidence evidence, trigger optional visual QA and manual release shards, and report useful logs/artifacts.
 - Phase 8 CI-only tuning decision: complete. Added `docs/V112_CI_NO_FIX_DECISION.md` because no hosted failure evidence or static review issue justifies changing workflow YAML, helper code, timeouts, artifacts, scripts, app code, or tests.
+- Phase 9 v0.11.2 remote CI observation report: complete. Added `docs/V112_REMOTE_CI_OBSERVATION_REPORT.md` and updated README, roadmap, release checklist, changelog, development checkpoint, and this handoff to document v0.11.2 as a remote-observation/limitation milestone.
 
 Current v0.11.2 verification:
 
@@ -78,6 +79,15 @@ Current v0.11.2 verification:
 - Phase 8 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.1m.
 - Phase 8 `npm run smoke:preview`: PASS in about 38s at `http://127.0.0.1:4173/`, with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
 - Phase 8 `git diff --check`: PASS.
+- Phase 9 `npm test`: PASS, 46 files / 351 tests.
+- Phase 9 `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- Phase 9 `npm run validate:content`: PASS.
+- Phase 9 `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- Phase 9 `npm run test:e2e:smoke`: PASS, 12 tests in about 5.3m.
+- Phase 9 `npm run smoke:preview`: PASS in about 22s at `http://127.0.0.1:4173/`, with title/menu/tutorial/campaign/skirmish checks and 0 browser console errors.
+- Phase 9 `npm run visual:qa`: PASS, 1 capture test in about 3.4m, 18 indexed screenshots, 0 recorded browser console errors.
+- Phase 9 `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- Phase 9 `git diff --check`: PASS.
 
 Current v0.11.2 risks:
 

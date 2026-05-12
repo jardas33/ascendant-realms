@@ -188,7 +188,7 @@ Manual `workflow_dispatch` inputs:
 | `run_release_matrix` | 3-way release shard matrix plus `npm run playtest:sim` | CI release gate dry-run or pre-freeze confidence. |
 | `run_full_release` | `npm run test:e2e:release` | Major freeze or one-command release-lane confirmation in CI. |
 
-The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. GitHub-side syntax/runner behavior still needs validation after push; do not weaken local release gates until CI has proven itself on the remote.
+The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. v0.11.2 could not inspect remote Actions runs from the Codex environment because `gh` is unavailable, the GitHub connector token is expired, and unauthenticated Actions API access returns `404 Not Found`. Use `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` to collect the first hosted-run URL, `fast-confidence` duration, `smoke:preview` result, manual-job status, and artifact evidence from GitHub UI. Do not weaken local release gates until CI has proven itself on the remote.
 
 7. Optional focused e2e lanes:
 

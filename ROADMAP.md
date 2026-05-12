@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.11.1 CI Release Matrix Dry-Run and Preview Helper Portability** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.8 technical/visual foundation, v0.9 docs/specs/prompts-only Cinderfen style-frame package, v0.9.1 non-runtime style-frame intake pipeline, v0.10 Tutorial v2 onboarding refinement, and v0.11 technical reliability gate while adding conservative GitHub Actions CI dry-run support, CI matrix documentation, preview helper portability notes, artifact strategy, and CI/local parity checks. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, or release coverage reduction.
+The latest feature checkpoint is **v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.8 technical/visual foundation, v0.9 docs/specs/prompts-only Cinderfen style-frame package, v0.9.1 non-runtime style-frame intake pipeline, v0.10 Tutorial v2 onboarding refinement, v0.11 technical reliability gate, and v0.11.1 CI dry-run workflow while documenting remote Actions access limits, expected GitHub UI evidence, static workflow review, timeout/artifact/preview-helper reviews, and a no-fix decision. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, or release coverage reduction.
 
-The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. If neither human tutorial feedback nor candidate art is available, the safest autonomous follow-up is **v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning**, focused on observing the pushed workflow run, documenting remote runner timing/artifacts, and making tiny CI-only fixes only if evidence requires them.
+The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. If neither human tutorial feedback nor candidate art is available, the safest technical follow-up is **v0.11.3 GitHub Actions Evidence Follow-Up and Minimal Tuning**, but only after Emmanuel captures GitHub UI evidence using `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`.
+
+New v0.11.2 remote CI observation docs:
+
+- `docs/V112_REMOTE_CI_OBSERVATION_CAPABILITY.md`
+- `docs/V112_GITHUB_ACTIONS_EVIDENCE_REPORT.md`
+- `docs/V112_WORKFLOW_STATIC_REVIEW.md`
+- `docs/V112_CI_TIMEOUT_TUNING_REVIEW.md`
+- `docs/V112_PREVIEW_HELPER_REMOTE_PORTABILITY_REVIEW.md`
+- `docs/V112_CI_ARTIFACT_REMOTE_REVIEW.md`
+- `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`
+- `docs/V112_CI_NO_FIX_DECISION.md`
+- `docs/V112_REMOTE_CI_OBSERVATION_REPORT.md`
 
 New v0.11.1 CI release matrix docs and workflow:
 
