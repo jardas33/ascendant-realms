@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-05-11 v0.11.2 remote CI observation report gate
+Updated: 2026-05-12 v0.11.3 fast confidence smoke fix
+
+## v0.11.3 Fast Confidence Smoke Fix - 2026-05-12
+
+Scope: fix the first reported remote GitHub Actions `Fast confidence` smoke timeout while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, workflow coverage, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or speculative CI workflow churn.
+
+Included work:
+
+- Added `docs/V113_FAST_CONFIDENCE_SMOKE_FIX.md`.
+- Reviewed the reported GitHub Actions failure for `settings screen persists accessibility options` and the likely cascade in `campaign Border Village launches a battle scene`.
+- Improved `tests/e2e/smoke.spec.ts` settings control waits by verifying re-rendered Settings DOM state after range, checkbox, and fog-select changes.
+- Added a narrowly scoped 60s timeout for only the settings accessibility smoke test, tied to hosted CI evidence that the combined settings-persistence plus in-battle runtime-application path exceeded the global 35s Playwright test timeout.
+- Left Border Village smoke coverage unchanged because it passed independently in focused local verification.
+
+Latest verification results:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke
+PASS after the fix: 12 Playwright smoke tests in about 4.7m.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on
+PASS after the fix: 1 test in 26.8s.
+
+npx playwright test tests/e2e/smoke.spec.ts --grep "campaign Border Village launches a battle scene" --retries=1 --trace=on
+PASS after the fix: 1 test in 16.7s.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 28.7m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.3m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 13.4m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 4.9m.
+
+npm run visual:qa
+PASS: 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Remaining watch items: Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after push. If Border Village fails again with a fresh failure after settings passes, investigate it as independent rather than as timeout cascade.
 
 ## v0.11.2 Remote CI Observation Report Gate - 2026-05-11
 

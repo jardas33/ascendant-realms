@@ -1,12 +1,71 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-11 v0.11.2 remote CI observation final gate
+Last updated: 2026-05-12 v0.11.3 fast confidence smoke fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.3 GitHub Actions Fast Confidence Smoke Fix - 2026-05-12
+
+Mission: fix the first reported remote GitHub Actions `Fast confidence` smoke timeout without changing gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, CI coverage strength, maps, units, factions, rewards, or app runtime behavior.
+
+Remote evidence from Emmanuel:
+
+- Workflow: `CI Release Matrix Dry Run`.
+- Run: `Checkpoint v0.11.2 GitHub Actions remote CI observation #2`.
+- Commit: `aee73ee`.
+- Failed job/step: `Fast confidence` at `Run npm run test:e2e:smoke`.
+- Primary failure: `settings screen persists accessibility options` timed out at the 35s Playwright test budget.
+- Secondary failure: `campaign Border Village launches a battle scene` hit browser/context setup failure after the settings timeout and is treated as likely cascade unless the next hosted run proves otherwise.
+
+Files changed:
+
+- `tests/e2e/smoke.spec.ts`: added deterministic settings control waits, explicit post-control assertions, and a narrow 60s timeout for only the settings accessibility smoke test.
+- `docs/V113_FAST_CONFIDENCE_SMOKE_FIX.md`: added evidence, diagnosis, coverage-preservation notes, and GitHub re-check instructions.
+- `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, `RELEASE_CHECKLIST.md`, and this handoff: documented v0.11.3.
+
+Coverage status:
+
+- The settings smoke test was not removed, skipped, split into fake assertions, or weakened.
+- The timeout was increased only for `settings screen persists accessibility options`.
+- The Border Village smoke test was left unchanged because focused local runs pass independently.
+
+Current v0.11.3 focused verification:
+
+- Pre-fix `npm run test:e2e:smoke`: PASS, 12 tests in about 4.9m.
+- Pre-fix focused settings with trace: PASS, 1 test in 23.6s, close to the 35s hosted-runner budget.
+- Pre-fix focused Border Village with trace: PASS, 1 test in 17.3s.
+- Pre-fix settings repeat with one worker and trace: PASS, 3 repeats in 22.4s, 23.8s, and 24.1s.
+- Post-fix focused settings with trace: PASS, 1 test in 26.8s.
+- Post-fix focused Border Village with trace: PASS, 1 test in 16.7s.
+
+Current v0.11.3 full local verification:
+
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 4.7m.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- `npm run test:e2e:release`: PASS, 67 tests in about 28.7m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.3m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 13.4m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 4.9m.
+- `npm run visual:qa`: PASS, 18 indexed screenshots and 0 recorded browser console errors.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+
+Current v0.11.3 remaining risks:
+
+- Hosted GitHub Actions timing still needs the next remote run to prove the fix under Linux runner conditions.
+- Treat the previous Border Village context/setup failure as cascade for now; investigate independently only if it returns after settings passes.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.3 fast confidence smoke fix`, push if safe, then ask Emmanuel to re-check the automatic GitHub Actions `Fast confidence` job.
 
 ## Current v0.11.2 GitHub Actions Remote CI Observation - 2026-05-11
 

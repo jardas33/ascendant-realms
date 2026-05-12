@@ -17,12 +17,24 @@ import { createHero, openFreshMainMenu, SAVE_KEY, seedCampaignSave, startNewCamp
 
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
+const SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS = 60_000;
+
 async function expectBattleLoaded(page: Page): Promise<void> {
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
   await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
   await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
   await expect(page.getByTestId("battle-minimap")).toBeVisible();
   await expect(page.getByTestId("minimap")).toBeVisible();
+}
+
+async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
+  await page.getByTestId(testId).evaluate((input, nextValue) => {
+    const range = input as HTMLInputElement;
+    range.value = nextValue;
+    range.dispatchEvent(new Event("input", { bubbles: true }));
+  }, value);
+  await expect(page.getByTestId(testId)).toHaveValue(value);
+  await expect(page.getByTestId("settings-status")).toContainText("Previewing settings");
 }
 
 async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, heroName: string): Promise<void> {
@@ -539,24 +551,24 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("settings screen persists accessibility options", async ({ page }) => {
+    // GitHub Actions evidence showed this path can exceed the global 35s budget because it covers
+    // both settings persistence and an in-battle runtime application check.
+    test.setTimeout(SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS);
+
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-settings").click();
     await expect(page.getByTestId("settings-screen")).toBeVisible();
-    await page.getByTestId("settings-master-volume").evaluate((input) => {
-      const range = input as HTMLInputElement;
-      range.value = "0.35";
-      range.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    await page.getByTestId("settings-ui-scale").evaluate((input) => {
-      const range = input as HTMLInputElement;
-      range.value = "1.15";
-      range.dispatchEvent(new Event("input", { bubbles: true }));
-    });
+    await setSettingsRangeValue(page, "settings-master-volume", "0.35");
+    await setSettingsRangeValue(page, "settings-ui-scale", "1.15");
     await page.getByTestId("settings-floating-text").uncheck();
+    await expect(page.getByTestId("settings-floating-text")).not.toBeChecked();
     await page.getByTestId("settings-reduced-motion").check();
+    await expect(page.getByTestId("settings-reduced-motion")).toBeChecked();
     await page.getByTestId("settings-colorblind-minimap").check();
+    await expect(page.getByTestId("settings-colorblind-minimap")).toBeChecked();
     await page.getByTestId("settings-fog-override").selectOption("disabled");
+    await expect(page.getByTestId("settings-fog-override")).toHaveValue("disabled");
     await page.getByTestId("settings-save").click();
     await expect(page.getByTestId("settings-status")).toContainText("Settings saved");
     await page.getByTestId("settings-back").click();

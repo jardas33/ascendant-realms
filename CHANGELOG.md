@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.11.3 GitHub Actions Fast Confidence Smoke Fix - 2026-05-12
+
+This checkpoint fixes the first reported remote GitHub Actions `Fast confidence` smoke timeout without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, workflow coverage, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Fast-confidence smoke fix report: `docs/V113_FAST_CONFIDENCE_SMOKE_FIX.md`.
+- Settings accessibility smoke robustness in `tests/e2e/smoke.spec.ts`.
+- A settings range-control helper that waits for the Settings scene's DOM re-rendered control state before continuing.
+- Explicit state assertions after settings accessibility/fog controls change.
+- A narrowly scoped 60s timeout for only `settings screen persists accessibility options`, justified by GitHub Actions evidence that the combined settings-persistence plus in-battle runtime-application smoke path exceeded the global 35s budget on the hosted runner.
+- Handoff, development checkpoint, and release-checklist updates.
+
+### Verification
+
+- Focused reproduction before the fix: local full smoke passed, focused settings passed but consumed 23.6s of the 35s budget, and a serial 3x settings repeat passed at 22.4s, 23.8s, and 24.1s.
+- Post-fix focused gate: `npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on` passed in 26.8s.
+- Post-fix focused gate: `npx playwright test tests/e2e/smoke.spec.ts --grep "campaign Border Village launches a battle scene" --retries=1 --trace=on` passed in 16.7s.
+- Required local gate: `npm test` passed with 46 files / 351 tests; build passed with the known Phaser warning; `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke`, `npm run smoke:preview`, full release, 3-way release shards, `visual:qa`, `playtest:sim`, and `git diff --check` passed.
+
+### Next
+
+- Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after this commit is pushed and confirm the settings accessibility smoke test no longer times out.
+- Treat the previous Border Village `browser.newContext` failure as a likely cascade unless the next hosted run shows a fresh independent failure.
+
 ## v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning - 2026-05-11
 
 This checkpoint documents remote GitHub Actions observation limits and CI no-change decisions without changing gameplay, content, tutorial behavior, save format, campaign progression, visual assets, runtime art, workflow YAML, helper code, Playwright coverage, maps, units, factions, rewards, or UI design.
