@@ -1,12 +1,86 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-12 v0.11.4 fast confidence seed/reload fix
+Last updated: 2026-05-12 v0.11.5 fast confidence lane split
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.5 GitHub Actions Fast Confidence Lane Split - 2026-05-12
+
+Mission: split automatic GitHub Actions browser confidence from the full smoke/release lanes without changing gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, balance, CI coverage strength, maps, units, factions, rewards, or app runtime behavior.
+
+Remote evidence from Emmanuel:
+
+- Workflow: `CI Release Matrix Dry Run`.
+- Failed job/step: `Fast confidence` at `Run npm run test:e2e:smoke`.
+- The v0.11.4 helper fix got past the earlier settings issue, but the hosted runner still failed/flaked on longer campaign/skirmish smoke paths.
+- Reported hosted result: about 16.1 minutes, 2 failed, 3 flaky, 7 passed.
+- Diagnosis: the whole 12-test smoke suite is too heavy and browser-context-sensitive for automatic push/PR CI; full smoke should remain available locally/manual/release instead of being the automatic fast-confidence browser lane.
+
+Files changed:
+
+- `package.json`: added `npm run test:e2e:smoke:fast`.
+- `.github/workflows/ci.yml`: automatic `Fast confidence` now runs `npm run test:e2e:smoke:fast`.
+- `tests/e2e/smoke.spec.ts`: tagged six tests `@ci-fast` and six longer tests `@extended-smoke`.
+- `docs/V115_FAST_CONFIDENCE_LANE_SPLIT.md`: added evidence, classification, coverage-preservation notes, and GitHub re-check instructions.
+- README, release checklist, developer command guide, v0.11 release lane plan, changelog, development checkpoint, and this handoff updated.
+
+Automatic fast confidence now runs these six `@ci-fast` tests:
+
+- `main menu boots @ci-fast`
+- `tutorial entry launches a no-reward shell and returns to menu @ci-fast`
+- `tutorial exit returns to menu without saving @ci-fast`
+- `settings screen persists accessibility options @ci-fast`
+- `new campaign flow opens the campaign map and blocks locked nodes @ci-fast`
+- `inventory screen opens without crashing @ci-fast`
+
+Full smoke and release/manual coverage still include these six `@extended-smoke` tests:
+
+- `campaign Border Village launches a battle scene @extended-smoke`
+- `post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards @extended-smoke`
+- `post-Crossing campaign launches Cinderfen Watch and persists completion @extended-smoke`
+- `post-Ashen Cinderfen event reacts to Malrec's trophy standard @extended-smoke`
+- `skirmish setup lists maps and launches Broken Ford @extended-smoke`
+- `skirmish difficulty selection changes fog and starting pressure @extended-smoke`
+
+Coverage status:
+
+- No smoke tests were deleted.
+- No smoke tests were globally skipped.
+- No assertions were weakened.
+- `npm run test:e2e:smoke` remains the full 12-test smoke suite.
+- Full release and manual release shards remain unchanged.
+
+Current v0.11.5 verification:
+
+- `npm run test:e2e:smoke:fast -- --list`: PASS, lists 6 tests.
+- `npm run test:e2e:smoke -- --list`: PASS, lists all 12 tests.
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke:fast`: PASS, 6 tests in about 2.1m.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 5.2m.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- `npm run test:e2e:release`: PASS, 67 tests in about 31.2m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.1m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 15.2m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.7m.
+- `npm run visual:qa`: PASS, 18 indexed screenshots and 0 recorded browser console errors.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS, no whitespace errors; PowerShell reported only the normal workflow line-ending notice.
+
+Current v0.11.5 remaining risks:
+
+- Hosted GitHub Actions still needs the next remote run to prove the smaller automatic fast-confidence lane under Linux runner conditions.
+- Extended campaign/skirmish smoke coverage is intentionally outside automatic push/PR CI, but remains in full smoke and release/manual lanes.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.5 fast confidence lane split`, push if safe, then ask Emmanuel to re-check the automatic GitHub Actions `Fast confidence` job.
 
 ## Current v0.11.4 GitHub Actions Smoke Seed/Reload Stability Fix - 2026-05-12
 

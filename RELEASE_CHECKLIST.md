@@ -29,7 +29,7 @@ Known current realities:
 - The known Phaser vendor chunk warning remains expected and non-blocking.
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
-- GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs automatically, while visual QA, 3-way release shards, simulator, and full release remain manual `workflow_dispatch` options.
+- GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, 3-way release shards, simulator, and full release remain local/manual release confidence.
 
 ## Required Automated Checks
 
@@ -97,19 +97,23 @@ Some chunks are larger than 500 kB after minification.
 
 This Vite warning is expected for the current Phaser vendor chunk and is not a release blocker unless a later optimization explicitly targets lazy scene/data loading or warning-policy cleanup. The app chunk is below the default 500 kB threshold after the v0.4 vendor split; the warning remains because Phaser itself is still large.
 
-4. Fast default browser smoke lane:
+4. Browser smoke lanes:
 
 ```bash
+npm run test:e2e:smoke:fast
 npm run test:e2e:smoke
 ```
 
 Expected current prototype result:
 
 ```text
+PASS: 6 Playwright tests for smoke:fast
 PASS: 12 Playwright tests
 ```
 
-This lane runs `tests/e2e/smoke.spec.ts` and is the frequent-iteration browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full tutorial completion in smoke while the lane remains inside the 6-7 minute watch band; move it deeper only if smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
+`npm run test:e2e:smoke:fast` runs the six `@ci-fast` smoke checks used by automatic GitHub Fast confidence: main menu, Tutorial entry/return, Tutorial exit without saving, Settings persistence, New Campaign map/locked-node checks, and inventory reachability.
+
+`npm run test:e2e:smoke` runs all 12 tests in `tests/e2e/smoke.spec.ts` and is the full smoke browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full Tutorial completion in smoke while the lane remains inside the local watch band; move completion deeper only if local smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
 
@@ -180,7 +184,7 @@ npm test
 npm run build
 npm run validate:content
 npm run validate:art-intake
-npm run test:e2e:smoke
+npm run test:e2e:smoke:fast
 npm run smoke:preview
 ```
 

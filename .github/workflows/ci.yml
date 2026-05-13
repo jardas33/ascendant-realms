@@ -67,8 +67,8 @@ jobs:
       - name: Art-intake validation
         run: npm run validate:art-intake
 
-      - name: E2E smoke
-        run: npm run test:e2e:smoke
+      - name: E2E fast smoke
+        run: npm run test:e2e:smoke:fast
 
       - name: Production preview smoke
         run: npm run smoke:preview
@@ -241,4 +241,3 @@ jobs:
             playwright-report/
           if-no-files-found: ignore
           retention-days: 7
-

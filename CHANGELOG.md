@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.11.5 GitHub Actions Fast Confidence Lane Split - 2026-05-12
+
+This checkpoint splits automatic GitHub browser confidence from the full smoke/release lanes without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, workflow coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Fast-confidence lane split report: `docs/V115_FAST_CONFIDENCE_LANE_SPLIT.md`.
+- New package script: `npm run test:e2e:smoke:fast`.
+- Smoke test title tags:
+  - `@ci-fast` for the six automatic fast-confidence checks.
+  - `@extended-smoke` for the six longer campaign/skirmish smoke checks.
+- GitHub Actions automatic `Fast confidence` now runs `npm run test:e2e:smoke:fast` instead of the full smoke suite.
+- Full `npm run test:e2e:smoke`, full release, release shards, manual workflow lanes, and local final gates remain coverage-preserving.
+- README, release checklist, developer command guide, release lane reliability plan, development checkpoint, and handoff updates.
+
+### Verification
+
+- Script inventory: `npm run test:e2e:smoke:fast -- --list` lists 6 tests; `npm run test:e2e:smoke -- --list` lists all 12 tests.
+- Required local gate: `npm test` passed with 46 files / 351 tests; build passed with the known Phaser warning; `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, full `npm run test:e2e:smoke`, `npm run smoke:preview`, full release, 3-way release shards, `visual:qa`, `playtest:sim`, and `git diff --check` passed.
+
+### Next
+
+- Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after this commit is pushed and confirm the e2e step runs `npm run test:e2e:smoke:fast`.
+- Use full local smoke, manual release shards, or full release for the extended campaign/skirmish smoke coverage.
+
 ## v0.11.4 GitHub Actions Smoke Seed/Reload Stability Fix - 2026-05-12
 
 This checkpoint stabilizes seeded campaign/skirmish smoke setup after the first v0.11.3 GitHub Actions `Fast confidence` rerun, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, workflow coverage, maps, units, factions, rewards, or UI design.

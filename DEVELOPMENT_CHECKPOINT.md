@@ -1,6 +1,73 @@
 # Development Checkpoint
 
-Updated: 2026-05-12 v0.11.4 fast confidence seed/reload fix
+Updated: 2026-05-12 v0.11.5 fast confidence lane split
+
+## v0.11.5 Fast Confidence Lane Split - 2026-05-12
+
+Scope: split automatic GitHub Actions browser confidence from the full smoke/release lanes while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, workflow coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or speculative timeout inflation.
+
+Included work:
+
+- Added `docs/V115_FAST_CONFIDENCE_LANE_SPLIT.md`.
+- Added `npm run test:e2e:smoke:fast`.
+- Tagged six smoke tests as `@ci-fast` and six longer campaign/skirmish smoke tests as `@extended-smoke`.
+- Updated `.github/workflows/ci.yml` so automatic `Fast confidence` runs `npm run test:e2e:smoke:fast`.
+- Kept `npm run test:e2e:smoke` as the full 12-test smoke suite.
+- Kept full release, 3-way release shards, visual QA, simulator, preview smoke, and manual GitHub workflow lanes coverage-preserving.
+
+Current verification:
+
+```text
+npm run test:e2e:smoke:fast -- --list
+PASS: lists 6 tests from `tests/e2e/smoke.spec.ts`.
+
+npm run test:e2e:smoke -- --list
+PASS: lists all 12 tests from `tests/e2e/smoke.spec.ts`.
+
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.1m.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 5.2m.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 31.2m.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.1m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 15.2m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 5.7m.
+
+npm run visual:qa
+PASS: 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS: no whitespace errors; PowerShell reported only the normal workflow line-ending notice.
+```
+
+Remaining watch items: Emmanuel should re-check the automatic GitHub Actions `Fast confidence` job after push and confirm the e2e step runs `npm run test:e2e:smoke:fast`. Extended campaign/skirmish smoke coverage remains in full smoke and release/manual lanes.
 
 ## v0.11.4 Fast Confidence Seed/Reload Fix - 2026-05-12
 

@@ -33,6 +33,7 @@ npm test
 npm run build
 npm run validate:content
 npm run validate:art-intake
+npm run test:e2e:smoke:fast
 npm run test:e2e:smoke
 git diff --check
 ```
@@ -46,7 +47,7 @@ npm run visual:qa
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Tutorial copy, step metadata, no-reward clarity, tutorial launch/exit, or small overlay hierarchy work | Smoke about 5m; layout about 12 to 15m; visual QA about 3m | No-save/no-reward tutorial path, battle launch, menu return, tutorial metadata validation, responsive overlay readability | Broken tutorial signal, changed test copy, lost no-save/no-reward behavior, or layout overlap | `npm run test:e2e:smoke` for tutorial source changes; it carries the release-critical no-save/no-reward tutorial path |
+| Tutorial copy, step metadata, no-reward clarity, tutorial launch/exit, or small overlay hierarchy work | Fast smoke about 2-3m locally; full smoke about 5m; layout about 12 to 15m; visual QA about 3m | No-save/no-reward tutorial path, battle launch, menu return, tutorial metadata validation, responsive overlay readability | Broken tutorial signal, changed test copy, lost no-save/no-reward behavior, or layout overlap | `npm run test:e2e:smoke` for tutorial source changes; it carries the release-critical no-save/no-reward tutorial path |
 
 ## Visual-Intake Changes
 
@@ -90,6 +91,7 @@ npm test
 npm run build
 npm run validate:content
 npm run validate:art-intake
+npm run test:e2e:smoke:fast
 npm run test:e2e:smoke
 npm run playtest:sim
 git diff --check
@@ -111,6 +113,7 @@ npm run test:e2e:release
 Commands:
 
 ```bash
+npm run test:e2e:smoke:fast
 npm run test:e2e:smoke
 npm run test:e2e:release
 npm run test:e2e:release:shard1
@@ -122,7 +125,7 @@ npm run test:e2e:release:shard3of3
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Full release about 29m; 2-way shards about 24m and 5m; 3-way shards about 11 to 13m, 13m, and 5m | Full browser behavior suite, shard distributability, smoke/deep/layout/pressure coverage | Real browser regression, shard-only scheduling issue, timeout or stale-process issue | Full release before major freezes; 3-way shards are balanced for CI but do not delete the one-command lane |
+| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Fast smoke about 2-3m locally; full smoke about 5m; full release about 29-31m; 2-way shards about 24m and 5m; 3-way shards about 12 to 15m and 5m | Full browser behavior suite, shard distributability, smoke/deep/layout/pressure coverage | Real browser regression, shard-only scheduling issue, timeout or stale-process issue | Full release before major freezes; 3-way shards are balanced for CI but do not delete the one-command lane |
 
 Timeout policy lives in `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`.
 
@@ -135,6 +138,7 @@ npm test
 npm run build
 npm run validate:content
 npm run validate:art-intake
+npm run test:e2e:smoke:fast
 npm run test:e2e:smoke
 npm run test:e2e:release
 npm run test:e2e:release:shard1
@@ -215,7 +219,7 @@ npm test
 npm run build
 npm run validate:content
 npm run validate:art-intake
-npm run test:e2e:smoke
+npm run test:e2e:smoke:fast
 npm run smoke:preview
 ```
 
@@ -229,7 +233,7 @@ run_full_release
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Remote PR/push confidence or manual release dry-runs | Fast CI is smoke-sized; manual release shards depend on the slowest 3-way shard | Clean install, build, validators, smoke, preview smoke, optional visual artifacts, optional release shards, optional simulator | Missing CI browser dependency, Linux/CI preview portability issue, real browser regression, shard-only failure, or artifact upload issue | Local final gate before handoff; CI supplements local release evidence and still needs GitHub-side validation after first push |
+| Remote PR/push confidence or manual release dry-runs | Fast CI runs the 6-test `@ci-fast` smoke subset; manual release shards depend on the slowest 3-way shard | Clean install, build, validators, fast smoke, preview smoke, optional visual artifacts, optional release shards, optional simulator | Missing CI browser dependency, Linux/CI preview portability issue, real browser regression, shard-only failure, or artifact upload issue | Full local smoke/release gates before handoff; CI supplements local release evidence |
 
 CI design docs: `docs/V111_CI_MATRIX_AUDIT.md`, `docs/V111_CI_RELEASE_MATRIX_PLAN.md`, `docs/V111_CI_ARTIFACT_STRATEGY.md`, and `docs/V111_CI_LOCAL_PARITY_CHECK.md`.
 

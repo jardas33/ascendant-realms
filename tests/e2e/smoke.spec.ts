@@ -450,7 +450,7 @@ function tutorialStepForCommand(command: SemanticCommand): string {
 }
 
 test.describe("Ascendant Realms browser smoke flows", () => {
-  test("main menu boots", async ({ page }) => {
+  test("main menu boots @ci-fast", async ({ page }) => {
     await openFreshMainMenu(page);
 
     await expect(page.getByRole("heading", { name: "Ascendant Realms" })).toBeVisible();
@@ -468,7 +468,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-reset-save")).toBeVisible();
   });
 
-  test("tutorial entry launches a no-reward shell and returns to menu", async ({ page }) => {
+  test("tutorial entry launches a no-reward shell and returns to menu @ci-fast", async ({ page }) => {
     test.setTimeout(75_000);
     await openFreshMainMenu(page);
 
@@ -539,7 +539,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
   });
 
-  test("tutorial exit returns to menu without saving", async ({ page }) => {
+  test("tutorial exit returns to menu without saving @ci-fast", async ({ page }) => {
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-tutorial").click();
@@ -551,7 +551,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
   });
 
-  test("settings screen persists accessibility options", async ({ page }) => {
+  test("settings screen persists accessibility options @ci-fast", async ({ page }) => {
     // GitHub Actions evidence showed this path can exceed the global 35s budget because it covers
     // both settings persistence and an in-battle runtime application check.
     test.setTimeout(SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS);
@@ -653,7 +653,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("minimap").locator(".minimap-unit[fill='#d55e00']").first()).toBeVisible();
   });
 
-  test("new campaign flow opens the campaign map and blocks locked nodes", async ({ page }) => {
+  test("new campaign flow opens the campaign map and blocks locked nodes @ci-fast", async ({ page }) => {
     await startNewCampaign(page, "E2E Campaign");
 
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
@@ -681,7 +681,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-start-node")).toHaveCount(0);
   });
 
-  test("campaign Border Village launches a battle scene", async ({ page }) => {
+  test("campaign Border Village launches a battle scene @extended-smoke", async ({ page }) => {
     await startNewCampaign(page, "E2E Campaign");
 
     await page.getByTestId("campaign-node-border_village").click();
@@ -732,7 +732,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(fogVisibility.crownShrineVisible).toBe(true);
   });
 
-  test("post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards", async ({ page }) => {
+  test("post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards @extended-smoke", async ({ page }) => {
     test.setTimeout(85_000);
     await seedPostAshenCampaign(page);
 
@@ -977,7 +977,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.hero.inventory).toHaveLength(rewardSnapshot.inventoryCount);
   });
 
-  test("post-Crossing campaign launches Cinderfen Watch and persists completion", async ({ page }) => {
+  test("post-Crossing campaign launches Cinderfen Watch and persists completion @extended-smoke", async ({ page }) => {
     test.setTimeout(65_000);
     await seedPostCinderfenCrossingCampaign(page);
 
@@ -1133,7 +1133,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.hero.inventory).toHaveLength(rewardSnapshot.inventoryCount);
   });
 
-  test("post-Ashen Cinderfen event reacts to Malrec's trophy standard", async ({ page }) => {
+  test("post-Ashen Cinderfen event reacts to Malrec's trophy standard @extended-smoke", async ({ page }) => {
     await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
 
     await page.getByTestId("menu-continue-campaign").click();
@@ -1167,7 +1167,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.resources).toMatchObject({ crowns: 260, stone: 180, iron: 120, aether: 80 });
   });
 
-  test("skirmish setup lists maps and launches Broken Ford", async ({ page }) => {
+  test("skirmish setup lists maps and launches Broken Ford @extended-smoke", async ({ page }) => {
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
     await createHero(page, "E2E Skirmish");
@@ -1186,7 +1186,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expectBattleLoaded(page);
   });
 
-  test("skirmish difficulty selection changes fog and starting pressure", async ({ page }) => {
+  test("skirmish difficulty selection changes fog and starting pressure @extended-smoke", async ({ page }) => {
     // GitHub Actions evidence showed seeded skirmish setup can exceed the global 35s budget on
     // hosted runners because this smoke path launches two seeded battles back-to-back.
     test.setTimeout(SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS);
@@ -1206,7 +1206,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(normalBattle.enemyUnitDefinitionIds).toHaveLength(4);
   });
 
-  test("inventory screen opens without crashing", async ({ page }) => {
+  test("inventory screen opens without crashing @ci-fast", async ({ page }) => {
     await seedCampaignSave(page, { hero: { heroName: "E2E Inventory" } });
 
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();

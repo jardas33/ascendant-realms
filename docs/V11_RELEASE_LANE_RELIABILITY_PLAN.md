@@ -8,7 +8,8 @@ Scope: define how Ascendant Realms should use the current Playwright release lan
 
 | Lane | Command | Current count | Latest known runtime | Intended use |
 | --- | --- | ---: | --- | --- |
-| Smoke | `npm run test:e2e:smoke` | 12 tests | About 4.9m | Frequent browser confidence during implementation. |
+| Fast smoke | `npm run test:e2e:smoke:fast` | 6 tests | About 2-3m locally | Automatic GitHub push/PR browser confidence. |
+| Full smoke | `npm run test:e2e:smoke` | 12 tests | About 5m locally | Local/manual smoke confidence with extended campaign/skirmish flows. |
 | Full release | `npm run test:e2e:release` | 67 tests | About 29.0m | Major checkpoints, final gates, and full pre-freeze confidence. |
 | 2-way shard 1 | `npm run test:e2e:release:shard1` | 55 tests | About 24.3m | Legacy 2-way split; currently heavy. |
 | 2-way shard 2 | `npm run test:e2e:release:shard2` | 12 tests | About 4.8m | Legacy 2-way split; currently smoke-sized. |
@@ -25,7 +26,7 @@ Use the smallest lane that protects the changed surface during implementation, t
 | Work type | Recommended verification |
 | --- | --- |
 | Docs-only | `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `git diff --check` |
-| Script/test tooling | Docs-only gate plus `npm run test:e2e:smoke` |
+| Script/test tooling | Docs-only gate plus `npm run test:e2e:smoke:fast`; add full smoke when the touched surface affects campaign/skirmish flows |
 | Tutorial or layout work | Add `npm run test:e2e:layout`; add `npm run visual:qa` when screenshots matter |
 | Visual-intake metadata | Docs-only gate plus `npm run validate:art-intake` |
 | Content/data/save/campaign work | Add focused unit tests, `npm run test:e2e:smoke`, relevant deep/release coverage, and `npm run playtest:sim` when campaign battle outcomes can change |
@@ -43,6 +44,8 @@ v0.11.1 adds `.github/workflows/ci.yml` as a conservative first GitHub Actions w
 - manual 3-way release shard matrix plus simulator
 - manual full-release e2e lane for major freezes
 - Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, and no paid services
+
+v0.11.5 changes the automatic push/PR browser lane from full smoke to `npm run test:e2e:smoke:fast` after hosted evidence showed the full smoke file is too heavy and context-sensitive for every push. Full smoke remains available locally and through release/manual lanes.
 
 The CI workflow does not replace the local final gate. Treat the first pushed workflow run as a dry-run validation of GitHub syntax, runner timing, artifact behavior, Playwright browser installation, and `smoke:preview` portability.
 
@@ -135,7 +138,8 @@ The v0.11 implementation should stay in the reliability/documentation lane:
 
 The release lane process is healthy when:
 
-- smoke remains the default iteration browser gate
+- fast smoke remains the automatic GitHub push/PR browser gate
+- full smoke remains available for local/manual smoke confidence
 - 3-way shards remain the preferred balanced CI split
 - full release remains available and green before major checkpoints
 - timeouts are documented and rerun with evidence
