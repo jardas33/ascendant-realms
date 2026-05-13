@@ -1,5 +1,25 @@
 # Changelog
 
+## v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
+
+This checkpoint stabilizes the manually triggered GitHub Actions `Optional visual QA` job after v0.11.5 made automatic `Fast confidence` green, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, screenshot coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Visual QA hosted navigation report: `docs/V116_VISUAL_QA_HOSTED_NAVIGATION_FIX.md`.
+- Narrow setup-navigation retry in `tests/e2e/shared-helpers.ts` for transient hosted-runner `net::ERR_ABORTED`, frame-detached, and setup-navigation timeout errors during `gotoReadyMainMenu`; timed-out navigation is accepted only if the real main menu is already visible.
+- Scoped optional visual QA test budget increase from 240s to 420s for the single 18-screenshot capture pass.
+- All 18 visual QA screenshot targets, browser console error collection, and human-reviewed non-pixel-perfect policy remain unchanged.
+- Release checklist, development checkpoint, and handoff updates.
+
+### Verification
+
+- Required local gate: `npm test`, `npm run build`, `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, `npm run visual:qa`, `npm run smoke:preview`, full `npm run test:e2e:smoke`, `npm run playtest:sim`, 3-way release shards, and `git diff --check` passed.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `Optional visual QA` job and confirm it uploads `visual-qa-latest` with `index.md`, 18 screenshots, and 0 browser console errors.
+
 ## v0.11.5 GitHub Actions Fast Confidence Lane Split - 2026-05-12
 
 This checkpoint splits automatic GitHub browser confidence from the full smoke/release lanes without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, workflow coverage strength, maps, units, factions, rewards, or UI design.

@@ -24,6 +24,8 @@ const EMPTY_RESOURCES: CampaignResources = {
 };
 
 const MAIN_MENU_BOOT_TIMEOUT_MS = 20_000;
+const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 30_000;
+const MAIN_MENU_NAVIGATION_ATTEMPTS = 2;
 
 const BASE_HERO = {
   heroName: "E2E Seed",
@@ -72,8 +74,74 @@ const BASE_CAMPAIGN = {
   rivalTrophies: []
 };
 
+function describeNavigationError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isTransientAppNavigationError(error: unknown): boolean {
+  const message = describeNavigationError(error);
+  return (
+    message.includes("net::ERR_ABORTED") ||
+    message.includes("Timeout") ||
+    message.includes("timeout") ||
+    message.includes("frame was detached") ||
+    message.includes("Frame was detached")
+  );
+}
+
+async function isMainMenuReady(page: Page): Promise<boolean> {
+  const mainMenuReady = await page
+    .getByTestId("main-menu")
+    .waitFor({ state: "visible", timeout: 1_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!mainMenuReady) {
+    return false;
+  }
+
+  return page
+    .getByTestId("menu-new-campaign")
+    .waitFor({ state: "visible", timeout: 1_000 })
+    .then(() => true)
+    .catch(() => false);
+}
+
+async function gotoAppRootWithRetry(page: Page, context: string): Promise<void> {
+  let lastError: unknown;
+  let attemptsUsed = 0;
+
+  for (let attempt = 1; attempt <= MAIN_MENU_NAVIGATION_ATTEMPTS; attempt += 1) {
+    attemptsUsed = attempt;
+    try {
+      await page.goto("/", {
+        waitUntil: "domcontentloaded",
+        timeout: MAIN_MENU_NAVIGATION_TIMEOUT_MS
+      });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (await isMainMenuReady(page)) {
+        return;
+      }
+
+      if (!isTransientAppNavigationError(error) || attempt === MAIN_MENU_NAVIGATION_ATTEMPTS) {
+        break;
+      }
+
+      // Hosted visual/layout runs have shown transient app-root navigation aborts/timeouts while a frame is being replaced.
+      // Only those setup-navigation aborts are retried; the app still must render the real main menu below.
+      console.warn(`${context}: retrying app boot navigation after transient error: ${describeNavigationError(error)}`);
+      await page.waitForLoadState("domcontentloaded", { timeout: 2_000 }).catch(() => undefined);
+    }
+  }
+
+  throw new Error(
+    `${context}: app root navigation failed after ${attemptsUsed} attempt(s): ${describeNavigationError(lastError)}`
+  );
+}
+
 async function gotoReadyMainMenu(page: Page, context: string): Promise<void> {
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await gotoAppRootWithRetry(page, context);
   await expect(
     page.getByTestId("main-menu"),
     `${context}: expected main menu after app boot`

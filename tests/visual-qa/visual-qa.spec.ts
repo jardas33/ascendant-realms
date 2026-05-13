@@ -29,6 +29,7 @@ const OUTPUT_DIR = path.resolve(process.cwd(), "visual-qa", "latest");
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
+const VISUAL_QA_CAPTURE_TIMEOUT_MS = 420_000;
 
 function attachConsoleCollector(page: Page, consoleErrors: string[]): void {
   page.on("console", (message) => {
@@ -193,7 +194,9 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
 
 test.describe("Ascendant Realms visual QA capture", () => {
   test("captures the current menu, campaign, tutorial, results, inventory, gallery, and Cinderfen battle views", async ({ page }) => {
-    test.setTimeout(240_000);
+    // Optional hosted visual QA captures 18 screenshots in one console-error-checked pass.
+    // GitHub Actions run #6 hit the previous 240s budget during setup navigation, not a visual assertion.
+    test.setTimeout(VISUAL_QA_CAPTURE_TIMEOUT_MS);
     await mkdir(OUTPUT_DIR, { recursive: true });
     const records: CaptureRecord[] = [];
     const consoleErrors: string[] = [];

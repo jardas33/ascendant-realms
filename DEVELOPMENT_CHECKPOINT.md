@@ -1,6 +1,63 @@
 # Development Checkpoint
 
-Updated: 2026-05-12 v0.11.5 fast confidence lane split
+Updated: 2026-05-12 v0.11.6 optional visual QA hosted navigation fix
+
+## v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
+
+Scope: stabilize the manually triggered GitHub Actions `Optional visual QA` job while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, screenshot coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or visual baseline pixel assertions.
+
+Included work:
+
+- Added `docs/V116_VISUAL_QA_HOSTED_NAVIGATION_FIX.md`.
+- Updated `tests/e2e/shared-helpers.ts` so `gotoReadyMainMenu` retries only transient app-root setup navigation aborts such as `net::ERR_ABORTED`, frame-detach errors, or setup-navigation timeouts, while still requiring visible main-menu controls afterward. A navigation timeout is accepted only when the real main menu is already visible.
+- Updated `tests/visual-qa/visual-qa.spec.ts` so the optional 18-screenshot visual QA capture test has a 420s budget instead of the previous 240s budget.
+- Kept the visual QA harness as one coverage-preserving pass with 18 screenshot targets and strict browser console error collection.
+- Kept automatic GitHub `Fast confidence` on `npm run test:e2e:smoke:fast`; this pass only targets the manual optional visual QA job.
+
+Current verification:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests.
+
+npm run visual:qa
+PASS: 1 Playwright visual QA test in about 4.1m, 18 indexed screenshots, 0 recorded browser console errors.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.7m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 14.8m after the helper was refined to accept a setup-navigation timeout only when the real main menu was already visible.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 5.7m.
+
+git diff --check
+PASS: no whitespace errors.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `Optional visual QA` job and confirm `visual-qa-latest` uploads with `index.md`, 18 screenshots, and 0 browser console errors. If it fails again, inspect whether the failure is a new app assertion, browser console error, another navigation abort, or total job timeout before tuning further.
 
 ## v0.11.5 Fast Confidence Lane Split - 2026-05-12
 

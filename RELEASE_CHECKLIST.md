@@ -30,6 +30,7 @@ Known current realities:
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
 - GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, 3-way release shards, simulator, and full release remain local/manual release confidence.
+- v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 
 ## Required Automated Checks
 
@@ -198,6 +199,8 @@ Manual `workflow_dispatch` inputs:
 
 The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. v0.11.2 could not inspect remote Actions runs from the Codex environment because `gh` is unavailable, the GitHub connector token is expired, and unauthenticated Actions API access returns `404 Not Found`. Use `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` to collect the first hosted-run URL, `fast-confidence` duration, `smoke:preview` result, manual-job status, and artifact evidence from GitHub UI. Do not weaken local release gates until CI has proven itself on the remote.
 
+v0.11.6 remote evidence confirmed automatic Fast confidence was green on commit `1948ce5`, then showed the manual `Optional visual QA` job timing out during setup navigation rather than failing a screenshot or console-error assertion. The visual QA job remains manual and coverage-preserving; rerun it from GitHub UI when human screenshot review is needed and inspect `visual-qa-latest` for `index.md`, 18 screenshots, and 0 browser console errors.
+
 7. Optional focused e2e lanes:
 
 ```bash
@@ -257,6 +260,8 @@ Generated index summary records screenshot count 18, console error count 0, and 
 ```
 
 This v0.8.2 lane is optional and review-oriented. It captures main menu, Asset Gallery, Hero Inventory, Tutorial desktop/mobile, campaign map, route-complete campaign map, Skirmish Setup, Cinderfen Crossing desktop/tablet, Cinder Shrine, Crossing pressure warning, Cinderfen Watch, Watch pressure warning, and victory/defeat Results views. It is not a pixel-perfect visual regression test and it does not replace smoke, layout, release, content validation, or simulator gates. Generated screenshots are intentionally ignored by git.
+
+v0.11.6 keeps all 18 targets and console-error failure behavior intact. The single capture test now has a 420s budget because GitHub-hosted runners showed the prior 240s limit could expire during setup navigation, and the shared app-boot helper retries only transient setup-navigation aborts/timeouts before requiring the real main menu.
 
 Future Cinderfen visual work should also review `docs/V09_CINDERFEN_SCREENSHOT_ACCEPTANCE_CRITERIA.md` and `docs/V091_STYLE_FRAME_SCREENSHOT_COMPARISON_PLAN.md`. v0.9.1 keeps this lane as human-review evidence: no pixel-perfect diffing, no generated/imported runtime art, and no production approval without source/license metadata plus manifest validation. Tutorial-specific v0.10 observations live in `docs/V10_TUTORIAL_VISUAL_QA_REVIEW.md`.
 

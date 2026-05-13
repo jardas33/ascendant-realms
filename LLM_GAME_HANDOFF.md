@@ -1,12 +1,68 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-12 v0.11.5 fast confidence lane split
+Last updated: 2026-05-12 v0.11.6 optional visual QA hosted navigation fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
+
+Mission: stabilize the manually triggered GitHub Actions `Optional visual QA` job without changing gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, balance, screenshot coverage strength, maps, units, factions, rewards, app runtime behavior, or release coverage.
+
+Remote evidence from Emmanuel:
+
+- Commit `1948ce5` made automatic GitHub Actions `Fast confidence` green, so the v0.11.5 fast lane split worked.
+- Manual workflow run `CI Release Matrix Dry Run #6` failed in job `Optional visual QA`.
+- Failed step: `Run npm run visual:qa`.
+- Command: `playwright test --config=playwright.visual-qa.config.ts --reporter=line`.
+- Failure: the single visual QA capture test timed out at 240s while navigating to `http://127.0.0.1:5173/`.
+- Error included `page.goto: net::ERR_ABORTED; maybe frame was detached?`.
+- Stack path: `gotoReadyMainMenu` -> `openMainMenuForStorageSeed` -> `seedCompletedCinderfenRouteCampaign` -> `tests/visual-qa/visual-qa.spec.ts`.
+- Diagnosis: optional visual QA hit hosted-runner setup navigation instability and a tight single-test budget, not a visual assertion, browser console error, gameplay, or asset failure.
+
+Files changed:
+
+- `tests/e2e/shared-helpers.ts`: `gotoReadyMainMenu` now uses a focused `gotoAppRootWithRetry` helper that retries only transient app-root setup navigation aborts such as `net::ERR_ABORTED`, frame-detach errors, and setup-navigation timeouts, with a bounded per-attempt navigation timeout. If navigation times out after the app already rendered, the helper accepts the state only when the real `main-menu` and `menu-new-campaign` controls are visible.
+- `tests/visual-qa/visual-qa.spec.ts`: the optional 18-screenshot visual QA capture test now has a 420s budget instead of the previous 240s budget.
+- `docs/V116_VISUAL_QA_HOSTED_NAVIGATION_FIX.md`: added the hosted evidence, root-cause hypothesis, helper/timeout changes, coverage-preservation notes, and GitHub rerun checklist.
+- `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, `RELEASE_CHECKLIST.md`, and this handoff updated.
+
+Coverage status:
+
+- Visual QA remains one capture test.
+- All 18 screenshot targets remain covered.
+- Browser console error collection still fails visual QA if any errors are recorded.
+- No screenshots were removed.
+- No pixel-perfect assertions were added.
+- Automatic Fast confidence remains on `npm run test:e2e:smoke:fast`.
+
+Current v0.11.6 verification:
+
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke:fast`: PASS, 6 tests.
+- `npm run visual:qa`: PASS, 1 capture test in about 4.1m, 18 indexed screenshots, 0 recorded browser console errors.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- `npm run test:e2e:smoke`: PASS, 12 tests.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.7m.
+- `npm run test:e2e:release:shard2of3`: first attempt with the initial helper version failed on two local setup-navigation timeouts even though the failure snapshot showed the main menu was visible; the helper was refined to accept that state only when real menu controls are visible, and the final rerun PASS, 27 tests in about 14.8m.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.7m.
+- `git diff --check`: PASS, no whitespace errors.
+
+Current v0.11.6 remaining risks:
+
+- The manual GitHub Actions `Optional visual QA` job still needs a fresh hosted run to prove the navigation retry and larger test budget under Linux runner conditions.
+- Visual QA remains optional, human-reviewed, and non-pixel-perfect.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.6 optional visual QA hosted navigation fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `Optional visual QA` job and confirm `visual-qa-latest` includes `index.md`, 18 screenshots, and 0 browser console errors.
 
 ## Current v0.11.5 GitHub Actions Fast Confidence Lane Split - 2026-05-12
 
