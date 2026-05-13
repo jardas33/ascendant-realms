@@ -19,27 +19,62 @@ type VisualViewport = {
 };
 
 type CaptureRecord = {
+  group: string;
   title: string;
   fileName: string;
   viewport: string;
   note: string;
+  retryUsed: boolean;
 };
 
 const OUTPUT_DIR = path.resolve(process.cwd(), "visual-qa", "latest");
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const VISUAL_QA_CAPTURE_TIMEOUT_MS = 420_000;
+const EXPECTED_SCREENSHOT_COUNT = 18;
+const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
+const SCREENSHOT_TIMEOUT_MS = 45_000;
+const SCREENSHOT_ATTEMPTS = 2;
 
-function attachConsoleCollector(page: Page, consoleErrors: string[]): void {
+const visualQaRecords: CaptureRecord[] = [];
+const visualQaConsoleErrors: string[] = [];
+let visualQaStartedAt = Date.now();
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isTransientScreenshotError(error: unknown): boolean {
+  const message = describeError(error);
+  return message.includes("Timeout") || message.includes("timeout") || message.includes("page screenshot");
+}
+
+function viewportLabel(viewport: VisualViewport): string {
+  return `${viewport.width}x${viewport.height} ${viewport.label}`;
+}
+
+function elapsedMs(): number {
+  return Date.now() - visualQaStartedAt;
+}
+
+function attachConsoleCollector(page: Page, group: string): string[] {
+  const consoleErrors: string[] = [];
+  const recordError = (message: string) => {
+    const entry = `[${group}] ${message}`;
+    consoleErrors.push(entry);
+    visualQaConsoleErrors.push(entry);
+  };
+
   page.on("console", (message) => {
     if (message.type() === "error") {
-      consoleErrors.push(message.text());
+      recordError(message.text());
     }
   });
   page.on("pageerror", (error) => {
-    consoleErrors.push(error.message);
+    recordError(error.message);
   });
+
+  return consoleErrors;
 }
 
 async function useViewport(page: Page, viewport: VisualViewport): Promise<void> {
@@ -47,28 +82,70 @@ async function useViewport(page: Page, viewport: VisualViewport): Promise<void> 
 }
 
 async function settleForScreenshot(page: Page): Promise<void> {
-  await page.waitForLoadState("networkidle").catch(() => undefined);
+  await page.waitForLoadState("networkidle", { timeout: 5_000 }).catch(() => undefined);
   await page.waitForTimeout(150);
+}
+
+async function takeScreenshotWithRetry(page: Page, group: string, fileName: string, viewport: VisualViewport): Promise<boolean> {
+  let retryUsed = false;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= SCREENSHOT_ATTEMPTS; attempt += 1) {
+    const attemptStartedAt = Date.now();
+    console.log(
+      `[visual-qa] START screenshot group="${group}" file="${fileName}" viewport="${viewportLabel(viewport)}" url="${page.url()}" elapsed=${elapsedMs()}ms attempt=${attempt}`
+    );
+
+    try {
+      await settleForScreenshot(page);
+      await page.screenshot({
+        path: path.join(OUTPUT_DIR, fileName),
+        fullPage: false,
+        animations: "disabled",
+        caret: "hide",
+        timeout: SCREENSHOT_TIMEOUT_MS
+      });
+      console.log(
+        `[visual-qa] DONE screenshot group="${group}" file="${fileName}" elapsed=${elapsedMs()}ms duration=${Date.now() - attemptStartedAt}ms retry=${retryUsed ? "yes" : "no"}`
+      );
+      return retryUsed;
+    } catch (error) {
+      lastError = error;
+      console.warn(
+        `[visual-qa] FAIL screenshot group="${group}" file="${fileName}" elapsed=${elapsedMs()}ms duration=${Date.now() - attemptStartedAt}ms error="${describeError(error)}"`
+      );
+
+      if (!isTransientScreenshotError(error) || attempt === SCREENSHOT_ATTEMPTS) {
+        break;
+      }
+
+      retryUsed = true;
+      console.warn(`[visual-qa] RETRY screenshot group="${group}" file="${fileName}" nextAttempt=${attempt + 1}`);
+      await page.waitForLoadState("domcontentloaded", { timeout: 2_000 }).catch(() => undefined);
+    }
+  }
+
+  throw new Error(
+    `[visual-qa] screenshot ${fileName} in group ${group} failed after ${SCREENSHOT_ATTEMPTS} attempt(s): ${describeError(lastError)}`
+  );
 }
 
 async function captureView(
   page: Page,
-  records: CaptureRecord[],
+  group: string,
   title: string,
   fileName: string,
   viewport: VisualViewport,
   note: string
 ): Promise<void> {
-  await settleForScreenshot(page);
-  await page.screenshot({
-    path: path.join(OUTPUT_DIR, fileName),
-    fullPage: false
-  });
-  records.push({
+  const retryUsed = await takeScreenshotWithRetry(page, group, fileName, viewport);
+  visualQaRecords.push({
+    group,
     title,
     fileName,
-    viewport: `${viewport.width}x${viewport.height} ${viewport.label}`,
-    note
+    viewport: viewportLabel(viewport),
+    note,
+    retryUsed
   });
 }
 
@@ -156,6 +233,8 @@ async function forceBattleDefeat(page: Page): Promise<void> {
 
 async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Promise<void> {
   const viewportSummary = [...new Set(records.map((record) => record.viewport))].join(", ");
+  const groupSummary = [...new Set(records.map((record) => record.group))].join(", ");
+  const retryCount = records.filter((record) => record.retryUsed).length;
   const lines = [
     "# Ascendant Realms Visual QA Capture",
     "",
@@ -168,14 +247,18 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
     `- Screenshot count: ${records.length}`,
     `- Browser console error count: ${consoleErrors.length}`,
     `- Viewports covered: ${viewportSummary}`,
+    `- Capture groups: ${groupSummary}`,
+    `- Screenshot retries used: ${retryCount}`,
     "- Harness: `tests/visual-qa/visual-qa.spec.ts`",
     "",
     "## Captures",
     "",
     ...records.flatMap((record) => [
       `- ${record.title}`,
+      `  - Group: \`${record.group}\``,
       `  - File: \`${record.fileName}\``,
       `  - Viewport: ${record.viewport}`,
+      `  - Retry used: ${record.retryUsed ? "yes" : "no"}`,
       `  - Note: ${record.note}`
     ]),
     "",
@@ -189,101 +272,145 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
   ];
 
   await writeFile(path.join(OUTPUT_DIR, "index.md"), `${lines.join("\n")}\n`, "utf8");
-  console.log(`Visual QA wrote ${records.length} screenshot(s) to ${OUTPUT_DIR}. Browser console errors: ${consoleErrors.length}.`);
+  console.log(
+    `Visual QA wrote ${records.length} screenshot(s) across ${groupSummary} to ${OUTPUT_DIR}. Browser console errors: ${consoleErrors.length}. Screenshot retries: ${retryCount}.`
+  );
 }
 
 test.describe("Ascendant Realms visual QA capture", () => {
-  test("captures the current menu, campaign, tutorial, results, inventory, gallery, and Cinderfen battle views", async ({ page }) => {
-    // Optional hosted visual QA captures 18 screenshots in one console-error-checked pass.
-    // GitHub Actions run #6 hit the previous 240s budget during setup navigation, not a visual assertion.
-    test.setTimeout(VISUAL_QA_CAPTURE_TIMEOUT_MS);
+  test.beforeAll(async () => {
+    visualQaStartedAt = Date.now();
+    visualQaRecords.length = 0;
+    visualQaConsoleErrors.length = 0;
     await mkdir(OUTPUT_DIR, { recursive: true });
-    const records: CaptureRecord[] = [];
-    const consoleErrors: string[] = [];
-    attachConsoleCollector(page, consoleErrors);
+  });
+
+  test.afterAll(async () => {
+    await writeIndex(visualQaRecords, visualQaConsoleErrors);
+    expect(visualQaRecords, "visual QA should preserve the full 18-screenshot review set").toHaveLength(
+      EXPECTED_SCREENSHOT_COUNT
+    );
+    expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
+  });
+
+  test("captures menu, gallery, and inventory review views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "menu-gallery-inventory";
+    const consoleErrors = attachConsoleCollector(page, group);
 
     await useViewport(page, DESKTOP);
     await openFreshMainMenu(page);
     await expect(page.getByTestId("main-menu")).toBeVisible();
-    await captureView(page, records, "Main menu", "main-menu-desktop.png", DESKTOP, "Desktop title screen and primary navigation.");
+    await captureView(page, group, "Main menu", "main-menu-desktop.png", DESKTOP, "Desktop title screen and primary navigation.");
 
     await page.getByTestId("menu-asset-gallery").click();
     await expect(page.locator(".asset-gallery-card").first()).toBeVisible();
-    await captureView(page, records, "Asset Gallery", "asset-gallery-desktop.png", DESKTOP, "Manual asset gallery and image-load status surface.");
+    await captureView(page, group, "Asset Gallery", "asset-gallery-desktop.png", DESKTOP, "Manual asset gallery and image-load status surface.");
 
     await useViewport(page, TABLET);
     await openFreshMainMenu(page);
     await expect(page.getByTestId("main-menu")).toBeVisible();
-    await captureView(page, records, "Main menu tablet", "main-menu-tablet.png", TABLET, "Tablet menu composition check.");
+    await captureView(page, group, "Main menu tablet", "main-menu-tablet.png", TABLET, "Tablet menu composition check.");
 
     await useViewport(page, MOBILE);
     await openFreshMainMenu(page);
     await expect(page.getByTestId("main-menu")).toBeVisible();
-    await captureView(page, records, "Main menu mobile", "main-menu-mobile.png", MOBILE, "Mobile menu crop and scroll check.");
+    await captureView(page, group, "Main menu mobile", "main-menu-mobile.png", MOBILE, "Mobile menu crop and scroll check.");
 
     await useViewport(page, DESKTOP);
     await seedPostCinderfenCrossingCampaign(page);
     await page.getByTestId("menu-inventory").click();
     await expect(page.getByTestId("hero-inventory")).toBeVisible();
-    await captureView(page, records, "Hero Inventory", "hero-inventory-desktop.png", DESKTOP, "Saved hero equipment, inventory, stats, and skill panel.");
+    await captureView(page, group, "Hero Inventory", "hero-inventory-desktop.png", DESKTOP, "Saved hero equipment, inventory, stats, and skill panel.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures tutorial review views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "tutorial";
+    const consoleErrors = attachConsoleCollector(page, group);
 
     await useViewport(page, DESKTOP);
     await openFreshMainMenu(page);
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await captureView(page, records, "Tutorial launch", "tutorial-desktop.png", DESKTOP, "Proving Grounds tutorial overlay and battle HUD.");
+    await captureView(page, group, "Tutorial launch", "tutorial-desktop.png", DESKTOP, "Proving Grounds tutorial overlay and battle HUD.");
 
     await useViewport(page, MOBILE);
     await openFreshMainMenu(page);
     await page.getByTestId("menu-tutorial").click();
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await captureView(page, records, "Tutorial launch mobile", "tutorial-mobile.png", MOBILE, "Mobile Proving Grounds overlay and battle HUD density.");
+    await captureView(page, group, "Tutorial launch mobile", "tutorial-mobile.png", MOBILE, "Mobile Proving Grounds overlay and battle HUD density.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures campaign map and skirmish setup review views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "campaign-skirmish";
+    const consoleErrors = attachConsoleCollector(page, group);
 
     await useViewport(page, DESKTOP);
     await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
     await continueSavedCampaign(page);
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await captureView(page, records, "Campaign map", "campaign-map-desktop.png", DESKTOP, "Post-Ashen campaign map with Cinderfen route available.");
+    await captureView(page, group, "Campaign map", "campaign-map-desktop.png", DESKTOP, "Post-Ashen campaign map with Cinderfen route available.");
 
     await seedCompletedCinderfenRouteCampaign(page);
     await continueSavedCampaign(page);
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await captureView(page, records, "Campaign route complete", "campaign-route-complete-desktop.png", DESKTOP, "Completed Cinderfen route campaign map state.");
+    await captureView(page, group, "Campaign route complete", "campaign-route-complete-desktop.png", DESKTOP, "Completed Cinderfen route campaign map state.");
 
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
     await createHero(page, "Visual QA");
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-    await captureView(page, records, "Skirmish setup", "skirmish-setup-desktop.png", DESKTOP, "Skirmish setup map and difficulty selection.");
+    await captureView(page, group, "Skirmish setup", "skirmish-setup-desktop.png", DESKTOP, "Skirmish setup map and difficulty selection.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures Cinderfen Crossing battle and victory review views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "cinderfen-crossing";
+    const consoleErrors = attachConsoleCollector(page, group);
 
     await seedPostAshenCampaign(page);
     await continueSavedCampaign(page);
     await page.getByTestId("campaign-node-cinderfen_overlook").click();
     await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
     await launchCinderfenCrossing(page);
-    await captureView(page, records, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Causeway initial battle view.");
+    await captureView(page, group, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Causeway initial battle view.");
     await useViewport(page, TABLET);
-    await captureView(page, records, "Cinderfen Crossing tablet", "cinderfen-crossing-tablet.png", TABLET, "Tablet Cinderfen battle HUD density.");
+    await captureView(page, group, "Cinderfen Crossing tablet", "cinderfen-crossing-tablet.png", TABLET, "Tablet Cinderfen battle HUD density.");
     await useViewport(page, DESKTOP);
     await centerCaptureSite(page, "cinder_crossing", true);
-    await captureView(page, records, "Cinderfen Shrine captured", "cinderfen-crossing-shrine-desktop.png", DESKTOP, "Cinder Shrine centered after capture-site hook.");
+    await captureView(page, group, "Cinderfen Shrine captured", "cinderfen-crossing-shrine-desktop.png", DESKTOP, "Cinder Shrine centered after capture-site hook.");
     await triggerCrossingPressureWarning(page);
-    await captureView(page, records, "Cinderfen Crossing pressure warning", "cinderfen-crossing-pressure-desktop.png", DESKTOP, "Causeway pressure status warning after Cinder Shrine capture.");
+    await captureView(page, group, "Cinderfen Crossing pressure warning", "cinderfen-crossing-pressure-desktop.png", DESKTOP, "Causeway pressure status warning after Cinder Shrine capture.");
     await completeCinderfenVictory(page);
-    await captureView(page, records, "Results victory", "results-victory-desktop.png", DESKTOP, "Cinderfen Crossing victory rewards and objective summary.");
+    await captureView(page, group, "Results victory", "results-victory-desktop.png", DESKTOP, "Cinderfen Crossing victory rewards and objective summary.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures Cinderfen Watch battle and defeat review views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "cinderfen-watch";
+    const consoleErrors = attachConsoleCollector(page, group);
 
     await seedPostCinderfenCrossingCampaign(page);
     await continueSavedCampaign(page);
     await launchCinderfenWatch(page);
-    await captureView(page, records, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watchpost initial battle view.");
+    await captureView(page, group, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watchpost initial battle view.");
     await triggerWatchPressureWarning(page);
-    await captureView(page, records, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");
+    await captureView(page, group, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");
     await forceBattleDefeat(page);
-    await captureView(page, records, "Results defeat", "results-defeat-desktop.png", DESKTOP, "Cinderfen Watch defeat results and guidance tips.");
+    await captureView(page, group, "Results defeat", "results-defeat-desktop.png", DESKTOP, "Cinderfen Watch defeat results and guidance tips.");
 
-    await writeIndex(records, consoleErrors);
-    expect(consoleErrors, "visual QA should not record browser console errors").toEqual([]);
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
 });

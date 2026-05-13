@@ -17,7 +17,8 @@ Configuration:
 - Config file: `playwright.visual-qa.config.ts`
 - Test directory: `tests/visual-qa/`
 - Worker count: `1`
-- Per-test timeout: `120_000`
+- Default per-test timeout: `120_000`
+- v0.11.7 visual QA group timeout override: `180_000`
 - Browser: Chromium desktop profile with the same SwiftShader/ANGLE launch args used by e2e
 - Dev server: `npm run dev` at `http://127.0.0.1:5173`
 - Retries: `0`
@@ -58,6 +59,14 @@ The harness currently writes 18 screenshots covering:
 - Cinderfen Watch pressure warning
 - Results defeat
 
+As of v0.11.7, those captures are split into 5 smaller Playwright tests:
+
+- `menu-gallery-inventory`
+- `tutorial`
+- `campaign-skirmish`
+- `cinderfen-crossing`
+- `cinderfen-watch`
+
 ## v0.11 Reliability Improvement
 
 The generated index now includes an explicit summary:
@@ -67,13 +76,30 @@ The generated index now includes an explicit summary:
 - viewports covered
 - harness path
 
+v0.11.7 extends this summary with:
+
+- capture groups
+- screenshot retry count
+- group and retry status per capture
+
 The test output also prints a short summary after writing the index:
 
 ```text
-Visual QA wrote 18 screenshot(s) to <repo>/visual-qa/latest. Browser console errors: 0.
+Visual QA wrote 18 screenshot(s) across menu-gallery-inventory, tutorial, campaign-skirmish, cinderfen-crossing, cinderfen-watch to <repo>/visual-qa/latest. Browser console errors: 0. Screenshot retries: 0.
 ```
 
 This helps future reviewers confirm they are looking at a complete capture set without adding brittle image comparisons.
+
+## v0.11.7 Screenshot Stability Improvement
+
+Remote hosted evidence showed the previous monolithic visual QA test could hang inside `page.screenshot`, specifically around the Cinderfen Crossing tablet capture. The harness now logs each screenshot before and after capture:
+
+```text
+[visual-qa] START screenshot group="cinderfen-crossing" file="cinderfen-crossing-tablet.png" viewport="1024x768 tablet" url="http://127.0.0.1:5173/" elapsed=184383ms attempt=1
+[visual-qa] DONE screenshot group="cinderfen-crossing" file="cinderfen-crossing-tablet.png" elapsed=187749ms duration=3366ms retry=no
+```
+
+Each screenshot uses a 45 second screenshot timeout, disabled animations/caret, and one retry for transient screenshot timeout/capture failures. Browser console errors are still recorded and fail the run.
 
 ## Cleanup Decision
 

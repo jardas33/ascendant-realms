@@ -1,12 +1,72 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-12 v0.11.6 optional visual QA hosted navigation fix
+Last updated: 2026-05-13 v0.11.7 optional visual QA screenshot stability fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
+
+Mission: stabilize the manually triggered GitHub Actions `Optional visual QA` screenshot capture path without changing gameplay, content, saves, tutorial behavior, visuals, runtime art, campaign progression, balance, screenshot coverage strength, maps, units, factions, rewards, app runtime behavior, or release coverage.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` remains green after v0.11.5.
+- v0.11.6 removed the prior `page.goto net::ERR_ABORTED` navigation failure, but manual Optional visual QA still failed on commit `caeff57`.
+- Failed step: `Run npm run visual:qa`.
+- Failure: `Test timeout of 420000ms exceeded`.
+- Specific operation: `page.screenshot`.
+- Call log: taking page screenshot, waiting for fonts to load, fonts loaded.
+- Stack path: `captureView(...)` in `tests/visual-qa/visual-qa.spec.ts`.
+- Suspected target from the reported line: `Cinderfen Crossing tablet` / `cinderfen-crossing-tablet.png`.
+- Diagnosis: hosted screenshot capture hang inside one monolithic 18-screenshot visual QA test, not a navigation failure, visual assertion, browser console error, gameplay, or asset failure.
+
+Files changed:
+
+- `tests/visual-qa/visual-qa.spec.ts`: split visual QA from one test into 5 smaller tests with fresh Playwright pages: `menu-gallery-inventory`, `tutorial`, `campaign-skirmish`, `cinderfen-crossing`, and `cinderfen-watch`.
+- `tests/visual-qa/visual-qa.spec.ts`: added per-screenshot `START`, `DONE`, `FAIL`, and `RETRY` logs with capture group, file name, viewport, URL, elapsed time, attempt, duration, and retry status.
+- `tests/visual-qa/visual-qa.spec.ts`: added a 45s per-screenshot timeout, one retry for transient screenshot timeout/capture failures, and `animations: "disabled"` / `caret: "hide"` for screenshot calls.
+- `tests/visual-qa/visual-qa.spec.ts`: generated index now records capture groups and retry status for each screenshot.
+- `docs/V117_VISUAL_QA_SCREENSHOT_STABILITY_FIX.md`: added hosted evidence, line/target diagnosis, split strategy, timeout/retry behavior, coverage-preservation notes, and next GitHub check.
+- `docs/V11_VISUAL_QA_RELIABILITY_NOTES.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, `RELEASE_CHECKLIST.md`, and this handoff updated.
+
+Coverage status:
+
+- Visual QA now runs 5 tests.
+- All 18 screenshot targets remain covered.
+- Browser console error collection still fails visual QA if any errors are recorded.
+- No screenshots were removed.
+- No pixel-perfect assertions were added.
+- No workflow job was skipped or weakened.
+
+Current v0.11.7 verification:
+
+- Initial `npm run visual:qa`: PASS, 5 tests in about 4.2m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke:fast`: PASS, 6 tests in about 2.0m.
+- Final `npm run visual:qa`: PASS, 5 tests in about 4.1m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 5.3m.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 11.3m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 14.8m; it exercised the known setup-navigation retry once and recovered.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 5.2m.
+- `git diff --check`: PASS.
+
+Current v0.11.7 remaining risks:
+
+- The manual GitHub Actions `Optional visual QA` job still needs a fresh hosted run to prove the split harness and screenshot timeout/retry behavior under Linux runner conditions.
+- Visual QA remains optional, human-reviewed, and non-pixel-perfect.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.7 optional visual QA screenshot stability fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `Optional visual QA` job and confirm the hosted log reaches `DONE screenshot` for `cinderfen-crossing-tablet.png`.
 
 ## Current v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
 

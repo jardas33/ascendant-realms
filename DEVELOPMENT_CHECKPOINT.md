@@ -1,6 +1,64 @@
 # Development Checkpoint
 
-Updated: 2026-05-12 v0.11.6 optional visual QA hosted navigation fix
+Updated: 2026-05-13 v0.11.7 optional visual QA screenshot stability fix
+
+## v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
+
+Scope: stabilize the manually triggered GitHub Actions `Optional visual QA` screenshot capture path while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, screenshot coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or visual baseline pixel assertions.
+
+Included work:
+
+- Added `docs/V117_VISUAL_QA_SCREENSHOT_STABILITY_FIX.md`.
+- Split `tests/visual-qa/visual-qa.spec.ts` from one monolithic screenshot test into 5 smaller tests: menu/gallery/inventory, tutorial, campaign/skirmish, Cinderfen Crossing, and Cinderfen Watch.
+- Kept all 18 screenshot targets and strict browser console error collection.
+- Added per-screenshot start/done/fail/retry logging with group, file name, viewport, URL, elapsed time, duration, and retry status.
+- Added a 45s per-screenshot timeout, disabled screenshot animations/caret, and one retry for transient screenshot timeout/capture failures.
+- Updated the generated `visual-qa/latest/index.md` schema to include capture groups and screenshot retry status.
+
+Current verification:
+
+```text
+npm run visual:qa
+PASS: 5 Playwright visual QA tests in about 4.2m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.0m.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 5.3m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 11.3m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 14.8m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 5.2m.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `Optional visual QA` job and confirm the hosted log shows `DONE screenshot` for `cinderfen-crossing-tablet.png`, `visual-qa-latest/index.md` uploads with 18 screenshots, and browser console errors remain 0.
 
 ## v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
 

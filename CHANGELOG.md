@@ -1,5 +1,27 @@
 # Changelog
 
+## v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
+
+This checkpoint stabilizes the manually triggered GitHub Actions `Optional visual QA` job after v0.11.6 fixed hosted navigation but exposed a hosted screenshot-capture hang, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, screenshot coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Visual QA screenshot stability report: `docs/V117_VISUAL_QA_SCREENSHOT_STABILITY_FIX.md`.
+- Split `npm run visual:qa` from one monolithic 18-screenshot test into 5 smaller visual QA tests with fresh Playwright pages.
+- Added per-screenshot `START`, `DONE`, `FAIL`, and `RETRY` logging with capture group, file name, viewport, URL, elapsed time, duration, and retry status.
+- Added a 45s per-screenshot timeout, one retry for transient screenshot timeout/capture failures, and disabled animations/caret during screenshots.
+- Expanded the generated visual QA index with capture groups and screenshot retry count/status.
+- Preserved all 18 visual QA screenshot targets and unchanged browser console error failure behavior.
+
+### Verification
+
+- Full checkpoint gate passed: `npm test` with 46 files / 351 tests, `npm run build` with the known Phaser warning, `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, split `npm run visual:qa`, `npm run smoke:preview`, full `npm run test:e2e:smoke`, `npm run playtest:sim`, all 3 release shards, and `git diff --check`.
+- Split `npm run visual:qa` passed with 5 tests, 18 screenshots, 0 browser console errors, and 0 screenshot retries.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `Optional visual QA` job and confirm the log reaches `DONE screenshot ... cinderfen-crossing-tablet.png`, the job shows 5 visual QA tests, and `visual-qa-latest/index.md` reports 18 screenshots and 0 browser console errors.
+
 ## v0.11.6 Optional Visual QA Hosted Navigation Fix - 2026-05-12
 
 This checkpoint stabilizes the manually triggered GitHub Actions `Optional visual QA` job after v0.11.5 made automatic `Fast confidence` green, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, screenshot coverage strength, maps, units, factions, rewards, or UI design.
