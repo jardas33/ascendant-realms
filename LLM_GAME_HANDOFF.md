@@ -1,12 +1,107 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-13 v0.11.8 hosted release matrix stability fix
+Last updated: 2026-05-14 v0.11.9 hosted release matrix split and timeout fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.9 Hosted Release Matrix Split and Timeout Fix - 2026-05-14
+
+Mission: split the manually triggered GitHub Actions release matrix into smaller hosted shards and tune the hosted shard timeout without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` is green.
+- Manual `Optional visual QA` is green.
+- Manual `Release simulator` is green.
+- Manual `Run manual 3-way release shard matrix and simulator` on run #13 still failed in the release matrix.
+- Shard 1 of 3 hit the 35-minute job timeout after running 28 tests with 1 worker; the first shown issue was `tests/e2e/deep-flow.spec.ts:569`, timing out while clicking `menu-reset-save`.
+- Shard 2 of 3 hit the 35-minute job timeout after running 27 tests with 1 worker; the first shown issue was a hosted Chromium `browser.newContext` context failure in `enemy-pressure.spec.ts`.
+- Shard 3 of 3 failed after about 18 minutes in extended smoke with hosted Chromium/context instability, including `campaign Border Village launches a battle scene @extended-smoke` and post-Ashen campaign persistence.
+
+Files changed:
+
+- `package.json`: added hosted-only 6-way release scripts, `test:e2e:release:hosted:shard1of6` through `test:e2e:release:hosted:shard6of6`, using Playwright test-level sharding with `--fully-parallel --workers=1`.
+- `.github/workflows/ci.yml`: manual `run_release_matrix` now uses six hosted release shard jobs and a 45-minute per-shard timeout. Automatic Fast confidence, optional visual QA, release simulator, and manual full release remain unchanged.
+- `tests/e2e/shared-helpers.ts`: `gotoAppRootWithRetry` now performs a final real-main-menu readiness check after the last transient setup-navigation error and only recovers when actual main menu controls are visible.
+- `tests/e2e/deep-flow.spec.ts`: applied existing `clickReady` to the two `menu-reset-save` clicks reported by shard-1 hosted evidence.
+- `docs/V119_HOSTED_RELEASE_MATRIX_SPLIT_AUDIT.md`: added hosted 3-way timeout/failure audit and coverage-preservation rationale.
+- `docs/V119_HOSTED_RELEASE_MATRIX_SPLIT_FIX.md`: added implementation notes, hosted 6-way script list, workflow expectations, and GitHub rerun checklist.
+- `README.md`, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, and this handoff updated.
+
+Release scripts:
+
+- Local `npm run test:e2e:release` remains unchanged.
+- Local 2-way shard scripts remain unchanged.
+- Local 3-way shard scripts remain unchanged.
+- Hosted 6-way scripts are additive and intended for GitHub-hosted manual release matrix jobs; they shard at test level while keeping each shard single-worker.
+- Hosted setup-navigation recovery still fails blank or missing UI states; the final retry path requires visible `main-menu` and `menu-new-campaign`.
+
+Current v0.11.9 verification:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.2m.
+
+npm run visual:qa
+PASS: 5 Playwright visual QA tests in about 4.5m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 6.7m.
+
+npm run test:e2e:release:hosted:shard1of6
+PASS: 12 Playwright tests in about 6.9m.
+
+npm run test:e2e:release:hosted:shard2of6
+PASS: 11 Playwright tests in about 5.1m.
+
+npm run test:e2e:release:hosted:shard3of6
+PASS: 11 Playwright tests in about 5.2m.
+
+npm run test:e2e:release:hosted:shard4of6
+PASS: 11 Playwright tests in about 4.9m.
+
+npm run test:e2e:release:hosted:shard5of6
+PASS: 11 Playwright tests in about 11.3m with setup-navigation retry diagnostics and recovery.
+
+npm run test:e2e:release:hosted:shard6of6
+PASS: 11 Playwright tests in about 6.3m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+```
+
+Current v0.11.9 remaining risks:
+
+- The hosted 6-way matrix still needs a fresh GitHub Actions manual rerun.
+- GitHub-hosted Chromium/context instability may still appear, but smaller shards should reduce wall-clock and browser-session pressure.
+- The full release lane remains slow by design.
+- Existing local 3-way shard scripts were not rerun in this pass because they are unchanged and the corrected hosted 6-way scripts exercised the same 67-test release suite.
+
+Next step:
+
+- Finish local verification, commit as `Checkpoint v0.11.9 hosted release matrix split and timeout fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `run_release_matrix` workflow input and expect six release matrix jobs.
 
 ## Current v0.11.8 Hosted Release Matrix Stability Fix - 2026-05-13
 

@@ -27,6 +27,7 @@ const MAIN_MENU_BOOT_TIMEOUT_MS = 20_000;
 const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 15_000;
 const MAIN_MENU_NAVIGATION_ATTEMPTS = 3;
 const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
+const MAIN_MENU_FINAL_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_ATTEMPTS = 2;
 
@@ -106,10 +107,10 @@ function isTransientClickError(error: unknown): boolean {
   );
 }
 
-async function isMainMenuReady(page: Page): Promise<boolean> {
+async function isMainMenuReady(page: Page, timeout = MAIN_MENU_READY_PROBE_TIMEOUT_MS): Promise<boolean> {
   const mainMenuReady = await page
     .getByTestId("main-menu")
-    .waitFor({ state: "visible", timeout: MAIN_MENU_READY_PROBE_TIMEOUT_MS })
+    .waitFor({ state: "visible", timeout })
     .then(() => true)
     .catch(() => false);
   if (!mainMenuReady) {
@@ -118,7 +119,7 @@ async function isMainMenuReady(page: Page): Promise<boolean> {
 
   return page
     .getByTestId("menu-new-campaign")
-    .waitFor({ state: "visible", timeout: MAIN_MENU_READY_PROBE_TIMEOUT_MS })
+    .waitFor({ state: "visible", timeout })
     .then(() => true)
     .catch(() => false);
 }
@@ -151,6 +152,15 @@ async function gotoAppRootWithRetry(page: Page, context: string): Promise<void> 
         `${context}: retrying app boot navigation attempt ${attempt + 1}/${MAIN_MENU_NAVIGATION_ATTEMPTS} after transient error: ${describeNavigationError(error)}`
       );
       await page.waitForLoadState("domcontentloaded", { timeout: 2_000 }).catch(() => undefined);
+    }
+  }
+
+  if (lastError && isTransientAppNavigationError(lastError)) {
+    console.warn(
+      `${context}: checking real main menu after final transient app boot navigation error: ${describeNavigationError(lastError)}`
+    );
+    if (await isMainMenuReady(page, MAIN_MENU_FINAL_READY_TIMEOUT_MS)) {
+      return;
     }
   }
 

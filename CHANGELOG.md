@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.11.9 Hosted Release Matrix Split and Timeout Fix - 2026-05-14
+
+This checkpoint makes the manually triggered GitHub Actions release matrix smaller and more CI-realistic after hosted 3-way release shards timed out or hit Chromium context instability, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Hosted release matrix split audit: `docs/V119_HOSTED_RELEASE_MATRIX_SPLIT_AUDIT.md`.
+- Hosted release matrix fix report: `docs/V119_HOSTED_RELEASE_MATRIX_SPLIT_FIX.md`.
+- New additive package scripts: `npm run test:e2e:release:hosted:shard1of6` through `npm run test:e2e:release:hosted:shard6of6`, using Playwright test-level sharding with `--fully-parallel --workers=1`.
+- GitHub Actions manual `run_release_matrix` now runs six hosted release shard jobs with a 45-minute per-shard timeout plus the unchanged release simulator.
+- Existing local full release, 2-way shard, and 3-way shard scripts remain available and unchanged.
+- Applied the existing non-forced `clickReady` helper to the two `menu-reset-save` clicks called out by hosted shard-1 evidence.
+- Added a final real-main-menu readiness check after transient app-root navigation retries in the shared helper, accepting recovery only when the actual main menu controls are visible.
+- README, release checklist, developer command guide, release lane reliability plan, development checkpoint, and handoff updates.
+
+### Verification
+
+- Required gate passed: `npm test` with 46 files / 351 tests, `npm run build` with the known Phaser vendor warning, `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, `npm run visual:qa`, `npm run smoke:preview`, full `npm run test:e2e:smoke`, all six hosted release shards, `npm run playtest:sim`, and `git diff --check`.
+- Hosted 6-way release shards passed with 67 total Playwright tests split 12/11/11/11/11/11.
+- The existing local 3-way shard scripts were not rerun in this pass because they are unchanged and the corrected hosted 6-way scripts exercised the same 67-test release suite.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input and expect six jobs named `shard-1-of-6` through `shard-6-of-6`, plus the unchanged `Release simulator` job.
+
 ## v0.11.8 Hosted Release Matrix Stability Fix - 2026-05-13
 
 This checkpoint stabilizes the manually triggered GitHub Actions 3-way release matrix after Fast confidence, Optional visual QA, and the release simulator were green, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.

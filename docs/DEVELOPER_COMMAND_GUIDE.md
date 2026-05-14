@@ -121,11 +121,17 @@ npm run test:e2e:release:shard2
 npm run test:e2e:release:shard1of3
 npm run test:e2e:release:shard2of3
 npm run test:e2e:release:shard3of3
+npm run test:e2e:release:hosted:shard1of6
+npm run test:e2e:release:hosted:shard2of6
+npm run test:e2e:release:hosted:shard3of6
+npm run test:e2e:release:hosted:shard4of6
+npm run test:e2e:release:hosted:shard5of6
+npm run test:e2e:release:hosted:shard6of6
 ```
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Fast smoke about 2-3m locally; full smoke about 5m; full release about 29-31m; 2-way shards about 24m and 5m; 3-way shards about 12 to 15m and 5m | Full browser behavior suite, shard distributability, smoke/deep/layout/pressure coverage | Real browser regression, shard-only scheduling issue, timeout or stale-process issue | Full release before major freezes; 3-way shards are balanced for CI but do not delete the one-command lane |
+| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Fast smoke about 2-3m locally; full smoke about 5m; full release about 29-36m; local 3-way shards about 14 to 17m and 6m recently; hosted 6-way shards are smaller CI jobs but add local overhead when run sequentially | Full browser behavior suite, shard distributability, smoke/deep/layout/pressure coverage | Real browser regression, shard-only scheduling issue, timeout or stale-process issue | Full release before major freezes; hosted 6-way shards are GitHub CI ergonomics and do not delete the one-command lane |
 
 Timeout policy lives in `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`.
 
@@ -146,6 +152,12 @@ npm run test:e2e:release:shard2
 npm run test:e2e:release:shard1of3
 npm run test:e2e:release:shard2of3
 npm run test:e2e:release:shard3of3
+npm run test:e2e:release:hosted:shard1of6
+npm run test:e2e:release:hosted:shard2of6
+npm run test:e2e:release:hosted:shard3of6
+npm run test:e2e:release:hosted:shard4of6
+npm run test:e2e:release:hosted:shard5of6
+npm run test:e2e:release:hosted:shard6of6
 npm run visual:qa
 npm run playtest:sim
 npm run smoke:preview
@@ -233,11 +245,13 @@ run_full_release
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Remote PR/push confidence or manual release dry-runs | Fast CI runs the 6-test `@ci-fast` smoke subset; manual release shards depend on the slowest 3-way shard | Clean install, build, validators, fast smoke, preview smoke, optional visual artifacts, optional release shards, optional simulator | Missing CI browser dependency, Linux/CI preview portability issue, real browser regression, shard-only failure, or artifact upload issue | Full local smoke/release gates before handoff; CI supplements local release evidence |
+| Remote PR/push confidence or manual release dry-runs | Fast CI runs the 6-test `@ci-fast` smoke subset; manual release matrix now runs six hosted shards with a 45m per-shard timeout | Clean install, build, validators, fast smoke, preview smoke, optional visual artifacts, optional release shards, optional simulator | Missing CI browser dependency, Linux/CI preview portability issue, real browser regression, shard-only failure, or artifact upload issue | Full local smoke/release gates before handoff; CI supplements local release evidence |
 
 CI design docs: `docs/V111_CI_MATRIX_AUDIT.md`, `docs/V111_CI_RELEASE_MATRIX_PLAN.md`, `docs/V111_CI_ARTIFACT_STRATEGY.md`, and `docs/V111_CI_LOCAL_PARITY_CHECK.md`.
 
-v0.11.8 hosted release note: the manual 3-way release matrix remains coverage-preserving. If a shard logs `retrying app boot navigation` or `retrying click actionability`, treat that as expected transient recovery only when the same test still reaches its real assertions and passes. Do not remove shard coverage or switch to force-clicks for speed; use `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md` for the current helper policy.
+v0.11.8 hosted release note: the release helpers remain coverage-preserving. If a shard logs `retrying app boot navigation` or `retrying click actionability`, treat that as expected transient recovery only when the same test still reaches its real assertions and passes. Do not remove shard coverage or switch to force-clicks for speed; use `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md` for the current helper policy.
+
+v0.11.9 hosted release note: the manual GitHub `run_release_matrix` input uses six hosted shard scripts, `test:e2e:release:hosted:shard1of6` through `shard6of6`, with test-level sharding, `--workers=1`, and a 45-minute per-shard timeout. Local full release, local 2-way shards, and local 3-way shards remain available for developer and final-gate confidence.
 
 ## Simulator
 

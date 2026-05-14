@@ -595,7 +595,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.getByTestId("campaign-main-menu").click();
     await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();
-    await page.getByTestId("menu-reset-save").click();
+    await clickReady(page.getByTestId("menu-reset-save"), "deep-flow reset save from main menu");
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
 
@@ -611,7 +611,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.originId).toBe("temple_orphan");
 
     await page.getByTestId("campaign-main-menu").click();
-    await page.getByTestId("menu-reset-save").click();
+    await clickReady(page.getByTestId("menu-reset-save"), "deep-flow reset save after campaign return");
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
   });
