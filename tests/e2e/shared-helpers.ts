@@ -1,4 +1,4 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 
 export const SAVE_KEY = "ascendant-realms-save-v1";
 
@@ -24,8 +24,11 @@ const EMPTY_RESOURCES: CampaignResources = {
 };
 
 const MAIN_MENU_BOOT_TIMEOUT_MS = 20_000;
-const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 30_000;
-const MAIN_MENU_NAVIGATION_ATTEMPTS = 2;
+const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 15_000;
+const MAIN_MENU_NAVIGATION_ATTEMPTS = 3;
+const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
+const CLICK_READY_TIMEOUT_MS = 10_000;
+const CLICK_READY_ATTEMPTS = 2;
 
 const BASE_HERO = {
   heroName: "E2E Seed",
@@ -82,8 +85,22 @@ function isTransientAppNavigationError(error: unknown): boolean {
   const message = describeNavigationError(error);
   return (
     message.includes("net::ERR_ABORTED") ||
+    message.includes("interrupted by another navigation") ||
     message.includes("Timeout") ||
     message.includes("timeout") ||
+    message.includes("frame was detached") ||
+    message.includes("Frame was detached")
+  );
+}
+
+function isTransientClickError(error: unknown): boolean {
+  const message = describeNavigationError(error);
+  return (
+    message.includes("Timeout") ||
+    message.includes("timeout") ||
+    message.includes("not stable") ||
+    message.includes("Element is not stable") ||
+    message.includes("intercepts pointer events") ||
     message.includes("frame was detached") ||
     message.includes("Frame was detached")
   );
@@ -92,7 +109,7 @@ function isTransientAppNavigationError(error: unknown): boolean {
 async function isMainMenuReady(page: Page): Promise<boolean> {
   const mainMenuReady = await page
     .getByTestId("main-menu")
-    .waitFor({ state: "visible", timeout: 1_000 })
+    .waitFor({ state: "visible", timeout: MAIN_MENU_READY_PROBE_TIMEOUT_MS })
     .then(() => true)
     .catch(() => false);
   if (!mainMenuReady) {
@@ -101,7 +118,7 @@ async function isMainMenuReady(page: Page): Promise<boolean> {
 
   return page
     .getByTestId("menu-new-campaign")
-    .waitFor({ state: "visible", timeout: 1_000 })
+    .waitFor({ state: "visible", timeout: MAIN_MENU_READY_PROBE_TIMEOUT_MS })
     .then(() => true)
     .catch(() => false);
 }
@@ -114,7 +131,7 @@ async function gotoAppRootWithRetry(page: Page, context: string): Promise<void> 
     attemptsUsed = attempt;
     try {
       await page.goto("/", {
-        waitUntil: "domcontentloaded",
+        waitUntil: "commit",
         timeout: MAIN_MENU_NAVIGATION_TIMEOUT_MS
       });
       return;
@@ -130,7 +147,9 @@ async function gotoAppRootWithRetry(page: Page, context: string): Promise<void> 
 
       // Hosted visual/layout runs have shown transient app-root navigation aborts/timeouts while a frame is being replaced.
       // Only those setup-navigation aborts are retried; the app still must render the real main menu below.
-      console.warn(`${context}: retrying app boot navigation after transient error: ${describeNavigationError(error)}`);
+      console.warn(
+        `${context}: retrying app boot navigation attempt ${attempt + 1}/${MAIN_MENU_NAVIGATION_ATTEMPTS} after transient error: ${describeNavigationError(error)}`
+      );
       await page.waitForLoadState("domcontentloaded", { timeout: 2_000 }).catch(() => undefined);
     }
   }
@@ -140,7 +159,7 @@ async function gotoAppRootWithRetry(page: Page, context: string): Promise<void> 
   );
 }
 
-async function gotoReadyMainMenu(page: Page, context: string): Promise<void> {
+export async function gotoReadyMainMenu(page: Page, context: string): Promise<void> {
   await gotoAppRootWithRetry(page, context);
   await expect(
     page.getByTestId("main-menu"),
@@ -150,6 +169,38 @@ async function gotoReadyMainMenu(page: Page, context: string): Promise<void> {
     page.getByTestId("menu-new-campaign"),
     `${context}: expected main menu actions after app boot`
   ).toBeVisible({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
+}
+
+export async function clickReady(locator: Locator, context: string): Promise<void> {
+  let lastError: unknown;
+  let attemptsUsed = 0;
+
+  for (let attempt = 1; attempt <= CLICK_READY_ATTEMPTS; attempt += 1) {
+    attemptsUsed = attempt;
+    try {
+      await expect(locator, `${context}: expected target to be visible`).toBeVisible({
+        timeout: CLICK_READY_TIMEOUT_MS
+      });
+      await expect(locator, `${context}: expected target to be enabled`).toBeEnabled({
+        timeout: CLICK_READY_TIMEOUT_MS
+      });
+      await locator.scrollIntoViewIfNeeded({ timeout: 5_000 }).catch(() => undefined);
+      await locator.click({ timeout: CLICK_READY_TIMEOUT_MS });
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!isTransientClickError(error) || attempt === CLICK_READY_ATTEMPTS) {
+        break;
+      }
+
+      console.warn(
+        `${context}: retrying click actionability attempt ${attempt + 1}/${CLICK_READY_ATTEMPTS} after transient error: ${describeNavigationError(error)}`
+      );
+      await locator.waitFor({ state: "visible", timeout: 1_000 }).catch(() => undefined);
+    }
+  }
+
+  throw new Error(`${context}: click failed after ${attemptsUsed} attempt(s): ${describeNavigationError(lastError)}`);
 }
 
 export async function openMainMenuForStorageSeed(page: Page, context: string): Promise<void> {

@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { openMainMenuAfterStorageSeed, openMainMenuForStorageSeed, SAVE_KEY } from "./shared-helpers";
+import { clickReady, openMainMenuAfterStorageSeed, openMainMenuForStorageSeed, SAVE_KEY } from "./shared-helpers";
 
 const EMPTY_RESOURCES = { crowns: 0, stone: 0, iron: 0, aether: 0 };
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
@@ -366,7 +366,7 @@ export async function completeCinderfenOverlookChoice(
 
 // UI-path helper: opens the Waystation with stable campaign node test IDs.
 export async function openCinderfenWaystation(page: Page): Promise<void> {
-  await page.getByTestId("campaign-node-cinderfen_waystation").click();
+  await clickReady(page.getByTestId("campaign-node-cinderfen_waystation"), "open Cinderfen Waystation node");
   await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Waystation");
 }
 
@@ -382,19 +382,19 @@ export async function buyCinderfenWaystationService(
 
 // UI-path helper: launches Crossing via campaign node/start test IDs, then waits for the battle shell.
 export async function launchCinderfenCrossing(page: Page): Promise<void> {
-  await page.getByTestId("campaign-node-cinderfen_crossing").click();
+  await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "launch Cinderfen Crossing node");
   await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await page.getByTestId("campaign-start-node").click();
+  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Crossing start");
   await expectChapter2BattleLoaded(page);
 }
 
 // UI-path helper: launches Watch via campaign node/start test IDs, then waits for the battle shell.
 export async function launchCinderfenWatch(page: Page): Promise<void> {
-  await page.getByTestId("campaign-node-cinderfen_watch").click();
+  await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "launch Cinderfen Watch node");
   await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await page.getByTestId("campaign-start-node").click();
+  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Watch start");
   await expectChapter2BattleLoaded(page);
 }
 

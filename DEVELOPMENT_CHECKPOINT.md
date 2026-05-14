@@ -1,6 +1,72 @@
 # Development Checkpoint
 
-Updated: 2026-05-13 v0.11.7 optional visual QA screenshot stability fix
+Updated: 2026-05-13 v0.11.8 hosted release matrix stability fix
+
+## v0.11.8 Hosted Release Matrix Stability Fix - 2026-05-13
+
+Scope: stabilize the manually triggered GitHub Actions 3-way release matrix while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, release coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or visual baseline pixel assertions.
+
+Included work:
+
+- Added `docs/V118_RELEASE_MATRIX_RELOAD_NAVIGATION_AUDIT.md`.
+- Added `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md`.
+- Replaced remaining e2e `page.reload()` usage with hosted-safe app-root navigation through `gotoReadyMainMenu`.
+- Unified `deep-flow.spec.ts` storage seeding with the shared menu-ready helper and Continue Campaign readiness assertion.
+- Hardened `gotoReadyMainMenu` with commit-stage navigation, three setup-navigation attempts, same-URL interruption retry handling, longer real-menu readiness probes, and clearer retry logs.
+- Added `clickReady` for narrow hosted actionability stalls without force-clicking, skipping, or weakening assertions.
+- Applied `clickReady` to reported release-path campaign/skirmish interactions, including Broken Ford, Cinderfen node/start helpers, and Border Village start paths.
+- Added a scoped 120s budget for the seeded Cinderfen menu/campaign layout readability test after remote shard-2 evidence and local full-release reproduction.
+
+Current verification:
+
+```text
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.3m.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 6.5m.
+
+npm run visual:qa
+PASS: 5 Playwright visual QA tests in about 4.4m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+Targeted hosted-failure reproductions
+PASS: deep-flow live victory/defeat, layout mobile portrait, layout tablet Cinderfen readability, Broken Ford smoke, post-Ashen Crossing smoke, and post-Crossing Watch smoke.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 36.5m after the final helper/timeout refinement.
+
+npm run test:e2e:release:shard1of3
+PASS: 28 Playwright tests in about 13.7m.
+
+npm run test:e2e:release:shard2of3
+PASS: 27 Playwright tests in about 16.5m.
+
+npm run test:e2e:release:shard3of3
+PASS: 12 Playwright tests in about 6.0m.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `Run manual 3-way release shard matrix and simulator` workflow input and confirm shard 1 no longer fails in deep-flow `seedSave`, shard 2 no longer fails in seeded Cinderfen layout setup navigation, and shard 3 no longer stalls at Broken Ford selection/start.
 
 ## v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
 

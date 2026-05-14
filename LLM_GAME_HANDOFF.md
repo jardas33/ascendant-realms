@@ -1,12 +1,88 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-13 v0.11.7 optional visual QA screenshot stability fix
+Last updated: 2026-05-13 v0.11.8 hosted release matrix stability fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.8 Hosted Release Matrix Stability Fix - 2026-05-13
+
+Mission: stabilize the manually triggered GitHub Actions 3-way release matrix without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` is green after v0.11.5.
+- Manual `Optional visual QA` is green after v0.11.7.
+- Manual `Release simulator` is green.
+- Manual `Run manual 3-way release shard matrix and simulator` on commit `8b805b9` failed in the release matrix.
+- Shard 1 failed in `tests/e2e/deep-flow.spec.ts` test `live campaign battles resolve victory and defeat through BattleScene results` with `page.reload: net::ERR_ABORTED; maybe frame was detached?` inside local `seedSave`.
+- Shard 2 failed in `seedCompletedCinderfenRouteCampaign` setup navigation through `gotoAppRootWithRetry` after two app-root navigation attempts.
+- Shard 3 failed/flaked in long extended smoke paths, especially `setup-map-broken_ford` actionability and nearby campaign/skirmish interactions.
+
+Files changed:
+
+- `tests/e2e/shared-helpers.ts`: exported `gotoReadyMainMenu`, added commit-stage app-root navigation, three setup-navigation attempts, same-URL interruption retry handling, longer real-menu readiness probes, clearer retry logs, and new `clickReady` without force-clicking.
+- `tests/e2e/deep-flow.spec.ts`: removed local raw reload storage-seed path, imported shared `SAVE_KEY`/`gotoReadyMainMenu`, unified `seedSave` and `openFreshMainMenu` with hosted-safe navigation, and used `clickReady` on reported campaign/skirmish release interactions.
+- `tests/e2e/chapter2-helpers.ts`: used `clickReady` for Cinderfen Waystation/Crossing/Watch campaign node and start helpers.
+- `tests/e2e/smoke.spec.ts`: used `clickReady` on reported extended-smoke campaign/skirmish interactions and replaced the post-Crossing persistence `page.reload()` with `gotoReadyMainMenu`.
+- `tests/e2e/layout.spec.ts`: used `clickReady` on reported layout campaign/skirmish interactions and gave the seeded Cinderfen menu/campaign readability test a scoped 120s budget.
+- `docs/V118_RELEASE_MATRIX_RELOAD_NAVIGATION_AUDIT.md`: added reload/navigation audit.
+- `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md`: added hosted evidence, fix summary, coverage notes, and GitHub rerun checklist.
+- `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`, and this handoff updated.
+
+Reload status:
+
+- `rg -n "page\\.reload\\(" tests/e2e tests/visual-qa` finds no remaining Playwright `page.reload()` usage.
+- Deep-flow `seedSave` was unified with the shared hosted-safe menu-ready path.
+- The smoke persistence check still verifies save persistence after a fresh app-root navigation and Continue Campaign flow.
+
+Click helper status:
+
+- `clickReady` was added for hosted actionability stalls.
+- It waits for visible/enabled state, scrolls into view, clicks without `force`, retries once only on transient actionability/timeouts, and logs the context.
+- It was applied only to reported release-path campaign/skirmish interactions and their shared helpers.
+
+Release scripts:
+
+- No release scripts changed.
+- The 3-way release matrix remains `npm run test:e2e:release:shard1of3`, `npm run test:e2e:release:shard2of3`, and `npm run test:e2e:release:shard3of3`.
+
+Current v0.11.8 verification:
+
+- `npm test`: PASS, 46 files / 351 tests.
+- `npm run build`: PASS with the known Phaser vendor chunk-size warning.
+- `npm run validate:content`: PASS.
+- `npm run validate:art-intake`: PASS, checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+- `npm run test:e2e:smoke:fast`: PASS, 6 tests in about 2.3m.
+- Targeted `deep-flow` live victory/defeat repro: PASS, 1 test in about 1.1m.
+- Targeted layout mobile portrait repro: PASS, 2 tests in about 2.7m.
+- Targeted layout tablet Cinderfen readability repro after helper refinement: PASS, 1 test in about 1.7m with setup-navigation retry diagnostics and recovery.
+- Targeted Broken Ford smoke repro: PASS, 1 test in about 30.5s.
+- Targeted post-Ashen Crossing smoke repro: PASS, 1 test in about 1.4m.
+- Targeted post-Crossing Watch smoke repro: PASS, 1 test in about 1.3m.
+- `npm run test:e2e:smoke`: PASS, 12 tests in about 6.5m.
+- `npm run visual:qa`: PASS, 5 tests in about 4.4m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+- `npm run smoke:preview`: PASS, production preview checks with 0 browser console errors.
+- First full-release attempt after the initial helper refinement failed at the tablet Cinderfen layout path after 66/67 tests; the targeted repro passed, a scoped 120s timeout was added for that layout test, then the final full-release pass was green.
+- `npm run test:e2e:release`: PASS, 67 tests in about 36.5m.
+- `npm run test:e2e:release:shard1of3`: PASS, 28 tests in about 13.7m.
+- `npm run test:e2e:release:shard2of3`: PASS, 27 tests in about 16.5m with setup-navigation retry diagnostics and recovery.
+- `npm run test:e2e:release:shard3of3`: PASS, 12 tests in about 6.0m.
+- `npm run playtest:sim`: PASS, 255 simulated runs across 85 campaign battle nodes.
+- `git diff --check`: PASS.
+
+Current v0.11.8 remaining risks:
+
+- The manual GitHub Actions 3-way release matrix still needs a fresh hosted rerun to prove the local helper improvements under GitHub-hosted Linux conditions.
+- Setup-navigation retry logs may appear in hosted shards; they are acceptable only when the real test assertions still pass.
+- The full release lane remains slow, and shard 2 remains layout-heavy.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.8 hosted release matrix stability fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `Run manual 3-way release shard matrix and simulator` workflow input.
 
 ## Current v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
 

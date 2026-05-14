@@ -237,6 +237,8 @@ run_full_release
 
 CI design docs: `docs/V111_CI_MATRIX_AUDIT.md`, `docs/V111_CI_RELEASE_MATRIX_PLAN.md`, `docs/V111_CI_ARTIFACT_STRATEGY.md`, and `docs/V111_CI_LOCAL_PARITY_CHECK.md`.
 
+v0.11.8 hosted release note: the manual 3-way release matrix remains coverage-preserving. If a shard logs `retrying app boot navigation` or `retrying click actionability`, treat that as expected transient recovery only when the same test still reaches its real assertions and passes. Do not remove shard coverage or switch to force-clicks for speed; use `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md` for the current helper policy.
+
 ## Simulator
 
 Command:

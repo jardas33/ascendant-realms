@@ -9,7 +9,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
-import { continueSavedCampaign, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
+import { clickReady, continueSavedCampaign, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
 
 const LAYOUT_VIEWPORTS = [
   { width: 1366, height: 768, label: "desktop" },
@@ -391,7 +391,7 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await page.getByTestId("setup-map-ashen_outpost").click();
   await page.getByTestId("setup-difficulty-normal").click();
-  await page.getByTestId("setup-start-battle").click();
+  await clickReady(page.getByTestId("setup-start-battle"), "layout Ashen Outpost skirmish start battle");
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
 }
 
@@ -468,7 +468,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
       await continueSavedCampaign(page);
-      await page.getByTestId("campaign-node-border_village").click();
+      await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Border Village node`);
       await page.getByTestId("campaign-start-node").click();
       await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
@@ -493,7 +493,9 @@ test.describe("Ascendant Realms responsive layout", () => {
 
   for (const viewport of CINDERFEN_READABILITY_VIEWPORTS) {
     test(`v0.3 Cinderfen menu and campaign readability fit ${viewport.label}`, async ({ page }) => {
-      test.setTimeout(90_000);
+      // GitHub-hosted release shard evidence and local full-release reproduction show this seeded
+      // Cinderfen layout pass can spend extra time recovering from app-root setup navigation retries.
+      test.setTimeout(120_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
       await expect(page.getByText("Prototype v0.3", { exact: true })).toBeVisible();
@@ -511,7 +513,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
       await expectCampaignSupportPanelsReadable(page, `${viewport.label} campaign map`);
 
-      await page.getByTestId("campaign-node-cinderfen_overlook").click();
+      await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), `${viewport.label} Cinderfen Overlook node`);
       await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Overlook");
       await expect(page.locator(".campaign-node-details")).toContainText("Aid the Marsh Refugees");
       await expect(page.locator(".campaign-node-details")).toContainText("Study the Cinders");
@@ -545,7 +547,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       );
       await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Waystation details`);
 
-      await page.getByTestId("campaign-node-cinderfen_crossing").click();
+      await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), `${viewport.label} Cinderfen Crossing node`);
       await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
       await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
       await expectReachableButton(page, page.getByTestId("campaign-start-node"), `${viewport.label} Crossing start`);
@@ -560,7 +562,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
         "future Cinderfen roads"
       );
-      await page.getByTestId("campaign-node-cinderfen_aftermath").click();
+      await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), `${viewport.label} Cinderfen Aftermath node`);
       await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
       await expect(page.locator(".campaign-node-details")).toContainText("Secure the Watch Road");
       await expect(page.locator(".campaign-node-details")).toContainText("Aid the Fenfolk");
@@ -582,7 +584,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page);
       await continueSavedCampaign(page);
-      await page.getByTestId("campaign-node-cinderfen_overlook").click();
+      await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), `${viewport.label} reset Cinderfen Overlook node`);
       await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
       await launchCinderfenCrossing(page);
       await expectCinderfenBattleHudReadable(page, `${viewport.label} Crossing`, {

@@ -13,7 +13,15 @@ import {
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
 import { runSemanticCommandLog, type SemanticCommand } from "./semantic-command-log";
-import { createHero, openFreshMainMenu, SAVE_KEY, seedCampaignSave, startNewCampaign } from "./shared-helpers";
+import {
+  clickReady,
+  createHero,
+  gotoReadyMainMenu,
+  openFreshMainMenu,
+  SAVE_KEY,
+  seedCampaignSave,
+  startNewCampaign
+} from "./shared-helpers";
 
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
@@ -43,7 +51,7 @@ async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, her
   await page.getByTestId("menu-skirmish").click();
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await page.getByTestId(`setup-difficulty-${difficulty}`).click();
-  await page.getByTestId("setup-start-battle").click();
+  await clickReady(page.getByTestId("setup-start-battle"), `smoke skirmish ${difficulty} start battle`);
   await expectBattleLoaded(page);
 }
 
@@ -684,9 +692,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   test("campaign Border Village launches a battle scene @extended-smoke", async ({ page }) => {
     await startNewCampaign(page, "E2E Campaign");
 
-    await page.getByTestId("campaign-node-border_village").click();
+    await clickReady(page.getByTestId("campaign-node-border_village"), "smoke Border Village node");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(page.getByTestId("campaign-start-node"), "smoke Border Village start");
     await expectBattleLoaded(page);
     const fogVisibility = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -744,7 +752,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-ashen_outpost")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Unlocked");
-    await page.getByTestId("campaign-node-cinderfen_overlook").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), "smoke Cinderfen Overlook node");
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Scout the Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Aid the Marsh Refugees");
@@ -806,7 +814,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.activeModifierIds).toEqual(expect.arrayContaining(["inspired_militia", "shrine_attunement"]));
     expect(save.campaign.townServiceUseCounts["cinderfen_waystation:shrine_attunement"]).toBe(1);
 
-    await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke Cinderfen Crossing detail node");
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Normal");
@@ -952,7 +960,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
-    await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke completed Cinderfen Crossing detail");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.locator(".campaign-node-details")).toContainText("Unlocks");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
@@ -962,14 +970,13 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.hero.xp).toBe(rewardSnapshot.xp);
     expect(save.hero.inventory).toHaveLength(rewardSnapshot.inventoryCount);
 
-    await page.reload();
-    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await gotoReadyMainMenu(page, "smoke Cinderfen Crossing persistence reload");
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
-    await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke reloaded Cinderfen Crossing detail");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     save = await readStoredSave(page);
     expect(save.campaign.resources).toMatchObject(rewardSnapshot.resources);
@@ -986,7 +993,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
-    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "smoke Cinderfen Watch node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
     await expect(page.locator(".campaign-node-details")).toContainText("Normal");
@@ -1092,9 +1099,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Available/i);
-    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "smoke completed Cinderfen Watch detail");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
-    await page.getByTestId("campaign-node-cinderfen_aftermath").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), "smoke Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
     await expect(page.locator(".campaign-node-details")).toContainText("Secure the Watch Road");
     await expect(page.locator(".campaign-node-details")).toContainText("Aid the Fenfolk");
@@ -1123,7 +1130,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       reputation: save.hero.factionReputation.common_folk
     };
 
-    await page.getByTestId("campaign-node-cinderfen_aftermath").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), "smoke completed Cinderfen Aftermath detail");
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toBeDisabled();
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Already chosen");
     save = await readStoredSave(page);
@@ -1138,7 +1145,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await page.getByTestId("campaign-node-cinderfen_overlook").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), "smoke trophy Cinderfen Overlook node");
 
     const standardChoice = page.locator("button[data-campaign-choice='raise_malrecs_standard']");
     await expect(standardChoice).toBeEnabled();
@@ -1181,8 +1188,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("setup-difficulty-easy")).toBeVisible();
     await expect(page.getByTestId("setup-difficulty-normal")).toBeVisible();
 
-    await page.getByTestId("setup-map-broken_ford").click();
-    await page.getByTestId("setup-start-battle").click();
+    await clickReady(page.getByTestId("setup-map-broken_ford"), "smoke Broken Ford map selection");
+    await clickReady(page.getByTestId("setup-start-battle"), "smoke Broken Ford start battle");
     await expectBattleLoaded(page);
   });
 

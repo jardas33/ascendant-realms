@@ -1,6 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-
-const SAVE_KEY = "ascendant-realms-save-v1";
+import { clickReady, gotoReadyMainMenu, SAVE_KEY } from "./shared-helpers";
 
 type CampaignResources = {
   crowns: number;
@@ -87,16 +86,14 @@ function attachConsoleFailure(page: Page): void {
 
 async function openMainMenu(page: Page): Promise<void> {
   attachConsoleFailure(page);
-  await page.goto("/");
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await gotoReadyMainMenu(page, "deep-flow open main menu");
 }
 
 async function openFreshMainMenu(page: Page): Promise<void> {
   attachConsoleFailure(page);
-  await page.goto("/");
+  await gotoReadyMainMenu(page, "deep-flow fresh main menu before storage reset");
   await page.evaluate((key) => localStorage.removeItem(key), SAVE_KEY);
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await gotoReadyMainMenu(page, "deep-flow fresh main menu after storage reset");
 }
 
 async function seedSave(page: Page, options: {
@@ -118,15 +115,15 @@ async function seedSave(page: Page, options: {
     settings: {},
     statistics: {}
   };
-  await page.goto("/");
+  await gotoReadyMainMenu(page, "deep-flow seedSave storage seed setup");
   await page.evaluate(
     ({ key, value }) => {
       localStorage.setItem(key, JSON.stringify(value));
     },
     { key: SAVE_KEY, value: save }
   );
-  await page.reload();
-  await expect(page.getByTestId("main-menu")).toBeVisible();
+  await gotoReadyMainMenu(page, "deep-flow seedSave storage seed reload");
+  await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
 }
 
 async function readSave(page: Page): Promise<Record<string, any>> {
@@ -389,7 +386,7 @@ async function startFirstClaimSkirmish(
   await createHero(page, heroName);
   await page.getByTestId("setup-map-first_claim").click();
   await page.getByTestId(`setup-difficulty-${difficulty}`).click();
-  await page.getByTestId("setup-start-battle").click();
+  await clickReady(page.getByTestId("setup-start-battle"), "deep-flow first claim skirmish start battle");
   await expectBattleLoaded(page);
   await waitForBattleScene(page);
 }
@@ -551,15 +548,15 @@ async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat
 async function openCampaignNode(page: Page, nodeId: string): Promise<void> {
   await page.getByTestId("menu-continue-campaign").click();
   await expect(page.getByTestId("campaign-map")).toBeVisible();
-  await page.getByTestId(`campaign-node-${nodeId}`).click();
+  await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow open campaign node ${nodeId}`);
 }
 
 async function startCampaignBattle(page: Page, nodeId: string): Promise<void> {
   await page.getByTestId("menu-continue-campaign").click();
   await expect(page.getByTestId("campaign-map")).toBeVisible();
-  await page.getByTestId(`campaign-node-${nodeId}`).click();
+  await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow start campaign node ${nodeId}`);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await page.getByTestId("campaign-start-node").click();
+  await clickReady(page.getByTestId("campaign-start-node"), `deep-flow start campaign battle ${nodeId}`);
   await expectBattleLoaded(page);
   await waitForBattleScene(page);
 }
@@ -915,8 +912,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("retinue-panel")).toContainText("Retinue death is permanent in V1");
     await expect(page.getByTestId("retinue-panel")).toContainText("Training Yard II");
 
-    await page.getByTestId("campaign-node-border_village").click();
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow retinue campaign node");
+    await clickReady(page.getByTestId("campaign-start-node"), "deep-flow retinue campaign start");
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     await expect(page.getByTestId("battle-status")).toContainText("Retinue deployed: Veteran Militia");
@@ -1277,7 +1274,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       await page.getByTestId(`setup-map-${mapId}`).click();
       await page.getByTestId("setup-difficulty-normal").click();
       await page.getByTestId("setup-personality-hexfire_cult").click();
-      await page.getByTestId("setup-start-battle").click();
+      await clickReady(page.getByTestId("setup-start-battle"), `deep-flow launch skirmish map ${mapId}`);
       await expectBattleLoaded(page);
       await expect(page.getByTestId("battle-status")).toContainText(/Enemy|Capture|AI/i);
       await page.getByRole("button", { name: "Menu" }).click();
@@ -1291,7 +1288,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.getByTestId("menu-skirmish").click();
     await createHero(page, "Battle QA");
     await page.getByTestId("setup-difficulty-normal").click();
-    await page.getByTestId("setup-start-battle").click();
+    await clickReady(page.getByTestId("setup-start-battle"), "deep-flow battle HUD start battle");
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
 
@@ -1790,9 +1787,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
 
-    await page.getByTestId("campaign-node-border_village").click();
+    await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow first campaign battle node");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(page.getByTestId("campaign-start-node"), "deep-flow first campaign battle start");
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
 

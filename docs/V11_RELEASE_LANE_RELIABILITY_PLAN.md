@@ -47,6 +47,8 @@ v0.11.1 adds `.github/workflows/ci.yml` as a conservative first GitHub Actions w
 
 v0.11.5 changes the automatic push/PR browser lane from full smoke to `npm run test:e2e:smoke:fast` after hosted evidence showed the full smoke file is too heavy and context-sensitive for every push. Full smoke remains available locally and through release/manual lanes.
 
+v0.11.8 keeps the manual 3-way release matrix unchanged but hardens the long hosted paths: deep-flow synthetic saves no longer use raw reloads, app-root setup navigation retries same-URL interruption/timeout cases before proving the real main menu, and reported release-path clicks use a non-forced actionability helper. A scoped 120s budget is allowed only for the seeded Cinderfen menu/campaign layout readability test that reproduced the shard-2 timeout pattern.
+
 The CI workflow does not replace the local final gate. Treat the first pushed workflow run as a dry-run validation of GitHub syntax, runner timing, artifact behavior, Playwright browser installation, and `smoke:preview` portability.
 
 ## Timeout Policy

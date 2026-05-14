@@ -32,6 +32,7 @@ Known current realities:
 - GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, 3-way release shards, simulator, and full release remain local/manual release confidence.
 - v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 - v0.11.7 splits optional visual QA into 5 smaller tests and adds per-screenshot logging, a 45s screenshot timeout, one screenshot retry, and retry metadata while keeping all 18 targets and console-error failure behavior.
+- v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
 
 ## Required Automated Checks
 
@@ -121,6 +122,8 @@ v0.11.3 gives only `settings screen persists accessibility options` a 60s per-te
 
 v0.11.4 stabilizes seeded smoke setup by waiting for a ready main menu before localStorage mutation and navigating back to `/` after writing seeded saves instead of relying on `page.reload()`. `skirmish difficulty selection changes fog and starting pressure` now has a scoped 60s budget because it launches two seeded battles back-to-back and GitHub Actions evidence showed the seed/reload path could exceed the global timeout. The test remains in smoke and keeps its fog/pressure assertions.
 
+v0.11.8 extends the same hosted-safe navigation rule to deep-flow and extended smoke release paths: remaining raw e2e reloads were replaced with app-root navigation plus real main-menu assertions, and reported release-path clicks now use `clickReady` without `force`. Full smoke remains the 12-test coverage lane.
+
 5. Full browser release-gate suite:
 
 ```bash
@@ -201,6 +204,8 @@ Manual `workflow_dispatch` inputs:
 The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. v0.11.2 could not inspect remote Actions runs from the Codex environment because `gh` is unavailable, the GitHub connector token is expired, and unauthenticated Actions API access returns `404 Not Found`. Use `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` to collect the first hosted-run URL, `fast-confidence` duration, `smoke:preview` result, manual-job status, and artifact evidence from GitHub UI. Do not weaken local release gates until CI has proven itself on the remote.
 
 v0.11.6 remote evidence confirmed automatic Fast confidence was green on commit `1948ce5`, then showed the manual `Optional visual QA` job timing out during setup navigation rather than failing a screenshot or console-error assertion. v0.11.7 remote evidence on commit `caeff57` then showed navigation was no longer the issue, but a hosted `page.screenshot` call hung around the Cinderfen Crossing tablet capture. The visual QA job remains manual and coverage-preserving; rerun it from GitHub UI when human screenshot review is needed and inspect `visual-qa-latest` for `index.md`, 18 screenshots, 5 capture groups, screenshot retry status, and 0 browser console errors.
+
+v0.11.8 remote evidence showed the manual 3-way release matrix was the remaining hosted lane: shard 1 failed in deep-flow `seedSave` on raw reload, shard 2 failed in seeded Cinderfen layout setup navigation, and shard 3 stalled on Broken Ford actionability. Rerun the manual `run_release_matrix` workflow input after v0.11.8 and check that retries are logged with context and recover without missing any release tests.
 
 7. Optional focused e2e lanes:
 

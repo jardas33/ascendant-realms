@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.11.8 Hosted Release Matrix Stability Fix - 2026-05-13
+
+This checkpoint stabilizes the manually triggered GitHub Actions 3-way release matrix after Fast confidence, Optional visual QA, and the release simulator were green, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Release matrix stability report: `docs/V118_HOSTED_RELEASE_MATRIX_STABILITY_FIX.md`.
+- Reload/navigation audit: `docs/V118_RELEASE_MATRIX_RELOAD_NAVIGATION_AUDIT.md`.
+- Removed remaining Playwright `page.reload()` usage from e2e/visual QA by routing deep-flow and smoke persistence checks through the shared hosted-safe app-root navigation helper.
+- Unified `deep-flow.spec.ts` synthetic save setup with the shared `gotoReadyMainMenu` path and Continue Campaign readiness checks.
+- Hardened `gotoReadyMainMenu` with commit-stage navigation, three setup-navigation attempts, same-URL interruption handling, longer menu-readiness probes, and clearer retry diagnostics.
+- Added a narrow `clickReady` helper for hosted actionability stalls without using force-clicks or weakening assertions.
+- Applied `clickReady` to reported release-path interactions: Broken Ford selection/start, seeded skirmish starts, Cinderfen campaign node/start helpers, and Border Village campaign start paths.
+- Added a scoped 120s budget to the seeded Cinderfen layout readability test after remote shard-2 evidence and a local full-release reproduction showed the 90s budget could expire during setup-navigation recovery.
+
+### Verification
+
+- Required gate passed: `npm test` with 46 files / 351 tests, `npm run build` with the known Phaser warning, `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, full `npm run test:e2e:smoke`, `npm run visual:qa`, `npm run smoke:preview`, targeted hosted-failure reproductions, full release, all 3 release shards, `npm run playtest:sim`, and `git diff --check`.
+- Full release passed with 67 tests in about 36.5m after the final helper/timeout refinement.
+- 3-way release shards passed: shard1 28 tests, shard2 27 tests, shard3 12 tests.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `Run manual 3-way release shard matrix and simulator` workflow input and confirm shards 1, 2, and 3 are green with any setup-navigation/actionability retries logged and recovered.
+
 ## v0.11.7 Optional Visual QA Screenshot Stability Fix - 2026-05-13
 
 This checkpoint stabilizes the manually triggered GitHub Actions `Optional visual QA` job after v0.11.6 fixed hosted navigation but exposed a hosted screenshot-capture hang, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, screenshot coverage strength, maps, units, factions, rewards, or UI design.
