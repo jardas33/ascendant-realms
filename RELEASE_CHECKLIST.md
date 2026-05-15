@@ -29,11 +29,11 @@ Known current realities:
 - The known Phaser vendor chunk warning remains expected and non-blocking.
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
-- GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, hosted release shards, simulator, and full release remain local/manual release confidence.
+- GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, hosted release groups, simulator, and full release remain local/manual release confidence.
 - v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 - v0.11.7 splits optional visual QA into 5 smaller tests and adds per-screenshot logging, a 45s screenshot timeout, one screenshot retry, and retry metadata while keeping all 18 targets and console-error failure behavior.
 - v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
-- v0.11.9 keeps local full release, local 2-way shards, and local 3-way shards intact, but changes the manual GitHub release matrix to six hosted shards with a 45-minute per-shard timeout after hosted 3-way shards hit the 35-minute job cap.
+- v0.11.10 keeps local full release, local 2-way shards, and local 3-way shards intact, but replaces the manual GitHub release matrix's `--fully-parallel` hosted shards with explicit hosted groups after run #15 showed deterministic seed/actionability instability across the 6-way native split.
 
 ## Required Automated Checks
 
@@ -177,18 +177,18 @@ Shard 3 of 3: passed, 12 Playwright tests in about 4.9m.
 
 Final verification should still run the full release lane, both existing 2-shard scripts, and all three 3-shard scripts before push. The 3-shard scripts remain the additive CI option; they do not replace the canonical full release lane.
 
-v0.11.9 adds hosted-only 6-shard scripts for the manual GitHub Actions release matrix:
+v0.11.10 supersedes the hosted-only 6-shard scripts with explicit hosted release groups for the manual GitHub Actions release matrix:
 
 ```bash
-npm run test:e2e:release:hosted:shard1of6
-npm run test:e2e:release:hosted:shard2of6
-npm run test:e2e:release:hosted:shard3of6
-npm run test:e2e:release:hosted:shard4of6
-npm run test:e2e:release:hosted:shard5of6
-npm run test:e2e:release:hosted:shard6of6
+npm run test:e2e:release:hosted:deep-meta
+npm run test:e2e:release:hosted:deep-battle
+npm run test:e2e:release:hosted:deep-campaign-pressure
+npm run test:e2e:release:hosted:layout-core
+npm run test:e2e:release:hosted:layout-cinderfen
+npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted shards must pass to equal the same full release suite in GitHub Actions. They use Playwright test-level sharding with `--fully-parallel --workers=1`, which keeps each shard single-worker while avoiding file-shaped shard imbalance. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts.
+All six hosted groups must pass to equal the same 67-test full release suite in GitHub Actions. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` after GitHub run #15 showed test-level sharding still produced seed/navigation, actionability, layout, and extended-smoke instability.
 
 ## GitHub Actions CI Dry Run
 
@@ -212,7 +212,7 @@ Manual `workflow_dispatch` inputs:
 | Input | Runs | Use when |
 | --- | --- | --- |
 | `run_visual_qa` | `npm run visual:qa` and uploads `visual-qa/latest/` | Human screenshot review is needed. |
-| `run_release_matrix` | 6-way hosted release shard matrix plus `npm run playtest:sim` | CI release gate dry-run or pre-freeze confidence on GitHub-hosted runners. |
+| `run_release_matrix` | Explicit hosted release groups plus `npm run playtest:sim` | CI release gate dry-run or pre-freeze confidence on GitHub-hosted runners. |
 | `run_full_release` | `npm run test:e2e:release` | Major freeze or one-command release-lane confirmation in CI. |
 
 The workflow uses Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, no paid services, and short-retention artifacts. v0.11.2 could not inspect remote Actions runs from the Codex environment because `gh` is unavailable, the GitHub connector token is expired, and unauthenticated Actions API access returns `404 Not Found`. Use `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md` to collect the first hosted-run URL, `fast-confidence` duration, `smoke:preview` result, manual-job status, and artifact evidence from GitHub UI. Do not weaken local release gates until CI has proven itself on the remote.
@@ -222,6 +222,8 @@ v0.11.6 remote evidence confirmed automatic Fast confidence was green on commit 
 v0.11.8 remote evidence showed the manual 3-way release matrix was the remaining hosted lane: shard 1 failed in deep-flow `seedSave` on raw reload, shard 2 failed in seeded Cinderfen layout setup navigation, and shard 3 stalled on Broken Ford actionability. Rerun the manual `run_release_matrix` workflow input after v0.11.8 and check that retries are logged with context and recover without missing any release tests.
 
 v0.11.9 remote evidence showed the v0.11.8 helper hardening was not enough for GitHub-hosted wall-clock limits: shard 1 and shard 2 hit the 35-minute job timeout, while shard 3 still showed hosted browser/context instability in extended smoke. The manual `run_release_matrix` input now runs six hosted shards named `shard-1-of-6` through `shard-6-of-6` with a 45-minute per-shard timeout, plus the unchanged release simulator. The old hosted 3-way jobs should not appear in new manual release-matrix runs, but the local 3-way scripts remain available.
+
+v0.11.10 remote evidence on run #15 showed the v0.11.9 native 6-way split was still unstable across all hosted shards, with seed setup navigation aborts, right-click movement actionability, layout launch timing, and extended-smoke seeded campaign failures. The manual `run_release_matrix` input now runs explicit hosted groups named `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, plus the unchanged release simulator. If rerunning the matrix, expect those six group names rather than `shard-1-of-6` through `shard-6-of-6`.
 
 7. Optional focused e2e lanes:
 

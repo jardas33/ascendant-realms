@@ -30,6 +30,7 @@ const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
 const MAIN_MENU_FINAL_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_ATTEMPTS = 2;
+const STORAGE_SEED_WINDOW_NAME_PREFIX = "__ASCENDANT_REALMS_E2E_SAVE_SEED__:";
 
 const BASE_HERO = {
   heroName: "E2E Seed",
@@ -213,6 +214,41 @@ export async function clickReady(locator: Locator, context: string): Promise<voi
   throw new Error(`${context}: click failed after ${attemptsUsed} attempt(s): ${describeNavigationError(lastError)}`);
 }
 
+export async function seedSaveBeforeAppBoot(
+  page: Page,
+  context: string,
+  save: Record<string, unknown>,
+  options: { clearStorage?: boolean } = {}
+): Promise<void> {
+  await page.addInitScript(
+    ({ prefix }) => {
+      if (!window.name.startsWith(prefix)) {
+        return;
+      }
+      const rawPayload = window.name.slice(prefix.length);
+      window.name = "";
+      const payload = JSON.parse(rawPayload) as { key: string; value: unknown; clearStorage: boolean };
+      if (payload.clearStorage) {
+        localStorage.clear();
+      }
+      localStorage.setItem(payload.key, JSON.stringify(payload.value));
+    },
+    { prefix: STORAGE_SEED_WINDOW_NAME_PREFIX }
+  );
+  await page.evaluate(
+    ({ prefix, key, value, clearStorage }) => {
+      window.name = `${prefix}${JSON.stringify({ key, value, clearStorage })}`;
+    },
+    {
+      prefix: STORAGE_SEED_WINDOW_NAME_PREFIX,
+      key: SAVE_KEY,
+      value: save,
+      clearStorage: options.clearStorage === true
+    }
+  );
+  await gotoReadyMainMenu(page, `${context} storage seed boot`);
+}
+
 export async function openMainMenuForStorageSeed(page: Page, context: string): Promise<void> {
   await gotoReadyMainMenu(page, `${context} storage seed setup`);
 }
@@ -265,18 +301,14 @@ export async function seedCampaignSave(page: Page, options: SeedCampaignOptions 
     }
   };
 
-  await openMainMenuForStorageSeed(page, "seedCampaignSave");
-  await page.evaluate(
-    ({ key, value }) => {
-      localStorage.clear();
-      localStorage.setItem(key, JSON.stringify(value));
-    },
-    { key: SAVE_KEY, value: save }
-  );
-  await openMainMenuAfterStorageSeed(page, "seedCampaignSave");
+  await seedSaveBeforeAppBoot(page, "seedCampaignSave", save, { clearStorage: true });
+  await expect(
+    page.getByTestId("menu-continue-campaign"),
+    "seedCampaignSave: expected seeded campaign save to enable Continue Campaign"
+  ).toBeEnabled({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
 }
 
 export async function continueSavedCampaign(page: Page): Promise<void> {
-  await page.getByTestId("menu-continue-campaign").click();
+  await clickReady(page.getByTestId("menu-continue-campaign"), "continue saved campaign");
   await expect(page.getByTestId("campaign-map")).toBeVisible();
 }

@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
+
+This checkpoint replaces the v0.11.9 hosted native 6-way release shards with explicit hosted release groups after GitHub Actions run #15 still failed across all hosted shards, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Hosted failure audit: `docs/V1110_HOSTED_RELEASE_MATRIX_FAILURE_AUDIT.md`.
+- Hosted determinism fix report: `docs/V1110_HOSTED_RELEASE_MATRIX_DETERMINISM_FIX.md`.
+- Replaced hosted `test:e2e:release:hosted:shard1of6` through `shard6of6` scripts with explicit hosted group scripts for deep meta, deep battle, deep campaign plus pressure, layout core, layout Cinderfen, and smoke.
+- Removed hosted `--fully-parallel` test-level sharding from the GitHub manual release matrix.
+- Updated `.github/workflows/ci.yml` so manual `run_release_matrix` runs six named hosted groups with the existing 45-minute timeout plus the unchanged release simulator.
+- Added `seedSaveBeforeAppBoot` for deterministic test-only localStorage seeding before app boot, and applied it to shared seeded campaign saves, Chapter 2 seed helpers, and deep-flow local seed setup.
+- Applied the existing non-forced `clickReady` helper to additional hosted-problem launch/setup interactions and kept real actionability checks intact.
+- Added one retry around the hosted-problem right-click movement command while preserving the `Moving` assertion.
+- Tagged release tests into hosted groups totaling the same 67 tests as the full release lane.
+- README, release checklist, developer command guide, release lane reliability plan, development checkpoint, and handoff updates.
+
+### Verification
+
+- Required gate passed: `npm test` with 46 files / 351 tests, `npm run build` with the known Phaser vendor warning, `validate:content`, `validate:art-intake`, `npm run test:e2e:smoke:fast`, `npm run visual:qa`, `npm run smoke:preview`, targeted remote-failure reproductions, all six hosted release groups, full `npm run test:e2e:smoke`, full `npm run test:e2e:release`, `npm run playtest:sim`, and `git diff --check`.
+- Hosted release groups passed with 67 total Playwright tests split 12/11/7/16/9/12.
+- Full release passed 67 tests in about 36.5m after the deterministic seed/actionability changes.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input and expect jobs named `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, plus the unchanged `Release simulator` job.
+
 ## v0.11.9 Hosted Release Matrix Split and Timeout Fix - 2026-05-14
 
 This checkpoint makes the manually triggered GitHub Actions release matrix smaller and more CI-realistic after hosted 3-way release shards timed out or hit Chromium context instability, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.

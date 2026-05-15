@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { clickReady, openMainMenuAfterStorageSeed, openMainMenuForStorageSeed, SAVE_KEY } from "./shared-helpers";
+import { clickReady, seedSaveBeforeAppBoot, SAVE_KEY } from "./shared-helpers";
 
 const EMPTY_RESOURCES = { crowns: 0, stone: 0, iron: 0, aether: 0 };
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
@@ -23,12 +23,7 @@ type CinderfenWaystationServiceId = "ash_filters" | "marsh_guides" | "refugee_sc
 
 // Test-only seed helper: writes a known post-Ashen campaign save so Chapter 2 specs do not replay Chapter 1.
 export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOptions = {}): Promise<void> {
-  await openMainMenuForStorageSeed(page, "seedPostAshenCampaign");
-  await page.evaluate(
-    ({ key, completedNodeIds, unlockedNodeIds, emptyResources, includeMalrecTrophy }) => {
-      localStorage.setItem(
-        key,
-        JSON.stringify({
+  const save = {
           version: 2,
           createdAt: "2026-05-03T12:00:00.000Z",
           updatedAt: "2026-05-03T12:00:00.000Z",
@@ -66,11 +61,11 @@ export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOp
             started: true,
             difficulty: "normal",
             resources: { crowns: 260, stone: 180, iron: 120, aether: 80 },
-            resourcesSpent: emptyResources,
-            completedNodeIds,
-            unlockedNodeIds,
+            resourcesSpent: EMPTY_RESOURCES,
+            completedNodeIds: CHAPTER_ONE_COMPLETED_NODE_IDS,
+            unlockedNodeIds: POST_ASHEN_UNLOCKED_NODE_IDS,
             lockedNodeIds: [],
-            nodeRewardsClaimedIds: completedNodeIds,
+            nodeRewardsClaimedIds: CHAPTER_ONE_COMPLETED_NODE_IDS,
             choiceIdsClaimed: [],
             townServiceClaimedIds: [],
             townServiceUseCounts: {},
@@ -78,7 +73,7 @@ export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOp
             strongholdUpgradeRanks: {},
             retinueUnits: [],
             rivals: [],
-            rivalTrophies: includeMalrecTrophy
+            rivalTrophies: options.includeMalrecTrophy === true
               ? [
                   {
                     trophyId: "trophy_malrec_outpost_standard",
@@ -96,28 +91,22 @@ export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOp
           },
           settings: {},
           statistics: {}
-        })
-      );
-    },
-    {
-      key: SAVE_KEY,
-      completedNodeIds: CHAPTER_ONE_COMPLETED_NODE_IDS,
-      unlockedNodeIds: POST_ASHEN_UNLOCKED_NODE_IDS,
-      emptyResources: EMPTY_RESOURCES,
-      includeMalrecTrophy: options.includeMalrecTrophy === true
-    }
-  );
-  await openMainMenuAfterStorageSeed(page, "seedPostAshenCampaign");
+        };
+  await seedSaveBeforeAppBoot(page, "seedPostAshenCampaign", save);
+  await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
 }
 
 // Test-only seed helper: starts the Watch spec after Crossing rewards have already persisted.
 export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<void> {
-  await openMainMenuForStorageSeed(page, "seedPostCinderfenCrossingCampaign");
-  await page.evaluate(
-    ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
-      localStorage.setItem(
-        key,
-        JSON.stringify({
+  const completedNodeIds = [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook", "cinderfen_crossing"];
+  const unlockedNodeIds = [
+    ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+    "cinderfen_overlook",
+    "cinderfen_waystation",
+    "cinderfen_crossing",
+    "cinderfen_watch"
+  ];
+  const save = {
           version: 2,
           createdAt: "2026-05-03T12:00:00.000Z",
           updatedAt: "2026-05-03T12:00:00.000Z",
@@ -162,7 +151,7 @@ export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<voi
             started: true,
             difficulty: "normal",
             resources: { crowns: 245, stone: 200, iron: 150, aether: 80 },
-            resourcesSpent: { ...emptyResources, crowns: 55, aether: 12 },
+            resourcesSpent: { ...EMPTY_RESOURCES, crowns: 55, aether: 12 },
             completedNodeIds,
             unlockedNodeIds,
             lockedNodeIds: [],
@@ -180,33 +169,29 @@ export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<voi
           },
           settings: {},
           statistics: {}
-        })
-      );
-    },
-    {
-      key: SAVE_KEY,
-      completedNodeIds: [...CHAPTER_ONE_COMPLETED_NODE_IDS, "cinderfen_overlook", "cinderfen_crossing"],
-      unlockedNodeIds: [
-        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
-        "cinderfen_overlook",
-        "cinderfen_waystation",
-        "cinderfen_crossing",
-        "cinderfen_watch"
-      ],
-      emptyResources: EMPTY_RESOURCES
-    }
-  );
-  await openMainMenuAfterStorageSeed(page, "seedPostCinderfenCrossingCampaign");
+        };
+  await seedSaveBeforeAppBoot(page, "seedPostCinderfenCrossingCampaign", save);
+  await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
 }
 
 // Test-only seed helper: creates a frozen v0.3 route-complete save for readability checks without replaying battles.
 export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<void> {
-  await openMainMenuForStorageSeed(page, "seedCompletedCinderfenRouteCampaign");
-  await page.evaluate(
-    ({ key, completedNodeIds, unlockedNodeIds, emptyResources }) => {
-      localStorage.setItem(
-        key,
-        JSON.stringify({
+  const completedNodeIds = [
+    ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+    "cinderfen_overlook",
+    "cinderfen_crossing",
+    "cinderfen_watch",
+    "cinderfen_aftermath"
+  ];
+  const unlockedNodeIds = [
+    ...CHAPTER_ONE_COMPLETED_NODE_IDS,
+    "cinderfen_overlook",
+    "cinderfen_waystation",
+    "cinderfen_crossing",
+    "cinderfen_watch",
+    "cinderfen_aftermath"
+  ];
+  const save = {
           version: 2,
           createdAt: "2026-05-05T23:00:00.000Z",
           updatedAt: "2026-05-05T23:00:00.000Z",
@@ -251,7 +236,7 @@ export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<v
             started: true,
             difficulty: "normal",
             resources: { crowns: 210, stone: 222, iron: 176, aether: 90 },
-            resourcesSpent: { ...emptyResources, crowns: 130, aether: 12 },
+            resourcesSpent: { ...EMPTY_RESOURCES, crowns: 130, aether: 12 },
             completedNodeIds,
             unlockedNodeIds,
             lockedNodeIds: [],
@@ -317,30 +302,9 @@ export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<v
           },
           settings: {},
           statistics: {}
-        })
-      );
-    },
-    {
-      key: SAVE_KEY,
-      completedNodeIds: [
-        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
-        "cinderfen_overlook",
-        "cinderfen_crossing",
-        "cinderfen_watch",
-        "cinderfen_aftermath"
-      ],
-      unlockedNodeIds: [
-        ...CHAPTER_ONE_COMPLETED_NODE_IDS,
-        "cinderfen_overlook",
-        "cinderfen_waystation",
-        "cinderfen_crossing",
-        "cinderfen_watch",
-        "cinderfen_aftermath"
-      ],
-      emptyResources: EMPTY_RESOURCES
-    }
-  );
-  await openMainMenuAfterStorageSeed(page, "seedCompletedCinderfenRouteCampaign");
+        };
+  await seedSaveBeforeAppBoot(page, "seedCompletedCinderfenRouteCampaign", save);
+  await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
 }
 
 // Test-only save reader used by Chapter 2 persistence assertions.

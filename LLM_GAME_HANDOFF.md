@@ -1,12 +1,126 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-14 v0.11.9 hosted release matrix split and timeout fix
+Last updated: 2026-05-14 v0.11.10 hosted release matrix determinism fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
+
+Mission: stabilize the manually triggered GitHub Actions hosted release matrix after v0.11.9's native 6-way split still failed on hosted runners, without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` is green.
+- Manual `Optional visual QA` is green.
+- Manual `Release simulator` is green.
+- Manual `run_release_matrix` on run #15 failed across all six v0.11.9 hosted shards.
+- Shard 1 failed in `deep-flow` seeded-save setup with `page.goto: net::ERR_ABORTED` after three app-root navigation attempts.
+- Shard 2 failed the deep-flow movement command assertion: expected `Moving`, received `Guarding`.
+- Shard 3 showed actionability/layout/enemy-pressure failures, including a resolved `menu-tutorial` button that did not become stable for click.
+- Shard 4 showed layout Battle HUD readiness failure after Border Village start.
+- Shard 5 concentrated on layout/Cinderfen viewport failures.
+- Shard 6 showed seeded campaign/skirmish boot failures in extended smoke.
+
+Files changed:
+
+- `package.json`: replaced hosted native `shard1of6` through `shard6of6` scripts with explicit hosted group scripts: `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- `.github/workflows/ci.yml`: manual `run_release_matrix` now runs those six hosted groups with the existing 45-minute timeout; automatic Fast confidence, optional visual QA, release simulator, and manual full release remain unchanged.
+- `tests/e2e/shared-helpers.ts`: added `seedSaveBeforeAppBoot` for deterministic test-only localStorage seeding before app boot; it writes a one-shot `window.name` seed payload before app-root navigation, and `seedCampaignSave` plus `continueSavedCampaign` use the hosted-safe path/actionability helper.
+- `tests/e2e/chapter2-helpers.ts`: Chapter 2 seeded campaign helpers now seed before app boot.
+- `tests/e2e/deep-flow.spec.ts`: local `seedSave` now uses pre-boot seeding, deep-flow tests are tagged into hosted groups, and the right-click movement command retries once while keeping the `Moving` assertion.
+- `tests/e2e/layout.spec.ts`: layout tests are tagged into hosted core/Cinderfen groups; tutorial launch and Border Village battle-start use `clickReady`; the hosted-problem Battle HUD readiness check uses a narrow 30s window.
+- `tests/e2e/enemy-pressure.spec.ts`: release pressure launch/setup clicks use `clickReady` and both tests are included in the hosted deep-campaign-pressure group.
+- `tests/e2e/smoke.spec.ts`: tutorial launch clicks use `clickReady`; the full smoke suite remains the hosted smoke group.
+- `docs/V1110_HOSTED_RELEASE_MATRIX_FAILURE_AUDIT.md`: added remote run #15 failure audit.
+- `docs/V1110_HOSTED_RELEASE_MATRIX_DETERMINISM_FIX.md`: added implementation notes, hosted group list, coverage count, and GitHub rerun checklist.
+- `README.md`, `RELEASE_CHECKLIST.md`, `docs/DEVELOPER_COMMAND_GUIDE.md`, `docs/V11_RELEASE_LANE_RELIABILITY_PLAN.md`, `CHANGELOG.md`, `DEVELOPMENT_CHECKPOINT.md`, and this handoff updated.
+
+Release scripts:
+
+- Local `npm run test:e2e:release` remains unchanged.
+- Local 2-way shard scripts remain unchanged.
+- Local 3-way shard scripts remain unchanged.
+- Hosted GitHub release scripts are explicit groups, not native shards:
+  - `npm run test:e2e:release:hosted:deep-meta`
+  - `npm run test:e2e:release:hosted:deep-battle`
+  - `npm run test:e2e:release:hosted:deep-campaign-pressure`
+  - `npm run test:e2e:release:hosted:layout-core`
+  - `npm run test:e2e:release:hosted:layout-cinderfen`
+  - `npm run test:e2e:release:hosted:smoke`
+- The hosted scripts no longer use `--fully-parallel`.
+- Local list checks showed the hosted groups cover 67 total release tests: 12, 11, 7, 16, 9, and 12.
+
+Current v0.11.10 verification:
+
+```text
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.0m.
+
+npm run visual:qa
+PASS: 5 Playwright visual QA tests in about 4.2m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+Targeted remote-failure reproductions
+PASS: Refugee/Chapel seed path, battle HUD minimap movement path, desktop tutorial layout entry, multi-viewport Battle HUD/results layout, and skirmish difficulty pressure path.
+
+npm run test:e2e:release:hosted:deep-meta
+PASS: 12 Playwright tests in about 6.1m, with one recovered setup-navigation retry.
+
+npm run test:e2e:release:hosted:deep-battle
+PASS: 11 Playwright tests in about 4.7m.
+
+npm run test:e2e:release:hosted:deep-campaign-pressure
+PASS: 7 Playwright tests in about 3.6m.
+
+npm run test:e2e:release:hosted:layout-core
+PASS: 16 Playwright tests in about 6.2m.
+
+npm run test:e2e:release:hosted:layout-cinderfen
+PASS: 9 Playwright tests in about 9.5m, with recovered setup-navigation retries.
+
+npm run test:e2e:release:hosted:smoke
+PASS: 12 Playwright tests in about 6.2m.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 6.3m.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 36.5m, with recovered setup-navigation retries.
+
+git diff --check
+PASS.
+```
+
+Current v0.11.10 remaining risks:
+
+- The explicit hosted groups need a fresh GitHub Actions manual rerun after push.
+- GitHub-hosted Chromium/context instability may still appear, but the current fix removes test-level sharding and reduces seed/actionability race surfaces.
+- The full release lane remains slow by design.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.10 hosted release matrix determinism fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `run_release_matrix` workflow input and expect six release matrix jobs named `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
 
 ## Current v0.11.9 Hosted Release Matrix Split and Timeout Fix - 2026-05-14
 

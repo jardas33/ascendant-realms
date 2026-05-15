@@ -1,5 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
-import { clickReady, gotoReadyMainMenu, SAVE_KEY } from "./shared-helpers";
+import { clickReady, gotoReadyMainMenu, SAVE_KEY, seedSaveBeforeAppBoot } from "./shared-helpers";
 
 type CampaignResources = {
   crowns: number;
@@ -115,14 +115,7 @@ async function seedSave(page: Page, options: {
     settings: {},
     statistics: {}
   };
-  await gotoReadyMainMenu(page, "deep-flow seedSave storage seed setup");
-  await page.evaluate(
-    ({ key, value }) => {
-      localStorage.setItem(key, JSON.stringify(value));
-    },
-    { key: SAVE_KEY, value: save }
-  );
-  await gotoReadyMainMenu(page, "deep-flow seedSave storage seed reload");
+  await seedSaveBeforeAppBoot(page, "deep-flow seedSave", save);
   await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
 }
 
@@ -182,6 +175,34 @@ async function worldToScreen(page: Page, point: { x: number; y: number }): Promi
 async function clickWorldPoint(page: Page, point: { x: number; y: number }, button: "left" | "right" = "left"): Promise<void> {
   const screen = await worldToScreen(page, point);
   await page.mouse.click(screen.x, screen.y, { button });
+}
+
+async function rightClickWorldPointUntilOrder(
+  page: Page,
+  point: { x: number; y: number },
+  expectedOrder: string,
+  context: string
+): Promise<void> {
+  const orderSummary = page.getByTestId("unit-order-summary");
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    await clickWorldPoint(page, point, "right");
+    try {
+      await expect(orderSummary, `${context}: expected right-click move command to update unit order`).toContainText(
+        expectedOrder,
+        { timeout: 5_000 }
+      );
+      return;
+    } catch (error) {
+      lastError = error;
+      if (attempt === 2) {
+        break;
+      }
+      console.warn(`${context}: retrying world right-click command after order did not become ${expectedOrder}`);
+      await page.waitForTimeout(250);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(`${context}: expected unit order ${expectedOrder}`);
 }
 
 async function advanceBattleSimulation(page: Page, seconds: number, step = 0.25): Promise<void> {
@@ -566,7 +587,7 @@ async function startBorderVillageCampaignBattle(page: Page): Promise<void> {
 }
 
 test.describe("Ascendant Realms deep end-to-end QA", () => {
-  test("main menu, info, hero creation selections, reset state, and gallery navigation work", async ({ page }) => {
+  test("main menu, info, hero creation selections, reset state, and gallery navigation work @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(60_000);
     await openFreshMainMenu(page);
 
@@ -616,7 +637,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
   });
 
-  test("campaign nodes, event choices, reputation, resources, and town services update the save", async ({ page }) => {
+  test("campaign nodes, event choices, reputation, resources, and town services update the save @hosted-deep-meta", async ({ page }) => {
     await seedSave(page, {
       hero: {
         level: 2,
@@ -674,7 +695,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.campaign.townServiceClaimedIds).toContain("marcher_camp:purchase_emberglass_wand");
   });
 
-  test("reputation ranks expose active effects and discounted campaign actions", async ({ page }) => {
+  test("reputation ranks expose active effects and discounted campaign actions @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {
       hero: {
@@ -716,7 +737,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='demand_tribute']")).toContainText("Modifiers: Gain Angered Raiders");
   });
 
-  test("stronghold upgrades spend campaign resources and apply to later battles", async ({ page }) => {
+  test("stronghold upgrades spend campaign resources and apply to later battles @hosted-deep-meta", async ({ page }) => {
     await seedSave(page, {
       campaign: {
         resources: { crowns: 320, stone: 220, iron: 100, aether: 40 },
@@ -750,7 +771,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(snapshot.resources).toMatchObject({ crowns: 520, stone: 345, iron: 195, aether: 105 });
   });
 
-  test("unit veterancy rank appears in battle HUD and victory results", async ({ page }) => {
+  test("unit veterancy rank appears in battle HUD and victory results @hosted-deep-meta", async ({ page }) => {
     await startFirstClaimSkirmish(page, "Veterancy QA", "story");
 
     const granted = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.grantSelectedUnitVeterancyXp?.(140));
@@ -778,7 +799,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".veteran-summary")).toContainText("Retinue Camp");
   });
 
-  test("Results retinue recruitment explains capacity, eligibility, and full camp state", async ({ page }) => {
+  test("Results retinue recruitment explains capacity, eligibility, and full camp state @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(60_000);
 
     const veteranSummary = {
@@ -882,7 +903,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.campaign.retinueUnits).toHaveLength(2);
   });
 
-  test("campaign retinue units deploy with saved veterancy rank", async ({ page }) => {
+  test("campaign retinue units deploy with saved veterancy rank @hosted-deep-meta", async ({ page }) => {
     await seedSave(page, {
       campaign: {
         unlockedNodeIds: ["border_village"],
@@ -946,7 +967,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Deployed retinue veteran");
   });
 
-  test("known rival state previews, resolves, and persists after a commander defeat", async ({ page }) => {
+  test("known rival state previews, resolves, and persists after a commander defeat @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(80_000);
     await seedSave(page, {
       campaign: {
@@ -1031,7 +1052,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.inventory.some((item: any) => item.itemId === "cinderseer_lens")).toBe(true);
   });
 
-  test("alternate Refugee Caravan and Chapel choices apply rewards and completion", async ({ page }) => {
+  test("alternate Refugee Caravan and Chapel choices apply rewards and completion @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(100_000);
 
     const earlyCampaign = {
@@ -1116,7 +1137,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='repair_chapel']")).toContainText("Node completed");
   });
 
-  test("inventory equipment, unequip, and skill spending persist", async ({ page }) => {
+  test("inventory equipment, unequip, and skill spending persist @hosted-deep-meta", async ({ page }) => {
     await seedSave(page, {
       hero: {
         skillPoints: 2,
@@ -1161,7 +1182,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.allocatedSkills.combat_drill).toBe(1);
   });
 
-  test("victory reward can be kept in inventory without equipping", async ({ page }) => {
+  test("victory reward can be kept in inventory without equipping @hosted-deep-meta", async ({ page }) => {
     await seedSave(page);
     await startSyntheticResults(page, "victory");
 
@@ -1181,7 +1202,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".inventory-row", { hasText: "Weathered Command Sword" }).getByRole("button", { name: "Equip Now" })).toBeVisible();
   });
 
-  test("affixed victory reward displays and applies equipment stats", async ({ page }) => {
+  test("affixed victory reward displays and applies equipment stats @hosted-deep-meta", async ({ page }) => {
     await seedSave(page);
     await startSyntheticResults(page, "victory", { rewardAffixes: ["sharp"] });
 
@@ -1202,7 +1223,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".equipment-row", { hasText: "Weapon" })).toContainText("Total: +6 damage, +1 might, +1 command");
   });
 
-  test("victory and defeat result actions are clear and save the equip-now path", async ({ page }) => {
+  test("victory and defeat result actions are clear and save the equip-now path @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
 
     await seedSave(page);
@@ -1240,7 +1261,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.equipment.weapon).toBe("deep-qa:weathered_command_sword:1");
   });
 
-  test("Ashen Outpost defeat tips explain staged objective recovery", async ({ page }) => {
+  test("Ashen Outpost defeat tips explain staged objective recovery @hosted-deep-battle", async ({ page }) => {
     await seedSave(page);
 
     await startSyntheticResults(page, "defeat", {
@@ -1263,7 +1284,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".defeat-tips")).toContainText("Stronghold");
   });
 
-  test("all skirmish maps and AI personalities launch without browser errors", async ({ page }) => {
+  test("all skirmish maps and AI personalities launch without browser errors @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
@@ -1283,7 +1304,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     }
   });
 
-  test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions", async ({ page }) => {
+  test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle", async ({ page }) => {
     await openFreshMainMenu(page);
     await page.getByTestId("menu-skirmish").click();
     await createHero(page, "Battle QA");
@@ -1330,8 +1351,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.keyboard.press("H");
     await page.keyboard.press("Space");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
-    await clickWorldPoint(page, { x: 850, y: 780 }, "right");
-    await expect(page.getByTestId("unit-order-summary")).toContainText("Moving");
+    await rightClickWorldPointUntilOrder(page, { x: 850, y: 780 }, "Moving", "deep-flow battle HUD movement command");
 
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
@@ -1357,7 +1377,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
   });
 
-  test("battle HUD keeps hovered command buttons stable across routine refreshes", async ({ page }) => {
+  test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {
     await startFirstClaimSkirmish(page, "Hover QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
     await selectPlayerCommandHallFromScene(page);
@@ -1405,7 +1425,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
   });
 
-  test("battle HUD preserves side-panel scroll across forced refreshes", async ({ page }) => {
+  test("battle HUD preserves side-panel scroll across forced refreshes @hosted-deep-battle", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 640 });
     await startFirstClaimSkirmish(page, "Scroll QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
@@ -1452,7 +1472,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(after.scrollTop).toBeGreaterThanOrEqual(before.scrollTop - 2);
   });
 
-  test("captured resource sites stay locally visible under fog after units leave", async ({ page }) => {
+  test("captured resource sites stay locally visible under fog after units leave @hosted-deep-battle", async ({ page }) => {
     await startFirstClaimSkirmish(page, "Fog Capture QA");
 
     const siteVisibility = await page.evaluate(() => {
@@ -1530,7 +1550,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(siteVisibility.renderedSiteMarkers).toBeGreaterThan(0);
   });
 
-  test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input", async ({ page }) => {
+  test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {
       hero: {
@@ -1695,7 +1715,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(warCryResult.enemyHp.some((hp: number, index: number) => hp < warCrySetup.enemyHp[index])).toBe(true);
   });
 
-  test("minimap renders marker families, camera rectangle, rally marker, and live pings", async ({ page }) => {
+  test("minimap renders marker families, camera rectangle, rally marker, and live pings @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await startFirstClaimSkirmish(page, "Minimap QA", "story");
 
@@ -1775,7 +1795,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(minimapState.renderedCounts.camera).toBe(1);
   });
 
-  test("first campaign battle path covers capture, build, train, rally, and victory rewards", async ({ page }) => {
+  test("first campaign battle path covers capture, build, train, rally, and victory rewards @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await openFreshMainMenu(page);
 
@@ -1959,7 +1979,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(Object.values(save.hero.equipment ?? {})).toHaveLength(0);
   });
 
-  test("first enemy wave pressure can damage the base and be survived", async ({ page }) => {
+  test("first enemy wave pressure can damage the base and be survived @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page);
     await startBorderVillageCampaignBattle(page);
@@ -2044,7 +2064,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(survival.hudStatusText).toContain("Enemy wave 1 defeated");
   });
 
-  test("Chapel of the Marches guidance keeps the node open before a completing repair choice", async ({ page }) => {
+  test("Chapel of the Marches guidance keeps the node open before a completing repair choice @hosted-deep-campaign", async ({ page }) => {
     await seedSave(page, {
       hero: {
         level: 3,
@@ -2104,7 +2124,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='pray_for_strength']")).toContainText("Node completed");
   });
 
-  test("Mystic Lodge, Acolyte, Watchtower combat, and research UI work through battle commands", async ({ page }) => {
+  test("Mystic Lodge, Acolyte, Watchtower combat, and research UI work through battle commands @hosted-deep-campaign", async ({ page }) => {
     test.setTimeout(80_000);
     await startFirstClaimSkirmish(page, "Systems QA");
 
@@ -2208,7 +2228,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     );
   });
 
-  test("Ashen Outpost special objectives display completed states on Results", async ({ page }) => {
+  test("Ashen Outpost special objectives display completed states on Results @hosted-deep-campaign", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {
       hero: {
@@ -2319,7 +2339,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(summaryText).toMatch(/Defeat Captain Malrec\s+Completed/);
   });
 
-  test("Old Stone Road victory unlocks the next campaign layer without repeat-starting completed rewards", async ({ page }) => {
+  test("Old Stone Road victory unlocks the next campaign layer without repeat-starting completed rewards @hosted-deep-campaign", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {
       hero: {
@@ -2385,7 +2405,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
   });
 
-  test("live campaign battles resolve victory and defeat through BattleScene results", async ({ page }) => {
+  test("live campaign battles resolve victory and defeat through BattleScene results @hosted-deep-campaign", async ({ page }) => {
     test.setTimeout(80_000);
 
     await seedSave(page);

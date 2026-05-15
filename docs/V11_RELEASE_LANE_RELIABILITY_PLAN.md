@@ -16,7 +16,7 @@ Scope: define how Ascendant Realms should use the current Playwright release lan
 | 3-way shard 1 | `npm run test:e2e:release:shard1of3` | 28 tests | About 11.5m | Deep-flow family. |
 | 3-way shard 2 | `npm run test:e2e:release:shard2of3` | 27 tests | About 12.9m | Layout plus enemy-pressure family. |
 | 3-way shard 3 | `npm run test:e2e:release:shard3of3` | 12 tests | About 4.9m | Smoke family. |
-| Hosted 6-way shards | `npm run test:e2e:release:hosted:shardNof6` | Full suite across 6 shards | Pending hosted rerun | Manual GitHub Actions release matrix. |
+| Hosted release groups | `npm run test:e2e:release:hosted:*` | 67 tests across 6 explicit groups | Pending hosted rerun | Manual GitHub Actions release matrix. |
 | Layout | `npm run test:e2e:layout` | 25 tests | About 12.5m recently | Responsive UI/HUD/tutorial overlay confidence. |
 | Visual QA | `npm run visual:qa` | 5 capture tests | About 4m recently | Optional indexed screenshots and console-error capture for human review. |
 
@@ -31,7 +31,7 @@ Use the smallest lane that protects the changed surface during implementation, t
 | Tutorial or layout work | Add `npm run test:e2e:layout`; add `npm run visual:qa` when screenshots matter |
 | Visual-intake metadata | Docs-only gate plus `npm run validate:art-intake` |
 | Content/data/save/campaign work | Add focused unit tests, `npm run test:e2e:smoke`, relevant deep/release coverage, and `npm run playtest:sim` when campaign battle outcomes can change |
-| CI long checks | Prefer the hosted 6-way shards in GitHub Actions; keep local 3-way shards for local/manual cross-checks |
+| CI long checks | Prefer the explicit hosted release groups in GitHub Actions; keep local 3-way shards for local/manual cross-checks |
 | Final freeze | Run the full final gate, including smoke, full release, 2-way shards, 3-way shards, visual QA, simulator, diff check, and production preview smoke |
 
 The full release lane should remain available even when 3-way shards are used in CI. The shards prove distributability and help CI scheduling; the full lane proves the suite also works in the single-command release path.
@@ -42,7 +42,7 @@ v0.11.1 adds `.github/workflows/ci.yml` as a conservative first GitHub Actions w
 
 - automatic fast confidence on pull requests and pushes to `main`
 - manual optional visual QA with screenshot artifact upload
-- manual hosted 6-way release shard matrix plus simulator
+- manual hosted release group matrix plus simulator
 - manual full-release e2e lane for major freezes
 - Node 22, `npm ci`, Playwright Chromium install, npm cache, no secrets, and no paid services
 
@@ -51,6 +51,8 @@ v0.11.5 changes the automatic push/PR browser lane from full smoke to `npm run t
 v0.11.8 keeps the manual 3-way release matrix unchanged but hardens the long hosted paths: deep-flow synthetic saves no longer use raw reloads, app-root setup navigation retries same-URL interruption/timeout cases before proving the real main menu, and reported release-path clicks use a non-forced actionability helper. A scoped 120s budget is allowed only for the seeded Cinderfen menu/campaign layout readability test that reproduced the shard-2 timeout pattern.
 
 v0.11.9 changes only the hosted manual release matrix shape after remote run #13 showed the v0.11.8 helper fixes were still not enough for GitHub-hosted wall-clock limits. The workflow now runs six hosted shard jobs with Playwright test-level sharding, single-worker execution inside each shard, and a 45-minute per-shard timeout. Local `npm run test:e2e:release`, the 2-way shards, and the 3-way shards remain available and unchanged.
+
+v0.11.10 supersedes the v0.11.9 hosted shard shape after remote run #15 showed the native 6-way split still failed across all hosted shards. The workflow now runs six explicit hosted groups: deep meta, deep battle, deep campaign plus pressure, layout core, layout Cinderfen, and smoke. This removes hosted `--fully-parallel` test-level sharding while preserving the same 67 release tests, the 45-minute manual job timeout, local full release, local 2-way shards, and local 3-way shards.
 
 The CI workflow does not replace the local final gate. Treat the first pushed workflow run as a dry-run validation of GitHub syntax, runner timing, artifact behavior, Playwright browser installation, and `smoke:preview` portability.
 
@@ -145,7 +147,7 @@ The release lane process is healthy when:
 
 - fast smoke remains the automatic GitHub push/PR browser gate
 - full smoke remains available for local/manual smoke confidence
-- hosted 6-way shards remain the preferred GitHub Actions release-matrix split
+- explicit hosted release groups remain the preferred GitHub Actions release-matrix split
 - local 3-way shards remain available for local/manual cross-checks
 - full release remains available and green before major checkpoints
 - timeouts are documented and rerun with evidence

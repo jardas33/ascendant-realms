@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { launchCinderfenWatch, seedPostCinderfenCrossingCampaign } from "./chapter2-helpers";
+import { clickReady } from "./shared-helpers";
 import { createHero, openFreshMainMenu } from "./shared-helpers";
 
 function attachConsoleFailure(page: Page): void {
@@ -89,7 +90,7 @@ async function showNormalStatusMessage(page: Page, message: string): Promise<str
 }
 
 test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
-  test("campaign Cinderfen Watch shows scoped pressure warning after Watch Road capture", async ({ page }) => {
+  test("campaign Cinderfen Watch shows scoped pressure warning after Watch Road capture @hosted-deep-campaign", async ({ page }) => {
     attachConsoleFailure(page);
     await seedPostCinderfenCrossingCampaign(page);
 
@@ -135,11 +136,11 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     await expectBattleLoaded(page);
   });
 
-  test("tutorial and skirmish launches do not activate pressure plans", async ({ page }) => {
+  test("tutorial and skirmish launches do not activate pressure plans @hosted-deep-campaign", async ({ page }) => {
     attachConsoleFailure(page);
     await openFreshMainMenu(page);
 
-    await page.getByTestId("menu-tutorial").click();
+    await clickReady(page.getByTestId("menu-tutorial"), "enemy-pressure tutorial launch");
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     let pressureState = await readPressureState(page);
@@ -151,11 +152,11 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     await expect(page.getByTestId("battle-status")).not.toContainText("The Watch Captain tightens the road guard.");
 
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-skirmish").click();
+    await clickReady(page.getByTestId("menu-skirmish"), "enemy-pressure skirmish menu");
     await createHero(page, "Pressure Skirmish Guard");
-    await page.getByTestId("setup-map-cinderfen_watchpost").click();
-    await page.getByTestId("setup-difficulty-normal").click();
-    await page.getByTestId("setup-start-battle").click();
+    await clickReady(page.getByTestId("setup-map-cinderfen_watchpost"), "enemy-pressure Cinderfen Watchpost map");
+    await clickReady(page.getByTestId("setup-difficulty-normal"), "enemy-pressure normal difficulty");
+    await clickReady(page.getByTestId("setup-start-battle"), "enemy-pressure skirmish start battle");
     await expectBattleLoaded(page);
 
     pressureState = await readPressureState(page);

@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
       run_release_matrix:
-        description: "Run manual 6-way hosted release shard matrix and simulator"
+        description: "Run manual hosted release groups and simulator"
         required: false
         default: false
         type: boolean
@@ -141,18 +141,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: shard-1-of-6
-            command: npm run test:e2e:release:hosted:shard1of6
-          - name: shard-2-of-6
-            command: npm run test:e2e:release:hosted:shard2of6
-          - name: shard-3-of-6
-            command: npm run test:e2e:release:hosted:shard3of6
-          - name: shard-4-of-6
-            command: npm run test:e2e:release:hosted:shard4of6
-          - name: shard-5-of-6
-            command: npm run test:e2e:release:hosted:shard5of6
-          - name: shard-6-of-6
-            command: npm run test:e2e:release:hosted:shard6of6
+          - name: deep-meta
+            command: npm run test:e2e:release:hosted:deep-meta
+          - name: deep-battle
+            command: npm run test:e2e:release:hosted:deep-battle
+          - name: deep-campaign-pressure
+            command: npm run test:e2e:release:hosted:deep-campaign-pressure
+          - name: layout-core
+            command: npm run test:e2e:release:hosted:layout-core
+          - name: layout-cinderfen
+            command: npm run test:e2e:release:hosted:layout-cinderfen
+          - name: smoke
+            command: npm run test:e2e:release:hosted:smoke
 
     steps:
       - name: Checkout

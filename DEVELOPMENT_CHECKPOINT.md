@@ -1,6 +1,81 @@
 # Development Checkpoint
 
-Updated: 2026-05-14 v0.11.9 hosted release matrix split and timeout fix
+Updated: 2026-05-14 v0.11.10 hosted release matrix determinism fix
+
+## v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
+
+Scope: stabilize the manually triggered GitHub Actions hosted release matrix after v0.11.9's native 6-way split still failed on hosted runners, while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, release coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or visual baseline pixel assertions.
+
+Included work:
+
+- Added `docs/V1110_HOSTED_RELEASE_MATRIX_FAILURE_AUDIT.md`.
+- Added `docs/V1110_HOSTED_RELEASE_MATRIX_DETERMINISM_FIX.md`.
+- Replaced hosted native 6-way `--fully-parallel` shard scripts with explicit hosted release group scripts: `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- Updated `.github/workflows/ci.yml` so the manual `run_release_matrix` input runs the six hosted groups with the existing 45-minute job timeout plus the unchanged release simulator.
+- Added `seedSaveBeforeAppBoot` and routed shared, Chapter 2, and deep-flow seeded-save setup through pre-boot localStorage seeding.
+- Applied non-forced `clickReady` to hosted-problem launch/setup interactions and added a one-retry right-click movement command helper while preserving the `Moving` assertion.
+- Tagged release tests into explicit hosted groups totaling the same 67 tests as the full release suite.
+- Updated README, release checklist, developer command guide, release lane reliability plan, changelog, and this checkpoint.
+
+Current verification:
+
+```text
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm test
+PASS: 46 test files, 351 tests.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in about 2.0m.
+
+npm run visual:qa
+PASS: 5 Playwright visual QA tests in about 4.2m, 18 indexed screenshots, 0 recorded browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview checks passed with 0 browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+Targeted remote-failure reproductions
+PASS: Refugee/Chapel seed path, battle HUD minimap movement path, desktop tutorial layout entry, multi-viewport Battle HUD/results layout, and skirmish difficulty pressure path.
+
+npm run test:e2e:release:hosted:deep-meta
+PASS: 12 Playwright tests in about 6.1m, with one recovered setup-navigation retry.
+
+npm run test:e2e:release:hosted:deep-battle
+PASS: 11 Playwright tests in about 4.7m.
+
+npm run test:e2e:release:hosted:deep-campaign-pressure
+PASS: 7 Playwright tests in about 3.6m.
+
+npm run test:e2e:release:hosted:layout-core
+PASS: 16 Playwright tests in about 6.2m.
+
+npm run test:e2e:release:hosted:layout-cinderfen
+PASS: 9 Playwright tests in about 9.5m, with recovered setup-navigation retries.
+
+npm run test:e2e:release:hosted:smoke
+PASS: 12 Playwright tests in about 6.2m.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in about 6.3m.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in about 36.5m, with recovered setup-navigation retries.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input after this checkpoint and confirm it now shows six release matrix jobs named `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, plus the unchanged release simulator.
 
 ## v0.11.9 Hosted Release Matrix Split and Timeout Fix - 2026-05-14
 

@@ -480,7 +480,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(75_000);
     await openFreshMainMenu(page);
 
-    await page.getByTestId("menu-tutorial").click();
+    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial entry launch");
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
@@ -550,7 +550,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   test("tutorial exit returns to menu without saving @ci-fast", async ({ page }) => {
     await openFreshMainMenu(page);
 
-    await page.getByTestId("menu-tutorial").click();
+    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial exit launch");
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await page.getByTestId("tutorial-exit").click();

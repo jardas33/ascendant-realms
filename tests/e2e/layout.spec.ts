@@ -147,7 +147,7 @@ async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
   await openFreshMainMenu(page);
   await expectNoHorizontalOverflow(page, `${label} main menu`);
   await expectReachableButton(page, page.getByTestId("menu-tutorial"), `${label} Tutorial`);
-  await page.getByTestId("menu-tutorial").click();
+  await clickReady(page.getByTestId("menu-tutorial"), `${label} Tutorial launch`);
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
 }
@@ -397,7 +397,7 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
 
 test.describe("Ascendant Realms responsive layout", () => {
   for (const viewport of LAYOUT_VIEWPORTS) {
-    test(`menu and hero creation fit or scroll on ${viewport.label}`, async ({ page }) => {
+    test(`menu and hero creation fit or scroll on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await openFreshMainMenu(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} main menu`);
@@ -409,7 +409,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectBottomActionReachable(page, page.getByTestId("hero-start"), `${viewport.label} hero creation start`);
     });
 
-    test(`campaign, setup, inventory, and asset gallery remain reachable on ${viewport.label}`, async ({ page }) => {
+    test(`campaign, setup, inventory, and asset gallery remain reachable on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout ${viewport.label}` } });
       await continueSavedCampaign(page);
@@ -435,7 +435,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectInViewport(page, page.getByRole("button", { name: "Back" }), `${viewport.label} asset gallery back`);
     });
 
-    test(`tutorial entry and first objective overlay stay readable on ${viewport.label}`, async ({ page }) => {
+    test(`tutorial entry and first objective overlay stay readable on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await launchTutorialOverlay(page, viewport.label);
       await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
@@ -463,14 +463,14 @@ test.describe("Ascendant Realms responsive layout", () => {
     { width: 390, height: 844, label: "mobile-tall" },
     { width: 360, height: 640, label: "mobile-short" }
   ]) {
-    test(`battle HUD and results layout stay inside the viewport on ${viewport.label}`, async ({ page }) => {
+    test(`battle HUD and results layout stay inside the viewport on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
       await continueSavedCampaign(page);
       await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Border Village node`);
-      await page.getByTestId("campaign-start-node").click();
-      await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
+      await clickReady(page.getByTestId("campaign-start-node"), `${viewport.label} Border Village start`);
+      await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
       await expectInViewport(page, page.getByTestId("battle-hero-panel"), `${viewport.label} hero panel`);
       await expectInViewport(page, page.getByTestId("battle-minimap"), `${viewport.label} minimap`);
@@ -492,7 +492,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   }
 
   for (const viewport of CINDERFEN_READABILITY_VIEWPORTS) {
-    test(`v0.3 Cinderfen menu and campaign readability fit ${viewport.label}`, async ({ page }) => {
+    test(`v0.3 Cinderfen menu and campaign readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
       // GitHub-hosted release shard evidence and local full-release reproduction show this seeded
       // Cinderfen layout pass can spend extra time recovering from app-root setup navigation retries.
       test.setTimeout(120_000);
@@ -579,7 +579,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   }
 
   for (const viewport of CINDERFEN_BATTLE_READABILITY_VIEWPORTS) {
-    test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label}`, async ({ page }) => {
+    test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
       test.setTimeout(viewport.label === "mobile portrait" ? 120_000 : 90_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page);
@@ -619,7 +619,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     });
   }
 
-  test("Ashen Outpost objectives do not cover the fortress focus area on desktop", async ({ page }) => {
+  test("Ashen Outpost objectives do not cover the fortress focus area on desktop @hosted-layout-cinderfen", async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await startAshenOutpostSkirmish(page, "Layout Ashen");
     await expect(page.getByTestId("battle-objectives")).toBeVisible();
@@ -663,7 +663,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     }
   });
 
-  test("Ashen Outpost landmarks are scoutable under fog without HUD overlap", async ({ page }) => {
+  test("Ashen Outpost landmarks are scoutable under fog without HUD overlap @hosted-layout-cinderfen", async ({ page }) => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await startAshenOutpostSkirmish(page, "Scout Ashen");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
