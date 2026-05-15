@@ -173,7 +173,7 @@ jobs:
       - name: Production build
         run: npm run build
 
-      - name: Run release shard
+      - name: Run hosted release group
         run: ${{ matrix.command }}
 
       - name: Upload Playwright shard artifacts

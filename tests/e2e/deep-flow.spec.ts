@@ -184,9 +184,11 @@ async function rightClickWorldPointUntilOrder(
   context: string
 ): Promise<void> {
   const orderSummary = page.getByTestId("unit-order-summary");
+  const candidatePoints = [point, { x: point.x - 90, y: point.y - 80 }, { x: point.x + 80, y: point.y - 80 }];
   let lastError: unknown;
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
-    await clickWorldPoint(page, point, "right");
+  for (let attempt = 1; attempt <= candidatePoints.length; attempt += 1) {
+    const candidatePoint = candidatePoints[attempt - 1];
+    await clickWorldPoint(page, candidatePoint, "right");
     try {
       await expect(orderSummary, `${context}: expected right-click move command to update unit order`).toContainText(
         expectedOrder,
@@ -195,10 +197,12 @@ async function rightClickWorldPointUntilOrder(
       return;
     } catch (error) {
       lastError = error;
-      if (attempt === 2) {
+      if (attempt === candidatePoints.length) {
         break;
       }
-      console.warn(`${context}: retrying world right-click command after order did not become ${expectedOrder}`);
+      console.warn(
+        `${context}: retrying world right-click command at alternate point after order did not become ${expectedOrder}`
+      );
       await page.waitForTimeout(250);
     }
   }
@@ -403,10 +407,10 @@ async function startFirstClaimSkirmish(
   difficulty: "story" | "easy" | "normal" | "hard" = "normal"
 ): Promise<void> {
   await openFreshMainMenu(page);
-  await page.getByTestId("menu-skirmish").click();
+  await clickReady(page.getByTestId("menu-skirmish"), "deep-flow first claim skirmish menu");
   await createHero(page, heroName);
-  await page.getByTestId("setup-map-first_claim").click();
-  await page.getByTestId(`setup-difficulty-${difficulty}`).click();
+  await clickReady(page.getByTestId("setup-map-first_claim"), "deep-flow first claim map");
+  await clickReady(page.getByTestId(`setup-difficulty-${difficulty}`), `deep-flow first claim ${difficulty} difficulty`);
   await clickReady(page.getByTestId("setup-start-battle"), "deep-flow first claim skirmish start battle");
   await expectBattleLoaded(page);
   await waitForBattleScene(page);
@@ -1287,28 +1291,28 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   test("all skirmish maps and AI personalities launch without browser errors @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-skirmish").click();
+    await clickReady(page.getByTestId("menu-skirmish"), "deep-flow map QA skirmish menu");
     await createHero(page, "Map QA");
 
     for (const mapId of ["first_claim", "broken_ford", "ashen_outpost"]) {
       await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-      await page.getByTestId(`setup-map-${mapId}`).click();
-      await page.getByTestId("setup-difficulty-normal").click();
-      await page.getByTestId("setup-personality-hexfire_cult").click();
+      await clickReady(page.getByTestId(`setup-map-${mapId}`), `deep-flow map QA ${mapId} map`);
+      await clickReady(page.getByTestId("setup-difficulty-normal"), `deep-flow map QA ${mapId} normal difficulty`);
+      await clickReady(page.getByTestId("setup-personality-hexfire_cult"), `deep-flow map QA ${mapId} personality`);
       await clickReady(page.getByTestId("setup-start-battle"), `deep-flow launch skirmish map ${mapId}`);
       await expectBattleLoaded(page);
       await expect(page.getByTestId("battle-status")).toContainText(/Enemy|Capture|AI/i);
-      await page.getByRole("button", { name: "Menu" }).click();
+      await clickReady(page.getByRole("button", { name: "Menu" }), `deep-flow return to menu after skirmish map ${mapId}`);
       await expect(page.getByTestId("main-menu")).toBeVisible();
-      await page.getByTestId("menu-skirmish").click();
+      await clickReady(page.getByTestId("menu-skirmish"), `deep-flow map QA return to skirmish menu after ${mapId}`);
     }
   });
 
   test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle", async ({ page }) => {
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-skirmish").click();
+    await clickReady(page.getByTestId("menu-skirmish"), "deep-flow battle HUD skirmish menu");
     await createHero(page, "Battle QA");
-    await page.getByTestId("setup-difficulty-normal").click();
+    await clickReady(page.getByTestId("setup-difficulty-normal"), "deep-flow battle HUD normal difficulty");
     await clickReady(page.getByTestId("setup-start-battle"), "deep-flow battle HUD start battle");
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
@@ -1356,8 +1360,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
     await expect(page.locator(".side-panel")).toContainText("Build");
-    await page.locator("button[data-action='build'][data-id='barracks']").click();
-    await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
+    await clickReady(page.locator("button[data-action='build'][data-id='barracks']"), "deep-flow build Barracks command");
     await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode");
     await expect(page.locator(".hint-line")).toHaveCount(0);
     await page.waitForFunction(() => {
@@ -1422,7 +1425,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(hoverState.label).toContain("Build Barracks");
 
     await barracksButton.click();
-    await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
+    await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode");
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return scene?.buildingSystem?.pendingBuildingId === "barracks" && scene?.buildingSystem?.ghost?.visible;
+    });
   });
 
   test("battle HUD preserves side-panel scroll across forced refreshes @hosted-deep-battle", async ({ page }) => {

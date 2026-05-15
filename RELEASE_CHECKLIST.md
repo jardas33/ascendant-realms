@@ -33,7 +33,7 @@ Known current realities:
 - v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 - v0.11.7 splits optional visual QA into 5 smaller tests and adds per-screenshot logging, a 45s screenshot timeout, one screenshot retry, and retry metadata while keeping all 18 targets and console-error failure behavior.
 - v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
-- v0.11.10 keeps local full release, local 2-way shards, and local 3-way shards intact, but replaces the manual GitHub release matrix's `--fully-parallel` hosted shards with explicit hosted groups after run #15 showed deterministic seed/actionability instability across the 6-way native split.
+- v0.11.11 keeps local full release, local 2-way shards, and local 3-way shards intact, but runs the manual GitHub release groups against production preview after run #17 showed hosted dev-server release groups still failed across app boot, actionability, and browser-context stability.
 
 ## Required Automated Checks
 
@@ -177,7 +177,7 @@ Shard 3 of 3: passed, 12 Playwright tests in about 4.9m.
 
 Final verification should still run the full release lane, both existing 2-shard scripts, and all three 3-shard scripts before push. The 3-shard scripts remain the additive CI option; they do not replace the canonical full release lane.
 
-v0.11.10 supersedes the hosted-only 6-shard scripts with explicit hosted release groups for the manual GitHub Actions release matrix:
+v0.11.11 keeps the explicit hosted release groups and runs them against production preview through `playwright.hosted-release.config.ts`:
 
 ```bash
 npm run test:e2e:release:hosted:deep-meta
@@ -188,7 +188,9 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same 67-test full release suite in GitHub Actions. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` after GitHub run #15 showed test-level sharding still produced seed/navigation, actionability, layout, and extended-smoke instability.
+All six hosted groups must pass to equal the same 67-test full release suite in GitHub Actions. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability.
+
+Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 
 ## GitHub Actions CI Dry Run
 
@@ -224,6 +226,8 @@ v0.11.8 remote evidence showed the manual 3-way release matrix was the remaining
 v0.11.9 remote evidence showed the v0.11.8 helper hardening was not enough for GitHub-hosted wall-clock limits: shard 1 and shard 2 hit the 35-minute job timeout, while shard 3 still showed hosted browser/context instability in extended smoke. The manual `run_release_matrix` input now runs six hosted shards named `shard-1-of-6` through `shard-6-of-6` with a 45-minute per-shard timeout, plus the unchanged release simulator. The old hosted 3-way jobs should not appear in new manual release-matrix runs, but the local 3-way scripts remain available.
 
 v0.11.10 remote evidence on run #15 showed the v0.11.9 native 6-way split was still unstable across all hosted shards, with seed setup navigation aborts, right-click movement actionability, layout launch timing, and extended-smoke seeded campaign failures. The manual `run_release_matrix` input now runs explicit hosted groups named `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, plus the unchanged release simulator. If rerunning the matrix, expect those six group names rather than `shard-1-of-6` through `shard-6-of-6`.
+
+v0.11.11 remote evidence on run #17 showed the explicit groups were still failing when hosted against Vite dev server. The hosted group scripts now use `playwright.hosted-release.config.ts`, which starts `npm run preview:hosted` on `127.0.0.1:5173` and adds hosted-only Chromium stability flags. The workflow already uses `npx playwright install --with-deps chromium`; no dependency-install change was needed.
 
 7. Optional focused e2e lanes:
 

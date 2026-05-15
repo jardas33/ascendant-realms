@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
+
+This checkpoint moves the manual hosted GitHub Actions release matrix from the Vite dev server to production preview after GitHub run #17 still failed all explicit hosted groups, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Hosted release environment audit: `docs/V1111_HOSTED_RELEASE_ENVIRONMENT_AUDIT.md`.
+- Hosted preview environment fix report: `docs/V1111_HOSTED_RELEASE_PREVIEW_ENVIRONMENT_FIX.md`.
+- New `playwright.hosted-release.config.ts` for hosted release groups, serving `vite preview` on `127.0.0.1:5173` instead of the Vite dev server.
+- New `npm run preview:hosted` script for strict-port production preview on the Playwright release URL.
+- Hosted release group scripts now run with `--config=playwright.hosted-release.config.ts`.
+- Hosted release Chromium launch args now include `--no-sandbox`, `--disable-dev-shm-usage`, `--disable-gpu`, and the existing SwiftShader/WebGL args.
+- GitHub Actions already used `npx playwright install --with-deps chromium`; no dependency-install change was required.
+- Small test-only actionability hardening on reported skirmish/tutorial launch paths, with no force-clicks and no weakened assertions.
+- Deep-flow right-click movement command now tries nearby alternate world points before failing the unchanged `Moving` assertion.
+
+### Verification
+
+- Passed: `npm test` with 46 files / 351 tests.
+- Passed: `npm run build` with the known Phaser vendor chunk warning.
+- Passed: `npm run validate:content` and `npm run validate:art-intake`.
+- Passed: `npm run test:e2e:smoke:fast`, `npm run visual:qa`, `npm run smoke:preview`, and `npm run playtest:sim`.
+- Passed: all six hosted release preview groups locally, totaling 67 tests: `deep-meta` 12, `deep-battle` 11, `deep-campaign-pressure` 7, `layout-core` 16, `layout-cinderfen` 9, and `smoke` 12.
+- Passed: targeted hosted-preview repros for the run #17 deep-meta, deep-battle movement, pressure, layout, and smoke failures.
+- Passed: local `npm run test:e2e:smoke` on rerun after one dev-server app-root navigation timeout in the long Cinderfen Crossing smoke test.
+- Passed: local `npm run test:e2e:release` with 67 tests in 35.2m after the first invocation exceeded the local tool timeout.
+- Passed: `git diff --check`, with only the existing Windows CRLF warning on `.github/workflows/ci.yml`.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input and expect the same six hosted group jobs plus the unchanged `Release simulator`, now running release groups against production preview.
+
 ## v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
 
 This checkpoint replaces the v0.11.9 hosted native 6-way release shards with explicit hosted release groups after GitHub Actions run #15 still failed across all hosted shards, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.

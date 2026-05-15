@@ -48,9 +48,9 @@ async function setSettingsRangeValue(page: Page, testId: string, value: string):
 
 async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, heroName: string): Promise<void> {
   await seedCampaignSave(page, { hero: { heroName } });
-  await page.getByTestId("menu-skirmish").click();
+  await clickReady(page.getByTestId("menu-skirmish"), `smoke skirmish ${difficulty} menu`);
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-  await page.getByTestId(`setup-difficulty-${difficulty}`).click();
+  await clickReady(page.getByTestId(`setup-difficulty-${difficulty}`), `smoke skirmish ${difficulty} difficulty`);
   await clickReady(page.getByTestId("setup-start-battle"), `smoke skirmish ${difficulty} start battle`);
   await expectBattleLoaded(page);
 }
@@ -605,7 +605,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 
     await page.getByTestId("settings-back").click();
-    await page.getByTestId("menu-skirmish").click();
+    await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu");
     await page.waitForFunction(() =>
       Boolean(document.querySelector('[data-testid="hero-creation"], [data-testid="skirmish-setup"]'))
     );
@@ -613,8 +613,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       await createHero(page, "E2E Settings");
     }
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-    await page.getByTestId("setup-difficulty-normal").click();
-    await page.getByTestId("setup-start-battle").click();
+    await clickReady(page.getByTestId("setup-difficulty-normal"), "settings smoke normal difficulty");
+    await clickReady(page.getByTestId("setup-start-battle"), "settings smoke start battle");
     await expectBattleLoaded(page);
 
     const battleSettings = await page.evaluate(() => {
@@ -1176,7 +1176,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
   test("skirmish setup lists maps and launches Broken Ford @extended-smoke", async ({ page }) => {
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-skirmish").click();
+    await clickReady(page.getByTestId("menu-skirmish"), "smoke Broken Ford skirmish menu");
     await createHero(page, "E2E Skirmish");
 
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();

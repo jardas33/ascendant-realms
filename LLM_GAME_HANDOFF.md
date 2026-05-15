@@ -1,12 +1,106 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-14 v0.11.10 hosted release matrix determinism fix
+Last updated: 2026-05-15 v0.11.11 hosted release preview environment fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
+
+Mission: harden the manually triggered GitHub Actions hosted release matrix environment after v0.11.10 explicit groups still failed on hosted runners, without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` is green.
+- Manual `Optional visual QA` is green.
+- Manual `Release simulator` is green.
+- Manual `run_release_matrix` on run #17 failed all six explicit hosted groups.
+- `deep-meta` failed in seeded-save boot because the app did not reliably show `menu-new-campaign`.
+- `deep-battle` still failed the `Moving` assertion after right-click movement.
+- `deep-campaign-pressure` hit page/context/browser closure during `clickReady`.
+- `layout-core`, `layout-cinderfen`, and `smoke` showed app-root navigation timeouts, `net::ERR_ABORTED`, browser/page closure, and setup actionability failures.
+
+Files changed:
+
+- `playwright.hosted-release.config.ts`: new hosted release config using production preview on `http://127.0.0.1:5173`, `workers: 1`, `fullyParallel: false`, CI retries, retained failure artifacts, and hosted-only Chromium stability args.
+- `package.json`: added `preview:hosted`; hosted release group scripts now use `--config=playwright.hosted-release.config.ts`.
+- `.github/workflows/ci.yml`: release matrix step label now says hosted release group. The workflow already used `npx playwright install --with-deps chromium`; Fast confidence, optional visual QA, release simulator, and full-release job structure are unchanged.
+- `tests/e2e/smoke.spec.ts`: skirmish and settings battle launch paths use `clickReady` for reported hosted actionability points.
+- `tests/e2e/deep-flow.spec.ts`: skirmish setup paths use `clickReady`; right-click movement command tries nearby alternate world points before failing the unchanged `Moving` assertion.
+- `tests/e2e/layout.spec.ts`: Ashen Outpost and skirmish navigation paths use `clickReady`.
+- `docs/V1111_HOSTED_RELEASE_ENVIRONMENT_AUDIT.md`: added environment audit.
+- `docs/V1111_HOSTED_RELEASE_PREVIEW_ENVIRONMENT_FIX.md`: added implementation report and GitHub rerun checklist.
+- README, release checklist, developer command guide, changelog, development checkpoint, and this handoff updated.
+
+Release scripts:
+
+- Local `npm run test:e2e:release` remains unchanged and still uses the default Vite dev-server Playwright config.
+- Local 2-way shard scripts remain unchanged.
+- Local 3-way shard scripts remain unchanged.
+- Hosted GitHub release group scripts now use production preview through `playwright.hosted-release.config.ts`:
+  - `npm run test:e2e:release:hosted:deep-meta`
+  - `npm run test:e2e:release:hosted:deep-battle`
+  - `npm run test:e2e:release:hosted:deep-campaign-pressure`
+  - `npm run test:e2e:release:hosted:layout-core`
+  - `npm run test:e2e:release:hosted:layout-cinderfen`
+  - `npm run test:e2e:release:hosted:smoke`
+- Local list checks showed the hosted groups still cover 67 total release tests: 12, 11, 7, 16, 9, and 12.
+
+Current v0.11.11 verification:
+
+```text
+npm test
+PASS: 46 files / 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: 1 candidate metadata JSON file and 0 review manifest JSON files checked.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in 2.1m.
+
+npm run visual:qa
+PASS: 5 Playwright tests in 4.4m, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview smoke on http://127.0.0.1:4173/ with 0 browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+Hosted release preview groups
+PASS: deep-meta 12/12, deep-battle 11/11, deep-campaign-pressure 7/7, layout-core 16/16, layout-cinderfen 9/9, smoke 12/12.
+
+Targeted hosted-preview run #17 repros
+PASS: deep-meta alternate Refugee/Chapel, deep-battle movement, pressure tutorial/skirmish, desktop tutorial layout, battle HUD/results layout, and smoke difficulty-selection repros.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 6.8m on rerun. The first local dev-server attempt timed out in the long Cinderfen Crossing smoke test during an app-root navigation retry; the targeted repro and full rerun passed.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in 35.2m after rerunning with a longer local command ceiling. The first invocation exceeded the local tool timeout before returning output.
+
+git diff --check
+PASS: only the existing Windows CRLF warning on .github/workflows/ci.yml.
+```
+
+Current v0.11.11 remaining risks:
+
+- The hosted preview release groups need a fresh GitHub Actions manual rerun after push.
+- GitHub-hosted Chromium/context instability may still appear, but this pass removes Vite dev server/HMR from the hosted release matrix.
+- The local full release lane remains intentionally unchanged and slow.
+
+Next step:
+
+- Commit as `Checkpoint v0.11.11 hosted release preview environment fix`, push if safe, then ask Emmanuel to rerun the manual GitHub Actions `run_release_matrix` workflow input.
 
 ## Current v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
 

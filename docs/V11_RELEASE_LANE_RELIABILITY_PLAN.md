@@ -16,7 +16,7 @@ Scope: define how Ascendant Realms should use the current Playwright release lan
 | 3-way shard 1 | `npm run test:e2e:release:shard1of3` | 28 tests | About 11.5m | Deep-flow family. |
 | 3-way shard 2 | `npm run test:e2e:release:shard2of3` | 27 tests | About 12.9m | Layout plus enemy-pressure family. |
 | 3-way shard 3 | `npm run test:e2e:release:shard3of3` | 12 tests | About 4.9m | Smoke family. |
-| Hosted release groups | `npm run test:e2e:release:hosted:*` | 67 tests across 6 explicit groups | Pending hosted rerun | Manual GitHub Actions release matrix. |
+| Hosted release groups | `npm run test:e2e:release:hosted:*` | 67 tests across 6 explicit groups | Pending hosted rerun | Manual GitHub Actions release matrix against production preview. |
 | Layout | `npm run test:e2e:layout` | 25 tests | About 12.5m recently | Responsive UI/HUD/tutorial overlay confidence. |
 | Visual QA | `npm run visual:qa` | 5 capture tests | About 4m recently | Optional indexed screenshots and console-error capture for human review. |
 
@@ -53,6 +53,8 @@ v0.11.8 keeps the manual 3-way release matrix unchanged but hardens the long hos
 v0.11.9 changes only the hosted manual release matrix shape after remote run #13 showed the v0.11.8 helper fixes were still not enough for GitHub-hosted wall-clock limits. The workflow now runs six hosted shard jobs with Playwright test-level sharding, single-worker execution inside each shard, and a 45-minute per-shard timeout. Local `npm run test:e2e:release`, the 2-way shards, and the 3-way shards remain available and unchanged.
 
 v0.11.10 supersedes the v0.11.9 hosted shard shape after remote run #15 showed the native 6-way split still failed across all hosted shards. The workflow now runs six explicit hosted groups: deep meta, deep battle, deep campaign plus pressure, layout core, layout Cinderfen, and smoke. This removes hosted `--fully-parallel` test-level sharding while preserving the same 67 release tests, the 45-minute manual job timeout, local full release, local 2-way shards, and local 3-way shards.
+
+v0.11.11 supersedes the hosted environment for those explicit groups after remote run #17 showed all groups still failed against Vite dev server. Hosted release groups now use `playwright.hosted-release.config.ts` and `npm run preview:hosted`, so GitHub-hosted release matrix jobs run against production preview on `127.0.0.1:5173` while preserving the same 67 release tests and local full release lanes.
 
 The CI workflow does not replace the local final gate. Treat the first pushed workflow run as a dry-run validation of GitHub syntax, runner timing, artifact behavior, Playwright browser installation, and `smoke:preview` portability.
 

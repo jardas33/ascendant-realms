@@ -74,7 +74,7 @@ async function scrollMainToBottom(page: Page): Promise<void> {
 }
 
 async function expectInViewport(page: Page, locator: Locator, label: string): Promise<void> {
-  const box = await locator.boundingBox();
+  const box = await waitForLayoutBox(page, locator);
   expect(box, `${label} has a layout box`).not.toBeNull();
   const viewport = page.viewportSize();
   expect(viewport, `${label} viewport exists`).not.toBeNull();
@@ -111,7 +111,7 @@ async function expectTutorialOverlayHasFeedbackPriority(page: Page, label: strin
 
 async function expectWithinViewportWidth(page: Page, locator: Locator, label: string): Promise<void> {
   await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
-  const box = await locator.boundingBox();
+  const box = await waitForLayoutBox(page, locator);
   expect(box, `${label} has a layout box`).not.toBeNull();
   const viewport = page.viewportSize();
   expect(viewport, `${label} viewport exists`).not.toBeNull();
@@ -134,13 +134,22 @@ async function expectReachableButton(
     await expect(locator, `${label} enabled`).toBeEnabled();
   }
   await expectInViewport(page, locator, label);
-  const box = await locator.boundingBox();
+  const box = await waitForLayoutBox(page, locator);
   expect(box, `${label} has button dimensions`).not.toBeNull();
   if (!box) {
     return;
   }
   expect(box.width, `${label} tap width`).toBeGreaterThanOrEqual(40);
   expect(box.height, `${label} tap height`).toBeGreaterThanOrEqual(32);
+}
+
+async function waitForLayoutBox(page: Page, locator: Locator): Promise<Awaited<ReturnType<Locator["boundingBox"]>>> {
+  let box = await locator.boundingBox();
+  for (let attempt = 0; !box && attempt < 5; attempt += 1) {
+    await page.waitForTimeout(100);
+    box = await locator.boundingBox();
+  }
+  return box;
 }
 
 async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
@@ -387,10 +396,10 @@ async function showVictoryResults(page: Page): Promise<void> {
 
 async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<void> {
   await seedCampaignSave(page, { hero: { heroName } });
-  await page.getByTestId("menu-skirmish").click();
+  await clickReady(page.getByTestId("menu-skirmish"), "layout Ashen Outpost skirmish menu");
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-  await page.getByTestId("setup-map-ashen_outpost").click();
-  await page.getByTestId("setup-difficulty-normal").click();
+  await clickReady(page.getByTestId("setup-map-ashen_outpost"), "layout Ashen Outpost map");
+  await clickReady(page.getByTestId("setup-difficulty-normal"), "layout Ashen Outpost normal difficulty");
   await clickReady(page.getByTestId("setup-start-battle"), "layout Ashen Outpost skirmish start battle");
   await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
 }
@@ -403,7 +412,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} main menu`);
       await expectBottomActionReachable(page, page.getByText("Credits / Info"), `${viewport.label} main menu bottom action`);
 
-      await page.getByTestId("menu-skirmish").click();
+      await clickReady(page.getByTestId("menu-skirmish"), `${viewport.label} skirmish menu from main menu`);
       await expect(page.getByTestId("hero-creation")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} hero creation`);
       await expectBottomActionReachable(page, page.getByTestId("hero-start"), `${viewport.label} hero creation start`);
@@ -417,7 +426,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectBottomActionReachable(page, page.getByTestId("campaign-main-menu"), `${viewport.label} campaign actions`);
 
       await page.getByTestId("campaign-main-menu").click();
-      await page.getByTestId("menu-skirmish").click();
+      await clickReady(page.getByTestId("menu-skirmish"), `${viewport.label} skirmish menu from campaign return`);
       await expect(page.getByTestId("skirmish-setup")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} skirmish setup`);
       await expectBottomActionReachable(page, page.getByTestId("setup-start-battle"), `${viewport.label} setup start`);

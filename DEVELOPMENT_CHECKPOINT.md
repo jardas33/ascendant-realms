@@ -1,6 +1,67 @@
 # Development Checkpoint
 
-Updated: 2026-05-14 v0.11.10 hosted release matrix determinism fix
+Updated: 2026-05-15 v0.11.11 hosted release preview environment fix
+
+## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
+
+Scope: harden the manually triggered GitHub Actions hosted release matrix environment after v0.11.10 explicit groups still failed on hosted runners, while preserving gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, release coverage strength, and the current browser prototype scope. This pass did not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, or visual baseline pixel assertions.
+
+Included work:
+
+- Added `docs/V1111_HOSTED_RELEASE_ENVIRONMENT_AUDIT.md`.
+- Added `docs/V1111_HOSTED_RELEASE_PREVIEW_ENVIRONMENT_FIX.md`.
+- Added `playwright.hosted-release.config.ts` so hosted release groups run against production preview instead of Vite dev server.
+- Added `npm run preview:hosted`.
+- Updated hosted release group scripts to use `--config=playwright.hosted-release.config.ts`.
+- Kept automatic Fast confidence, optional visual QA, release simulator, local full release, local 2-way shards, local 3-way shards, and manual full-release CI lane unchanged.
+- Kept the GitHub Actions Chromium install step as `npx playwright install --with-deps chromium`, because the workflow already installs Linux browser dependencies.
+- Added hosted-release-only Chromium launch args for Linux runner stability.
+- Applied small test-only `clickReady` hardening to reported skirmish/tutorial launch paths and extended the deep-flow right-click movement helper to try nearby alternate world points while preserving the `Moving` assertion.
+
+Current verification:
+
+```text
+npm test
+PASS: 46 files / 351 tests.
+
+npm run build
+PASS: TypeScript compile and Vite production build with the known Phaser vendor chunk warning.
+
+npm run validate:content
+PASS.
+
+npm run validate:art-intake
+PASS: 1 candidate metadata JSON file and 0 review manifest JSON files checked.
+
+npm run test:e2e:smoke:fast
+PASS: 6 Playwright tests in 2.1m.
+
+npm run visual:qa
+PASS: 5 Playwright tests in 4.4m, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS: production preview smoke on http://127.0.0.1:4173/ with 0 browser console errors.
+
+npm run playtest:sim
+PASS: 255 simulated runs across 85 campaign battle nodes.
+
+Hosted release preview groups
+PASS: deep-meta 12/12, deep-battle 11/11, deep-campaign-pressure 7/7, layout-core 16/16, layout-cinderfen 9/9, smoke 12/12.
+
+Targeted hosted-preview run #17 repros
+PASS: deep-meta alternate Refugee/Chapel, deep-battle movement, pressure tutorial/skirmish, desktop tutorial layout, battle HUD/results layout, and smoke difficulty-selection repros.
+
+npm run test:e2e:smoke
+PASS: 12 Playwright tests in 6.8m on rerun. The first local dev-server attempt timed out in the long Cinderfen Crossing smoke test during an app-root navigation retry; the targeted repro and full rerun passed.
+
+npm run test:e2e:release
+PASS: 67 Playwright tests in 35.2m after rerunning with a longer local command ceiling. The first invocation exceeded the local tool timeout before returning output.
+
+git diff --check
+PASS: only the existing Windows CRLF warning on .github/workflows/ci.yml.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input after this checkpoint and confirm the same six release matrix jobs now run against production preview.
 
 ## v0.11.10 Hosted Release Matrix Determinism Fix - 2026-05-14
 
