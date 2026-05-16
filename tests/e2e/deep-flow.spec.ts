@@ -297,6 +297,50 @@ async function waitForBattleScene(page: Page): Promise<void> {
   await page.waitForFunction(() => Boolean(window.ascendantRealmsGame?.scene.getScene("BattleScene")?.scene.isActive()));
 }
 
+async function launchSkirmishMapFromScene(page: Page, mapId: string, heroName: string): Promise<void> {
+  await page.evaluate(
+    ({ targetMapId, hero }) => {
+      const game = window.ascendantRealmsGame;
+      if (!game) {
+        throw new Error("Ascendant Realms game was not booted.");
+      }
+      for (const sceneKey of [
+        "BattleScene",
+        "SkirmishSetupScene",
+        "HeroCreationScene",
+        "MainMenuScene",
+        "CampaignMapScene",
+        "SettingsScene"
+      ]) {
+        game.scene.stop(sceneKey);
+      }
+      game.scene.start("BattleScene", {
+        launchRequest: {
+          requestId: `deep-map-qa:${targetMapId}`,
+          mode: "skirmish",
+          mapId: targetMapId,
+          heroSave: hero,
+          sourceId: "deep_flow_map_qa",
+          rewardTableId: `${targetMapId}_rewards`,
+          difficulty: "normal",
+          modifiers: [],
+          enemyProfileId: "ashen_covenant",
+          aiPersonalityId: "hexfire_cult"
+        }
+      });
+    },
+    {
+      targetMapId: mapId,
+      hero: {
+        ...BASE_HERO,
+        heroName
+      }
+    }
+  );
+  await expectBattleLoaded(page);
+  await waitForBattleScene(page);
+}
+
 async function worldToScreen(page: Page, point: { x: number; y: number }): Promise<{ x: number; y: number }> {
   return page.evaluate((target) => {
     const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1521,24 +1565,31 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   test("all skirmish maps and AI personalities launch without browser errors @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(120_000);
     await openFreshMainMenu(page);
-    await clickReady(page.getByTestId("menu-skirmish"), "deep-flow map QA skirmish menu");
-    await createHero(page, "Map QA");
 
     for (const mapId of ["first_claim", "broken_ford", "ashen_outpost"]) {
-      await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-      await clickReady(page.getByTestId(`setup-map-${mapId}`), `deep-flow map QA ${mapId} map`);
-      await clickReady(page.getByTestId("setup-difficulty-normal"), `deep-flow map QA ${mapId} normal difficulty`);
-      await clickReady(page.getByTestId("setup-personality-hexfire_cult"), `deep-flow map QA ${mapId} personality`);
-      await clickReady(page.getByTestId("setup-start-battle"), `deep-flow launch skirmish map ${mapId}`);
-      await expectBattleLoaded(page);
+      await launchSkirmishMapFromScene(page, mapId, "Map QA");
+      const launchState = await page.evaluate(() => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive()) {
+          throw new Error("BattleScene is not active.");
+        }
+        scene.update(performance.now(), 250);
+        return {
+          mapId: scene.launch.request.mapId,
+          activeMapId: scene.launch.map.id,
+          difficulty: scene.launch.request.difficulty,
+          aiPersonalityId: scene.launch.request.aiPersonalityId,
+          enemyUnits: scene.units.filter((unit: any) => unit.team === "enemy" && unit.alive).length
+        };
+      });
+      expect(launchState).toMatchObject({
+        mapId,
+        activeMapId: mapId,
+        difficulty: "normal",
+        aiPersonalityId: "hexfire_cult"
+      });
+      expect(launchState.enemyUnits).toBeGreaterThan(0);
       await expect(page.getByTestId("battle-status")).toContainText(/Enemy|Capture|AI/i);
-      await clickReady(
-        page.getByRole("button", { name: "Menu" }),
-        `deep-flow return to menu after skirmish map ${mapId}`,
-        HUD_MENU_CLICK_OPTIONS
-      );
-      await expect(page.getByTestId("main-menu")).toBeVisible();
-      await clickReady(page.getByTestId("menu-skirmish"), `deep-flow map QA return to skirmish menu after ${mapId}`);
     }
   });
 

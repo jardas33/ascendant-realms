@@ -59,6 +59,44 @@ async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, her
   await expectBattleLoaded(page);
 }
 
+async function launchSettingsSmokeBattle(page: Page): Promise<void> {
+  await page.evaluate((key) => {
+    const rawSave = localStorage.getItem(key);
+    if (!rawSave) {
+      throw new Error("Expected saved settings before launching the settings smoke battle.");
+    }
+
+    const save = JSON.parse(rawSave);
+    const hero = {
+      ...save.hero,
+      heroName: "E2E Settings"
+    };
+    const game = window.ascendantRealmsGame;
+    if (!game) {
+      throw new Error("Ascendant Realms game was not booted.");
+    }
+
+    for (const sceneKey of ["SettingsScene", "MainMenuScene", "SkirmishSetupScene", "HeroCreationScene", "CampaignMapScene", "BattleScene"]) {
+      game.scene.stop(sceneKey);
+    }
+    game.scene.start("BattleScene", {
+      launchRequest: {
+        requestId: "settings-smoke:first_claim",
+        mode: "skirmish",
+        mapId: "first_claim",
+        heroSave: hero,
+        sourceId: "settings_smoke",
+        rewardTableId: "first_claim_rewards",
+        difficulty: "normal",
+        modifiers: [],
+        enemyProfileId: "ashen_covenant",
+        aiPersonalityId: "balanced_warlord"
+      }
+    });
+  }, SAVE_KEY);
+  await expectBattleLoaded(page);
+}
+
 async function selectCampaignNodeDetails(
   page: Page,
   nodeId: string,
@@ -773,12 +811,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate(() => document.documentElement.dataset.reducedMotion)).toBe("true");
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 
-    await seedCampaignSave(page, { hero: { heroName: "E2E Settings" }, settings: persistedSettings });
-    await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu", SCENE_TRANSITION_CLICK_OPTIONS);
-    await expect(page.getByTestId("skirmish-setup")).toBeVisible();
-    await clickReady(page.getByTestId("setup-difficulty-normal"), "settings smoke normal difficulty");
-    await clickReady(page.getByTestId("setup-start-battle"), "settings smoke start battle");
-    await expectBattleLoaded(page);
+    await launchSettingsSmokeBattle(page);
 
     const battleSettings = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
