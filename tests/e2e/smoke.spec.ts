@@ -773,14 +773,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate(() => document.documentElement.dataset.reducedMotion)).toBe("true");
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 
-    await clickReady(page.getByTestId("settings-back"), "settings smoke back before skirmish");
+    await seedCampaignSave(page, { hero: { heroName: "E2E Settings" }, settings: persistedSettings });
     await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu", SCENE_TRANSITION_CLICK_OPTIONS);
-    await page.waitForFunction(() =>
-      Boolean(document.querySelector('[data-testid="hero-creation"], [data-testid="skirmish-setup"]'))
-    );
-    if (await page.getByTestId("hero-creation").isVisible()) {
-      await createHero(page, "E2E Settings");
-    }
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();
     await clickReady(page.getByTestId("setup-difficulty-normal"), "settings smoke normal difficulty");
     await clickReady(page.getByTestId("setup-start-battle"), "settings smoke start battle");
