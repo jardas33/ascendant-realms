@@ -3,6 +3,13 @@ import { launchCinderfenWatch, seedPostCinderfenCrossingCampaign } from "./chapt
 import { clickReady, expectBattleLoaded } from "./shared-helpers";
 import { createHero, openFreshMainMenu } from "./shared-helpers";
 
+const SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
+
 function attachConsoleFailure(page: Page): void {
   page.on("console", (message) => {
     if (message.type() === "error") {
@@ -134,7 +141,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     attachConsoleFailure(page);
     await openFreshMainMenu(page);
 
-    await clickReady(page.getByTestId("menu-tutorial"), "enemy-pressure tutorial launch");
+    await clickReady(page.getByTestId("menu-tutorial"), "enemy-pressure tutorial launch", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     let pressureState = await readPressureState(page);
@@ -146,11 +153,11 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     await expect(page.getByTestId("battle-status")).not.toContainText("The Watch Captain tightens the road guard.");
 
     await openFreshMainMenu(page);
-    await clickReady(page.getByTestId("menu-skirmish"), "enemy-pressure skirmish menu");
+    await clickReady(page.getByTestId("menu-skirmish"), "enemy-pressure skirmish menu", SCENE_TRANSITION_CLICK_OPTIONS);
     await createHero(page, "Pressure Skirmish Guard");
     await clickReady(page.getByTestId("setup-map-cinderfen_watchpost"), "enemy-pressure Cinderfen Watchpost map");
     await clickReady(page.getByTestId("setup-difficulty-normal"), "enemy-pressure normal difficulty");
-    await clickReady(page.getByTestId("setup-start-battle"), "enemy-pressure skirmish start battle");
+    await clickReady(page.getByTestId("setup-start-battle"), "enemy-pressure skirmish start battle", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
 
     pressureState = await readPressureState(page);

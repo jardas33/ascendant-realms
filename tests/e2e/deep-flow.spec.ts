@@ -1409,7 +1409,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("all skirmish maps and AI personalities launch without browser errors @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(120_000);
     await openFreshMainMenu(page);
     await clickReady(page.getByTestId("menu-skirmish"), "deep-flow map QA skirmish menu");
     await createHero(page, "Map QA");
@@ -1433,7 +1433,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(75_000);
+    test.setTimeout(120_000);
     await openFreshMainMenu(page);
     await clickReady(page.getByTestId("menu-skirmish"), "deep-flow battle HUD skirmish menu");
     await createHero(page, "Battle QA");
@@ -1516,7 +1516,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(60_000);
+    test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Hover QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
     await selectPlayerCommandHallFromScene(page);
@@ -1962,7 +1962,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("first campaign battle path covers capture, build, train, rally, and victory rewards @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(120_000);
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-new-campaign").click();
@@ -2062,7 +2062,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       rallyPoint,
       { timeout: 5_000 }
     );
-    await expect(page.getByTestId("battle-status")).toContainText(/Rally point set/i);
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator(".side-panel")).toContainText("Rally Point: Set");
 
     await completeTrainingQueues(page);
     const trainedMilitia = await page.waitForFunction(

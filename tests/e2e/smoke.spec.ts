@@ -34,6 +34,12 @@ const RESULTS_NAV_CLICK_OPTIONS = {
   attempts: 1,
   normalClickTimeoutMs: 2_000
 } as const;
+const SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
 const CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS = {
   attempts: 1,
   domFallbackTimeoutMs: 2_000,
@@ -114,7 +120,9 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
     }
 
     if (targetStepId === "capture_crown_shrine") {
-      return window.__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine") ?? null;
+      const result = window.__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine") ?? null;
+      refresh();
+      return result;
     }
 
     if (targetStepId === "gather_crowns") {
@@ -394,23 +402,13 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
       throw new Error(`Command ${command.id} is missing a test id target.`);
     }
     const isTutorialNext = command.target.id === "tutorial-next";
-    try {
-      await clickReady(page.getByTestId(command.target.id), `tutorial command ${command.id}`, {
-        allowTargetGoneAfterClick: isTutorialNext ? true : undefined,
-        attempts: isTutorialNext ? 1 : undefined,
-        domFallbackTimeoutMs: isTutorialNext ? 5_000 : undefined,
-        normalClickTimeoutMs: isTutorialNext ? 750 : undefined,
-        timeoutMs: command.timeoutMs,
-        waitForLayoutBox: isTutorialNext ? false : undefined
-      });
-    } catch (error) {
-      if (!isTutorialNext) {
-        throw error;
-      }
-      console.warn(
-        `tutorial command ${command.id}: click target changed during advancement; checking expected tutorial state`
-      );
+    if (isTutorialNext) {
+      await clickTutorialNextAndWaitForState(page, command);
+      return null;
     }
+    await clickReady(page.getByTestId(command.target.id), `tutorial command ${command.id}`, {
+      timeoutMs: command.timeoutMs
+    });
     await expectTutorialCommandState(page, command);
     return null;
   }
@@ -438,6 +436,64 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
 
   const stepId = tutorialStepForCommand(command);
   return completeTutorialSceneStep(page, stepId);
+}
+
+async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCommand): Promise<void> {
+  const button = page.getByTestId("tutorial-next");
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    if (await isExpectedTutorialCommandState(page, command)) {
+      return;
+    }
+
+    try {
+      await expect(button, `tutorial command ${command.id}: next button visible`).toBeVisible({
+        timeout: command.timeoutMs ?? 10_000
+      });
+      await expect(button, `tutorial command ${command.id}: next button enabled`).toBeEnabled({
+        timeout: command.timeoutMs ?? 10_000
+      });
+      await button.click({ force: true, timeout: 2_000 });
+      await expectTutorialCommandState(page, command);
+      return;
+    } catch (error) {
+      lastError = error;
+      console.warn(`tutorial command ${command.id}: next click attempt ${attempt} did not reach expected state; retrying`);
+      await page.waitForTimeout(150);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(`tutorial command ${command.id}: did not reach expected state`);
+}
+
+async function isExpectedTutorialCommandState(page: Page, command: SemanticCommand): Promise<boolean> {
+  const expectedTitle = command.expected?.title;
+  const expectedProgress = command.expected?.progress;
+  const expectedText = command.expected?.text;
+  if (!expectedTitle && !expectedProgress && !expectedText) {
+    return true;
+  }
+
+  return page
+    .evaluate(
+      ({ title, progress, text }) => {
+        const objective = document.querySelector("[data-testid='tutorial-objective']")?.textContent ?? "";
+        const progressText = document.querySelector("[data-testid='tutorial-progress']")?.textContent ?? "";
+        const instruction = document.querySelector("[data-testid='tutorial-instruction']")?.textContent ?? "";
+        return (
+          (!title || objective.includes(title)) &&
+          (!progress || progressText.includes(progress)) &&
+          (!text || instruction.includes(text))
+        );
+      },
+      {
+        title: expectedTitle,
+        progress: expectedProgress,
+        text: expectedText
+      }
+    )
+    .catch(() => false);
 }
 
 async function expectTutorialCommandState(page: Page, command: SemanticCommand): Promise<void> {
@@ -533,7 +589,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(95_000);
     await openFreshMainMenu(page);
 
-    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial entry launch");
+    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial entry launch", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
@@ -604,10 +660,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(TUTORIAL_EXIT_SMOKE_TIMEOUT_MS);
     await openFreshMainMenu(page);
 
-    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial exit launch");
+    await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial exit launch", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await clickReady(page.getByTestId("tutorial-exit"), "smoke tutorial exit");
+    await clickReady(page.getByTestId("tutorial-exit"), "smoke tutorial exit", SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.getByTestId("main-menu")).toBeVisible();
     await expect(page.getByTestId("tutorial-complete-notice")).toHaveCount(0);
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();

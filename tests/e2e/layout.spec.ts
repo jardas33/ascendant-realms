@@ -30,6 +30,12 @@ const CINDERFEN_BATTLE_READABILITY_VIEWPORTS = [
 ];
 const HOSTED_LAYOUT_CORE_TIMEOUT_MS = 90_000;
 const HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS = 180_000;
+const SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
 
 async function expectNoHorizontalOverflow(page: Page, label: string): Promise<void> {
   const result = await page.evaluate(() => {
@@ -284,7 +290,7 @@ async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
   await openFreshMainMenu(page);
   await expectNoHorizontalOverflow(page, `${label} main menu`);
   await expectReachableButton(page, page.getByTestId("menu-tutorial"), `${label} Tutorial`);
-  await clickReady(page.getByTestId("menu-tutorial"), `${label} Tutorial launch`);
+  await clickReady(page.getByTestId("menu-tutorial"), `${label} Tutorial launch`, SCENE_TRANSITION_CLICK_OPTIONS);
   await expectBattleLoaded(page, `${label} tutorial battle`);
   await expect(page.getByTestId("tutorial-overlay")).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 15_000 });
@@ -494,11 +500,15 @@ async function expectCinderfenBattleHudReadable(
 }
 
 async function showVictoryResults(page: Page): Promise<void> {
-  await openFreshMainMenu(page);
+  await page.waitForFunction(() => Boolean(window.ascendantRealmsGame), undefined, { timeout: 10_000 });
   await page.evaluate(() => {
     const game = window.ascendantRealmsGame;
     if (!game) {
       throw new Error("Ascendant Realms game was not booted.");
+    }
+    const battleScene = game.scene.getScene("BattleScene");
+    if (battleScene?.scene.isActive()) {
+      game.scene.stop("BattleScene");
     }
     const rewardInstance = {
       instanceId: "layout:ashbound_censer:manual-audit",
@@ -590,6 +600,10 @@ async function showVictoryResults(page: Page): Promise<void> {
     });
   });
   await expect(page.locator(".results-panel")).toBeVisible();
+  await page.waitForFunction(() => {
+    const game = window.ascendantRealmsGame;
+    return Boolean(game?.scene.getScene("ResultsScene")?.scene.isActive() && document.querySelector(".results-panel"));
+  });
 }
 
 async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<void> {
@@ -787,7 +801,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   }
 
   for (const viewport of CINDERFEN_BATTLE_READABILITY_VIEWPORTS) {
-    test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
+    test(`Cinderfen Crossing battle HUD readability fits ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
       test.setTimeout(HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page);
@@ -799,7 +813,11 @@ test.describe("Ascendant Realms responsive layout", () => {
         mapName: "Cinderfen Causeway",
         objectiveTexts: ["Claim the Cinder Shrine", "Cinder Shrine Surge", "Clear Cinder Guardians", "Destroy Enemy Barracks"]
       });
+    });
 
+    test(`Cinderfen Watch battle HUD and results readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
+      test.setTimeout(HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS);
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostCinderfenCrossingCampaign(page);
       await continueSavedCampaign(page);
       await launchCinderfenWatch(page);
