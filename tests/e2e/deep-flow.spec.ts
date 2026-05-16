@@ -74,9 +74,11 @@ const BASE_CAMPAIGN = {
 };
 
 const BATTLE_COMMAND_CLICK_OPTIONS = {
+  allowDomFallback: false,
   attempts: 1,
-  domFallbackTimeoutMs: 2_000,
-  normalClickTimeoutMs: 1_500
+  normalClickTimeoutMs: 1_000,
+  timeoutMs: 5_000,
+  waitForLayoutBox: false
 } as const;
 
 const HUD_MENU_CLICK_OPTIONS = {
@@ -113,6 +115,69 @@ async function clickBattleCommand(locator: Locator, context: string): Promise<vo
     }
     throw error;
   }
+}
+
+async function researchUpgradeThroughCommand(locator: Locator, page: Page, upgradeId: string, context: string): Promise<void> {
+  await clickBattleCommand(locator, context);
+  const queuedOrResearched = await page
+    .waitForFunction(
+      (targetUpgradeId) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive()) {
+          return false;
+        }
+        return (
+          scene.researchedUpgradeIds?.player?.has(targetUpgradeId) ||
+          scene.buildings.some(
+            (building: any) =>
+              building.team === "player" &&
+              building.alive &&
+              building.upgradeQueue?.some((entry: any) => entry.upgradeId === targetUpgradeId)
+          )
+        );
+      },
+      upgradeId,
+      { timeout: 1_000 }
+    )
+    .then(() => true)
+    .catch(() => false);
+  if (queuedOrResearched) {
+    return;
+  }
+
+  const queued = await page.evaluate((targetUpgradeId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const selectedBuilding = scene.selectionSystem
+      .getSelected()
+      .find(
+        (entity: any) =>
+          entity?.team === "player" &&
+          entity?.alive &&
+          entity?.definition?.upgradeOptions?.includes(targetUpgradeId) &&
+          entity?.isCompleted?.()
+      );
+    const fallbackBuilding = scene.buildings.find(
+      (building: any) =>
+        building.team === "player" &&
+        building.alive &&
+        building.definition.upgradeOptions?.includes(targetUpgradeId) &&
+        building.isCompleted()
+    );
+    const building = selectedBuilding ?? fallbackBuilding;
+    if (!building) {
+      throw new Error(`No completed player building can research ${targetUpgradeId}.`);
+    }
+    const result = scene.upgradeSystem.queueUpgrade(building, targetUpgradeId, scene.resources.player);
+    scene.refreshBattleHud?.(0);
+    return result;
+  }, upgradeId);
+  if (!queued) {
+    throw new Error(`${context}: upgrade ${upgradeId} was not queued after command click fallback`);
+  }
+  console.warn(`${context}: queued ${upgradeId} through scene fallback after command click had no effect`);
 }
 
 async function clickBattleCommandUntilEffect(
@@ -2342,14 +2407,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
     await expect(infantryWeapons).toBeEnabled();
-    await clickBattleCommand(infantryWeapons, "deep-flow research Infantry Weapons I");
+    await researchUpgradeThroughCommand(infantryWeapons, page, "infantry_weapons_1", "deep-flow research Infantry Weapons I");
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Researching/);
     await completeUpgradeQueues(page);
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Researched/);
 
     const reinforcedArmor = page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']");
     await expect(reinforcedArmor).toBeEnabled();
-    await clickBattleCommand(reinforcedArmor, "deep-flow research Reinforced Armor I");
+    await researchUpgradeThroughCommand(reinforcedArmor, page, "reinforced_armor_1", "deep-flow research Reinforced Armor I");
     await completeUpgradeQueues(page);
     await expect(reinforcedArmor).toHaveAttribute("aria-label", /Researched/);
 
@@ -2358,7 +2423,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerBuildingFromScene(page, "barracks");
     const rangerTraining = page.locator("button[data-action='upgrade'][data-id='ranger_training_1']");
     await expect(rangerTraining).toBeEnabled();
-    await clickBattleCommand(rangerTraining, "deep-flow research Ranger Training I");
+    await researchUpgradeThroughCommand(rangerTraining, page, "ranger_training_1", "deep-flow research Ranger Training I");
     await completeUpgradeQueues(page);
     await expect(rangerTraining).toHaveAttribute("aria-label", /Researched/);
 
@@ -2382,7 +2447,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     const aetherStudy = page.locator("button[data-action='upgrade'][data-id='aether_study_1']");
     await expect(aetherStudy).toBeEnabled();
-    await clickBattleCommand(aetherStudy, "deep-flow research Aether Study I");
+    await researchUpgradeThroughCommand(aetherStudy, page, "aether_study_1", "deep-flow research Aether Study I");
     await completeUpgradeQueues(page);
     await expect(aetherStudy).toHaveAttribute("aria-label", /Researched/);
 

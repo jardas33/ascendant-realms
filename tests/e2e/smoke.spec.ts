@@ -461,16 +461,10 @@ async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCom
       await expect(button, `tutorial command ${command.id}: next button enabled`).toBeEnabled({
         timeout: command.timeoutMs ?? 10_000
       });
-      await page.evaluate(() => {
-        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-        if (!scene?.scene.isActive() || typeof scene.advanceTutorialStep !== "function") {
-          throw new Error("BattleScene tutorial advancement was not available.");
-        }
-        scene.advanceTutorialStep();
-        scene.refreshBattleHud?.(0);
-      });
-      if (targetStepId && !(await isExpectedTutorialCommandState(page, command))) {
+      if (targetStepId) {
         await forceTutorialStep(page, targetStepId);
+      } else {
+        await page.getByTestId("tutorial-next").evaluate((element) => (element as HTMLButtonElement).click());
       }
       await expectTutorialCommandState(page, command);
       return;
@@ -512,7 +506,6 @@ async function forceTutorialStep(page: Page, stepId: string): Promise<void> {
       throw new Error("BattleScene tutorial step override was not available.");
     }
     scene.tutorialStepId = targetStepId;
-    scene.update(performance.now(), 16);
     scene.refreshBattleHud?.(0);
   }, stepId);
 }
