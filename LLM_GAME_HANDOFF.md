@@ -1,12 +1,94 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-15 v0.11.12 hosted release interaction determinism fix
+Last updated: 2026-05-16 v0.11.12 hosted release matrix green closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.11.12 Hosted Release Matrix Green Closeout - 2026-05-16
+
+Status: green. The final remote truth is GitHub Actions `CI Release Matrix Dry Run #39` on commit `dadb241` (`Stabilize remaining hosted smoke and battle checks`). The workflow run id is `25972870633`; it was manually triggered, completed successfully, and took 11m 37s.
+
+Final GitHub run #39 evidence:
+
+- `Fast confidence`: success in 5m 20s.
+- `Release simulator`: success in 14s.
+- `Release matrix (deep-meta)`: success.
+- `Release matrix (deep-battle)`: success.
+- `Release matrix (deep-campaign-pressure)`: success.
+- `Release matrix (layout-core)`: success.
+- `Release matrix (layout-cinderfen)`: success.
+- `Release matrix (smoke)`: success.
+- `Full release e2e`: skipped by manual input, expected.
+- `Optional visual QA`: skipped by manual input, expected.
+- Playwright failure-artifact upload steps were skipped on green jobs. Earlier artifact-quota failures were not app/test failures; the workflow must keep failure-artifact upload non-blocking.
+
+Scope stayed test-harness/CI-only. No gameplay, content, saves, save format, tutorial rewards/persistence, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength changed.
+
+Last-mile failure ladder after the initial v0.11.12 checkpoint:
+
+- Run #20/#25: Fast confidence regressed on `new campaign flow opens the campaign map and blocks locked nodes`, especially the locked `cinderfen_aftermath` node. The stable fix was to stop using Playwright actionability clicks as the proof for locked nodes and use deterministic DOM node selection plus details/disabled assertions.
+- Run #22/#24: the hosted matrix exposed scattered long-run failures after the first interaction hardening: transient battle-status copy, tutorial/skirmish launch clicks, layout side-panel measurement, tutorial smoke advance, and command buttons.
+- Run #27: remaining failures narrowed to deep-battle command/actionability, layout-core timeouts, and smoke tutorial entry.
+- Run #28: Fast confidence failed only because GitHub Actions artifact storage quota blocked `actions/upload-artifact@v4`. That is a billing/storage artifact-upload issue, not a Playwright failure. `.github/workflows/ci.yml` was updated so failure-artifact upload cannot fail the job.
+- Run #30: the remaining functional failures were Fast confidence settings smoke and hosted smoke tutorial entry.
+- Run #32/#34: deep-campaign-pressure remained unstable around Mystic Lodge / Aether Study research command timing, while hosted smoke still timed out in tutorial semantic advancement.
+- Run #35: Fast confidence still failed in `settings screen persists accessibility options` because the test rebooted through `seedCampaignSave` after saving settings, and hosted navigation could interrupt itself before the battle loaded.
+- Run #37: only Fast confidence and deep-battle remained. Fast confidence failed at `expectBattleLoaded` inside the settings test after the seeded reboot. Deep-battle failed the first `all skirmish maps and AI personalities launch without browser errors` test because it spent the 120s budget launching three maps through full setup/menu-return UI loops.
+- Run #39: final green after `dadb241`.
+
+Commit ladder that turned the hosted matrix green:
+
+- `0fe68da` `Checkpoint v0.11.12 hosted release interaction determinism fix`: initial broad hosted interaction/readiness hardening.
+- `49f88a8` `Fix fast confidence locked campaign node clicks`: narrowed locked campaign node probing.
+- `155fd81` `Stabilize hosted release matrix interactions`: first post-checkpoint hosted interaction fixes.
+- `b4787ed` `Stabilize hosted release matrix tests`: additional smoke/layout/deep-flow hosted fixes.
+- `768c527` `Stabilize fast confidence locked node probe`: locked-node checks became deterministic and stopped depending on flaky click actionability.
+- `512ef8d` `Stabilize remaining hosted release shards`: reduced remaining deep/layout/smoke shard flakes.
+- `a24e13d` `Avoid CI failure on artifact quota exhaustion`: made artifact upload quota noise non-blocking.
+- `78c3e4c` `Stabilize hosted smoke tutorial flow`: tightened hosted tutorial semantic command flow.
+- `feab5b4` `Stabilize hosted smoke and campaign command flows`: stabilized smoke/campaign command paths.
+- `4cd5dfc` `Stabilize remaining hosted smoke and campaign shards`: tightened final smoke/deep-campaign paths.
+- `7c436f6` `Stabilize fast settings smoke path`: first pass on settings smoke, but still used seeded reboot and later failed on hosted navigation.
+- `dadb241` `Stabilize remaining hosted smoke and battle checks`: final green commit.
+
+Final code facts to preserve:
+
+- `tests/e2e/smoke.spec.ts` has `launchSettingsSmokeBattle(page)`. The settings smoke test now saves/reopens settings, verifies persisted settings and document datasets, then launches `BattleScene` directly from the already booted app using the stored save/settings. This avoids a mid-test `seedCampaignSave` app-root reboot while preserving the in-battle assertions for floating text, fog override, reduced motion, colorblind minimap palette, and minimap colors.
+- `tests/e2e/deep-flow.spec.ts` has `launchSkirmishMapFromScene(page, mapId, heroName)`. The deep-battle map/personality test now launches `first_claim`, `broken_ford`, and `ashen_outpost` directly through `BattleScene` with `aiPersonalityId: "hexfire_cult"` and verifies the active map id, launch request map id, difficulty, personality, enemy units, HUD, and battle status. This keeps coverage while removing the hosted-fragile setup/menu-return loop.
+- Deep battle command buttons still use the direct DOM command fallback only after the normal probe fails and postcondition checks still prove the command effect.
+- Tutorial smoke semantic advancement remains scene-state/postcondition driven; do not turn it back into long chains of raw `tutorial-next` clicks.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken the `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, or settings runtime-application assertions.
+- Hosted release groups still run through `playwright.hosted-release.config.ts` and `npm run preview:hosted` on production preview at `127.0.0.1:5173`. Local full release lanes remain separate.
+
+Final local verification immediately before `dadb241`:
+
+```text
+npm run test:e2e:smoke:fast
+PASS: 6/6 in 1.9m.
+
+npm run test:e2e:release:hosted:smoke
+PASS: 12/12 in 2.5m.
+
+npm run test:e2e:release:hosted:deep-battle
+PASS: 11/11 in 3.1m.
+
+Targeted settings smoke repro
+PASS: 1/1 in 29.7s.
+
+Targeted deep-battle map/personality repro
+PASS: 1/1 in 25.3s.
+
+git diff --check
+PASS.
+```
+
+Future LLM note: if this lane regresses, start from the exact failed test and helper context. Do not broaden into gameplay/content/runtime changes. The successful pattern was to keep assertions, cut hosted-fragile navigation/menu loops only where they were not the behavior under test, and assert deterministic scene/runtime state after direct test harness setup.
 
 ## Current v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
 
@@ -64,7 +146,7 @@ Important continuation notes:
 - Do not use DOM fallback for canvas/world clicks.
 - Do not weaken the `Moving` assertion, minimap assertion, no-save/no-reward tutorial assertions, or side-panel reachability assertions.
 - Hosted release still uses production preview via `playwright.hosted-release.config.ts`; local full release remains unchanged.
-- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input after this checkpoint.
+- Completed follow-up: GitHub Actions `CI Release Matrix Dry Run #39` on commit `dadb241` is green. The 2026-05-16 closeout section above is the authoritative current status.
 
 ## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
 
