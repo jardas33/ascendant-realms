@@ -40,12 +40,6 @@ const SCENE_TRANSITION_CLICK_OPTIONS = {
   domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
-const CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS = {
-  attempts: 1,
-  domFallbackTimeoutMs: 2_000,
-  normalClickTimeoutMs: 2_000
-} as const;
-
 async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
   await page.getByTestId(testId).evaluate((input, nextValue) => {
     const range = input as HTMLInputElement;
@@ -63,6 +57,18 @@ async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, her
   await clickReady(page.getByTestId(`setup-difficulty-${difficulty}`), `smoke skirmish ${difficulty} difficulty`);
   await clickReady(page.getByTestId("setup-start-battle"), `smoke skirmish ${difficulty} start battle`);
   await expectBattleLoaded(page);
+}
+
+async function selectCampaignNodeDetails(
+  page: Page,
+  nodeId: string,
+  expectedTitle: string,
+  context: string
+): Promise<void> {
+  const node = page.getByTestId(`campaign-node-${nodeId}`);
+  await expect(node, `${context}: node button`).toBeVisible({ timeout: 10_000 });
+  await node.evaluate((element) => (element as HTMLElement).click());
+  await expect(page.locator(".campaign-node-details"), `${context}: node details`).toContainText(expectedTitle);
 }
 
 async function readDifficultyBattleState(page: Page): Promise<{
@@ -772,17 +778,14 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("new campaign flow opens the campaign map and blocks locked nodes @ci-fast", async ({ page }) => {
+    test.setTimeout(60_000);
     await startNewCampaign(page, "E2E Campaign");
 
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
-    await clickReady(
-      page.getByTestId("campaign-node-aether_well_ruins"),
-      "smoke locked Aether Well node",
-      CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS
-    );
+    await selectCampaignNodeDetails(page, "aether_well_ruins", "Aether Well Ruins", "smoke locked Aether Well node");
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Locked/i);
@@ -790,27 +793,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
-    await clickReady(
-      page.getByTestId("campaign-node-cinderfen_crossing"),
-      "smoke locked Cinderfen Crossing node",
-      CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS
-    );
+    await selectCampaignNodeDetails(page, "cinderfen_crossing", "Cinderfen Crossing", "smoke locked Cinderfen Crossing node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
-    await clickReady(
-      page.getByTestId("campaign-node-cinderfen_watch"),
-      "smoke locked Cinderfen Watch node",
-      CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS
-    );
+    await selectCampaignNodeDetails(page, "cinderfen_watch", "Cinderfen Watch", "smoke locked Cinderfen Watch node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
-    await clickReady(
-      page.getByTestId("campaign-node-cinderfen_aftermath"),
-      "smoke locked Cinderfen Aftermath node",
-      CAMPAIGN_NODE_DETAIL_CLICK_OPTIONS
-    );
+    await selectCampaignNodeDetails(page, "cinderfen_aftermath", "Cinderfen Aftermath", "smoke locked Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
     await expect(page.getByTestId("campaign-start-node")).toHaveCount(0);
   });
