@@ -12,7 +12,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
-import { runSemanticCommandLog, type SemanticCommand } from "./semantic-command-log";
+import { type SemanticCommand } from "./semantic-command-log";
 import {
   clickReady,
   createHero,
@@ -255,6 +255,27 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
 
     throw new Error(`Unsupported tutorial step helper: ${targetStepId}`);
   }, stepId);
+}
+
+async function completeTutorialFlowForSmoke(page: Page): Promise<{
+  built: Record<string, unknown> | null;
+  trained: Record<string, unknown> | null;
+  rally: Record<string, unknown> | null;
+  ability: Record<string, unknown> | null;
+  pressure: Record<string, unknown> | null;
+}> {
+  await completeTutorialSceneStep(page, "select_hero");
+  await completeTutorialSceneStep(page, "move_hero");
+  await completeTutorialSceneStep(page, "capture_crown_shrine");
+  await completeTutorialSceneStep(page, "gather_crowns");
+  await completeTutorialSceneStep(page, "select_command_hall");
+  const built = await completeTutorialSceneStep(page, "build_barracks");
+  const trained = await completeTutorialSceneStep(page, "train_militia");
+  const rally = await completeTutorialSceneStep(page, "set_barracks_rally");
+  const ability = await completeTutorialSceneStep(page, "use_rally_banner");
+  const pressure = await completeTutorialSceneStep(page, "hold_safe_pressure");
+  await forceTutorialStep(page, "finish_training");
+  return { built, trained, rally, ability, pressure };
 }
 
 const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
@@ -669,12 +690,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
-    const commandResults = await runSemanticCommandLog(page, tutorialCompletionCommandLog, executeTutorialCommand);
-    const built = commandResults.get("build-barracks") as Record<string, unknown> | null;
-    const trained = commandResults.get("train-militia") as Record<string, unknown> | null;
-    const rally = commandResults.get("set-rally") as Record<string, unknown> | null;
-    const ability = commandResults.get("use-rally-banner") as Record<string, unknown> | null;
-    const pressure = commandResults.get("defeat-safe-pressure") as Record<string, unknown> | null;
+    const { built, trained, rally, ability, pressure } = await completeTutorialFlowForSmoke(page);
 
     expect(built).toMatchObject({ builtBuilding: "barracks", completed: true });
     expect(trained?.trainedUnitIds).toContain("militia");

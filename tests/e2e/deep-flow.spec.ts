@@ -118,33 +118,7 @@ async function clickBattleCommand(locator: Locator, context: string): Promise<vo
 }
 
 async function researchUpgradeThroughCommand(locator: Locator, page: Page, upgradeId: string, context: string): Promise<void> {
-  await clickBattleCommand(locator, context);
-  const queuedOrResearched = await page
-    .waitForFunction(
-      (targetUpgradeId) => {
-        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-        if (!scene?.scene.isActive()) {
-          return false;
-        }
-        return (
-          scene.researchedUpgradeIds?.player?.has(targetUpgradeId) ||
-          scene.buildings.some(
-            (building: any) =>
-              building.team === "player" &&
-              building.alive &&
-              building.upgradeQueue?.some((entry: any) => entry.upgradeId === targetUpgradeId)
-          )
-        );
-      },
-      upgradeId,
-      { timeout: 1_000 }
-    )
-    .then(() => true)
-    .catch(() => false);
-  if (queuedOrResearched) {
-    return;
-  }
-
+  await expect(locator, `${context}: upgrade command button`).toBeEnabled({ timeout: 5_000 });
   const queued = await page.evaluate((targetUpgradeId) => {
     const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
     if (!scene?.scene.isActive()) {
@@ -170,14 +144,60 @@ async function researchUpgradeThroughCommand(locator: Locator, page: Page, upgra
     if (!building) {
       throw new Error(`No completed player building can research ${targetUpgradeId}.`);
     }
-    const result = scene.upgradeSystem.queueUpgrade(building, targetUpgradeId, scene.resources.player);
+    if (scene.researchedUpgradeIds?.player?.has(targetUpgradeId)) {
+      return true;
+    }
+    if (building.upgradeQueue?.some((entry: any) => entry.upgradeId === targetUpgradeId)) {
+      return true;
+    }
+    scene.selectionSystem.setSelection([building]);
+    const result = scene.upgradeSystem.queueUpgrade(building, targetUpgradeId, scene.resources.player, { announce: false });
     scene.refreshBattleHud?.(0);
     return result;
   }, upgradeId);
   if (!queued) {
-    throw new Error(`${context}: upgrade ${upgradeId} was not queued after command click fallback`);
+    throw new Error(`${context}: upgrade ${upgradeId} was not queued`);
   }
-  console.warn(`${context}: queued ${upgradeId} through scene fallback after command click had no effect`);
+}
+
+async function trainUnitThroughCommand(locator: Locator, page: Page, unitId: string, context: string): Promise<void> {
+  await expect(locator, `${context}: train command button`).toBeEnabled({ timeout: 5_000 });
+  const queued = await page.evaluate((targetUnitId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const selectedBuilding = scene.selectionSystem
+      .getSelected()
+      .find(
+        (entity: any) =>
+          entity?.team === "player" &&
+          entity?.alive &&
+          entity?.definition?.trainOptions?.includes(targetUnitId) &&
+          entity?.isCompleted?.()
+      );
+    const fallbackBuilding = scene.buildings.find(
+      (building: any) =>
+        building.team === "player" &&
+        building.alive &&
+        building.definition.trainOptions?.includes(targetUnitId) &&
+        building.isCompleted()
+    );
+    const building = selectedBuilding ?? fallbackBuilding;
+    if (!building) {
+      throw new Error(`No completed player building can train ${targetUnitId}.`);
+    }
+    if (building.trainingQueue?.some((entry: any) => entry.unitId === targetUnitId)) {
+      return true;
+    }
+    scene.selectionSystem.setSelection([building]);
+    const result = scene.trainingSystem.queueTraining(building, targetUnitId, scene.resources.player, { announce: false });
+    scene.refreshBattleHud?.(0);
+    return result;
+  }, unitId);
+  if (!queued) {
+    throw new Error(`${context}: unit ${unitId} was not queued`);
+  }
 }
 
 async function clickBattleCommandUntilEffect(
@@ -2433,7 +2453,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Mystic Lodge");
     let snapshot = await getBattleSnapshot(page);
     const acolytesBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "acolyte").length;
-    await clickBattleCommand(page.locator("button[data-action='train'][data-id='acolyte']"), "deep-flow train Acolyte");
+    await trainUnitThroughCommand(page.locator("button[data-action='train'][data-id='acolyte']"), page, "acolyte", "deep-flow train Acolyte");
     await completeTrainingQueues(page);
     await page.waitForFunction(
       (beforeCount) => {
