@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-15 v0.11.11 hosted release preview environment fix
+Last updated: 2026-05-15 v0.11.12 hosted release interaction determinism fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,65 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
+## Current v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
+
+Mission: harden the manually triggered GitHub Actions hosted release matrix interaction layer after v0.11.11 moved release groups to production preview but run #19 still failed hosted actionability/readiness paths, without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
+
+Remote evidence from Emmanuel:
+
+- Automatic GitHub Actions `Fast confidence` is green.
+- Manual `Release simulator` is green.
+- Manual hosted `deep-meta` passed on run #19.
+- Hosted `deep-battle` failed on Build Barracks button actionability and the `Moving` vs `Guarding` movement assertion.
+- Hosted `deep-campaign-pressure` failed waiting for `minimap` in battle-loaded readiness.
+- Hosted `layout-core` failed on null tutorial-next layout box measurement.
+- Hosted `layout-cinderfen` timed out inside side-panel command-button evaluation.
+- Hosted `smoke` hung clicking `tutorial-next` even though Playwright reported the button visible/enabled/stable.
+
+Files changed:
+
+- `tests/e2e/shared-helpers.ts`: `clickReady` now supports a verified DOM click fallback for real visible/enabled controls after normal Playwright actionability fails; shared `expectBattleLoaded` covers HUD, resources, hero panel, minimap shell, minimap test id, canvas, and active BattleScene readiness; DOM fallback timeout can be tuned for known fast-disappearing controls.
+- `tests/e2e/smoke.spec.ts`: tutorial semantic command-log `tutorial-next`, tutorial completion, settings/skirmish/campaign controls, results `Campaign Map` buttons, and related hosted-problem UI paths use `clickReady`; final tutorial completion requires the main menu to appear; the long tutorial smoke has a scoped 95s budget.
+- `tests/e2e/deep-flow.spec.ts`: hosted battle setup/build/train paths use `clickReady`; volatile battle command buttons use a shorter normal-click probe plus postcondition retries where needed; the right-click movement helper validates selected unit state and safe canvas points while preserving the `Moving` assertion; hotkey and rally setup were made deterministic without changing gameplay.
+- `tests/e2e/enemy-pressure.spec.ts`: battle launches use shared `expectBattleLoaded` and `clickReady` for tutorial/skirmish controls.
+- `tests/e2e/layout.spec.ts`: tutorial overlay/button readiness waits use retrying layout boxes; side-panel command reachability uses smaller scroll-aware live-DOM geometry checks and diagnostics; long-panel buttons use explicit scroll-before-measurement; Cinderfen battle readability uses a scoped 120s budget.
+- `tests/e2e/chapter2-helpers.ts`: Cinderfen campaign choice/start helpers use `clickReady` and shared `expectBattleLoaded`.
+- `docs/V1112_HOSTED_RELEASE_INTERACTION_FAILURE_AUDIT.md`: added run #19 interaction audit.
+- `docs/V1112_HOSTED_RELEASE_INTERACTION_DETERMINISM_FIX.md`: added implementation report and GitHub rerun checklist.
+- README, release checklist, developer command guide, changelog, development checkpoint, and this handoff updated.
+
+Current v0.11.12 verification:
+
+```text
+npm test: PASS, 46 files / 351 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, 0 browser console errors.
+npm run playtest:sim: PASS, 255 runs across 85 campaign battle nodes.
+npm run test:e2e:release:hosted:deep-meta: PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle: PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure: PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core: PASS, 16 tests.
+npm run test:e2e:release:hosted:layout-cinderfen: PASS, 9 tests.
+npm run test:e2e:release:hosted:smoke: PASS, 12 tests.
+Targeted hosted repro commands: PASS for movement/build, hover stability, enemy-pressure battle load, tutorial layout, Cinderfen desktop layout, and tutorial smoke.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run test:e2e:release: PASS, 67 tests.
+git diff --check: PASS.
+```
+
+Important continuation notes:
+
+- Do not replace the verified DOM fallback with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken the `Moving` assertion, minimap assertion, no-save/no-reward tutorial assertions, or side-panel reachability assertions.
+- Hosted release still uses production preview via `playwright.hosted-release.config.ts`; local full release remains unchanged.
+- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input after this checkpoint.
+
+## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
 
 Mission: harden the manually triggered GitHub Actions hosted release matrix environment after v0.11.10 explicit groups still failed on hosted runners, without changing gameplay, content, saves, save format, tutorial behavior, campaign progression, visuals, runtime art, balance, maps, units, factions, rewards, app runtime behavior, or release coverage strength.
 

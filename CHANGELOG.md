@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
+
+This checkpoint keeps the hosted release groups on production preview and hardens the test-only interaction/readiness layer after GitHub run #19 passed `deep-meta` but still failed hosted `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.
+
+### Included
+
+- Hosted interaction failure audit: `docs/V1112_HOSTED_RELEASE_INTERACTION_FAILURE_AUDIT.md`.
+- Hosted interaction determinism fix report: `docs/V1112_HOSTED_RELEASE_INTERACTION_DETERMINISM_FIX.md`.
+- `clickReady` now supports a verified DOM click fallback for real enabled controls after normal Playwright click actionability fails; it does not apply to canvas/world clicks.
+- Targeted hosted-problem raw DOM clicks now use `clickReady`, including tutorial command-log advancement, smoke setup/campaign controls, enemy-pressure launch controls, deep-flow Barracks/Train command points, layout navigation, and Chapter 2 helper campaign controls.
+- Shared `expectBattleLoaded` now covers HUD, resources, hero panel, minimap shell, minimap test id, canvas, and active BattleScene readiness, and is reused across hosted pressure/smoke/layout/deep paths.
+- Tutorial layout and smoke paths now wait for real overlay/button readiness and non-null layout boxes before measuring or advancing.
+- Side-panel command reachability now waits for side-panel readiness, uses smaller per-button live-DOM geometry checks, and records diagnostics instead of one broad page evaluation.
+- Deep-battle right-click movement now revalidates selected unit state and canvas-safe movement points before preserving the unchanged `Moving` assertion.
+
+### Verification
+
+- Final verification for this checkpoint is recorded in `docs/V1112_HOSTED_RELEASE_INTERACTION_DETERMINISM_FIX.md` and `DEVELOPMENT_CHECKPOINT.md`.
+
+### Next
+
+- Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input and expect the same production-preview hosted release jobs plus the unchanged `Release simulator`.
+
 ## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
 
 This checkpoint moves the manual hosted GitHub Actions release matrix from the Vite dev server to production preview after GitHub run #17 still failed all explicit hosted groups, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.

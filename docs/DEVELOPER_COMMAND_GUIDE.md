@@ -1,6 +1,6 @@
 # Developer Command Guide
 
-Date: 2026-05-11
+Date: 2026-05-15
 
 Use this guide to pick the smallest useful verification gate during implementation while keeping the full release gate intact for checkpoints. Run commands from the project root:
 
@@ -131,7 +131,7 @@ npm run test:e2e:release:hosted:smoke
 
 | Use when | Expected runtime | Protects | Common failure meaning | Do not skip |
 | --- | --- | --- | --- | --- |
-| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Fast smoke about 2-3m locally; full smoke about 5m; full release about 29-36m; local 3-way shards about 14 to 17m and 6m recently; hosted explicit groups are smaller CI jobs but add local overhead when run sequentially | Full browser behavior suite, hosted-group distributability, smoke/deep/layout/pressure coverage, production-preview release environment | Real browser regression, hosted grouping issue, preview-server issue, timeout or stale-process issue | Full release before major freezes; hosted groups are GitHub CI ergonomics and do not delete the one-command lane |
+| Final gates, release freezes, broad gameplay/content changes, or CI lane validation | Fast smoke about 2-3m locally; full smoke about 5m; full release about 29-36m; local 3-way shards about 14 to 17m and 6m recently; hosted explicit groups are smaller CI jobs but add local overhead when run sequentially | Full browser behavior suite, hosted-group distributability, smoke/deep/layout/pressure coverage, production-preview release environment, hosted interaction determinism | Real browser regression, hosted grouping issue, preview-server issue, actionability/layout readiness issue, timeout, or stale-process issue | Full release before major freezes; hosted groups are GitHub CI ergonomics and do not delete the one-command lane |
 
 Run `npm run build` before running hosted release groups locally; CI release matrix jobs already do this before starting production preview.
 
@@ -258,6 +258,8 @@ v0.11.9 hosted release note: the manual GitHub `run_release_matrix` input briefl
 v0.11.10 hosted release note: GitHub run #15 showed that the native 6-way split was still unstable across hosted runners. The manual GitHub `run_release_matrix` input now uses explicit hosted groups: `deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`. Local full release, local 2-way shards, and local 3-way shards remain available for developer and final-gate confidence.
 
 v0.11.11 hosted release note: GitHub run #17 showed the explicit groups were still unstable when served by Vite dev server. Hosted release groups now use `playwright.hosted-release.config.ts`, `npm run preview:hosted`, production preview on `127.0.0.1:5173`, and hosted-only Chromium stability args. The workflow already installs Chromium with Linux dependencies via `npx playwright install --with-deps chromium`.
+
+v0.11.12 hosted release note: GitHub run #19 showed production preview fixed the broad server instability but left interaction determinism failures. The hosted suite now uses a verified DOM click fallback only after normal Playwright click actionability fails on a real visible/enabled control, shared battle-loaded waits that include `minimap`, retrying tutorial/layout boxes, scroll-aware side-panel geometry checks, and safer canvas movement points while preserving the original assertions.
 
 ## Simulator
 

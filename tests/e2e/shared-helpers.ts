@@ -16,6 +16,16 @@ type SeedCampaignOptions = {
   statistics?: Record<string, unknown>;
 };
 
+type ClickReadyOptions = {
+  allowDomFallback?: boolean;
+  allowTargetGoneAfterClick?: boolean;
+  attempts?: number;
+  domFallbackTimeoutMs?: number;
+  normalClickTimeoutMs?: number;
+  timeoutMs?: number;
+  waitForLayoutBox?: boolean;
+};
+
 const EMPTY_RESOURCES: CampaignResources = {
   crowns: 0,
   stone: 0,
@@ -30,6 +40,7 @@ const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
 const MAIN_MENU_FINAL_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_ATTEMPTS = 2;
+const CLICK_READY_LAYOUT_BOX_ATTEMPTS = 20;
 const STORAGE_SEED_WINDOW_NAME_PREFIX = "__ASCENDANT_REALMS_E2E_SAVE_SEED__:";
 
 const BASE_HERO = {
@@ -102,10 +113,167 @@ function isTransientClickError(error: unknown): boolean {
     message.includes("timeout") ||
     message.includes("not stable") ||
     message.includes("Element is not stable") ||
+    message.includes("layout box") ||
     message.includes("intercepts pointer events") ||
     message.includes("frame was detached") ||
     message.includes("Frame was detached")
   );
+}
+
+async function waitForLocatorLayoutBox(
+  locator: Locator,
+  context: string,
+  timeoutMs = CLICK_READY_TIMEOUT_MS
+): Promise<void> {
+  const startedAt = Date.now();
+  let box = await locator.boundingBox().catch(() => null);
+  for (let attempt = 1; !box && attempt <= CLICK_READY_LAYOUT_BOX_ATTEMPTS && Date.now() - startedAt < timeoutMs; attempt += 1) {
+    await locator.page().waitForTimeout(100);
+    box = await locator.boundingBox().catch(() => null);
+  }
+  if (!box) {
+    throw new Error(`${context}: target did not produce a layout box before click`);
+  }
+}
+
+type DomClickVerification = {
+  ok: boolean;
+  reason: string;
+  tag: string;
+  text: string;
+  width: number;
+  height: number;
+};
+
+function isRetryableDomClickVerification(verification: DomClickVerification): boolean {
+  return (
+    verification.reason === "no matched elements" ||
+    verification.reason === "not visibly laid out" ||
+    verification.reason.startsWith("center covered by")
+  );
+}
+
+async function verifiedDomClick(
+  locator: Locator,
+  context: string,
+  timeoutMs = CLICK_READY_TIMEOUT_MS
+): Promise<void> {
+  const startedAt = Date.now();
+  let lastError: unknown;
+  let lastVerification: DomClickVerification | undefined;
+
+  for (let attempt = 1; attempt <= CLICK_READY_LAYOUT_BOX_ATTEMPTS && Date.now() - startedAt < timeoutMs; attempt += 1) {
+    try {
+      const verification = await locator.evaluateAll((elements): DomClickVerification => {
+        let firstFailure: DomClickVerification | undefined;
+
+        for (const element of elements) {
+          const control = element as HTMLElement;
+          const style = window.getComputedStyle(control);
+          const rect = control.getBoundingClientRect();
+          const tag = control.tagName.toLowerCase();
+          const role = control.getAttribute("role") ?? "";
+          const isControl =
+            tag === "button" ||
+            tag === "a" ||
+            tag === "input" ||
+            tag === "select" ||
+            tag === "textarea" ||
+            role === "button";
+          const disabled =
+            (control instanceof HTMLButtonElement ||
+              control instanceof HTMLInputElement ||
+              control instanceof HTMLSelectElement ||
+              control instanceof HTMLTextAreaElement) &&
+            control.disabled;
+          const ariaDisabled = control.getAttribute("aria-disabled") === "true";
+          const visible =
+            style.display !== "none" &&
+            style.visibility !== "hidden" &&
+            Number(style.opacity || "1") > 0 &&
+            rect.width > 0 &&
+            rect.height > 0;
+          const text = (control.textContent ?? control.getAttribute("aria-label") ?? "")
+            .trim()
+            .replace(/\s+/g, " ")
+            .slice(0, 80);
+
+          const failure = (reason: string): DomClickVerification => ({
+            ok: false,
+            reason,
+            tag,
+            text,
+            width: rect.width,
+            height: rect.height
+          });
+
+          if (!isControl) {
+            firstFailure ??= failure(`not a DOM control (${tag})`);
+            continue;
+          }
+          if (!visible) {
+            firstFailure ??= failure("not visibly laid out");
+            continue;
+          }
+          if (disabled || ariaDisabled) {
+            firstFailure ??= failure("disabled");
+            continue;
+          }
+
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const hit = document.elementFromPoint(centerX, centerY);
+          const hitControl = hit?.closest?.("button,a,input,select,textarea,[role='button']");
+          const covered = Boolean(hit && hit !== control && !control.contains(hit) && hitControl !== control);
+          if (covered) {
+            const blocker = hit instanceof HTMLElement
+              ? `${hit.tagName.toLowerCase()} ${hit.getAttribute("data-testid") ?? hit.className ?? ""}`.trim()
+              : "unknown element";
+            firstFailure ??= failure(`center covered by ${blocker}`);
+            continue;
+          }
+
+          control.click();
+          return {
+            ok: true,
+            reason: "verified",
+            tag,
+            text,
+            width: rect.width,
+            height: rect.height
+          };
+        }
+
+        return firstFailure ?? { ok: false, reason: "no matched elements", tag: "", text: "", width: 0, height: 0 };
+      });
+      lastVerification = verification;
+
+      if (verification.ok) {
+        console.warn(
+          `${context}: normal click failed; using verified DOM click fallback on ${verification.tag} ${Math.round(
+            verification.width
+          )}x${Math.round(verification.height)} "${verification.text}"`
+        );
+        return;
+      }
+
+      if (!isRetryableDomClickVerification(verification)) {
+        break;
+      }
+    } catch (error) {
+      lastError = error;
+      if (!isTransientClickError(error)) {
+        break;
+      }
+    }
+
+    await locator.page().waitForTimeout(100);
+  }
+
+  if (lastVerification) {
+    throw new Error(`${context}: DOM click fallback refused: ${lastVerification.reason}`);
+  }
+  throw new Error(`${context}: DOM click fallback failed: ${describeNavigationError(lastError)}`);
 }
 
 async function isMainMenuReady(page: Page, timeout = MAIN_MENU_READY_PROBE_TIMEOUT_MS): Promise<boolean> {
@@ -182,33 +350,81 @@ export async function gotoReadyMainMenu(page: Page, context: string): Promise<vo
   ).toBeVisible({ timeout: MAIN_MENU_BOOT_TIMEOUT_MS });
 }
 
-export async function clickReady(locator: Locator, context: string): Promise<void> {
+export async function expectBattleLoaded(
+  page: Page,
+  context = "battle loaded",
+  options: { timeoutMs?: number } = {}
+): Promise<void> {
+  const timeoutMs = options.timeoutMs ?? 30_000;
+  await expect(page.getByTestId("battle-hud"), `${context}: battle HUD`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("battle-resources"), `${context}: resources`).toContainText("Crowns", {
+    timeout: timeoutMs
+  });
+  await expect(page.getByTestId("battle-hero-panel"), `${context}: hero panel`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("battle-minimap"), `${context}: minimap shell`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("minimap"), `${context}: minimap`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.locator("canvas"), `${context}: Phaser canvas`).toBeVisible({ timeout: timeoutMs });
+  await page.waitForFunction(
+    () => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return Boolean(scene?.scene.isActive() && scene.hero && scene.activeMap && scene.runtime && scene.game?.canvas);
+    },
+    undefined,
+    { timeout: timeoutMs }
+  );
+}
+
+export async function clickReady(locator: Locator, context: string, options: ClickReadyOptions = {}): Promise<void> {
+  const timeoutMs = options.timeoutMs ?? CLICK_READY_TIMEOUT_MS;
+  const domFallbackTimeoutMs = options.domFallbackTimeoutMs ?? timeoutMs;
+  const normalClickTimeoutMs = options.normalClickTimeoutMs ?? timeoutMs;
+  const attempts = options.attempts ?? CLICK_READY_ATTEMPTS;
+  const waitForLayoutBox = options.waitForLayoutBox ?? true;
+  const allowDomFallback = options.allowDomFallback ?? true;
+  const allowTargetGoneAfterClick = options.allowTargetGoneAfterClick ?? false;
   let lastError: unknown;
   let attemptsUsed = 0;
 
-  for (let attempt = 1; attempt <= CLICK_READY_ATTEMPTS; attempt += 1) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
     attemptsUsed = attempt;
     try {
+      await locator.waitFor({ state: "attached", timeout: timeoutMs });
       await expect(locator, `${context}: expected target to be visible`).toBeVisible({
-        timeout: CLICK_READY_TIMEOUT_MS
+        timeout: timeoutMs
       });
       await expect(locator, `${context}: expected target to be enabled`).toBeEnabled({
-        timeout: CLICK_READY_TIMEOUT_MS
+        timeout: timeoutMs
       });
       await locator.scrollIntoViewIfNeeded({ timeout: 5_000 }).catch(() => undefined);
-      await locator.click({ timeout: CLICK_READY_TIMEOUT_MS });
+      if (waitForLayoutBox) {
+        await waitForLocatorLayoutBox(locator, context, timeoutMs);
+      }
+      await locator.click({ timeout: normalClickTimeoutMs });
       return;
     } catch (error) {
       lastError = error;
-      if (!isTransientClickError(error) || attempt === CLICK_READY_ATTEMPTS) {
+      if (!isTransientClickError(error) || attempt === attempts) {
         break;
       }
 
       console.warn(
-        `${context}: retrying click actionability attempt ${attempt + 1}/${CLICK_READY_ATTEMPTS} after transient error: ${describeNavigationError(error)}`
+        `${context}: retrying click actionability attempt ${attempt + 1}/${attempts} after transient error: ${describeNavigationError(error)}`
       );
       await locator.waitFor({ state: "visible", timeout: 1_000 }).catch(() => undefined);
     }
+  }
+
+  if (allowTargetGoneAfterClick && lastError && isTransientClickError(lastError)) {
+    const remainingTargets = await locator.count().catch(() => 0);
+    if (remainingTargets === 0) {
+      console.warn(`${context}: target disappeared after normal click; relying on follow-up assertions`);
+      return;
+    }
+  }
+
+  if (allowDomFallback && lastError && isTransientClickError(lastError)) {
+    await verifiedDomClick(locator, context, domFallbackTimeoutMs);
+    return;
   }
 
   throw new Error(`${context}: click failed after ${attemptsUsed} attempt(s): ${describeNavigationError(lastError)}`);
@@ -270,12 +486,12 @@ export async function openFreshMainMenu(page: Page): Promise<void> {
 export async function createHero(page: Page, name: string): Promise<void> {
   await expect(page.getByTestId("hero-creation")).toBeVisible();
   await page.getByTestId("hero-name-input").fill(name);
-  await page.getByTestId("hero-start").click();
+  await clickReady(page.getByTestId("hero-start"), `create hero ${name}`);
 }
 
 export async function startNewCampaign(page: Page, heroName: string): Promise<void> {
   await openFreshMainMenu(page);
-  await page.getByTestId("menu-new-campaign").click();
+  await clickReady(page.getByTestId("menu-new-campaign"), "start new campaign");
   await createHero(page, heroName);
   await expect(page.getByTestId("campaign-map")).toBeVisible();
 }

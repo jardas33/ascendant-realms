@@ -16,6 +16,7 @@ import { runSemanticCommandLog, type SemanticCommand } from "./semantic-command-
 import {
   clickReady,
   createHero,
+  expectBattleLoaded,
   gotoReadyMainMenu,
   openFreshMainMenu,
   SAVE_KEY,
@@ -27,14 +28,11 @@ type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
 const SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS = 60_000;
 const SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS = 60_000;
-
-async function expectBattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
-  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
-  await expect(page.getByTestId("battle-minimap")).toBeVisible();
-  await expect(page.getByTestId("minimap")).toBeVisible();
-}
+const RESULTS_NAV_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  normalClickTimeoutMs: 2_000
+} as const;
 
 async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
   await page.getByTestId(testId).evaluate((input, nextValue) => {
@@ -389,7 +387,14 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
     if (!command.target?.id) {
       throw new Error(`Command ${command.id} is missing a test id target.`);
     }
-    await page.getByTestId(command.target.id).click({ timeout: command.timeoutMs });
+    const isTutorialNext = command.target.id === "tutorial-next";
+    await clickReady(page.getByTestId(command.target.id), `tutorial command ${command.id}`, {
+      allowTargetGoneAfterClick: isTutorialNext ? true : undefined,
+      attempts: isTutorialNext ? 1 : undefined,
+      normalClickTimeoutMs: isTutorialNext ? 750 : undefined,
+      timeoutMs: command.timeoutMs,
+      waitForLayoutBox: isTutorialNext ? false : undefined
+    });
     await expectTutorialCommandState(page, command);
     return null;
   }
@@ -398,7 +403,9 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
     if (!command.target?.id) {
       throw new Error(`Command ${command.id} is missing a text target.`);
     }
-    await page.getByText(command.target.id).click({ timeout: command.timeoutMs });
+    await clickReady(page.getByText(command.target.id), `tutorial command ${command.id}`, {
+      timeoutMs: command.timeoutMs
+    });
     await expectTutorialCommandState(page, command);
     return null;
   }
@@ -424,6 +431,36 @@ async function expectTutorialCommandState(page: Page, command: SemanticCommand):
   if (command.expected?.text) {
     await expect(page.getByTestId("tutorial-instruction")).toContainText(command.expected.text);
   }
+}
+
+async function clickCompleteTutorialAndWaitForMenu(page: Page): Promise<void> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial", { timeout: 5_000 });
+      await clickReady(page.getByTestId("tutorial-next"), `smoke complete tutorial attempt ${attempt}`, {
+        allowTargetGoneAfterClick: true,
+        attempts: 1,
+        domFallbackTimeoutMs: 2_000,
+        normalClickTimeoutMs: 750,
+        waitForLayoutBox: false
+      });
+    } catch (error) {
+      lastError = error;
+    }
+
+    const menuVisible = await page
+      .getByTestId("main-menu")
+      .waitFor({ state: "visible", timeout: 3_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (menuVisible) {
+      return;
+    }
+    console.warn(`smoke complete tutorial: main menu was not visible after attempt ${attempt}; retrying`);
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("smoke complete tutorial: main menu did not appear");
 }
 
 function tutorialStepForCommand(command: SemanticCommand): string {
@@ -477,7 +514,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("tutorial entry launches a no-reward shell and returns to menu @ci-fast", async ({ page }) => {
-    test.setTimeout(75_000);
+    test.setTimeout(95_000);
     await openFreshMainMenu(page);
 
     await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial entry launch");
@@ -537,7 +574,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("tutorial-instruction")).toContainText("campaign progress");
     await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
-    await page.getByTestId("tutorial-next").click();
+    await clickCompleteTutorialAndWaitForMenu(page);
     await expect(page.getByTestId("main-menu")).toBeVisible();
     await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Training complete");
     await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Nothing was saved");
@@ -553,7 +590,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial exit launch");
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await page.getByTestId("tutorial-exit").click();
+    await clickReady(page.getByTestId("tutorial-exit"), "smoke tutorial exit");
     await expect(page.getByTestId("main-menu")).toBeVisible();
     await expect(page.getByTestId("tutorial-complete-notice")).toHaveCount(0);
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
@@ -566,7 +603,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await openFreshMainMenu(page);
 
-    await page.getByTestId("menu-settings").click();
+    await clickReady(page.getByTestId("menu-settings"), "settings smoke open settings");
     await expect(page.getByTestId("settings-screen")).toBeVisible();
     await setSettingsRangeValue(page, "settings-master-volume", "0.35");
     await setSettingsRangeValue(page, "settings-ui-scale", "1.15");
@@ -578,12 +615,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("settings-colorblind-minimap")).toBeChecked();
     await page.getByTestId("settings-fog-override").selectOption("disabled");
     await expect(page.getByTestId("settings-fog-override")).toHaveValue("disabled");
-    await page.getByTestId("settings-save").click();
+    await clickReady(page.getByTestId("settings-save"), "settings smoke save");
     await expect(page.getByTestId("settings-status")).toContainText("Settings saved");
-    await page.getByTestId("settings-back").click();
+    await clickReady(page.getByTestId("settings-back"), "settings smoke back after save");
     await expect(page.getByTestId("main-menu")).toBeVisible();
 
-    await page.getByTestId("menu-settings").click();
+    await clickReady(page.getByTestId("menu-settings"), "settings smoke reopen settings");
     await expect(page.getByTestId("settings-master-volume")).toHaveValue("0.35");
     await expect(page.getByTestId("settings-ui-scale")).toHaveValue("1.15");
     await expect(page.getByTestId("settings-floating-text")).not.toBeChecked();
@@ -604,7 +641,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate(() => document.documentElement.dataset.reducedMotion)).toBe("true");
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 
-    await page.getByTestId("settings-back").click();
+    await clickReady(page.getByTestId("settings-back"), "settings smoke back before skirmish");
     await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu");
     await page.waitForFunction(() =>
       Boolean(document.querySelector('[data-testid="hero-creation"], [data-testid="skirmish-setup"]'))
@@ -668,7 +705,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
-    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), "smoke locked Aether Well node");
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Locked/i);
@@ -676,15 +713,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
-    await page.getByTestId("campaign-node-cinderfen_crossing").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke locked Cinderfen Crossing node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
-    await page.getByTestId("campaign-node-cinderfen_watch").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "smoke locked Cinderfen Watch node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
-    await page.getByTestId("campaign-node-cinderfen_aftermath").click();
+    await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), "smoke locked Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
     await expect(page.getByTestId("campaign-start-node")).toHaveCount(0);
   });
@@ -744,7 +781,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(85_000);
     await seedPostAshenCampaign(page);
 
-    await page.getByTestId("menu-continue-campaign").click();
+    await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: Border Marches");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Completed/i);
@@ -955,7 +992,11 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       inventoryCount: save.hero.inventory.length
     };
 
-    await page.getByRole("button", { name: "Campaign Map" }).click();
+    await clickReady(
+      page.getByRole("button", { name: "Campaign Map" }),
+      "smoke Cinderfen Crossing results campaign map",
+      RESULTS_NAV_CLICK_OPTIONS
+    );
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
@@ -971,7 +1012,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.hero.inventory).toHaveLength(rewardSnapshot.inventoryCount);
 
     await gotoReadyMainMenu(page, "smoke Cinderfen Crossing persistence reload");
-    await page.getByTestId("menu-continue-campaign").click();
+    await clickReady(page.getByTestId("menu-continue-campaign"), "smoke reload Cinderfen Crossing continue campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
@@ -988,7 +1029,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(65_000);
     await seedPostCinderfenCrossingCampaign(page);
 
-    await page.getByTestId("menu-continue-campaign").click();
+    await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Crossing campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
@@ -1095,7 +1136,11 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       inventoryCount: save.hero.inventory.length
     };
 
-    await page.getByRole("button", { name: "Campaign Map" }).click();
+    await clickReady(
+      page.getByRole("button", { name: "Campaign Map" }),
+      "smoke Cinderfen Watch results campaign map",
+      RESULTS_NAV_CLICK_OPTIONS
+    );
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Available/i);
@@ -1108,7 +1153,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Study the Ashen Marks");
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Cost: 40 Crowns");
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Reputation: +5 Common Folk");
-    await page.locator("button[data-campaign-choice='aid_the_fenfolk']").click();
+    await clickReady(page.locator("button[data-campaign-choice='aid_the_fenfolk']"), "smoke Cinderfen Aftermath aid Fenfolk");
     await expect(page.getByTestId("campaign-status")).toContainText("Aid the Fenfolk chosen");
     await expect(page.getByTestId("campaign-status")).toContainText("Cinderfen route secured");
     await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 route complete");
@@ -1143,7 +1188,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   test("post-Ashen Cinderfen event reacts to Malrec's trophy standard @extended-smoke", async ({ page }) => {
     await seedPostAshenCampaign(page, { includeMalrecTrophy: true });
 
-    await page.getByTestId("menu-continue-campaign").click();
+    await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen trophy campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), "smoke trophy Cinderfen Overlook node");
 
@@ -1217,7 +1262,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await seedCampaignSave(page, { hero: { heroName: "E2E Inventory" } });
 
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();
-    await page.getByTestId("menu-inventory").click();
+    await clickReady(page.getByTestId("menu-inventory"), "smoke inventory screen");
     await expect(page.getByTestId("hero-inventory")).toBeVisible();
     await expect(page.getByTestId("hero-stats")).toBeVisible();
     await expect(page.getByTestId("equipment-panel")).toBeVisible();

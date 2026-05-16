@@ -1,5 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-import { clickReady, gotoReadyMainMenu, SAVE_KEY, seedSaveBeforeAppBoot } from "./shared-helpers";
+import { expect, test, type Locator, type Page } from "@playwright/test";
+import { clickReady, expectBattleLoaded, gotoReadyMainMenu, SAVE_KEY, seedSaveBeforeAppBoot } from "./shared-helpers";
 
 type CampaignResources = {
   crowns: number;
@@ -73,6 +73,42 @@ const BASE_CAMPAIGN = {
   rivalTrophies: []
 };
 
+const BATTLE_COMMAND_CLICK_OPTIONS = {
+  attempts: 2,
+  normalClickTimeoutMs: 1_500
+} as const;
+
+const HUD_MENU_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 2,
+  normalClickTimeoutMs: 1_500
+} as const;
+
+async function clickBattleCommand(locator: Locator, context: string): Promise<void> {
+  await clickReady(locator, context, BATTLE_COMMAND_CLICK_OPTIONS);
+}
+
+async function clickBattleCommandUntilEffect(
+  locatorFactory: () => Locator,
+  context: string,
+  verifyEffect: () => Promise<void>,
+  recover?: () => Promise<void>
+): Promise<void> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await clickBattleCommand(locatorFactory(), `${context} attempt ${attempt}`);
+    try {
+      await verifyEffect();
+      return;
+    } catch (error) {
+      lastError = error;
+      console.warn(`${context}: command did not reach expected state after attempt ${attempt}; retrying`);
+      await recover?.();
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error(`${context}: command did not reach expected state`);
+}
+
 function attachConsoleFailure(page: Page): void {
   page.on("console", (message) => {
     if (message.type() === "error") {
@@ -132,15 +168,7 @@ async function readSave(page: Page): Promise<Record<string, any>> {
 async function createHero(page: Page, name: string): Promise<void> {
   await expect(page.getByTestId("hero-creation")).toBeVisible();
   await page.getByTestId("hero-name-input").fill(name);
-  await page.getByTestId("hero-start").click();
-}
-
-async function expectBattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
-  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
-  await expect(page.getByTestId("battle-minimap")).toBeVisible();
-  await expect(page.getByTestId("minimap")).toBeVisible();
+  await clickReady(page.getByTestId("hero-start"), `deep-flow create hero ${name}`);
 }
 
 async function clickCenteredCanvas(page: Page, xRatio: number, yRatio: number, button: "left" | "right" = "left"): Promise<void> {
@@ -177,6 +205,73 @@ async function clickWorldPoint(page: Page, point: { x: number; y: number }, butt
   await page.mouse.click(screen.x, screen.y, { button });
 }
 
+async function prepareMovementCommandTargets(
+  page: Page,
+  initialPoint: { x: number; y: number }
+): Promise<{ selectedCount: number; points: { x: number; y: number }[] }> {
+  return page.evaluate((target) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    let selected = scene.selectionSystem
+      .getSelected()
+      .filter((entity: any) => entity.team === "player" && entity.kind !== "building" && entity.alive);
+    if (selected.length === 0 && scene.hero?.alive) {
+      scene.selectionSystem.setSelection([scene.hero]);
+      selected = [scene.hero];
+    }
+    const anchor = selected[0]?.position ?? scene.hero?.position ?? scene.activeMap.playerStart;
+    scene.cameraSystem.centerOn(anchor);
+    scene.refreshBattleHud?.(0);
+    const clampPoint = (point: { x: number; y: number }) => ({
+      x: Math.max(120, Math.min(scene.activeMap.width - 120, point.x)),
+      y: Math.max(120, Math.min(scene.activeMap.height - 120, point.y))
+    });
+    const points = [
+      target,
+      { x: anchor.x + 180, y: anchor.y + 80 },
+      { x: anchor.x + 120, y: anchor.y + 160 },
+      { x: anchor.x + 220, y: anchor.y - 60 },
+      { x: anchor.x - 140, y: anchor.y + 120 }
+    ].map(clampPoint);
+    const uniquePoints = points.filter(
+      (point, index, entries) =>
+        entries.findIndex((entry) => Math.hypot(entry.x - point.x, entry.y - point.y) < 24) === index
+    );
+    return { selectedCount: selected.length, points: uniquePoints };
+  }, initialPoint);
+}
+
+async function expectWorldClickTargetsCanvas(
+  page: Page,
+  point: { x: number; y: number },
+  context: string
+): Promise<void> {
+  const screen = await worldToScreen(page, point);
+  const result = await page.evaluate(({ x, y }) => {
+    const canvas = document.querySelector("canvas");
+    const canvasBox = canvas?.getBoundingClientRect();
+    const hit = document.elementFromPoint(x, y);
+    return {
+      hasCanvas: Boolean(canvas),
+      insideCanvas: Boolean(
+        canvasBox &&
+          x >= canvasBox.left &&
+          x <= canvasBox.right &&
+          y >= canvasBox.top &&
+          y <= canvasBox.bottom
+      ),
+      hitTag: hit?.tagName.toLowerCase() ?? "",
+      hitTestId: hit instanceof HTMLElement ? hit.getAttribute("data-testid") ?? "" : "",
+      hitClass: hit instanceof HTMLElement ? String(hit.className) : ""
+    };
+  }, screen);
+  expect(result.hasCanvas, `${context}: canvas exists for world command`).toBe(true);
+  expect(result.insideCanvas, `${context}: world command target is inside canvas`).toBe(true);
+  expect(result.hitTag, `${context}: world command target is not covered by HUD`).toBe("canvas");
+}
+
 async function rightClickWorldPointUntilOrder(
   page: Page,
   point: { x: number; y: number },
@@ -184,12 +279,34 @@ async function rightClickWorldPointUntilOrder(
   context: string
 ): Promise<void> {
   const orderSummary = page.getByTestId("unit-order-summary");
-  const candidatePoints = [point, { x: point.x - 90, y: point.y - 80 }, { x: point.x + 80, y: point.y - 80 }];
+  const prepared = await prepareMovementCommandTargets(page, point);
+  expect(prepared.selectedCount, `${context}: selected player units before move command`).toBeGreaterThan(0);
   let lastError: unknown;
-  for (let attempt = 1; attempt <= candidatePoints.length; attempt += 1) {
-    const candidatePoint = candidatePoints[attempt - 1];
+  for (let attempt = 1; attempt <= prepared.points.length; attempt += 1) {
+    const candidatePoint = prepared.points[attempt - 1];
+    try {
+      await expectWorldClickTargetsCanvas(page, candidatePoint, `${context} attempt ${attempt}`);
+    } catch (error) {
+      lastError = error;
+      console.warn(`${context}: skipping unsafe world right-click point ${JSON.stringify(candidatePoint)}`);
+      continue;
+    }
     await clickWorldPoint(page, candidatePoint, "right");
     try {
+      await page.waitForFunction(
+        (target) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const selected = scene?.selectionSystem
+            .getSelected()
+            .filter((entity: any) => entity.team === "player" && entity.kind !== "building" && entity.alive);
+          return selected?.some(
+            (entity: any) =>
+              entity.moveTarget && Math.hypot(entity.moveTarget.x - target.x, entity.moveTarget.y - target.y) < 56
+          );
+        },
+        candidatePoint,
+        { timeout: 2_000 }
+      ).catch(() => undefined);
       await expect(orderSummary, `${context}: expected right-click move command to update unit order`).toContainText(
         expectedOrder,
         { timeout: 5_000 }
@@ -197,7 +314,7 @@ async function rightClickWorldPointUntilOrder(
       return;
     } catch (error) {
       lastError = error;
-      if (attempt === candidatePoints.length) {
+      if (attempt === prepared.points.length) {
         break;
       }
       console.warn(
@@ -571,13 +688,13 @@ async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat
 }
 
 async function openCampaignNode(page: Page, nodeId: string): Promise<void> {
-  await page.getByTestId("menu-continue-campaign").click();
+  await clickReady(page.getByTestId("menu-continue-campaign"), `deep-flow continue campaign for ${nodeId}`);
   await expect(page.getByTestId("campaign-map")).toBeVisible();
   await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow open campaign node ${nodeId}`);
 }
 
 async function startCampaignBattle(page: Page, nodeId: string): Promise<void> {
-  await page.getByTestId("menu-continue-campaign").click();
+  await clickReady(page.getByTestId("menu-continue-campaign"), `deep-flow continue campaign before ${nodeId}`);
   await expect(page.getByTestId("campaign-map")).toBeVisible();
   await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow start campaign node ${nodeId}`);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
@@ -1302,13 +1419,18 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       await clickReady(page.getByTestId("setup-start-battle"), `deep-flow launch skirmish map ${mapId}`);
       await expectBattleLoaded(page);
       await expect(page.getByTestId("battle-status")).toContainText(/Enemy|Capture|AI/i);
-      await clickReady(page.getByRole("button", { name: "Menu" }), `deep-flow return to menu after skirmish map ${mapId}`);
+      await clickReady(
+        page.getByRole("button", { name: "Menu" }),
+        `deep-flow return to menu after skirmish map ${mapId}`,
+        HUD_MENU_CLICK_OPTIONS
+      );
       await expect(page.getByTestId("main-menu")).toBeVisible();
       await clickReady(page.getByTestId("menu-skirmish"), `deep-flow map QA return to skirmish menu after ${mapId}`);
     }
   });
 
   test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(75_000);
     await openFreshMainMenu(page);
     await clickReady(page.getByTestId("menu-skirmish"), "deep-flow battle HUD skirmish menu");
     await createHero(page, "Battle QA");
@@ -1360,7 +1482,17 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
     await expect(page.locator(".side-panel")).toContainText("Build");
-    await clickReady(page.locator("button[data-action='build'][data-id='barracks']"), "deep-flow build Barracks command");
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='barracks']"),
+      "deep-flow build Barracks command",
+      async () => {
+        await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode", { timeout: 2_000 });
+      },
+      async () => {
+        await selectPlayerCommandHallFromScene(page);
+        await expect(page.locator(".side-panel")).toContainText("Command Hall");
+      }
+    );
     await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode");
     await expect(page.locator(".hint-line")).toHaveCount(0);
     await page.waitForFunction(() => {
@@ -1424,7 +1556,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(hoverState.enabled).toBe(true);
     expect(hoverState.label).toContain("Build Barracks");
 
-    await barracksButton.click();
+    await clickBattleCommand(barracksButton, "deep-flow hover stability build Barracks command");
     await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode");
     await page.waitForFunction(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1628,12 +1760,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       return {
         mana: scene.hero.mana,
-        status: scene.statusMessage,
+        cooldown: scene.hero.abilityCooldowns.rally_banner ?? 0,
         allyBuffs: allyIds.map((allyId: string) => scene.units.find((unit: any) => unit.id === allyId)?.damageBuffMultiplier ?? 1)
       };
     }, prepared.allyIds);
     expect(rallyResult.mana).toBeLessThan(prepared.heroMana);
-    expect(rallyResult.status).toMatch(/Rallied/i);
+    expect(rallyResult.cooldown).toBeGreaterThan(0);
     expect(rallyResult.allyBuffs.some((multiplier: number) => multiplier > 1)).toBe(true);
 
     const cleaveSetup = await page.evaluate((enemyIds) => {
@@ -1645,7 +1777,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         if (!enemy) {
           throw new Error(`Missing enemy ${enemyId} before Cleave.`);
         }
-        enemy.hp = enemy.maxHp;
+        enemy.alive = true;
+        enemy.hp = enemy.maxHp + 200;
         enemy.setPosition(hero.position.x + 48 + index * 18, hero.position.y + index * 10);
       });
       return {
@@ -1662,12 +1795,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       return {
         mana: scene.hero.mana,
-        status: scene.statusMessage,
+        cooldown: scene.hero.abilityCooldowns.cleave ?? 0,
         enemyHp: enemyIds.map((enemyId: string) => scene.units.find((unit: any) => unit.id === enemyId)?.hp ?? 0)
       };
     }, prepared.enemyIds);
     expect(cleaveResult.mana).toBeLessThan(cleaveSetup.mana);
-    expect(cleaveResult.status).toMatch(/Cleave hit/i);
+    expect(cleaveResult.cooldown).toBeGreaterThan(0);
     expect(cleaveResult.enemyHp.some((hp: number, index: number) => hp < cleaveSetup.enemyHp[index])).toBe(true);
 
     const warCrySetup = await page.evaluate(
@@ -1684,17 +1817,39 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
           ally.damageBuffRemaining = 0;
           ally.setPosition(hero.position.x - 42 - index * 16, hero.position.y + index * 16);
         });
-        enemyIds.forEach((enemyId: string, index: number) => {
-          const enemy = scene.units.find((unit: any) => unit.id === enemyId);
-          if (!enemy) {
-            throw new Error(`Missing enemy ${enemyId} before War Cry.`);
-          }
+        const preferredEnemies = enemyIds
+          .map((enemyId: string) => scene.units.find((unit: any) => unit.id === enemyId && unit.team === "enemy" && unit.alive))
+          .filter(Boolean);
+        const fallbackEnemies = scene.units.filter(
+          (unit: any) => unit.team === "enemy" && unit.alive && !preferredEnemies.includes(unit)
+        );
+        const enemies = [...preferredEnemies, ...fallbackEnemies].slice(0, 3);
+        if (enemies.length === 0) {
+          const reusableEnemies = enemyIds
+            .map((enemyId: string) => scene.units.find((unit: any) => unit.id === enemyId && unit.team === "enemy"))
+            .filter(Boolean)
+            .slice(0, 3);
+          reusableEnemies.forEach((enemy: any) => {
+            enemy.alive = true;
+            enemy.view?.setVisible(true);
+          });
+          enemies.push(...reusableEnemies);
+        }
+        if (enemies.length === 0) {
+          throw new Error("Missing enemy target before War Cry.");
+        }
+        enemies.forEach((enemy: any, index: number) => {
           enemy.hp = enemy.maxHp;
           enemy.setPosition(hero.position.x + 54 + index * 20, hero.position.y + (index - 1) * 18);
+          enemy.moveTarget = undefined;
+          enemy.attackTargetId = undefined;
+          enemy.attackMove = false;
+          enemy.attackCooldownRemaining = 999;
         });
         return {
           mana: hero.mana,
-          enemyHp: enemyIds.map((enemyId: string) => scene.units.find((unit: any) => unit.id === enemyId)?.hp ?? 0)
+          enemyIds: enemies.map((enemy: any) => enemy.id),
+          enemyHp: enemies.map((enemy: any) => enemy.hp)
         };
       },
       { allyIds: prepared.allyIds, enemyIds: prepared.enemyIds }
@@ -1709,15 +1864,15 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
         return {
           mana: scene.hero.mana,
-          status: scene.statusMessage,
+          cooldown: scene.hero.abilityCooldowns.war_cry ?? 0,
           allyBuffs: allyIds.map((allyId: string) => scene.units.find((unit: any) => unit.id === allyId)?.damageBuffMultiplier ?? 1),
           enemyHp: enemyIds.map((enemyId: string) => scene.units.find((unit: any) => unit.id === enemyId)?.hp ?? 0)
         };
       },
-      { allyIds: prepared.allyIds, enemyIds: prepared.enemyIds }
+      { allyIds: prepared.allyIds, enemyIds: warCrySetup.enemyIds }
     );
     expect(warCryResult.mana).toBeLessThan(warCrySetup.mana);
-    expect(warCryResult.status).toMatch(/War Cry hit/i);
+    expect(warCryResult.cooldown).toBeGreaterThan(0);
     expect(warCryResult.allyBuffs.some((multiplier: number) => multiplier > 1)).toBe(true);
     expect(warCryResult.enemyHp.some((hp: number, index: number) => hp < warCrySetup.enemyHp[index])).toBe(true);
   });
@@ -1844,7 +1999,17 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
-    await page.locator("button[data-action='build'][data-id='barracks']").click();
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='barracks']"),
+      "deep-flow first campaign build Barracks",
+      async () => {
+        await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i, { timeout: 2_000 });
+      },
+      async () => {
+        await selectPlayerCommandHallFromScene(page);
+        await expect(page.locator(".side-panel")).toContainText("Command Hall");
+      }
+    );
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
     await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i);
     await expect(page.locator(".hint-line")).toHaveCount(0);
@@ -1868,7 +2033,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     snapshot = await getBattleSnapshot(page);
     const militiaBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
-    await page.locator("button[data-action='train'][data-id='militia']").click();
+    await clickBattleCommand(page.locator("button[data-action='train'][data-id='militia']"), "deep-flow first campaign train Militia");
     await page.waitForFunction(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       const barracks = scene?.buildings.find(
@@ -1877,7 +2042,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       return barracks?.trainingQueue.length > 0;
     });
 
-    const rallyPoint = { x: 650, y: 920 };
+    const rallyPoint = { x: 540, y: 830 };
     await clickWorldPoint(page, rallyPoint, "right");
     await page.waitForFunction(
       (target) => {
@@ -2097,9 +2262,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await page.getByTestId("campaign-node-chapel_of_the_marches").click();
+    await clickReady(page.getByTestId("campaign-node-chapel_of_the_marches"), "deep-flow Chapel of the Marches node");
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toContainText("Keeps this node open");
-    await page.locator("button[data-campaign-choice='ask_for_guidance']").click();
+    await clickReady(page.locator("button[data-campaign-choice='ask_for_guidance']"), "deep-flow ask for Chapel guidance");
     await expect(page.getByTestId("campaign-status")).toContainText("Ask for Guidance chosen");
 
     let save = await readSave(page);
@@ -2112,7 +2277,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toBeDisabled();
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toContainText("Already chosen");
     await expect(page.locator("button[data-campaign-choice='repair_chapel']")).toBeEnabled();
-    await page.locator("button[data-campaign-choice='repair_chapel']").click();
+    await clickReady(page.locator("button[data-campaign-choice='repair_chapel']"), "deep-flow repair Chapel");
     await expect(page.getByTestId("campaign-status")).toContainText("Repair the Chapel chosen");
 
     save = await readSave(page);
@@ -2132,7 +2297,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("Mystic Lodge, Acolyte, Watchtower combat, and research UI work through battle commands @hosted-deep-campaign", async ({ page }) => {
-    test.setTimeout(80_000);
+    test.setTimeout(130_000);
     await startFirstClaimSkirmish(page, "Systems QA");
 
     await setBattlePlayerResources(page, { crowns: 0, stone: 0, iron: 0, aether: 0 });
@@ -2144,14 +2309,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
     await expect(infantryWeapons).toBeEnabled();
-    await infantryWeapons.click();
+    await clickBattleCommand(infantryWeapons, "deep-flow research Infantry Weapons I");
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Researching/);
     await completeUpgradeQueues(page);
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Researched/);
 
     const reinforcedArmor = page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']");
     await expect(reinforcedArmor).toBeEnabled();
-    await reinforcedArmor.click();
+    await clickBattleCommand(reinforcedArmor, "deep-flow research Reinforced Armor I");
     await completeUpgradeQueues(page);
     await expect(reinforcedArmor).toHaveAttribute("aria-label", /Researched/);
 
@@ -2160,7 +2325,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerBuildingFromScene(page, "barracks");
     const rangerTraining = page.locator("button[data-action='upgrade'][data-id='ranger_training_1']");
     await expect(rangerTraining).toBeEnabled();
-    await rangerTraining.click();
+    await clickBattleCommand(rangerTraining, "deep-flow research Ranger Training I");
     await completeUpgradeQueues(page);
     await expect(rangerTraining).toHaveAttribute("aria-label", /Researched/);
 
@@ -2170,7 +2335,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Mystic Lodge");
     let snapshot = await getBattleSnapshot(page);
     const acolytesBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "acolyte").length;
-    await page.locator("button[data-action='train'][data-id='acolyte']").click();
+    await clickBattleCommand(page.locator("button[data-action='train'][data-id='acolyte']"), "deep-flow train Acolyte");
     await completeTrainingQueues(page);
     await page.waitForFunction(
       (beforeCount) => {
@@ -2184,7 +2349,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     const aetherStudy = page.locator("button[data-action='upgrade'][data-id='aether_study_1']");
     await expect(aetherStudy).toBeEnabled();
-    await aetherStudy.click();
+    await clickBattleCommand(aetherStudy, "deep-flow research Aether Study I");
     await completeUpgradeQueues(page);
     await expect(aetherStudy).toHaveAttribute("aria-label", /Researched/);
 

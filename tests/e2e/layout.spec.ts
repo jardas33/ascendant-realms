@@ -9,7 +9,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
-import { clickReady, continueSavedCampaign, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
+import { clickReady, continueSavedCampaign, expectBattleLoaded, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
 
 const LAYOUT_VIEWPORTS = [
   { width: 1366, height: 768, label: "desktop" },
@@ -110,7 +110,8 @@ async function expectTutorialOverlayHasFeedbackPriority(page: Page, label: strin
 }
 
 async function expectWithinViewportWidth(page: Page, locator: Locator, label: string): Promise<void> {
-  await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
+  await locator.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" })).catch(() => undefined);
+  await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => undefined);
   const box = await waitForLayoutBox(page, locator);
   expect(box, `${label} has a layout box`).not.toBeNull();
   const viewport = page.viewportSize();
@@ -128,28 +129,153 @@ async function expectReachableButton(
   label: string,
   options: { enabled?: boolean } = {}
 ): Promise<void> {
-  await locator.evaluate((element) => element.scrollIntoView({ block: "nearest", inline: "nearest" }));
-  await expect(locator, `${label} visible`).toBeVisible();
+  await locator.waitFor({ state: "attached", timeout: 10_000 });
+  await locator.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" })).catch(() => undefined);
+  await locator.scrollIntoViewIfNeeded({ timeout: 1_000 }).catch(() => undefined);
+  await expect(locator, `${label} visible`).toBeVisible({ timeout: 5_000 });
   if (options.enabled !== false) {
-    await expect(locator, `${label} enabled`).toBeEnabled();
+    await expect(locator, `${label} enabled`).toBeEnabled({ timeout: 5_000 });
   }
-  await expectInViewport(page, locator, label);
   const box = await waitForLayoutBox(page, locator);
   expect(box, `${label} has button dimensions`).not.toBeNull();
+  const viewport = page.viewportSize();
+  expect(viewport, `${label} viewport exists`).not.toBeNull();
   if (!box) {
     return;
+  }
+  if (viewport) {
+    expect(box.x, `${label} left edge`).toBeGreaterThanOrEqual(-2);
+    expect(box.x + box.width, `${label} right edge`).toBeLessThanOrEqual(viewport.width + 2);
+    expect(box.y, `${label} top edge`).toBeGreaterThanOrEqual(-2);
+    expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(viewport.height + 2);
   }
   expect(box.width, `${label} tap width`).toBeGreaterThanOrEqual(40);
   expect(box.height, `${label} tap height`).toBeGreaterThanOrEqual(32);
 }
 
+async function readLayoutBox(locator: Locator): Promise<Awaited<ReturnType<Locator["boundingBox"]>>> {
+  const playwrightBox = await locator.boundingBox({ timeout: 500 }).catch(() => null);
+  if (playwrightBox) {
+    return playwrightBox;
+  }
+  return locator
+    .evaluateAll((elements) => {
+      for (const element of elements) {
+        const target = element as HTMLElement;
+        const style = window.getComputedStyle(target);
+        const rect = target.getBoundingClientRect();
+        if (
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          Number(style.opacity || "1") > 0 &&
+          rect.width > 0 &&
+          rect.height > 0
+        ) {
+          return {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height
+          };
+        }
+      }
+      return null;
+    })
+    .catch(() => null);
+}
+
 async function waitForLayoutBox(page: Page, locator: Locator): Promise<Awaited<ReturnType<Locator["boundingBox"]>>> {
-  let box = await locator.boundingBox();
-  for (let attempt = 0; !box && attempt < 5; attempt += 1) {
+  let box = await readLayoutBox(locator);
+  for (let attempt = 0; !box && attempt < 20; attempt += 1) {
     await page.waitForTimeout(100);
-    box = await locator.boundingBox();
+    box = await readLayoutBox(locator);
   }
   return box;
+}
+
+type LayoutBoxSnapshot = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+type CommandButtonGeometry = {
+  buttonBox: LayoutBoxSnapshot | null;
+  panelBox: LayoutBoxSnapshot | null;
+  text: string;
+  visible: boolean;
+};
+
+async function scrollCommandButtonIntoPanel(page: Page, action: string, index: number): Promise<CommandButtonGeometry> {
+  let geometry: CommandButtonGeometry = { buttonBox: null, panelBox: null, text: "", visible: false };
+
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    geometry = await page.evaluate(
+      ({ action: requestedAction, index: requestedIndex }): CommandButtonGeometry => {
+      const readBox = (target: Element): LayoutBoxSnapshot => {
+        const rect = target.getBoundingClientRect();
+        return {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        };
+      };
+      const container = document.querySelector<HTMLElement>(".side-panel");
+      const controls = Array.from(container?.querySelectorAll<HTMLButtonElement>("button[data-action]") ?? []).filter(
+        (entry) => entry.dataset.action === requestedAction
+      );
+      const control = controls[requestedIndex];
+      if (!control) {
+        return {
+          buttonBox: null,
+          panelBox: container ? readBox(container) : null,
+          text: "",
+          visible: false
+        };
+      }
+      if (!container) {
+        control.scrollIntoView({ block: "center", inline: "nearest" });
+      } else {
+        const panelRect = container.getBoundingClientRect();
+        const rect = control.getBoundingClientRect();
+        const centeredTop =
+          container.scrollTop + rect.top - panelRect.top - Math.max(0, (container.clientHeight - rect.height) / 2);
+        container.scrollTop = Math.max(0, centeredTop);
+      }
+
+      const style = window.getComputedStyle(control);
+      const buttonBox = readBox(control);
+      const panelBox = container ? readBox(container) : null;
+      return {
+        buttonBox,
+        panelBox,
+        text: (control.getAttribute("aria-label") ?? control.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 180),
+        visible:
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          Number(style.opacity || "1") > 0 &&
+          buttonBox.width > 0 &&
+          buttonBox.height > 0
+      };
+    },
+      { action, index }
+    );
+
+    if (
+      geometry.buttonBox &&
+      geometry.panelBox &&
+      geometry.buttonBox.y >= geometry.panelBox.y - 1 &&
+      geometry.buttonBox.y + geometry.buttonBox.height <= geometry.panelBox.y + geometry.panelBox.height + 1
+    ) {
+      return geometry;
+    }
+
+    await page.waitForTimeout(100);
+  }
+
+  return geometry;
 }
 
 async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
@@ -157,49 +283,100 @@ async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
   await expectNoHorizontalOverflow(page, `${label} main menu`);
   await expectReachableButton(page, page.getByTestId("menu-tutorial"), `${label} Tutorial`);
   await clickReady(page.getByTestId("menu-tutorial"), `${label} Tutorial launch`);
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+  await expectBattleLoaded(page, `${label} tutorial battle`);
+  await expect(page.getByTestId("tutorial-overlay")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("tutorial-next")).toBeEnabled({ timeout: 15_000 });
+  await expectReachableButton(page, page.getByTestId("tutorial-next"), `${label} tutorial next after launch`);
 }
 
 async function expectBattleCommandButtonsReachable(page: Page, actions: string[], label: string): Promise<void> {
-  const result = await page.evaluate((requestedActions) => {
-    const panel = document.querySelector<HTMLElement>(".side-panel");
-    if (!panel) {
-      return { count: 0, offenders: ["missing side panel"], labels: [] };
-    }
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const buttons = requestedActions.flatMap((action) =>
-      Array.from(panel.querySelectorAll<HTMLButtonElement>(`button[data-action="${action}"]`))
-    );
-    const offenders = buttons
-      .map((button) => {
-        button.scrollIntoView({ block: "nearest", inline: "nearest" });
-        const rect = button.getBoundingClientRect();
-        const nextPanelRect = panel.getBoundingClientRect();
-        const label = button.getAttribute("aria-label") ?? button.textContent?.replace(/\s+/g, " ").trim() ?? "";
-        const problems = [];
-        if (rect.left < -1 || rect.right > viewportWidth + 1) {
+  const panel = page.locator(".side-panel");
+  await expect(panel, `${label} side panel visible before command reachability`).toBeVisible({ timeout: 15_000 });
+  await page
+    .waitForFunction(
+      (requestedActions) => {
+        const sidePanel = document.querySelector<HTMLElement>(".side-panel");
+        return Boolean(
+          sidePanel &&
+            requestedActions.some((action) => sidePanel.querySelector(`button[data-action="${action}"]`))
+        );
+      },
+      actions,
+      { timeout: 10_000 }
+    )
+    .catch(async (error) => {
+      console.warn(`${label} command button readiness failed: ${error instanceof Error ? error.message : String(error)}`);
+      console.warn(`${label} diagnostics: ${JSON.stringify(await commandPanelDiagnostics(page))}`);
+      throw error;
+    });
+
+  const viewport = page.viewportSize();
+  const panelBox = await waitForLayoutBox(page, panel);
+  expect(viewport, `${label} viewport exists`).not.toBeNull();
+  expect(panelBox, `${label} side panel has a layout box`).not.toBeNull();
+  if (!viewport || !panelBox) {
+    return;
+  }
+
+  let count = 0;
+  const offenders: string[] = [];
+  for (const action of actions) {
+    const buttons = panel.locator(`button[data-action="${action}"]`);
+    const actionCount = await buttons.count();
+    count += actionCount;
+    for (let index = 0; index < actionCount; index += 1) {
+      const button = buttons.nth(index);
+      await expect(button, `${label} ${action} command ${index + 1} visible`).toBeVisible({ timeout: 5_000 });
+      const geometry = await scrollCommandButtonIntoPanel(page, action, index);
+      const box = geometry.buttonBox;
+      const buttonPanelBox = geometry.panelBox ?? panelBox;
+      const fallbackText = (await button.getAttribute("aria-label")) ?? (await button.innerText()).replace(/\s+/g, " ").trim();
+      const text = geometry.text || fallbackText;
+      const problems = [];
+      if (!box) {
+        problems.push("missing layout box");
+      } else {
+        if (box.x < -1 || box.x + box.width > viewport.width + 1) {
           problems.push("outside viewport width");
         }
-        if (rect.top < nextPanelRect.top - 1 || rect.bottom > nextPanelRect.bottom + 1 || rect.top < -1 || rect.bottom > viewportHeight + 1) {
+        if (
+          box.y < buttonPanelBox.y - 1 ||
+          box.y + box.height > buttonPanelBox.y + buttonPanelBox.height + 1 ||
+          box.y < -1 ||
+          box.y + box.height > viewport.height + 1
+        ) {
           problems.push("not visible in command panel");
         }
-        if (rect.width < 72 || rect.height < 40) {
-          problems.push(`small tap target ${Math.round(rect.width)}x${Math.round(rect.height)}`);
+        if (box.width < 72 || box.height < 40) {
+          problems.push(`small tap target ${Math.round(box.width)}x${Math.round(box.height)}`);
         }
-        return problems.length > 0 ? `${label}: ${problems.join(", ")}` : undefined;
-      })
-      .filter((entry): entry is string => Boolean(entry));
-    return {
-      count: buttons.length,
-      offenders,
-      labels: buttons.map((button) => button.getAttribute("aria-label") ?? button.textContent?.replace(/\s+/g, " ").trim() ?? "")
-    };
-  }, actions);
+      }
+      if (problems.length > 0) {
+        offenders.push(`${text}: ${problems.join(", ")}`);
+      }
+    }
+  }
 
-  expect(result.count, `${label} command buttons for ${actions.join(", ")} are present`).toBeGreaterThan(0);
-  expect(result.offenders, `${label} command buttons should be visible, wide enough, and inside the panel`).toEqual([]);
+  expect(count, `${label} command buttons for ${actions.join(", ")} are present`).toBeGreaterThan(0);
+  expect(offenders, `${label} command buttons should be visible, wide enough, and inside the panel`).toEqual([]);
+}
+
+async function commandPanelDiagnostics(page: Page): Promise<Record<string, unknown>> {
+  return page
+    .evaluate(() => {
+      const hud = document.querySelector("[data-testid='battle-hud']");
+      const panel = document.querySelector<HTMLElement>(".side-panel");
+      return {
+        url: window.location.href,
+        hasBattleHud: Boolean(hud),
+        hasSidePanel: Boolean(panel),
+        sidePanelText: (panel?.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 240)
+      };
+    })
+    .catch((error) => ({
+      diagnosticError: error instanceof Error ? error.message : String(error)
+    }));
 }
 
 async function selectBattleBuilding(page: Page, buildingId: string, expectedName: string): Promise<void> {
@@ -278,6 +455,7 @@ async function expectCinderfenBattleHudReadable(
   label: string,
   expected: { mapName: string; objectiveTexts: string[] }
 ): Promise<void> {
+  await expectBattleLoaded(page, `${label} battle`);
   await expect(page.getByTestId("battle-status")).toContainText(expected.mapName);
   for (const objectiveText of expected.objectiveTexts) {
     await expect(page.getByTestId("battle-objectives")).toContainText(objectiveText);
@@ -401,7 +579,7 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
   await clickReady(page.getByTestId("setup-map-ashen_outpost"), "layout Ashen Outpost map");
   await clickReady(page.getByTestId("setup-difficulty-normal"), "layout Ashen Outpost normal difficulty");
   await clickReady(page.getByTestId("setup-start-battle"), "layout Ashen Outpost skirmish start battle");
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 15_000 });
+  await expectBattleLoaded(page, "layout Ashen Outpost battle");
 }
 
 test.describe("Ascendant Realms responsive layout", () => {
@@ -425,26 +603,27 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} campaign map`);
       await expectBottomActionReachable(page, page.getByTestId("campaign-main-menu"), `${viewport.label} campaign actions`);
 
-      await page.getByTestId("campaign-main-menu").click();
+      await clickReady(page.getByTestId("campaign-main-menu"), `${viewport.label} campaign main menu`);
       await clickReady(page.getByTestId("menu-skirmish"), `${viewport.label} skirmish menu from campaign return`);
       await expect(page.getByTestId("skirmish-setup")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} skirmish setup`);
       await expectBottomActionReachable(page, page.getByTestId("setup-start-battle"), `${viewport.label} setup start`);
 
-      await page.getByTestId("setup-back").click();
-      await page.getByTestId("menu-inventory").click();
+      await clickReady(page.getByTestId("setup-back"), `${viewport.label} setup back`);
+      await clickReady(page.getByTestId("menu-inventory"), `${viewport.label} inventory menu`);
       await expect(page.getByTestId("hero-inventory")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} inventory`);
       await expectBottomActionReachable(page, page.getByText("Main Menu"), `${viewport.label} inventory bottom action`);
 
-      await page.getByText("Main Menu").click();
-      await page.getByTestId("menu-asset-gallery").click();
+      await clickReady(page.getByText("Main Menu"), `${viewport.label} inventory main menu`);
+      await clickReady(page.getByTestId("menu-asset-gallery"), `${viewport.label} asset gallery menu`);
       await expect(page.getByText("Asset Gallery")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} asset gallery`);
       await expectInViewport(page, page.getByRole("button", { name: "Back" }), `${viewport.label} asset gallery back`);
     });
 
     test(`tutorial entry and first objective overlay stay readable on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+      test.setTimeout(60_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await launchTutorialOverlay(page, viewport.label);
       await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
@@ -453,7 +632,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);
       await expectInViewport(page, page.getByTestId("tutorial-overlay"), `${viewport.label} tutorial overlay`);
       await expectTutorialOverlayHasFeedbackPriority(page, `${viewport.label} tutorial overlay`);
-      const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
+      const overlayBox = await waitForLayoutBox(page, page.getByTestId("tutorial-overlay"));
       expect(overlayBox, `${viewport.label} tutorial overlay has width`).not.toBeNull();
       if (overlayBox) {
         expect(overlayBox.width, `${viewport.label} tutorial overlay stays readable`).toBeGreaterThanOrEqual(
@@ -479,7 +658,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await continueSavedCampaign(page);
       await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Border Village node`);
       await clickReady(page.getByTestId("campaign-start-node"), `${viewport.label} Border Village start`);
-      await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
+      await expectBattleLoaded(page, `${viewport.label} Border Village battle`);
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
       await expectInViewport(page, page.getByTestId("battle-hero-panel"), `${viewport.label} hero panel`);
       await expectInViewport(page, page.getByTestId("battle-minimap"), `${viewport.label} minimap`);
@@ -589,7 +768,7 @@ test.describe("Ascendant Realms responsive layout", () => {
 
   for (const viewport of CINDERFEN_BATTLE_READABILITY_VIEWPORTS) {
     test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
-      test.setTimeout(viewport.label === "mobile portrait" ? 120_000 : 90_000);
+      test.setTimeout(120_000);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page);
       await continueSavedCampaign(page);

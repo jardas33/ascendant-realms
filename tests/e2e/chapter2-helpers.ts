@@ -1,5 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-import { clickReady, seedSaveBeforeAppBoot, SAVE_KEY } from "./shared-helpers";
+import { clickReady, expectBattleLoaded, seedSaveBeforeAppBoot, SAVE_KEY } from "./shared-helpers";
 
 const EMPTY_RESOURCES = { crowns: 0, stone: 0, iron: 0, aether: 0 };
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
@@ -324,7 +324,7 @@ export async function completeCinderfenOverlookChoice(
   choiceId: CinderfenOverlookChoiceId,
   expectedStatusText: string
 ): Promise<void> {
-  await page.locator(`button[data-campaign-choice='${choiceId}']`).click();
+  await clickReady(page.locator(`button[data-campaign-choice='${choiceId}']`), `complete Cinderfen Overlook ${choiceId}`);
   await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
 }
 
@@ -340,7 +340,7 @@ export async function buyCinderfenWaystationService(
   serviceId: CinderfenWaystationServiceId,
   expectedStatusText: string
 ): Promise<void> {
-  await page.locator(`button[data-campaign-choice='${serviceId}']`).click();
+  await clickReady(page.locator(`button[data-campaign-choice='${serviceId}']`), `buy Cinderfen Waystation ${serviceId}`);
   await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
 }
 
@@ -350,7 +350,7 @@ export async function launchCinderfenCrossing(page: Page): Promise<void> {
   await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
   await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Crossing start");
-  await expectChapter2BattleLoaded(page);
+  await expectBattleLoaded(page, "launch Cinderfen Crossing battle");
 }
 
 // UI-path helper: launches Watch via campaign node/start test IDs, then waits for the battle shell.
@@ -359,7 +359,7 @@ export async function launchCinderfenWatch(page: Page): Promise<void> {
   await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
   await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Watch start");
-  await expectChapter2BattleLoaded(page);
+  await expectBattleLoaded(page, "launch Cinderfen Watch battle");
 }
 
 // Safe hook helper: calls the Playwright-only captureSite hook exposed by the game test harness.
@@ -549,12 +549,4 @@ export async function completeCinderfenWatchVictory(page: Page): Promise<{
   });
   await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
   return result;
-}
-
-async function expectChapter2BattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
-  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
-  await expect(page.getByTestId("battle-minimap")).toBeVisible();
-  await expect(page.getByTestId("minimap")).toBeVisible();
 }

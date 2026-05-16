@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-05-15 v0.11.11 hosted release preview environment fix
+Updated: 2026-05-15 v0.11.12 hosted release interaction determinism fix
+
+## v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
+
+Scope: harden the manually triggered GitHub Actions hosted release matrix interaction layer after v0.11.11 production preview reduced server instability but run #19 still failed hosted deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke. This pass preserves gameplay rules, save compatibility, campaign progression, tutorial behavior, balance, Cinderfen rewards, pressure guardrails, maps, units, factions, workers/construction prohibitions, existing art, runtime art wiring, release coverage strength, and the current browser prototype scope. It does not add workers, enemy workers, real enemy construction, harvesting, dynamic enemy economy, new maps, new units, new factions, rewards, tutorial completion persistence, save-version changes, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, engine switching, external assets, generated art, imported art, downloaded art, scraped art, runtime art replacement, live reinforcements, capture-site contest AI, defensive-hold behavior, full UI redesign, graphics overhaul, app runtime behavior changes, coverage reduction, secrets, paid services, visual baseline pixel assertions, skipped tests, or weakened assertions.
+
+Included work:
+
+- Added `docs/V1112_HOSTED_RELEASE_INTERACTION_FAILURE_AUDIT.md`.
+- Added `docs/V1112_HOSTED_RELEASE_INTERACTION_DETERMINISM_FIX.md`.
+- Hardened `clickReady` with a verified DOM fallback for real visible/enabled controls after normal Playwright click actionability fails, without using force clicks and without applying it to canvas/world clicks.
+- Reused the strongest shared `expectBattleLoaded` helper across hosted pressure, smoke, layout, deep-flow, and Chapter 2 helper launch paths.
+- Routed targeted hosted-problem DOM UI buttons through `clickReady`, including tutorial command-log advancement, smoke setup/campaign paths, enemy-pressure launches, deep-flow Barracks/Train command buttons, layout navigation, and Cinderfen helper choices/starts.
+- Strengthened tutorial layout readiness with overlay/button waits and retrying layout-box measurement.
+- Reworked side-panel command reachability to wait for side-panel readiness, measure current live DOM buttons in smaller scroll-aware checks, and emit diagnostics if readiness fails.
+- Hardened the deep-battle right-click movement helper to reselect a friendly unit, validate canvas-safe target points, and keep the `Moving` assertion.
+
+Current verification:
+
+```text
+npm test: PASS, 46 files / 351 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, 0 browser console errors.
+npm run playtest:sim: PASS, 255 runs across 85 campaign battle nodes.
+npm run test:e2e:release:hosted:deep-meta: PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle: PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure: PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core: PASS, 16 tests.
+npm run test:e2e:release:hosted:layout-cinderfen: PASS, 9 tests.
+npm run test:e2e:release:hosted:smoke: PASS, 12 tests.
+Targeted hosted repro commands: PASS, movement/build, hover stability, enemy-pressure battle load, tutorial layout, Cinderfen desktop layout, and tutorial smoke.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run test:e2e:release: PASS, 67 tests.
+git diff --check: PASS.
+```
+
+Remaining watch items: Emmanuel should rerun the manual GitHub Actions `run_release_matrix` workflow input after this checkpoint and confirm the same six production-preview hosted release matrix jobs plus the unchanged release simulator.
 
 ## v0.11.11 Hosted Release Preview Environment Fix - 2026-05-15
 

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { launchCinderfenWatch, seedPostCinderfenCrossingCampaign } from "./chapter2-helpers";
-import { clickReady } from "./shared-helpers";
+import { clickReady, expectBattleLoaded } from "./shared-helpers";
 import { createHero, openFreshMainMenu } from "./shared-helpers";
 
 function attachConsoleFailure(page: Page): void {
@@ -12,14 +12,6 @@ function attachConsoleFailure(page: Page): void {
   page.on("pageerror", (error) => {
     throw error;
   });
-}
-
-async function expectBattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
-  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
-  await expect(page.getByTestId("battle-minimap")).toBeVisible();
-  await expect(page.getByTestId("minimap")).toBeVisible();
 }
 
 async function captureSiteWithHook(page: Page, siteId: string): Promise<any> {
@@ -94,7 +86,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     attachConsoleFailure(page);
     await seedPostCinderfenCrossingCampaign(page);
 
-    await page.getByTestId("menu-continue-campaign").click();
+    await clickReady(page.getByTestId("menu-continue-campaign"), "enemy-pressure continue campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await launchCinderfenWatch(page);
 
