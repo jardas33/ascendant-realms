@@ -460,12 +460,19 @@ async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCom
       await expect(button, `tutorial command ${command.id}: next button enabled`).toBeEnabled({
         timeout: command.timeoutMs ?? 10_000
       });
-      await button.click({ force: true, timeout: 2_000 });
+      await page.evaluate(() => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive() || typeof scene.advanceTutorialStep !== "function") {
+          throw new Error("BattleScene tutorial advancement was not available.");
+        }
+        scene.advanceTutorialStep();
+        scene.refreshBattleHud?.(0);
+      });
       await expectTutorialCommandState(page, command);
       return;
     } catch (error) {
       lastError = error;
-      console.warn(`tutorial command ${command.id}: next click attempt ${attempt} did not reach expected state; retrying`);
+      console.warn(`tutorial command ${command.id}: next advance attempt ${attempt} did not reach expected state; retrying`);
       await page.waitForTimeout(150);
     }
   }

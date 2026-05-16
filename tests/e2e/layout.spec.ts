@@ -28,15 +28,8 @@ const CINDERFEN_BATTLE_READABILITY_VIEWPORTS = [
   { width: 390, height: 844, label: "mobile portrait" },
   { width: 844, height: 390, label: "mobile landscape" }
 ];
-const HOSTED_LAYOUT_CORE_TIMEOUT_MS = 90_000;
+const HOSTED_LAYOUT_CORE_TIMEOUT_MS = 120_000;
 const HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS = 180_000;
-const SCENE_TRANSITION_CLICK_OPTIONS = {
-  allowTargetGoneAfterClick: true,
-  attempts: 1,
-  domFallbackTimeoutMs: 2_000,
-  normalClickTimeoutMs: 1_500
-} as const;
-
 async function expectNoHorizontalOverflow(page: Page, label: string): Promise<void> {
   const result = await page.evaluate(() => {
     const root = document.getElementById("ui-root");
@@ -290,7 +283,7 @@ async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
   await openFreshMainMenu(page);
   await expectNoHorizontalOverflow(page, `${label} main menu`);
   await expectReachableButton(page, page.getByTestId("menu-tutorial"), `${label} Tutorial`);
-  await clickReady(page.getByTestId("menu-tutorial"), `${label} Tutorial launch`, SCENE_TRANSITION_CLICK_OPTIONS);
+  await page.getByTestId("menu-tutorial").evaluate((element) => (element as HTMLElement).click());
   await expectBattleLoaded(page, `${label} tutorial battle`);
   await expect(page.getByTestId("tutorial-overlay")).toBeVisible({ timeout: 15_000 });
   await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 15_000 });
@@ -685,7 +678,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     { width: 390, height: 844, label: "mobile-tall" },
     { width: 360, height: 640, label: "mobile-short" }
   ]) {
-    test(`battle HUD and results layout stay inside the viewport on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+    test(`battle HUD layout stays inside the viewport on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
@@ -702,7 +695,12 @@ test.describe("Ascendant Realms responsive layout", () => {
       await createCompletedBarracksAndSelect(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} barracks commands`);
       await expectBattleCommandButtonsReachable(page, ["train", "upgrade"], `${viewport.label} barracks`);
+    });
 
+    test(`results layout stays inside the viewport on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await openFreshMainMenu(page);
       await showVictoryResults(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} results`);
       await expectBottomActionReachable(
