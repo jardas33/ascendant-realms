@@ -74,7 +74,8 @@ jobs:
         run: npm run smoke:preview
 
       - name: Upload Playwright failure artifacts
-        if: always()
+        if: failure()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: playwright-fast-confidence
@@ -82,7 +83,7 @@ jobs:
             test-results/
             playwright-report/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
 
   visual-qa:
     name: Optional visual QA
@@ -114,15 +115,17 @@ jobs:
 
       - name: Upload visual QA screenshots
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: visual-qa-latest
           path: visual-qa/latest/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
 
       - name: Upload visual QA Playwright artifacts
-        if: always()
+        if: failure()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: playwright-visual-qa
@@ -130,7 +133,7 @@ jobs:
             test-results/
             playwright-report/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
 
   release-shards:
     name: Release matrix (${{ matrix.name }})
@@ -177,7 +180,8 @@ jobs:
         run: ${{ matrix.command }}
 
       - name: Upload Playwright shard artifacts
-        if: always()
+        if: failure()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: playwright-release-${{ matrix.name }}
@@ -185,7 +189,7 @@ jobs:
             test-results/
             playwright-report/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
 
   release-simulator:
     name: Release simulator
@@ -238,7 +242,8 @@ jobs:
         run: npm run test:e2e:release
 
       - name: Upload full release Playwright artifacts
-        if: always()
+        if: failure()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: playwright-full-release
@@ -246,4 +251,4 @@ jobs:
             test-results/
             playwright-report/
           if-no-files-found: ignore
-          retention-days: 7
+          retention-days: 3
