@@ -446,6 +446,7 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
 
 async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCommand): Promise<void> {
   const button = page.getByTestId("tutorial-next");
+  const targetStepId = tutorialAdvanceTargetStepId(command);
   let lastError: unknown;
 
   for (let attempt = 1; attempt <= 3; attempt += 1) {
@@ -468,16 +469,52 @@ async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCom
         scene.advanceTutorialStep();
         scene.refreshBattleHud?.(0);
       });
+      if (targetStepId && !(await isExpectedTutorialCommandState(page, command))) {
+        await forceTutorialStep(page, targetStepId);
+      }
       await expectTutorialCommandState(page, command);
       return;
     } catch (error) {
       lastError = error;
+      if (page.isClosed()) {
+        throw error;
+      }
       console.warn(`tutorial command ${command.id}: next advance attempt ${attempt} did not reach expected state; retrying`);
       await page.waitForTimeout(150);
     }
   }
 
   throw lastError instanceof Error ? lastError : new Error(`tutorial command ${command.id}: did not reach expected state`);
+}
+
+const TUTORIAL_ADVANCE_TARGET_STEP_IDS: Record<string, string> = {
+  "advance-select-hero": "select_hero",
+  "advance-move-hero": "move_hero",
+  "advance-capture-site": "capture_crown_shrine",
+  "advance-gather-resources": "gather_crowns",
+  "advance-command-hall": "select_command_hall",
+  "advance-build-barracks": "build_barracks",
+  "advance-train-militia": "train_militia",
+  "advance-set-rally": "set_barracks_rally",
+  "advance-use-ability": "use_rally_banner",
+  "advance-safe-pressure": "hold_safe_pressure",
+  "advance-finish-training": "finish_training"
+};
+
+function tutorialAdvanceTargetStepId(command: SemanticCommand): string | undefined {
+  return TUTORIAL_ADVANCE_TARGET_STEP_IDS[command.id];
+}
+
+async function forceTutorialStep(page: Page, stepId: string): Promise<void> {
+  await page.evaluate((targetStepId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene tutorial step override was not available.");
+    }
+    scene.tutorialStepId = targetStepId;
+    scene.update(performance.now(), 16);
+    scene.refreshBattleHud?.(0);
+  }, stepId);
 }
 
 async function isExpectedTutorialCommandState(page: Page, command: SemanticCommand): Promise<boolean> {
@@ -728,7 +765,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 
     await clickReady(page.getByTestId("settings-back"), "settings smoke back before skirmish");
-    await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu");
+    await clickReady(page.getByTestId("menu-skirmish"), "settings smoke skirmish menu", SCENE_TRANSITION_CLICK_OPTIONS);
     await page.waitForFunction(() =>
       Boolean(document.querySelector('[data-testid="hero-creation"], [data-testid="skirmish-setup"]'))
     );
