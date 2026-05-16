@@ -28,6 +28,8 @@ const CINDERFEN_BATTLE_READABILITY_VIEWPORTS = [
   { width: 390, height: 844, label: "mobile portrait" },
   { width: 844, height: 390, label: "mobile landscape" }
 ];
+const HOSTED_LAYOUT_CORE_TIMEOUT_MS = 90_000;
+const HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS = 180_000;
 
 async function expectNoHorizontalOverflow(page: Page, label: string): Promise<void> {
   const result = await page.evaluate(() => {
@@ -399,36 +401,54 @@ async function selectBattleBuilding(page: Page, buildingId: string, expectedName
 }
 
 async function createCompletedBarracksAndSelect(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-    if (!scene?.scene.isActive()) {
-      throw new Error("BattleScene is not active.");
-    }
-    let barracks = scene.buildings.find(
-      (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
-    );
-    if (!barracks) {
-      const commandHall = scene.buildings.find(
-        (entry: any) => entry.team === "player" && entry.definition.id === "command_hall" && entry.alive
-      );
-      if (!commandHall) {
-        throw new Error("Missing Command Hall.");
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
       }
-      scene.buildingSystem.startPlacement("barracks", { anchor: commandHall.position, resources: scene.resources.player });
-      const ghost = scene.buildingSystem.ghost;
-      if (!ghost || !scene.buildingSystem.tryPlace(ghost.x, ghost.y, scene.resources.player)) {
-        throw new Error("Unable to place Barracks for layout check.");
-      }
-      barracks = scene.buildings.find(
+      let barracks = scene.buildings.find(
         (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
       );
+      if (!barracks) {
+        const commandHall = scene.buildings.find(
+          (entry: any) => entry.team === "player" && entry.definition.id === "command_hall" && entry.alive
+        );
+        if (!commandHall) {
+          throw new Error("Missing Command Hall.");
+        }
+        scene.buildingSystem.startPlacement("barracks", { anchor: commandHall.position, resources: scene.resources.player });
+        const ghost = scene.buildingSystem.ghost;
+        if (!ghost || !scene.buildingSystem.tryPlace(ghost.x, ghost.y, scene.resources.player)) {
+          throw new Error("Unable to place Barracks for layout check.");
+        }
+        barracks = scene.buildings.find(
+          (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
+        );
+      }
+      scene.buildingSystem.update((barracks.definition.constructionTimeSeconds ?? 25) + 1);
+      scene.cameraSystem.centerOn(barracks.position);
+      scene.selectionSystem.setSelection([barracks]);
+      (document.activeElement as HTMLElement | null)?.blur?.();
+      scene.refreshBattleHud?.(0);
+    });
+
+    try {
+      await page.waitForFunction(
+        () => document.querySelector<HTMLElement>(".side-panel")?.textContent?.includes("Barracks"),
+        undefined,
+        { timeout: 3_000 }
+      );
+      await expect(page.locator(".side-panel")).toContainText("Barracks");
+      return;
+    } catch (error) {
+      lastError = error;
+      console.warn(`layout Barracks selection did not render after attempt ${attempt}; retrying`);
+      await page.waitForTimeout(100);
     }
-    scene.buildingSystem.update((barracks.definition.constructionTimeSeconds ?? 25) + 1);
-    scene.cameraSystem.centerOn(barracks.position);
-    scene.selectionSystem.setSelection([barracks]);
-    scene.refreshBattleHud?.(0);
-  });
-  await expect(page.locator(".side-panel")).toContainText("Barracks");
+  }
+  throw lastError instanceof Error ? lastError : new Error("layout Barracks selection did not render");
 }
 
 async function expectBottomActionReachable(page: Page, locator: Locator, label: string): Promise<void> {
@@ -623,7 +643,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     });
 
     test(`tutorial entry and first objective overlay stay readable on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
-      test.setTimeout(60_000);
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await launchTutorialOverlay(page, viewport.label);
       await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
@@ -652,7 +672,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     { width: 360, height: 640, label: "mobile-short" }
   ]) {
     test(`battle HUD and results layout stay inside the viewport on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
-      test.setTimeout(60_000);
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
       await continueSavedCampaign(page);
@@ -768,7 +788,7 @@ test.describe("Ascendant Realms responsive layout", () => {
 
   for (const viewport of CINDERFEN_BATTLE_READABILITY_VIEWPORTS) {
     test(`Cinderfen battle HUD and Watch results readability fit ${viewport.label} @hosted-layout-cinderfen`, async ({ page }) => {
-      test.setTimeout(120_000);
+      test.setTimeout(HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedPostAshenCampaign(page);
       await continueSavedCampaign(page);

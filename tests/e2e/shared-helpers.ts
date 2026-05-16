@@ -39,6 +39,8 @@ const MAIN_MENU_NAVIGATION_ATTEMPTS = 3;
 const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
 const MAIN_MENU_FINAL_READY_TIMEOUT_MS = 10_000;
 const CLICK_READY_TIMEOUT_MS = 10_000;
+const CLICK_READY_NORMAL_CLICK_TIMEOUT_MS = 2_000;
+const CLICK_READY_DOM_FALLBACK_TIMEOUT_MS = 2_000;
 const CLICK_READY_ATTEMPTS = 2;
 const CLICK_READY_LAYOUT_BOX_ATTEMPTS = 20;
 const STORAGE_SEED_WINDOW_NAME_PREFIX = "__ASCENDANT_REALMS_E2E_SAVE_SEED__:";
@@ -376,8 +378,8 @@ export async function expectBattleLoaded(
 
 export async function clickReady(locator: Locator, context: string, options: ClickReadyOptions = {}): Promise<void> {
   const timeoutMs = options.timeoutMs ?? CLICK_READY_TIMEOUT_MS;
-  const domFallbackTimeoutMs = options.domFallbackTimeoutMs ?? timeoutMs;
-  const normalClickTimeoutMs = options.normalClickTimeoutMs ?? timeoutMs;
+  const domFallbackTimeoutMs = options.domFallbackTimeoutMs ?? CLICK_READY_DOM_FALLBACK_TIMEOUT_MS;
+  const normalClickTimeoutMs = options.normalClickTimeoutMs ?? CLICK_READY_NORMAL_CLICK_TIMEOUT_MS;
   const attempts = options.attempts ?? CLICK_READY_ATTEMPTS;
   const waitForLayoutBox = options.waitForLayoutBox ?? true;
   const allowDomFallback = options.allowDomFallback ?? true;

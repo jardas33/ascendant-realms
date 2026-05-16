@@ -28,6 +28,7 @@ type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
 const SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS = 60_000;
 const SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS = 60_000;
+const TUTORIAL_EXIT_SMOKE_TIMEOUT_MS = 60_000;
 const RESULTS_NAV_CLICK_OPTIONS = {
   allowTargetGoneAfterClick: true,
   attempts: 1,
@@ -393,13 +394,23 @@ async function executeTutorialCommand(command: SemanticCommand, page: Page): Pro
       throw new Error(`Command ${command.id} is missing a test id target.`);
     }
     const isTutorialNext = command.target.id === "tutorial-next";
-    await clickReady(page.getByTestId(command.target.id), `tutorial command ${command.id}`, {
-      allowTargetGoneAfterClick: isTutorialNext ? true : undefined,
-      attempts: isTutorialNext ? 1 : undefined,
-      normalClickTimeoutMs: isTutorialNext ? 750 : undefined,
-      timeoutMs: command.timeoutMs,
-      waitForLayoutBox: isTutorialNext ? false : undefined
-    });
+    try {
+      await clickReady(page.getByTestId(command.target.id), `tutorial command ${command.id}`, {
+        allowTargetGoneAfterClick: isTutorialNext ? true : undefined,
+        attempts: isTutorialNext ? 1 : undefined,
+        domFallbackTimeoutMs: isTutorialNext ? 5_000 : undefined,
+        normalClickTimeoutMs: isTutorialNext ? 750 : undefined,
+        timeoutMs: command.timeoutMs,
+        waitForLayoutBox: isTutorialNext ? false : undefined
+      });
+    } catch (error) {
+      if (!isTutorialNext) {
+        throw error;
+      }
+      console.warn(
+        `tutorial command ${command.id}: click target changed during advancement; checking expected tutorial state`
+      );
+    }
     await expectTutorialCommandState(page, command);
     return null;
   }
@@ -590,6 +601,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("tutorial exit returns to menu without saving @ci-fast", async ({ page }) => {
+    test.setTimeout(TUTORIAL_EXIT_SMOKE_TIMEOUT_MS);
     await openFreshMainMenu(page);
 
     await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial exit launch");

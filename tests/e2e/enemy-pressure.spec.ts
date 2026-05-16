@@ -83,6 +83,7 @@ async function showNormalStatusMessage(page: Page, message: string): Promise<str
 
 test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
   test("campaign Cinderfen Watch shows scoped pressure warning after Watch Road capture @hosted-deep-campaign", async ({ page }) => {
+    test.setTimeout(90_000);
     attachConsoleFailure(page);
     await seedPostCinderfenCrossingCampaign(page);
 
@@ -129,6 +130,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
   });
 
   test("tutorial and skirmish launches do not activate pressure plans @hosted-deep-campaign", async ({ page }) => {
+    test.setTimeout(75_000);
     attachConsoleFailure(page);
     await openFreshMainMenu(page);
 

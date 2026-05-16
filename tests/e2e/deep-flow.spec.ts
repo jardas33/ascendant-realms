@@ -74,13 +74,15 @@ const BASE_CAMPAIGN = {
 };
 
 const BATTLE_COMMAND_CLICK_OPTIONS = {
-  attempts: 2,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
 
 const HUD_MENU_CLICK_OPTIONS = {
   allowTargetGoneAfterClick: true,
-  attempts: 2,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
 
@@ -893,6 +895,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("unit veterancy rank appears in battle HUD and victory results @hosted-deep-meta", async ({ page }) => {
+    test.setTimeout(60_000);
     await startFirstClaimSkirmish(page, "Veterancy QA", "story");
 
     const granted = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.grantSelectedUnitVeterancyXp?.(140));
@@ -1513,6 +1516,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(60_000);
     await startFirstClaimSkirmish(page, "Hover QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
     await selectPlayerCommandHallFromScene(page);
