@@ -22,7 +22,7 @@ export const ENEMY_PRESSURE_PLANS: EnemyStrategicPressurePlanDefinition[] = [
         trigger: { type: "player_captures_site", captureSiteId: "watch_road_toll" },
         action: { type: "show_warning" },
         intensity: "minor",
-        warningCopy: "The Watch Captain tightens the road guard. Keep income protected.",
+        warningCopy: "The Watch Captain tightens the road guard. Keep a guard on income before the tower push.",
         telemetryLabel: "watch_road_response"
       },
       {
@@ -32,7 +32,7 @@ export const ENEMY_PRESSURE_PLANS: EnemyStrategicPressurePlanDefinition[] = [
         condition: { type: "stage_completed", stageId: "watch_road_response" },
         action: { type: "reinforce_next_wave", unitIds: ["raider"], count: 1 },
         intensity: "minor",
-        warningCopy: "Enemy horns answer your advance. Expect faster pressure on the raised road.",
+        warningCopy: "Enemy horns answer your advance. Hold Watch Road Toll, break the next wave, then push the tower.",
         telemetryLabel: "watch_road_reinforcement"
       },
       {
@@ -65,7 +65,7 @@ export const ENEMY_PRESSURE_PLANS: EnemyStrategicPressurePlanDefinition[] = [
         trigger: { type: "player_captures_site", captureSiteId: "cinder_crossing" },
         action: { type: "show_warning" },
         intensity: "minor",
-        warningCopy: "Enemy horns answer the Cinder Shrine. Hold the route before pushing on.",
+        warningCopy: "Enemy horns answer the Cinder Shrine. Hold the route, regroup, then push the center road.",
         telemetryLabel: "shrine_route_warning"
       },
       {
@@ -75,7 +75,7 @@ export const ENEMY_PRESSURE_PLANS: EnemyStrategicPressurePlanDefinition[] = [
         condition: { type: "stage_completed", stageId: "shrine_route_warning" },
         action: { type: "contest_capture_site", captureSiteId: "cinder_crossing", unitIds: ["raider"], count: 2 },
         intensity: "minor",
-        warningCopy: "Ashen scouts mark the center road. Expect faster pressure after the shrine.",
+        warningCopy: "Ashen scouts mark the center road. Expect faster pressure; break the next wave before pushing.",
         telemetryLabel: "causeway_contest"
       },
       {

@@ -19,11 +19,13 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
       const productionBuildings = selected.filter(
         (entity): entity is Building => entity instanceof Building && entity.isCompleted() && entity.definition.trainOptions.length > 0
       );
-      return `${selectedUnits.length > 0 ? renderOrderSummary("Orders", summarizeUnitOrders(selectedUnits)) : ""}
+      const hiddenCount = Math.max(0, selected.length - 12);
+      return `<p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
+      ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
       <div class="selection-grid">${selected
         .slice(0, 12)
         .map((entity) => `<span>${escapeHtml(entity.definition.name)}</span>`)
-        .join("")}</div>${
+        .join("")}</div>${hiddenCount > 0 ? `<p class="quiet">+${hiddenCount} more selected.</p>` : ""}${
         productionBuildings.length > 0
           ? `<p class="quiet">Rally Point: ${productionBuildings.some((building) => building.rallyPoint) ? "Set" : "None"}. Right-click ground to set rally point.</p>`
           : ""

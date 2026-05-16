@@ -1642,6 +1642,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.keyboard.press("Space");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
     await rightClickWorldPointUntilOrder(page, { x: 850, y: 780 }, "Moving", "deep-flow battle HUD movement command");
+    await expect(page.getByTestId("battle-status")).toContainText("Move order accepted");
 
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");

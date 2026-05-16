@@ -188,21 +188,21 @@ export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
           {
             id: "capture_cinder_crossing",
             name: "Claim the Cinder Shrine",
-            description: "Capture side income first if needed, then claim the shrine for Cinder Shrine Surge (+20 Aether once) and hold it for Aether income.",
+            description: "Take side income if needed, then claim Cinder Shrine Surge (+20 Aether once) and hold the shrine.",
             type: "capture_site",
             targetId: "cinder_crossing"
           },
           {
             id: "clear_cinder_guardians",
             name: "Clear Cinder Guardians",
-            description: "Defeat the Brute anchoring the central neutral camp.",
+            description: "Defeat the Brute and Hexer so the center road stops splitting your army.",
             type: "defeat_unit",
             targetId: "brute"
           },
           {
             id: "destroy_cinderfen_barracks",
             name: "Destroy Enemy Barracks",
-            description: "Break the Ashen staging camp before committing to the Stronghold.",
+            description: "Break Ashen production before committing your army to the Stronghold.",
             type: "destroy_building",
             targetId: "enemy_barracks"
           }

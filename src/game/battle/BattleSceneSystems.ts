@@ -156,7 +156,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
   const movementSystem = new MovementSystem({
     onPathFailed: (unit, target) => {
       if (unit.team === "player") {
-        showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978");
+        showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978", {
+          priority: "command"
+        });
       }
     }
   });
@@ -164,7 +166,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
   const trainingSystem = new TrainingSystem({
     scene,
     addUnit,
-    onMessage: (message, x, y) => showMessage(message, x, y),
+    onMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options),
     onUnitTrained: (unit) => {
       if (unit.team === "player") {
         runtime.recordUnitTrained(unit.definition.id);
@@ -182,7 +184,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getBuildings,
     getCaptureSites,
     addBuilding,
-    onMessage: (message, x, y) => showMessage(message, x, y),
+    onMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options),
     strongholdEffects,
     onConstructionStarted: (building) => {
       if (building.team === "player") {
@@ -202,7 +204,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getTechState,
     isResearched: isUpgradeResearched,
     markResearched: markUpgradeResearched,
-    onMessage: (message, x, y) => showMessage(message, x, y),
+    onMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options),
     onUpgradeCompleted: applyUpgradeEffects
   });
 
@@ -297,7 +299,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         buildingSystem.startPlacement(buildingId, { anchor: source?.position, resources: resources.player });
         AudioManager.play("ui_click");
         const definition = BUILDING_BY_ID[buildingId];
-        showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`);
+        showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`, undefined, undefined, "#d9eee8", {
+          priority: "command"
+        });
       },
       onTrain: (unitId, sourceBuildingId) => {
         const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
@@ -356,7 +360,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     centerOnHero: () => cameraSystem.centerOn(hero.position),
     castAbilitySlot,
     toggleFogDebug,
-    showMessage: (message) => showMessage(message)
+    showMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options)
   });
 
   showBattleStartSummary();

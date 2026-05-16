@@ -594,7 +594,8 @@ export class BattleScene extends Phaser.Scene {
       assignment.updatedCount === 1 ? "Rally point set" : `Rally point set for ${assignment.updatedCount} buildings`,
       assignment.rallyPoint.x,
       assignment.rallyPoint.y - 28,
-      "#b9f7c7"
+      "#b9f7c7",
+      { priority: "command" }
     );
     return true;
   }

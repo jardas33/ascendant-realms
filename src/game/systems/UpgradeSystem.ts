@@ -8,8 +8,13 @@ interface UpgradeSystemOptions {
   getTechState: (team: Team) => TechState;
   isResearched: (team: Team, upgradeId: string) => boolean;
   markResearched: (team: Team, upgradeId: string) => void;
-  onMessage: (message: string, x?: number, y?: number) => void;
+  onMessage: (message: string, x?: number, y?: number, color?: string, options?: UpgradeSystemMessageOptions) => void;
   onUpgradeCompleted: (team: Team, upgrade: UpgradeDefinition) => void;
+}
+
+interface UpgradeSystemMessageOptions {
+  durationSeconds?: number;
+  priority?: "normal" | "command" | "pressure" | "objective";
 }
 
 export class UpgradeSystem {
@@ -20,7 +25,9 @@ export class UpgradeSystem {
     const announce = options.announce ?? building.team === "player";
     if (!building.isCompleted()) {
       if (announce) {
-        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60);
+        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
@@ -29,26 +36,34 @@ export class UpgradeSystem {
     }
     if (this.options.isResearched(building.team, upgradeId)) {
       if (announce) {
-        this.options.onMessage("Upgrade already researched", building.position.x, building.position.y - 60);
+        this.options.onMessage("Upgrade already researched", building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
     if (building.upgradeQueue.some((entry) => entry.upgradeId === upgradeId)) {
       if (announce) {
-        this.options.onMessage("Upgrade already queued", building.position.x, building.position.y - 60);
+        this.options.onMessage("Upgrade already queued", building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
     const prerequisite = checkPrerequisites(upgrade.prerequisites, this.options.getTechState(building.team));
     if (!prerequisite.ok) {
       if (announce) {
-        this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60);
+        this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
     if (!canAfford(resources, upgrade.cost)) {
       if (announce) {
-        this.options.onMessage("Not enough resources", building.position.x, building.position.y - 60);
+        this.options.onMessage(`Not enough resources for ${upgrade.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
@@ -62,7 +77,9 @@ export class UpgradeSystem {
       paidCost: { ...upgrade.cost }
     });
     if (announce) {
-      this.options.onMessage(`Researching ${upgrade.name}`, building.position.x, building.position.y - 60);
+      this.options.onMessage(`Research queued: ${upgrade.name}`, building.position.x, building.position.y - 60, "#d9eee8", {
+        priority: "command"
+      });
     }
     return true;
   }
@@ -77,7 +94,9 @@ export class UpgradeSystem {
     }
     addResources(resources, canceled.paidCost);
     const upgrade = requireUpgrade(canceled.upgradeId);
-    this.options.onMessage(`Canceled ${upgrade.name}`, building.position.x, building.position.y - 60);
+    this.options.onMessage(`Canceled ${upgrade.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+      priority: "command"
+    });
     return true;
   }
 
@@ -100,7 +119,9 @@ export class UpgradeSystem {
         this.options.onUpgradeCompleted(building.team, upgrade);
       }
       if (active.announce) {
-        this.options.onMessage(`${upgrade.name} complete`, building.position.x, building.position.y - 60);
+        this.options.onMessage(`${upgrade.name} complete`, building.position.x, building.position.y - 60, "#d9eee8", {
+          priority: "command"
+        });
       }
     });
   }

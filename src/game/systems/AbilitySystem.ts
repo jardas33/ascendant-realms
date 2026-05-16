@@ -16,7 +16,12 @@ interface AbilitySystemOptions {
   addProjectile: (projectile: Projectile) => void;
   onDamage: (target: BaseEntity, amount: number) => void;
   onKill: (killer: Hero, target: BaseEntity) => void;
-  onMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  onMessage: (message: string, x?: number, y?: number, color?: string, options?: AbilitySystemMessageOptions) => void;
+}
+
+interface AbilitySystemMessageOptions {
+  durationSeconds?: number;
+  priority?: "normal" | "command" | "pressure" | "objective";
 }
 
 export class AbilitySystem {
@@ -38,17 +43,17 @@ export class AbilitySystem {
       return false;
     }
     if (!hero.unlockedAbilities.includes(ability.id)) {
-      this.options.onMessage("Ability not learned", hero.position.x, hero.position.y - 44, "#ffd27a");
+      this.showAbilityMessage("Ability not learned", hero.position.x, hero.position.y - 44, "#ffd27a");
       return false;
     }
     if (hero.abilityCooldowns[ability.id] > 0) {
       if (hero.abilityCooldowns[ability.id] < ability.cooldown - 0.5) {
-        this.options.onMessage("Ability cooling down", hero.position.x, hero.position.y - 44, "#ffd27a");
+        this.showAbilityMessage("Ability cooling down", hero.position.x, hero.position.y - 44, "#ffd27a");
       }
       return false;
     }
     if (hero.mana < ability.manaCost) {
-      this.options.onMessage("Not enough mana", hero.position.x, hero.position.y - 44, "#74d3f2");
+      this.showAbilityMessage("Not enough mana", hero.position.x, hero.position.y - 44, "#74d3f2");
       return false;
     }
 
@@ -94,14 +99,14 @@ export class AbilitySystem {
       .filter((unit) => unit.alive && unit.team === hero.team && unit.id !== hero.id && distance(unit.position, hero.position) <= ability.radius);
     allies.forEach((unit) => unit.applyDamageBuff(1 + ability.amount, ability.duration));
     this.pulse(hero.position.x, hero.position.y, ability.radius, 0xf4d36c);
-    this.options.onMessage(`Rallied ${allies.length} allies`, hero.position.x, hero.position.y - 52, "#ffe590");
+    this.showAbilityMessage(`Rallied ${allies.length} allies`, hero.position.x, hero.position.y - 52, "#ffe590");
     return true;
   }
 
   private firebolt(hero: Hero, ability: AbilityDefinition): boolean {
     const target = this.nearestHostile(hero, ability.range);
     if (!target) {
-      this.options.onMessage("No target in range", hero.position.x, hero.position.y - 44, "#ffd27a");
+      this.showAbilityMessage("No target in range", hero.position.x, hero.position.y - 44, "#ffd27a");
       return false;
     }
     this.options.addProjectile(
@@ -116,7 +121,7 @@ export class AbilitySystem {
         color: 0xff7b35
       })
     );
-    this.options.onMessage(ability.name, hero.position.x, hero.position.y - 52, "#ffb06b");
+    this.showAbilityMessage(ability.name, hero.position.x, hero.position.y - 52, "#ffb06b");
     return true;
   }
 
@@ -132,19 +137,19 @@ export class AbilitySystem {
     const target = selectedAlly instanceof Unit ? selectedAlly : hero;
     const healed = target.heal(ability.amount);
     this.pulse(target.position.x, target.position.y, 42, 0x9cffae);
-    this.options.onMessage(`+${Math.round(healed)} HP`, target.position.x, target.position.y - 44, "#aef7b7");
+    this.showAbilityMessage(`+${Math.round(healed)} HP`, target.position.x, target.position.y - 44, "#aef7b7");
     return healed > 0;
   }
 
   private arcaneBurst(hero: Hero, ability: AbilityDefinition): boolean {
     const target = this.nearestHostile(hero, ability.range);
     if (!target) {
-      this.options.onMessage("No target in range", hero.position.x, hero.position.y - 44, "#ffd27a");
+      this.showAbilityMessage("No target in range", hero.position.x, hero.position.y - 44, "#ffd27a");
       return false;
     }
     const hits = this.damageArea(hero, target.position.x, target.position.y, ability.radius, ability.amount);
     this.pulse(target.position.x, target.position.y, ability.radius, 0x9f86ff);
-    this.options.onMessage(`Arcane Burst hit ${hits}`, target.position.x, target.position.y - 52, "#c9b9ff");
+    this.showAbilityMessage(`Arcane Burst hit ${hits}`, target.position.x, target.position.y - 52, "#c9b9ff");
     return hits > 0;
   }
 
@@ -162,7 +167,7 @@ export class AbilitySystem {
     hero.setPosition(hero.position.x + (direction.x / length) * distanceToTravel, hero.position.y + (direction.y / length) * distanceToTravel);
     hero.moveTarget = undefined;
     this.pulse(hero.position.x, hero.position.y, 54, 0x83d8ff);
-    this.options.onMessage("Blink", hero.position.x, hero.position.y - 52, "#aee7ff");
+    this.showAbilityMessage("Blink", hero.position.x, hero.position.y - 52, "#aee7ff");
     return true;
   }
 
@@ -173,7 +178,7 @@ export class AbilitySystem {
       .filter((unit) => unit.alive && unit.team === hero.team && unit.id !== hero.id && distance(unit.position, hero.position) <= ability.radius);
     allies.forEach((unit) => unit.applyDamageBuff(1.12, ability.duration));
     this.pulse(hero.position.x, hero.position.y, ability.radius, 0xf4a64d);
-    this.options.onMessage(`War Cry hit ${hits}`, hero.position.x, hero.position.y - 52, "#ffc182");
+    this.showAbilityMessage(`War Cry hit ${hits}`, hero.position.x, hero.position.y - 52, "#ffc182");
     return hits > 0 || allies.length > 0;
   }
 
@@ -187,7 +192,7 @@ export class AbilitySystem {
       unit.applyDamageBuff(1.15, ability.duration);
     });
     this.pulse(hero.position.x, hero.position.y, ability.radius, 0xd7ff99);
-    this.options.onMessage(`Blessed ${allies.length} allies`, hero.position.x, hero.position.y - 52, "#ddffba");
+    this.showAbilityMessage(`Blessed ${allies.length} allies`, hero.position.x, hero.position.y - 52, "#ddffba");
     return allies.length > 0 || totalHealed > 0;
   }
 
@@ -198,15 +203,19 @@ export class AbilitySystem {
     allies.forEach((unit) => unit.heal(ability.amount));
     const hits = this.damageArea(hero, hero.position.x, hero.position.y, ability.radius, ability.amount);
     this.pulse(hero.position.x, hero.position.y, ability.radius, 0xb9ffd0);
-    this.options.onMessage(`Sanctified ground`, hero.position.x, hero.position.y - 52, "#caffd8");
+    this.showAbilityMessage("Sanctified ground", hero.position.x, hero.position.y - 52, "#caffd8");
     return hits > 0 || allies.length > 0;
   }
 
   private damageAroundHero(hero: Hero, ability: AbilityDefinition, color: number, label: string): boolean {
     const hits = this.damageArea(hero, hero.position.x, hero.position.y, ability.radius, ability.amount);
     this.pulse(hero.position.x, hero.position.y, ability.radius, color);
-    this.options.onMessage(`${label} hit ${hits}`, hero.position.x, hero.position.y - 52, "#ffdca3");
+    this.showAbilityMessage(`${label} hit ${hits}`, hero.position.x, hero.position.y - 52, "#ffdca3");
     return hits > 0;
+  }
+
+  private showAbilityMessage(message: string, x: number, y: number, color: string): void {
+    this.options.onMessage(message, x, y, color, { priority: "command" });
   }
 
   private damageArea(hero: Hero, x: number, y: number, radius: number, amount: number): number {

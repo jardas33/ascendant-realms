@@ -22,7 +22,12 @@ interface InputSystemOptions {
   centerOnHero: () => void;
   castAbilitySlot: (slot: number) => void;
   toggleFogDebug?: () => void;
-  showMessage: (message: string) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string, options?: InputMessageOptions) => void;
+}
+
+interface InputMessageOptions {
+  durationSeconds?: number;
+  priority?: "normal" | "command" | "pressure" | "objective";
 }
 
 export class InputSystem {
@@ -137,7 +142,7 @@ export class InputSystem {
     this.addKeyHandler("keyup-A", (event) => {
       if (this.aPressedAt > 0 && performance.now() - this.aPressedAt <= 220) {
         this.attackMoveMode = true;
-        this.options.showMessage("Attack-move: right click a destination");
+        this.showCommandMessage("Attack-move: right click a destination");
       }
       if (!event?.shiftKey) {
         this.attackMoveMode = false;
@@ -173,6 +178,12 @@ export class InputSystem {
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     if (target && target.alive && target.team !== "player") {
       selectedUnits.forEach((unit) => unit.commandAttack(target.id));
+      if (selectedUnits.length > 0) {
+        this.showCommandMessage(
+          `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${this.entityLabel(target)}`,
+          target.position
+        );
+      }
       this.attackMoveMode = false;
       return;
     }
@@ -187,7 +198,29 @@ export class InputSystem {
       const offset = formationOffset(index, FORMATION_SPACING);
       unit.commandMove({ x: point.x + offset.x, y: point.y + offset.y }, this.attackMoveMode);
     });
+    this.showCommandMessage(
+      `${this.attackMoveMode ? "Attack-move accepted" : "Move order accepted"}: ${this.selectionLabel(selectedUnits)}`,
+      point
+    );
     this.attackMoveMode = false;
+  }
+
+  private showCommandMessage(message: string, point?: Position): void {
+    this.options.showMessage(message, point?.x, point ? point.y - 24 : undefined, "#d9eee8", { priority: "command" });
+  }
+
+  private selectionLabel(units: Unit[]): string {
+    if (units.length === 1) {
+      return units[0].definition.name;
+    }
+    return `${units.length} units`;
+  }
+
+  private entityLabel(entity: BaseEntity): string {
+    if (entity instanceof Unit || entity instanceof Building) {
+      return entity.definition.name;
+    }
+    return entity.kind;
   }
 
   private toWorld(pointer: Phaser.Input.Pointer): Position {

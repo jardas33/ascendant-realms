@@ -1,4 +1,4 @@
-export type BattleStatusPriority = "normal" | "pressure" | "objective";
+export type BattleStatusPriority = "normal" | "command" | "pressure" | "objective";
 
 export interface BattleStatusOptions {
   durationSeconds?: number;
@@ -7,8 +7,9 @@ export interface BattleStatusOptions {
 
 const BATTLE_STATUS_PRIORITY_RANK: Record<BattleStatusPriority, number> = {
   normal: 0,
-  pressure: 1,
-  objective: 2
+  command: 1,
+  pressure: 2,
+  objective: 3
 };
 
 export function shouldReplaceBattleStatus(options: {
@@ -25,6 +26,9 @@ export function shouldReplaceBattleStatus(options: {
 export function battleStatusDurationSeconds(priority: BattleStatusPriority): number {
   if (priority === "objective") {
     return 4;
+  }
+  if (priority === "command") {
+    return 3.25;
   }
   return priority === "pressure" ? 4.5 : 2.5;
 }

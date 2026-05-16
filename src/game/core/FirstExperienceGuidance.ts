@@ -194,7 +194,7 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.outcome === "defeat") {
     return {
       title: "Recover And Retry",
-      body: "Defeat is a planning signal. The first wave should be survivable; if the base collapses later, equip rewards, use support choices, rebuild after each wave, and wait for a larger army before attacking.",
+      body: "Defeat is a planning signal. Read the tips below, rebuild economy and production, hold after each wave, then attack with a larger grouped army.",
       actions: ["Build Barracks earlier", "Set a rally point", "Use camp or Chapel support", "Attack with a larger army"]
     };
   }

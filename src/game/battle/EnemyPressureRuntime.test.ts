@@ -90,7 +90,7 @@ describe("EnemyPressureRuntime", () => {
     pressure.recordPlayerCapturedSite("watch_road_toll");
     pressure.update();
 
-    expect(warnings).toEqual(["The Watch Captain tightens the road guard. Keep income protected."]);
+    expect(warnings).toEqual(["The Watch Captain tightens the road guard. Keep a guard on income before the tower push."]);
     expect(runtime.stats.enemyPressurePlanId).toBe("ashen_watch_captain_pressure");
     expect(runtime.stats.enemyPressureTriggeredStageIds).toEqual(["watch_road_response"]);
     expect(runtime.stats.enemyPressureWarningsShown).toBe(1);

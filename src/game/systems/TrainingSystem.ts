@@ -11,10 +11,15 @@ import { applyRallyPointToTrainedUnit } from "./RallyPointSystem";
 interface TrainingSystemOptions {
   scene: Phaser.Scene;
   addUnit: (unit: Unit) => void;
-  onMessage: (message: string, x?: number, y?: number) => void;
+  onMessage: (message: string, x?: number, y?: number, color?: string, options?: TrainingSystemMessageOptions) => void;
   onUnitTrained?: (unit: Unit) => void;
   getTechState?: (team: Team) => TechState;
   strongholdEffects?: Pick<StrongholdBattleEffects, "unitTrainingTimeMultipliers">;
+}
+
+interface TrainingSystemMessageOptions {
+  durationSeconds?: number;
+  priority?: "normal" | "command" | "pressure" | "objective";
 }
 
 export class TrainingSystem {
@@ -27,7 +32,9 @@ export class TrainingSystem {
     const announce = options.announce ?? building.team === "player";
     if (!building.isCompleted()) {
       if (announce) {
-        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60);
+        this.options.onMessage("Construction must finish first", building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
@@ -39,14 +46,18 @@ export class TrainingSystem {
       const prerequisite = checkPrerequisites(unitDefinition.prerequisites, techState);
       if (!prerequisite.ok) {
         if (announce) {
-          this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60);
+          this.options.onMessage(prerequisite.reason ?? "Locked", building.position.x, building.position.y - 60, "#ffd27a", {
+            priority: "command"
+          });
         }
         return false;
       }
     }
     if (!canAfford(resources, unitDefinition.cost)) {
       if (announce) {
-        this.options.onMessage("Not enough resources", building.position.x, building.position.y - 60);
+        this.options.onMessage(`Not enough resources for ${unitDefinition.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+          priority: "command"
+        });
       }
       return false;
     }
@@ -60,7 +71,9 @@ export class TrainingSystem {
       paidCost: { ...unitDefinition.cost }
     });
     if (announce) {
-      this.options.onMessage(`Training ${unitDefinition.name}`, building.position.x, building.position.y - 60);
+      this.options.onMessage(`Training queued: ${unitDefinition.name}`, building.position.x, building.position.y - 60, "#d9eee8", {
+        priority: "command"
+      });
     }
     return true;
   }
@@ -83,7 +96,9 @@ export class TrainingSystem {
     }
     addResources(resources, canceled.paidCost);
     const unitDefinition = requireUnit(canceled.unitId);
-    this.options.onMessage(`Canceled ${unitDefinition.name}`, building.position.x, building.position.y - 60);
+    this.options.onMessage(`Canceled ${unitDefinition.name}`, building.position.x, building.position.y - 60, "#ffd27a", {
+      priority: "command"
+    });
     return true;
   }
 
@@ -121,7 +136,13 @@ export class TrainingSystem {
     this.options.addUnit(unit);
     this.options.onUnitTrained?.(unit);
     if (announce) {
-      this.options.onMessage(`${unitDefinition.name} ready`, unit.position.x, unit.position.y - 28);
+      this.options.onMessage(
+        building.rallyPoint ? `${unitDefinition.name} ready: moving to rally point` : `${unitDefinition.name} ready`,
+        unit.position.x,
+        unit.position.y - 28,
+        "#d9eee8",
+        { priority: "command" }
+      );
     }
   }
 }

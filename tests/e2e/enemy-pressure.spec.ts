@@ -121,7 +121,7 @@ test.describe("Enemy Strategic Pressure V1 browser coverage", () => {
     expect(pressureState.completedStageIds).toEqual(expect.arrayContaining(["watch_road_response"]));
     expect(pressureState.pressureWarningsShown).toBe(1);
 
-    const pressureWarning = "Enemy horns answer your advance. Expect faster pressure on the raised road.";
+    const pressureWarning = "Enemy horns answer your advance. Hold Watch Road Toll, break the next wave, then push the tower.";
     expect(await advancePressureRuntime(page, 36)).toBe(pressureWarning);
     await expect(page.getByTestId("battle-status")).toContainText(pressureWarning);
     expect(await showNormalStatusMessage(page, "Generic battle update")).toBe(pressureWarning);

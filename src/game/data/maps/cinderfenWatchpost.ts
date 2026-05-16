@@ -151,21 +151,21 @@ export const CINDERFEN_WATCHPOST_MAP: BattleMapDefinition = {
         {
           id: "capture_watch_road",
           name: "Capture the Watch Road",
-          description: "Claim the raised-road toll first; it funds the push into fog around the watchtower.",
+          description: "Claim Watch Road Toll first; hold that income while scouting the fog around the tower.",
           type: "capture_site",
           targetId: "watch_road_toll"
         },
         {
           id: "clear_marsh_raider_camp",
           name: "Clear the Marsh Raider Camp",
-          description: "Defeat the Brute leading the raider camp on the lower road.",
+          description: "Clear the lower-road Brute before it splits your line during the tower push.",
           type: "defeat_unit",
           targetId: "brute"
         },
         {
           id: "destroy_watchpost_tower",
           name: "Destroy the Watchpost Tower",
-          description: "Bring down the central Ashen Watchtower before the Stronghold assault.",
+          description: "Bring down the central Watchtower, then commit to the fortified Stronghold.",
           type: "destroy_building",
           targetId: "watchtower"
         }

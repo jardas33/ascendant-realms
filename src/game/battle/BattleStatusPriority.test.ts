@@ -22,6 +22,26 @@ describe("BattleStatusPriority", () => {
     ).toBe(true);
   });
 
+  it("lets command acknowledgements replace routine normal messages", () => {
+    expect(
+      shouldReplaceBattleStatus({
+        currentPriority: "normal",
+        currentTimerSeconds: 2,
+        incomingPriority: "command"
+      })
+    ).toBe(true);
+  });
+
+  it("keeps active pressure warnings ahead of command acknowledgements", () => {
+    expect(
+      shouldReplaceBattleStatus({
+        currentPriority: "pressure",
+        currentTimerSeconds: 3,
+        incomingPriority: "command"
+      })
+    ).toBe(false);
+  });
+
   it("lets objective feedback replace active pressure warnings", () => {
     expect(
       shouldReplaceBattleStatus({
@@ -44,5 +64,10 @@ describe("BattleStatusPriority", () => {
 
   it("gives pressure warnings a longer status-line read window", () => {
     expect(battleStatusDurationSeconds("pressure")).toBeGreaterThan(battleStatusDurationSeconds("normal"));
+  });
+
+  it("gives command acknowledgements a longer read window than routine messages", () => {
+    expect(battleStatusDurationSeconds("command")).toBeGreaterThan(battleStatusDurationSeconds("normal"));
+    expect(battleStatusDurationSeconds("command")).toBeLessThan(battleStatusDurationSeconds("pressure"));
   });
 });

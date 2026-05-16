@@ -13,10 +13,15 @@ interface BuildingSystemOptions {
   getBuildings: () => Building[];
   getCaptureSites: () => CaptureSite[];
   addBuilding: (building: Building) => void;
-  onMessage: (message: string, x?: number, y?: number) => void;
+  onMessage: (message: string, x?: number, y?: number, color?: string, options?: BuildingSystemMessageOptions) => void;
   onConstructionStarted?: (building: Building) => void;
   onBuilt?: (building: Building) => void;
   strongholdEffects?: StrongholdBattleEffects;
+}
+
+interface BuildingSystemMessageOptions {
+  durationSeconds?: number;
+  priority?: "normal" | "command" | "pressure" | "objective";
 }
 
 export class BuildingSystem {
@@ -113,7 +118,7 @@ export class BuildingSystem {
 
     const placement = this.getPlacementResult(x, y, definition.id, resources);
     if (!placement.ok) {
-      this.options.onMessage(placementReasonText(placement.reason), x, y);
+      this.options.onMessage(placementReasonText(placement.reason), x, y, "#ffd27a", { priority: "command" });
       return false;
     }
 
@@ -130,7 +135,9 @@ export class BuildingSystem {
     this.options.onMessage(
       building.isCompleted() ? `${definition.name} built` : `${definition.name} construction started`,
       x,
-      y - 30
+      y - 30,
+      "#d9eee8",
+      { priority: "command" }
     );
     this.cancelPlacement();
     return true;

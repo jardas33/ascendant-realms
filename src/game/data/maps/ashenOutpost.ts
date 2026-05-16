@@ -187,7 +187,7 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
           {
             id: "capture_burned_shrine",
             name: "Capture the Burned Shrine",
-            description: "Seize the central aether shrine to weaken the gate Watchtower before assaulting the fortress.",
+            description: "Take the central shrine first; it damages the gate Watchtower and makes the fortress push safer.",
             type: "capture_site",
             targetId: "burned_shrine"
           },
@@ -201,7 +201,7 @@ export const ASHEN_OUTPOST_MAP: BattleMapDefinition = {
           {
             id: "defeat_outpost_captain",
             name: "Defeat Captain Malrec",
-            description: "Defeat Captain Malrec, the Ashen commander guarding the upper ridge.",
+            description: "Save hero abilities for Captain Malrec once the shrine and barracks are secure.",
             type: "defeat_unit",
             targetId: "enemy_commander"
           }

@@ -80,7 +80,7 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
 
 export function initialResultsStatus(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
-    return "No victory rewards or battle XP were saved. Retry when ready, or return and adjust your plan.";
+    return "No victory rewards or battle XP were saved. Use Defeat Tips to rebuild economy, train a larger army, and retry when ready.";
   }
   if (isRepeatBattleClear(data)) {
     return "Repeat clear complete. Reduced repeat rewards were applied; weighted item rolls and campaign node rewards do not duplicate.";
