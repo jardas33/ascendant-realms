@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.12.1 Human-Paced Core Feel Playtest Review - 2026-05-17
+
+This checkpoint validates the v0.12 readability pass through slow, human-paced play review and applies only tiny evidence-backed polish. It preserves the v0.11.12/v0.12 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, and gameplay mechanics.
+
+### Included
+
+- Human-paced playtest protocol: `docs/V0121_HUMAN_PACED_PLAYTEST_PROTOCOL.md`.
+- Human-paced playtest notes: `docs/V0121_HUMAN_PACED_PLAYTEST_NOTES.md`.
+- Tiny polish plan: `docs/V0121_PLAYTEST_POLISH_PLAN.md`.
+- No-tuning decision: `docs/V0121_TUNING_DECISION.md`.
+- Visual QA review: `docs/V0121_VISUAL_QA_REVIEW.md`.
+- Final report: `docs/V0121_HUMAN_PACED_PLAYTEST_REPORT.md`.
+- Aligned player-facing Cinderfen battle names to `Cinderfen Crossing` and `Cinderfen Watch` while keeping ids, files, routes, saves, and mechanics unchanged.
+- Reworded the Cinder Shrine objective so the small tracker calls out the one-time +20 Aether surge and hold instruction more plainly.
+- Made defeat guidance context-aware so skirmish defeats no longer suggest campaign-only camp/Chapel support.
+- Updated focused tests for the changed copy and preserved release assertions after scene-transition/HUD-refresh timing was exposed by full release verification.
+
+### Verification
+
+- Final verification is recorded in `docs/V0121_HUMAN_PACED_PLAYTEST_REPORT.md`.
+
+### Next
+
+- Rerun the manual GitHub Actions release matrix on the v0.12.1 checkpoint commit.
+- Next recommended long goal: v0.12.2 Human Balance Watchpoint Review, focused on repeated evidence for retinue plus Training Yard II, Greedy Economy timeouts, Fast Army clear speed, early campaign defeat causes, and pressure-warning fairness.
+
 ## v0.12 Core Game Feel and Battle Readability Pass - 2026-05-16
 
 This checkpoint improves the existing playable slice after the v0.11.12 hosted release matrix green closeout. It focuses on command acknowledgement, selected-order clarity, objective wording, scoped pressure readability, battle-status priority, side-panel hierarchy, results guidance, and evidence-backed no-change tuning decisions without adding new art, maps, factions, units, save migrations, broad AI/economy behavior, or CI plumbing.

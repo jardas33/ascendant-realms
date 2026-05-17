@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-05-16 v0.12 core game feel and battle readability pass
+Updated: 2026-05-17 v0.12.1 human-paced core feel playtest review
+
+## v0.12.1 Human-Paced Core Feel Playtest Review - 2026-05-17
+
+Scope: review the v0.12 core feel/readability changes through a slower human-style play pass, then apply only tiny evidence-backed polish. This pass preserves the v0.11.12/v0.12 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, and gameplay mechanics. It does not start the 2026 visual overhaul or add broad AI/economy behavior.
+
+Included work:
+
+- Added `docs/V0121_HUMAN_PACED_PLAYTEST_PROTOCOL.md`.
+- Added `docs/V0121_HUMAN_PACED_PLAYTEST_NOTES.md`.
+- Added `docs/V0121_PLAYTEST_POLISH_PLAN.md`.
+- Added `docs/V0121_TUNING_DECISION.md`.
+- Added `docs/V0121_VISUAL_QA_REVIEW.md`.
+- Added `docs/V0121_HUMAN_PACED_PLAYTEST_REPORT.md`.
+- Aligned player-facing Cinderfen map names to `Cinderfen Crossing` and `Cinderfen Watch` while keeping map ids, file names, route wiring, saves, and mechanics unchanged.
+- Reworded the Cinder Shrine objective to explain the one-time +20 Aether surge and hold instruction in the small tracker.
+- Made defeat guidance context-aware so skirmish defeats use `Hold after each wave` while campaign defeats keep camp/Chapel support guidance.
+- Updated reward/report naming and focused copy tests for the new Cinderfen names.
+- Preserved release assertions after full release exposed two deep-flow timing issues: Start Battle scene transitions now use the existing scene-transition click options, and direct building selection refreshes the HUD before side-panel assertions. No force clicks or canvas/world DOM fallback were added.
+
+Current verification:
+
+```text
+npm test: PASS, 47 files / 356 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, production preview, 0 browser console errors.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+npm run test:e2e:release:hosted:deep-meta: PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle: PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure: PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core: PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen: PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke: PASS, 12 tests.
+npm run test:e2e:release: PASS, 74 tests.
+git diff --check: PASS.
+```
+
+Remaining watch items: commit, push, and rerun the manual GitHub Actions release matrix on the final v0.12.1 checkpoint commit. The next recommended long goal is v0.12.2 Human Balance Watchpoint Review focused on retinue plus Training Yard II, Greedy Economy timeouts, Fast Army clear speed, early campaign defeat causes, and pressure-warning fairness. Keep the future 2026 visual overhaul separate.
 
 ## v0.12 Core Game Feel and Battle Readability Pass - 2026-05-16
 

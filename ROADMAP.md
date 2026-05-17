@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.12 Core Game Feel and Battle Readability Pass** on 2026-05-16. It builds on the v0.11.12 hosted release matrix green closeout and improves the existing slice through command acknowledgement, selected-order hierarchy, objective wording, scoped pressure warning copy, battle-status read windows, side-panel readability, and results guidance. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
+The latest player-facing checkpoint is **v0.12.1 Human-Paced Core Feel Playtest Review** on 2026-05-17. It validates the v0.12 readability pass through slow play review, aligns Cinderfen player-facing battle names to `Cinderfen Crossing` and `Cinderfen Watch`, clarifies the Cinder Shrine objective, and makes skirmish defeat guidance stop pointing at campaign-only support. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is **v0.12.1 Human-Paced Core Feel Playtest Review**. Review Ashen Outpost, Cinderfen Crossing, Cinderfen Watch, Results, and campaign return flow with the new command/objective/pressure feedback, then apply only small copy, HUD-spacing, or tiny tuning changes if evidence supports them. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is **v0.12.2 Human Balance Watchpoint Review**. Focus on repeated human and simulator evidence for retinue plus Training Yard II, Greedy Economy timeouts, Fast Army clear speed, early campaign defeat causes, and pressure-warning fairness. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.12.1 human-paced playtest docs:
+
+- `docs/V0121_HUMAN_PACED_PLAYTEST_PROTOCOL.md`
+- `docs/V0121_HUMAN_PACED_PLAYTEST_NOTES.md`
+- `docs/V0121_PLAYTEST_POLISH_PLAN.md`
+- `docs/V0121_TUNING_DECISION.md`
+- `docs/V0121_VISUAL_QA_REVIEW.md`
+- `docs/V0121_HUMAN_PACED_PLAYTEST_REPORT.md`
 
 New v0.12 core feel docs:
 
@@ -228,8 +237,8 @@ Completed v0.3 Cinderfen route:
 
 - [x] Cinderfen Overlook: `cinderfen_overlook` is a playable Chapter 2 preparation event after `ashen_outpost`, with three baseline choices plus the optional Malrec trophy consequence.
 - [x] Cinderfen Waystation: `cinderfen_waystation` is a compact town/service node after `cinderfen_overlook`, with Marsh Guides, Ash Filters, Refugee Scouts, and Shrine Attunement using existing campaign choice/modifier/save rules.
-- [x] Cinderfen Crossing: `cinderfen_crossing` is playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Causeway** battle map.
-- [x] Cinderfen Watch: `cinderfen_watch` is playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watchpost** battle map.
+- [x] Cinderfen Crossing: `cinderfen_crossing` is playable after `cinderfen_overlook` and launches the authored `cinderfen_causeway` / **Cinderfen Crossing** battle map.
+- [x] Cinderfen Watch: `cinderfen_watch` is playable after `cinderfen_crossing` and launches the compact `cinderfen_watchpost` / **Cinderfen Watch** battle map.
 - [x] Cinderfen Aftermath: `cinderfen_aftermath` is a compact non-battle event after `cinderfen_watch`, with three modest baseline once-only choices plus a tiny optional Malrec trophy reputation choice using existing resource, reward, reputation, modifier, save, and duplicate-prevention rules. It is the end of the current playable Cinderfen route.
 - Implemented Cinderfen identity hook: the Cinder Shrine first-capture Aether surge exists as a small battle-local tactical feature.
 - Baseline document: `docs/V03_CINDERFEN_ROUTE_BASELINE.md`.
@@ -237,7 +246,7 @@ Completed v0.3 Cinderfen route:
 - Automated review: `docs/CINDERFEN_AUTOMATED_REVIEW.md`.
 - Working proposal: The Cinderfen Road remains a small ash-glass wetland/causeway route that reuses the current campaign, rival, trophy, Stronghold, retinue, reputation, enemy hero, and affixed-loot systems.
 - Default implementation stance: use existing Free Marches and Ashen Covenant content first; do not start a full new faction.
-- Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath` are implemented. Cinderfen Causeway and Cinderfen Watchpost have map/objective/reward validation, Cinderfen appears in e2e coverage, both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile, and the aftermath is event-only. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
+- Current slice result: `cinderfen_overlook`, `cinderfen_waystation`, `cinderfen_crossing`, `cinderfen_watch`, and `cinderfen_aftermath` are implemented. Cinderfen Crossing and Cinderfen Watch have map/objective/reward validation, Cinderfen appears in e2e coverage, both Cinderfen battles are included in the Chapter 2 simulator profile with one eligible Waystation Shrine Attunement service profile, and the aftermath is event-only. No new faction, worker, enemy construction, diplomacy, procedural generation, crafting, or broad army management has been added.
 
 Completed Tutorial / Proving Grounds shell and v0.6 onboarding foundation:
 
@@ -436,7 +445,7 @@ Recommended focus after the v0.3.1 freeze:
 - Basic buildings.
 - Enemy AI.
 - Win/loss.
-- Five authored battlefields now prove the map pipeline: First Claim, Broken Ford, Ashen Outpost, Chapter 2 Cinderfen Causeway, and Chapter 2 Cinderfen Watchpost.
+- Five authored battlefields now prove the map pipeline: First Claim, Broken Ford, Ashen Outpost, Chapter 2 Cinderfen Crossing, and Chapter 2 Cinderfen Watch.
 - Ashen Outpost serves as the first campaign milestone/boss-style fortress assault, with secondary objective tracking for map-specific goals.
 
 ## Phase 2: Hero RPG Depth
@@ -478,9 +487,9 @@ Recommended focus after the v0.3.1 freeze:
 - Rival Rewards and Trophies V1 with data-driven first-defeat XP/resource/reputation/item rewards, duplicate prevention, save-backed trophy records, Campaign Map trophy display, Results reward/trophy copy, and playtest telemetry fields.
 - Save-backed node completion, unlocks, selected node, one-time node rewards, and once-only choice claims.
 - Campaign battle launches through the shared `BattleLaunchRequest` path.
-- Chapter 2 has a compact playable Cinderfen slice: `cinderfen_overlook` is the implemented event gate after Ashen Outpost, `cinderfen_crossing` unlocks after that event to launch `Cinderfen Causeway`, `cinderfen_watch` unlocks after Cinderfen Crossing to launch `Cinderfen Watchpost`, and `cinderfen_aftermath` unlocks after Cinderfen Watch as a non-battle consequence node.
+- Chapter 2 has a compact playable Cinderfen slice: `cinderfen_overlook` is the implemented event gate after Ashen Outpost, `cinderfen_crossing` unlocks after that event to launch `Cinderfen Crossing`, `cinderfen_watch` unlocks after Cinderfen Crossing to launch `Cinderfen Watch`, and `cinderfen_aftermath` unlocks after Cinderfen Watch as a non-battle consequence node.
 - `cinderfen_waystation` is the implemented Chapter 2 support/town node after Cinderfen Overlook. It spends campaign resources on modest Cinderfen-only preparation without adding a broad shop, new faction, workers, enemy construction, diplomacy, procedural generation, or crafting.
-- Cinderfen Causeway uses the Cinder Shrine first-capture Aether surge as its compact battle-local tactical identity feature.
+- Cinderfen Crossing uses the Cinder Shrine first-capture Aether surge as its compact battle-local tactical identity feature.
 - The only returning-rival consequence in Chapter 2 is the optional Malrec trophy event choice; there is no new Chapter 2 rival system.
 - Quests.
 - Shops.
