@@ -7,6 +7,7 @@ import { CaptureSite } from "../entities/CaptureSite";
 import { Hero } from "../entities/Hero";
 import { Unit } from "../entities/Unit";
 import type { BattleRuntime } from "./BattleRuntime";
+import type { BattleStatusOptions } from "./BattleStatusPriority";
 import type { MinimapPing } from "../ui/MinimapView";
 
 export interface TrackedEnemyWave {
@@ -51,7 +52,7 @@ export function updateResourceSiteWarnings(options: {
   captureSites: CaptureSite[];
   units: Unit[];
   addMinimapPing: (x: number, y: number, color: string, label: string) => void;
-  showMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string, options?: BattleStatusOptions) => void;
 }): Map<string, number> {
   const cooldowns = new Map(options.cooldowns);
   cooldowns.forEach((remaining, siteId) => {
@@ -81,7 +82,9 @@ export function updateResourceSiteWarnings(options: {
 
     cooldowns.set(site.definition.id, 10);
     options.addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} under attack`);
-    options.showMessage(`${site.definition.name} is under attack.`, site.position.x, site.position.y - 70, "#f0d978");
+    options.showMessage(`${site.definition.name} is under attack.`, site.position.x, site.position.y - 70, "#f0d978", {
+      priority: "pressure"
+    });
   });
   return cooldowns;
 }
@@ -122,7 +125,7 @@ export function updateTrackedEnemyWaves(options: {
   units: Unit[];
   runtime: BattleRuntime;
   hero: Hero;
-  showMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string, options?: BattleStatusOptions) => void;
 }): TrackedEnemyWave[] {
   return options.waves.filter((wave) => {
     const aliveWaveUnits = options.units.filter((unit) => wave.unitIds.includes(unit.id) && unit.alive);
@@ -130,7 +133,9 @@ export function updateTrackedEnemyWaves(options: {
       return true;
     }
     options.runtime.recordEnemyWaveSurvived();
-    options.showMessage(`Enemy wave ${wave.id} defeated`, options.hero.position.x, options.hero.position.y - 80, "#aef7b7");
+    options.showMessage(`Enemy wave ${wave.id} defeated`, options.hero.position.x, options.hero.position.y - 80, "#aef7b7", {
+      priority: "pressure"
+    });
     return false;
   });
 }
@@ -195,14 +200,16 @@ export function warnIfCommandHallUnderAttack(options: {
   cooldown: number;
   playerBaseBuildingId: string;
   addMinimapPing: (x: number, y: number, color: string, label: string) => void;
-  showMessage: (message: string, x?: number, y?: number, color?: string) => void;
+  showMessage: (message: string, x?: number, y?: number, color?: string, options?: BattleStatusOptions) => void;
 }): number {
   const { target, cooldown, playerBaseBuildingId, addMinimapPing, showMessage } = options;
   if (cooldown > 0 || !(target instanceof Building) || target.team !== "player" || target.definition.id !== playerBaseBuildingId) {
     return cooldown;
   }
   addMinimapPing(target.position.x, target.position.y, "#ff7268", "Command Hall under attack");
-  showMessage("Your Command Hall is under attack.", target.position.x, target.position.y - 74, "#ffb1a9");
+  showMessage("Your Command Hall is under attack.", target.position.x, target.position.y - 74, "#ffb1a9", {
+    priority: "pressure"
+  });
   return 8;
 }
 

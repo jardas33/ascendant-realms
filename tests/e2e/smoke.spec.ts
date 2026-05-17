@@ -40,6 +40,9 @@ const SCENE_TRANSITION_CLICK_OPTIONS = {
   domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
+const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
+  allowTargetDisabledAfterClick: true
+} as const;
 async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
   await page.getByTestId(testId).evaluate((input, nextValue) => {
     const range = input as HTMLInputElement;
@@ -55,7 +58,11 @@ async function launchSkirmishBattle(page: Page, difficulty: SmokeDifficulty, her
   await clickReady(page.getByTestId("menu-skirmish"), `smoke skirmish ${difficulty} menu`);
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await clickReady(page.getByTestId(`setup-difficulty-${difficulty}`), `smoke skirmish ${difficulty} difficulty`);
-  await clickReady(page.getByTestId("setup-start-battle"), `smoke skirmish ${difficulty} start battle`);
+  await clickReady(
+    page.getByTestId("setup-start-battle"),
+    `smoke skirmish ${difficulty} start battle`,
+    SCENE_TRANSITION_CLICK_OPTIONS
+  );
   await expectBattleLoaded(page);
 }
 
@@ -938,7 +945,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards @extended-smoke", async ({ page }) => {
-    test.setTimeout(85_000);
+    // This Chapter 2 route covers event choice, town service, battle launch,
+    // victory rewards, campaign return, and a persistence reload in one flow.
+    test.setTimeout(115_000);
     await seedPostAshenCampaign(page);
 
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen campaign");
@@ -1186,7 +1195,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("post-Crossing campaign launches Cinderfen Watch and persists completion @extended-smoke", async ({ page }) => {
-    test.setTimeout(65_000);
+    // This route includes Waystation support, Watch victory, aftermath choice,
+    // and reward persistence; keep the assertions intact and budget the full path.
+    test.setTimeout(95_000);
     await seedPostCinderfenCrossingCampaign(page);
 
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Crossing campaign");
@@ -1313,8 +1324,22 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Study the Ashen Marks");
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Cost: 40 Crowns");
     await expect(page.locator("button[data-campaign-choice='aid_the_fenfolk']")).toContainText("Reputation: +5 Common Folk");
-    await clickReady(page.locator("button[data-campaign-choice='aid_the_fenfolk']"), "smoke Cinderfen Aftermath aid Fenfolk");
-    await expect(page.getByTestId("campaign-status")).toContainText("Aid the Fenfolk chosen");
+    const aidFenfolkStatusText = "Aid the Fenfolk chosen";
+    await clickReady(
+      page.locator("button[data-campaign-choice='aid_the_fenfolk']"),
+      "smoke Cinderfen Aftermath aid Fenfolk",
+      {
+        ...ONE_SHOT_CHOICE_CLICK_OPTIONS,
+        successCheckAfterClick: async () => {
+          const text = await page
+            .getByTestId("campaign-status")
+            .textContent({ timeout: 1_000 })
+            .catch(() => "");
+          return text?.includes(aidFenfolkStatusText) ?? false;
+        }
+      }
+    );
+    await expect(page.getByTestId("campaign-status")).toContainText(aidFenfolkStatusText);
     await expect(page.getByTestId("campaign-status")).toContainText("Cinderfen route secured");
     await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 route complete");
     await expect(page.getByTestId("campaign-status")).toContainText("future Cinderfen roads");

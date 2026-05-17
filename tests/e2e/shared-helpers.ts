@@ -18,10 +18,12 @@ type SeedCampaignOptions = {
 
 type ClickReadyOptions = {
   allowDomFallback?: boolean;
+  allowTargetDisabledAfterClick?: boolean;
   allowTargetGoneAfterClick?: boolean;
   attempts?: number;
   domFallbackTimeoutMs?: number;
   normalClickTimeoutMs?: number;
+  successCheckAfterClick?: () => Promise<boolean>;
   timeoutMs?: number;
   waitForLayoutBox?: boolean;
 };
@@ -153,6 +155,35 @@ function isRetryableDomClickVerification(verification: DomClickVerification): bo
     verification.reason === "not visibly laid out" ||
     verification.reason.startsWith("center covered by")
   );
+}
+
+async function isLocatorTargetDisabled(locator: Locator): Promise<boolean> {
+  return locator
+    .evaluateAll((elements) =>
+      elements.some((element) => {
+        const control = element.closest?.("button,a,input,select,textarea,[role='button']");
+        if (!control) {
+          return false;
+        }
+
+        const disabled =
+          (control instanceof HTMLButtonElement ||
+            control instanceof HTMLInputElement ||
+            control instanceof HTMLSelectElement ||
+            control instanceof HTMLTextAreaElement) &&
+          control.disabled;
+        return disabled || control.getAttribute("aria-disabled") === "true";
+      })
+    )
+    .catch(() => false);
+}
+
+async function didClickAlreadySucceed(successCheckAfterClick: (() => Promise<boolean>) | undefined): Promise<boolean> {
+  if (!successCheckAfterClick) {
+    return false;
+  }
+
+  return successCheckAfterClick().catch(() => false);
 }
 
 async function verifiedDomClick(
@@ -383,9 +414,12 @@ export async function clickReady(locator: Locator, context: string, options: Cli
   const attempts = options.attempts ?? CLICK_READY_ATTEMPTS;
   const waitForLayoutBox = options.waitForLayoutBox ?? true;
   const allowDomFallback = options.allowDomFallback ?? true;
+  const allowTargetDisabledAfterClick = options.allowTargetDisabledAfterClick ?? false;
   const allowTargetGoneAfterClick = options.allowTargetGoneAfterClick ?? false;
+  const successCheckAfterClick = options.successCheckAfterClick;
   let lastError: unknown;
   let attemptsUsed = 0;
+  let attemptedNormalClick = false;
 
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     attemptsUsed = attempt;
@@ -401,10 +435,20 @@ export async function clickReady(locator: Locator, context: string, options: Cli
       if (waitForLayoutBox) {
         await waitForLocatorLayoutBox(locator, context, timeoutMs);
       }
+      attemptedNormalClick = true;
       await locator.click({ timeout: normalClickTimeoutMs });
       return;
     } catch (error) {
       lastError = error;
+      if (
+        attemptedNormalClick &&
+        isTransientClickError(error) &&
+        (await didClickAlreadySucceed(successCheckAfterClick))
+      ) {
+        console.warn(`${context}: follow-up state appeared after normal click; skipping retry/fallback`);
+        return;
+      }
+
       if (!isTransientClickError(error) || attempt === attempts) {
         break;
       }
@@ -422,6 +466,23 @@ export async function clickReady(locator: Locator, context: string, options: Cli
       console.warn(`${context}: target disappeared after normal click; relying on follow-up assertions`);
       return;
     }
+  }
+
+  if (allowTargetDisabledAfterClick && attemptedNormalClick && lastError && isTransientClickError(lastError)) {
+    if (await isLocatorTargetDisabled(locator)) {
+      console.warn(`${context}: target disabled after normal click; relying on follow-up assertions`);
+      return;
+    }
+  }
+
+  if (
+    attemptedNormalClick &&
+    lastError &&
+    isTransientClickError(lastError) &&
+    (await didClickAlreadySucceed(successCheckAfterClick))
+  ) {
+    console.warn(`${context}: follow-up state appeared after normal click; skipping fallback`);
+    return;
   }
 
   if (allowDomFallback && lastError && isTransientClickError(lastError)) {

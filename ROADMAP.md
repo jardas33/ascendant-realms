@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest feature checkpoint is **v0.11.2 GitHub Actions Remote CI Observation and Timeout Tuning** on 2026-05-11. It preserves the frozen v0.3 Cinderfen Route Baseline, frozen v0.3.1 polish release, v0.4 technical groundwork, v0.5 save/content-validation gate, v0.6 Tutorial / Proving Grounds foundation, v0.7 Enemy Strategic Pressure V1, v0.8 technical/visual foundation, v0.9 docs/specs/prompts-only Cinderfen style-frame package, v0.9.1 non-runtime style-frame intake pipeline, v0.10 Tutorial v2 onboarding refinement, v0.11 technical reliability gate, and v0.11.1 CI dry-run workflow while documenting remote Actions access limits, expected GitHub UI evidence, static workflow review, timeout/artifact/preview-helper reviews, and a no-fix decision. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, large candidate binaries, broad systems, live reinforcements, capture-site contest AI, defensive-hold behavior, engine switching, final art, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, or release coverage reduction.
+The latest player-facing checkpoint is **v0.12 Core Game Feel and Battle Readability Pass** on 2026-05-16. It builds on the v0.11.12 hosted release matrix green closeout and improves the existing slice through command acknowledgement, selected-order hierarchy, objective wording, scoped pressure warning copy, battle-status read windows, side-panel readability, and results guidance. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is a short **v0.10.1 Tutorial v2 Human-Feedback Polish** only after Emmanuel completes `docs/V10_MANUAL_TUTORIAL_V2_PLAYTEST_CHECKLIST.md`. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. If neither human tutorial feedback nor candidate art is available, the safest technical follow-up is **v0.11.3 GitHub Actions Evidence Follow-Up and Minimal Tuning**, but only after Emmanuel captures GitHub UI evidence using `docs/V112_MANUAL_GITHUB_ACTIONS_CHECKLIST.md`.
+The next recommended player-facing step is **v0.12.1 Human-Paced Core Feel Playtest Review**. Review Ashen Outpost, Cinderfen Crossing, Cinderfen Watch, Results, and campaign return flow with the new command/objective/pressure feedback, then apply only small copy, HUD-spacing, or tiny tuning changes if evidence supports them. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.12 core feel docs:
+
+- `docs/V012_CORE_GAME_FEEL_AUDIT.md`
+- `docs/V012_BATTLE_READABILITY_AUDIT.md`
+- `docs/V012_BALANCE_AND_FEEL_TUNING_NOTES.md`
+- `docs/V012_VISUAL_READABILITY_NOTES.md`
+- `docs/V012_CORE_GAME_FEEL_PASS_REPORT.md`
 
 New v0.11.2 remote CI observation docs:
 

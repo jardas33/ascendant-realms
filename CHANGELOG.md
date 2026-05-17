@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.12 Core Game Feel and Battle Readability Pass - 2026-05-16
+
+This checkpoint improves the existing playable slice after the v0.11.12 hosted release matrix green closeout. It focuses on command acknowledgement, selected-order clarity, objective wording, scoped pressure readability, battle-status priority, side-panel hierarchy, results guidance, and evidence-backed no-change tuning decisions without adding new art, maps, factions, units, save migrations, broad AI/economy behavior, or CI plumbing.
+
+### Included
+
+- Core feel audit: `docs/V012_CORE_GAME_FEEL_AUDIT.md`.
+- Battle readability audit: `docs/V012_BATTLE_READABILITY_AUDIT.md`.
+- Balance/readability tuning note: `docs/V012_BALANCE_AND_FEEL_TUNING_NOTES.md`.
+- Visual readability note: `docs/V012_VISUAL_READABILITY_NOTES.md`.
+- Final pass report: `docs/V012_CORE_GAME_FEEL_PASS_REPORT.md`.
+- Added a `command` battle-status priority so accepted commands can outlive routine income ticks while still yielding to pressure and objective messages.
+- Added clearer move, attack, attack-move, rally, build, train, research, ability, and blocked-command feedback.
+- Improved selected-group and current-order side-panel hierarchy using existing HUD styling.
+- Marked the first unfinished objective as `Next` and tightened Ashen/Cinderfen objective copy.
+- Clarified Cinderfen pressure warning counterplay without promoting pressure into workers, construction, economy AI, or a broad strategic planner.
+- Improved defeat/results guidance while preserving reward/save behavior.
+- Added/updated tests for objective state, status priority, pressure warning copy, and command acknowledgement.
+
+### Verification
+
+- Final verification is recorded in `docs/V012_CORE_GAME_FEEL_PASS_REPORT.md`.
+
+### Next
+
+- Rerun the manual GitHub Actions release matrix on the v0.12 checkpoint commit.
+- Next recommended long goal: v0.12.1 Human-Paced Core Feel Playtest Review, with any follow-up changes kept small and evidence-driven.
+
 ## v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
 
 This checkpoint keeps the hosted release groups on production preview and hardens the test-only interaction/readiness layer after GitHub run #19 passed `deep-meta` but still failed hosted `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`, without changing gameplay, content, tutorial behavior, save format, campaign progression, balance, visual assets, runtime art, release coverage strength, maps, units, factions, rewards, or UI design.

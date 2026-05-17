@@ -30,6 +30,13 @@ const CINDERFEN_BATTLE_READABILITY_VIEWPORTS = [
 ];
 const HOSTED_LAYOUT_CORE_TIMEOUT_MS = 120_000;
 const HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS = 180_000;
+const UI_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
+
 async function expectNoHorizontalOverflow(page: Page, label: string): Promise<void> {
   const result = await page.evaluate(() => {
     const root = document.getElementById("ui-root");
@@ -605,7 +612,11 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
   await expect(page.getByTestId("skirmish-setup")).toBeVisible();
   await clickReady(page.getByTestId("setup-map-ashen_outpost"), "layout Ashen Outpost map");
   await clickReady(page.getByTestId("setup-difficulty-normal"), "layout Ashen Outpost normal difficulty");
-  await clickReady(page.getByTestId("setup-start-battle"), "layout Ashen Outpost skirmish start battle");
+  await clickReady(
+    page.getByTestId("setup-start-battle"),
+    "layout Ashen Outpost skirmish start battle",
+    UI_TRANSITION_CLICK_OPTIONS
+  );
   await expectBattleLoaded(page, "layout Ashen Outpost battle");
 }
 
@@ -617,7 +628,11 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} main menu`);
       await expectBottomActionReachable(page, page.getByText("Credits / Info"), `${viewport.label} main menu bottom action`);
 
-      await clickReady(page.getByTestId("menu-skirmish"), `${viewport.label} skirmish menu from main menu`);
+      await clickReady(
+        page.getByTestId("menu-skirmish"),
+        `${viewport.label} skirmish menu from main menu`,
+        UI_TRANSITION_CLICK_OPTIONS
+      );
       await expect(page.getByTestId("hero-creation")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} hero creation`);
       await expectBottomActionReachable(page, page.getByTestId("hero-start"), `${viewport.label} hero creation start`);
@@ -631,19 +646,27 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectBottomActionReachable(page, page.getByTestId("campaign-main-menu"), `${viewport.label} campaign actions`);
 
       await clickReady(page.getByTestId("campaign-main-menu"), `${viewport.label} campaign main menu`);
-      await clickReady(page.getByTestId("menu-skirmish"), `${viewport.label} skirmish menu from campaign return`);
+      await clickReady(
+        page.getByTestId("menu-skirmish"),
+        `${viewport.label} skirmish menu from campaign return`,
+        UI_TRANSITION_CLICK_OPTIONS
+      );
       await expect(page.getByTestId("skirmish-setup")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} skirmish setup`);
       await expectBottomActionReachable(page, page.getByTestId("setup-start-battle"), `${viewport.label} setup start`);
 
-      await clickReady(page.getByTestId("setup-back"), `${viewport.label} setup back`);
-      await clickReady(page.getByTestId("menu-inventory"), `${viewport.label} inventory menu`);
+      await clickReady(page.getByTestId("setup-back"), `${viewport.label} setup back`, UI_TRANSITION_CLICK_OPTIONS);
+      await clickReady(page.getByTestId("menu-inventory"), `${viewport.label} inventory menu`, UI_TRANSITION_CLICK_OPTIONS);
       await expect(page.getByTestId("hero-inventory")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} inventory`);
       await expectBottomActionReachable(page, page.getByText("Main Menu"), `${viewport.label} inventory bottom action`);
 
-      await clickReady(page.getByText("Main Menu"), `${viewport.label} inventory main menu`);
-      await clickReady(page.getByTestId("menu-asset-gallery"), `${viewport.label} asset gallery menu`);
+      await clickReady(page.getByText("Main Menu"), `${viewport.label} inventory main menu`, UI_TRANSITION_CLICK_OPTIONS);
+      await clickReady(
+        page.getByTestId("menu-asset-gallery"),
+        `${viewport.label} asset gallery menu`,
+        UI_TRANSITION_CLICK_OPTIONS
+      );
       await expect(page.getByText("Asset Gallery")).toBeVisible();
       await expectNoHorizontalOverflow(page, `${viewport.label} asset gallery`);
       await expectInViewport(page, page.getByRole("button", { name: "Back" }), `${viewport.label} asset gallery back`);
@@ -684,7 +707,11 @@ test.describe("Ascendant Realms responsive layout", () => {
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
       await continueSavedCampaign(page);
       await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Border Village node`);
-      await clickReady(page.getByTestId("campaign-start-node"), `${viewport.label} Border Village start`);
+      await clickReady(
+        page.getByTestId("campaign-start-node"),
+        `${viewport.label} Border Village start`,
+        UI_TRANSITION_CLICK_OPTIONS
+      );
       await expectBattleLoaded(page, `${viewport.label} Border Village battle`);
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
       await expectInViewport(page, page.getByTestId("battle-hero-panel"), `${viewport.label} hero panel`);

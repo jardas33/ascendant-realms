@@ -1,12 +1,80 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-16 v0.11.12 hosted release matrix green closeout
+Last updated: 2026-05-16 v0.12 core game feel and battle readability pass
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12 Core Game Feel and Battle Readability Pass - 2026-05-16
+
+Status: local verification green, ready for a manual GitHub Actions release-matrix rerun after push. This is the first player-facing pass after the v0.11.12 hosted release matrix green closeout. It improves the existing game slice without adding new art, maps, factions, units, save migrations, multiplayer, monetization, procedural generation, broad AI/economy behavior, or CI plumbing.
+
+Core guardrails to preserve:
+
+- Final v0.11.12 remote green truth remains GitHub Actions `CI Release Matrix Dry Run #39` on commit `dadb241`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken the `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not turn tutorial smoke semantic advancement back into raw `tutorial-next` click chains.
+- Do not confuse this pass with the future 2026 visual art overhaul.
+
+Files and behavior changed:
+
+- `src/game/battle/BattleStatusPriority.ts`: added `command` priority between `normal` and `pressure`, with a longer read window than routine messages.
+- `src/game/systems/InputSystem.ts`, `BuildingSystem.ts`, `TrainingSystem.ts`, `UpgradeSystem.ts`, `AbilitySystem.ts`, `BattleSceneSystems.ts`, and `BattleScene.ts`: valid and blocked move/attack/attack-move/rally/build/train/research/ability feedback now uses clearer command messages where appropriate.
+- `src/game/ui/hudPanels/SelectedEntityPanel.ts` and `src/game/styles/battle-hud.css`: multi-selection now shows selected count, `Commands apply to this group.`, and a stronger `Current Orders` block.
+- `src/game/ui/hudPanels/ObjectivePanel.ts`: the first unfinished objective is marked `Next`; later unfinished objectives remain `Open`.
+- `src/game/data/maps/ashenOutpost.ts`, `cinderfenCauseway.ts`, and `cinderfenWatchpost.ts`: objective copy is shorter and more actionable.
+- `src/game/data/enemyPressurePlans.ts`: pressure warnings now name counterplay while staying warning/telemetry scoped.
+- `src/game/core/FirstExperienceGuidance.ts` and `src/game/results/ResultsViewModel.ts`: defeat/results guidance is clearer without changing reward/save behavior.
+- `PLAYTEST_TELEMETRY.json`: regenerated after pressure-copy changes; no numeric tuning was made.
+- `src/game/battle/BattleSceneAlerts.ts`: enemy wave defeated / base-pressure messages now use pressure priority so command feedback cannot bury them immediately.
+- `tests/e2e/shared-helpers.ts`, `chapter2-helpers.ts`, `deep-flow.spec.ts`, `layout.spec.ts`, and `smoke.spec.ts`: targeted success/transition handling for real DOM buttons that detach or disable after successful clicks. No force clicks and no canvas/world DOM fallback.
+
+Docs added:
+
+- `docs/V012_CORE_GAME_FEEL_AUDIT.md`
+- `docs/V012_BATTLE_READABILITY_AUDIT.md`
+- `docs/V012_BALANCE_AND_FEEL_TUNING_NOTES.md`
+- `docs/V012_VISUAL_READABILITY_NOTES.md`
+- `docs/V012_CORE_GAME_FEEL_PASS_REPORT.md`
+
+Tests added/updated:
+
+- `src/game/battle/BattleStatusPriority.test.ts`
+- `src/game/battle/EnemyPressureRuntime.test.ts`
+- `src/game/ui/hudPanels/ObjectivePanel.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `tests/e2e/enemy-pressure.spec.ts`
+
+Current verification:
+
+```text
+npm test: PASS, 47 files / 355 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, production preview smoke, 0 browser console errors.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+npm run test:e2e:release:hosted:deep-meta: PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle: PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure: PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core: PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen: PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke: PASS, 12 tests.
+npm run test:e2e:release: PASS, 74 tests.
+git diff --check: PASS.
+```
+
+Next recommended long-running goal: v0.12.1 Human-Paced Core Feel Playtest Review. Review Ashen Outpost, Cinderfen Crossing, Cinderfen Watch, Results, and campaign return flow using the new command/objective/pressure feedback. Keep follow-up changes small, evidence-driven, and separate from the future runtime art overhaul.
 
 ## Current v0.11.12 Hosted Release Matrix Green Closeout - 2026-05-16
 

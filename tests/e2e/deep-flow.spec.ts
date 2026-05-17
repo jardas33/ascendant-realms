@@ -87,6 +87,30 @@ const HUD_MENU_CLICK_OPTIONS = {
   domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
+const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
+  allowTargetDisabledAfterClick: true
+} as const;
+
+async function campaignStatusIncludes(page: Page, expectedStatusText: string): Promise<boolean> {
+  const text = await page
+    .getByTestId("campaign-status")
+    .textContent({ timeout: 1_000 })
+    .catch(() => "");
+  return text?.includes(expectedStatusText) ?? false;
+}
+
+async function clickCampaignChoiceAndExpectStatus(
+  page: Page,
+  locator: Locator,
+  context: string,
+  expectedStatusText: string
+): Promise<void> {
+  await clickReady(locator, context, {
+    ...ONE_SHOT_CHOICE_CLICK_OPTIONS,
+    successCheckAfterClick: () => campaignStatusIncludes(page, expectedStatusText)
+  });
+  await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
+}
 
 async function clickBattleCommand(locator: Locator, context: string): Promise<void> {
   try {
@@ -1694,7 +1718,17 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       };
     });
 
-    await barracksButton.hover();
+    await page.mouse.move(hoverPoint.x, hoverPoint.y);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((point) => {
+            const hit = document.elementFromPoint(point.x, point.y)?.closest("button[data-action='build'][data-id='barracks']");
+            return Boolean(hit);
+          }, hoverPoint),
+        { message: "expected pointer to rest on the Barracks command button" }
+      )
+      .toBe(true);
     await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
@@ -2199,14 +2233,27 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     snapshot = await getBattleSnapshot(page);
     const militiaBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
-    await clickBattleCommand(page.locator("button[data-action='train'][data-id='militia']"), "deep-flow first campaign train Militia");
-    await page.waitForFunction(() => {
-      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      const barracks = scene?.buildings.find(
-        (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
-      );
-      return barracks?.trainingQueue.length > 0;
-    });
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='train'][data-id='militia']"),
+      "deep-flow first campaign train Militia",
+      async () => {
+        await page.waitForFunction(
+          () => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const barracks = scene?.buildings.find(
+              (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+            );
+            return barracks?.trainingQueue.length > 0;
+          },
+          undefined,
+          { timeout: 2_000 }
+        );
+      },
+      async () => {
+        await selectPlayerBuildingFromScene(page, "barracks");
+        await expect(page.locator(".side-panel")).toContainText("Barracks");
+      }
+    );
 
     const rallyPoint = { x: 540, y: 830 };
     await clickWorldPoint(page, rallyPoint, "right");
@@ -2434,8 +2481,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await clickReady(page.getByTestId("campaign-node-chapel_of_the_marches"), "deep-flow Chapel of the Marches node");
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toContainText("Keeps this node open");
-    await clickReady(page.locator("button[data-campaign-choice='ask_for_guidance']"), "deep-flow ask for Chapel guidance");
-    await expect(page.getByTestId("campaign-status")).toContainText("Ask for Guidance chosen");
+    await clickCampaignChoiceAndExpectStatus(
+      page,
+      page.locator("button[data-campaign-choice='ask_for_guidance']"),
+      "deep-flow ask for Chapel guidance",
+      "Ask for Guidance chosen"
+    );
 
     let save = await readSave(page);
     expect(save.campaign.choiceIdsClaimed).toContain("chapel_of_the_marches:ask_for_guidance");
@@ -2447,8 +2498,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toBeDisabled();
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toContainText("Already chosen");
     await expect(page.locator("button[data-campaign-choice='repair_chapel']")).toBeEnabled();
-    await clickReady(page.locator("button[data-campaign-choice='repair_chapel']"), "deep-flow repair Chapel");
-    await expect(page.getByTestId("campaign-status")).toContainText("Repair the Chapel chosen");
+    await clickCampaignChoiceAndExpectStatus(
+      page,
+      page.locator("button[data-campaign-choice='repair_chapel']"),
+      "deep-flow repair Chapel",
+      "Repair the Chapel chosen"
+    );
 
     save = await readSave(page);
     expect(save.campaign.choiceIdsClaimed).toContain("chapel_of_the_marches:repair_chapel");

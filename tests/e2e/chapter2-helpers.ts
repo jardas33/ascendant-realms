@@ -2,6 +2,15 @@ import { expect, type Page } from "@playwright/test";
 import { clickReady, expectBattleLoaded, seedSaveBeforeAppBoot, SAVE_KEY } from "./shared-helpers";
 
 const EMPTY_RESOURCES = { crowns: 0, stone: 0, iron: 0, aether: 0 };
+const SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
+const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
+  allowTargetDisabledAfterClick: true
+} as const;
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
   "border_village",
   "old_stone_road",
@@ -20,6 +29,14 @@ interface SeedPostAshenOptions {
 
 type CinderfenOverlookChoiceId = "aid_marsh_refugees" | "raise_malrecs_standard";
 type CinderfenWaystationServiceId = "ash_filters" | "marsh_guides" | "refugee_scouts" | "shrine_attunement";
+
+async function campaignStatusIncludes(page: Page, expectedStatusText: string): Promise<boolean> {
+  const text = await page
+    .getByTestId("campaign-status")
+    .textContent({ timeout: 1_000 })
+    .catch(() => "");
+  return text?.includes(expectedStatusText) ?? false;
+}
 
 // Test-only seed helper: writes a known post-Ashen campaign save so Chapter 2 specs do not replay Chapter 1.
 export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOptions = {}): Promise<void> {
@@ -324,7 +341,14 @@ export async function completeCinderfenOverlookChoice(
   choiceId: CinderfenOverlookChoiceId,
   expectedStatusText: string
 ): Promise<void> {
-  await clickReady(page.locator(`button[data-campaign-choice='${choiceId}']`), `complete Cinderfen Overlook ${choiceId}`);
+  await clickReady(
+    page.locator(`button[data-campaign-choice='${choiceId}']`),
+    `complete Cinderfen Overlook ${choiceId}`,
+    {
+      ...ONE_SHOT_CHOICE_CLICK_OPTIONS,
+      successCheckAfterClick: () => campaignStatusIncludes(page, expectedStatusText)
+    }
+  );
   await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
 }
 
@@ -340,7 +364,9 @@ export async function buyCinderfenWaystationService(
   serviceId: CinderfenWaystationServiceId,
   expectedStatusText: string
 ): Promise<void> {
-  await clickReady(page.locator(`button[data-campaign-choice='${serviceId}']`), `buy Cinderfen Waystation ${serviceId}`);
+  await clickReady(page.locator(`button[data-campaign-choice='${serviceId}']`), `buy Cinderfen Waystation ${serviceId}`, {
+    successCheckAfterClick: () => campaignStatusIncludes(page, expectedStatusText)
+  });
   await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
 }
 
@@ -349,7 +375,7 @@ export async function launchCinderfenCrossing(page: Page): Promise<void> {
   await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "launch Cinderfen Crossing node");
   await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Crossing start");
+  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Crossing start", SCENE_TRANSITION_CLICK_OPTIONS);
   await expectBattleLoaded(page, "launch Cinderfen Crossing battle");
 }
 
@@ -358,7 +384,7 @@ export async function launchCinderfenWatch(page: Page): Promise<void> {
   await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "launch Cinderfen Watch node");
   await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Watch start");
+  await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Watch start", SCENE_TRANSITION_CLICK_OPTIONS);
   await expectBattleLoaded(page, "launch Cinderfen Watch battle");
 }
 

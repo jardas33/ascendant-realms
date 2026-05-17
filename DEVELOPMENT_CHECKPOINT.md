@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-15 v0.11.12 hosted release interaction determinism fix
+Updated: 2026-05-16 v0.12 core game feel and battle readability pass
+
+## v0.12 Core Game Feel and Battle Readability Pass - 2026-05-16
+
+Scope: improve the existing playable slice after the v0.11.12 hosted release matrix green closeout. This pass focuses on readability and responsiveness through command acknowledgement, selected-order clarity, objective wording, scoped pressure counterplay, battle-status priority, side-panel hierarchy, and results guidance. It preserves gameplay scope, save compatibility, campaign progression, tutorial no-save/no-reward behavior, existing art, runtime art wiring, hosted release group configuration, release coverage strength, maps, units, factions, workers/construction prohibitions, and local/hosted release-lane separation.
+
+Included work:
+
+- Added `docs/V012_CORE_GAME_FEEL_AUDIT.md`.
+- Added `docs/V012_BATTLE_READABILITY_AUDIT.md`.
+- Added `docs/V012_BALANCE_AND_FEEL_TUNING_NOTES.md`.
+- Added `docs/V012_VISUAL_READABILITY_NOTES.md`.
+- Added `docs/V012_CORE_GAME_FEEL_PASS_REPORT.md`.
+- Added command-level battle-status priority so accepted commands can replace routine income/status messages while pressure/objective messages still outrank them.
+- Added clearer successful and blocked command feedback for movement, attack, attack-move, rally points, building placement, training, research, and abilities.
+- Improved selected-group and current-order side-panel hierarchy without changing selection mechanics or runtime art.
+- Marked the first unfinished objective as `Next` and tightened Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch objective copy.
+- Clarified Cinderfen Crossing and Cinderfen Watch pressure warnings with counterplay language while keeping pressure warning/telemetry scoped.
+- Improved defeat/results guidance without changing reward or save behavior.
+- Added/updated focused tests for command status priority, objective state, pressure warning copy, and browser command acknowledgement.
+
+Current verification:
+
+```text
+npm test: PASS, 47 files / 355 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, production preview smoke, 0 browser console errors.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+npm run test:e2e:release:hosted:deep-meta: PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle: PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure: PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core: PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen: PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke: PASS, 12 tests.
+npm run test:e2e:release: PASS, 74 tests.
+git diff --check: PASS.
+```
+
+Remaining watch items: rerun the manual GitHub Actions release matrix on the final v0.12 commit after push. The next recommended long goal is v0.12.1 Human-Paced Core Feel Playtest Review across Ashen Outpost, Cinderfen Crossing, Cinderfen Watch, Results, and campaign return flow. Keep the future 2026 visual overhaul separate from this pass.
 
 ## v0.11.12 Hosted Release Interaction Determinism Fix - 2026-05-15
 

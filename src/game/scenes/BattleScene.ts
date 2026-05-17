@@ -1018,7 +1018,7 @@ export class BattleScene extends Phaser.Scene {
       captureSites: this.captureSites,
       units: this.units,
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
-      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+      showMessage: (message, x, y, color, options) => this.showMessage(message, x, y, color, options)
     });
   }
 
@@ -1042,7 +1042,7 @@ export class BattleScene extends Phaser.Scene {
       units: this.units,
       runtime: this.runtime,
       hero: this.hero,
-      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+      showMessage: (message, x, y, color, options) => this.showMessage(message, x, y, color, options)
     });
   }
 
@@ -1154,7 +1154,7 @@ export class BattleScene extends Phaser.Scene {
       cooldown: this.commandHallWarningCooldown,
       playerBaseBuildingId: this.activeMap.scenario.objectives.playerBaseBuildingId,
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
-      showMessage: (message, x, y, color) => this.showMessage(message, x, y, color)
+      showMessage: (message, x, y, color, options) => this.showMessage(message, x, y, color, options)
     });
   }
 

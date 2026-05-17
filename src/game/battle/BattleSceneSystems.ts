@@ -347,7 +347,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     placeBuilding: (point) => buildingSystem.tryPlace(point.x, point.y, resources.player),
     cancelPlacement: () => {
       buildingSystem.cancelPlacement();
-      showMessage("Building placement cancelled");
+      showMessage("Building placement cancelled", undefined, undefined, undefined, { priority: "command" });
     },
     getSelectedUnits: () => selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
     getSelectedRallyBuildings: selectedRallyBuildings,
