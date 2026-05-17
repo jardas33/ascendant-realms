@@ -383,7 +383,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await page.getByTestId("campaign-node-cinderfen_overlook").click();
     await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
     await launchCinderfenCrossing(page);
-    await captureView(page, group, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Causeway initial battle view.");
+    await captureView(page, group, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Crossing initial battle view.");
     await useViewport(page, TABLET);
     await captureView(page, group, "Cinderfen Crossing tablet", "cinderfen-crossing-tablet.png", TABLET, "Tablet Cinderfen battle HUD density.");
     await useViewport(page, DESKTOP);
@@ -405,7 +405,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await seedPostCinderfenCrossingCampaign(page);
     await continueSavedCampaign(page);
     await launchCinderfenWatch(page);
-    await captureView(page, group, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watchpost initial battle view.");
+    await captureView(page, group, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watch initial battle view.");
     await triggerWatchPressureWarning(page);
     await captureView(page, group, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");
     await forceBattleDefeat(page);

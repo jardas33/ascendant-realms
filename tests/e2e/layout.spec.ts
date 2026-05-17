@@ -795,7 +795,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Waystation details`);
 
       await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), `${viewport.label} Cinderfen Crossing node`);
-      await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
+      await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Crossing");
       await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
       await expectReachableButton(page, page.getByTestId("campaign-start-node"), `${viewport.label} Crossing start`);
 
@@ -835,8 +835,8 @@ test.describe("Ascendant Realms responsive layout", () => {
       await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
       await launchCinderfenCrossing(page);
       await expectCinderfenBattleHudReadable(page, `${viewport.label} Crossing`, {
-        mapName: "Cinderfen Causeway",
-        objectiveTexts: ["Claim the Cinder Shrine", "Cinder Shrine Surge", "Clear Cinder Guardians", "Destroy Enemy Barracks"]
+        mapName: "Cinderfen Crossing",
+        objectiveTexts: ["Claim the Cinder Shrine", "one-time +20 Aether surge", "Clear Cinder Guardians", "Destroy Enemy Barracks"]
       });
     });
 
@@ -847,7 +847,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await continueSavedCampaign(page);
       await launchCinderfenWatch(page);
       await expectCinderfenBattleHudReadable(page, `${viewport.label} Watch`, {
-        mapName: "Cinderfen Watchpost",
+        mapName: "Cinderfen Watch",
         objectiveTexts: ["Capture the Watch Road", "Clear the Marsh Raider Camp", "Destroy the Watchpost Tower"]
       });
 
@@ -855,7 +855,7 @@ test.describe("Ascendant Realms responsive layout", () => {
         await completeCinderfenWatchVictory(page);
         const resultsPanel = page.locator(".results-panel");
         await expect(resultsPanel).toContainText("Victory");
-        await expect(resultsPanel).toContainText("Cinderfen Watchpost");
+        await expect(resultsPanel).toContainText("Cinderfen Watch");
         await expect(resultsPanel).toContainText("Reward XP");
         await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Aftermath");
         await expect(page.locator(".special-objectives")).toContainText("Capture the Watch Road");

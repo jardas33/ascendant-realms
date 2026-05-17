@@ -881,12 +881,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
     await selectCampaignNodeDetails(page, "cinderfen_crossing", "Cinderfen Crossing", "smoke locked Cinderfen Crossing node");
-    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Crossing");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await selectCampaignNodeDetails(page, "cinderfen_watch", "Cinderfen Watch", "smoke locked Cinderfen Watch node");
-    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await selectCampaignNodeDetails(page, "cinderfen_aftermath", "Cinderfen Aftermath", "smoke locked Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
@@ -1022,17 +1022,17 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke Cinderfen Crossing detail node");
     await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
-    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Causeway");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Crossing");
     await expect(page.locator(".campaign-node-details")).toContainText("Normal");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.locator(".campaign-node-details")).toContainText("Scout's Bow");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
 
     await launchCinderfenCrossing(page);
-    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Causeway");
+    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Crossing");
     await expect(page.getByTestId("battle-status")).toContainText("Normal");
     await expect(page.getByTestId("battle-objectives")).toContainText("Claim the Cinder Shrine");
-    await expect(page.getByTestId("battle-objectives")).toContainText("Cinder Shrine Surge");
+    await expect(page.getByTestId("battle-objectives")).toContainText("one-time +20 Aether surge");
     await expect(page.getByTestId("battle-objectives")).toContainText("+20 Aether");
     await expect(page.getByTestId("battle-objectives")).toContainText("Clear Cinder Guardians");
     await expect(page.getByTestId("battle-objectives")).toContainText("Destroy Enemy Barracks");
@@ -1061,7 +1061,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       };
     });
     expect(battleState).toMatchObject({
-      mapName: "Cinderfen Causeway",
+      mapName: "Cinderfen Crossing",
       campaignNodeId: "cinderfen_crossing",
       mode: "campaign_node",
       rewardTableId: "cinderfen_causeway_rewards",
@@ -1127,7 +1127,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     const resultsPanel = page.locator(".results-panel");
     await expect(resultsPanel).toContainText("Victory");
-    await expect(resultsPanel).toContainText("Cinderfen Causeway");
+    await expect(resultsPanel).toContainText("Cinderfen Crossing");
     await expect(resultsPanel).toContainText("Normal");
     await expect(resultsPanel).toContainText("Reward XP");
     await expect(resultsPanel).toContainText("65");
@@ -1207,7 +1207,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
     await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "smoke Cinderfen Watch node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
-    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watchpost");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
     await expect(page.locator(".campaign-node-details")).toContainText("Normal");
     await expect(page.locator(".campaign-node-details")).toContainText("Hexfire Cult");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
@@ -1221,7 +1221,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.activeModifierIds).toContain("marsh_guides");
 
     await launchCinderfenWatch(page);
-    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Watchpost");
+    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Watch");
     await expect(page.getByTestId("battle-status")).toContainText("Normal");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Watch Road");
     await expect(page.getByTestId("battle-objectives")).toContainText("Clear the Marsh Raider Camp");
@@ -1249,7 +1249,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       };
     });
     expect(battleState).toMatchObject({
-      mapName: "Cinderfen Watchpost",
+      mapName: "Cinderfen Watch",
       campaignNodeId: "cinderfen_watch",
       mode: "campaign_node",
       rewardTableId: "cinderfen_watchpost_rewards",
@@ -1280,7 +1280,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     const resultsPanel = page.locator(".results-panel");
     await expect(resultsPanel).toContainText("Victory");
-    await expect(resultsPanel).toContainText("Cinderfen Watchpost");
+    await expect(resultsPanel).toContainText("Cinderfen Watch");
     await expect(resultsPanel).toContainText("Reward XP");
     await expect(resultsPanel).toContainText("66");
     await expect(resultsPanel).toContainText("34 Crowns, 20 Stone, 16 Iron, 10 Aether");

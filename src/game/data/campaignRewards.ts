@@ -156,7 +156,7 @@ export const BORDER_MARCHES_REWARD_TABLES: RewardTableDefinition[] = [
 export const CINDERFEN_ROAD_REWARD_TABLES: RewardTableDefinition[] = [
   {
     id: "cinderfen_causeway_rewards",
-    name: "Cinderfen Causeway Spoils",
+    name: "Cinderfen Crossing Spoils",
     guaranteedItemIds: [],
     deterministicItemIds: [
       "aether_lens",
@@ -201,7 +201,7 @@ export const CINDERFEN_ROAD_REWARD_TABLES: RewardTableDefinition[] = [
   },
   {
     id: "cinderfen_watchpost_rewards",
-    name: "Cinderfen Watchpost Spoils",
+    name: "Cinderfen Watch Spoils",
     guaranteedItemIds: [],
     deterministicItemIds: [
       "ashbound_censer",

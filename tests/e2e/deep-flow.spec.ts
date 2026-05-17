@@ -87,6 +87,12 @@ const HUD_MENU_CLICK_OPTIONS = {
   domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
+const SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
 const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
@@ -538,6 +544,7 @@ async function selectPlayerBuildingFromScene(page: Page, buildingId: string): Pr
     }
     scene.cameraSystem.centerOn(building.position);
     scene.selectionSystem.setSelection([building]);
+    scene.refreshBattleHud?.(0);
   }, buildingId);
 }
 
@@ -708,7 +715,11 @@ async function startFirstClaimSkirmish(
   await createHero(page, heroName);
   await clickReady(page.getByTestId("setup-map-first_claim"), "deep-flow first claim map");
   await clickReady(page.getByTestId(`setup-difficulty-${difficulty}`), `deep-flow first claim ${difficulty} difficulty`);
-  await clickReady(page.getByTestId("setup-start-battle"), "deep-flow first claim skirmish start battle");
+  await clickReady(
+    page.getByTestId("setup-start-battle"),
+    "deep-flow first claim skirmish start battle",
+    SCENE_TRANSITION_CLICK_OPTIONS
+  );
   await expectBattleLoaded(page);
   await waitForBattleScene(page);
 }
@@ -878,7 +889,11 @@ async function startCampaignBattle(page: Page, nodeId: string): Promise<void> {
   await expect(page.getByTestId("campaign-map")).toBeVisible();
   await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow start campaign node ${nodeId}`);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-  await clickReady(page.getByTestId("campaign-start-node"), `deep-flow start campaign battle ${nodeId}`);
+  await clickReady(
+    page.getByTestId("campaign-start-node"),
+    `deep-flow start campaign battle ${nodeId}`,
+    SCENE_TRANSITION_CLICK_OPTIONS
+  );
   await expectBattleLoaded(page);
   await waitForBattleScene(page);
 }
@@ -1065,7 +1080,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(purchasedSave.campaign.resources).toMatchObject({ crowns: 130, stone: 115, iron: 65, aether: 40 });
     expect(purchasedSave.campaign.resourcesSpent).toMatchObject({ crowns: 190, stone: 105, iron: 35, aether: 0 });
 
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow stronghold campaign start",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     const snapshot = await getBattleSnapshot(page);
@@ -1236,7 +1255,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("retinue-panel")).toContainText("Training Yard II");
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow retinue campaign node");
-    await clickReady(page.getByTestId("campaign-start-node"), "deep-flow retinue campaign start");
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow retinue campaign start",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     await expect(page.getByTestId("battle-status")).toContainText("Retinue deployed: Veteran Militia");
@@ -1304,7 +1327,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Veyra of the Cinders, Hexfire Seer");
     await expect(page.locator(".campaign-node-details")).toContainText("Escaped - Wary");
 
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow rival campaign start",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     await expect(page.getByTestId("battle-status")).toContainText("Enemy commander: Veyra of the Cinders, Hexfire Seer");
@@ -1623,7 +1650,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await clickReady(page.getByTestId("menu-skirmish"), "deep-flow battle HUD skirmish menu");
     await createHero(page, "Battle QA");
     await clickReady(page.getByTestId("setup-difficulty-normal"), "deep-flow battle HUD normal difficulty");
-    await clickReady(page.getByTestId("setup-start-battle"), "deep-flow battle HUD start battle");
+    await clickReady(
+      page.getByTestId("setup-start-battle"),
+      "deep-flow battle HUD start battle",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
 
@@ -2171,7 +2202,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow first campaign battle node");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await clickReady(page.getByTestId("campaign-start-node"), "deep-flow first campaign battle start");
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow first campaign battle start",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
 
@@ -2669,7 +2704,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Captain Malrec");
     await expect(page.locator(".campaign-node-details")).toContainText("Outpost Commander");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow Ashen Outpost campaign start",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
     await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/3");

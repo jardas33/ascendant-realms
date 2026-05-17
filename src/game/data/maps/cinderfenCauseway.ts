@@ -2,7 +2,7 @@ import type { BattleMapDefinition } from "../../core/GameTypes";
 
 export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
     id: "cinderfen_causeway",
-    name: "Cinderfen Causeway",
+    name: "Cinderfen Crossing",
     role: "Chapter 2 ash-marsh crossing",
     description:
       "A burned road through ash marsh and cinder pools, with side economy routes and one contested Cinder Shrine at the crossing.",
@@ -188,7 +188,7 @@ export const CINDERFEN_CAUSEWAY_MAP: BattleMapDefinition = {
           {
             id: "capture_cinder_crossing",
             name: "Claim the Cinder Shrine",
-            description: "Take side income if needed, then claim Cinder Shrine Surge (+20 Aether once) and hold the shrine.",
+            description: "Claim the shrine for a one-time +20 Aether surge, then hold it. Take side income first if you need time.",
             type: "capture_site",
             targetId: "cinder_crossing"
           },

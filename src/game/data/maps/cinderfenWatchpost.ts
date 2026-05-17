@@ -2,7 +2,7 @@ import type { BattleMapDefinition } from "../../core/GameTypes";
 
 export const CINDERFEN_WATCHPOST_MAP: BattleMapDefinition = {
   id: "cinderfen_watchpost",
-  name: "Cinderfen Watchpost",
+  name: "Cinderfen Watch",
   role: "Chapter 2 ash-marsh watchpost",
   description:
     "A raised road through the cinder marsh, guarded by an Ashen watchtower and a compact fortified camp on the far bank.",

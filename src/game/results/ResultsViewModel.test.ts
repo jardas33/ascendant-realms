@@ -170,6 +170,38 @@ describe("results scene helpers", () => {
     expect(viewModel.skillPointsGained).toBe(0);
   });
 
+  it("uses defeat guidance actions that match campaign or skirmish context", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const skirmishData = createResultsData({
+      stats: {
+        ...baseStats(),
+        outcome: "defeat"
+      },
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mapId: "cinderfen_causeway",
+        difficulty: "normal"
+      })
+    });
+    const campaignData = createResultsData({
+      stats: {
+        ...baseStats(),
+        outcome: "defeat"
+      },
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "cinderfen_causeway",
+        difficulty: "normal",
+        campaignNodeId: "cinderfen_crossing"
+      })
+    });
+
+    expect(createResultsViewModel(skirmishData).guidance.actions).toContain("Hold after each wave");
+    expect(createResultsViewModel(skirmishData).guidance.actions).not.toContain("Use camp or Chapel support");
+    expect(createResultsViewModel(campaignData).guidance.actions).toContain("Use camp or Chapel support");
+  });
+
   it("labels repeat battle clears as reduced rewards", () => {
     const startingHero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),

@@ -209,7 +209,7 @@ describe("campaign map presentation helpers", () => {
     const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
 
     expect(canStartCampaignNode(node, campaign)).toBe(true);
-    expect(html).toContain("Cinderfen Causeway");
+    expect(html).toContain("Cinderfen Crossing");
     expect(html).toContain("Hexfire Cult");
     expect(html).toContain("Scout&#039;s Bow");
   });
@@ -251,7 +251,7 @@ describe("campaign map presentation helpers", () => {
     const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
 
     expect(canStartCampaignNode(node, campaign)).toBe(true);
-    expect(html).toContain("Cinderfen Watchpost");
+    expect(html).toContain("Cinderfen Watch");
     expect(html).toContain("Normal");
     expect(html).toContain("Hexfire Cult");
     expect(html).toContain("40 Crowns, 22 Stone, 18 Iron, 10 Aether");

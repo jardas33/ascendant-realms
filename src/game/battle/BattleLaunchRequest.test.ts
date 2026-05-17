@@ -186,7 +186,7 @@ describe("BattleLaunchRequest", () => {
     });
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
-      expect(resolved.launch.map.name).toBe("Cinderfen Causeway");
+      expect(resolved.launch.map.name).toBe("Cinderfen Crossing");
       expect(resolved.launch.rewardTable.id).toBe("cinderfen_causeway_rewards");
       expect(resolved.launch.request.enemyHeroId).toBeUndefined();
     }
@@ -208,7 +208,7 @@ describe("BattleLaunchRequest", () => {
     });
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
-      expect(resolved.launch.map.name).toBe("Cinderfen Watchpost");
+      expect(resolved.launch.map.name).toBe("Cinderfen Watch");
       expect(resolved.launch.rewardTable.id).toBe("cinderfen_watchpost_rewards");
       expect(resolved.launch.request.enemyHeroId).toBeUndefined();
     }
