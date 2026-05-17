@@ -1,12 +1,64 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-17 v0.12.1 human-paced core feel playtest review
+Last updated: 2026-05-17 v0.12.2 human balance watchpoint review
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12.2 Human Balance Watchpoint Review - 2026-05-17
+
+Status: local verification green; docs-only balance/watchpoint review. This pass reviews the v0.12/v0.12.1 watchpoints and does not change runtime behavior, numbers, tests, art, assets, save format, maps, factions, units, broad AI/economy behavior, or CI plumbing.
+
+Core guardrails to preserve:
+
+- User-provided remote baseline before this goal: GitHub Actions `CI Release Matrix Dry Run #44` green on commit `1b28678`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not turn tutorial smoke semantic advancement back into raw `tutorial-next` click chains.
+- Do not confuse this pass with the future 2026 visual art overhaul.
+
+Balance watchpoint decisions:
+
+- Retinue + Training Yard II: strongest current profile and especially clean in Ashen/Cinderfen, but current evidence supports no change. Treat it as satisfying earned power and keep it as the main future watchpoint.
+- Greedy Economy: failures are risky conversion/timeouts, not unfair early pressure or raw economy shortage. It survives first waves and often floats large resources.
+- Fast Army: legitimate speed profile. It clears quickly in Cinderfen but has broader failures and is not the whole-suite dominant route.
+- Early defeats: no current structural early-defeat problem. Border Village and Old Stone Road are stable; Ashen Outpost failures are timeouts while Safe Beginner wins.
+- Pressure fairness: Cinderfen pressure warnings are fair/actionable in structural evidence. Remaining risk is human noticeability under real combat stress.
+- Numeric tuning: none.
+- Copy/readability changes: none in v0.12.2.
+
+Docs added:
+
+- `docs/V0122_BALANCE_WATCHPOINT_PROTOCOL.md`
+- `docs/V0122_SIMULATOR_BALANCE_REVIEW.md`
+- `docs/V0122_HUMAN_BALANCE_NOTES.md`
+- `docs/V0122_TUNING_DECISION.md`
+- `docs/V0122_HUMAN_BALANCE_WATCHPOINT_REPORT.md`
+
+Current verification:
+
+```text
+npm test: PASS, 47 files / 356 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, production preview, 0 browser console errors.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+```
+
+Hosted release groups and full release were not run locally because v0.12.2 made no gameplay, HUD, campaign, pressure, result, tuning, test-harness, or release-lane behavior changes.
+
+Next recommended long-running goal: v0.12.3 Human Campaign Balance Play Session. Focus on direct human play through Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch with no retinue, one veteran, mixed veterans, and Retinue + Training Yard II. Keep it evidence-only unless repeated human runs reproduce a specific unfairness pattern. Keep future visual overhaul work separate.
 
 ## Current v0.12.1 Human-Paced Core Feel Playtest Review - 2026-05-17
 

@@ -1,6 +1,42 @@
 # Development Checkpoint
 
-Updated: 2026-05-17 v0.12.1 human-paced core feel playtest review
+Updated: 2026-05-17 v0.12.2 human balance watchpoint review
+
+## v0.12.2 Human Balance Watchpoint Review - 2026-05-17
+
+Scope: review repeated simulator and human-style evidence for Retinue + Training Yard II strength, Greedy Economy timeouts, Fast Army quick clears, early campaign defeat causes, and Cinderfen pressure warning fairness. This pass preserves the v0.11.12/v0.12/v0.12.1 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, and gameplay mechanics. It does not start the 2026 visual overhaul or add broad AI/economy behavior.
+
+Included work:
+
+- Added `docs/V0122_BALANCE_WATCHPOINT_PROTOCOL.md`.
+- Added `docs/V0122_SIMULATOR_BALANCE_REVIEW.md`.
+- Added `docs/V0122_HUMAN_BALANCE_NOTES.md`.
+- Added `docs/V0122_TUNING_DECISION.md`.
+- Added `docs/V0122_HUMAN_BALANCE_WATCHPOINT_REPORT.md`.
+- Classified Retinue + Training Yard II as the strongest current watchpoint and satisfying earned power, not a current nerf target.
+- Classified Greedy Economy failures as risky resource-to-army conversion/timeouts, not unfair early pressure.
+- Classified Fast Army as a legitimate speed profile with broader failure risk, not a free dominant route.
+- Found no current structural early campaign defeat problem.
+- Found Cinderfen pressure warnings fair/actionable in structural evidence while preserving human noticeability as a watch item.
+
+Current verification:
+
+```text
+npm test: PASS, 47 files / 356 tests.
+npm run build: PASS, known Phaser vendor chunk-size warning only.
+npm run validate:content: PASS.
+npm run validate:art-intake: PASS, 1 candidate metadata JSON / 0 review manifests.
+npm run test:e2e:smoke:fast: PASS, 6 tests.
+npm run test:e2e:smoke: PASS, 12 tests.
+npm run visual:qa: PASS, 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+npm run smoke:preview: PASS, production preview, 0 browser console errors.
+npm run playtest:sim: PASS, 255 simulated runs across 85 campaign battle nodes.
+git diff --check: PASS.
+```
+
+Hosted release groups and full release were not run locally because v0.12.2 made no gameplay, HUD, campaign, pressure, result, tuning, test-harness, or release-lane behavior changes.
+
+Remaining watch items: GitHub Actions rerun is optional because v0.12.2 is docs-only, but a manual release-matrix rerun after push is a clean remote parity check. The next recommended long goal is v0.12.3 Human Campaign Balance Play Session focused on direct human runs through Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch across retinue/Training Yard profiles. Keep the future 2026 visual overhaul separate.
 
 ## v0.12.1 Human-Paced Core Feel Playtest Review - 2026-05-17
 

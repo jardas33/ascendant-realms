@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.12.2 Human Balance Watchpoint Review - 2026-05-17
+
+This checkpoint reviews the v0.12/v0.12.1 balance watchpoints without changing runtime behavior. It preserves the v0.11.12/v0.12/v0.12.1 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.
+
+### Included
+
+- Balance watchpoint protocol: `docs/V0122_BALANCE_WATCHPOINT_PROTOCOL.md`.
+- Simulator balance review: `docs/V0122_SIMULATOR_BALANCE_REVIEW.md`.
+- Human-style balance notes: `docs/V0122_HUMAN_BALANCE_NOTES.md`.
+- No-tuning decision: `docs/V0122_TUNING_DECISION.md`.
+- Final watchpoint report: `docs/V0122_HUMAN_BALANCE_WATCHPOINT_REPORT.md`.
+- Retinue + Training Yard II was confirmed as the strongest watchpoint, especially in Ashen/Cinderfen, but not a current numeric nerf target.
+- Greedy Economy failures were classified as risky conversion/timeouts rather than unfair early pressure or raw economy shortage.
+- Fast Army was classified as a legitimate speed profile, not a free dominant route.
+- Early campaign defeat evidence did not show a structural balance problem.
+- Cinderfen pressure warnings remain fair and actionable in current structural evidence.
+
+### Verification
+
+- Final verification is recorded in `docs/V0122_HUMAN_BALANCE_WATCHPOINT_REPORT.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because v0.12.2 is docs-only, but a manual release-matrix rerun after push is a clean remote parity check.
+- Next recommended long goal: v0.12.3 Human Campaign Balance Play Session, focused on direct human runs through Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch across retinue/Training Yard profiles.
+
 ## v0.12.1 Human-Paced Core Feel Playtest Review - 2026-05-17
 
 This checkpoint validates the v0.12 readability pass through slow, human-paced play review and applies only tiny evidence-backed polish. It preserves the v0.11.12/v0.12 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, and gameplay mechanics.

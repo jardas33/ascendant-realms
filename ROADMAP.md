@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.12.1 Human-Paced Core Feel Playtest Review** on 2026-05-17. It validates the v0.12 readability pass through slow play review, aligns Cinderfen player-facing battle names to `Cinderfen Crossing` and `Cinderfen Watch`, clarifies the Cinder Shrine objective, and makes skirmish defeat guidance stop pointing at campaign-only support. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
+The latest player-facing checkpoint is **v0.12.2 Human Balance Watchpoint Review** on 2026-05-17. It reviews repeated simulator and human-style evidence for Retinue + Training Yard II, Greedy Economy, Fast Army, early campaign defeats, and pressure warning fairness. It makes no numeric tuning and no runtime behavior changes: Retinue + Training Yard II remains the strongest watchpoint but reads as satisfying earned power, Greedy Economy failures read as risky conversion/timeouts, Fast Army remains a legitimate speed profile, early defeats are not structural in current evidence, and pressure warnings remain fair/actionable in the structural read. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is **v0.12.2 Human Balance Watchpoint Review**. Focus on repeated human and simulator evidence for retinue plus Training Yard II, Greedy Economy timeouts, Fast Army clear speed, early campaign defeat causes, and pressure-warning fairness. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is **v0.12.3 Human Campaign Balance Play Session**. Focus on direct human runs through Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch with no retinue, one veteran, mixed veterans, and Retinue + Training Yard II. Keep it evidence-only unless repeated human runs reproduce a specific unfairness pattern. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.12.2 balance watchpoint docs:
+
+- `docs/V0122_BALANCE_WATCHPOINT_PROTOCOL.md`
+- `docs/V0122_SIMULATOR_BALANCE_REVIEW.md`
+- `docs/V0122_HUMAN_BALANCE_NOTES.md`
+- `docs/V0122_TUNING_DECISION.md`
+- `docs/V0122_HUMAN_BALANCE_WATCHPOINT_REPORT.md`
 
 New v0.12.1 human-paced playtest docs:
 
