@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.12.3 Human Campaign Balance Play Session** on 2026-05-17. It gathers direct human-style campaign evidence for Retinue + Training Yard II, Greedy Economy, Fast Army, early defeats, pressure-warning noticeability, and the fairness of Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch. It makes no numeric tuning and no runtime behavior changes: Retinue + Training Yard II remains the strongest watchpoint but reads as satisfying earned power, Greedy Economy failures read as risky conversion/timeouts, Fast Army remains a legitimate speed profile, early defeats are not structural in current evidence, and pressure warnings remain fair/actionable in the structural read while human noticeability stays open. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
+The latest player-facing checkpoint is **v0.12.4 Manual Human Playtest Packet And Tester Checklist** on 2026-05-18. It packages the v0.12.x human balance/readability watchpoints into practical tester-facing documentation for Emmanuel or another human tester. It makes no numeric tuning and no runtime behavior changes: Retinue + Training Yard II remains a watchpoint that should not be nerfed without repeated trivialization reports, Greedy Economy should not be buffed just because it is risky, Fast Army should not be slowed just because it is fast, early defeats should be judged by clarity, and pressure warnings should be judged by noticeability plus reaction time. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is **v0.12.4 Manual Human Playtest Packet And Tester Checklist**. Focus on giving Emmanuel or a human tester a compact checklist and rating sheet for Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch across Retinue + Training Yard II, Greedy Economy, Fast Army, early defeat clarity, pressure-warning noticeability, and result guidance. Keep it evidence-only unless repeated human runs reproduce a specific unfairness pattern. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is **v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage**. Focus on collecting completed packet forms, classifying reports as no change, copy/readability, tiny tuning, needs more testing, future art/UI overhaul, or future systems pass, and deciding whether evidence repeats enough to justify a narrow follow-up. Keep it evidence-only unless repeated human runs reproduce a specific unfairness pattern. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.12.4 manual human playtest packet docs:
+
+- `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`
+- `docs/V0124_PLAYTEST_ROUTE_CARDS.md`
+- `docs/V0124_MISSION_CHECKLISTS.md`
+- `docs/V0124_WATCHPOINT_RATING_SHEET.md`
+- `docs/V0124_BUG_AND_FRICTION_REPORT_TEMPLATE.md`
+- `docs/V0124_PLAYTEST_SUMMARY_FORM.md`
+- `docs/V0124_DESIGNER_INTERPRETATION_GUIDE.md`
+- `docs/V0124_PLAYTEST_PACKET_INDEX.md`
 
 New v0.12.3 human campaign balance docs:
 

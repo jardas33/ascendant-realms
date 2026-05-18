@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
+
+This checkpoint packages the v0.12.x human balance watchpoints into practical tester-facing documentation. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.
+
+### Included
+
+- Main manual playtest packet: `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`.
+- Route cards: `docs/V0124_PLAYTEST_ROUTE_CARDS.md`.
+- Mission checklists: `docs/V0124_MISSION_CHECKLISTS.md`.
+- Watchpoint rating sheet: `docs/V0124_WATCHPOINT_RATING_SHEET.md`.
+- Bug/friction report template: `docs/V0124_BUG_AND_FRICTION_REPORT_TEMPLATE.md`.
+- Playtest summary form: `docs/V0124_PLAYTEST_SUMMARY_FORM.md`.
+- Designer interpretation guide: `docs/V0124_DESIGNER_INTERPRETATION_GUIDE.md`.
+- Playtest packet index: `docs/V0124_PLAYTEST_PACKET_INDEX.md`.
+- Tester-facing guidance for what to judge now versus what belongs to the future visual overhaul.
+- Interpretation rules to prevent one-off complaints from becoming premature tuning.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because v0.12.4 is docs-only.
+- Next recommended long goal: v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage.
+
 ## v0.12.3 Human Campaign Balance Play Session - 2026-05-17
 
 This checkpoint gathers direct human-style campaign balance evidence after v0.12.2 without changing runtime behavior. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.

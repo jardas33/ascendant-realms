@@ -1,12 +1,86 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-17 v0.12.3 human campaign balance play session
+Last updated: 2026-05-18 v0.12.4 manual human playtest packet
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
+
+Status: local verification green; docs-only manual playtest packet. This pass converts the v0.12.x balance/readability watchpoints into tester-facing forms and interpretation guidance. It does not change runtime behavior, numbers, tests, art, assets, save format, maps, factions, units, combat systems, campaign progression, broad AI/economy behavior, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1184e5f` (`Checkpoint v0.12.3 human campaign balance play session`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not start the future 2026 visual art overhaul.
+
+Packet docs added:
+
+- `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`
+- `docs/V0124_PLAYTEST_ROUTE_CARDS.md`
+- `docs/V0124_MISSION_CHECKLISTS.md`
+- `docs/V0124_WATCHPOINT_RATING_SHEET.md`
+- `docs/V0124_BUG_AND_FRICTION_REPORT_TEMPLATE.md`
+- `docs/V0124_PLAYTEST_SUMMARY_FORM.md`
+- `docs/V0124_DESIGNER_INTERPRETATION_GUIDE.md`
+- `docs/V0124_PLAYTEST_PACKET_INDEX.md`
+
+How to use the packet:
+
+- Start with `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`.
+- Choose the quick 30-minute path or full 2-hour path from `docs/V0124_PLAYTEST_PACKET_INDEX.md`.
+- Use route cards for Baseline Cautious, No-Retinue, One-Veteran, Mixed-Veterans, Retinue + Training Yard II, Greedy Economy, and Fast Army.
+- Fill mission checklists and watchpoint ratings while playing.
+- Use bug/friction templates for confusion, balance, pressure-warning, art/visual debt, or actual bug reports.
+- Use the designer interpretation guide before recommending tuning.
+
+Interpretation rules:
+
+- Retinue + Training Yard II should not be nerfed unless multiple testers report trivialization.
+- Greedy Economy should not be buffed just because it is risky.
+- Fast Army should not be slowed just because it is fast.
+- Objective clarity problems should usually be fixed before balance numbers.
+- Art complaints should be separated from gameplay readability unless they block decisions.
+- Do not tune based on one unlucky run.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run visual:qa
+PASS - final rerun 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+Note: the first visual QA attempt hit a local saved-campaign click fallback refusal in the existing campaign/skirmish screenshot group; the full visual QA rerun passed without code or test changes.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage. Collect completed packet forms, classify reports, and decide whether repeated evidence supports no change, copy/readability, tiny tuning, more testing, future art/UI overhaul, or a future systems pass. Keep future visual overhaul work separate.
 
 ## Current v0.12.3 Human Campaign Balance Play Session - 2026-05-17
 

@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-05-17 v0.12.3 human campaign balance play session
+Updated: 2026-05-18 v0.12.4 manual human playtest packet
+
+## v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
+
+Scope: package the v0.12.x manual human balance/readability questions into practical tester-facing documentation that Emmanuel or another human tester can use while playing the current browser prototype. This pass preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, combat systems, campaign progression, and gameplay numbers. It does not start the 2026 visual overhaul.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1184e5f` (`Checkpoint v0.12.3 human campaign balance play session`).
+- Branch state before edits: `main` clean and synced with `origin/main` (`git rev-list --left-right --count origin/main...HEAD` returned `0 0`).
+- Guardrails: docs-only packet; no maps, factions, units, art/assets, runtime art, save format, gameplay numbers, combat systems, campaign progression, hosted release stability patterns, or broad balance implementation.
+
+Included work:
+
+- Added `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`.
+- Added `docs/V0124_PLAYTEST_ROUTE_CARDS.md`.
+- Added `docs/V0124_MISSION_CHECKLISTS.md`.
+- Added `docs/V0124_WATCHPOINT_RATING_SHEET.md`.
+- Added `docs/V0124_BUG_AND_FRICTION_REPORT_TEMPLATE.md`.
+- Added `docs/V0124_PLAYTEST_SUMMARY_FORM.md`.
+- Added `docs/V0124_DESIGNER_INTERPRETATION_GUIDE.md`.
+- Added `docs/V0124_PLAYTEST_PACKET_INDEX.md`.
+- Converted the v0.12.3 watchpoints into tester-facing route cards, mission prompts, rating scales, report templates, and designer interpretation rules.
+- Kept future visual-overhaul notes separate from current gameplay readability and balance evidence.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run visual:qa
+PASS - final rerun 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+Note: the first visual QA attempt hit a local saved-campaign click fallback refusal in the existing campaign/skirmish screenshot group; the full visual QA rerun passed without code or test changes.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because v0.12.4 is docs-only. The next recommended long goal is v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage after Emmanuel or another tester fills the packet. Keep future visual overhaul work separate.
 
 ## v0.12.3 Human Campaign Balance Play Session - 2026-05-17
 
