@@ -5,6 +5,7 @@ import { formationOffset } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import { shouldIgnoreGameKeyboardEvent } from "./KeyboardFocusGuard";
 import { SelectionSystem } from "./SelectionSystem";
 
 interface InputSystemOptions {
@@ -37,6 +38,7 @@ export class InputSystem {
   private pointerDownHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerMoveHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerUpHandler?: (pointer: Phaser.Input.Pointer) => void;
+  private globalPointerReleaseHandler?: () => void;
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
@@ -58,6 +60,11 @@ export class InputSystem {
     }
     if (this.pointerUpHandler) {
       input.off("pointerup", this.pointerUpHandler);
+    }
+    if (this.globalPointerReleaseHandler) {
+      window.removeEventListener("pointerup", this.globalPointerReleaseHandler);
+      window.removeEventListener("pointercancel", this.globalPointerReleaseHandler);
+      window.removeEventListener("blur", this.globalPointerReleaseHandler);
     }
     const keyboard = this.options.scene.input.keyboard;
     if (keyboard) {
@@ -81,7 +88,11 @@ export class InputSystem {
       if (this.options.isPlacingBuilding()) {
         this.options.updateBuildingGhost(point);
       }
-      if (!this.dragStart || !pointer.leftButtonDown() || this.options.isPlacingBuilding()) {
+      if (this.dragStart && !pointer.leftButtonDown()) {
+        this.clearDrag();
+        return;
+      }
+      if (!this.dragStart || this.options.isPlacingBuilding()) {
         return;
       }
       this.drawDragBox(this.dragStart, point);
@@ -113,6 +124,11 @@ export class InputSystem {
     input.on("pointerdown", this.pointerDownHandler);
     input.on("pointermove", this.pointerMoveHandler);
     input.on("pointerup", this.pointerUpHandler);
+
+    this.globalPointerReleaseHandler = () => this.clearDrag();
+    window.addEventListener("pointerup", this.globalPointerReleaseHandler);
+    window.addEventListener("pointercancel", this.globalPointerReleaseHandler);
+    window.addEventListener("blur", this.globalPointerReleaseHandler);
   }
 
   private bindKeyboard(): void {
@@ -153,7 +169,15 @@ export class InputSystem {
   }
 
   private addKeyHandler(event: string, handler: (event?: KeyboardEvent) => void): void {
-    this.keyHandlers.push({ event, handler });
+    this.keyHandlers.push({
+      event,
+      handler: (keyboardEvent) => {
+        if (shouldIgnoreGameKeyboardEvent(keyboardEvent)) {
+          return;
+        }
+        handler(keyboardEvent);
+      }
+    });
   }
 
   private triggerAbilitySlot(slot: number, event?: KeyboardEvent): void {

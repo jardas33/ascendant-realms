@@ -33,13 +33,17 @@ export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): str
       ${abilities
         .map((ability) => {
           const cooldownRemaining = hero.abilityCooldowns[ability.id] ?? 0;
+          const label = abilityLabel(ability, cooldownRemaining);
+          const description = `${ability.description} Cost: ${ability.manaCost} Mana.`;
           return `
-            <button class="hud-button ability" data-action="ability" data-id="${ability.id}">
+            <button class="hud-button ability" data-action="ability" data-id="${ability.id}" title="${escapeHtml(
+              `${ability.name}: ${description}`
+            )}" aria-label="${escapeHtml(`${label}. ${description}`)}">
               <span class="ability-button-content">
                 ${AssetLoader.imageHtml(abilityIconAssetId(ability.id), `${ability.name} icon`, "ability-icon")}
-                <span>${escapeHtml(abilityLabel(ability, cooldownRemaining))}</span>
+                <span>${escapeHtml(label)}</span>
               </span>
-              <small>${ability.manaCost} Mana</small>
+              <small>${escapeHtml(description)}</small>
             </button>
           `;
         })

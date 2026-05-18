@@ -96,6 +96,16 @@ export class CombatSystem {
   }
 
   private resolveTarget(attacker: Combatant): BaseEntity | undefined {
+    if (
+      attacker instanceof Unit &&
+      attacker.team === "player" &&
+      attacker.moveTarget &&
+      !attacker.attackMove &&
+      !attacker.attackTargetId
+    ) {
+      return undefined;
+    }
+
     const explicitTarget = attacker instanceof Unit && attacker.attackTargetId ? this.findEntityById(attacker.attackTargetId) : undefined;
     if (explicitTarget?.alive && CollisionSystem.isHostile(attacker.team, explicitTarget.team)) {
       return explicitTarget;

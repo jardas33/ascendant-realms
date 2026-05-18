@@ -1,12 +1,89 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14 private playtest build packaging
+Last updated: 2026-05-18 v0.14.1 Emmanuel quick playtest fixes
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
+
+Status: local verification green; first real private playtest intake plus narrow runtime usability fixes. This pass uses only Emmanuel's supplied session `PT-20260518-EMMANUEL-BASELINE-01`. It changes runtime input/HUD/menu/normal move behavior narrowly, but it does not change gameplay numbers, save format, campaign data, maps, factions, units, rewards, runtime art/assets, pressure plans, hosted release patterns, automated simulation scope, or balance tuning.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `0236df7` (`Checkpoint v0.14 private playtest build packaging`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not invent playtest feedback, implement balance-number changes, add new content, save migration, runtime art, automated simulation expansion, or the future 2026 visual art overhaul.
+
+v0.14.1 docs added:
+
+- `docs/V0141_EMMANUEL_QUICK_PLAYTEST_INTAKE.md`
+- `docs/V0141_REPRODUCTION_PLAN.md`
+- `docs/V0141_QUICK_PLAYTEST_FIX_REPORT.md`
+
+v0.14.1 code/tests added or changed:
+
+- `src/game/systems/KeyboardFocusGuard.ts`
+- `src/game/systems/InputSystem.ts`
+- `src/game/systems/CameraSystem.ts`
+- `src/game/scenes/HeroCreationScene.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/battle/BattleSceneSystems.ts`
+- `src/game/ui/HUD.ts`
+- `src/game/ui/hudPanels/HudRoot.ts`
+- `src/game/ui/hudPanels/HudTypes.ts`
+- `src/game/ui/hudPanels/PauseMenuPanel.ts`
+- `src/game/ui/hudPanels/HeroHudPanel.ts`
+- `src/game/ui/hudPanels/TutorialPanel.ts`
+- `src/game/ui/UnitOrderSummary.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/game/systems/MovementSystem.ts`
+- `src/game/styles/battle-feedback.css`
+- `src/game/systems/MovementSystem.test.ts`
+- `src/game/ui/hudPanels/PauseMenuPanel.test.ts`
+- updated combat/order summary unit tests and smoke/deep Playwright tests.
+
+Fix summary:
+
+- I05 hero rename input with `W/A/S/D`: fixed.
+- I07 selection marquee stuck over HUD: fixed.
+- I06 retreat/move command ignored during combat: fixed narrowly by making normal move intent override opportunistic combat targeting; attack-move still fights.
+- I09 Menu exits instead of pause: fixed with a pause overlay and explicit exit.
+- I02 hero skill lacks explanation: fixed with visible ability copy.
+- I01 hover flicker and I03 Tutorial Next Objective delay: addressed by stable tutorial/HUD interaction refresh handling.
+- I08 unit snap-back loop: narrow blocked-correction fix; needs Emmanuel retest before deeper pathing work.
+- I04 hero attack unclear: partly addressed with clearer selected order copy; needs retest before combat VFX/system changes.
+
+Current verification:
+
+```text
+npm test PASS, 52 files / 375 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests in about 2.4m.
+npm run test:e2e:smoke PASS, 13 tests in about 7.1m.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests in about 39.5m after rerunning with a long enough local command timeout.
+```
+
+Next recommended goal: Create a clean v0.14.1 private playtest package after this checkpoint commit, have Emmanuel rerun the same Baseline Cautious route, and record whether I01-I09 are fixed, improved, or still reproducible. If I08 or I04 still reproduce, open a narrow movement/pathing or combat-readability goal with video/screenshot evidence.
 
 ## Current v0.14 Private Playtest Build Packaging And One-Click Tester Delivery - 2026-05-18
 

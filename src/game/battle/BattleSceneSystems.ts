@@ -100,6 +100,8 @@ interface CreateBattleSceneSystemsOptions {
   onPlayerCapturedSite?: (siteId: string) => void;
   onPlayerUnitTrained?: (unitId: string) => void;
   openMainMenu: () => void;
+  resumeBattle: () => void;
+  exitToMainMenu: () => void;
 }
 
 // BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
@@ -144,7 +146,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     showBattleStartSummary,
     onPlayerCapturedSite,
     onPlayerUnitTrained,
-    openMainMenu
+    openMainMenu,
+    resumeBattle,
+    exitToMainMenu
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
@@ -334,7 +338,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       },
       onTutorialNext: advanceTutorialStep,
       onMinimapMove: centerCameraFromMinimap,
-      onMenu: openMainMenu
+      onMenu: openMainMenu,
+      onResume: resumeBattle,
+      onExitToMainMenu: exitToMainMenu
     })
   );
 

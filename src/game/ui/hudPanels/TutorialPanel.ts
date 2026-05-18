@@ -25,7 +25,7 @@ export function renderTutorialPanel(step: TutorialStepViewModel | undefined): st
               )}</button>`
             : ""
         }
-        <button class="hud-button compact tutorial-secondary" data-testid="tutorial-exit" data-action="menu" aria-label="Exit Tutorial and return to main menu">Exit Tutorial</button>
+        <button class="hud-button compact tutorial-secondary" data-testid="tutorial-exit" data-action="exit-menu" aria-label="Exit Tutorial and return to main menu">Exit Tutorial</button>
       </div>
     </section>
   `;

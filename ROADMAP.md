@@ -11,9 +11,15 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing/tooling checkpoint is **v0.14 Private Playtest Build Packaging And One-Click Tester Delivery** on 2026-05-18. It turns the verified prototype and tester packet into a lower-friction private distribution flow: `npm run build:playtest`, `npm run package:playtest`, `npm run verify:playtest-package`, ignored package folders under `artifacts/playtest/`, tester README, feedback packet, route assignment plan, build metadata, and local server launchers. It makes no numeric tuning and no runtime gameplay changes. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, automated simulation expansion, or release coverage reduction.
+The latest player-facing checkpoint is **v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass** on 2026-05-18. It ingests Emmanuel's first real private playtest session, fixes narrow input/HUD/menu/command usability failures, and keeps gameplay numbers, save format, maps, factions, units, runtime art/assets, broad combat AI, balance tuning, automated simulation expansion, and visual overhaul out of scope.
 
-The next recommended player-facing step is **Real Human Playtest Execution And Intake**, but only after actual testers use a v0.14 private package and return completed forms. Use v0.13/v0.13.1 automated evidence to prioritize what to test; do not treat it as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to generate a clean v0.14.1 private package and have Emmanuel rerun the same Baseline Cautious route, focusing on the nine reported issues. Use that retest before opening deeper pathing/combat-readability work. Use v0.13/v0.13.1 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.14.1 Emmanuel quick playtest docs:
+
+- `docs/V0141_EMMANUEL_QUICK_PLAYTEST_INTAKE.md`
+- `docs/V0141_REPRODUCTION_PLAN.md`
+- `docs/V0141_QUICK_PLAYTEST_FIX_REPORT.md`
 
 New v0.14 private playtest package docs and commands:
 

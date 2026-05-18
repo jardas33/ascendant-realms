@@ -24,6 +24,7 @@ const TARGET_REPATH_DISTANCE = 36;
 const STUCK_DISTANCE_EPSILON = 4;
 const STUCK_SECONDS_BEFORE_REPATH = 0.75;
 const REPATH_COOLDOWN_SECONDS = 0.55;
+const MAX_GRID_CORRECTION_DISTANCE = 20;
 
 export class MovementSystem {
   private readonly unitPathStates = new Map<string, UnitPathState>();
@@ -125,7 +126,7 @@ export class MovementSystem {
     }
 
     const nearest = grid.findNearestWalkablePoint(next, 2);
-    if (nearest) {
+    if (nearest && distance(nearest, unit.position) <= Math.max(MAX_GRID_CORRECTION_DISTANCE, step + unit.radius)) {
       unit.setPosition(
         clamp(nearest.x, unit.radius, map.width - unit.radius),
         clamp(nearest.y, unit.radius, map.height - unit.radius)
@@ -232,8 +233,8 @@ export class MovementSystem {
       unit.setPosition(point.x, point.y);
       return;
     }
-    const nearest = grid.findNearestWalkablePoint(unit.position, 1);
-    if (nearest) {
+    const nearest = grid.findNearestWalkablePoint(point, 1);
+    if (nearest && distance(nearest, unit.position) <= MAX_GRID_CORRECTION_DISTANCE) {
       unit.setPosition(nearest.x, nearest.y);
     }
   }

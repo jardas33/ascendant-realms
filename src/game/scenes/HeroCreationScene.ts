@@ -7,6 +7,7 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { createNewHeroSave } from "../data/heroes";
 import { HERO_CLASSES } from "../data/heroClasses";
 import { ORIGINS } from "../data/origins";
+import { stopKeyboardEventForEditableTarget } from "../systems/KeyboardFocusGuard";
 
 interface HeroCreationData {
   nextMode?: "campaign" | "skirmish";
@@ -15,6 +16,7 @@ interface HeroCreationData {
 export class HeroCreationScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
+  private keyboardHandler?: (event: KeyboardEvent) => void;
   private selectedClassId = HERO_CLASSES[0].id;
   private selectedOriginId = ORIGINS[0].id;
   private heroName = "Aster";
@@ -69,6 +71,9 @@ export class HeroCreationScene extends Phaser.Scene {
     };
 
     this.root.addEventListener("click", this.handler);
+    this.keyboardHandler = (event) => stopKeyboardEventForEditableTarget(event);
+    this.root.addEventListener("keydown", this.keyboardHandler, true);
+    this.root.addEventListener("keyup", this.keyboardHandler, true);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
     this.render();
   }
@@ -142,6 +147,10 @@ export class HeroCreationScene extends Phaser.Scene {
   private cleanup(): void {
     if (this.root && this.handler) {
       this.root.removeEventListener("click", this.handler);
+    }
+    if (this.root && this.keyboardHandler) {
+      this.root.removeEventListener("keydown", this.keyboardHandler, true);
+      this.root.removeEventListener("keyup", this.keyboardHandler, true);
     }
   }
 }

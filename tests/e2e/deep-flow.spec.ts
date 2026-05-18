@@ -1690,6 +1690,48 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Battle QA");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
 
+    await expect(page.locator(".side-panel")).toBeVisible();
+    const dragTargets = await page.evaluate((startPoint) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const panel = document.querySelector<HTMLElement>(".side-panel");
+      const panelBox = panel?.getBoundingClientRect();
+      if (!panelBox || panelBox.width <= 0 || panelBox.height <= 0) {
+        throw new Error("Expected visible side panel for drag release regression.");
+      }
+      const canvasBounds = scene.game.canvas.getBoundingClientRect();
+      const camera = scene.cameras.main;
+      return {
+        start: {
+          x: canvasBounds.left + startPoint.x - camera.scrollX,
+          y: canvasBounds.top + startPoint.y - camera.scrollY
+        },
+        end: {
+          x: panelBox.left + panelBox.width / 2,
+          y: panelBox.top + panelBox.height / 2
+        }
+      };
+    }, heroStart);
+    await page.mouse.move(dragTargets.start.x, dragTargets.start.y);
+    await page.mouse.down();
+    await page.mouse.move(dragTargets.end.x, dragTargets.end.y, { steps: 6 });
+    await page.mouse.up();
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              dragging: Boolean(scene?.inputSystem?.dragStart),
+              battleActive: Boolean(scene?.scene.isActive())
+            };
+          }),
+        { message: "expected selection marquee state to clear after releasing over the side panel" }
+      )
+      .toEqual({ dragging: false, battleActive: true });
+
     await page.getByTestId("minimap").click({ position: { x: 90, y: 60 } });
     await page.keyboard.press("F");
     await expect(page.getByTestId("battle-status")).toContainText(/Fog/i);

@@ -194,6 +194,7 @@ export class BattleScene extends Phaser.Scene {
   private unitVeterancyRankUps: UnitVeterancyRankUpEvent[] = [];
   private lostRetinueUnitIds = new Set<string>();
   private scoutedEnemyHeroIds = new Set<string>();
+  private menuPaused = false;
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
     enemy: new Set<string>()
@@ -233,6 +234,11 @@ export class BattleScene extends Phaser.Scene {
     }
 
     const deltaSeconds = deltaMs / 1000;
+    if (this.menuPaused) {
+      this.refreshBattleHud(deltaSeconds);
+      return;
+    }
+
     this.runtime.tick(deltaSeconds);
     this.statusTimer = Math.max(0, this.statusTimer - deltaSeconds);
     this.commandHallWarningCooldown = Math.max(0, this.commandHallWarningCooldown - deltaSeconds);
@@ -307,6 +313,7 @@ export class BattleScene extends Phaser.Scene {
     this.unitVeterancyRankUps = [];
     this.lostRetinueUnitIds = new Set<string>();
     this.scoutedEnemyHeroIds = new Set<string>();
+    this.menuPaused = false;
     this.researchedUpgradeIds = {
       player: new Set<string>(),
       enemy: new Set<string>()
@@ -373,7 +380,9 @@ export class BattleScene extends Phaser.Scene {
       showBattleStartSummary: () => this.showBattleStartSummary(),
       onPlayerCapturedSite: (siteId) => this.enemyPressureRuntime?.recordPlayerCapturedSite(siteId),
       onPlayerUnitTrained: (unitId) => this.enemyPressureRuntime?.recordPlayerTrainedUnit(unitId),
-      openMainMenu: () => this.scene.start(SCENE_KEYS.mainMenu)
+      openMainMenu: () => this.openBattleMenu(),
+      resumeBattle: () => this.resumeBattle(),
+      exitToMainMenu: () => this.exitToMainMenu()
     });
 
     this.movementSystem = systems.movementSystem;
@@ -860,8 +869,40 @@ export class BattleScene extends Phaser.Scene {
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
       minimap: this.createMinimapSnapshot(),
-      objectives: this.createObjectiveSnapshot()
+      objectives: this.createObjectiveSnapshot(),
+      pauseMenu: this.menuPaused
+        ? {
+            visible: true,
+            title: "Paused",
+            description: "Battle simulation is paused. Resume when ready, or exit to the main menu after confirming this is what you want."
+          }
+        : undefined
     });
+  }
+
+  private openBattleMenu(): void {
+    if (this.runtime.ended) {
+      return;
+    }
+    this.menuPaused = true;
+    this.statusMessage = "Paused";
+    this.statusTimer = 60;
+    this.statusPriority = "command";
+    this.refreshBattleHud(0);
+  }
+
+  private resumeBattle(): void {
+    if (!this.menuPaused) {
+      return;
+    }
+    this.menuPaused = false;
+    this.showMessage("Resumed", undefined, undefined, "#d9eee8", { priority: "command" });
+    this.refreshBattleHud(0);
+  }
+
+  private exitToMainMenu(): void {
+    this.menuPaused = false;
+    this.scene.start(SCENE_KEYS.mainMenu);
   }
 
   private cleanupDeadEntities(): void {

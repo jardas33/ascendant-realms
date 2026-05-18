@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
+
+This checkpoint ingests Emmanuel's first real private playtest session, `PT-20260518-EMMANUEL-BASELINE-01`, and fixes only narrow, high-confidence input, HUD, tutorial, and command usability problems. It does not add maps, factions, units, runtime art/assets, save migration, balance tuning, broad combat AI rewrites, automated simulation expansion, or invented tester feedback.
+
+### Included
+
+- New intake, reproduction, and fix-report docs for Emmanuel's Baseline Cautious quick route.
+- Focused keyboard guard so global movement/camera hotkeys ignore focused editable inputs.
+- Hero creation text input now accepts names containing `W`, `A`, `S`, and `D`.
+- Battle selection drag state clears on pointer release/cancel/blur and when a stale drag loses the mouse button.
+- Battle `Menu` now opens a pause overlay with `Resume` and `Exit to Main Menu`.
+- Normal player move orders now override opportunistic combat engagement; attack-move still engages along the route.
+- Movement correction avoids large blocked snap-back jumps.
+- Hero ability controls now show concise effect/cost copy.
+- Selected order copy clarifies that attacking should reduce enemy HP when in weapon range.
+- Focused unit and browser tests cover text input, selection drag cleanup, pause menu, move vs attack-move, movement correction, and readability copy.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in input handling, HUD/menu behavior, normal move command intent, and movement correction.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Human feedback used: yes, only Emmanuel's supplied session.
+- Deferred/retest-dependent: deeper pathing or combat-readability work if the unit snap-back or hero attack clarity reports reproduce after this pass.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+- GitHub Actions should be rerun because runtime input/HUD/battle behavior changed, even though local and hosted release gates passed.
+
+### Next
+
+- Build a clean v0.14.1 private playtest package and have Emmanuel rerun the same Baseline Cautious route, focusing on the nine reported issues.
+
 ## v0.14 Private Playtest Build Packaging And One-Click Tester Delivery - 2026-05-18
 
 This checkpoint makes the existing browser prototype easier to package and send for private human playtesting. It preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, hosted release patterns, automated lab behavior, and human-feedback boundaries.

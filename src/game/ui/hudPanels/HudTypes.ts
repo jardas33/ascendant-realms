@@ -16,6 +16,8 @@ export interface HUDCallbacks {
   onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;
+  onResume: () => void;
+  onExitToMainMenu: () => void;
 }
 
 export interface HUDSnapshot {
@@ -30,6 +32,13 @@ export interface HUDSnapshot {
   techState: TechState;
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
+  pauseMenu?: HUDPauseMenuSnapshot;
+}
+
+export interface HUDPauseMenuSnapshot {
+  visible: boolean;
+  title: string;
+  description: string;
 }
 
 export interface HUDObjectiveSnapshot {

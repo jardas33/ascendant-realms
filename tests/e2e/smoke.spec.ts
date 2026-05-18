@@ -694,6 +694,22 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-reset-save")).toBeVisible();
   });
 
+  test("hero name input accepts movement-key letters @ci-fast", async ({ page }) => {
+    await openFreshMainMenu(page);
+
+    await clickReady(page.getByTestId("menu-new-campaign"), "smoke hero name typing menu");
+    await expect(page.getByTestId("hero-creation")).toBeVisible();
+    const input = page.getByTestId("hero-name-input");
+    await input.evaluate((element) => {
+      const field = element as HTMLInputElement;
+      field.value = "";
+      field.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    await input.focus();
+    await page.keyboard.type("WASD wasd");
+    await expect(input).toHaveValue("WASD wasd");
+  });
+
   test("tutorial entry launches a no-reward shell and returns to menu @ci-fast", async ({ page }) => {
     test.setTimeout(95_000);
     await openFreshMainMenu(page);
@@ -712,6 +728,39 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       expect(overlayBox.x).toBeGreaterThanOrEqual(-2);
       expect(overlayBox.x + overlayBox.width).toBeLessThanOrEqual(viewport.width + 2);
     }
+    const tutorialNextHoverPoint = await page.getByTestId("tutorial-next").evaluate((button) => {
+      (button as HTMLButtonElement & { __hudStableSentinel?: string }).__hudStableSentinel = "tutorial-next-hover";
+      const rect = button.getBoundingClientRect();
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2
+      };
+    });
+    await page.mouse.move(tutorialNextHoverPoint.x, tutorialNextHoverPoint.y);
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.statusMessage = "Tutorial hover stability refresh";
+      (window as any).__tutorialHoverRefreshAt = performance.now();
+      scene.refreshBattleHud(0.11);
+    });
+    await page.waitForFunction(() => performance.now() - ((window as any).__tutorialHoverRefreshAt ?? 0) > 260);
+    const tutorialHoverState = await page.evaluate((point) => {
+      const button = document.querySelector<HTMLButtonElement>("[data-testid='tutorial-next']");
+      const hit = document.elementFromPoint(point.x, point.y)?.closest("[data-testid='tutorial-next']");
+      return {
+        sameNode: Boolean((button as (HTMLButtonElement & { __hudStableSentinel?: string }) | null)?.__hudStableSentinel === "tutorial-next-hover"),
+        pointerStillOnButton: Boolean(button && hit === button),
+        text: button?.textContent ?? ""
+      };
+    }, tutorialNextHoverPoint);
+    expect(tutorialHoverState).toMatchObject({
+      sameNode: true,
+      pointerStillOnButton: true,
+      text: expect.stringContaining("Next Objective")
+    });
     await expect(page.getByTestId("tutorial-info-panel")).toHaveCount(0);
     await expect(page.getByTestId("skirmish-setup")).toHaveCount(0);
     const tutorialLaunch = await page.evaluate(() => {
@@ -862,6 +911,31 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(battleSettings.colorblindSnapshot).toBe(true);
     await expect(page.getByTestId("minimap").locator(".minimap-unit[fill='#56b4e9']").first()).toBeVisible();
     await expect(page.getByTestId("minimap").locator(".minimap-unit[fill='#d55e00']").first()).toBeVisible();
+
+    const battleMenuPoint = await page
+      .waitForFunction(() => {
+        const button = document.querySelector<HTMLElement>("[data-testid='battle-menu']");
+        const rect = button?.getBoundingClientRect();
+        if (!rect || rect.width <= 0 || rect.height <= 0) {
+          return null;
+        }
+        return {
+          x: rect.left + rect.width / 2,
+          y: rect.top + rect.height / 2
+        };
+      })
+      .then((handle) => handle.jsonValue());
+    await page.mouse.move(battleMenuPoint.x, battleMenuPoint.y);
+    await clickReady(page.getByTestId("battle-menu"), "settings smoke battle menu");
+    await expect(page.getByTestId("battle-pause-menu")).toBeVisible();
+    await expect(page.getByTestId("battle-status")).toContainText("Paused");
+    const pausedState = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return { menuPaused: Boolean(scene?.menuPaused), stillInBattle: Boolean(scene?.scene.isActive()) };
+    });
+    expect(pausedState).toMatchObject({ menuPaused: true, stillInBattle: true });
+    await clickReady(page.getByTestId("battle-resume"), "settings smoke battle resume");
+    await expect(page.getByTestId("battle-pause-menu")).toHaveCount(0);
   });
 
   test("new campaign flow opens the campaign map and blocks locked nodes @ci-fast", async ({ page }) => {

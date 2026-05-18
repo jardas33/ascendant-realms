@@ -5,8 +5,26 @@ import { Unit } from "../entities/Unit";
 import { CombatSystem } from "./CombatSystem";
 
 describe("CombatSystem", () => {
-  it("stops player units to fight when an enemy enters weapon range", () => {
+  it("lets player units obey a normal move order away from enemies in weapon range", () => {
     const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, moveTarget: { x: 260, y: 100 } });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toEqual({ x: 260, y: 100 });
+    expect(enemy.hp).toBe(enemy.maxHp);
+  });
+
+  it("stops attack-moving player units to fight enemies in weapon range", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      moveTarget: { x: 260, y: 100 },
+      attackMove: true
+    });
     const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
     const combat = createCombat([player, enemy]);
 

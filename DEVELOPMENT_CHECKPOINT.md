@@ -1,6 +1,66 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14 private playtest build packaging
+Updated: 2026-05-18 v0.14.1 Emmanuel quick playtest fixes
+
+## v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
+
+Scope: ingest Emmanuel's real Baseline Cautious private playtest session `PT-20260518-EMMANUEL-BASELINE-01`, classify the nine reports through the existing intake framework, and implement only small high-confidence fixes for actual bugs or severe usability friction. This pass preserves gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, pressure plans, hosted release patterns, automated simulation scope, and the no-invented-feedback boundary.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `0236df7` (`Checkpoint v0.14 private playtest build packaging`).
+- Branch state before edits: `main` clean and synced with `origin/main`.
+- Human feedback source: Emmanuel only, session `PT-20260518-EMMANUEL-BASELINE-01`.
+- Guardrails: no maps, factions, units, runtime art/assets, save format, gameplay numbers, broad combat AI rewrite, broad tuning, automated simulation expansion, invented feedback, hosted release assertion weakening, force clicks, DOM fallback for canvas/world clicks, or visual overhaul.
+
+Included work:
+
+- Added `docs/V0141_EMMANUEL_QUICK_PLAYTEST_INTAKE.md`.
+- Added `docs/V0141_REPRODUCTION_PLAN.md`.
+- Added `docs/V0141_QUICK_PLAYTEST_FIX_REPORT.md`.
+- Added `src/game/systems/KeyboardFocusGuard.ts` so game keyboard handlers ignore focused editable elements.
+- Updated hero creation input handling so names can include movement-key letters such as `W`, `A`, `S`, and `D`.
+- Updated battle input drag handling so selection marquee state clears on pointer release/cancel/blur and stale mouse-button loss.
+- Added a battle pause overlay for `Menu`, with `Resume` and explicit `Exit to Main Menu`.
+- Updated player normal move orders so they do not immediately re-acquire combat targets; attack-move still engages.
+- Tightened movement correction so blocked separation does not produce large snap-back movement.
+- Added visible hero ability description/cost copy and clearer selected order copy for attacking/moving.
+- Added/updated focused unit and browser tests for the fixes.
+
+Fix status:
+
+- Fixed: I05 hero rename input blocks `W/A/S/D`.
+- Fixed: I07 selection marquee stuck over HUD.
+- Fixed narrowly: I06 retreat/move command being overridden by nearby combat.
+- Fixed: I09 battle Menu accidental exit now opens pause.
+- Fixed: I02 hero skill explanation.
+- Addressed: I01 hover flicker and I03 tutorial Next Objective delay through stable tutorial/HUD refresh handling.
+- Narrowly addressed: I08 unit movement snap-back through blocked movement-correction guard; retest required.
+- Partly addressed: I04 hero attack unclear through selected order copy; retest required before deeper combat/VFX work.
+
+Current verification:
+
+```text
+npm test PASS, 52 files / 375 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests in about 2.4m.
+npm run test:e2e:smoke PASS, 13 tests in about 7.1m.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests after targeted HUD stability fixes.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests after pause-menu actionability stabilization.
+npm run test:e2e:release PASS, 75 tests in about 39.5m after rerunning with a long enough local command timeout.
+```
+
+Remaining watch items: Run `git diff --check` before commit. GitHub Actions should be rerun after this checkpoint because runtime input/HUD/battle/menu behavior changed. Emmanuel should retest the same Baseline Cautious private route on a clean v0.14.1 package before any deeper pathing, combat readability, or UI polish goal.
 
 ## v0.14 Private Playtest Build Packaging And One-Click Tester Delivery - 2026-05-18
 

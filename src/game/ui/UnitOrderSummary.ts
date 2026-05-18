@@ -16,7 +16,7 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   if (unit.attackTargetId) {
     return {
       label: "Attacking",
-      detail: "Pursuing the targeted enemy and fighting when in range.",
+      detail: "Pursuing the targeted enemy; HP drops when in weapon range.",
       tone: "active"
     };
   }
@@ -32,7 +32,7 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   if (unit.moveTarget) {
     return {
       label: "Moving",
-      detail: "Moving to the ordered point; stops to fight enemies that enter weapon range.",
+      detail: "Moving to the ordered point; use attack-move to fight along the route.",
       tone: "neutral"
     };
   }

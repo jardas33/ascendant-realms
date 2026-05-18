@@ -73,6 +73,14 @@ export class HUD {
         callbacks.onMenu();
         handled = true;
       }
+      if (action === "resume") {
+        callbacks.onResume();
+        handled = true;
+      }
+      if (action === "exit-menu") {
+        callbacks.onExitToMainMenu();
+        handled = true;
+      }
       if (handled) {
         this.deferredMarkup = "";
         this.pointerInsideStablePanel = false;
@@ -162,8 +170,8 @@ export class HUD {
   }
 }
 
-const STABLE_INTERACTION_SELECTOR = ".side-panel, .objectives-panel";
-const SCROLLABLE_HUD_SELECTORS = [".side-panel", ".objectives-panel"] as const;
+const STABLE_INTERACTION_SELECTOR = ".top-bar, .side-panel, .objectives-panel, .tutorial-panel, .minimap-shell, .pause-menu-panel";
+const SCROLLABLE_HUD_SELECTORS = [".side-panel", ".objectives-panel", ".tutorial-panel"] as const;
 
 function isStableInteractionTarget(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest(STABLE_INTERACTION_SELECTOR));

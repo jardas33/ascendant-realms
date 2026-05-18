@@ -9,6 +9,7 @@ import { escapeHtml } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
 import { renderMinimapPanel } from "./MinimapPanel";
 import { renderObjectives } from "./ObjectivePanel";
+import { renderPauseMenu } from "./PauseMenuPanel";
 import { renderPlacementBanner } from "./PlacementPanel";
 import { renderResources } from "./ResourceBar";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
@@ -26,7 +27,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
   return `
     <div class="top-bar" data-testid="battle-hud">
       <div class="resource-row" data-testid="battle-resources">${renderResources(snapshot.resources)}</div>
-      <button class="hud-button compact" data-action="menu">Menu</button>
+      <button class="hud-button compact" data-testid="battle-menu" data-action="menu">Menu</button>
     </div>
     ${renderHeroHudPanel(snapshot.hero)}
     <div class="${sidePanelClass}">
@@ -37,6 +38,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
     ${renderMinimapPanel(snapshot.minimap)}
     ${renderObjectives(snapshot.objectives)}
     ${renderTutorialPanel(snapshot.tutorial)}
+    ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}
     ${renderStatusLine(snapshot.status, snapshot.isPlacing)}
     ${renderHintLine(snapshot.hint)}

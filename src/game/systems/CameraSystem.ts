@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { CAMERA_PAN_SPEED } from "../core/Constants";
 import type { BattleMapDefinition, Position } from "../core/GameTypes";
+import { isEditableElementFocused } from "./KeyboardFocusGuard";
 
 export class CameraSystem {
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
@@ -13,6 +14,9 @@ export class CameraSystem {
   }
 
   update(deltaSeconds: number): void {
+    if (isEditableElementFocused()) {
+      return;
+    }
     const camera = this.scene.cameras.main;
     const distance = CAMERA_PAN_SPEED * deltaSeconds;
     if (this.cursors.left.isDown || this.keys.A.isDown) {
