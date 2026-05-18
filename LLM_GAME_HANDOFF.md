@@ -1,12 +1,75 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14.3 combat selection control fixes
+Last updated: 2026-05-18 v0.14.4 combat control retest fixes
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.14.4 Combat Control Retest Fix Pass - 2026-05-18
+
+Status: local verification green through full release and hosted release groups; pre-commit private playtest package verified. This pass uses only Emmanuel's v0.14.3 retest evidence for `PT-20260518-EMMANUEL-BASELINE-01`. It changes runtime input/combat/tutorial/HUD behavior narrowly, but it does not change gameplay data numbers, save format, campaign data, maps, factions, units, rewards, runtime art/assets, behaviour modes, unit panel structure, pressure plans, hosted release patterns, automated simulation scope, broad combat AI/pathing, protected UI, or balance tuning.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `28698152edca0967a561dc0de2a9c08b021d4061`, clean and synced with `origin/main`.
+- Human feedback source: Emmanuel only, v0.14.3 retest notes.
+- Confirmed fixed before this pass: drag-select multiple units, tutorial defeat Results, Retry Tutorial, Return Main Menu, and class/origin mechanical explanations.
+- Remaining issues before this pass: idle adjacent melee after kills/contact, drag-selection lag over HUD/minimap, Complete Tutorial direct-main-menu behavior, missing attack-hover/left-click attack intent, blue-vs-green tutorial capture copy, and an unavailable screenshot-backed visual bug.
+
+v0.14.4 docs added:
+
+- `docs/V0144_COMBAT_CONTROL_RETEST_FIX_REPORT.md`
+
+v0.14.4 code/tests changed:
+
+- `src/game/systems/CombatSystem.ts`
+- `src/game/systems/CombatSystem.test.ts`
+- `src/game/systems/InputSystem.ts`
+- `src/game/ui/HUD.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/data/tutorials.ts`
+- `tests/e2e/smoke.spec.ts`
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix summary:
+
+- Melee engagement: added a small visual contact margin for melee reach and regression coverage for body-contact attacks plus post-kill adjacent target reacquisition.
+- Drag selection: active battlefield drags now update the marquee from global pointer movement, keeping drag visuals responsive while crossing HUD/minimap DOM surfaces.
+- HUD/minimap focus: handled minimap clicks now flush the stable-hover deferral path like HUD buttons, preventing stale `No Selection` markup after minimap interaction.
+- Tutorial completion: `Complete Tutorial` now opens the existing no-save/no-reward Results flow as a tutorial victory before Main Menu.
+- Attack intent: selected units hovering a targetable hostile/neutral target now show a crosshair attack cursor, and left-clicking that target issues an attack order.
+- Tutorial copy: Crown Shrine ownership copy now says green, matching the current ring color.
+- Visual bug: no attached retest screenshot was available in the current thread or repo artifacts, so no screenshot-specific visual fix is claimed.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 383 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests after fixing the HUD/minimap stale-selection deferral.
+npm run package:playtest PASS, produced pre-commit dirty package `artifacts/playtest/ascendant-realms-private-playtest-2869815-dirty`.
+npm run verify:playtest-package PASS, 19 checks.
+git diff --check PASS.
+```
+
+Next recommended goal after this checkpoint: have Emmanuel retest the v0.14.4 package on the same Baseline Cautious route, focusing on melee contact after a kill, enemy contact attacks, drag-select over HUD/minimap, Complete Tutorial Results flow, attack-hover/left-click attack, green Crown Shrine copy, and the missing screenshot visual bug if he can recapture it.
 
 ## Current v0.14.3 Combat Engagement, Marquee Selection, And Control Clarity Fix Pass - 2026-05-18
 

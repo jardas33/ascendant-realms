@@ -49,10 +49,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "captureSite",
         title: "Capture Crown Shrine",
         description: "Teach capture-site ownership with the safest existing First Claim opening.",
-        instruction: "Move Aster and soldiers into the Crown Shrine ring until it turns blue.",
+        instruction: "Move Aster and soldiers into the Crown Shrine ring until it turns green.",
         objectiveType: "captureSite",
         requiredAction: "captureSite",
-        hint: "Blue ownership starts your battle income.",
+        hint: "Green ownership starts your battle income.",
         references: {
           mapIds: ["first_claim"],
           captureSiteIds: ["crown_shrine"],
@@ -168,7 +168,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Training complete. You practiced the core loop. No rewards: no XP, items, resources, or campaign progress were granted.",
         objectiveType: "finish",
         requiredAction: "finish",
-        hint: "Complete Tutorial returns to the main menu; nothing is saved."
+        hint: "Complete Tutorial opens a no-save results summary; nothing is saved."
       }
     ]
   }

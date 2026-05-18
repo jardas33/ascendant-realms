@@ -60,7 +60,7 @@ Risk: "road ahead" depends on the player's camera context. v0.10 copy can say "n
 
 ### 5. Capture-Site Teaching
 
-Capture-site teaching is clear enough: move hero and soldiers into the Crown Shrine ring until it turns blue. It uses the safest existing First Claim opening and references the existing `crown_shrine`.
+Capture-site teaching is clear enough: move hero and soldiers into the Crown Shrine ring until it turns green. It uses the safest existing First Claim opening and references the existing `crown_shrine`.
 
 Risk: the strategic reason for capturing is mostly implied. v0.10 can explicitly connect the shrine to temporary battle income before the resource step.
 
@@ -131,4 +131,3 @@ Proceed with a conservative Tutorial v2 refinement:
 - Prefer copy/hint refinement over step restructuring.
 - Consider a tiny overlay readability pass only if it preserves current layout tests and visual QA.
 - Keep full tutorial completion covered unless Phase 6 shows a real runtime problem.
-

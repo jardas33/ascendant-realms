@@ -614,7 +614,7 @@ async function expectTutorialCommandState(page: Page, command: SemanticCommand):
   }
 }
 
-async function clickCompleteTutorialAndWaitForMenu(page: Page): Promise<void> {
+async function clickCompleteTutorialAndWaitForResults(page: Page): Promise<void> {
   let lastError: unknown;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
@@ -630,18 +630,18 @@ async function clickCompleteTutorialAndWaitForMenu(page: Page): Promise<void> {
       lastError = error;
     }
 
-    const menuVisible = await page
-      .getByTestId("main-menu")
+    const resultsVisible = await page
+      .locator(".results-panel")
       .waitFor({ state: "visible", timeout: 3_000 })
       .then(() => true)
       .catch(() => false);
-    if (menuVisible) {
+    if (resultsVisible) {
       return;
     }
-    console.warn(`smoke complete tutorial: main menu was not visible after attempt ${attempt}; retrying`);
+    console.warn(`smoke complete tutorial: results were not visible after attempt ${attempt}; retrying`);
   }
 
-  throw lastError instanceof Error ? lastError : new Error("smoke complete tutorial: main menu did not appear");
+  throw lastError instanceof Error ? lastError : new Error("smoke complete tutorial: results did not appear");
 }
 
 function tutorialStepForCommand(command: SemanticCommand): string {
@@ -803,12 +803,17 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("tutorial-instruction")).toContainText("campaign progress");
     await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
-    await clickCompleteTutorialAndWaitForMenu(page);
-    await expect(page.getByTestId("main-menu")).toBeVisible();
-    await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Training complete");
-    await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Nothing was saved");
-    await expect(page.getByTestId("tutorial-complete-notice")).toContainText("Start New Campaign");
+    await clickCompleteTutorialAndWaitForResults(page);
+    await expect(page.locator(".results-panel")).toBeVisible();
+    await expect(page.locator(".results-panel")).toContainText("Victory");
+    await expect(page.locator(".results-panel")).toContainText("Tutorial run complete");
+    await expect(page.locator(".results-panel")).toContainText("no-save and no-reward");
+    await expect(page.locator("button[data-results-action='retry']")).toContainText("Retry Tutorial");
+    await expect(page.locator("button[data-results-action='menu']")).toContainText("Main Menu");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
+    await clickReady(page.locator("button[data-results-action='menu']"), "smoke tutorial complete results main menu", SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await expect(page.getByTestId("tutorial-complete-notice")).toHaveCount(0);
     await expect(page.getByTestId("menu-new-campaign")).toBeVisible();
     await expect(page.getByTestId("menu-skirmish")).toBeVisible();
   });

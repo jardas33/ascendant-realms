@@ -12,6 +12,8 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
+const MELEE_VISUAL_CONTACT_MARGIN = 14;
+
 interface CombatSystemOptions {
   scene: Phaser.Scene;
   getUnits: () => Unit[];
@@ -249,7 +251,8 @@ export class CombatSystem {
     if (!(attacker instanceof Unit) || range > 45) {
       return range;
     }
-    return Math.max(range, attacker.radius + target.radius + 4);
+    // Sprite footprints and separation can make melee units look adjacent while their centers are outside raw stat range.
+    return Math.max(range, attacker.radius + target.radius + MELEE_VISUAL_CONTACT_MARGIN);
   }
 
   private getCooldown(attacker: Combatant): number {

@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.14.4 Combat Control Retest Fixes - 2026-05-18
+
+This checkpoint uses only Emmanuel's v0.14.3 retest of `PT-20260518-EMMANUEL-BASELINE-01` and fixes the remaining concrete combat/control issues without broad redesign, behaviour modes, unit panel redesign, maps, factions, units, runtime art/assets, save migration, or balance tuning.
+
+### Included
+
+- Added `docs/V0144_COMBAT_CONTROL_RETEST_FIX_REPORT.md`.
+- Improved adjacent melee engagement by giving melee contact a small visual-footprint tolerance.
+- Added regression coverage for melee visual contact and post-kill adjacent target reacquisition.
+- Kept drag-selection responsive while the pointer crosses the side panel or minimap by updating the marquee from global pointer movement during active battlefield drags.
+- Cleared handled HUD/minimap focus/deferred markup state so minimap interaction does not leave stale `No Selection` UI after keyboard selection.
+- Added attack-hover feedback: selected units hovering a targetable hostile/neutral target now show a crosshair cursor and left-click issues an attack order.
+- Changed `Complete Tutorial` to open the existing no-save/no-reward Results flow instead of going straight to Main Menu.
+- Updated tutorial Crown Shrine copy from blue ownership to green ownership.
+- Updated browser coverage for tutorial completion, attack cursor/left-click attack order, and release-over-minimap drag behavior.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in melee contact interpretation, input drag responsiveness, attack-click intent, and tutorial completion routing.
+- Gameplay numbers changed: no unit data, HP, damage, cooldown, economy, reward, map, faction, or unit values changed.
+- Save format changed: no.
+- Human feedback used: yes, only Emmanuel's v0.14.3 retest notes.
+- Screenshot visual bug: not specifically fixed because no attached screenshot was available in the current thread or repo artifacts.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+- GitHub Actions should be rerun because runtime battle/input/tutorial behavior changed.
+
+### Next
+
+- Have Emmanuel retest melee contact after kills, enemy contact attacks, drag-select over HUD/minimap, Complete Tutorial Results flow, and attack-hover/left-click attack orders.
+
 ## v0.14.3 Combat Selection Control Fixes - 2026-05-18
 
 This checkpoint uses Emmanuel's v0.14.x retest of `PT-20260518-EMMANUEL-BASELINE-01` and fixes the remaining critical control/combat usability reports without adding maps, factions, units, runtime art/assets, save migration, broad AI/pathing rewrites, visual overhaul, or copied/protected RTS UI.

@@ -59,7 +59,7 @@ The following steps need shorter, more action-oriented copy:
 The following hints should become clearer without becoming longer:
 
 - Camera: `H` selects Aster; `Space` recenters after movement.
-- Capture: hold the ring until it turns blue.
+- Capture: hold the ring until it turns green.
 - Building: `Esc` cancels placement if the ground is blocked.
 - Training: the new Militia appears after the queue finishes.
 - Rally: new units move to the marker after training.
@@ -157,4 +157,3 @@ Overlay/layout implementation should additionally run:
 
 - `npm run test:e2e:layout`;
 - `npm run visual:qa`.
-

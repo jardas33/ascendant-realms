@@ -38,11 +38,13 @@ export class InputSystem {
   private pointerDownHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerMoveHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerUpHandler?: (pointer: Phaser.Input.Pointer) => void;
+  private globalPointerMoveHandler?: (event: PointerEvent) => void;
   private globalPointerReleaseHandler?: (event: PointerEvent) => void;
   private globalPointerCancelHandler?: () => void;
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
+  private cursorMode: "" | "attack" = "";
 
   constructor(private readonly options: InputSystemOptions) {
     this.dragGraphic = options.scene.add.graphics().setDepth(90);
@@ -62,6 +64,9 @@ export class InputSystem {
     if (this.pointerUpHandler) {
       input.off("pointerup", this.pointerUpHandler);
     }
+    if (this.globalPointerMoveHandler) {
+      window.removeEventListener("pointermove", this.globalPointerMoveHandler);
+    }
     if (this.globalPointerReleaseHandler) {
       window.removeEventListener("pointerup", this.globalPointerReleaseHandler);
     }
@@ -73,6 +78,7 @@ export class InputSystem {
     if (keyboard) {
       this.keyHandlers.forEach(({ event, handler }) => keyboard.off(event, handler));
     }
+    this.setCanvasCursor("");
     this.dragGraphic.destroy();
   }
 
@@ -95,6 +101,9 @@ export class InputSystem {
         return;
       }
       if (!this.dragStart || this.options.isPlacingBuilding()) {
+        if (!this.options.isPlacingBuilding()) {
+          this.updateAttackCursor(point);
+        }
         return;
       }
       this.drawDragBox(this.dragStart, point);
@@ -125,6 +134,15 @@ export class InputSystem {
     input.on("pointermove", this.pointerMoveHandler);
     input.on("pointerup", this.pointerUpHandler);
 
+    this.globalPointerMoveHandler = (event: PointerEvent) => {
+      if (this.dragStart && !this.options.isPlacingBuilding()) {
+        this.drawDragBox(this.dragStart, this.toWorldFromClient(event.clientX, event.clientY));
+        return;
+      }
+      if (event.target !== this.options.scene.game.canvas) {
+        this.setCanvasCursor("");
+      }
+    };
     this.globalPointerReleaseHandler = (event: PointerEvent) => {
       if (!this.dragStart || this.options.isPlacingBuilding()) {
         this.clearDrag();
@@ -133,6 +151,7 @@ export class InputSystem {
       this.completeDrag(this.toWorldFromClient(event.clientX, event.clientY), event.shiftKey);
     };
     this.globalPointerCancelHandler = () => this.clearDrag();
+    window.addEventListener("pointermove", this.globalPointerMoveHandler);
     window.addEventListener("pointerup", this.globalPointerReleaseHandler);
     window.addEventListener("pointercancel", this.globalPointerCancelHandler);
     window.addEventListener("blur", this.globalPointerCancelHandler);
@@ -205,16 +224,9 @@ export class InputSystem {
       return;
     }
 
-    const target = this.options.findWorldEntityAt(point);
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
-    if (target && target.alive && target.team !== "player") {
-      selectedUnits.forEach((unit) => unit.commandAttack(target.id));
-      if (selectedUnits.length > 0) {
-        this.showCommandMessage(
-          `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${this.entityLabel(target)}`,
-          target.position
-        );
-      }
+    const target = this.options.findWorldEntityAt(point);
+    if (this.issueAttackOrder(target, selectedUnits)) {
       this.attackMoveMode = false;
       return;
     }
@@ -234,6 +246,40 @@ export class InputSystem {
       point
     );
     this.attackMoveMode = false;
+  }
+
+  private issueAttackOrder(target: BaseEntity | undefined, selectedUnits: Unit[]): boolean {
+    if (!target?.alive || target.team === "player" || selectedUnits.length === 0) {
+      return false;
+    }
+
+    selectedUnits.forEach((unit) => unit.commandAttack(target.id));
+    this.showCommandMessage(
+      `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${this.entityLabel(target)}`,
+      target.position
+    );
+    return true;
+  }
+
+  private updateAttackCursor(point: Position): void {
+    const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
+    const target = this.options.findWorldEntityAt(point);
+    this.setCanvasCursor(target?.alive && target.team !== "player" && selectedUnits.length > 0 ? "attack" : "");
+  }
+
+  private setCanvasCursor(mode: "" | "attack"): void {
+    if (this.cursorMode === mode) {
+      return;
+    }
+    const canvas = this.options.scene.game.canvas;
+    this.cursorMode = mode;
+    if (mode === "attack") {
+      canvas.style.cursor = "crosshair";
+      canvas.dataset.battleCursor = "attack";
+      return;
+    }
+    canvas.style.cursor = "";
+    delete canvas.dataset.battleCursor;
   }
 
   private showCommandMessage(message: string, point?: Position): void {
@@ -275,8 +321,10 @@ export class InputSystem {
     }
     if (Math.hypot(point.x - start.x, point.y - start.y) > 12) {
       this.options.selection.selectBox(this.rectFromPoints(start, point), additive);
-    } else {
+    } else if (!this.issueAttackOrder(this.options.findWorldEntityAt(point), this.options.getSelectedUnits().filter((unit) => unit.alive))) {
       this.options.selection.selectAt(point, additive);
+    } else {
+      this.attackMoveMode = false;
     }
     this.clearDrag();
   }
@@ -293,6 +341,7 @@ export class InputSystem {
   private clearDrag(): void {
     this.dragStart = undefined;
     this.dragGraphic.clear();
+    this.setCanvasCursor("");
   }
 
   private rectFromPoints(a: Position, b: Position): Phaser.Geom.Rectangle {

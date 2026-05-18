@@ -31,6 +31,8 @@ export class HUD {
             clamp((event.clientY - bounds.top) / bounds.height, 0, 1)
           );
         }
+        clearInteractionFocus(target);
+        this.markInteractionHandled();
         return;
       }
 
@@ -82,9 +84,8 @@ export class HUD {
         handled = true;
       }
       if (handled) {
-        this.deferredMarkup = "";
-        this.pointerInsideStablePanel = false;
-        this.forceNextUpdate = true;
+        clearInteractionFocus(button);
+        this.markInteractionHandled();
       }
     };
     this.pointerOverHandler = (event) => {
@@ -168,6 +169,12 @@ export class HUD {
     this.lastMarkup = markup;
     restoreScrollState(this.root, scrollState);
   }
+
+  private markInteractionHandled(): void {
+    this.deferredMarkup = "";
+    this.pointerInsideStablePanel = false;
+    this.forceNextUpdate = true;
+  }
 }
 
 const STABLE_INTERACTION_SELECTOR = ".top-bar, .side-panel, .objectives-panel, .tutorial-panel, .minimap-shell, .pause-menu-panel";
@@ -175,6 +182,11 @@ const SCROLLABLE_HUD_SELECTORS = [".side-panel", ".objectives-panel", ".tutorial
 
 function isStableInteractionTarget(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest(STABLE_INTERACTION_SELECTOR));
+}
+
+function clearInteractionFocus(target: Element | null): void {
+  const focusTarget = target?.closest<HTMLElement>("button, [role='button']");
+  focusTarget?.blur();
 }
 
 function captureScrollState(root: HTMLElement): Map<string, number> {

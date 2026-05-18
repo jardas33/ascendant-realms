@@ -1,6 +1,59 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14.3 combat selection control fixes
+Updated: 2026-05-18 v0.14.4 combat control retest fixes
+
+## v0.14.4 Combat Control Retest Fix Pass - 2026-05-18
+
+Scope: use only Emmanuel's v0.14.3 retest evidence from `PT-20260518-EMMANUEL-BASELINE-01`, preserve all v0.14.3 fixes, and narrowly fix remaining melee engagement, drag-selection responsiveness, tutorial completion semantics, attack-hover intent, and tutorial copy mismatch.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `28698152edca0967a561dc0de2a9c08b021d4061`, clean and synced with `origin/main`.
+- Human feedback source: Emmanuel only, v0.14.3 retest notes.
+- Confirmed fixed before this pass: drag-select multiple units, tutorial defeat Results, Retry Tutorial, Return Main Menu, and class/origin mechanical explanations.
+- Guardrails: no maps, factions, units, runtime art/assets, save format changes, broad redesign, behaviour modes, unit panel redesign, balance tuning, hidden failures, force-click test shortcuts, or DOM fallback for canvas/world clicks.
+
+Included work:
+
+- Added `docs/V0144_COMBAT_CONTROL_RETEST_FIX_REPORT.md`.
+- Strengthened `CombatSystem` melee contact interpretation with a small visual contact margin so sprite-adjacent melee units attack reliably.
+- Added regression coverage for visual melee contact and post-kill adjacent target reacquisition.
+- Updated `InputSystem` so active marquee drags continue rendering via global pointer movement while crossing DOM HUD/minimap surfaces.
+- Added targetable-hostile attack cursor state and left-click attack ordering for selected units.
+- Changed final tutorial completion to route through no-save/no-reward Results instead of direct Main Menu.
+- Updated tutorial Crown Shrine copy from blue to green ownership and final completion hint to Results summary.
+- Updated smoke/deep-flow browser coverage for tutorial completion, attack-hover/click, and release-over-minimap drag handling.
+
+Known evidence gap:
+
+- Emmanuel mentioned an attached screenshot visual bug, but no matching screenshot was present in the current thread or repo artifacts during this pass. No screenshot-specific visual fix is claimed; visual QA remains part of final verification.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 383 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests after fixing the HUD/minimap stale-selection deferral.
+npm run package:playtest PASS, produced pre-commit dirty package `artifacts/playtest/ascendant-realms-private-playtest-2869815-dirty`.
+npm run verify:playtest-package PASS, 19 checks.
+git diff --check PASS.
+```
+
+Remaining watch items: commit as `Checkpoint v0.14.4 combat control retest fixes`, push, then regenerate and verify a clean non-dirty private playtest package from the final commit. GitHub Actions should be rerun because runtime battle/input/tutorial behavior changed.
 
 ## v0.14.3 Combat Engagement, Marquee Selection, And Control Clarity Fix Pass - 2026-05-18
 

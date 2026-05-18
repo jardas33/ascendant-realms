@@ -100,6 +100,42 @@ describe("CombatSystem", () => {
 
     expect(player.hp).toBeLessThan(player.maxHp);
   });
+
+  it("counts visual melee contact as attack range when sprite footprints touch", () => {
+    const player = fakeUnit({ id: "player-hero", team: "player", x: 100, y: 100, radius: 18, range: 26 });
+    const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 146, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(enemy.hp).toBeLessThan(enemy.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+  });
+
+  it("reacquires an adjacent melee target after killing the previous explicit target", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      radius: 18,
+      range: 26,
+      damage: 12,
+      attackTargetId: "enemy-stone-imp-1"
+    });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 146, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, firstImp, secondImp]);
+
+    combat.update(0.1);
+    expect(firstImp.alive).toBe(false);
+
+    combat.update(1.1);
+
+    expect(player.attackTargetId).toBeUndefined();
+    expect(secondImp.hp).toBeLessThan(secondImp.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+  });
 });
 
 function createCombat(units: Unit[]): CombatSystem {
@@ -124,6 +160,9 @@ function fakeUnit(options: {
   moveOrderCombatSuppressionSeconds?: number;
   radius?: number;
   range?: number;
+  hp?: number;
+  damage?: number;
+  attackTargetId?: string;
 }): Unit {
   return Object.assign(Object.create(Unit.prototype), {
     id: options.id,
@@ -133,9 +172,10 @@ function fakeUnit(options: {
     position: { x: options.x, y: options.y },
     radius: options.radius ?? 13,
     maxHp: 100,
-    hp: 100,
+    hp: options.hp ?? 100,
     armor: 0,
     attackCooldownRemaining: 0,
+    attackTargetId: options.attackTargetId,
     moveTarget: options.moveTarget ? { ...options.moveTarget } : undefined,
     attackMove: options.attackMove ?? false,
     moveOrderCombatSuppressionSeconds:
@@ -151,8 +191,8 @@ function fakeUnit(options: {
       name: options.team === "player" ? "Militia" : "Raider",
       factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
       stats: {
-        maxHp: 100,
-        damage: 10,
+      maxHp: 100,
+      damage: options.damage ?? 10,
         range: options.range ?? 28,
         attackCooldown: 1,
         speed: 90,

@@ -1690,6 +1690,78 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Battle QA");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
 
+    const attackHoverTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected an active BattleScene hero for attack cursor coverage.");
+      }
+      const target = scene.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!target) {
+        throw new Error("Expected a visible hostile unit for attack cursor coverage.");
+      }
+      scene.fogDebugDisabled = true;
+      scene.updateFogOfWar?.(0, true);
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(target.position);
+      scene.refreshBattleHud?.(0);
+      return { id: target.id, x: target.position.x, y: target.position.y };
+    });
+    const attackHoverScreen = await worldToScreen(page, attackHoverTarget);
+    await page.mouse.move(attackHoverScreen.x, attackHoverScreen.y);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return {
+              cursor: canvas?.style.cursor ?? "",
+              mode: canvas?.dataset.battleCursor ?? ""
+            };
+          }),
+        { message: "expected hostile hover to expose attack cursor intent" }
+      )
+      .toEqual({ cursor: "crosshair", mode: "attack" });
+    await clickWorldPoint(page, attackHoverTarget, "left");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((targetId) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              targetId,
+              heroAttackTargetId: scene?.hero?.attackTargetId,
+              heroAttackMove: Boolean(scene?.hero?.attackMove),
+              status: document.querySelector("[data-testid='battle-status']")?.textContent ?? ""
+            };
+          }, attackHoverTarget.id),
+        { message: "expected left-clicking a targetable hostile to issue an attack order" }
+      )
+      .toMatchObject({
+        targetId: attackHoverTarget.id,
+        heroAttackTargetId: attackHoverTarget.id,
+        heroAttackMove: true,
+        status: expect.stringContaining("Attack order accepted")
+      });
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        return;
+      }
+      if (scene.hero) {
+        scene.hero.attackTargetId = undefined;
+        scene.hero.attackMove = false;
+        scene.hero.moveTarget = undefined;
+        scene.hero.moveOrderCombatSuppressionSeconds = 0;
+      }
+      const playerUnits = scene.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      scene.selectionSystem.setSelection(playerUnits);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.statusMessage = "";
+      scene.statusTimer = 0;
+      scene.statusPriority = "normal";
+      scene.refreshBattleHud?.(0);
+    });
+
     await expect(page.locator(".side-panel")).toBeVisible();
     const dragTargets = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1754,6 +1826,73 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         { message: "expected release-over-HUD marquee selection to select multiple battlefield units" }
       )
       .toBeGreaterThan(1);
+
+    const minimapDragTargets = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const playerUnits = scene.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      const minimap = document.querySelector<HTMLElement>("[data-testid='minimap']");
+      const minimapBox = minimap?.getBoundingClientRect();
+      if (!minimapBox || minimapBox.width <= 0 || minimapBox.height <= 0) {
+        throw new Error("Expected visible minimap for drag release regression.");
+      }
+      const canvasBounds = scene.game.canvas.getBoundingClientRect();
+      const camera = scene.cameras.main;
+      const minX = Math.min(...playerUnits.map((unit: any) => unit.position.x)) - 42;
+      const minY = Math.min(...playerUnits.map((unit: any) => unit.position.y)) - 42;
+      const worldToScreen = (point: { x: number; y: number }) => ({
+        x: canvasBounds.left + (point.x - camera.scrollX) * camera.zoom,
+        y: canvasBounds.top + (point.y - camera.scrollY) * camera.zoom
+      });
+      const start = worldToScreen({ x: minX, y: minY });
+      return {
+        start: {
+          x: Math.max(canvasBounds.left + 24, Math.min(canvasBounds.right - 24, start.x)),
+          y: Math.max(canvasBounds.top + 24, Math.min(canvasBounds.bottom - 24, start.y))
+        },
+        mid: {
+          x: minimapBox.left + minimapBox.width / 2,
+          y: minimapBox.top + minimapBox.height / 2
+        },
+        end: {
+          x: minimapBox.left + minimapBox.width - 8,
+          y: minimapBox.top + minimapBox.height - 8
+        }
+      };
+    });
+    await page.mouse.move(minimapDragTargets.start.x, minimapDragTargets.start.y);
+    await page.mouse.down();
+    await page.mouse.move(minimapDragTargets.mid.x, minimapDragTargets.mid.y, { steps: 4 });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return Boolean(scene?.inputSystem?.dragStart);
+          }),
+        { timeout: 1_000, message: "expected active marquee drag while crossing the minimap" }
+      )
+      .toBe(true);
+    await page.mouse.move(minimapDragTargets.end.x, minimapDragTargets.end.y, { steps: 2 });
+    await page.mouse.up();
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              dragging: Boolean(scene?.inputSystem?.dragStart),
+              battleActive: Boolean(scene?.scene.isActive()),
+              selectedUnits: scene?.selectionSystem
+                .getSelected()
+                .filter((entity: any) => entity.team === "player" && entity.kind !== "building").length
+            };
+          }),
+        { message: "expected release-over-minimap marquee selection to complete promptly" }
+      )
+      .toMatchObject({ dragging: false, battleActive: true, selectedUnits: expect.any(Number) });
 
     await page.getByTestId("minimap").click({ position: { x: 90, y: 60 } });
     await page.keyboard.press("F");
