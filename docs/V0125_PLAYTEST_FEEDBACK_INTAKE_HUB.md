@@ -19,6 +19,14 @@ For distributing the playtest before feedback exists, use the v0.12.6 onboarding
 
 Do not create triage rows until a real tester has completed a form or sent usable evidence.
 
+Automated evidence is separate:
+
+- v0.13 scenario lab report: `PLAYTEST_SCENARIO_LAB.md`
+- v0.13 watchpoint summary: `PLAYTEST_WATCHPOINT_SUMMARY.md`
+- v0.13 profile catalog: `PLAYTEST_SCENARIO_PROFILES.md`
+
+Use these automated reports to prioritize what to ask real testers to play, but do not paste them into human feedback intake rows or treat them as completed tester forms.
+
 ## Intake Location
 
 Recommended storage pattern:

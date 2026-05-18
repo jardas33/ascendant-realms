@@ -1,6 +1,80 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.12.6 playtest distribution readiness
+Updated: 2026-05-18 v0.13 automated playtest scenario lab
+
+## v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
+
+Scope: add an automated playtest scenario lab and watchpoint classifier on top of the existing deterministic simulator. This pass preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5/v0.12.6 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, combat systems, campaign progression, and gameplay numbers. It does not invent human feedback, start the 2026 visual overhaul, or implement balance changes.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `064b5db` (`Checkpoint v0.12.6 playtest distribution readiness`).
+- Branch state before edits: `main` clean and synced with `origin/main` (`git rev-list --left-right --count origin/main...HEAD` returned `0 0`).
+- Guardrails: no maps, factions, units, runtime art/assets, save format, gameplay numbers, combat systems, campaign progression, hosted release stability changes, invented feedback, broad AI/economy rewrites, or balance implementation.
+
+Included work:
+
+- Added `src/game/playtest/ScenarioLabTypes.ts`.
+- Added `src/game/playtest/ScenarioLabProfiles.ts`.
+- Added `src/game/playtest/ScenarioLabClassifier.ts`.
+- Added `src/game/playtest/ScenarioLabRunner.ts`.
+- Added `src/game/playtest/ScenarioLabReportWriter.ts`.
+- Added `src/game/playtest/ScenarioLab.test.ts`.
+- Added `tools/runPlaytestLab.ts`.
+- Added `tools/runPlaytestProfiles.ts`.
+- Added `npm run playtest:lab`, `npm run playtest:watchpoints`, and `npm run playtest:profiles`.
+- Generated `PLAYTEST_SCENARIO_LAB.json`, `PLAYTEST_SCENARIO_LAB.md`, `PLAYTEST_WATCHPOINT_SUMMARY.md`, `PLAYTEST_SCENARIO_PROFILES.json`, and `PLAYTEST_SCENARIO_PROFILES.md`.
+- Added v0.13 docs for architecture audit, profile spec, metrics spec, classifier rules, automated evidence decision, and final scenario-lab report.
+- Updated README, ROADMAP, CHANGELOG, and the v0.12.5 intake hub so automated evidence remains separate from real tester feedback.
+
+Automated evidence verdicts:
+
+- Strongest automated watchpoint profile: Retinue + Training Yard II.
+- Weakest / most failure-prone route: Greedy Economy.
+- Fastest profile: Pressure-Ignoring, a narrow Fast Army pressure-node proxy.
+- Retinue + Training Yard II: needs human testing; no nerf.
+- Greedy Economy: monitor conversion/time risk; no buff.
+- Fast Army: monitor Cinderfen speed; no slowdown.
+- Early defeats: no change.
+- Pressure fairness: structurally actionable but needs human noticeability testing.
+- Cinderfen Crossing / Watch: no structural tuning from automation.
+- Ashen Outpost: monitor pacing/final-assault timeouts.
+
+Current verification:
+
+```text
+npm test
+PASS - 48 files / 362 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+npm run playtest:lab
+PASS - generated 10 profiles, 355 derived profile-run metrics, and 8 watchpoint classifications.
+
+npm run playtest:watchpoints
+PASS - regenerated the scenario lab and watchpoint summary.
+
+npm run playtest:profiles
+PASS - generated 10 scenario profile definitions.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed. The next recommended long goal is Real Human Playtest Execution And Intake after testers complete the v0.12.6 packet. Do not run feedback triage until real completed forms exist.
 
 ## v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
 

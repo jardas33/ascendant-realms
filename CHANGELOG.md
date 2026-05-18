@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
+
+This checkpoint adds an automated scenario-lab and watchpoint-classifier layer on top of the existing deterministic playtest simulator. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5/v0.12.6 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.
+
+### Included
+
+- Scenario-lab profiles, metrics, classifier, report writer, and runner under `src/game/playtest/`.
+- New commands: `npm run playtest:lab`, `npm run playtest:watchpoints`, and `npm run playtest:profiles`.
+- Generated automated evidence outputs: `PLAYTEST_SCENARIO_LAB.md`, `PLAYTEST_SCENARIO_LAB.json`, `PLAYTEST_WATCHPOINT_SUMMARY.md`, `PLAYTEST_SCENARIO_PROFILES.md`, and `PLAYTEST_SCENARIO_PROFILES.json`.
+- v0.13 docs for architecture audit, scenario profile spec, telemetry metrics, classifier rules, automated evidence decision, and final scenario-lab report.
+- Focused tests for profile metadata, classifier conservatism, report sections, JSON shape, and no human-feedback claims.
+
+### Verdict
+
+- Runtime code changed only in simulator/reporting tooling.
+- Gameplay numbers changed: no.
+- Human feedback used: no.
+- Automated decision: no runtime tuning. Retinue + Training Yard II needs human testing, Greedy Economy remains a monitor item for conversion/time risk, Fast Army remains a monitor item for Cinderfen speed, early defeats are no-change structurally, and pressure fairness still needs human noticeability testing.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed.
+- Next recommended long goal: real human playtest execution using v0.12.6 tester packet, followed by feedback intake only after completed forms exist.
+
 ## v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
 
 This checkpoint adds the distribution and onboarding layer needed to hand the current v0.12.x browser prototype to real human testers. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.

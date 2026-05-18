@@ -1,12 +1,125 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.12.6 playtest distribution readiness
+Last updated: 2026-05-18 v0.13 automated playtest scenario lab
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
+
+Status: local verification green; automated simulator/tooling/reporting checkpoint. This pass adds a deterministic scenario lab over the existing playtest simulator, with typed route/profile definitions, derived metrics, watchpoint classification, generated Markdown/JSON reports, package scripts, tests, and documentation. It does not change runtime gameplay, gameplay numbers, campaign data, maps, factions, units, art/assets, save format, combat systems, campaign progression, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `064b5db` (`Checkpoint v0.12.6 playtest distribution readiness`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not invent playtest feedback, implement balance changes, add new content, save migration, runtime art, or the future 2026 visual art overhaul.
+
+Scenario lab code and tools added:
+
+- `src/game/playtest/ScenarioLabTypes.ts`
+- `src/game/playtest/ScenarioLabProfiles.ts`
+- `src/game/playtest/ScenarioLabClassifier.ts`
+- `src/game/playtest/ScenarioLabRunner.ts`
+- `src/game/playtest/ScenarioLabReportWriter.ts`
+- `src/game/playtest/ScenarioLab.test.ts`
+- `tools/runPlaytestLab.ts`
+- `tools/runPlaytestProfiles.ts`
+
+Scripts added:
+
+- `npm run playtest:lab`
+- `npm run playtest:watchpoints`
+- `npm run playtest:profiles`
+
+Generated outputs:
+
+- `PLAYTEST_SCENARIO_LAB.json`
+- `PLAYTEST_SCENARIO_LAB.md`
+- `PLAYTEST_WATCHPOINT_SUMMARY.md`
+- `PLAYTEST_SCENARIO_PROFILES.json`
+- `PLAYTEST_SCENARIO_PROFILES.md`
+
+v0.13 docs added:
+
+- `docs/V013_AUTOMATED_PLAYTEST_ARCHITECTURE_AUDIT.md`
+- `docs/V013_AUTOMATED_SCENARIO_PROFILE_SPEC.md`
+- `docs/V013_TELEMETRY_METRICS_SPEC.md`
+- `docs/V013_WATCHPOINT_CLASSIFIER_RULES.md`
+- `docs/V013_AUTOMATED_EVIDENCE_DECISION.md`
+- `docs/V013_AUTOMATED_PLAYTEST_SCENARIO_LAB_REPORT.md`
+
+Automated profile list:
+
+- Baseline Cautious.
+- No-Retinue.
+- One-Veteran.
+- Mixed-Veterans.
+- Retinue + Training Yard II.
+- Greedy Economy.
+- Fast Army.
+- Pressure-Ignoring.
+- Objective-Rush.
+- Safe Beginner.
+
+Metrics tracked:
+
+- win/loss/timeout, derived failure reason, node, automated profile, clear time, army survival, unit losses, units trained, resource surplus, final/peak Aether, objective completion count, pressure warnings, derived pressure reaction window, retinue marker, Training Yard II marker, Greedy/Fast markers, route verdict, and confidence level.
+- Unavailable and not faked: human noticeability, human confusion, fun, final hero HP/death, base HP/base damage, and visual readability.
+
+Watchpoint verdicts:
+
+- Retinue + Training Yard II: strongest automated watchpoint profile; needs human testing; no nerf.
+- Greedy Economy: monitor conversion/time risk; no buff.
+- Fast Army: monitor Cinderfen speed; no slowdown.
+- Early defeats: no change.
+- Pressure fairness: structurally actionable but human noticeability remains unknown.
+- Cinderfen Crossing fairness: no structural tuning from automation.
+- Cinderfen Watch fairness: no structural tuning from automation.
+- Ashen Outpost stability: monitor pacing/final-assault timeouts.
+
+Current verification:
+
+```text
+npm test
+PASS - 48 files / 362 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+npm run playtest:lab
+PASS - generated 10 profiles, 355 derived profile-run metrics, and 8 watchpoint classifications.
+
+npm run playtest:watchpoints
+PASS - regenerated the scenario lab and watchpoint summary.
+
+npm run playtest:profiles
+PASS - generated 10 scenario profile definitions.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: Real Human Playtest Execution And Intake. Send testers the v0.12.6 quick-start and feedback packet, assign routes with the v0.12.6 route plan, then ingest completed forms through the v0.12.5 intake hub. Use v0.13 automated evidence to prioritize routes, not as human feedback. Keep future visual overhaul work separate.
 
 ## Current v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
 

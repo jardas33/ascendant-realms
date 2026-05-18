@@ -1,0 +1,290 @@
+import { BATTLE_NODE_IDS } from "./PlaytestScenarios";
+import type { ScenarioLabProfileDefinition } from "./ScenarioLabTypes";
+
+const ALL_BATTLE_NODES = [...BATTLE_NODE_IDS];
+const WATCHPOINT_NODES = ["ashen_outpost", "cinderfen_crossing", "cinderfen_watch"];
+const CINDERFEN_NODES = ["cinderfen_crossing", "cinderfen_watch"];
+
+export const SCENARIO_LAB_PROFILES: ScenarioLabProfileDefinition[] = [
+  {
+    id: "baseline_cautious",
+    name: "Baseline Cautious",
+    routeAssumptions: ["No deliberate optimization.", "Read objectives.", "React to warnings.", "Preserve units."],
+    playerBehaviorModel: "Uses the Safe Beginner script with no persistent Stronghold or retinue power.",
+    preferredStrongholdProfileIds: ["no_stronghold"],
+    scriptIds: ["safe_beginner"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "low",
+    objectivePriority: "survive",
+    retreatSurvivalBias: "high",
+    expectedStrengths: ["Stable openings.", "Good first-wave survival.", "Clear baseline for early defeat checks."],
+    expectedWeaknesses: ["Slower clears.", "May time out if final assault is delayed."],
+    watchpointRelevance: ["early_defeats", "pressure_fairness", "ashen_outpost_stability"],
+    markers: {
+      retinueUsed: false,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["This is the closest automated proxy for a careful first human route."]
+  },
+  {
+    id: "no_retinue",
+    name: "No-Retinue",
+    routeAssumptions: ["Avoid carried veteran power.", "Allow normal non-retinue Stronghold paths.", "Check fairness without saved units."],
+    playerBehaviorModel: "Runs Safe Beginner through the non-retinue Stronghold profiles.",
+    preferredStrongholdProfileIds: [
+      "no_stronghold",
+      "training_yard_path",
+      "defensive_watch_post_path",
+      "economy_quartermaster_path",
+      "tier_two_quartermaster_path",
+      "chapel_corner_path",
+      "ranger_paths_path",
+      "waystation_shrine_attunement"
+    ],
+    scriptIds: ["safe_beginner"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "low",
+    objectivePriority: "survive",
+    retreatSurvivalBias: "high",
+    expectedStrengths: ["Separates campaign fairness from retinue carryover.", "Shows whether normal upgrades are enough."],
+    expectedWeaknesses: ["Can expose milestone timeouts.", "Does not test veteran power fantasy."],
+    watchpointRelevance: ["early_defeats", "ashen_outpost_stability", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: false,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["Uses existing non-retinue profile rows; it does not create new campaign state."]
+  },
+  {
+    id: "one_veteran",
+    name: "One-Veteran",
+    routeAssumptions: ["Bring one meaningful veteran.", "Do not stack every carryover advantage.", "Check whether one veteran feels earned."],
+    playerBehaviorModel: "Runs Safe Beginner with the Veteran Militia and Veteran Ranger retinue profiles.",
+    preferredStrongholdProfileIds: ["retinue_veteran_militia", "retinue_veteran_ranger"],
+    scriptIds: ["safe_beginner"],
+    nodeIds: WATCHPOINT_NODES,
+    riskAppetite: "low",
+    objectivePriority: "survive",
+    retreatSurvivalBias: "high",
+    expectedStrengths: ["Modest carryover help.", "Good comparison against no-retinue baseline."],
+    expectedWeaknesses: ["Single-veteran differences can be narrow.", "Does not test max-stacked power."],
+    watchpointRelevance: ["retinue_training_yard_ii", "ashen_outpost_stability", "cinderfen_crossing_fairness"],
+    markers: {
+      retinueUsed: true,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["Combines both one-veteran rows to avoid over-reading one unit type."]
+  },
+  {
+    id: "mixed_veterans",
+    name: "Mixed-Veterans",
+    routeAssumptions: ["Use a normal experienced-player carryover setup.", "Do not deliberately max all advantages."],
+    playerBehaviorModel: "Runs Safe Beginner and Fast Army through the Mixed Veterans profile.",
+    preferredStrongholdProfileIds: ["retinue_mixed_veterans"],
+    scriptIds: ["safe_beginner", "fast_army"],
+    nodeIds: WATCHPOINT_NODES,
+    riskAppetite: "medium",
+    objectivePriority: "objectives",
+    retreatSurvivalBias: "medium",
+    expectedStrengths: ["Shows ordinary veteran carryover strength.", "Highlights whether mixed veterans become mandatory."],
+    expectedWeaknesses: ["Can blur cautious and aggressive play if reviewed without route notes."],
+    watchpointRelevance: ["retinue_training_yard_ii", "fast_army", "ashen_outpost_stability"],
+    markers: {
+      retinueUsed: true,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: true,
+      pressureProbe: false
+    },
+    automationNotes: ["This profile intentionally stays below the Training Yard II stacked route."]
+  },
+  {
+    id: "retinue_training_yard_ii",
+    name: "Retinue + Training Yard II",
+    routeAssumptions: ["Deliberately stack the known strong profile.", "Check for trivialization across Ashen and Cinderfen."],
+    playerBehaviorModel: "Runs all three existing scripts through the Retinue + Training Yard II profile.",
+    preferredStrongholdProfileIds: ["retinue_training_yard_path"],
+    scriptIds: ["safe_beginner", "greedy_economy", "fast_army"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "medium",
+    objectivePriority: "objectives",
+    retreatSurvivalBias: "medium",
+    expectedStrengths: ["Strongest earned-power profile.", "Best stress test for trivialization."],
+    expectedWeaknesses: ["Can look too clean in automation while still feeling earned to humans."],
+    watchpointRelevance: ["retinue_training_yard_ii", "ashen_outpost_stability", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: true,
+      trainingYardIIActive: true,
+      greedyEconomy: false,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["A monitor result is expected unless the route sweeps broadly with very low losses and no route engagement."]
+  },
+  {
+    id: "greedy_economy",
+    name: "Greedy Economy",
+    routeAssumptions: ["Prioritize resources and value.", "Delay conversion into army.", "Check whether timeouts feel like risk or weakness."],
+    playerBehaviorModel: "Runs Greedy Economy across the full Stronghold/retinue matrix.",
+    preferredStrongholdProfileIds: [
+      "no_stronghold",
+      "training_yard_path",
+      "defensive_watch_post_path",
+      "economy_quartermaster_path",
+      "tier_two_quartermaster_path",
+      "chapel_corner_path",
+      "ranger_paths_path",
+      "retinue_veteran_militia",
+      "retinue_veteran_ranger",
+      "retinue_mixed_veterans",
+      "retinue_training_yard_path",
+      "retinue_quartermaster_path",
+      "waystation_shrine_attunement"
+    ],
+    scriptIds: ["greedy_economy"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "high",
+    objectivePriority: "economy",
+    retreatSurvivalBias: "medium",
+    expectedStrengths: ["High resource ceiling.", "Useful pressure test for conversion timing."],
+    expectedWeaknesses: ["Timeout prone.", "Can confuse players if surplus resources do not become army pressure."],
+    watchpointRelevance: ["greedy_economy", "pressure_fairness", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: false,
+      trainingYardIIActive: false,
+      greedyEconomy: true,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["Retinue rows are included because the behavior model is the watchpoint, not just the persistent profile."]
+  },
+  {
+    id: "fast_army",
+    name: "Fast Army",
+    routeAssumptions: ["Build quickly.", "Push objectives early.", "Accept higher risk for clear speed."],
+    playerBehaviorModel: "Runs Fast Army across the full Stronghold/retinue matrix.",
+    preferredStrongholdProfileIds: [
+      "no_stronghold",
+      "training_yard_path",
+      "defensive_watch_post_path",
+      "economy_quartermaster_path",
+      "tier_two_quartermaster_path",
+      "chapel_corner_path",
+      "ranger_paths_path",
+      "retinue_veteran_militia",
+      "retinue_veteran_ranger",
+      "retinue_mixed_veterans",
+      "retinue_training_yard_path",
+      "retinue_quartermaster_path",
+      "waystation_shrine_attunement"
+    ],
+    scriptIds: ["fast_army"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "high",
+    objectivePriority: "speed",
+    retreatSurvivalBias: "low",
+    expectedStrengths: ["Fast clear speed.", "Good probe for Cinderfen trivialization."],
+    expectedWeaknesses: ["Can fail outside the speed-friendly slice.", "May skip pressure before it proves noticeability."],
+    watchpointRelevance: ["fast_army", "pressure_fairness", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: false,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: true,
+      pressureProbe: false
+    },
+    automationNotes: ["Fast does not automatically mean broken; the classifier requires broad invalidation before tuning."]
+  },
+  {
+    id: "pressure_ignoring",
+    name: "Pressure-Ignoring",
+    routeAssumptions: ["Prioritize winning quickly over reacting to pressure warnings.", "Check whether pressure can be bypassed."],
+    playerBehaviorModel: "Uses Fast Army on pressure-enabled Cinderfen nodes as the current no-new-script proxy.",
+    preferredStrongholdProfileIds: ["no_stronghold", "retinue_training_yard_path"],
+    scriptIds: ["fast_army"],
+    nodeIds: CINDERFEN_NODES,
+    riskAppetite: "high",
+    objectivePriority: "pressure_probe",
+    retreatSurvivalBias: "low",
+    expectedStrengths: ["Reveals whether warnings are late or avoidable.", "Shows speed versus pressure interaction."],
+    expectedWeaknesses: ["Cannot model human attention directly.", "Does not prove warnings were noticed."],
+    watchpointRelevance: ["pressure_fairness", "fast_army", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: true,
+      trainingYardIIActive: true,
+      greedyEconomy: false,
+      fastArmy: true,
+      pressureProbe: true
+    },
+    automationNotes: ["This is automated evidence only; human noticeability still needs real testers."]
+  },
+  {
+    id: "objective_rush",
+    name: "Objective-Rush",
+    routeAssumptions: ["Push the win condition early.", "Do not fully stabilize every side objective first."],
+    playerBehaviorModel: "Uses Fast Army across Ashen and Cinderfen watchpoint nodes with baseline and strong stacked profiles.",
+    preferredStrongholdProfileIds: ["no_stronghold", "retinue_training_yard_path"],
+    scriptIds: ["fast_army"],
+    nodeIds: WATCHPOINT_NODES,
+    riskAppetite: "high",
+    objectivePriority: "objectives",
+    retreatSurvivalBias: "low",
+    expectedStrengths: ["Finds speed/trivialization risks.", "Separates objective race from economy greed."],
+    expectedWeaknesses: ["Can produce legitimate losses if the rush is reckless.", "Does not test slow readability."],
+    watchpointRelevance: ["fast_army", "retinue_training_yard_ii", "ashen_outpost_stability"],
+    markers: {
+      retinueUsed: true,
+      trainingYardIIActive: true,
+      greedyEconomy: false,
+      fastArmy: true,
+      pressureProbe: true
+    },
+    automationNotes: ["Uses existing deterministic Fast Army behavior instead of adding a new combat system."]
+  },
+  {
+    id: "safe_beginner",
+    name: "Safe Beginner",
+    routeAssumptions: ["Use the safest existing script as a structural fairness reference.", "Compare against every profile."],
+    playerBehaviorModel: "Runs Safe Beginner across the full Stronghold/retinue matrix.",
+    preferredStrongholdProfileIds: [
+      "no_stronghold",
+      "training_yard_path",
+      "defensive_watch_post_path",
+      "economy_quartermaster_path",
+      "tier_two_quartermaster_path",
+      "chapel_corner_path",
+      "ranger_paths_path",
+      "retinue_veteran_militia",
+      "retinue_veteran_ranger",
+      "retinue_mixed_veterans",
+      "retinue_training_yard_path",
+      "retinue_quartermaster_path",
+      "waystation_shrine_attunement"
+    ],
+    scriptIds: ["safe_beginner"],
+    nodeIds: ALL_BATTLE_NODES,
+    riskAppetite: "low",
+    objectivePriority: "survive",
+    retreatSurvivalBias: "high",
+    expectedStrengths: ["Best structural fairness proxy.", "Keeps pressure and first-wave checks conservative."],
+    expectedWeaknesses: ["Can hide speed-route rewards.", "Cannot judge human boredom or stress."],
+    watchpointRelevance: ["early_defeats", "pressure_fairness", "cinderfen_crossing_fairness", "cinderfen_watch_fairness"],
+    markers: {
+      retinueUsed: false,
+      trainingYardIIActive: false,
+      greedyEconomy: false,
+      fastArmy: false,
+      pressureProbe: false
+    },
+    automationNotes: ["This profile is structural evidence, not a replacement for real beginner feedback."]
+  }
+];

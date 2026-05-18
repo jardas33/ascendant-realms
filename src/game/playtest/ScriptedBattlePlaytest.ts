@@ -6,3 +6,8 @@ export * from "./PlaytestTelemetry";
 export * from "./PlaytestAnalyzer";
 export * from "./PlaytestReportWriter";
 export * from "./PlaytestRunner";
+export * from "./ScenarioLabTypes";
+export * from "./ScenarioLabProfiles";
+export * from "./ScenarioLabClassifier";
+export * from "./ScenarioLabRunner";
+export * from "./ScenarioLabReportWriter";

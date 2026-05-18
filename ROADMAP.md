@@ -11,9 +11,23 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.12.6 Playtest Distribution Readiness And Tester Onboarding** on 2026-05-18. It adds the short tester quick-start, Emmanuel coordinator guide, route assignment plan, copy-paste feedback submission packet, storage plan, and ready-to-send tester message needed to hand the current v0.12.x browser prototype to real human testers. It makes no numeric tuning and no runtime behavior changes: Retinue + Training Yard II remains a watchpoint that should not be nerfed without repeated trivialization reports, Greedy Economy should not be buffed just because it is risky, Fast Army should not be slowed just because it is fast, early defeats should be judged by clarity, and pressure warnings should be judged by noticeability plus reaction time. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
+The latest player-facing/tooling checkpoint is **v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1** on 2026-05-18. It adds deterministic scenario-lab profile definitions, derived metrics, watchpoint classification, generated Markdown/JSON reports, and scripts for lab/profile/watchpoint output. It makes no numeric tuning and no runtime gameplay changes: Retinue + Training Yard II remains the strongest automated watchpoint and needs human testing before any nerf, Greedy Economy remains risky through timing/conversion rather than a buff target, Fast Army remains decisive but not free across the whole suite, early defeats remain structurally stable, and pressure fairness remains structurally actionable while human noticeability stays unknown. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is **v0.12.7 Real Human Playtest Feedback Review And Small-Polish Decision**, but only after real completed tester forms exist. Focus on ingesting completed packet forms, classifying reports, updating the watchpoint aggregation sheet, and deciding whether repeated evidence supports no change, copy/readability, tiny tuning, more testing, future art/UI overhaul, or future systems pass. Keep it evidence-only unless repeated human runs reproduce a specific unfairness pattern. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is **Real Human Playtest Execution And Intake**, but only after actual testers use the v0.12.6 packet. Send testers the quick-start and feedback packet, assign routes using the route plan, and only then ingest completed forms through the v0.12.5 intake hub. Use v0.13 automated evidence to prioritize what to test; do not treat it as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.13 automated scenario-lab docs and outputs:
+
+- `docs/V013_AUTOMATED_PLAYTEST_ARCHITECTURE_AUDIT.md`
+- `docs/V013_AUTOMATED_SCENARIO_PROFILE_SPEC.md`
+- `docs/V013_TELEMETRY_METRICS_SPEC.md`
+- `docs/V013_WATCHPOINT_CLASSIFIER_RULES.md`
+- `docs/V013_AUTOMATED_EVIDENCE_DECISION.md`
+- `docs/V013_AUTOMATED_PLAYTEST_SCENARIO_LAB_REPORT.md`
+- `PLAYTEST_SCENARIO_LAB.md`
+- `PLAYTEST_SCENARIO_LAB.json`
+- `PLAYTEST_WATCHPOINT_SUMMARY.md`
+- `PLAYTEST_SCENARIO_PROFILES.md`
+- `PLAYTEST_SCENARIO_PROFILES.json`
 
 New v0.12.6 tester distribution docs:
 
