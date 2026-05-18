@@ -6,6 +6,7 @@ test-results/
 blob-report/
 tmp-test-logs/
 bundle-analysis/
+/artifacts/playtest/
 /visual-qa/
 *.log
 .preview-server.pid

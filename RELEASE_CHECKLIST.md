@@ -350,6 +350,19 @@ NOTE: v0.11 added `npm run smoke:preview` after v0.10 exposed child-process clea
 
 After build-output or chunking changes, run a production preview smoke when feasible and confirm the main menu loads, `Prototype v0.3` / `Cinderfen Route Baseline` copy remains visible, key menu routes open without crashing, browser console errors stay at 0, and the preview process exits cleanly.
 
+## Private Playtest Package Check
+
+For private human playtest distribution, build and verify the package after the normal gate:
+
+```bash
+npm run package:playtest
+npm run verify:playtest-package
+```
+
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+
+If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
+
 ## Manual QA Areas Not Fully Automated
 
 - Full human-paced Border Village and Old Stone Road playthroughs on Easy, including first warning, Barracks timing, first trained unit, and first enemy contact.

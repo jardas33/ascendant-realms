@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -p tsconfig.json && vite build",
+    "build:playtest": "tsc -p tsconfig.json && vite build --base ./",
+    "package:playtest": "npm run build:playtest && tsx tools/packagePlaytestBuild.ts",
+    "verify:playtest-package": "tsx tools/verifyPlaytestPackage.ts",
     "build:analyze": "tsc -p tsconfig.json && vite build --mode analyze",
     "preview": "vite preview --host 0.0.0.0",
     "preview:hosted": "vite preview --host 127.0.0.1 --port 5173 --strictPort",

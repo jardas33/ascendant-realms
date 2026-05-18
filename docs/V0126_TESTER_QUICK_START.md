@@ -47,7 +47,14 @@ Preferred:
 3. Start from a clean save if the route asks for one.
 4. Write down the route/profile you played and how long you played.
 
-If Emmanuel asks you to run it locally:
+If Emmanuel sends a private playtest package:
+
+1. Open `README_FOR_TESTERS.md` in the package.
+2. Start the included local server with `START_GAME_WINDOWS.bat` on Windows or `START_GAME_MAC_LINUX.sh` on Mac/Linux.
+3. Open the local URL shown by the package, usually `http://127.0.0.1:4174/`.
+4. Fill the included `FEEDBACK_SUBMISSION_PACKET.md` when done.
+
+If Emmanuel asks you to run the source repo locally:
 
 1. Install Node.js if it is not already installed.
 2. Open a terminal in the project folder.

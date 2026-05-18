@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.14 Private Playtest Build Packaging And One-Click Tester Delivery - 2026-05-18
+
+This checkpoint makes the existing browser prototype easier to package and send for private human playtesting. It preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, hosted release patterns, automated lab behavior, and human-feedback boundaries.
+
+### Included
+
+- New package commands: `npm run build:playtest`, `npm run package:playtest`, and `npm run verify:playtest-package`.
+- Playtest-safe build mode uses relative asset URLs so the package can be served from its own folder.
+- New package generator: `tools/packagePlaytestBuild.ts`.
+- New package verifier: `tools/verifyPlaytestPackage.ts`.
+- New package validation helper and tests under `src/game/playtest/PlaytestPackageValidation*`.
+- Private package output under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`.
+- Package contents include `game/`, tester README, feedback packet, route assignment plan, build metadata, a local server helper, and Windows/Mac/Linux launchers.
+- New v0.14 docs for distribution audit, tester README, coordinator guide, and ready-to-send private message.
+- Existing tester quick-start/coordinator docs now point to the private package flow.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Human feedback used: no.
+- Private feedback storage changed: no raw feedback folders were created or committed.
+- GitHub Actions rerun is optional because this is packaging/tooling/docs only.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- Generate a clean package after this commit, send it to real testers, then run feedback intake only after completed human forms exist.
+
 ## v0.13.1a Extended Scenario Lab Integrity Audit And Gap-Fix Pass - 2026-05-18
 
 This checkpoint audits the v0.13.1 extended scenario lab instead of trusting the prior handoff. It preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, hosted release patterns, and human-feedback boundaries.

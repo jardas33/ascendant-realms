@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.13.1a extended scenario lab integrity audit
+Updated: 2026-05-18 v0.14 private playtest build packaging
+
+## v0.14 Private Playtest Build Packaging And One-Click Tester Delivery - 2026-05-18
+
+Scope: make the current browser prototype easier to package, send, start, and verify for private human playtesting. This pass preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, pressure behavior, hosted release patterns, automated simulation scope, and human-feedback boundaries.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `afbb37f` (`Checkpoint v0.13.1a extended scenario lab integrity audit`).
+- Branch state before edits: `main` clean and synced with `origin/main`.
+- Guardrails: no maps, factions, units, runtime art/assets, save format, gameplay numbers, combat systems, campaign progression, hosted release stability changes, invented feedback, broad AI/economy rewrites, automated simulation expansion, or balance implementation.
+
+Included work:
+
+- Added `npm run build:playtest`, `npm run package:playtest`, and `npm run verify:playtest-package`.
+- Added `tools/packagePlaytestBuild.ts` to create ignored private package folders under `artifacts/playtest/`.
+- Added `tools/verifyPlaytestPackage.ts`.
+- Added `src/game/playtest/PlaytestPackageValidation.ts` and focused package validation tests.
+- Added `.gitignore` coverage for generated private playtest packages.
+- Added v0.14 distribution audit, tester README, coordinator guide, and paste-ready private tester message.
+- Updated README, release checklist, v0.12.6 tester docs, roadmap, changelog, and handoff references.
+
+Package shape:
+
+- Output location: `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`.
+- Includes built `game/`, `README_FOR_TESTERS.md`, `PLAYTEST_BUILD_INFO.md`, `playtest-build-info.json`, `FEEDBACK_SUBMISSION_PACKET.md`, `TESTER_QUICK_START.md`, `ROUTE_ASSIGNMENT_PLAN.md`, `READY_TO_SEND_PRIVATE_PLAYTEST_MESSAGE.md`, `start-playtest-server.mjs`, `START_GAME_WINDOWS.bat`, and `START_GAME_MAC_LINUX.sh`.
+- Excludes `node_modules`, `.git`, raw private feedback folders, secret-like files, and unapproved runtime art/assets.
+
+Current verification:
+
+```text
+npm test PASS, 50 files / 371 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 6 tests in about 2.2m.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run build:playtest PASS with package-safe relative asset URLs and the known Phaser vendor chunk warning.
+npm run package:playtest PASS, generated artifacts/playtest/ascendant-realms-private-playtest-afbb37f-dirty during the pre-commit worktree.
+npm run verify:playtest-package PASS, 19 package integrity checks.
+Private package server smoke PASS at http://127.0.0.1:4174/ with ASCENDANT_PLAYTEST_NO_OPEN=1.
+git diff --check PASS.
+```
+
+Remaining watch items: Regenerate the private package after the final checkpoint commit so its metadata uses the clean v0.14 commit hash. GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed.
 
 ## v0.13.1a Extended Scenario Lab Integrity Audit And Gap-Fix Pass - 2026-05-18
 

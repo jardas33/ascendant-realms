@@ -45,7 +45,16 @@ One severe reproducible crash or progression blocker can be investigated immedia
 
 ## What To Send Testers
 
-Send:
+Preferred after v0.14:
+
+1. Create the private package with `npm run package:playtest`.
+2. Verify it with `npm run verify:playtest-package`.
+3. Send the package folder or a manual zip.
+4. Include the assigned route name and the short v0.14 ready-to-send message.
+
+Use `docs/V014_PLAYTEST_PACKAGE_COORDINATOR_GUIDE.md` for the package flow and `docs/V014_READY_TO_SEND_PRIVATE_PLAYTEST_MESSAGE.md` for the paste-ready message.
+
+If sending only docs instead of the package, send:
 
 1. `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`
 2. `docs/V0126_TESTER_QUICK_START.md`
