@@ -11,9 +11,25 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing/tooling checkpoint is **v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1** on 2026-05-18. It adds deterministic scenario-lab profile definitions, derived metrics, watchpoint classification, generated Markdown/JSON reports, and scripts for lab/profile/watchpoint output. It makes no numeric tuning and no runtime gameplay changes: Retinue + Training Yard II remains the strongest automated watchpoint and needs human testing before any nerf, Greedy Economy remains risky through timing/conversion rather than a buff target, Fast Army remains decisive but not free across the whole suite, early defeats remain structurally stable, and pressure fairness remains structurally actionable while human noticeability stays unknown. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
+The latest player-facing/tooling checkpoint is **v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard** on 2026-05-18. It deepens the v0.13 deterministic scenario lab with repeated 5-iteration extended batches, profile comparison metrics, profile x node x script aggregation, node-risk dashboarding, conservative regression thresholds, Markdown/JSON/CSV outputs, and scripts for extended lab/profile/watchpoint evidence. It makes no numeric tuning and no runtime gameplay changes: Mixed-Veterans is the top-ranked stable automated profile, Retinue + Training Yard II remains a human-testing dominance watchpoint rather than a nerf target, Greedy Economy remains a monitor item for conversion/time risk rather than a buff target, Fast Army remains decisive in Cinderfen but not a whole-suite trivialization signal, early defeats remain structurally stable, and pressure fairness still requires human noticeability testing. It does not add workers, enemy workers, real enemy construction, dynamic enemy economy, new maps, new units, new factions, rewards, save-version changes, tutorial completion persistence, campaign progression, diplomacy, procedural generation, crafting, multiplayer, desktop packaging, external assets, generated art, imported art, runtime art replacement, a full UI redesign, graphics overhaul, workflow weakening, hosted release plumbing, or release coverage reduction.
 
-The next recommended player-facing step is **Real Human Playtest Execution And Intake**, but only after actual testers use the v0.12.6 packet. Send testers the quick-start and feedback packet, assign routes using the route plan, and only then ingest completed forms through the v0.12.5 intake hub. Use v0.13 automated evidence to prioritize what to test; do not treat it as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is **Real Human Playtest Execution And Intake**, but only after actual testers use the v0.12.6 packet. Send testers the quick-start and feedback packet, assign routes using the route plan, and only then ingest completed forms through the v0.12.5 intake hub. Use v0.13/v0.13.1 automated evidence to prioritize what to test; do not treat it as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.13.1 extended automated scenario-lab docs and outputs:
+
+- `docs/V0131_SCENARIO_LAB_LIMITATIONS_AUDIT.md`
+- `docs/V0131_NODE_RISK_DASHBOARD_SPEC.md`
+- `docs/V0131_BALANCE_REGRESSION_THRESHOLDS.md`
+- `docs/V0131_EXTENDED_AUTOMATED_EVIDENCE_REVIEW.md`
+- `docs/V0131_TUNING_AND_ACTION_DECISION.md`
+- `docs/V0131_EXTENDED_SCENARIO_LAB_REPORT.md`
+- `PLAYTEST_SCENARIO_LAB_EXTENDED.md`
+- `PLAYTEST_SCENARIO_LAB_EXTENDED.json`
+- `PLAYTEST_PROFILE_COMPARISON.md`
+- `PLAYTEST_PROFILE_COMPARISON.csv`
+- `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`
+- `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`
+- `PLAYTEST_WATCHPOINTS_EXTENDED.md`
 
 New v0.13 automated scenario-lab docs and outputs:
 

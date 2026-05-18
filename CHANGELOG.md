@@ -1,5 +1,33 @@
 # Changelog
 
+## v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
+
+This checkpoint deepens the v0.13 automated scenario lab with repeated deterministic evidence, profile comparisons, node-risk dashboarding, and conservative future regression thresholds. It preserves the v0.13/v0.12.x green foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.
+
+### Included
+
+- Extended scenario-lab runner, report writer, regression thresholds, and tests under `src/game/playtest/`.
+- New commands: `npm run playtest:lab:extended`, `npm run playtest:watchpoints:extended`, and `npm run playtest:profiles:compare`.
+- Generated extended automated evidence outputs: `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_SCENARIO_LAB_EXTENDED.json`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_PROFILE_COMPARISON.csv`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`.
+- v0.13.1 docs for lab limitations, node-risk dashboard spec, regression thresholds, evidence review, no-tuning decision, and final extended-lab report.
+- Focused tests for repeated batch generation, profile comparison metrics, watchpoint threshold classification, required report sections, no human-feedback claims, and quick-lab preservation.
+
+### Verdict
+
+- Runtime code changed only in simulator/reporting tooling.
+- Gameplay numbers changed: no.
+- Human feedback used: no.
+- Automated decision: no runtime tuning. Mixed-Veterans is the top-ranked stable automated profile, Retinue + Training Yard II requires human testing before any balance proposal, Greedy Economy remains a monitor item for conversion/time risk, Fast Army remains a monitor item for Cinderfen speed rather than a trivialization signal, early defeats are OK, and pressure fairness still needs human noticeability testing.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed.
+- Next recommended long goal: real human playtest execution using the v0.12.6 tester packet, prioritized by the v0.13.1 dashboard, followed by feedback intake only after completed forms exist.
+
 ## v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
 
 This checkpoint adds an automated scenario-lab and watchpoint-classifier layer on top of the existing deterministic playtest simulator. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5/v0.12.6 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.

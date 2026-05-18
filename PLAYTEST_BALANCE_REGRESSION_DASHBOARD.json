@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-05-18T12:41:34.984Z",
+  "buildCommit": "1a4e09e",
+  "batchLabel": "v0.13.1 extended deterministic scenario lab",
+  "iterationCount": 5,
+  "seed": "scenario-lab-v0131",
+  "strongestProfileId": "mixed_veterans",
+  "weakestProfileId": "greedy_economy",
+  "biggestTimeoutRiskNodeId": "ashen_outpost",
+  "biggestPressureRiskNodeId": "cinderfen_watch",
+  "topMonitorItems": [
+    {
+      "watchpointId": "pressure_fairness",
+      "watchpointName": "Pressure Warning Fairness",
+      "status": "Human testing required",
+      "normalExpectedState": "Safe routes win pressure nodes and warnings appear before pressure matters.",
+      "warningThreshold": "<90% safe-route pressure win rate, warnings missing from most pressure rows, or very short reaction windows.",
+      "strongSignalThreshold": "Repeated safe-route pressure defeats with missing/late warnings.",
+      "currentSignal": "100% Safe Beginner pressure-node win rate; 84% warning-row rate; average reaction window 139.8s.",
+      "recommendedAction": "Human testing required for noticeability and stress.",
+      "doNotDo": "Do not treat warning counts as proof that humans saw or understood warnings.",
+      "evidence": [
+        "Pressure/Cinderfen rows: 570.",
+        "Pressure warnings shown: 1095."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "retinue_training_yard_ii",
+      "watchpointName": "Retinue + Training Yard II Dominance",
+      "status": "Human testing required",
+      "normalExpectedState": "Strong earned-power route with some failures or costs outside ideal watchpoint nodes.",
+      "warningThreshold": ">=90% full-profile win rate plus >=95% low-loss wins on Ashen/Cinderfen watchpoint nodes.",
+      "strongSignalThreshold": ">=95% full-profile win rate, zero failures, and <=1 average unit loss.",
+      "currentSignal": "81% win rate; 100% Ashen/Cinderfen low-loss win rate; 1.8 average losses.",
+      "recommendedAction": "Prioritize human testing; do not tune from automation alone.",
+      "doNotDo": "Do not nerf retinue or Training Yard II from clean automated watchpoint nodes alone.",
+      "evidence": [
+        "Retinue + Training Yard II: 85-15-5 across 105 extended metric rows.",
+        "Ashen/Cinderfen low-loss wins: 45/45."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "fast_army",
+      "watchpointName": "Fast Army Trivialization",
+      "status": "Monitor",
+      "normalExpectedState": "Fast Army is faster and often good in Cinderfen but still has failures elsewhere.",
+      "warningThreshold": ">=96% Cinderfen win rate, <=10% whole-profile failure rate, and <=1.5 average losses.",
+      "strongSignalThreshold": "Cinderfen sweep plus whole-suite sweep across repeated runs.",
+      "currentSignal": "88% Cinderfen win rate; 38% whole-profile failure rate.",
+      "recommendedAction": "Monitor Cinderfen speed and ask humans whether it feels decisive or trivial.",
+      "doNotDo": "Do not slow Fast Army just because it is the fastest route.",
+      "evidence": [
+        "Fast Army: 265-120-40 across 425 extended metric rows.",
+        "Cinderfen Fast Army wins: 110/125."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "greedy_economy",
+      "watchpointName": "Greedy Economy Collapse",
+      "status": "Monitor",
+      "normalExpectedState": "Greedy is risky but survives openings; failures read as conversion or pacing rather than raw weakness.",
+      "warningThreshold": ">=65% timeout rate with <25% win rate across repeated extended rows.",
+      "strongSignalThreshold": ">=75% timeout/loss rate plus resource surplus remaining high across multiple nodes.",
+      "currentSignal": "36% win rate; 51% timeout rate; 9793.8 average resource surplus.",
+      "recommendedAction": "Monitor conversion clarity and pacing; keep human testing first.",
+      "doNotDo": "Do not buff economy just because greed is risky or timeout-prone.",
+      "evidence": [
+        "Greedy Economy: 155-55-215 across 425 extended metric rows.",
+        "First-wave survived rate: 100%; conversion/clear-speed timeouts: 55."
+      ],
+      "humanTestingNeeded": true
+    }
+  ],
+  "profileRanking": [
+    {
+      "profileId": "mixed_veterans",
+      "profileName": "Mixed-Veterans",
+      "iterationsObserved": 5,
+      "totalRuns": 30,
+      "record": {
+        "wins": 30,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 221.5,
+      "averageClearTimeSeconds": 226.66666666666666,
+      "fastestClearTimeSeconds": 78,
+      "slowestClearTimeSeconds": 385,
+      "clearTimeSpreadSeconds": 307,
+      "averageUnitLosses": 0,
+      "averageFinalArmySize": 12.166666666666666,
+      "averageResourceSurplus": 1546,
+      "averageFinalAether": 219,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 3.6666666666666665,
+      "pressureWarningCount": 25,
+      "averagePressureReactionWindowSeconds": 102,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "medium",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "one_veteran",
+      "profileName": "One-Veteran",
+      "iterationsObserved": 5,
+      "totalRuns": 30,
+      "record": {
+        "wins": 30,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 378,
+      "averageClearTimeSeconds": 379,
+      "fastestClearTimeSeconds": 367,
+      "slowestClearTimeSeconds": 399,
+      "clearTimeSpreadSeconds": 32,
+      "averageUnitLosses": 0.5,
+      "averageFinalArmySize": 11.666666666666666,
+      "averageResourceSurplus": 2427,
+      "averageFinalAether": 313,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 4,
+      "pressureWarningCount": 45,
+      "averagePressureReactionWindowSeconds": 102,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "medium",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "pressure_ignoring",
+      "profileName": "Pressure-Ignoring",
+      "iterationsObserved": 5,
+      "totalRuns": 20,
+      "record": {
+        "wins": 20,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 92,
+      "averageClearTimeSeconds": 92.5,
+      "fastestClearTimeSeconds": 76,
+      "slowestClearTimeSeconds": 110,
+      "clearTimeSpreadSeconds": 34,
+      "averageUnitLosses": 0.5,
+      "averageFinalArmySize": 12.5,
+      "averageResourceSurplus": 680,
+      "averageFinalAether": 112.5,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 3.5,
+      "pressureWarningCount": 15,
+      "averagePressureReactionWindowSeconds": null,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "low",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "safe_beginner",
+      "profileName": "Safe Beginner",
+      "iterationsObserved": 5,
+      "totalRuns": 425,
+      "record": {
+        "wins": 425,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 371,
+      "averageClearTimeSeconds": 366.0705882352941,
+      "fastestClearTimeSeconds": 334,
+      "slowestClearTimeSeconds": 403,
+      "clearTimeSpreadSeconds": 69,
+      "averageUnitLosses": 1,
+      "averageFinalArmySize": 11.341176470588236,
+      "averageResourceSurplus": 2274.9529411764706,
+      "averageFinalAether": 289.21176470588233,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 2.3058823529411763,
+      "pressureWarningCount": 285,
+      "averagePressureReactionWindowSeconds": 97.08,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "high",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "no_retinue",
+      "profileName": "No-Retinue",
+      "iterationsObserved": 5,
+      "totalRuns": 250,
+      "record": {
+        "wins": 250,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 373,
+      "averageClearTimeSeconds": 372.38,
+      "fastestClearTimeSeconds": 347,
+      "slowestClearTimeSeconds": 403,
+      "clearTimeSpreadSeconds": 56,
+      "averageUnitLosses": 1.28,
+      "averageFinalArmySize": 11.26,
+      "averageResourceSurplus": 2293.76,
+      "averageFinalAether": 298.08,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 2.32,
+      "pressureWarningCount": 180,
+      "averagePressureReactionWindowSeconds": 93.66666666666667,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "high",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "baseline_cautious",
+      "profileName": "Baseline Cautious",
+      "iterationsObserved": 5,
+      "totalRuns": 35,
+      "record": {
+        "wins": 35,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "lossRate": 0,
+      "timeoutRate": 0,
+      "medianClearTimeSeconds": 373,
+      "averageClearTimeSeconds": 373,
+      "fastestClearTimeSeconds": 347,
+      "slowestClearTimeSeconds": 403,
+      "clearTimeSpreadSeconds": 56,
+      "averageUnitLosses": 1.2857142857142858,
+      "averageFinalArmySize": 11.285714285714286,
+      "averageResourceSurplus": 2264.5714285714284,
+      "averageFinalAether": 297,
+      "objectiveCompletionRate": 1,
+      "averageObjectiveCompletionCount": 2.2857142857142856,
+      "pressureWarningCount": 25,
+      "averagePressureReactionWindowSeconds": 102,
+      "routeVerdictDistribution": [
+        {
+          "value": "stable",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "medium",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "consistent stable"
+    },
+    {
+      "profileId": "objective_rush",
+      "profileName": "Objective-Rush",
+      "iterationsObserved": 5,
+      "totalRuns": 30,
+      "record": {
+        "wins": 25,
+        "defeats": 0,
+        "timeouts": 5
+      },
+      "winRate": 0.8333333333333334,
+      "lossRate": 0,
+      "timeoutRate": 0.16666666666666666,
+      "medianClearTimeSeconds": 93,
+      "averageClearTimeSeconds": 250.5,
+      "fastestClearTimeSeconds": 76,
+      "slowestClearTimeSeconds": 1050,
+      "clearTimeSpreadSeconds": 974,
+      "averageUnitLosses": 1.8333333333333333,
+      "averageFinalArmySize": 11.5,
+      "averageResourceSurplus": 2094.6666666666665,
+      "averageFinalAether": 121.66666666666667,
+      "objectiveCompletionRate": 0.8333333333333334,
+      "averageObjectiveCompletionCount": 2.8333333333333335,
+      "pressureWarningCount": 15,
+      "averagePressureReactionWindowSeconds": null,
+      "routeVerdictDistribution": [
+        {
+          "value": "strategy spread; needs human testing",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "medium",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "mixed route"
+    },
+    {
+      "profileId": "retinue_training_yard_ii",
+      "profileName": "Retinue + Training Yard II",
+      "iterationsObserved": 5,
+      "totalRuns": 105,
+      "record": {
+        "wins": 85,
+        "defeats": 15,
+        "timeouts": 5
+      },
+      "winRate": 0.8095238095238095,
+      "lossRate": 0.14285714285714285,
+      "timeoutRate": 0.047619047619047616,
+      "medianClearTimeSeconds": 334,
+      "averageClearTimeSeconds": 341.9047619047619,
+      "fastestClearTimeSeconds": 71,
+      "slowestClearTimeSeconds": 900,
+      "clearTimeSpreadSeconds": 829,
+      "averageUnitLosses": 1.7619047619047619,
+      "averageFinalArmySize": 10.285714285714286,
+      "averageResourceSurplus": 3371.1428571428573,
+      "averageFinalAether": 452.95238095238096,
+      "objectiveCompletionRate": 0.8095238095238095,
+      "averageObjectiveCompletionCount": 2,
+      "pressureWarningCount": 45,
+      "averagePressureReactionWindowSeconds": 163.75,
+      "routeVerdictDistribution": [
+        {
+          "value": "strategy spread; needs human testing",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "high",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "mixed route"
+    },
+    {
+      "profileId": "fast_army",
+      "profileName": "Fast Army",
+      "iterationsObserved": 5,
+      "totalRuns": 425,
+      "record": {
+        "wins": 265,
+        "defeats": 120,
+        "timeouts": 40
+      },
+      "winRate": 0.6235294117647059,
+      "lossRate": 0.2823529411764706,
+      "timeoutRate": 0.09411764705882353,
+      "medianClearTimeSeconds": 122,
+      "averageClearTimeSeconds": 307.74117647058824,
+      "fastestClearTimeSeconds": 71,
+      "slowestClearTimeSeconds": 1050,
+      "clearTimeSpreadSeconds": 979,
+      "averageUnitLosses": 3.011764705882353,
+      "averageFinalArmySize": 7.823529411764706,
+      "averageResourceSurplus": 2174.6823529411763,
+      "averageFinalAether": 98,
+      "objectiveCompletionRate": 0.6235294117647059,
+      "averageObjectiveCompletionCount": 1.423529411764706,
+      "pressureWarningCount": 105,
+      "averagePressureReactionWindowSeconds": 85,
+      "routeVerdictDistribution": [
+        {
+          "value": "decisive but not free; monitor Cinderfen speed",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "high",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "mixed route"
+    },
+    {
+      "profileId": "greedy_economy",
+      "profileName": "Greedy Economy",
+      "iterationsObserved": 5,
+      "totalRuns": 425,
+      "record": {
+        "wins": 155,
+        "defeats": 55,
+        "timeouts": 215
+      },
+      "winRate": 0.36470588235294116,
+      "lossRate": 0.12941176470588237,
+      "timeoutRate": 0.5058823529411764,
+      "medianClearTimeSeconds": 900,
+      "averageClearTimeSeconds": 672.0235294117647,
+      "fastestClearTimeSeconds": 279,
+      "slowestClearTimeSeconds": 1050,
+      "clearTimeSpreadSeconds": 771,
+      "averageUnitLosses": 4.670588235294118,
+      "averageFinalArmySize": 6.635294117647059,
+      "averageResourceSurplus": 9793.75294117647,
+      "averageFinalAether": 1797.5411764705882,
+      "objectiveCompletionRate": 0.36470588235294116,
+      "averageObjectiveCompletionCount": 0.611764705882353,
+      "pressureWarningCount": 355,
+      "averagePressureReactionWindowSeconds": 225.12,
+      "routeVerdictDistribution": [
+        {
+          "value": "risky conversion route; monitor clarity and pacing",
+          "count": 5
+        }
+      ],
+      "confidenceDistribution": [
+        {
+          "value": "high",
+          "count": 5
+        }
+      ],
+      "stabilityVerdict": "unstable route"
+    }
+  ],
+  "watchpointStatuses": [
+    {
+      "watchpointId": "retinue_training_yard_ii",
+      "watchpointName": "Retinue + Training Yard II Dominance",
+      "status": "Human testing required",
+      "normalExpectedState": "Strong earned-power route with some failures or costs outside ideal watchpoint nodes.",
+      "warningThreshold": ">=90% full-profile win rate plus >=95% low-loss wins on Ashen/Cinderfen watchpoint nodes.",
+      "strongSignalThreshold": ">=95% full-profile win rate, zero failures, and <=1 average unit loss.",
+      "currentSignal": "81% win rate; 100% Ashen/Cinderfen low-loss win rate; 1.8 average losses.",
+      "recommendedAction": "Prioritize human testing; do not tune from automation alone.",
+      "doNotDo": "Do not nerf retinue or Training Yard II from clean automated watchpoint nodes alone.",
+      "evidence": [
+        "Retinue + Training Yard II: 85-15-5 across 105 extended metric rows.",
+        "Ashen/Cinderfen low-loss wins: 45/45."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "greedy_economy",
+      "watchpointName": "Greedy Economy Collapse",
+      "status": "Monitor",
+      "normalExpectedState": "Greedy is risky but survives openings; failures read as conversion or pacing rather than raw weakness.",
+      "warningThreshold": ">=65% timeout rate with <25% win rate across repeated extended rows.",
+      "strongSignalThreshold": ">=75% timeout/loss rate plus resource surplus remaining high across multiple nodes.",
+      "currentSignal": "36% win rate; 51% timeout rate; 9793.8 average resource surplus.",
+      "recommendedAction": "Monitor conversion clarity and pacing; keep human testing first.",
+      "doNotDo": "Do not buff economy just because greed is risky or timeout-prone.",
+      "evidence": [
+        "Greedy Economy: 155-55-215 across 425 extended metric rows.",
+        "First-wave survived rate: 100%; conversion/clear-speed timeouts: 55."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "fast_army",
+      "watchpointName": "Fast Army Trivialization",
+      "status": "Monitor",
+      "normalExpectedState": "Fast Army is faster and often good in Cinderfen but still has failures elsewhere.",
+      "warningThreshold": ">=96% Cinderfen win rate, <=10% whole-profile failure rate, and <=1.5 average losses.",
+      "strongSignalThreshold": "Cinderfen sweep plus whole-suite sweep across repeated runs.",
+      "currentSignal": "88% Cinderfen win rate; 38% whole-profile failure rate.",
+      "recommendedAction": "Monitor Cinderfen speed and ask humans whether it feels decisive or trivial.",
+      "doNotDo": "Do not slow Fast Army just because it is the fastest route.",
+      "evidence": [
+        "Fast Army: 265-120-40 across 425 extended metric rows.",
+        "Cinderfen Fast Army wins: 110/125."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "early_defeats",
+      "watchpointName": "Early Defeat Spike",
+      "status": "OK",
+      "normalExpectedState": "Early-node defeats remain near zero in automation.",
+      "warningThreshold": ">=5% early-node defeat rate.",
+      "strongSignalThreshold": ">=15% early-node defeat rate or repeated early-pressure defeats.",
+      "currentSignal": "0% early defeat rate; 0% early-pressure defeat rate.",
+      "recommendedAction": "No change.",
+      "doNotDo": "Do not weaken early tests or mask first-wave failures.",
+      "evidence": [
+        "Early-node record: 470-0-0 across 470 extended metric rows."
+      ],
+      "humanTestingNeeded": false
+    },
+    {
+      "watchpointId": "pressure_fairness",
+      "watchpointName": "Pressure Warning Fairness",
+      "status": "Human testing required",
+      "normalExpectedState": "Safe routes win pressure nodes and warnings appear before pressure matters.",
+      "warningThreshold": "<90% safe-route pressure win rate, warnings missing from most pressure rows, or very short reaction windows.",
+      "strongSignalThreshold": "Repeated safe-route pressure defeats with missing/late warnings.",
+      "currentSignal": "100% Safe Beginner pressure-node win rate; 84% warning-row rate; average reaction window 139.8s.",
+      "recommendedAction": "Human testing required for noticeability and stress.",
+      "doNotDo": "Do not treat warning counts as proof that humans saw or understood warnings.",
+      "evidence": [
+        "Pressure/Cinderfen rows: 570.",
+        "Pressure warnings shown: 1095."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "cinderfen_crossing_fairness",
+      "watchpointName": "Cinderfen Crossing Fairness",
+      "status": "OK",
+      "normalExpectedState": "Safe Beginner wins all current rows; other route timeouts can remain monitor items.",
+      "warningThreshold": "Any repeated Safe Beginner failure or >=45% route timeout rate.",
+      "strongSignalThreshold": "Safe-route losses/timeouts across repeated runs.",
+      "currentSignal": "100% Safe Beginner win rate; 22% all-profile timeout rate.",
+      "recommendedAction": "No structural tuning; prioritize human route feel.",
+      "doNotDo": "Do not tune Cinderfen from non-safe route timeouts alone.",
+      "evidence": [
+        "Cinderfen Crossing record: 230-0-65 across 295 extended metric rows."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "cinderfen_watch_fairness",
+      "watchpointName": "Cinderfen Watch Fairness",
+      "status": "OK",
+      "normalExpectedState": "Safe Beginner wins all current rows; other route timeouts can remain monitor items.",
+      "warningThreshold": "Any repeated Safe Beginner failure or >=45% route timeout rate.",
+      "strongSignalThreshold": "Safe-route losses/timeouts across repeated runs.",
+      "currentSignal": "100% Safe Beginner win rate; 20% all-profile timeout rate.",
+      "recommendedAction": "No structural tuning; prioritize human route feel.",
+      "doNotDo": "Do not tune Cinderfen from non-safe route timeouts alone.",
+      "evidence": [
+        "Cinderfen Watch record: 220-0-55 across 275 extended metric rows."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "ashen_outpost_stability",
+      "watchpointName": "Ashen Outpost Timeout Spike",
+      "status": "OK",
+      "normalExpectedState": "Safe play remains stable, with route timeouts watched as pacing/final-assault evidence.",
+      "warningThreshold": "Any repeated safe-route failures or >=10% defeat rate.",
+      "strongSignalThreshold": "Safe-route failures plus high timeout rate across repeated batches.",
+      "currentSignal": "28% timeout rate; 0% defeat rate.",
+      "recommendedAction": "Monitor final-assault pacing and ask humans whether timeouts feel fair.",
+      "doNotDo": "Do not change Ashen Outpost numbers from timeout telemetry alone.",
+      "evidence": [
+        "Ashen Outpost record: 190-0-75 across 265 extended metric rows."
+      ],
+      "humanTestingNeeded": true
+    },
+    {
+      "watchpointId": "objective_completion_drop",
+      "watchpointName": "Objective Completion Drop",
+      "status": "OK",
+      "normalExpectedState": "Primary objective completion stays at or above 70% across overlapped extended profile rows.",
+      "warningThreshold": "<55% primary objective completion rate.",
+      "strongSignalThreshold": "<45% primary objective completion rate.",
+      "currentSignal": "74% primary objective completion rate.",
+      "recommendedAction": "No change.",
+      "doNotDo": "Do not infer player confusion from objective completion alone.",
+      "evidence": [
+        "Primary objective completed in 1320/1775 extended metric rows."
+      ],
+      "humanTestingNeeded": false
+    },
+    {
+      "watchpointId": "resource_starvation_spike",
+      "watchpointName": "Resource Starvation Spike",
+      "status": "OK",
+      "normalExpectedState": "Resource problems are localized, not a global economy starvation signal.",
+      "warningThreshold": ">=20% non-victory rows end with very low resource surplus.",
+      "strongSignalThreshold": ">=35% non-victory starvation rows, suggesting future economy-system review.",
+      "currentSignal": "0% low-resource non-victory row rate.",
+      "recommendedAction": "No change.",
+      "doNotDo": "Do not globally raise resources without node/profile evidence.",
+      "evidence": [
+        "Low-resource non-victory rows: 0/1775."
+      ],
+      "humanTestingNeeded": false
+    }
+  ],
+  "nodeRiskTable": [
+    {
+      "nodeId": "bandit_hillfort",
+      "nodeName": "Bandit Hillfort",
+      "totalRuns": 235,
+      "record": {
+        "wins": 105,
+        "defeats": 125,
+        "timeouts": 5
+      },
+      "winRate": 0.44680851063829785,
+      "timeoutRate": 0.02127659574468085,
+      "lossRate": 0.5319148936170213,
+      "averageUnitLosses": 5.617021276595745,
+      "pressureWarningCount": 0,
+      "greedyEconomyRecord": {
+        "wins": 0,
+        "defeats": 55,
+        "timeouts": 5
+      },
+      "fastArmyRecord": {
+        "wins": 0,
+        "defeats": 60,
+        "timeouts": 0
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 5,
+        "defeats": 10,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": -108.51904761904763,
+      "status": "Warning",
+      "verdict": "loss-risk node (53% defeat rate)"
+    },
+    {
+      "nodeId": "aether_well_ruins",
+      "nodeName": "Aether Well Ruins",
+      "totalRuns": 235,
+      "record": {
+        "wins": 105,
+        "defeats": 65,
+        "timeouts": 65
+      },
+      "winRate": 0.44680851063829785,
+      "timeoutRate": 0.2765957446808511,
+      "lossRate": 0.2765957446808511,
+      "averageUnitLosses": 4.25531914893617,
+      "pressureWarningCount": 0,
+      "greedyEconomyRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 60
+      },
+      "fastArmyRecord": {
+        "wins": 0,
+        "defeats": 60,
+        "timeouts": 0
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 5,
+        "defeats": 5,
+        "timeouts": 5
+      },
+      "pressureIgnoringRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": -114.16666666666666,
+      "status": "OK",
+      "verdict": "structurally stable"
+    },
+    {
+      "nodeId": "ashen_outpost",
+      "nodeName": "Ashen Outpost",
+      "totalRuns": 265,
+      "record": {
+        "wins": 190,
+        "defeats": 0,
+        "timeouts": 75
+      },
+      "winRate": 0.7169811320754716,
+      "timeoutRate": 0.2830188679245283,
+      "lossRate": 0,
+      "averageUnitLosses": 2.169811320754717,
+      "pressureWarningCount": 0,
+      "greedyEconomyRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 45
+      },
+      "fastArmyRecord": {
+        "wins": 35,
+        "defeats": 0,
+        "timeouts": 25
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": 13.566666666666666,
+      "status": "OK",
+      "verdict": "structurally stable"
+    },
+    {
+      "nodeId": "cinderfen_crossing",
+      "nodeName": "Cinderfen Crossing",
+      "totalRuns": 295,
+      "record": {
+        "wins": 230,
+        "defeats": 0,
+        "timeouts": 65
+      },
+      "winRate": 0.7796610169491526,
+      "timeoutRate": 0.22033898305084745,
+      "lossRate": 0,
+      "averageUnitLosses": 1.5084745762711864,
+      "pressureWarningCount": 540,
+      "greedyEconomyRecord": {
+        "wins": 5,
+        "defeats": 0,
+        "timeouts": 60
+      },
+      "fastArmyRecord": {
+        "wins": 60,
+        "defeats": 0,
+        "timeouts": 5
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 10,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": 18.904166666666665,
+      "status": "Monitor",
+      "verdict": "pressure-watch node"
+    },
+    {
+      "nodeId": "cinderfen_watch",
+      "nodeName": "Cinderfen Watch",
+      "totalRuns": 275,
+      "record": {
+        "wins": 220,
+        "defeats": 0,
+        "timeouts": 55
+      },
+      "winRate": 0.8,
+      "timeoutRate": 0.2,
+      "lossRate": 0,
+      "averageUnitLosses": 1.6,
+      "pressureWarningCount": 555,
+      "greedyEconomyRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 45
+      },
+      "fastArmyRecord": {
+        "wins": 50,
+        "defeats": 0,
+        "timeouts": 10
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 10,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": 19.13809523809524,
+      "status": "Monitor",
+      "verdict": "pressure-watch node"
+    },
+    {
+      "nodeId": "old_stone_road",
+      "nodeName": "Old Stone Road",
+      "totalRuns": 235,
+      "record": {
+        "wins": 235,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "timeoutRate": 0,
+      "lossRate": 0,
+      "averageUnitLosses": 1.6382978723404256,
+      "pressureWarningCount": 0,
+      "greedyEconomyRecord": {
+        "wins": 60,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "fastArmyRecord": {
+        "wins": 60,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": 25.633333333333333,
+      "status": "OK",
+      "verdict": "structurally stable"
+    },
+    {
+      "nodeId": "border_village",
+      "nodeName": "Border Village",
+      "totalRuns": 235,
+      "record": {
+        "wins": 235,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "winRate": 1,
+      "timeoutRate": 0,
+      "lossRate": 0,
+      "averageUnitLosses": 0.6595744680851063,
+      "pressureWarningCount": 0,
+      "greedyEconomyRecord": {
+        "wins": 60,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "fastArmyRecord": {
+        "wins": 60,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueTrainingYardRecord": {
+        "wins": 15,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "pressureIgnoringRecord": {
+        "wins": 0,
+        "defeats": 0,
+        "timeouts": 0
+      },
+      "retinueAdvantageScore": 16.633333333333333,
+      "status": "OK",
+      "verdict": "structurally stable"
+    }
+  ],
+  "noTuneReasons": [
+    "The extended batch repeats deterministic simulator evidence; it is stronger regression evidence, not human feedback.",
+    "No watchpoint combines repeated automated signals with real human confirmation.",
+    "Pressure-warning noticeability, route feel, and fun remain unavailable to automation.",
+    "Most current signals are monitor or human-testing outcomes rather than numeric-tuning outcomes."
+  ],
+  "humanTestingRecommendations": [
+    "Retinue + Training Yard II through Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch.",
+    "Greedy Economy with explicit notes on resource-to-army conversion timing.",
+    "Fast Army through Cinderfen to judge decisive play versus trivialization.",
+    "Pressure warning noticeability under real combat stress.",
+    "Ashen Outpost pacing and final-assault readability."
+  ]
+}

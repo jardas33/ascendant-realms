@@ -124,6 +124,8 @@ The lab can show structural timing, losses, wins, timeouts, resources, and warni
 
 ## Future Goal Guidance
 
+v0.13.1 follow-up: the extended automated lab now lives in `docs/V0131_EXTENDED_SCENARIO_LAB_REPORT.md`, with generated dashboard outputs in `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`. Those outputs deepen deterministic regression evidence, but they still are not human feedback.
+
 Next recommended long goal: run real human playtests using the v0.12.6 packet, then use v0.12.5 intake to classify completed forms. Use v0.13 automated evidence as prioritization context, not as a substitute for real feedback.
 
 Priority human tests:

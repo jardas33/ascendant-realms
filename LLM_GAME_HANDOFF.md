@@ -1,12 +1,123 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.13 automated playtest scenario lab
+Last updated: 2026-05-18 v0.13.1 extended automated scenario lab
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
+
+Status: local verification green; automated simulator/tooling/reporting checkpoint. This pass extends the v0.13 deterministic scenario lab with repeated batches, profile comparison metrics, node-risk dashboarding, conservative regression thresholds, generated Markdown/JSON/CSV reports, package scripts, tests, and documentation. It does not change runtime gameplay, gameplay numbers, campaign data, maps, factions, units, art/assets, save format, combat systems, campaign progression, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1a4e09e` (`Checkpoint v0.13 automated playtest scenario lab`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not invent playtest feedback, implement balance changes, add new content, save migration, runtime art, or the future 2026 visual art overhaul.
+
+Extended scenario lab code and tools added:
+
+- `src/game/playtest/ScenarioLabExtendedRunner.ts`
+- `src/game/playtest/ScenarioLabExtendedReportWriter.ts`
+- `src/game/playtest/ScenarioLabRegressionThresholds.ts`
+- `src/game/playtest/ScenarioLabExtended.test.ts`
+
+Scripts added:
+
+- `npm run playtest:lab:extended`
+- `npm run playtest:watchpoints:extended`
+- `npm run playtest:profiles:compare`
+
+Generated outputs:
+
+- `PLAYTEST_SCENARIO_LAB_EXTENDED.json`
+- `PLAYTEST_SCENARIO_LAB_EXTENDED.md`
+- `PLAYTEST_PROFILE_COMPARISON.md`
+- `PLAYTEST_PROFILE_COMPARISON.csv`
+- `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`
+- `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`
+- `PLAYTEST_WATCHPOINTS_EXTENDED.md`
+
+v0.13.1 docs added:
+
+- `docs/V0131_SCENARIO_LAB_LIMITATIONS_AUDIT.md`
+- `docs/V0131_NODE_RISK_DASHBOARD_SPEC.md`
+- `docs/V0131_BALANCE_REGRESSION_THRESHOLDS.md`
+- `docs/V0131_EXTENDED_AUTOMATED_EVIDENCE_REVIEW.md`
+- `docs/V0131_TUNING_AND_ACTION_DECISION.md`
+- `docs/V0131_EXTENDED_SCENARIO_LAB_REPORT.md`
+
+Extended run shape:
+
+- Default iterations: 5.
+- Source simulator runs: 255 per iteration, 1,275 total.
+- Derived profile-run metrics: 355 per iteration, 1,775 total.
+- Regression watchpoints: 10.
+
+Extended watchpoint verdicts:
+
+- Mixed-Veterans: top-ranked stable automated profile.
+- Retinue + Training Yard II: dominance watchpoint; human testing required; no nerf.
+- Greedy Economy: monitor conversion/time risk; no buff.
+- Fast Army: monitor Cinderfen speed; no slowdown.
+- Early defeats: OK/no change.
+- Pressure fairness: human testing required.
+- Cinderfen Crossing fairness: structurally OK for Safe Beginner; no structural tuning.
+- Cinderfen Watch fairness: structurally OK for Safe Beginner; no structural tuning.
+- Ashen Outpost timeout spike: OK under thresholds, monitor final-assault pacing.
+- Objective completion drop and resource starvation spike: OK.
+
+Current verification:
+
+```text
+npm test
+PASS - 49 files / 367 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes.
+
+npm run playtest:lab
+PASS - generated 10 profiles, 355 derived profile-run metrics, and 8 watchpoint classifications.
+
+npm run playtest:watchpoints
+PASS - regenerated the scenario lab and watchpoint summary.
+
+npm run playtest:profiles
+PASS - generated 10 scenario profile definitions.
+
+npm run playtest:lab:extended
+PASS - generated 5 deterministic iterations, 1,275 source simulator runs, 1,775 derived profile-run metrics, and 10 regression watchpoints.
+
+npm run playtest:watchpoints:extended
+PASS - regenerated extended watchpoints with 5 deterministic iterations, 1,275 source simulator runs, 1,775 derived profile-run metrics, and 10 regression watchpoints.
+
+npm run playtest:profiles:compare
+PASS - generated 10 scenario profile comparisons and 1,775 extended profile-run metrics.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: Real Human Playtest Execution And Intake. Send testers the v0.12.6 quick-start and feedback packet, assign routes with the v0.12.6 route plan, then ingest completed forms through the v0.12.5 intake hub. Use v0.13.1 automated evidence to prioritize routes, not as human feedback. Keep future visual overhaul work separate.
 
 ## Current v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
 

@@ -1,6 +1,88 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.13 automated playtest scenario lab
+Updated: 2026-05-18 v0.13.1 extended automated scenario lab
+
+## v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
+
+Scope: deepen the v0.13 automated scenario lab with repeated deterministic evidence, profile comparison, node-risk dashboarding, balance regression thresholds, generated reports, tests, and docs. This pass preserves the v0.13/v0.12.x green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, combat systems, campaign progression, and gameplay numbers. It does not invent human feedback, start the 2026 visual overhaul, or implement balance changes.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1a4e09e` (`Checkpoint v0.13 automated playtest scenario lab`).
+- Branch state before edits: `main` clean and synced with `origin/main`.
+- Guardrails: no maps, factions, units, runtime art/assets, save format, gameplay numbers, combat systems, campaign progression, hosted release stability changes, invented feedback, broad AI/economy rewrites, or balance implementation.
+
+Included work:
+
+- Added `src/game/playtest/ScenarioLabExtendedRunner.ts`.
+- Added `src/game/playtest/ScenarioLabExtendedReportWriter.ts`.
+- Added `src/game/playtest/ScenarioLabRegressionThresholds.ts`.
+- Added `src/game/playtest/ScenarioLabExtended.test.ts`.
+- Extended scenario metric rows with objective completion, pressure-trigger, first-wave, and post-pressure loss fields needed for repeated reporting.
+- Added `npm run playtest:lab:extended`, `npm run playtest:watchpoints:extended`, and `npm run playtest:profiles:compare`.
+- Generated `PLAYTEST_SCENARIO_LAB_EXTENDED.json`, `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_PROFILE_COMPARISON.csv`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`.
+- Added v0.13.1 docs for limitations audit, node-risk dashboard spec, regression thresholds, extended evidence review, no-tuning decision, and final extended lab report.
+- Updated README, ROADMAP, CHANGELOG, the v0.12.5 intake hub, and the v0.13 scenario-lab report so automated evidence remains separate from real tester feedback.
+
+Extended automated evidence:
+
+- Extended run size: 5 deterministic iterations, 255 source simulator runs per iteration, 1,275 source simulator runs total, 355 derived metric rows per iteration, 1,775 extended metric rows total.
+- Top-ranked stable automated profile: Mixed-Veterans.
+- Weakest / most failure-prone route: Greedy Economy.
+- Biggest timeout risk: Ashen Outpost.
+- Biggest pressure-risk signal: Cinderfen Watch.
+- Retinue + Training Yard II: human testing required; no nerf.
+- Greedy Economy: monitor conversion/time risk; no buff.
+- Fast Army: monitor Cinderfen speed; no slowdown.
+- Early defeats: OK/no change.
+- Pressure fairness: human testing required.
+- Cinderfen Crossing / Watch: structurally OK for Safe Beginner; no structural tuning.
+- Objective completion and resource starvation: OK.
+
+Current verification:
+
+```text
+npm test
+PASS - 49 files / 367 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes.
+
+npm run playtest:lab
+PASS - generated 10 profiles, 355 derived profile-run metrics, and 8 watchpoint classifications.
+
+npm run playtest:watchpoints
+PASS - regenerated the scenario lab and watchpoint summary.
+
+npm run playtest:profiles
+PASS - generated 10 scenario profile definitions.
+
+npm run playtest:lab:extended
+PASS - generated 5 deterministic iterations, 1,275 source simulator runs, 1,775 derived profile-run metrics, and 10 regression watchpoints.
+
+npm run playtest:watchpoints:extended
+PASS - regenerated extended watchpoints with 5 deterministic iterations, 1,275 source simulator runs, 1,775 derived profile-run metrics, and 10 regression watchpoints.
+
+npm run playtest:profiles:compare
+PASS - generated 10 scenario profile comparisons and 1,775 extended profile-run metrics.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed. The next recommended long goal is Real Human Playtest Execution And Intake after testers complete the v0.12.6 packet, using the v0.13.1 dashboard to prioritize routes. Do not run feedback triage until real completed forms exist.
 
 ## v0.13 Automated Playtest Scenario Lab And Balance Telemetry V1 - 2026-05-18
 

@@ -24,6 +24,10 @@ Automated evidence is separate:
 - v0.13 scenario lab report: `PLAYTEST_SCENARIO_LAB.md`
 - v0.13 watchpoint summary: `PLAYTEST_WATCHPOINT_SUMMARY.md`
 - v0.13 profile catalog: `PLAYTEST_SCENARIO_PROFILES.md`
+- v0.13.1 extended scenario lab: `PLAYTEST_SCENARIO_LAB_EXTENDED.md`
+- v0.13.1 profile comparison: `PLAYTEST_PROFILE_COMPARISON.md`
+- v0.13.1 balance regression dashboard: `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`
+- v0.13.1 extended watchpoints: `PLAYTEST_WATCHPOINTS_EXTENDED.md`
 
 Use these automated reports to prioritize what to ask real testers to play, but do not paste them into human feedback intake rows or treat them as completed tester forms.
 
