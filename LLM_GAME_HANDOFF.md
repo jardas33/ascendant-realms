@@ -1,12 +1,82 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-17 v0.12.2 human balance watchpoint review
+Last updated: 2026-05-17 v0.12.3 human campaign balance play session
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12.3 Human Campaign Balance Play Session - 2026-05-17
+
+Status: local verification green; docs-only balance/play-session review. This pass gathers direct human-style campaign evidence after v0.12.2 and does not change runtime behavior, numbers, tests, art, assets, save format, maps, factions, units, broad AI/economy behavior, or CI plumbing.
+
+Core guardrails to preserve:
+
+- Current baseline commit before this goal: `f8fa346` (`Checkpoint v0.12.2 human balance watchpoint review`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not turn tutorial smoke semantic advancement back into raw `tutorial-next` click chains.
+- Do not confuse this pass with the future 2026 visual art overhaul.
+
+Human campaign play-session decisions:
+
+- Retinue + Training Yard II: strongest and cleanest current route, especially Ashen/Cinderfen, but still treated as satisfying earned power. No numeric tuning.
+- Greedy Economy: risky conversion/timeouts, not unfair pressure or underpowered economy. No copy or numeric change.
+- Fast Army: decisive speed profile, especially Crossing, but not whole-slice dominance. No slowdown.
+- Early defeats: no current structural early-defeat issue; Border Village guidance remains readable from visible browser entry.
+- Pressure fairness: structurally fair/actionable; human noticeability under dense combat remains the main unresolved risk.
+- Numeric tuning: none.
+- Copy/readability changes: none in v0.12.3.
+
+Docs added:
+
+- `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_PROTOCOL.md`
+- `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_NOTES.md`
+- `docs/V0123_CAMPAIGN_BALANCE_EVIDENCE_TABLE.md`
+- `docs/V0123_BALANCE_PLAY_SESSION_DECISION.md`
+- `docs/V0123_HUMAN_CAMPAIGN_BALANCE_PLAY_SESSION_REPORT.md`
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run test:e2e:smoke
+PASS - final full rerun 12 tests in 7.5m.
+Note: the first full-smoke attempt hit a local timeout in the existing trophy-standard extended smoke after 11/12 tests passed; the focused trophy-standard rerun passed, then the full smoke rerun passed without code or test changes.
+
+npm run visual:qa
+PASS - 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS - production preview at http://127.0.0.1:4173/ verified menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and 0 browser console errors.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: v0.12.4 Manual Human Playtest Packet And Tester Checklist. Give Emmanuel or a human tester a compact checklist/rating sheet for Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch across Retinue + Training Yard II, Greedy Economy, Fast Army, early defeat clarity, pressure-warning noticeability, and result guidance. Keep future visual overhaul work separate.
 
 ## Current v0.12.2 Human Balance Watchpoint Review - 2026-05-17
 

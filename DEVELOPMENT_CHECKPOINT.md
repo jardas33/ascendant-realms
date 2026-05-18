@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-05-17 v0.12.2 human balance watchpoint review
+Updated: 2026-05-17 v0.12.3 human campaign balance play session
+
+## v0.12.3 Human Campaign Balance Play Session - 2026-05-17
+
+Scope: gather direct human-style campaign balance evidence for Retinue + Training Yard II, Greedy Economy, Fast Army, early defeats, pressure-warning noticeability, and the fairness of Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch. This pass preserves the v0.11.12/v0.12/v0.12.1/v0.12.2 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, and gameplay mechanics. It does not start the 2026 visual overhaul or add broad AI/economy behavior.
+
+Included work:
+
+- Added `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_PROTOCOL.md`.
+- Added `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_NOTES.md`.
+- Added `docs/V0123_CAMPAIGN_BALANCE_EVIDENCE_TABLE.md`.
+- Added `docs/V0123_BALANCE_PLAY_SESSION_DECISION.md`.
+- Added `docs/V0123_HUMAN_CAMPAIGN_BALANCE_PLAY_SESSION_REPORT.md`.
+- Confirmed direct visible browser readability from main menu through New Campaign, Campaign Map, Border Village guidance, and battle HUD launch.
+- Classified Retinue + Training Yard II as the strongest and cleanest route, but still deferred numeric tuning as earned power.
+- Classified Greedy Economy as risky conversion/timeouts, not unfair pressure or underpowered economy.
+- Classified Fast Army as decisive speed play, not current Cinderfen trivialization.
+- Found no current structural early defeat issue and kept pressure-warning noticeability as a human-stress watch item.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run test:e2e:smoke
+PASS - final full rerun 12 tests in 7.5m.
+Note: the first full-smoke attempt hit a local timeout in the existing trophy-standard extended smoke after 11/12 tests passed; the focused trophy-standard rerun passed, then the full smoke rerun passed without code or test changes.
+
+npm run visual:qa
+PASS - 5 tests, 18 screenshots, 0 browser console errors, 0 screenshot retries.
+
+npm run smoke:preview
+PASS - production preview at http://127.0.0.1:4173/ verified menu copy, Tutorial launch/exit, New Campaign, Continue Campaign, Skirmish Setup, and 0 browser console errors.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because v0.12.3 is docs-only, but a manual release-matrix rerun after push is a clean remote parity check. The next recommended long goal is v0.12.4 Manual Human Playtest Packet And Tester Checklist. Keep the future 2026 visual overhaul separate.
 
 ## v0.12.2 Human Balance Watchpoint Review - 2026-05-17
 

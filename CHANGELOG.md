@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.12.3 Human Campaign Balance Play Session - 2026-05-17
+
+This checkpoint gathers direct human-style campaign balance evidence after v0.12.2 without changing runtime behavior. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.
+
+### Included
+
+- Human campaign play-session protocol: `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_PROTOCOL.md`.
+- Human-style campaign notes: `docs/V0123_HUMAN_CAMPAIGN_PLAY_SESSION_NOTES.md`.
+- Compact evidence table: `docs/V0123_CAMPAIGN_BALANCE_EVIDENCE_TABLE.md`.
+- No-change decision: `docs/V0123_BALANCE_PLAY_SESSION_DECISION.md`.
+- Final report: `docs/V0123_HUMAN_CAMPAIGN_BALANCE_PLAY_SESSION_REPORT.md`.
+- Direct visible browser evidence from main menu through New Campaign, Campaign Map, Border Village guidance, and battle HUD launch.
+- Route evidence for baseline, no-retinue, one-veteran, mixed-veterans, Retinue + Training Yard II, Greedy Economy, and Fast Army.
+
+### Verification
+
+- Final verification is recorded in `docs/V0123_HUMAN_CAMPAIGN_BALANCE_PLAY_SESSION_REPORT.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because v0.12.3 is docs-only, but a manual release-matrix rerun after push is a clean remote parity check.
+- Next recommended long goal: v0.12.4 Manual Human Playtest Packet And Tester Checklist.
+
 ## v0.12.2 Human Balance Watchpoint Review - 2026-05-17
 
 This checkpoint reviews the v0.12/v0.12.1 balance watchpoints without changing runtime behavior. It preserves the v0.11.12/v0.12/v0.12.1 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.
