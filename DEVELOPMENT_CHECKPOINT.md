@@ -1,6 +1,61 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14.1 Emmanuel quick playtest fixes
+Updated: 2026-05-18 v0.14.2 hosted settings smoke fix
+
+## v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
+
+Scope: fix the isolated GitHub Actions CI Release Matrix Dry Run #55 hosted smoke timeout in `settings screen persists accessibility options @ci-fast`, without weakening the settings assertions or changing runtime gameplay.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `256c688` (`Checkpoint v0.14.1 Emmanuel quick playtest fixes`).
+- Branch state before edits: `main` clean and synced with `origin/main`.
+- Remote failure: CI Release Matrix Dry Run #55, hosted smoke group, 1 failed / 12 passed.
+- Failed test: `tests/e2e/smoke.spec.ts:825`, `settings screen persists accessibility options @ci-fast`.
+- Failure mode: 60-second timeout on both first attempt and retry.
+- Guardrails: no gameplay numbers, save format, maps, factions, units, assets, assertion weakening, force clicks, DOM fallback for canvas/world clicks, broad CI restructuring, or hosted matrix reshaping.
+
+Included work:
+
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FAILURE_AUDIT.md`.
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FIX.md`.
+- Increased only `SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS` from 60 seconds to 90 seconds.
+
+Root cause:
+
+- The exact hosted-config settings repro passed locally before the fix, but took about 45 seconds.
+- v0.14.1 expanded this smoke path with battle pause overlay verification while preserving settings persistence and runtime accessibility checks.
+- GitHub-hosted preview plus screenshot/video/trace overhead left too little margin inside the previous 60-second scoped budget.
+
+Protected assertions:
+
+- Settings still persist after save/reopen.
+- Reduced motion and colorblind minimap document datasets are still asserted.
+- Floating text disabled, fog override disabled, reduced motion, and colorblind minimap runtime behavior are still asserted.
+- Battle Menu pause and Resume behavior are still asserted.
+- No settings assertion was removed or softened.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --reporter=line
+PASS, 1 test in about 35.8s after the scoped timeout fix.
+
+npm run test:e2e:release:hosted:smoke
+PASS, 13 tests in about 2.9m.
+
+npm test PASS, 52 files / 375 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests in about 2.2m.
+npm run test:e2e:smoke PASS, 13 tests in about 6.7m.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+git diff --check PASS.
+```
+
+Remaining watch items: Emmanuel should rerun GitHub Actions CI Release Matrix Dry Run and confirm the hosted smoke group passes.
 
 ## v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
 

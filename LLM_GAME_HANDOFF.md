@@ -1,12 +1,65 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14.1 Emmanuel quick playtest fixes
+Last updated: 2026-05-18 v0.14.2 hosted settings smoke fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
+
+Status: local verification green; narrow hosted smoke timeout fix. This pass addresses GitHub Actions CI Release Matrix Dry Run #55, where only the hosted smoke group's `settings screen persists accessibility options @ci-fast` test timed out at 60 seconds. It does not change runtime gameplay, gameplay numbers, save format, campaign data, maps, factions, units, rewards, runtime art/assets, hosted release matrix structure, or settings assertion coverage.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `256c688` (`Checkpoint v0.14.1 Emmanuel quick playtest fixes`), clean and synced with `origin/main`.
+- Failed workflow evidence supplied by Emmanuel: CI Release Matrix Dry Run #55, commit `256c688`, hosted smoke group, 1 failed / 12 passed.
+- The GitHub CLI was not installed locally; the GitHub app workflow tools require numeric run ids, so this pass records the supplied run #55 evidence rather than claiming artifact inspection.
+
+Fix:
+
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FAILURE_AUDIT.md`.
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FIX.md`.
+- Increased only `SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS` in `tests/e2e/smoke.spec.ts` from 60 seconds to 90 seconds.
+
+Root cause:
+
+- The exact hosted-config settings repro passed locally before the fix but took about 45 seconds.
+- v0.14.1 expanded the settings smoke path with battle pause overlay verification, leaving too little CI margin inside a 60-second scoped test timeout.
+- This was a scoped test-budget regression, not evidence that settings persistence or accessibility assertions were broken.
+
+Protected assertions:
+
+- settings persist after save/reopen
+- reduced motion and colorblind minimap document datasets apply
+- floating text disabled remains asserted in runtime combat
+- fog override disabled remains asserted in runtime battle
+- colorblind minimap runtime and DOM markers remain asserted
+- battle Menu pause and Resume behavior remain asserted
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --reporter=line
+PASS, 1 test in about 35.8s after the scoped timeout fix.
+
+npm run test:e2e:release:hosted:smoke
+PASS, 13 tests in about 2.9m.
+
+npm test PASS, 52 files / 375 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests in about 2.2m.
+npm run test:e2e:smoke PASS, 13 tests in about 6.7m.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+git diff --check PASS.
+```
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run and confirm the hosted smoke group passes on this checkpoint.
 
 ## Current v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
 

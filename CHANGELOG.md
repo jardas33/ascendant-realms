@@ -1,5 +1,32 @@
 # Changelog
 
+## v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
+
+This checkpoint fixes the isolated GitHub Actions CI Release Matrix Dry Run #55 hosted smoke timeout in `settings screen persists accessibility options @ci-fast`. It keeps the settings smoke assertions intact and does not change runtime gameplay, gameplay numbers, save format, content, art/assets, or hosted release matrix structure.
+
+### Included
+
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FAILURE_AUDIT.md`.
+- Added `docs/V0142_HOSTED_SETTINGS_SMOKE_FIX.md`.
+- Increased only the settings accessibility smoke test timeout from 60 seconds to 90 seconds.
+
+### Verdict
+
+- Root cause: v0.14.1 expanded this already multi-stage settings smoke path with battle pause overlay verification; local hosted repro passed but used about 45 seconds, leaving too little margin for slower GitHub-hosted runners.
+- Settings assertions preserved: yes.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Hosted matrix structure changed: no.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- Rerun the GitHub Actions CI Release Matrix Dry Run and confirm the hosted smoke group passes.
+
 ## v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass - 2026-05-18
 
 This checkpoint ingests Emmanuel's first real private playtest session, `PT-20260518-EMMANUEL-BASELINE-01`, and fixes only narrow, high-confidence input, HUD, tutorial, and command usability problems. It does not add maps, factions, units, runtime art/assets, save migration, balance tuning, broad combat AI rewrites, automated simulation expansion, or invented tester feedback.
