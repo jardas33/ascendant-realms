@@ -27,6 +27,17 @@ Thresholds are intentionally conservative:
 - Copy/readability and human testing should come before numeric tuning when the issue may be understanding.
 - Strong automated signals should become future investigation items unless real human evidence agrees.
 
+## Rationale
+
+The v0.13.1 thresholds are not balance patches. They are regression triage rules for deterministic automation:
+
+- Win-rate thresholds are high because the simulator repeats scripted routes, not independent human attempts.
+- Timeout and defeat thresholds are separated so a pacing issue does not become an automatic damage/HP tuning recommendation.
+- Safe Beginner failures are weighted more heavily than aggressive-profile failures because Safe Beginner is the closest automation has to a conservative route.
+- Pressure-warning status defaults to human testing because telemetry can show warning timing but cannot prove the warning was noticed or understood.
+- Retinue + Training Yard II, Greedy Economy, and Fast Army have explicit "do not do" rules because each can look extreme in automation for different reasons: earned power, conversion risk, or speed-route bias.
+- The default action should remain OK, Monitor, or Human testing required unless repeated rows cross a strong threshold and a future human pass agrees.
+
 ## Watchpoint Thresholds
 
 | Watchpoint | Normal expected state | Warning threshold | Strong signal threshold | Action | Do not do |

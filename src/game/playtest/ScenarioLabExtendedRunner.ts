@@ -43,6 +43,7 @@ export function runExtendedScenarioLab(options: ScenarioLabExtendedOptions = {})
       runKey: `${batchLabel}:${seedId}:${metric.profileId}:${metric.nodeId}:${metric.playerScript}:${metric.sourceStrongholdProfileId}:${metricIndex}`
     }));
   });
+  const uniqueDerivedMetricFingerprints = uniqueValues(extendedRunMetrics.map((metric) => derivedMetricFingerprint(metric))).length;
   const profileComparisons = summarizeProfileComparisons(reports, extendedRunMetrics);
   const profileNodeScriptComparisons = summarizeProfileNodeScriptComparisons(extendedRunMetrics);
   const nodeRiskDashboard = summarizeNodeRiskDashboard(extendedRunMetrics);
@@ -73,6 +74,7 @@ export function runExtendedScenarioLab(options: ScenarioLabExtendedOptions = {})
     sourceRunCountPerIteration: reports[0]?.sourceRunCount ?? 0,
     totalSourceRuns: reports.reduce((total, report) => total + report.sourceRunCount, 0),
     totalDerivedMetrics: extendedRunMetrics.length,
+    uniqueDerivedMetricFingerprints,
     iterationSummaries,
     profileComparisons,
     profileNodeScriptComparisons,
@@ -86,9 +88,11 @@ export function runExtendedScenarioLab(options: ScenarioLabExtendedOptions = {})
     biggestPressureRiskNodeId: dashboard.biggestPressureRiskNodeId,
     extendedRunMetrics,
     dashboard,
+    metricsAvailability: reports[0]?.metricsAvailability ?? [],
     determinismNotes: [
       "Each iteration reruns the deterministic scripted simulator from the same content baseline.",
       "Seed identifiers are stable evidence labels for repeated batches; they do not introduce random gameplay variation.",
+      "The extended batch is a deterministic repeatability check, not a stochastic sample or statistical population.",
       "Repeated identical signals improve regression confidence in the tooling layer, but they are not human playtest feedback."
     ]
   };
@@ -362,7 +366,7 @@ function mostFrequentProfile(values: Array<ScenarioLabProfileId | null>): Scenar
 }
 
 function normalizeIterationCount(iterations: number | undefined): number {
-  if (!iterations || !Number.isFinite(iterations)) {
+  if (iterations === undefined || !Number.isFinite(iterations)) {
     return DEFAULT_SCENARIO_LAB_EXTENDED_ITERATIONS;
   }
   return Math.max(1, Math.min(25, Math.floor(iterations)));
@@ -434,4 +438,33 @@ function divide(numerator: number, denominator: number): number {
 
 function formatPercent(value: number): string {
   return `${Math.round(value * 100)}%`;
+}
+
+function derivedMetricFingerprint(metric: ScenarioLabExtendedRunMetric): string {
+  return [
+    metric.profileId,
+    metric.sourceStrongholdProfileId,
+    metric.playerScript,
+    metric.nodeId,
+    metric.result,
+    metric.failureReason,
+    metric.clearTimeSeconds,
+    metric.armySurvivalCount,
+    metric.unitLosses,
+    metric.unitsTrained,
+    metric.resourceSurplus,
+    metric.finalAether,
+    metric.peakAether,
+    metric.objectiveCompletionCount,
+    metric.primaryObjectiveCompleted,
+    metric.pressureWarningCount,
+    metric.pressureTriggered,
+    metric.pressureReactionWindowSeconds ?? "null",
+    metric.firstWaveSurvived,
+    metric.lossesAfterPressure,
+    metric.retinueUsed,
+    metric.trainingYardIIActive,
+    metric.greedyEconomyMarker,
+    metric.fastArmyMarker
+  ].join("|");
 }

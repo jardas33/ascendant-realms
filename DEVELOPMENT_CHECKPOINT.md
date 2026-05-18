@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.13.1 extended automated scenario lab
+Updated: 2026-05-18 v0.13.1a extended scenario lab integrity audit
+
+## v0.13.1a Extended Scenario Lab Integrity Audit And Gap-Fix Pass - 2026-05-18
+
+Scope: independently audit v0.13.1 extended scenario lab implementation and generated evidence, then fix only genuine tooling/reporting integrity gaps. This pass preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, pressure behavior, hosted release patterns, and human-feedback boundaries.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1e59f8c` (`Checkpoint v0.13.1 extended scenario lab`).
+- Branch state before edits: `main` clean and synced with `origin/main`.
+- Guardrails: no maps, factions, units, runtime art/assets, save format, gameplay numbers, combat systems, campaign progression, hosted release stability changes, invented feedback, broad AI/economy rewrites, or balance implementation.
+
+Audit verdict:
+
+- v0.13.1 was real implementation, not mostly superficial docs.
+- The extended scripts did call simulator-backed runners and computed counts from generated data.
+- The five default iterations are deterministic repeatability checks, not stochastic samples.
+- v0.13.1 had genuine reporting/tooling gaps: no generated-output verifier, CSV/Markdown ranking mismatch, missing extended metric-availability metadata, and too-permissive `--runs` parsing.
+
+Included work:
+
+- Added `src/game/playtest/ScenarioLabOutputValidation.ts`.
+- Added `tools/verifyPlaytestLabOutputs.ts`.
+- Added `npm run playtest:lab:verify`.
+- Updated `src/game/playtest/ScenarioLabExtendedRunner.ts` and types to include `uniqueDerivedMetricFingerprints` and metric availability.
+- Updated `src/game/playtest/ScenarioLabExtendedReportWriter.ts` so CSV/Markdown profile order agrees and extended reports state deterministic-repeatability limits.
+- Updated CLI run-count parsing in `tools/runPlaytestLab.ts` and `tools/runPlaytestProfiles.ts`.
+- Expanded extended lab tests to validate generated JSON/Markdown/CSV consistency.
+- Added v0.13.1a audit docs and improved threshold rationale docs.
+- Regenerated extended outputs.
+
+Current verification:
+
+```text
+npm test PASS, 49 files / 368 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 6 tests in about 2.0m.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab PASS, 10 profiles, 355 derived metrics, 8 watchpoints.
+npm run playtest:watchpoints PASS, 10 profiles, 355 derived metrics, 8 watchpoints.
+npm run playtest:profiles PASS, 10 scenario profiles.
+npm run playtest:lab:extended PASS, 5 iterations, 1,275 source runs, 1,775 derived metrics, 10 watchpoints.
+npm run playtest:watchpoints:extended PASS, 5 iterations, 1,275 source runs, 1,775 derived metrics, 10 watchpoints.
+npm run playtest:profiles:compare PASS, 10 comparisons, 1,775 extended metrics.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+git diff --check PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed. The next recommended long goal remains Real Human Playtest Execution And Intake after testers complete the v0.12.6 packet.
 
 ## v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
 

@@ -1,12 +1,79 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.13.1 extended automated scenario lab
+Last updated: 2026-05-18 v0.13.1a extended scenario lab integrity audit
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.13.1a Extended Scenario Lab Integrity Audit And Gap-Fix Pass - 2026-05-18
+
+Status: local verification green; automated simulator/tooling/reporting audit checkpoint. This pass audits v0.13.1, confirms it was real simulator-backed implementation, fixes generated-output consistency gaps, and adds a verifier. It does not change runtime gameplay, gameplay numbers, campaign data, maps, factions, units, art/assets, save format, combat systems, campaign progression, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `1e59f8c` (`Checkpoint v0.13.1 extended scenario lab`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not invent playtest feedback, implement balance changes, add new content, save migration, runtime art, or the future 2026 visual art overhaul.
+
+Integrity audit verdict:
+
+- v0.13.1 was real: extended scripts call simulator-backed runners and generated full JSON/Markdown/CSV outputs.
+- v0.13.1 was incomplete as a quality gate: it lacked generated-output verification and CSV ordering did not match ranked Markdown ordering.
+- The 5 deterministic iterations are identical repeatability checks, not stochastic evidence.
+- The right trust level is deterministic regression evidence and route-priority planning, not human balance proof or tuning authorization.
+
+v0.13.1a code/tools added:
+
+- `src/game/playtest/ScenarioLabOutputValidation.ts`
+- `tools/verifyPlaytestLabOutputs.ts`
+
+Scripts added:
+
+- `npm run playtest:lab:verify`
+
+Important fixes:
+
+- `PLAYTEST_PROFILE_COMPARISON.csv` now uses the same ranked order as `PLAYTEST_PROFILE_COMPARISON.md`.
+- Extended JSON/Markdown now include `uniqueDerivedMetricFingerprints`.
+- Extended JSON/Markdown now include metric availability so unavailable metrics remain explicit.
+- Extended Markdown now says the five default iterations are identical deterministic replays, not random samples.
+- CLI `--runs` now rejects invalid values outside 1-25.
+- Threshold docs include rationale for conservative non-tuning statuses.
+
+v0.13.1a docs added:
+
+- `docs/V0131A_EXTENDED_LAB_INTEGRITY_AUDIT.md`
+- `docs/V0131A_SCRIPT_AND_OUTPUT_VERIFICATION.md`
+- `docs/V0131A_STATISTICAL_USEFULNESS_REVIEW.md`
+- `docs/V0131A_EXTENDED_SCENARIO_LAB_AUDIT_REPORT.md`
+
+Current verification:
+
+```text
+npm test PASS, 49 files / 368 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 6 tests in about 2.0m.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab PASS, 10 profiles, 355 derived metrics, 8 watchpoints.
+npm run playtest:watchpoints PASS, 10 profiles, 355 derived metrics, 8 watchpoints.
+npm run playtest:profiles PASS, 10 scenario profiles.
+npm run playtest:lab:extended PASS, 5 iterations, 1,275 source runs, 1,775 derived metrics, 10 watchpoints.
+npm run playtest:watchpoints:extended PASS, 5 iterations, 1,275 source runs, 1,775 derived metrics, 10 watchpoints.
+npm run playtest:profiles:compare PASS, 10 comparisons, 1,775 extended metrics.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+git diff --check PASS.
+```
+
+Next recommended long-running goal: Real Human Playtest Execution And Intake. Send testers the v0.12.6 quick-start and feedback packet, assign routes with the v0.12.6 route plan, then ingest completed forms through the v0.12.5 intake hub. Use v0.13.1a automated evidence to prioritize routes, not as human feedback. Keep future visual overhaul work separate.
 
 ## Current v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
 

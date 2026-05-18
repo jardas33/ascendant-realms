@@ -324,6 +324,7 @@ export interface ScenarioLabExtendedReport {
   sourceRunCountPerIteration: number;
   totalSourceRuns: number;
   totalDerivedMetrics: number;
+  uniqueDerivedMetricFingerprints: number;
   iterationSummaries: ScenarioLabIterationSummary[];
   profileComparisons: ScenarioLabProfileComparison[];
   profileNodeScriptComparisons: ScenarioLabProfileNodeScriptComparison[];
@@ -337,5 +338,6 @@ export interface ScenarioLabExtendedReport {
   biggestPressureRiskNodeId: string | null;
   extendedRunMetrics: ScenarioLabExtendedRunMetric[];
   dashboard: ScenarioLabBalanceRegressionDashboard;
+  metricsAvailability: ScenarioLabMetricAvailability[];
   determinismNotes: string[];
 }

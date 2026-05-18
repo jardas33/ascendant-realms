@@ -5,6 +5,7 @@ import {
   renderExtendedWatchpointsMarkdown,
   renderProfileComparisonCsv,
   renderProfileComparisonMarkdown,
+  validateScenarioLabOutputArtifacts,
   runExtendedScenarioLab,
   runScenarioLab
 } from "./ScriptedBattlePlaytest";
@@ -26,6 +27,8 @@ describe("ScenarioLabExtended", () => {
     expect(report.sourceRunCountPerIteration).toBe(255);
     expect(report.totalSourceRuns).toBe(510);
     expect(report.totalDerivedMetrics).toBe(710);
+    expect(report.uniqueDerivedMetricFingerprints).toBe(355);
+    expect(report.metricsAvailability.some((metric) => metric.metric === "human noticeability" && metric.status === "unavailable")).toBe(true);
     expect(report.iterationSummaries.map((summary) => summary.seedId)).toEqual(["test-seed-iteration-1", "test-seed-iteration-2"]);
     expect(report.profileComparisons).toHaveLength(10);
     expect(report.profileNodeScriptComparisons.length).toBeGreaterThan(30);
@@ -94,6 +97,9 @@ describe("ScenarioLabExtended", () => {
 
     expect(outputs[0]).toContain("# v0.13.1 Extended Automated Scenario Lab");
     expect(outputs[0]).toContain("## Profile x Node x Script Risk Rows");
+    expect(outputs[0]).toContain("Unique deterministic metric fingerprints: 355.");
+    expect(outputs[0]).toContain("The five default iterations are intentionally identical deterministic replays");
+    expect(outputs[0]).toContain("## Metric Availability");
     expect(outputs[1]).toContain("# v0.13.1 Balance Regression Dashboard");
     expect(outputs[1]).toContain("## Do Not Tune Yet");
     expect(outputs[2]).toContain("# v0.13.1 Profile Comparison");
@@ -117,5 +123,30 @@ describe("ScenarioLabExtended", () => {
     expect(quickAfter.watchpoints.map((watchpoint) => watchpoint.watchpointId)).toEqual(
       quickBefore.watchpoints.map((watchpoint) => watchpoint.watchpointId)
     );
+  });
+
+  it("validates generated JSON, Markdown, and CSV artifacts for consistency", () => {
+    const report = runExtendedScenarioLab({
+      iterations: 2,
+      generatedAt: "2026-05-18T00:00:00.000Z",
+      buildCommit: "test-commit"
+    });
+    const result = validateScenarioLabOutputArtifacts(
+      {
+        extendedJson: JSON.stringify(report, null, 2),
+        extendedMarkdown: renderExtendedScenarioLabMarkdownReport(report),
+        profileComparisonMarkdown: renderProfileComparisonMarkdown(report),
+        profileComparisonCsv: renderProfileComparisonCsv(report),
+        dashboardJson: JSON.stringify(report.dashboard, null, 2),
+        dashboardMarkdown: renderBalanceRegressionDashboardMarkdown(report),
+        watchpointsMarkdown: renderExtendedWatchpointsMarkdown(report)
+      },
+      { expectedIterationCount: 2 }
+    );
+
+    expect(result.errors).toEqual([]);
+    expect(result.ok).toBe(true);
+    expect(result.checks).toContain("CSV profile order matches computed ranking");
+    expect(result.checks).toContain("Markdown profile order matches computed ranking");
   });
 });

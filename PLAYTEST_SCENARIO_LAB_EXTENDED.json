@@ -1,14 +1,15 @@
 {
   "schemaVersion": 1,
   "generatedBy": "Ascendant Realms extended automated playtest scenario lab v0.13.1",
-  "generatedAt": "2026-05-18T12:41:34.984Z",
-  "buildCommit": "1a4e09e",
+  "generatedAt": "2026-05-18T13:01:51.673Z",
+  "buildCommit": "1e59f8c",
   "batchLabel": "v0.13.1 extended deterministic scenario lab",
   "seed": "scenario-lab-v0131",
   "iterationCount": 5,
   "sourceRunCountPerIteration": 255,
   "totalSourceRuns": 1275,
   "totalDerivedMetrics": 1775,
+  "uniqueDerivedMetricFingerprints": 355,
   "iterationSummaries": [
     {
       "iteration": 1,
@@ -66249,8 +66250,8 @@
   ],
   "dashboard": {
     "schemaVersion": 1,
-    "generatedAt": "2026-05-18T12:41:34.984Z",
-    "buildCommit": "1a4e09e",
+    "generatedAt": "2026-05-18T13:01:51.673Z",
+    "buildCommit": "1e59f8c",
     "batchLabel": "v0.13.1 extended deterministic scenario lab",
     "iterationCount": 5,
     "seed": "scenario-lab-v0131",
@@ -67164,9 +67165,72 @@
       "Ashen Outpost pacing and final-assault readability."
     ]
   },
+  "metricsAvailability": [
+    {
+      "metric": "win/loss/timeout",
+      "status": "available",
+      "note": "Read directly from scripted telemetry."
+    },
+    {
+      "metric": "battle node/profile/script",
+      "status": "available",
+      "note": "Read directly from scripted telemetry."
+    },
+    {
+      "metric": "clear time",
+      "status": "available",
+      "note": "Uses battleDurationSeconds."
+    },
+    {
+      "metric": "army survival and unit losses",
+      "status": "available",
+      "note": "Uses finalArmySize and unitsLost."
+    },
+    {
+      "metric": "resource surplus and Aether state",
+      "status": "available",
+      "note": "Uses resourcesFloated and peakResourcesFloated."
+    },
+    {
+      "metric": "objective completion",
+      "status": "available",
+      "note": "Uses objectiveCompletion ids; full timing/order is not available."
+    },
+    {
+      "metric": "pressure warning count",
+      "status": "available",
+      "note": "Uses pressureWarningsShown and triggeredStages."
+    },
+    {
+      "metric": "pressure reaction window",
+      "status": "derived",
+      "note": "Derived from firstPressureTime to first enemy contact when both exist."
+    },
+    {
+      "metric": "retinue / Training Yard II / route markers",
+      "status": "derived",
+      "note": "Retinue and Training Yard II are derived from source telemetry; behavior markers are derived from scripts and route definitions."
+    },
+    {
+      "metric": "hero survival / final hero HP",
+      "status": "unavailable",
+      "note": "Current telemetry tracks hero level and XP, not final HP or death."
+    },
+    {
+      "metric": "base damage",
+      "status": "unavailable",
+      "note": "Current telemetry tracks base collapse/defeat notes, not base HP damage."
+    },
+    {
+      "metric": "human noticeability",
+      "status": "unavailable",
+      "note": "Automated runs cannot prove whether a human noticed a warning."
+    }
+  ],
   "determinismNotes": [
     "Each iteration reruns the deterministic scripted simulator from the same content baseline.",
     "Seed identifiers are stable evidence labels for repeated batches; they do not introduce random gameplay variation.",
+    "The extended batch is a deterministic repeatability check, not a stochastic sample or statistical population.",
     "Repeated identical signals improve regression confidence in the tooling layer, but they are not human playtest feedback."
   ]
 }

@@ -14,3 +14,4 @@ export * from "./ScenarioLabReportWriter";
 export * from "./ScenarioLabRegressionThresholds";
 export * from "./ScenarioLabExtendedRunner";
 export * from "./ScenarioLabExtendedReportWriter";
+export * from "./ScenarioLabOutputValidation";

@@ -48,9 +48,18 @@ export function renderExtendedScenarioLabMarkdownReport(report: ScenarioLabExten
   lines.push("## Limits");
   lines.push("");
   lines.push("- Repeated deterministic runs are regression evidence, not new human observations.");
+  lines.push("- The five default iterations are intentionally identical deterministic replays; spreads describe the scenario/profile mix, not random variance.");
   lines.push("- The lab still cannot measure fun, stress, warning noticeability, visual readability, human confusion, final hero HP, or base damage.");
   lines.push("- Profile rows overlap intentionally, so compare route evidence views rather than independent player populations.");
   lines.push("- Any tuning candidate still needs a separate decision step and preferably real human playtest notes.");
+  lines.push("");
+  lines.push("## Metric Availability");
+  lines.push("");
+  lines.push("| Metric | Status | Note |");
+  lines.push("| --- | --- | --- |");
+  report.metricsAvailability.forEach((metric) => {
+    lines.push(`| ${metric.metric} | ${metric.status} | ${metric.note} |`);
+  });
   return formatMarkdownDocument(lines);
 }
 
@@ -99,7 +108,7 @@ export function renderProfileComparisonCsv(report: ScenarioLabExtendedReport): s
     "averagePressureReactionWindowSeconds",
     "stabilityVerdict"
   ];
-  const rows = report.profileComparisons.map((profile) =>
+  const rows = [...report.profileComparisons].sort(profileRankSort).map((profile) =>
     [
       profile.profileId,
       profile.profileName,
@@ -199,6 +208,7 @@ function pushBatchInfo(lines: string[], report: ScenarioLabExtendedReport): void
   lines.push(`Seed label: ${report.seed}`);
   lines.push(`Source runs: ${report.sourceRunCountPerIteration} per iteration, ${report.totalSourceRuns} total.`);
   lines.push(`Derived profile-run metrics: ${report.totalDerivedMetrics}.`);
+  lines.push(`Unique deterministic metric fingerprints: ${report.uniqueDerivedMetricFingerprints}.`);
   lines.push("");
 }
 
@@ -233,7 +243,8 @@ function appendNodeRiskTable(lines: string[], nodes: ScenarioLabNodeRiskDashboar
   lines.push("");
   lines.push("| Node | Runs | Record | Win | Timeout | Loss | Avg losses | Pressure warnings | Greedy | Fast | Retinue+Yard | Pressure-Ignoring | Retinue advantage | Status | Verdict |");
   lines.push("| --- | ---: | --- | ---: | ---: | ---: | ---: | ---: | --- | --- | --- | --- | ---: | --- | --- |");
-  nodes.forEach((node) => {
+  const rankedNodes = [...nodes].sort(nodeRiskSort);
+  rankedNodes.forEach((node) => {
     lines.push(
       `| ${node.nodeName} | ${node.totalRuns} | ${formatRecord(node.record)} | ${formatPercent(node.winRate)} | ${formatPercent(
         node.timeoutRate
@@ -245,6 +256,12 @@ function appendNodeRiskTable(lines: string[], nodes: ScenarioLabNodeRiskDashboar
     );
   });
   lines.push("");
+}
+
+function nodeRiskSort(left: ScenarioLabNodeRiskDashboardEntry, right: ScenarioLabNodeRiskDashboardEntry): number {
+  const leftRisk = left.lossRate + left.timeoutRate;
+  const rightRisk = right.lossRate + right.timeoutRate;
+  return rightRisk - leftRisk || right.averageUnitLosses - left.averageUnitLosses || right.pressureWarningCount - left.pressureWarningCount;
 }
 
 function appendWatchpointStatusTable(lines: string[], watchpoints: ScenarioLabWatchpointRegression[]): void {

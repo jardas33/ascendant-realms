@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.13.1a Extended Scenario Lab Integrity Audit And Gap-Fix Pass - 2026-05-18
+
+This checkpoint audits the v0.13.1 extended scenario lab instead of trusting the prior handoff. It preserves runtime gameplay, gameplay numbers, campaign data, maps, factions, units, rewards, save format, runtime art/assets, hosted release patterns, and human-feedback boundaries.
+
+### Included
+
+- Integrity audit docs for implementation reality, script/output verification, statistical usefulness, and final audit verdict.
+- New generated-output validator: `src/game/playtest/ScenarioLabOutputValidation.ts`.
+- New command: `npm run playtest:lab:verify`.
+- CSV profile comparison ordering now matches the ranked Markdown table.
+- Extended JSON/Markdown now include `uniqueDerivedMetricFingerprints` and metric availability.
+- Extended reports now state that the five default iterations are identical deterministic replays, not stochastic samples.
+- CLI `--runs` validation now rejects invalid values instead of silently falling back.
+- Threshold documentation now explains the rationale for conservative non-tuning statuses.
+
+### Verdict
+
+- v0.13.1 was real implementation, not mostly superficial docs.
+- v0.13.1 was still missing a generated-output quality gate and had a CSV/Markdown ordering mismatch.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Human feedback used: no.
+- Automated decision remains no runtime tuning.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because no runtime gameplay/HUD/campaign/pressure/result/tuning behavior changed.
+- Next recommended long goal remains real human playtest execution using the v0.12.6 tester packet, followed by intake only after completed forms exist.
+
 ## v0.13.1 Extended Automated Scenario Lab, Multi-Run Evidence, and Balance Regression Dashboard - 2026-05-18
 
 This checkpoint deepens the v0.13 automated scenario lab with repeated deterministic evidence, profile comparisons, node-risk dashboarding, and conservative future regression thresholds. It preserves the v0.13/v0.12.x green foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.

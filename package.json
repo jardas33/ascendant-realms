@@ -40,6 +40,7 @@
     "playtest:lab:extended": "tsx tools/runPlaytestLab.ts --extended --runs=5",
     "playtest:watchpoints:extended": "tsx tools/runPlaytestLab.ts --extended --watchpoints-only --runs=5",
     "playtest:profiles:compare": "tsx tools/runPlaytestProfiles.ts --compare --runs=5",
+    "playtest:lab:verify": "tsx tools/verifyPlaytestLabOutputs.ts",
     "assets:prompts": "tsx tools/manual-asset-pipeline/generatePromptBook.ts",
     "assets:ui-kit": "tsx tools/manual-asset-pipeline/generateProceduralUiKit.ts",
     "assets:process-battle-sprites": "tsx tools/manual-asset-pipeline/processBattleSprites.ts",

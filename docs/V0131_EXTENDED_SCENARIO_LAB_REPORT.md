@@ -25,6 +25,7 @@ New scripts:
 - `npm run playtest:lab:extended`
 - `npm run playtest:watchpoints:extended`
 - `npm run playtest:profiles:compare`
+- `npm run playtest:lab:verify` (added by the v0.13.1a integrity pass)
 
 CLI support:
 
@@ -36,6 +37,7 @@ CLI support:
 - `--json=false` / `--no-json`
 - `--markdown=false` / `--no-markdown`
 - `--compare` for profile comparison generation
+- invalid `--runs` values now fail instead of silently falling back
 
 ## Outputs Generated
 
@@ -64,7 +66,10 @@ Default extended batch:
 - 1,275 source simulator runs total.
 - 355 derived profile-run metric rows per iteration.
 - 1,775 derived extended metric rows total.
+- 355 unique deterministic metric fingerprints.
 - 10 regression watchpoints.
+
+Important interpretation: the five iterations are deterministic repeatability checks. They are intentionally identical replays from the same simulator matrix, not random samples or independent player attempts.
 
 ## Tests Added
 
@@ -79,6 +84,18 @@ Default extended batch:
 - required report sections
 - no human-feedback claims
 - quick lab shape remaining intact after extended runs
+- generated JSON/Markdown/CSV artifact consistency through the v0.13.1a verifier
+
+`npm run playtest:lab:verify` checks:
+
+- required generated output files
+- extended JSON shape and count consistency
+- deterministic fingerprint counts
+- profile and watchpoint coverage
+- CSV and Markdown profile ranking agreement
+- dashboard JSON and Markdown agreement
+- unavailable metrics staying explicitly unavailable
+- absence of forbidden human-feedback claim phrases
 
 ## Profile Comparison Summary
 

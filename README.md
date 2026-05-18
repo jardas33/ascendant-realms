@@ -203,9 +203,10 @@ npm run playtest:profiles
 npm run playtest:lab:extended
 npm run playtest:watchpoints:extended
 npm run playtest:profiles:compare
+npm run playtest:lab:verify
 ```
 
-`playtest:lab` regenerates `PLAYTEST_SCENARIO_LAB.md`, `PLAYTEST_SCENARIO_LAB.json`, and `PLAYTEST_WATCHPOINT_SUMMARY.md`. `playtest:profiles` regenerates `PLAYTEST_SCENARIO_PROFILES.md` and `PLAYTEST_SCENARIO_PROFILES.json`. `playtest:lab:extended`, `playtest:watchpoints:extended`, and `playtest:profiles:compare` generate separate v0.13.1 extended outputs including `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_SCENARIO_LAB_EXTENDED.json`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_PROFILE_COMPARISON.csv`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`. These are automated deterministic evidence only; they do not include or replace human tester feedback.
+`playtest:lab` regenerates `PLAYTEST_SCENARIO_LAB.md`, `PLAYTEST_SCENARIO_LAB.json`, and `PLAYTEST_WATCHPOINT_SUMMARY.md`. `playtest:profiles` regenerates `PLAYTEST_SCENARIO_PROFILES.md` and `PLAYTEST_SCENARIO_PROFILES.json`. `playtest:lab:extended`, `playtest:watchpoints:extended`, and `playtest:profiles:compare` generate separate v0.13.1 extended outputs including `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_SCENARIO_LAB_EXTENDED.json`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_PROFILE_COMPARISON.csv`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`. `playtest:lab:verify` checks those generated outputs for JSON/Markdown/CSV consistency without treating them as human feedback. These are automated deterministic evidence only; they do not include or replace human tester feedback.
 
 ## Preview A Build
 

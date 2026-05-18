@@ -44,7 +44,10 @@ function numericOption(args: string[], name: string): number | undefined {
     return undefined;
   }
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  if (!Number.isFinite(parsed) || parsed < 1 || parsed > 25) {
+    throw new Error(`${name} must be a number from 1 to 25.`);
+  }
+  return Math.floor(parsed);
 }
 
 function stringOption(args: string[], name: string): string | undefined {
