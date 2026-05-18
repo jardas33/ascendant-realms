@@ -15,6 +15,20 @@ describe("MovementSystem", () => {
     expect(distance(unit.position, { x: 120, y: 120 })).toBeLessThanOrEqual(2);
     expect(distance(overlapping.position, { x: 121, y: 120 })).toBeLessThanOrEqual(2);
   });
+
+  it("keeps repeated move commands advancing instead of resetting to the original point", () => {
+    const system = new MovementSystem();
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 40, y: 40, moveTarget: { x: 200, y: 40 } });
+    const original = { ...unit.position };
+
+    for (let i = 0; i < 5; i += 1) {
+      unit.moveTarget = { x: 200, y: 40 };
+      system.update(0.1, [unit], testMap());
+    }
+
+    expect(unit.position.x).toBeGreaterThan(original.x + 20);
+    expect(distance(unit.position, original)).toBeGreaterThan(20);
+  });
 });
 
 function testMap(): BattleMapDefinition {

@@ -16,6 +16,29 @@ describe("CombatSystem", () => {
     expect(enemy.hp).toBe(enemy.maxHp);
   });
 
+  it("lets normal move orders interrupt combat briefly without disabling later contact attacks", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      moveTarget: { x: 260, y: 100 },
+      moveOrderCombatSuppressionSeconds: 0.2
+    });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(enemy.hp).toBe(enemy.maxHp);
+    expect(player.moveTarget).toEqual({ x: 260, y: 100 });
+
+    combat.update(0.2);
+
+    expect(enemy.hp).toBeLessThan(enemy.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+  });
+
   it("stops attack-moving player units to fight enemies in weapon range", () => {
     const player = fakeUnit({
       id: "player-militia",
@@ -57,6 +80,26 @@ describe("CombatSystem", () => {
     expect(player.moveTarget?.x).toBeGreaterThan(player.position.x);
     expect(player.moveTarget?.x).toBeLessThan(enemy.position.x);
   });
+
+  it("counts melee body contact as attack range for adjacent player attacks", () => {
+    const player = fakeUnit({ id: "player-hero", team: "player", x: 100, y: 100, radius: 18, range: 26 });
+    const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 134, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(enemy.hp).toBeLessThan(enemy.maxHp);
+  });
+
+  it("counts melee body contact as attack range for adjacent enemy attacks", () => {
+    const player = fakeUnit({ id: "player-hero", team: "player", x: 100, y: 100, radius: 18, range: 34 });
+    const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 134, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.hp).toBeLessThan(player.maxHp);
+  });
 });
 
 function createCombat(units: Unit[]): CombatSystem {
@@ -78,6 +121,9 @@ function fakeUnit(options: {
   y: number;
   moveTarget?: Position;
   attackMove?: boolean;
+  moveOrderCombatSuppressionSeconds?: number;
+  radius?: number;
+  range?: number;
 }): Unit {
   return Object.assign(Object.create(Unit.prototype), {
     id: options.id,
@@ -85,13 +131,15 @@ function fakeUnit(options: {
     alive: true,
     team: options.team,
     position: { x: options.x, y: options.y },
-    radius: 13,
+    radius: options.radius ?? 13,
     maxHp: 100,
     hp: 100,
     armor: 0,
     attackCooldownRemaining: 0,
     moveTarget: options.moveTarget ? { ...options.moveTarget } : undefined,
     attackMove: options.attackMove ?? false,
+    moveOrderCombatSuppressionSeconds:
+      options.moveOrderCombatSuppressionSeconds ?? (options.moveTarget && !options.attackMove ? 1.15 : 0),
     damageBuffMultiplier: 1,
     upgradeDamageMultiplier: 1,
     upgradeRangeMultiplier: 1,
@@ -105,7 +153,7 @@ function fakeUnit(options: {
       stats: {
         maxHp: 100,
         damage: 10,
-        range: 28,
+        range: options.range ?? 28,
         attackCooldown: 1,
         speed: 90,
         armor: 0

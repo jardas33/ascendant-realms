@@ -38,7 +38,8 @@ export class InputSystem {
   private pointerDownHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerMoveHandler?: (pointer: Phaser.Input.Pointer) => void;
   private pointerUpHandler?: (pointer: Phaser.Input.Pointer) => void;
-  private globalPointerReleaseHandler?: () => void;
+  private globalPointerReleaseHandler?: (event: PointerEvent) => void;
+  private globalPointerCancelHandler?: () => void;
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
@@ -63,8 +64,10 @@ export class InputSystem {
     }
     if (this.globalPointerReleaseHandler) {
       window.removeEventListener("pointerup", this.globalPointerReleaseHandler);
-      window.removeEventListener("pointercancel", this.globalPointerReleaseHandler);
-      window.removeEventListener("blur", this.globalPointerReleaseHandler);
+    }
+    if (this.globalPointerCancelHandler) {
+      window.removeEventListener("pointercancel", this.globalPointerCancelHandler);
+      window.removeEventListener("blur", this.globalPointerCancelHandler);
     }
     const keyboard = this.options.scene.input.keyboard;
     if (keyboard) {
@@ -89,7 +92,6 @@ export class InputSystem {
         this.options.updateBuildingGhost(point);
       }
       if (this.dragStart && !pointer.leftButtonDown()) {
-        this.clearDrag();
         return;
       }
       if (!this.dragStart || this.options.isPlacingBuilding()) {
@@ -113,22 +115,27 @@ export class InputSystem {
 
       const start = this.dragStart;
       const additive = this.isShift(pointer);
-      if (start && Math.hypot(point.x - start.x, point.y - start.y) > 12) {
-        this.options.selection.selectBox(this.rectFromPoints(start, point), additive);
-      } else {
-        this.options.selection.selectAt(point, additive);
+      if (!start) {
+        return;
       }
-      this.clearDrag();
+      this.completeDrag(point, additive);
     };
 
     input.on("pointerdown", this.pointerDownHandler);
     input.on("pointermove", this.pointerMoveHandler);
     input.on("pointerup", this.pointerUpHandler);
 
-    this.globalPointerReleaseHandler = () => this.clearDrag();
+    this.globalPointerReleaseHandler = (event: PointerEvent) => {
+      if (!this.dragStart || this.options.isPlacingBuilding()) {
+        this.clearDrag();
+        return;
+      }
+      this.completeDrag(this.toWorldFromClient(event.clientX, event.clientY), event.shiftKey);
+    };
+    this.globalPointerCancelHandler = () => this.clearDrag();
     window.addEventListener("pointerup", this.globalPointerReleaseHandler);
-    window.addEventListener("pointercancel", this.globalPointerReleaseHandler);
-    window.addEventListener("blur", this.globalPointerReleaseHandler);
+    window.addEventListener("pointercancel", this.globalPointerCancelHandler);
+    window.addEventListener("blur", this.globalPointerCancelHandler);
   }
 
   private bindKeyboard(): void {
@@ -250,6 +257,28 @@ export class InputSystem {
   private toWorld(pointer: Phaser.Input.Pointer): Position {
     const point = pointer.positionToCamera(this.options.scene.cameras.main) as Phaser.Math.Vector2;
     return { x: point.x, y: point.y };
+  }
+
+  private toWorldFromClient(clientX: number, clientY: number): Position {
+    const canvas = this.options.scene.game.canvas;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = rect.width > 0 ? canvas.width / rect.width : 1;
+    const scaleY = rect.height > 0 ? canvas.height / rect.height : 1;
+    const point = this.options.scene.cameras.main.getWorldPoint((clientX - rect.left) * scaleX, (clientY - rect.top) * scaleY);
+    return { x: point.x, y: point.y };
+  }
+
+  private completeDrag(point: Position, additive: boolean): void {
+    const start = this.dragStart;
+    if (!start) {
+      return;
+    }
+    if (Math.hypot(point.x - start.x, point.y - start.y) > 12) {
+      this.options.selection.selectBox(this.rectFromPoints(start, point), additive);
+    } else {
+      this.options.selection.selectAt(point, additive);
+    }
+    this.clearDrag();
   }
 
   private drawDragBox(start: Position, end: Position): void {

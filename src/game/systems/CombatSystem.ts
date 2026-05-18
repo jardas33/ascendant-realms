@@ -35,13 +35,19 @@ export class CombatSystem {
 
     attackers.forEach((attacker) => {
       attacker.attackCooldownRemaining = Math.max(0, attacker.attackCooldownRemaining - deltaSeconds);
+      if (attacker instanceof Unit) {
+        attacker.moveOrderCombatSuppressionSeconds = Math.max(
+          0,
+          attacker.moveOrderCombatSuppressionSeconds - deltaSeconds
+        );
+      }
 
       const target = this.resolveTarget(attacker);
       if (!target) {
         return;
       }
 
-      const range = this.getRange(attacker);
+      const range = this.getEffectiveRange(attacker, target);
       const targetDistance = distance(attacker.position, target.position);
       if (targetDistance > range) {
         this.moveTowardTargetIfAllowed(attacker, target, range);
@@ -101,7 +107,8 @@ export class CombatSystem {
       attacker.team === "player" &&
       attacker.moveTarget &&
       !attacker.attackMove &&
-      !attacker.attackTargetId
+      !attacker.attackTargetId &&
+      attacker.moveOrderCombatSuppressionSeconds > 0
     ) {
       return undefined;
     }
@@ -235,6 +242,14 @@ export class CombatSystem {
       return attacker.range;
     }
     return attacker.definition.attack?.range ?? 0;
+  }
+
+  private getEffectiveRange(attacker: Combatant, target: BaseEntity): number {
+    const range = this.getRange(attacker);
+    if (!(attacker instanceof Unit) || range > 45) {
+      return range;
+    }
+    return Math.max(range, attacker.radius + target.radius + 4);
   }
 
   private getCooldown(attacker: Combatant): number {

@@ -29,10 +29,6 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
   if (!completion) {
     return;
   }
-  if (launch.request.mode === "tutorial") {
-    scene.scene.start(SCENE_KEYS.mainMenu);
-    return;
-  }
   const resultsHeroSave = outcome === "victory" ? completion.heroSave : startingHeroSave;
   if (completion.shouldSaveHero && launch.request.mode !== "campaign_node") {
     SaveSystem.saveHero(completion.heroSave);

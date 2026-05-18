@@ -4,6 +4,7 @@ export interface UnitOrderState {
   attackTargetId?: string;
   moveTarget?: Position;
   attackMove?: boolean;
+  moveOrderCombatSuppressionSeconds?: number;
 }
 
 export interface UnitOrderSummary {
@@ -32,7 +33,10 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   if (unit.moveTarget) {
     return {
       label: "Moving",
-      detail: "Moving to the ordered point; use attack-move to fight along the route.",
+      detail:
+        (unit.moveOrderCombatSuppressionSeconds ?? 0) > 0
+          ? "Moving to the ordered point; nearby attacks wait briefly so movement intent is clear."
+          : "Moving to the ordered point; use attack-move to fight along the route.",
       tone: "neutral"
     };
   }

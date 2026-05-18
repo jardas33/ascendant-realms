@@ -708,6 +708,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await input.focus();
     await page.keyboard.type("WASD wasd");
     await expect(input).toHaveValue("WASD wasd");
+    await expect(page.getByTestId("hero-class-warlord-mechanics")).toContainText("HP 260");
+    await expect(page.getByTestId("hero-class-warlord-mechanics")).toContainText("Rally Banner");
+    await expect(page.getByTestId("hero-class-arcanist-mechanics")).toContainText("lowest HP and armor");
+    await expect(page.getByTestId("hero-origin-exiled_noble-mechanics")).toContainText("+2 Command");
   });
 
   test("tutorial entry launches a no-reward shell and returns to menu @ci-fast", async ({ page }) => {

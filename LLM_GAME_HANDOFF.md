@@ -1,12 +1,86 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14.2 hosted settings smoke fix
+Last updated: 2026-05-18 v0.14.3 combat selection control fixes
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.14.3 Combat Engagement, Marquee Selection, And Control Clarity Fix Pass - 2026-05-18
+
+Status: local verification green through full release and hosted release groups; private playtest package verified before commit. This pass uses only Emmanuel's v0.14.x retest of `PT-20260518-EMMANUEL-BASELINE-01`. It changes runtime input/combat/tutorial/Hero Creation behavior narrowly, but it does not change gameplay data numbers, save format, campaign data, maps, factions, units, rewards, runtime art/assets, pressure plans, hosted release patterns, automated simulation scope, broad combat AI/pathing, protected UI, or balance tuning.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `029a1c730d03ede1e126a8da5ffce3c88eccba93`, clean and synced with `origin/main`.
+- Human feedback source: Emmanuel only, session `PT-20260518-EMMANUEL-BASELINE-01 retest`.
+- Confirmed fixed before this pass: hero rename W/A/S/D, Tutorial Next Objective, hover flicker, hero skill explanation, and pause/menu.
+- Still broken before this pass: marquee selection, melee idle-adjacent attacks, retreat inconsistency, tutorial defeat feedback, and class/origin mechanical explanation.
+
+v0.14.3 docs added:
+
+- `docs/V0143_EMMANUEL_RETEST_INTAKE.md`
+- `docs/V0143_REPRODUCTION_PLAN.md`
+- `docs/V0143_COMBAT_SELECTION_RETEST_FIX_REPORT.md`
+- `docs/V0143_UNIT_BEHAVIOUR_MODES_DESIGN.md`
+
+v0.14.3 code/tests added or changed:
+
+- `src/game/systems/InputSystem.ts`
+- `src/game/systems/SelectionSystem.test.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/game/systems/CombatSystem.test.ts`
+- `src/game/entities/Unit.ts`
+- `src/game/systems/MovementSystem.ts`
+- `src/game/systems/MovementSystem.test.ts`
+- `src/game/ui/UnitOrderSummary.ts`
+- `src/game/ui/UnitOrderSummary.test.ts`
+- `src/game/battle/BattleSceneResults.ts`
+- `src/game/core/FirstExperienceGuidance.ts`
+- `src/game/results/ResultsNavigation.ts`
+- `src/game/results/ResultsViewModel.ts`
+- `src/game/results/ResultsViewModel.test.ts`
+- `src/game/scenes/HeroCreationScene.ts`
+- `tests/e2e/deep-flow.spec.ts`
+- `tests/e2e/smoke.spec.ts`
+
+Fix summary:
+
+- Marquee selection: fixed release-over-HUD selection completion while preserving pointercancel/blur cleanup.
+- Melee engagement: fixed idle-adjacent melee contact by using body radii for melee effective reach; ranged behavior unchanged.
+- Retreat intent: improved normal move-away reliability by making combat reacquisition suppression short-lived instead of indefinite.
+- Snap-back guard: additional movement test covers repeated move commands not resetting position.
+- Tutorial defeat: fixed no-feedback menu dump by routing tutorial defeat through Results with no-save/no-reward guidance and Retry Tutorial/Main Menu actions.
+- Hero creation clarity: class/origin choices now show actual stats, origin bonuses, primary abilities, and compact tradeoffs.
+- Behaviour modes: design-only document; no runtime stance/patrol feature implemented.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 381 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+npm run package:playtest PASS, produced a pre-commit dirty package.
+npm run verify:playtest-package PASS, 19 checks.
+```
+
+Next recommended goal: have Emmanuel retest the clean v0.14.3 package on the same Baseline Cautious route. If melee/retreat still feel wrong after this pass, open a narrow combat readability/pathing goal with screenshots or video. If behaviour modes remain desired after core controls are stable, open an original stance-controls V1 goal starting with Guard Area and Hold Ground only.
 
 ## Current v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
 

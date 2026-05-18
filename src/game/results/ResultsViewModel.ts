@@ -80,7 +80,13 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
 
 export function initialResultsStatus(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
+    if (data.launchRequest?.mode === "tutorial") {
+      return "Tutorial attempt ended. This training run is no-save and no-reward, so no campaign progress, items, XP, or hero changes were saved.";
+    }
     return "No victory rewards or battle XP were saved. Use Defeat Tips to rebuild economy, train a larger army, and retry when ready.";
+  }
+  if (data.launchRequest?.mode === "tutorial") {
+    return "Tutorial run complete. This training path is no-save and no-reward, so campaign progress, items, XP, and hero changes were not saved.";
   }
   if (isRepeatBattleClear(data)) {
     return "Repeat clear complete. Reduced repeat rewards were applied; weighted item rolls and campaign node rewards do not duplicate.";

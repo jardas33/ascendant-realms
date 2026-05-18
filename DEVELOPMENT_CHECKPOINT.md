@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14.2 hosted settings smoke fix
+Updated: 2026-05-18 v0.14.3 combat selection control fixes
+
+## v0.14.3 Combat Engagement, Marquee Selection, And Control Clarity Fix Pass - 2026-05-18
+
+Scope: ingest Emmanuel's v0.14.x retest of `PT-20260518-EMMANUEL-BASELINE-01`, fix the remaining critical marquee selection, melee engagement, retreat, tutorial defeat, and hero creation clarity issues, and keep behaviour modes design-only.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `029a1c730d03ede1e126a8da5ffce3c88eccba93`, clean and synced with `origin/main`.
+- Human feedback source: Emmanuel only, session `PT-20260518-EMMANUEL-BASELINE-01 retest`.
+- Confirmed fixed by Emmanuel before this pass: W/A/S/D hero rename, Tutorial Next Objective, hover flicker, hero skill explanation, and pause/menu behavior.
+- Guardrails: no protected UI copying, maps, factions, units, runtime art/assets, save format changes, broad AI/pathing rewrite, gameplay-number tuning, hidden failures, force-click test shortcuts, DOM fallback for canvas/world clicks, or v0.14.1 rollback.
+
+Included work:
+
+- Added `docs/V0143_EMMANUEL_RETEST_INTAKE.md`.
+- Added `docs/V0143_REPRODUCTION_PLAN.md`.
+- Added `docs/V0143_COMBAT_SELECTION_RETEST_FIX_REPORT.md`.
+- Added `docs/V0143_UNIT_BEHAVIOUR_MODES_DESIGN.md`.
+- Fixed release-over-HUD marquee selection by completing active battlefield drags on global pointer release and clearing only on cancel/blur.
+- Added `src/game/systems/SelectionSystem.test.ts` and strengthened deep-flow marquee coverage.
+- Added melee contact reach in `CombatSystem` for melee units using existing body radii, while leaving ranged behavior and unit data unchanged.
+- Replaced indefinite normal move-order combat suppression with a short-lived movement-intent window.
+- Preserved attack-move and explicit attack behavior.
+- Kept and strengthened movement snap-back regression coverage.
+- Routed tutorial defeat to Results with no-save/no-reward guidance and `Retry Tutorial` / `Main Menu`.
+- Added factual class/origin mechanical summaries to Hero Creation using existing stats, origin bonuses, and primary ability descriptions.
+- Added/updated focused unit and browser tests.
+
+Fix status:
+
+- Fixed: retest marquee selection broken while releasing over HUD.
+- Fixed: melee hero/unit/enemy idle-adjacent combat cases covered by contact reach tests.
+- Improved/fixed narrowly: retreat/move-away intent now gets a short priority window, then units can re-engage if still stuck beside enemies.
+- Guarded: unit teleport/snap-back loop remains unreproduced in retest and now has an additional repeated-command regression test.
+- Fixed: tutorial defeat now shows no-save/no-reward Results guidance instead of silently dumping to main menu.
+- Fixed: hero class/origin choices now expose mechanical summaries.
+- Deferred: unit info panel visual restructuring and behaviour modes runtime implementation.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 381 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+npm run package:playtest PASS, produced a pre-commit dirty package.
+npm run verify:playtest-package PASS, 19 checks.
+```
+
+Remaining watch items: Run `git diff --check`, commit, push, then regenerate and verify a clean non-dirty private playtest package from the final commit. GitHub Actions should be rerun because runtime battle/input/tutorial behavior changed.
 
 ## v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
 

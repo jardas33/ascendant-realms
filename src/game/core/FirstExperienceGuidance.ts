@@ -192,12 +192,27 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
 
 export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage {
   if (input.outcome === "defeat") {
+    if (input.mode === "tutorial") {
+      return {
+        title: "Training Attempt Ended",
+        body: "This was a no-save, no-reward tutorial run. Nothing was saved or lost; retry the training battle to practice grouping, retreating, and using your hero before starting a campaign.",
+        actions: ["Retry Tutorial", "Practice grouped movement", "Return to Main Menu when ready"]
+      };
+    }
     const supportAction =
       input.mode === "campaign_node" ? "Use camp or Chapel support" : "Hold after each wave";
     return {
       title: "Recover And Retry",
       body: "Defeat is a planning signal. Read the tips below, rebuild economy and production, hold after each wave, then attack with a larger grouped army.",
       actions: ["Build Barracks earlier", "Set a rally point", supportAction, "Attack with a larger army"]
+    };
+  }
+
+  if (input.mode === "tutorial") {
+    return {
+      title: "Training Complete",
+      body: "This was a no-save, no-reward tutorial run. Use it for practice, then start or continue a campaign when you are ready.",
+      actions: ["Retry Tutorial", "Return to Main Menu", "Start a campaign when ready"]
     };
   }
 

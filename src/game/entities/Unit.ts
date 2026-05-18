@@ -15,6 +15,8 @@ import {
 } from "../data/unitVeterancy";
 import { BaseEntity } from "./BaseEntity";
 
+const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
+
 export class Unit extends BaseEntity {
   readonly definition: UnitDefinition;
   readonly unitInstanceId: string;
@@ -28,6 +30,7 @@ export class Unit extends BaseEntity {
   attackTargetId?: string;
   moveTarget?: Position;
   attackMove = false;
+  moveOrderCombatSuppressionSeconds = 0;
   attackCooldownRemaining = 0;
   damageBuffMultiplier = 1;
   damageBuffRemaining = 0;
@@ -108,11 +111,13 @@ export class Unit extends BaseEntity {
     this.moveTarget = { ...target };
     this.attackTargetId = undefined;
     this.attackMove = attackMove;
+    this.moveOrderCombatSuppressionSeconds = attackMove ? 0 : PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS;
   }
 
   commandAttack(targetId: string): void {
     this.attackTargetId = targetId;
     this.attackMove = true;
+    this.moveOrderCombatSuppressionSeconds = 0;
   }
 
   applyDamageBuff(multiplier: number, duration: number): void {

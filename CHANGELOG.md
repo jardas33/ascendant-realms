@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.14.3 Combat Selection Control Fixes - 2026-05-18
+
+This checkpoint uses Emmanuel's v0.14.x retest of `PT-20260518-EMMANUEL-BASELINE-01` and fixes the remaining critical control/combat usability reports without adding maps, factions, units, runtime art/assets, save migration, broad AI/pathing rewrites, visual overhaul, or copied/protected RTS UI.
+
+### Included
+
+- Added `docs/V0143_EMMANUEL_RETEST_INTAKE.md`.
+- Added `docs/V0143_REPRODUCTION_PLAN.md`.
+- Added `docs/V0143_COMBAT_SELECTION_RETEST_FIX_REPORT.md`.
+- Added `docs/V0143_UNIT_BEHAVIOUR_MODES_DESIGN.md`.
+- Restored marquee selection when a drag starts on the battlefield and releases over the HUD/side panel.
+- Added melee contact reach so adjacent melee units can attack reliably without changing unit data.
+- Changed normal move-order combat suppression from indefinite to short-lived, preserving retreat intent without making retreat invincible.
+- Routed tutorial defeat through no-save/no-reward Results guidance with `Retry Tutorial` and `Main Menu`.
+- Added factual hero class/origin mechanical summaries from existing stats, origin bonuses, and primary abilities.
+- Added focused unit and browser regression coverage for selection, melee engagement, retreat intent, tutorial defeat guidance, movement snap-back, and hero creation clarity.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in input selection handling, melee contact engagement, move-order combat intent, tutorial defeat routing, and hero creation copy.
+- Gameplay numbers changed: no unit data, damage, HP, economy, reward, map, or save values changed. The melee fix changes contact interpretation, not content data.
+- Save format changed: no.
+- Human feedback used: yes, only Emmanuel's supplied retest notes.
+- Unit behaviour modes: design-only, not implemented.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+- GitHub Actions should be rerun because runtime battle/input/tutorial behavior changed.
+
+### Next
+
+- Regenerate a clean private playtest package from the final commit and have Emmanuel retest marquee selection, melee attacks, retreat reliability, tutorial defeat, and hero creation explanations.
+
 ## v0.14.2 Hosted Settings Smoke Fix - 2026-05-18
 
 This checkpoint fixes the isolated GitHub Actions CI Release Matrix Dry Run #55 hosted smoke timeout in `settings screen persists accessibility options @ci-fast`. It keeps the settings smoke assertions intact and does not change runtime gameplay, gameplay numbers, save format, content, art/assets, or hosted release matrix structure.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createSkirmishBattleLaunchRequest } from "../battle/BattleLaunchRequest";
+import { createSkirmishBattleLaunchRequest, createTutorialBattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import type { BattleStats } from "../core/GameTypes";
 import { createItemInstance } from "../core/HeroProgressionRules";
 import { SaveSystem, createFallbackCampaignSave } from "../core/SaveSystem";
@@ -200,6 +200,28 @@ describe("results scene helpers", () => {
     expect(createResultsViewModel(skirmishData).guidance.actions).toContain("Hold after each wave");
     expect(createResultsViewModel(skirmishData).guidance.actions).not.toContain("Use camp or Chapel support");
     expect(createResultsViewModel(campaignData).guidance.actions).toContain("Use camp or Chapel support");
+  });
+
+  it("gives tutorial defeat no-save/no-reward retry guidance", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      stats: {
+        ...baseStats(),
+        outcome: "defeat"
+      },
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createTutorialBattleLaunchRequest(heroSave)
+    });
+    const viewModel = createResultsViewModel(data);
+    const actions = renderPrimaryActions(data);
+
+    expect(initialResultsStatus(data)).toContain("no-save and no-reward");
+    expect(viewModel.guidance.title).toBe("Training Attempt Ended");
+    expect(viewModel.guidance.body).toContain("Nothing was saved or lost");
+    expect(actions).toContain("Retry Tutorial");
+    expect(actions).toContain("Main Menu");
+    expect(actions).not.toContain("Open Hero Inventory");
   });
 
   it("labels repeat battle clears as reduced rewards", () => {

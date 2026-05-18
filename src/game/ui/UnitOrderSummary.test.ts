@@ -15,6 +15,16 @@ describe("UnitOrderSummary", () => {
       label: "Moving",
       detail: expect.stringContaining("use attack-move")
     });
+    expect(
+      describeUnitOrder({
+        moveTarget: { x: 100, y: 200 },
+        attackMove: false,
+        moveOrderCombatSuppressionSeconds: 0.5
+      })
+    ).toMatchObject({
+      label: "Moving",
+      detail: expect.stringContaining("movement intent")
+    });
   });
 
   it("describes idle units as guarding nearby space", () => {

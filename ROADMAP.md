@@ -11,9 +11,16 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.14.1 Emmanuel Quick Playtest Intake And Critical Usability Fix Pass** on 2026-05-18. It ingests Emmanuel's first real private playtest session, fixes narrow input/HUD/menu/command usability failures, and keeps gameplay numbers, save format, maps, factions, units, runtime art/assets, broad combat AI, balance tuning, automated simulation expansion, and visual overhaul out of scope.
+The latest player-facing checkpoint is **v0.14.3 Combat Engagement, Marquee Selection, And Control Clarity Fix Pass** on 2026-05-18. It uses Emmanuel's v0.14.x retest to fix marquee selection, melee contact engagement, retreat intent, tutorial defeat guidance, and hero class/origin mechanical explanations while keeping gameplay numbers, save format, maps, factions, units, runtime art/assets, broad combat AI/pathing rewrites, balance tuning, automated simulation expansion, protected-UI copying, and visual overhaul out of scope.
 
-The next recommended player-facing step is to generate a clean v0.14.1 private package and have Emmanuel rerun the same Baseline Cautious route, focusing on the nine reported issues. Use that retest before opening deeper pathing/combat-readability work. Use v0.13/v0.13.1 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to generate a clean v0.14.3 private package from the final commit and have Emmanuel rerun the same Baseline Cautious route, focusing on marquee selection, hero/Stone Imp melee engagement, retreat reliability, tutorial defeat feedback, class/origin explanation, and any return of unit snap-back. Use that retest before opening a deeper pathing/combat-readability or behaviour-modes implementation goal. Use v0.13/v0.13.1 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.14.3 Emmanuel retest docs:
+
+- `docs/V0143_EMMANUEL_RETEST_INTAKE.md`
+- `docs/V0143_REPRODUCTION_PLAN.md`
+- `docs/V0143_COMBAT_SELECTION_RETEST_FIX_REPORT.md`
+- `docs/V0143_UNIT_BEHAVIOUR_MODES_DESIGN.md`
 
 New v0.14.1 Emmanuel quick playtest docs:
 

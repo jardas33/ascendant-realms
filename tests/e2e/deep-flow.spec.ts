@@ -1691,10 +1691,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
 
     await expect(page.locator(".side-panel")).toBeVisible();
-    const dragTargets = await page.evaluate((startPoint) => {
+    const dragTargets = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
         throw new Error("BattleScene is not active.");
+      }
+      const playerUnits = scene.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      if (playerUnits.length < 2) {
+        throw new Error("Expected multiple player units for marquee selection regression.");
       }
       const panel = document.querySelector<HTMLElement>(".side-panel");
       const panelBox = panel?.getBoundingClientRect();
@@ -1703,17 +1707,24 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       }
       const canvasBounds = scene.game.canvas.getBoundingClientRect();
       const camera = scene.cameras.main;
+      const minX = Math.min(...playerUnits.map((unit: any) => unit.position.x)) - 42;
+      const minY = Math.min(...playerUnits.map((unit: any) => unit.position.y)) - 42;
+      const worldToScreen = (point: { x: number; y: number }) => ({
+        x: canvasBounds.left + (point.x - camera.scrollX) * camera.zoom,
+        y: canvasBounds.top + (point.y - camera.scrollY) * camera.zoom
+      });
+      const start = worldToScreen({ x: minX, y: minY });
       return {
         start: {
-          x: canvasBounds.left + startPoint.x - camera.scrollX,
-          y: canvasBounds.top + startPoint.y - camera.scrollY
+          x: Math.max(canvasBounds.left + 24, Math.min(canvasBounds.right - 24, start.x)),
+          y: Math.max(canvasBounds.top + 24, Math.min(canvasBounds.bottom - 24, start.y))
         },
         end: {
           x: panelBox.left + panelBox.width / 2,
           y: panelBox.top + panelBox.height / 2
         }
       };
-    }, heroStart);
+    });
     await page.mouse.move(dragTargets.start.x, dragTargets.start.y);
     await page.mouse.down();
     await page.mouse.move(dragTargets.end.x, dragTargets.end.y, { steps: 6 });
@@ -1731,6 +1742,18 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         { message: "expected selection marquee state to clear after releasing over the side panel" }
       )
       .toEqual({ dragging: false, battleActive: true });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.selectionSystem
+              .getSelected()
+              .filter((entity: any) => entity.team === "player" && entity.kind !== "building").length;
+          }),
+        { message: "expected release-over-HUD marquee selection to select multiple battlefield units" }
+      )
+      .toBeGreaterThan(1);
 
     await page.getByTestId("minimap").click({ position: { x: 90, y: 60 } });
     await page.keyboard.press("F");

@@ -7,6 +7,7 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { createNewHeroSave } from "../data/heroes";
 import { HERO_CLASSES } from "../data/heroClasses";
 import { ORIGINS } from "../data/origins";
+import { ABILITY_BY_ID } from "../data/contentIndex";
 import { stopKeyboardEventForEditableTarget } from "../systems/KeyboardFocusGuard";
 
 interface HeroCreationData {
@@ -112,6 +113,7 @@ export class HeroCreationScene extends Phaser.Scene {
                       <span class="choice-copy">
                         <strong>${heroClass.name}</strong>
                         <span>${heroClass.description}</span>
+                        <small data-testid="hero-class-${heroClass.id}-mechanics">${escapeHtml(classMechanicsSummary(heroClass))}</small>
                       </span>
                     </span>
                   </button>
@@ -126,6 +128,7 @@ export class HeroCreationScene extends Phaser.Scene {
                   <button class="choice ${origin.id === this.selectedOriginId ? "selected" : ""}" data-testid="hero-origin-${origin.id}" data-option-kind="origin" data-id="${origin.id}">
                     <strong>${origin.name}</strong>
                     <span>${origin.description}</span>
+                    <small data-testid="hero-origin-${origin.id}-mechanics">${escapeHtml(originMechanicsSummary(origin))}</small>
                   </button>
                 `
               ).join("")}
@@ -162,4 +165,55 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function classMechanicsSummary(heroClass: (typeof HERO_CLASSES)[number]): string {
+  const stats = heroClass.baseStats;
+  const primary = ABILITY_BY_ID[heroClass.primaryAbilityId];
+  const abilityText = primary ? `${primary.name}: ${primary.description}` : "Primary ability not available.";
+  return [
+    `Stats: HP ${stats.maxHp}, Mana ${stats.maxMana}, Damage ${stats.damage}, Armor ${stats.armor}, Range ${stats.range}.`,
+    `Attributes: Might ${stats.might}, Command ${stats.command}, Arcana ${stats.arcana}, Faith ${stats.faith}.`,
+    `Primary ability: ${abilityText}`,
+    classTradeoffSummary(heroClass.id)
+  ].join(" ");
+}
+
+function classTradeoffSummary(classId: string): string {
+  if (classId === "warlord") {
+    return "Strength: toughest front-line commander. Tradeoff: shortest range and less mana than caster/support classes.";
+  }
+  if (classId === "arcanist") {
+    return "Strength: long range and highest mana. Tradeoff: lowest HP and armor.";
+  }
+  if (classId === "shepherd") {
+    return "Strength: healing and support range. Tradeoff: lower damage and armor than the Warlord.";
+  }
+  return "Compare stats and primary ability before choosing.";
+}
+
+function originMechanicsSummary(origin: (typeof ORIGINS)[number]): string {
+  const bonuses = Object.entries(origin.statMods).map(([stat, value]) => `${formatSigned(value)} ${statLabel(stat)}`);
+  return bonuses.length > 0 ? `Mechanical bonus: ${bonuses.join(", ")}.` : "Mechanical bonus: none.";
+}
+
+function statLabel(stat: string): string {
+  return (
+    {
+      maxHp: "HP",
+      maxMana: "Mana",
+      damage: "Damage",
+      armor: "Armor",
+      speed: "Speed",
+      range: "Range",
+      might: "Might",
+      command: "Command",
+      arcana: "Arcana",
+      faith: "Faith"
+    }[stat] ?? stat
+  );
+}
+
+function formatSigned(value: number): string {
+  return value > 0 ? `+${value}` : `${value}`;
 }

@@ -52,12 +52,25 @@ export function createCampaignMapReturnData(data: ResultsData, save: CurrentStor
 
 export function renderPrimaryActions(data: ResultsData): string {
   const isCampaign = data.launchRequest?.mode === "campaign_node";
+  const isTutorial = data.launchRequest?.mode === "tutorial";
   if (data.stats.outcome === "defeat") {
+    if (isTutorial) {
+      return `
+        <button data-results-action="retry">Retry Tutorial</button>
+        <button data-results-action="menu">Main Menu</button>
+      `;
+    }
     return `
       <button data-results-action="retry">Retry</button>
       <button data-results-action="inventory">Open Hero Inventory</button>
       <button data-results-action="${isCampaign ? "campaign" : "menu"}">${isCampaign ? "Campaign Map" : "Main Menu"}</button>
       ${isCampaign ? `<button data-results-action="menu">Main Menu</button>` : ""}
+    `;
+  }
+  if (isTutorial) {
+    return `
+      <button data-results-action="retry">Retry Tutorial</button>
+      <button data-results-action="menu">Main Menu</button>
     `;
   }
   return `
