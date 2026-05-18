@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.12.5 manual playtest feedback intake triage
+Updated: 2026-05-18 v0.12.6 playtest distribution readiness
+
+## v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
+
+Scope: add the distribution-readiness layer for real human manual playtests of the current v0.12.x browser prototype. This pass preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, combat systems, campaign progression, and gameplay numbers. It does not invent tester feedback, start the 2026 visual overhaul, or implement balance changes.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `fbd5530` (`Checkpoint v0.12.5 manual playtest feedback intake triage`).
+- Branch state before edits: `main` clean and synced with `origin/main` (`git rev-list --left-right --count origin/main...HEAD` returned `0 0`).
+- Guardrails: docs-only tester onboarding/distribution; no maps, factions, units, art/assets, runtime art, save format, gameplay numbers, combat systems, campaign progression, hosted release stability patterns, invented feedback, or balance implementation.
+
+Included work:
+
+- Added `docs/V0126_TESTER_QUICK_START.md`.
+- Added `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`.
+- Added `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`.
+- Added `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`.
+- Added `docs/V0126_FEEDBACK_STORAGE_PLAN.md`.
+- Added `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`.
+- Updated `docs/V0124_PLAYTEST_PACKET_INDEX.md` so the tester quick-start, route assignment, feedback packet, coordinator guide, storage plan, and ready-to-send message sit above the larger v0.12.4 packet.
+- Updated `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md` so feedback intake begins after real tester forms are completed and points back to the v0.12.6 distribution docs.
+- Updated `README.md` with a short manual tester quick-start pointer.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because v0.12.6 is docs-only. The next recommended long goal is v0.12.7 Real Human Playtest Feedback Review And Small-Polish Decision after real completed tester packets are received. Do not invent feedback, and keep future visual overhaul work separate.
 
 ## v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
 

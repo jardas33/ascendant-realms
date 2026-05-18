@@ -1,5 +1,28 @@
 # Changelog
 
+## v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
+
+This checkpoint adds the distribution and onboarding layer needed to hand the current v0.12.x browser prototype to real human testers. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4/v0.12.5 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.
+
+### Included
+
+- Tester quick-start: `docs/V0126_TESTER_QUICK_START.md`.
+- Emmanuel/coordinator guide: `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`.
+- Route assignment plan: `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`.
+- Copy-paste feedback submission packet: `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`.
+- Feedback storage plan: `docs/V0126_FEEDBACK_STORAGE_PLAN.md`.
+- Ready-to-send tester message: `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`.
+- Updated the v0.12.4 packet index and v0.12.5 intake hub so testers, coordinator workflow, and later triage are connected.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because v0.12.6 is docs-only.
+- Next recommended long goal: v0.12.7 Real Human Playtest Feedback Review And Small-Polish Decision, only after real completed tester forms exist.
+
 ## v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
 
 This checkpoint adds the evidence-intake layer for completed v0.12.4 manual playtest packets. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.

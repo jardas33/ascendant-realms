@@ -4,6 +4,20 @@ Date: 2026-05-18
 
 Use this index to choose the right amount of manual testing.
 
+## Send To Testers First
+
+Use these v0.12.6 documents when handing the prototype to someone:
+
+1. Tester quick-start: `docs/V0126_TESTER_QUICK_START.md`
+2. Ready-to-send message: `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`
+3. Feedback submission packet: `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`
+4. Route assignment plan: `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`
+
+Coordinator docs:
+
+1. Coordinator guide: `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`
+2. Feedback storage plan: `docs/V0126_FEEDBACK_STORAGE_PLAN.md`
+
 ## Document Order
 
 Use these first while playing:
@@ -27,12 +41,23 @@ Use these after forms are completed:
 7. Issue-ready templates: `docs/V0125_ISSUE_READY_TEMPLATES.md`
 8. Sample fictional triage: `docs/V0125_SAMPLE_FEEDBACK_TRIAGE.md`
 
+Use these to prepare for real submissions:
+
+1. Tester quick-start: `docs/V0126_TESTER_QUICK_START.md`
+2. Coordinator guide: `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`
+3. Route assignment plan: `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`
+4. Feedback submission packet: `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`
+5. Feedback storage plan: `docs/V0126_FEEDBACK_STORAGE_PLAN.md`
+6. Ready-to-send tester message: `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`
+
 ## Quick 30-Minute Test
 
 Goal: catch the biggest human-readability and pressure-noticeability issues quickly.
 
 Use:
 
+- Tester quick-start.
+- Feedback submission packet.
 - Main packet.
 - Baseline Cautious route card.
 - Mission checklists for Tutorial / Proving Grounds, Border Village, one Cinderfen battle, Results screen, and Campaign return flow.
@@ -50,6 +75,7 @@ Suggested path:
 Best output:
 
 - One summary form.
+- One completed v0.12.6 feedback submission packet.
 - One or two confusion/pressure reports if anything felt bad.
 - Ratings for clarity, fairness, pressure noticeability, and fun.
 - A session ID from the v0.12.5 intake hub if the report is being archived.
@@ -60,6 +86,9 @@ Goal: gather route-level evidence for the main v0.12.x balance watchpoints.
 
 Use:
 
+- Tester quick-start.
+- Assigned route from the v0.12.6 route assignment plan.
+- Feedback submission packet.
 - Main packet.
 - All relevant route cards.
 - Mission checklists for Ashen Outpost, Cinderfen Crossing, Cinderfen Watch, Results screen, and Campaign return flow.

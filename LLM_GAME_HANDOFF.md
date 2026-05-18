@@ -1,12 +1,70 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.12.5 manual playtest feedback intake triage
+Last updated: 2026-05-18 v0.12.6 playtest distribution readiness
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12.6 Playtest Distribution Readiness And Tester Onboarding - 2026-05-18
+
+Status: local verification green; docs-only tester onboarding and distribution readiness. This pass adds the short materials Emmanuel can send to real testers so they know how to open/run the game, what route to play, what to ignore, what to judge, how long to play, how to fill feedback, and how to send it back. It does not change runtime behavior, numbers, tests, art, assets, save format, maps, factions, units, combat systems, campaign progression, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `fbd5530` (`Checkpoint v0.12.5 manual playtest feedback intake triage`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not invent playtest feedback, implement balance changes, add new content, save migration, runtime art, or the future 2026 visual art overhaul.
+
+Tester distribution docs added:
+
+- `docs/V0126_TESTER_QUICK_START.md`
+- `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`
+- `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`
+- `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`
+- `docs/V0126_FEEDBACK_STORAGE_PLAN.md`
+- `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`
+
+How Emmanuel should use the packet:
+
+- Send `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`, `docs/V0126_TESTER_QUICK_START.md`, and `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md` to each tester.
+- Assign routes from `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`.
+- Use `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md` to choose tester mix, avoid leading questions, and decide when evidence is ready for future work.
+- Use `docs/V0126_FEEDBACK_STORAGE_PLAN.md` before committing any real tester feedback; do not commit private names, contact details, large media, or unapproved raw recordings.
+- After completed forms exist, start intake in `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md` and classify with the v0.12.5 triage docs.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: v0.12.7 Real Human Playtest Feedback Review And Small-Polish Decision, only after real completed tester packets are received. Ingest real completed forms, classify reports, update the aggregation sheet, and decide whether repeated evidence supports no change, copy/readability, tiny tuning, more testing, future art/UI overhaul, or future systems pass. Keep future visual overhaul work separate.
 
 ## Current v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
 

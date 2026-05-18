@@ -6,6 +6,19 @@ Purpose: central intake process for completed v0.12.4 manual playtest packets. U
 
 This is an evidence intake framework. It does not authorize runtime code changes, tuning, new art, new content, save migration, or hosted release workflow changes.
 
+## Before Intake
+
+For distributing the playtest before feedback exists, use the v0.12.6 onboarding docs:
+
+- Tester quick-start: `docs/V0126_TESTER_QUICK_START.md`
+- Ready-to-send tester message: `docs/V0126_READY_TO_SEND_TESTER_MESSAGE.md`
+- Route assignment plan: `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md`
+- Feedback submission packet: `docs/V0126_FEEDBACK_SUBMISSION_PACKET.md`
+- Coordinator guide: `docs/V0126_PLAYTEST_COORDINATOR_GUIDE.md`
+- Feedback storage plan: `docs/V0126_FEEDBACK_STORAGE_PLAN.md`
+
+Do not create triage rows until a real tester has completed a form or sent usable evidence.
+
 ## Intake Location
 
 Recommended storage pattern:
