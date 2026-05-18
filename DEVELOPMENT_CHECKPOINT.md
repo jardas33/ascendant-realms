@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.12.4 manual human playtest packet
+Updated: 2026-05-18 v0.12.5 manual playtest feedback intake triage
+
+## v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
+
+Scope: add the evidence-intake and triage framework for completed v0.12.4 manual playtest packet responses. This pass preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4 green release foundation, hosted release group structure, local/hosted lane separation, save compatibility, tutorial no-save/no-reward behavior, existing art/runtime assets, maps, factions, units, rewards, pressure scope, combat systems, campaign progression, and gameplay numbers. It does not start the 2026 visual overhaul or implement balance changes.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `9fb0196` (`Checkpoint v0.12.4 manual human playtest packet`).
+- Branch state before edits: `main` clean and synced with `origin/main` (`git rev-list --left-right --count origin/main...HEAD` returned `0 0`).
+- Guardrails: docs-only intake/triage; no maps, factions, units, art/assets, runtime art, save format, gameplay numbers, combat systems, campaign progression, hosted release stability patterns, or balance implementation.
+
+Included work:
+
+- Added `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md`.
+- Added `docs/V0125_EVIDENCE_CLASSIFICATION_GUIDE.md`.
+- Added `docs/V0125_WATCHPOINT_AGGREGATION_SHEET.md`.
+- Added `docs/V0125_TRIAGE_DECISION_TREE.md`.
+- Added `docs/V0125_SEVERITY_PRIORITY_RUBRIC.md`.
+- Added `docs/V0125_FEEDBACK_TO_ACTION_MATRIX.md`.
+- Added `docs/V0125_ISSUE_READY_TEMPLATES.md`.
+- Added `docs/V0125_SAMPLE_FEEDBACK_TRIAGE.md`.
+- Updated `docs/V0124_PLAYTEST_PACKET_INDEX.md` so completed tester forms point into the v0.12.5 intake workflow.
+- Defined session IDs, evidence categories, repetition thresholds, severity/priority mapping, feedback-to-action rules, issue-ready templates, and clearly fictional sample triage.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Remaining watch items: GitHub Actions rerun is optional because v0.12.5 is docs-only. The next recommended long goal is v0.12.6 Manual Playtest Feedback Review And Small-Polish Decision after real tester packets are received. Keep future visual overhaul work separate.
 
 ## v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
 

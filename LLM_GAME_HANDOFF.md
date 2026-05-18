@@ -1,12 +1,81 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.12.4 manual human playtest packet
+Last updated: 2026-05-18 v0.12.5 manual playtest feedback intake triage
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
+
+Status: local verification green; docs-only feedback intake/triage framework. This pass adds the system for receiving completed v0.12.4 manual playtest packets, classifying evidence, aggregating repeated watchpoint feedback, and deciding next actions. It does not change runtime behavior, numbers, tests, art, assets, save format, maps, factions, units, combat systems, campaign progression, broad AI/economy behavior, hosted release stability patterns, or CI plumbing.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `9fb0196` (`Checkpoint v0.12.4 manual human playtest packet`), clean and synced with `origin/main`.
+- Hosted release groups still use `playwright.hosted-release.config.ts` and `npm run preview:hosted`.
+- Local full release lanes remain separate from hosted release groups.
+- Do not replace `clickReady` with force clicks.
+- Do not use DOM fallback for canvas/world clicks.
+- Do not weaken `Moving`, minimap, no-save/no-reward tutorial, battle command, side-panel reachability, settings runtime-application, or hosted release assertions.
+- Do not implement balance changes, new content, save migration, runtime art, or the future 2026 visual art overhaul.
+
+Intake docs added:
+
+- `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md`
+- `docs/V0125_EVIDENCE_CLASSIFICATION_GUIDE.md`
+- `docs/V0125_WATCHPOINT_AGGREGATION_SHEET.md`
+- `docs/V0125_TRIAGE_DECISION_TREE.md`
+- `docs/V0125_SEVERITY_PRIORITY_RUBRIC.md`
+- `docs/V0125_FEEDBACK_TO_ACTION_MATRIX.md`
+- `docs/V0125_ISSUE_READY_TEMPLATES.md`
+- `docs/V0125_SAMPLE_FEEDBACK_TRIAGE.md`
+
+How to classify future tester feedback:
+
+- Start in `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md` and assign a session ID like `PT-YYYYMMDD-TESTER-ROUTE-01`.
+- Classify each issue with `docs/V0125_EVIDENCE_CLASSIFICATION_GUIDE.md`.
+- Aggregate repeated watchpoint reports in `docs/V0125_WATCHPOINT_AGGREGATION_SHEET.md`.
+- Use `docs/V0125_TRIAGE_DECISION_TREE.md` to separate bugs, clarity/readability, balance, pressure noticeability, controls, results guidance, art/UI debt, feature requests, and one-off noise.
+- Use `docs/V0125_SEVERITY_PRIORITY_RUBRIC.md` and `docs/V0125_FEEDBACK_TO_ACTION_MATRIX.md` before opening implementation work.
+- Use `docs/V0125_ISSUE_READY_TEMPLATES.md` when converting evidence into a future GitHub issue or Codex goal.
+
+Current repetition thresholds:
+
+- 1 isolated report = note only.
+- 2 similar reports = monitor / maybe copy tweak.
+- 3+ similar reports = candidate for small fix.
+- 3+ reports across different routes = strong signal.
+- 5+ reports or severe blocker = priority issue.
+
+Current verification:
+
+```text
+npm test
+PASS - 47 files / 356 tests.
+
+npm run build
+PASS - production build completed with the known Phaser vendor chunk-size warning.
+
+npm run validate:content
+PASS - content validation passed.
+
+npm run validate:art-intake
+PASS - checked 1 candidate metadata JSON file and 0 review manifest JSON files.
+
+npm run test:e2e:smoke:fast
+PASS - 6 tests.
+
+npm run playtest:sim
+PASS - regenerated telemetry for 255 runs across 85 campaign battle nodes; no telemetry diff.
+
+git diff --check
+PASS.
+```
+
+Next recommended long-running goal: v0.12.6 Manual Playtest Feedback Review And Small-Polish Decision. Ingest real completed tester packets, classify reports, update the aggregation sheet, and decide whether repeated evidence supports no change, copy/readability, tiny tuning, more testing, future art/UI overhaul, or a future systems pass. Keep future visual overhaul work separate.
 
 ## Current v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
 

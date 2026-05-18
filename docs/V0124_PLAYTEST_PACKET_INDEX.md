@@ -6,6 +6,8 @@ Use this index to choose the right amount of manual testing.
 
 ## Document Order
 
+Use these first while playing:
+
 1. Main packet: `docs/V0124_MANUAL_HUMAN_PLAYTEST_PACKET.md`
 2. Route cards: `docs/V0124_PLAYTEST_ROUTE_CARDS.md`
 3. Mission checklists: `docs/V0124_MISSION_CHECKLISTS.md`
@@ -13,6 +15,17 @@ Use this index to choose the right amount of manual testing.
 5. Bug/friction template: `docs/V0124_BUG_AND_FRICTION_REPORT_TEMPLATE.md`
 6. Summary form: `docs/V0124_PLAYTEST_SUMMARY_FORM.md`
 7. Designer interpretation guide: `docs/V0124_DESIGNER_INTERPRETATION_GUIDE.md`
+
+Use these after forms are completed:
+
+1. Intake hub: `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md`
+2. Evidence classification guide: `docs/V0125_EVIDENCE_CLASSIFICATION_GUIDE.md`
+3. Watchpoint aggregation sheet: `docs/V0125_WATCHPOINT_AGGREGATION_SHEET.md`
+4. Triage decision tree: `docs/V0125_TRIAGE_DECISION_TREE.md`
+5. Severity/priority rubric: `docs/V0125_SEVERITY_PRIORITY_RUBRIC.md`
+6. Feedback-to-action matrix: `docs/V0125_FEEDBACK_TO_ACTION_MATRIX.md`
+7. Issue-ready templates: `docs/V0125_ISSUE_READY_TEMPLATES.md`
+8. Sample fictional triage: `docs/V0125_SAMPLE_FEEDBACK_TRIAGE.md`
 
 ## Quick 30-Minute Test
 
@@ -39,6 +52,7 @@ Best output:
 - One summary form.
 - One or two confusion/pressure reports if anything felt bad.
 - Ratings for clarity, fairness, pressure noticeability, and fun.
+- A session ID from the v0.12.5 intake hub if the report is being archived.
 
 ## Full 2-Hour Test
 
@@ -68,6 +82,7 @@ Best output:
 - One completed summary form.
 - Watchpoint ratings for every tested route.
 - Separate reports for any confusion, balance concern, pressure-warning miss, art/readability blocker, or actual bug.
+- Aggregated watchpoint rows using the v0.12.5 intake docs.
 
 ## Stop Early If
 

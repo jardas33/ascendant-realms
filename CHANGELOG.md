@@ -1,5 +1,30 @@
 # Changelog
 
+## v0.12.5 Manual Human Playtest Feedback Intake And Evidence Triage - 2026-05-18
+
+This checkpoint adds the evidence-intake layer for completed v0.12.4 manual playtest packets. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3/v0.12.4 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, combat systems, campaign progression, and gameplay numbers.
+
+### Included
+
+- Feedback intake hub: `docs/V0125_PLAYTEST_FEEDBACK_INTAKE_HUB.md`.
+- Evidence classification guide: `docs/V0125_EVIDENCE_CLASSIFICATION_GUIDE.md`.
+- Watchpoint aggregation sheet: `docs/V0125_WATCHPOINT_AGGREGATION_SHEET.md`.
+- Triage decision tree: `docs/V0125_TRIAGE_DECISION_TREE.md`.
+- Severity/priority rubric: `docs/V0125_SEVERITY_PRIORITY_RUBRIC.md`.
+- Feedback-to-action matrix: `docs/V0125_FEEDBACK_TO_ACTION_MATRIX.md`.
+- Issue-ready templates: `docs/V0125_ISSUE_READY_TEMPLATES.md`.
+- Fictional sample feedback triage: `docs/V0125_SAMPLE_FEEDBACK_TRIAGE.md`.
+- Updated the v0.12.4 packet index to point from filled tester forms into the v0.12.5 intake workflow.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- GitHub Actions rerun is optional because v0.12.5 is docs-only.
+- Next recommended long goal: v0.12.6 Manual Playtest Feedback Review And Small-Polish Decision.
+
 ## v0.12.4 Manual Human Playtest Packet And Tester Checklist - 2026-05-18
 
 This checkpoint packages the v0.12.x human balance watchpoints into practical tester-facing documentation. It preserves the v0.11.12/v0.12/v0.12.1/v0.12.2/v0.12.3 green release foundation, hosted release group structure, save compatibility, tutorial no-save/no-reward behavior, existing art, maps, factions, units, rewards, enemy pressure scope, and gameplay mechanics.
