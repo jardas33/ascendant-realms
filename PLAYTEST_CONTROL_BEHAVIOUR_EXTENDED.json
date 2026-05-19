@@ -1,0 +1,2140 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "ControlBehaviourScenarioRunner",
+  "generatedAt": "2026-05-19T10:51:52.936Z",
+  "buildCommit": "27dfe1a",
+  "runMode": "extended",
+  "iterationCount": 5,
+  "scenarioCount": 10,
+  "results": [
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "iteration": 1,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "contact attack frame observed",
+        "no chase target required",
+        "Hold Ground contact target took damage without chase movement."
+      ],
+      "limitations": [
+        "Uses deterministic combat-system state, not a full human-input battle."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "iteration": 1,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "distant",
+        "targetAcquired": false,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "no target retained",
+        "no chase target assigned",
+        "Hold Ground did not assign a chase target for an idle distant enemy."
+      ],
+      "limitations": [
+        "Does not prove the mode feels exciting; it proves bounded refusal."
+      ]
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "iteration": 1,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 92,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "target acquired",
+        "local chase target assigned",
+        "Guard Area assigned a local chase target."
+      ],
+      "limitations": [
+        "Does not tune the default leash."
+      ]
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "iteration": 1,
+      "mode": "press_attack",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "press-leash target acquired",
+        "far target refused",
+        "Press Attack pursued a target beyond Guard Area reach.",
+        "Press Attack refused the farther map-wide target."
+      ],
+      "limitations": [
+        "Does not judge whether the current leash is fun or optimal."
+      ]
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "iteration": 1,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "explicit target retained",
+        "pursuit target assigned",
+        "Explicit attack target remained active and assigned pursuit under Hold Ground."
+      ],
+      "limitations": [
+        "The lab does not replace browser click attack coverage."
+      ]
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "iteration": 1,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": true,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "move target retained",
+        "same-frame reacquisition suppressed",
+        "Suppression blocked contact reacquisition on the expiry frame.",
+        "Combat resumed after the grace window."
+      ],
+      "limitations": [
+        "Pathfinding blockage and human perception still need browser/manual checks."
+      ]
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "iteration": 1,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first target killed",
+        "second contact target damaged",
+        "Adjacent second target took damage after the first explicit target died."
+      ],
+      "limitations": [
+        "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "iteration": 1,
+      "mode": "mixed",
+      "explicitOrderType": "mode_change",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "mode_change",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": 3,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved"
+      ],
+      "evidence": [
+        "mixed detected",
+        "group mode applied count",
+        "Mixed group normalized to Guard Area for 3 units."
+      ],
+      "limitations": [
+        "HUD click handling is covered separately by browser tests."
+      ]
+    },
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "iteration": 1,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "selected units plus valid enemy should expose attack intent",
+        "empty click should not attack",
+        "Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.",
+        "Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; real cursor state is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "iteration": 1,
+      "mode": "not_applicable",
+      "explicitOrderType": "ui_regression",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "ui_regression",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "marquee cleanup",
+        "minimap movement",
+        "hero selection refresh",
+        "Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.",
+        "Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; DOM/canvas interaction is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "iteration": 2,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "contact attack frame observed",
+        "no chase target required",
+        "Hold Ground contact target took damage without chase movement."
+      ],
+      "limitations": [
+        "Uses deterministic combat-system state, not a full human-input battle."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "iteration": 2,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "distant",
+        "targetAcquired": false,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "no target retained",
+        "no chase target assigned",
+        "Hold Ground did not assign a chase target for an idle distant enemy."
+      ],
+      "limitations": [
+        "Does not prove the mode feels exciting; it proves bounded refusal."
+      ]
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "iteration": 2,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 92,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "target acquired",
+        "local chase target assigned",
+        "Guard Area assigned a local chase target."
+      ],
+      "limitations": [
+        "Does not tune the default leash."
+      ]
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "iteration": 2,
+      "mode": "press_attack",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "press-leash target acquired",
+        "far target refused",
+        "Press Attack pursued a target beyond Guard Area reach.",
+        "Press Attack refused the farther map-wide target."
+      ],
+      "limitations": [
+        "Does not judge whether the current leash is fun or optimal."
+      ]
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "iteration": 2,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "explicit target retained",
+        "pursuit target assigned",
+        "Explicit attack target remained active and assigned pursuit under Hold Ground."
+      ],
+      "limitations": [
+        "The lab does not replace browser click attack coverage."
+      ]
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "iteration": 2,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": true,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "move target retained",
+        "same-frame reacquisition suppressed",
+        "Suppression blocked contact reacquisition on the expiry frame.",
+        "Combat resumed after the grace window."
+      ],
+      "limitations": [
+        "Pathfinding blockage and human perception still need browser/manual checks."
+      ]
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "iteration": 2,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first target killed",
+        "second contact target damaged",
+        "Adjacent second target took damage after the first explicit target died."
+      ],
+      "limitations": [
+        "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "iteration": 2,
+      "mode": "mixed",
+      "explicitOrderType": "mode_change",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "mode_change",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": 3,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved"
+      ],
+      "evidence": [
+        "mixed detected",
+        "group mode applied count",
+        "Mixed group normalized to Guard Area for 3 units."
+      ],
+      "limitations": [
+        "HUD click handling is covered separately by browser tests."
+      ]
+    },
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "iteration": 2,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "selected units plus valid enemy should expose attack intent",
+        "empty click should not attack",
+        "Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.",
+        "Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; real cursor state is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "iteration": 2,
+      "mode": "not_applicable",
+      "explicitOrderType": "ui_regression",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "ui_regression",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "marquee cleanup",
+        "minimap movement",
+        "hero selection refresh",
+        "Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.",
+        "Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; DOM/canvas interaction is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "iteration": 3,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "contact attack frame observed",
+        "no chase target required",
+        "Hold Ground contact target took damage without chase movement."
+      ],
+      "limitations": [
+        "Uses deterministic combat-system state, not a full human-input battle."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "iteration": 3,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "distant",
+        "targetAcquired": false,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "no target retained",
+        "no chase target assigned",
+        "Hold Ground did not assign a chase target for an idle distant enemy."
+      ],
+      "limitations": [
+        "Does not prove the mode feels exciting; it proves bounded refusal."
+      ]
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "iteration": 3,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 92,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "target acquired",
+        "local chase target assigned",
+        "Guard Area assigned a local chase target."
+      ],
+      "limitations": [
+        "Does not tune the default leash."
+      ]
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "iteration": 3,
+      "mode": "press_attack",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "press-leash target acquired",
+        "far target refused",
+        "Press Attack pursued a target beyond Guard Area reach.",
+        "Press Attack refused the farther map-wide target."
+      ],
+      "limitations": [
+        "Does not judge whether the current leash is fun or optimal."
+      ]
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "iteration": 3,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "explicit target retained",
+        "pursuit target assigned",
+        "Explicit attack target remained active and assigned pursuit under Hold Ground."
+      ],
+      "limitations": [
+        "The lab does not replace browser click attack coverage."
+      ]
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "iteration": 3,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": true,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "move target retained",
+        "same-frame reacquisition suppressed",
+        "Suppression blocked contact reacquisition on the expiry frame.",
+        "Combat resumed after the grace window."
+      ],
+      "limitations": [
+        "Pathfinding blockage and human perception still need browser/manual checks."
+      ]
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "iteration": 3,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first target killed",
+        "second contact target damaged",
+        "Adjacent second target took damage after the first explicit target died."
+      ],
+      "limitations": [
+        "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "iteration": 3,
+      "mode": "mixed",
+      "explicitOrderType": "mode_change",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "mode_change",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": 3,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved"
+      ],
+      "evidence": [
+        "mixed detected",
+        "group mode applied count",
+        "Mixed group normalized to Guard Area for 3 units."
+      ],
+      "limitations": [
+        "HUD click handling is covered separately by browser tests."
+      ]
+    },
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "iteration": 3,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "selected units plus valid enemy should expose attack intent",
+        "empty click should not attack",
+        "Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.",
+        "Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; real cursor state is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "iteration": 3,
+      "mode": "not_applicable",
+      "explicitOrderType": "ui_regression",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "ui_regression",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "marquee cleanup",
+        "minimap movement",
+        "hero selection refresh",
+        "Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.",
+        "Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; DOM/canvas interaction is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "iteration": 4,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "contact attack frame observed",
+        "no chase target required",
+        "Hold Ground contact target took damage without chase movement."
+      ],
+      "limitations": [
+        "Uses deterministic combat-system state, not a full human-input battle."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "iteration": 4,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "distant",
+        "targetAcquired": false,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "no target retained",
+        "no chase target assigned",
+        "Hold Ground did not assign a chase target for an idle distant enemy."
+      ],
+      "limitations": [
+        "Does not prove the mode feels exciting; it proves bounded refusal."
+      ]
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "iteration": 4,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 92,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "target acquired",
+        "local chase target assigned",
+        "Guard Area assigned a local chase target."
+      ],
+      "limitations": [
+        "Does not tune the default leash."
+      ]
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "iteration": 4,
+      "mode": "press_attack",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "press-leash target acquired",
+        "far target refused",
+        "Press Attack pursued a target beyond Guard Area reach.",
+        "Press Attack refused the farther map-wide target."
+      ],
+      "limitations": [
+        "Does not judge whether the current leash is fun or optimal."
+      ]
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "iteration": 4,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "explicit target retained",
+        "pursuit target assigned",
+        "Explicit attack target remained active and assigned pursuit under Hold Ground."
+      ],
+      "limitations": [
+        "The lab does not replace browser click attack coverage."
+      ]
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "iteration": 4,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": true,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "move target retained",
+        "same-frame reacquisition suppressed",
+        "Suppression blocked contact reacquisition on the expiry frame.",
+        "Combat resumed after the grace window."
+      ],
+      "limitations": [
+        "Pathfinding blockage and human perception still need browser/manual checks."
+      ]
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "iteration": 4,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first target killed",
+        "second contact target damaged",
+        "Adjacent second target took damage after the first explicit target died."
+      ],
+      "limitations": [
+        "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "iteration": 4,
+      "mode": "mixed",
+      "explicitOrderType": "mode_change",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "mode_change",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": 3,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved"
+      ],
+      "evidence": [
+        "mixed detected",
+        "group mode applied count",
+        "Mixed group normalized to Guard Area for 3 units."
+      ],
+      "limitations": [
+        "HUD click handling is covered separately by browser tests."
+      ]
+    },
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "iteration": 4,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "selected units plus valid enemy should expose attack intent",
+        "empty click should not attack",
+        "Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.",
+        "Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; real cursor state is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "iteration": 4,
+      "mode": "not_applicable",
+      "explicitOrderType": "ui_regression",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "ui_regression",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "marquee cleanup",
+        "minimap movement",
+        "hero selection refresh",
+        "Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.",
+        "Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; DOM/canvas interaction is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "iteration": 5,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "contact attack frame observed",
+        "no chase target required",
+        "Hold Ground contact target took damage without chase movement."
+      ],
+      "limitations": [
+        "Uses deterministic combat-system state, not a full human-input battle."
+      ]
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "iteration": 5,
+      "mode": "hold_ground",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "distant",
+        "targetAcquired": false,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "no target retained",
+        "no chase target assigned",
+        "Hold Ground did not assign a chase target for an idle distant enemy."
+      ],
+      "limitations": [
+        "Does not prove the mode feels exciting; it proves bounded refusal."
+      ]
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "iteration": 5,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 92,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "target acquired",
+        "local chase target assigned",
+        "Guard Area assigned a local chase target."
+      ],
+      "limitations": [
+        "Does not tune the default leash."
+      ]
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "iteration": 5,
+      "mode": "press_attack",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "press-leash target acquired",
+        "far target refused",
+        "Press Attack pursued a target beyond Guard Area reach.",
+        "Press Attack refused the farther map-wide target."
+      ],
+      "limitations": [
+        "Does not judge whether the current leash is fun or optimal."
+      ]
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "iteration": 5,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 302,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "explicit target retained",
+        "pursuit target assigned",
+        "Explicit attack target remained active and assigned pursuit under Hold Ground."
+      ],
+      "limitations": [
+        "The lab does not replace browser click attack coverage."
+      ]
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "iteration": 5,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": true,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "move target retained",
+        "same-frame reacquisition suppressed",
+        "Suppression blocked contact reacquisition on the expiry frame.",
+        "Combat resumed after the grace window."
+      ],
+      "limitations": [
+        "Pathfinding blockage and human perception still need browser/manual checks."
+      ]
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "iteration": 5,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first target killed",
+        "second contact target damaged",
+        "Adjacent second target took damage after the first explicit target died."
+      ],
+      "limitations": [
+        "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "iteration": 5,
+      "mode": "mixed",
+      "explicitOrderType": "mode_change",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "mode_change",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": 3,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved"
+      ],
+      "evidence": [
+        "mixed detected",
+        "group mode applied count",
+        "Mixed group normalized to Guard Area for 3 units."
+      ],
+      "limitations": [
+        "HUD click handling is covered separately by browser tests."
+      ]
+    },
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "iteration": 5,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "selected units plus valid enemy should expose attack intent",
+        "empty click should not attack",
+        "Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.",
+        "Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; real cursor state is verified by Playwright."
+      ]
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "iteration": 5,
+      "mode": "not_applicable",
+      "explicitOrderType": "ui_regression",
+      "result": "pass",
+      "confidence": "medium",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "ui_regression",
+        "enemyDistanceCategory": "not_applicable",
+        "targetAcquired": null,
+        "targetRetained": null,
+        "chaseDistance": null,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "targetAcquired",
+        "targetRetained",
+        "chaseDistance",
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "marquee cleanup",
+        "minimap movement",
+        "hero selection refresh",
+        "Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.",
+        "Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted."
+      ],
+      "limitations": [
+        "This lab records the contract and paired tests; DOM/canvas interaction is verified by Playwright."
+      ]
+    }
+  ],
+  "dashboard": {
+    "schemaVersion": 1,
+    "generatedBy": "ControlBehaviourScenarioRunner",
+    "generatedAt": "2026-05-19T10:51:52.936Z",
+    "buildCommit": "27dfe1a",
+    "iterationCount": 5,
+    "scenarioCount": 10,
+    "passCount": 50,
+    "monitorCount": 0,
+    "failCount": 0,
+    "notMeasuredCount": 0,
+    "ranking": [
+      {
+        "scenarioId": "attack_cursor_intent_integrity",
+        "scenarioName": "Attack Cursor/Intent Integrity",
+        "verdict": "pass",
+        "confidence": "medium",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "explicit_attack_overrides_mode",
+        "scenarioName": "Explicit Attack Overrides Mode",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "group_mixed_mode_application",
+        "scenarioName": "Group Mixed Mode Application",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "guard_area_default_local_defence",
+        "scenarioName": "Guard Area Default Local Defence",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "hold_ground_contact_defence",
+        "scenarioName": "Hold Ground Contact Defence",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "hold_ground_distant_threat_refusal",
+        "scenarioName": "Hold Ground Distant Threat Refusal",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "hud_minimap_selection_regression",
+        "scenarioName": "HUD/Minimap/Selection Regression Protection",
+        "verdict": "pass",
+        "confidence": "medium",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "move_away_suppression",
+        "scenarioName": "Move-Away Suppression",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "post_kill_adjacent_reacquisition",
+        "scenarioName": "Post-Kill Adjacent Reacquisition",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "press_attack_bounded_pursuit",
+        "scenarioName": "Press Attack Bounded Pursuit",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      }
+    ],
+    "limitations": [
+      "Deterministic automated evidence only.",
+      "Not human fun evidence.",
+      "Not balance proof.",
+      "Does not replace Emmanuel's manual retest.",
+      "Does not invent human observations."
+    ],
+    "manualRetestNeeded": true
+  },
+  "limitations": [
+    "Deterministic automated evidence only.",
+    "Not human fun evidence.",
+    "Not balance proof.",
+    "Does not replace Emmanuel's manual retest.",
+    "Does not invent human observations."
+  ],
+  "determinismNotes": [
+    "Repeated extended runs replay the same deterministic scenarios.",
+    "Iteration counts are repeatability checks, not stochastic samples.",
+    "Browser pointer and HUD regressions are represented here as contracts and verified by Playwright gates."
+  ]
+}

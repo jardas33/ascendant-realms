@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "ControlBehaviourScenarioRunner",
+  "generatedAt": "2026-05-19T10:51:52.936Z",
+  "buildCommit": "27dfe1a",
+  "iterationCount": 5,
+  "scenarioCount": 10,
+  "passCount": 50,
+  "monitorCount": 0,
+  "failCount": 0,
+  "notMeasuredCount": 0,
+  "ranking": [
+    {
+      "scenarioId": "attack_cursor_intent_integrity",
+      "scenarioName": "Attack Cursor/Intent Integrity",
+      "verdict": "pass",
+      "confidence": "medium",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "explicit_attack_overrides_mode",
+      "scenarioName": "Explicit Attack Overrides Mode",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "group_mixed_mode_application",
+      "scenarioName": "Group Mixed Mode Application",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "guard_area_default_local_defence",
+      "scenarioName": "Guard Area Default Local Defence",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "hold_ground_contact_defence",
+      "scenarioName": "Hold Ground Contact Defence",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "hold_ground_distant_threat_refusal",
+      "scenarioName": "Hold Ground Distant Threat Refusal",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "hud_minimap_selection_regression",
+      "scenarioName": "HUD/Minimap/Selection Regression Protection",
+      "verdict": "pass",
+      "confidence": "medium",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "move_away_suppression",
+      "scenarioName": "Move-Away Suppression",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "post_kill_adjacent_reacquisition",
+      "scenarioName": "Post-Kill Adjacent Reacquisition",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    },
+    {
+      "scenarioId": "press_attack_bounded_pursuit",
+      "scenarioName": "Press Attack Bounded Pursuit",
+      "verdict": "pass",
+      "confidence": "high",
+      "passRate": 1,
+      "monitorRate": 0,
+      "failRate": 0,
+      "iterationCount": 5
+    }
+  ],
+  "limitations": [
+    "Deterministic automated evidence only.",
+    "Not human fun evidence.",
+    "Not balance proof.",
+    "Does not replace Emmanuel's manual retest.",
+    "Does not invent human observations."
+  ],
+  "manualRetestNeeded": true
+}

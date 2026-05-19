@@ -1,12 +1,110 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-19 v0.15 RTS control behaviour foundation
+Last updated: 2026-05-19 v0.16 behaviour mode gauntlet and playtest diagnostics
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics - 2026-05-19
+
+Status: local verification green through the required unit/build/content/art/browser/hosted/release/control-lab/package gates. A pre-commit dirty private package was generated and verified; regenerate a clean package after the final v0.16 commit.
+
+Phase 0 baseline:
+
+- Starting commit: `27dfe1a1ec060708c831690c4bfa806b0d06cb32`, `Checkpoint v0.15 RTS control behaviour foundation`.
+- Baseline was clean and synced with `origin/main` before v0.16 work started.
+- GitHub CLI was unavailable. The GitHub connector returned no PR-triggered workflow runs and no combined statuses for the v0.15 SHA, so remote CI status is unknown from this environment.
+- Guardrails preserved: no maps, factions, units, runtime art/assets, save migration, behaviour-mode persistence, Patrol runtime behaviour, broad AI/pathing rewrite, gameplay-number or wave-timing tuning, hosted matrix restructuring, assertion weakening, force-click canvas/world shortcuts, DOM fallback for canvas/world clicks, protected RTS copying, or invented human feedback.
+
+v0.16 docs added:
+
+- `docs/V016_BASELINE_AND_CI_AUDIT.md`
+- `docs/V016_BEHAVIOUR_MODE_AUDIT.md`
+- `docs/V016_CONTROL_BEHAVIOUR_GAUNTLET_REPORT.md`
+- `docs/V016_EMMANUEL_CONTROL_RETEST_SCRIPT.md`
+- `docs/V016_PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md`
+- `docs/V016_BEHAVIOUR_MODE_TESTER_CHECKLIST.md`
+- `docs/V016_CONTROL_FEEDBACK_INTAKE_TEMPLATE.md`
+- `docs/V016_CONTROL_REGRESSION_TRIAGE_GUIDE.md`
+
+v0.16 code/tests/tools changed:
+
+- `src/game/systems/CombatSystem.ts`
+- `src/game/playtest/PlaytestPackageValidation.ts`
+- `src/game/playtest/ScriptedBattlePlaytest.ts`
+- `src/game/playtest/ControlBehaviourScenarioTypes.ts`
+- `src/game/playtest/ControlBehaviourScenarioProfiles.ts`
+- `src/game/playtest/ControlBehaviourScenarioRunner.ts`
+- `src/game/playtest/ControlBehaviourScenarioReportWriter.ts`
+- `src/game/playtest/ControlBehaviourScenarioValidation.ts`
+- `tools/runControlBehaviourLab.ts`
+- `tools/verifyControlBehaviourLabOutputs.ts`
+- `tools/packagePlaytestBuild.ts`
+- `package.json`
+- `src/game/systems/BehaviourModeSystem.test.ts`
+- `src/game/systems/CombatSystem.test.ts`
+- `src/game/ui/UnitOrderSummary.test.ts`
+- `src/game/ui/hudPanels/SelectedEntityPanel.test.ts`
+- `src/game/playtest/PlaytestPackageValidation.test.ts`
+- `src/game/playtest/ControlBehaviourScenarioLab.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix and hardening summary:
+
+- Added deterministic control behaviour lab coverage for Hold Ground, Guard Area, Press Attack, explicit attack, move-away suppression, adjacent reacquisition, group mixed mode handling, attack cursor integrity, and HUD/minimap/selection protections.
+- Added generated lab outputs: `PLAYTEST_CONTROL_BEHAVIOUR_LAB.*`, `PLAYTEST_CONTROL_BEHAVIOUR_EXTENDED.*`, and `PLAYTEST_CONTROL_BEHAVIOUR_DASHBOARD.*`.
+- Added a hosted browser gauntlet for mode buttons, attack hover/click intent, retreat feedback, marquee cleanup over HUD, minimap movement, and `H` hero-select refresh.
+- Narrowly fixed Hold Ground direct-attacker response so a nearby enemy directly attacking the unit can be pursued within the existing local aggro radius while idle distant threats are still refused.
+- Expanded unit/system coverage around v0.15 behaviour modes, explicit orders, retreat suppression, group mode application, selected panel behaviour controls, order copy, and package validation.
+- Hardened private playtest package contents and verifier checks so v0.16 control retest materials are required.
+
+Control lab result:
+
+```text
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:extended PASS, 50 rows / 50 pass across 5 deterministic iterations.
+npm run playtest:controls:verify PASS, 930 consistency checks.
+```
+
+The control lab is deterministic automated evidence only. It is not human fun evidence, balance proof, stochastic proof, or a replacement for Emmanuel's manual retest.
+
+Current verification:
+
+```text
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:extended PASS, 50 rows / 50 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "behaviour mode control gauntlet" --repeat-each=3 --retries=0 --reporter=line PASS, 3 tests.
+npm run test:e2e:release:shard1of3 PASS, 29 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 13 tests.
+npm run test:e2e:release PASS, 76 tests.
+npm run package:playtest PASS, produced pre-commit dirty package `artifacts/playtest/ascendant-realms-private-playtest-27dfe1a-dirty`.
+npm run verify:playtest-package PASS, 24 checks.
+```
+
+Runtime gameplay changed: yes, narrowly in Hold Ground direct-attacker response. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: yes, only direct-attacker Hold Ground alignment; no new modes. Package changed: yes.
+
+Next recommended action after commit/push: regenerate and verify the clean private package from the final v0.16 commit, send it to Emmanuel, and rerun GitHub Actions CI Release Matrix Dry Run because runtime combat/control behavior and release/package diagnostics changed.
 
 ## Current v0.15 RTS Control Behaviour Foundation - 2026-05-19
 

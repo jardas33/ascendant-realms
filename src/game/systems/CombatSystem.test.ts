@@ -117,6 +117,26 @@ describe("CombatSystem", () => {
     expect(enemy.hp).toBe(enemy.maxHp);
   });
 
+  it("lets Hold Ground units respond to nearby direct attackers without chasing idle distant enemies", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "hold_ground" });
+    const directAttacker = fakeUnit({
+      id: "enemy-hexer",
+      team: "enemy",
+      x: 240,
+      y: 100,
+      attackTargetId: "player-militia"
+    });
+    const distantIdle = fakeUnit({ id: "enemy-raider", team: "enemy", x: 430, y: 100 });
+    const combat = createCombat([player, directAttacker, distantIdle]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeDefined();
+    expect(player.moveTarget?.x).toBeGreaterThan(player.position.x);
+    expect(player.moveTarget?.x).toBeLessThan(directAttacker.position.x);
+    expect(distantIdle.hp).toBe(distantIdle.maxHp);
+  });
+
   it("lets Hold Ground units attack immediate-range enemies", () => {
     const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "hold_ground" });
     const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
@@ -126,6 +146,24 @@ describe("CombatSystem", () => {
 
     expect(enemy.hp).toBeLessThan(enemy.maxHp);
     expect(player.moveTarget).toBeUndefined();
+  });
+
+  it("keeps ranged Hold Ground units from over-pursuing enemies outside their weapon reach", () => {
+    const player = fakeUnit({
+      id: "player-ranger",
+      team: "player",
+      x: 100,
+      y: 100,
+      range: 160,
+      behaviourMode: "hold_ground"
+    });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 300, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(enemy.hp).toBe(enemy.maxHp);
   });
 
   it("lets Press Attack units pursue threats beyond the default guard leash", () => {
@@ -138,6 +176,65 @@ describe("CombatSystem", () => {
     expect(player.moveTarget).toBeDefined();
     expect(player.moveTarget?.x).toBeGreaterThan(player.position.x);
     expect(player.moveTarget?.x).toBeLessThan(enemy.position.x);
+  });
+
+  it("keeps Press Attack pursuit bounded instead of chasing across the map", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "press_attack" });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 510, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(enemy.hp).toBe(enemy.maxHp);
+  });
+
+  it("lets explicit attack orders override Hold Ground refusal", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      behaviourMode: "hold_ground",
+      attackTargetId: "enemy-raider"
+    });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 430, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeDefined();
+    expect(player.attackTargetId).toBe("enemy-raider");
+  });
+
+  it("keeps Guard Area units inside the local leash", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "guard_area" });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 390, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(enemy.hp).toBe(enemy.maxHp);
+  });
+
+  it("keeps Press Attack from overriding explicit move-away suppression", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      moveTarget: { x: 260, y: 100 },
+      behaviourMode: "press_attack",
+      moveOrderCombatSuppressionSeconds: 0.25
+    });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toEqual({ x: 260, y: 100 });
+    expect(enemy.hp).toBe(enemy.maxHp);
   });
 
   it("counts melee body contact as attack range for adjacent player attacks", () => {
@@ -271,8 +368,8 @@ function fakeUnit(options: {
       name: options.team === "player" ? "Militia" : "Raider",
       factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
       stats: {
-      maxHp: 100,
-      damage: options.damage ?? 10,
+        maxHp: 100,
+        damage: options.damage ?? 10,
         range: options.range ?? 28,
         attackCooldown: 1,
         speed: 90,

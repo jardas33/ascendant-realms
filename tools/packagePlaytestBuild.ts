@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.15 RTS control behaviour foundation";
+const CHECKPOINT = "v0.16 behaviour mode gauntlet and playtest diagnostics";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -43,6 +43,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0126_FEEDBACK_SUBMISSION_PACKET.md", join(packageDir, "FEEDBACK_SUBMISSION_PACKET.md"));
   await copyMarkdown("docs/V0126_ROUTE_ASSIGNMENT_PLAN.md", join(packageDir, "ROUTE_ASSIGNMENT_PLAN.md"));
   await copyMarkdown("docs/V014_READY_TO_SEND_PRIVATE_PLAYTEST_MESSAGE.md", join(packageDir, "READY_TO_SEND_PRIVATE_PLAYTEST_MESSAGE.md"));
+  await copyMarkdown("docs/V016_EMMANUEL_CONTROL_RETEST_SCRIPT.md", join(packageDir, "CONTROL_RETEST_SCRIPT.md"));
+  await copyMarkdown("docs/V016_PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md", join(packageDir, "PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md"));
+  await copyMarkdown("docs/V016_BEHAVIOUR_MODE_TESTER_CHECKLIST.md", join(packageDir, "BEHAVIOUR_MODE_TESTER_CHECKLIST.md"));
+  await copyMarkdown("docs/V016_CONTROL_FEEDBACK_INTAKE_TEMPLATE.md", join(packageDir, "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md"));
+  await copyMarkdown("docs/V016_CONTROL_REGRESSION_TRIAGE_GUIDE.md", join(packageDir, "CONTROL_REGRESSION_TRIAGE_GUIDE.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -67,7 +72,7 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     gameDirectory: "game/",
     startCommand: "node start-playtest-server.mjs",
     requiresLocalServer: true,
-    feedbackFile: "FEEDBACK_SUBMISSION_PACKET.md",
+    feedbackFile: "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md",
     knownWarnings: ["Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype."],
     notForJudging: [
       "final art quality",
@@ -125,6 +130,8 @@ Working tree dirty when packaged: ${info.workingTreeDirty ? "yes" : "no"}
 Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
+
+For the v0.16 control retest, start with CONTROL_RETEST_SCRIPT.md or PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md.
 
 ## Known Warning
 

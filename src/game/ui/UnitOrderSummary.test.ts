@@ -43,6 +43,29 @@ describe("UnitOrderSummary", () => {
     });
   });
 
+  it("keeps explicit move and attack copy ahead of behaviour mode copy", () => {
+    expect(
+      describeUnitOrder({
+        behaviourMode: "hold_ground",
+        attackTargetId: "enemy-hexer",
+        attackTargetLabel: "Hexer"
+      })
+    ).toMatchObject({
+      label: "Attacking",
+      detail: expect.stringContaining("Target: Hexer")
+    });
+    expect(
+      describeUnitOrder({
+        behaviourMode: "press_attack",
+        moveTarget: { x: 220, y: 140 },
+        moveOrderCombatSuppressionSeconds: 0.2
+      })
+    ).toMatchObject({
+      label: "Repositioning",
+      detail: expect.stringContaining("target reacquisition waits briefly")
+    });
+  });
+
   it("summarizes mixed selected unit orders", () => {
     expect(
       summarizeUnitOrders([

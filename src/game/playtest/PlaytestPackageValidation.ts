@@ -23,6 +23,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "FEEDBACK_SUBMISSION_PACKET.md",
   "TESTER_QUICK_START.md",
   "ROUTE_ASSIGNMENT_PLAN.md",
+  "CONTROL_RETEST_SCRIPT.md",
+  "PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md",
+  "BEHAVIOUR_MODE_TESTER_CHECKLIST.md",
+  "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md",
+  "CONTROL_REGRESSION_TRIAGE_GUIDE.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -124,7 +129,13 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.commit, "build info commit", checks, errors);
     expectString(parsed.shortCommit, "build info shortCommit", checks, errors);
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
-    expectEqual(parsed.checkpoint, "v0.15 RTS control behaviour foundation", "build info checkpoint", checks, errors);
+    expectEqual(
+      parsed.checkpoint,
+      "v0.16 behaviour mode gauntlet and playtest diagnostics",
+      "build info checkpoint",
+      checks,
+      errors
+    );
     expectEqual(parsed.packagePurpose, "private human playtest distribution", "build info package purpose", checks, errors);
     expectEqual(parsed.requiresLocalServer, true, "build info local server requirement", checks, errors);
   } catch (error) {

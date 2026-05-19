@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics - 2026-05-19
+
+This checkpoint builds an automated confidence and packaging layer around the v0.15 RTS behaviour modes and control fixes. It is a hardening, diagnostics, regression, and private-playtest evidence pass, not a broad feature or balance pass.
+
+### Included
+
+- Added `docs/V016_BASELINE_AND_CI_AUDIT.md`.
+- Added `docs/V016_BEHAVIOUR_MODE_AUDIT.md`.
+- Added `docs/V016_CONTROL_BEHAVIOUR_GAUNTLET_REPORT.md`.
+- Added Emmanuel/tester retest docs: control retest script, route card, behaviour-mode checklist, feedback intake template, and triage guide.
+- Added deterministic control behaviour lab scripts: `npm run playtest:controls`, `npm run playtest:controls:extended`, and `npm run playtest:controls:verify`.
+- Added generated control lab JSON/Markdown and dashboard outputs.
+- Expanded unit/system coverage for Hold Ground, Guard Area, Press Attack, explicit orders, move-away suppression, mixed group mode reporting, order summary copy, selected panel behaviour controls, and package validation.
+- Added a hosted browser gauntlet covering behaviour mode controls, attack hover, left-click attack, retreat feedback, marquee/HUD cleanup, minimap movement, and `H` hero-select refresh.
+- Narrowly fixed Hold Ground direct-attacker response so a nearby enemy directly attacking the unit can be pursued, while idle distant enemies are still refused.
+- Hardened private playtest package validation so v0.16 control retest materials are required.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in Hold Ground direct-attacker response.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: yes, only to align Hold Ground direct-attacker handling with the existing v0.15 spec.
+- Patrol implemented: no.
+- Human feedback invented or claimed: no.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md`, `LLM_GAME_HANDOFF.md`, and `docs/V016_CONTROL_BEHAVIOUR_GAUNTLET_REPORT.md`.
+- GitHub Actions should be rerun because runtime combat/control behaviour and release/package diagnostics changed.
+
+### Next
+
+- Send the clean v0.16 private package to Emmanuel and use `docs/V016_EMMANUEL_CONTROL_RETEST_SCRIPT.md` for the next manual retest.
+
 ## v0.15 RTS Control Behaviour Foundation - 2026-05-18
 
 This checkpoint builds the first original RTS behaviour-mode foundation on top of the v0.14.x Emmanuel control fixes, while preserving the no-new-content, no-save-migration, no-runtime-art, no-balance-tuning guardrails.

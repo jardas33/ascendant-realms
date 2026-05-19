@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.15 RTS control behaviour foundation",
+          checkpoint: "v0.16 behaviour mode gauntlet and playtest diagnostics",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -67,6 +67,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "FEEDBACK_SUBMISSION_PACKET.md", sizeBytes: 20, textContent: "Feedback form" },
       { path: "TESTER_QUICK_START.md", sizeBytes: 20, textContent: "Quick start" },
       { path: "ROUTE_ASSIGNMENT_PLAN.md", sizeBytes: 20, textContent: "Routes" },
+      { path: "CONTROL_RETEST_SCRIPT.md", sizeBytes: 20, textContent: "Retest" },
+      { path: "PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md", sizeBytes: 20, textContent: "Route card" },
+      { path: "BEHAVIOUR_MODE_TESTER_CHECKLIST.md", sizeBytes: 20, textContent: "Checklist" },
+      { path: "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md", sizeBytes: 20, textContent: "Feedback" },
+      { path: "CONTROL_REGRESSION_TRIAGE_GUIDE.md", sizeBytes: 20, textContent: "Triage" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

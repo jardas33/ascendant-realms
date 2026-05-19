@@ -15,3 +15,8 @@ export * from "./ScenarioLabRegressionThresholds";
 export * from "./ScenarioLabExtendedRunner";
 export * from "./ScenarioLabExtendedReportWriter";
 export * from "./ScenarioLabOutputValidation";
+export * from "./ControlBehaviourScenarioTypes";
+export * from "./ControlBehaviourScenarioProfiles";
+export * from "./ControlBehaviourScenarioRunner";
+export * from "./ControlBehaviourScenarioReportWriter";
+export * from "./ControlBehaviourScenarioValidation";

@@ -74,7 +74,7 @@ export class CombatSystem {
   }
 
   private moveTowardTargetIfAllowed(attacker: Combatant, target: BaseEntity, range: number): void {
-    if (!(attacker instanceof Unit) || !this.shouldChaseTarget(attacker)) {
+    if (!(attacker instanceof Unit) || !this.shouldChaseTarget(attacker, target)) {
       return;
     }
 
@@ -85,12 +85,12 @@ export class CombatSystem {
     };
   }
 
-  private shouldChaseTarget(attacker: Unit): boolean {
+  private shouldChaseTarget(attacker: Unit, target: BaseEntity): boolean {
     if (attacker.attackTargetId || attacker.attackMove || attacker.team !== "player") {
       return true;
     }
     if (normalizeBehaviourMode(attacker.behaviourMode) === "hold_ground") {
-      return false;
+      return target instanceof Unit && target.attackTargetId === attacker.id && distance(attacker.position, target.position) <= DEFAULT_AGGRO_RADIUS;
     }
     return !attacker.moveTarget;
   }

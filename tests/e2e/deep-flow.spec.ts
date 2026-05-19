@@ -97,6 +97,12 @@ const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
 
+const BEHAVIOUR_MODE_LABELS = {
+  hold_ground: "Hold Ground",
+  guard_area: "Guard Area",
+  press_attack: "Press Attack"
+} as const;
+
 async function campaignStatusIncludes(page: Page, expectedStatusText: string): Promise<boolean> {
   const text = await page
     .getByTestId("campaign-status")
@@ -145,6 +151,59 @@ async function clickBattleCommand(locator: Locator, context: string): Promise<vo
     }
     throw error;
   }
+}
+
+async function clickBehaviourMode(
+  page: Page,
+  mode: keyof typeof BEHAVIOUR_MODE_LABELS,
+  context: string
+): Promise<void> {
+  const expectedLabel = BEHAVIOUR_MODE_LABELS[mode];
+  let lastError: unknown;
+  const locator = page.getByTestId(`behaviour-mode-${mode}`);
+
+  for (let attempt = 1; attempt <= 8; attempt += 1) {
+    const clicked = await locator
+      .evaluateAll((elements) => {
+        for (const element of elements) {
+          const button = element instanceof HTMLButtonElement ? element : element.closest("button");
+          if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") {
+            continue;
+          }
+          const style = window.getComputedStyle(button);
+          const rect = button.getBoundingClientRect();
+          const visible =
+            style.display !== "none" &&
+            style.visibility !== "hidden" &&
+            Number(style.opacity || "1") > 0 &&
+            rect.width > 0 &&
+            rect.height > 0;
+          if (!visible) {
+            continue;
+          }
+          button.click();
+          return true;
+        }
+        return false;
+      })
+      .catch((error) => {
+        lastError = error;
+        return false;
+      });
+    const text = await page.getByTestId("behaviour-mode-current").textContent({ timeout: 500 }).catch(() => "");
+    if (text?.includes(expectedLabel)) {
+      return;
+    }
+    if (!clicked && attempt === 1) {
+      lastError = new Error(`${context}: behaviour mode button was not visibly laid out.`);
+    }
+    await page.waitForTimeout(150);
+  }
+
+  if (lastError instanceof Error) {
+    throw lastError;
+  }
+  throw new Error(`${context}: behaviour mode did not become ${expectedLabel}.`);
 }
 
 async function researchUpgradeThroughCommand(locator: Locator, page: Page, upgradeId: string, context: string): Promise<void> {
@@ -461,7 +520,7 @@ async function expectWorldClickTargetsCanvas(
 async function rightClickWorldPointUntilOrder(
   page: Page,
   point: { x: number; y: number },
-  expectedOrder: string,
+  expectedOrder: string | RegExp,
   context: string
 ): Promise<void> {
   const orderSummary = page.getByTestId("unit-order-summary");
@@ -2293,6 +2352,308 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       resource: "stone"
     });
     expect(siteVisibility.renderedSiteMarkers).toBeGreaterThan(0);
+  });
+
+  test("behaviour mode control gauntlet preserves attack, retreat, marquee, and minimap intent @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(120_000);
+    await startFirstClaimSkirmish(page, "Control Gauntlet", "normal");
+    await page.keyboard.press("H");
+    await expect(page.locator(".side-panel")).toContainText("Control Gauntlet");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Guard Area");
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
+
+    await clickBehaviourMode(page, "hold_ground", "behaviour gauntlet Hold Ground");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Hold Ground");
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Holding Ground");
+
+    const holdRefusal = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active BattleScene hero for Hold Ground refusal.");
+      }
+      const target = scene.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!target) {
+        throw new Error("Expected a live hostile unit for Hold Ground refusal.");
+      }
+      scene.units
+        .filter((unit: any) => unit.team !== "player" && unit.id !== target.id)
+        .forEach((unit: any, index: number) => unit.setPosition(scene.activeMap.width - 160, scene.activeMap.height - 160 - index * 18));
+      scene.hero.behaviourMode = "hold_ground";
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.attackCooldownRemaining = 0;
+      target.hp = target.maxHp;
+      target.setPosition(Math.min(scene.activeMap.width - 180, scene.hero.position.x + 430), scene.hero.position.y);
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.refreshBattleHud?.(0);
+      scene.combatSystem.update(0.1);
+      return {
+        moveTarget: scene.hero.moveTarget ? { ...scene.hero.moveTarget } : undefined,
+        targetHp: target.hp,
+        targetMaxHp: target.maxHp
+      };
+    });
+    expect(holdRefusal.moveTarget).toBeUndefined();
+    expect(holdRefusal.targetHp).toBe(holdRefusal.targetMaxHp);
+
+    const attackTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const target = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !target) {
+        throw new Error("Expected active hero and hostile target for attack intent gauntlet.");
+      }
+      scene.fogDebugDisabled = true;
+      scene.updateFogOfWar?.(0, true);
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.attackCooldownRemaining = 0;
+      scene.units
+        .filter((unit: any) => unit.team === "player" && unit.id !== scene.hero.id)
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(scene.hero.position.x - 130 - index * 18, scene.hero.position.y + 110 + index * 14);
+        });
+      target.hp = target.maxHp;
+      target.factionSpeedMultiplier = 0;
+      target.attackTargetId = undefined;
+      target.attackTargetLabel = undefined;
+      target.attackMove = false;
+      target.moveTarget = undefined;
+      target.moveOrderCombatSuppressionSeconds = 3;
+      target.setPosition(
+        Math.min(scene.activeMap.width - 180, scene.hero.position.x + 160),
+        Math.max(120, scene.hero.position.y - 130)
+      );
+      target.view?.setVisible(true);
+      scene.updateFogOfWar?.(0, true);
+      const targetPoint = { x: target.position.x, y: target.position.y };
+      const hitOffsets = [
+        [0, 0],
+        [8, 0],
+        [-8, 0],
+        [0, 8],
+        [0, -8],
+        [12, 12],
+        [-12, 12],
+        [12, -12],
+        [-12, -12],
+        [18, 0],
+        [-18, 0],
+        [0, 18],
+        [0, -18]
+      ];
+      const hitPoint =
+        hitOffsets
+          .map(([dx, dy]) => ({ x: targetPoint.x + dx, y: targetPoint.y + dy }))
+          .find((point) => scene.findWorldEntityAt?.(point)?.id === target.id) ?? targetPoint;
+      const hit = scene.findWorldEntityAt?.(hitPoint);
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.refreshBattleHud?.(0);
+      return { id: target.id, x: hitPoint.x, y: hitPoint.y, hitConfirmed: hit?.id === target.id, hitId: hit?.id ?? "" };
+    });
+    expect(attackTarget.hitConfirmed, `expected hostile target hit-test point, got ${attackTarget.hitId}`).toBe(true);
+    const attackScreen = await worldToScreen(page, attackTarget);
+    await expectWorldClickTargetsCanvas(page, attackTarget, "behaviour gauntlet attack hover target");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((target) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const hit = scene?.findWorldEntityAt?.({ x: target.x, y: target.y });
+            return { id: hit?.id ?? "", team: hit?.team ?? "" };
+          }, attackTarget),
+        { message: "expected behaviour gauntlet hover point to resolve to the hostile target" }
+      )
+      .toEqual({ id: attackTarget.id, team: expect.not.stringMatching(/^player$/) });
+    await page.mouse.move(attackScreen.x - 24, attackScreen.y - 24);
+    await page.mouse.move(attackScreen.x, attackScreen.y, { steps: 4 });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return canvas?.dataset.battleCursor ?? "";
+          }),
+        { message: "expected behaviour gauntlet attack cursor intent" }
+      )
+      .toBe("attack");
+    await clickWorldPoint(page, attackTarget, "left");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((targetId) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              targetId,
+              attackTargetId: scene?.hero?.attackTargetId ?? "",
+              attackMove: Boolean(scene?.hero?.attackMove)
+            };
+          }, attackTarget.id),
+        { message: "expected left-click attack to issue an explicit attack order" }
+      )
+      .toEqual({ targetId: attackTarget.id, attackTargetId: attackTarget.id, attackMove: true });
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Attacking");
+
+    await clickBehaviourMode(page, "guard_area", "behaviour gauntlet Guard Area");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Guard Area");
+    const guardResponse = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const target = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !target) {
+        throw new Error("Expected active hero and hostile target for Guard Area gauntlet.");
+      }
+      scene.hero.behaviourMode = "guard_area";
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.attackCooldownRemaining = 0;
+      target.setPosition(scene.hero.position.x + 180, scene.hero.position.y);
+      scene.combatSystem.update(0.1);
+      return { hasMoveTarget: Boolean(scene.hero.moveTarget), moveTargetX: scene.hero.moveTarget?.x ?? 0 };
+    });
+    expect(guardResponse.hasMoveTarget).toBe(true);
+    expect(guardResponse.moveTargetX).toBeGreaterThan(0);
+
+    await clickBehaviourMode(page, "press_attack", "behaviour gauntlet Press Attack");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Press Attack");
+    const pressResponse = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const target = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !target) {
+        throw new Error("Expected active hero and hostile target for Press Attack gauntlet.");
+      }
+      scene.hero.behaviourMode = "press_attack";
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.attackCooldownRemaining = 0;
+      target.setPosition(Math.min(scene.activeMap.width - 180, scene.hero.position.x + 330), scene.hero.position.y);
+      scene.combatSystem.update(0.1);
+      return { hasMoveTarget: Boolean(scene.hero.moveTarget), moveTargetX: scene.hero.moveTarget?.x ?? 0 };
+    });
+    expect(pressResponse.hasMoveTarget).toBe(true);
+    expect(pressResponse.moveTargetX).toBeGreaterThan(0);
+
+    const retreatPoint = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const target = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !target) {
+        throw new Error("Expected active hero and hostile target for retreat gauntlet.");
+      }
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.attackCooldownRemaining = 0;
+      scene.hero.factionSpeedMultiplier = 0.25;
+      target.factionSpeedMultiplier = 0;
+      target.setPosition(scene.hero.position.x + 34, scene.hero.position.y);
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.refreshBattleHud?.(0);
+      return {
+        x: Math.max(120, scene.hero.position.x - 360),
+        y: Math.max(120, scene.hero.position.y + 180)
+      };
+    });
+    await rightClickWorldPointUntilOrder(page, retreatPoint, /Repositioning|Moving/, "behaviour gauntlet retreat order");
+    await expect(page.getByTestId("battle-status")).toContainText("Move order accepted");
+    const retreatState = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      scene.combatSystem.update(0.1);
+      return {
+        attackTargetId: scene?.hero?.attackTargetId ?? "",
+        hasMoveTarget: Boolean(scene?.hero?.moveTarget),
+        moveTarget: scene?.hero?.moveTarget ? { ...scene.hero.moveTarget } : undefined
+      };
+    });
+    expect(retreatState.attackTargetId).toBe("");
+    expect(retreatState.hasMoveTarget).toBe(true);
+    expect(retreatState.moveTarget).toBeDefined();
+
+    const dragTargets = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const playerUnits = scene?.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      const panel = document.querySelector<HTMLElement>(".side-panel");
+      const panelBox = panel?.getBoundingClientRect();
+      if (!scene?.scene.isActive() || !playerUnits || playerUnits.length < 2 || !panelBox) {
+        throw new Error("Expected player units and side panel for behaviour marquee gauntlet.");
+      }
+      scene.selectionSystem.setSelection(playerUnits);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.refreshBattleHud?.(0);
+      const canvasBounds = scene.game.canvas.getBoundingClientRect();
+      const camera = scene.cameras.main;
+      const minX = Math.min(...playerUnits.map((unit: any) => unit.position.x)) - 42;
+      const minY = Math.min(...playerUnits.map((unit: any) => unit.position.y)) - 42;
+      const start = {
+        x: canvasBounds.left + minX - camera.scrollX,
+        y: canvasBounds.top + minY - camera.scrollY
+      };
+      return {
+        start: {
+          x: Math.max(canvasBounds.left + 24, Math.min(canvasBounds.right - 24, start.x)),
+          y: Math.max(canvasBounds.top + 24, Math.min(canvasBounds.bottom - 24, start.y))
+        },
+        end: {
+          x: panelBox.left + panelBox.width / 2,
+          y: panelBox.top + panelBox.height / 2
+        }
+      };
+    });
+    await page.mouse.move(dragTargets.start.x, dragTargets.start.y);
+    await page.mouse.down();
+    await page.mouse.move(dragTargets.end.x, dragTargets.end.y, { steps: 6 });
+    await page.mouse.up();
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              dragging: Boolean(scene?.inputSystem?.dragStart),
+              selectedUnits: scene?.selectionSystem
+                .getSelected()
+                .filter((entity: any) => entity.team === "player" && entity.kind !== "building").length
+            };
+          }),
+        { message: "expected behaviour gauntlet marquee cleanup over HUD" }
+      )
+      .toMatchObject({ dragging: false, selectedUnits: expect.any(Number) });
+
+    const minimapClickTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const minimap = document.querySelector<HTMLElement>("[data-testid='minimap']");
+      const minimapBox = minimap?.getBoundingClientRect();
+      if (!scene?.scene.isActive() || !minimapBox) {
+        throw new Error("Expected minimap for behaviour gauntlet.");
+      }
+      return {
+        before: { scrollX: scene.cameras.main.scrollX, scrollY: scene.cameras.main.scrollY },
+        position: { x: Math.round(minimapBox.width * 0.82), y: Math.round(minimapBox.height * 0.78) }
+      };
+    });
+    await page.getByTestId("minimap").click({ position: minimapClickTarget.position });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((before) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const camera = scene?.cameras.main;
+            return camera ? Math.hypot(camera.scrollX - before.scrollX, camera.scrollY - before.scrollY) : 0;
+          }, minimapClickTarget.before),
+        { message: "expected behaviour gauntlet minimap movement after mode controls" }
+      )
+      .toBeGreaterThan(10);
+    await page.keyboard.press("H");
+    await expect(page.locator(".side-panel")).toContainText("Control Gauntlet");
+    await expect(page.locator(".side-panel")).not.toContainText("No Selection");
   });
 
   test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input @hosted-deep-battle", async ({ page }) => {

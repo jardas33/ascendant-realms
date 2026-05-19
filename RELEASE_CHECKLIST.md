@@ -56,6 +56,12 @@ Current v0.15 checkpoint result:
 PASS: 55 test files, 393 tests
 ```
 
+Current v0.16 checkpoint result:
+
+```text
+PASS: 56 test files, 406 tests
+```
+
 2. Standalone content validation:
 
 ```bash
@@ -150,7 +156,13 @@ Current v0.15 checkpoint result:
 PASS: 75 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.15 checkpoint full release gate is 75 tests across the release spec set while smoke is 13 tests.
+Current v0.16 checkpoint result:
+
+```text
+PASS: 76 Playwright tests
+```
+
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16 checkpoint full release gate is 76 tests across the release spec set while smoke is 13 tests. The v0.16 all-in-one release run took about 40 minutes locally on Windows; set command timeouts accordingly.
 
 6. Optional CI sharded release gate:
 
@@ -201,7 +213,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.15 checkpoint hosted group counts are 12 deep-meta, 11 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 13 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. v0.11.12 keeps assertions intact while allowing a verified DOM click fallback only for real enabled controls after normal Playwright click actionability fails.
+All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 13 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input.
 
 Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 
@@ -278,6 +290,24 @@ Cinderfen repeat rewards remain tiny XP/resources with no repeat item roll
 ```
 
 This command regenerates `PLAYTEST_TELEMETRY.md` and `PLAYTEST_TELEMETRY.json`.
+
+For v0.16 RTS control/behaviour diagnostics, also run:
+
+```bash
+npm run playtest:controls
+npm run playtest:controls:extended
+npm run playtest:controls:verify
+```
+
+Expected v0.16 result:
+
+```text
+PASS: normal control lab writes 10 scenario rows
+PASS: extended control lab writes 5 deterministic iterations / 50 scenario rows
+PASS: verifier checks unique scenario ids, allowed verdicts, metric availability, Markdown/dashboard consistency, and no invented human-feedback claims
+```
+
+These commands regenerate `PLAYTEST_CONTROL_BEHAVIOUR_LAB.md`, `PLAYTEST_CONTROL_BEHAVIOUR_LAB.json`, `PLAYTEST_CONTROL_BEHAVIOUR_EXTENDED.md`, `PLAYTEST_CONTROL_BEHAVIOUR_EXTENDED.json`, `PLAYTEST_CONTROL_BEHAVIOUR_DASHBOARD.md`, and `PLAYTEST_CONTROL_BEHAVIOUR_DASHBOARD.json`. They are deterministic automated evidence only; they do not replace Emmanuel's manual retest and are not balance proof.
 
 Latest v0.10 report-gate simulator verification, 2026-05-11:
 
@@ -371,7 +401,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

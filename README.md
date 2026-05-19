@@ -2,9 +2,9 @@
 
 Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype, v0.7.1 polishing pressure warning feel and visibility, v0.7.2 reviewing Cinderfen pressure feel without expanding mechanics, v0.7.3 adding closer-to-real browser-input pressure review plus a manual playtest checklist, v0.8 refreshing technical/e2e runtime facts while creating a visual debt, scale, 2026 art direction, asset pipeline, and Cinderfen visual foundation gate, v0.8.1 adding the visual asset manifest and screenshot QA foundation, v0.8.2 hardening source/license review plus expanded screenshot coverage, v0.9 defining a controlled docs/specs/prompts-only Cinderfen style-frame package before any art generation or runtime replacement, v0.9.1 adding the safe non-runtime intake pipeline for future Cinderfen style-frame candidates, v0.10 refining Tutorial / Proving Grounds onboarding clarity without adding rewards, persistence, maps, units, factions, or art replacement, v0.11 improving technical reliability, e2e lane clarity, preview smoke automation, visual QA reporting, bundle/performance documentation, command ergonomics, and release-checklist maintainability without changing gameplay or content, v0.11.1 adding a conservative GitHub Actions CI dry-run workflow, CI matrix documentation, preview helper portability notes, artifact strategy, and CI/local parity checks without changing gameplay or content, v0.11.2 documenting remote CI observation limits, static workflow review, timeout/artifact/preview-helper review, and an Emmanuel-facing GitHub Actions checklist without changing gameplay, content, CI coverage, or workflow behavior, v0.11.5 splitting automatic GitHub fast confidence from full smoke/release browser lanes without deleting or weakening tests, v0.11.9 adding a hosted-only 6-way manual release matrix for GitHub runners while preserving local full release and 3-way shards, v0.11.10 replacing that hosted matrix with deterministic explicit release groups plus pre-boot seeded-save fixtures, v0.11.11 moving those hosted release groups onto production preview, and v0.11.12 hardening hosted release interaction determinism for DOM buttons, battle-loaded waits, layout boxes, side-panel measurement, and canvas movement commands. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
 
-Current v0.15 work adds the RTS control behaviour foundation requested after the v0.14.x Emmanuel playtest fixes: selected units now expose session-only Hold Ground, Guard Area, and Press Attack modes, attack-hover and left-click attack intent are covered more tightly, explicit attack orders can show target copy, and retreat/reposition suppression cannot be overwritten on the same expiry frame. No gameplay data numbers, save format, maps, factions, units, runtime art/assets, broad combat AI/pathing rewrite, protected UI copying, or visual overhaul changed.
+Current v0.16 work hardens the v0.15 RTS control behaviour foundation with a deeper automated gauntlet, deterministic control diagnostics, package validation, and Emmanuel-facing retest materials. It keeps the session-only Hold Ground, Guard Area, and Press Attack model, adds `playtest:controls` evidence outputs, narrows one Hold Ground direct-attacker response mismatch, and preserves the no gameplay-number, save-format, map, faction, unit, runtime-art, broad-AI, Patrol, protected-UI, and visual-overhaul guardrails.
 
-The v0.15 package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, build metadata, local server launchers, and package verification.
+The v0.16 package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, v0.16 control retest materials, build metadata, local server launchers, and package verification.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -17,6 +17,8 @@ Emmanuel retest combat/selection fix report: `docs/V0143_COMBAT_SELECTION_RETEST
 v0.14.4 combat control retest fix report: `docs/V0144_COMBAT_CONTROL_RETEST_FIX_REPORT.md`.
 v0.15 behaviour mode spec: `docs/V015_BEHAVIOUR_MODES_SPEC.md`.
 v0.15 control/combat behaviour fix report: `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`.
+v0.16 control behaviour gauntlet report: `docs/V016_CONTROL_BEHAVIOUR_GAUNTLET_REPORT.md`.
+v0.16 Emmanuel control retest script: `docs/V016_EMMANUEL_CONTROL_RETEST_SCRIPT.md`.
 
 Current v0.3 feature snapshot:
 
@@ -136,7 +138,7 @@ npm run test:e2e:release
 
 `test:e2e:layout` runs responsive layout and mobile/readability checks from `tests/e2e/layout.spec.ts`, including Tutorial / Proving Grounds overlay reachability across desktop, tablet, and mobile viewports. `test:e2e:deep` runs the release-critical full-flow gameplay checks from `tests/e2e/deep-flow.spec.ts`, including at least one full first-battle campaign path. Enemy Strategic Pressure V1 has targeted release coverage in `tests/e2e/enemy-pressure.spec.ts`, keeping pressure warnings and tutorial/skirmish no-pressure guards out of the smoke lane. `test:e2e:release` runs the full Playwright suite with line reporter; `npm run test:e2e` remains the full suite as well.
 
-The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; after v0.14.1's input/HUD tests, `npm run test:e2e:release` covers 75 tests while the smoke lane covers 13 tests.
+The e2e suite runs with one worker for stability because live Phaser scenes, video capture, and the Vite dev server can time out when several full game flows run at once on a local machine. The full release gate is intentionally slower than the smoke lane; after the v0.16 control gauntlet, `npm run test:e2e:release` covers 76 tests while the smoke lane covers 13 tests.
 
 Tutorial e2e placement reviews: `docs/TUTORIAL_E2E_RUNTIME_REVIEW.md` and `docs/V10_TUTORIAL_E2E_LANE_REVIEW.md`. The v0.10 review keeps full Tutorial / Proving Grounds completion in smoke because the lane remains inside the 6-7 minute watch band and the test protects no-save/no-XP/no-reward behavior. Move completion deeper only if smoke repeatedly grows beyond the watch band.
 
@@ -170,7 +172,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted group scripts together cover the same full release suite, currently 75 tests. They avoid `--fully-parallel` test-level sharding, keep the hosted matrix manual-only, and group related deep-flow, layout, pressure, and smoke coverage for GitHub-hosted runners. Local full release, local 2-way shards, and local 3-way shards remain unchanged. The v0.11.12 helper changes are test-only and preserve the same behavior assertions.
+All six hosted group scripts together cover the same full release suite, currently 76 tests. They avoid `--fully-parallel` test-level sharding, keep the hosted matrix manual-only, and group related deep-flow, layout, pressure, and smoke coverage for GitHub-hosted runners. Local full release, local 2-way shards, and local 3-way shards remain unchanged. The hosted helpers preserve behavior assertions and still forbid DOM fallback for canvas/world clicks.
 
 Run `npm run build` before running the hosted group scripts locally. In GitHub Actions, the hosted release jobs already build before starting the production preview server.
 
@@ -216,6 +218,16 @@ npm run playtest:lab:verify
 
 `playtest:lab` regenerates `PLAYTEST_SCENARIO_LAB.md`, `PLAYTEST_SCENARIO_LAB.json`, and `PLAYTEST_WATCHPOINT_SUMMARY.md`. `playtest:profiles` regenerates `PLAYTEST_SCENARIO_PROFILES.md` and `PLAYTEST_SCENARIO_PROFILES.json`. `playtest:lab:extended`, `playtest:watchpoints:extended`, and `playtest:profiles:compare` generate separate v0.13.1 extended outputs including `PLAYTEST_SCENARIO_LAB_EXTENDED.md`, `PLAYTEST_SCENARIO_LAB_EXTENDED.json`, `PLAYTEST_PROFILE_COMPARISON.md`, `PLAYTEST_PROFILE_COMPARISON.csv`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.md`, `PLAYTEST_BALANCE_REGRESSION_DASHBOARD.json`, and `PLAYTEST_WATCHPOINTS_EXTENDED.md`. `playtest:lab:verify` checks those generated outputs for JSON/Markdown/CSV consistency without treating them as human feedback. These are automated deterministic evidence only; they do not include or replace human tester feedback.
 
+For the v0.16 control behaviour lab:
+
+```bash
+npm run playtest:controls
+npm run playtest:controls:extended
+npm run playtest:controls:verify
+```
+
+`playtest:controls` regenerates `PLAYTEST_CONTROL_BEHAVIOUR_LAB.md`, `PLAYTEST_CONTROL_BEHAVIOUR_LAB.json`, `PLAYTEST_CONTROL_BEHAVIOUR_DASHBOARD.md`, and `PLAYTEST_CONTROL_BEHAVIOUR_DASHBOARD.json`. `playtest:controls:extended` repeats the deterministic scenarios and writes `PLAYTEST_CONTROL_BEHAVIOUR_EXTENDED.md` plus `.json`. `playtest:controls:verify` checks IDs, allowed verdicts, metrics, iteration counts, dashboard/Markdown consistency, and the absence of invented human-feedback claims. These outputs are deterministic automated evidence, not human fun, balance, or usability proof.
+
 ## Preview A Build
 
 ```bash
@@ -239,7 +251,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-This writes an ignored package folder under `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. The package includes the built game under `game/`, a tester README, build metadata, route assignment notes, the feedback form, and small local server launchers. Send the folder or a manual zip of the folder; do not send the full repo, `node_modules`, raw private feedback, or secret files.
+This writes an ignored package folder under `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. The package includes the built game under `game/`, a tester README, build metadata, route assignment notes, the feedback form, v0.16 control retest materials, and small local server launchers. Send the folder or a manual zip of the folder; do not send the full repo, `node_modules`, raw private feedback, or secret files.
 
 Use `docs/V014_PLAYTEST_PACKAGE_COORDINATOR_GUIDE.md` for the coordinator flow and `docs/V014_READY_TO_SEND_PRIVATE_PLAYTEST_MESSAGE.md` for a paste-ready tester message.
 
