@@ -1,12 +1,69 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14.4 combat control retest fixes
+Last updated: 2026-05-18 v0.14.5 hosted deep-battle minimap fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
+
+Status: local verification green through all required gates, all hosted release groups, and full release after a narrow test timing fix. This pass addresses GitHub Actions CI Release Matrix Dry Run #61, where only the hosted deep-battle group's `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle` test failed around `tests/e2e/deep-flow.spec.ts:1868` with `Timeout 1000ms exceeded while waiting on the predicate`.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `9a1dc0a113144c9cb3132b689cec53fd772953f1`, clean and synced with `origin/main`.
+- Failed workflow evidence supplied by Emmanuel: CI Release Matrix Dry Run #61, commit `9a1dc0a`, hosted deep-battle group, 1 failed / 10 passed.
+- The GitHub CLI is not installed locally, so this pass records the supplied run #61 evidence rather than claiming direct Actions log/artifact inspection.
+- Guardrails: no gameplay numbers, save format, maps, factions, units, runtime assets, hosted matrix restructuring, assertion weakening, force clicks, DOM fallback for canvas/world clicks, broad input refactor, or rollback of v0.14.4 fixes.
+
+v0.14.5 docs added:
+
+- `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_REGRESSION_AUDIT.md`
+- `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_FIX.md`
+
+v0.14.5 test change:
+
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix summary:
+
+- Root cause: the v0.14.4 minimap drag regression check moved immediately from canvas to minimap after `page.mouse.down()` and only gave active drag state 1000ms to appear under hosted preview timing.
+- The test now waits for the battlefield pointerdown to establish marquee drag before crossing the minimap.
+- The active-drag-over-minimap and release-over-minimap assertions remain intact with a scoped 3000ms hosted-safe poll.
+- The minimap crossing now uses `try/finally` to guarantee mouseup cleanup.
+- The test now explicitly asserts that a minimap click moves the battle camera before continuing to fog toggle, movement command, building placement cancel, and command hall actions.
+- No runtime source code changed.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 383 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast first attempt hit local Windows net::ERR_NO_BUFFER_SPACE on the first navigation; rerun after socket cooldown PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line
+PASS, 1 test.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --repeat-each=3 --retries=0 --reporter=line
+PASS, 3 repeated targeted tests before the fix, supporting the hosted-timing diagnosis.
+npm run test:e2e:release:hosted:deep-battle
+PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+git diff --check PASS.
+```
+
+Next recommended action after commit/push: rerun GitHub Actions CI Release Matrix Dry Run and confirm the hosted deep-battle group passes.
 
 ## Current v0.14.4 Combat Control Retest Fix Pass - 2026-05-18
 

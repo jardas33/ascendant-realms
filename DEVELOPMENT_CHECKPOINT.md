@@ -1,6 +1,61 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14.4 combat control retest fixes
+Updated: 2026-05-18 v0.14.5 hosted deep-battle minimap fix
+
+## v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
+
+Scope: fix the isolated GitHub Actions CI Release Matrix Dry Run #61 hosted deep-battle failure in the minimap/marquee section of `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle`, without weakening minimap movement coverage or changing runtime gameplay.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `9a1dc0a113144c9cb3132b689cec53fd772953f1`, clean and synced with `origin/main`.
+- Remote failure evidence supplied by Emmanuel: CI Release Matrix Dry Run #61, commit `9a1dc0a`, hosted deep-battle group, 1 failed / 10 passed.
+- Failed predicate: around `tests/e2e/deep-flow.spec.ts:1868`, `Timeout 1000ms exceeded while waiting on the predicate`.
+- The local environment did not have the GitHub CLI installed, so the audit records Emmanuel's supplied CI evidence rather than claiming direct log/artifact inspection.
+- Guardrails: no gameplay numbers, save format, maps, factions, units, assets, assertion weakening, force clicks, DOM fallback for canvas/world clicks, broad input refactor, hosted matrix restructuring, or rollback of v0.14.4 user-facing fixes.
+
+Included work:
+
+- Added `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_REGRESSION_AUDIT.md`.
+- Added `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_FIX.md`.
+- Updated `tests/e2e/deep-flow.spec.ts` to wait for canvas pointerdown to establish active marquee drag before crossing the minimap.
+- Kept active-drag-over-minimap and release-over-minimap assertions with a scoped hosted-safe 3-second poll.
+- Wrapped the minimap crossing in `try/finally` so mouseup cleanup happens if the midpoint assertion fails.
+- Added an explicit minimap-click camera movement assertion before the existing fog toggle, movement command, placement cancel, and command hall checks.
+
+Root cause:
+
+- The v0.14.4 test moved immediately from canvas to minimap after `page.mouse.down()` and then gave the active-drag predicate only 1000ms.
+- Hosted preview timing can process the pointerdown and DOM-bound pointer movement in a slightly different order, so the check could sample before active drag state was observable.
+- Local targeted hosted repros and the full hosted deep-battle group passed before the fix, so this was treated as a test timing race rather than a proven runtime product bug.
+
+Current verification:
+
+```text
+npm test PASS, 53 files / 383 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast first attempt hit local Windows net::ERR_NO_BUFFER_SPACE on the first navigation; rerun after socket cooldown PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line
+PASS, 1 test.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --repeat-each=3 --retries=0 --reporter=line
+PASS, 3 repeated targeted tests before the fix, supporting the hosted-timing diagnosis.
+npm run test:e2e:release:hosted:deep-battle
+PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Minimap coverage preserved: yes.
 
 ## v0.14.4 Combat Control Retest Fix Pass - 2026-05-18
 

@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
+
+This checkpoint fixes the isolated GitHub Actions CI Release Matrix Dry Run #61 hosted deep-battle failure in the minimap/marquee section of `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle`.
+
+### Included
+
+- Added `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_REGRESSION_AUDIT.md`.
+- Added `docs/V0145_HOSTED_DEEP_BATTLE_MINIMAP_FIX.md`.
+- Updated `tests/e2e/deep-flow.spec.ts` so the minimap-crossing marquee check waits for the battlefield pointerdown to establish active drag state before moving into the minimap.
+- Kept the active-drag-over-minimap and release-over-minimap assertions, with a scoped hosted-safe 3-second poll instead of the brittle 1-second midpoint poll.
+- Added `try/finally` mouseup cleanup around the minimap drag segment.
+- Added an explicit minimap-click camera movement assertion so minimap movement coverage is clearer, not weaker.
+
+### Verdict
+
+- Root cause: a hosted timing race in the new v0.14.4 minimap drag regression check, not a proven runtime product regression.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Minimap coverage preserved: yes; camera movement is now explicitly asserted.
+- Hosted release matrix structure changed: no.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run and confirm the hosted deep-battle group passes.
+
 ## v0.14.4 Combat Control Retest Fixes - 2026-05-18
 
 This checkpoint uses only Emmanuel's v0.14.3 retest of `PT-20260518-EMMANUEL-BASELINE-01` and fixes the remaining concrete combat/control issues without broad redesign, behaviour modes, unit panel redesign, maps, factions, units, runtime art/assets, save migration, or balance tuning.

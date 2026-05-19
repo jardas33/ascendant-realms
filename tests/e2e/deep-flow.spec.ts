@@ -1864,19 +1864,32 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await page.mouse.move(minimapDragTargets.start.x, minimapDragTargets.start.y);
     await page.mouse.down();
-    await page.mouse.move(minimapDragTargets.mid.x, minimapDragTargets.mid.y, { steps: 4 });
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            return Boolean(scene?.inputSystem?.dragStart);
-          }),
-        { timeout: 1_000, message: "expected active marquee drag while crossing the minimap" }
-      )
-      .toBe(true);
-    await page.mouse.move(minimapDragTargets.end.x, minimapDragTargets.end.y, { steps: 2 });
-    await page.mouse.up();
+    try {
+      await expect
+        .poll(
+          async () =>
+            page.evaluate(() => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              return Boolean(scene?.inputSystem?.dragStart);
+            }),
+          { timeout: 3_000, message: "expected battlefield pointerdown to start marquee drag before crossing the minimap" }
+        )
+        .toBe(true);
+      await page.mouse.move(minimapDragTargets.mid.x, minimapDragTargets.mid.y, { steps: 4 });
+      await expect
+        .poll(
+          async () =>
+            page.evaluate(() => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              return Boolean(scene?.inputSystem?.dragStart);
+            }),
+          { timeout: 3_000, message: "expected active marquee drag while crossing the minimap" }
+        )
+        .toBe(true);
+      await page.mouse.move(minimapDragTargets.end.x, minimapDragTargets.end.y, { steps: 2 });
+    } finally {
+      await page.mouse.up();
+    }
     await expect
       .poll(
         async () =>
@@ -1894,7 +1907,42 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       )
       .toMatchObject({ dragging: false, battleActive: true, selectedUnits: expect.any(Number) });
 
-    await page.getByTestId("minimap").click({ position: { x: 90, y: 60 } });
+    const minimapClickTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const minimap = document.querySelector<HTMLElement>("[data-testid='minimap']");
+      const minimapBox = minimap?.getBoundingClientRect();
+      if (!scene?.scene.isActive() || !minimapBox || minimapBox.width <= 0 || minimapBox.height <= 0) {
+        throw new Error("Expected active BattleScene and visible minimap before minimap movement coverage.");
+      }
+      const camera = scene.cameras.main;
+      const cameraCenterX = camera.scrollX + camera.width / 2;
+      const cameraCenterY = camera.scrollY + camera.height / 2;
+      return {
+        before: {
+          scrollX: camera.scrollX,
+          scrollY: camera.scrollY
+        },
+        position: {
+          x: Math.round(minimapBox.width * (cameraCenterX < scene.activeMap.width / 2 ? 0.86 : 0.14)),
+          y: Math.round(minimapBox.height * (cameraCenterY < scene.activeMap.height / 2 ? 0.82 : 0.18))
+        }
+      };
+    });
+    await page.getByTestId("minimap").click({ position: minimapClickTarget.position });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((before) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const camera = scene?.cameras.main;
+            if (!camera) {
+              return 0;
+            }
+            return Math.hypot(camera.scrollX - before.scrollX, camera.scrollY - before.scrollY);
+          }, minimapClickTarget.before),
+        { message: "expected minimap click to move the battle camera" }
+      )
+      .toBeGreaterThan(10);
     await page.keyboard.press("F");
     await expect(page.getByTestId("battle-status")).toContainText(/Fog/i);
     await page.keyboard.press("H");
