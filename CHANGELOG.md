@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.15 RTS Control Behaviour Foundation - 2026-05-18
+
+This checkpoint builds the first original RTS behaviour-mode foundation on top of the v0.14.x Emmanuel control fixes, while preserving the no-new-content, no-save-migration, no-runtime-art, no-balance-tuning guardrails.
+
+### Included
+
+- Added `docs/V015_CONTROL_COMBAT_BASELINE_AUDIT.md`.
+- Added `docs/V015_BEHAVIOUR_MODES_SPEC.md`.
+- Added `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`.
+- Added session-only unit behaviour mode state: Hold Ground, Guard Area, and Press Attack.
+- Added selected-unit and selected-group behaviour controls using existing HUD button styling.
+- Updated selected order copy for behaviour modes, repositioning, and explicit attack targets.
+- Hardened retreat intent so normal move-order suppression cannot be consumed and overridden on the same update frame.
+- Kept attack-hover and left-click attack intent intact while adding coverage for HUD refresh survival, cursor clearing, and empty-click non-attack behavior.
+- Preserved v0.14.4/v0.14.5 marquee, HUD, and minimap regression coverage.
+- Updated tester-facing quick-start/package copy and playtest package metadata for v0.15.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in player unit behaviour modes, command feedback, explicit attack target labels, and move-away suppression timing.
+- Gameplay numbers changed: no unit data, HP, damage, range, cooldown, speed, economy, reward, map, faction, or unit values changed.
+- Save format changed: no.
+- Behaviour modes implemented: yes, session-only Hold Ground, Guard Area, and Press Attack.
+- Patrol implemented: no, design-only/deferred.
+- Runtime art/assets changed: no.
+
+### Verification
+
+- Final verification is recorded in `DEVELOPMENT_CHECKPOINT.md` and `LLM_GAME_HANDOFF.md`.
+- GitHub Actions should be rerun because runtime battle/input/HUD behavior changed.
+
+### Next
+
+- Have Emmanuel retest attack intent, left-click attack, adjacent melee engagement, Hold / Guard / Press modes, retreat/move-away behavior, HUD/minimap drag selection, tutorial completion/defeat, and snap-back risk.
+
 ## v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
 
 This checkpoint fixes the isolated GitHub Actions CI Release Matrix Dry Run #61 hosted deep-battle failure in the minimap/marquee section of `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle`.

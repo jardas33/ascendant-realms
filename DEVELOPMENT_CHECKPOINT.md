@@ -1,6 +1,65 @@
 # Development Checkpoint
 
-Updated: 2026-05-18 v0.14.5 hosted deep-battle minimap fix
+Updated: 2026-05-19 v0.15 RTS control behaviour foundation
+
+## v0.15 RTS Control Behaviour Foundation - 2026-05-19
+
+Scope: build a narrow, original RTS control foundation for command reliability, attack intent, melee engagement, retreat/move-away behavior, and session-only behaviour modes while preserving all v0.14.x human playtest fixes.
+
+Phase 0 baseline:
+
+- Current commit before this goal: `5ab64f5ec56324ba0f9abd4d69d51f109e0adeca`, clean and synced with `origin/main`.
+- Confirmed v0.14.5 hosted deep-battle minimap fix was complete before starting v0.15.
+- Read the required handoff/docs and runtime/test files before implementation.
+- Guardrails: no maps, factions, combat units, runtime art/assets, save format changes, broad AI/pathing rewrites, broad balance tuning, protected UI copying, visual overhaul, hosted release restructuring, weakened assertions, force-click canvas/world shortcuts, or DOM fallback for canvas/world clicks.
+
+Included work:
+
+- Added `docs/V015_CONTROL_COMBAT_BASELINE_AUDIT.md`.
+- Added `docs/V015_BEHAVIOUR_MODES_SPEC.md`.
+- Added `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`.
+- Added `BehaviourModeSystem` with `Hold Ground`, `Guard Area`, and `Press Attack`.
+- Added session-only `behaviourMode` state to live units; default is `Guard Area`.
+- Added selected-unit and selected-group behaviour controls to the current side panel, including `Mixed` state and group mode application.
+- Updated `CombatSystem` acquisition rules so Hold Ground avoids distant chase, Guard Area remains the balanced default, and Press Attack pursues within a larger bounded leash.
+- Preserved explicit move/attack orders above behaviour mode reacquisition and tightened move-away suppression so retreat intent cannot be overwritten on its expiry frame.
+- Added explicit attack target labels and clearer order copy for Guarding, Holding Ground, Pressing Attack, Attacking, Moving, and Repositioning.
+- Kept selected-unit attack hover/click intent reliable across HUD refresh, empty clicks, and cursor clearing.
+- Hardened hero-select HUD refresh after HUD/minimap interactions and constrained the side panel height so expanded controls do not cover Ashen/Cinderfen landmark focus.
+- Updated tester quick-start/package copy and playtest package checkpoint metadata for v0.15.
+
+Deferred:
+
+- Patrol, escort, return-anchor memory, save-persistent behaviour modes, icon/art additions, formation/pathing overhaul, broad combat AI rewrite, and balance tuning.
+
+Current verification:
+
+```text
+npm test PASS, 55 files / 393 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+npm run package:playtest PASS, produced pre-commit dirty package `artifacts/playtest/ascendant-realms-private-playtest-5ab64f5-dirty`.
+npm run verify:playtest-package PASS, 19 checks.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes, narrowly in session-only unit behaviour modes, command feedback/order copy, attack target labels, retreat reacquisition suppression timing, and HUD command controls. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no.
+
+Remaining closeout: commit as `Checkpoint v0.15 RTS control behaviour foundation`, push, regenerate and verify a clean private playtest package from the final commit, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
 

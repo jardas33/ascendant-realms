@@ -14,6 +14,7 @@ describe("CombatSystem", () => {
 
     expect(player.moveTarget).toEqual({ x: 260, y: 100 });
     expect(enemy.hp).toBe(enemy.maxHp);
+    expect(player.hp).toBeLessThan(player.maxHp);
   });
 
   it("lets normal move orders interrupt combat briefly without disabling later contact attacks", () => {
@@ -35,8 +36,32 @@ describe("CombatSystem", () => {
 
     combat.update(0.2);
 
+    expect(enemy.hp).toBe(enemy.maxHp);
+    expect(player.moveOrderCombatSuppressionSeconds).toBe(0);
+
+    combat.update(0.1);
+
     expect(enemy.hp).toBeLessThan(enemy.maxHp);
     expect(player.moveTarget).toBeUndefined();
+  });
+
+  it("does not reacquire a target on the same frame a move-away suppression window expires", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      moveTarget: { x: 260, y: 100 },
+      moveOrderCombatSuppressionSeconds: 0.1
+    });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toEqual({ x: 260, y: 100 });
+    expect(player.moveOrderCombatSuppressionSeconds).toBe(0);
+    expect(enemy.hp).toBe(enemy.maxHp);
   });
 
   it("stops attack-moving player units to fight enemies in weapon range", () => {
@@ -70,8 +95,42 @@ describe("CombatSystem", () => {
   });
 
   it("lets idle player units guard-chase nearby hostile targets", () => {
-    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100 });
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "guard_area" });
     const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 220, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeDefined();
+    expect(player.moveTarget?.x).toBeGreaterThan(player.position.x);
+    expect(player.moveTarget?.x).toBeLessThan(enemy.position.x);
+  });
+
+  it("keeps Hold Ground units from chasing distant enemies", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "hold_ground" });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 220, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(enemy.hp).toBe(enemy.maxHp);
+  });
+
+  it("lets Hold Ground units attack immediate-range enemies", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "hold_ground" });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 124, y: 100 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(enemy.hp).toBeLessThan(enemy.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+  });
+
+  it("lets Press Attack units pursue threats beyond the default guard leash", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "press_attack" });
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 430, y: 100 });
     const combat = createCombat([player, enemy]);
 
     combat.update(0.1);
@@ -136,6 +195,23 @@ describe("CombatSystem", () => {
     expect(secondImp.hp).toBeLessThan(secondImp.maxHp);
     expect(player.moveTarget).toBeUndefined();
   });
+
+  it("fills a readable target label for explicit attack orders", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      range: 40,
+      attackTargetId: "enemy-stone-imp"
+    });
+    const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 130, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, enemy]);
+
+    combat.update(0.1);
+
+    expect(player.attackTargetLabel).toBe("Raider");
+  });
 });
 
 function createCombat(units: Unit[]): CombatSystem {
@@ -163,6 +239,8 @@ function fakeUnit(options: {
   hp?: number;
   damage?: number;
   attackTargetId?: string;
+  attackTargetLabel?: string;
+  behaviourMode?: "hold_ground" | "guard_area" | "press_attack";
 }): Unit {
   return Object.assign(Object.create(Unit.prototype), {
     id: options.id,
@@ -176,6 +254,8 @@ function fakeUnit(options: {
     armor: 0,
     attackCooldownRemaining: 0,
     attackTargetId: options.attackTargetId,
+    attackTargetLabel: options.attackTargetLabel,
+    behaviourMode: options.behaviourMode ?? "guard_area",
     moveTarget: options.moveTarget ? { ...options.moveTarget } : undefined,
     attackMove: options.attackMove ?? false,
     moveOrderCombatSuppressionSeconds:

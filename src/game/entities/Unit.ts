@@ -13,6 +13,7 @@ import {
   createUnitVeterancyState,
   getUnitVeterancyRank
 } from "../data/unitVeterancy";
+import { DEFAULT_BEHAVIOUR_MODE, type BehaviourMode } from "../systems/BehaviourModeSystem";
 import { BaseEntity } from "./BaseEntity";
 
 const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
@@ -28,8 +29,10 @@ export class Unit extends BaseEntity {
   enemyHeroTitle?: string;
   enemyHeroAbilityCooldowns = new Map<string, number>();
   attackTargetId?: string;
+  attackTargetLabel?: string;
   moveTarget?: Position;
   attackMove = false;
+  behaviourMode: BehaviourMode = DEFAULT_BEHAVIOUR_MODE;
   moveOrderCombatSuppressionSeconds = 0;
   attackCooldownRemaining = 0;
   damageBuffMultiplier = 1;
@@ -110,12 +113,14 @@ export class Unit extends BaseEntity {
   commandMove(target: Position, attackMove = false): void {
     this.moveTarget = { ...target };
     this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
     this.attackMove = attackMove;
     this.moveOrderCombatSuppressionSeconds = attackMove ? 0 : PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS;
   }
 
-  commandAttack(targetId: string): void {
+  commandAttack(targetId: string, targetLabel?: string): void {
     this.attackTargetId = targetId;
+    this.attackTargetLabel = targetLabel;
     this.attackMove = true;
     this.moveOrderCombatSuppressionSeconds = 0;
   }

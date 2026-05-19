@@ -21,6 +21,7 @@ import { Unit } from "../entities/Unit";
 import { AudioManager } from "../systems/AudioManager";
 import { AbilitySystem } from "../systems/AbilitySystem";
 import { AISystem } from "../systems/AISystem";
+import { behaviourModeDefinition, setBehaviourMode, type BehaviourMode } from "../systems/BehaviourModeSystem";
 import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
 import { CombatSystem } from "../systems/CombatSystem";
@@ -86,6 +87,7 @@ interface CreateBattleSceneSystemsOptions {
   findWorldEntityAt: (point: Position) => BaseEntity | undefined;
   centerCameraFromMinimap: (normalizedX: number, normalizedY: number) => void;
   castAbilitySlot: (slot: number) => void;
+  refreshHud: () => void;
   advanceTutorialStep: () => void;
   toggleFogDebug: () => void;
   getTechState: (team: Team) => TechState;
@@ -133,6 +135,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     findWorldEntityAt,
     centerCameraFromMinimap,
     castAbilitySlot,
+    refreshHud,
     advanceTutorialStep,
     toggleFogDebug,
     getTechState,
@@ -336,6 +339,19 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
           AudioManager.play("ability_cast");
         }
       },
+      onBehaviourMode: (mode: BehaviourMode) => {
+        const selectedUnits = selectionSystem.getSelected().filter(
+          (entity): entity is Unit => entity instanceof Unit && entity.team === "player" && entity.alive
+        );
+        const changed = setBehaviourMode(selectedUnits, mode);
+        if (changed > 0) {
+          const definition = behaviourModeDefinition(mode);
+          showMessage(`${definition.label}: ${changed === 1 ? "unit" : `${changed} units`} updated.`, undefined, undefined, "#d9eee8", {
+            priority: "command"
+          });
+          AudioManager.play("ui_click");
+        }
+      },
       onTutorialNext: advanceTutorialStep,
       onMinimapMove: centerCameraFromMinimap,
       onMenu: openMainMenu,
@@ -361,6 +377,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     selectHero: () => {
       if (hero.alive) {
         selectionSystem.setSelection([hero]);
+        refreshHud();
       }
     },
     centerOnHero: () => cameraSystem.centerOn(hero.position),

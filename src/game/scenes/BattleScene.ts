@@ -367,6 +367,7 @@ export class BattleScene extends Phaser.Scene {
       findWorldEntityAt: (point) => this.findWorldEntityAt(point),
       centerCameraFromMinimap: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
+      refreshHud: () => this.refreshBattleHud(0),
       advanceTutorialStep: () => this.advanceTutorialStep(),
       toggleFogDebug: () => this.toggleFogDebug(),
       getTechState: (team) => this.getTechState(team),

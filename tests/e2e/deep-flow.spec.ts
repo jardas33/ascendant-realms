@@ -1689,6 +1689,44 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await expect(page.locator(".side-panel")).toContainText("Battle QA");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Guard Area");
+    await clickReady(page.getByTestId("behaviour-mode-hold_ground"), "deep-flow behaviour mode Hold Ground");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.hero?.behaviourMode;
+          }),
+        { message: "expected Hold Ground to apply to the selected hero" }
+      )
+      .toBe("hold_ground");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Hold Ground");
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Holding Ground");
+    await clickReady(page.getByTestId("behaviour-mode-press_attack"), "deep-flow behaviour mode Press Attack");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.hero?.behaviourMode;
+          }),
+        { message: "expected Press Attack to apply to the selected hero" }
+      )
+      .toBe("press_attack");
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Press Attack");
+    await clickReady(page.getByTestId("behaviour-mode-guard_area"), "deep-flow behaviour mode Guard Area");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.hero?.behaviourMode;
+          }),
+        { message: "expected Guard Area to restore the selected hero default mode" }
+      )
+      .toBe("guard_area");
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
 
     const attackHoverTarget = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1721,6 +1759,89 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         { message: "expected hostile hover to expose attack cursor intent" }
       )
       .toEqual({ cursor: "crosshair", mode: "attack" });
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.statusMessage = "Attack cursor stability refresh";
+      scene.refreshBattleHud?.(0.11);
+    });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return {
+              cursor: canvas?.style.cursor ?? "",
+              mode: canvas?.dataset.battleCursor ?? ""
+            };
+          }),
+        { message: "expected attack cursor intent to survive HUD refresh" }
+      )
+      .toEqual({ cursor: "crosshair", mode: "attack" });
+    const emptyCanvasPoint = await page.evaluate(() => {
+      const canvas = document.querySelector("canvas");
+      const bounds = canvas?.getBoundingClientRect();
+      if (!bounds) {
+        throw new Error("Expected canvas for attack cursor clear coverage.");
+      }
+      return { x: bounds.left + 12, y: bounds.top + 12 };
+    });
+    await page.mouse.move(emptyCanvasPoint.x, emptyCanvasPoint.y);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return {
+              cursor: canvas?.style.cursor ?? "",
+              mode: canvas?.dataset.battleCursor ?? ""
+            };
+          }),
+        { message: "expected attack cursor intent to clear when no enemy is hovered" }
+      )
+      .toEqual({ cursor: "", mode: "" });
+    await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              heroAttackTargetId: scene?.hero?.attackTargetId ?? "",
+              status: document.querySelector("[data-testid='battle-status']")?.textContent ?? ""
+            };
+          }),
+        { message: "expected an empty left-click to avoid issuing an attack order" }
+      )
+      .toEqual({ heroAttackTargetId: "", status: expect.not.stringContaining("Attack order accepted") });
+    const restoredAttackHoverTarget = await page.evaluate((targetId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active hero before restoring attack intent coverage.");
+      }
+      const target = scene.units.find((unit: any) => unit.id === targetId && unit.alive);
+      if (!target) {
+        throw new Error("Expected original attack-hover target to remain alive before left-click coverage.");
+      }
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(target.position);
+      scene.refreshBattleHud?.(0);
+      return { id: target.id, x: target.position.x, y: target.position.y };
+    }, attackHoverTarget.id);
+    const restoredAttackHoverScreen = await worldToScreen(page, restoredAttackHoverTarget);
+    await page.mouse.move(restoredAttackHoverScreen.x, restoredAttackHoverScreen.y);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return canvas?.dataset.battleCursor ?? "";
+          }),
+        { message: "expected attack cursor intent to return before left-click attack" }
+      )
+      .toBe("attack");
     await clickWorldPoint(page, attackHoverTarget, "left");
     await expect
       .poll(
@@ -1742,6 +1863,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         heroAttackMove: true,
         status: expect.stringContaining("Attack order accepted")
       });
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Attacking");
     await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
@@ -1761,6 +1883,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.statusPriority = "normal";
       scene.refreshBattleHud?.(0);
     });
+    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Guard Area");
 
     await expect(page.locator(".side-panel")).toBeVisible();
     const dragTargets = await page.evaluate(() => {

@@ -2,9 +2,9 @@
 
 Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fantasy RTS/RPG hybrid, with v0.3.1 frozen as its polish/readability layer, v0.4 serving as technical/UX/planning groundwork, v0.5 adding a save, content-validation, determinism, and expansion-readiness gate, v0.6 strengthening Tutorial / Proving Grounds onboarding and test-only command-log foundations, v0.7 adding the first controlled Enemy Strategic Pressure V1 prototype, v0.7.1 polishing pressure warning feel and visibility, v0.7.2 reviewing Cinderfen pressure feel without expanding mechanics, v0.7.3 adding closer-to-real browser-input pressure review plus a manual playtest checklist, v0.8 refreshing technical/e2e runtime facts while creating a visual debt, scale, 2026 art direction, asset pipeline, and Cinderfen visual foundation gate, v0.8.1 adding the visual asset manifest and screenshot QA foundation, v0.8.2 hardening source/license review plus expanded screenshot coverage, v0.9 defining a controlled docs/specs/prompts-only Cinderfen style-frame package before any art generation or runtime replacement, v0.9.1 adding the safe non-runtime intake pipeline for future Cinderfen style-frame candidates, v0.10 refining Tutorial / Proving Grounds onboarding clarity without adding rewards, persistence, maps, units, factions, or art replacement, v0.11 improving technical reliability, e2e lane clarity, preview smoke automation, visual QA reporting, bundle/performance documentation, command ergonomics, and release-checklist maintainability without changing gameplay or content, v0.11.1 adding a conservative GitHub Actions CI dry-run workflow, CI matrix documentation, preview helper portability notes, artifact strategy, and CI/local parity checks without changing gameplay or content, v0.11.2 documenting remote CI observation limits, static workflow review, timeout/artifact/preview-helper review, and an Emmanuel-facing GitHub Actions checklist without changing gameplay, content, CI coverage, or workflow behavior, v0.11.5 splitting automatic GitHub fast confidence from full smoke/release browser lanes without deleting or weakening tests, v0.11.9 adding a hosted-only 6-way manual release matrix for GitHub runners while preserving local full release and 3-way shards, v0.11.10 replacing that hosted matrix with deterministic explicit release groups plus pre-boot seeded-save fixtures, v0.11.11 moving those hosted release groups onto production preview, and v0.11.12 hardening hosted release interaction determinism for DOM buttons, battle-loaded waits, layout boxes, side-panel measurement, and canvas movement commands. The visible main menu labels the playable build as `Prototype v0.3` with the subtitle `Cinderfen Route Baseline`; v0.2 remains the previous systems baseline, while v0.3 promotes the compact Chapter 2 Cinderfen route on top of that technical foundation. You create a persistent hero, enter campaign nodes or skirmishes, capture magical resource sites, build a small army, fight enemies and named rival commanders, level up, earn loot with item affixes, claim small rival victory rewards and trophies, spend campaign resources on Stronghold upgrades and Cinderfen preparation services, make compact reputation-shifting choices, face scoped enemy commander pressure in selected Cinderfen battles, and save progress locally.
 
-Current v0.14.4 work uses Emmanuel's v0.14.3 retest notes and keeps the fix pass narrow: visually adjacent melee units re-engage more reliably, drag selection stays responsive while crossing HUD/minimap surfaces, Complete Tutorial opens the no-save/no-reward Results flow instead of acting like Exit Tutorial, selected-unit enemy hover shows attack intent and left-click issues an attack order, and the Crown Shrine tutorial copy now matches the green ownership ring. No gameplay data numbers, save format, maps, factions, units, runtime art/assets, behaviour modes, unit panel redesign, broad combat AI/pathing rewrite, protected UI copying, or visual overhaul changed.
+Current v0.15 work adds the RTS control behaviour foundation requested after the v0.14.x Emmanuel playtest fixes: selected units now expose session-only Hold Ground, Guard Area, and Press Attack modes, attack-hover and left-click attack intent are covered more tightly, explicit attack orders can show target copy, and retreat/reposition suppression cannot be overwritten on the same expiry frame. No gameplay data numbers, save format, maps, factions, units, runtime art/assets, broad combat AI/pathing rewrite, protected UI copying, or visual overhaul changed.
 
-The v0.14 package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, build metadata, local server launchers, and package verification.
+The v0.15 package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, build metadata, local server launchers, and package verification.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -15,6 +15,8 @@ Private playtest package guide: `docs/V014_PLAYTEST_PACKAGE_COORDINATOR_GUIDE.md
 Emmanuel quick playtest fix report: `docs/V0141_QUICK_PLAYTEST_FIX_REPORT.md`.
 Emmanuel retest combat/selection fix report: `docs/V0143_COMBAT_SELECTION_RETEST_FIX_REPORT.md`.
 v0.14.4 combat control retest fix report: `docs/V0144_COMBAT_CONTROL_RETEST_FIX_REPORT.md`.
+v0.15 behaviour mode spec: `docs/V015_BEHAVIOUR_MODES_SPEC.md`.
+v0.15 control/combat behaviour fix report: `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`.
 
 Current v0.3 feature snapshot:
 
@@ -352,10 +354,12 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 
 - Left click: select a friendly unit or building.
 - Drag with left mouse: box-select friendly units.
+- Left click a hovered enemy while player units are selected: attack that enemy.
 - Right click ground: move selected units.
 - Right click ground with a completed Barracks or Mystic Lodge selected: set its rally point.
 - Right click enemy: attack selected enemy.
 - `Shift+A`, then right click: attack-move selected units.
+- Selected unit panel: use `Hold`, `Guard`, and `Press` to change session-only unit behaviour mode.
 - `H`: select hero.
 - `1`, `2`, `3`: use unlocked hero abilities.
 - `Space`: center camera on hero.

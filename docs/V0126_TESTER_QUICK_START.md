@@ -30,7 +30,7 @@ Mention visuals only when they block gameplay understanding, such as "I could no
 While playing, focus on:
 
 - clarity: did you know what to do next?
-- commands: did selecting, moving, attacking, building, and retreating feel responsive?
+- commands: did selecting, moving, attacking, behaviour modes, building, and retreating feel responsive?
 - objectives: did the tracker tell you what mattered?
 - pressure warnings: did you notice enemy pressure during combat?
 - fairness: did defeat feel caused by readable mistakes?
@@ -89,6 +89,17 @@ If you were not assigned a route, choose Baseline Cautious:
 - react to warnings
 - preserve units
 - retreat if badly hurt
+
+## Current Battle Controls To Notice
+
+- Select a unit, then hover an enemy. The cursor should clearly show attack intent.
+- Left-click a hovered enemy to issue an attack order, or right-click an enemy to attack.
+- Right-click ground to move. If you are leaving combat, the selected unit should visibly reposition briefly before target reacquisition resumes.
+- Use `Shift+A`, then right-click ground for attack-move.
+- Selected units now have three behaviour buttons: `Hold`, `Guard`, and `Press`.
+- `Hold Ground` avoids chasing distant enemies but still fights immediate threats.
+- `Guard Area` is the balanced default.
+- `Press Attack` pursues more assertively inside a local leash, not across the whole map.
 
 Use `docs/V0126_ROUTE_ASSIGNMENT_PLAN.md` only if Emmanuel asks you to choose from the broader route set.
 

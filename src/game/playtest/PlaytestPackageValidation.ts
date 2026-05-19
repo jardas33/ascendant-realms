@@ -124,7 +124,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.commit, "build info commit", checks, errors);
     expectString(parsed.shortCommit, "build info shortCommit", checks, errors);
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
-    expectEqual(parsed.checkpoint, "v0.14 private playtest build", "build info checkpoint", checks, errors);
+    expectEqual(parsed.checkpoint, "v0.15 RTS control behaviour foundation", "build info checkpoint", checks, errors);
     expectEqual(parsed.packagePurpose, "private human playtest distribution", "build info package purpose", checks, errors);
     expectEqual(parsed.requiresLocalServer, true, "build info local server requirement", checks, errors);
   } catch (error) {

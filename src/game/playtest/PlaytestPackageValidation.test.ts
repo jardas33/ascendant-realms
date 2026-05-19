@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.14 private playtest build",
+          checkpoint: "v0.15 RTS control behaviour foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })

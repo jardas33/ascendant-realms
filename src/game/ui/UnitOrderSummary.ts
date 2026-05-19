@@ -1,10 +1,13 @@
 import type { Position } from "../core/GameTypes";
+import { behaviourModeDefinition, normalizeBehaviourMode, type BehaviourMode } from "../systems/BehaviourModeSystem";
 
 export interface UnitOrderState {
   attackTargetId?: string;
+  attackTargetLabel?: string;
   moveTarget?: Position;
   attackMove?: boolean;
   moveOrderCombatSuppressionSeconds?: number;
+  behaviourMode?: BehaviourMode;
 }
 
 export interface UnitOrderSummary {
@@ -15,9 +18,10 @@ export interface UnitOrderSummary {
 
 export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   if (unit.attackTargetId) {
+    const target = unit.attackTargetLabel ? ` Target: ${unit.attackTargetLabel}.` : "";
     return {
       label: "Attacking",
-      detail: "Pursuing the targeted enemy; HP drops when in weapon range.",
+      detail: `${target} Pursuing until in weapon range; HP drops when attacks land.`.trim(),
       tone: "active"
     };
   }
@@ -31,19 +35,39 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   }
 
   if (unit.moveTarget) {
+    if ((unit.moveOrderCombatSuppressionSeconds ?? 0) > 0) {
+      return {
+        label: "Repositioning",
+        detail: "Retreat or move order is taking priority; target reacquisition waits briefly.",
+        tone: "active"
+      };
+    }
     return {
       label: "Moving",
-      detail:
-        (unit.moveOrderCombatSuppressionSeconds ?? 0) > 0
-          ? "Moving to the ordered point; nearby attacks wait briefly so movement intent is clear."
-          : "Moving to the ordered point; use attack-move to fight along the route.",
+      detail: "Moving to the ordered point; use attack-move to fight along the route.",
       tone: "neutral"
+    };
+  }
+
+  const mode = normalizeBehaviourMode(unit.behaviourMode);
+  if (mode === "hold_ground") {
+    return {
+      label: "Holding Ground",
+      detail: behaviourModeDefinition(mode).orderDetail,
+      tone: "neutral"
+    };
+  }
+  if (mode === "press_attack") {
+    return {
+      label: "Pressing Attack",
+      detail: behaviourModeDefinition(mode).orderDetail,
+      tone: "active"
     };
   }
 
   return {
     label: "Guarding",
-    detail: "Holding position and engaging nearby threats.",
+    detail: behaviourModeDefinition(mode).orderDetail,
     tone: "neutral"
   };
 }

@@ -35,6 +35,8 @@ Focus your feedback on:
 
 - whether you knew what to do
 - whether commands felt responsive
+- whether attack-hover, left-click attack, and retreat/move-away intent felt clear
+- whether Hold / Guard / Press behaviour buttons were understandable
 - whether objectives were readable
 - whether pressure warnings were noticed
 - whether defeat felt fair
@@ -62,6 +64,14 @@ Mention visuals only if they blocked gameplay understanding.
 3. Use the route Emmanuel assigned.
 4. If no route was assigned, use Baseline Cautious: read objectives, avoid heavy optimization, react to warnings, preserve units, and retreat if badly hurt.
 5. Fill `FEEDBACK_SUBMISSION_PACKET.md`.
+
+## Battle Controls To Try
+
+- Select a unit and hover an enemy. The cursor should show attack intent.
+- Left-click a hovered enemy, or right-click an enemy, to order an attack.
+- Right-click ground to move or retreat. Retreating units can still be chased, but they should not instantly snap back to the same target.
+- Selected units have `Hold`, `Guard`, and `Press` behaviour buttons.
+- `Hold` avoids distant chase, `Guard` is the default, and `Press` pursues nearby enemies more assertively.
 
 ## Full 2-Hour Route
 

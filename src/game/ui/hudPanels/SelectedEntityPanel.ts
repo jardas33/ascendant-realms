@@ -2,6 +2,12 @@ import { Building } from "../../entities/Building";
 import { Hero } from "../../entities/Hero";
 import { Unit } from "../../entities/Unit";
 import {
+  BEHAVIOUR_MODE_DEFINITIONS,
+  behaviourModeDefinition,
+  summarizeBehaviourModes,
+  type BehaviourMode
+} from "../../systems/BehaviourModeSystem";
+import {
   formatUnitVeterancyBonusSummary,
   formatUnitVeterancyXpProgress,
   getUnitVeterancyRank
@@ -22,6 +28,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
       const hiddenCount = Math.max(0, selected.length - 12);
       return `<p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
       ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
+      ${renderBehaviourControls(selectedUnits)}
       <div class="selection-grid">${selected
         .slice(0, 12)
         .map((entity) => `<span>${escapeHtml(entity.definition.name)}</span>`)
@@ -38,6 +45,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     const order = describeUnitOrder(selectedOne);
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderBehaviourControls([selectedOne])}
       <div class="hero-command-summary">
         <span><strong>Damage</strong>${Math.round(selectedOne.damage)}</span>
         <span><strong>Range</strong>${selectedOne.range}</span>
@@ -54,6 +62,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Normal battle unit";
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderBehaviourControls([selectedOne])}
       <div class="stat-list" data-testid="selected-unit-stats">
         <span>Rank ${escapeHtml(rank.name)}</span>
         <span>XP ${escapeHtml(xpProgress)}</span>
@@ -92,6 +101,45 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     ${selectedOne.isUnderConstruction() ? renderProgress("Construction", selectedOne.constructionProgress) : ""}
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
+  `;
+}
+
+function renderBehaviourControls(units: Unit[]): string {
+  if (units.length === 0) {
+    return "";
+  }
+
+  const summary = summarizeBehaviourModes(units);
+  const currentDetail = summary.mode
+    ? behaviourModeDefinition(summary.mode).description
+    : "Selected units use different behaviour modes.";
+
+  return `
+    <div class="behaviour-mode-panel" data-testid="behaviour-mode-panel">
+      <div class="behaviour-mode-header">
+        <strong>Behaviour</strong>
+        <span data-testid="behaviour-mode-current" title="${escapeHtml(currentDetail)}">${escapeHtml(summary.label)}</span>
+      </div>
+      <div class="behaviour-mode-buttons">
+        ${BEHAVIOUR_MODE_DEFINITIONS.map((definition) => renderBehaviourModeButton(definition.id, summary.mode)).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderBehaviourModeButton(mode: BehaviourMode, currentMode?: BehaviourMode): string {
+  const definition = behaviourModeDefinition(mode);
+  const active = currentMode === mode;
+  return `
+    <button
+      class="hud-button compact mini behaviour-mode-button ${active ? "active" : ""}"
+      data-testid="behaviour-mode-${definition.id}"
+      data-action="behaviour-mode"
+      data-id="${definition.id}"
+      aria-label="Set behaviour mode to ${escapeHtml(definition.label)}. ${escapeHtml(definition.description)}"
+      aria-pressed="${active ? "true" : "false"}"
+      title="${escapeHtml(definition.description)}"
+    >${escapeHtml(definition.shortLabel)}</button>
   `;
 }
 

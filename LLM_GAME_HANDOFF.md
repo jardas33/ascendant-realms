@@ -1,12 +1,95 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-18 v0.14.5 hosted deep-battle minimap fix
+Last updated: 2026-05-19 v0.15 RTS control behaviour foundation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.15 RTS Control Behaviour Foundation - 2026-05-19
+
+Status: local verification green through the requested unit/build/content/art/browser/hosted/release gates. A pre-commit dirty private package was generated and verified; regenerate a clean package after the final commit.
+
+Phase 0 baseline:
+
+- Starting commit: `5ab64f5ec56324ba0f9abd4d69d51f109e0adeca`, `Checkpoint v0.14.5 hosted deep-battle minimap fix`.
+- Baseline was clean and synced with `origin/main` before v0.15 work started.
+- v0.14.5 hosted deep-battle minimap work was complete before this pass.
+- Guardrails preserved: no maps, factions, combat units, runtime art/assets, save migration, broad AI/pathing rewrite, broad balance tuning, protected RTS UI copying, visual overhaul, hosted release restructuring, assertion weakening, force-click canvas/world shortcuts, or DOM fallback for canvas/world clicks.
+
+v0.15 docs added:
+
+- `docs/V015_CONTROL_COMBAT_BASELINE_AUDIT.md`
+- `docs/V015_BEHAVIOUR_MODES_SPEC.md`
+- `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`
+
+v0.15 code/tests changed:
+
+- `src/game/systems/BehaviourModeSystem.ts`
+- `src/game/entities/Unit.ts`
+- `src/game/systems/CombatSystem.ts`
+- `src/game/systems/InputSystem.ts`
+- `src/game/battle/BattleSceneSystems.ts`
+- `src/game/scenes/BattleScene.ts`
+- `src/game/ui/HUD.ts`
+- `src/game/ui/UnitOrderSummary.ts`
+- `src/game/ui/hudPanels/HudTypes.ts`
+- `src/game/ui/hudPanels/SelectedEntityPanel.ts`
+- `src/game/styles/battle-hud.css`
+- `src/game/playtest/PlaytestPackageValidation.ts`
+- `tools/packagePlaytestBuild.ts`
+- `src/game/systems/BehaviourModeSystem.test.ts`
+- `src/game/systems/CombatSystem.test.ts`
+- `src/game/ui/UnitOrderSummary.test.ts`
+- `src/game/ui/hudPanels/SelectedEntityPanel.test.ts`
+- `src/game/playtest/PlaytestPackageValidation.test.ts`
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix summary:
+
+- Added session-only per-unit behaviour modes: `Hold Ground`, `Guard Area`, and `Press Attack`; default is `Guard Area`.
+- Added selected-unit/group behaviour controls using existing HUD button styling, with mixed-group reporting and group application.
+- Kept behaviour modes out of save data, so no save migration was needed.
+- Layered behaviour modes into target acquisition: Hold Ground avoids distant chase but fights immediate/contact threats, Guard Area keeps balanced nearby response, and Press Attack uses a larger bounded leash.
+- Preserved explicit move and attack orders as temporary/manual intent above behaviour mode reacquisition.
+- Hardened move-away suppression so target reacquisition cannot happen on the same update frame the retreat window expires.
+- Added readable order copy for behaviour idle states, explicit attack target labels, and retreat/repositioning.
+- Kept hover/click attack intent clear: selected units get attack cursor on valid enemies, left-click issues attack, empty left-click does not.
+- Hardened `H` hero-select HUD refresh after HUD/minimap interactions so the side panel does not remain stale at `No Selection`.
+- Kept the behaviour controls compact and constrained the desktop side panel height so Cinderfen/Ashen landmark focus is not covered by the expanded control panel.
+
+Deferred:
+
+- Patrol, escort/follow, return-anchor memory, persistent behaviour preferences, icons/new art, formation/pathing overhaul, and deeper combat AI rewrites.
+
+Current verification:
+
+```text
+npm test PASS, 55 files / 393 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 7 tests.
+npm run test:e2e:smoke PASS, 13 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS against production preview.
+npm run playtest:sim PASS, 255 runs across 85 campaign battle nodes.
+npm run playtest:lab:verify PASS, 63 generated-output consistency checks.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 11 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run test:e2e:release:hosted:smoke PASS, 13 tests.
+npm run test:e2e:release PASS, 75 tests.
+npm run package:playtest PASS, produced pre-commit dirty package `artifacts/playtest/ascendant-realms-private-playtest-5ab64f5-dirty`.
+npm run verify:playtest-package PASS, 19 checks.
+git diff --check PASS.
+```
+
+Next recommended action after commit/push: rerun GitHub Actions CI Release Matrix Dry Run because runtime battle/input/HUD behavior changed.
 
 ## Current v0.14.5 Hosted Deep-Battle Minimap Fix - 2026-05-18
 

@@ -1,4 +1,4 @@
-# v0.14 Ready-To-Send Private Playtest Message
+# v0.15 Ready-To-Send Private Playtest Message
 
 Date: 2026-05-18
 
@@ -19,6 +19,9 @@ Time options:
 Please focus on:
 - Did you know what to do?
 - Did commands feel responsive?
+- Did enemy hover and left-click attack feel clear?
+- Did Hold / Guard / Press behaviour buttons make sense?
+- Did retreat or move-away orders visibly obey you?
 - Were objectives readable?
 - Did you notice pressure warnings during combat?
 - Did victory or defeat feel fair?

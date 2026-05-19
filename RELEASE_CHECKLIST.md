@@ -50,6 +50,12 @@ Expected current prototype result:
 PASS: 46 test files, 351 tests
 ```
 
+Current v0.15 checkpoint result:
+
+```text
+PASS: 55 test files, 393 tests
+```
+
 2. Standalone content validation:
 
 ```bash
@@ -118,7 +124,7 @@ PASS: 12 Playwright tests
 
 `npm run test:e2e:smoke:fast` runs the six `@ci-fast` smoke checks used by automatic GitHub Fast confidence: main menu, Tutorial entry/return, Tutorial exit without saving, Settings persistence, New Campaign map/locked-node checks, and inventory reachability.
 
-`npm run test:e2e:smoke` runs all 12 tests in `tests/e2e/smoke.spec.ts` and is the full smoke browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full Tutorial completion in smoke while the lane remains inside the local watch band; move completion deeper only if local smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
+`npm run test:e2e:smoke` runs all 13 tests in `tests/e2e/smoke.spec.ts` and is the full smoke browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full Tutorial completion in smoke while the lane remains inside the local watch band; move completion deeper only if local smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
 
@@ -138,7 +144,13 @@ Expected current prototype result:
 PASS: 67 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.7 Enemy Strategic Pressure V1 e2e pass adds `tests/e2e/enemy-pressure.spec.ts`, so the current full release gate is 67 tests across 4 spec files while smoke remains 12 tests. Latest v0.10 lane review checkpoint: smoke PASS, 12 tests in about 4.8m; release PASS, 67 tests in about 28.0m.
+Current v0.15 checkpoint result:
+
+```text
+PASS: 75 Playwright tests
+```
+
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.15 checkpoint full release gate is 75 tests across the release spec set while smoke is 13 tests.
 
 6. Optional CI sharded release gate:
 
@@ -189,7 +201,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same 67-test full release suite in GitHub Actions. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. v0.11.12 keeps assertions intact while allowing a verified DOM click fallback only for real enabled controls after normal Playwright click actionability fails.
+All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.15 checkpoint hosted group counts are 12 deep-meta, 11 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 13 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. v0.11.12 keeps assertions intact while allowing a verified DOM click fallback only for real enabled controls after normal Playwright click actionability fails.
 
 Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 

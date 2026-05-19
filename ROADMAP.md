@@ -11,9 +11,15 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.14.4 Combat Control Retest Fix Pass** on 2026-05-18. It uses only Emmanuel's v0.14.3 retest notes to tighten adjacent melee contact engagement, keep drag-selection responsive across HUD/minimap surfaces, route Complete Tutorial through no-save/no-reward Results, add attack-hover/left-click attack intent, and correct the tutorial Crown Shrine ring copy from blue to green while keeping gameplay data numbers, save format, maps, factions, units, runtime art/assets, behaviour modes, unit panel redesign, broad combat AI/pathing rewrites, balance tuning, protected-UI copying, and visual overhaul out of scope.
+The latest player-facing checkpoint is **v0.15 RTS Control Behaviour Foundation** on 2026-05-18. It implements session-only Hold Ground, Guard Area, and Press Attack modes; adds selected-unit/group behaviour controls; strengthens attack-hover and left-click attack coverage; carries readable explicit attack target copy; and tightens move-away suppression so retreat intent is not overwritten on the expiry frame. It keeps gameplay data numbers, save format, maps, factions, units, runtime art/assets, patrol, broad combat AI/pathing rewrites, balance tuning, protected-UI copying, and visual overhaul out of scope.
 
-The next recommended player-facing step is to generate a clean v0.14.4 private package from the final commit and have Emmanuel rerun the same Baseline Cautious route, focusing on melee engagement after one enemy dies, enemy contact attacks, drag-select over HUD/minimap, Complete Tutorial Results flow, attack-hover/left-click attack orders, green Crown Shrine tutorial copy, and the screenshot visual bug if he can recapture it. Use that retest before opening a deeper pathing/combat-readability or behaviour-modes implementation goal. Use v0.13/v0.13.1 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to send the clean v0.15 private package to Emmanuel and have him rerun the same Baseline Cautious route, focusing on attack intent, left-click attack orders, adjacent melee engagement, Hold / Guard / Press behaviour, retreat/move-away obeying visibly, drag-select over HUD/minimap, tutorial completion/defeat, and snap-back risk. Use that retest before opening deeper formation/pathing, patrol, save-persistent behaviour modes, or UI redesign work. Use v0.13/v0.13.1 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.15 control behaviour docs:
+
+- `docs/V015_CONTROL_COMBAT_BASELINE_AUDIT.md`
+- `docs/V015_BEHAVIOUR_MODES_SPEC.md`
+- `docs/V015_CONTROL_COMBAT_BEHAVIOUR_FIX_REPORT.md`
 
 New v0.14.4 Emmanuel retest docs:
 

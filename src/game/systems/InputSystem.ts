@@ -41,6 +41,7 @@ export class InputSystem {
   private globalPointerMoveHandler?: (event: PointerEvent) => void;
   private globalPointerReleaseHandler?: (event: PointerEvent) => void;
   private globalPointerCancelHandler?: () => void;
+  private globalKeyDownHandler?: (event: KeyboardEvent) => void;
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
@@ -73,6 +74,9 @@ export class InputSystem {
     if (this.globalPointerCancelHandler) {
       window.removeEventListener("pointercancel", this.globalPointerCancelHandler);
       window.removeEventListener("blur", this.globalPointerCancelHandler);
+    }
+    if (this.globalKeyDownHandler) {
+      window.removeEventListener("keydown", this.globalKeyDownHandler, true);
     }
     const keyboard = this.options.scene.input.keyboard;
     if (keyboard) {
@@ -159,7 +163,6 @@ export class InputSystem {
 
   private bindKeyboard(): void {
     const keyboard = this.options.scene.input.keyboard!;
-    this.addKeyHandler("keydown-H", () => this.options.selectHero());
     this.addKeyHandler("keydown-SPACE", () => this.options.centerOnHero());
     this.addKeyHandler("keydown-ONE", (event) => this.triggerAbilitySlot(0, event));
     this.addKeyHandler("keydown-NUMPAD_ONE", (event) => this.triggerAbilitySlot(0, event));
@@ -192,6 +195,15 @@ export class InputSystem {
       this.aPressedAt = 0;
     });
     this.keyHandlers.forEach(({ event, handler }) => keyboard.on(event, handler));
+    this.globalKeyDownHandler = (event: KeyboardEvent) => {
+      if (event.repeat || shouldIgnoreGameKeyboardEvent(event)) {
+        return;
+      }
+      if (event.key.toLowerCase() === "h") {
+        this.options.selectHero();
+      }
+    };
+    window.addEventListener("keydown", this.globalKeyDownHandler, true);
   }
 
   private addKeyHandler(event: string, handler: (event?: KeyboardEvent) => void): void {
@@ -253,9 +265,10 @@ export class InputSystem {
       return false;
     }
 
-    selectedUnits.forEach((unit) => unit.commandAttack(target.id));
+    const targetLabel = this.entityLabel(target);
+    selectedUnits.forEach((unit) => unit.commandAttack(target.id, targetLabel));
     this.showCommandMessage(
-      `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${this.entityLabel(target)}`,
+      `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${targetLabel}`,
       target.position
     );
     return true;

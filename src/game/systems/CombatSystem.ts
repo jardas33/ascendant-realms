@@ -7,12 +7,14 @@ import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
+import { DEFAULT_BEHAVIOUR_MODE, normalizeBehaviourMode } from "./BehaviourModeSystem";
 import { CollisionSystem } from "./CollisionSystem";
 import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
 const MELEE_VISUAL_CONTACT_MARGIN = 14;
+const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
 
 interface CombatSystemOptions {
   scene: Phaser.Scene;
@@ -37,34 +39,37 @@ export class CombatSystem {
 
     attackers.forEach((attacker) => {
       attacker.attackCooldownRemaining = Math.max(0, attacker.attackCooldownRemaining - deltaSeconds);
-      if (attacker instanceof Unit) {
-        attacker.moveOrderCombatSuppressionSeconds = Math.max(
-          0,
-          attacker.moveOrderCombatSuppressionSeconds - deltaSeconds
-        );
-      }
 
-      const target = this.resolveTarget(attacker);
-      if (!target) {
-        return;
-      }
+      try {
+        const target = this.resolveTarget(attacker);
+        if (!target) {
+          return;
+        }
 
-      const range = this.getEffectiveRange(attacker, target);
-      const targetDistance = distance(attacker.position, target.position);
-      if (targetDistance > range) {
-        this.moveTowardTargetIfAllowed(attacker, target, range);
-        return;
-      }
+        const range = this.getEffectiveRange(attacker, target);
+        const targetDistance = distance(attacker.position, target.position);
+        if (targetDistance > range) {
+          this.moveTowardTargetIfAllowed(attacker, target, range);
+          return;
+        }
 
-      if (attacker instanceof Unit) {
-        attacker.moveTarget = undefined;
-      }
+        if (attacker instanceof Unit) {
+          attacker.moveTarget = undefined;
+        }
 
-      if (this.getCooldown(attacker) > 0) {
-        return;
-      }
+        if (this.getCooldown(attacker) > 0) {
+          return;
+        }
 
-      this.attack(attacker, target);
+        this.attack(attacker, target);
+      } finally {
+        if (attacker instanceof Unit) {
+          attacker.moveOrderCombatSuppressionSeconds = Math.max(
+            0,
+            attacker.moveOrderCombatSuppressionSeconds - deltaSeconds
+          );
+        }
+      }
     });
   }
 
@@ -81,7 +86,13 @@ export class CombatSystem {
   }
 
   private shouldChaseTarget(attacker: Unit): boolean {
-    return Boolean(attacker.attackTargetId || attacker.attackMove || attacker.team !== "player" || !attacker.moveTarget);
+    if (attacker.attackTargetId || attacker.attackMove || attacker.team !== "player") {
+      return true;
+    }
+    if (normalizeBehaviourMode(attacker.behaviourMode) === "hold_ground") {
+      return false;
+    }
+    return !attacker.moveTarget;
   }
 
   private updateProjectiles(deltaSeconds: number): void {
@@ -117,17 +128,47 @@ export class CombatSystem {
 
     const explicitTarget = attacker instanceof Unit && attacker.attackTargetId ? this.findEntityById(attacker.attackTargetId) : undefined;
     if (explicitTarget?.alive && CollisionSystem.isHostile(attacker.team, explicitTarget.team)) {
+      if (attacker instanceof Unit) {
+        attacker.attackTargetLabel = this.entityLabel(explicitTarget);
+      }
       return explicitTarget;
     }
 
     if (attacker instanceof Unit && attacker.attackTargetId && (!explicitTarget || !explicitTarget.alive)) {
       attacker.attackTargetId = undefined;
+      attacker.attackTargetLabel = undefined;
     }
 
-    const searchRadius = attacker instanceof Building ? this.getRange(attacker) : attacker.attackMove ? ATTACK_MOVE_SEARCH_RADIUS : DEFAULT_AGGRO_RADIUS;
     return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
-      return CollisionSystem.isHostile(attacker.team, entity.team) && distance(attacker.position, entity.position) <= searchRadius;
+      return this.canAcquireTarget(attacker, entity);
     });
+  }
+
+  private canAcquireTarget(attacker: Combatant, target: BaseEntity): boolean {
+    if (!CollisionSystem.isHostile(attacker.team, target.team)) {
+      return false;
+    }
+
+    const targetDistance = distance(attacker.position, target.position);
+    if (attacker instanceof Building) {
+      return targetDistance <= this.getRange(attacker);
+    }
+    if (attacker.attackMove) {
+      return targetDistance <= ATTACK_MOVE_SEARCH_RADIUS;
+    }
+    if (attacker.team !== "player") {
+      return targetDistance <= DEFAULT_AGGRO_RADIUS;
+    }
+
+    const mode = normalizeBehaviourMode(attacker.behaviourMode ?? DEFAULT_BEHAVIOUR_MODE);
+    if (mode === "hold_ground") {
+      const directlyAttacked = target instanceof Unit && target.attackTargetId === attacker.id;
+      return targetDistance <= this.getEffectiveRange(attacker, target) || (directlyAttacked && targetDistance <= DEFAULT_AGGRO_RADIUS);
+    }
+    if (mode === "press_attack") {
+      return targetDistance <= PRESS_ATTACK_SEARCH_RADIUS;
+    }
+    return targetDistance <= DEFAULT_AGGRO_RADIUS;
   }
 
   private attack(attacker: Combatant, target: BaseEntity): void {
@@ -261,5 +302,12 @@ export class CombatSystem {
 
   private findEntityById(id: string): BaseEntity | undefined {
     return [...this.options.getUnits(), ...this.options.getBuildings()].find((entity) => entity.id === id);
+  }
+
+  private entityLabel(entity: BaseEntity): string {
+    if (entity instanceof Unit || entity instanceof Building) {
+      return entity.definition.name;
+    }
+    return entity.kind;
   }
 }

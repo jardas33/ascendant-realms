@@ -2,6 +2,7 @@ import type { ResourceBag } from "../../core/GameTypes";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
 import type { Unit } from "../../entities/Unit";
+import type { BehaviourMode } from "../../systems/BehaviourModeSystem";
 import type { TechState } from "../../systems/PrerequisiteSystem";
 import type { TutorialStepViewModel } from "../../tutorial/TutorialStepModel";
 import type { MinimapSnapshot } from "../MinimapView";
@@ -13,6 +14,7 @@ export interface HUDCallbacks {
   onUpgrade: (upgradeId: string, sourceBuildingId: string) => void;
   onCancelUpgrade: (sourceBuildingId: string, queueIndex: number) => void;
   onAbility: (abilityId: string) => void;
+  onBehaviourMode: (mode: BehaviourMode) => void;
   onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;

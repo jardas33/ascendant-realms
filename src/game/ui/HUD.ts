@@ -1,5 +1,6 @@
 import { renderHud } from "./hudPanels/HudRoot";
 import { clamp } from "./hudPanels/HudFormatting";
+import { isBehaviourMode } from "../systems/BehaviourModeSystem";
 import type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot } from "./hudPanels/HudTypes";
 
 export type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot };
@@ -65,6 +66,10 @@ export class HUD {
       }
       if (action === "ability") {
         callbacks.onAbility(id);
+        handled = true;
+      }
+      if (action === "behaviour-mode" && isBehaviourMode(id)) {
+        callbacks.onBehaviourMode(id);
         handled = true;
       }
       if (action === "tutorial-next") {
