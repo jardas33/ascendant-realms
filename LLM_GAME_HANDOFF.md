@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-20 v0.16.2 release-matrix smoke/deep-battle stabilization
+Last updated: 2026-05-20 v0.16.3 hosted smoke pause/resume stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,54 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.16.2 Release-Matrix Smoke/Deep-Battle Stabilization - 2026-05-20
+## Current v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
+
+Status: local verification is green after a narrow test-only follow-up for the remaining hosted smoke failure. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.3 before starting v0.17.
+
+Remote evidence:
+
+- GitHub Actions CI Release Matrix Dry Run #68 checked out `f4ac082875db451a05b2b2668f9714e1ecf0af8d`, `Checkpoint v0.16.2 release-matrix smoke and deep-battle stabilization`.
+- Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+- Only `Release matrix (smoke)` was red.
+- Failed test: `settings accessibility options apply in battle @ci-fast`.
+- New failure shape: both `settings smoke battle menu` and `settings smoke battle resume` reached verified DOM-control fallback, then the test hit the 90s timeout. This showed v0.16.2 fixed the page-closed/fallback symptom but still spent too much hosted time in normal Playwright actionability waits before fallback.
+- Artifact upload again failed because GitHub artifact storage quota was hit, so traces/videos/error-context files were not downloadable through the connector.
+
+v0.16.3 docs added:
+
+- `docs/V0163_HOSTED_SMOKE_PAUSE_RESUME_FIX.md`
+
+v0.16.3 test change:
+
+- `tests/e2e/smoke.spec.ts`
+
+Fix summary:
+
+- Added `SETTINGS_BATTLE_MENU_CLICK_OPTIONS` for only the settings smoke battle `Menu` and `Resume` DOM buttons.
+- Reduced those two normal click attempts to one 500ms actionability attempt before using the existing verified DOM-control fallback.
+- Kept the fallback bounded to 1s and the target visible/enabled budget to 3s.
+- Preserved the pause/resume assertions: pause menu visible, battle status paused, BattleScene active while paused, pause menu gone after resume, BattleScene active after resume, and `menuPaused` false after resume.
+- No force clicks and no DOM fallback for canvas/world clicks.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --reporter=line PASS, 1 test in 42.1s.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.0m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.5m.
+npm run test:e2e:smoke PASS, 14 tests in 7.0m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:release PASS, 77 tests in 37.8m.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, smoke spec only.
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run for v0.16.3 and confirm hosted smoke is green before opening any v0.17 work.
+
+## v0.16.2 Release-Matrix Smoke/Deep-Battle Stabilization - 2026-05-20
 
 Status: local verification is green after a narrow test-only release-matrix timeout fix. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.2 before starting v0.17.
 

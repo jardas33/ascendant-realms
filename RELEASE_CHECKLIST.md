@@ -37,6 +37,7 @@ Known current realities:
 - v0.11.12 keeps hosted release coverage intact and hardens interaction determinism after run #19 showed remaining hosted failures in real DOM button clicks, battle-loaded waits, tutorial/layout box measurement, side-panel reachability checks, and canvas movement delivery.
 - v0.16.1 keeps the automatic Fast confidence script unchanged but splits settings accessibility coverage into two focused `@ci-fast` tests so settings persistence and runtime battle application get separate browser contexts.
 - v0.16.2 keeps the hosted release matrix shape unchanged after run #66, removes duplicated behaviour-mode switching from the older deep-battle HUD test because the dedicated hosted behaviour gauntlet owns that coverage, and gives only the settings runtime accessibility smoke a 90s hosted-safe budget.
+- v0.16.3 keeps the same hosted smoke coverage after run #68, but gives only the settings runtime smoke battle `Menu`/`Resume` DOM buttons a short normal-click budget before verified DOM-control fallback so hosted CI does not burn the test timeout on repeated actionability waits.
 
 ## Required Automated Checks
 
@@ -136,7 +137,7 @@ PASS: 14 Playwright tests
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
 
-v0.16.1 supersedes the combined settings path shape for Fast confidence: `settings screen persists accessibility options @ci-fast` now covers save/reopen persistence and localStorage/document dataset assertions, while `settings accessibility options apply in battle @ci-fast` covers floating text disabled, fog override, colorblind minimap runtime state and marker colors, and battle pause/resume. v0.16.2 keeps the persistence test at a scoped 60s budget and gives only the runtime battle-application test a scoped 90s budget after GitHub run #66 showed hosted production-preview smoke could exceed 60s around battle resume. Inventory remains a separate `@ci-fast` smoke test; if it fails during browser context setup immediately after settings failures, first investigate settings/context pressure before changing inventory behavior.
+v0.16.1 supersedes the combined settings path shape for Fast confidence: `settings screen persists accessibility options @ci-fast` now covers save/reopen persistence and localStorage/document dataset assertions, while `settings accessibility options apply in battle @ci-fast` covers floating text disabled, fog override, colorblind minimap runtime state and marker colors, and battle pause/resume. v0.16.2 keeps the persistence test at a scoped 60s budget and gives only the runtime battle-application test a scoped 90s budget after GitHub run #66 showed hosted production-preview smoke could exceed 60s around battle resume. v0.16.3 keeps the assertions and timeout but shortens only the settings runtime smoke Menu/Resume normal-click attempts before verified DOM-control fallback, because run #68 showed both DOM fallbacks fired only after hosted CI had already spent the test budget. Inventory remains a separate `@ci-fast` smoke test; if it fails during browser context setup immediately after settings failures, first investigate settings/context pressure before changing inventory behavior.
 
 v0.11.4 stabilizes seeded smoke setup by waiting for a ready main menu before localStorage mutation and navigating back to `/` after writing seeded saves instead of relying on `page.reload()`. `skirmish difficulty selection changes fog and starting pressure` now has a scoped 60s budget because it launches two seeded battles back-to-back and GitHub Actions evidence showed the seed/reload path could exceed the global timeout. The test remains in smoke and keeps its fog/pressure assertions.
 
@@ -160,13 +161,13 @@ Current v0.15 checkpoint result:
 PASS: 75 Playwright tests
 ```
 
-Current v0.16.2 checkpoint result:
+Current v0.16.3 checkpoint result:
 
 ```text
 PASS: 77 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.2 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.2 all-in-one release run took about 36.3 minutes locally on Windows; set command timeouts accordingly.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.3 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.3 all-in-one release run took about 37.8 minutes locally on Windows; set command timeouts accordingly.
 
 6. Optional CI sharded release gate:
 

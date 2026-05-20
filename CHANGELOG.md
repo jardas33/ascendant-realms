@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
+
+This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #68 hosted smoke timeout after v0.16.2. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0163_HOSTED_SMOKE_PAUSE_RESUME_FIX.md`.
+- Added scoped click options for only the settings runtime smoke battle menu and resume buttons.
+- Kept the verified DOM-control fallback, but stopped spending hosted CI budget on repeated normal actionability waits before using it.
+- Preserved the pause/resume scene-state assertions.
+
+### Verdict
+
+- Root cause: hosted smoke still spent too much time in normal Playwright click actionability before the verified DOM fallback on real `Menu` and `Resume` DOM buttons.
+- Settings/accessibility assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused hosted settings runtime test, hosted smoke lane with 14 tests, `npm run test:e2e:smoke:fast` with 8 tests, full smoke with 14 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, and full release with 77 tests.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.3 and confirm `Release matrix (smoke)` is green before starting v0.17.
+
 ## v0.16.2 Release-Matrix Smoke And Deep-Battle Stabilization - 2026-05-20
 
 This checkpoint fixes the GitHub Actions CI Release Matrix Dry Run #66 hosted release-matrix smoke and deep-battle timeout regressions after v0.16.1. It is a test-only stabilization pass, not v0.17 and not a gameplay/content/balance change.

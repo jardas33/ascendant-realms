@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-05-20 v0.16.2 release-matrix smoke/deep-battle stabilization
+Updated: 2026-05-20 v0.16.3 hosted smoke pause/resume stabilization
+
+## v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
+
+Scope: fix only the remaining GitHub Actions CI Release Matrix Dry Run #68 `Release matrix (smoke)` timeout after v0.16.2, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, changing behaviour modes, changing package materials, restructuring the release matrix, weakening settings/accessibility assertions, using force clicks, or using DOM fallback for canvas/world clicks.
+
+Baseline:
+
+- Starting commit: `f4ac082875db451a05b2b2668f9714e1ecf0af8d`, `Checkpoint v0.16.2 release-matrix smoke and deep-battle stabilization`.
+- Branch was clean and synced with `origin/main`.
+- `gh` CLI was unavailable locally.
+- GitHub connector logs for Actions run id `26191069260` showed CI Release Matrix Dry Run #68 failed only in `Release matrix (smoke)`.
+- Deep-battle, Fast confidence, Release simulator, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+
+Included work:
+
+- Added `docs/V0163_HOSTED_SMOKE_PAUSE_RESUME_FIX.md`.
+- Added scoped settings battle menu click options in `tests/e2e/smoke.spec.ts`.
+- Applied those options only to `settings smoke battle menu` and `settings smoke battle resume`.
+
+Root cause:
+
+- v0.16.2 fixed the earlier timeout/page-closed shape, but run #68 showed the settings smoke still spent too much hosted CI time inside normal Playwright actionability waits before the verified DOM-control fallback.
+- Both Menu and Resume were real visible DOM buttons, and both verified DOM fallbacks fired before the test timed out.
+- The failure was not a settings runtime regression; it was an over-budget smoke pause/resume interaction under hosted production-preview timing.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --reporter=line PASS, 1 test in 42.1s.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.0m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.5m.
+npm run test:e2e:smoke PASS, 14 tests in 7.0m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:release PASS, 77 tests in 37.8m.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, smoke spec only.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.3 hosted smoke pause-resume stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.2 Release-Matrix Smoke/Deep-Battle Stabilization - 2026-05-20
 

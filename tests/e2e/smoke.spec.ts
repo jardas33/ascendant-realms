@@ -50,6 +50,13 @@ const SCENE_TRANSITION_CLICK_OPTIONS = {
   domFallbackTimeoutMs: 2_000,
   normalClickTimeoutMs: 1_500
 } as const;
+const SETTINGS_BATTLE_MENU_CLICK_OPTIONS = {
+  attempts: 1,
+  domFallbackTimeoutMs: 1_000,
+  normalClickTimeoutMs: 500,
+  timeoutMs: 3_000,
+  waitForLayoutBox: false
+} as const;
 const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
@@ -991,6 +998,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       .then((handle) => handle.jsonValue());
     await page.mouse.move(battleMenuPoint.x, battleMenuPoint.y);
     await clickReady(page.getByTestId("battle-menu"), "settings smoke battle menu", {
+      ...SETTINGS_BATTLE_MENU_CLICK_OPTIONS,
       successCheckAfterClick: () => waitForBattlePauseState(page, true)
     });
     await expect(page.getByTestId("battle-pause-menu")).toBeVisible();
@@ -1001,6 +1009,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     expect(pausedState).toMatchObject({ menuPaused: true, stillInBattle: true });
     await clickReady(page.getByTestId("battle-resume"), "settings smoke battle resume", {
+      ...SETTINGS_BATTLE_MENU_CLICK_OPTIONS,
       successCheckAfterClick: () => waitForBattlePauseState(page, false)
     });
     await expect(page.getByTestId("battle-pause-menu")).toHaveCount(0);
