@@ -1,12 +1,65 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-19 v0.16 behaviour mode gauntlet and playtest diagnostics
+Last updated: 2026-05-20 v0.16.1 fast-confidence CI smoke stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
+
+Status: local verification is green after a narrow test-only Fast confidence fix. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.1 before starting v0.17.
+
+Remote evidence:
+
+- Latest pushed baseline before this pass: `c28f19d82205a1dd8358c4412fdf030d3d9e3b7b`, `Checkpoint v0.16 behaviour mode gauntlet and playtest diagnostics`.
+- GitHub Actions CI Release Matrix Dry Run #64 was red in `Fast confidence` for commit `c28f19d`.
+- Primary failed test supplied by Emmanuel: `settings screen persists accessibility options @ci-fast`.
+- Secondary flaky test supplied by Emmanuel: `inventory screen opens without crashing @ci-fast`, failing while Playwright set up a browser context.
+- `gh` was unavailable locally. The GitHub connector could not resolve displayed run `#64` to a numeric Actions run id, so the audit records Emmanuel's supplied failure evidence plus local reproduction and verification.
+
+v0.16.1 docs added:
+
+- `docs/V0161_FAST_CONFIDENCE_CI_FAILURE_AUDIT.md`
+- `docs/V0161_FAST_CONFIDENCE_CI_FIX.md`
+
+v0.16.1 test change:
+
+- `tests/e2e/smoke.spec.ts`
+
+Fix summary:
+
+- Split the oversized settings accessibility smoke path into two focused `@ci-fast` tests: one for settings save/reopen persistence and one for in-battle runtime application.
+- Preserved every settings/accessibility assertion: persistence, localStorage settings, reduced-motion dataset, colorblind minimap dataset, floating-text suppression, fog override, minimap colorblind markers, and battle menu pause/resume.
+- Added a Settings-screen success check for the Settings menu click so reaching the Settings screen is accepted before click fallback looks for a main-menu button that has already gone away.
+- Left the inventory smoke unchanged; local targeted inventory passed independently, supporting the diagnosis that the CI inventory error was downstream browser/context instability.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --reporter=line PASS, 1 test in 38.2s.
+npx playwright test tests/e2e/smoke.spec.ts --grep "inventory screen opens without crashing" --retries=1 --trace=on --reporter=line PASS, 1 test in 28.8s.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.6m.
+npm run test:e2e:smoke PASS, 14 tests in 7.4m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release:hosted:smoke FAIL first run on unrelated extended-smoke transient Cinderfen difficulty status copy; targeted rerun passed and full hosted-smoke rerun passed.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/smoke.spec.ts --grep "post-Ashen campaign resolves Cinderfen Overlook" --retries=1 --trace=on --reporter=line PASS, 1 test in 35.6s.
+npm run test:e2e:release:hosted:smoke PASS on full rerun, 14 tests in 3.3m.
+npm run test:e2e:release PASS, 77 tests in 38.4m.
+npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 1.5m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, smoke spec only.
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run for v0.16.1 and confirm Fast confidence is green before opening any v0.17 work.
 
 ## Current v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics - 2026-05-19
 

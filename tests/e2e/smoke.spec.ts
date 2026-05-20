@@ -26,9 +26,18 @@ import {
 
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
-const SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS = 90_000;
+const SETTINGS_ACCESSIBILITY_PERSISTENCE_SMOKE_TIMEOUT_MS = 60_000;
+const SETTINGS_ACCESSIBILITY_RUNTIME_SMOKE_TIMEOUT_MS = 60_000;
 const SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS = 60_000;
 const TUTORIAL_EXIT_SMOKE_TIMEOUT_MS = 60_000;
+const ACCESSIBILITY_SMOKE_SETTINGS = {
+  masterVolume: 0.35,
+  uiScale: 1.15,
+  floatingTextEnabled: false,
+  reducedMotionEnabled: true,
+  colorblindMinimapPalette: true,
+  fogEnabledOverride: "disabled"
+} as const;
 const RESULTS_NAV_CLICK_OPTIONS = {
   allowTargetGoneAfterClick: true,
   attempts: 1,
@@ -43,6 +52,13 @@ const SCENE_TRANSITION_CLICK_OPTIONS = {
 const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
+function settingsScreenVisible(page: Page): Promise<boolean> {
+  return page
+    .getByTestId("settings-screen")
+    .isVisible()
+    .catch(() => false);
+}
+
 async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
   await page.getByTestId(testId).evaluate((input, nextValue) => {
     const range = input as HTMLInputElement;
@@ -832,16 +848,18 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("settings screen persists accessibility options @ci-fast", async ({ page }) => {
-    // GitHub Actions evidence showed this path can exceed the global 35s budget because it covers
-    // both settings persistence and an in-battle runtime application check.
-    test.setTimeout(SETTINGS_ACCESSIBILITY_SMOKE_TIMEOUT_MS);
+    // Keep this scoped because GitHub-hosted runners have repeatedly shown this settings path can
+    // exceed the global 35s budget even when the assertions are valid.
+    test.setTimeout(SETTINGS_ACCESSIBILITY_PERSISTENCE_SMOKE_TIMEOUT_MS);
 
     await openFreshMainMenu(page);
 
-    await clickReady(page.getByTestId("menu-settings"), "settings smoke open settings");
+    await clickReady(page.getByTestId("menu-settings"), "settings smoke open settings", {
+      successCheckAfterClick: () => settingsScreenVisible(page)
+    });
     await expect(page.getByTestId("settings-screen")).toBeVisible();
-    await setSettingsRangeValue(page, "settings-master-volume", "0.35");
-    await setSettingsRangeValue(page, "settings-ui-scale", "1.15");
+    await setSettingsRangeValue(page, "settings-master-volume", ACCESSIBILITY_SMOKE_SETTINGS.masterVolume.toFixed(2));
+    await setSettingsRangeValue(page, "settings-ui-scale", ACCESSIBILITY_SMOKE_SETTINGS.uiScale.toFixed(2));
     await page.getByTestId("settings-floating-text").uncheck();
     await expect(page.getByTestId("settings-floating-text")).not.toBeChecked();
     await page.getByTestId("settings-reduced-motion").check();
@@ -855,7 +873,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await clickReady(page.getByTestId("settings-back"), "settings smoke back after save");
     await expect(page.getByTestId("main-menu")).toBeVisible();
 
-    await clickReady(page.getByTestId("menu-settings"), "settings smoke reopen settings");
+    await clickReady(page.getByTestId("menu-settings"), "settings smoke reopen settings", {
+      successCheckAfterClick: () => settingsScreenVisible(page)
+    });
+    await expect(page.getByTestId("settings-screen")).toBeVisible();
     await expect(page.getByTestId("settings-master-volume")).toHaveValue("0.35");
     await expect(page.getByTestId("settings-ui-scale")).toHaveValue("1.15");
     await expect(page.getByTestId("settings-floating-text")).not.toBeChecked();
@@ -868,11 +889,25 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       return raw ? JSON.parse(raw).settings : undefined;
     }, SAVE_KEY);
     expect(persistedSettings).toMatchObject({
-      floatingTextEnabled: false,
-      reducedMotionEnabled: true,
-      colorblindMinimapPalette: true,
-      fogEnabledOverride: "disabled"
+      floatingTextEnabled: ACCESSIBILITY_SMOKE_SETTINGS.floatingTextEnabled,
+      reducedMotionEnabled: ACCESSIBILITY_SMOKE_SETTINGS.reducedMotionEnabled,
+      colorblindMinimapPalette: ACCESSIBILITY_SMOKE_SETTINGS.colorblindMinimapPalette,
+      fogEnabledOverride: ACCESSIBILITY_SMOKE_SETTINGS.fogEnabledOverride
     });
+    expect(await page.evaluate(() => document.documentElement.dataset.reducedMotion)).toBe("true");
+    expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
+  });
+
+  test("settings accessibility options apply in battle @ci-fast", async ({ page }) => {
+    // Split from settings persistence so Fast confidence gets a fresh context for the battle checks
+    // instead of one long multi-scene test that can starve the next browser context on CI.
+    test.setTimeout(SETTINGS_ACCESSIBILITY_RUNTIME_SMOKE_TIMEOUT_MS);
+
+    await seedCampaignSave(page, {
+      hero: { heroName: "E2E Settings" },
+      settings: ACCESSIBILITY_SMOKE_SETTINGS
+    });
+
     expect(await page.evaluate(() => document.documentElement.dataset.reducedMotion)).toBe("true");
     expect(await page.evaluate(() => document.documentElement.dataset.colorblindMinimap)).toBe("true");
 

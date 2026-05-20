@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-19 v0.16 behaviour mode gauntlet and playtest diagnostics
+Updated: 2026-05-20 v0.16.1 fast-confidence CI smoke stabilization
+
+## v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
+
+Scope: fix only GitHub Actions CI Release Matrix Dry Run #64 `Fast confidence` regression after v0.16, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, touching behaviour modes, changing package materials, restructuring CI, weakening settings/accessibility assertions, or weakening inventory coverage.
+
+Baseline:
+
+- Starting commit: `c28f19d82205a1dd8358c4412fdf030d3d9e3b7b`, `Checkpoint v0.16 behaviour mode gauntlet and playtest diagnostics`.
+- Branch was clean and synced with `origin/main`.
+- Remote evidence supplied by Emmanuel: run #64 failed in `Fast confidence`; primary failed test was `settings screen persists accessibility options @ci-fast`; secondary flaky test was `inventory screen opens without crashing @ci-fast`.
+- Direct GitHub artifact inspection was unavailable because `gh` is not installed and the connector could not resolve displayed run `#64` as a numeric Actions run id.
+
+Included work:
+
+- Added `docs/V0161_FAST_CONFIDENCE_CI_FAILURE_AUDIT.md`.
+- Added `docs/V0161_FAST_CONFIDENCE_CI_FIX.md`.
+- Split the settings accessibility smoke path into a persistence-focused `@ci-fast` test and a runtime-battle `@ci-fast` test.
+- Added shared accessibility smoke settings data so both tests assert the same setting values.
+- Added a Settings-screen success check to the Settings menu click/reopen path so a successful transition does not fall through to a now-gone main-menu button.
+- Left the inventory smoke test unchanged.
+
+Root cause:
+
+- The original settings test combined persistence, localStorage, document dataset, battle launch, runtime accessibility, minimap color, fog override, floating text, and pause/resume assertions in one long browser context.
+- Remote failure evidence reached the settings retry and then showed inventory failing while a new browser context was being created, which points to browser/context pressure after the long settings path.
+- A local full-smoke run after the first split exposed the actionability race: Settings had already reopened, but the click helper did not treat `settings-screen` as success before fallback checked the vanished `menu-settings` button.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --reporter=line PASS, 1 test in 38.2s.
+npx playwright test tests/e2e/smoke.spec.ts --grep "inventory screen opens without crashing" --retries=1 --trace=on --reporter=line PASS, 1 test in 28.8s.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.6m.
+npm run test:e2e:smoke PASS, 14 tests in 7.4m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release:hosted:smoke FAIL first run on unrelated extended-smoke transient Cinderfen difficulty status copy.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/smoke.spec.ts --grep "post-Ashen campaign resolves Cinderfen Overlook" --retries=1 --trace=on --reporter=line PASS, 1 test in 35.6s.
+npm run test:e2e:release:hosted:smoke PASS on full rerun, 14 tests in 3.3m.
+npm run test:e2e:release PASS, 77 tests in 38.4m.
+npx playwright test tests/e2e/smoke.spec.ts --grep "settings screen persists accessibility options" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 1.5m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, smoke spec only.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.1 fast-confidence CI smoke stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics - 2026-05-19
 

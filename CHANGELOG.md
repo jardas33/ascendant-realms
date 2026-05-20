@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
+
+This checkpoint fixes the GitHub Actions CI Release Matrix Dry Run #64 `Fast confidence` regression after v0.16. It is a test-only smoke stabilization pass, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0161_FAST_CONFIDENCE_CI_FAILURE_AUDIT.md`.
+- Added `docs/V0161_FAST_CONFIDENCE_CI_FIX.md`.
+- Split the settings accessibility smoke path into two focused `@ci-fast` tests: persistence and in-battle runtime application.
+- Added a Settings-screen success check for the Settings menu click/reopen path.
+- Preserved the inventory smoke test unchanged.
+
+### Verdict
+
+- Root cause: the original settings accessibility smoke test was an oversized multi-scene `@ci-fast` path that could exceed hosted runner budget and destabilize later browser context setup.
+- Settings/accessibility assertions weakened: no.
+- Inventory assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+
+### Verification
+
+- Passed: targeted settings persistence, targeted inventory, `npm run test:e2e:smoke:fast` with 8 tests, full `npm run test:e2e:smoke` with 14 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, controls lab, controls verifier, hosted smoke rerun with 14 tests, full release with 77 tests, a 3-repeat settings persistence soak, and `git diff --check`.
+- Noted: the first hosted smoke run failed in an unrelated extended-smoke Cinderfen transient status-copy assertion. The targeted hosted case then passed, and the full hosted smoke rerun passed without code changes.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.1 and confirm `Fast confidence` is green before starting v0.17.
+
 ## v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics - 2026-05-19
 
 This checkpoint builds an automated confidence and packaging layer around the v0.15 RTS behaviour modes and control fixes. It is a hardening, diagnostics, regression, and private-playtest evidence pass, not a broad feature or balance pass.

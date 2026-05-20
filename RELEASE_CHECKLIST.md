@@ -35,6 +35,7 @@ Known current realities:
 - v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
 - v0.11.11 keeps local full release, local 2-way shards, and local 3-way shards intact, but runs the manual GitHub release groups against production preview after run #17 showed hosted dev-server release groups still failed across app boot, actionability, and browser-context stability.
 - v0.11.12 keeps hosted release coverage intact and hardens interaction determinism after run #19 showed remaining hosted failures in real DOM button clicks, battle-loaded waits, tutorial/layout box measurement, side-panel reachability checks, and canvas movement delivery.
+- v0.16.1 keeps the automatic Fast confidence script unchanged but splits settings accessibility coverage into two focused `@ci-fast` tests so settings persistence and runtime battle application get separate browser contexts.
 
 ## Required Automated Checks
 
@@ -56,7 +57,7 @@ Current v0.15 checkpoint result:
 PASS: 55 test files, 393 tests
 ```
 
-Current v0.16 checkpoint result:
+Current v0.16.1 checkpoint result:
 
 ```text
 PASS: 56 test files, 406 tests
@@ -124,15 +125,17 @@ npm run test:e2e:smoke
 Expected current prototype result:
 
 ```text
-PASS: 6 Playwright tests for smoke:fast
-PASS: 12 Playwright tests
+PASS: 8 Playwright tests for smoke:fast
+PASS: 14 Playwright tests
 ```
 
-`npm run test:e2e:smoke:fast` runs the six `@ci-fast` smoke checks used by automatic GitHub Fast confidence: main menu, Tutorial entry/return, Tutorial exit without saving, Settings persistence, New Campaign map/locked-node checks, and inventory reachability.
+`npm run test:e2e:smoke:fast` runs the eight `@ci-fast` smoke checks used by automatic GitHub Fast confidence: main menu, hero name input, Tutorial entry/return, Tutorial exit without saving, Settings persistence, Settings runtime accessibility in battle, New Campaign map/locked-node checks, and inventory reachability.
 
-`npm run test:e2e:smoke` runs all 13 tests in `tests/e2e/smoke.spec.ts` and is the full smoke browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full Tutorial completion in smoke while the lane remains inside the local watch band; move completion deeper only if local smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
+`npm run test:e2e:smoke` runs all 14 tests in `tests/e2e/smoke.spec.ts` and is the full smoke browser check. It keeps main menu, Tutorial / Proving Grounds no-reward completion and exit, Settings, New Campaign, campaign launch, Cinderfen reward/save/duplicate-prevention, skirmish, difficulty, and inventory smoke coverage visible. The v0.10 tutorial e2e lane review keeps full Tutorial completion in smoke while the lane remains inside the local watch band; move completion deeper only if local smoke repeatedly grows beyond that band. v0.10 did not add smoke tests or change lane counts.
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
+
+v0.16.1 supersedes the combined settings path shape for Fast confidence: `settings screen persists accessibility options @ci-fast` now covers save/reopen persistence and localStorage/document dataset assertions, while `settings accessibility options apply in battle @ci-fast` covers floating text disabled, fog override, colorblind minimap runtime state and marker colors, and battle pause/resume. Both tests have scoped 60s budgets. Inventory remains a separate `@ci-fast` smoke test; if it fails during browser context setup immediately after settings failures, first investigate settings/context pressure before changing inventory behavior.
 
 v0.11.4 stabilizes seeded smoke setup by waiting for a ready main menu before localStorage mutation and navigating back to `/` after writing seeded saves instead of relying on `page.reload()`. `skirmish difficulty selection changes fog and starting pressure` now has a scoped 60s budget because it launches two seeded battles back-to-back and GitHub Actions evidence showed the seed/reload path could exceed the global timeout. The test remains in smoke and keeps its fog/pressure assertions.
 
@@ -156,13 +159,13 @@ Current v0.15 checkpoint result:
 PASS: 75 Playwright tests
 ```
 
-Current v0.16 checkpoint result:
+Current v0.16.1 checkpoint result:
 
 ```text
-PASS: 76 Playwright tests
+PASS: 77 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16 checkpoint full release gate is 76 tests across the release spec set while smoke is 13 tests. The v0.16 all-in-one release run took about 40 minutes locally on Windows; set command timeouts accordingly.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.1 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.1 all-in-one release run took about 38 minutes locally on Windows; set command timeouts accordingly.
 
 6. Optional CI sharded release gate:
 
@@ -213,7 +216,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 13 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input.
+All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16.1 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 14 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input.
 
 Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 
