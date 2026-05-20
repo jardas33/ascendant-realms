@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-20 v0.16.1 fast-confidence CI smoke stabilization
+Last updated: 2026-05-20 v0.16.2 release-matrix smoke/deep-battle stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,65 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
+## Current v0.16.2 Release-Matrix Smoke/Deep-Battle Stabilization - 2026-05-20
+
+Status: local verification is green after a narrow test-only release-matrix timeout fix. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.2 before starting v0.17.
+
+Remote evidence:
+
+- GitHub Actions CI Release Matrix Dry Run #66 was red at commit `3bfe3b20a09cbc67de80954384d3ddad7a61a270`, `Checkpoint v0.16.1 fast-confidence CI smoke stabilization`.
+- Emmanuel's screenshot text showed `3fbe3b2`, but local checkout and fetched job logs identify the commit as `3bfe3b2`; treat the screenshot value as a short-hash transposition.
+- Green jobs: Fast confidence, Release simulator, Release matrix deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen.
+- Red jobs: Release matrix deep-battle and Release matrix smoke.
+- Deep-battle failed in `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle` with a 120s timeout while clicking `deep-flow behaviour mode Guard Area`.
+- Smoke failed in `settings accessibility options apply in battle @ci-fast` with a 60s timeout while clicking `settings smoke battle resume`.
+- GitHub artifact upload failed because artifact storage quota was hit, so traces/videos/error contexts were not downloadable.
+
+v0.16.2 docs added:
+
+- `docs/V0162_RELEASE_MATRIX_TIMEOUT_FAILURE_AUDIT.md`
+- `docs/V0162_RELEASE_MATRIX_TIMEOUT_FIX.md`
+
+v0.16.2 test changes:
+
+- `tests/e2e/deep-flow.spec.ts`
+- `tests/e2e/smoke.spec.ts`
+
+Fix summary:
+
+- Removed only the duplicated Hold Ground, Press Attack, and Guard Area switching sequence from the older deep-battle HUD/minimap/building test.
+- Kept that HUD test's original coverage: default behaviour-mode affordance, attack intent, minimap movement, fog toggle, building placement cancel, and command hall actions.
+- Left the dedicated hosted behaviour mode gauntlet intact as the owner of behaviour-mode switching and behaviour assertions.
+- Increased only the settings runtime accessibility smoke timeout from 60s to 90s, matching the established scoped settings-timeout pattern.
+- Added semantic pause/resume success checks for the settings runtime battle menu clicks so `clickReady` can stop once the real scene and DOM state changed.
+- Added an explicit post-resume assertion that the battle scene remains active and unpaused.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line PASS, 1 test in 1.0m.
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --reporter=line PASS, 1 test in 36.5s.
+npm run test:e2e:release:hosted:deep-battle PASS, 12 tests in 3.7m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 2.8m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.3m.
+npm run test:e2e:smoke PASS, 14 tests in 6.5m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release PASS, 77 tests in 36.3m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 3.4m.
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 1.6m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, Playwright spec coverage distribution and scoped settings runtime timeout only.
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run for v0.16.2 and confirm deep-battle and smoke are green before opening any v0.17 work.
+
+## v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
 
 Status: local verification is green after a narrow test-only Fast confidence fix. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.1 before starting v0.17.
 

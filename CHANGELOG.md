@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.16.2 Release-Matrix Smoke And Deep-Battle Stabilization - 2026-05-20
+
+This checkpoint fixes the GitHub Actions CI Release Matrix Dry Run #66 hosted release-matrix smoke and deep-battle timeout regressions after v0.16.1. It is a test-only stabilization pass, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0162_RELEASE_MATRIX_TIMEOUT_FAILURE_AUDIT.md`.
+- Added `docs/V0162_RELEASE_MATRIX_TIMEOUT_FIX.md`.
+- Removed duplicated behaviour-mode switching from the older deep-battle HUD/minimap/building test.
+- Kept the dedicated hosted behaviour mode gauntlet intact as the owner of behaviour-mode switching assertions.
+- Increased only the settings runtime accessibility smoke timeout from 60s to 90s.
+- Added semantic pause/resume success checks for the settings runtime battle menu and resume clicks.
+- Added an explicit post-resume battle-state assertion.
+
+### Verdict
+
+- Root cause: two hosted tests exceeded their scoped Playwright budgets under release-matrix production-preview timing. The deep-battle HUD test was overloaded by duplicated behaviour-mode transitions, and the settings runtime smoke needed the same kind of scoped hosted budget previously used for settings-smoke timeouts.
+- `Target page/context/browser closed` was a timeout cleanup consequence, not the cause.
+- Settings/accessibility assertions weakened: no.
+- Minimap/fog/building/cancel/command hall assertions weakened: no.
+- Behaviour mode assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+
+### Verification
+
+- Passed: focused hosted deep-battle test, focused hosted smoke settings runtime test, hosted deep-battle lane with 12 tests, hosted smoke lane with 14 tests, `npm run test:e2e:smoke:fast` with 8 tests, full smoke with 14 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, controls lab, controls verifier, full release with 77 tests, 3-repeat focused deep-battle soak, 3-repeat focused settings runtime soak, and `git diff --check`.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.2 and confirm `Release matrix (deep-battle)` and `Release matrix (smoke)` are green before starting v0.17.
+
 ## v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
 
 This checkpoint fixes the GitHub Actions CI Release Matrix Dry Run #64 `Fast confidence` regression after v0.16. It is a test-only smoke stabilization pass, not v0.17 and not a gameplay/content/balance change.

@@ -1747,45 +1747,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       return scene?.selectionSystem.getSelected().some((entity: any) => entity.kind === "hero");
     });
     await expect(page.locator(".side-panel")).toContainText("Battle QA");
+    // Behaviour mode switching is owned by the dedicated gauntlet below; this hosted HUD test keeps
+    // the default mode affordance checks without duplicating three extra mode transitions.
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
     await expect(page.getByTestId("behaviour-mode-current")).toContainText("Guard Area");
-    await clickReady(page.getByTestId("behaviour-mode-hold_ground"), "deep-flow behaviour mode Hold Ground");
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            return scene?.hero?.behaviourMode;
-          }),
-        { message: "expected Hold Ground to apply to the selected hero" }
-      )
-      .toBe("hold_ground");
-    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Hold Ground");
-    await expect(page.getByTestId("unit-order-summary")).toContainText("Holding Ground");
-    await clickReady(page.getByTestId("behaviour-mode-press_attack"), "deep-flow behaviour mode Press Attack");
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            return scene?.hero?.behaviourMode;
-          }),
-        { message: "expected Press Attack to apply to the selected hero" }
-      )
-      .toBe("press_attack");
-    await expect(page.getByTestId("behaviour-mode-current")).toContainText("Press Attack");
-    await clickReady(page.getByTestId("behaviour-mode-guard_area"), "deep-flow behaviour mode Guard Area");
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            return scene?.hero?.behaviourMode;
-          }),
-        { message: "expected Guard Area to restore the selected hero default mode" }
-      )
-      .toBe("guard_area");
-    await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
 
     const attackHoverTarget = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

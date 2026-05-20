@@ -1,6 +1,59 @@
 # Development Checkpoint
 
-Updated: 2026-05-20 v0.16.1 fast-confidence CI smoke stabilization
+Updated: 2026-05-20 v0.16.2 release-matrix smoke/deep-battle stabilization
+
+## v0.16.2 Release-Matrix Smoke/Deep-Battle Stabilization - 2026-05-20
+
+Scope: fix only GitHub Actions CI Release Matrix Dry Run #66 `Release matrix (deep-battle)` and `Release matrix (smoke)` timeout regressions after v0.16.1, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, changing behaviour modes, changing package materials, restructuring the release matrix, weakening settings/accessibility assertions, weakening minimap/fog/building/cancel/command hall assertions, or weakening behaviour mode coverage.
+
+Baseline:
+
+- Starting commit: `3bfe3b20a09cbc67de80954384d3ddad7a61a270`, `Checkpoint v0.16.1 fast-confidence CI smoke stabilization`.
+- Branch was clean and synced with `origin/main`.
+- `gh` CLI was unavailable locally.
+- GitHub connector logs for Actions run id `26154299133` showed CI Release Matrix Dry Run #66 failed in `Release matrix (deep-battle)` and `Release matrix (smoke)`.
+- Artifact upload failed because GitHub artifact storage quota was hit, so traces/videos/error-context files were not downloadable.
+
+Included work:
+
+- Added `docs/V0162_RELEASE_MATRIX_TIMEOUT_FAILURE_AUDIT.md`.
+- Added `docs/V0162_RELEASE_MATRIX_TIMEOUT_FIX.md`.
+- Removed duplicated Hold Ground, Press Attack, and Guard Area switching from the older deep-battle HUD/minimap/building test.
+- Kept the dedicated hosted behaviour mode gauntlet intact for behaviour-mode switching and behaviour assertions.
+- Increased only the settings runtime accessibility smoke timeout from 60s to 90s.
+- Added semantic pause/resume success checks around the settings battle menu and resume `clickReady` calls.
+- Added an explicit post-resume battle-state assertion.
+
+Root cause:
+
+- The deep-battle failure was an overloaded hosted scenario: the older HUD/minimap/building test had accumulated duplicated v0.16 behaviour-mode transitions before continuing through its original minimap/fog/build/cancel/command hall surface.
+- The smoke failure was a hosted production-preview timing margin issue in the settings runtime accessibility test; the test was valid locally but exceeded the 60s hosted budget around battle resume.
+- In both logs, `Target page, context or browser has been closed` was reported after Playwright's per-test timeout, so it was a consequence of timeout cleanup rather than the root cause.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line PASS, 1 test in 1.0m.
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --reporter=line PASS, 1 test in 36.5s.
+npm run test:e2e:release:hosted:deep-battle PASS, 12 tests in 3.7m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 2.8m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.3m.
+npm run test:e2e:smoke PASS, 14 tests in 6.5m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release PASS, 77 tests in 36.3m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 3.4m.
+npx playwright test tests/e2e/smoke.spec.ts --config=playwright.hosted-release.config.ts --grep "settings accessibility options apply in battle" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 1.6m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, Playwright specs only.
+
+Remaining closeout: commit as `Checkpoint v0.16.2 release-matrix smoke and deep-battle stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.1 Fast-Confidence CI Smoke Stabilization - 2026-05-20
 

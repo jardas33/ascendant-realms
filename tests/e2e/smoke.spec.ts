@@ -27,7 +27,8 @@ import {
 type SmokeDifficulty = "story" | "easy" | "normal" | "hard";
 
 const SETTINGS_ACCESSIBILITY_PERSISTENCE_SMOKE_TIMEOUT_MS = 60_000;
-const SETTINGS_ACCESSIBILITY_RUNTIME_SMOKE_TIMEOUT_MS = 60_000;
+// Scoped to the hosted production-preview settings runtime smoke; all accessibility assertions stay active.
+const SETTINGS_ACCESSIBILITY_RUNTIME_SMOKE_TIMEOUT_MS = 90_000;
 const SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS = 60_000;
 const TUTORIAL_EXIT_SMOKE_TIMEOUT_MS = 60_000;
 const ACCESSIBILITY_SMOKE_SETTINGS = {
@@ -118,6 +119,25 @@ async function launchSettingsSmokeBattle(page: Page): Promise<void> {
     });
   }, SAVE_KEY);
   await expectBattleLoaded(page);
+}
+
+async function waitForBattlePauseState(page: Page, expectedPaused: boolean, timeout = 1_000): Promise<boolean> {
+  return page
+    .waitForFunction(
+      (paused) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const pauseMenu = document.querySelector("[data-testid='battle-pause-menu']");
+        return (
+          Boolean(scene?.scene.isActive()) &&
+          Boolean(scene?.menuPaused) === paused &&
+          (paused ? Boolean(pauseMenu) : !pauseMenu)
+        );
+      },
+      expectedPaused,
+      { timeout }
+    )
+    .then(() => true)
+    .catch(() => false);
 }
 
 async function selectCampaignNodeDetails(
@@ -970,7 +990,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       })
       .then((handle) => handle.jsonValue());
     await page.mouse.move(battleMenuPoint.x, battleMenuPoint.y);
-    await clickReady(page.getByTestId("battle-menu"), "settings smoke battle menu");
+    await clickReady(page.getByTestId("battle-menu"), "settings smoke battle menu", {
+      successCheckAfterClick: () => waitForBattlePauseState(page, true)
+    });
     await expect(page.getByTestId("battle-pause-menu")).toBeVisible();
     await expect(page.getByTestId("battle-status")).toContainText("Paused");
     const pausedState = await page.evaluate(() => {
@@ -978,8 +1000,15 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       return { menuPaused: Boolean(scene?.menuPaused), stillInBattle: Boolean(scene?.scene.isActive()) };
     });
     expect(pausedState).toMatchObject({ menuPaused: true, stillInBattle: true });
-    await clickReady(page.getByTestId("battle-resume"), "settings smoke battle resume");
+    await clickReady(page.getByTestId("battle-resume"), "settings smoke battle resume", {
+      successCheckAfterClick: () => waitForBattlePauseState(page, false)
+    });
     await expect(page.getByTestId("battle-pause-menu")).toHaveCount(0);
+    const resumedState = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return { menuPaused: Boolean(scene?.menuPaused), stillInBattle: Boolean(scene?.scene.isActive()) };
+    });
+    expect(resumedState).toMatchObject({ menuPaused: false, stillInBattle: true });
   });
 
   test("new campaign flow opens the campaign map and blocks locked nodes @ci-fast", async ({ page }) => {

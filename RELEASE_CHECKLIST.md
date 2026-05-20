@@ -36,6 +36,7 @@ Known current realities:
 - v0.11.11 keeps local full release, local 2-way shards, and local 3-way shards intact, but runs the manual GitHub release groups against production preview after run #17 showed hosted dev-server release groups still failed across app boot, actionability, and browser-context stability.
 - v0.11.12 keeps hosted release coverage intact and hardens interaction determinism after run #19 showed remaining hosted failures in real DOM button clicks, battle-loaded waits, tutorial/layout box measurement, side-panel reachability checks, and canvas movement delivery.
 - v0.16.1 keeps the automatic Fast confidence script unchanged but splits settings accessibility coverage into two focused `@ci-fast` tests so settings persistence and runtime battle application get separate browser contexts.
+- v0.16.2 keeps the hosted release matrix shape unchanged after run #66, removes duplicated behaviour-mode switching from the older deep-battle HUD test because the dedicated hosted behaviour gauntlet owns that coverage, and gives only the settings runtime accessibility smoke a 90s hosted-safe budget.
 
 ## Required Automated Checks
 
@@ -57,7 +58,7 @@ Current v0.15 checkpoint result:
 PASS: 55 test files, 393 tests
 ```
 
-Current v0.16.1 checkpoint result:
+Current v0.16.2 checkpoint result:
 
 ```text
 PASS: 56 test files, 406 tests
@@ -135,7 +136,7 @@ PASS: 14 Playwright tests
 
 v0.11.3 gives only `settings screen persists accessibility options` a 60s per-test budget after GitHub Actions evidence showed this combined settings-persistence plus in-battle runtime-application check can exceed the global 35s Playwright timeout on hosted runners. The test remains in smoke and keeps its real persistence/runtime assertions. If `campaign Border Village launches a battle scene` fails immediately after a settings timeout, first treat it as possible browser/context cascade; if it fails again after settings passes, investigate it independently.
 
-v0.16.1 supersedes the combined settings path shape for Fast confidence: `settings screen persists accessibility options @ci-fast` now covers save/reopen persistence and localStorage/document dataset assertions, while `settings accessibility options apply in battle @ci-fast` covers floating text disabled, fog override, colorblind minimap runtime state and marker colors, and battle pause/resume. Both tests have scoped 60s budgets. Inventory remains a separate `@ci-fast` smoke test; if it fails during browser context setup immediately after settings failures, first investigate settings/context pressure before changing inventory behavior.
+v0.16.1 supersedes the combined settings path shape for Fast confidence: `settings screen persists accessibility options @ci-fast` now covers save/reopen persistence and localStorage/document dataset assertions, while `settings accessibility options apply in battle @ci-fast` covers floating text disabled, fog override, colorblind minimap runtime state and marker colors, and battle pause/resume. v0.16.2 keeps the persistence test at a scoped 60s budget and gives only the runtime battle-application test a scoped 90s budget after GitHub run #66 showed hosted production-preview smoke could exceed 60s around battle resume. Inventory remains a separate `@ci-fast` smoke test; if it fails during browser context setup immediately after settings failures, first investigate settings/context pressure before changing inventory behavior.
 
 v0.11.4 stabilizes seeded smoke setup by waiting for a ready main menu before localStorage mutation and navigating back to `/` after writing seeded saves instead of relying on `page.reload()`. `skirmish difficulty selection changes fog and starting pressure` now has a scoped 60s budget because it launches two seeded battles back-to-back and GitHub Actions evidence showed the seed/reload path could exceed the global timeout. The test remains in smoke and keeps its fog/pressure assertions.
 
@@ -159,13 +160,13 @@ Current v0.15 checkpoint result:
 PASS: 75 Playwright tests
 ```
 
-Current v0.16.1 checkpoint result:
+Current v0.16.2 checkpoint result:
 
 ```text
 PASS: 77 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.1 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.1 all-in-one release run took about 38 minutes locally on Windows; set command timeouts accordingly.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.2 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.2 all-in-one release run took about 36.3 minutes locally on Windows; set command timeouts accordingly.
 
 6. Optional CI sharded release gate:
 
@@ -216,7 +217,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16.1 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 14 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input.
+All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16.2 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 14 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input. v0.16.2 keeps behaviour-mode switching coverage in the dedicated hosted behaviour gauntlet instead of duplicating those transitions inside the older minimap/fog/build/cancel/command-hall HUD test.
 
 Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 
