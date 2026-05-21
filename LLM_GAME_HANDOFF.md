@@ -1,12 +1,57 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-20 v0.16.5 hosted deep-battle command hall split stabilization
+Last updated: 2026-05-21 v0.16.6 hosted deep-battle first campaign training stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
+
+Status: local verification is green after a narrow test-only follow-up for the remaining hosted deep-battle failure after v0.16.5. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.6 before starting v0.17.
+
+Remote evidence:
+
+- The repository was made public, which allowed GitHub-hosted Actions to start again without the private-repo billing block.
+- CI Release Matrix Dry Run #75 checked out `0398e6e18a596d6ca42f8b50761949f477055757`, `Checkpoint v0.16.5 hosted deep-battle command hall split stabilization`.
+- Fast confidence, Release simulator, Release matrix smoke, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+- Only `Release matrix (deep-battle)` was red.
+- Failed test: `first campaign battle path covers capture, build, train, rally, and victory rewards @hosted-deep-battle`.
+- Failure shape: the v0.16.5 split tests passed, then the first-campaign path failed around Militia training/rally lookup. First attempt timed out after completing training queues; retry timed out waiting for the visible train command to expose a Barracks training queue.
+
+v0.16.6 docs added:
+
+- `docs/V0166_HOSTED_DEEP_BATTLE_FIRST_CAMPAIGN_TRAINING_FIX.md`
+
+v0.16.6 test change:
+
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix summary:
+
+- Kept the visible Militia train command click path first.
+- Added a narrow fallback to the existing scene-backed `trainUnitThroughCommand` helper only when visible command clicks never expose a training queue.
+- Broadened the trained Militia lookup to accept a newly trained unit that has either a rally `moveTarget` or is already at the rally point.
+- Left runtime gameplay, balance, save data, art/assets, behaviour modes, and workflow structure unchanged.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "first campaign battle path covers capture, build, train, rally, and victory rewards" --retries=1 --trace=on --reporter=line PASS, 1 test in 53.2s.
+npm run test:e2e:release:hosted:deep-battle PASS, 13 tests in 4.3m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.6m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, deep-flow spec fallback/lookup only.
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run for v0.16.6 and confirm hosted deep-battle is green before opening any v0.17 work.
 
 ## Current v0.16.5 Hosted Deep-Battle Command Hall Split Stabilization - 2026-05-20
 

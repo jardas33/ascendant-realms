@@ -1,6 +1,50 @@
 # Development Checkpoint
 
-Updated: 2026-05-20 v0.16.5 hosted deep-battle command hall split stabilization
+Updated: 2026-05-21 v0.16.6 hosted deep-battle first campaign training stabilization
+
+## v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
+
+Scope: fix only the remaining GitHub Actions CI Release Matrix Dry Run #75 `Release matrix (deep-battle)` failure after v0.16.5, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, changing behaviour modes, changing package materials, restructuring the release matrix, weakening first-campaign capture/build/train/rally/victory assertions, using force clicks, or using DOM fallback for canvas/world clicks.
+
+Baseline:
+
+- Starting commit: `0398e6e18a596d6ca42f8b50761949f477055757`, `Checkpoint v0.16.5 hosted deep-battle command hall split stabilization`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions run #73 failed before starting because the private repository hit the billing/payment/spending gate.
+- After the repository was made public, rerun #73 Fast confidence passed and manual workflow dispatch #75 ran on the hosted runner.
+- CI Release Matrix Dry Run #75 had Fast confidence, Release simulator, Release matrix smoke, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen green.
+- Only `Release matrix (deep-battle)` was red.
+
+Included work:
+
+- Added `docs/V0166_HOSTED_DEEP_BATTLE_FIRST_CAMPAIGN_TRAINING_FIX.md`.
+- Kept visible Militia train command click attempts in the first-campaign hosted deep-battle test.
+- Added a narrow fallback to the existing scene-backed `trainUnitThroughCommand` helper only after visible command clicks fail to expose a training queue.
+- Allowed the trained Militia lookup to accept a newly trained unit that has already reached the rally point as well as one still carrying the rally `moveTarget`.
+
+Root cause:
+
+- The v0.16.5 Command Hall split held; the new #75 failure occurred later in the broad first-campaign path.
+- Hosted CI sometimes failed to observe the Barracks training queue after repeated visible Militia command fallback clicks.
+- The trained-unit lookup was stricter than the later rally assertion because it required a live `moveTarget` and ignored a newly trained unit already at the rally point.
+- This was a test-harness timing/readiness issue, not a runtime gameplay regression.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "first campaign battle path covers capture, build, train, rally, and victory rewards" --retries=1 --trace=on --reporter=line PASS, 1 test in 53.2s.
+npm run test:e2e:release:hosted:deep-battle PASS, 13 tests in 4.3m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.6m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, deep-flow spec fallback/lookup only.
+
+Remaining closeout: commit as `Checkpoint v0.16.6 hosted deep-battle first campaign training stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.5 Hosted Deep-Battle Command Hall Split Stabilization - 2026-05-20
 

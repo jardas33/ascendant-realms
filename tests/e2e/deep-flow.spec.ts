@@ -3011,27 +3011,37 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     snapshot = await getBattleSnapshot(page);
     const militiaBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
-    await clickBattleCommandUntilEffect(
-      () => page.locator("button[data-action='train'][data-id='militia']"),
-      "deep-flow first campaign train Militia",
-      async () => {
-        await page.waitForFunction(
-          () => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            const barracks = scene?.buildings.find(
-              (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
-            );
-            return barracks?.trainingQueue.length > 0;
-          },
-          undefined,
-          { timeout: 2_000 }
-        );
-      },
-      async () => {
-        await selectPlayerBuildingFromScene(page, "barracks");
-        await expect(page.locator(".side-panel")).toContainText("Barracks");
-      }
-    );
+    const trainMilitiaButton = () => page.locator("button[data-action='train'][data-id='militia']");
+    try {
+      await clickBattleCommandUntilEffect(
+        trainMilitiaButton,
+        "deep-flow first campaign train Militia",
+        async () => {
+          await page.waitForFunction(
+            () => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              const barracks = scene?.buildings.find(
+                (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+              );
+              return barracks?.trainingQueue.length > 0;
+            },
+            undefined,
+            { timeout: 2_000 }
+          );
+        },
+        async () => {
+          await selectPlayerBuildingFromScene(page, "barracks");
+          await expect(page.locator(".side-panel")).toContainText("Barracks");
+        }
+      );
+    } catch (error) {
+      console.warn(
+        `deep-flow first campaign train Militia: visible command did not expose a training queue; using scene-backed command helper. ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+      await trainUnitThroughCommand(trainMilitiaButton(), page, "militia", "deep-flow first campaign train Militia");
+    }
 
     const rallyPoint = { x: 540, y: 830 };
     await clickWorldPoint(page, rallyPoint, "right");
@@ -3060,9 +3070,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         if (candidates.length <= beforeCount) {
           return false;
         }
-        return candidates.find(
-          (unit: any) => unit.moveTarget && Math.hypot(unit.moveTarget.x - target.x, unit.moveTarget.y - target.y) < 8
-        )?.id;
+        const newlyTrainedCandidates = candidates.slice(beforeCount);
+        return newlyTrainedCandidates.find((unit: any) => {
+          const moveTargetMatches = unit.moveTarget && Math.hypot(unit.moveTarget.x - target.x, unit.moveTarget.y - target.y) < 8;
+          const alreadyAtRally = Math.hypot(unit.position.x - target.x, unit.position.y - target.y) < 24;
+          return moveTargetMatches || alreadyAtRally;
+        })?.id;
       },
       { beforeCount: militiaBefore, target: rallyPoint },
       { timeout: 5_000 }

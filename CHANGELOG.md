@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
+
+This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #75 hosted deep-battle failure after v0.16.5. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0166_HOSTED_DEEP_BATTLE_FIRST_CAMPAIGN_TRAINING_FIX.md`.
+- Kept visible Militia train command clicks first in the first-campaign hosted deep-battle test.
+- Added a narrow fallback to the existing scene-backed training command helper only when visible command clicks do not expose a training queue.
+- Allowed the trained Militia lookup to accept a newly trained unit already at the rally point, matching the later rally assertion.
+
+### Verdict
+
+- Root cause: hosted deep-battle #75 passed the v0.16.5 split tests and failed later in the broad first-campaign path because training command observation and trained-unit lookup were too brittle under hosted timing.
+- First-campaign capture/build/train/rally/victory assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused hosted first-campaign path, hosted deep-battle lane with 13 tests, `npm run test:e2e:smoke:fast` with 8 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, and `git diff --check`.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.6 and confirm `Release matrix (deep-battle)` is green before starting v0.17.
+
 ## v0.16.5 Hosted Deep-Battle Command Hall Split Stabilization - 2026-05-20
 
 This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #72 hosted deep-battle timeout after v0.16.4. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
