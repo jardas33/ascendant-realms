@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-20 v0.16.3 hosted smoke pause/resume stabilization
+Last updated: 2026-05-20 v0.16.4 hosted deep-battle movement command stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,59 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
+## Current v0.16.4 Hosted Deep-Battle Movement Command Stabilization - 2026-05-20
+
+Status: local verification is green after a narrow test-only follow-up for the remaining hosted deep-battle failure. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.4 before starting v0.17.
+
+Remote evidence:
+
+- GitHub Actions CI Release Matrix Dry Run #70 checked out `ce2b54a9e23d7dc43e7eb9706ab882dc4e761bfa`, `Checkpoint v0.16.3 hosted smoke pause-resume stabilization`.
+- Fast confidence, Release simulator, Release matrix smoke, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+- Only `Release matrix (deep-battle)` was red.
+- Failed test: `battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle`.
+- Failure shape: the test timed out in `rightClickWorldPointUntilOrder` after repeatedly waiting for the movement order summary to become exactly `Moving`.
+- GitHub artifact upload again failed because artifact storage quota was hit, so traces/videos/error-context files were not downloadable through the connector.
+
+v0.16.4 docs added:
+
+- `docs/V0164_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md`
+- `docs/V0164_HOSTED_DEEP_BATTLE_FIX.md`
+
+v0.16.4 test change:
+
+- `tests/e2e/deep-flow.spec.ts`
+
+Fix summary:
+
+- Added a shared movement order summary pattern for `Moving` or `Repositioning`, matching the runtime's valid move-order states under combat suppression.
+- Kept real canvas right-click movement commands; no force clicks and no DOM fallback for canvas/world clicks.
+- Replaced transient hosted status-line assertions in the older HUD test with deterministic state assertions for fog active state, selected-unit movement order summary, and placement cancel state.
+- Left the dedicated behaviour mode control gauntlet intact.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line PASS, 1 test in 1.3m.
+npm run test:e2e:release:hosted:deep-battle PASS, 12 tests in 4.1m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.1m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 8.2m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release PASS, 77 tests in 40.9m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 3.4m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, deep-flow spec assertions only.
+
+Next recommended action: rerun GitHub Actions CI Release Matrix Dry Run for v0.16.4 and confirm hosted deep-battle is green before opening any v0.17 work.
+
+## v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
 
 Status: local verification is green after a narrow test-only follow-up for the remaining hosted smoke failure. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.3 before starting v0.17.
 

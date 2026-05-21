@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.16.4 Hosted Deep-Battle Movement Command Stabilization - 2026-05-20
+
+This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #70 hosted deep-battle timeout after v0.16.3. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0164_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md`.
+- Added `docs/V0164_HOSTED_DEEP_BATTLE_FIX.md`.
+- Added a shared `Moving` / `Repositioning` movement-order summary pattern for valid right-click move commands.
+- Swapped transient hosted status-line assertions in the older deep-battle HUD test for deterministic fog state, movement order, and placement cancel state checks.
+- Kept the dedicated behaviour mode gauntlet intact.
+
+### Verdict
+
+- Root cause: the older hosted HUD/minimap/building deep-battle test still required exact `Moving` copy and transient status-line text in a pressure-heavy battle, while the runtime can validly show `Repositioning` and pressure status can outrank normal command/fog messages.
+- Minimap/fog/building/cancel/command hall assertions weakened: no.
+- Behaviour mode assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused hosted deep-battle HUD test, hosted deep-battle lane with 12 tests, hosted smoke lane with 14 tests, `npm run test:e2e:smoke:fast` with 8 tests, full smoke with 14 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, controls lab, controls verifier, full release with 77 tests, and 3-repeat focused deep-battle soak.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.4 and confirm `Release matrix (deep-battle)` is green before starting v0.17.
+
 ## v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
 
 This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #68 hosted smoke timeout after v0.16.2. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.

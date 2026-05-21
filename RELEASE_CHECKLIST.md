@@ -38,6 +38,7 @@ Known current realities:
 - v0.16.1 keeps the automatic Fast confidence script unchanged but splits settings accessibility coverage into two focused `@ci-fast` tests so settings persistence and runtime battle application get separate browser contexts.
 - v0.16.2 keeps the hosted release matrix shape unchanged after run #66, removes duplicated behaviour-mode switching from the older deep-battle HUD test because the dedicated hosted behaviour gauntlet owns that coverage, and gives only the settings runtime accessibility smoke a 90s hosted-safe budget.
 - v0.16.3 keeps the same hosted smoke coverage after run #68, but gives only the settings runtime smoke battle `Menu`/`Resume` DOM buttons a short normal-click budget before verified DOM-control fallback so hosted CI does not burn the test timeout on repeated actionability waits.
+- v0.16.4 keeps the same hosted deep-battle coverage after run #70, but treats `Moving` and `Repositioning` as valid right-click movement summaries and checks fog/cancel behaviour through durable scene state instead of transient status-line text that pressure messages can intentionally outrank.
 
 ## Required Automated Checks
 
@@ -161,13 +162,13 @@ Current v0.15 checkpoint result:
 PASS: 75 Playwright tests
 ```
 
-Current v0.16.3 checkpoint result:
+Current v0.16.4 checkpoint result:
 
 ```text
 PASS: 77 Playwright tests
 ```
 
-`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.3 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.3 all-in-one release run took about 37.8 minutes locally on Windows; set command timeouts accordingly.
+`npm run test:e2e` also remains the full Playwright suite. Use a long timeout. The full suite intentionally runs with one worker for stability. The v0.16.4 checkpoint full release gate is 77 tests across the release spec set while smoke is 14 tests. The v0.16.4 all-in-one release run took about 40.9 minutes locally on Windows; set command timeouts accordingly.
 
 6. Optional CI sharded release gate:
 
@@ -218,7 +219,7 @@ npm run test:e2e:release:hosted:layout-cinderfen
 npm run test:e2e:release:hosted:smoke
 ```
 
-All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16.2 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 14 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input. v0.16.2 keeps behaviour-mode switching coverage in the dedicated hosted behaviour gauntlet instead of duplicating those transitions inside the older minimap/fog/build/cancel/command-hall HUD test.
+All six hosted groups must pass to equal the same full release suite in GitHub Actions; the v0.16.4 checkpoint hosted group counts are 12 deep-meta, 12 deep-battle, 7 deep-campaign-pressure, 20 layout-core, 12 layout-cinderfen, and 14 smoke tests. They are additive, manual-only CI ergonomics for hosted runners and do not remove or replace the full release lane, the 2-way scripts, or the local 3-way scripts. The hosted groups intentionally avoid `--fully-parallel` and use production preview instead of Vite dev server after GitHub run #17 showed dev-server hosted release groups still produced seed/navigation, actionability, layout, and extended-smoke instability. Hosted helpers keep assertions intact while allowing a verified DOM click fallback only for real enabled DOM controls after normal Playwright click actionability fails. Canvas/world actions still use real pointer input. v0.16.2 keeps behaviour-mode switching coverage in the dedicated hosted behaviour gauntlet instead of duplicating those transitions inside the older minimap/fog/build/cancel/command-hall HUD test. v0.16.4 keeps that older HUD test focused on minimap/fog/build/cancel/command hall behaviour and asserts fog/cancel via scene state when hosted pressure messages can legitimately occupy the status line.
 
 Run `npm run build` before using these hosted scripts locally. The GitHub release matrix jobs already run `npm run build` before the hosted group command.
 

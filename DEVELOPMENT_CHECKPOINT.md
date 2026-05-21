@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-20 v0.16.3 hosted smoke pause/resume stabilization
+Updated: 2026-05-20 v0.16.4 hosted deep-battle movement command stabilization
+
+## v0.16.4 Hosted Deep-Battle Movement Command Stabilization - 2026-05-20
+
+Scope: fix only the remaining GitHub Actions CI Release Matrix Dry Run #70 `Release matrix (deep-battle)` timeout after v0.16.3, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, changing behaviour modes, changing package materials, restructuring the release matrix, weakening minimap/fog/building/cancel/command hall assertions, weakening behaviour mode coverage, using force clicks, or using DOM fallback for canvas/world clicks.
+
+Baseline:
+
+- Starting commit: `ce2b54a9e23d7dc43e7eb9706ab882dc4e761bfa`, `Checkpoint v0.16.3 hosted smoke pause-resume stabilization`.
+- Branch was clean and synced with `origin/main`.
+- `gh` CLI was unavailable locally.
+- GitHub connector logs for Actions run id `26194525737` showed CI Release Matrix Dry Run #70 failed only in `Release matrix (deep-battle)`.
+- Fast confidence, Release simulator, Release matrix smoke, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+- Artifact upload failed because GitHub artifact storage quota was hit, so traces/videos/error-context files were not downloadable.
+
+Included work:
+
+- Added `docs/V0164_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md`.
+- Added `docs/V0164_HOSTED_DEEP_BATTLE_FIX.md`.
+- Added `MOVE_ORDER_SUMMARY_PATTERN = /Moving|Repositioning/` for valid move-order summaries.
+- Applied that pattern to the older deep-battle HUD movement assertion and the dedicated behaviour gauntlet retreat assertion.
+- Replaced transient status-line assertions in the older HUD test with semantic fog active, movement order, and placement cancel state assertions.
+
+Root cause:
+
+- The older HUD/minimap/building deep-battle test still required a real right-click movement order to render exactly `Moving`.
+- Under combat pressure, the same valid movement order can render as `Repositioning` while move-order combat suppression is active.
+- The test also used transient status-line text for fog/cancel feedback, but pressure status messages can intentionally outrank normal fog debug or command messages.
+- The timeout was caused by the stale assertion/readiness shape, not a browser crash or gameplay runtime regression.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --reporter=line PASS, 1 test in 1.3m.
+npm run test:e2e:release:hosted:deep-battle PASS, 12 tests in 4.1m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.1m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 8.2m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release PASS, 77 tests in 40.9m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 3.4m.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, deep-flow spec assertions only.
+
+Remaining closeout: commit as `Checkpoint v0.16.4 hosted deep-battle movement command stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.3 Hosted Smoke Pause/Resume Stabilization - 2026-05-20
 

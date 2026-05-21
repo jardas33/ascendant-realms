@@ -80,6 +80,7 @@ const BATTLE_COMMAND_CLICK_OPTIONS = {
   timeoutMs: 5_000,
   waitForLayoutBox: false
 } as const;
+const MOVE_ORDER_SUMMARY_PATTERN = /Moving|Repositioning/;
 
 const HUD_MENU_CLICK_OPTIONS = {
   allowTargetGoneAfterClick: true,
@@ -2091,12 +2092,30 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       )
       .toBeGreaterThan(10);
     await page.keyboard.press("F");
-    await expect(page.getByTestId("battle-status")).toContainText(/Fog/i);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              battleActive: Boolean(scene?.scene.isActive()),
+              fogActive: Boolean(scene?.isFogActive?.()),
+              fogDebugDisabled: Boolean(scene?.fogDebugDisabled)
+            };
+          }),
+        { message: "expected F key to re-enable battle fog even when pressure status text is active" }
+      )
+      .toEqual({ battleActive: true, fogActive: true, fogDebugDisabled: false });
     await page.keyboard.press("H");
     await page.keyboard.press("Space");
     await expect(page.getByTestId("unit-order-summary")).toContainText("Guarding");
-    await rightClickWorldPointUntilOrder(page, { x: 850, y: 780 }, "Moving", "deep-flow battle HUD movement command");
-    await expect(page.getByTestId("battle-status")).toContainText("Move order accepted");
+    await rightClickWorldPointUntilOrder(
+      page,
+      { x: 850, y: 780 },
+      MOVE_ORDER_SUMMARY_PATTERN,
+      "deep-flow battle HUD movement command"
+    );
+    await expect(page.getByTestId("unit-order-summary")).toContainText(MOVE_ORDER_SUMMARY_PATTERN);
 
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
@@ -2128,7 +2147,20 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       );
     });
     await page.keyboard.press("Escape");
-    await expect(page.getByTestId("battle-status")).toContainText(/cancel/i);
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return {
+              pendingBuilding: Boolean(scene?.buildingSystem?.pendingBuildingId),
+              ghostVisible: Boolean(scene?.buildingSystem?.ghost?.visible)
+            };
+          }),
+        { message: "expected Escape to cancel building placement state" }
+      )
+      .toEqual({ pendingBuilding: false, ghostVisible: false });
+    await expect(page.getByTestId("placement-banner")).toHaveCount(0);
   });
 
   test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {
@@ -2527,7 +2559,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         y: Math.max(120, scene.hero.position.y + 180)
       };
     });
-    await rightClickWorldPointUntilOrder(page, retreatPoint, /Repositioning|Moving/, "behaviour gauntlet retreat order");
+    await rightClickWorldPointUntilOrder(
+      page,
+      retreatPoint,
+      MOVE_ORDER_SUMMARY_PATTERN,
+      "behaviour gauntlet retreat order"
+    );
     await expect(page.getByTestId("battle-status")).toContainText("Move order accepted");
     const retreatState = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
