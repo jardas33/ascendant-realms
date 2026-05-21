@@ -1704,7 +1704,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     }
   });
 
-  test("battle HUD supports minimap movement, fog toggle, building placement cancel, and command hall actions @hosted-deep-battle", async ({ page }) => {
+  test("battle HUD supports minimap movement, fog toggle, and move commands @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(120_000);
     await openFreshMainMenu(page);
     await clickReady(page.getByTestId("menu-skirmish"), "deep-flow battle HUD skirmish menu");
@@ -2116,7 +2116,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       "deep-flow battle HUD movement command"
     );
     await expect(page.getByTestId("unit-order-summary")).toContainText(MOVE_ORDER_SUMMARY_PATTERN);
+  });
 
+  test("battle HUD supports command hall building placement and cancel @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Builder QA");
+    await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
     await expect(page.locator(".side-panel")).toContainText("Build");

@@ -39,6 +39,7 @@ Known current realities:
 - v0.16.2 keeps the hosted release matrix shape unchanged after run #66, removes duplicated behaviour-mode switching from the older deep-battle HUD test because the dedicated hosted behaviour gauntlet owns that coverage, and gives only the settings runtime accessibility smoke a 90s hosted-safe budget.
 - v0.16.3 keeps the same hosted smoke coverage after run #68, but gives only the settings runtime smoke battle `Menu`/`Resume` DOM buttons a short normal-click budget before verified DOM-control fallback so hosted CI does not burn the test timeout on repeated actionability waits.
 - v0.16.4 keeps the same hosted deep-battle coverage after run #70, but treats `Moving` and `Repositioning` as valid right-click movement summaries and checks fog/cancel behaviour through durable scene state instead of transient status-line text that pressure messages can intentionally outrank.
+- v0.16.5 keeps hosted deep-battle coverage intact after run #72, but splits the older broad minimap/fog/move/build/cancel HUD scenario into a movement/fog/move test and a focused Command Hall building placement/cancel test so each has its own hosted browser context and timeout budget.
 
 ## Required Automated Checks
 

@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-20 v0.16.4 hosted deep-battle movement command stabilization
+Updated: 2026-05-20 v0.16.5 hosted deep-battle command hall split stabilization
+
+## v0.16.5 Hosted Deep-Battle Command Hall Split Stabilization - 2026-05-20
+
+Scope: fix only the remaining GitHub Actions CI Release Matrix Dry Run #72 `Release matrix (deep-battle)` timeout after v0.16.4, without adding features, changing runtime gameplay, changing gameplay numbers, changing save format, adding runtime art/assets, changing behaviour modes, changing package materials, restructuring the release matrix, weakening minimap/fog/building/cancel/command hall assertions, weakening behaviour mode coverage, using force clicks, or using DOM fallback for canvas/world clicks.
+
+Baseline:
+
+- Starting commit: `9c8e694177e6a60e423539eb202393a3a94071b9`, `Checkpoint v0.16.4 hosted deep-battle movement command stabilization`.
+- Branch was clean and synced with `origin/main`.
+- `gh` CLI was unavailable locally.
+- GitHub connector logs for Actions run id `26198333332` showed CI Release Matrix Dry Run #72 failed only in `Release matrix (deep-battle)`.
+- Fast confidence, Release simulator, Release matrix smoke, deep-meta, deep-campaign-pressure, layout-core, and layout-cinderfen were green.
+- Artifact upload failed because GitHub artifact storage quota was hit, so traces/videos/error-context files were not downloadable.
+
+Included work:
+
+- Added `docs/V0165_HOSTED_DEEP_BATTLE_COMMAND_HALL_SPLIT_AUDIT.md`.
+- Added `docs/V0165_HOSTED_DEEP_BATTLE_COMMAND_HALL_SPLIT_FIX.md`.
+- Split the older hosted deep-battle HUD/minimap/fog/build/cancel scenario into two focused tests.
+- Kept minimap movement, fog toggle, attack cursor, marquee, and right-click move command assertions in the original test.
+- Moved Command Hall building placement/cancel assertions into a new hosted deep-battle test with a fresh browser context.
+
+Root cause:
+
+- v0.16.4 fixed the previous movement-order timeout, and run #72 reached the later Command Hall build section.
+- The older hosted HUD/minimap/building test was still too broad for the 120s hosted CI budget and timed out while `clickReady` waited for the Barracks build command to be visible or enabled.
+- Later command-button tests in the same hosted deep-battle shard passed, so the failure was scenario length and hosted timing pressure, not a Command Hall or Barracks runtime regression.
+
+Current verification:
+
+```text
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, and move commands" --retries=1 --trace=on --reporter=line PASS, 1 test in 1.0m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports command hall building placement and cancel" --retries=1 --trace=on --reporter=line PASS, 1 test in 39.7s.
+npm run test:e2e:release:hosted:deep-battle PASS, 13 tests in 4.4m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.1m.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.5m.
+npm run test:e2e:smoke PASS, 14 tests in 6.9m.
+npm test PASS, 56 files / 406 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run playtest:controls PASS, 10 rows / 10 pass.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release PASS, 78 tests in 37.3m after rerunning with a longer local wrapper timeout.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports minimap movement, fog toggle, and move commands" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 2.7m.
+npx playwright test tests/e2e/deep-flow.spec.ts --config=playwright.hosted-release.config.ts --grep "battle HUD supports command hall building placement and cancel" --retries=1 --trace=on --repeat-each=3 --reporter=line PASS, 3 tests in 1.8m.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Package changed: no. Test/CI harness changed: yes, deep-flow spec split only.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.5 hosted deep-battle command hall split stabilization`, push, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.4 Hosted Deep-Battle Movement Command Stabilization - 2026-05-20
 

@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.16.5 Hosted Deep-Battle Command Hall Split Stabilization - 2026-05-20
+
+This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #72 hosted deep-battle timeout after v0.16.4. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
+
+### Included
+
+- Added `docs/V0165_HOSTED_DEEP_BATTLE_COMMAND_HALL_SPLIT_AUDIT.md`.
+- Added `docs/V0165_HOSTED_DEEP_BATTLE_COMMAND_HALL_SPLIT_FIX.md`.
+- Split the older broad hosted deep-battle HUD/minimap/fog/build/cancel test into two focused tests.
+- Kept minimap, fog, attack cursor, marquee, and right-click move assertions in the original test.
+- Moved Command Hall building placement/cancel assertions into a fresh hosted deep-battle context.
+- Kept the dedicated behaviour mode gauntlet intact.
+
+### Verdict
+
+- Root cause: the older hosted deep-battle HUD test still reached the late Command Hall build command too close to the 120s hosted CI timeout after v0.16.4 fixed the earlier movement-order issue.
+- Minimap/fog/building/cancel/command hall assertions weakened: no.
+- Behaviour mode assertions weakened: no.
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Package changed: no.
+- CI workflow/release matrix changed: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused hosted movement/fog/move deep-battle test, focused hosted Command Hall build/cancel test, hosted deep-battle lane with 13 tests, hosted smoke lane with 14 tests, `npm run test:e2e:smoke:fast` with 8 tests, full smoke with 14 tests, `npm test` with 56 files / 406 tests, build, content validation, art-intake validation, controls lab, controls verifier, full release with 78 tests, and 3-repeat hosted soaks for both split tests.
+
+### Next
+
+- Rerun GitHub Actions CI Release Matrix Dry Run for v0.16.5 and confirm `Release matrix (deep-battle)` is green before starting v0.17.
+
 ## v0.16.4 Hosted Deep-Battle Movement Command Stabilization - 2026-05-20
 
 This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #70 hosted deep-battle timeout after v0.16.3. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.
