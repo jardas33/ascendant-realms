@@ -1,6 +1,72 @@
 # Development Checkpoint
 
-Updated: 2026-05-21 v0.16.7 manual combat contact and aggro fix
+Updated: 2026-05-22 v0.16.8 post-combat-fix CI verification and soak audit
+
+## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
+
+Scope: verify v0.16.7's runtime combat/control fix through remote CI inspection, automated soak, control-lab coverage, public-repo safety audit, and package readiness without starting v0.17, adding gameplay features, implementing worker construction/builders, adding units/buildings/maps/factions/runtime art/assets, adding Patrol/formations, rewriting broad AI/pathing, changing gameplay numbers/unit stats/enemy wave timings/save format, weakening control coverage, using force clicks, using DOM fallback for canvas/world clicks, or inventing human feedback.
+
+Baseline:
+
+- Starting commit: `169bb21d54bd1599f5241b15bbfb1a187276d921`, `Checkpoint v0.16.7 manual combat contact and aggro fix`.
+- Branch was clean and synced with `origin/main`.
+- Existing package `artifacts/playtest/ascendant-realms-private-playtest-169bb21` recorded `workingTreeDirty: false`.
+- v0.16.7 had changed runtime melee contact/reacquisition, local melee enemy building aggro, retreat suppression, and hover/click tolerance.
+- GitHub Actions CI Release Matrix Dry Run #78 on the v0.16.7 commit was green as a push run, but only Fast confidence ran. Release simulator, release matrix groups, optional visual QA, and full release e2e were skipped because they require workflow dispatch.
+
+Included work:
+
+- Added `docs/V0168_BASELINE_AND_REMOTE_CI_AUDIT.md`.
+- Added `docs/V0168_REMOTE_CI_VERIFICATION.md`.
+- Added `docs/V0168_CI_TRIAGE_FIX.md`.
+- Added `docs/V0168_COMBAT_FIX_SOAK_REPORT.md`.
+- Added `docs/V0168_CONTROL_LAB_V0167_COVERAGE_REVIEW.md`.
+- Added `docs/V0168_PUBLIC_REPO_SAFETY_AUDIT.md`.
+- Added `docs/V0168_EMMANUEL_RETEST_AFTER_V0167_CHECKLIST.md`.
+- Added `docs/V0168_LONG_SOAK_RESULTS.md`.
+- Added deterministic control-lab scenarios for local melee enemy building aggro and attack-hover tolerance versus nearby empty terrain.
+- Regenerated control-lab normal, extended, and dashboard outputs.
+- Stabilized one hosted smoke assertion by relying on deterministic Cinderfen Crossing scene state instead of transient `battle-status` launch text after the battle had already advanced to AI status.
+- Completed a public-repo safety audit.
+
+Public safety result:
+
+- No tracked `.env`, private key, credential, service-account, package artifact, Playwright report, raw private feedback, email address, or secret value was found.
+- Secret-pattern matches were documentation/test references and package-validator dummy fixtures.
+- Protected-IP searches found only guardrails/prompt negatives/art-direction warnings, not copied names/assets/lore/UI/music.
+- Tracked `public/assets/manual` image assets remain intentional prototype assets, but prior asset docs still classify current file-backed image assets as needing source/license proof before production approval.
+
+Triage:
+
+- `npm run test:e2e:release:hosted:smoke` initially failed one Chapter 2 smoke assertion because `battle-status` had advanced to `AI: EXPAND - Time 0:12`.
+- Classification: hosted timing issue / transient status-line assertion.
+- Fix: test-only; no runtime change.
+- Coverage preserved: the test still asserts Cinderfen Crossing map/node/reward table/mode/difficulty and later objective/reward/persistence state through scene and save state.
+
+Current verification:
+
+```text
+npm test -- CombatSystem.test.ts CollisionSystem.test.ts MovementSystem.test.ts BehaviourModeSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 5 files / 38 tests.
+Focused unit soak repeated the same command 10 times: PASS 10/10.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --repeat-each=5 --reporter=line PASS, 5/5 in 1.6m.
+npm run playtest:controls / npm run playtest:controls:extended / npm run playtest:controls:verify repeated 3 cycles: PASS 3/3. Final verifier PASS, 1112 checks.
+npm test PASS, 57 files / 414 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.4m.
+npm run test:e2e:smoke PASS, 14 tests in 7.0m after the hosted smoke assertion fix.
+npm run test:e2e:release:hosted:deep-battle PASS, 14 tests in 4.4m.
+npm run test:e2e:release:hosted:smoke first run FAIL, 1 transient status-line assertion; targeted fix applied.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/smoke.spec.ts --grep "post-Ashen campaign resolves Cinderfen Overlook" --reporter=line PASS, 1 test in 27.7s.
+npm run test:e2e:release:hosted:smoke rerun PASS, 14 tests in 2.9m.
+npm run test:e2e:release PASS, 79 tests in 38.7m.
+npm run visual:qa PASS, 5 tests in 4.4m; 18 screenshots, 0 browser console errors, 0 screenshot retries.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes. Package changed: final clean package must be regenerated after commit.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.8 post-combat-fix CI verification and soak audit`, push, regenerate and verify a clean private playtest package, confirm branch clean/synced, and have a user with GitHub Actions write access dispatch the normal enabled release matrix.
 
 ## v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
 

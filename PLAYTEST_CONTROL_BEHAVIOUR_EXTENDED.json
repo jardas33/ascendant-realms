@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "generatedBy": "ControlBehaviourScenarioRunner",
-  "generatedAt": "2026-05-19T10:51:52.936Z",
-  "buildCommit": "27dfe1a",
+  "generatedAt": "2026-05-22T10:16:26.281Z",
+  "buildCommit": "169bb21",
   "runMode": "extended",
   "iterationCount": 5,
-  "scenarioCount": 10,
+  "scenarioCount": 12,
   "results": [
     {
       "scenarioId": "hold_ground_contact_defence",
@@ -99,7 +99,7 @@
         "enemyDistanceCategory": "near",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 92,
+        "chaseDistance": 89.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -138,7 +138,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -178,7 +178,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -277,6 +277,86 @@
       ],
       "limitations": [
         "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "enemy_melee_building_aggro",
+      "scenarioName": "Enemy Melee Building Aggro",
+      "iteration": 1,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "building target damaged",
+        "local building aggro only",
+        "Enemy melee damaged the local Command Hall footprint without a global chase."
+      ],
+      "limitations": [
+        "Does not add global enemy building chase or judge wave balance."
+      ]
+    },
+    {
+      "scenarioId": "attack_hover_tolerance_boundary",
+      "scenarioName": "Attack Hover Tolerance Boundary",
+      "iteration": 1,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "visible body edge resolves",
+        "nearby empty terrain does not resolve",
+        "Visible enemy body edge resolved as attack intent.",
+        "Nearby empty terrain remained non-targetable."
+      ],
+      "limitations": [
+        "Cursor rendering and left-click attack remain browser-level coverage."
       ]
     },
     {
@@ -498,7 +578,7 @@
         "enemyDistanceCategory": "near",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 92,
+        "chaseDistance": 89.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -537,7 +617,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -577,7 +657,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -676,6 +756,86 @@
       ],
       "limitations": [
         "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "enemy_melee_building_aggro",
+      "scenarioName": "Enemy Melee Building Aggro",
+      "iteration": 2,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "building target damaged",
+        "local building aggro only",
+        "Enemy melee damaged the local Command Hall footprint without a global chase."
+      ],
+      "limitations": [
+        "Does not add global enemy building chase or judge wave balance."
+      ]
+    },
+    {
+      "scenarioId": "attack_hover_tolerance_boundary",
+      "scenarioName": "Attack Hover Tolerance Boundary",
+      "iteration": 2,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "visible body edge resolves",
+        "nearby empty terrain does not resolve",
+        "Visible enemy body edge resolved as attack intent.",
+        "Nearby empty terrain remained non-targetable."
+      ],
+      "limitations": [
+        "Cursor rendering and left-click attack remain browser-level coverage."
       ]
     },
     {
@@ -897,7 +1057,7 @@
         "enemyDistanceCategory": "near",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 92,
+        "chaseDistance": 89.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -936,7 +1096,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -976,7 +1136,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1075,6 +1235,86 @@
       ],
       "limitations": [
         "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "enemy_melee_building_aggro",
+      "scenarioName": "Enemy Melee Building Aggro",
+      "iteration": 3,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "building target damaged",
+        "local building aggro only",
+        "Enemy melee damaged the local Command Hall footprint without a global chase."
+      ],
+      "limitations": [
+        "Does not add global enemy building chase or judge wave balance."
+      ]
+    },
+    {
+      "scenarioId": "attack_hover_tolerance_boundary",
+      "scenarioName": "Attack Hover Tolerance Boundary",
+      "iteration": 3,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "visible body edge resolves",
+        "nearby empty terrain does not resolve",
+        "Visible enemy body edge resolved as attack intent.",
+        "Nearby empty terrain remained non-targetable."
+      ],
+      "limitations": [
+        "Cursor rendering and left-click attack remain browser-level coverage."
       ]
     },
     {
@@ -1296,7 +1536,7 @@
         "enemyDistanceCategory": "near",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 92,
+        "chaseDistance": 89.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1335,7 +1575,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1375,7 +1615,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1474,6 +1714,86 @@
       ],
       "limitations": [
         "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "enemy_melee_building_aggro",
+      "scenarioName": "Enemy Melee Building Aggro",
+      "iteration": 4,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "building target damaged",
+        "local building aggro only",
+        "Enemy melee damaged the local Command Hall footprint without a global chase."
+      ],
+      "limitations": [
+        "Does not add global enemy building chase or judge wave balance."
+      ]
+    },
+    {
+      "scenarioId": "attack_hover_tolerance_boundary",
+      "scenarioName": "Attack Hover Tolerance Boundary",
+      "iteration": 4,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "visible body edge resolves",
+        "nearby empty terrain does not resolve",
+        "Visible enemy body edge resolved as attack intent.",
+        "Nearby empty terrain remained non-targetable."
+      ],
+      "limitations": [
+        "Cursor rendering and left-click attack remain browser-level coverage."
       ]
     },
     {
@@ -1695,7 +2015,7 @@
         "enemyDistanceCategory": "near",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 92,
+        "chaseDistance": 89.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1734,7 +2054,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1774,7 +2094,7 @@
         "enemyDistanceCategory": "press_leash",
         "targetAcquired": true,
         "targetRetained": true,
-        "chaseDistance": 302,
+        "chaseDistance": 299.2,
         "leashRespected": true,
         "contactAttackFramesObserved": 0,
         "retreatCommandAccepted": null,
@@ -1873,6 +2193,86 @@
       ],
       "limitations": [
         "Uses compact deterministic combat ticks."
+      ]
+    },
+    {
+      "scenarioId": "enemy_melee_building_aggro",
+      "scenarioName": "Enemy Melee Building Aggro",
+      "iteration": 5,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "building target damaged",
+        "local building aggro only",
+        "Enemy melee damaged the local Command Hall footprint without a global chase."
+      ],
+      "limitations": [
+        "Does not add global enemy building chase or judge wave balance."
+      ]
+    },
+    {
+      "scenarioId": "attack_hover_tolerance_boundary",
+      "scenarioName": "Attack Hover Tolerance Boundary",
+      "iteration": 5,
+      "mode": "guard_area",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "near",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": null,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "contactAttackFramesObserved",
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "visible body edge resolves",
+        "nearby empty terrain does not resolve",
+        "Visible enemy body edge resolved as attack intent.",
+        "Nearby empty terrain remained non-targetable."
+      ],
+      "limitations": [
+        "Cursor rendering and left-click attack remain browser-level coverage."
       ]
     },
     {
@@ -2006,11 +2406,11 @@
   "dashboard": {
     "schemaVersion": 1,
     "generatedBy": "ControlBehaviourScenarioRunner",
-    "generatedAt": "2026-05-19T10:51:52.936Z",
-    "buildCommit": "27dfe1a",
+    "generatedAt": "2026-05-22T10:16:26.281Z",
+    "buildCommit": "169bb21",
     "iterationCount": 5,
-    "scenarioCount": 10,
-    "passCount": 50,
+    "scenarioCount": 12,
+    "passCount": 60,
     "monitorCount": 0,
     "failCount": 0,
     "notMeasuredCount": 0,
@@ -2020,6 +2420,26 @@
         "scenarioName": "Attack Cursor/Intent Integrity",
         "verdict": "pass",
         "confidence": "medium",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "attack_hover_tolerance_boundary",
+        "scenarioName": "Attack Hover Tolerance Boundary",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "enemy_melee_building_aggro",
+        "scenarioName": "Enemy Melee Building Aggro",
+        "verdict": "pass",
+        "confidence": "high",
         "passRate": 1,
         "monitorRate": 0,
         "failRate": 0,

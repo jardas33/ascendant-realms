@@ -1,7 +1,8 @@
-import type { Position, Team } from "../core/GameTypes";
-import type { Building } from "../entities/Building";
+import type { BuildingDefinition, Position, Team } from "../core/GameTypes";
+import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { behaviourModeDefinition, setBehaviourMode, summarizeBehaviourModes } from "../systems/BehaviourModeSystem";
+import { CollisionSystem } from "../systems/CollisionSystem";
 import { CombatSystem } from "../systems/CombatSystem";
 import { CONTROL_BEHAVIOUR_SCENARIO_PROFILES } from "./ControlBehaviourScenarioProfiles";
 import type {
@@ -89,6 +90,10 @@ function runScenario(profile: ControlBehaviourScenarioProfile, iteration: number
       return result(profile, iteration, moveAwaySuppression());
     case "post_kill_adjacent_reacquisition":
       return result(profile, iteration, postKillAdjacentReacquisition());
+    case "enemy_melee_building_aggro":
+      return result(profile, iteration, enemyMeleeBuildingAggro());
+    case "attack_hover_tolerance_boundary":
+      return result(profile, iteration, attackHoverToleranceBoundary());
     case "group_mixed_mode_application":
       return result(profile, iteration, groupMixedModeApplication());
     case "attack_cursor_intent_integrity":
@@ -339,6 +344,73 @@ function postKillAdjacentReacquisition(): ScenarioRun {
   };
 }
 
+function enemyMeleeBuildingAggro(): ScenarioRun {
+  const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 100, y: 100, radius: 13, range: 28, damage: 12 });
+  const commandHall = fakeBuilding({ id: "player-command-hall", team: "player", x: 166, y: 100, width: 96, height: 76, hp: 140 });
+  createCombat([enemy], [commandHall]).update(0.1);
+  const passed = commandHall.hp < commandHall.maxHp && !enemy.moveTarget;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "not_applicable",
+      enemyDistanceCategory: "contact",
+      targetAcquired: commandHall.hp < commandHall.maxHp,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: true,
+      contactAttackFramesObserved: commandHall.hp < commandHall.maxHp ? 1 : 0
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [passed ? "Enemy melee damaged the local Command Hall footprint without a global chase." : "Enemy melee did not attack the local building footprint."]
+  };
+}
+
+function attackHoverToleranceBoundary(): ScenarioRun {
+  const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 100, y: 100, radius: 14, range: 26 });
+  const bodyEdgeHit = CollisionSystem.findEntityAt(123, 100, [enemy], {
+    minimumRadius: 24,
+    padding: (entity) => (entity.kind === "unit" ? 4 : 0)
+  });
+  const emptyNearbyHit = CollisionSystem.findEntityAt(129, 100, [enemy], {
+    minimumRadius: 24,
+    padding: (entity) => (entity.kind === "unit" ? 4 : 0)
+  });
+  const passed = bodyEdgeHit?.id === enemy.id && !emptyNearbyHit;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "guard_area",
+      explicitOrderType: "attack",
+      enemyDistanceCategory: "near",
+      targetAcquired: bodyEdgeHit?.id === enemy.id,
+      targetRetained: !emptyNearbyHit,
+      chaseDistance: 0,
+      leashRespected: true,
+      contactAttackFramesObserved: null
+    }),
+    unavailableMetrics: unavailable([
+      "contactAttackFramesObserved",
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [
+      bodyEdgeHit?.id === enemy.id ? "Visible enemy body edge resolved as attack intent." : "Visible enemy body edge did not resolve.",
+      !emptyNearbyHit ? "Nearby empty terrain remained non-targetable." : "Nearby empty terrain incorrectly resolved as a target."
+    ]
+  };
+}
+
 function groupMixedModeApplication(): ScenarioRun {
   const units = [{ behaviourMode: "hold_ground" as const }, { behaviourMode: "press_attack" as const }, {}];
   const before = summarizeBehaviourModes(units);
@@ -542,11 +614,11 @@ function unavailable(keys: ControlBehaviourMetricKey[]): ControlBehaviourMetricK
   return keys;
 }
 
-function createCombat(units: Unit[]): CombatSystem {
+function createCombat(units: Unit[], buildings: Building[] = []): CombatSystem {
   return new CombatSystem({
     scene: {} as never,
     getUnits: () => units,
-    getBuildings: () => [] as Building[],
+    getBuildings: () => buildings,
     getProjectiles: () => [],
     addProjectile: () => undefined,
     onDamage: () => undefined,
@@ -618,6 +690,58 @@ function fakeUnit(options: {
     },
     destroyView: () => undefined
   }) as Unit;
+}
+
+function fakeBuilding(options: {
+  id: string;
+  team: Team;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  hp: number;
+}): Building {
+  const definition: BuildingDefinition = {
+    id: "command_hall",
+    name: "Command Hall",
+    description: "Test Command Hall.",
+    factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
+    size: { width: options.width, height: options.height },
+    maxHp: options.hp,
+    armor: 0,
+    cost: {},
+    constructionTimeSeconds: 0,
+    color: 0x8dbf7b,
+    visionRadius: 180,
+    buildOptions: [],
+    trainOptions: [],
+    upgradeOptions: [],
+    xpValue: 0
+  };
+  return Object.assign(Object.create(Building.prototype), {
+    id: options.id,
+    kind: "building",
+    alive: true,
+    team: options.team,
+    position: { x: options.x, y: options.y },
+    radius: Math.max(options.width, options.height) / 2,
+    maxHp: options.hp,
+    hp: options.hp,
+    armor: 0,
+    attackCooldownRemaining: 0,
+    definition,
+    constructionState: "completed",
+    isCompleted: () => true,
+    takeDamage(rawDamage: number) {
+      const damage = Math.max(1, Math.round(rawDamage - this.armor));
+      this.hp = Math.max(0, this.hp - damage);
+      if (this.hp <= 0) {
+        this.alive = false;
+      }
+      return damage;
+    },
+    destroyView: () => undefined
+  }) as Building;
 }
 
 function distance(a: Position, b: Position): number {

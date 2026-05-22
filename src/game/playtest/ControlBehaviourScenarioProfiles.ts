@@ -58,6 +58,22 @@ export const CONTROL_BEHAVIOUR_SCENARIO_PROFILES: ControlBehaviourScenarioProfil
     limitations: ["Uses compact deterministic combat ticks."]
   },
   {
+    id: "enemy_melee_building_aggro",
+    name: "Enemy Melee Building Aggro",
+    mode: "not_applicable",
+    purpose: "Confirm enemy melee units can attack a local hostile building footprint.",
+    expectedEvidence: ["building target damaged", "local building aggro only"],
+    limitations: ["Does not add global enemy building chase or judge wave balance."]
+  },
+  {
+    id: "attack_hover_tolerance_boundary",
+    name: "Attack Hover Tolerance Boundary",
+    mode: "guard_area",
+    purpose: "Confirm attack hover tolerance reaches the visible enemy footprint but not empty nearby terrain.",
+    expectedEvidence: ["visible body edge resolves", "nearby empty terrain does not resolve"],
+    limitations: ["Cursor rendering and left-click attack remain browser-level coverage."]
+  },
+  {
     id: "group_mixed_mode_application",
     name: "Group Mixed Mode Application",
     mode: "mixed",

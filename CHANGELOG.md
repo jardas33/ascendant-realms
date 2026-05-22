@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
+
+This checkpoint verifies v0.16.7's runtime combat/control fix with remote CI inspection, automated soak, control-lab coverage, public-repo safety audit, and tester handoff. It is not v0.17 and not a feature/content/balance pass.
+
+### Included
+
+- Added v0.16.8 baseline, remote CI, soak, control-lab, public-repo safety, long-soak, CI-triage, and Emmanuel retest docs.
+- Inspected GitHub Actions CI Release Matrix Dry Run #78 for the v0.16.7 commit: Fast confidence passed; workflow-dispatch release matrix jobs were skipped.
+- Added deterministic control-lab scenarios for local enemy melee building aggro and attack-hover tolerance versus nearby empty terrain.
+- Regenerated control-lab normal, extended, and dashboard outputs.
+- Stabilized one hosted smoke assertion by using deterministic scene state instead of transient Cinderfen Crossing launch text in `battle-status`.
+- Audited public-repo safety for secrets, private tester data, generated artifacts, tracked binaries, and obvious protected-IP terms.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Enemy aggro changed: no.
+- Retreat logic changed: no.
+- Test/CI harness changed: yes, control-lab scenarios and one smoke assertion.
+- Worker construction implemented: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+- Secrets found: no.
+- Public asset watchpoint: current tracked image assets remain prototype assets and still need source/license proof before production approval.
+
+### Verification
+
+- Passed: focused combat/movement/collision/behaviour/control-lab tests, 10-repeat focused unit soak, 5-repeat hosted manual combat regression, 3 control-lab normal/extended/verify cycles, `npm test` with 57 files / 414 tests, build, content validation, art-intake validation, fast smoke, full smoke after the smoke assertion fix, hosted deep-battle, hosted smoke after targeted fix and rerun, full release e2e with 79 tests, and visual QA with 18 screenshots / 0 console errors / 0 retries.
+
+### Next
+
+- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and manually dispatch the normal GitHub Actions release matrix because v0.16.7 changed runtime combat/control behaviour and the remote v0.16.7 push run only executed Fast confidence.
+
 ## v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
 
 This checkpoint fixes Emmanuel's real v0.16.6 manual retest combat/control findings. It is a narrow runtime bugfix, not v0.17 and not a feature/content/balance pass.

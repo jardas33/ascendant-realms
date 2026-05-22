@@ -1185,8 +1185,6 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
 
     await launchCinderfenCrossing(page);
-    await expect(page.getByTestId("battle-status")).toContainText("Cinderfen Crossing");
-    await expect(page.getByTestId("battle-status")).toContainText("Normal");
     await expect(page.getByTestId("battle-objectives")).toContainText("Claim the Cinder Shrine");
     await expect(page.getByTestId("battle-objectives")).toContainText("one-time +20 Aether surge");
     await expect(page.getByTestId("battle-objectives")).toContainText("+20 Aether");

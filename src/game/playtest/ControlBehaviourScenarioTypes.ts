@@ -8,6 +8,8 @@ export type ControlBehaviourScenarioId =
   | "explicit_attack_overrides_mode"
   | "move_away_suppression"
   | "post_kill_adjacent_reacquisition"
+  | "enemy_melee_building_aggro"
+  | "attack_hover_tolerance_boundary"
   | "group_mixed_mode_application"
   | "attack_cursor_intent_integrity"
   | "hud_minimap_selection_regression";

@@ -1,10 +1,10 @@
 # Playtest Control Behaviour Lab
 
-Generated: 2026-05-19T10:51:52.936Z
-Build commit: 27dfe1a
+Generated: 2026-05-22T10:16:26.281Z
+Build commit: 169bb21
 Run mode: extended
 Iterations: 5
-Scenarios: 10
+Scenarios: 12
 
 ## What This Is
 
@@ -29,6 +29,8 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Explicit Attack Overrides Mode | hold_ground | attack | pass | high | explicit target retained; pursuit target assigned; Explicit attack target remained active and assigned pursuit under Hold Ground. |
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
+| Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Group Mixed Mode Application | mixed | mode_change | pass | high | mixed detected; group mode applied count; Mixed group normalized to Guard Area for 3 units. |
 | Attack Cursor/Intent Integrity | guard_area | attack | pass | medium | selected units plus valid enemy should expose attack intent; empty click should not attack; Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.; Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not. |
 | HUD/Minimap/Selection Regression Protection | not_applicable | ui_regression | pass | medium | marquee cleanup; minimap movement; hero selection refresh; Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.; Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted. |
@@ -39,6 +41,8 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Explicit Attack Overrides Mode | hold_ground | attack | pass | high | explicit target retained; pursuit target assigned; Explicit attack target remained active and assigned pursuit under Hold Ground. |
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
+| Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Group Mixed Mode Application | mixed | mode_change | pass | high | mixed detected; group mode applied count; Mixed group normalized to Guard Area for 3 units. |
 | Attack Cursor/Intent Integrity | guard_area | attack | pass | medium | selected units plus valid enemy should expose attack intent; empty click should not attack; Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.; Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not. |
 | HUD/Minimap/Selection Regression Protection | not_applicable | ui_regression | pass | medium | marquee cleanup; minimap movement; hero selection refresh; Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.; Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted. |
@@ -49,6 +53,8 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Explicit Attack Overrides Mode | hold_ground | attack | pass | high | explicit target retained; pursuit target assigned; Explicit attack target remained active and assigned pursuit under Hold Ground. |
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
+| Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Group Mixed Mode Application | mixed | mode_change | pass | high | mixed detected; group mode applied count; Mixed group normalized to Guard Area for 3 units. |
 | Attack Cursor/Intent Integrity | guard_area | attack | pass | medium | selected units plus valid enemy should expose attack intent; empty click should not attack; Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.; Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not. |
 | HUD/Minimap/Selection Regression Protection | not_applicable | ui_regression | pass | medium | marquee cleanup; minimap movement; hero selection refresh; Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.; Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted. |
@@ -59,6 +65,8 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Explicit Attack Overrides Mode | hold_ground | attack | pass | high | explicit target retained; pursuit target assigned; Explicit attack target remained active and assigned pursuit under Hold Ground. |
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
+| Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Group Mixed Mode Application | mixed | mode_change | pass | high | mixed detected; group mode applied count; Mixed group normalized to Guard Area for 3 units. |
 | Attack Cursor/Intent Integrity | guard_area | attack | pass | medium | selected units plus valid enemy should expose attack intent; empty click should not attack; Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.; Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not. |
 | HUD/Minimap/Selection Regression Protection | not_applicable | ui_regression | pass | medium | marquee cleanup; minimap movement; hero selection refresh; Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.; Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted. |
@@ -69,6 +77,8 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Explicit Attack Overrides Mode | hold_ground | attack | pass | high | explicit target retained; pursuit target assigned; Explicit attack target remained active and assigned pursuit under Hold Ground. |
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
+| Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Group Mixed Mode Application | mixed | mode_change | pass | high | mixed detected; group mode applied count; Mixed group normalized to Guard Area for 3 units. |
 | Attack Cursor/Intent Integrity | guard_area | attack | pass | medium | selected units plus valid enemy should expose attack intent; empty click should not attack; Contract is covered by Playwright: selected units hovering a valid enemy expose attack cursor intent.; Contract is covered by Playwright: left-click valid enemy issues attack, empty click does not. |
 | HUD/Minimap/Selection Regression Protection | not_applicable | ui_regression | pass | medium | marquee cleanup; minimap movement; hero selection refresh; Contract is covered by Playwright: marquee cleanup across HUD/minimap remains asserted.; Contract is covered by Playwright: minimap movement and H hero-select refresh remain asserted. |

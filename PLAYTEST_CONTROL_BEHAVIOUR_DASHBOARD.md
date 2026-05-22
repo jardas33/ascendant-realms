@@ -1,13 +1,13 @@
 # Playtest Control Behaviour Dashboard
 
-Generated: 2026-05-19T10:51:52.936Z
-Build commit: 27dfe1a
+Generated: 2026-05-22T10:16:26.281Z
+Build commit: 169bb21
 Iterations: 5
-Scenarios: 10
+Scenarios: 12
 
 ## Summary
 
-- Pass rows: 50
+- Pass rows: 60
 - Monitor rows: 0
 - Fail rows: 0
 - Not-measured rows: 0
@@ -18,15 +18,17 @@ Scenarios: 10
 | Rank | Scenario | Verdict | Confidence | Pass Rate | Monitor Rate | Fail Rate |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Attack Cursor/Intent Integrity | pass | medium | 100% | 0% | 0% |
-| 2 | Explicit Attack Overrides Mode | pass | high | 100% | 0% | 0% |
-| 3 | Group Mixed Mode Application | pass | high | 100% | 0% | 0% |
-| 4 | Guard Area Default Local Defence | pass | high | 100% | 0% | 0% |
-| 5 | Hold Ground Contact Defence | pass | high | 100% | 0% | 0% |
-| 6 | Hold Ground Distant Threat Refusal | pass | high | 100% | 0% | 0% |
-| 7 | HUD/Minimap/Selection Regression Protection | pass | medium | 100% | 0% | 0% |
-| 8 | Move-Away Suppression | pass | high | 100% | 0% | 0% |
-| 9 | Post-Kill Adjacent Reacquisition | pass | high | 100% | 0% | 0% |
-| 10 | Press Attack Bounded Pursuit | pass | high | 100% | 0% | 0% |
+| 2 | Attack Hover Tolerance Boundary | pass | high | 100% | 0% | 0% |
+| 3 | Enemy Melee Building Aggro | pass | high | 100% | 0% | 0% |
+| 4 | Explicit Attack Overrides Mode | pass | high | 100% | 0% | 0% |
+| 5 | Group Mixed Mode Application | pass | high | 100% | 0% | 0% |
+| 6 | Guard Area Default Local Defence | pass | high | 100% | 0% | 0% |
+| 7 | Hold Ground Contact Defence | pass | high | 100% | 0% | 0% |
+| 8 | Hold Ground Distant Threat Refusal | pass | high | 100% | 0% | 0% |
+| 9 | HUD/Minimap/Selection Regression Protection | pass | medium | 100% | 0% | 0% |
+| 10 | Move-Away Suppression | pass | high | 100% | 0% | 0% |
+| 11 | Post-Kill Adjacent Reacquisition | pass | high | 100% | 0% | 0% |
+| 12 | Press Attack Bounded Pursuit | pass | high | 100% | 0% | 0% |
 
 ## Limitations
 

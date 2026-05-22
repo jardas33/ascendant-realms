@@ -42,6 +42,7 @@ Known current realities:
 - v0.16.5 keeps hosted deep-battle coverage intact after run #72, but splits the older broad minimap/fog/move/build/cancel HUD scenario into a movement/fog/move test and a focused Command Hall building placement/cancel test so each has its own hosted browser context and timeout budget.
 - v0.16.6 keeps hosted first-campaign coverage intact after run #75, but lets the first-campaign training assertion fall back to the existing scene-backed training command helper if visible command clicks never expose a queue, and accepts newly trained Militia that have already reached the rally point.
 - v0.16.7 changes runtime combat/control behaviour narrowly after Emmanuel's manual retest: melee visible-contact tolerance, local melee building contact, move-away suppression preservation, and conservative attack-hover hit tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
+- v0.16.8 adds post-combat-fix verification docs, control-lab coverage for the v0.16.7 manual issues, and a public-repo safety audit. The v0.16.7 push run #78 only executed automatic Fast confidence, so manual CI Release Matrix Dry Run remains required for the enabled release lanes.
 
 ## Required Automated Checks
 
@@ -70,6 +71,12 @@ PASS: 56 test files, 406 tests
 ```
 
 Current v0.16.7 checkpoint result:
+
+```text
+PASS: 57 test files, 414 tests
+```
+
+Current v0.16.8 checkpoint result:
 
 ```text
 PASS: 57 test files, 414 tests
