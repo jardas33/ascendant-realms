@@ -45,7 +45,6 @@ export class MovementSystem {
       unit.updateBuffs(deltaSeconds);
       if (!unit.moveTarget) {
         this.unitPathStates.delete(unit.id);
-        unit.moveOrderCombatSuppressionSeconds = 0;
         return;
       }
 
@@ -105,7 +104,6 @@ export class MovementSystem {
     const waypoint = state.waypoints[state.waypointIndex];
     if (!waypoint) {
       unit.moveTarget = undefined;
-      unit.moveOrderCombatSuppressionSeconds = 0;
       this.unitPathStates.delete(unit.id);
       return;
     }

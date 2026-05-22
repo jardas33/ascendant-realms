@@ -101,6 +101,9 @@ import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
 
+const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 24;
+const WORLD_ENTITY_UNIT_HIT_PADDING = 4;
+
 interface BattleSceneData {
   launchRequest?: BattleLaunchRequest;
   heroSave?: HeroSaveData;
@@ -643,7 +646,11 @@ export class BattleScene extends Phaser.Scene {
     return CollisionSystem.findEntityAt(
       point.x,
       point.y,
-      [...this.units, ...this.buildings].filter((entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position))
+      [...this.units, ...this.buildings].filter((entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position)),
+      {
+        minimumRadius: WORLD_ENTITY_INTERACTION_MIN_RADIUS,
+        padding: (entity) => (entity instanceof Unit ? WORLD_ENTITY_UNIT_HIT_PADDING : 0)
+      }
     );
   }
 

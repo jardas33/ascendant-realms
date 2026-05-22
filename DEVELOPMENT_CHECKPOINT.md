@@ -1,6 +1,62 @@
 # Development Checkpoint
 
-Updated: 2026-05-21 v0.16.6 hosted deep-battle first campaign training stabilization
+Updated: 2026-05-21 v0.16.7 manual combat contact and aggro fix
+
+## v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
+
+Scope: fix only Emmanuel's real manual v0.16.6 retest combat/control bugs without starting v0.17, implementing worker construction/builders, adding units/buildings/maps/factions/runtime art, adding patrol/formations, rewriting broad AI/pathing, changing gameplay numbers, changing unit stats, changing enemy wave timings, changing save format, weakening tests, using force clicks, or using DOM fallback for canvas/world clicks.
+
+Baseline:
+
+- Starting commit: `3737c16`, `Checkpoint v0.16.6 hosted deep-battle first campaign training stabilization`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions CI Release Matrix Dry Run #77 was green on enabled lanes: Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
+- v0.16.6 was test-only; runtime gameplay, gameplay numbers, save format, runtime art/assets, and behaviour modes were unchanged.
+- Emmanuel's manual retest session `PT-20260521-EMMANUEL-V0166-CONTROLS-01` on build/package `3737c16` / `ascendant-realms-private-playtest-3737c16` returned MIXED.
+
+Included work:
+
+- Added `docs/V0167_EMMANUEL_MANUAL_RETEST_INTAKE.md`.
+- Added `docs/V0167_COMBAT_CONTACT_AGGRO_REPRODUCTION_PLAN.md`.
+- Added `docs/V0167_COMBAT_CONTACT_AGGRO_AUDIT.md`.
+- Added `docs/V0167_COMBAT_CONTACT_AGGRO_FIX_REPORT.md`.
+- Added `docs/V0167_DEFERRED_WORKER_CONSTRUCTION_NOTE.md`.
+- Increased melee visual-contact tolerance narrowly.
+- Made melee unit-vs-building contact use the target building footprint.
+- Preserved player move-away combat suppression even if pathing clears the move target early.
+- Added conservative world entity interaction hit-test tolerance for attack hover/click intent.
+- Added focused unit/system tests and a hosted-safe manual combat contact regression.
+
+Root cause:
+
+- Visible melee contact and raw center/radius combat contact were slightly mismatched for small adjacent enemies.
+- Building pathing/obstacles use rectangular footprints, but melee attack reach treated buildings like circular targets.
+- Retreat suppression could be effectively canceled by early move-target clearing before the short suppression window expired.
+- Attack hover/click intent used raw entity radius rather than a visible interaction footprint.
+
+Current verification:
+
+```text
+npm test -- CombatSystem.test.ts CollisionSystem.test.ts MovementSystem.test.ts PASS, 3 files / 30 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 23.9s.
+npm test PASS, 57 files / 414 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.9m.
+npm run test:e2e:smoke first attempt timed out at 6m; rerun PASS, 14 tests in 7.1m.
+npm run playtest:controls PASS, 10 scenarios / 10 pass rows.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 14 tests in 4.6m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.0m.
+npm run test:e2e:release first attempt timed out at 30m; longer local wrapper rerun PASS, 79 tests in 38.8m.
+npm run visual:qa PASS, 5 tests in 4.5m; 18 screenshots, 0 console errors, 0 retries.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: yes, contact/reacquisition semantics only. Enemy aggro changed: yes, local melee building contact only. Retreat logic changed: yes, move-away suppression preservation only. Package changed: final clean package must be regenerated after commit.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.7 manual combat contact and aggro fix`, push, regenerate and verify a clean private playtest package, confirm branch clean/synced, and rerun GitHub Actions CI Release Matrix Dry Run.
 
 ## v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
 

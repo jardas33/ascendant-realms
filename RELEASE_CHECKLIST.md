@@ -41,6 +41,7 @@ Known current realities:
 - v0.16.4 keeps the same hosted deep-battle coverage after run #70, but treats `Moving` and `Repositioning` as valid right-click movement summaries and checks fog/cancel behaviour through durable scene state instead of transient status-line text that pressure messages can intentionally outrank.
 - v0.16.5 keeps hosted deep-battle coverage intact after run #72, but splits the older broad minimap/fog/move/build/cancel HUD scenario into a movement/fog/move test and a focused Command Hall building placement/cancel test so each has its own hosted browser context and timeout budget.
 - v0.16.6 keeps hosted first-campaign coverage intact after run #75, but lets the first-campaign training assertion fall back to the existing scene-backed training command helper if visible command clicks never expose a queue, and accepts newly trained Militia that have already reached the rally point.
+- v0.16.7 changes runtime combat/control behaviour narrowly after Emmanuel's manual retest: melee visible-contact tolerance, local melee building contact, move-away suppression preservation, and conservative attack-hover hit tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 
 ## Required Automated Checks
 
@@ -66,6 +67,12 @@ Current v0.16.2 checkpoint result:
 
 ```text
 PASS: 56 test files, 406 tests
+```
+
+Current v0.16.7 checkpoint result:
+
+```text
+PASS: 57 test files, 414 tests
 ```
 
 2. Standalone content validation:
@@ -156,6 +163,12 @@ Expected current prototype result:
 
 ```text
 PASS: 67 Playwright tests
+```
+
+Current v0.16.7 checkpoint result:
+
+```text
+PASS: 79 Playwright tests
 ```
 
 Current v0.15 checkpoint result:

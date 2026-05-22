@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
+
+This checkpoint fixes Emmanuel's real v0.16.6 manual retest combat/control findings. It is a narrow runtime bugfix, not v0.17 and not a feature/content/balance pass.
+
+### Included
+
+- Added v0.16.7 manual intake, reproduction plan, audit, fix report, and deferred worker-construction note.
+- Increased melee contact tolerance enough for adjacent visible-contact enemies without making Hold Ground chase distant idle enemies.
+- Made melee unit-vs-building contact use the building footprint so enemies near a Command Hall/building can attack it locally.
+- Preserved explicit move-away combat suppression when pathing clears the move target early.
+- Added conservative attack hover/click hit tolerance for visible enemy body footprint while keeping nearby empty terrain non-targetable.
+- Added focused CombatSystem, MovementSystem, CollisionSystem, and hosted deep-battle regression coverage.
+
+### Verdict
+
+- Root cause: raw contact/hit-test circles were stricter than visible melee/building/hover footprints, and retreat suppression depended too tightly on a live move target.
+- Runtime gameplay changed: yes.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: yes, contact/reacquisition semantics only; no new mode or persistence.
+- Enemy aggro changed: yes, local melee building contact only.
+- Retreat logic changed: yes, move-away suppression preservation only.
+- Worker construction implemented: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused Combat/Collision/Movement tests with 30 tests, focused hosted manual regression, `npm test` with 57 files / 414 tests, build, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests after a longer rerun, controls lab, controls verifier, hosted deep-battle with 14 tests, hosted smoke with 14 tests, full release with 79 tests after a longer local wrapper rerun, visual QA with 18 screenshots / 0 console errors / 0 retries, and `git diff --check`.
+
+### Next
+
+- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and rerun GitHub Actions CI Release Matrix Dry Run because runtime combat/control behaviour changed.
+
 ## v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
 
 This checkpoint fixes the remaining GitHub Actions CI Release Matrix Dry Run #75 hosted deep-battle failure after v0.16.5. It is a test-only follow-up, not v0.17 and not a gameplay/content/balance change.

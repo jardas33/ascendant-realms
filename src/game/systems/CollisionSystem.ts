@@ -2,6 +2,11 @@ import type { Position, Team } from "../core/GameTypes";
 import { distance } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
 
+interface EntityHitTestOptions<T extends BaseEntity> {
+  minimumRadius?: number;
+  padding?: number | ((entity: T) => number);
+}
+
 export class CollisionSystem {
   static isHostile(a: Team, b: Team): boolean {
     if (a === b) {
@@ -10,9 +15,21 @@ export class CollisionSystem {
     return a !== "neutral" || b !== "neutral";
   }
 
-  static findEntityAt<T extends BaseEntity>(x: number, y: number, entities: T[]): T | undefined {
+  static findEntityAt<T extends BaseEntity>(
+    x: number,
+    y: number,
+    entities: T[],
+    options: EntityHitTestOptions<T> = {}
+  ): T | undefined {
     return entities
-      .filter((entity) => entity.alive && distance({ x, y }, entity.position) <= entity.radius)
+      .filter((entity) => {
+        if (!entity.alive) {
+          return false;
+        }
+        const padding = typeof options.padding === "function" ? options.padding(entity) : options.padding ?? 0;
+        const hitRadius = Math.max(entity.radius + padding, options.minimumRadius ?? entity.radius);
+        return distance({ x, y }, entity.position) <= hitRadius;
+      })
       .sort((a, b) => b.radius - a.radius)[0];
   }
 

@@ -2663,6 +2663,220 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).not.toContainText("No Selection");
   });
 
+  test("manual combat contact regression covers adjacent follow-up, building aggro, retreat suppression, and hover tolerance @hosted-deep-battle", async ({
+    page
+  }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Contact Regression", "normal");
+    await page.keyboard.press("H");
+    await expect(page.locator(".side-panel")).toContainText("Contact Regression");
+
+    const contactResult = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active BattleScene hero for contact regression.");
+      }
+      const enemies = scene.units.filter((unit: any) => unit.team !== "player" && unit.alive);
+      if (enemies.length < 2) {
+        throw new Error("Expected at least two hostile units for contact regression.");
+      }
+      const [firstEnemy, secondEnemy, ...otherEnemies] = enemies;
+      otherEnemies.forEach((unit: any, index: number) => {
+        unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 28);
+        unit.attackTargetId = undefined;
+        unit.attackTargetLabel = undefined;
+        unit.attackMove = false;
+        unit.moveTarget = undefined;
+      });
+      scene.fogDebugDisabled = true;
+      scene.updateFogOfWar?.(0, true);
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.hero.behaviourMode = "hold_ground";
+      scene.hero.attackTargetId = firstEnemy.id;
+      scene.hero.attackTargetLabel = firstEnemy.definition.name;
+      scene.hero.attackMove = true;
+      scene.hero.moveTarget = undefined;
+      scene.hero.moveOrderCombatSuppressionSeconds = 0;
+      scene.hero.attackCooldownRemaining = 0;
+      firstEnemy.hp = Math.max(1, Math.ceil(scene.hero.damage / 2));
+      firstEnemy.alive = true;
+      firstEnemy.attackCooldownRemaining = 0;
+      firstEnemy.setPosition(scene.hero.position.x + 32, scene.hero.position.y);
+      secondEnemy.hp = secondEnemy.maxHp;
+      secondEnemy.alive = true;
+      secondEnemy.attackCooldownRemaining = 0;
+      secondEnemy.attackTargetId = undefined;
+      secondEnemy.attackTargetLabel = undefined;
+      secondEnemy.attackMove = false;
+      secondEnemy.moveTarget = undefined;
+      secondEnemy.setPosition(scene.hero.position.x + 48, scene.hero.position.y);
+      scene.combatSystem.update(0.1);
+      const firstKilled = !firstEnemy.alive;
+      scene.combatSystem.update(scene.hero.attackCooldown + 0.2);
+      return {
+        firstKilled,
+        heroRange: scene.hero.range,
+        heroRadius: scene.hero.radius,
+        heroCooldown: scene.hero.attackCooldown,
+        heroCooldownRemaining: scene.hero.attackCooldownRemaining,
+        secondDistance: Math.hypot(secondEnemy.position.x - scene.hero.position.x, secondEnemy.position.y - scene.hero.position.y),
+        secondRadius: secondEnemy.radius,
+        secondId: secondEnemy.id,
+        secondTeam: secondEnemy.team,
+        secondAlive: secondEnemy.alive,
+        heroAttackTargetId: scene.hero.attackTargetId ?? "",
+        heroAttackMove: Boolean(scene.hero.attackMove),
+        secondHp: secondEnemy.hp,
+        secondMaxHp: secondEnemy.maxHp,
+        heroMoveTarget: Boolean(scene.hero.moveTarget)
+      };
+    });
+    expect(contactResult.firstKilled).toBe(true);
+    expect(contactResult.secondHp, JSON.stringify(contactResult)).toBeLessThan(contactResult.secondMaxHp);
+    expect(contactResult.heroMoveTarget).toBe(false);
+
+    const buildingAggro = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const commandHall = scene?.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      const raider = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !commandHall || !raider) {
+        throw new Error("Expected Command Hall and hostile unit for building aggro regression.");
+      }
+      scene.units
+        .filter((unit: any) => unit.team === "player")
+        .forEach((unit: any, index: number) =>
+          unit.setPosition(
+            Math.max(120, commandHall.position.x - 360),
+            Math.min(scene.activeMap.height - 120, commandHall.position.y + 260 + index * 24)
+          )
+        );
+      scene.units
+        .filter((unit: any) => unit.team !== "player" && unit.id !== raider.id)
+        .forEach((unit: any, index: number) => unit.setPosition(scene.activeMap.width - 160, scene.activeMap.height - 160 - index * 24));
+      commandHall.hp = commandHall.maxHp;
+      commandHall.alive = true;
+      raider.hp = raider.maxHp;
+      raider.alive = true;
+      raider.attackCooldownRemaining = 0;
+      raider.attackTargetId = undefined;
+      raider.attackTargetLabel = undefined;
+      raider.attackMove = false;
+      raider.moveTarget = undefined;
+      raider.moveOrderCombatSuppressionSeconds = 0;
+      raider.setPosition(commandHall.position.x + 88, commandHall.position.y);
+      scene.combatSystem.update(0.1);
+      return {
+        commandHallHp: commandHall.hp,
+        commandHallMaxHp: commandHall.maxHp,
+        raiderMoveTarget: Boolean(raider.moveTarget)
+      };
+    });
+    expect(buildingAggro.commandHallHp).toBeLessThan(buildingAggro.commandHallMaxHp);
+    expect(buildingAggro.raiderMoveTarget).toBe(false);
+
+    const retreatSuppression = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const enemies = scene?.units.filter((unit: any) => unit.team !== "player" && unit.alive).slice(0, 2);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !enemies || enemies.length < 2) {
+        throw new Error("Expected hero and two hostiles for retreat suppression regression.");
+      }
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.moveOrderCombatSuppressionSeconds = 0;
+      scene.hero.attackCooldownRemaining = 0;
+      scene.hero.behaviourMode = "press_attack";
+      scene.units
+        .filter((unit: any) => unit.team === "player" && unit.id !== scene.hero.id)
+        .forEach((unit: any, index: number) => {
+          unit.attackTargetId = undefined;
+          unit.attackTargetLabel = undefined;
+          unit.attackMove = false;
+          unit.moveTarget = undefined;
+          unit.moveOrderCombatSuppressionSeconds = 3;
+          unit.setPosition(Math.max(120, scene.hero.position.x - 260), Math.min(scene.activeMap.height - 120, scene.hero.position.y + 180 + index * 24));
+        });
+      enemies.forEach((enemy: any, index: number) => {
+        enemy.hp = enemy.maxHp;
+        enemy.alive = true;
+        enemy.attackTargetId = undefined;
+        enemy.attackTargetLabel = undefined;
+        enemy.attackMove = false;
+        enemy.moveTarget = undefined;
+        enemy.setPosition(scene.hero.position.x + 34 + index * 8, scene.hero.position.y + index * 12);
+      });
+      scene.hero.commandMove({ x: scene.hero.position.x - 220, y: scene.hero.position.y + 80 }, false);
+      const suppressionAfterCommand = scene.hero.moveOrderCombatSuppressionSeconds;
+      scene.hero.moveTarget = undefined;
+      scene.combatSystem.update(0.1);
+      return {
+        suppressionAfterCommand,
+        suppressionAfterCombat: scene.hero.moveOrderCombatSuppressionSeconds,
+        attackTargetId: scene.hero.attackTargetId ?? "",
+        enemyHp: enemies.map((enemy: any) => enemy.hp),
+        enemyMaxHp: enemies.map((enemy: any) => enemy.maxHp)
+      };
+    });
+    expect(retreatSuppression.suppressionAfterCommand).toBeGreaterThan(0);
+    expect(retreatSuppression.suppressionAfterCombat).toBeGreaterThan(0);
+    expect(retreatSuppression.attackTargetId).toBe("");
+    expect(retreatSuppression.enemyHp).toEqual(retreatSuppression.enemyMaxHp);
+
+    const hoverTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const hostiles = scene?.units.filter((unit: any) => unit.team !== "player" && unit.alive);
+      const target = hostiles?.[0];
+      if (!scene?.scene.isActive() || !target || !hostiles) {
+        throw new Error("Expected hostile target for hover tolerance regression.");
+      }
+      hostiles.slice(1).forEach((unit: any, index: number) => {
+        unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 24);
+      });
+      scene.units
+        .filter((unit: any) => unit.team === "player" && unit.id !== scene.hero.id)
+        .forEach((unit: any, index: number) => unit.setPosition(scene.hero.position.x - 180, scene.hero.position.y + 150 + index * 24));
+      target.attackTargetId = undefined;
+      target.attackTargetLabel = undefined;
+      target.attackMove = false;
+      target.moveTarget = undefined;
+      target.attackCooldownRemaining = 999;
+      target.setPosition(
+        Math.max(240, Math.min(scene.activeMap.width - 240, scene.hero.position.x + 360)),
+        Math.max(240, Math.min(scene.activeMap.height - 240, scene.hero.position.y + 260))
+      );
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(target.position);
+      scene.refreshBattleHud?.(0);
+      const tolerantPoint = { x: target.position.x + 23, y: target.position.y };
+      const emptyPoint = { x: target.position.x + 31, y: target.position.y };
+      return {
+        id: target.id,
+        x: tolerantPoint.x,
+        y: tolerantPoint.y,
+        tolerantHitId: scene.findWorldEntityAt?.(tolerantPoint)?.id ?? "",
+        emptyHitId: scene.findWorldEntityAt?.(emptyPoint)?.id ?? ""
+      };
+    });
+    expect(hoverTarget.tolerantHitId).toBe(hoverTarget.id);
+    expect(hoverTarget.emptyHitId).toBe("");
+    const hoverScreen = await worldToScreen(page, hoverTarget);
+    await expectWorldClickTargetsCanvas(page, hoverTarget, "manual combat contact hover tolerance");
+    await page.mouse.move(hoverScreen.x, hoverScreen.y, { steps: 4 });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+            return canvas?.dataset.battleCursor ?? "";
+          }),
+        { message: "expected tolerant hover point to expose attack cursor intent" }
+      )
+      .toBe("attack");
+  });
+
   test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {

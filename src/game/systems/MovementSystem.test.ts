@@ -29,6 +29,16 @@ describe("MovementSystem", () => {
     expect(unit.position.x).toBeGreaterThan(original.x + 20);
     expect(distance(unit.position, original)).toBeGreaterThan(20);
   });
+
+  it("does not erase move-away combat suppression just because pathing already cleared the target", () => {
+    const system = new MovementSystem();
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 40, y: 40 });
+    unit.moveOrderCombatSuppressionSeconds = 0.75;
+
+    system.update(0.1, [unit], testMap());
+
+    expect(unit.moveOrderCombatSuppressionSeconds).toBe(0.75);
+  });
 });
 
 function testMap(): BattleMapDefinition {

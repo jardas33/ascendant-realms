@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-21 v0.16.6 hosted deep-battle first campaign training stabilization
+Last updated: 2026-05-21 v0.16.7 manual combat contact and aggro fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,60 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
+## Current v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
+
+Status: local verification is green after Emmanuel's v0.16.6 manual retest found remaining runtime combat/control issues. Commit, push, regenerate a clean private package, and rerun GitHub Actions CI Release Matrix Dry Run because runtime combat/control behaviour changed.
+
+Manual evidence:
+
+- Session: `PT-20260521-EMMANUEL-V0166-CONTROLS-01`
+- Build/package: `3737c16`, `ascendant-realms-private-playtest-3737c16`
+- Route/browser/OS: Tutorial, Brave, Windows
+- Result: MIXED
+- Confirmed working: Guard Area default, Hold Ground distant refusal and direct-attacker response, left-click attack, Guard Area, Press Attack leash, drag-select across HUD/minimap, minimap click plus `H`, and Tutorial defeat Results.
+- Confirmed issues: adjacent/contact melee idle after first enemy dies, enemy melee building aggro near Command Hall, partial retreat unreliability near multiple enemies, and tiny attack-hover hit area.
+- Deferred request: worker construction/builders remain future design work and were not implemented.
+
+v0.16.7 docs added:
+
+- `docs/V0167_EMMANUEL_MANUAL_RETEST_INTAKE.md`
+- `docs/V0167_COMBAT_CONTACT_AGGRO_REPRODUCTION_PLAN.md`
+- `docs/V0167_COMBAT_CONTACT_AGGRO_AUDIT.md`
+- `docs/V0167_COMBAT_CONTACT_AGGRO_FIX_REPORT.md`
+- `docs/V0167_DEFERRED_WORKER_CONSTRUCTION_NOTE.md`
+
+Runtime fix summary:
+
+- Melee contact is slightly more forgiving for visible/contact-valid adjacent targets.
+- Melee unit-vs-building contact uses building footprint-aware reach, so nearby enemy melee can attack a Command Hall/building instead of pathing/idling beside it.
+- Move-away combat suppression survives early path-target clearing for its intended short window, while still ending when the command destination is actually reached.
+- World entity hover/click hit testing uses a conservative interaction minimum/padding for enemy body tolerance while empty nearby terrain remains non-targetable.
+
+Current verification:
+
+```text
+npm test -- CombatSystem.test.ts CollisionSystem.test.ts MovementSystem.test.ts PASS, 3 files / 30 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 23.9s.
+npm test PASS, 57 files / 414 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.9m.
+npm run test:e2e:smoke first attempt timed out at 6m; rerun PASS, 14 tests in 7.1m.
+npm run playtest:controls PASS, 10 scenarios / 10 pass rows.
+npm run playtest:controls:verify PASS, 930 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 14 tests in 4.6m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.0m.
+npm run test:e2e:release first attempt timed out at 30m; longer local wrapper rerun PASS, 79 tests in 38.8m.
+npm run visual:qa PASS, 5 tests in 4.5m; 18 screenshots, 0 console errors, 0 retries.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: yes, through contact/reacquisition semantics only; mode definitions and persistence unchanged. Enemy aggro changed: yes, local melee building contact only. Retreat logic changed: yes, explicit move-away suppression preservation only. Package changed: final clean package must be regenerated after commit.
+
+Next recommended action: commit as `Checkpoint v0.16.7 manual combat contact and aggro fix`, push, regenerate and verify a clean private package, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.7 before starting v0.17.
+
+## v0.16.6 Hosted Deep-Battle First Campaign Training Stabilization - 2026-05-21
 
 Status: local verification is green after a narrow test-only follow-up for the remaining hosted deep-battle failure after v0.16.5. Push the checkpoint, then rerun GitHub Actions CI Release Matrix Dry Run for v0.16.6 before starting v0.17.
 

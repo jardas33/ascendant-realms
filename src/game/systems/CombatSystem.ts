@@ -13,7 +13,7 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
-const MELEE_VISUAL_CONTACT_MARGIN = 14;
+const MELEE_VISUAL_CONTACT_MARGIN = 18;
 const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
 
 interface CombatSystemOptions {
@@ -118,7 +118,6 @@ export class CombatSystem {
     if (
       attacker instanceof Unit &&
       attacker.team === "player" &&
-      attacker.moveTarget &&
       !attacker.attackMove &&
       !attacker.attackTargetId &&
       attacker.moveOrderCombatSuppressionSeconds > 0
@@ -293,7 +292,11 @@ export class CombatSystem {
       return range;
     }
     // Sprite footprints and separation can make melee units look adjacent while their centers are outside raw stat range.
-    return Math.max(range, attacker.radius + target.radius + MELEE_VISUAL_CONTACT_MARGIN);
+    const targetFootprintRadius =
+      target instanceof Building
+        ? Math.hypot(target.definition.size.width / 2, target.definition.size.height / 2)
+        : target.radius;
+    return Math.max(range, attacker.radius + targetFootprintRadius + MELEE_VISUAL_CONTACT_MARGIN);
   }
 
   private getCooldown(attacker: Combatant): number {

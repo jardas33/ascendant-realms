@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Position, Team } from "../core/GameTypes";
-import type { Building } from "../entities/Building";
+import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { CombatSystem } from "./CombatSystem";
 
@@ -293,6 +293,95 @@ describe("CombatSystem", () => {
     expect(player.moveTarget).toBeUndefined();
   });
 
+  it("lets Hold Ground reacquire a visible-contact hostile after killing the first adjacent enemy", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      radius: 19,
+      range: 34,
+      damage: 12,
+      behaviourMode: "hold_ground",
+      attackTargetId: "enemy-stone-imp-1"
+    });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 150, y: 100, radius: 14, range: 26 });
+    const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 430, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, firstImp, secondImp, distantImp]);
+
+    combat.update(0.1);
+    expect(firstImp.alive).toBe(false);
+
+    combat.update(1.1);
+
+    expect(player.attackTargetId).toBeUndefined();
+    expect(secondImp.hp).toBeLessThan(secondImp.maxHp);
+    expect(distantImp.hp).toBe(distantImp.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+  });
+
+  it("lets enemy melee units attack a nearby Command Hall footprint when no better target exists", () => {
+    const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 188, y: 100, radius: 13, range: 28 });
+    const commandHall = fakeBuilding({
+      id: "player-command-hall",
+      buildingId: "command_hall",
+      name: "Command Hall",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 96,
+      height: 82
+    });
+    const combat = createCombat([raider], [commandHall]);
+
+    combat.update(0.1);
+
+    expect(commandHall.hp).toBeLessThan(commandHall.maxHp);
+    expect(raider.moveTarget).toBeUndefined();
+  });
+
+  it("does not make enemy melee units globally chase distant buildings", () => {
+    const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 390, y: 100, radius: 13, range: 28 });
+    const commandHall = fakeBuilding({
+      id: "player-command-hall",
+      buildingId: "command_hall",
+      name: "Command Hall",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 96,
+      height: 82
+    });
+    const combat = createCombat([raider], [commandHall]);
+
+    combat.update(0.1);
+
+    expect(commandHall.hp).toBe(commandHall.maxHp);
+    expect(raider.moveTarget).toBeUndefined();
+  });
+
+  it("keeps move-away suppression active even if pathing has already cleared the move target", () => {
+    const player = fakeUnit({
+      id: "player-militia",
+      team: "player",
+      x: 100,
+      y: 100,
+      moveOrderCombatSuppressionSeconds: 0.25,
+      behaviourMode: "press_attack"
+    });
+    const firstEnemy = fakeUnit({ id: "enemy-raider-1", team: "enemy", x: 124, y: 100 });
+    const secondEnemy = fakeUnit({ id: "enemy-raider-2", team: "enemy", x: 130, y: 112 });
+    const combat = createCombat([player, firstEnemy, secondEnemy]);
+
+    combat.update(0.1);
+
+    expect(firstEnemy.hp).toBe(firstEnemy.maxHp);
+    expect(secondEnemy.hp).toBe(secondEnemy.maxHp);
+    expect(player.attackTargetId).toBeUndefined();
+    expect(player.moveOrderCombatSuppressionSeconds).toBeGreaterThan(0);
+  });
+
   it("fills a readable target label for explicit attack orders", () => {
     const player = fakeUnit({
       id: "player-hero",
@@ -311,11 +400,11 @@ describe("CombatSystem", () => {
   });
 });
 
-function createCombat(units: Unit[]): CombatSystem {
+function createCombat(units: Unit[], buildings: Building[] = []): CombatSystem {
   return new CombatSystem({
     scene: {} as never,
     getUnits: () => units,
-    getBuildings: () => [] as Building[],
+    getBuildings: () => buildings,
     getProjectiles: () => [],
     addProjectile: vi.fn(),
     onDamage: vi.fn(),
@@ -386,4 +475,46 @@ function fakeUnit(options: {
     },
     destroyView: vi.fn()
   }) as Unit;
+}
+
+function fakeBuilding(options: {
+  id: string;
+  buildingId: string;
+  name: string;
+  team: Team;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  hp?: number;
+}): Building {
+  return Object.assign(Object.create(Building.prototype), {
+    id: options.id,
+    kind: "building",
+    alive: true,
+    team: options.team,
+    position: { x: options.x, y: options.y },
+    radius: Math.max(options.width, options.height) / 2,
+    maxHp: 500,
+    hp: options.hp ?? 500,
+    armor: 0,
+    attackCooldownRemaining: 0,
+    definition: {
+      id: options.buildingId,
+      name: options.name,
+      factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
+      size: { width: options.width, height: options.height },
+      attack: undefined
+    },
+    isCompleted: () => true,
+    takeDamage(rawDamage: number) {
+      const damage = Math.max(1, Math.round(rawDamage - this.armor));
+      this.hp = Math.max(0, this.hp - damage);
+      if (this.hp <= 0) {
+        this.alive = false;
+      }
+      return damage;
+    },
+    destroyView: vi.fn()
+  }) as Building;
 }
