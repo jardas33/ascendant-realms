@@ -1,12 +1,65 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-22 v0.16.9 autonomous manual-retest proxy and tester readiness
+Last updated: 2026-05-22 v0.16.10 release-candidate freeze and backlog triage
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
+
+Status: release-candidate docs, backlog triage, public-safety check, and tester kit polish are complete locally. This checkpoint does not start v0.17, implement worker construction, add gameplay/content, change runtime gameplay, rebalance numbers, change saves, or add runtime art/assets.
+
+Baseline and remote CI:
+
+- Starting commit: `83f146e1a0c9a4092a0457c504e4f3d767078c01`, `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions CI Release Matrix Dry Run #83 on `83f146e1a0c9a4092a0457c504e4f3d767078c01` completed successfully as a push run with Fast confidence only.
+- #83 skipped Release simulator, Release matrix, Optional visual QA, and Full release e2e because it was a push run.
+- No exact-final workflow-dispatch release matrix was found for `83f146e`.
+- GitHub Actions #80 remains the latest workflow-dispatch matrix evidence for the post-v0.16.7 runtime stack: Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke passed on `ad4eee0`; Optional visual QA and Full release e2e were skipped.
+
+v0.16.10 docs added:
+
+- `docs/V01610_RELEASE_CANDIDATE_BASELINE.md`
+- `docs/V01610_REMOTE_CI_FINAL_HASH_STATUS.md`
+- `docs/V01610_RELEASE_CANDIDATE_DECISION.md`
+- `docs/V01610_BACKLOG_TRIAGE.md`
+- `docs/V01610_PUBLIC_RELEASE_SAFETY_CHECK.md`
+- `docs/V01610_TESTER_MESSAGE_SHORT.md`
+- `docs/V01610_TESTER_FEEDBACK_FORM_SHORT.md`
+- `docs/V01610_ROUTE_ASSIGNMENTS_SMALL_BATCH.md`
+- `docs/V01610_EMMANUEL_MANUAL_RETEST_CHECKLIST.md`
+
+Included work:
+
+- Declared `83f146e` ready for Emmanuel's manual retest and a small 2-5 external tester batch, with human-risk and watchpoints separated from automated confidence.
+- Triaged backlog into manual-before-v0.17 checks, v0.16.x bugfix-only triggers, v0.17 intake, worker-construction design, readability/VFX, tutorial/onboarding, visual overhaul, and explicit deferrals.
+- Polished the tester kit into short v0.16.10 release-candidate docs.
+- Updated private package build metadata to `v0.16.10 release-candidate freeze and backlog triage`.
+- Added the release-candidate notes, Emmanuel retest checklist, short tester message, short feedback form, and small-batch routes to the generated playtest package and package validator.
+- Completed a final public-repo safety check. No secrets, tracked `.env` files, private tester data, raw feedback, package artifacts, large unwanted binaries, or protected-IP copies were found. Prototype image assets remain a source/license proof watchpoint before production approval.
+
+Verification:
+
+```text
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.4m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS against the pre-commit dirty tree; generated `ascendant-realms-private-playtest-83f146e-dirty`.
+npm run verify:playtest-package PASS, 29 checks.
+```
+
+Runtime gameplay changed in v0.16.10: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, package metadata and package validation only. Package changed: yes, tester kit contents expanded. Final clean package must be regenerated after commit.
+
+Next recommended action: commit as `Checkpoint v0.16.10 release-candidate freeze and backlog triage`, push, regenerate and verify a clean private package, confirm branch clean/synced, and let Emmanuel manually retest using `EMMANUEL_MANUAL_RETEST_CHECKLIST.md`.
 
 ## Current v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
 

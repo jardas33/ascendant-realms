@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.16.9 autonomous manual-retest proxy and tester readiness";
+const CHECKPOINT = "v0.16.10 release-candidate freeze and backlog triage";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -48,6 +48,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V016_BEHAVIOUR_MODE_TESTER_CHECKLIST.md", join(packageDir, "BEHAVIOUR_MODE_TESTER_CHECKLIST.md"));
   await copyMarkdown("docs/V016_CONTROL_FEEDBACK_INTAKE_TEMPLATE.md", join(packageDir, "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md"));
   await copyMarkdown("docs/V016_CONTROL_REGRESSION_TRIAGE_GUIDE.md", join(packageDir, "CONTROL_REGRESSION_TRIAGE_GUIDE.md"));
+  await copyMarkdown("docs/V01610_RELEASE_CANDIDATE_DECISION.md", join(packageDir, "RELEASE_CANDIDATE_NOTES.md"));
+  await copyMarkdown("docs/V01610_EMMANUEL_MANUAL_RETEST_CHECKLIST.md", join(packageDir, "EMMANUEL_MANUAL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V01610_TESTER_MESSAGE_SHORT.md", join(packageDir, "FIRST_TESTER_MESSAGE.md"));
+  await copyMarkdown("docs/V01610_TESTER_FEEDBACK_FORM_SHORT.md", join(packageDir, "TESTER_FEEDBACK_FORM_SHORT.md"));
+  await copyMarkdown("docs/V01610_ROUTE_ASSIGNMENTS_SMALL_BATCH.md", join(packageDir, "ROUTE_ASSIGNMENTS_SMALL_BATCH.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -131,7 +136,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.16 control retest, start with CONTROL_RETEST_SCRIPT.md or PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md.
+For the v0.16.10 release-candidate retest, start with EMMANUEL_MANUAL_RETEST_CHECKLIST.md, RELEASE_CANDIDATE_NOTES.md, or PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md.
 
 ## Known Warning
 

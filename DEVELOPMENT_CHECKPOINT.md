@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-05-22 v0.16.9 autonomous manual-retest proxy and tester readiness
+Updated: 2026-05-22 v0.16.10 release-candidate freeze and backlog triage
+
+## v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
+
+Scope: freeze the current post-v0.16.7 combat/control candidate for Emmanuel retest or a small external tester batch, document exact-final CI status, triage backlog, polish tester kit docs, run a final public-repo safety check, and verify/package without starting v0.17 or changing runtime gameplay.
+
+Baseline:
+
+- Starting commit: `83f146e1a0c9a4092a0457c504e4f3d767078c01`, `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`.
+- Branch was clean and synced with `origin/main`.
+- v0.16.7 remains the latest runtime combat/control fix.
+- v0.16.8 and v0.16.9 did not change runtime gameplay.
+- GitHub Actions CI Release Matrix Dry Run #83 for `83f146e1a0c9a4092a0457c504e4f3d767078c01` passed Fast confidence as a push run.
+- #83 skipped release simulator, hosted release matrix, optional visual QA, and full release e2e.
+- No exact-final workflow-dispatch release matrix was found for `83f146e`.
+- GitHub Actions #80 remains the latest workflow-dispatch matrix evidence for the post-v0.16.7 runtime stack and passed the enabled lanes on `ad4eee0`.
+
+Included work:
+
+- Added `docs/V01610_RELEASE_CANDIDATE_BASELINE.md`.
+- Added `docs/V01610_REMOTE_CI_FINAL_HASH_STATUS.md`.
+- Added `docs/V01610_RELEASE_CANDIDATE_DECISION.md`.
+- Added `docs/V01610_BACKLOG_TRIAGE.md`.
+- Added `docs/V01610_PUBLIC_RELEASE_SAFETY_CHECK.md`.
+- Added `docs/V01610_TESTER_MESSAGE_SHORT.md`.
+- Added `docs/V01610_TESTER_FEEDBACK_FORM_SHORT.md`.
+- Added `docs/V01610_ROUTE_ASSIGNMENTS_SMALL_BATCH.md`.
+- Added `docs/V01610_EMMANUEL_MANUAL_RETEST_CHECKLIST.md`.
+- Updated package metadata to the v0.16.10 checkpoint title.
+- Added release-candidate notes, Emmanuel retest checklist, short tester message, short feedback form, and small-batch routes to the generated playtest package and validator.
+- Regenerated control-lab outputs against the current commit while preserving the 18-scenario / 5-iteration extended dashboard.
+
+Verification:
+
+```text
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.4m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS against the pre-commit dirty tree.
+npm run verify:playtest-package PASS, 29 checks.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, package metadata and package validation only. Package changed: yes, tester kit contents expanded.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.10 release-candidate freeze and backlog triage`, push, regenerate and verify a clean private playtest package, and confirm branch clean/synced.
 
 ## v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
 

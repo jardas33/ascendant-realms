@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.16.9 autonomous manual-retest proxy and tester readiness",
+          checkpoint: "v0.16.10 release-candidate freeze and backlog triage",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -72,6 +72,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "BEHAVIOUR_MODE_TESTER_CHECKLIST.md", sizeBytes: 20, textContent: "Checklist" },
       { path: "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md", sizeBytes: 20, textContent: "Feedback" },
       { path: "CONTROL_REGRESSION_TRIAGE_GUIDE.md", sizeBytes: 20, textContent: "Triage" },
+      { path: "RELEASE_CANDIDATE_NOTES.md", sizeBytes: 20, textContent: "Release candidate" },
+      { path: "EMMANUEL_MANUAL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Manual retest" },
+      { path: "FIRST_TESTER_MESSAGE.md", sizeBytes: 20, textContent: "Tester message" },
+      { path: "TESTER_FEEDBACK_FORM_SHORT.md", sizeBytes: 20, textContent: "Feedback short" },
+      { path: "ROUTE_ASSIGNMENTS_SMALL_BATCH.md", sizeBytes: 20, textContent: "Routes short" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

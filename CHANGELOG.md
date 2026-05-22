@@ -1,5 +1,44 @@
 # Changelog
 
+## v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
+
+This checkpoint freezes the post-v0.16.7 combat/control candidate for Emmanuel retest or a small external tester batch. It is not v0.17 and not a runtime feature/content/balance pass.
+
+### Included
+
+- Added v0.16.10 release-candidate baseline, final-hash CI status, release-candidate decision, backlog triage, public-safety check, tester message, feedback form, route assignment, and Emmanuel retest docs.
+- Inspected GitHub Actions run #83 for `83f146e`: Fast confidence passed; release simulator, hosted release matrix, optional visual QA, and full release e2e were skipped by the push trigger.
+- Documented that no exact-final workflow-dispatch release matrix was found for `83f146e`; run #80 remains the latest enabled workflow-dispatch matrix evidence for the post-v0.16.7 runtime stack.
+- Declared `83f146e` ready for Emmanuel manual retest and a small 2-5 external tester batch, with remaining human-risk and watchpoints separated from automated confidence.
+- Triaged backlog into manual-before-v0.17 checks, v0.16.x bugfix-only triggers, v0.17 intake, worker construction design, combat readability/VFX, tutorial/onboarding, visual overhaul, and explicit deferrals.
+- Updated the playtest package metadata to the v0.16.10 checkpoint title.
+- Added release-candidate notes, Emmanuel retest checklist, short tester message, short feedback form, and route assignments to the generated playtest package and validator.
+- Completed a public-release safety check without finding secrets, private tester data, raw feedback, package artifacts, large unwanted binaries, or protected-IP copies.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Enemy aggro changed: no.
+- Retreat logic changed: no.
+- Test/CI harness changed: yes, package metadata and package validation only.
+- Package changed: yes, tester kit contents expanded.
+- Worker construction implemented: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+- Secrets found: no.
+
+### Verification
+
+- Passed: `npm test` with 57 files / 415 tests, build, content validation, art-intake validation, fast smoke with 8 tests, control lab normal, control lab extended, control verifier with 1658 checks, dirty-tree package generation, and package verification with 29 checks.
+
+### Next
+
+- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and have Emmanuel run `EMMANUEL_MANUAL_RETEST_CHECKLIST.md`.
+
 ## v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
 
 This checkpoint strengthens automated evidence for the v0.16.7 manual combat/control fixes and prepares a small external tester packet. It is not v0.17 and not a runtime feature/content/balance pass.
