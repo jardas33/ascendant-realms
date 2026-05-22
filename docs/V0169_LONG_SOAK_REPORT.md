@@ -69,4 +69,4 @@ PASS: 5 tests in 4.2m; 18 screenshots, 0 browser console errors, 0 screenshot re
 
 - Existing verified DOM button fallbacks appeared in smoke/layout/deep-flow logs for DOM buttons. No force clicks or canvas/world DOM fallback were added.
 - No deterministic combat/contact, building aggro, retreat, hover, minimap, or Results regression reproduced.
-- GitHub Actions still needs a manual workflow-dispatch release matrix run for the v0.16.7+ combat-control stack; push Fast confidence alone is not full matrix evidence.
+- GitHub Actions run #80 later provided the enabled workflow-dispatch release matrix evidence on `ad4eee0`: Fast confidence, release simulator, and hosted release matrix deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke all passed. Optional visual QA and full release e2e were skipped remotely and remain local evidence from this soak.

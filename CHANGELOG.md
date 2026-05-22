@@ -8,6 +8,7 @@ This checkpoint strengthens automated evidence for the v0.16.7 manual combat/con
 
 - Added v0.16.9 baseline, remote CI, autonomous manual-proxy, combat edge matrix, first-tester, worker-design-only, visual/readability, and long-soak docs.
 - Inspected GitHub Actions run #79 for `ad4eee0`: Fast confidence passed; workflow-dispatch release matrix jobs were skipped.
+- Inspected GitHub Actions run #80 for `ad4eee0`: workflow-dispatch Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke all passed; optional visual QA and full release e2e were skipped.
 - Extended the deterministic control behaviour lab from 12 to 18 scenarios.
 - Added manual-proxy scenarios for Hold Ground adjacent follow-up and group retreat/resume.
 - Added combat edge scenarios for 1 hero vs 3 melee enemies, 2 friendlies vs 3 enemies, local building aggro, and Hold/Guard/Press mode differences.
@@ -36,7 +37,7 @@ This checkpoint strengthens automated evidence for the v0.16.7 manual combat/con
 
 ### Next
 
-- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and manually dispatch the normal GitHub Actions release matrix because push Fast confidence is not full release-matrix evidence.
+- Push the final v0.16.9 docs/test checkpoint, regenerate the clean private playtest package, verify it does not end in `-dirty`, and inspect the automatic final push Fast confidence run. A fresh workflow-dispatch release matrix on the final v0.16.9 commit is optional because v0.16.9 does not change runtime gameplay.
 
 ## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 
@@ -73,7 +74,7 @@ This checkpoint verifies v0.16.7's runtime combat/control fix with remote CI ins
 
 ### Next
 
-- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and manually dispatch the normal GitHub Actions release matrix because v0.16.7 changed runtime combat/control behaviour and the remote v0.16.7 push run only executed Fast confidence.
+- Later v0.16.9 CI inspection found GitHub Actions run #80, a workflow-dispatch release matrix on `ad4eee0`, passed the enabled release lanes for the post-v0.16.7 combat-control stack. Optional visual QA and full release e2e were skipped remotely.
 
 ## v0.16.7 Manual Combat Contact And Aggro Fix - 2026-05-21
 

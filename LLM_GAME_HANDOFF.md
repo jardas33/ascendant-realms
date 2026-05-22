@@ -16,9 +16,10 @@ Baseline and remote CI:
 
 - Starting commit: `ad4eee0a80a43f81df41ff30640a14f8434a5797`, `Checkpoint v0.16.8 post-combat-fix CI verification and soak audit`.
 - Branch was clean and synced with `origin/main`.
-- GitHub Actions CI Release Matrix Dry Run #79 on `ad4eee0a80a43f81df41ff30640a14f8434a5797` completed successfully as a push run.
-- #79 ran Fast confidence only; release simulator, release matrix groups, optional visual QA, and full release e2e were skipped because no authenticated `workflow_dispatch` creation path is available here.
-- The latest nearby true workflow-dispatch release matrix remains #77 on the v0.16.6 baseline, not the v0.16.7/v0.16.8/v0.16.9 combat-control stack.
+- GitHub Actions CI Release Matrix Dry Run #79 on `ad4eee0a80a43f81df41ff30640a14f8434a5797` completed successfully as a push run with Fast confidence only.
+- GitHub Actions CI Release Matrix Dry Run #80 on `ad4eee0a80a43f81df41ff30640a14f8434a5797` completed successfully as a `workflow_dispatch` run.
+- #80 passed Fast confidence, Release simulator, and the hosted release matrix groups: deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
+- #80 skipped Optional visual QA and Full release e2e, so those must not be claimed as remote-passed from that run.
 
 v0.16.9 docs added:
 
@@ -67,7 +68,7 @@ npm run visual:qa PASS, 5 tests in 4.2m; 18 screenshots, 0 console errors, 0 ret
 
 Runtime gameplay changed in v0.16.9: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, deterministic control-lab/test coverage only. Package changed: final clean package must be regenerated after commit.
 
-Next recommended action: commit as `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`, push, regenerate and verify a clean private package, then have a user with GitHub Actions write access dispatch the normal enabled release matrix.
+Next recommended action: after the final v0.16.9 push, inspect the automatic Fast confidence run and keep the clean package path handy for Emmanuel's manual retest. A fresh workflow-dispatch release matrix on the final v0.16.9 commit is optional because v0.16.9 changed deterministic coverage/docs/package readiness only, not runtime gameplay.
 
 ## Current v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 
@@ -79,8 +80,8 @@ Baseline and remote CI:
 - Branch was clean and synced with `origin/main`.
 - Existing package `artifacts/playtest/ascendant-realms-private-playtest-169bb21` was clean and recorded `workingTreeDirty: false`.
 - GitHub Actions CI Release Matrix Dry Run #78 on `169bb21d54bd1599f5241b15bbfb1a187276d921` completed successfully as a push run.
-- #78 ran Fast confidence only; release simulator, release matrix groups, optional visual QA, and full release e2e were skipped because no authenticated `workflow_dispatch` creation path is available in this local environment.
-- The normal manual release matrix still needs an authenticated dispatch after the v0.16.8 push.
+- #78 ran Fast confidence only; release simulator, release matrix groups, optional visual QA, and full release e2e were skipped because it was a push run.
+- Later v0.16.9 CI inspection found run #80, a workflow-dispatch release matrix on `ad4eee0`, passed the enabled release lanes for this post-v0.16.7 combat-control stack. Optional visual QA and full release e2e were skipped remotely.
 
 v0.16.8 docs added:
 

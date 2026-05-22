@@ -13,7 +13,8 @@ Baseline:
 - v0.16.7 remains the latest runtime combat/control fix.
 - v0.16.8 was test/CI/docs/package readiness and did not change runtime gameplay.
 - GitHub Actions CI Release Matrix Dry Run #79 for `ad4eee0a80a43f81df41ff30640a14f8434a5797` passed Fast confidence as a push run.
-- #79 skipped Release simulator, release matrix jobs, optional visual QA, and full release e2e. A true workflow-dispatch release matrix has not yet run for the v0.16.7+ combat-control stack.
+- GitHub Actions CI Release Matrix Dry Run #80 for `ad4eee0a80a43f81df41ff30640a14f8434a5797` passed as a `workflow_dispatch` run across Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
+- #80 skipped Optional visual QA and Full release e2e, so those remain local evidence from this checkpoint.
 
 Included work:
 
@@ -57,7 +58,7 @@ npm run visual:qa PASS, 5 tests in 4.2m; 18 screenshots, 0 browser console error
 
 Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, deterministic coverage only. Package changed: final clean package must be regenerated after commit.
 
-Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`, push, regenerate and verify a clean private playtest package, confirm branch clean/synced, and have a user with GitHub Actions write access dispatch the normal enabled release matrix.
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`, push, regenerate and verify a clean private playtest package, confirm branch clean/synced, and inspect the final push Fast confidence run. A fresh workflow-dispatch release matrix on the final v0.16.9 commit is optional because v0.16.9 did not change runtime gameplay.
 
 ## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 
