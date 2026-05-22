@@ -1,6 +1,63 @@
 # Development Checkpoint
 
-Updated: 2026-05-22 v0.16.8 post-combat-fix CI verification and soak audit
+Updated: 2026-05-22 v0.16.9 autonomous manual-retest proxy and tester readiness
+
+## v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
+
+Scope: build stronger automated evidence around the v0.16.7 manual combat/control retest items while Emmanuel is away, inspect remote CI status, prepare first external tester docs, document worker construction as design-only, audit control visual/readability risks, and run the requested verification gates without starting v0.17 or changing runtime gameplay.
+
+Baseline:
+
+- Starting commit: `ad4eee0a80a43f81df41ff30640a14f8434a5797`, `Checkpoint v0.16.8 post-combat-fix CI verification and soak audit`.
+- Branch was clean and synced with `origin/main`.
+- v0.16.7 remains the latest runtime combat/control fix.
+- v0.16.8 was test/CI/docs/package readiness and did not change runtime gameplay.
+- GitHub Actions CI Release Matrix Dry Run #79 for `ad4eee0a80a43f81df41ff30640a14f8434a5797` passed Fast confidence as a push run.
+- #79 skipped Release simulator, release matrix jobs, optional visual QA, and full release e2e. A true workflow-dispatch release matrix has not yet run for the v0.16.7+ combat-control stack.
+
+Included work:
+
+- Added `docs/V0169_BASELINE_STATUS.md`.
+- Added `docs/V0169_REMOTE_RELEASE_MATRIX_STATUS.md`.
+- Added `docs/V0169_AUTONOMOUS_MANUAL_RETEST_PROXY_SPEC.md`.
+- Added `docs/V0169_AUTONOMOUS_MANUAL_RETEST_PROXY_REPORT.md`.
+- Added `docs/V0169_COMBAT_EDGE_CASE_MATRIX.md`.
+- Added `docs/V0169_FIRST_EXTERNAL_TESTER_PLAN.md`.
+- Added `docs/V0169_TESTER_MESSAGE_SHORT.md`.
+- Added `docs/V0169_TESTER_FEEDBACK_FORM_SHORT.md`.
+- Added `docs/V0169_ROUTE_ASSIGNMENTS_SMALL_BATCH.md`.
+- Added `docs/V0169_WORKER_CONSTRUCTION_DESIGN_BRIEF.md`.
+- Added `docs/V0169_CONTROL_VISUAL_READABILITY_AUDIT.md`.
+- Added `docs/V0169_LONG_SOAK_REPORT.md`.
+- Extended the control behaviour lab to 18 scenarios.
+- Added manual proxy coverage for Hold Ground adjacent follow-up and group retreat/resume.
+- Added combat edge scenarios for 1 hero vs 3 melee enemies, 2 friendly units vs 3 enemies, building aggro locality, and Hold/Guard/Press mode differences.
+- Added a focused ranged-enemy building aggro unit test.
+
+Verification:
+
+```text
+npm test -- CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 2 files / 29 tests.
+Focused repeat of the same command 5 times: PASS 5/5.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet|manual combat contact regression" --repeat-each=3 --reporter=line PASS, 6 tests in 2.8m.
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.4m.
+npm run test:e2e:smoke PASS, 14 tests in 6.8m.
+npm run test:e2e:release:hosted:deep-battle PASS, 14 tests in 4.2m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 2.7m.
+npm run test:e2e:release PASS, 79 tests in 38.4m.
+npm run visual:qa PASS, 5 tests in 4.2m; 18 screenshots, 0 browser console errors, 0 screenshot retries.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, deterministic coverage only. Package changed: final clean package must be regenerated after commit.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`, push, regenerate and verify a clean private playtest package, confirm branch clean/synced, and have a user with GitHub Actions write access dispatch the normal enabled release matrix.
 
 ## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 

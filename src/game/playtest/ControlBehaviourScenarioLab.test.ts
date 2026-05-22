@@ -14,6 +14,20 @@ describe("ControlBehaviourScenarioLab", () => {
       result: "pass",
       confidence: "high"
     });
+    expect(report.results.find((entry) => entry.scenarioId === "manual_proxy_hold_ground_adjacent_followup")).toMatchObject({
+      result: "pass",
+      confidence: "high"
+    });
+    expect(report.results.find((entry) => entry.scenarioId === "manual_proxy_group_retreat_resume")).toMatchObject({
+      result: "pass",
+      confidence: "high",
+      metrics: expect.objectContaining({
+        reacquisitionSuppressedDuringRetreat: true,
+        snapBackObserved: false
+      })
+    });
+    expect(report.results.find((entry) => entry.scenarioId === "combat_edge_hero_three_melee_followup")?.metrics.contactAttackFramesObserved).toBeGreaterThanOrEqual(1);
+    expect(report.results.find((entry) => entry.scenarioId === "combat_edge_building_aggro_matrix")?.metrics.leashRespected).toBe(true);
     expect(report.results.find((entry) => entry.scenarioId === "press_attack_bounded_pursuit")?.metrics.leashRespected).toBe(true);
     expect(report.limitations).toContain("Not human fun evidence.");
   });

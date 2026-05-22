@@ -43,6 +43,7 @@ Known current realities:
 - v0.16.6 keeps hosted first-campaign coverage intact after run #75, but lets the first-campaign training assertion fall back to the existing scene-backed training command helper if visible command clicks never expose a queue, and accepts newly trained Militia that have already reached the rally point.
 - v0.16.7 changes runtime combat/control behaviour narrowly after Emmanuel's manual retest: melee visible-contact tolerance, local melee building contact, move-away suppression preservation, and conservative attack-hover hit tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 - v0.16.8 adds post-combat-fix verification docs, control-lab coverage for the v0.16.7 manual issues, and a public-repo safety audit. The v0.16.7 push run #78 only executed automatic Fast confidence, so manual CI Release Matrix Dry Run remains required for the enabled release lanes.
+- v0.16.9 expands deterministic manual-retest proxy coverage to 18 control scenarios, adds first external tester docs, and keeps worker construction/design and visual-readability work docs-only. Push run #79 for v0.16.8 was Fast confidence only; manual CI Release Matrix Dry Run remains required for the v0.16.7+ combat-control stack.
 
 ## Required Automated Checks
 
@@ -80,6 +81,12 @@ Current v0.16.8 checkpoint result:
 
 ```text
 PASS: 57 test files, 414 tests
+```
+
+Current v0.16.9 checkpoint result:
+
+```text
+PASS: 57 test files, 415 tests
 ```
 
 2. Standalone content validation:

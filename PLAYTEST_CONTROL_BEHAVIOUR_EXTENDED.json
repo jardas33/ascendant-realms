@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "generatedBy": "ControlBehaviourScenarioRunner",
-  "generatedAt": "2026-05-22T10:16:26.281Z",
-  "buildCommit": "169bb21",
+  "generatedAt": "2026-05-22T18:39:26.036Z",
+  "buildCommit": "ad4eee0",
   "runMode": "extended",
   "iterationCount": 5,
-  "scenarioCount": 12,
+  "scenarioCount": 18,
   "results": [
     {
       "scenarioId": "hold_ground_contact_defence",
@@ -360,6 +360,246 @@
       ]
     },
     {
+      "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+      "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+      "iteration": 1,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first adjacent enemy killed",
+        "second adjacent enemy damaged",
+        "distant idle enemy refused",
+        "First adjacent enemy died.",
+        "Second adjacent enemy took follow-up damage.",
+        "Distant idle enemy remained refused."
+      ],
+      "limitations": [
+        "Deterministic proxy only; it does not replace Emmanuel's human retest."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_group_retreat_resume",
+      "scenarioName": "Manual Proxy Group Retreat And Resume",
+      "iteration": 1,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": false,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "retreat command accepted",
+        "reacquisition suppressed",
+        "combat resumes after suppression",
+        "Group retreat suppression prevented immediate contact attacks.",
+        "Combat resumed after suppression expired."
+      ],
+      "limitations": [
+        "Does not prove pathing feel or collision readability under human input."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_hero_three_melee_followup",
+      "scenarioName": "Combat Edge Hero Versus Three Melee",
+      "iteration": 1,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first melee enemy killed",
+        "follow-up adjacent enemy damaged",
+        "First melee enemy died.",
+        "At least one remaining adjacent melee enemy took follow-up damage."
+      ],
+      "limitations": [
+        "Uses compact combat ticks rather than a full battle wave."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_two_friendlies_three_enemies",
+      "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
+      "iteration": 1,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "multiple enemies damaged",
+        "friendlies keep local engagement",
+        "Two friendly units damaged multiple nearby enemies."
+      ],
+      "limitations": [
+        "Does not rebalance group focus fire or enemy wave size."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_building_aggro_matrix",
+      "scenarioName": "Combat Edge Building Aggro Matrix",
+      "iteration": 1,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "local building damaged",
+        "distant building not chased",
+        "Local melee enemy damaged the Command Hall footprint.",
+        "Distant melee enemy did not globally chase the building."
+      ],
+      "limitations": [
+        "Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_mode_difference_matrix",
+      "scenarioName": "Combat Edge Mode Difference Matrix",
+      "iteration": 1,
+      "mode": "mixed",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 388.4,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount"
+      ],
+      "evidence": [
+        "Hold refuses distant",
+        "Guard uses local leash",
+        "Press uses bounded pursuit",
+        "Hold Ground refused the distant idle target.",
+        "Guard Area kept a local leash.",
+        "Press Attack pursued farther but stayed bounded."
+      ],
+      "limitations": [
+        "Does not tune leash distances or player feel."
+      ]
+    },
+    {
       "scenarioId": "group_mixed_mode_application",
       "scenarioName": "Group Mixed Mode Application",
       "iteration": 1,
@@ -839,6 +1079,246 @@
       ]
     },
     {
+      "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+      "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+      "iteration": 2,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first adjacent enemy killed",
+        "second adjacent enemy damaged",
+        "distant idle enemy refused",
+        "First adjacent enemy died.",
+        "Second adjacent enemy took follow-up damage.",
+        "Distant idle enemy remained refused."
+      ],
+      "limitations": [
+        "Deterministic proxy only; it does not replace Emmanuel's human retest."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_group_retreat_resume",
+      "scenarioName": "Manual Proxy Group Retreat And Resume",
+      "iteration": 2,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": false,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "retreat command accepted",
+        "reacquisition suppressed",
+        "combat resumes after suppression",
+        "Group retreat suppression prevented immediate contact attacks.",
+        "Combat resumed after suppression expired."
+      ],
+      "limitations": [
+        "Does not prove pathing feel or collision readability under human input."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_hero_three_melee_followup",
+      "scenarioName": "Combat Edge Hero Versus Three Melee",
+      "iteration": 2,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first melee enemy killed",
+        "follow-up adjacent enemy damaged",
+        "First melee enemy died.",
+        "At least one remaining adjacent melee enemy took follow-up damage."
+      ],
+      "limitations": [
+        "Uses compact combat ticks rather than a full battle wave."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_two_friendlies_three_enemies",
+      "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
+      "iteration": 2,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "multiple enemies damaged",
+        "friendlies keep local engagement",
+        "Two friendly units damaged multiple nearby enemies."
+      ],
+      "limitations": [
+        "Does not rebalance group focus fire or enemy wave size."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_building_aggro_matrix",
+      "scenarioName": "Combat Edge Building Aggro Matrix",
+      "iteration": 2,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "local building damaged",
+        "distant building not chased",
+        "Local melee enemy damaged the Command Hall footprint.",
+        "Distant melee enemy did not globally chase the building."
+      ],
+      "limitations": [
+        "Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_mode_difference_matrix",
+      "scenarioName": "Combat Edge Mode Difference Matrix",
+      "iteration": 2,
+      "mode": "mixed",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 388.4,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount"
+      ],
+      "evidence": [
+        "Hold refuses distant",
+        "Guard uses local leash",
+        "Press uses bounded pursuit",
+        "Hold Ground refused the distant idle target.",
+        "Guard Area kept a local leash.",
+        "Press Attack pursued farther but stayed bounded."
+      ],
+      "limitations": [
+        "Does not tune leash distances or player feel."
+      ]
+    },
+    {
       "scenarioId": "group_mixed_mode_application",
       "scenarioName": "Group Mixed Mode Application",
       "iteration": 2,
@@ -1318,6 +1798,246 @@
       ]
     },
     {
+      "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+      "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+      "iteration": 3,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first adjacent enemy killed",
+        "second adjacent enemy damaged",
+        "distant idle enemy refused",
+        "First adjacent enemy died.",
+        "Second adjacent enemy took follow-up damage.",
+        "Distant idle enemy remained refused."
+      ],
+      "limitations": [
+        "Deterministic proxy only; it does not replace Emmanuel's human retest."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_group_retreat_resume",
+      "scenarioName": "Manual Proxy Group Retreat And Resume",
+      "iteration": 3,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": false,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "retreat command accepted",
+        "reacquisition suppressed",
+        "combat resumes after suppression",
+        "Group retreat suppression prevented immediate contact attacks.",
+        "Combat resumed after suppression expired."
+      ],
+      "limitations": [
+        "Does not prove pathing feel or collision readability under human input."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_hero_three_melee_followup",
+      "scenarioName": "Combat Edge Hero Versus Three Melee",
+      "iteration": 3,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first melee enemy killed",
+        "follow-up adjacent enemy damaged",
+        "First melee enemy died.",
+        "At least one remaining adjacent melee enemy took follow-up damage."
+      ],
+      "limitations": [
+        "Uses compact combat ticks rather than a full battle wave."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_two_friendlies_three_enemies",
+      "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
+      "iteration": 3,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "multiple enemies damaged",
+        "friendlies keep local engagement",
+        "Two friendly units damaged multiple nearby enemies."
+      ],
+      "limitations": [
+        "Does not rebalance group focus fire or enemy wave size."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_building_aggro_matrix",
+      "scenarioName": "Combat Edge Building Aggro Matrix",
+      "iteration": 3,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "local building damaged",
+        "distant building not chased",
+        "Local melee enemy damaged the Command Hall footprint.",
+        "Distant melee enemy did not globally chase the building."
+      ],
+      "limitations": [
+        "Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_mode_difference_matrix",
+      "scenarioName": "Combat Edge Mode Difference Matrix",
+      "iteration": 3,
+      "mode": "mixed",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 388.4,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount"
+      ],
+      "evidence": [
+        "Hold refuses distant",
+        "Guard uses local leash",
+        "Press uses bounded pursuit",
+        "Hold Ground refused the distant idle target.",
+        "Guard Area kept a local leash.",
+        "Press Attack pursued farther but stayed bounded."
+      ],
+      "limitations": [
+        "Does not tune leash distances or player feel."
+      ]
+    },
+    {
       "scenarioId": "group_mixed_mode_application",
       "scenarioName": "Group Mixed Mode Application",
       "iteration": 3,
@@ -1797,6 +2517,246 @@
       ]
     },
     {
+      "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+      "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+      "iteration": 4,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first adjacent enemy killed",
+        "second adjacent enemy damaged",
+        "distant idle enemy refused",
+        "First adjacent enemy died.",
+        "Second adjacent enemy took follow-up damage.",
+        "Distant idle enemy remained refused."
+      ],
+      "limitations": [
+        "Deterministic proxy only; it does not replace Emmanuel's human retest."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_group_retreat_resume",
+      "scenarioName": "Manual Proxy Group Retreat And Resume",
+      "iteration": 4,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": false,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "retreat command accepted",
+        "reacquisition suppressed",
+        "combat resumes after suppression",
+        "Group retreat suppression prevented immediate contact attacks.",
+        "Combat resumed after suppression expired."
+      ],
+      "limitations": [
+        "Does not prove pathing feel or collision readability under human input."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_hero_three_melee_followup",
+      "scenarioName": "Combat Edge Hero Versus Three Melee",
+      "iteration": 4,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first melee enemy killed",
+        "follow-up adjacent enemy damaged",
+        "First melee enemy died.",
+        "At least one remaining adjacent melee enemy took follow-up damage."
+      ],
+      "limitations": [
+        "Uses compact combat ticks rather than a full battle wave."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_two_friendlies_three_enemies",
+      "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
+      "iteration": 4,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "multiple enemies damaged",
+        "friendlies keep local engagement",
+        "Two friendly units damaged multiple nearby enemies."
+      ],
+      "limitations": [
+        "Does not rebalance group focus fire or enemy wave size."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_building_aggro_matrix",
+      "scenarioName": "Combat Edge Building Aggro Matrix",
+      "iteration": 4,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "local building damaged",
+        "distant building not chased",
+        "Local melee enemy damaged the Command Hall footprint.",
+        "Distant melee enemy did not globally chase the building."
+      ],
+      "limitations": [
+        "Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_mode_difference_matrix",
+      "scenarioName": "Combat Edge Mode Difference Matrix",
+      "iteration": 4,
+      "mode": "mixed",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 388.4,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount"
+      ],
+      "evidence": [
+        "Hold refuses distant",
+        "Guard uses local leash",
+        "Press uses bounded pursuit",
+        "Hold Ground refused the distant idle target.",
+        "Guard Area kept a local leash.",
+        "Press Attack pursued farther but stayed bounded."
+      ],
+      "limitations": [
+        "Does not tune leash distances or player feel."
+      ]
+    },
+    {
       "scenarioId": "group_mixed_mode_application",
       "scenarioName": "Group Mixed Mode Application",
       "iteration": 4,
@@ -2273,6 +3233,246 @@
       ],
       "limitations": [
         "Cursor rendering and left-click attack remain browser-level coverage."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+      "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+      "iteration": 5,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first adjacent enemy killed",
+        "second adjacent enemy damaged",
+        "distant idle enemy refused",
+        "First adjacent enemy died.",
+        "Second adjacent enemy took follow-up damage.",
+        "Distant idle enemy remained refused."
+      ],
+      "limitations": [
+        "Deterministic proxy only; it does not replace Emmanuel's human retest."
+      ]
+    },
+    {
+      "scenarioId": "manual_proxy_group_retreat_resume",
+      "scenarioName": "Manual Proxy Group Retreat And Resume",
+      "iteration": 5,
+      "mode": "press_attack",
+      "explicitOrderType": "move",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "press_attack",
+        "explicitOrderType": "move",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": false,
+        "reacquisitionSuppressedDuringRetreat": true,
+        "snapBackObserved": false,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "retreat command accepted",
+        "reacquisition suppressed",
+        "combat resumes after suppression",
+        "Group retreat suppression prevented immediate contact attacks.",
+        "Combat resumed after suppression expired."
+      ],
+      "limitations": [
+        "Does not prove pathing feel or collision readability under human input."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_hero_three_melee_followup",
+      "scenarioName": "Combat Edge Hero Versus Three Melee",
+      "iteration": 5,
+      "mode": "hold_ground",
+      "explicitOrderType": "attack",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "hold_ground",
+        "explicitOrderType": "attack",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "first melee enemy killed",
+        "follow-up adjacent enemy damaged",
+        "First melee enemy died.",
+        "At least one remaining adjacent melee enemy took follow-up damage."
+      ],
+      "limitations": [
+        "Uses compact combat ticks rather than a full battle wave."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_two_friendlies_three_enemies",
+      "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
+      "iteration": 5,
+      "mode": "guard_area",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "guard_area",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 2,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "multiple enemies damaged",
+        "friendlies keep local engagement",
+        "Two friendly units damaged multiple nearby enemies."
+      ],
+      "limitations": [
+        "Does not rebalance group focus fire or enemy wave size."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_building_aggro_matrix",
+      "scenarioName": "Combat Edge Building Aggro Matrix",
+      "iteration": 5,
+      "mode": "not_applicable",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "not_applicable",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "contact",
+        "targetAcquired": true,
+        "targetRetained": false,
+        "chaseDistance": 0,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 1,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": null
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount",
+        "mixedModeDetected"
+      ],
+      "evidence": [
+        "local building damaged",
+        "distant building not chased",
+        "Local melee enemy damaged the Command Hall footprint.",
+        "Distant melee enemy did not globally chase the building."
+      ],
+      "limitations": [
+        "Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."
+      ]
+    },
+    {
+      "scenarioId": "combat_edge_mode_difference_matrix",
+      "scenarioName": "Combat Edge Mode Difference Matrix",
+      "iteration": 5,
+      "mode": "mixed",
+      "explicitOrderType": "none",
+      "result": "pass",
+      "confidence": "high",
+      "metrics": {
+        "mode": "mixed",
+        "explicitOrderType": "none",
+        "enemyDistanceCategory": "press_leash",
+        "targetAcquired": true,
+        "targetRetained": true,
+        "chaseDistance": 388.4,
+        "leashRespected": true,
+        "contactAttackFramesObserved": 0,
+        "retreatCommandAccepted": null,
+        "reacquisitionSuppressedDuringRetreat": null,
+        "snapBackObserved": null,
+        "groupModeAppliedCount": null,
+        "mixedModeDetected": true
+      },
+      "unavailableMetrics": [
+        "retreatCommandAccepted",
+        "reacquisitionSuppressedDuringRetreat",
+        "snapBackObserved",
+        "groupModeAppliedCount"
+      ],
+      "evidence": [
+        "Hold refuses distant",
+        "Guard uses local leash",
+        "Press uses bounded pursuit",
+        "Hold Ground refused the distant idle target.",
+        "Guard Area kept a local leash.",
+        "Press Attack pursued farther but stayed bounded."
+      ],
+      "limitations": [
+        "Does not tune leash distances or player feel."
       ]
     },
     {
@@ -2406,11 +3606,11 @@
   "dashboard": {
     "schemaVersion": 1,
     "generatedBy": "ControlBehaviourScenarioRunner",
-    "generatedAt": "2026-05-22T10:16:26.281Z",
-    "buildCommit": "169bb21",
+    "generatedAt": "2026-05-22T18:39:26.036Z",
+    "buildCommit": "ad4eee0",
     "iterationCount": 5,
-    "scenarioCount": 12,
-    "passCount": 60,
+    "scenarioCount": 18,
+    "passCount": 90,
     "monitorCount": 0,
     "failCount": 0,
     "notMeasuredCount": 0,
@@ -2428,6 +3628,46 @@
       {
         "scenarioId": "attack_hover_tolerance_boundary",
         "scenarioName": "Attack Hover Tolerance Boundary",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "combat_edge_building_aggro_matrix",
+        "scenarioName": "Combat Edge Building Aggro Matrix",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "combat_edge_hero_three_melee_followup",
+        "scenarioName": "Combat Edge Hero Versus Three Melee",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "combat_edge_mode_difference_matrix",
+        "scenarioName": "Combat Edge Mode Difference Matrix",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "combat_edge_two_friendlies_three_enemies",
+        "scenarioName": "Combat Edge Two Friendlies Versus Three Enemies",
         "verdict": "pass",
         "confidence": "high",
         "passRate": 1,
@@ -2500,6 +3740,26 @@
         "scenarioName": "HUD/Minimap/Selection Regression Protection",
         "verdict": "pass",
         "confidence": "medium",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "manual_proxy_group_retreat_resume",
+        "scenarioName": "Manual Proxy Group Retreat And Resume",
+        "verdict": "pass",
+        "confidence": "high",
+        "passRate": 1,
+        "monitorRate": 0,
+        "failRate": 0,
+        "iterationCount": 5
+      },
+      {
+        "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
+        "scenarioName": "Manual Proxy Hold Ground Adjacent Follow-Up",
+        "verdict": "pass",
+        "confidence": "high",
         "passRate": 1,
         "monitorRate": 0,
         "failRate": 0,

@@ -94,6 +94,18 @@ function runScenario(profile: ControlBehaviourScenarioProfile, iteration: number
       return result(profile, iteration, enemyMeleeBuildingAggro());
     case "attack_hover_tolerance_boundary":
       return result(profile, iteration, attackHoverToleranceBoundary());
+    case "manual_proxy_hold_ground_adjacent_followup":
+      return result(profile, iteration, manualProxyHoldGroundAdjacentFollowup());
+    case "manual_proxy_group_retreat_resume":
+      return result(profile, iteration, manualProxyGroupRetreatResume());
+    case "combat_edge_hero_three_melee_followup":
+      return result(profile, iteration, combatEdgeHeroThreeMeleeFollowup());
+    case "combat_edge_two_friendlies_three_enemies":
+      return result(profile, iteration, combatEdgeTwoFriendliesThreeEnemies());
+    case "combat_edge_building_aggro_matrix":
+      return result(profile, iteration, combatEdgeBuildingAggroMatrix());
+    case "combat_edge_mode_difference_matrix":
+      return result(profile, iteration, combatEdgeModeDifferenceMatrix());
     case "group_mixed_mode_application":
       return result(profile, iteration, groupMixedModeApplication());
     case "attack_cursor_intent_integrity":
@@ -407,6 +419,284 @@ function attackHoverToleranceBoundary(): ScenarioRun {
     evidence: [
       bodyEdgeHit?.id === enemy.id ? "Visible enemy body edge resolved as attack intent." : "Visible enemy body edge did not resolve.",
       !emptyNearbyHit ? "Nearby empty terrain remained non-targetable." : "Nearby empty terrain incorrectly resolved as a target."
+    ]
+  };
+}
+
+function manualProxyHoldGroundAdjacentFollowup(): ScenarioRun {
+  const hero = fakeUnit({
+    id: "player-hero",
+    team: "player",
+    x: 100,
+    y: 100,
+    radius: 19,
+    range: 34,
+    damage: 12,
+    behaviourMode: "hold_ground",
+    attackTargetId: "enemy-stone-imp-1"
+  });
+  const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
+  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 150, y: 100, radius: 14, range: 26 });
+  const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 430, y: 100, radius: 14, range: 26 });
+  const combat = createCombat([hero, firstImp, secondImp, distantImp]);
+
+  combat.update(0.1);
+  combat.update(1.1);
+
+  const passed = !firstImp.alive && secondImp.hp < secondImp.maxHp && distantImp.hp === distantImp.maxHp && !hero.moveTarget;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "hold_ground",
+      explicitOrderType: "attack",
+      enemyDistanceCategory: "contact",
+      targetAcquired: secondImp.hp < secondImp.maxHp,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: distantImp.hp === distantImp.maxHp && !hero.moveTarget,
+      contactAttackFramesObserved: secondImp.hp < secondImp.maxHp ? 1 : 0
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [
+      !firstImp.alive ? "First adjacent enemy died." : "First adjacent enemy survived.",
+      secondImp.hp < secondImp.maxHp ? "Second adjacent enemy took follow-up damage." : "Second adjacent enemy idled without damage.",
+      distantImp.hp === distantImp.maxHp && !hero.moveTarget ? "Distant idle enemy remained refused." : "Hold Ground chased or damaged a distant idle enemy."
+    ]
+  };
+}
+
+function manualProxyGroupRetreatResume(): ScenarioRun {
+  const firstPlayer = fakeUnit({
+    id: "player-hero",
+    team: "player",
+    x: 100,
+    y: 100,
+    behaviourMode: "press_attack",
+    moveTarget: { x: 250, y: 100 },
+    moveOrderCombatSuppressionSeconds: 0.1
+  });
+  const secondPlayer = fakeUnit({
+    id: "player-militia",
+    team: "player",
+    x: 100,
+    y: 130,
+    behaviourMode: "press_attack",
+    moveTarget: { x: 250, y: 130 },
+    moveOrderCombatSuppressionSeconds: 0.1
+  });
+  const enemies = [
+    fakeUnit({ id: "enemy-raider-1", team: "enemy", x: 124, y: 100 }),
+    fakeUnit({ id: "enemy-raider-2", team: "enemy", x: 126, y: 130 }),
+    fakeUnit({ id: "enemy-raider-3", team: "enemy", x: 138, y: 115 })
+  ];
+  enemies.forEach((enemy) => {
+    enemy.attackCooldownRemaining = 999;
+  });
+  const combat = createCombat([firstPlayer, secondPlayer, ...enemies]);
+
+  combat.update(0.1);
+  const suppressed = enemies.every((enemy) => enemy.hp === enemy.maxHp) && Boolean(firstPlayer.moveTarget && secondPlayer.moveTarget);
+  combat.update(0.1);
+  const damagedEnemies = enemies.filter((enemy) => enemy.hp < enemy.maxHp).length;
+  const passed = suppressed && damagedEnemies >= 1;
+
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "press_attack",
+      explicitOrderType: "move",
+      enemyDistanceCategory: "contact",
+      targetAcquired: damagedEnemies >= 1,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: true,
+      contactAttackFramesObserved: damagedEnemies,
+      retreatCommandAccepted: Boolean(firstPlayer.moveTarget || firstPlayer.moveOrderCombatSuppressionSeconds > 0),
+      reacquisitionSuppressedDuringRetreat: suppressed,
+      snapBackObserved: !suppressed
+    }),
+    unavailableMetrics: unavailable(["groupModeAppliedCount", "mixedModeDetected"]),
+    evidence: [
+      suppressed ? "Group retreat suppression prevented immediate contact attacks." : "Group retreat suppression allowed immediate reacquisition.",
+      damagedEnemies >= 1 ? "Combat resumed after suppression expired." : "Combat did not resume after suppression expired."
+    ]
+  };
+}
+
+function combatEdgeHeroThreeMeleeFollowup(): ScenarioRun {
+  const hero = fakeUnit({
+    id: "player-hero",
+    team: "player",
+    x: 100,
+    y: 100,
+    radius: 19,
+    range: 34,
+    damage: 20,
+    behaviourMode: "hold_ground",
+    attackTargetId: "enemy-melee-1"
+  });
+  const enemies = [
+    fakeUnit({ id: "enemy-melee-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 }),
+    fakeUnit({ id: "enemy-melee-2", team: "enemy", x: 148, y: 100, radius: 14, range: 26 }),
+    fakeUnit({ id: "enemy-melee-3", team: "enemy", x: 136, y: 118, radius: 14, range: 26 })
+  ];
+  const combat = createCombat([hero, ...enemies]);
+
+  combat.update(0.1);
+  combat.update(1.1);
+
+  const followupDamaged = enemies.slice(1).filter((enemy) => enemy.hp < enemy.maxHp).length;
+  const passed = !enemies[0].alive && followupDamaged >= 1 && !hero.moveTarget;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "hold_ground",
+      explicitOrderType: "attack",
+      enemyDistanceCategory: "contact",
+      targetAcquired: followupDamaged >= 1,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: !hero.moveTarget,
+      contactAttackFramesObserved: followupDamaged
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [
+      !enemies[0].alive ? "First melee enemy died." : "First melee enemy survived.",
+      followupDamaged >= 1 ? "At least one remaining adjacent melee enemy took follow-up damage." : "Remaining adjacent melee enemies idled."
+    ]
+  };
+}
+
+function combatEdgeTwoFriendliesThreeEnemies(): ScenarioRun {
+  const firstPlayer = fakeUnit({ id: "player-hero", team: "player", x: 100, y: 100, radius: 18, range: 30, behaviourMode: "guard_area" });
+  const secondPlayer = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 130, radius: 13, range: 28, behaviourMode: "guard_area" });
+  const enemies = [
+    fakeUnit({ id: "enemy-raider-1", team: "enemy", x: 132, y: 100 }),
+    fakeUnit({ id: "enemy-raider-2", team: "enemy", x: 132, y: 130 }),
+    fakeUnit({ id: "enemy-raider-3", team: "enemy", x: 150, y: 115 })
+  ];
+  createCombat([firstPlayer, secondPlayer, ...enemies]).update(0.1);
+  const damagedEnemies = enemies.filter((enemy) => enemy.hp < enemy.maxHp).length;
+  const passed = damagedEnemies >= 2 && !firstPlayer.moveTarget && !secondPlayer.moveTarget;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "guard_area",
+      enemyDistanceCategory: "contact",
+      targetAcquired: damagedEnemies >= 2,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: true,
+      contactAttackFramesObserved: damagedEnemies
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [
+      damagedEnemies >= 2 ? "Two friendly units damaged multiple nearby enemies." : "Multiple friendlies did not engage the nearby enemy group."
+    ]
+  };
+}
+
+function combatEdgeBuildingAggroMatrix(): ScenarioRun {
+  const localRaider = fakeUnit({ id: "enemy-local-raider", team: "enemy", x: 100, y: 100, radius: 13, range: 28, damage: 12 });
+  const distantRaider = fakeUnit({ id: "enemy-distant-raider", team: "enemy", x: 560, y: 100, radius: 13, range: 28, damage: 12 });
+  const commandHall = fakeBuilding({ id: "player-command-hall", team: "player", x: 166, y: 100, width: 96, height: 76, hp: 140 });
+  createCombat([localRaider, distantRaider], [commandHall]).update(0.1);
+  const localHit = commandHall.hp < commandHall.maxHp && !localRaider.moveTarget;
+  const distantRefused = !distantRaider.moveTarget && distantRaider.attackTargetId === undefined;
+  const passed = localHit && distantRefused;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "not_applicable",
+      enemyDistanceCategory: "contact",
+      targetAcquired: localHit,
+      targetRetained: false,
+      chaseDistance: 0,
+      leashRespected: distantRefused,
+      contactAttackFramesObserved: localHit ? 1 : 0
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount",
+      "mixedModeDetected"
+    ]),
+    evidence: [
+      localHit ? "Local melee enemy damaged the Command Hall footprint." : "Local melee enemy did not damage the Command Hall footprint.",
+      distantRefused ? "Distant melee enemy did not globally chase the building." : "Distant melee enemy chased the building."
+    ]
+  };
+}
+
+function combatEdgeModeDifferenceMatrix(): ScenarioRun {
+  const hold = fakeUnit({ id: "player-hold", team: "player", x: 100, y: 100, behaviourMode: "hold_ground" });
+  const holdEnemy = fakeUnit({ id: "enemy-hold", team: "enemy", x: 220, y: 100 });
+  createCombat([hold, holdEnemy]).update(0.1);
+
+  const guard = fakeUnit({ id: "player-guard", team: "player", x: 100, y: 100, behaviourMode: "guard_area" });
+  const guardEnemy = fakeUnit({ id: "enemy-guard", team: "enemy", x: 220, y: 100 });
+  createCombat([guard, guardEnemy]).update(0.1);
+
+  const guardFar = fakeUnit({ id: "player-guard-far", team: "player", x: 100, y: 100, behaviourMode: "guard_area" });
+  const guardFarEnemy = fakeUnit({ id: "enemy-guard-far", team: "enemy", x: 390, y: 100 });
+  createCombat([guardFar, guardFarEnemy]).update(0.1);
+
+  const press = fakeUnit({ id: "player-press", team: "player", x: 100, y: 100, behaviourMode: "press_attack" });
+  const pressEnemy = fakeUnit({ id: "enemy-press", team: "enemy", x: 430, y: 100 });
+  createCombat([press, pressEnemy]).update(0.1);
+
+  const pressFar = fakeUnit({ id: "player-press-far", team: "player", x: 100, y: 100, behaviourMode: "press_attack" });
+  const pressFarEnemy = fakeUnit({ id: "enemy-press-far", team: "enemy", x: 510, y: 100 });
+  createCombat([pressFar, pressFarEnemy]).update(0.1);
+
+  const passed = !hold.moveTarget && Boolean(guard.moveTarget) && !guardFar.moveTarget && Boolean(press.moveTarget) && !pressFar.moveTarget;
+  return {
+    verdict: passed ? "pass" : "fail",
+    confidence: "high",
+    metrics: metrics({
+      mode: "mixed",
+      enemyDistanceCategory: "press_leash",
+      targetAcquired: Boolean(guard.moveTarget && press.moveTarget),
+      targetRetained: Boolean(guard.moveTarget && press.moveTarget),
+      chaseDistance: round((guard.moveTarget ? distance(guard.position, guard.moveTarget) : 0) + (press.moveTarget ? distance(press.position, press.moveTarget) : 0)),
+      leashRespected: !hold.moveTarget && !guardFar.moveTarget && !pressFar.moveTarget,
+      contactAttackFramesObserved: 0,
+      mixedModeDetected: true
+    }),
+    unavailableMetrics: unavailable([
+      "retreatCommandAccepted",
+      "reacquisitionSuppressedDuringRetreat",
+      "snapBackObserved",
+      "groupModeAppliedCount"
+    ]),
+    evidence: [
+      !hold.moveTarget ? "Hold Ground refused the distant idle target." : "Hold Ground chased a distant idle target.",
+      Boolean(guard.moveTarget) && !guardFar.moveTarget ? "Guard Area kept a local leash." : "Guard Area leash behaviour drifted.",
+      Boolean(press.moveTarget) && !pressFar.moveTarget ? "Press Attack pursued farther but stayed bounded." : "Press Attack bounded pursuit drifted."
     ]
   };
 }

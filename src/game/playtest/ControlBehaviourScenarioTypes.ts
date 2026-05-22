@@ -10,6 +10,12 @@ export type ControlBehaviourScenarioId =
   | "post_kill_adjacent_reacquisition"
   | "enemy_melee_building_aggro"
   | "attack_hover_tolerance_boundary"
+  | "manual_proxy_hold_ground_adjacent_followup"
+  | "manual_proxy_group_retreat_resume"
+  | "combat_edge_hero_three_melee_followup"
+  | "combat_edge_two_friendlies_three_enemies"
+  | "combat_edge_building_aggro_matrix"
+  | "combat_edge_mode_difference_matrix"
   | "group_mixed_mode_application"
   | "attack_cursor_intent_integrity"
   | "hud_minimap_selection_regression";

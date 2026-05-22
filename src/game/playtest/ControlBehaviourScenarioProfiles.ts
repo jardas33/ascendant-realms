@@ -74,6 +74,54 @@ export const CONTROL_BEHAVIOUR_SCENARIO_PROFILES: ControlBehaviourScenarioProfil
     limitations: ["Cursor rendering and left-click attack remain browser-level coverage."]
   },
   {
+    id: "manual_proxy_hold_ground_adjacent_followup",
+    name: "Manual Proxy Hold Ground Adjacent Follow-Up",
+    mode: "hold_ground",
+    purpose: "Proxy Emmanuel's two-adjacent-enemy Hold Ground report after the first enemy dies.",
+    expectedEvidence: ["first adjacent enemy killed", "second adjacent enemy damaged", "distant idle enemy refused"],
+    limitations: ["Deterministic proxy only; it does not replace Emmanuel's human retest."]
+  },
+  {
+    id: "manual_proxy_group_retreat_resume",
+    name: "Manual Proxy Group Retreat And Resume",
+    mode: "press_attack",
+    purpose: "Proxy group retreat near multiple enemies and confirm combat resumes after suppression expires.",
+    expectedEvidence: ["retreat command accepted", "reacquisition suppressed", "combat resumes after suppression"],
+    limitations: ["Does not prove pathing feel or collision readability under human input."]
+  },
+  {
+    id: "combat_edge_hero_three_melee_followup",
+    name: "Combat Edge Hero Versus Three Melee",
+    mode: "hold_ground",
+    purpose: "Confirm a hero does not idle after killing the first enemy with two more melee enemies adjacent.",
+    expectedEvidence: ["first melee enemy killed", "follow-up adjacent enemy damaged"],
+    limitations: ["Uses compact combat ticks rather than a full battle wave."]
+  },
+  {
+    id: "combat_edge_two_friendlies_three_enemies",
+    name: "Combat Edge Two Friendlies Versus Three Enemies",
+    mode: "guard_area",
+    purpose: "Confirm multiple friendly units engage nearby enemies without requiring a single explicit target.",
+    expectedEvidence: ["multiple enemies damaged", "friendlies keep local engagement"],
+    limitations: ["Does not rebalance group focus fire or enemy wave size."]
+  },
+  {
+    id: "combat_edge_building_aggro_matrix",
+    name: "Combat Edge Building Aggro Matrix",
+    mode: "not_applicable",
+    purpose: "Confirm local building aggro stays local and melee building contact remains valid.",
+    expectedEvidence: ["local building damaged", "distant building not chased"],
+    limitations: ["Ranged projectile building aggro is verified in CombatSystem tests to avoid Phaser view setup in the lab."]
+  },
+  {
+    id: "combat_edge_mode_difference_matrix",
+    name: "Combat Edge Mode Difference Matrix",
+    mode: "mixed",
+    purpose: "Confirm Hold, Guard, and Press keep their intended pursuit differences.",
+    expectedEvidence: ["Hold refuses distant", "Guard uses local leash", "Press uses bounded pursuit"],
+    limitations: ["Does not tune leash distances or player feel."]
+  },
+  {
     id: "group_mixed_mode_application",
     name: "Group Mixed Mode Application",
     mode: "mixed",

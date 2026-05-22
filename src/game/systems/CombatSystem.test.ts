@@ -341,6 +341,36 @@ describe("CombatSystem", () => {
     expect(raider.moveTarget).toBeUndefined();
   });
 
+  it("lets enemy ranged units target a nearby Command Hall without requiring melee contact", () => {
+    const addProjectile = vi.fn();
+    const ranger = fakeUnit({ id: "enemy-ranger", team: "enemy", x: 210, y: 100, radius: 13, range: 140 });
+    const commandHall = fakeBuilding({
+      id: "player-command-hall",
+      buildingId: "command_hall",
+      name: "Command Hall",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 96,
+      height: 82
+    });
+    const combat = new CombatSystem({
+      scene: fakeProjectileScene() as never,
+      getUnits: () => [ranger],
+      getBuildings: () => [commandHall],
+      getProjectiles: () => [],
+      addProjectile,
+      onDamage: vi.fn(),
+      onKill: vi.fn()
+    });
+
+    combat.update(0.1);
+
+    expect(addProjectile).toHaveBeenCalledTimes(1);
+    expect(ranger.moveTarget).toBeUndefined();
+    expect(commandHall.hp).toBe(commandHall.maxHp);
+  });
+
   it("does not make enemy melee units globally chase distant buildings", () => {
     const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 390, y: 100, radius: 13, range: 28 });
     const commandHall = fakeBuilding({
@@ -517,4 +547,34 @@ function fakeBuilding(options: {
     },
     destroyView: vi.fn()
   }) as Building;
+}
+
+function fakeProjectileScene(): unknown {
+  const gameObject = {
+    displayWidth: 0,
+    y: 0,
+    add: vi.fn(),
+    addAt: vi.fn(),
+    destroy: vi.fn(),
+    moveTo: vi.fn(),
+    setColor: vi.fn().mockReturnThis(),
+    setDepth: vi.fn().mockReturnThis(),
+    setDisplaySize: vi.fn().mockReturnThis(),
+    setOrigin: vi.fn().mockReturnThis(),
+    setPosition: vi.fn().mockReturnThis(),
+    setSize: vi.fn().mockReturnThis(),
+    setSmoothness: vi.fn().mockReturnThis(),
+    setStrokeStyle: vi.fn().mockReturnThis(),
+    setVisible: vi.fn().mockReturnThis(),
+    setY: vi.fn().mockReturnThis()
+  };
+  return {
+    add: {
+      circle: vi.fn(() => gameObject),
+      container: vi.fn(() => gameObject),
+      ellipse: vi.fn(() => gameObject),
+      rectangle: vi.fn(() => ({ ...gameObject })),
+      text: vi.fn(() => gameObject)
+    }
+  };
 }

@@ -1,12 +1,73 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-22 v0.16.8 post-combat-fix CI verification and soak audit
+Last updated: 2026-05-22 v0.16.9 autonomous manual-retest proxy and tester readiness
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
+
+Status: local automated verification is green after adding stronger deterministic proxy coverage for the v0.16.7 manual combat/control checklist. This checkpoint does not start v0.17, implement worker construction, add content, change runtime gameplay, rebalance numbers, change saves, or add runtime art/assets.
+
+Baseline and remote CI:
+
+- Starting commit: `ad4eee0a80a43f81df41ff30640a14f8434a5797`, `Checkpoint v0.16.8 post-combat-fix CI verification and soak audit`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions CI Release Matrix Dry Run #79 on `ad4eee0a80a43f81df41ff30640a14f8434a5797` completed successfully as a push run.
+- #79 ran Fast confidence only; release simulator, release matrix groups, optional visual QA, and full release e2e were skipped because no authenticated `workflow_dispatch` creation path is available here.
+- The latest nearby true workflow-dispatch release matrix remains #77 on the v0.16.6 baseline, not the v0.16.7/v0.16.8/v0.16.9 combat-control stack.
+
+v0.16.9 docs added:
+
+- `docs/V0169_BASELINE_STATUS.md`
+- `docs/V0169_REMOTE_RELEASE_MATRIX_STATUS.md`
+- `docs/V0169_AUTONOMOUS_MANUAL_RETEST_PROXY_SPEC.md`
+- `docs/V0169_AUTONOMOUS_MANUAL_RETEST_PROXY_REPORT.md`
+- `docs/V0169_COMBAT_EDGE_CASE_MATRIX.md`
+- `docs/V0169_FIRST_EXTERNAL_TESTER_PLAN.md`
+- `docs/V0169_TESTER_MESSAGE_SHORT.md`
+- `docs/V0169_TESTER_FEEDBACK_FORM_SHORT.md`
+- `docs/V0169_ROUTE_ASSIGNMENTS_SMALL_BATCH.md`
+- `docs/V0169_WORKER_CONSTRUCTION_DESIGN_BRIEF.md`
+- `docs/V0169_CONTROL_VISUAL_READABILITY_AUDIT.md`
+- `docs/V0169_LONG_SOAK_REPORT.md`
+
+Included work:
+
+- Extended the deterministic control behaviour lab from 12 to 18 scenarios.
+- Added manual-proxy scenarios for Hold Ground adjacent follow-up and group retreat/resume.
+- Added edge matrix scenarios for 1 hero vs 3 melee enemies, 2 friendly units vs 3 enemies, local building aggro, and Hold/Guard/Press mode differences.
+- Added a focused `CombatSystem` unit test proving ranged enemies can target a nearby Command Hall without depending on the melee contact fix.
+- Prepared first external tester docs for a 2-5 tester batch without committing private tester names.
+- Added worker construction design-only notes and control visual/readability audit notes.
+
+Current verification:
+
+```text
+npm test -- CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 2 files / 29 tests.
+Focused repeat of the same command 5 times: PASS 5/5.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet|manual combat contact regression" --repeat-each=3 --reporter=line PASS, 6 tests in 2.8m.
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.4m.
+npm run test:e2e:smoke PASS, 14 tests in 6.8m.
+npm run test:e2e:release:hosted:deep-battle PASS, 14 tests in 4.2m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 2.7m.
+npm run test:e2e:release PASS, 79 tests in 38.4m.
+npm run visual:qa PASS, 5 tests in 4.2m; 18 screenshots, 0 console errors, 0 retries.
+```
+
+Runtime gameplay changed in v0.16.9: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, deterministic control-lab/test coverage only. Package changed: final clean package must be regenerated after commit.
+
+Next recommended action: commit as `Checkpoint v0.16.9 autonomous manual-retest proxy and tester readiness`, push, regenerate and verify a clean private package, then have a user with GitHub Actions write access dispatch the normal enabled release matrix.
 
 ## Current v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 

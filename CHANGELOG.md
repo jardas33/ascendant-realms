@@ -1,5 +1,43 @@
 # Changelog
 
+## v0.16.9 Autonomous Manual-Retest Proxy And Tester Readiness - 2026-05-22
+
+This checkpoint strengthens automated evidence for the v0.16.7 manual combat/control fixes and prepares a small external tester packet. It is not v0.17 and not a runtime feature/content/balance pass.
+
+### Included
+
+- Added v0.16.9 baseline, remote CI, autonomous manual-proxy, combat edge matrix, first-tester, worker-design-only, visual/readability, and long-soak docs.
+- Inspected GitHub Actions run #79 for `ad4eee0`: Fast confidence passed; workflow-dispatch release matrix jobs were skipped.
+- Extended the deterministic control behaviour lab from 12 to 18 scenarios.
+- Added manual-proxy scenarios for Hold Ground adjacent follow-up and group retreat/resume.
+- Added combat edge scenarios for 1 hero vs 3 melee enemies, 2 friendlies vs 3 enemies, local building aggro, and Hold/Guard/Press mode differences.
+- Added a focused ranged-enemy building aggro unit test.
+- Prepared short first external tester docs for 2-5 testers without committing private tester names.
+- Documented worker construction as deferred design-only work.
+- Audited attack cursor, hover readability, dense clusters, behaviour buttons, and retreat/order feedback without adding runtime art/assets.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Enemy aggro changed: no.
+- Retreat logic changed: no.
+- Test/CI harness changed: yes, deterministic control-lab and unit-test coverage only.
+- Worker construction implemented: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused proxy/edge tests, 5-repeat focused proxy soak, control lab normal/extended/verify, 3-repeat hosted proxy soak, `npm test` with 57 files / 415 tests, build, content validation, art-intake validation, fast smoke, full smoke, hosted deep-battle, hosted smoke, full release e2e with 79 tests, and visual QA with 18 screenshots / 0 console errors / 0 retries.
+
+### Next
+
+- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and manually dispatch the normal GitHub Actions release matrix because push Fast confidence is not full release-matrix evidence.
+
 ## v0.16.8 Post-Combat-Fix CI Verification And Soak Audit - 2026-05-22
 
 This checkpoint verifies v0.16.7's runtime combat/control fix with remote CI inspection, automated soak, control-lab coverage, public-repo safety audit, and tester handoff. It is not v0.17 and not a feature/content/balance pass.
