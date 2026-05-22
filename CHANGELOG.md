@@ -13,6 +13,7 @@ This checkpoint strengthens automated evidence for the v0.16.7 manual combat/con
 - Added manual-proxy scenarios for Hold Ground adjacent follow-up and group retreat/resume.
 - Added combat edge scenarios for 1 hero vs 3 melee enemies, 2 friendlies vs 3 enemies, local building aggro, and Hold/Guard/Press mode differences.
 - Added a focused ranged-enemy building aggro unit test.
+- Updated private package build-info metadata and verifier expectation to name the v0.16.9 checkpoint.
 - Prepared short first external tester docs for 2-5 testers without committing private tester names.
 - Documented worker construction as deferred design-only work.
 - Audited attack cursor, hover readability, dense clusters, behaviour buttons, and retreat/order feedback without adding runtime art/assets.

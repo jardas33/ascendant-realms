@@ -42,6 +42,7 @@ Included work:
 - Added manual-proxy scenarios for Hold Ground adjacent follow-up and group retreat/resume.
 - Added edge matrix scenarios for 1 hero vs 3 melee enemies, 2 friendly units vs 3 enemies, local building aggro, and Hold/Guard/Press mode differences.
 - Added a focused `CombatSystem` unit test proving ranged enemies can target a nearby Command Hall without depending on the melee contact fix.
+- Updated private package build-info metadata and verifier expectation to name the v0.16.9 checkpoint.
 - Prepared first external tester docs for a 2-5 tester batch without committing private tester names.
 - Added worker construction design-only notes and control visual/readability audit notes.
 

@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.16 behaviour mode gauntlet and playtest diagnostics",
+          checkpoint: "v0.16.9 autonomous manual-retest proxy and tester readiness",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })

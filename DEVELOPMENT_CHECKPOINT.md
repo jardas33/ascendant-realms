@@ -34,6 +34,7 @@ Included work:
 - Added manual proxy coverage for Hold Ground adjacent follow-up and group retreat/resume.
 - Added combat edge scenarios for 1 hero vs 3 melee enemies, 2 friendly units vs 3 enemies, building aggro locality, and Hold/Guard/Press mode differences.
 - Added a focused ranged-enemy building aggro unit test.
+- Updated private package build-info metadata and verifier expectation to name the v0.16.9 checkpoint.
 
 Verification:
 

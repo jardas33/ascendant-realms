@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.16 behaviour mode gauntlet and playtest diagnostics";
+const CHECKPOINT = "v0.16.9 autonomous manual-retest proxy and tester readiness";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {

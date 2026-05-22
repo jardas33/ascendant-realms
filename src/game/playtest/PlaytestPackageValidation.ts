@@ -131,7 +131,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.16 behaviour mode gauntlet and playtest diagnostics",
+      "v0.16.9 autonomous manual-retest proxy and tester readiness",
       "build info checkpoint",
       checks,
       errors
