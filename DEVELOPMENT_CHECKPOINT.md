@@ -1,6 +1,44 @@
 # Development Checkpoint
 
-Updated: 2026-05-22 v0.16.10 release-candidate freeze and backlog triage
+Updated: 2026-05-22 v0.16.11 release-candidate issue backlog and tester launch prep
+
+## v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
+
+Scope: prepare project-management artifacts so Emmanuel can manually retest later or send the release-candidate package to 2-5 testers. This is docs/issues and package-doc polish only, with no runtime gameplay change.
+
+Baseline:
+
+- Starting commit: `7cc6eff95123c0dfa90d05a66d5a9305e1f44eff`, `Checkpoint v0.16.10 release-candidate freeze and backlog triage`.
+- Branch was clean and synced with `origin/main`.
+- Package at intake: `artifacts/playtest/ascendant-realms-private-playtest-7cc6eff`, clean and verified.
+- GitHub Actions CI Release Matrix Dry Run #84 for `7cc6eff95123c0dfa90d05a66d5a9305e1f44eff` passed Fast confidence as a push run.
+- #84 skipped release simulator, hosted release matrix, optional visual QA, and full release e2e.
+- No exact-final workflow-dispatch release matrix was found for `7cc6eff`.
+- GitHub Actions #80 remains the enabled workflow-dispatch matrix evidence for the post-v0.16.7 runtime stack on `ad4eee0`.
+
+Included work:
+
+- Added `docs/V01611_EXACT_FINAL_CI_AND_RELEASE_NOTE.md`.
+- Added `docs/V01611_GITHUB_ISSUE_BACKLOG.md`.
+- Added `docs/V01611_TESTER_LAUNCH_PACKET_INDEX.md`.
+- Added `docs/V01611_NO_CODE_FREEZE_NOTE.md`.
+- Updated package metadata to the v0.16.11 checkpoint title.
+- Added `TESTER_LAUNCH_PACKET_INDEX.md` to the generated playtest package and package validator.
+
+Verification:
+
+```text
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run package:playtest PASS against the pre-commit dirty tree.
+npm run verify:playtest-package PASS, 30 checks.
+```
+
+Runtime gameplay changed: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, package metadata and package validation only. Package changed: yes, tester launch index added.
+
+Remaining closeout: run required gates, commit as `Checkpoint v0.16.11 release-candidate issue backlog and tester launch prep`, push, regenerate and verify a clean private playtest package, and confirm branch clean/synced.
 
 ## v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
 

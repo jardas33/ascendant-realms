@@ -1,12 +1,57 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-22 v0.16.10 release-candidate freeze and backlog triage
+Last updated: 2026-05-22 v0.16.11 release-candidate issue backlog and tester launch prep
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
+
+Status: docs/issues-only project-management pass is complete locally. This checkpoint prepares exact-final CI notes, ready-to-copy issue templates, tester launch packet guidance, and a no-code freeze note. Runtime gameplay is unchanged.
+
+Baseline and remote CI:
+
+- Starting commit: `7cc6eff95123c0dfa90d05a66d5a9305e1f44eff`, `Checkpoint v0.16.10 release-candidate freeze and backlog triage`.
+- Branch was clean and synced with `origin/main`.
+- Package at intake: `artifacts/playtest/ascendant-realms-private-playtest-7cc6eff`, clean and verified.
+- GitHub Actions CI Release Matrix Dry Run #84 on `7cc6eff95123c0dfa90d05a66d5a9305e1f44eff` completed successfully as a push run with Fast confidence only.
+- #84 skipped Release simulator, Release matrix, Optional visual QA, and Full release e2e because it was a push run.
+- No exact-final workflow-dispatch release matrix was found for `7cc6eff`.
+- GitHub Actions #80 remains the enabled workflow-dispatch matrix evidence for the post-v0.16.7 runtime stack on `ad4eee0`.
+
+v0.16.11 docs added:
+
+- `docs/V01611_EXACT_FINAL_CI_AND_RELEASE_NOTE.md`
+- `docs/V01611_GITHUB_ISSUE_BACKLOG.md`
+- `docs/V01611_TESTER_LAUNCH_PACKET_INDEX.md`
+- `docs/V01611_NO_CODE_FREEZE_NOTE.md`
+
+Included work:
+
+- Added exact-final CI and release note documenting that `7cc6eff` has Fast confidence only and no exact-final workflow-dispatch matrix.
+- Added ready-to-copy GitHub issue templates for manual retest, possible v0.16.x bugfixes, attack cursor polish, worker construction design, tester feedback intake, onboarding polish, and visual overhaul.
+- Added tester launch packet index explaining which package files to send and route assignments for 2-5 testers.
+- Added no-code freeze note stating that the next evidence should be human/manual testing, not more autonomous code.
+- Updated package metadata to `v0.16.11 release-candidate issue backlog and tester launch prep`.
+- Added `TESTER_LAUNCH_PACKET_INDEX.md` to the generated playtest package and package validator.
+
+Verification:
+
+```text
+npm test PASS, 57 files / 415 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run package:playtest PASS against the pre-commit dirty tree; generated `ascendant-realms-private-playtest-7cc6eff-dirty`.
+npm run verify:playtest-package PASS, 30 checks.
+```
+
+Runtime gameplay changed in v0.16.11: no. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no. Enemy aggro changed: no. Retreat logic changed: no. Test/CI harness changed: yes, package metadata and package validation only. Package changed: yes, tester launch index added.
+
+Next recommended action: commit as `Checkpoint v0.16.11 release-candidate issue backlog and tester launch prep`, push, regenerate and verify a clean private package, confirm branch clean/synced, then have Emmanuel manually retest before any v0.17 work.
 
 ## Current v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
 

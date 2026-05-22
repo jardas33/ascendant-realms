@@ -33,6 +33,7 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "FIRST_TESTER_MESSAGE.md",
   "TESTER_FEEDBACK_FORM_SHORT.md",
   "ROUTE_ASSIGNMENTS_SMALL_BATCH.md",
+  "TESTER_LAUNCH_PACKET_INDEX.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -136,7 +137,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.16.10 release-candidate freeze and backlog triage",
+      "v0.16.11 release-candidate issue backlog and tester launch prep",
       "build info checkpoint",
       checks,
       errors

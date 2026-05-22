@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
+
+This checkpoint prepares project-management artifacts for Emmanuel's manual retest or a 2-5 tester launch. It is not v0.17 and does not change runtime gameplay.
+
+### Included
+
+- Added exact-final CI and release note documenting that `7cc6eff` has push Fast confidence green and no exact-final workflow-dispatch release matrix.
+- Added ready-to-copy GitHub issue templates for manual retest, possible v0.16.x combat/control bugfixes, attack cursor polish, worker construction design, external tester intake, tutorial/onboarding polish, and visual overhaul.
+- Added tester launch packet index with package file list and 2-5 tester route assignments.
+- Added no-code freeze note: the next evidence should be human/manual testing, not more autonomous code.
+- Updated package metadata to the v0.16.11 checkpoint title.
+- Added `TESTER_LAUNCH_PACKET_INDEX.md` to the generated playtest package and validator.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no.
+- Enemy aggro changed: no.
+- Retreat logic changed: no.
+- Test/CI harness changed: yes, package metadata and package validation only.
+- Package changed: yes, tester launch index added.
+- Worker construction implemented: no.
+- Invented human feedback: no.
+
+### Verification
+
+- Passed: `npm test` with 57 files / 415 tests, build, content validation, art-intake validation, dirty-tree package generation, and package verification with 30 checks.
+
+### Next
+
+- Commit, push, regenerate the clean package, and have Emmanuel manually retest before v0.17.
+
 ## v0.16.10 Release-Candidate Freeze And Backlog Triage - 2026-05-22
 
 This checkpoint freezes the post-v0.16.7 combat/control candidate for Emmanuel retest or a small external tester batch. It is not v0.17 and not a runtime feature/content/balance pass.
