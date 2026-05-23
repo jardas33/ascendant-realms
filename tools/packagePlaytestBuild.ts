@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.16.12 stationary adjacent melee reacquisition fix";
+const CHECKPOINT = "v0.16.13 Stone Imp visible-contact reacquisition fix";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -55,6 +55,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V01610_ROUTE_ASSIGNMENTS_SMALL_BATCH.md", join(packageDir, "ROUTE_ASSIGNMENTS_SMALL_BATCH.md"));
   await copyMarkdown("docs/V01611_TESTER_LAUNCH_PACKET_INDEX.md", join(packageDir, "TESTER_LAUNCH_PACKET_INDEX.md"));
   await copyMarkdown("docs/V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md", join(packageDir, "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V01613_BD26DE3_RETEST_INTAKE.md", join(packageDir, "V01613_BD26DE3_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md", join(packageDir, "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");

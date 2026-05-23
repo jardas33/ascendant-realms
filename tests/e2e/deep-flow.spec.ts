@@ -2676,21 +2676,23 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       if (!scene?.scene.isActive() || !scene.hero?.alive) {
         throw new Error("Expected active BattleScene hero for contact regression.");
       }
-      const enemies = scene.units.filter((unit: any) => unit.team !== "player" && unit.alive);
+      const imps = scene.units.filter((unit: any) => unit.definition?.id === "stone_imp");
       const commandHall = scene.buildings.find(
         (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
       );
-      if (enemies.length < 2 || !commandHall) {
-        throw new Error("Expected at least two hostile units and a Command Hall for contact regression.");
+      if (imps.length < 2 || !commandHall) {
+        throw new Error("Expected at least two Stone Imps and a Command Hall for contact regression.");
       }
-      const [firstEnemy, secondEnemy, ...otherEnemies] = enemies;
-      otherEnemies.forEach((unit: any, index: number) => {
-        unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 28);
-        unit.attackTargetId = undefined;
-        unit.attackTargetLabel = undefined;
-        unit.attackMove = false;
-        unit.moveTarget = undefined;
-      });
+      const [firstEnemy, secondEnemy] = imps;
+      scene.units
+        .filter((unit: any) => unit.team !== "player" && !imps.includes(unit))
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 28);
+          unit.attackTargetId = undefined;
+          unit.attackTargetLabel = undefined;
+          unit.attackMove = false;
+          unit.moveTarget = undefined;
+        });
       scene.fogDebugDisabled = true;
       scene.updateFogOfWar?.(0, true);
       scene.selectionSystem.setSelection([scene.hero]);
@@ -2712,7 +2714,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       secondEnemy.attackTargetLabel = commandHall.definition.name;
       secondEnemy.attackMove = true;
       secondEnemy.moveTarget = undefined;
-      secondEnemy.setPosition(scene.hero.position.x + 54, scene.hero.position.y);
+      secondEnemy.setPosition(scene.hero.position.x + 64, scene.hero.position.y);
       const heroHpBefore = scene.hero.hp;
       scene.combatSystem.update(0.1);
       const firstKilled = !firstEnemy.alive;
@@ -2741,6 +2743,49 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(contactResult.secondHp, JSON.stringify(contactResult)).toBeLessThan(contactResult.secondMaxHp);
     expect(contactResult.heroHpAfter, JSON.stringify(contactResult)).toBeLessThan(contactResult.heroHpBefore);
     expect(contactResult.heroMoveTarget).toBe(false);
+
+    const stationaryStartContact = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const imps = scene?.units.filter((unit: any) => unit.definition?.id === "stone_imp").slice(0, 2);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !imps || imps.length < 2) {
+        throw new Error("Expected active BattleScene hero and two Stone Imps for stationary start contact regression.");
+      }
+      scene.units
+        .filter((unit: any) => unit.team !== "player" && !imps.includes(unit))
+        .forEach((unit: any, index: number) => unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 24));
+      scene.hero.behaviourMode = "hold_ground";
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.moveOrderCombatSuppressionSeconds = 0;
+      scene.hero.attackCooldownRemaining = 0;
+      imps.forEach((enemy: any, index: number) => {
+        enemy.hp = enemy.maxHp;
+        enemy.alive = true;
+        enemy.attackCooldownRemaining = 0;
+        enemy.attackTargetId = undefined;
+        enemy.attackTargetLabel = undefined;
+        enemy.attackMove = false;
+        enemy.moveTarget = undefined;
+        enemy.setPosition(scene.hero.position.x + 64 + index * 36, scene.hero.position.y + index * 10);
+      });
+      const heroHpBefore = scene.hero.hp;
+      scene.combatSystem.update(0.1);
+      return {
+        heroHpBefore,
+        heroHpAfter: scene.hero.hp,
+        enemyHp: imps.map((enemy: any) => enemy.hp),
+        enemyMaxHp: imps.map((enemy: any) => enemy.maxHp),
+        heroMoveTarget: Boolean(scene.hero.moveTarget)
+      };
+    });
+    expect(
+      stationaryStartContact.enemyHp.some((hp: number, index: number) => hp < stationaryStartContact.enemyMaxHp[index]) ||
+        stationaryStartContact.heroHpAfter < stationaryStartContact.heroHpBefore,
+      JSON.stringify(stationaryStartContact)
+    ).toBe(true);
+    expect(stationaryStartContact.heroMoveTarget).toBe(false);
 
     const buildingAggro = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

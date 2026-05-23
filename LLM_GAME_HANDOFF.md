@@ -1,12 +1,58 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.16.12 stationary adjacent melee reacquisition fix
+Last updated: 2026-05-23 v0.16.13 Stone Imp visible-contact reacquisition fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
+
+Status: narrow runtime combat/control follow-up is implemented locally after bd26de3 failed Emmanuel's manual Tutorial retest. This checkpoint does not start v0.17.
+
+Baseline:
+
+- Starting commit: `bd26de3`, `Checkpoint v0.16.12 stationary adjacent melee reacquisition fix`.
+- Branch was clean and synced with `origin/main`.
+- Package tested: `ascendant-realms-private-playtest-bd26de3`.
+- Manual result: FAIL. In Tutorial, a Hold Ground hero beside two Stone Imps could still idle before combat started or after the first Stone Imp died until the hero moved again.
+
+v0.16.13 docs added:
+
+- `docs/V01613_BD26DE3_RETEST_INTAKE.md`
+- `docs/V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md`
+
+Runtime fix summary:
+
+- A browser/manual proxy against the clean bd26de3 package reproduced the cutoff: Warlord versus Stone Imp combat started at 54px and 57px center distance, then idled at 58px+.
+- The previous v0.16.12 tests missed this because they encoded a 54px second target.
+- `MELEE_VISUAL_CONTACT_MARGIN` is now 32px, covering a 64px Stone Imp visible-contact setup without adding distant chase.
+- The hosted browser/manual regression now uses two real Tutorial Stone Imps, not the first two generic hostile units.
+
+Verification so far:
+
+```text
+npm test -- CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 2 files / 33 tests.
+npm test -- PlaytestPackageValidation.test.ts CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 3 files / 36 tests.
+npm test PASS, 57 files / 421 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 26.7s after rebuilding dist.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 24.7s after final rebuild.
+npm run package:playtest PASS against the pre-commit dirty tree.
+npm run verify:playtest-package PASS, 33 checks.
+```
+
+Runtime gameplay changed: yes, local melee visible-contact reacquisition only. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no mode definitions changed; Hold Ground still refuses distant idle enemies. Enemy aggro changed: no broad AI/pathing rewrite. Retreat logic changed: no. Package changed: pending clean v0.16.13 package generation.
+
+Remaining closeout: run full required gates, regenerate control-lab reports, run `git diff --check`, commit/push if green, regenerate and verify a clean private package, and direct Emmanuel to retest that new package instead of bd26de3.
 
 ## Current v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
 

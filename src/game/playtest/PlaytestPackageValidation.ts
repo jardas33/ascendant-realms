@@ -35,6 +35,8 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "ROUTE_ASSIGNMENTS_SMALL_BATCH.md",
   "TESTER_LAUNCH_PACKET_INDEX.md",
   "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md",
+  "V01613_BD26DE3_RETEST_INTAKE.md",
+  "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -138,7 +140,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.16.12 stationary adjacent melee reacquisition fix",
+      "v0.16.13 Stone Imp visible-contact reacquisition fix",
       "build info checkpoint",
       checks,
       errors

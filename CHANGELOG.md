@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
+
+This checkpoint fixes the failed bd26de3 manual retest where the Tutorial Hold Ground hero could still idle beside two Stone Imps before combat started or after the first imp died.
+
+### Included
+
+- Added bd26de3 retest intake and a v0.16.13 fix note.
+- Reproduced bd26de3 in a browser/manual proxy: Warlord versus Stone Imp contact started at 54px and 57px but idled at 58px+.
+- Increased melee visible-contact tolerance from 24px to 32px so the real Stone Imp visible-contact boundary reacquires without movement.
+- Strengthened unit, deterministic control-lab, and hosted browser/manual regressions to use the 64px Stone Imp setup instead of the previous 54px near miss.
+- Updated private package metadata and validation to require the v0.16.13 retest/fix notes.
+
+### Verdict
+
+- Runtime gameplay changed: yes, local melee visible-contact reacquisition only.
+- Gameplay numbers changed: no unit stats, waves, resources, or balance data changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: no mode definitions changed; Hold Ground still refuses distant idle enemies.
+- Enemy aggro changed: no broad AI/pathing rewrite; only local melee contact reach changed.
+- Retreat logic changed: no.
+- Worker construction implemented: no.
+
+### Verification
+
+- Passed: focused package/combat/control tests with 3 files / 36 tests, `npm test` with 57 files / 421 tests, build, content validation, art-intake validation, fast smoke with 8 tests, control lab normal/extended/verify, hosted browser/manual Stone Imp regression, dirty-tree package generation, and package verification with 33 checks.
+
+### Next
+
+- Regenerate and verify a clean private playtest package from the final v0.16.13 commit. Emmanuel should retest the Tutorial Hold Ground hero beside two Stone Imps against that new package, not bd26de3.
+
 ## v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
 
 This checkpoint fixes Emmanuel's `ec0608a` Tutorial retest failure where a Hold Ground hero and adjacent Stone Imps could remain idle in visible contact. It is a narrow v0.16.x combat bugfix, not v0.17.

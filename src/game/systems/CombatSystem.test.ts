@@ -331,8 +331,8 @@ describe("CombatSystem", () => {
       range: 34,
       behaviourMode: "hold_ground"
     });
-    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
-    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 158, y: 114, radius: 14, range: 26 });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 164, y: 100, radius: 14, range: 26 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 168, y: 114, radius: 14, range: 26 });
     const combat = createCombat([player, firstImp, secondImp]);
 
     combat.update(0.1);
@@ -354,7 +354,7 @@ describe("CombatSystem", () => {
       attackTargetId: "enemy-stone-imp-1"
     });
     const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
-    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 164, y: 100, radius: 14, range: 26 });
     const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 220, y: 100, radius: 14, range: 26 });
     const combat = createCombat([player, firstImp, secondImp, distantImp]);
 

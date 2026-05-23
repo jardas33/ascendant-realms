@@ -13,7 +13,7 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
-const MELEE_VISUAL_CONTACT_MARGIN = 24;
+const MELEE_VISUAL_CONTACT_MARGIN = 32;
 const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
 
 interface CombatSystemOptions {

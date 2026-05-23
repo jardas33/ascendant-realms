@@ -328,7 +328,7 @@ function postKillAdjacentReacquisition(): ScenarioRun {
     behaviourMode: "guard_area"
   });
   const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
-  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
+  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 164, y: 100, radius: 14, range: 26 });
   const combat = createCombat([player, firstImp, secondImp]);
   combat.update(0.1);
   combat.update(1.1);
@@ -444,7 +444,7 @@ function manualProxyHoldGroundAdjacentFollowup(): ScenarioRun {
     attackTargetId: "enemy-stone-imp-1"
   });
   const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
-  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
+  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 164, y: 100, radius: 14, range: 26 });
   const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 430, y: 100, radius: 14, range: 26 });
   const combat = createCombat([hero, firstImp, secondImp, distantImp]);
 

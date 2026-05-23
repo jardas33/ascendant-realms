@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.16.12 stationary adjacent melee reacquisition fix",
+          checkpoint: "v0.16.13 Stone Imp visible-contact reacquisition fix",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -79,6 +79,8 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "ROUTE_ASSIGNMENTS_SMALL_BATCH.md", sizeBytes: 20, textContent: "Routes short" },
       { path: "TESTER_LAUNCH_PACKET_INDEX.md", sizeBytes: 20, textContent: "Launch index" },
       { path: "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Retest intake" },
+      { path: "V01613_BD26DE3_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Retest intake" },
+      { path: "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md", sizeBytes: 20, textContent: "Fix note" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

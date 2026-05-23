@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.16.12 stationary adjacent melee reacquisition fix
+Updated: 2026-05-23 v0.16.13 Stone Imp visible-contact reacquisition fix
+
+## v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
+
+Scope: fix the failed bd26de3 manual retest where a Tutorial Hold Ground hero beside two Stone Imps still idled before combat started or after the first imp died. This is a v0.16.x bugfix follow-up only and does not start v0.17.
+
+Baseline:
+
+- Starting commit: `bd26de3`, `Checkpoint v0.16.12 stationary adjacent melee reacquisition fix`.
+- Branch was clean and synced with `origin/main`.
+- Manual package tested: `ascendant-realms-private-playtest-bd26de3`.
+- Manual result: FAIL, Tutorial route, Hold Ground hero beside two Stone Imps still required moving the hero again to start/restart combat.
+
+Included work:
+
+- Added `docs/V01613_BD26DE3_RETEST_INTAKE.md`.
+- Added `docs/V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md`.
+- Reproduced bd26de3 with a browser/manual proxy against the clean package: 54px and 57px Stone Imp contact started combat; 58px+ idled.
+- Increased melee visible-contact tolerance from 24px to 32px.
+- Strengthened unit, deterministic control-lab, and hosted browser/manual regressions to use the 64px Stone Imp visible-contact boundary.
+- Updated package metadata and validation for the v0.16.13 checkpoint.
+
+Verification so far:
+
+```text
+npm test -- CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 2 files / 33 tests.
+npm test -- PlaytestPackageValidation.test.ts CombatSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 3 files / 36 tests.
+npm test PASS, 57 files / 421 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 26.7s after rebuilding dist.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 24.7s after final rebuild.
+npm run package:playtest PASS against the pre-commit dirty tree.
+npm run verify:playtest-package PASS, 33 checks.
+```
+
+Runtime gameplay changed: yes, local melee visible-contact reacquisition only. Gameplay numbers changed: no unit stats, waves, resources, or balance data changed. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: no mode definitions changed; Hold Ground still refuses distant idle enemies. Enemy aggro changed: no broad AI/pathing rewrite. Retreat logic changed: no. Test/CI harness changed: yes, stronger exact Stone Imp browser/manual proxy coverage and package metadata. Package changed: pending clean v0.16.13 package generation.
+
+Remaining closeout: run the required gates, update generated control-lab reports, run `git diff --check`, commit as a v0.16.13 checkpoint, push if safe, regenerate and verify a clean private playtest package, and have Emmanuel retest the new package instead of bd26de3.
 
 ## v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
 

@@ -47,6 +47,7 @@ Known current realities:
 - v0.16.10 freezes the current post-combat-fix candidate for Emmanuel retest or a 2-5 tester batch, adds backlog triage and public-safety docs, and expands the private package tester kit with release-candidate notes, Emmanuel retest checklist, short tester message, short feedback form, and route assignments. Push run #83 for `83f146e` passed Fast confidence only; no exact-final workflow-dispatch matrix was found for `83f146e`.
 - v0.16.11 adds exact-final CI/release notes, ready-to-copy GitHub issue templates, tester launch packet index, and a no-code freeze note. Push run #84 for `7cc6eff` passed Fast confidence only; no exact-final workflow-dispatch matrix was found for `7cc6eff`. Run #80 on `ad4eee0` remains the enabled release-matrix evidence for the post-v0.16.7 runtime stack.
 - v0.16.12 changes runtime combat/control narrowly after Emmanuel's `ec0608a` Tutorial retest: stationary visible-contact melee reacquisition, post-target-death Hold Ground contact rules, immediate melee contact over distant explicit targets, and top/head hover tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
+- v0.16.13 follows the failed `bd26de3` package retest and widens only the local melee visible-contact boundary from the 57px Stone Imp cutoff to cover the 64px browser/manual proxy case. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 
 ## Required Automated Checks
 
@@ -93,6 +94,12 @@ PASS: 57 test files, 415 tests
 ```
 
 Current v0.16.12 checkpoint result:
+
+```text
+PASS: 57 test files, 421 tests
+```
+
+Current v0.16.13 checkpoint result:
 
 ```text
 PASS: 57 test files, 421 tests
@@ -445,7 +452,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 retest intake, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 
