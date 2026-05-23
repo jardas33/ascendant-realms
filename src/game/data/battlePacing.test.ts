@@ -86,7 +86,7 @@ describe("battle pacing data", () => {
     const paced = applyTutorialEnemyAIPacing(config);
 
     expect(paced).toMatchObject({
-      incomePerTick: { crowns: 54, stone: 27, iron: 27, aether: 21 },
+      incomePerTick: { crowns: 36, stone: 18, iron: 18, aether: 14 },
       trainInterval: TUTORIAL_ENEMY_AI_PACING.trainInterval,
       expandInterval: TUTORIAL_ENEMY_AI_PACING.expandInterval,
       initialExpandDelay: TUTORIAL_ENEMY_AI_PACING.initialExpandDelay,

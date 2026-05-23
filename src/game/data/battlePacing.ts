@@ -152,12 +152,12 @@ export const FIRST_MATCH_TUTORIAL_PROTECTION: FirstMatchTutorialProtectionDefini
 };
 
 export const TUTORIAL_ENEMY_AI_PACING = {
-  incomePerTickMultiplier: 0.6,
-  trainInterval: 12,
-  expandInterval: 48,
-  initialExpandDelay: 60,
-  attackInterval: 140,
-  initialAttackDelay: 420,
+  incomePerTickMultiplier: 0.4,
+  trainInterval: 24,
+  expandInterval: 90,
+  initialExpandDelay: 120,
+  attackInterval: 220,
+  initialAttackDelay: 540,
   minAttackArmySize: 2,
   attackWaveSize: 2,
   expandSquadSize: 1

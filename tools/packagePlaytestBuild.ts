@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.17.1 tutorial drag polish and beginner pacing";
+const CHECKPOINT = "v0.17.2 imp damage feedback and tutorial easing";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -60,6 +60,7 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V017_SOLO_PLAYTEST_INTAKE.md", join(packageDir, "V017_SOLO_PLAYTEST_INTAKE.md"));
   await copyMarkdown("docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md", join(packageDir, "V017_WORKER_ECONOMY_DESIGN_SPEC.md"));
   await copyMarkdown("docs/V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md", join(packageDir, "V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md", join(packageDir, "V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -143,7 +144,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.17.1 Tutorial retest, start with V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md. The worker-economy direction remains documented in V017_WORKER_ECONOMY_DESIGN_SPEC.md; it is design-only and not implemented in this build.
+For the v0.17.2 Tutorial retest, start with V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md. The worker-economy direction remains documented in V017_WORKER_ECONOMY_DESIGN_SPEC.md; it is design-only and not implemented in this build.
 
 ## Known Warning
 

@@ -10,6 +10,7 @@ export interface DamageFeedbackView {
 }
 
 const DEFAULT_DAMAGE_THRESHOLD = 5;
+const PLAYER_DAMAGE_THRESHOLD = 1;
 
 export function createDamageFeedbackView(
   targetTeam: Team,
@@ -17,14 +18,14 @@ export function createDamageFeedbackView(
   options: { threshold?: number } = {}
 ): DamageFeedbackView | undefined {
   const roundedAmount = Math.round(amount);
-  const threshold = options.threshold ?? DEFAULT_DAMAGE_THRESHOLD;
+  const threshold = options.threshold ?? (targetTeam === "player" ? PLAYER_DAMAGE_THRESHOLD : DEFAULT_DAMAGE_THRESHOLD);
   if (roundedAmount < threshold) {
     return undefined;
   }
 
   if (targetTeam === "player") {
     return {
-      text: `HIT -${roundedAmount}`,
+      text: `-${roundedAmount}`,
       color: "#ff5f67",
       yOffset: -12
     };

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17.1 tutorial drag polish and beginner pacing
+Last updated: 2026-05-23 v0.17.2 imp damage feedback and tutorial easing
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,53 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
+## Current v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
+
+Status: v0.17.2 Tutorial polish is implemented and in verification/closeout.
+
+Baseline:
+
+- Starting commit: `a990f11`, `Checkpoint v0.17.1 tutorial drag polish and beginner pacing`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-a990f11`.
+- Manual result: MIXED. Tutorial panel dragging passed. Remaining issues were missing Stone Imp damage feedback against the hero, unwanted `HIT` text on incoming damage, and Tutorial enemy buildup still feeling too fast.
+
+v0.17.2 docs added:
+
+- `docs/V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md`
+
+Runtime/UI summary:
+
+- Incoming direct damage to player-owned targets now appears down to 1 actual damage, fixing the Stone Imp versus Aster case where `8` raw damage minus `4` armor produced hidden `4` damage.
+- Incoming direct damage now uses compact `-N` text instead of `HIT -N`; status labels such as `Burn` still use the existing separate effect feedback.
+- Tutorial enemy pressure is eased only through `applyTutorialEnemyAIPacing()`: income per tick is scaled to 40%, training is at least 24s, expansion is at least 90s with a 120s initial delay, first attack is at least 540s, follow-up attacks are at least 220s, attack waves remain capped at 2, and expansion squads remain capped at 1.
+- Campaign/skirmish map data, global difficulty presets, save data, runtime art/assets, units/buildings/factions, combat-control behavior, and worker construction are unchanged.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts PASS, 2 files / 7 tests.
+npm test -- src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 10 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 37.2s.
+npm test PASS, 58 files / 425 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.9m.
+npm run test:e2e:smoke PASS, 14 tests in 8.1m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-a990f11-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-a990f11-dirty PASS, 37 checks.
+```
+
+Runtime gameplay changed: yes, incoming damage text readability and Tutorial-only enemy pressure. Gameplay numbers changed: Tutorial-only enemy AI helper values changed; no global campaign/skirmish balance changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; clean v0.17.2 package generation is pending after commit.
+
+Remaining closeout: run the full gate, package generation/verification, `git diff --check`, commit/push if green, regenerate and verify a clean private package, load it in the browser, and rerun GitHub Actions after push because runtime Tutorial behavior changed.
+
+## v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
 
 Status: v0.17.1 Tutorial polish is implemented and locally verified before final commit/package closeout.
 

@@ -861,9 +861,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       if (!scene?.scene.isActive() || !scene.hero?.alive) {
         throw new Error("BattleScene hero is not active.");
       }
-      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.id === "raider" && unit.alive);
+      const enemy = scene.units.find((unit: any) => unit.definition.id === "stone_imp" && unit.alive);
       if (!enemy) {
-        throw new Error("Missing enemy Raider for incoming damage feedback check.");
+        throw new Error("Missing Stone Imp for incoming hero damage feedback check.");
       }
       const originalEnemyPosition = { x: enemy.position.x, y: enemy.position.y };
       const originalHeroHp = scene.hero.hp;
@@ -901,7 +901,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(incomingDamageFeedback.floatingTextEnabled).toBe(true);
     expect(incomingDamageFeedback.afterFloatingText).toBeGreaterThan(incomingDamageFeedback.beforeFloatingText);
     expect(incomingDamageFeedback.damageTexts).toEqual(
-      expect.arrayContaining([expect.objectContaining({ text: expect.stringMatching(/^HIT -/), color: "#ff5f67" })])
+      expect.arrayContaining([expect.objectContaining({ text: "-4", color: "#ff5f67" })])
     );
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 

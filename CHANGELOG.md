@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
+
+This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-a990f11`. It keeps the v0.17 line in narrow Tutorial polish: Stone Imp hero damage readability, simpler incoming damage text, and another Tutorial-only pacing ease.
+
+### Included
+
+- Added `docs/V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md` with Emmanuel's a990f11 Tutorial feedback.
+- Fixed the Stone Imp versus Tutorial hero feedback gap by showing player-owned incoming direct damage down to 1 actual damage. Stone Imp hits against Aster now show the existing floating damage text even after hero armor reduces the hit to `4`.
+- Removed the `HIT` prefix from incoming direct damage. Player-side direct damage now shows compact `-N` text in the existing red incoming color, while existing effect labels such as `Burn` remain separate.
+- Eased Tutorial-only enemy escalation again: enemy income per tick is now scaled to 40%, training is at least 24s, expansion is at least 90s with a 120s initial delay, first attack is at least 540s, and follow-up attacks are at least 220s.
+- Updated package metadata and validation to include the v0.17.2 intake doc.
+
+### Verdict
+
+- Runtime gameplay changed: yes, damage feedback readability and Tutorial-only enemy pacing.
+- Gameplay numbers changed: Tutorial-only enemy AI helper values changed; campaign/skirmish map data and global difficulty presets did not.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no.
+- Worker construction implemented: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed so far: focused DamageFeedback/battlePacing/package tests, TypeScript no-emit, targeted Tutorial browser smoke covering Stone Imp damage against Aster, `npm test` with 58 files / 425 tests, build, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, control lab normal, control lab extended, control-lab verification with 1658 checks, dirty-tree package generation, and dirty-tree package verification with 37 checks.
+
+### Next
+
+- Run the full verification/package closeout, then have Emmanuel retest Tutorial Stone Imp damage against the hero, incoming damage text without `HIT`, and beginner pressure feel.
+
 ## v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
 
 This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-171ba86`. It keeps v0.17.1 to Tutorial polish only: broader panel dragging, clearer incoming damage text, and slower Tutorial-only enemy pressure.

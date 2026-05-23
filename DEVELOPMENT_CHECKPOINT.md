@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.1 tutorial drag polish and beginner pacing
+Updated: 2026-05-23 v0.17.2 imp damage feedback and tutorial easing
+
+## v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
+
+Scope: respond to Emmanuel's mixed Tutorial retest of `ascendant-realms-private-playtest-a990f11` with narrow Tutorial polish only. This pass fixes the Stone Imp hero damage feedback threshold, removes the `HIT` prefix from incoming direct damage, and further slows Tutorial-only enemy buildup. It does not implement worker construction or start v0.18.
+
+Baseline:
+
+- Starting commit: `a990f11`, `Checkpoint v0.17.1 tutorial drag polish and beginner pacing`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-a990f11`.
+- Manual result: PASS for Tutorial panel dragging.
+- Remaining feedback: Stone Imp damage against the hero does not show, incoming player-side direct damage should omit `HIT`, and Tutorial enemy army buildup remains too fast for beginners.
+
+Included work:
+
+- Added `docs/V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md`.
+- Player-owned incoming direct damage now shows down to 1 actual damage, covering Stone Imp hits reduced by hero armor.
+- Incoming direct damage now shows compact `-N` text instead of `HIT -N`; status/effect labels remain unchanged.
+- Tutorial-only enemy pressure now scales enemy income per tick to 40%, trains no faster than every 24s, expands no faster than every 90s after a 120s initial delay, sends the first attack no earlier than 540s, sends follow-up attacks no faster than every 220s, and keeps attack/expansion groups small.
+- Campaign/skirmish map data, global difficulty presets, combat-control behaviour, workers, buildings, units, saves, and runtime art/assets are unchanged.
+- Package metadata and validation now require the v0.17.2 intake doc.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts PASS, 2 files / 7 tests.
+npm test -- src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 10 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 37.2s.
+npm test PASS, 58 files / 425 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.9m.
+npm run test:e2e:smoke PASS, 14 tests in 8.1m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-a990f11-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-a990f11-dirty PASS, 37 checks.
+```
+
+Runtime gameplay changed: yes, incoming damage feedback readability and Tutorial-only enemy pressure. Gameplay numbers changed: Tutorial-only enemy AI helper values changed; no global map/unit/wave/resource/campaign balance changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated; clean v0.17.2 package generation is pending after commit.
+
+Remaining closeout: run the full verification gate, package generation/verification, and `git diff --check`; commit as `Checkpoint v0.17.2 imp damage feedback and tutorial easing`; push if safe; regenerate and verify a clean private package; and rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 
 ## v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
 

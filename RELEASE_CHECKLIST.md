@@ -50,6 +50,7 @@ Known current realities:
 - v0.16.13 follows the failed `bd26de3` package retest and widens only the local melee visible-contact boundary from the 57px Stone Imp cutoff to cover the 64px browser/manual proxy case. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 - v0.17 starts the post-combat-control polish/design line: Tutorial objective panel drag/Hide/Reset is session-only, Tutorial enemy escalation uses existing Story pacing only in Tutorial launches, and worker economy remains design-only. No worker construction, save migration, runtime art/assets, or global balance rewrite is included.
 - v0.17.1 is a narrow Tutorial polish follow-up after Emmanuel's 171ba86 retest: whole safe-panel drag, existing-floating-text incoming `HIT -N` player damage feedback, and slower Tutorial-only enemy income/training/attack pacing. No worker construction, global AI/balance, save, art, unit/building/map/faction, or combat-control rewrite is included. Rerun GitHub Actions after push because runtime Tutorial behaviour changed.
+- v0.17.2 is a narrow Tutorial polish follow-up after Emmanuel's a990f11 retest: Stone Imp hits against Aster now show compact incoming `-N` damage, incoming direct damage no longer includes `HIT`, and Tutorial-only enemy training/income/attack pacing is eased further. No worker construction, global AI/balance, save, art, unit/building/map/faction, or combat-control rewrite is included. Rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 
 ## Required Automated Checks
 
