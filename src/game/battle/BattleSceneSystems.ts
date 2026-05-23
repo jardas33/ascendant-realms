@@ -33,7 +33,7 @@ import { MovementSystem } from "../systems/MovementSystem";
 import type { TechState } from "../systems/PrerequisiteSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { SelectionSystem } from "../systems/SelectionSystem";
-import { TrainingSystem } from "../systems/TrainingSystem";
+import { findWalkableTrainedUnitSpawnPoint, TrainingSystem } from "../systems/TrainingSystem";
 import { UISystem } from "../systems/UISystem";
 import { UpgradeSystem } from "../systems/UpgradeSystem";
 import { XPSystem } from "../systems/XPSystem";
@@ -185,7 +185,13 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       }
     },
     getTechState,
-    strongholdEffects
+    strongholdEffects,
+    resolveSpawnPoint: (context) =>
+      findWalkableTrainedUnitSpawnPoint({
+        ...context,
+        map: activeMap,
+        buildings: getBuildings()
+      })
   });
 
   const buildingSystem = new BuildingSystem({

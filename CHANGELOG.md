@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
+
+This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-532007d`. It keeps the v0.17 line narrow: preserve the passed cost display, side-panel Hide/Show, neutral-contact, and enemy-base text fixes while addressing newly produced Rangers that could become immobile near the Tutorial Barracks / Command Hall cluster.
+
+### Included
+
+- Added `docs/V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md` with Emmanuel's 532007d Tutorial feedback.
+- Trained units now resolve their spawn point against the live map pathfinding grid and nearby building footprints before appearing.
+- Move-ordered units that somehow start inside a blocked building cell now get a small nearest-walkable correction before pathing.
+- Added focused TrainingSystem and MovementSystem regressions for the Tutorial Barracks / Command Hall geometry.
+- Added a browser/manual-proxy deep regression that launches Tutorial, places the Barracks in the reported cluster, trains eight Rangers, orders them to move, and proves each newly trained Ranger moves.
+- Updated private playtest package metadata and validation to include the v0.17.4 intake doc.
+
+### Verdict
+
+- Runtime gameplay changed: yes, trained-unit spawn placement and blocked-start movement recovery.
+- Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no.
+- Worker construction implemented: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused TrainingSystem/MovementSystem/package tests, targeted Tutorial Ranger production browser regression, `npm test` with 60 files / 431 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, targeted rerun of the one transient full-smoke timeout path, full smoke rerun with 14 tests, control lab normal, control lab extended, and control-lab verification with 1658 checks.
+- Note: the first full smoke run timed out in the existing long Cinderfen Watch/Aftermath extended-smoke path; that exact test passed on targeted rerun, and the full smoke command passed on rerun.
+
+### Next
+
+- Generate and verify the v0.17.4 private playtest package, then have Emmanuel retest Tutorial Ranger production around the Barracks / Command Hall cluster.
+
 ## v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
 
 This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-e448d18`. It keeps the v0.17 line narrow: preserve the fixed incoming damage and easier Tutorial pressure, address one brief neutral-contact idle report, reduce attack-order path-warning clutter, and make the selected side panel less obstructive.

@@ -52,6 +52,7 @@ Known current realities:
 - v0.17.1 is a narrow Tutorial polish follow-up after Emmanuel's 171ba86 retest: whole safe-panel drag, existing-floating-text incoming `HIT -N` player damage feedback, and slower Tutorial-only enemy income/training/attack pacing. No worker construction, global AI/balance, save, art, unit/building/map/faction, or combat-control rewrite is included. Rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 - v0.17.2 is a narrow Tutorial polish follow-up after Emmanuel's a990f11 retest: Stone Imp hits against Aster now show compact incoming `-N` damage, incoming direct damage no longer includes `HIT`, and Tutorial-only enemy training/income/attack pacing is eased further. No worker construction, global AI/balance, save, art, unit/building/map/faction, or combat-control rewrite is included. Rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 - v0.17.3 is a narrow Tutorial/combat UI follow-up after Emmanuel's e448d18 retest: small melee units share the visible-contact floor for troop/Stone Imp/Wild Hound adjacency, explicit attack-target path failures suppress the no-path floating warning, selected side panel Hide/Show is session-only, and command buttons show explicit `Cost: ...` text. No worker construction, global AI/balance, save, art, unit/building/map/faction, or economy rewrite is included. Rerun GitHub Actions after push because runtime combat/UI behaviour changed.
+- v0.17.4 is a narrow production-spawn/movement follow-up after Emmanuel's 532007d retest: trained units resolve spawn points against pathfinding/building-footprint clearance, and move-ordered units recover from blocked building start cells. No worker construction, global AI/balance, save, art, unit/building/map/faction, economy rewrite, or Tutorial pacing change is included. Rerun GitHub Actions after push because runtime movement/production behaviour changed.
 
 ## Required Automated Checks
 
@@ -113,6 +114,12 @@ Current v0.17.1 checkpoint result:
 
 ```text
 PASS: 58 test files, 425 tests
+```
+
+Current v0.17.4 checkpoint result:
+
+```text
+PASS: 60 test files, 431 tests
 ```
 
 Current v0.16.13 checkpoint result:

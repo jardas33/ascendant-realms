@@ -39,6 +39,16 @@ describe("MovementSystem", () => {
 
     expect(unit.moveOrderCombatSuppressionSeconds).toBe(0.75);
   });
+
+  it("recovers a move-ordered unit that starts inside a blocked building cell", () => {
+    const system = new MovementSystem();
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 120, y: 120, moveTarget: { x: 220, y: 120 } });
+
+    system.update(0.1, [unit], testMap(), [fakeBuilding({ x: 120, y: 120 })]);
+
+    expect(distance(unit.position, { x: 120, y: 120 })).toBeGreaterThan(20);
+    expect(unit.moveTarget).toEqual({ x: 220, y: 120 });
+  });
 });
 
 function testMap(): BattleMapDefinition {

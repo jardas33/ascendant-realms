@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.3 contact polish and command panel readability
+Updated: 2026-05-23 v0.17.4 trained Ranger spawn and movement recovery
+
+## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
+
+Scope: respond to Emmanuel's mixed Tutorial retest of `ascendant-realms-private-playtest-532007d` with a narrow production-spawn/movement fix only. This pass preserves the v0.17.3 cost display, selected side-panel Hide/Show, neutral-contact, and enemy-base text improvements while addressing newly produced Rangers that could appear stuck near the Barracks / Command Hall cluster.
+
+Baseline:
+
+- Starting commit: `532007d`, `Checkpoint v0.17.3 contact polish and command panel readability`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-532007d`.
+- Manual result: PASS for cost readability and side-panel Hide/Show.
+- Manual monitor items: neutral troop contact and enemy-base visual text did not reproduce in this attempt.
+- Remaining issue: a couple of newly produced Rangers could get stuck right after production and ignore movement orders.
+
+Included work:
+
+- Added `docs/V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md`.
+- Training spawn placement now checks the live pathfinding grid and building-footprint clearance before creating a trained unit.
+- Movement now performs a small nearest-walkable correction for move-ordered units that start inside a blocked building cell.
+- Added deterministic TrainingSystem and MovementSystem tests for the Tutorial Barracks / Command Hall blocked-cell setup.
+- Added a deep browser/manual-proxy regression that launches Tutorial, places Barracks at the reported cluster, trains eight Rangers, orders them to move, and verifies every trained Ranger moves.
+- Package metadata and validation now require the v0.17.4 intake doc.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/TrainingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 9 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Tutorial Barracks can train clustered Rangers" --reporter=line PASS, 1 test in 21.7s.
+npm test PASS, 60 files / 431 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+npm run test:e2e:smoke first run: one existing long Cinderfen Watch/Aftermath extended-smoke path timed out.
+npx playwright test tests/e2e/smoke.spec.ts --grep "post-Crossing campaign launches Cinderfen Watch" --reporter=line PASS, 1 test in 1.6m.
+npm run test:e2e:smoke rerun PASS, 14 tests in 7.5m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Runtime gameplay changed: yes, trained-unit spawn placement and blocked-start movement recovery. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed; v0.17.2 Tutorial-only pacing is preserved. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated; package generation and `git diff --check` are pending.
+
+Remaining closeout: generate and verify a dirty-tree private package, run `git diff --check`, commit as `Checkpoint v0.17.4 trained Ranger spawn and movement recovery`, push if safe, regenerate and verify a clean private package, load it in the browser, and rerun GitHub Actions after push because runtime movement/production behavior changed.
 
 ## v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
 

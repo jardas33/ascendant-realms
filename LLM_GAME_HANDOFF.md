@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17.3 contact polish and command panel readability
+Last updated: 2026-05-23 v0.17.4 trained Ranger spawn and movement recovery
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,9 +8,55 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
+## Current v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
+
+Status: v0.17.4 production-spawn/movement fix is implemented and in package/commit closeout.
+
+Baseline:
+
+- Starting commit: `532007d`, `Checkpoint v0.17.3 contact polish and command panel readability`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-532007d`.
+- Manual result: MIXED. Cost readability and selected side-panel Hide/Show passed. Neutral troop contact and enemy-base visual text did not reproduce in this attempt. New remaining issue: a couple of newly produced Rangers could get stuck near the player Barracks / Command Hall cluster and ignore move orders.
+
+v0.17.4 docs added:
+
+- `docs/V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md`
+
+Runtime/UI summary:
+
+- Trained units now resolve their spawn point against the live pathfinding grid and nearby building footprints before appearing.
+- Move-ordered units that somehow start inside a blocked building cell now get a small nearest-walkable correction before pathing.
+- The fix is narrow to trained-unit spawn placement and blocked-start movement recovery.
+- v0.17.3 cost display, selected side-panel Hide/Show, neutral-contact, and explicit-attack path-warning behavior are preserved.
+- Save data, runtime art/assets, workers, buildings, units, maps, factions, global balance, Tutorial pacing, and economy architecture are unchanged.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/TrainingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 9 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Tutorial Barracks can train clustered Rangers" --reporter=line PASS, 1 test in 21.7s.
+npm test PASS, 60 files / 431 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+npm run test:e2e:smoke first run: one existing long Cinderfen Watch/Aftermath extended-smoke path timed out.
+npx playwright test tests/e2e/smoke.spec.ts --grep "post-Crossing campaign launches Cinderfen Watch" --reporter=line PASS, 1 test in 1.6m.
+npm run test:e2e:smoke rerun PASS, 14 tests in 7.5m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Runtime gameplay changed: yes, trained-unit spawn placement and blocked-start movement recovery. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; dirty package generation is pending before commit and clean package generation is pending after commit.
+
+Remaining closeout: generate and verify a dirty-tree private package, run `git diff --check`, commit/push if green, regenerate and verify a clean private package, load it in the browser, and rerun GitHub Actions after push because runtime movement/production behavior changed.
+
 ## Current v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
 
-Status: v0.17.3 contact/UI polish is implemented and in verification/closeout.
+Status: v0.17.3 contact/UI polish shipped as commit `532007d` and package `ascendant-realms-private-playtest-532007d`.
 
 Baseline:
 

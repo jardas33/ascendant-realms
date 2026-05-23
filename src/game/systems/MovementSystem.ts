@@ -25,6 +25,8 @@ const STUCK_DISTANCE_EPSILON = 4;
 const STUCK_SECONDS_BEFORE_REPATH = 0.75;
 const REPATH_COOLDOWN_SECONDS = 0.55;
 const MAX_GRID_CORRECTION_DISTANCE = 20;
+const BLOCKED_START_CORRECTION_SEARCH_CELLS = 4;
+const BLOCKED_START_MAX_CORRECTION_DISTANCE = DEFAULT_PATHFINDING_CELL_SIZE * 1.75;
 
 export class MovementSystem {
   private readonly unitPathStates = new Map<string, UnitPathState>();
@@ -54,6 +56,7 @@ export class MovementSystem {
         this.unitPathStates.delete(unit.id);
         return;
       }
+      this.correctBlockedMoveStart(unit, map, grid);
 
       const state = this.pathStateFor(unit);
       state.repathCooldown = Math.max(0, state.repathCooldown - deltaSeconds);
@@ -134,6 +137,21 @@ export class MovementSystem {
         clamp(nearest.y, unit.radius, map.height - unit.radius)
       );
     }
+  }
+
+  private correctBlockedMoveStart(unit: Unit, map: BattleMapDefinition, grid: PathfindingGrid): void {
+    if (grid.isWorldWalkable(unit.position)) {
+      return;
+    }
+    const nearest = grid.findNearestWalkablePoint(unit.position, BLOCKED_START_CORRECTION_SEARCH_CELLS);
+    if (!nearest || distance(nearest, unit.position) > BLOCKED_START_MAX_CORRECTION_DISTANCE) {
+      return;
+    }
+    unit.setPosition(
+      clamp(nearest.x, unit.radius, map.width - unit.radius),
+      clamp(nearest.y, unit.radius, map.height - unit.radius)
+    );
+    this.unitPathStates.delete(unit.id);
   }
 
   private updateStuckState(unit: Unit, state: UnitPathState, deltaSeconds: number): void {

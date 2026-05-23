@@ -3021,6 +3021,96 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       .toBe("attack");
   });
 
+  test("Tutorial Barracks can train clustered Rangers that remain movable after production @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(60_000);
+    await openFreshMainMenu(page);
+    await clickReady(page.getByTestId("menu-tutorial"), "deep-flow launch Tutorial for Ranger production regression", SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+
+    const productionResult = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.resources.player.crowns = 10_000;
+      scene.resources.player.stone = 10_000;
+      scene.resources.player.iron = 10_000;
+      scene.resources.player.aether = 10_000;
+      scene.units
+        .filter((unit: any) => unit.team !== "player")
+        .forEach((unit: any, index: number) => {
+          unit.attackTargetId = undefined;
+          unit.attackTargetLabel = undefined;
+          unit.attackMove = false;
+          unit.moveTarget = undefined;
+          unit.attackCooldownRemaining = 999;
+          unit.setPosition(scene.activeMap.width - 160, scene.activeMap.height - 160 - index * 24);
+        });
+
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Expected Tutorial Command Hall for Ranger production regression.");
+      }
+
+      scene.buildingSystem.startPlacement("barracks");
+      if (!scene.buildingSystem.tryPlace(360, 680, scene.resources.player)) {
+        throw new Error("Could not place Tutorial Barracks for Ranger production regression.");
+      }
+      const barracks = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+      );
+      if (!barracks) {
+        throw new Error("Expected placed Tutorial Barracks for Ranger production regression.");
+      }
+      barracks.constructionState = "completed";
+      barracks.constructionProgress = 1;
+      barracks.hp = barracks.maxHp;
+      barracks.updateHealthBar?.();
+      barracks.rallyPoint = { x: 540, y: 830 };
+
+      const beforeIds = new Set(scene.units.map((unit: any) => unit.id));
+      for (let index = 0; index < 8; index += 1) {
+        if (!scene.trainingSystem.queueTraining(barracks, "ranger", scene.resources.player, { announce: false })) {
+          throw new Error(`Ranger ${index + 1} did not queue.`);
+        }
+        scene.trainingSystem.update(99, scene.buildings);
+      }
+      const trainedRangers = scene.units.filter(
+        (unit: any) => !beforeIds.has(unit.id) && unit.team === "player" && unit.definition.id === "ranger" && unit.alive
+      );
+      if (trainedRangers.length !== 8) {
+        throw new Error(`Expected 8 trained Rangers, got ${trainedRangers.length}.`);
+      }
+
+      const starts = trainedRangers.map((unit: any) => ({ id: unit.id, x: unit.position.x, y: unit.position.y }));
+      trainedRangers.forEach((unit: any) => unit.commandMove({ x: 540, y: 830 }, false));
+      for (let index = 0; index < 30; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+      }
+
+      return {
+        trainedCount: trainedRangers.length,
+        moved: trainedRangers.map((unit: any, index: number) => ({
+          id: unit.id,
+          startX: starts[index].x,
+          startY: starts[index].y,
+          x: unit.position.x,
+          y: unit.position.y,
+          distanceMoved: Math.hypot(unit.position.x - starts[index].x, unit.position.y - starts[index].y),
+          moveTarget: unit.moveTarget ? { ...unit.moveTarget } : undefined
+        }))
+      };
+    });
+
+    expect(productionResult.trainedCount).toBe(8);
+    productionResult.moved.forEach((unit) => {
+      expect(unit.distanceMoved, JSON.stringify(productionResult)).toBeGreaterThan(12);
+    });
+  });
+
   test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await seedSave(page, {
