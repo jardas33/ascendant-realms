@@ -17,7 +17,7 @@ describe("TrainingSystem", () => {
     const preferredPoint = preferredTrainingSpawnPoint(barracks, ranger.radius, 5);
     const grid = tutorialGrid([commandHall, barracks]);
 
-    expect(grid.isWorldWalkable(preferredPoint)).toBe(false);
+    expect(isOutsideBuildingFootprints(preferredPoint, ranger.radius, [commandHall, barracks])).toBe(false);
 
     const spawnPoint = findWalkableTrainedUnitSpawnPoint({
       map: FIRST_CLAIM_MAP,
@@ -32,7 +32,7 @@ describe("TrainingSystem", () => {
     expect(isOutsideBuildingFootprints(spawnPoint, ranger.radius, [commandHall, barracks])).toBe(true);
   });
 
-  it("trains a cluster of Tutorial Rangers that can answer a rally/move order", () => {
+  it("trains a cluster of Tutorial Rangers that can answer rally and near-base move orders", () => {
     const commandHall = fakeBuilding("command_hall", { x: 260, y: 800 });
     const barracks = fakeBuilding("barracks", { x: 360, y: 680 });
     barracks.rallyPoint = { x: 540, y: 830 };
@@ -76,6 +76,26 @@ describe("TrainingSystem", () => {
 
     trainedUnits.forEach((unit) => {
       expect(distance(unit.position, starts.get(unit.id)!)).toBeGreaterThan(12);
+    });
+
+    const visibleOpenWestOfCommandHall = { x: 180, y: 800 };
+    const visibleOpenCell = grid.worldToCell(visibleOpenWestOfCommandHall);
+    expect(grid.isCellWalkable(visibleOpenCell.x, visibleOpenCell.y)).toBe(false);
+    expect(grid.isWorldWalkable(visibleOpenWestOfCommandHall)).toBe(true);
+
+    [
+      { label: "visible-open west side of the Command Hall", target: visibleOpenWestOfCommandHall },
+      { label: "north side of the Barracks", target: { x: 430, y: 620 } },
+      { label: "main road rally lane", target: { x: 540, y: 830 } }
+    ].forEach((order) => {
+      const orderStarts = new Map(trainedUnits.map((unit) => [unit.id, { ...unit.position }]));
+      trainedUnits.forEach((unit) => unit.commandMove(order.target, false));
+      for (let index = 0; index < 20; index += 1) {
+        movement.update(0.1, trainedUnits, FIRST_CLAIM_MAP, buildings);
+      }
+      trainedUnits.forEach((unit) => {
+        expect(distance(unit.position, orderStarts.get(unit.id)!), order.label).toBeGreaterThan(12);
+      });
     });
   });
 });

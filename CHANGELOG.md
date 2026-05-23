@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
+
+This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-7baa99a`. v0.17.4 made trained Rangers no longer hard-stuck after production, but several ranged units could still feel blocked by invisible geometry near the Tutorial Barracks / Command Hall cluster until redirected.
+
+### Included
+
+- Added `docs/V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md` with Emmanuel's 7baa99a Tutorial feedback.
+- Kept static building cells for route search, but made exact world-point walkability use the padded building rectangle so visible open ground beside a building is no longer treated as fully blocked just because its coarse cell center is blocked.
+- Allowed exact walkable goals inside coarse static-blocked cells to be used as path endpoints.
+- Anchored path smoothing from the requested start point instead of the start cell center.
+- Added PathfindingGrid, MovementSystem, and trained-Ranger cluster regressions for visible open near-base points around the Command Hall / Barracks cluster.
+- Updated private playtest package metadata and validation to include the v0.17.5 intake doc.
+
+### Verdict
+
+- Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells.
+- Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no.
+- Worker construction implemented: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused PathfindingGrid/MovementSystem/TrainingSystem/package tests, targeted Tutorial Ranger production browser regression, `npm test` with 60 files / 433 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, in-app browser Tutorial HUD boot check, user manual retest that the Ranger near-base issue seems solved, dirty-tree package generation, dirty-tree package verification with 40 checks, and `git diff --check`.
+
+### Next
+
+- Commit/push if `git diff --check` remains green, regenerate a clean private package from the final commit, and have Emmanuel retest several Rangers around the Tutorial Barracks / Command Hall cluster with repeated move orders near the base.
+
 ## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
 
 This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-532007d`. It keeps the v0.17 line narrow: preserve the passed cost display, side-panel Hide/Show, neutral-contact, and enemy-base text fixes while addressing newly produced Rangers that could become immobile near the Tutorial Barracks / Command Hall cluster.

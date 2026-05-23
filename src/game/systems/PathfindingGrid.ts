@@ -45,6 +45,13 @@ interface SearchNode extends GridCoord {
   f: number;
 }
 
+interface Rectangle {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 const DIRECTIONS: GridCoord[] = [
   { x: 1, y: 0 },
   { x: -1, y: 0 },
@@ -60,6 +67,7 @@ export class PathfindingGrid {
   readonly columns: number;
   readonly rows: number;
   readonly cells: PathfindingCell[];
+  private readonly staticObstacleRectangles: Rectangle[] = [];
 
   constructor(
     readonly width: number,
@@ -81,8 +89,11 @@ export class PathfindingGrid {
 
   findPath(start: Position, goal: Position, options: { allowPartial?: boolean; maxEndpointSearchCells?: number } = {}): PathfindingResult | undefined {
     const allowPartial = options.allowPartial ?? true;
-    const startCell = this.findNearestWalkableCell(start, options.maxEndpointSearchCells ?? 6);
-    const endCell = this.findNearestWalkableCell(goal, options.maxEndpointSearchCells ?? 8);
+    const goalIsWalkable = this.isWorldWalkable(goal);
+    const startCell = this.isWorldWalkable(start)
+      ? this.worldToCell(start)
+      : this.findNearestWalkableCell(start, options.maxEndpointSearchCells ?? 6);
+    const endCell = goalIsWalkable ? this.worldToCell(goal) : this.findNearestWalkableCell(goal, options.maxEndpointSearchCells ?? 8);
     if (!startCell || !endCell) {
       return undefined;
     }
@@ -114,7 +125,7 @@ export class PathfindingGrid {
       open.sort((a, b) => a.f - b.f);
       const current = open.shift()!;
       if (this.sameCell(current, endCell)) {
-        return this.buildResult(cameFrom, current.key, startCell, endCell, goal, true);
+        return this.buildResult(cameFrom, current.key, startCell, endCell, start, goal, true);
       }
 
       closed.add(current.key);
@@ -124,7 +135,7 @@ export class PathfindingGrid {
         closestScore = currentHeuristic;
       }
 
-      this.neighbors(current).forEach((neighbor) => {
+      this.neighbors(current, goalIsWalkable ? endCell : undefined).forEach((neighbor) => {
         const neighborKey = this.key(neighbor);
         if (closed.has(neighborKey)) {
           return;
@@ -152,12 +163,22 @@ export class PathfindingGrid {
     if (!allowPartial || closestKey === this.key(startCell)) {
       return undefined;
     }
-    return this.buildResult(cameFrom, closestKey, startCell, this.coordFromKey(closestKey), goal, false);
+    return this.buildResult(cameFrom, closestKey, startCell, this.coordFromKey(closestKey), start, goal, false);
   }
 
   isWorldWalkable(point: Position): boolean {
     const cell = this.worldToCell(point);
-    return this.isCellWalkable(cell.x, cell.y);
+    const current = this.cellAt(cell.x, cell.y);
+    if (current.blockedTerrain || current.softBlocked) {
+      return false;
+    }
+    if (current.staticBlocked) {
+      if (this.staticObstacleRectangles.length === 0) {
+        return false;
+      }
+      return !this.staticObstacleRectangles.some((rect) => this.pointInRectangle(this.clampPoint(point), rect));
+    }
+    return current.walkable;
   }
 
   findNearestWalkablePoint(point: Position, maxRadiusCells = 4): Position | undefined {
@@ -227,6 +248,7 @@ export class PathfindingGrid {
         width: obstacle.width + padding * 2,
         height: obstacle.height + padding * 2
       };
+      this.staticObstacleRectangles.push(rect);
       this.cells.forEach((cell) => {
         if (!this.pointInRectangle(cell.center, rect)) {
           return;
@@ -274,6 +296,7 @@ export class PathfindingGrid {
     endKey: string,
     startCell: GridCoord,
     endCell: GridCoord,
+    requestedStart: Position,
     requestedGoal: Position,
     complete: boolean
   ): PathfindingResult {
@@ -283,7 +306,7 @@ export class PathfindingGrid {
       waypoints[waypoints.length - 1] = this.clampPoint(requestedGoal);
     }
     return {
-      waypoints: this.smoothWaypoints(this.cellCenter(startCell), waypoints),
+      waypoints: this.smoothWaypoints(this.clampPoint(requestedStart), waypoints),
       complete,
       startCell,
       endCell
@@ -334,10 +357,10 @@ export class PathfindingGrid {
     return true;
   }
 
-  private neighbors(coord: GridCoord): GridCoord[] {
+  private neighbors(coord: GridCoord, walkableEndpoint?: GridCoord): GridCoord[] {
     return DIRECTIONS.flatMap((direction) => {
       const next = { x: coord.x + direction.x, y: coord.y + direction.y };
-      if (!this.isCellWalkable(next.x, next.y)) {
+      if (!this.isSearchCellWalkable(next, walkableEndpoint)) {
         return [];
       }
       if (
@@ -349,6 +372,13 @@ export class PathfindingGrid {
       }
       return [next];
     });
+  }
+
+  private isSearchCellWalkable(coord: GridCoord, walkableEndpoint?: GridCoord): boolean {
+    return (
+      this.isCellWalkable(coord.x, coord.y) ||
+      (walkableEndpoint !== undefined && this.sameCell(coord, walkableEndpoint))
+    );
   }
 
   private heuristic(a: GridCoord, b: GridCoord): number {

@@ -112,4 +112,21 @@ describe("PathfindingGrid", () => {
       expect(point.x < 190 || point.x > 310 || point.y < 190 || point.y > 310).toBe(true);
     });
   });
+
+  it("keeps precise open points walkable when their coarse static cell is blocked", () => {
+    const grid = PathfindingGrid.fromMap(testMap(), {
+      cellSize: 80,
+      staticObstacles: [{ id: "hall", x: 260, y: 250, width: 96, height: 82, padding: 16 }]
+    });
+
+    expect(grid.isCellWalkable(2, 3)).toBe(false);
+    expect(grid.isWorldWalkable({ x: 260, y: 250 })).toBe(false);
+    expect(grid.isWorldWalkable({ x: 180, y: 250 })).toBe(true);
+
+    const result = grid.findPath({ x: 440, y: 250 }, { x: 180, y: 250 });
+
+    expect(result?.complete).toBe(true);
+    expect(result?.endCell).toEqual({ x: 2, y: 3 });
+    expect(result?.waypoints.at(-1)).toEqual({ x: 180, y: 250 });
+  });
 });

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17.4 trained Ranger spawn and movement recovery
+Last updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,55 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
+## Current v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
+
+Status: v0.17.5 near-base pathing fix is implemented, locally verified, and manually retested in the in-app browser as solving the Ranger invisible-blocker issue. Package/commit closeout is still pending.
+
+Baseline:
+
+- Starting commit: `7baa99a`, `Checkpoint v0.17.4 trained Ranger spawn and movement recovery`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-7baa99a`.
+- Manual result: MIXED. Rangers were not completely stuck after production, but several ranged units could still sometimes stop near the Barracks / Command Hall cluster despite no visible blocker. Redirecting them in other directions could recover movement, so the issue read like an invisible rock around the base.
+- Follow-up manual result after the v0.17.5 local fix: PASS. User opened the local game at `http://127.0.0.1:5173/`, tested Ranger movement around the Tutorial base, and reported: "great, issue seems to be solved now."
+
+v0.17.5 docs added:
+
+- `docs/V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md`
+
+Runtime/UI summary:
+
+- Static building blockers still mark coarse cells for route search, preserving building avoidance.
+- Exact world-point walkability now checks the padded building rectangle for static blockers, so visible open ground inside a coarse blocked cell is no longer treated as fully blocked.
+- Exact walkable goals inside coarse static-blocked cells can be used as path endpoints.
+- Path smoothing now starts from the requested start point instead of the start cell center, reducing static-cell artifacts near buildings.
+- v0.17.4 trained-unit spawn placement and blocked-start movement recovery are preserved.
+- v0.17.3 cost display, selected side-panel Hide/Show, neutral-contact, and explicit-attack path-warning behavior are preserved.
+- Save data, runtime art/assets, workers, buildings, units, maps, factions, global balance, Tutorial pacing, and economy architecture are unchanged.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/PathfindingGrid.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/TrainingSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 4 files / 15 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Tutorial Barracks can train clustered Rangers" --reporter=line PASS, 1 test in 21.1s.
+npm test PASS, 60 files / 433 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+In-app Browser local Tutorial boot check PASS: main menu loaded, Tutorial HUD visible, canvas present.
+User manual in-app browser retest PASS: Ranger near-base invisible-blocker issue seems solved.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-7baa99a-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-7baa99a-dirty PASS, 40 checks.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; dirty package generated and verified, clean package generation is pending after commit.
+
+Remaining closeout: commit/push if green, regenerate and verify a clean private package from the final commit, load the clean package in the browser, and rerun GitHub Actions after push because runtime pathing behavior changed.
+
+## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
 
 Status: v0.17.4 production-spawn/movement fix is implemented and in package/commit closeout.
 

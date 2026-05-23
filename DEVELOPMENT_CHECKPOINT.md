@@ -1,6 +1,50 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.4 trained Ranger spawn and movement recovery
+Updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix
+
+## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
+
+Scope: respond to Emmanuel's mixed Tutorial retest of `ascendant-realms-private-playtest-7baa99a` with a narrow pathing/collision-proxy fix only. v0.17.4 reduced the hard trained-Ranger stuck case, but several ranged units could still feel blocked by invisible geometry near the Barracks / Command Hall cluster until redirected.
+
+Baseline:
+
+- Starting commit: `7baa99a`, `Checkpoint v0.17.4 trained Ranger spawn and movement recovery`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-7baa99a`.
+- Manual result: MIXED. Rangers were not completely stuck, but some move orders near the player base felt like they hit an invisible blocker.
+- Follow-up manual result after the v0.17.5 local fix: PASS. User tested Ranger movement around the Tutorial base in the in-app browser and reported the issue seems solved.
+
+Included work:
+
+- Added `docs/V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md`.
+- Static building blockers still mark coarse path cells for routing, but exact world-point walkability now checks the padded building rectangle instead of treating the entire coarse cell as blocked.
+- Walkable goals that share a coarse static-blocked cell can now be used as exact path endpoints, so visible open ground beside the Command Hall does not behave like an invisible rock.
+- Path smoothing now anchors from the requested start point instead of the start cell center, preserving exact start/end behavior around coarse static cells.
+- Added PathfindingGrid and MovementSystem regressions for visible open points in coarse static building cells.
+- Strengthened the Tutorial trained-Ranger regression so a cluster of Rangers answers repeated near-base move orders, including the visible west side of the Command Hall.
+- Package metadata and validation now require the v0.17.5 intake doc.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/PathfindingGrid.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/TrainingSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 4 files / 15 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Tutorial Barracks can train clustered Rangers" --reporter=line PASS, 1 test in 21.1s.
+npm test PASS, 60 files / 433 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+In-app Browser local Tutorial boot check PASS: main menu loaded, Tutorial HUD visible, canvas present.
+User manual in-app browser retest PASS: Ranger near-base invisible-blocker issue seems solved.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-7baa99a-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-7baa99a-dirty PASS, 40 checks.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed; v0.17.2 Tutorial-only pacing is preserved. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated and dirty-tree package verified; final commit/package closeout is pending.
+
+Remaining closeout: commit as `Checkpoint v0.17.5 Ranger near-base invisible blocker fix`, push if safe, regenerate and verify a clean private package, and rerun GitHub Actions after push because runtime pathing behavior changed.
 
 ## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
 

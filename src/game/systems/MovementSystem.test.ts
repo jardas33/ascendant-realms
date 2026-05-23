@@ -49,9 +49,21 @@ describe("MovementSystem", () => {
     expect(distance(unit.position, { x: 120, y: 120 })).toBeGreaterThan(20);
     expect(unit.moveTarget).toEqual({ x: 220, y: 120 });
   });
+
+  it("moves toward exact open points that share a coarse static building cell", () => {
+    const system = new MovementSystem();
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 120, y: 250, moveTarget: { x: 180, y: 250 } });
+
+    system.update(0.1, [unit], testMap({ width: 500, height: 500 }), [
+      fakeBuilding({ x: 260, y: 250 }, { width: 96, height: 82 })
+    ]);
+
+    expect(unit.position.x).toBeGreaterThan(120);
+    expect(unit.moveTarget).toEqual({ x: 180, y: 250 });
+  });
 });
 
-function testMap(): BattleMapDefinition {
+function testMap(overrides: Partial<BattleMapDefinition> = {}): BattleMapDefinition {
   return {
     id: "movement_test",
     name: "Movement Test",
@@ -97,7 +109,8 @@ function testMap(): BattleMapDefinition {
         unitPlan: ["raider"]
       },
       rewardTableId: "first_claim_rewards"
-    }
+    },
+    ...overrides
   };
 }
 
@@ -118,13 +131,13 @@ function fakeUnit(options: { id: string; team: Team; x: number; y: number; moveT
   } as unknown as Unit;
 }
 
-function fakeBuilding(position: Position): Building {
+function fakeBuilding(position: Position, size: { width: number; height: number } = { width: 120, height: 120 }): Building {
   return {
     id: "blocked-building",
     alive: true,
     position,
     definition: {
-      size: { width: 120, height: 120 }
+      size
     }
   } as Building;
 }
