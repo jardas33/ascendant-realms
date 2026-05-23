@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.16.13 Stone Imp visible-contact reacquisition fix
+Updated: 2026-05-23 v0.17 tutorial QoL and worker economy design spec
+
+## v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
+
+Scope: start v0.17 as a first polish/design checkpoint after Emmanuel confirmed the v0.16.13 combat-control baseline. This pass implements Tutorial objective-box QoL, improves Tutorial-specific pressure readability, and documents the worker-economy direction without implementing worker construction.
+
+Baseline:
+
+- Starting commit: `461c563`, `Checkpoint v0.16.13 Stone Imp visible-contact reacquisition fix`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-461c563`.
+- Manual result: PASS for the critical adjacent melee bug, attack cursor, Tutorial defeat/results, and no major broken/confusing items.
+- Remaining feedback: Tutorial objective box blocks view; Tutorial pressure can feel hard; Command Hall should become worker production long-term.
+
+Included work:
+
+- Added `docs/V017_SOLO_PLAYTEST_INTAKE.md`.
+- Added `docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md`.
+- Tutorial panel now has a draggable Proving Grounds handle, Hide/Show, and Reset.
+- Tutorial panel offset/minimized state is stored only on the live HUD instance and is cleared when the battle UI is destroyed.
+- Tutorial panel local controls avoid forcing gameplay HUD rerenders, preserving the existing hover-stability guard for `tutorial-next`.
+- Tutorial copy now explicitly teaches early capture income, side mines, Barracks, Militia, rally, grouped defense, and enemy army growth.
+- Tutorial launches now apply existing Story pacing values to enemy escalation through a narrow helper, without mutating map data or changing campaign/skirmish AI.
+- Package metadata and package validation now require the v0.17 intake and worker-economy spec docs.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts src/game/data/battlePacing.test.ts PASS, 2 files / 8 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 41.8s after the local-panel refresh fix.
+In-app browser dev check at http://127.0.0.1:5173/ PASS: Tutorial panel visible, drag moved +76/+44, Reset cleared movement, Hide hid body, restore showed Next Objective.
+npm test PASS, 57 files / 422 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.0m.
+npm run test:e2e:smoke PASS, 14 tests in 8.3m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+git diff --check PASS before docs closeout.
+```
+
+Runtime gameplay changed: yes, Tutorial UI movement/minimize/reset and Tutorial-only enemy escalation pacing. Gameplay numbers changed: no global map, unit, wave, resource, or campaign balance data changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no, design spec only. Economy/production architecture rewritten: no. Package changed: metadata/validator updated; clean v0.17 package generation is pending after commit.
+
+Remaining closeout: rerun `git diff --check`, commit as `Checkpoint v0.17 tutorial QoL and worker economy design spec`, push if safe, regenerate and verify a clean private playtest package, and have Emmanuel retest Tutorial panel movement and pressure feel.
 
 ## v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
 

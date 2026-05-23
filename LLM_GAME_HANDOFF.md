@@ -1,12 +1,65 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.16.13 Stone Imp visible-contact reacquisition fix
+Last updated: 2026-05-23 v0.17 tutorial QoL and worker economy design spec
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
+
+Status: v0.17 Tutorial QoL/readability and worker-economy design work is implemented and locally verified before final commit/package closeout.
+
+Baseline:
+
+- Starting commit: `461c563`, `Checkpoint v0.16.13 Stone Imp visible-contact reacquisition fix`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-461c563`.
+- Manual result: CI green, critical adjacent melee bug fixed, attack cursor better, Tutorial defeat/results works, no major broken/confusing items.
+- Follow-up feedback: Tutorial objective box blocks view, Tutorial can feel hard if mines/army are delayed, and Command Hall should eventually produce workers instead of army units.
+
+v0.17 docs added:
+
+- `docs/V017_SOLO_PLAYTEST_INTAKE.md`
+- `docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md`
+
+Runtime/UI summary:
+
+- Tutorial objective panel now has a draggable Proving Grounds handle, Hide/Show, and Reset.
+- The panel's moved/minimized state lives only on the HUD instance for the current session and is not saved.
+- Local panel controls do not force gameplay HUD refreshes, preserving the existing hover-stability guard around Tutorial Next.
+- Tutorial copy now explicitly pushes early resource capture, side mines, Barracks, Militia, rally, grouped defense, and enemy army growth.
+- Tutorial launches apply existing Story pacing values to enemy escalation through a narrow helper. Campaign/skirmish AI config and map data are unchanged.
+
+Design-only summary:
+
+- `docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md` records the recommended long-term direction: Command Hall trains workers, workers construct buildings, production buildings train army units, buildings unlock upgrades, and worker construction should be phased in v0.18+ only after UI/AI/save risks are scoped.
+- No workers, new units, new buildings, production rewrite, save migration, runtime art/assets, maps, factions, or visual overhaul were implemented in v0.17.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts src/game/data/battlePacing.test.ts PASS, 2 files / 8 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 41.8s after the local-panel refresh fix.
+In-app browser dev check at http://127.0.0.1:5173/ PASS: Tutorial panel visible, drag moved +76/+44, Reset cleared movement, Hide hid body, restore showed Next Objective.
+npm test PASS, 57 files / 422 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.0m.
+npm run test:e2e:smoke PASS, 14 tests in 8.3m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+git diff --check PASS before docs closeout.
+```
+
+Runtime gameplay changed: yes, Tutorial UI movement/minimize/reset and Tutorial-only enemy escalation pacing. Gameplay numbers changed: no global map, unit, wave, resource, or campaign balance data changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no, design spec only. Package changed: metadata/validator updated; clean v0.17 package generation is pending after commit.
+
+Remaining closeout: rerun `git diff --check`, commit/push if green, regenerate and verify a clean private package, and direct Emmanuel to retest Tutorial panel movement and pressure feel.
 
 ## Current v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
 

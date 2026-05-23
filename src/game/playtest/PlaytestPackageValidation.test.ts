@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.16.13 Stone Imp visible-contact reacquisition fix",
+          checkpoint: "v0.17 Tutorial QoL and worker economy design spec",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -81,6 +81,8 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Retest intake" },
       { path: "V01613_BD26DE3_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Retest intake" },
       { path: "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md", sizeBytes: 20, textContent: "Fix note" },
+      { path: "V017_SOLO_PLAYTEST_INTAKE.md", sizeBytes: 20, textContent: "Solo intake" },
+      { path: "V017_WORKER_ECONOMY_DESIGN_SPEC.md", sizeBytes: 20, textContent: "Worker economy spec" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

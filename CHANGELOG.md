@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
+
+This checkpoint starts v0.17 after Emmanuel confirmed the v0.16.13 adjacent melee/contact bug is fixed. It focuses on Tutorial objective-box QoL, Tutorial-specific pressure readability, and a design-only worker-economy spec.
+
+### Included
+
+- Added Emmanuel's solo playtest intake for the green v0.16.13 combat-control baseline.
+- Marked the v0.16 critical adjacent melee bug as manually fixed against `ascendant-realms-private-playtest-461c563`.
+- Made the Tutorial objective panel movable by dragging its Proving Grounds handle, with session-only offset state.
+- Added Tutorial panel Hide/Show and Reset controls; these do not write save data and preserve HUD/minimap interaction.
+- Added browser smoke coverage for drag, reset, minimize, restore, hover-stable Tutorial Next, completion, and no-save/no-reward behavior.
+- Clarified Tutorial copy around early income capture, side mines, building a Barracks, training Militia, rallying, and grouped defense.
+- Applied the existing Story pacing values to enemy escalation only for Tutorial launches, leaving campaign/skirmish map AI data unchanged.
+- Added `docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md` for Command Hall workers, worker-built buildings, production buildings, upgrades, risks, UI, AI, save/migration concerns, and phased v0.18+ implementation.
+- Updated private playtest package metadata and validation to include the v0.17 intake/spec docs.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Tutorial UI movement/minimize/reset and Tutorial-only enemy escalation pacing.
+- Gameplay numbers changed: no global map, unit, wave, resource, or campaign balance data changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no; v0.16.13 contact behavior was preserved.
+- Worker construction implemented: no, design spec only.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: focused TutorialPanel and battle-pacing tests, TypeScript no-emit, targeted Tutorial browser smoke, in-app browser panel drag/hide/reset check, `npm test` with 57 files / 422 tests, build, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, control lab normal, control lab extended, and control-lab verification with 1658 checks.
+
+### Next
+
+- Commit/push the checkpoint, regenerate a clean private playtest package from the final v0.17 commit, verify it, and have Emmanuel retest the Tutorial objective panel movement plus overall Tutorial pressure feel.
+
 ## v0.16.13 Stone Imp Visible-Contact Reacquisition Fix - 2026-05-23
 
 This checkpoint fixes the failed bd26de3 manual retest where the Tutorial Hold Ground hero could still idle beside two Stone Imps before combat started or after the first imp died.

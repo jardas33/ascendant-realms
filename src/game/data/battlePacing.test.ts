@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { BATTLE_DIFFICULTIES, getBattleDifficulty, getBattlePhase } from "./battlePacing";
+import type { EnemyAIConfig } from "../core/GameTypes";
+import { applyTutorialEnemyAIPacing, BATTLE_DIFFICULTIES, getBattleDifficulty, getBattlePhase } from "./battlePacing";
 
 describe("battle pacing data", () => {
   it("maps elapsed battle time into the intended first-skirmish phases", () => {
@@ -54,5 +55,43 @@ describe("battle pacing data", () => {
     expect(easy.fogOfWarEnabled).toBe(true);
     expect(normal.fogOfWarEnabled).toBe(true);
     expect(hard.fogOfWarEnabled).toBe(true);
+  });
+
+  it("applies story-paced enemy escalation only through the tutorial pacing helper", () => {
+    const config: EnemyAIConfig = {
+      incomeInterval: 5,
+      incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
+      trainInterval: 5.6,
+      expandInterval: 21,
+      initialExpandDelay: 18,
+      attackInterval: 68,
+      initialAttackDelay: 210,
+      minAttackArmySize: 3,
+      attackWaveSize: 6,
+      expandSquadSize: 2,
+      defenseSquadSize: 6,
+      defendRadius: 400,
+      baseBuildingId: "enemy_stronghold",
+      productionBuildingId: "enemy_barracks",
+      attackTargetBuildingId: "command_hall",
+      unitPlan: ["raider", "raider", "hexer", "raider", "brute"]
+    };
+
+    const paced = applyTutorialEnemyAIPacing(config);
+
+    expect(paced).toMatchObject({
+      trainInterval: 9,
+      expandInterval: 30,
+      initialExpandDelay: 30,
+      attackInterval: 100,
+      initialAttackDelay: 300,
+      minAttackArmySize: 2,
+      attackWaveSize: 2,
+      expandSquadSize: 1,
+      defenseSquadSize: 6,
+      unitPlan: config.unitPlan
+    });
+    expect(config.trainInterval).toBe(5.6);
+    expect(config.initialAttackDelay).toBe(210);
   });
 });

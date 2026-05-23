@@ -5,15 +5,33 @@ import type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot } from "./hudPanel
 
 export type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot };
 
+interface TutorialPanelOffset {
+  x: number;
+  y: number;
+}
+
+interface TutorialPanelDragState {
+  pointerId: number;
+  startClientX: number;
+  startClientY: number;
+  startOffset: TutorialPanelOffset;
+}
+
 export class HUD {
   private readonly root: HTMLElement;
   private readonly clickHandler: (event: MouseEvent) => void;
+  private readonly pointerDownHandler: (event: PointerEvent) => void;
+  private readonly pointerMoveHandler: (event: PointerEvent) => void;
+  private readonly pointerUpHandler: (event: PointerEvent) => void;
   private readonly pointerOverHandler: (event: PointerEvent) => void;
   private readonly pointerOutHandler: (event: PointerEvent) => void;
   private lastMarkup = "";
   private deferredMarkup = "";
   private pointerInsideStablePanel = false;
   private forceNextUpdate = false;
+  private tutorialPanelOffset: TutorialPanelOffset = { x: 0, y: 0 };
+  private tutorialPanelMinimized = false;
+  private tutorialPanelDrag?: TutorialPanelDragState;
 
   constructor(callbacks: HUDCallbacks) {
     const root = document.getElementById("ui-root");
@@ -44,6 +62,7 @@ export class HUD {
       const action = button.dataset.action;
       const id = button.dataset.id ?? "";
       let handled = false;
+      let localPanelOnly = false;
       if (action === "build") {
         callbacks.onBuild(id, button.dataset.sourceId ?? "");
         handled = true;
@@ -76,6 +95,17 @@ export class HUD {
         callbacks.onTutorialNext();
         handled = true;
       }
+      if (action === "tutorial-minimize") {
+        this.tutorialPanelMinimized = !this.tutorialPanelMinimized;
+        this.applyTutorialPanelState();
+        handled = true;
+        localPanelOnly = true;
+      }
+      if (action === "tutorial-reset") {
+        this.resetTutorialPanelState();
+        handled = true;
+        localPanelOnly = true;
+      }
       if (action === "menu") {
         callbacks.onMenu();
         handled = true;
@@ -90,8 +120,56 @@ export class HUD {
       }
       if (handled) {
         clearInteractionFocus(button);
-        this.markInteractionHandled();
+        if (localPanelOnly) {
+          this.pointerInsideStablePanel = false;
+        } else {
+          this.markInteractionHandled();
+        }
       }
+    };
+    this.pointerDownHandler = (event) => {
+      const handle = (event.target as Element | null)?.closest<HTMLElement>("[data-testid='tutorial-drag-handle']");
+      if (!handle || !this.root.contains(handle)) {
+        return;
+      }
+      const panel = this.root.querySelector<HTMLElement>("[data-testid='tutorial-overlay']");
+      if (!panel) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      this.pointerInsideStablePanel = true;
+      this.tutorialPanelDrag = {
+        pointerId: event.pointerId,
+        startClientX: event.clientX,
+        startClientY: event.clientY,
+        startOffset: { ...this.tutorialPanelOffset }
+      };
+      handle.setPointerCapture?.(event.pointerId);
+    };
+    this.pointerMoveHandler = (event) => {
+      if (!this.tutorialPanelDrag || event.pointerId !== this.tutorialPanelDrag.pointerId) {
+        return;
+      }
+      const nextOffset = {
+        x: this.tutorialPanelDrag.startOffset.x + event.clientX - this.tutorialPanelDrag.startClientX,
+        y: this.tutorialPanelDrag.startOffset.y + event.clientY - this.tutorialPanelDrag.startClientY
+      };
+      this.tutorialPanelOffset = this.clampTutorialPanelOffset(nextOffset);
+      this.applyTutorialPanelState();
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    this.pointerUpHandler = (event) => {
+      if (!this.tutorialPanelDrag || event.pointerId !== this.tutorialPanelDrag.pointerId) {
+        return;
+      }
+      this.tutorialPanelDrag = undefined;
+      this.pointerInsideStablePanel = false;
+      event.preventDefault();
+      event.stopPropagation();
+      this.flushDeferredMarkup();
     };
     this.pointerOverHandler = (event) => {
       if (isStableInteractionTarget(event.target)) {
@@ -112,6 +190,10 @@ export class HUD {
       this.flushDeferredMarkup();
     };
     this.root.addEventListener("click", this.clickHandler);
+    this.root.addEventListener("pointerdown", this.pointerDownHandler);
+    window.addEventListener("pointermove", this.pointerMoveHandler);
+    window.addEventListener("pointerup", this.pointerUpHandler);
+    window.addEventListener("pointercancel", this.pointerUpHandler);
     this.root.addEventListener("pointerover", this.pointerOverHandler);
     this.root.addEventListener("pointerout", this.pointerOutHandler);
   }
@@ -134,6 +216,10 @@ export class HUD {
 
   destroy(): void {
     this.root.removeEventListener("click", this.clickHandler);
+    this.root.removeEventListener("pointerdown", this.pointerDownHandler);
+    window.removeEventListener("pointermove", this.pointerMoveHandler);
+    window.removeEventListener("pointerup", this.pointerUpHandler);
+    window.removeEventListener("pointercancel", this.pointerUpHandler);
     this.root.removeEventListener("pointerover", this.pointerOverHandler);
     this.root.removeEventListener("pointerout", this.pointerOutHandler);
     this.root.className = "ui-root";
@@ -142,9 +228,16 @@ export class HUD {
     this.deferredMarkup = "";
     this.pointerInsideStablePanel = false;
     this.forceNextUpdate = false;
+    this.tutorialPanelDrag = undefined;
+    this.tutorialPanelOffset = { x: 0, y: 0 };
+    this.tutorialPanelMinimized = false;
   }
 
   private shouldDeferUpdate(): boolean {
+    if (this.tutorialPanelDrag) {
+      return true;
+    }
+
     if (this.pointerInsideStablePanel) {
       return true;
     }
@@ -173,12 +266,76 @@ export class HUD {
     this.root.innerHTML = markup;
     this.lastMarkup = markup;
     restoreScrollState(this.root, scrollState);
+    this.applyTutorialPanelState();
   }
 
   private markInteractionHandled(): void {
     this.deferredMarkup = "";
     this.pointerInsideStablePanel = false;
     this.forceNextUpdate = true;
+  }
+
+  private resetTutorialPanelState(): void {
+    this.tutorialPanelOffset = { x: 0, y: 0 };
+    this.tutorialPanelMinimized = false;
+    this.applyTutorialPanelState();
+  }
+
+  private applyTutorialPanelState(): void {
+    const panel = this.root.querySelector<HTMLElement>("[data-testid='tutorial-overlay']");
+    if (!panel) {
+      return;
+    }
+    const x = Math.round(this.tutorialPanelOffset.x);
+    const y = Math.round(this.tutorialPanelOffset.y);
+    panel.style.setProperty("--tutorial-panel-offset-x", `${x}px`);
+    panel.style.setProperty("--tutorial-panel-offset-y", `${y}px`);
+    panel.dataset.tutorialMoved = x !== 0 || y !== 0 ? "true" : "false";
+    panel.dataset.tutorialMinimized = this.tutorialPanelMinimized ? "true" : "false";
+    panel.classList.toggle("minimized", this.tutorialPanelMinimized);
+
+    const body = panel.querySelector<HTMLElement>("[data-testid='tutorial-panel-body']");
+    body?.setAttribute("aria-hidden", this.tutorialPanelMinimized ? "true" : "false");
+
+    const minimizeButton = panel.querySelector<HTMLButtonElement>("[data-testid='tutorial-minimize']");
+    minimizeButton?.setAttribute("aria-expanded", this.tutorialPanelMinimized ? "false" : "true");
+  }
+
+  private clampTutorialPanelOffset(offset: TutorialPanelOffset): TutorialPanelOffset {
+    const panel = this.root.querySelector<HTMLElement>("[data-testid='tutorial-overlay']");
+    if (!panel) {
+      return offset;
+    }
+
+    const margin = 8;
+    const current = this.tutorialPanelOffset;
+    const rect = panel.getBoundingClientRect();
+    let x = offset.x;
+    let y = offset.y;
+    const deltaX = x - current.x;
+    const deltaY = y - current.y;
+    const proposedLeft = rect.left + deltaX;
+    const proposedRight = rect.right + deltaX;
+    const proposedTop = rect.top + deltaY;
+    const proposedBottom = rect.bottom + deltaY;
+
+    if (proposedLeft < margin) {
+      x += margin - proposedLeft;
+    }
+    if (proposedRight > window.innerWidth - margin) {
+      x -= proposedRight - (window.innerWidth - margin);
+    }
+    if (proposedTop < margin) {
+      y += margin - proposedTop;
+    }
+    if (proposedBottom > window.innerHeight - margin) {
+      y -= proposedBottom - (window.innerHeight - margin);
+    }
+
+    return {
+      x: Math.round(x),
+      y: Math.round(y)
+    };
   }
 }
 

@@ -48,6 +48,7 @@ Known current realities:
 - v0.16.11 adds exact-final CI/release notes, ready-to-copy GitHub issue templates, tester launch packet index, and a no-code freeze note. Push run #84 for `7cc6eff` passed Fast confidence only; no exact-final workflow-dispatch matrix was found for `7cc6eff`. Run #80 on `ad4eee0` remains the enabled release-matrix evidence for the post-v0.16.7 runtime stack.
 - v0.16.12 changes runtime combat/control narrowly after Emmanuel's `ec0608a` Tutorial retest: stationary visible-contact melee reacquisition, post-target-death Hold Ground contact rules, immediate melee contact over distant explicit targets, and top/head hover tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 - v0.16.13 follows the failed `bd26de3` package retest and widens only the local melee visible-contact boundary from the 57px Stone Imp cutoff to cover the 64px browser/manual proxy case. Rerun GitHub Actions CI Release Matrix Dry Run after push.
+- v0.17 starts the post-combat-control polish/design line: Tutorial objective panel drag/Hide/Reset is session-only, Tutorial enemy escalation uses existing Story pacing only in Tutorial launches, and worker economy remains design-only. No worker construction, save migration, runtime art/assets, or global balance rewrite is included.
 
 ## Required Automated Checks
 
@@ -97,6 +98,12 @@ Current v0.16.12 checkpoint result:
 
 ```text
 PASS: 57 test files, 421 tests
+```
+
+Current v0.17 checkpoint result:
+
+```text
+PASS: 57 test files, 422 tests
 ```
 
 Current v0.16.13 checkpoint result:

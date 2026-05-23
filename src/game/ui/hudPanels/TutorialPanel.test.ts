@@ -11,7 +11,13 @@ describe("TutorialPanel", () => {
     expect(html).toContain('data-testid="tutorial-overlay"');
     expect(html).toContain('aria-live="polite"');
     expect(html).toContain('aria-label="Exit Tutorial and return to main menu"');
+    expect(html).toContain('data-testid="tutorial-drag-handle"');
+    expect(html).toContain('data-testid="tutorial-minimize"');
+    expect(html).toContain('data-testid="tutorial-reset"');
+    expect(html).toContain('data-testid="tutorial-panel-body"');
     expect(html).toContain("Proving Grounds");
+    expect(html).toContain("Hide");
+    expect(html).toContain("Reset");
     expect(html).toContain("Select Aster");
     expect(html).toContain("Click Aster");
     expect(html).toContain("Selected units");

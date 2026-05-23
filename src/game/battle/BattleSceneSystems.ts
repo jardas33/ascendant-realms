@@ -10,6 +10,7 @@ import type {
   UpgradeDefinition
 } from "../core/GameTypes";
 import { BUILDING_BY_ID } from "../data/contentIndex";
+import { applyTutorialEnemyAIPacing } from "../data/battlePacing";
 import { getStrongholdBattleEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
@@ -388,6 +389,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
   showBattleStartSummary();
 
+  const enemyAIConfig =
+    launch.request.mode === "tutorial" ? applyTutorialEnemyAIPacing(activeMap.scenario.enemyAI) : activeMap.scenario.enemyAI;
   const aiController = new EnemyAIController({
     resources: resources.enemy,
     getUnits,
@@ -404,7 +407,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onAlert: (message, x, y) => showMessage(message, x, y, "#f6e27d"),
     onWaveLaunched: trackEnemyWave,
     difficulty: launch.request.difficulty,
-    config: activeMap.scenario.enemyAI,
+    config: enemyAIConfig,
     aiPersonalityId: launch.request.aiPersonalityId,
     attackWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds
   });

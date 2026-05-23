@@ -49,10 +49,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "captureSite",
         title: "Capture Crown Shrine",
         description: "Teach capture-site ownership with the safest existing First Claim opening.",
-        instruction: "Move Aster and soldiers into the Crown Shrine ring until it turns green.",
+        instruction: "Move Aster and soldiers into the Crown Shrine ring until it turns green. Capture income early so the enemy army does not outgrow you.",
         objectiveType: "captureSite",
         requiredAction: "captureSite",
-        hint: "Green ownership starts your battle income.",
+        hint: "Green ownership starts battle income; side mines add Stone, Iron, and Aether.",
         references: {
           mapIds: ["first_claim"],
           captureSiteIds: ["crown_shrine"],
@@ -64,7 +64,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "gatherResources",
         title: "Gather Battle Crowns",
         description: "Teach that captured sites generate temporary battle resources.",
-        instruction: "Hold the Crown Shrine and watch Crowns rise for this battle.",
+        instruction: "Hold the Crown Shrine and watch Crowns rise for this battle. The enemy is building army, so keep income moving.",
         objectiveType: "resourceThreshold",
         requiredAction: "waitForIncome",
         hint: "Crowns earned here are temporary battle resources, not saved rewards.",
@@ -82,7 +82,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Select your Command Hall to show construction commands.",
         objectiveType: "selectBuilding",
         requiredAction: "selectBuilding",
-        hint: "The Command Hall starts Barracks construction.",
+        hint: "The Command Hall starts Barracks construction before the first enemy wave.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["command_hall"]
@@ -93,7 +93,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "buildStructure",
         title: "Build Barracks",
         description: "Teach Barracks placement and completed construction using existing build rules.",
-        instruction: "Place a Barracks on clear ground near your base.",
+        instruction: "Place a Barracks on clear ground near your base. This is the safe path to a bigger army.",
         objectiveType: "buildStructure",
         requiredAction: "buildStructure",
         hint: "If the ground is blocked, press Esc and try a nearby spot.",
@@ -107,7 +107,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "trainUnit",
         title: "Train Militia",
         description: "Teach basic unit training from a completed Barracks.",
-        instruction: "Select the completed Barracks and queue one Militia.",
+        instruction: "Select the completed Barracks and queue one Militia before the enemy army grows.",
         objectiveType: "trainUnit",
         requiredAction: "trainUnit",
         hint: "When training finishes, the Militia joins your army.",
@@ -126,7 +126,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "With Barracks selected, right-click safe ground near the road.",
         objectiveType: "setRally",
         requiredAction: "setRally",
-        hint: "New units move toward that marker after training.",
+        hint: "New units move toward that marker after training; gather them near Aster before pressure arrives.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["barracks"]
@@ -151,10 +151,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "defeatEnemy",
         title: "Group Up And Hold",
         description: "Teach that a staged force handles small existing enemy contact better than rushing alone.",
-        instruction: "Keep hero and troops together, then defeat the small Raider pressure.",
+        instruction: "The enemy is building army now. Keep hero and troops together, then defeat the small Raider pressure.",
         objectiveType: "defeatEnemy",
         requiredAction: "defeatEnemy",
-        hint: "A grouped force is safer than chasing alone.",
+        hint: "A grouped force with captured income is safer than chasing alone.",
         references: {
           mapIds: ["first_claim"],
           unitIds: ["raider"]

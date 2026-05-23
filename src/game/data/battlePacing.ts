@@ -2,6 +2,7 @@ import type {
   BattleDifficulty,
   BattleDifficultyDefinition,
   BattlePhaseDefinition,
+  EnemyAIConfig,
   FirstMatchTutorialProtectionDefinition,
   ResourceBag
 } from "../core/GameTypes";
@@ -170,4 +171,19 @@ export function scaledEnemyIncome(income: Partial<ResourceBag>, multiplier: numb
   return Object.fromEntries(
     Object.entries(income).map(([resource, amount]) => [resource, Math.max(0, Math.round((amount ?? 0) * multiplier))])
   ) as Partial<ResourceBag>;
+}
+
+export function applyTutorialEnemyAIPacing(config: EnemyAIConfig): EnemyAIConfig {
+  const story = getBattleDifficulty("story");
+  return {
+    ...config,
+    trainInterval: Math.max(config.trainInterval, story.trainInterval),
+    expandInterval: Math.max(config.expandInterval, story.expandInterval),
+    initialExpandDelay: Math.max(config.initialExpandDelay, story.expandInterval),
+    attackInterval: Math.max(config.attackInterval, story.attackInterval),
+    initialAttackDelay: Math.max(config.initialAttackDelay, story.firstAttackDelay),
+    minAttackArmySize: Math.min(config.minAttackArmySize, story.minAttackArmySize),
+    attackWaveSize: Math.min(config.attackWaveSize, story.attackWaveSize),
+    expandSquadSize: Math.min(config.expandSquadSize, story.expandSquadSize)
+  };
 }

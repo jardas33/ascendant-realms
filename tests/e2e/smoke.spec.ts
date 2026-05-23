@@ -775,6 +775,32 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       expect(overlayBox.x).toBeGreaterThanOrEqual(-2);
       expect(overlayBox.x + overlayBox.width).toBeLessThanOrEqual(viewport.width + 2);
     }
+    const dragHandleBox = await page.getByTestId("tutorial-drag-handle").boundingBox();
+    expect(dragHandleBox).not.toBeNull();
+    if (overlayBox && dragHandleBox) {
+      await page.mouse.move(dragHandleBox.x + dragHandleBox.width / 2, dragHandleBox.y + dragHandleBox.height / 2);
+      await page.mouse.down();
+      await page.mouse.move(dragHandleBox.x + dragHandleBox.width / 2 + 76, dragHandleBox.y + dragHandleBox.height / 2 + 44, {
+        steps: 5
+      });
+      await page.mouse.up();
+      await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "true");
+      const movedOverlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
+      expect(movedOverlayBox).not.toBeNull();
+      if (movedOverlayBox) {
+        expect(movedOverlayBox.x - overlayBox.x).toBeGreaterThan(30);
+        expect(movedOverlayBox.y - overlayBox.y).toBeGreaterThan(20);
+      }
+    }
+    await clickReady(page.getByTestId("tutorial-reset"), "smoke tutorial panel reset");
+    await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "false");
+    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel minimize");
+    await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "true");
+    await expect(page.getByTestId("tutorial-panel-body")).toBeHidden();
+    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel restore");
+    await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "false");
+    await expect(page.getByTestId("tutorial-panel-body")).toBeVisible();
+    await expect(page.getByTestId("tutorial-next")).toBeVisible();
     const tutorialNextHoverPoint = await page.getByTestId("tutorial-next").evaluate((button) => {
       (button as HTMLButtonElement & { __hudStableSentinel?: string }).__hudStableSentinel = "tutorial-next-hover";
       const rect = button.getBoundingClientRect();

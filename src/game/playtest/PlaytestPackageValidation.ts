@@ -37,6 +37,8 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md",
   "V01613_BD26DE3_RETEST_INTAKE.md",
   "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md",
+  "V017_SOLO_PLAYTEST_INTAKE.md",
+  "V017_WORKER_ECONOMY_DESIGN_SPEC.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -140,7 +142,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.16.13 Stone Imp visible-contact reacquisition fix",
+      "v0.17 Tutorial QoL and worker economy design spec",
       "build info checkpoint",
       checks,
       errors
