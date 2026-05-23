@@ -2979,16 +2979,30 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.units
         .filter((unit: any) => unit.team === "player" && unit.id !== scene.hero.id)
         .forEach((unit: any, index: number) => unit.setPosition(scene.hero.position.x - 180, scene.hero.position.y + 150 + index * 24));
+      scene.hero.behaviourMode = "hold_ground";
+      scene.hero.attackTargetId = undefined;
+      scene.hero.attackTargetLabel = undefined;
+      scene.hero.attackMove = false;
+      scene.hero.moveTarget = undefined;
+      scene.hero.moveOrderCombatSuppressionSeconds = 3;
+      scene.hero.attackCooldownRemaining = 999;
+      target.hp = target.maxHp;
+      target.alive = true;
+      target.factionSpeedMultiplier = 0;
       target.attackTargetId = undefined;
       target.attackTargetLabel = undefined;
       target.attackMove = false;
       target.moveTarget = undefined;
+      target.moveOrderCombatSuppressionSeconds = 3;
       target.attackCooldownRemaining = 999;
       target.setPosition(
         Math.max(240, Math.min(scene.activeMap.width - 240, scene.hero.position.x + 360)),
         Math.max(240, Math.min(scene.activeMap.height - 240, scene.hero.position.y + 260))
       );
       scene.selectionSystem.setSelection([scene.hero]);
+      scene.fogDebugDisabled = true;
+      scene.updateFogOfWar?.(0, true);
+      target.view?.setVisible(true);
       scene.cameraSystem.centerOn(target.position);
       scene.refreshBattleHud?.(0);
       const tolerantPoint = { x: target.position.x + 23, y: target.position.y };
@@ -3008,6 +3022,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(hoverTarget.emptyHitId).toBe("");
     const hoverScreen = await worldToScreen(page, hoverTarget);
     await expectWorldClickTargetsCanvas(page, hoverTarget, "manual combat contact hover tolerance");
+    await page.mouse.move(hoverScreen.x - 24, hoverScreen.y - 24);
     await page.mouse.move(hoverScreen.x, hoverScreen.y, { steps: 4 });
     await expect
       .poll(

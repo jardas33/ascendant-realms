@@ -57,6 +57,13 @@ const SETTINGS_BATTLE_MENU_CLICK_OPTIONS = {
   timeoutMs: 3_000,
   waitForLayoutBox: false
 } as const;
+const HUD_TOGGLE_CLICK_OPTIONS = {
+  attempts: 1,
+  domFallbackTimeoutMs: 1_500,
+  normalClickTimeoutMs: 750,
+  timeoutMs: 4_000,
+  waitForLayoutBox: false
+} as const;
 const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
@@ -65,6 +72,14 @@ function settingsScreenVisible(page: Page): Promise<boolean> {
     .getByTestId("settings-screen")
     .isVisible()
     .catch(() => false);
+}
+
+async function testIdAttributeEquals(page: Page, testId: string, attribute: string, expected: string): Promise<boolean> {
+  const value = await page
+    .getByTestId(testId)
+    .getAttribute(attribute, { timeout: 500 })
+    .catch(() => "");
+  return value === expected;
 }
 
 async function setSettingsRangeValue(page: Page, testId: string, value: string): Promise<void> {
@@ -792,22 +807,37 @@ test.describe("Ascendant Realms browser smoke flows", () => {
         expect(movedOverlayBox.y - overlayBox.y).toBeGreaterThan(20);
       }
     }
-    await clickReady(page.getByTestId("tutorial-reset"), "smoke tutorial panel reset");
+    await clickReady(page.getByTestId("tutorial-reset"), "smoke tutorial panel reset", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: () => testIdAttributeEquals(page, "tutorial-overlay", "data-tutorial-moved", "false")
+    });
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "false");
-    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel minimize");
+    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel minimize", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: () => testIdAttributeEquals(page, "tutorial-overlay", "data-tutorial-minimized", "true")
+    });
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "true");
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "false");
     await expect(page.getByTestId("tutorial-panel-body")).toBeHidden();
-    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel restore");
+    await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel restore", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: () => testIdAttributeEquals(page, "tutorial-overlay", "data-tutorial-minimized", "false")
+    });
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "false");
     await expect(page.getByTestId("tutorial-panel-body")).toBeVisible();
     await expect(page.getByTestId("tutorial-next")).toBeVisible();
     await page.keyboard.press("H");
     await expect(page.getByTestId("selection-side-panel")).toBeVisible();
-    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel minimize");
+    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel minimize", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: () => testIdAttributeEquals(page, "selection-side-panel", "data-side-panel-minimized", "true")
+    });
     await expect(page.getByTestId("selection-side-panel")).toHaveAttribute("data-side-panel-minimized", "true");
     await expect(page.getByTestId("side-panel-body")).toBeHidden();
-    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel restore");
+    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel restore", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: () => testIdAttributeEquals(page, "selection-side-panel", "data-side-panel-minimized", "false")
+    });
     await expect(page.getByTestId("selection-side-panel")).toHaveAttribute("data-side-panel-minimized", "false");
     await expect(page.getByTestId("side-panel-body")).toBeVisible();
     const tutorialNextHoverPoint = await page.getByTestId("tutorial-next").evaluate((button) => {
