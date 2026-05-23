@@ -163,7 +163,18 @@ async function clickBehaviourMode(
   let lastError: unknown;
   const locator = page.getByTestId(`behaviour-mode-${mode}`);
 
-  for (let attempt = 1; attempt <= 8; attempt += 1) {
+  for (let attempt = 1; attempt <= 12; attempt += 1) {
+    if (attempt === 1 || attempt % 3 === 0) {
+      await page.evaluate(() => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive() || !scene.hero?.alive) {
+          return;
+        }
+        scene.selectionSystem.setSelection([scene.hero]);
+        scene.refreshBattleHud?.(0);
+      });
+      await page.waitForTimeout(50);
+    }
     const clicked = await locator
       .evaluateAll((elements) => {
         for (const element of elements) {
@@ -198,7 +209,7 @@ async function clickBehaviourMode(
     if (!clicked && attempt === 1) {
       lastError = new Error(`${context}: behaviour mode button was not visibly laid out.`);
     }
-    await page.waitForTimeout(150);
+    await page.waitForTimeout(200);
   }
 
   if (lastError instanceof Error) {

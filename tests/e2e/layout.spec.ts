@@ -482,7 +482,17 @@ async function expectCinderfenBattleHudReadable(
   expected: { mapName: string; objectiveTexts: string[] }
 ): Promise<void> {
   await expectBattleLoaded(page, `${label} battle`);
-  await expect(page.getByTestId("battle-status")).toContainText(expected.mapName);
+  await expect(page.getByTestId("battle-status")).toBeVisible();
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          return scene?.scene.isActive() ? scene.activeMap?.name ?? "" : "";
+        }),
+      { message: `${label} battle launched expected map` }
+    )
+    .toBe(expected.mapName);
   for (const objectiveText of expected.objectiveTexts) {
     await expect(page.getByTestId("battle-objectives")).toContainText(objectiveText);
   }
