@@ -328,7 +328,7 @@ function postKillAdjacentReacquisition(): ScenarioRun {
     behaviourMode: "guard_area"
   });
   const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
-  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 146, y: 100, radius: 14, range: 26 });
+  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
   const combat = createCombat([player, firstImp, secondImp]);
   combat.update(0.1);
   combat.update(1.1);
@@ -388,13 +388,20 @@ function attackHoverToleranceBoundary(): ScenarioRun {
   const enemy = fakeUnit({ id: "enemy-stone-imp", team: "enemy", x: 100, y: 100, radius: 14, range: 26 });
   const bodyEdgeHit = CollisionSystem.findEntityAt(123, 100, [enemy], {
     minimumRadius: 24,
-    padding: (entity) => (entity.kind === "unit" ? 4 : 0)
+    padding: (entity) => (entity.kind === "unit" ? 4 : 0),
+    topPadding: (entity) => (entity.kind === "unit" ? 6 : 0)
+  });
+  const headHit = CollisionSystem.findEntityAt(100, 72, [enemy], {
+    minimumRadius: 24,
+    padding: (entity) => (entity.kind === "unit" ? 4 : 0),
+    topPadding: (entity) => (entity.kind === "unit" ? 6 : 0)
   });
   const emptyNearbyHit = CollisionSystem.findEntityAt(129, 100, [enemy], {
     minimumRadius: 24,
-    padding: (entity) => (entity.kind === "unit" ? 4 : 0)
+    padding: (entity) => (entity.kind === "unit" ? 4 : 0),
+    topPadding: (entity) => (entity.kind === "unit" ? 6 : 0)
   });
-  const passed = bodyEdgeHit?.id === enemy.id && !emptyNearbyHit;
+  const passed = bodyEdgeHit?.id === enemy.id && headHit?.id === enemy.id && !emptyNearbyHit;
   return {
     verdict: passed ? "pass" : "fail",
     confidence: "high",
@@ -403,7 +410,7 @@ function attackHoverToleranceBoundary(): ScenarioRun {
       explicitOrderType: "attack",
       enemyDistanceCategory: "near",
       targetAcquired: bodyEdgeHit?.id === enemy.id,
-      targetRetained: !emptyNearbyHit,
+      targetRetained: headHit?.id === enemy.id && !emptyNearbyHit,
       chaseDistance: 0,
       leashRespected: true,
       contactAttackFramesObserved: null
@@ -418,6 +425,7 @@ function attackHoverToleranceBoundary(): ScenarioRun {
     ]),
     evidence: [
       bodyEdgeHit?.id === enemy.id ? "Visible enemy body edge resolved as attack intent." : "Visible enemy body edge did not resolve.",
+      headHit?.id === enemy.id ? "Visible enemy top/head area resolved as attack intent." : "Visible enemy top/head area did not resolve.",
       !emptyNearbyHit ? "Nearby empty terrain remained non-targetable." : "Nearby empty terrain incorrectly resolved as a target."
     ]
   };
@@ -436,7 +444,7 @@ function manualProxyHoldGroundAdjacentFollowup(): ScenarioRun {
     attackTargetId: "enemy-stone-imp-1"
   });
   const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
-  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 150, y: 100, radius: 14, range: 26 });
+  const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
   const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 430, y: 100, radius: 14, range: 26 });
   const combat = createCombat([hero, firstImp, secondImp, distantImp]);
 
@@ -545,8 +553,8 @@ function combatEdgeHeroThreeMeleeFollowup(): ScenarioRun {
   });
   const enemies = [
     fakeUnit({ id: "enemy-melee-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 }),
-    fakeUnit({ id: "enemy-melee-2", team: "enemy", x: 148, y: 100, radius: 14, range: 26 }),
-    fakeUnit({ id: "enemy-melee-3", team: "enemy", x: 136, y: 118, radius: 14, range: 26 })
+    fakeUnit({ id: "enemy-melee-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 }),
+    fakeUnit({ id: "enemy-melee-3", team: "enemy", x: 138, y: 122, radius: 14, range: 26 })
   ];
   const combat = createCombat([hero, ...enemies]);
 

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.16.11 release-candidate issue backlog and tester launch prep";
+const CHECKPOINT = "v0.16.12 stationary adjacent melee reacquisition fix";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -54,6 +54,7 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V01610_TESTER_FEEDBACK_FORM_SHORT.md", join(packageDir, "TESTER_FEEDBACK_FORM_SHORT.md"));
   await copyMarkdown("docs/V01610_ROUTE_ASSIGNMENTS_SMALL_BATCH.md", join(packageDir, "ROUTE_ASSIGNMENTS_SMALL_BATCH.md"));
   await copyMarkdown("docs/V01611_TESTER_LAUNCH_PACKET_INDEX.md", join(packageDir, "TESTER_LAUNCH_PACKET_INDEX.md"));
+  await copyMarkdown("docs/V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md", join(packageDir, "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -137,7 +138,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.16.11 release-candidate retest, start with TESTER_LAUNCH_PACKET_INDEX.md, EMMANUEL_MANUAL_RETEST_CHECKLIST.md, RELEASE_CANDIDATE_NOTES.md, or PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md.
+For the v0.16.12 retest, start with V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md, EMMANUEL_MANUAL_RETEST_CHECKLIST.md, RELEASE_CANDIDATE_NOTES.md, or PRIVATE_PLAYTEST_CONTROL_ROUTE_CARD.md.
 
 ## Known Warning
 

@@ -1,6 +1,49 @@
 # Development Checkpoint
 
-Updated: 2026-05-22 v0.16.11 release-candidate issue backlog and tester launch prep
+Updated: 2026-05-23 v0.16.12 stationary adjacent melee reacquisition fix
+
+## v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
+
+Scope: fix Emmanuel's `ec0608a` Tutorial retest failure where a Hold Ground hero and two adjacent Stone Imps could stand in visible contact without combat starting, especially after the first target died. This is a v0.16.x bugfix only and does not start v0.17.
+
+Baseline:
+
+- Starting commit: `ec0608a`, `Checkpoint v0.16.11 release-candidate issue backlog and tester launch prep`.
+- Branch was clean and synced with `origin/main`.
+- Manual package tested: `ascendant-realms-private-playtest-ec0608a`.
+- Manual session: `PT-20260521-EMMANUEL-EC0608A-SOLO-01`, Brave on Windows, Tutorial route, MIXED.
+
+Included work:
+
+- Added `docs/V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md`.
+- Added `docs/V01612_STATIONARY_ADJACENT_MELEE_REACQUISITION_FIX.md`.
+- Increased melee visible-contact tolerance narrowly.
+- Prioritized immediate melee contact over distant explicit targets when the explicit target is not already in effective range.
+- Cleared explicit attack-move state after dead/invalid explicit targets so Hold Ground does not become follow-up chase mode.
+- Added top/head world hit-test tolerance for units and buildings while preserving empty side terrain refusal.
+- Updated package metadata and validation for the v0.16.12 checkpoint.
+
+Verification so far:
+
+```text
+npm test -- CombatSystem.test.ts CollisionSystem.test.ts MovementSystem.test.ts BehaviourModeSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 5 files / 45 tests.
+npm test PASS, 57 files / 421 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 24.4s.
+Browser preview sanity at http://127.0.0.1:5173/ PASS: main menu loaded, Tutorial reached BattleScene, console errors 0.
+npm run package:playtest PASS against the pre-commit dirty tree.
+npm run verify:playtest-package PASS, 31 checks.
+```
+
+Runtime gameplay changed: yes, melee contact/reacquisition semantics only. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: yes, Hold Ground contact/post-target-death semantics only. Enemy aggro changed: yes, immediate melee contact can interrupt a distant explicit target; no global chase was added. Retreat logic changed: no. Test/CI harness changed: yes, stronger unit/control-lab/hosted regression coverage and package metadata. Package changed: yes, v0.16.12 build metadata and intake doc.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.12 stationary adjacent melee reacquisition fix`, push, regenerate and verify a clean private playtest package, and confirm branch clean/synced.
 
 ## v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
 

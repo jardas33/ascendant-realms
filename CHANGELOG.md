@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
+
+This checkpoint fixes Emmanuel's `ec0608a` Tutorial retest failure where a Hold Ground hero and adjacent Stone Imps could remain idle in visible contact. It is a narrow v0.16.x combat bugfix, not v0.17.
+
+### Included
+
+- Added Emmanuel's `PT-20260521-EMMANUEL-EC0608A-SOLO-01` retest intake.
+- Added a v0.16.12 fix report covering the audit, root cause, runtime change, test coverage, building-feedback debt, hover tolerance, and Tutorial-box deferral.
+- Increased melee visible-contact tolerance narrowly for stationary adjacent melee.
+- Let melee units accept immediate hostile contact when their explicit target is not already in effective range.
+- Cleared explicit attack-move state after dead/invalid explicit targets so Hold Ground resumes local-contact rules after a target dies.
+- Added top/head hover hit tolerance for units and buildings while preserving nearby empty terrain refusal.
+- Updated control-lab scenarios and private package metadata for v0.16.12.
+
+### Verdict
+
+- Runtime gameplay changed: yes, melee contact/reacquisition semantics only.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Behaviour modes changed: yes, Hold Ground contact/post-target-death semantics only.
+- Enemy aggro changed: yes, immediate melee contact can interrupt a distant explicit target; no global chase was added.
+- Retreat logic changed: no.
+- Test/CI harness changed: yes, stronger combat/collision/control-lab/hosted regression coverage and package metadata.
+- Worker construction implemented: no.
+- Force clicks used: no.
+- Canvas/world DOM fallback used: no.
+
+### Verification
+
+- Passed: focused combat/collision/movement/behaviour/control-lab tests with 5 files / 45 tests, `npm test` with 57 files / 421 tests, build, content validation, art-intake validation, fast smoke with 8 tests, control lab normal/extended/verify, hosted manual combat contact regression, in-app browser production-preview sanity, dirty-tree package generation, and package verification with 31 checks.
+
+### Next
+
+- Commit, push, regenerate the clean private playtest package, verify it does not end in `-dirty`, and have Emmanuel retest the Tutorial adjacent-two-imp Hold Ground case before v0.17.
+
 ## v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
 
 This checkpoint prepares project-management artifacts for Emmanuel's manual retest or a 2-5 tester launch. It is not v0.17 and does not change runtime gameplay.

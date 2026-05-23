@@ -34,6 +34,7 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "TESTER_FEEDBACK_FORM_SHORT.md",
   "ROUTE_ASSIGNMENTS_SMALL_BATCH.md",
   "TESTER_LAUNCH_PACKET_INDEX.md",
+  "V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -137,7 +138,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.16.11 release-candidate issue backlog and tester launch prep",
+      "v0.16.12 stationary adjacent melee reacquisition fix",
       "build info checkpoint",
       checks,
       errors

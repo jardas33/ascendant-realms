@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-22 v0.16.11 release-candidate issue backlog and tester launch prep
+Last updated: 2026-05-23 v0.16.12 stationary adjacent melee reacquisition fix
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,57 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
+## Current v0.16.12 Stationary Adjacent Melee Reacquisition Fix - 2026-05-23
+
+Status: narrow runtime combat/control bugfix is implemented and locally verified before final commit/package closeout. This checkpoint responds only to Emmanuel's `ec0608a` Tutorial retest failure and does not start v0.17.
+
+Baseline:
+
+- Starting commit: `ec0608a`, `Checkpoint v0.16.11 release-candidate issue backlog and tester launch prep`.
+- Branch was clean and synced with `origin/main`.
+- Package tested by Emmanuel: `ascendant-realms-private-playtest-ec0608a`.
+- Manual session: `PT-20260521-EMMANUEL-EC0608A-SOLO-01`, Brave on Windows, Tutorial route, result MIXED.
+
+v0.16.12 docs added:
+
+- `docs/V01612_EMMANUEL_EC0608A_RETEST_INTAKE.md`
+- `docs/V01612_STATIONARY_ADJACENT_MELEE_REACQUISITION_FIX.md`
+
+Runtime fix summary:
+
+- Melee contact now accepts a slightly wider visible-contact tolerance for stationary adjacent units.
+- Melee units now prioritize immediate hostile contact when their explicit target is not already in effective range, so an enemy ordered toward the Command Hall can still fight a player unit it is standing beside.
+- Dead/invalid explicit attack targets now clear the explicit attack-move state, so Hold Ground returns to local-contact/direct-attacker rules after a target dies.
+- World entity hover/click intent now includes a narrow top/head area for units and buildings while keeping nearby side terrain non-targetable.
+
+Deferred:
+
+- Melee building attacks are deterministic-test covered, but their visual feedback remains readability debt.
+- A draggable/movable Tutorial objective box remains future QoL; it was not implemented in this combat bugfix.
+
+Verification so far:
+
+```text
+npm test -- CombatSystem.test.ts CollisionSystem.test.ts MovementSystem.test.ts BehaviourModeSystem.test.ts ControlBehaviourScenarioLab.test.ts PASS, 5 files / 45 tests.
+npm test PASS, 57 files / 421 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 24.4s.
+Browser preview sanity at http://127.0.0.1:5173/ PASS: main menu loaded, Tutorial reached BattleScene, console errors 0.
+npm run package:playtest PASS against the pre-commit dirty tree; generated `ascendant-realms-private-playtest-ec0608a-dirty`.
+npm run verify:playtest-package PASS, 31 checks.
+```
+
+Runtime gameplay changed: yes, melee contact/reacquisition semantics only. Gameplay numbers changed: no. Save format changed: no. Runtime art/assets changed: no. Behaviour modes changed: yes, Hold Ground post-target-death/contact semantics only. Enemy aggro changed: yes, immediate melee contact can interrupt a distant explicit target; no global building chase was added. Retreat logic changed: no. Package changed: yes, package metadata now names v0.16.12 and includes the v0.16.12 retest intake.
+
+Remaining closeout: run `git diff --check`, commit as `Checkpoint v0.16.12 stationary adjacent melee reacquisition fix`, push, regenerate and verify a clean private playtest package from the final commit, and have Emmanuel retest the Tutorial adjacent-two-imp Hold Ground case against the clean package.
+
+## v0.16.11 Release-Candidate Issue Backlog And Tester Launch Prep - 2026-05-22
 
 Status: docs/issues-only project-management pass is complete locally. This checkpoint prepares exact-final CI notes, ready-to-copy issue templates, tester launch packet guidance, and a no-code freeze note. Runtime gameplay is unchanged.
 

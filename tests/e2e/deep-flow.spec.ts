@@ -2677,8 +2677,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         throw new Error("Expected active BattleScene hero for contact regression.");
       }
       const enemies = scene.units.filter((unit: any) => unit.team !== "player" && unit.alive);
-      if (enemies.length < 2) {
-        throw new Error("Expected at least two hostile units for contact regression.");
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (enemies.length < 2 || !commandHall) {
+        throw new Error("Expected at least two hostile units and a Command Hall for contact regression.");
       }
       const [firstEnemy, secondEnemy, ...otherEnemies] = enemies;
       otherEnemies.forEach((unit: any, index: number) => {
@@ -2705,11 +2708,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       secondEnemy.hp = secondEnemy.maxHp;
       secondEnemy.alive = true;
       secondEnemy.attackCooldownRemaining = 0;
-      secondEnemy.attackTargetId = undefined;
-      secondEnemy.attackTargetLabel = undefined;
-      secondEnemy.attackMove = false;
+      secondEnemy.attackTargetId = commandHall.id;
+      secondEnemy.attackTargetLabel = commandHall.definition.name;
+      secondEnemy.attackMove = true;
       secondEnemy.moveTarget = undefined;
-      secondEnemy.setPosition(scene.hero.position.x + 48, scene.hero.position.y);
+      secondEnemy.setPosition(scene.hero.position.x + 54, scene.hero.position.y);
+      const heroHpBefore = scene.hero.hp;
       scene.combatSystem.update(0.1);
       const firstKilled = !firstEnemy.alive;
       scene.combatSystem.update(scene.hero.attackCooldown + 0.2);
@@ -2726,6 +2730,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         secondAlive: secondEnemy.alive,
         heroAttackTargetId: scene.hero.attackTargetId ?? "",
         heroAttackMove: Boolean(scene.hero.attackMove),
+        heroHpBefore,
+        heroHpAfter: scene.hero.hp,
         secondHp: secondEnemy.hp,
         secondMaxHp: secondEnemy.maxHp,
         heroMoveTarget: Boolean(scene.hero.moveTarget)
@@ -2733,6 +2739,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     expect(contactResult.firstKilled).toBe(true);
     expect(contactResult.secondHp, JSON.stringify(contactResult)).toBeLessThan(contactResult.secondMaxHp);
+    expect(contactResult.heroHpAfter, JSON.stringify(contactResult)).toBeLessThan(contactResult.heroHpBefore);
     expect(contactResult.heroMoveTarget).toBe(false);
 
     const buildingAggro = await page.evaluate(() => {
@@ -2851,16 +2858,19 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.cameraSystem.centerOn(target.position);
       scene.refreshBattleHud?.(0);
       const tolerantPoint = { x: target.position.x + 23, y: target.position.y };
+      const topPoint = { x: target.position.x, y: target.position.y - 28 };
       const emptyPoint = { x: target.position.x + 31, y: target.position.y };
       return {
         id: target.id,
         x: tolerantPoint.x,
         y: tolerantPoint.y,
         tolerantHitId: scene.findWorldEntityAt?.(tolerantPoint)?.id ?? "",
+        topHitId: scene.findWorldEntityAt?.(topPoint)?.id ?? "",
         emptyHitId: scene.findWorldEntityAt?.(emptyPoint)?.id ?? ""
       };
     });
     expect(hoverTarget.tolerantHitId).toBe(hoverTarget.id);
+    expect(hoverTarget.topHitId).toBe(hoverTarget.id);
     expect(hoverTarget.emptyHitId).toBe("");
     const hoverScreen = await worldToScreen(page, hoverTarget);
     await expectWorldClickTargetsCanvas(page, hoverTarget, "manual combat contact hover tolerance");

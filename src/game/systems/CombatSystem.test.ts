@@ -321,6 +321,110 @@ describe("CombatSystem", () => {
     expect(player.moveTarget).toBeUndefined();
   });
 
+  it("lets a stationary Hold Ground hero engage visible-contact imps when no one initially attacks", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      radius: 19,
+      range: 34,
+      behaviourMode: "hold_ground"
+    });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 158, y: 114, radius: 14, range: 26 });
+    const combat = createCombat([player, firstImp, secondImp]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(firstImp.hp < firstImp.maxHp || secondImp.hp < secondImp.maxHp || player.hp < player.maxHp).toBe(true);
+  });
+
+  it("lets a Hold Ground hero reacquire the second visible-contact imp after the first dies without moving", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      radius: 19,
+      range: 34,
+      damage: 20,
+      behaviourMode: "hold_ground",
+      attackTargetId: "enemy-stone-imp-1"
+    });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
+    const secondImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 154, y: 100, radius: 14, range: 26 });
+    const distantImp = fakeUnit({ id: "enemy-stone-imp-3", team: "enemy", x: 220, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, firstImp, secondImp, distantImp]);
+
+    combat.update(0.1);
+    expect(firstImp.alive).toBe(false);
+
+    combat.update(1.2);
+
+    expect(secondImp.hp).toBeLessThan(secondImp.maxHp);
+    expect(distantImp.hp).toBe(distantImp.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+    expect(player.attackMove).toBe(false);
+  });
+
+  it("lets melee contact interrupt a distant explicit target instead of idling beside a hostile", () => {
+    const player = fakeUnit({ id: "player-hero", team: "player", x: 100, y: 100, radius: 19, range: 34, behaviourMode: "hold_ground" });
+    const raider = fakeUnit({
+      id: "enemy-raider",
+      team: "enemy",
+      x: 154,
+      y: 100,
+      radius: 14,
+      range: 26,
+      attackTargetId: "player-command-hall"
+    });
+    const commandHall = fakeBuilding({
+      id: "player-command-hall",
+      buildingId: "command_hall",
+      name: "Command Hall",
+      team: "player",
+      x: 500,
+      y: 100,
+      width: 96,
+      height: 82
+    });
+    const combat = createCombat([player, raider], [commandHall]);
+
+    combat.update(0.1);
+
+    expect(player.hp).toBeLessThan(player.maxHp);
+    expect(raider.moveTarget).toBeUndefined();
+    expect(commandHall.hp).toBe(commandHall.maxHp);
+  });
+
+  it("keeps Hold Ground from chasing after its explicit target dies when only a distant enemy remains", () => {
+    const player = fakeUnit({
+      id: "player-hero",
+      team: "player",
+      x: 100,
+      y: 100,
+      radius: 19,
+      range: 34,
+      damage: 20,
+      behaviourMode: "hold_ground",
+      attackTargetId: "enemy-stone-imp-1"
+    });
+    const firstImp = fakeUnit({ id: "enemy-stone-imp-1", team: "enemy", x: 132, y: 100, radius: 14, range: 26, hp: 8 });
+    const distantImp = fakeUnit({ id: "enemy-stone-imp-2", team: "enemy", x: 220, y: 100, radius: 14, range: 26 });
+    const combat = createCombat([player, firstImp, distantImp]);
+
+    combat.update(0.1);
+    expect(firstImp.alive).toBe(false);
+
+    combat.update(1.2);
+
+    expect(distantImp.hp).toBe(distantImp.maxHp);
+    expect(player.moveTarget).toBeUndefined();
+    expect(player.attackMove).toBe(false);
+  });
+
   it("lets enemy melee units attack a nearby Command Hall footprint when no better target exists", () => {
     const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 188, y: 100, radius: 13, range: 28 });
     const commandHall = fakeBuilding({

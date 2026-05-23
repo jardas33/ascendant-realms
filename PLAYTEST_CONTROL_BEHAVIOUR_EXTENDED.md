@@ -1,7 +1,7 @@
 # Playtest Control Behaviour Lab
 
-Generated: 2026-05-22T20:38:56.181Z
-Build commit: 83f146e
+Generated: 2026-05-23T15:48:08.955Z
+Build commit: ec0608a
 Run mode: extended
 Iterations: 5
 Scenarios: 18
@@ -30,7 +30,7 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
 | Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
-| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; visible top/head area resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Visible enemy top/head area resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Manual Proxy Hold Ground Adjacent Follow-Up | hold_ground | attack | pass | high | first adjacent enemy killed; second adjacent enemy damaged; distant idle enemy refused; First adjacent enemy died.; Second adjacent enemy took follow-up damage.; Distant idle enemy remained refused. |
 | Manual Proxy Group Retreat And Resume | press_attack | move | pass | high | retreat command accepted; reacquisition suppressed; combat resumes after suppression; Group retreat suppression prevented immediate contact attacks.; Combat resumed after suppression expired. |
 | Combat Edge Hero Versus Three Melee | hold_ground | attack | pass | high | first melee enemy killed; follow-up adjacent enemy damaged; First melee enemy died.; At least one remaining adjacent melee enemy took follow-up damage. |
@@ -48,7 +48,7 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
 | Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
-| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; visible top/head area resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Visible enemy top/head area resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Manual Proxy Hold Ground Adjacent Follow-Up | hold_ground | attack | pass | high | first adjacent enemy killed; second adjacent enemy damaged; distant idle enemy refused; First adjacent enemy died.; Second adjacent enemy took follow-up damage.; Distant idle enemy remained refused. |
 | Manual Proxy Group Retreat And Resume | press_attack | move | pass | high | retreat command accepted; reacquisition suppressed; combat resumes after suppression; Group retreat suppression prevented immediate contact attacks.; Combat resumed after suppression expired. |
 | Combat Edge Hero Versus Three Melee | hold_ground | attack | pass | high | first melee enemy killed; follow-up adjacent enemy damaged; First melee enemy died.; At least one remaining adjacent melee enemy took follow-up damage. |
@@ -66,7 +66,7 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
 | Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
-| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; visible top/head area resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Visible enemy top/head area resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Manual Proxy Hold Ground Adjacent Follow-Up | hold_ground | attack | pass | high | first adjacent enemy killed; second adjacent enemy damaged; distant idle enemy refused; First adjacent enemy died.; Second adjacent enemy took follow-up damage.; Distant idle enemy remained refused. |
 | Manual Proxy Group Retreat And Resume | press_attack | move | pass | high | retreat command accepted; reacquisition suppressed; combat resumes after suppression; Group retreat suppression prevented immediate contact attacks.; Combat resumed after suppression expired. |
 | Combat Edge Hero Versus Three Melee | hold_ground | attack | pass | high | first melee enemy killed; follow-up adjacent enemy damaged; First melee enemy died.; At least one remaining adjacent melee enemy took follow-up damage. |
@@ -84,7 +84,7 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
 | Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
-| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; visible top/head area resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Visible enemy top/head area resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Manual Proxy Hold Ground Adjacent Follow-Up | hold_ground | attack | pass | high | first adjacent enemy killed; second adjacent enemy damaged; distant idle enemy refused; First adjacent enemy died.; Second adjacent enemy took follow-up damage.; Distant idle enemy remained refused. |
 | Manual Proxy Group Retreat And Resume | press_attack | move | pass | high | retreat command accepted; reacquisition suppressed; combat resumes after suppression; Group retreat suppression prevented immediate contact attacks.; Combat resumed after suppression expired. |
 | Combat Edge Hero Versus Three Melee | hold_ground | attack | pass | high | first melee enemy killed; follow-up adjacent enemy damaged; First melee enemy died.; At least one remaining adjacent melee enemy took follow-up damage. |
@@ -102,7 +102,7 @@ This is deterministic automated evidence for v0.15/v0.16 RTS controls. It checks
 | Move-Away Suppression | press_attack | move | pass | high | move target retained; same-frame reacquisition suppressed; Suppression blocked contact reacquisition on the expiry frame.; Combat resumed after the grace window. |
 | Post-Kill Adjacent Reacquisition | guard_area | none | pass | high | first target killed; second contact target damaged; Adjacent second target took damage after the first explicit target died. |
 | Enemy Melee Building Aggro | not_applicable | none | pass | high | building target damaged; local building aggro only; Enemy melee damaged the local Command Hall footprint without a global chase. |
-| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Nearby empty terrain remained non-targetable. |
+| Attack Hover Tolerance Boundary | guard_area | attack | pass | high | visible body edge resolves; visible top/head area resolves; nearby empty terrain does not resolve; Visible enemy body edge resolved as attack intent.; Visible enemy top/head area resolved as attack intent.; Nearby empty terrain remained non-targetable. |
 | Manual Proxy Hold Ground Adjacent Follow-Up | hold_ground | attack | pass | high | first adjacent enemy killed; second adjacent enemy damaged; distant idle enemy refused; First adjacent enemy died.; Second adjacent enemy took follow-up damage.; Distant idle enemy remained refused. |
 | Manual Proxy Group Retreat And Resume | press_attack | move | pass | high | retreat command accepted; reacquisition suppressed; combat resumes after suppression; Group retreat suppression prevented immediate contact attacks.; Combat resumed after suppression expired. |
 | Combat Edge Hero Versus Three Melee | hold_ground | attack | pass | high | first melee enemy killed; follow-up adjacent enemy damaged; First melee enemy died.; At least one remaining adjacent melee enemy took follow-up damage. |

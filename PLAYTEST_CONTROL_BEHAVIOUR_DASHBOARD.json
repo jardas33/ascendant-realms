@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "generatedBy": "ControlBehaviourScenarioRunner",
-  "generatedAt": "2026-05-22T20:38:56.181Z",
-  "buildCommit": "83f146e",
+  "generatedAt": "2026-05-23T15:48:08.955Z",
+  "buildCommit": "ec0608a",
   "iterationCount": 5,
   "scenarioCount": 18,
   "passCount": 90,

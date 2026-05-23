@@ -13,7 +13,7 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
 
-const MELEE_VISUAL_CONTACT_MARGIN = 18;
+const MELEE_VISUAL_CONTACT_MARGIN = 24;
 const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
 
 interface CombatSystemOptions {
@@ -125,7 +125,17 @@ export class CombatSystem {
       return undefined;
     }
 
-    const explicitTarget = attacker instanceof Unit && attacker.attackTargetId ? this.findEntityById(attacker.attackTargetId) : undefined;
+    let explicitTarget = attacker instanceof Unit && attacker.attackTargetId ? this.findEntityById(attacker.attackTargetId) : undefined;
+    if (attacker instanceof Unit && attacker.attackTargetId && (!explicitTarget?.alive || !CollisionSystem.isHostile(attacker.team, explicitTarget.team))) {
+      this.clearExplicitAttackTarget(attacker);
+      explicitTarget = undefined;
+    }
+
+    const contactTarget = attacker instanceof Unit ? this.findImmediateMeleeContactTarget(attacker) : undefined;
+    if (contactTarget && (!explicitTarget || !this.isWithinEffectiveRange(attacker, explicitTarget))) {
+      return contactTarget;
+    }
+
     if (explicitTarget?.alive && CollisionSystem.isHostile(attacker.team, explicitTarget.team)) {
       if (attacker instanceof Unit) {
         attacker.attackTargetLabel = this.entityLabel(explicitTarget);
@@ -133,14 +143,28 @@ export class CombatSystem {
       return explicitTarget;
     }
 
-    if (attacker instanceof Unit && attacker.attackTargetId && (!explicitTarget || !explicitTarget.alive)) {
-      attacker.attackTargetId = undefined;
-      attacker.attackTargetLabel = undefined;
-    }
-
     return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
       return this.canAcquireTarget(attacker, entity);
     });
+  }
+
+  private clearExplicitAttackTarget(attacker: Unit): void {
+    attacker.attackTargetId = undefined;
+    attacker.attackTargetLabel = undefined;
+    attacker.attackMove = false;
+  }
+
+  private findImmediateMeleeContactTarget(attacker: Unit): BaseEntity | undefined {
+    if (this.getRange(attacker) > 45) {
+      return undefined;
+    }
+    return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
+      return CollisionSystem.isHostile(attacker.team, entity.team) && this.isWithinEffectiveRange(attacker, entity);
+    });
+  }
+
+  private isWithinEffectiveRange(attacker: Combatant, target: BaseEntity): boolean {
+    return distance(attacker.position, target.position) <= this.getEffectiveRange(attacker, target);
   }
 
   private canAcquireTarget(attacker: Combatant, target: BaseEntity): boolean {

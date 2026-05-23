@@ -103,6 +103,8 @@ import type { TechState } from "../systems/PrerequisiteSystem";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 24;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 4;
+const WORLD_ENTITY_UNIT_TOP_HIT_PADDING = 6;
+const WORLD_ENTITY_BUILDING_TOP_HIT_PADDING = 8;
 
 interface BattleSceneData {
   launchRequest?: BattleLaunchRequest;
@@ -649,7 +651,9 @@ export class BattleScene extends Phaser.Scene {
       [...this.units, ...this.buildings].filter((entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position)),
       {
         minimumRadius: WORLD_ENTITY_INTERACTION_MIN_RADIUS,
-        padding: (entity) => (entity instanceof Unit ? WORLD_ENTITY_UNIT_HIT_PADDING : 0)
+        padding: (entity) => (entity instanceof Unit ? WORLD_ENTITY_UNIT_HIT_PADDING : 0),
+        topPadding: (entity) =>
+          entity instanceof Unit ? WORLD_ENTITY_UNIT_TOP_HIT_PADDING : WORLD_ENTITY_BUILDING_TOP_HIT_PADDING
       }
     );
   }

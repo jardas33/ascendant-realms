@@ -70,7 +70,7 @@ export const CONTROL_BEHAVIOUR_SCENARIO_PROFILES: ControlBehaviourScenarioProfil
     name: "Attack Hover Tolerance Boundary",
     mode: "guard_area",
     purpose: "Confirm attack hover tolerance reaches the visible enemy footprint but not empty nearby terrain.",
-    expectedEvidence: ["visible body edge resolves", "nearby empty terrain does not resolve"],
+    expectedEvidence: ["visible body edge resolves", "visible top/head area resolves", "nearby empty terrain does not resolve"],
     limitations: ["Cursor rendering and left-click attack remain browser-level coverage."]
   },
   {

@@ -46,6 +46,7 @@ Known current realities:
 - v0.16.9 expands deterministic manual-retest proxy coverage to 18 control scenarios, adds first external tester docs, and keeps worker construction/design and visual-readability work docs-only. Push run #79 for v0.16.8 was Fast confidence only, then workflow-dispatch run #80 on the same `ad4eee0` commit passed Fast confidence, Release simulator, and the enabled hosted release matrix groups: deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke. Optional visual QA and full release e2e were skipped remotely.
 - v0.16.10 freezes the current post-combat-fix candidate for Emmanuel retest or a 2-5 tester batch, adds backlog triage and public-safety docs, and expands the private package tester kit with release-candidate notes, Emmanuel retest checklist, short tester message, short feedback form, and route assignments. Push run #83 for `83f146e` passed Fast confidence only; no exact-final workflow-dispatch matrix was found for `83f146e`.
 - v0.16.11 adds exact-final CI/release notes, ready-to-copy GitHub issue templates, tester launch packet index, and a no-code freeze note. Push run #84 for `7cc6eff` passed Fast confidence only; no exact-final workflow-dispatch matrix was found for `7cc6eff`. Run #80 on `ad4eee0` remains the enabled release-matrix evidence for the post-v0.16.7 runtime stack.
+- v0.16.12 changes runtime combat/control narrowly after Emmanuel's `ec0608a` Tutorial retest: stationary visible-contact melee reacquisition, post-target-death Hold Ground contact rules, immediate melee contact over distant explicit targets, and top/head hover tolerance. Rerun GitHub Actions CI Release Matrix Dry Run after push.
 
 ## Required Automated Checks
 
@@ -89,6 +90,12 @@ Current v0.16.9 checkpoint result:
 
 ```text
 PASS: 57 test files, 415 tests
+```
+
+Current v0.16.12 checkpoint result:
+
+```text
+PASS: 57 test files, 421 tests
 ```
 
 2. Standalone content validation:
@@ -339,8 +346,8 @@ npm run playtest:controls:verify
 Expected v0.16 result:
 
 ```text
-PASS: normal control lab writes 10 scenario rows
-PASS: extended control lab writes 5 deterministic iterations / 50 scenario rows
+PASS: normal control lab writes 18 scenario rows
+PASS: extended control lab writes 5 deterministic iterations / 90 scenario rows
 PASS: verifier checks unique scenario ids, allowed verdicts, metric availability, Markdown/dashboard consistency, and no invented human-feedback claims
 ```
 
@@ -438,7 +445,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 retest intake, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

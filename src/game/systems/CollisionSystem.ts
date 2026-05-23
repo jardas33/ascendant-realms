@@ -5,6 +5,7 @@ import type { BaseEntity } from "../entities/BaseEntity";
 interface EntityHitTestOptions<T extends BaseEntity> {
   minimumRadius?: number;
   padding?: number | ((entity: T) => number);
+  topPadding?: number | ((entity: T) => number);
 }
 
 export class CollisionSystem {
@@ -27,8 +28,14 @@ export class CollisionSystem {
           return false;
         }
         const padding = typeof options.padding === "function" ? options.padding(entity) : options.padding ?? 0;
+        const topPadding = typeof options.topPadding === "function" ? options.topPadding(entity) : options.topPadding ?? 0;
         const hitRadius = Math.max(entity.radius + padding, options.minimumRadius ?? entity.radius);
-        return distance({ x, y }, entity.position) <= hitRadius;
+        if (distance({ x, y }, entity.position) <= hitRadius) {
+          return true;
+        }
+        const dx = Math.abs(x - entity.position.x);
+        const dy = entity.position.y - y;
+        return topPadding > 0 && dy > 0 && dy <= hitRadius + topPadding && dx <= hitRadius * 0.55;
       })
       .sort((a, b) => b.radius - a.radius)[0];
   }
