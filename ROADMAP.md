@@ -11,9 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.16 Behaviour Mode Gauntlet And Playtest Diagnostics** on 2026-05-19. It hardens the v0.15 session-only Hold Ground, Guard Area, and Press Attack foundation with broader unit/system tests, a hosted browser control gauntlet, deterministic `playtest:controls` diagnostics, v0.16 package validation, and Emmanuel-facing retest materials. It keeps gameplay data numbers, save format, maps, factions, units, runtime art/assets, Patrol runtime behaviour, broad combat AI/pathing rewrites, balance tuning, protected-UI copying, and visual overhaul out of scope.
+The latest player-facing checkpoint is **v0.17.5 Ranger Near-Base Invisible Blocker Fix** on 2026-05-23. It responds to Emmanuel's mixed v0.17.4 Tutorial retest by fixing visible open ground near the Tutorial Command Hall / Barracks cluster being treated like blocked coarse static cells. It preserves v0.17.4 trained Ranger spawn recovery, v0.17.3 cost/side-panel/contact polish, save format, runtime art/assets, workers, maps, factions, unit/building stats, global balance, Tutorial pacing, and economy architecture. The v0.17.5 release closeout includes a verified clean package for the runtime commit and GitHub Actions CI Release Matrix Dry Run #100 green after hosted Playwright harness stabilization.
 
-The next recommended player-facing step is to send the clean v0.16 private package to Emmanuel and have him rerun the v0.16 control retest script on the Baseline Cautious route, focusing on attack intent, left-click attack orders, adjacent melee engagement, Hold / Guard / Press behaviour, retreat/move-away obeying visibly, drag-select over HUD/minimap, tutorial completion/defeat, and snap-back risk. Use that retest before opening deeper formation/pathing, Patrol, save-persistent behaviour modes, or UI redesign work. Use v0.13/v0.13.1 and v0.16 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to send the clean v0.17.5 private package to Emmanuel/testers and continue feedback intake from the existing v0.17 Tutorial/Ranger checklist. Treat the Ranger near-base invisible blocker as resolved unless a new manual package retest reproduces it. Do not open worker economy runtime, broader pathing rewrites, Patrol, save-persistent behaviour modes, balance tuning, or UI redesign without a new explicit goal. Worker economy remains design-only; use v0.13/v0.13.1, v0.16, and v0.17 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.17 Tutorial/Ranger docs and outputs:
+
+- `docs/V017_SOLO_PLAYTEST_INTAKE.md`
+- `docs/V017_WORKER_ECONOMY_DESIGN_SPEC.md`
+- `docs/V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md`
+- `docs/V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md`
+- `docs/V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md`
+- `docs/V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md`
+- `docs/V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md`
+- `DEVELOPMENT_CHECKPOINT.md`
+- `LLM_GAME_HANDOFF.md`
 
 New v0.16 control behaviour docs and outputs:
 

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix
+Last updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix release closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
 
-Status: v0.17.5 near-base pathing fix is implemented, locally verified, and manually retested in the in-app browser as solving the Ranger invisible-blocker issue. Package/commit closeout is still pending.
+Status: v0.17.5 near-base pathing fix is implemented, locally verified, manually retested in the in-app browser as solving the Ranger invisible-blocker issue, committed, pushed, packaged, and followed by a green GitHub Actions release matrix after hosted test-harness stabilization.
 
 Baseline:
 
@@ -34,6 +34,16 @@ Runtime/UI summary:
 - v0.17.3 cost display, selected side-panel Hide/Show, neutral-contact, and explicit-attack path-warning behavior are preserved.
 - Save data, runtime art/assets, workers, buildings, units, maps, factions, global balance, Tutorial pacing, and economy architecture are unchanged.
 
+Release/CI closeout:
+
+- Runtime fix commit `caae2b4` (`Checkpoint v0.17.5 Ranger near-base invisible blocker fix`) was pushed to `origin/main`.
+- Clean package `artifacts/playtest/ascendant-realms-private-playtest-caae2b4` was generated and verified with 40 package checks before hosted CI reruns exposed test-harness races.
+- GitHub Actions CI Release Matrix Dry Run #96 on `caae2b4` failed `Release matrix (deep-battle)` on a live-combat hover-target race and `Release matrix (smoke)` on hosted HUD-toggle actionability timeout.
+- Commit `74ce170` stabilized those two hosted checks: the manual combat hover setup now freezes the hover-only target/hero state, and the smoke Tutorial/selected-panel toggles use faster state-checked HUD click options.
+- GitHub Actions CI Release Matrix Dry Run #98 on `74ce170` made `smoke` green but exposed two more hosted harness races: `layout-cinderfen` relied on transient battle-status map-name text after AI status had replaced it, and the behaviour-mode gauntlet could look for behaviour buttons while the HUD refreshed after a canvas attack click.
+- Commit `d0f59e9` stabilized those follow-up hosted checks: Cinderfen layout now verifies the launched map from stable BattleScene state while keeping visible HUD/objective assertions, and behaviour-mode clicks reselect/refresh the hero panel before checking visible mode text.
+- GitHub Actions CI Release Matrix Dry Run #100 on `d0f59e9` passed: Fast confidence, Release simulator, and all six release matrix jobs (`deep-meta`, `deep-battle`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, `smoke`) succeeded. Optional visual QA and full release e2e were intentionally skipped for this dispatch.
+
 Verification:
 
 ```text
@@ -50,11 +60,23 @@ User manual in-app browser retest PASS: Ranger near-base invisible-blocker issue
 npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-7baa99a-dirty.
 npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-7baa99a-dirty PASS, 40 checks.
 git diff --check PASS.
+npm run package:playtest PASS, clean package ascendant-realms-private-playtest-caae2b4.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-caae2b4 PASS, 40 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line FAIL before hosted-stabilization fix, then PASS after fix, 1 test in 25.4s.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS after HUD-toggle stabilization, 1 test in 1.1m.
+npm run test:e2e:release:hosted:deep-battle PASS after hosted-stabilization fixes, 15 tests in 5.0m.
+npm run test:e2e:release:hosted:smoke PASS after hosted-stabilization fixes, 14 tests in 3.6m.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/layout.spec.ts --grep "Cinderfen Crossing battle HUD readability fits desktop" --reporter=line PASS, 1 test in 47.2s.
+npm run test:e2e:release:hosted:layout-cinderfen PASS after layout status stabilization, 12 tests in 4.2m.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --reporter=line PASS after behaviour-panel stabilization, 1 test in 55.0s.
+npx tsc -p tsconfig.json --noEmit PASS after hosted-stabilization fixes.
+npm test PASS after first hosted-stabilization fix, 60 files / 433 tests.
+GitHub Actions CI Release Matrix Dry Run #100 PASS on d0f59e9.
 ```
 
-Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; dirty package generated and verified, clean package generation is pending after commit.
+Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Test/CI harness changed: yes, hosted Playwright checks now avoid live-combat hover drift, HUD-toggle actionability timeout, transient status-line map-name timing, and behaviour-panel refresh races without weakening coverage. Package changed: metadata/validator updated; clean runtime package generated and verified for the v0.17.5 runtime commit.
 
-Remaining closeout: commit/push if green, regenerate and verify a clean private package from the final commit, load the clean package in the browser, and rerun GitHub Actions after push because runtime pathing behavior changed.
+Release handoff rule: distribute only a clean package generated from the exact commit being handed off, and rerun package verification if HEAD changes. No runtime, gameplay-data, save, asset, balance, or hosted release-matrix follow-up is pending for v0.17.5.
 
 ## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
 

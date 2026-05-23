@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix
+Updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix release closeout
 
 ## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
 
@@ -23,6 +23,8 @@ Included work:
 - Added PathfindingGrid and MovementSystem regressions for visible open points in coarse static building cells.
 - Strengthened the Tutorial trained-Ranger regression so a cluster of Rangers answers repeated near-base move orders, including the visible west side of the Command Hall.
 - Package metadata and validation now require the v0.17.5 intake doc.
+- Runtime fix commit `caae2b4` was pushed to `origin/main`, followed by hosted Playwright stabilization commits `74ce170` and `d0f59e9`.
+- Hosted stabilization kept coverage intact while removing CI-only timing races in manual combat hover targeting, Tutorial/selected-panel HUD toggles, Cinderfen layout map-name checks, and behaviour-mode panel refresh after canvas attack clicks.
 
 Verification:
 
@@ -40,11 +42,19 @@ User manual in-app browser retest PASS: Ranger near-base invisible-blocker issue
 npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-7baa99a-dirty.
 npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-7baa99a-dirty PASS, 40 checks.
 git diff --check PASS.
+npm run package:playtest PASS, clean package ascendant-realms-private-playtest-caae2b4.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-caae2b4 PASS, 40 checks.
+npm run test:e2e:release:hosted:deep-battle PASS after hosted-stabilization fixes, 15 tests in 5.0m.
+npm run test:e2e:release:hosted:smoke PASS after hosted-stabilization fixes, 14 tests in 3.6m.
+npm run test:e2e:release:hosted:layout-cinderfen PASS after layout status stabilization, 12 tests in 4.2m.
+npx tsc -p tsconfig.json --noEmit PASS after hosted-stabilization fixes.
+npm test PASS after first hosted-stabilization fix, 60 files / 433 tests.
+GitHub Actions CI Release Matrix Dry Run #100 PASS on d0f59e9: Fast confidence, Release simulator, and all six release matrix jobs succeeded; optional visual QA and full release e2e were intentionally skipped.
 ```
 
-Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed; v0.17.2 Tutorial-only pacing is preserved. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated and dirty-tree package verified; final commit/package closeout is pending.
+Runtime gameplay changed: yes, static building point-walkability and exact path endpoints near coarse building cells. Gameplay numbers changed: no unit/building/resource/wave/pacing/balance values changed; v0.17.2 Tutorial-only pacing is preserved. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Test/CI harness changed: yes, hosted Playwright checks now avoid known timing races without weakening assertions. Package changed: metadata/validator updated and clean runtime package verified.
 
-Remaining closeout: commit as `Checkpoint v0.17.5 Ranger near-base invisible blocker fix`, push if safe, regenerate and verify a clean private package, and rerun GitHub Actions after push because runtime pathing behavior changed.
+Release handoff rule: distribute only a clean package generated from the exact commit being handed off, and rerun package verification if HEAD changes. No runtime, gameplay-data, save, asset, balance, or hosted release-matrix follow-up is pending for v0.17.5.
 
 ## v0.17.4 Trained Ranger Spawn And Movement Recovery - 2026-05-23
 
