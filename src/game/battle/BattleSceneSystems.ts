@@ -38,6 +38,7 @@ import { UISystem } from "../systems/UISystem";
 import { UpgradeSystem } from "../systems/UpgradeSystem";
 import { XPSystem } from "../systems/XPSystem";
 import { FloatingText } from "../ui/FloatingText";
+import { showDamageFeedback } from "../ui/DamageFeedback";
 import { HUD } from "../ui/HUD";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
@@ -228,9 +229,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getProjectiles,
     addProjectile,
     onDamage: (target, amount) => {
-      if (amount >= 5) {
-        FloatingText.show(scene, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
-      }
+      showDamageFeedback(scene, target, amount);
       warnIfCommandHallUnderAttack(target);
     },
     onUnitDamage: handleUnitDamage,
@@ -278,9 +277,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getBuildings,
     addProjectile,
     onDamage: (target, amount) => {
-      if (amount >= 5) {
-        FloatingText.show(scene, `-${amount}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
-      }
+      showDamageFeedback(scene, target, amount);
       warnIfCommandHallUnderAttack(target);
     },
     onKill: handleKill,

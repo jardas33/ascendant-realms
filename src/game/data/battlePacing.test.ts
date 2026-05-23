@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { EnemyAIConfig } from "../core/GameTypes";
-import { applyTutorialEnemyAIPacing, BATTLE_DIFFICULTIES, getBattleDifficulty, getBattlePhase } from "./battlePacing";
+import {
+  applyTutorialEnemyAIPacing,
+  BATTLE_DIFFICULTIES,
+  getBattleDifficulty,
+  getBattlePhase,
+  TUTORIAL_ENEMY_AI_PACING
+} from "./battlePacing";
 
 describe("battle pacing data", () => {
   it("maps elapsed battle time into the intended first-skirmish phases", () => {
@@ -57,7 +63,7 @@ describe("battle pacing data", () => {
     expect(hard.fogOfWarEnabled).toBe(true);
   });
 
-  it("applies story-paced enemy escalation only through the tutorial pacing helper", () => {
+  it("applies beginner enemy escalation only through the tutorial pacing helper", () => {
     const config: EnemyAIConfig = {
       incomeInterval: 5,
       incomePerTick: { crowns: 90, stone: 45, iron: 45, aether: 35 },
@@ -80,18 +86,20 @@ describe("battle pacing data", () => {
     const paced = applyTutorialEnemyAIPacing(config);
 
     expect(paced).toMatchObject({
-      trainInterval: 9,
-      expandInterval: 30,
-      initialExpandDelay: 30,
-      attackInterval: 100,
-      initialAttackDelay: 300,
-      minAttackArmySize: 2,
-      attackWaveSize: 2,
-      expandSquadSize: 1,
+      incomePerTick: { crowns: 54, stone: 27, iron: 27, aether: 21 },
+      trainInterval: TUTORIAL_ENEMY_AI_PACING.trainInterval,
+      expandInterval: TUTORIAL_ENEMY_AI_PACING.expandInterval,
+      initialExpandDelay: TUTORIAL_ENEMY_AI_PACING.initialExpandDelay,
+      attackInterval: TUTORIAL_ENEMY_AI_PACING.attackInterval,
+      initialAttackDelay: TUTORIAL_ENEMY_AI_PACING.initialAttackDelay,
+      minAttackArmySize: TUTORIAL_ENEMY_AI_PACING.minAttackArmySize,
+      attackWaveSize: TUTORIAL_ENEMY_AI_PACING.attackWaveSize,
+      expandSquadSize: TUTORIAL_ENEMY_AI_PACING.expandSquadSize,
       defenseSquadSize: 6,
       unitPlan: config.unitPlan
     });
     expect(config.trainInterval).toBe(5.6);
     expect(config.initialAttackDelay).toBe(210);
+    expect(config.incomePerTick.crowns).toBe(90);
   });
 });

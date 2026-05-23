@@ -1,6 +1,50 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17 tutorial QoL and worker economy design spec
+Updated: 2026-05-23 v0.17.1 tutorial drag polish and beginner pacing
+
+## v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
+
+Scope: respond to Emmanuel's mixed Tutorial retest of `ascendant-realms-private-playtest-171ba86` with narrow Tutorial polish only. This pass broadens safe panel dragging, makes incoming player-side damage text more readable through existing floating text, and slows Tutorial-only enemy pressure. It does not implement worker construction or start v0.18.
+
+Baseline:
+
+- Starting commit: `171ba86`, `Checkpoint v0.17 tutorial QoL and worker economy design spec`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-171ba86`.
+- Manual result: PASS for Tutorial box Hide/Show/Reset, Tutorial guidance, combat sanity, and Tutorial results flow.
+- Remaining feedback: panel only drags from the title, incoming enemy damage on hero/friendly units is unclear, and Tutorial enemy army buildup is too fast for beginners.
+
+Included work:
+
+- Added `docs/V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md`.
+- Tutorial objective panel drag now starts from any non-button panel area. Buttons and other interactable controls are excluded from drag start.
+- Hide/Show and Reset remain local panel controls. Panel offset/minimized state remains HUD-session-only and writes no save data.
+- Incoming damage to player-controlled entities now uses existing floating text with distinct `HIT -N` copy and brighter red color; outgoing damage remains `-N`.
+- Floating-text settings still control whether damage text appears.
+- Tutorial-only enemy pressure now scales enemy income per tick to 60%, trains no faster than every 12s, expands no faster than every 48s after a 60s initial delay, sends the first attack no earlier than 420s, sends follow-up attacks no faster than every 140s, and keeps attack/expansion groups small.
+- Campaign/skirmish map data, global difficulty presets, combat-control behaviour, workers, buildings, units, saves, and runtime art/assets are unchanged.
+- Package metadata and validation now require the v0.17.1 intake doc.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 4 files / 14 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 31.0s.
+npm test PASS, 58 files / 425 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+npm run test:e2e:smoke PASS, 14 tests in 7.6m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Runtime gameplay changed: yes, Tutorial panel drag targeting, incoming damage text readability, and Tutorial-only enemy pressure. Gameplay numbers changed: Tutorial-only enemy AI helper values changed; no global map/unit/wave/resource/campaign balance changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated; clean v0.17.1 package generation is pending after commit.
+
+Remaining closeout: run package generation/verification and `git diff --check`, commit as `Checkpoint v0.17.1 tutorial drag polish and beginner pacing`, push if safe, regenerate and verify a clean private package, and rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 
 ## v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
 

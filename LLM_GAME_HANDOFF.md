@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17 tutorial QoL and worker economy design spec
+Last updated: 2026-05-23 v0.17.1 tutorial drag polish and beginner pacing
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,9 +8,55 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
+## Current v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
+
+Status: v0.17.1 Tutorial polish is implemented and locally verified before final commit/package closeout.
+
+Baseline:
+
+- Starting commit: `171ba86`, `Checkpoint v0.17 tutorial QoL and worker economy design spec`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-171ba86`.
+- Manual result: MIXED. Hide/Show, Reset, Tutorial guidance, combat sanity, and Results flow passed. Remaining issues were narrow drag hit area, unclear incoming damage on hero/friendly units, and too-fast Tutorial enemy buildup.
+
+v0.17.1 docs added:
+
+- `docs/V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md`
+
+Runtime/UI summary:
+
+- Tutorial objective panel drag now starts from any non-button panel area, not only the `Proving Grounds` title.
+- Buttons/interactable controls are excluded from drag start, preserving Hide/Show, Reset, Next Objective, and Exit Tutorial clicks.
+- Tutorial panel moved/minimized state remains only on the live HUD instance and is not saved.
+- Incoming damage on player-controlled entities now uses the existing floating-text system with `HIT -N` in brighter red. Outgoing damage on enemies remains `-N`.
+- Disabled floating text still suppresses damage feedback.
+- Tutorial enemy pressure is slowed only through `applyTutorialEnemyAIPacing()`: income per tick is scaled to 60%, training is at least 12s, expansion at least 48s with a 60s initial delay, first attack at least 420s, follow-up attacks at least 140s, attack waves capped at 2, and expansion squads capped at 1.
+- Campaign/skirmish map data, global difficulty presets, save data, runtime art/assets, units/buildings/factions, and worker construction are unchanged.
+
+Verification so far:
+
+```text
+npm test -- src/game/ui/hudPanels/TutorialPanel.test.ts src/game/ui/DamageFeedback.test.ts src/game/data/battlePacing.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 4 files / 14 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 31.0s.
+npm test PASS, 58 files / 425 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.7m.
+npm run test:e2e:smoke PASS, 14 tests in 7.6m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Runtime gameplay changed: yes, Tutorial panel drag targeting, incoming damage text readability, and Tutorial-only enemy pressure. Gameplay numbers changed: Tutorial-only enemy AI helper values changed; no global campaign/skirmish balance changed. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; clean v0.17.1 package generation is pending after commit.
+
+Remaining closeout: run package generation/verification and `git diff --check`, commit/push if green, regenerate and verify a clean private package, load it in the browser, and rerun GitHub Actions after push because runtime Tutorial behaviour changed.
+
 ## Current v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
 
-Status: v0.17 Tutorial QoL/readability and worker-economy design work is implemented and locally verified before final commit/package closeout.
+Status: v0.17 Tutorial QoL/readability and worker-economy design work is complete. Final commit was `171ba86`; clean package was `ascendant-realms-private-playtest-171ba86`.
 
 Baseline:
 

@@ -15,6 +15,7 @@ describe("TutorialPanel", () => {
     expect(html).toContain('data-testid="tutorial-minimize"');
     expect(html).toContain('data-testid="tutorial-reset"');
     expect(html).toContain('data-testid="tutorial-panel-body"');
+    expect(html).toContain("Drag empty panel space to move the objective box");
     expect(html).toContain("Proving Grounds");
     expect(html).toContain("Hide");
     expect(html).toContain("Reset");

@@ -39,6 +39,7 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V01613_STONE_IMP_VISIBLE_CONTACT_FIX.md",
   "V017_SOLO_PLAYTEST_INTAKE.md",
   "V017_WORKER_ECONOMY_DESIGN_SPEC.md",
+  "V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -142,7 +143,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.17 Tutorial QoL and worker economy design spec",
+      "v0.17.1 tutorial drag polish and beginner pacing",
       "build info checkpoint",
       checks,
       errors

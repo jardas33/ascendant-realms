@@ -151,6 +151,18 @@ export const FIRST_MATCH_TUTORIAL_PROTECTION: FirstMatchTutorialProtectionDefini
   earlyAttackMaxWaveSize: 2
 };
 
+export const TUTORIAL_ENEMY_AI_PACING = {
+  incomePerTickMultiplier: 0.6,
+  trainInterval: 12,
+  expandInterval: 48,
+  initialExpandDelay: 60,
+  attackInterval: 140,
+  initialAttackDelay: 420,
+  minAttackArmySize: 2,
+  attackWaveSize: 2,
+  expandSquadSize: 1
+} as const;
+
 export function getBattlePhase(elapsedSeconds: number): BattlePhaseDefinition {
   const elapsed = Math.max(0, elapsedSeconds);
   return (
@@ -174,16 +186,16 @@ export function scaledEnemyIncome(income: Partial<ResourceBag>, multiplier: numb
 }
 
 export function applyTutorialEnemyAIPacing(config: EnemyAIConfig): EnemyAIConfig {
-  const story = getBattleDifficulty("story");
   return {
     ...config,
-    trainInterval: Math.max(config.trainInterval, story.trainInterval),
-    expandInterval: Math.max(config.expandInterval, story.expandInterval),
-    initialExpandDelay: Math.max(config.initialExpandDelay, story.expandInterval),
-    attackInterval: Math.max(config.attackInterval, story.attackInterval),
-    initialAttackDelay: Math.max(config.initialAttackDelay, story.firstAttackDelay),
-    minAttackArmySize: Math.min(config.minAttackArmySize, story.minAttackArmySize),
-    attackWaveSize: Math.min(config.attackWaveSize, story.attackWaveSize),
-    expandSquadSize: Math.min(config.expandSquadSize, story.expandSquadSize)
+    incomePerTick: scaledEnemyIncome(config.incomePerTick, TUTORIAL_ENEMY_AI_PACING.incomePerTickMultiplier),
+    trainInterval: Math.max(config.trainInterval, TUTORIAL_ENEMY_AI_PACING.trainInterval),
+    expandInterval: Math.max(config.expandInterval, TUTORIAL_ENEMY_AI_PACING.expandInterval),
+    initialExpandDelay: Math.max(config.initialExpandDelay, TUTORIAL_ENEMY_AI_PACING.initialExpandDelay),
+    attackInterval: Math.max(config.attackInterval, TUTORIAL_ENEMY_AI_PACING.attackInterval),
+    initialAttackDelay: Math.max(config.initialAttackDelay, TUTORIAL_ENEMY_AI_PACING.initialAttackDelay),
+    minAttackArmySize: Math.min(config.minAttackArmySize, TUTORIAL_ENEMY_AI_PACING.minAttackArmySize),
+    attackWaveSize: Math.min(config.attackWaveSize, TUTORIAL_ENEMY_AI_PACING.attackWaveSize),
+    expandSquadSize: Math.min(config.expandSquadSize, TUTORIAL_ENEMY_AI_PACING.expandSquadSize)
   };
 }

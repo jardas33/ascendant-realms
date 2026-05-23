@@ -84,6 +84,7 @@ import { Unit } from "../entities/Unit";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { SaveSettingsData } from "../save/SaveTypes";
 import { FloatingText } from "../ui/FloatingText";
+import { showDamageFeedback } from "../ui/DamageFeedback";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
 import {
   advanceTutorialStep,
@@ -729,7 +730,7 @@ export class BattleScene extends Phaser.Scene {
         const wasAlive = entity.alive;
         const actual = entity.takeDamage(tick.damage);
         if (actual > 0) {
-          FloatingText.show(this, `-${Math.round(actual)}`, entity.position.x, entity.position.y - entity.radius - 8, "#ff9a64");
+          showDamageFeedback(this, entity, actual, { threshold: 1 });
           this.warnIfCommandHallUnderAttack(entity);
         }
         if (wasAlive && !entity.alive) {
@@ -778,7 +779,7 @@ export class BattleScene extends Phaser.Scene {
     const wasAlive = target.alive;
     const actual = target.takeDamage(amount);
     if (actual > 0) {
-      FloatingText.show(this, `-${Math.round(actual)}`, target.position.x, target.position.y - target.radius, "#ffb1a9");
+      showDamageFeedback(this, target, actual);
       this.warnIfCommandHallUnderAttack(target);
       this.handleUnitDamage(source, target, actual);
     }

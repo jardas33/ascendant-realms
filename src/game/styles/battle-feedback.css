@@ -125,7 +125,10 @@
     0 12px 30px rgba(0, 0, 0, 0.34);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
   backdrop-filter: blur(5px);
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: move;
+  user-select: none;
+  touch-action: none;
 }
 
 .tutorial-panel.minimized {
@@ -153,10 +156,6 @@
 }
 
 .tutorial-drag-handle {
-  pointer-events: auto;
-  cursor: move;
-  user-select: none;
-  touch-action: none;
   min-width: 0;
 }
 
@@ -203,6 +202,9 @@
 
 .tutorial-panel button {
   pointer-events: auto;
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
   min-height: 34px;
   padding: 7px 10px;
   font-size: 12px;

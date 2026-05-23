@@ -128,12 +128,12 @@ export class HUD {
       }
     };
     this.pointerDownHandler = (event) => {
-      const handle = (event.target as Element | null)?.closest<HTMLElement>("[data-testid='tutorial-drag-handle']");
-      if (!handle || !this.root.contains(handle)) {
+      const target = event.target as Element | null;
+      const panel = target?.closest<HTMLElement>("[data-testid='tutorial-overlay']");
+      if (!panel || !this.root.contains(panel)) {
         return;
       }
-      const panel = this.root.querySelector<HTMLElement>("[data-testid='tutorial-overlay']");
-      if (!panel) {
+      if (target?.closest(TUTORIAL_PANEL_NON_DRAG_SELECTOR)) {
         return;
       }
 
@@ -146,7 +146,7 @@ export class HUD {
         startClientY: event.clientY,
         startOffset: { ...this.tutorialPanelOffset }
       };
-      handle.setPointerCapture?.(event.pointerId);
+      panel.setPointerCapture?.(event.pointerId);
     };
     this.pointerMoveHandler = (event) => {
       if (!this.tutorialPanelDrag || event.pointerId !== this.tutorialPanelDrag.pointerId) {
@@ -341,6 +341,7 @@ export class HUD {
 
 const STABLE_INTERACTION_SELECTOR = ".top-bar, .side-panel, .objectives-panel, .tutorial-panel, .minimap-shell, .pause-menu-panel";
 const SCROLLABLE_HUD_SELECTORS = [".side-panel", ".objectives-panel", ".tutorial-panel"] as const;
+const TUTORIAL_PANEL_NON_DRAG_SELECTOR = "button, a, input, select, textarea, [role='button'], [data-action]";
 
 function isStableInteractionTarget(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest(STABLE_INTERACTION_SELECTOR));

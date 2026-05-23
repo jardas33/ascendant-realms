@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.17.1 Tutorial Drag Polish And Beginner Pacing - 2026-05-23
+
+This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-171ba86`. It keeps v0.17.1 to Tutorial polish only: broader panel dragging, clearer incoming damage text, and slower Tutorial-only enemy pressure.
+
+### Included
+
+- Added `docs/V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md` with Emmanuel's 171ba86 Tutorial feedback.
+- Made the Tutorial objective panel draggable from any non-button part of the panel instead of only the `Proving Grounds` title.
+- Preserved Hide/Show and Reset, and kept Tutorial panel movement session-only with no save data or migration.
+- Added distinct incoming player-side damage text through the existing floating-text system: direct hits on player-controlled entities now show `HIT -N` in a brighter red, while outgoing enemy damage remains compact `-N`.
+- Kept floating text settings authoritative; disabling combat floating text still suppresses the new incoming text.
+- Slowed only Tutorial enemy escalation by applying a Tutorial helper that scales enemy income per tick to 60%, raises training to at least 12s, expansion to at least 48s with a 60s initial delay, first attack to at least 420s, follow-up attacks to at least 140s, and keeps attack/expansion groups capped small.
+- Updated package metadata and validation to include the v0.17.1 intake doc.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Tutorial panel drag targeting, combat floating text readability, and Tutorial-only enemy pacing.
+- Gameplay numbers changed: Tutorial-only enemy AI pacing/income helper values changed; campaign/skirmish map data and global difficulty presets did not.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no.
+- Worker construction implemented: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed so far: focused TutorialPanel/DamageFeedback/battlePacing/package tests, TypeScript no-emit, targeted Tutorial browser smoke, `npm test` with 58 files / 425 tests, build, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, control lab normal, control lab extended, and control-lab verification with 1658 checks.
+
+### Next
+
+- Regenerate and verify the clean private playtest package from the final v0.17.1 commit. Emmanuel should retest Tutorial panel body dragging, button clicks, incoming hero/unit damage readability, and beginner pressure feel.
+
 ## v0.17 Tutorial QoL And Worker Economy Design Spec - 2026-05-23
 
 This checkpoint starts v0.17 after Emmanuel confirmed the v0.16.13 adjacent melee/contact bug is fixed. It focuses on Tutorial objective-box QoL, Tutorial-specific pressure readability, and a design-only worker-economy spec.

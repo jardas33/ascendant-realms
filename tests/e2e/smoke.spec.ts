@@ -775,12 +775,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       expect(overlayBox.x).toBeGreaterThanOrEqual(-2);
       expect(overlayBox.x + overlayBox.width).toBeLessThanOrEqual(viewport.width + 2);
     }
-    const dragHandleBox = await page.getByTestId("tutorial-drag-handle").boundingBox();
-    expect(dragHandleBox).not.toBeNull();
-    if (overlayBox && dragHandleBox) {
-      await page.mouse.move(dragHandleBox.x + dragHandleBox.width / 2, dragHandleBox.y + dragHandleBox.height / 2);
+    const dragSurfaceBox = await page.getByTestId("tutorial-instruction").boundingBox();
+    expect(dragSurfaceBox).not.toBeNull();
+    if (overlayBox && dragSurfaceBox) {
+      await page.mouse.move(dragSurfaceBox.x + dragSurfaceBox.width / 2, dragSurfaceBox.y + dragSurfaceBox.height / 2);
       await page.mouse.down();
-      await page.mouse.move(dragHandleBox.x + dragHandleBox.width / 2 + 76, dragHandleBox.y + dragHandleBox.height / 2 + 44, {
+      await page.mouse.move(dragSurfaceBox.x + dragSurfaceBox.width / 2 + 76, dragSurfaceBox.y + dragSurfaceBox.height / 2 + 44, {
         steps: 5
       });
       await page.mouse.up();
@@ -796,6 +796,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "false");
     await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel minimize");
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "true");
+    await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-moved", "false");
     await expect(page.getByTestId("tutorial-panel-body")).toBeHidden();
     await clickReady(page.getByTestId("tutorial-minimize"), "smoke tutorial panel restore");
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "false");
@@ -855,6 +856,53 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       heroName: "Aster",
       completedBattles: 0
     });
+    const incomingDamageFeedback = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("BattleScene hero is not active.");
+      }
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.id === "raider" && unit.alive);
+      if (!enemy) {
+        throw new Error("Missing enemy Raider for incoming damage feedback check.");
+      }
+      const originalEnemyPosition = { x: enemy.position.x, y: enemy.position.y };
+      const originalHeroHp = scene.hero.hp;
+      const floatingTextCount = () =>
+        scene.children.list.filter((child: any) => child?.type === "Text" && child.depth === 100).length;
+      const beforeFloatingText = floatingTextCount();
+      scene.units
+        .filter((unit: any) => unit.team === "player" && unit.alive)
+        .forEach((unit: any) => {
+          unit.attackCooldownRemaining = 999;
+          unit.attackTargetId = undefined;
+          unit.attackMove = false;
+        });
+      enemy.setPosition(scene.hero.position.x + 28, scene.hero.position.y);
+      enemy.moveTarget = undefined;
+      enemy.commandAttack(scene.hero.id);
+      enemy.attackCooldownRemaining = 0;
+      scene.combatSystem.update(0.1);
+      const damageTexts = scene.children.list
+        .filter((child: any) => child?.type === "Text" && child.depth === 100)
+        .map((child: any) => ({ text: child.text ?? "", color: child.style?.color ?? "" }));
+      enemy.setPosition(originalEnemyPosition.x, originalEnemyPosition.y);
+      enemy.attackTargetId = undefined;
+      enemy.attackMove = false;
+      enemy.attackCooldownRemaining = 999;
+      scene.hero.hp = originalHeroHp;
+      scene.hero.updateHealthBar?.();
+      return {
+        floatingTextEnabled: scene.settings.floatingTextEnabled,
+        beforeFloatingText,
+        afterFloatingText: floatingTextCount(),
+        damageTexts
+      };
+    });
+    expect(incomingDamageFeedback.floatingTextEnabled).toBe(true);
+    expect(incomingDamageFeedback.afterFloatingText).toBeGreaterThan(incomingDamageFeedback.beforeFloatingText);
+    expect(incomingDamageFeedback.damageTexts).toEqual(
+      expect.arrayContaining([expect.objectContaining({ text: expect.stringMatching(/^HIT -/), color: "#ff5f67" })])
+    );
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();
 
     const { built, trained, rally, ability, pressure } = await completeTutorialFlowForSmoke(page);
