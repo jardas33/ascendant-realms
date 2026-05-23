@@ -164,11 +164,12 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
   const movementSystem = new MovementSystem({
     onPathFailed: (unit, target) => {
-      if (unit.team === "player") {
-        showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978", {
-          priority: "command"
-        });
+      if (unit.team !== "player" || unit.attackTargetId) {
+        return;
       }
+      showMessage("No clear path. Moving as close as possible.", target.x, target.y - 24, "#f0d978", {
+        priority: "command"
+      });
     }
   });
 

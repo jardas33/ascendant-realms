@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.2 imp damage feedback and tutorial easing
+Updated: 2026-05-23 v0.17.3 contact polish and command panel readability
+
+## v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
+
+Scope: respond to Emmanuel's mixed Tutorial retest of `ascendant-realms-private-playtest-e448d18` with a narrow polish/fix pass only. This pass preserves the v0.17.2 incoming damage and beginner-pressure improvements while addressing one brief adjacent neutral-contact idle report, explicit-attack path-warning clutter, bottom-right side-panel obstruction, and unclear command costs.
+
+Baseline:
+
+- Starting commit: `e448d18`, `Checkpoint v0.17.2 imp damage feedback and tutorial easing`.
+- Branch was clean and synced with `origin/main`.
+- Manual package retested: `ascendant-realms-private-playtest-e448d18`.
+- Manual result: PASS for incoming damage readability and Tutorial beginner pressure.
+- Remaining feedback: brief player troop / Stone Imp / Wild Hound contact idle, repeated `No clear path` text while attacking enemy base, selected side panel sometimes blocking view, and create-unit/upgrade costs not being obvious enough.
+
+Included work:
+
+- Added `docs/V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md`.
+- Added a small melee visible-contact floor so non-hero troops and neutral melee units attack when they read as adjacent, without broadening Hold Ground into chase behavior.
+- Explicit attack-target path failures no longer show the blocked-path floating warning, reducing enemy-base attack text clutter while normal blocked movement warnings remain.
+- Added a session-only Hide/Show control to the selected unit/building side panel.
+- Build, train, and upgrade commands now show explicit `Cost: ...` text, including locked commands.
+- Package metadata and validation now require the v0.17.3 intake doc.
+- A deep browser regression now covers the reported militia plus neutral Stone Imp/Wild Hound contact setup and the explicit-attack path-warning suppression.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/CombatSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 35 tests.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 31.5s.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 33.2s.
+npm test PASS, 59 files / 428 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 7.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-e448d18-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-e448d18-dirty PASS, 38 checks.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes, melee visible-contact tolerance and explicit-attack path-warning display. Gameplay numbers changed: no map/unit/wave/resource/tutorial pacing values changed; v0.17.2 Tutorial-only pacing is preserved. Save format changed: no. Runtime art/assets changed: no. Worker construction implemented: no. Economy/production architecture rewritten: no. Package changed: metadata/validator updated; clean v0.17.3 package generation is pending after commit.
+
+Remaining closeout: commit as `Checkpoint v0.17.3 contact polish and command panel readability`; push if safe; regenerate and verify a clean private package; load it in the browser; and rerun GitHub Actions after push because runtime combat/UI behavior changed.
 
 ## v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
 

@@ -268,6 +268,20 @@ describe("CombatSystem", () => {
     expect(player.moveTarget).toBeUndefined();
   });
 
+  it("lets small player troops engage visible-contact neutral imps and hounds without stepping first", () => {
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, radius: 13, range: 28 });
+    const imp = fakeUnit({ id: "neutral-stone-imp", team: "neutral", x: 166, y: 100, radius: 14, range: 26 });
+    const hound = fakeUnit({ id: "neutral-wild-hound", team: "neutral", x: 164, y: 114, radius: 12, range: 24 });
+    const combat = createCombat([player, imp, hound]);
+
+    combat.update(0.1);
+
+    expect(player.moveTarget).toBeUndefined();
+    expect(imp.moveTarget).toBeUndefined();
+    expect(hound.moveTarget).toBeUndefined();
+    expect(imp.hp < imp.maxHp || hound.hp < hound.maxHp || player.hp < player.maxHp).toBe(true);
+  });
+
   it("reacquires an adjacent melee target after killing the previous explicit target", () => {
     const player = fakeUnit({
       id: "player-hero",

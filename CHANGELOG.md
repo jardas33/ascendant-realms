@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
+
+This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-e448d18`. It keeps the v0.17 line narrow: preserve the fixed incoming damage and easier Tutorial pressure, address one brief neutral-contact idle report, reduce attack-order path-warning clutter, and make the selected side panel less obstructive.
+
+### Included
+
+- Added `docs/V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md` with Emmanuel's e448d18 Tutorial feedback.
+- Added a small melee visible-contact floor so player troops, Stone Imps, and Wild Hounds can engage when their sprites read as adjacent without requiring a first step.
+- Kept Hold Ground/Guard Area/Press Attack semantics intact and preserved move-away suppression coverage.
+- Suppressed `No clear path. Moving as close as possible.` for explicit attack-target path failures so enemy-base attacks do not stack warning text over combat.
+- Added a Hide/Show control to the selected unit/building side panel. This is HUD-session-only and does not touch save data.
+- Made build, train, and upgrade command buttons show explicit `Cost: ...` text, including locked/insufficient-resource commands.
+- Updated package metadata and validation to include the v0.17.3 intake doc.
+
+### Verdict
+
+- Runtime gameplay changed: yes, melee visible-contact floor and explicit-attack path-warning display.
+- Gameplay numbers changed: no map/unit/wave/resource/pacing values changed; v0.17.2 Tutorial-only pacing is preserved.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: narrowly, only visible-contact engagement tolerance.
+- Worker construction implemented: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused CombatSystem/CommandPanel/package tests, targeted Tutorial smoke, targeted deep combat contact regression, `npm test` with 59 files / 428 tests, production build, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, control lab normal, control lab extended, control-lab verification with 1658 checks, dirty-tree package generation, dirty-tree package verification with 38 checks, and `git diff --check`.
+
+### Next
+
+- Commit/push if `git diff --check` remains green, regenerate a clean private package from the final commit, and have Emmanuel retest Tutorial neutral troop contact, enemy-base attack visual feedback, side-panel Hide/Show, and visible build/train/upgrade costs.
+
 ## v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
 
 This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-a990f11`. It keeps the v0.17 line in narrow Tutorial polish: Stone Imp hero damage readability, simpler incoming damage text, and another Tutorial-only pacing ease.

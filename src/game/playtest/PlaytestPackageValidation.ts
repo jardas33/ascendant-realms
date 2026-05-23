@@ -41,6 +41,7 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V017_WORKER_ECONOMY_DESIGN_SPEC.md",
   "V0171_EMMANUEL_TUTORIAL_RETEST_INTAKE.md",
   "V0172_EMMANUEL_A990F11_TUTORIAL_RETEST_INTAKE.md",
+  "V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -144,7 +145,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.17.2 imp damage feedback and tutorial easing",
+      "v0.17.3 contact polish and command panel readability",
       "build info checkpoint",
       checks,
       errors

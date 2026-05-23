@@ -37,7 +37,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: lockReason ?? formatCost(definition.cost),
+        detail: formatCommandDetail(definition.cost, lockReason),
         description: definition.description,
         effect: formatBuildingSummary(definition),
         locked: Boolean(lockReason)
@@ -61,7 +61,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: lockReason ?? formatCost(definition.cost),
+        detail: formatCommandDetail(definition.cost, lockReason),
         description: `${definition.role}. ${definition.description}`,
         effect: formatUnitSummary(definition),
         locked: Boolean(lockReason)
@@ -91,7 +91,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         id: definition.id,
         sourceId: selectedOne.id,
         name: definition.name,
-        detail: lockReason ?? formatCost(definition.cost),
+        detail: formatCommandDetail(definition.cost, lockReason),
         description: definition.description,
         effect: formatUpgradeEffects(definition),
         locked: Boolean(lockReason)
@@ -110,6 +110,11 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
   }
   return sections.join("");
+}
+
+function formatCommandDetail(cost: BuildingDefinition["cost"], lockReason?: string): string {
+  const costText = `Cost: ${formatCost(cost)}`;
+  return lockReason ? `${lockReason}. ${costText}` : costText;
 }
 
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
@@ -132,6 +137,8 @@ function renderCommandButton(options: {
       class="hud-button command-button ${options.locked ? "locked" : ""}"
       data-action="${options.action}"
       data-command-kind="${options.action}"
+      data-command-cost="${escapeHtml(options.detail)}"
+      data-testid="command-${options.action}-${options.id}"
       data-id="${options.id}"
       data-source-id="${options.sourceId}"
       aria-label="${escapeHtml(label)}"

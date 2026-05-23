@@ -14,6 +14,7 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 type Combatant = Unit | Building;
 
 const MELEE_VISUAL_CONTACT_MARGIN = 32;
+const MELEE_VISIBLE_CONTACT_FLOOR = 66;
 const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
 
 interface CombatSystemOptions {
@@ -320,7 +321,7 @@ export class CombatSystem {
       target instanceof Building
         ? Math.hypot(target.definition.size.width / 2, target.definition.size.height / 2)
         : target.radius;
-    return Math.max(range, attacker.radius + targetFootprintRadius + MELEE_VISUAL_CONTACT_MARGIN);
+    return Math.max(range, attacker.radius + targetFootprintRadius + MELEE_VISUAL_CONTACT_MARGIN, MELEE_VISIBLE_CONTACT_FLOOR);
   }
 
   private getCooldown(attacker: Combatant): number {

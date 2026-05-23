@@ -1,0 +1,79 @@
+import { describe, expect, it } from "vitest";
+import { BUILDING_BY_ID } from "../../data/contentIndex";
+import { Building } from "../../entities/Building";
+import { renderCommandActions } from "./CommandPanel";
+import type { HUDSnapshot } from "./HudTypes";
+
+describe("CommandPanel", () => {
+  it("labels build, train, and upgrade command costs clearly", () => {
+    const commandHall = fakeBuilding("player-command-hall", "command_hall");
+    const barracks = fakeBuilding("player-barracks", "barracks");
+
+    const commandHallMarkup = renderCommandActions(commandHall, fakeSnapshot(["command_hall"]));
+    const barracksMarkup = renderCommandActions(barracks, fakeSnapshot(["command_hall", "barracks"]));
+
+    expect(commandHallMarkup).toContain('data-testid="command-build-barracks"');
+    expect(commandHallMarkup).toContain("Cost: 180 Crowns, 120 Stone");
+    expect(commandHallMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
+    expect(commandHallMarkup).toContain("Cost: 120 Crowns, 70 Iron");
+    expect(barracksMarkup).toContain('data-testid="command-train-militia"');
+    expect(barracksMarkup).toContain("Cost: 60 Crowns, 20 Iron");
+  });
+
+  it("keeps costs visible when a command is locked", () => {
+    const commandHall = fakeBuilding("player-command-hall", "command_hall");
+
+    const markup = renderCommandActions(
+      commandHall,
+      fakeSnapshot(["command_hall"], { crowns: 0, stone: 0, iron: 0, aether: 0 })
+    );
+
+    expect(markup).toContain("Insufficient resources. Cost: 180 Crowns, 120 Stone");
+    expect(markup).toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
+  });
+});
+
+function fakeBuilding(id: string, buildingId: string): Building {
+  const definition = BUILDING_BY_ID[buildingId];
+  if (!definition) {
+    throw new Error(`Missing building ${buildingId}`);
+  }
+
+  return Object.assign(Object.create(Building.prototype), {
+    id,
+    kind: "building",
+    team: "player",
+    alive: true,
+    definition,
+    trainingQueue: [],
+    upgradeQueue: [],
+    isCompleted: () => true
+  }) as Building;
+}
+
+function fakeSnapshot(
+  completedBuildingIds: string[],
+  resources = { crowns: 999, stone: 999, iron: 999, aether: 999 }
+): HUDSnapshot {
+  return {
+    resources,
+    selected: [],
+    hero: {} as HUDSnapshot["hero"],
+    elapsedSeconds: 0,
+    isPlacing: false,
+    status: "",
+    techState: {
+      completedBuildingIds: new Set(completedBuildingIds),
+      researchedUpgradeIds: new Set<string>(),
+      heroLevel: 1
+    },
+    minimap: {
+      mapWidth: 1,
+      mapHeight: 1,
+      camera: { x: 0, y: 0, width: 1, height: 1 },
+      markers: [],
+      pings: [],
+      fog: { enabled: false }
+    }
+  };
+}

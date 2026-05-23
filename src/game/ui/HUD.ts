@@ -31,6 +31,7 @@ export class HUD {
   private forceNextUpdate = false;
   private tutorialPanelOffset: TutorialPanelOffset = { x: 0, y: 0 };
   private tutorialPanelMinimized = false;
+  private sidePanelMinimized = false;
   private tutorialPanelDrag?: TutorialPanelDragState;
 
   constructor(callbacks: HUDCallbacks) {
@@ -103,6 +104,12 @@ export class HUD {
       }
       if (action === "tutorial-reset") {
         this.resetTutorialPanelState();
+        handled = true;
+        localPanelOnly = true;
+      }
+      if (action === "side-panel-minimize") {
+        this.sidePanelMinimized = !this.sidePanelMinimized;
+        this.applySidePanelState();
         handled = true;
         localPanelOnly = true;
       }
@@ -231,6 +238,7 @@ export class HUD {
     this.tutorialPanelDrag = undefined;
     this.tutorialPanelOffset = { x: 0, y: 0 };
     this.tutorialPanelMinimized = false;
+    this.sidePanelMinimized = false;
   }
 
   private shouldDeferUpdate(): boolean {
@@ -267,6 +275,7 @@ export class HUD {
     this.lastMarkup = markup;
     restoreScrollState(this.root, scrollState);
     this.applyTutorialPanelState();
+    this.applySidePanelState();
   }
 
   private markInteractionHandled(): void {
@@ -299,6 +308,21 @@ export class HUD {
 
     const minimizeButton = panel.querySelector<HTMLButtonElement>("[data-testid='tutorial-minimize']");
     minimizeButton?.setAttribute("aria-expanded", this.tutorialPanelMinimized ? "false" : "true");
+  }
+
+  private applySidePanelState(): void {
+    const panel = this.root.querySelector<HTMLElement>("[data-testid='selection-side-panel']");
+    if (!panel) {
+      return;
+    }
+    panel.dataset.sidePanelMinimized = this.sidePanelMinimized ? "true" : "false";
+    panel.classList.toggle("minimized", this.sidePanelMinimized);
+
+    const body = panel.querySelector<HTMLElement>("[data-testid='side-panel-body']");
+    body?.setAttribute("aria-hidden", this.sidePanelMinimized ? "true" : "false");
+
+    const minimizeButton = panel.querySelector<HTMLButtonElement>("[data-testid='side-panel-minimize']");
+    minimizeButton?.setAttribute("aria-expanded", this.sidePanelMinimized ? "false" : "true");
   }
 
   private clampTutorialPanelOffset(offset: TutorialPanelOffset): TutorialPanelOffset {

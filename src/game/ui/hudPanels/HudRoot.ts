@@ -30,10 +30,18 @@ export function renderHud(snapshot: HUDSnapshot): string {
       <button class="hud-button compact" data-testid="battle-menu" data-action="menu">Menu</button>
     </div>
     ${renderHeroHudPanel(snapshot.hero)}
-    <div class="${sidePanelClass}">
-      <div class="panel-title">${escapeHtml(selectionTitle(selected))}</div>
-      <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero)}</div>
-      <div class="selection-summary">${renderSelectionSummary(selectedOne, selected)}</div>
+    <div class="${sidePanelClass}" data-testid="selection-side-panel" data-side-panel-minimized="false">
+      <div class="panel-title side-panel-title">
+        <span class="side-panel-title-text">${escapeHtml(selectionTitle(selected))}</span>
+        <button class="hud-button compact mini side-panel-minimize" type="button" data-testid="side-panel-minimize" data-action="side-panel-minimize" aria-expanded="true" aria-label="Hide or show selected unit panel">
+          <span class="side-panel-minimize-expanded">Hide</span>
+          <span class="side-panel-minimize-collapsed">Show</span>
+        </button>
+      </div>
+      <div class="side-panel-body" data-testid="side-panel-body">
+        <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero)}</div>
+        <div class="selection-summary">${renderSelectionSummary(selectedOne, selected)}</div>
+      </div>
     </div>
     ${renderMinimapPanel(snapshot.minimap)}
     ${renderObjectives(snapshot.objectives)}

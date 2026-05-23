@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.17.2 imp damage feedback and tutorial easing
+Last updated: 2026-05-23 v0.17.3 contact polish and command panel readability
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,9 +8,59 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
+## Current v0.17.3 Contact Polish And Command Panel Readability - 2026-05-23
 
-Status: v0.17.2 Tutorial polish is implemented and in verification/closeout.
+Status: v0.17.3 contact/UI polish is implemented and in verification/closeout.
+
+Baseline:
+
+- Starting commit: `e448d18`, `Checkpoint v0.17.2 imp damage feedback and tutorial easing`.
+- Branch was clean and synced with `origin/main`.
+- Emmanuel manually retested `ascendant-realms-private-playtest-e448d18`.
+- Manual result: MIXED. Incoming damage readability and beginner Tutorial pressure passed. Remaining issues were a brief troop/Stone Imp/Wild Hound adjacent idle, repeated no-path text while attacking the enemy base, selected side panel obstruction, and unclear command costs.
+
+v0.17.3 docs added:
+
+- `docs/V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md`
+
+Runtime/UI summary:
+
+- Non-hero melee troops and neutral melee units now share a small visible-contact floor, so sprites that read as adjacent can attack without first stepping.
+- The combat-control fix is narrow: Hold Ground still refuses distant idle enemies, move-away suppression remains covered, and Guard Area/Press Attack keep their existing leash behavior.
+- Explicit attack-target path failures no longer show `No clear path. Moving as close as possible.`, reducing text clutter when attacking enemy bases. Normal blocked movement warnings remain.
+- The selected unit/building side panel now has a session-only Hide/Show control.
+- Build, train, and upgrade buttons now show explicit `Cost: ...` text, including locked/insufficient-resource commands.
+- v0.17.2 incoming damage text and Tutorial-only beginner pacing are preserved.
+- Save data, runtime art/assets, workers, buildings, units, maps, factions, global balance, and economy architecture are unchanged.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/systems/CombatSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 files / 35 tests.
+npx playwright test tests/e2e/smoke.spec.ts --grep "tutorial entry launches" --reporter=line PASS, 1 test in 31.5s.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "manual combat contact regression" --reporter=line PASS, 1 test in 33.2s.
+npm test PASS, 59 files / 428 tests.
+npm run build PASS with the known Phaser vendor chunk warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 7.8m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 5 iterations / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package ascendant-realms-private-playtest-e448d18-dirty.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-e448d18-dirty PASS, 38 checks.
+git diff --check PASS.
+```
+
+Runtime gameplay changed: yes, melee visible-contact tolerance and explicit-attack path-warning display. Gameplay numbers changed: no map/unit/wave/resource/tutorial pacing values changed. Save format changed: no. Runtime art/assets changed: no. Worker construction implemented: no. Package changed: metadata/validator updated; clean v0.17.3 package generation is pending after commit.
+
+Remaining closeout: commit/push if green, regenerate and verify a clean private package, load it in the browser, and rerun GitHub Actions after push because runtime combat/UI behavior changed.
+
+## v0.17.2 Imp Damage Feedback And Tutorial Easing - 2026-05-23
+
+Status: v0.17.2 Tutorial polish shipped as commit `e448d18` and package `ascendant-realms-private-playtest-e448d18`.
 
 Baseline:
 

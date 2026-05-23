@@ -2746,7 +2746,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     const stationaryStartContact = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      const imps = scene?.units.filter((unit: any) => unit.definition?.id === "stone_imp").slice(0, 2);
+      const imps = scene?.units.filter((unit: any) => unit.definition?.id === "stone_imp" && unit.alive && unit.view).slice(0, 2);
       if (!scene?.scene.isActive() || !scene.hero?.alive || !imps || imps.length < 2) {
         throw new Error("Expected active BattleScene hero and two Stone Imps for stationary start contact regression.");
       }
@@ -2786,6 +2786,68 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       JSON.stringify(stationaryStartContact)
     ).toBe(true);
     expect(stationaryStartContact.heroMoveTarget).toBe(false);
+
+    const neutralTroopContact = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const militia = scene?.units.find((unit: any) => unit.definition?.id === "militia" && unit.team === "player" && unit.alive);
+      const imp = scene?.units.find((unit: any) => unit.definition?.id === "stone_imp" && unit.team === "neutral" && unit.alive);
+      const hound = scene?.units.find((unit: any) => unit.definition?.id === "wild_hound" && unit.team === "neutral" && unit.alive);
+      if (!scene?.scene.isActive() || !militia || !imp || !hound) {
+        throw new Error("Expected militia, neutral Stone Imp, and neutral Wild Hound for neutral contact regression.");
+      }
+      scene.units
+        .filter((unit: any) => unit.alive && ![militia.id, imp.id, hound.id].includes(unit.id))
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 22);
+          unit.attackTargetId = undefined;
+          unit.attackTargetLabel = undefined;
+          unit.attackMove = false;
+          unit.moveTarget = undefined;
+          unit.attackCooldownRemaining = 999;
+        });
+      militia.hp = militia.maxHp;
+      militia.behaviourMode = "guard_area";
+      militia.attackTargetId = undefined;
+      militia.attackTargetLabel = undefined;
+      militia.attackMove = false;
+      militia.moveTarget = undefined;
+      militia.moveOrderCombatSuppressionSeconds = 0;
+      militia.attackCooldownRemaining = 0;
+      imp.hp = imp.maxHp;
+      hound.hp = hound.maxHp;
+      [imp, hound].forEach((unit: any) => {
+        unit.attackTargetId = undefined;
+        unit.attackTargetLabel = undefined;
+        unit.attackMove = false;
+        unit.moveTarget = undefined;
+        unit.moveOrderCombatSuppressionSeconds = 0;
+        unit.attackCooldownRemaining = 0;
+      });
+      militia.setPosition(scene.hero.position.x + 120, scene.hero.position.y);
+      imp.setPosition(militia.position.x + 66, militia.position.y);
+      hound.setPosition(militia.position.x + 64, militia.position.y + 14);
+      scene.combatSystem.update(0.1);
+      return {
+        militiaHp: militia.hp,
+        militiaMaxHp: militia.maxHp,
+        impHp: imp.hp,
+        impMaxHp: imp.maxHp,
+        houndHp: hound.hp,
+        houndMaxHp: hound.maxHp,
+        militiaMoveTarget: Boolean(militia.moveTarget),
+        impMoveTarget: Boolean(imp.moveTarget),
+        houndMoveTarget: Boolean(hound.moveTarget)
+      };
+    });
+    expect(neutralTroopContact.militiaMoveTarget, JSON.stringify(neutralTroopContact)).toBe(false);
+    expect(neutralTroopContact.impMoveTarget, JSON.stringify(neutralTroopContact)).toBe(false);
+    expect(neutralTroopContact.houndMoveTarget, JSON.stringify(neutralTroopContact)).toBe(false);
+    expect(
+      neutralTroopContact.impHp < neutralTroopContact.impMaxHp ||
+        neutralTroopContact.houndHp < neutralTroopContact.houndMaxHp ||
+        neutralTroopContact.militiaHp < neutralTroopContact.militiaMaxHp,
+      JSON.stringify(neutralTroopContact)
+    ).toBe(true);
 
     const buildingAggro = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -2827,6 +2889,33 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     expect(buildingAggro.commandHallHp).toBeLessThan(buildingAggro.commandHallMaxHp);
     expect(buildingAggro.raiderMoveTarget).toBe(false);
+
+    const explicitAttackPathWarning = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const hero = scene?.hero;
+      const stronghold = scene?.buildings.find(
+        (building: any) => building.team === "enemy" && building.definition.id === "enemy_stronghold" && building.alive
+      );
+      if (!scene?.scene.isActive() || !hero || !stronghold) {
+        throw new Error("Expected hero and enemy stronghold for explicit attack path warning regression.");
+      }
+      const warningText = "No clear path. Moving as close as possible.";
+      const countWarnings = () =>
+        scene.children.list.filter((child: any) => child?.type === "Text" && (child.text ?? "") === warningText).length;
+      const before = countWarnings();
+      hero.commandAttack(stronghold.id, stronghold.definition.name);
+      hero.moveTarget = { x: stronghold.position.x, y: stronghold.position.y };
+      hero.setPosition(stronghold.position.x - 210, stronghold.position.y);
+      scene.movementSystem.update(0.1, [hero], scene.activeMap, scene.buildings);
+      return {
+        before,
+        after: countWarnings(),
+        attackTargetId: hero.attackTargetId ?? "",
+        moveTarget: Boolean(hero.moveTarget)
+      };
+    });
+    expect(explicitAttackPathWarning.attackTargetId).not.toBe("");
+    expect(explicitAttackPathWarning.after, JSON.stringify(explicitAttackPathWarning)).toBe(explicitAttackPathWarning.before);
 
     const retreatSuppression = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

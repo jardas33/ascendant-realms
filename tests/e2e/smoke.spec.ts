@@ -802,6 +802,14 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "false");
     await expect(page.getByTestId("tutorial-panel-body")).toBeVisible();
     await expect(page.getByTestId("tutorial-next")).toBeVisible();
+    await page.keyboard.press("H");
+    await expect(page.getByTestId("selection-side-panel")).toBeVisible();
+    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel minimize");
+    await expect(page.getByTestId("selection-side-panel")).toHaveAttribute("data-side-panel-minimized", "true");
+    await expect(page.getByTestId("side-panel-body")).toBeHidden();
+    await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel restore");
+    await expect(page.getByTestId("selection-side-panel")).toHaveAttribute("data-side-panel-minimized", "false");
+    await expect(page.getByTestId("side-panel-body")).toBeVisible();
     const tutorialNextHoverPoint = await page.getByTestId("tutorial-next").evaluate((button) => {
       (button as HTMLButtonElement & { __hudStableSentinel?: string }).__hudStableSentinel = "tutorial-next-hover";
       const rect = button.getBoundingClientRect();

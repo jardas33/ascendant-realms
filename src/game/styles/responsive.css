@@ -105,6 +105,10 @@
     order: 0;
   }
 
+  .side-panel .side-panel-body {
+    display: contents;
+  }
+
   .side-panel .command-tray {
     display: grid;
     order: 1;
@@ -319,8 +323,7 @@
     font-size: 9px;
   }
 
-  .side-panel .command-verb,
-  .side-panel .command-button:not(.locked) small {
+  .side-panel .command-verb {
     display: none;
   }
 
