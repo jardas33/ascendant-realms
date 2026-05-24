@@ -35,10 +35,6 @@ export class Building extends BaseEntity {
   rallyPoint?: Position;
   rallyTargetId?: string;
 
-  private constructionBarBack?: Phaser.GameObjects.Rectangle;
-  private constructionBarFill?: Phaser.GameObjects.Rectangle;
-  private readonly constructionBarWidth: number;
-
   constructor(
     scene: Phaser.Scene,
     definition: BuildingDefinition,
@@ -74,7 +70,6 @@ export class Building extends BaseEntity {
         ? `Waiting for ${this.assignedWorkerName ?? "Worker"}`
         : "Under construction"
       : "Complete";
-    this.constructionBarWidth = Math.max(58, definition.size.width * 0.95);
     this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true);
     const layout = this.addBattleView(scene, definition, team);
     const selectionRadius = Math.max(this.radius + 7, Math.max(definition.size.width, definition.size.height) * 0.64);
@@ -89,7 +84,6 @@ export class Building extends BaseEntity {
       selectionY: layout.visualBottom - 2
     });
     this.setSelectionRingLayer(1);
-    this.addConstructionProgressView(scene, layout.visualBottom + 23);
     this.applyInitialConstructionHealth();
     this.updateConstructionVisuals();
   }
@@ -152,25 +146,9 @@ export class Building extends BaseEntity {
     this.updateHealthBar();
   }
 
-  private addConstructionProgressView(scene: Phaser.Scene, y: number): void {
-    this.constructionBarBack = scene.add
-      .rectangle(-this.constructionBarWidth / 2, y, this.constructionBarWidth, 5, 0x08100c, 0.84)
-      .setOrigin(0, 0.5)
-      .setStrokeStyle(1, 0xf4e8a4, 0.3);
-    this.constructionBarFill = scene.add
-      .rectangle(-this.constructionBarWidth / 2, y, this.constructionBarWidth, 5, 0xf0d978, 0.92)
-      .setOrigin(0, 0.5);
-    this.view?.add([this.constructionBarBack, this.constructionBarFill]);
-  }
-
   private updateConstructionVisuals(): void {
     const constructing = this.constructionState === "underConstruction";
     this.view?.setAlpha(constructing ? 0.62 : 1);
-    this.constructionBarBack?.setVisible(constructing);
-    this.constructionBarFill?.setVisible(constructing);
-    if (this.constructionBarFill) {
-      this.constructionBarFill.displayWidth = this.constructionBarWidth * this.constructionProgress;
-    }
   }
 
   private addBattleView(
