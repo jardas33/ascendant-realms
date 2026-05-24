@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.20 upgrade and tech tree foundation",
+          checkpoint: "v0.20.1 tech tree closeout and polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -101,6 +101,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0191_PRODUCTION_ROLE_POLISH_REPORT.md", sizeBytes: 20, textContent: "Production role report" },
       { path: "V020_TECH_TREE_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Tech tree spec" },
       { path: "V020_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Tech tree report" },
+      { path: "V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md", sizeBytes: 20, textContent: "Tech tree closeout" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.20.1 Tech Tree Closeout And Polish - 2026-05-24
+
+This checkpoint closes out v0.20 by pushing the foundation commit, verifying Fast confidence, refreshing package metadata, and recording a small tech-tree audit. It does not start v0.21.
+
+### Included
+
+- Pushed `ae3d80d`, `Checkpoint v0.20 upgrade and tech tree foundation`, to `origin/main`.
+- Added `docs/V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md`.
+- Updated package metadata and package validation to name `v0.20.1 tech tree closeout and polish`.
+- Added the v0.20.1 closeout doc to private playtest packages.
+- Audited Command Hall, Barracks, Mystic Lodge, Watchtower, upgrade ownership, prerequisites, and effect summaries.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: GitHub Actions push Fast confidence for `ae3d80d`, `npm test` with 63 files / 465 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke, full smoke, control lab normal plus 1658-check verifier.
+- Remote release-matrix note: push workflow rules skipped simulator, hosted release groups, optional visual QA, and full release. Manual workflow_dispatch with `run_release_matrix=true` remains the exact remote hosted/simulator follow-up if needed.
+
+### Next
+
+- Send the clean v0.20.1 package for Emmanuel's tech-tree role retest after the final closeout commit/package verification.
+
 ## v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
 
 This checkpoint adds the first small, building-owned upgrade/tech-tree foundation without opening a large content or economy pass.

@@ -1,6 +1,46 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.20 upgrade and tech tree foundation
+Updated: 2026-05-24 v0.20.1 tech tree closeout and polish
+
+## v0.20.1 Tech Tree Closeout And Polish - 2026-05-24
+
+Scope: close out v0.20 by pushing the checkpoint, verifying CI/package confidence, auditing building-owned tech-tree roles, and updating package metadata/docs. This pass does not add harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, runtime art/assets, broad AI/pathing rewrite, global rebalance, big systems, or new upgrade content.
+
+Baseline:
+
+- Starting commit: `ae3d80d`, `Checkpoint v0.20 upgrade and tech tree foundation`.
+- Starting package: `artifacts/playtest/ascendant-realms-private-playtest-ae3d80d`, verified locally with 53 checks.
+- Branch was clean and ahead of `origin/main` by 1 commit.
+- `ae3d80d` was pushed to `origin/main`; `git status --short --branch` and `git rev-list --left-right --count origin/main...HEAD` returned clean/synced.
+
+Included work:
+
+- Added `docs/V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md`.
+- Updated package metadata and package validation to name `v0.20.1 tech tree closeout and polish`.
+- Included the v0.20.1 closeout doc in private playtest packages.
+- Audited Command Hall, Barracks, Mystic Lodge, Watchtower, upgrade ownership, prerequisites, and effect summaries.
+- Made no runtime or balance changes.
+
+Remote CI:
+
+- GitHub Actions push run `26372137063` on `main` / `ae3d80d`: Fast confidence passed.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact `ae3d80d` manual workflow_dispatch release matrix remains recommended if remote simulator/hosted evidence is required; this environment had no `gh` or GitHub token available to trigger it.
+
+Verification and closeout so far:
+
+```text
+npm test PASS, 63 files / 465 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Closeout note: after this metadata update, rerun focused package-validation tests, package, verify package, `git diff --check`, commit, regenerate/verify the clean package from the final commit, and push the v0.20.1 closeout commit.
 
 ## v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
 

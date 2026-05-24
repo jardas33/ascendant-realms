@@ -61,6 +61,7 @@ Known current realities:
 - v0.19 clarifies production roles without adding new content: Command Hall trains Workers only, Barracks owns basic army training and existing basic troop research, Mystic Lodge owns existing Acolyte/Aether Study actions, Watchtower remains completed-only defense, and incomplete buildings stay inactive with clearer role/unlock copy. Rerun GitHub Actions after push because runtime production ownership and UI changed.
 - v0.19.1 verifies and lightly polishes the v0.19 production architecture before v0.20. It adds production-role audits, a focused hosted Tutorial proxy, clearer Command Hall/Mystic Lodge/Watchtower/incomplete-building copy, and a narrow hosted-layout expectation fix after exact v0.19 workflow-dispatch run #113 failed only stale Command Hall build/upgrade layout assertions.
 - v0.20 adds the first small building-owned tech-tree layer: Command Hall core upgrade `Camp Foundations I`, Barracks-owned existing troop upgrades, Mystic Lodge `Aether Study I`, and Watchtower defensive upgrade `Sentry Bracing I`. Rerun GitHub Actions after push because runtime upgrade data, upgrade effects, and upgrade UI changed.
+- v0.20.1 closes out v0.20 without runtime changes: `ae3d80d` was pushed, Fast confidence passed, package metadata now names the closeout checkpoint, and a manual workflow_dispatch release matrix with `run_release_matrix=true` remains recommended for exact remote hosted/simulator evidence.
 
 ## Required Automated Checks
 
@@ -161,6 +162,12 @@ PASS: 62 test files, 458 tests
 ```
 
 Current v0.20 checkpoint result:
+
+```text
+PASS: 63 test files, 465 tests
+```
+
+Current v0.20.1 checkpoint result:
 
 ```text
 PASS: 63 test files, 465 tests

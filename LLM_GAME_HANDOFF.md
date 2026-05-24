@@ -1,12 +1,57 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.20 upgrade and tech tree foundation
+Last updated: 2026-05-24 v0.20.1 tech tree closeout and polish
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.20.1 Tech Tree Closeout And Polish - 2026-05-24
+
+Status: v0.20 is pushed, Fast confidence is green, the tech-tree role audit is complete, and v0.20.1 package metadata/docs are updated for the closeout package.
+
+Baseline:
+
+- Starting commit: `ae3d80d`, `Checkpoint v0.20 upgrade and tech tree foundation`.
+- Starting package: `artifacts/playtest/ascendant-realms-private-playtest-ae3d80d`, verified locally with 53 checks.
+- Branch was clean and ahead of `origin/main` by 1 commit before push.
+- `ae3d80d` was pushed to `origin/main`, and the branch returned to clean/synced.
+
+Remote CI:
+
+- GitHub Actions push run `26372137063` on `main` / `ae3d80d` passed Fast confidence.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact `ae3d80d` workflow_dispatch release matrix was not triggered from this environment because `gh` and GitHub token auth were unavailable. Run CI Release Matrix Dry Run manually with `run_release_matrix=true` if remote hosted/simulator evidence is needed.
+
+Docs/package metadata added:
+
+- `docs/V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md`
+- Package checkpoint string is now `v0.20.1 tech tree closeout and polish`.
+- Private playtest package validation now requires the v0.20.1 closeout doc.
+
+Runtime/UI summary:
+
+- No runtime gameplay, balance, save, art, pathing, AI, map, faction, or roster changes were made in v0.20.1.
+- Tech-tree audit confirms Command Hall Worker-only/core tech, Barracks army/upgrades, Mystic Lodge Acolyte/Aether Study, Watchtower Sentry Bracing gated by Camp Foundations, inactive incomplete buildings, and readable locked/researched states.
+
+Verification:
+
+```text
+npm test PASS, 63 files / 465 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+```
+
+Closeout note: rerun focused package-validation tests after the metadata/doc changes, run package generation and package verification after commit, confirm the final package does not end in `-dirty`, then push the v0.20.1 docs/package-metadata commit.
+
+Emmanuel retest focus: Command Hall Worker-only/core tech; Worker-built Barracks/Mystic Lodge/Watchtower; inactive incomplete buildings; Barracks Militia/Ranger plus Infantry Weapons I, Reinforced Armor I, Ranger Training I; Mystic Lodge Acolyte/Aether Study I; Watchtower defense plus Sentry Bracing I gated by Camp Foundations I; readable owner/requirement/cost/effect/locked/researching/researched states; Tutorial still does not require complex tech-tree use; v0.18.3 construction pause/resume/pathing stays stable.
 
 ## Current v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
 

@@ -57,6 +57,7 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0191_PRODUCTION_ROLE_POLISH_REPORT.md",
   "V020_TECH_TREE_FOUNDATION_SPEC.md",
   "V020_IMPLEMENTATION_REPORT.md",
+  "V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -160,7 +161,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.20 upgrade and tech tree foundation",
+      "v0.20.1 tech tree closeout and polish",
       "build info checkpoint",
       checks,
       errors
