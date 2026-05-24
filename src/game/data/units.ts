@@ -12,7 +12,7 @@ export const UNITS: UnitDefinition[] = [
     radius: 11,
     color: 0xd7b970,
     visionRadius: 330,
-    buildOptions: ["barracks"],
+    buildOptions: ["barracks", "mystic_lodge", "watchtower"],
     stats: {
       maxHp: 55,
       damage: 3,

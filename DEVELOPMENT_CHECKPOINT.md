@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.18 worker construction foundation local verification complete
+Updated: 2026-05-23 v0.18.2 worker construction expansion local verification complete
+
+## v0.18.2 Worker Construction Expansion - 2026-05-23
+
+Scope: expand the Worker construction foundation to the existing player building set only: Barracks, Mystic Lodge, and Watchtower. This pass does not add harvesting, repairs, multiple workers per site, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, visual overhaul, runtime art/assets, or broad economy rebalance.
+
+Baseline:
+
+- Starting commit: `7ec2701`, `Simplify construction site progress display`.
+- Branch was clean and synced with `origin/main`.
+- Current clean package before this pass: `artifacts/playtest/ascendant-realms-private-playtest-7ec2701`.
+
+Included work:
+
+- Added `docs/V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md`.
+- Added `docs/V0182_IMPLEMENTATION_REPORT.md`.
+- Expanded Worker build options to Barracks, Mystic Lodge, and Watchtower.
+- Kept Command Hall Worker-training only and direct build commands hidden.
+- Preserved existing building costs, build times, footprints, art conventions, and completed behavior.
+- Added command-panel coverage for all Worker build buttons and affordability text.
+- Added incomplete-Watchtower combat coverage so construction sites cannot attack before completion.
+- Cleaned selected construction-site UI copy to `Assigned Worker`.
+- Package metadata and validation now include the v0.18.2 Worker construction expansion docs.
+
+Verification so far:
+
+```text
+npx vitest run src/game/playtest/PlaytestPackageValidation.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/CombatSystem.test.ts src/game/systems/BuildingSystem.test.ts --reporter=dot PASS, 6 files / 49 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npm run build PASS with the known Vite chunk-size warning.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker can be trained|Worker exposes existing build set" --reporter=line PASS, 2 hosted tests in 1.8m.
+npm test PASS, 61 files / 442 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run playtest:sim PASS, 255 simulated runs across 85 campaign battle nodes.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 7.6m.
+npm run test:e2e:release:hosted:deep-battle PASS, 17 tests in 6.2m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.4m.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests in 1.8m.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests in 1.9m.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests in 3.6m.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests in 3.5m.
+npm run test:e2e:release PASS, 82 tests in 39.3m.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with 0 browser console errors.
+```
+
+Pending closeout: `git diff --check`, clean commit/push, clean package generation/verification after commit, and GitHub Actions release matrix observation after push.
 
 ## v0.18 Worker Construction Foundation - 2026-05-23
 

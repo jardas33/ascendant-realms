@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.18 worker construction foundation local verification complete
+Last updated: 2026-05-23 v0.18.2 worker construction expansion local verification complete
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,58 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.18 Worker Construction Foundation - 2026-05-23
+## Current v0.18.2 Worker Construction Expansion - 2026-05-23
+
+Status: v0.18.2 Worker construction expansion is implemented and locally verified. Clean commit/package and GitHub Actions closeout happen after this handoff update.
+
+Goal:
+
+- Expand Worker construction from Barracks only to the existing player build set: Barracks, Mystic Lodge, and Watchtower.
+- Keep Command Hall Worker-training only, with no player-facing building placement commands.
+- Preserve one assigned Worker per site, existing costs/build times/footprints/art, and existing completed building behavior.
+- Do not add harvesting, repairs, multiple-worker acceleration, enemy construction AI, save migration, new maps, new factions, Patrol runtime, formations, runtime art/assets, or global rebalance.
+
+Docs added:
+
+- `docs/V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md`
+- `docs/V0182_IMPLEMENTATION_REPORT.md`
+
+Runtime/UI summary:
+
+- Worker build options now include Barracks, Mystic Lodge, and Watchtower.
+- Incomplete Watchtower behavior is covered so it cannot attack before completion.
+- Selected construction-site copy now reads `Assigned Worker`.
+- Tutorial remains on the Worker Barracks route and gains no new objectives.
+
+Verification so far:
+
+```text
+npx vitest run src/game/playtest/PlaytestPackageValidation.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/CombatSystem.test.ts src/game/systems/BuildingSystem.test.ts --reporter=dot PASS, 6 files / 49 tests.
+npx tsc -p tsconfig.json --noEmit PASS.
+npm run build PASS with the known Vite chunk-size warning.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker can be trained|Worker exposes existing build set" --reporter=line PASS, 2 hosted tests in 1.8m.
+npm test PASS, 61 files / 442 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run playtest:sim PASS, 255 simulated runs across 85 campaign battle nodes.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 7.6m.
+npm run test:e2e:release:hosted:deep-battle PASS, 17 tests in 6.2m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.4m.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests in 1.8m.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests in 1.9m.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests in 3.6m.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests in 3.5m.
+npm run test:e2e:release PASS, 82 tests in 39.3m.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with 0 browser console errors.
+```
+
+Pending closeout: `git diff --check`, clean commit/push, clean package generation/verification after commit, and GitHub Actions release matrix observation after push.
+
+## v0.18 Worker Construction Foundation - 2026-05-23
 
 Status: v0.18 Worker construction foundation is implemented locally and local verification is green. Package closeout, commit/push, clean package verification, and GitHub Actions release matrix rerun still happen after this committed handoff.
 

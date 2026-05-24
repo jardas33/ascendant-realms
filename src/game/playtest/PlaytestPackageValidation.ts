@@ -46,6 +46,8 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md",
   "V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md",
   "V018_IMPLEMENTATION_REPORT.md",
+  "V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md",
+  "V0182_IMPLEMENTATION_REPORT.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -149,7 +151,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.18 worker construction foundation",
+      "v0.18.2 worker construction expansion",
       "build info checkpoint",
       checks,
       errors

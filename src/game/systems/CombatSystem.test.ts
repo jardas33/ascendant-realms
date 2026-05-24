@@ -489,6 +489,73 @@ describe("CombatSystem", () => {
     expect(commandHall.hp).toBe(commandHall.maxHp);
   });
 
+  it("keeps under-construction Watchtowers from firing until completion", () => {
+    const addProjectile = vi.fn();
+    const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 210, y: 100, radius: 13, range: 28 });
+    const incompleteTower = fakeBuilding({
+      id: "player-watchtower-site",
+      buildingId: "watchtower",
+      name: "Watchtower",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 48,
+      height: 72,
+      isCompleted: false,
+      attack: {
+        damage: 14,
+        range: 220,
+        cooldown: 1.1,
+        projectileColor: 0xffdf75
+      }
+    });
+    const combat = new CombatSystem({
+      scene: fakeProjectileScene() as never,
+      getUnits: () => [enemy],
+      getBuildings: () => [incompleteTower],
+      getProjectiles: () => [],
+      addProjectile,
+      onDamage: vi.fn(),
+      onKill: vi.fn()
+    });
+
+    combat.update(0.1);
+
+    expect(addProjectile).not.toHaveBeenCalled();
+    expect(enemy.hp).toBe(enemy.maxHp);
+
+    const completedTower = fakeBuilding({
+      id: "player-watchtower",
+      buildingId: "watchtower",
+      name: "Watchtower",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 48,
+      height: 72,
+      isCompleted: true,
+      attack: {
+        damage: 14,
+        range: 220,
+        cooldown: 1.1,
+        projectileColor: 0xffdf75
+      }
+    });
+    const completedCombat = new CombatSystem({
+      scene: fakeProjectileScene() as never,
+      getUnits: () => [enemy],
+      getBuildings: () => [completedTower],
+      getProjectiles: () => [],
+      addProjectile,
+      onDamage: vi.fn(),
+      onKill: vi.fn()
+    });
+
+    completedCombat.update(0.1);
+
+    expect(addProjectile).toHaveBeenCalledTimes(1);
+  });
+
   it("does not make enemy melee units globally chase distant buildings", () => {
     const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 390, y: 100, radius: 13, range: 28 });
     const commandHall = fakeBuilding({
@@ -635,6 +702,13 @@ function fakeBuilding(options: {
   width: number;
   height: number;
   hp?: number;
+  isCompleted?: boolean;
+  attack?: {
+    damage: number;
+    range: number;
+    cooldown: number;
+    projectileColor: number;
+  };
 }): Building {
   return Object.assign(Object.create(Building.prototype), {
     id: options.id,
@@ -652,9 +726,9 @@ function fakeBuilding(options: {
       name: options.name,
       factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
       size: { width: options.width, height: options.height },
-      attack: undefined
+      attack: options.attack
     },
-    isCompleted: () => true,
+    isCompleted: () => options.isCompleted ?? true,
     takeDamage(rawDamage: number) {
       const damage = Math.max(1, Math.round(rawDamage - this.armor));
       this.hp = Math.max(0, this.hp - damage);

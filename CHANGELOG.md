@@ -1,5 +1,37 @@
 # Changelog
 
+## v0.18.2 Worker Construction Expansion - 2026-05-23
+
+This checkpoint expands the v0.18 Worker construction foundation to the existing player building set only. It remains a bounded construction pass, not a worker economy rewrite.
+
+### Included
+
+- Added `docs/V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md` and `docs/V0182_IMPLEMENTATION_REPORT.md`.
+- Worker selection can now build Barracks, Mystic Lodge, and Watchtower.
+- Command Hall remains Worker-training only and still exposes no direct building placement commands.
+- Existing costs, construction times, footprints, art conventions, and completed building behaviors are preserved.
+- Incomplete Watchtower behavior is covered so it cannot fire before construction completes.
+- Selected construction-site UI now says `Assigned Worker` instead of duplicating `Worker Worker`.
+- Package metadata and validation now include the v0.18.2 retest docs.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Worker build options now cover existing player buildings.
+- Gameplay numbers changed: no existing cost, stat, wave, resource, or build-time values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no new objectives; Tutorial still uses the Worker Barracks route.
+- Economy/production architecture rewritten: no, Worker construction expansion only.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused Worker/package/UI/runtime tests, production build with the known Vite chunk-size warning, targeted hosted Worker regressions, `npm test` with 61 files / 442 tests, content validation, art-intake validation, simulator with 255 runs, control lab normal/extended plus 1658-check verifier, fast smoke, full smoke, all six hosted release-matrix groups, local full release with 82 tests, and production-preview smoke with 0 browser console errors.
+- Pending after commit: clean package verification and GitHub Actions release matrix observation.
+
+### Next
+
+- Generate and verify the clean package after commit, then relaunch it for retesting Worker-built Barracks, Mystic Lodge, and Watchtower.
+
 ## v0.18 Worker Construction Foundation - 2026-05-23
 
 This checkpoint implements the first safe Worker construction vertical slice after the clean v0.17.5 baseline. It keeps the scope narrow: one Worker, one Worker-built military building, no harvesting, no repair loop, no enemy construction AI, no save migration, no art replacement, and no broad Tutorial rewrite.

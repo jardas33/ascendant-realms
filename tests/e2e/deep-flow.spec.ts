@@ -2195,6 +2195,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='build'][data-id='watchtower']")).toHaveCount(0);
 
     const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker-only construction");
+    await expect(page.locator("button[data-action='build'][data-id='barracks']")).toBeEnabled();
+    await expect(page.locator("button[data-action='build'][data-id='mystic_lodge']")).toBeEnabled();
+    await expect(page.locator("button[data-action='build'][data-id='watchtower']")).toBeEnabled();
     await clickBattleCommandUntilEffect(
       () => page.locator("button[data-action='build'][data-id='barracks']"),
       "deep-flow Worker build Barracks cancel command",
@@ -2379,6 +2382,147 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(completed.trainOptions).toContain("militia");
     await expect(page.locator(".side-panel")).toContainText("Barracks");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toBeEnabled();
+  });
+
+  test("Worker exposes existing build set and Watchtower activates only after completion @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Watchtower Worker QA");
+    await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker expanded build set");
+
+    await expect(page.locator("button[data-action='build'][data-id='barracks']")).toBeEnabled();
+    await expect(page.locator("button[data-action='build'][data-id='mystic_lodge']")).toBeEnabled();
+    await expect(page.locator("button[data-action='build'][data-id='watchtower']")).toBeEnabled();
+
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='watchtower']"),
+      "deep-flow Worker build Watchtower command",
+      async () => {
+        await page.waitForFunction((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          return scene?.buildingSystem?.pendingBuildingId === "watchtower" && scene?.buildingSystem?.pendingAssignedWorkerId === workerId;
+        }, trainedWorker.id);
+      },
+      async () => {
+        await page.evaluate((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+          if (worker) {
+            scene.selectionSystem.setSelection([worker]);
+            scene.refreshBattleHud?.(0);
+          }
+        }, trainedWorker.id);
+      }
+    );
+
+    const placedTower = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Expected Command Hall for Worker Watchtower test.");
+      }
+      const points = [
+        { x: commandHall.position.x + 168, y: commandHall.position.y - 94 },
+        { x: commandHall.position.x + 210, y: commandHall.position.y - 112 },
+        { x: commandHall.position.x + 180, y: commandHall.position.y + 68 },
+        { x: commandHall.position.x + 48, y: commandHall.position.y - 148 }
+      ];
+      for (const point of points) {
+        scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
+        if (scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
+          const tower = scene.buildings.find(
+            (building: any) =>
+              building.team === "player" &&
+              building.definition.id === "watchtower" &&
+              building.alive &&
+              building.assignedWorkerId === workerId
+          );
+          if (!tower) {
+            throw new Error("Worker-placed Watchtower was not found.");
+          }
+          scene.selectionSystem.setSelection([tower]);
+          scene.refreshBattleHud?.(0);
+          return {
+            id: tower.id,
+            state: tower.constructionState,
+            assignedWorkerId: tower.assignedWorkerId,
+            assignedWorkerName: tower.assignedWorkerName
+          };
+        }
+      }
+      scene.buildingSystem.cancelPlacement();
+      throw new Error("Could not place Worker Watchtower construction site.");
+    }, trainedWorker.id);
+
+    expect(placedTower.state).toBe("underConstruction");
+    expect(placedTower.assignedWorkerId).toBe(trainedWorker.id);
+    expect(placedTower.assignedWorkerName).toBe("Worker");
+    await expect(page.locator(".side-panel")).toContainText("Production unlocks when this building is complete.");
+
+    const incompleteTowerCombat = await page.evaluate((towerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const tower = scene.buildings.find((building: any) => building.id === towerId && building.alive);
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.alive);
+      if (!tower || !enemy) {
+        throw new Error("Expected incomplete Watchtower and a live enemy.");
+      }
+      enemy.setPosition(tower.position.x + 118, tower.position.y);
+      enemy.moveTarget = undefined;
+      enemy.attackTargetId = undefined;
+      enemy.attackMove = false;
+      enemy.attackCooldownRemaining = 999;
+      tower.attackCooldownRemaining = 0;
+      const projectileCountBefore = scene.projectiles.length;
+      const hpBefore = enemy.hp;
+      scene.combatSystem.update(0.2);
+      return {
+        state: tower.constructionState,
+        projectileDelta: scene.projectiles.length - projectileCountBefore,
+        hpBefore,
+        hpAfter: enemy.hp
+      };
+    }, placedTower.id);
+
+    expect(incompleteTowerCombat.state).toBe("underConstruction");
+    expect(incompleteTowerCombat.projectileDelta).toBe(0);
+    expect(incompleteTowerCombat.hpAfter).toBe(incompleteTowerCombat.hpBefore);
+
+    await completePlayerBuilding(page, "watchtower");
+
+    const completedTowerCombat = await page.evaluate((towerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const tower = scene.buildings.find((building: any) => building.id === towerId && building.alive);
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.alive);
+      if (!tower || !enemy) {
+        throw new Error("Expected completed Watchtower and a live enemy.");
+      }
+      enemy.setPosition(tower.position.x + 118, tower.position.y);
+      enemy.moveTarget = undefined;
+      enemy.attackTargetId = undefined;
+      enemy.attackMove = false;
+      enemy.attackCooldownRemaining = 999;
+      tower.attackCooldownRemaining = 0;
+      const projectileCountBefore = scene.projectiles.length;
+      scene.combatSystem.update(0.2);
+      return {
+        state: tower.constructionState,
+        projectileDelta: scene.projectiles.length - projectileCountBefore
+      };
+    }, placedTower.id);
+
+    expect(completedTowerCombat.state).toBe("completed");
+    expect(completedTowerCombat.projectileDelta).toBeGreaterThan(0);
   });
 
   test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {

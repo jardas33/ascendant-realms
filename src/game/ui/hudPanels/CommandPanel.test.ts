@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BUILDING_BY_ID } from "../../data/contentIndex";
+import { BUILDING_BY_ID, UNIT_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
 import { Unit } from "../../entities/Unit";
 import { renderCommandActions } from "./CommandPanel";
@@ -42,8 +42,27 @@ describe("CommandPanel", () => {
     expect(markup).toContain('data-testid="command-build-barracks"');
     expect(markup).toContain("Build Barracks");
     expect(markup).toContain("Cost: 180 Crowns, 120 Stone");
+    expect(markup).toContain('data-testid="command-build-mystic_lodge"');
+    expect(markup).toContain("Build Mystic Lodge");
+    expect(markup).toContain("Cost: 160 Crowns, 100 Stone, 80 Aether");
+    expect(markup).toContain('data-testid="command-build-watchtower"');
+    expect(markup).toContain("Build Watchtower");
+    expect(markup).toContain("Cost: 120 Crowns, 100 Stone, 40 Iron");
     expect(markup).not.toContain('data-action="train"');
     expect(markup).not.toContain('data-action="upgrade"');
+  });
+
+  it("keeps Worker building costs visible when a structure is unaffordable", () => {
+    const worker = fakeWorker();
+
+    const markup = renderCommandActions(
+      worker,
+      fakeSnapshot(["command_hall"], { crowns: 380, stone: 255, iron: 140, aether: 75 })
+    );
+
+    expect(markup).toContain('data-testid="command-build-barracks"');
+    expect(markup).toContain('data-testid="command-build-watchtower"');
+    expect(markup).toContain("Insufficient resources. Cost: 160 Crowns, 100 Stone, 80 Aether");
   });
 });
 
@@ -71,11 +90,7 @@ function fakeWorker(): Unit {
     kind: "unit",
     team: "player",
     alive: true,
-    definition: {
-      id: "worker",
-      name: "Worker",
-      buildOptions: ["barracks"]
-    }
+    definition: UNIT_BY_ID.worker
   }) as Unit;
 }
 

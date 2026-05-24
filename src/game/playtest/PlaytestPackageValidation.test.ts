@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.18 worker construction foundation",
+          checkpoint: "v0.18.2 worker construction expansion",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -90,6 +90,8 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Tutorial v0.17.5 intake" },
       { path: "V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Worker construction spec" },
       { path: "V018_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Worker construction report" },
+      { path: "V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md", sizeBytes: 20, textContent: "Worker construction expansion spec" },
+      { path: "V0182_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Worker construction expansion report" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

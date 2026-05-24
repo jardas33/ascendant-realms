@@ -51,7 +51,7 @@ describe("SelectedEntityPanel", () => {
 
     expect(markup).toContain("Status Worker building");
     expect(markup).toContain("Construction 44%");
-    expect(markup).toContain("Worker Worker");
+    expect(markup).toContain("Assigned Worker");
   });
 });
 
