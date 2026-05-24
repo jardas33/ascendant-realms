@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.21 Worker Repair Foundation - 2026-05-24
+
+This checkpoint adds the first narrow Worker repair foundation without opening harvesting, resource-dropoff economy, enemy repair AI, or a broader Worker system.
+
+### Included
+
+- Added `docs/V021_WORKER_REPAIR_FOUNDATION_SPEC.md` and `docs/V021_IMPLEMENTATION_REPORT.md`.
+- Added Worker repair intent state separate from construction, move, and attack orders.
+- Added `RepairSystem` for repair validation, approach movement, pause/resume, and slow HP restoration.
+- Worker can repair damaged friendly completed Command Hall, Barracks, Mystic Lodge, and Watchtower buildings.
+- Repair is blocked for enemy buildings, incomplete buildings, and full-health buildings.
+- Explicit move and attack orders pause repair intent and do not magnet the Worker back.
+- Worker command UI now shows repair targets, HP, no-cost status, and full-health disabled state.
+- Selected Worker/building UI now reports active repair, paused repair, damaged repair status, and full-health status.
+- Added unit/UI/package tests and a hosted deep-battle repair proxy.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Worker repair was added.
+- Gameplay numbers changed: yes, a small no-cost Worker repair rate was added; combat, production, construction, tech, maps, waves, and global balance are otherwise unchanged.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused repair/construction/UI/package tests, production build with the known Vite chunk-size warning, hosted repair proxy, `npm test` with 64 files / 478 tests, content validation, art-intake validation, fast smoke, full smoke, control lab normal plus 1658-check verifier, hosted deep-battle with 20 tests, hosted smoke with 14 tests, dirty playtest package generation, dirty package verification with 56 checks, and `git diff --check`.
+
+### Next
+
+- Commit the checkpoint, generate a clean final package from the final commit, and use it for Emmanuel's Worker repair retest.
+
 ## v0.20.1 Tech Tree Closeout And Polish - 2026-05-24
 
 This checkpoint closes out v0.20 by pushing the foundation commit, verifying Fast confidence, refreshing package metadata, and recording a small tech-tree audit. It does not start v0.21.

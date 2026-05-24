@@ -164,6 +164,7 @@ export class BattleScene extends Phaser.Scene {
   private movementSystem!: BattleSceneSystems["movementSystem"];
   private combatSystem!: BattleSceneSystems["combatSystem"];
   private resourceSystem!: BattleSceneSystems["resourceSystem"];
+  private repairSystem!: BattleSceneSystems["repairSystem"];
   private buildingSystem!: BattleSceneSystems["buildingSystem"];
   private trainingSystem!: BattleSceneSystems["trainingSystem"];
   private upgradeSystem!: BattleSceneSystems["upgradeSystem"];
@@ -263,6 +264,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateStatusEffects(deltaSeconds);
     this.enemyHeroAbilitySystem.update(deltaSeconds);
     this.buildingSystem.update(deltaSeconds);
+    this.repairSystem.update(deltaSeconds);
     this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
     this.updateResourceSiteWarnings(deltaSeconds);
     this.trainingSystem.update(deltaSeconds, this.buildings);
@@ -395,6 +397,7 @@ export class BattleScene extends Phaser.Scene {
     this.movementSystem = systems.movementSystem;
     this.combatSystem = systems.combatSystem;
     this.resourceSystem = systems.resourceSystem;
+    this.repairSystem = systems.repairSystem;
     this.buildingSystem = systems.buildingSystem;
     this.trainingSystem = systems.trainingSystem;
     this.upgradeSystem = systems.upgradeSystem;
@@ -882,6 +885,7 @@ export class BattleScene extends Phaser.Scene {
       hint: this.tutorialHint,
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
+      repairTargets: this.repairSystem.repairTargetSummaries(),
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       pauseMenu: this.menuPaused

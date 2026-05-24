@@ -32,6 +32,7 @@ import { InputSystem } from "../systems/InputSystem";
 import { MovementSystem } from "../systems/MovementSystem";
 import type { TechState } from "../systems/PrerequisiteSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
+import { RepairSystem } from "../systems/RepairSystem";
 import { SelectionSystem } from "../systems/SelectionSystem";
 import { findWalkableTrainedUnitSpawnPoint, TrainingSystem } from "../systems/TrainingSystem";
 import { UISystem } from "../systems/UISystem";
@@ -50,6 +51,7 @@ export interface BattleSceneSystems {
   movementSystem: MovementSystem;
   combatSystem: CombatSystem;
   resourceSystem: ResourceSystem;
+  repairSystem: RepairSystem;
   buildingSystem: BuildingSystem;
   trainingSystem: TrainingSystem;
   upgradeSystem: UpgradeSystem;
@@ -217,6 +219,13 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     }
   });
 
+  const repairSystem = new RepairSystem({
+    map: activeMap,
+    getUnits,
+    getBuildings,
+    onMessage: (message, x, y, color, messageOptions) => showMessage(message, x, y, color, messageOptions)
+  });
+
   const upgradeSystem = new UpgradeSystem({
     getTechState,
     isResearched: isUpgradeResearched,
@@ -368,6 +377,13 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
           upgradeSystem.cancelUpgrade(building, queueIndex, resources.player);
         }
       },
+      onRepair: (targetBuildingId, sourceUnitId) => {
+        const worker = getUnits().find((entry) => entry.id === sourceUnitId && entry.alive && entry.team === "player");
+        const building = getBuildings().find((entry) => entry.id === targetBuildingId && entry.alive);
+        if (repairSystem.requestRepair(worker, building)) {
+          AudioManager.play("ui_click");
+        }
+      },
       onAbility: (abilityId) => {
         if (abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected())) {
           AudioManager.play("ability_cast");
@@ -408,6 +424,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getSelectedUnits: () => selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
     getSelectedRallyBuildings: selectedRallyBuildings,
     setRallyPoint,
+    issueRepairOrder: (target, selectedUnits) => repairSystem.issueRepairOrder(target, selectedUnits),
     selectHero: () => {
       if (hero.alive) {
         selectionSystem.setSelection([hero]);
@@ -450,6 +467,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     movementSystem,
     combatSystem,
     resourceSystem,
+    repairSystem,
     buildingSystem,
     trainingSystem,
     upgradeSystem,

@@ -66,8 +66,16 @@ describe("SelectedEntityPanel", () => {
     expect(lodgeMarkup).toContain("Role Mystic support: trains Acolytes and researches Aether Study I.");
     expect(towerMarkup).toContain("Role Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses.");
     expect(towerMarkup).toContain("Defense ready");
+    expect(towerMarkup).toContain("Repair Full health");
     expect(towerMarkup).toContain("Research idle");
     expect(towerMarkup).not.toContain("Queue idle");
+  });
+
+  it("shows damaged completed buildings can be repaired by a Worker", () => {
+    const markup = renderSelectionSummary(fakeBuilding("barracks", "barracks", { hp: 420, maxHp: 600 }), []);
+
+    expect(markup).toContain("HP 420/600");
+    expect(markup).toContain("Repair Damaged - select a Worker or right-click with a Worker");
   });
 });
 
@@ -93,6 +101,8 @@ function fakeBuilding(
     constructionStatusDetail?: string;
     assignedWorkerName?: string;
     underConstruction?: boolean;
+    hp?: number;
+    maxHp?: number;
   } = {}
 ): Building {
   const definition = BUILDING_BY_ID[buildingId];
@@ -108,8 +118,8 @@ function fakeBuilding(
     rallyPoint: undefined,
     trainingQueue: [],
     upgradeQueue: [],
-    hp: 100,
-    maxHp: 100,
+    hp: options.hp ?? 100,
+    maxHp: options.maxHp ?? 100,
     armor: 1,
     constructionProgress: options.constructionProgress ?? 1,
     constructionStatusDetail: options.constructionStatusDetail,

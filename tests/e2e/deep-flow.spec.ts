@@ -2502,6 +2502,120 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toBeEnabled();
   });
 
+  test("Worker repairs a damaged friendly completed building through repair command UI @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Worker Repair QA");
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker repair");
+    const barracksId = await placePlayerBuildingFromScene(page, "barracks");
+    await completePlayerBuilding(page, "barracks");
+
+    const damagedState = await page.evaluate(
+      ({ workerId, targetBuildingId }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive()) {
+          throw new Error("BattleScene is not active.");
+        }
+        const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
+        const barracks = scene.buildings.find((building: any) => building.id === targetBuildingId && building.alive);
+        if (!worker || !barracks || !barracks.isCompleted()) {
+          throw new Error("Expected a trained Worker and completed Barracks before repair coverage.");
+        }
+        worker.setPosition(
+          barracks.position.x - barracks.definition.size.width / 2 - worker.radius - 18,
+          barracks.position.y
+        );
+        worker.moveTarget = undefined;
+        worker.attackTargetId = undefined;
+        worker.attackMove = false;
+        worker.activeRepairTargetId = undefined;
+        worker.pausedRepairTargetId = undefined;
+        barracks.hp = Math.max(1, barracks.maxHp - 180);
+        barracks.updateHealthBar?.();
+        scene.selectionSystem.setSelection([worker]);
+        scene.cameraSystem.centerOn(barracks.position);
+        scene.refreshBattleHud?.(0);
+        return {
+          hp: barracks.hp,
+          maxHp: barracks.maxHp
+        };
+      },
+      { workerId: trainedWorker.id, targetBuildingId: barracksId }
+    );
+
+    await expect(page.locator(".side-panel")).toContainText("Worker");
+    const repairButton = page.locator(`button[data-action='repair'][data-id='${barracksId}']`);
+    await expect(repairButton).toBeEnabled();
+    await expect(repairButton).toContainText("Repair Barracks");
+    await expect(repairButton).toContainText(`Damaged: ${damagedState.hp}/${damagedState.maxHp} HP`);
+
+    await clickBattleCommandUntilEffect(
+      () => repairButton,
+      "deep-flow Worker repair Barracks command",
+      async () => {
+        await page.waitForFunction(
+          ({ workerId, targetBuildingId }) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+            return worker?.activeRepairTargetId === targetBuildingId;
+          },
+          { workerId: trainedWorker.id, targetBuildingId: barracksId }
+        );
+      },
+      async () => selectWorkerFromScene(page, trainedWorker.id)
+    );
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Repairing");
+
+    const repairProgress = await page.evaluate(
+      ({ workerId, targetBuildingId, beforeHp }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        if (!scene?.scene.isActive()) {
+          throw new Error("BattleScene is not active.");
+        }
+        const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
+        const barracks = scene.buildings.find((building: any) => building.id === targetBuildingId && building.alive);
+        if (!worker || !barracks) {
+          throw new Error("Expected Worker and damaged Barracks during repair coverage.");
+        }
+        scene.repairSystem.update(3);
+        const afterRepair = barracks.hp;
+        worker.commandMove({ x: barracks.position.x + 240, y: barracks.position.y - 170 }, false);
+        scene.repairSystem.update(3);
+        const afterMoveAway = barracks.hp;
+        worker.commandMove(
+          { x: barracks.position.x - barracks.definition.size.width / 2 - worker.radius - 18, y: barracks.position.y },
+          false
+        );
+        worker.setPosition(
+          barracks.position.x - barracks.definition.size.width / 2 - worker.radius - 18,
+          barracks.position.y
+        );
+        scene.repairSystem.update(3);
+        scene.selectionSystem.setSelection([worker]);
+        scene.refreshBattleHud?.(0);
+        return {
+          beforeHp,
+          afterRepair,
+          afterMoveAway,
+          afterReturn: barracks.hp,
+          activeRepairTargetId: worker.activeRepairTargetId,
+          pausedRepairTargetId: worker.pausedRepairTargetId
+        };
+      },
+      { workerId: trainedWorker.id, targetBuildingId: barracksId, beforeHp: damagedState.hp }
+    );
+
+    expect(repairProgress.afterRepair).toBeGreaterThan(repairProgress.beforeHp);
+    expect(repairProgress.afterMoveAway).toBe(repairProgress.afterRepair);
+    expect(repairProgress.afterReturn).toBeGreaterThan(repairProgress.afterMoveAway);
+    expect(repairProgress.activeRepairTargetId).toBe(barracksId);
+    expect(repairProgress.pausedRepairTargetId).toBeUndefined();
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Repairing");
+
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator(".side-panel")).toContainText("Repair Damaged - select a Worker or right-click with a Worker");
+  });
+
   test("Worker move-away pauses construction and base-cluster units keep moving @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Worker pause and pathing QA");

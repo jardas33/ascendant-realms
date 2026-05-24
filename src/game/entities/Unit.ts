@@ -34,6 +34,8 @@ export class Unit extends BaseEntity {
   attackMove = false;
   activeConstructionSiteId?: string;
   pausedConstructionSiteId?: string;
+  activeRepairTargetId?: string;
+  pausedRepairTargetId?: string;
   behaviourMode: BehaviourMode = DEFAULT_BEHAVIOUR_MODE;
   moveOrderCombatSuppressionSeconds = 0;
   attackCooldownRemaining = 0;
@@ -114,6 +116,7 @@ export class Unit extends BaseEntity {
 
   commandMove(target: Position, attackMove = false): void {
     this.pauseConstructionWork();
+    this.pauseRepairWork();
     this.moveTarget = { ...target };
     this.attackTargetId = undefined;
     this.attackTargetLabel = undefined;
@@ -123,6 +126,7 @@ export class Unit extends BaseEntity {
 
   commandAttack(targetId: string, targetLabel?: string): void {
     this.pauseConstructionWork();
+    this.pauseRepairWork();
     this.attackTargetId = targetId;
     this.attackTargetLabel = targetLabel;
     this.attackMove = true;
@@ -130,6 +134,7 @@ export class Unit extends BaseEntity {
   }
 
   commandConstructionMove(target: Position, siteId: string): void {
+    this.pauseRepairWork();
     this.activeConstructionSiteId = siteId;
     this.pausedConstructionSiteId = undefined;
     this.moveTarget = { ...target };
@@ -139,8 +144,37 @@ export class Unit extends BaseEntity {
   }
 
   markConstructionWork(siteId: string): void {
+    this.pauseRepairWork();
     this.activeConstructionSiteId = siteId;
     this.pausedConstructionSiteId = undefined;
+  }
+
+  commandRepairMove(target: Position, repairTargetId: string): void {
+    this.pauseConstructionWork();
+    this.activeRepairTargetId = repairTargetId;
+    this.pausedRepairTargetId = undefined;
+    this.moveTarget = { ...target };
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+  }
+
+  markRepairWork(repairTargetId: string): void {
+    this.pauseConstructionWork();
+    this.activeRepairTargetId = repairTargetId;
+    this.pausedRepairTargetId = undefined;
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+  }
+
+  clearRepairWork(repairTargetId?: string): void {
+    if (!repairTargetId || this.activeRepairTargetId === repairTargetId) {
+      this.activeRepairTargetId = undefined;
+    }
+    if (!repairTargetId || this.pausedRepairTargetId === repairTargetId) {
+      this.pausedRepairTargetId = undefined;
+    }
   }
 
   private pauseConstructionWork(): void {
@@ -148,6 +182,13 @@ export class Unit extends BaseEntity {
       this.pausedConstructionSiteId = this.activeConstructionSiteId;
     }
     this.activeConstructionSiteId = undefined;
+  }
+
+  private pauseRepairWork(): void {
+    if (this.activeRepairTargetId) {
+      this.pausedRepairTargetId = this.activeRepairTargetId;
+    }
+    this.activeRepairTargetId = undefined;
   }
 
   applyDamageBuff(multiplier: number, duration: number): void {

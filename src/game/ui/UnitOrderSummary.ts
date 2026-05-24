@@ -6,6 +6,8 @@ export interface UnitOrderState {
   attackTargetLabel?: string;
   moveTarget?: Position;
   attackMove?: boolean;
+  activeRepairTargetId?: string;
+  pausedRepairTargetId?: string;
   moveOrderCombatSuppressionSeconds?: number;
   behaviourMode?: BehaviourMode;
 }
@@ -31,6 +33,22 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
       label: "Attack-moving",
       detail: "Moving while engaging enemies along the route.",
       tone: "active"
+    };
+  }
+
+  if (unit.activeRepairTargetId) {
+    return {
+      label: "Repairing",
+      detail: "Restoring a friendly completed building; Worker must stay near the footprint.",
+      tone: "active"
+    };
+  }
+
+  if (unit.pausedRepairTargetId) {
+    return {
+      label: "Repair Paused",
+      detail: "Move the Worker back near the damaged building or issue Repair again to resume.",
+      tone: "neutral"
     };
   }
 

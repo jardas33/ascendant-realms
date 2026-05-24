@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.20.1 tech tree closeout and polish
+Updated: 2026-05-24 v0.21 worker repair foundation
+
+## v0.21 Worker Repair Foundation - 2026-05-24
+
+Scope: add the first safe Worker repair action for damaged friendly completed buildings. This pass does not add harvesting, resource-dropoff economy, enemy repair AI, enemy construction AI, multiple-worker acceleration, save migration, new maps/factions/units/buildings, runtime art/assets, broad AI/pathing rewrite, global rebalance, Patrol, or formations.
+
+Baseline:
+
+- Starting commit: `1ae687e`, `Checkpoint v0.20.1 tech tree closeout and polish`.
+- Starting package: `artifacts/playtest/ascendant-realms-private-playtest-1ae687e`.
+- Branch was clean and synced with `origin/main`.
+
+Included work:
+
+- Added `docs/V021_WORKER_REPAIR_FOUNDATION_SPEC.md`.
+- Added `docs/V021_IMPLEMENTATION_REPORT.md`.
+- Added Worker repair intent state separate from construction, move, and attack orders.
+- Added `RepairSystem` for validation, Worker approach, pause/resume, and slow HP restoration.
+- Allowed Workers to repair damaged friendly completed Command Hall, Barracks, Mystic Lodge, and Watchtower buildings.
+- Blocked repair for enemy buildings, incomplete buildings, and full-health buildings.
+- Kept incomplete buildings on construction behavior only.
+- Made explicit move and attack orders pause repair without pulling Workers back.
+- Added Worker repair command buttons and damaged/full-health repair status to existing HUD surfaces.
+- Added focused unit/UI/package and hosted deep-battle repair coverage.
+
+Verification and closeout so far:
+
+```text
+npm exec tsc -- --noEmit PASS.
+npm exec vitest run src/game/systems/RepairSystem.test.ts src/game/systems/BuildingSystem.test.ts src/game/ui/UnitOrderSummary.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts -- --reporter=dot PASS, 5 files / 38 tests.
+npm exec vitest run src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 1 file / 3 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker repairs a damaged friendly completed building" --reporter=line PASS, 1 hosted repair proxy test.
+npm test PASS, 64 files / 478 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 20 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-1ae687e-dirty generated.
+npm run verify:playtest-package PASS, 56 checks.
+git diff --check PASS.
+```
+
+Closeout note: commit, then regenerate and verify a clean package from the final v0.21 commit.
 
 ## v0.20.1 Tech Tree Closeout And Polish - 2026-05-24
 

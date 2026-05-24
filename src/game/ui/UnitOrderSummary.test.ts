@@ -43,6 +43,23 @@ describe("UnitOrderSummary", () => {
     });
   });
 
+  it("describes active and paused Worker repair orders", () => {
+    expect(describeUnitOrder({ activeRepairTargetId: "player-barracks", moveTarget: { x: 400, y: 600 } })).toMatchObject({
+      label: "Repairing",
+      detail: expect.stringContaining("Worker must stay near")
+    });
+    expect(
+      describeUnitOrder({
+        pausedRepairTargetId: "player-barracks",
+        moveTarget: { x: 120, y: 120 },
+        moveOrderCombatSuppressionSeconds: 0.5
+      })
+    ).toMatchObject({
+      label: "Repair Paused",
+      detail: expect.stringContaining("issue Repair again")
+    });
+  });
+
   it("keeps explicit move and attack copy ahead of behaviour mode copy", () => {
     expect(
       describeUnitOrder({

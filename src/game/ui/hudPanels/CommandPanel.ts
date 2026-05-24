@@ -105,6 +105,29 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     })
     .join("") : "";
 
+  const repairButtons =
+    selectedOne instanceof Unit && selectedOne.definition.id === "worker"
+      ? snapshot.repairTargets
+          .map((target) =>
+            renderCommandButton({
+              action: "repair",
+              verb: "Repair",
+              id: target.id,
+              sourceId: selectedOne.id,
+              name: target.name,
+              detail: target.isRepairable
+                ? `${target.status}. Cost: none`
+                : `Already repaired. HP ${Math.ceil(target.hp)}/${target.maxHp}`,
+              description: target.isRepairable
+                ? "Worker must stay near the building; move or attack orders pause repair."
+                : "Full health.",
+              effect: target.isRepairable ? "Effect: restores building HP slowly over time." : undefined,
+              locked: !target.isRepairable
+            })
+          )
+          .join("")
+      : "";
+
   const sections = [];
   if (selectedOne instanceof Building) {
     sections.push(`<div class="action-group"><strong>Role</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p></div>`);
@@ -114,6 +137,9 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
   if (buildButtons) {
     sections.push(`<div class="action-group"><strong>Build</strong>${buildButtons}</div>`);
+  }
+  if (repairButtons) {
+    sections.push(`<div class="action-group"><strong>Repair</strong>${repairButtons}</div>`);
   }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
@@ -129,7 +155,7 @@ function formatCommandDetail(cost: BuildingDefinition["cost"], lockReason?: stri
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
 
 function renderCommandButton(options: {
-  action: "build" | "train" | "upgrade";
+  action: "build" | "train" | "upgrade" | "repair";
   verb: string;
   id: string;
   sourceId: string;

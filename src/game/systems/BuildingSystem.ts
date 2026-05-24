@@ -27,7 +27,7 @@ interface BuildingSystemMessageOptions {
   priority?: "normal" | "command" | "pressure" | "objective";
 }
 
-const CONSTRUCTION_WORKER_FOOTPRINT_RANGE = 64;
+export const BUILDING_WORKER_FOOTPRINT_RANGE = 64;
 const CONSTRUCTION_PATHFINDING_CELL_SIZE = DEFAULT_PATHFINDING_CELL_SIZE / 2;
 
 export class BuildingSystem {
@@ -185,7 +185,7 @@ export class BuildingSystem {
     const movingAwayFromWorkRange =
       worker.pausedConstructionSiteId === building.id &&
       worker.moveTarget !== undefined &&
-      !isPointInConstructionRange(building, worker.moveTarget);
+      !isPointInBuildingWorkRange(building, worker.moveTarget);
     if (movingAwayFromWorkRange) {
       building.constructionProgressing = false;
       building.constructionStatusDetail = "Paused - Worker away";
@@ -288,13 +288,13 @@ export function constructionWorkerRange(building: Building, worker: Unit): numbe
 }
 
 export function isWorkerInConstructionRange(building: Building, worker: Unit): boolean {
-  return isPointInConstructionRange(building, worker.position);
+  return isPointInBuildingWorkRange(building, worker.position);
 }
 
-function isPointInConstructionRange(building: Building, point: Position): boolean {
+export function isPointInBuildingWorkRange(building: Building, point: Position): boolean {
   const dx = Math.max(Math.abs(point.x - building.position.x) - building.definition.size.width / 2, 0);
   const dy = Math.max(Math.abs(point.y - building.position.y) - building.definition.size.height / 2, 0);
-  return Math.max(dx, dy) <= CONSTRUCTION_WORKER_FOOTPRINT_RANGE;
+  return Math.max(dx, dy) <= BUILDING_WORKER_FOOTPRINT_RANGE;
 }
 
 export function findConstructionApproachPoint(options: {

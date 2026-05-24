@@ -88,6 +88,15 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
       <span>Armor ${selectedOne.armor}</span>
       <span>Role ${escapeHtml(formatBuildingRole(selectedOne.definition))}</span>
       ${
+        selectedOne.isCompleted() && selectedOne.team === "player"
+          ? `<span>Repair ${
+              selectedOne.hp < selectedOne.maxHp
+                ? "Damaged - select a Worker or right-click with a Worker"
+                : "Full health"
+            }</span>`
+          : ""
+      }
+      ${
         selectedOne.isUnderConstruction()
           ? `<span>Status ${escapeHtml(selectedOne.constructionStatusDetail ?? "Under construction")}</span>
              <span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>

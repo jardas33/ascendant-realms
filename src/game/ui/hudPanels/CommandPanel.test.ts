@@ -133,6 +133,38 @@ describe("CommandPanel", () => {
     expect(markup).not.toContain('data-action="upgrade"');
   });
 
+  it("renders Worker repair commands for damaged completed friendly buildings", () => {
+    const worker = fakeWorker();
+
+    const markup = renderCommandActions(
+      worker,
+      fakeSnapshot(["command_hall"], undefined, [], [
+        {
+          id: "player-barracks",
+          name: "Barracks",
+          hp: 420,
+          maxHp: 600,
+          isRepairable: true,
+          status: "Damaged: 420/600 HP"
+        },
+        {
+          id: "player-command-hall",
+          name: "Command Hall",
+          hp: 1450,
+          maxHp: 1450,
+          isRepairable: false,
+          status: "Full health"
+        }
+      ])
+    );
+
+    expect(markup).toContain('data-testid="command-repair-player-barracks"');
+    expect(markup).toContain("Repair Barracks");
+    expect(markup).toContain("Damaged: 420/600 HP. Cost: none");
+    expect(markup).toContain("move or attack orders pause repair");
+    expect(markup).toContain("Already repaired. HP 1450/1450");
+  });
+
   it("keeps Worker building costs visible when a structure is unaffordable", () => {
     const worker = fakeWorker();
 
@@ -178,7 +210,8 @@ function fakeWorker(): Unit {
 function fakeSnapshot(
   completedBuildingIds: string[],
   resources = { crowns: 999, stone: 999, iron: 999, aether: 999 },
-  researchedUpgradeIds: string[] = []
+  researchedUpgradeIds: string[] = [],
+  repairTargets: HUDSnapshot["repairTargets"] = []
 ): HUDSnapshot {
   return {
     resources,
@@ -192,6 +225,7 @@ function fakeSnapshot(
       researchedUpgradeIds: new Set<string>(researchedUpgradeIds),
       heroLevel: 1
     },
+    repairTargets,
     minimap: {
       mapWidth: 1,
       mapHeight: 1,

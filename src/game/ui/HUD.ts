@@ -84,6 +84,10 @@ export class HUD {
         callbacks.onCancelUpgrade(button.dataset.sourceId ?? "", Number(button.dataset.index ?? 0));
         handled = true;
       }
+      if (action === "repair") {
+        callbacks.onRepair(id, button.dataset.sourceId ?? "");
+        handled = true;
+      }
       if (action === "ability") {
         callbacks.onAbility(id);
         handled = true;

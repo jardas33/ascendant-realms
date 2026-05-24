@@ -4,6 +4,7 @@ import type { Building } from "../../entities/Building";
 import type { Unit } from "../../entities/Unit";
 import type { BehaviourMode } from "../../systems/BehaviourModeSystem";
 import type { TechState } from "../../systems/PrerequisiteSystem";
+import type { RepairTargetSummary } from "../../systems/RepairSystem";
 import type { TutorialStepViewModel } from "../../tutorial/TutorialStepModel";
 import type { MinimapSnapshot } from "../MinimapView";
 
@@ -13,6 +14,7 @@ export interface HUDCallbacks {
   onCancelTrain: (sourceBuildingId: string, queueIndex: number) => void;
   onUpgrade: (upgradeId: string, sourceBuildingId: string) => void;
   onCancelUpgrade: (sourceBuildingId: string, queueIndex: number) => void;
+  onRepair: (targetBuildingId: string, sourceUnitId: string) => void;
   onAbility: (abilityId: string) => void;
   onBehaviourMode: (mode: BehaviourMode) => void;
   onTutorialNext: () => void;
@@ -32,6 +34,7 @@ export interface HUDSnapshot {
   hint?: string;
   tutorial?: TutorialStepViewModel;
   techState: TechState;
+  repairTargets: RepairTargetSummary[];
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
   pauseMenu?: HUDPauseMenuSnapshot;

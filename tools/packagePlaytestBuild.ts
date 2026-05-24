@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.20.1 tech tree closeout and polish";
+const CHECKPOINT = "v0.21 worker repair foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -78,6 +78,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V020_TECH_TREE_FOUNDATION_SPEC.md", join(packageDir, "V020_TECH_TREE_FOUNDATION_SPEC.md"));
   await copyMarkdown("docs/V020_IMPLEMENTATION_REPORT.md", join(packageDir, "V020_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md", join(packageDir, "V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md"));
+  await copyMarkdown("docs/V021_WORKER_REPAIR_FOUNDATION_SPEC.md", join(packageDir, "V021_WORKER_REPAIR_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V021_IMPLEMENTATION_REPORT.md", join(packageDir, "V021_IMPLEMENTATION_REPORT.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -161,7 +163,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.20.1 tech-tree closeout retest, start with V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md, then use V020_TECH_TREE_FOUNDATION_SPEC.md and V020_IMPLEMENTATION_REPORT.md for the underlying tech-tree details. Focus on: Command Hall still trains Workers only and owns only core/base research; Workers build Barracks, Mystic Lodge, and Watchtower; incomplete buildings stay inactive; completed Barracks exposes Militia/Ranger and existing basic troop upgrades; completed Mystic Lodge exposes Acolyte and Aether Study I; completed Watchtower attacks defensively and exposes only simple defensive research gated by Camp Foundations I; upgrade buttons show owner, requirements, cost, effect, and researched state; v0.18.3 Worker pause/resume plus base-cluster pathing stay stable. Do not judge harvesting, repair, enemy construction, save persistence, large tech rosters, new content, or final art in this build.
+For the v0.21 Worker repair retest, start with V021_WORKER_REPAIR_FOUNDATION_SPEC.md and V021_IMPLEMENTATION_REPORT.md, then use V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md for the current production/tech baseline. Focus on: Command Hall still trains Workers only; Workers still build Barracks, Mystic Lodge, and Watchtower; construction pause/resume still works; damaged friendly completed buildings can be repaired by a nearby Worker; explicit move or attack pauses repair without pulling the Worker back; moving back or reissuing Repair resumes repair; enemy, incomplete, and full-health buildings do not start repair; completed Barracks, Mystic Lodge, Watchtower, and upgrade roles remain stable. Do not judge harvesting, resource-dropoff economy, repair cost balance, enemy repair/construction AI, save persistence, new content, or final art in this build.
 
 ## Known Warning
 
