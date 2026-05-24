@@ -26,11 +26,11 @@ This checkpoint expands the v0.18 Worker construction foundation to the existing
 ### Verification
 
 - Passed: TypeScript no-emit, focused Worker/package/UI/runtime tests, production build with the known Vite chunk-size warning, targeted hosted Worker regressions, `npm test` with 61 files / 442 tests, content validation, art-intake validation, simulator with 255 runs, control lab normal/extended plus 1658-check verifier, fast smoke, full smoke, all six hosted release-matrix groups, local full release with 82 tests, and production-preview smoke with 0 browser console errors.
-- Pending after commit: clean package verification and GitHub Actions release matrix observation.
+- Completed after commit: clean package `ascendant-realms-private-playtest-a20da05` verified with 44 checks, package server boot sanity passed at `http://127.0.0.1:4174/`, and GitHub Actions push run #107 passed Fast confidence. Release matrix, simulator, optional visual QA, and full release e2e jobs were skipped on push by workflow rules; release-matrix evidence is the local production-preview matrix above.
 
 ### Next
 
-- Generate and verify the clean package after commit, then relaunch it for retesting Worker-built Barracks, Mystic Lodge, and Watchtower.
+- Send the clean package for focused retesting of Worker-built Barracks, Mystic Lodge, and Watchtower.
 
 ## v0.18 Worker Construction Foundation - 2026-05-23
 

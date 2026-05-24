@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-23 v0.18.2 worker construction expansion local verification complete
+Last updated: 2026-05-24 v0.18.2 worker construction expansion closeout complete
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.18.2 Worker Construction Expansion - 2026-05-23
 
-Status: v0.18.2 Worker construction expansion is implemented and locally verified. Clean commit/package and GitHub Actions closeout happen after this handoff update.
+Status: v0.18.2 Worker construction expansion is implemented, locally verified, packaged, pushed, and closed out.
 
 Goal:
 
@@ -31,7 +31,7 @@ Runtime/UI summary:
 - Selected construction-site copy now reads `Assigned Worker`.
 - Tutorial remains on the Worker Barracks route and gains no new objectives.
 
-Verification so far:
+Verification and closeout:
 
 ```text
 npx vitest run src/game/playtest/PlaytestPackageValidation.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/CombatSystem.test.ts src/game/systems/BuildingSystem.test.ts --reporter=dot PASS, 6 files / 49 tests.
@@ -57,7 +57,15 @@ npm run test:e2e:release PASS, 82 tests in 39.3m.
 npm run smoke:preview PASS at http://127.0.0.1:4173/ with 0 browser console errors.
 ```
 
-Pending closeout: `git diff --check`, clean commit/push, clean package generation/verification after commit, and GitHub Actions release matrix observation after push.
+Post-commit closeout:
+
+- `git diff --check` passed before commit.
+- Implementation commit `a20da05` (`Checkpoint v0.18.2 worker construction expansion`) was pushed to `origin/main`.
+- Clean package `artifacts/playtest/ascendant-realms-private-playtest-a20da05` was generated from a clean tree and passed package verification with 44 checks.
+- The package was served locally at `http://127.0.0.1:4174/`; Browser boot sanity reached the main menu, rendered a 1280x720 canvas, and reported no browser console errors.
+- GitHub Actions push run #107 / `26351035731` completed successfully for commit `a20da05`. The Fast confidence job passed. Release matrix, simulator, optional visual QA, and full release e2e jobs were skipped on push by workflow rules, so the release-matrix evidence for this checkpoint is the local production-preview matrix above.
+
+Next sensible step: give Emmanuel the current clean package for a focused retest of Worker-built Barracks, Mystic Lodge, and Watchtower. Do not broaden into harvesting, repair, enemy construction AI, save migration, new art/assets, Patrol, formations, or global economy rebalance unless the next goal explicitly opens that scope.
 
 ## v0.18 Worker Construction Foundation - 2026-05-23
 
