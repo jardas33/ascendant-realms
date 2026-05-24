@@ -63,6 +63,7 @@ Known current realities:
 - v0.20 adds the first small building-owned tech-tree layer: Command Hall core upgrade `Camp Foundations I`, Barracks-owned existing troop upgrades, Mystic Lodge `Aether Study I`, and Watchtower defensive upgrade `Sentry Bracing I`. Rerun GitHub Actions after push because runtime upgrade data, upgrade effects, and upgrade UI changed.
 - v0.20.1 closes out v0.20 without runtime changes: `ae3d80d` was pushed, Fast confidence passed, package metadata now names the closeout checkpoint, and a manual workflow_dispatch release matrix with `run_release_matrix=true` remains recommended for exact remote hosted/simulator evidence.
 - v0.21 adds the first safe Worker repair foundation: Workers can repair damaged friendly completed buildings, explicit move/attack orders pause repair intent, moving back or reissuing Repair resumes, incomplete buildings remain construction-only, and enemy/full-health buildings cannot start repair. Rerun GitHub Actions after push because runtime Worker action and HUD behavior changed.
+- v0.21.1 closes out v0.21 without runtime changes: `79d038b` was pushed, Fast confidence passed, package metadata now names the closeout checkpoint, and a manual workflow_dispatch release matrix with `run_release_matrix=true` remains recommended for exact remote hosted/simulator evidence because push workflow rules skip those lanes.
 
 ## Required Automated Checks
 

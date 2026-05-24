@@ -1,5 +1,35 @@
 # Changelog
 
+## v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
+
+This checkpoint closes out v0.21 by pushing the Worker repair foundation, recording remote CI status, and refreshing package metadata. It does not start v0.22 and does not add new gameplay.
+
+### Included
+
+- Pushed `79d038b`, `Checkpoint v0.21 worker repair foundation`, to `origin/main`.
+- Added `docs/V0211_WORKER_REPAIR_CLOSEOUT.md`.
+- Updated package metadata and package validation to name `v0.21.1 worker repair closeout and CI verification`.
+- Added the v0.21.1 closeout doc to private playtest packages.
+- Recorded that push workflow rules skip the release matrix/simulator unless CI Release Matrix Dry Run is manually dispatched with `run_release_matrix=true`.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+
+### Verification
+
+- Passed: GitHub Actions push Fast confidence for `79d038b`, focused package-validation test, `npm test` with 64 files / 478 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke, dirty playtest package generation, and dirty package verification with 57 checks.
+- Remote release-matrix note: push workflow rules skipped simulator, hosted release groups, optional visual QA, and full release. Manual workflow_dispatch with `run_release_matrix=true` remains the exact remote hosted/simulator follow-up if needed.
+
+### Next
+
+- Commit the closeout metadata, regenerate/verify a clean v0.21.1 package from the final commit, and use it for Emmanuel's Worker repair retest.
+
 ## v0.21 Worker Repair Foundation - 2026-05-24
 
 This checkpoint adds the first narrow Worker repair foundation without opening harvesting, resource-dropoff economy, enemy repair AI, or a broader Worker system.

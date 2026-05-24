@@ -1,12 +1,57 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.21 worker repair foundation
+Last updated: 2026-05-24 v0.21.1 worker repair closeout and CI verification
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
+
+Status: v0.21 was pushed to `origin/main` at `79d038b`. v0.21.1 is a closeout/package metadata pass only; it does not change runtime gameplay.
+
+Baseline:
+
+- Starting commit: `79d038b`, `Checkpoint v0.21 worker repair foundation`.
+- Starting branch state: clean `main`, ahead of `origin/main` by 1 commit.
+- `79d038b` was pushed to `origin/main`, then the branch returned clean/synced.
+
+Remote CI:
+
+- GitHub Actions push run `26374133694` on `main` / `79d038b`: Fast confidence passed.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact `79d038b` workflow_dispatch release matrix was not triggered from this environment because the local `gh` CLI is unavailable and the available GitHub connector does not expose workflow_dispatch creation. Run CI Release Matrix Dry Run manually on `main` with `run_release_matrix=true` if exact remote hosted/simulator evidence is needed.
+
+Docs/package metadata:
+
+- Added `docs/V0211_WORKER_REPAIR_CLOSEOUT.md`.
+- Package checkpoint string is now `v0.21.1 worker repair closeout and CI verification`.
+- Private playtest package validation now requires the v0.21.1 closeout doc.
+
+Runtime/UI summary:
+
+- No runtime gameplay, balance, save, art, pathing, AI, map, faction, unit, building, or repair-rule changes were made in v0.21.1.
+- v0.21 Worker repair remains the current runtime change: damaged friendly completed buildings can be repaired by Workers; move/attack pauses repair; moving back or reissuing Repair resumes; enemy, incomplete, and full-health buildings do not start repair.
+
+Verification:
+
+```text
+npm exec vitest run src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 1 file / 3 tests.
+npm test PASS, 64 files / 478 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-79d038b-dirty generated.
+npm run verify:playtest-package PASS, 57 checks.
+git diff --check PASS.
+```
+
+Closeout note: rerun focused package-validation tests after the metadata/doc changes, run package generation and package verification, `git diff --check`, commit, regenerate/verify the clean package from the final commit, confirm it does not end in `-dirty`, then push the v0.21.1 closeout commit.
+
+Emmanuel retest focus: Command Hall Worker-only; Workers build Barracks/Mystic Lodge/Watchtower; construction pause/resume and base-cluster pathing stay stable; damaged friendly completed buildings repair while a Worker is alive and near the footprint; explicit move/attack pauses repair without magneting; moving back or issuing Repair again resumes; enemy buildings cannot be repaired; full-health buildings show already repaired/full health; incomplete buildings remain construction-only; completed Barracks, Mystic Lodge, Watchtower, and upgrade roles remain stable.
 
 ## Current v0.21 Worker Repair Foundation - 2026-05-24
 

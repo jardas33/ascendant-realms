@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.21 worker repair foundation",
+          checkpoint: "v0.21.1 worker repair closeout and CI verification",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -104,6 +104,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0201_TECH_TREE_CLOSEOUT_AND_POLISH.md", sizeBytes: 20, textContent: "Tech tree closeout" },
       { path: "V021_WORKER_REPAIR_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Worker repair spec" },
       { path: "V021_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Worker repair report" },
+      { path: "V0211_WORKER_REPAIR_CLOSEOUT.md", sizeBytes: 20, textContent: "Worker repair closeout" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

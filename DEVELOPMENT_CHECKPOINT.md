@@ -1,6 +1,45 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.21 worker repair foundation
+Updated: 2026-05-24 v0.21.1 worker repair closeout and CI verification
+
+## v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
+
+Scope: close out v0.21 by pushing the Worker repair foundation, inspecting GitHub Actions, refreshing package metadata, and documenting the final repair retest focus. This pass does not add harvesting, repair expansion, enemy repair AI, enemy construction AI, new units/buildings/maps/factions, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or test weakening.
+
+Baseline:
+
+- Starting commit: `79d038b`, `Checkpoint v0.21 worker repair foundation`.
+- Starting branch state: clean `main`, ahead of `origin/main` by 1 commit.
+- `79d038b` was pushed to `origin/main`; `git status --short --branch` and `git rev-list --left-right --count origin/main...HEAD` returned clean/synced.
+
+Included work:
+
+- Added `docs/V0211_WORKER_REPAIR_CLOSEOUT.md`.
+- Updated package metadata and package validation to name `v0.21.1 worker repair closeout and CI verification`.
+- Included the v0.21.1 closeout doc in private playtest packages.
+- Made no runtime, balance, save, art, pathing, AI, map, faction, unit, building, or repair-rule changes.
+
+Remote CI:
+
+- GitHub Actions push run `26374133694` on `main` / `79d038b`: Fast confidence passed.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact `79d038b` workflow_dispatch release matrix remains recommended if remote simulator/hosted evidence is required; this environment has no `gh` CLI and the available GitHub connector does not expose workflow_dispatch creation.
+
+Verification and closeout so far:
+
+```text
+npm exec vitest run src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 1 file / 3 tests.
+npm test PASS, 64 files / 478 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-79d038b-dirty generated.
+npm run verify:playtest-package PASS, 57 checks.
+git diff --check PASS.
+```
+
+Closeout note: after this metadata update, rerun focused package-validation tests, package, verify package, `git diff --check`, commit, regenerate/verify the clean package from the final commit, and push the v0.21.1 closeout commit.
 
 ## v0.21 Worker Repair Foundation - 2026-05-24
 
