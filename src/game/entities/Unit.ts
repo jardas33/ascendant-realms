@@ -32,6 +32,8 @@ export class Unit extends BaseEntity {
   attackTargetLabel?: string;
   moveTarget?: Position;
   attackMove = false;
+  activeConstructionSiteId?: string;
+  pausedConstructionSiteId?: string;
   behaviourMode: BehaviourMode = DEFAULT_BEHAVIOUR_MODE;
   moveOrderCombatSuppressionSeconds = 0;
   attackCooldownRemaining = 0;
@@ -111,6 +113,7 @@ export class Unit extends BaseEntity {
   }
 
   commandMove(target: Position, attackMove = false): void {
+    this.pauseConstructionWork();
     this.moveTarget = { ...target };
     this.attackTargetId = undefined;
     this.attackTargetLabel = undefined;
@@ -119,10 +122,32 @@ export class Unit extends BaseEntity {
   }
 
   commandAttack(targetId: string, targetLabel?: string): void {
+    this.pauseConstructionWork();
     this.attackTargetId = targetId;
     this.attackTargetLabel = targetLabel;
     this.attackMove = true;
     this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
+  commandConstructionMove(target: Position, siteId: string): void {
+    this.activeConstructionSiteId = siteId;
+    this.pausedConstructionSiteId = undefined;
+    this.moveTarget = { ...target };
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+  }
+
+  markConstructionWork(siteId: string): void {
+    this.activeConstructionSiteId = siteId;
+    this.pausedConstructionSiteId = undefined;
+  }
+
+  private pauseConstructionWork(): void {
+    if (this.activeConstructionSiteId) {
+      this.pausedConstructionSiteId = this.activeConstructionSiteId;
+    }
+    this.activeConstructionSiteId = undefined;
   }
 
   applyDamageBuff(multiplier: number, duration: number): void {

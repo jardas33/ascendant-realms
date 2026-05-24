@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.18.2 worker construction expansion closeout complete
+Updated: 2026-05-24 v0.18.3 worker assignment and construction pathing fix verification complete
+
+## v0.18.3 Worker Assignment And Construction Pathing Fix - 2026-05-24
+
+Scope: fix the v0.18.2 Worker construction assignment and building-cluster pathing bugs from Emmanuel's `039fe64` mixed retest. This pass does not add v0.19 feature work, harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, visual overhaul, runtime art/assets, or broad economy rebalance.
+
+Baseline:
+
+- Starting commit: `039fe64`, `Document v0.18.2 worker construction closeout`.
+- Branch was clean and synced with `origin/main`.
+- Current clean package before this pass: `artifacts/playtest/ascendant-realms-private-playtest-039fe64`.
+
+Included work:
+
+- Added `docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md`.
+- Added `docs/V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md`.
+- Added separate Worker construction intent state so construction auto-move no longer looks like an ordinary player move order.
+- Explicit player move and attack orders pause the current construction assignment.
+- Assigned construction progresses only while the assigned Worker is alive and within valid footprint work range.
+- Moving the Worker back into range resumes construction.
+- Construction-site UI status now reports `Building` or `Paused - Worker away` using existing selected-entity UI surfaces.
+- Movement and construction approach routing use a finer path grid with exact terrain/static-obstacle checks, preserving solid blocker interiors while keeping visible open edge points reachable.
+- Added unit and hosted browser regression coverage for Worker move-away pause/resume, incomplete Watchtower behavior, and Command Hall + Barracks + Mystic Lodge + Watchtower movement/attack movement.
+
+Verification and closeout so far:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npx vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/CombatSystem.test.ts --reporter=dot PASS, 3 files / 47 tests.
+npx vitest run src/game/systems/PathfindingGrid.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/MovementSystem.test.ts --reporter=dot PASS, 3 files / 17 tests.
+npx vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/PathfindingGrid.test.ts src/game/systems/TrainingSystem.test.ts --reporter=dot PASS, 4 files / 25 tests.
+npm test PASS, 61 files / 450 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.8m after exact rerun; first attempt was a cold Vite dev-server boot timeout before Phaser reached the main menu.
+npm run test:e2e:smoke PASS, 14 tests in 9.3m after prewarming the dev server; the cold dev-server first test timed out before app boot, then the warmed rerun passed.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 18 tests in 8.9m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.3m.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty PASS, 46 checks.
+git diff --check PASS.
+```
+
+Post-commit handoff rule: generate and verify a clean package from the final commit before distributing the v0.18.3 retest build.
 
 ## v0.18.2 Worker Construction Expansion - 2026-05-23
 

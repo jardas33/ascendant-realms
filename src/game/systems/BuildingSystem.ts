@@ -28,6 +28,7 @@ interface BuildingSystemMessageOptions {
 }
 
 const CONSTRUCTION_WORKER_FOOTPRINT_RANGE = 64;
+const CONSTRUCTION_PATHFINDING_CELL_SIZE = DEFAULT_PATHFINDING_CELL_SIZE / 2;
 
 export class BuildingSystem {
   pendingBuildingId?: string;
@@ -181,8 +182,21 @@ export class BuildingSystem {
     }
 
     const closeEnough = isWorkerInConstructionRange(building, worker);
+    const movingAwayFromWorkRange =
+      worker.pausedConstructionSiteId === building.id &&
+      worker.moveTarget !== undefined &&
+      !isPointInConstructionRange(building, worker.moveTarget);
+    if (movingAwayFromWorkRange) {
+      building.constructionProgressing = false;
+      building.constructionStatusDetail = "Paused - Worker away";
+      return false;
+    }
     if (!closeEnough) {
       building.constructionProgressing = false;
+      if (worker.activeConstructionSiteId !== building.id) {
+        building.constructionStatusDetail = "Paused - Worker away";
+        return false;
+      }
       building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} traveling`;
       const approach = findConstructionApproachPoint({
         map: this.options.map,
@@ -190,12 +204,13 @@ export class BuildingSystem {
         worker,
         buildings: this.options.getBuildings()
       });
-      commandWorkerToConstructionApproach(worker, approach);
+      commandWorkerToConstructionApproach(worker, approach, building.id);
       return false;
     }
 
     building.constructionProgressing = true;
-    building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} building`;
+    worker.markConstructionWork(building.id);
+    building.constructionStatusDetail = "Building";
     return true;
   }
 
@@ -214,7 +229,7 @@ export class BuildingSystem {
       worker,
       buildings: this.options.getBuildings()
     });
-    commandWorkerToConstructionApproach(worker, approach);
+    commandWorkerToConstructionApproach(worker, approach, building.id);
     building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} assigned`;
   }
 
@@ -273,8 +288,12 @@ export function constructionWorkerRange(building: Building, worker: Unit): numbe
 }
 
 export function isWorkerInConstructionRange(building: Building, worker: Unit): boolean {
-  const dx = Math.max(Math.abs(worker.position.x - building.position.x) - building.definition.size.width / 2, 0);
-  const dy = Math.max(Math.abs(worker.position.y - building.position.y) - building.definition.size.height / 2, 0);
+  return isPointInConstructionRange(building, worker.position);
+}
+
+function isPointInConstructionRange(building: Building, point: Position): boolean {
+  const dx = Math.max(Math.abs(point.x - building.position.x) - building.definition.size.width / 2, 0);
+  const dy = Math.max(Math.abs(point.y - building.position.y) - building.definition.size.height / 2, 0);
   return Math.max(dx, dy) <= CONSTRUCTION_WORKER_FOOTPRINT_RANGE;
 }
 
@@ -299,7 +318,7 @@ export function findConstructionApproachPoint(options: {
     { x: building.position.x + halfWidth + clearance, y: building.position.y + halfHeight + clearance }
   ];
   const grid = PathfindingGrid.fromMap(options.map, {
-    cellSize: DEFAULT_PATHFINDING_CELL_SIZE,
+    cellSize: CONSTRUCTION_PATHFINDING_CELL_SIZE,
     staticObstacles: staticObstaclesForConstructionBuildings(options.buildings)
   });
   const valid = candidates
@@ -317,11 +336,12 @@ export function findConstructionApproachPoint(options: {
   return grid.findNearestWalkablePoint(worker.position, 6) ?? { ...worker.position };
 }
 
-function commandWorkerToConstructionApproach(worker: Unit, approach: Position): void {
+function commandWorkerToConstructionApproach(worker: Unit, approach: Position, siteId: string): void {
   if (worker.moveTarget && distance(worker.moveTarget, approach) <= 4) {
+    worker.markConstructionWork(siteId);
     return;
   }
-  worker.commandMove(approach, false);
+  worker.commandConstructionMove(approach, siteId);
 }
 
 function staticObstaclesForConstructionBuildings(buildings: Building[]): PathfindingStaticObstacle[] {

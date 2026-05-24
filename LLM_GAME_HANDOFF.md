@@ -1,12 +1,66 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.18.2 worker construction expansion closeout complete
+Last updated: 2026-05-24 v0.18.3 worker assignment and construction pathing fix verification complete
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.18.3 Worker Assignment And Pathing Fix - 2026-05-24
+
+Status: v0.18.3 Worker construction assignment, pause/resume, and building-cluster pathing fixes are implemented, locally verified, dirty-package verified, and diff-check clean before commit.
+
+Goal:
+
+- Fix Emmanuel's mixed retest of `ascendant-realms-private-playtest-039fe64`.
+- Stop assigned Workers from being pulled back like a magnet after explicit player move-away commands.
+- Pause construction unless the assigned Worker is alive and within valid footprint work range.
+- Let construction resume when the assigned Worker returns to range or construction intent is reissued.
+- Improve movement around compact Command Hall + Barracks + Mystic Lodge + Watchtower clusters without making buildings non-blocking.
+- Keep this as a bugfix pass only: no v0.19 work, harvesting, repair, multiple-worker acceleration, enemy construction AI, new content, save migration, runtime art/assets, broad rebalance, Patrol, or formations.
+
+Docs added:
+
+- `docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md`
+- `docs/V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md`
+
+Runtime/UI summary:
+
+- Workers now track construction intent separately from ordinary player move/attack commands.
+- Explicit player move and attack orders pause the current construction assignment instead of being overwritten by construction auto-return.
+- Construction progress runs only while the assigned Worker is alive and in work range.
+- A paused assigned site no longer auto-pulls the Worker back while the Worker is following an explicit move-away target.
+- Moving the Worker back into valid work range resumes construction.
+- Construction-site status now uses existing UI copy: `Building` and `Paused - Worker away`.
+- Movement and construction approach pathfinding use a finer grid, with exact terrain/static-obstacle checks so blocker interiors remain solid while open edge points in the same coarse cell stay reachable.
+
+Verification so far:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npx vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/CombatSystem.test.ts --reporter=dot PASS, 3 files / 47 tests.
+npx vitest run src/game/systems/PathfindingGrid.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/MovementSystem.test.ts --reporter=dot PASS, 3 files / 17 tests.
+npx vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/PathfindingGrid.test.ts src/game/systems/TrainingSystem.test.ts --reporter=dot PASS, 4 files / 25 tests.
+npm test PASS, 61 files / 450 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.8m after exact rerun; first attempt hit a cold Vite dev-server boot timeout before Phaser reached the main menu.
+npm run test:e2e:smoke PASS, 14 tests in 9.3m after prewarming the dev server; cold first-test app boot timed out before the warmed rerun passed.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 18 tests in 8.9m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.3m.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty PASS, 46 checks.
+git diff --check PASS.
+```
+
+Handoff rule: after the checkpoint commit, generate and verify a clean package from the final commit before sending Emmanuel the retest build.
+
+Emmanuel retest focus: train Worker, start Barracks/Mystic Lodge/Watchtower construction, move the assigned Worker away and confirm progress pauses without magnetic return, move the Worker back and confirm progress resumes, then test compact base-cluster movement and incomplete/completed Watchtower behavior.
 
 ## Current v0.18.2 Worker Construction Expansion - 2026-05-23
 

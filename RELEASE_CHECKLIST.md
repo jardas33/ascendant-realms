@@ -56,6 +56,7 @@ Known current realities:
 - v0.17.5 fixes near-base invisible blockers by making exact world-point walkability use padded building rectangles inside coarse static cells and by allowing exact walkable endpoints. The final v0.17.5 handoff package was clean, and the GitHub Actions release matrix was green before v0.18 started.
 - v0.18 adds the first Worker construction foundation only: Command Hall trains Worker, Worker builds Barracks, assigned Worker proximity gates construction progress, incomplete Barracks cannot produce, and completed Barracks keeps existing production. Command Hall no longer exposes direct Barracks/Mystic Lodge/Watchtower construction commands; Tutorial keeps its step count but routes the Barracks objective through Worker construction. No harvesting, repair, enemy construction AI, multiple-worker acceleration, save migration, new factions/maps, Patrol, formations, or runtime art/assets are included. Rerun GitHub Actions after push because runtime construction/production behavior changed.
 - v0.18.2 expands Worker construction to the existing player building set only: Barracks, Mystic Lodge, and Watchtower. Command Hall remains Worker-training only, incomplete Watchtowers cannot attack, Tutorial keeps the Worker Barracks route, and no harvesting, repair, enemy construction AI, save migration, new factions/maps, Patrol, formations, runtime art/assets, or global economy rebalance are included. Rerun GitHub Actions after push because runtime construction options changed.
+- v0.18.3 fixes Worker construction move-away/pause/resume and compact building-cluster pathing only. Explicit player move/attack orders pause construction intent, construction resumes only when the assigned Worker returns to range or construction intent is reissued, exact blocker interiors remain solid, and exact open edge points stay reachable. Rerun GitHub Actions after push because runtime construction/pathing changed.
 
 ## Required Automated Checks
 
@@ -129,6 +130,18 @@ Current v0.18 checkpoint result:
 
 ```text
 PASS: 61 test files, 440 tests
+```
+
+Current v0.18.2 checkpoint result:
+
+```text
+PASS: 61 test files, 442 tests
+```
+
+Current v0.18.3 checkpoint result:
+
+```text
+PASS: 61 test files, 450 tests
 ```
 
 Current v0.16.13 checkpoint result:

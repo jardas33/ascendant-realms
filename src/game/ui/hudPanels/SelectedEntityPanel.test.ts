@@ -44,12 +44,12 @@ describe("SelectedEntityPanel", () => {
   it("shows assigned worker and progress for incomplete buildings", () => {
     const markup = renderSelectionSummary(fakeBuilding("barracks", "Barracks", {
       constructionProgress: 0.44,
-      constructionStatusDetail: "Worker building",
+      constructionStatusDetail: "Building",
       assignedWorkerName: "Worker",
       underConstruction: true
     }), []);
 
-    expect(markup).toContain("Status Worker building");
+    expect(markup).toContain("Status Building");
     expect(markup).toContain("Construction 44%");
     expect(markup).toContain("Assigned Worker");
   });

@@ -61,6 +61,56 @@ describe("MovementSystem", () => {
     expect(unit.position.x).toBeGreaterThan(120);
     expect(unit.moveTarget).toEqual({ x: 180, y: 250 });
   });
+
+  it("moves player units out of a tight player building cluster", () => {
+    const system = new MovementSystem();
+    const cluster = playerBuildingCluster();
+    const units = [
+      fakeUnit({ id: "worker", team: "player", x: 326, y: 862, moveTarget: { x: 610, y: 830 } }),
+      fakeUnit({ id: "militia", team: "player", x: 338, y: 884, moveTarget: { x: 626, y: 846 } }),
+      fakeUnit({ id: "ranger", team: "player", x: 318, y: 906, moveTarget: { x: 642, y: 862 } })
+    ];
+    const starts = units.map((unit) => ({ ...unit.position }));
+
+    for (let i = 0; i < 30; i += 1) {
+      system.update(0.1, units, firstClaimLikeMap(), cluster);
+    }
+
+    units.forEach((unit, index) => {
+      expect(unit.position.x).toBeGreaterThan(starts[index].x + 24);
+      expect(distance(unit.position, starts[index])).toBeGreaterThan(32);
+    });
+  });
+
+  it("lets a unit near the base cluster advance toward an enemy attack target", () => {
+    const system = new MovementSystem();
+    const cluster = playerBuildingCluster();
+    const unit = fakeUnit({ id: "player-ranger", team: "player", x: 330, y: 884, moveTarget: { x: 720, y: 820 } });
+    const start = { ...unit.position };
+
+    for (let i = 0; i < 35; i += 1) {
+      system.update(0.1, [unit], firstClaimLikeMap(), cluster);
+    }
+
+    expect(unit.position.x).toBeGreaterThan(start.x + 40);
+    expect(distance(unit.position, { x: 720, y: 820 })).toBeLessThan(distance(start, { x: 720, y: 820 }) - 40);
+  });
+
+  it("treats exact open ground beside blocked terrain as walkable instead of an invisible rock", () => {
+    const system = new MovementSystem();
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 760, y: 130, moveTarget: { x: 700, y: 130 } });
+
+    system.update(0.2, [unit], {
+      ...testMap({ width: 1000, height: 500 }),
+      terrainZones: [
+        { id: "grass", type: "grass", x: 0, y: 0, width: 1000, height: 500 },
+        { id: "water", type: "water", x: 720, y: 160, width: 120, height: 120 }
+      ]
+    });
+
+    expect(unit.position.x).toBeLessThan(760);
+    expect(unit.moveTarget).toEqual({ x: 700, y: 130 });
+  });
 });
 
 function testMap(overrides: Partial<BattleMapDefinition> = {}): BattleMapDefinition {
@@ -114,6 +164,21 @@ function testMap(overrides: Partial<BattleMapDefinition> = {}): BattleMapDefinit
   };
 }
 
+function firstClaimLikeMap(): BattleMapDefinition {
+  return testMap({
+    width: 2400,
+    height: 1600,
+    playerStart: { x: 260, y: 800 },
+    enemyStart: { x: 2140, y: 800 },
+    terrainZones: [
+      { id: "central_grass", type: "grass", x: 0, y: 0, width: 2400, height: 1600 },
+      { id: "player_build", type: "buildable", x: 70, y: 590, width: 520, height: 440 },
+      { id: "north_water", type: "water", x: 720, y: 160, width: 380, height: 140 },
+      { id: "broken_ridge", type: "blocked", x: 1060, y: 660, width: 260, height: 100 }
+    ]
+  });
+}
+
 function fakeUnit(options: { id: string; team: Team; x: number; y: number; moveTarget?: Position }): Unit {
   return {
     id: options.id,
@@ -140,6 +205,15 @@ function fakeBuilding(position: Position, size: { width: number; height: number 
       size
     }
   } as Building;
+}
+
+function playerBuildingCluster(): Building[] {
+  return [
+    fakeBuilding({ x: 260, y: 800 }, { width: 96, height: 82 }),
+    fakeBuilding({ x: 410, y: 800 }, { width: 82, height: 64 }),
+    fakeBuilding({ x: 292, y: 930 }, { width: 72, height: 62 }),
+    fakeBuilding({ x: 476, y: 918 }, { width: 48, height: 72 })
+  ];
 }
 
 function distance(a: Position, b: Position): number {

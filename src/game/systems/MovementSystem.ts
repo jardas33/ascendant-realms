@@ -27,6 +27,7 @@ const REPATH_COOLDOWN_SECONDS = 0.55;
 const MAX_GRID_CORRECTION_DISTANCE = 20;
 const BLOCKED_START_CORRECTION_SEARCH_CELLS = 4;
 const BLOCKED_START_MAX_CORRECTION_DISTANCE = DEFAULT_PATHFINDING_CELL_SIZE * 1.75;
+const MOVEMENT_PATHFINDING_CELL_SIZE = DEFAULT_PATHFINDING_CELL_SIZE / 2;
 
 export class MovementSystem {
   private readonly unitPathStates = new Map<string, UnitPathState>();
@@ -35,7 +36,7 @@ export class MovementSystem {
 
   update(deltaSeconds: number, units: Unit[], map: BattleMapDefinition, buildings: Building[] = []): void {
     const grid = PathfindingGrid.fromMap(map, {
-      cellSize: DEFAULT_PATHFINDING_CELL_SIZE,
+      cellSize: MOVEMENT_PATHFINDING_CELL_SIZE,
       staticObstacles: this.staticObstaclesForBuildings(buildings)
     });
     this.pruneUnitStates(units);

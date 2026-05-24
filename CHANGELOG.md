@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.18.3 Worker Assignment And Construction Pathing Fix - 2026-05-24
+
+This checkpoint fixes Emmanuel's mixed retest of `ascendant-realms-private-playtest-039fe64`. It is a narrow construction/pathing bugfix pass, not a worker-economy expansion.
+
+### Included
+
+- Added `docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md` and `docs/V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md`.
+- Worker construction intent is now separate from ordinary player move/attack commands.
+- Explicit player move and attack orders pause the current construction assignment instead of being overwritten by construction auto-return.
+- Construction progress now requires the assigned Worker to be alive and within valid work range.
+- Moving the Worker back into range resumes construction.
+- Construction-site status uses existing UI copy: `Building` and `Paused - Worker away`.
+- Pathing around Command Hall, Barracks, Mystic Lodge, Watchtower, and blocked terrain uses a finer grid plus exact blocker checks so open edge points do not behave like invisible rocks.
+- Hosted deep-battle coverage now includes Worker move-away pause/resume and compact base-cluster attack movement.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Worker construction assignment/pause behavior and path routing around blockers changed.
+- Gameplay numbers changed: no costs, stats, build times, waves, resources, or global balance values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no new objectives or content.
+- Economy/production architecture rewritten: no, bugfix only.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused construction/movement/pathing/combat tests, `npm test` with 61 files / 450 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, control lab normal plus 1658-check verifier, hosted deep-battle with 18 tests, and hosted smoke with 14 tests.
+- Browser smoke note: `npm run test:e2e:smoke:fast` and `npm run test:e2e:smoke` both passed after exact rerun/prewarm. The initial failures were cold Vite dev-server app-boot timeouts before Phaser reached the main menu, not assertion failures in the v0.18.3 behavior.
+- Dirty package generated and verified: `artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty`, 46 checks.
+- `git diff --check` passed.
+- Clean package handoff rule: generate and verify a clean package from the final commit before distributing the v0.18.3 retest build.
+
+### Next
+
+- Send Emmanuel the v0.18.3 package for focused retesting of Worker move-away pause/resume and compact base-cluster movement.
+
 ## v0.18.2 Worker Construction Expansion - 2026-05-23
 
 This checkpoint expands the v0.18 Worker construction foundation to the existing player building set only. It remains a bounded construction pass, not a worker economy rewrite.

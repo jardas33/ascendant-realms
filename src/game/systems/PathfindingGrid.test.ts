@@ -129,4 +129,22 @@ describe("PathfindingGrid", () => {
     expect(result?.endCell).toEqual({ x: 2, y: 3 });
     expect(result?.waypoints.at(-1)).toEqual({ x: 180, y: 250 });
   });
+
+  it("keeps precise blocker interiors solid even when the cell center is open", () => {
+    const grid = PathfindingGrid.fromMap(
+      testMap({
+        width: 900,
+        height: 900,
+        terrainZones: [{ id: "grass", type: "grass", x: 0, y: 0, width: 900, height: 900 }]
+      }),
+      {
+      cellSize: 40,
+      staticObstacles: [{ id: "barracks", x: 360, y: 680, width: 82, height: 64, padding: 16 }]
+      }
+    );
+
+    expect(grid.isCellWalkable(9, 15)).toBe(true);
+    expect(grid.isWorldWalkable({ x: 392, y: 639 })).toBe(false);
+    expect(grid.isWorldWalkable({ x: 382, y: 625 })).toBe(true);
+  });
 });

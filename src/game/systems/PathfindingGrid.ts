@@ -67,6 +67,7 @@ export class PathfindingGrid {
   readonly columns: number;
   readonly rows: number;
   readonly cells: PathfindingCell[];
+  private readonly blockedTerrainRectangles: Rectangle[] = [];
   private readonly staticObstacleRectangles: Rectangle[] = [];
 
   constructor(
@@ -169,14 +170,21 @@ export class PathfindingGrid {
   isWorldWalkable(point: Position): boolean {
     const cell = this.worldToCell(point);
     const current = this.cellAt(cell.x, cell.y);
-    if (current.blockedTerrain || current.softBlocked) {
+    if (current.softBlocked) {
       return false;
     }
-    if (current.staticBlocked) {
-      if (this.staticObstacleRectangles.length === 0) {
-        return false;
-      }
-      return !this.staticObstacleRectangles.some((rect) => this.pointInRectangle(this.clampPoint(point), rect));
+    const clampedPoint = this.clampPoint(point);
+    if (this.blockedTerrainRectangles.some((rect) => this.pointInRectangle(clampedPoint, rect))) {
+      return false;
+    }
+    if (this.staticObstacleRectangles.some((rect) => this.pointInRectangle(clampedPoint, rect))) {
+      return false;
+    }
+    if ((current.blockedTerrain && this.blockedTerrainRectangles.length === 0) || (current.staticBlocked && this.staticObstacleRectangles.length === 0)) {
+      return false;
+    }
+    if (current.blockedTerrain || current.staticBlocked) {
+      return true;
     }
     return current.walkable;
   }
@@ -229,8 +237,10 @@ export class PathfindingGrid {
     zones
       .filter((zone) => zone.type === "blocked" || zone.type === "water")
       .forEach((zone) => {
+        const rect = { x: zone.x, y: zone.y, width: zone.width, height: zone.height };
+        this.blockedTerrainRectangles.push(rect);
         this.cells.forEach((cell) => {
-          if (!this.cellRectangleOverlaps(cell, zone)) {
+          if (!this.pointInRectangle(cell.center, rect)) {
             return;
           }
           cell.blockedTerrain = true;
@@ -389,16 +399,6 @@ export class PathfindingGrid {
 
   private cellAt(x: number, y: number): PathfindingCell {
     return this.cells[y * this.columns + x];
-  }
-
-  private cellRectangleOverlaps(cell: PathfindingCell, rect: { x: number; y: number; width: number; height: number }): boolean {
-    const cellRect = {
-      x: cell.x * this.cellSize,
-      y: cell.y * this.cellSize,
-      width: Math.min(this.cellSize, this.width - cell.x * this.cellSize),
-      height: Math.min(this.cellSize, this.height - cell.y * this.cellSize)
-    };
-    return cellRect.x < rect.x + rect.width && cellRect.x + cellRect.width > rect.x && cellRect.y < rect.y + rect.height && cellRect.y + cellRect.height > rect.y;
   }
 
   private pointInRectangle(point: Position, rect: { x: number; y: number; width: number; height: number }): boolean {

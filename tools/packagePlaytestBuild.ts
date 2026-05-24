@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.18.2 worker construction expansion";
+const CHECKPOINT = "v0.18.3 worker assignment and construction pathing fix";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -68,6 +68,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V018_IMPLEMENTATION_REPORT.md", join(packageDir, "V018_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md", join(packageDir, "V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md"));
   await copyMarkdown("docs/V0182_IMPLEMENTATION_REPORT.md", join(packageDir, "V0182_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md", join(packageDir, "V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md", join(packageDir, "V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -151,7 +153,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.18.2 Worker construction expansion retest, start with V0182_IMPLEMENTATION_REPORT.md and V0182_WORKER_CONSTRUCTION_EXPANSION_SPEC.md. Worker construction is still a bounded foundation slice: train a Worker from the Command Hall, confirm the Command Hall has no build buttons, select the Worker, build Barracks, Mystic Lodge, or Watchtower, confirm incomplete sites cannot produce/research/attack, then confirm completed buildings resume their existing behavior. Do not judge full harvesting, repair, enemy construction, save persistence, or Tutorial onboarding in this build.
+For the v0.18.3 Worker assignment and construction pathing retest, start with V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md and V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md. Worker construction is still a bounded foundation slice: train a Worker from the Command Hall, select the Worker, build Barracks, Mystic Lodge, or Watchtower, move the assigned Worker away to confirm construction pauses without pulling the Worker back, move the Worker back to confirm construction resumes, and verify compact base-cluster movement. Do not judge harvesting, repair, enemy construction, save persistence, new content, or Tutorial onboarding in this build.
 
 ## Known Warning
 

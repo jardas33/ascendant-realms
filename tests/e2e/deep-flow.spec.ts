@@ -446,7 +446,43 @@ async function worldToScreen(page: Page, point: { x: number; y: number }): Promi
 
 async function clickWorldPoint(page: Page, point: { x: number; y: number }, button: "left" | "right" = "left"): Promise<void> {
   const screen = await worldToScreen(page, point);
-  await page.mouse.click(screen.x, screen.y, { button });
+  await page.mouse.move(screen.x, screen.y, { steps: 2 });
+  await page.waitForTimeout(50);
+  await page.mouse.down({ button });
+  await page.waitForTimeout(40);
+  await page.mouse.up({ button });
+}
+
+async function clickWorldPointUntilEffect(
+  page: Page,
+  point: { x: number; y: number },
+  button: "left" | "right",
+  context: string,
+  effectCheck: () => Promise<boolean>,
+  options: { attempts?: number; retryDelayMs?: number } = {}
+): Promise<void> {
+  const attempts = options.attempts ?? 3;
+  const retryDelayMs = options.retryDelayMs ?? 250;
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await expectWorldClickTargetsCanvas(page, point, `${context} attempt ${attempt}`);
+      await clickWorldPoint(page, point, button);
+      if (await effectCheck()) {
+        return;
+      }
+      lastError = new Error(`${context}: expected world-click effect after attempt ${attempt}`);
+    } catch (error) {
+      lastError = error;
+    }
+
+    if (attempt < attempts) {
+      await page.waitForTimeout(retryDelayMs);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(`${context}: expected world-click effect`);
 }
 
 async function prepareMovementCommandTargets(
@@ -2384,6 +2420,226 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toBeEnabled();
   });
 
+  test("Worker move-away pauses construction and base-cluster units keep moving @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Worker pause and pathing QA");
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker pause/resume");
+
+    const result = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.resources.player.crowns = 20_000;
+      scene.resources.player.stone = 20_000;
+      scene.resources.player.iron = 20_000;
+      scene.resources.player.aether = 20_000;
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
+      if (!commandHall || !worker) {
+        throw new Error("Expected Command Hall and trained Worker for pause/resume regression.");
+      }
+
+      const placeBuilding = (buildingId: string, points: Array<{ x: number; y: number }>, assignedWorkerId?: string) => {
+        scene.buildingSystem.startPlacement(buildingId, {
+          anchor: worker.position,
+          resources: scene.resources.player,
+          assignedWorkerId
+        });
+        for (const point of points) {
+          scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
+          if (scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
+            const placed = [...scene.buildings]
+              .reverse()
+              .find((building: any) => building.team === "player" && building.definition.id === buildingId && building.alive);
+            if (!placed) {
+              throw new Error(`Placed ${buildingId} was not found.`);
+            }
+            return placed;
+          }
+        }
+        scene.buildingSystem.cancelPlacement();
+        throw new Error(`Could not place ${buildingId}.`);
+      };
+
+      const barracks = placeBuilding(
+        "barracks",
+        [
+          { x: commandHall.position.x + 170, y: commandHall.position.y },
+          { x: commandHall.position.x + 170, y: commandHall.position.y - 90 },
+          { x: commandHall.position.x + 190, y: commandHall.position.y + 60 }
+        ],
+        worker.id
+      );
+
+      let progressBeforeMove = 0;
+      for (let index = 0; index < 120; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        scene.buildingSystem.update(0.1);
+        progressBeforeMove = barracks.constructionProgress;
+        if (progressBeforeMove > 0.05) {
+          break;
+        }
+      }
+      if (progressBeforeMove <= 0.05) {
+        throw new Error(`Expected Barracks progress before move-away, got ${progressBeforeMove}.`);
+      }
+
+      const footprintDistanceFromSite = (point: { x: number; y: number }, building: any) =>
+        Math.max(
+          Math.max(Math.abs(point.x - building.position.x) - building.definition.size.width / 2, 0),
+          Math.max(Math.abs(point.y - building.position.y) - building.definition.size.height / 2, 0)
+        );
+      const moveAwayTarget = { x: barracks.position.x + 220, y: barracks.position.y - 180 };
+      worker.commandMove(moveAwayTarget, false);
+      scene.buildingSystem.update(2);
+      const immediatePause = {
+        progress: barracks.constructionProgress,
+        status: barracks.constructionStatusDetail,
+        activeConstructionSiteId: worker.activeConstructionSiteId,
+        pausedConstructionSiteId: worker.pausedConstructionSiteId,
+        moveTarget: worker.moveTarget ? { ...worker.moveTarget } : undefined
+      };
+
+      for (let index = 0; index < 90; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        scene.buildingSystem.update(0.1);
+        if (footprintDistanceFromSite(worker.position, barracks) > 72) {
+          break;
+        }
+      }
+      const movedAway = {
+        progress: barracks.constructionProgress,
+        status: barracks.constructionStatusDetail,
+        workerDistanceToSite: Math.hypot(worker.position.x - barracks.position.x, worker.position.y - barracks.position.y),
+        workerFootprintDistance: footprintDistanceFromSite(worker.position, barracks),
+        activeConstructionSiteId: worker.activeConstructionSiteId,
+        pausedConstructionSiteId: worker.pausedConstructionSiteId,
+        moveTarget: worker.moveTarget ? { ...worker.moveTarget } : undefined
+      };
+
+      const resumeTarget = {
+        x: barracks.position.x - barracks.definition.size.width / 2 - worker.radius - 18,
+        y: barracks.position.y
+      };
+      worker.commandMove(resumeTarget, false);
+      for (let index = 0; index < 120; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        scene.buildingSystem.update(0.1);
+        if (barracks.constructionProgress > movedAway.progress + 0.04) {
+          break;
+        }
+      }
+      const resumed = {
+        progress: barracks.constructionProgress,
+        status: barracks.constructionStatusDetail,
+        workerDistanceToSite: Math.hypot(worker.position.x - barracks.position.x, worker.position.y - barracks.position.y),
+        activeConstructionSiteId: worker.activeConstructionSiteId,
+        pausedConstructionSiteId: worker.pausedConstructionSiteId
+      };
+
+      barracks.constructionState = "completed";
+      barracks.constructionProgress = 1;
+      barracks.constructionStatusDetail = "Complete";
+      barracks.hp = barracks.maxHp;
+      barracks.updateHealthBar?.();
+      const mystic = placeBuilding("mystic_lodge", [
+        { x: commandHall.position.x + 70, y: commandHall.position.y + 150 },
+        { x: commandHall.position.x + 40, y: commandHall.position.y + 150 },
+        { x: commandHall.position.x + 235, y: commandHall.position.y + 80 }
+      ]);
+      const tower = placeBuilding("watchtower", [
+        { x: commandHall.position.x + 250, y: commandHall.position.y + 130 },
+        { x: commandHall.position.x + 260, y: commandHall.position.y - 120 },
+        { x: commandHall.position.x + 270, y: commandHall.position.y + 40 }
+      ]);
+      [mystic, tower].forEach((building: any) => {
+        building.constructionState = "completed";
+        building.constructionProgress = 1;
+        building.constructionStatusDetail = "Complete";
+        building.hp = building.maxHp;
+        building.updateHealthBar?.();
+      });
+
+      const militia = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "militia" && unit.alive);
+      const ranger = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "ranger" && unit.alive);
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.alive);
+      if (!militia || !ranger || !enemy) {
+        throw new Error("Expected Militia, Ranger, Worker, and enemy unit for cluster attack movement.");
+      }
+      enemy.setPosition(commandHall.position.x + 520, commandHall.position.y + 20);
+      enemy.attackTargetId = undefined;
+      enemy.attackMove = false;
+      enemy.moveTarget = undefined;
+      enemy.attackCooldownRemaining = 999;
+      const movers = [
+        { unit: worker, point: { x: commandHall.position.x + 55, y: commandHall.position.y + 92 } },
+        { unit: militia, point: { x: commandHall.position.x + 75, y: commandHall.position.y + 118 } },
+        { unit: ranger, point: { x: commandHall.position.x + 38, y: commandHall.position.y + 142 } }
+      ];
+      movers.forEach(({ unit, point }) => {
+        unit.setPosition(point.x, point.y);
+        unit.moveTarget = undefined;
+        unit.attackTargetId = undefined;
+        unit.attackMove = false;
+        unit.moveOrderCombatSuppressionSeconds = 0;
+        unit.commandAttack(enemy.id, enemy.definition.name);
+      });
+      const starts = movers.map(({ unit }) => ({
+        id: unit.id,
+        unitId: unit.definition.id,
+        x: unit.position.x,
+        y: unit.position.y,
+        distanceToEnemy: Math.hypot(unit.position.x - enemy.position.x, unit.position.y - enemy.position.y)
+      }));
+      for (let index = 0; index < 55; index += 1) {
+        scene.combatSystem.update(0.1);
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+      }
+      const moved = movers.map(({ unit }, index) => ({
+        ...starts[index],
+        currentX: unit.position.x,
+        currentY: unit.position.y,
+        currentDistanceToEnemy: Math.hypot(unit.position.x - enemy.position.x, unit.position.y - enemy.position.y),
+        distanceMoved: Math.hypot(unit.position.x - starts[index].x, unit.position.y - starts[index].y),
+        moveTarget: unit.moveTarget ? { ...unit.moveTarget } : undefined,
+        attackTargetId: unit.attackTargetId
+      }));
+
+      scene.selectionSystem.setSelection([barracks]);
+      scene.refreshBattleHud?.(0);
+      return {
+        siteId: barracks.id,
+        progressBeforeMove,
+        immediatePause,
+        movedAway,
+        resumed,
+        moved
+      };
+    }, trainedWorker.id);
+
+    expect(result.immediatePause.progress).toBe(result.progressBeforeMove);
+    expect(result.immediatePause.status).toBe("Paused - Worker away");
+    expect(result.immediatePause.activeConstructionSiteId).toBeUndefined();
+    expect(result.immediatePause.pausedConstructionSiteId).toBe(result.siteId);
+    expect(result.immediatePause.moveTarget).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }));
+    expect(result.movedAway.progress).toBe(result.progressBeforeMove);
+    expect(result.movedAway.status).toBe("Paused - Worker away");
+    expect(result.movedAway.workerFootprintDistance).toBeGreaterThan(64);
+    expect(result.resumed.progress).toBeGreaterThan(result.movedAway.progress + 0.03);
+    expect(result.resumed.status).toBe("Building");
+    expect(result.resumed.activeConstructionSiteId).toBe(result.siteId);
+    expect(result.resumed.pausedConstructionSiteId).toBeUndefined();
+    result.moved.forEach((unit) => {
+      expect(unit.distanceMoved, JSON.stringify(result.moved)).toBeGreaterThan(24);
+      expect(unit.currentDistanceToEnemy, JSON.stringify(result.moved)).toBeLessThan(unit.distanceToEnemy - 24);
+    });
+    await expect(page.locator(".side-panel")).toContainText("Barracks");
+  });
+
   test("Worker exposes existing build set and Watchtower activates only after completion @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Watchtower Worker QA");
@@ -2912,13 +3168,13 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.hero.attackCooldownRemaining = 0;
       scene.hero.factionSpeedMultiplier = 0.25;
       target.factionSpeedMultiplier = 0;
-      target.setPosition(scene.hero.position.x + 34, scene.hero.position.y);
+      target.setPosition(Math.min(scene.activeMap.width - 180, scene.hero.position.x + 220), scene.hero.position.y - 80);
       scene.selectionSystem.setSelection([scene.hero]);
       scene.cameraSystem.centerOn(scene.hero.position);
       scene.refreshBattleHud?.(0);
       return {
-        x: Math.max(120, scene.hero.position.x - 360),
-        y: Math.max(120, scene.hero.position.y + 180)
+        x: Math.max(120, scene.hero.position.x - 220),
+        y: Math.max(120, scene.hero.position.y + 140)
       };
     });
     await rightClickWorldPointUntilOrder(
@@ -3527,8 +3783,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         unit.damageBuffRemaining = 0;
       });
       enemies.forEach((unit: any, index: number) => {
-        unit.hp = unit.maxHp;
-        unit.setPosition(hero.position.x + 52 + index * 22, hero.position.y + (index - 1) * 18);
+        unit.hp = unit.maxHp + 200;
+        unit.setPosition(hero.position.x + 220 + index * 32, hero.position.y + 120 + index * 18);
         unit.moveTarget = undefined;
         unit.attackTargetId = undefined;
         unit.attackMove = false;
@@ -3820,23 +4076,56 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
     await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i);
     await expect(page.locator(".hint-line")).toHaveCount(0);
-    await clickWorldPoint(page, { x: 450, y: 930 }, "left");
-    await page.waitForFunction(() => {
-      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      return scene?.buildings.some(
-        (building: any) =>
-          building.team === "player" &&
-          building.definition.id === "barracks" &&
-          building.alive &&
-          building.constructionState === "underConstruction"
-      );
-    });
+    await clickWorldPointUntilEffect(page, { x: 450, y: 930 }, "left", "deep-flow first campaign place Barracks", async () =>
+      page
+        .waitForFunction(
+          () => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.buildings.some(
+              (building: any) =>
+                building.team === "player" &&
+                building.definition.id === "barracks" &&
+                building.alive &&
+                building.constructionState === "underConstruction"
+            );
+          },
+          undefined,
+          { timeout: 2_000 }
+        )
+        .then(() => true)
+        .catch(() => false)
+    );
     await expect(page.locator(".side-panel")).toContainText(/Construction/i);
 
     await completePlayerBuilding(page, "barracks");
     await selectPlayerBuildingFromScene(page, "barracks");
     await expect(page.locator(".side-panel")).toContainText("Barracks");
     await expect(page.locator(".side-panel")).toContainText("Rally Point: None");
+
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator(".side-panel")).toContainText("Barracks");
+    const rallyPoint = { x: 620, y: 860 };
+    await clickWorldPointUntilEffect(page, rallyPoint, "right", "deep-flow first campaign set Barracks rally", async () =>
+      page
+        .waitForFunction(
+          (target) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const barracks = scene?.buildings.find(
+              (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+            );
+            if (!barracks?.rallyPoint) {
+              return false;
+            }
+            return Math.hypot(barracks.rallyPoint.x - target.x, barracks.rallyPoint.y - target.y) < 8;
+          },
+          rallyPoint,
+          { timeout: 2_000 }
+        )
+        .then(() => true)
+        .catch(() => false)
+    );
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator(".side-panel")).toContainText("Rally Point: Set");
 
     snapshot = await getBattleSnapshot(page);
     const militiaBefore = snapshot.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
@@ -3871,25 +4160,6 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       );
       await trainUnitThroughCommand(trainMilitiaButton(), page, "militia", "deep-flow first campaign train Militia");
     }
-
-    const rallyPoint = { x: 540, y: 830 };
-    await clickWorldPoint(page, rallyPoint, "right");
-    await page.waitForFunction(
-      (target) => {
-        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-        const barracks = scene?.buildings.find(
-          (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
-        );
-        if (!barracks?.rallyPoint) {
-          return false;
-        }
-        return Math.hypot(barracks.rallyPoint.x - target.x, barracks.rallyPoint.y - target.y) < 8;
-      },
-      rallyPoint,
-      { timeout: 5_000 }
-    );
-    await selectPlayerBuildingFromScene(page, "barracks");
-    await expect(page.locator(".side-panel")).toContainText("Rally Point: Set");
 
     await completeTrainingQueues(page);
     const trainedMilitia = await page.waitForFunction(
