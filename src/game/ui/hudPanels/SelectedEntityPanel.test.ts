@@ -40,6 +40,19 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain(">Guard Area</span>");
     expect(markup).not.toContain(">Mixed</span>");
   });
+
+  it("shows assigned worker and progress for incomplete buildings", () => {
+    const markup = renderSelectionSummary(fakeBuilding("barracks", "Barracks", {
+      constructionProgress: 0.44,
+      constructionStatusDetail: "Worker building",
+      assignedWorkerName: "Worker",
+      underConstruction: true
+    }), []);
+
+    expect(markup).toContain("Status Worker building");
+    expect(markup).toContain("Construction 44%");
+    expect(markup).toContain("Worker Worker");
+  });
 });
 
 function fakeUnit(id: string, name: string, behaviourMode: "hold_ground" | "guard_area" | "press_attack"): Unit {
@@ -56,7 +69,16 @@ function fakeUnit(id: string, name: string, behaviourMode: "hold_ground" | "guar
   }) as Unit;
 }
 
-function fakeBuilding(id: string, name: string): Building {
+function fakeBuilding(
+  id: string,
+  name: string,
+  options: {
+    constructionProgress?: number;
+    constructionStatusDetail?: string;
+    assignedWorkerName?: string;
+    underConstruction?: boolean;
+  } = {}
+): Building {
   return Object.assign(Object.create(Building.prototype), {
     id,
     kind: "building",
@@ -65,12 +87,18 @@ function fakeBuilding(id: string, name: string): Building {
     rallyPoint: undefined,
     trainingQueue: [],
     upgradeQueue: [],
+    hp: 100,
+    maxHp: 100,
+    armor: 1,
+    constructionProgress: options.constructionProgress ?? 1,
+    constructionStatusDetail: options.constructionStatusDetail,
+    assignedWorkerName: options.assignedWorkerName,
     definition: {
       id: name.toLowerCase().replaceAll(" ", "_"),
       name,
       trainOptions: []
     },
-    isCompleted: () => true,
-    isUnderConstruction: () => false
+    isCompleted: () => !options.underConstruction,
+    isUnderConstruction: () => Boolean(options.underConstruction)
   }) as Building;
 }

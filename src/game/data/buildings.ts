@@ -14,7 +14,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     visionRadius: 560,
     constructionTimeSeconds: 0,
     buildOptions: ["barracks", "mystic_lodge", "watchtower"],
-    trainOptions: [],
+    trainOptions: ["worker"],
     upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1"],
     xpValue: 80
   },

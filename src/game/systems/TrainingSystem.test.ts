@@ -10,6 +10,28 @@ import { DEFAULT_PATHFINDING_CELL_SIZE, PathfindingGrid, type PathfindingStaticO
 import { findWalkableTrainedUnitSpawnPoint, TrainingSystem } from "./TrainingSystem";
 
 describe("TrainingSystem", () => {
+  it("trains Workers from the Command Hall without moving army production", () => {
+    const commandHall = fakeBuilding("command_hall", { x: 260, y: 800 });
+    const trainedUnits: Unit[] = [];
+    const training = new TrainingSystem({
+      scene: createSceneStub(),
+      addUnit: (unit) => trainedUnits.push(unit),
+      onMessage: () => {},
+      resolveSpawnPoint: ({ preferredPoint }) => preferredPoint
+    });
+    const resources = { crowns: 100, stone: 0, iron: 0, aether: 0 };
+
+    expect(training.queueTraining(commandHall, "worker", resources)).toBe(true);
+    expect(resources.crowns).toBe(50);
+
+    training.update(99, [commandHall]);
+
+    expect(trainedUnits).toHaveLength(1);
+    expect(trainedUnits[0].definition.id).toBe("worker");
+    expect(commandHall.definition.trainOptions).toEqual(["worker"]);
+    expect(BUILDING_BY_ID.barracks.trainOptions).toEqual(["militia", "ranger"]);
+  });
+
   it("keeps later Tutorial Rangers from spawning in blocked Command Hall cells", () => {
     const commandHall = fakeBuilding("command_hall", { x: 260, y: 800 });
     const barracks = fakeBuilding("barracks", { x: 360, y: 680 });

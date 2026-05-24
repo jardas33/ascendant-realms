@@ -85,7 +85,9 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
       <span>Armor ${selectedOne.armor}</span>
       ${
         selectedOne.isUnderConstruction()
-          ? `<span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>`
+          ? `<span>Status ${escapeHtml(selectedOne.constructionStatusDetail ?? "Under construction")}</span>
+             <span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>
+             <span>Worker ${escapeHtml(selectedOne.assignedWorkerName ?? (selectedOne.assignedWorkerId ? "Assigned" : "Unassigned"))}</span>`
           : training
             ? `<span>Training ${escapeHtml(unitName(training.unitId))} ${Math.ceil(training.remaining)}s</span>`
             : "<span>Queue idle</span>"

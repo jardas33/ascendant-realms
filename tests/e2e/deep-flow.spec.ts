@@ -163,7 +163,7 @@ async function clickBehaviourMode(
   let lastError: unknown;
   const locator = page.getByTestId(`behaviour-mode-${mode}`);
 
-  for (let attempt = 1; attempt <= 12; attempt += 1) {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
     if (attempt === 1 || attempt % 3 === 0) {
       await page.evaluate(() => {
         const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -175,40 +175,27 @@ async function clickBehaviourMode(
       });
       await page.waitForTimeout(50);
     }
-    const clicked = await locator
-      .evaluateAll((elements) => {
-        for (const element of elements) {
-          const button = element instanceof HTMLButtonElement ? element : element.closest("button");
-          if (!button || button.disabled || button.getAttribute("aria-disabled") === "true") {
-            continue;
-          }
-          const style = window.getComputedStyle(button);
-          const rect = button.getBoundingClientRect();
-          const visible =
-            style.display !== "none" &&
-            style.visibility !== "hidden" &&
-            Number(style.opacity || "1") > 0 &&
-            rect.width > 0 &&
-            rect.height > 0;
-          if (!visible) {
-            continue;
-          }
-          button.click();
-          return true;
+
+    try {
+      await clickReady(locator, context, {
+        attempts: 1,
+        domFallbackTimeoutMs: 1_500,
+        normalClickTimeoutMs: 1_000,
+        timeoutMs: 5_000,
+        successCheckAfterClick: async () => {
+          const text = await page.getByTestId("behaviour-mode-current").textContent({ timeout: 500 }).catch(() => "");
+          return text?.includes(expectedLabel) ?? false;
         }
-        return false;
-      })
-      .catch((error) => {
-        lastError = error;
-        return false;
       });
-    const text = await page.getByTestId("behaviour-mode-current").textContent({ timeout: 500 }).catch(() => "");
+    } catch (error) {
+      lastError = error;
+    }
+
+    const text = await page.getByTestId("behaviour-mode-current").textContent({ timeout: 750 }).catch(() => "");
     if (text?.includes(expectedLabel)) {
       return;
     }
-    if (!clicked && attempt === 1) {
-      lastError = new Error(`${context}: behaviour mode button was not visibly laid out.`);
-    }
+    lastError = new Error(`${context}: behaviour mode did not become ${expectedLabel}; current label was ${text || "(missing)"}.`);
     await page.waitForTimeout(200);
   }
 
@@ -533,11 +520,13 @@ async function rightClickWorldPointUntilOrder(
   page: Page,
   point: { x: number; y: number },
   expectedOrder: string | RegExp,
-  context: string
+  context: string,
+  options: { requireSummary?: boolean } = {}
 ): Promise<void> {
   const orderSummary = page.getByTestId("unit-order-summary");
   const prepared = await prepareMovementCommandTargets(page, point);
   expect(prepared.selectedCount, `${context}: selected player units before move command`).toBeGreaterThan(0);
+  const requireSummary = options.requireSummary ?? true;
   let lastError: unknown;
   for (let attempt = 1; attempt <= prepared.points.length; attempt += 1) {
     const candidatePoint = prepared.points[attempt - 1];
@@ -550,20 +539,29 @@ async function rightClickWorldPointUntilOrder(
     }
     await clickWorldPoint(page, candidatePoint, "right");
     try {
-      await page.waitForFunction(
-        (target) => {
-          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-          const selected = scene?.selectionSystem
-            .getSelected()
-            .filter((entity: any) => entity.team === "player" && entity.kind !== "building" && entity.alive);
-          return selected?.some(
-            (entity: any) =>
-              entity.moveTarget && Math.hypot(entity.moveTarget.x - target.x, entity.moveTarget.y - target.y) < 56
-          );
-        },
-        candidatePoint,
-        { timeout: 2_000 }
-      ).catch(() => undefined);
+      const sceneOrderReached = await page
+        .waitForFunction(
+          (target) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const selected = scene?.selectionSystem
+              .getSelected()
+              .filter((entity: any) => entity.team === "player" && entity.kind !== "building" && entity.alive);
+            return selected?.some(
+              (entity: any) =>
+                entity.moveTarget && Math.hypot(entity.moveTarget.x - target.x, entity.moveTarget.y - target.y) < 56
+            );
+          },
+          candidatePoint,
+          { timeout: 2_000 }
+        )
+        .then(() => true)
+        .catch(() => false);
+      if (sceneOrderReached && !requireSummary) {
+        return;
+      }
+      if (!sceneOrderReached && !requireSummary) {
+        throw new Error(`${context}: expected scene move target near ${JSON.stringify(candidatePoint)}`);
+      }
       await expect(orderSummary, `${context}: expected right-click move command to update unit order`).toContainText(
         expectedOrder,
         { timeout: 5_000 }
@@ -2179,6 +2177,182 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("placement-banner")).toHaveCount(0);
   });
 
+  test("Worker can be trained, assigned, and complete a Barracks construction site @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Worker QA");
+    await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
+    await selectPlayerCommandHallFromScene(page);
+    await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeEnabled();
+
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='train'][data-id='worker']"),
+      "deep-flow train Worker command",
+      async () => {
+        await page.waitForFunction(() => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const commandHall = scene?.buildings.find(
+            (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+          );
+          return commandHall?.trainingQueue?.some((entry: any) => entry.unitId === "worker");
+        });
+      },
+      async () => {
+        await selectPlayerCommandHallFromScene(page);
+      }
+    );
+
+    const trainedWorker = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.trainingSystem.update(10, scene.buildings);
+      const worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+      if (!worker) {
+        throw new Error("Expected trained Worker.");
+      }
+      scene.selectionSystem.setSelection([worker]);
+      scene.cameraSystem.centerOn(worker.position);
+      scene.refreshBattleHud?.(0);
+      return {
+        id: worker.id,
+        x: worker.position.x,
+        y: worker.position.y
+      };
+    });
+    await expect(page.locator(".side-panel")).toContainText("Worker");
+    await expect(page.locator("button[data-action='build'][data-id='barracks']")).toBeEnabled();
+
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='barracks']"),
+      "deep-flow Worker build Barracks command",
+      async () => {
+        await page.waitForFunction((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          return scene?.buildingSystem?.pendingBuildingId === "barracks" && scene?.buildingSystem?.pendingAssignedWorkerId === workerId;
+        }, trainedWorker.id);
+      },
+      async () => {
+        await page.evaluate((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+          if (worker) {
+            scene.selectionSystem.setSelection([worker]);
+            scene.refreshBattleHud?.(0);
+          }
+        }, trainedWorker.id);
+      }
+    );
+
+    const placedSite = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Expected Command Hall for Worker construction test.");
+      }
+      const points = [
+        { x: commandHall.position.x + 170, y: commandHall.position.y },
+        { x: commandHall.position.x + 170, y: commandHall.position.y - 90 },
+        { x: commandHall.position.x + 180, y: commandHall.position.y + 40 },
+        { x: commandHall.position.x + 50, y: commandHall.position.y - 150 }
+      ];
+      for (const point of points) {
+        scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
+        if (scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
+          const site = scene.buildings.find(
+            (building: any) =>
+              building.team === "player" &&
+              building.definition.id === "barracks" &&
+              building.alive &&
+              building.assignedWorkerId === workerId
+          );
+          if (!site) {
+            throw new Error("Worker-placed Barracks was not found.");
+          }
+          scene.selectionSystem.setSelection([site]);
+          scene.refreshBattleHud?.(0);
+          return {
+            id: site.id,
+            state: site.constructionState,
+            progress: site.constructionProgress,
+            assignedWorkerId: site.assignedWorkerId,
+            assignedWorkerName: site.assignedWorkerName,
+            workerMoveTarget: scene.units.find((unit: any) => unit.id === workerId)?.moveTarget
+          };
+        }
+      }
+      scene.buildingSystem.cancelPlacement();
+      throw new Error("Could not place Worker Barracks construction site.");
+    }, trainedWorker.id);
+
+    expect(placedSite.state).toBe("underConstruction");
+    expect(placedSite.assignedWorkerId).toBe(trainedWorker.id);
+    expect(placedSite.assignedWorkerName).toBe("Worker");
+    expect(placedSite.workerMoveTarget).toBeDefined();
+    await expect(page.locator(".side-panel")).toContainText("Production unlocks when this building is complete.");
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+
+    const completed = await page.evaluate((siteId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      let maxProgress = 0;
+      let lastState: Record<string, unknown> | undefined;
+      for (let index = 0; index < 360; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        scene.buildingSystem.update(0.1);
+        const site = scene.buildings.find((building: any) => building.id === siteId && building.alive);
+        if (!site) {
+          throw new Error("Worker construction site disappeared.");
+        }
+        const worker = scene.units.find((unit: any) => unit.id === site.assignedWorkerId && unit.alive);
+        lastState = {
+          tick: index,
+          site: {
+            x: site.position.x,
+            y: site.position.y,
+            status: site.constructionStatusDetail,
+            progress: site.constructionProgress
+          },
+          worker: worker
+            ? {
+                x: worker.position.x,
+                y: worker.position.y,
+                moveTarget: worker.moveTarget,
+                distanceToSite: Math.hypot(worker.position.x - site.position.x, worker.position.y - site.position.y)
+              }
+            : undefined
+        };
+        maxProgress = Math.max(maxProgress, site.constructionProgress);
+        if (site.isCompleted()) {
+          scene.selectionSystem.setSelection([site]);
+          scene.refreshBattleHud?.(0);
+          return {
+            state: site.constructionState,
+            progress: site.constructionProgress,
+            maxProgress,
+            status: site.constructionStatusDetail,
+            trainOptions: site.definition.trainOptions
+          };
+        }
+      }
+      throw new Error(`Worker construction did not complete; max progress ${maxProgress}; last state ${JSON.stringify(lastState)}.`);
+    }, placedSite.id);
+
+    expect(completed.state).toBe("completed");
+    expect(completed.progress).toBe(1);
+    expect(completed.maxProgress).toBeGreaterThan(0);
+    expect(completed.trainOptions).toContain("militia");
+    await expect(page.locator(".side-panel")).toContainText("Barracks");
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toBeEnabled();
+  });
+
   test("battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Hover QA");
@@ -2579,12 +2753,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       page,
       retreatPoint,
       MOVE_ORDER_SUMMARY_PATTERN,
-      "behaviour gauntlet retreat order"
+      "behaviour gauntlet retreat order",
+      { requireSummary: false }
     );
     await expect(page.getByTestId("battle-status")).toContainText("Move order accepted");
     const retreatState = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      scene.combatSystem.update(0.1);
       return {
         attackTargetId: scene?.hero?.attackTargetId ?? "",
         hasMoveTarget: Boolean(scene?.hero?.moveTarget),

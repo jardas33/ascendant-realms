@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.18 Worker Construction Foundation - 2026-05-23
+
+This checkpoint implements the first safe Worker construction vertical slice after the clean v0.17.5 baseline. It keeps the scope narrow: one Worker, one Worker-built military building, no harvesting, no repair loop, no enemy construction AI, no save migration, no art replacement, and no Tutorial requirement change.
+
+### Included
+
+- Added `docs/V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md` and `docs/V018_IMPLEMENTATION_REPORT.md`.
+- Added a Free Marches Worker unit using existing asset conventions only.
+- Command Hall can train Workers.
+- Worker selection can build Barracks.
+- Worker-built Barracks begins as an incomplete construction site with assigned Worker id/name, status, and progress.
+- Assigned construction progresses only while the Worker is alive and near the building footprint.
+- Incomplete buildings remain blockers but do not expose train or upgrade commands.
+- Selected-building UI now shows construction lock copy, status, progress, and assigned Worker.
+- Package metadata and validation now require the v0.18 docs.
+- Added focused unit/UI/package tests and hosted deep-battle coverage for Worker -> Barracks -> completed production unlock.
+- Stabilized the existing hosted behaviour-mode gauntlet click helper after hosted evidence showed a timing race unrelated to Worker construction.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Worker training and Worker-assigned Barracks construction.
+- Gameplay numbers changed: yes, one new Worker unit and Command Hall Worker training; no broad army, wave, resource, or global balance rewrite.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Combat-control baseline changed: no runtime combat-control behavior changed.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no, foundation slice only.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused package/Worker/UI tests, targeted hosted Worker regression, `npm test` with 61 files / 440 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, control lab normal, control-lab verification with 1658 checks, targeted hosted behaviour-mode gauntlet rerun, hosted deep-battle with 16 tests, hosted smoke with 14 tests, local full release with 81 tests in 40.8m, dirty package verification with 42 checks, and packaged local-server browser boot sanity.
+- Pending after commit: clean package verification and GitHub Actions release matrix rerun after push.
+
+### Next
+
+- Finish the closeout gates and package v0.18 for Emmanuel to retest the Worker path specifically: train Worker, build Barracks, confirm incomplete Barracks cannot train, wait for completion, then train army units from the completed Barracks.
+
 ## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
 
 This checkpoint follows Emmanuel's mixed retest of `ascendant-realms-private-playtest-7baa99a`. v0.17.4 made trained Rangers no longer hard-stuck after production, but several ranged units could still feel blocked by invisible geometry near the Tutorial Barracks / Command Hall cluster until redirected.

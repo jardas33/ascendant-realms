@@ -198,6 +198,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     scene,
     map: activeMap,
     getBuildings,
+    getUnits,
     getCaptureSites,
     addBuilding,
     onMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options),
@@ -308,12 +309,31 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     new HUD({
       onBuild: (buildingId, sourceBuildingId) => {
         const source = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
-        buildingSystem.startPlacement(buildingId, { anchor: source?.position, resources: resources.player });
+        const builder = getUnits().find(
+          (entry) =>
+            entry.id === sourceBuildingId &&
+            entry.alive &&
+            entry.team === "player" &&
+            Boolean(entry.definition.buildOptions?.includes(buildingId))
+        );
+        buildingSystem.startPlacement(buildingId, {
+          anchor: builder?.position ?? source?.position,
+          resources: resources.player,
+          assignedWorkerId: builder?.id
+        });
         AudioManager.play("ui_click");
         const definition = BUILDING_BY_ID[buildingId];
-        showMessage(`Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`, undefined, undefined, "#d9eee8", {
-          priority: "command"
-        });
+        showMessage(
+          builder
+            ? `${builder.definition.name} ready to build ${definition?.name ?? "building"} - place the site near your base.`
+            : `Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`,
+          undefined,
+          undefined,
+          "#d9eee8",
+          {
+            priority: "command"
+          }
+        );
       },
       onTrain: (unitId, sourceBuildingId) => {
         const building = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");

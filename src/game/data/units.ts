@@ -2,6 +2,28 @@ import type { UnitDefinition } from "../core/GameTypes";
 
 export const UNITS: UnitDefinition[] = [
   {
+    id: "worker",
+    name: "Worker",
+    factionId: "free_marches",
+    role: "Builder",
+    description: "A camp hand who can establish basic military buildings.",
+    cost: { crowns: 50 },
+    trainTime: 3,
+    radius: 11,
+    color: 0xd7b970,
+    visionRadius: 330,
+    buildOptions: ["barracks"],
+    stats: {
+      maxHp: 55,
+      damage: 3,
+      range: 22,
+      attackCooldown: 1.4,
+      speed: 88,
+      armor: 0
+    },
+    xpValue: 8
+  },
+  {
     id: "militia",
     name: "Militia",
     factionId: "free_marches",

@@ -10,7 +10,7 @@ export const FACTIONS: FactionDefinition[] = [
       economyStyle: "Balanced site economy with strong campaign support from trusted local communities.",
       militaryStyle: "Reliable infantry, Rangers, defensive Watchtowers, and leadership scaling.",
       magicStyle: "Supportive Acolytes and hero-led blessings rather than raw burst damage.",
-      availableUnitIds: ["militia", "ranger", "acolyte"],
+      availableUnitIds: ["worker", "militia", "ranger", "acolyte"],
       availableBuildingIds: ["command_hall", "barracks", "mystic_lodge", "watchtower"],
       availableUpgradeIds: ["infantry_weapons_1", "ranger_training_1", "reinforced_armor_1", "aether_study_1"],
       aiPersonalityPreferences: ["balanced_warlord", "fortress_keeper"],

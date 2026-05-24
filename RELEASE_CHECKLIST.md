@@ -53,6 +53,8 @@ Known current realities:
 - v0.17.2 is a narrow Tutorial polish follow-up after Emmanuel's a990f11 retest: Stone Imp hits against Aster now show compact incoming `-N` damage, incoming direct damage no longer includes `HIT`, and Tutorial-only enemy training/income/attack pacing is eased further. No worker construction, global AI/balance, save, art, unit/building/map/faction, or combat-control rewrite is included. Rerun GitHub Actions after push because runtime Tutorial behaviour changed.
 - v0.17.3 is a narrow Tutorial/combat UI follow-up after Emmanuel's e448d18 retest: small melee units share the visible-contact floor for troop/Stone Imp/Wild Hound adjacency, explicit attack-target path failures suppress the no-path floating warning, selected side panel Hide/Show is session-only, and command buttons show explicit `Cost: ...` text. No worker construction, global AI/balance, save, art, unit/building/map/faction, or economy rewrite is included. Rerun GitHub Actions after push because runtime combat/UI behaviour changed.
 - v0.17.4 is a narrow production-spawn/movement follow-up after Emmanuel's 532007d retest: trained units resolve spawn points against pathfinding/building-footprint clearance, and move-ordered units recover from blocked building start cells. No worker construction, global AI/balance, save, art, unit/building/map/faction, economy rewrite, or Tutorial pacing change is included. Rerun GitHub Actions after push because runtime movement/production behaviour changed.
+- v0.17.5 fixes near-base invisible blockers by making exact world-point walkability use padded building rectangles inside coarse static cells and by allowing exact walkable endpoints. The final v0.17.5 handoff package was clean, and the GitHub Actions release matrix was green before v0.18 started.
+- v0.18 adds the first Worker construction foundation only: Command Hall trains Worker, Worker builds Barracks, assigned Worker proximity gates construction progress, incomplete Barracks cannot produce, and completed Barracks keeps existing production. No harvesting, repair, enemy construction AI, multiple-worker acceleration, save migration, new factions/maps, Patrol, formations, runtime art/assets, or Tutorial Worker requirement is included. Rerun GitHub Actions after push because runtime construction/production behavior changed.
 
 ## Required Automated Checks
 
@@ -120,6 +122,12 @@ Current v0.17.4 checkpoint result:
 
 ```text
 PASS: 60 test files, 431 tests
+```
+
+Current v0.18 checkpoint result:
+
+```text
+PASS: 61 test files, 440 tests
 ```
 
 Current v0.16.13 checkpoint result:

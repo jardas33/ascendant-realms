@@ -2,6 +2,7 @@ import type { BuildingDefinition, UnitDefinition, UpgradeDefinition } from "../.
 import { canAfford } from "../../core/MathUtils";
 import { BUILDING_BY_ID, UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
+import { Unit } from "../../entities/Unit";
 import { checkPrerequisites } from "../../systems/PrerequisiteSystem";
 import { formatCost } from "../BuildMenu";
 import {
@@ -13,15 +14,15 @@ import {
 import type { HUDSnapshot } from "./HudTypes";
 
 export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefined, snapshot: HUDSnapshot): string {
-  if (!(selectedOne instanceof Building)) {
+  if (!(selectedOne instanceof Building) && !(selectedOne instanceof Unit)) {
     return "";
   }
 
-  if (!selectedOne.isCompleted()) {
+  if (selectedOne instanceof Building && !selectedOne.isCompleted()) {
     return `<div class="action-group"><strong>Construction</strong><p class="quiet">Production unlocks when this building is complete.</p></div>`;
   }
 
-  const buildButtons = selectedOne.definition.buildOptions
+  const buildButtons = (selectedOne.definition.buildOptions ?? [])
     .map((buildingId) => BUILDING_BY_ID[buildingId])
     .filter((definition): definition is BuildingDefinition => definition !== undefined)
     .map((definition) => {
@@ -45,7 +46,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     })
     .join("");
 
-  const trainButtons = selectedOne.definition.trainOptions
+  const trainButtons = selectedOne instanceof Building ? selectedOne.definition.trainOptions
     .map((unitId) => UNIT_BY_ID[unitId])
     .filter((definition): definition is UnitDefinition => definition !== undefined)
     .map((definition) => {
@@ -67,9 +68,9 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         locked: Boolean(lockReason)
       });
     })
-    .join("");
+    .join("") : "";
 
-  const upgradeButtons = selectedOne.definition.upgradeOptions
+  const upgradeButtons = selectedOne instanceof Building ? selectedOne.definition.upgradeOptions
     .map((upgradeId) => UPGRADE_BY_ID[upgradeId])
     .filter((definition): definition is UpgradeDefinition => definition !== undefined)
     .map((definition) => {
@@ -97,7 +98,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         locked: Boolean(lockReason)
       });
     })
-    .join("");
+    .join("") : "";
 
   const sections = [];
   if (buildButtons) {

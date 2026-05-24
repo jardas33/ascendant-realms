@@ -1,16 +1,19 @@
 import Phaser from "phaser";
 import type { BattleMapDefinition, Position, ResourceBag } from "../core/GameTypes";
-import { payCost } from "../core/MathUtils";
+import { distance, payCost } from "../core/MathUtils";
 import { requireBuilding } from "../data/contentIndex";
 import { applyStrongholdBuildingEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import type { CaptureSite } from "../entities/CaptureSite";
+import type { Unit } from "../entities/Unit";
 import { canPlaceBuilding, placementReasonText, type PlacementResult } from "./BuildingPlacementRules";
+import { DEFAULT_PATHFINDING_CELL_SIZE, PathfindingGrid, type PathfindingStaticObstacle } from "./PathfindingGrid";
 
 interface BuildingSystemOptions {
   scene: Phaser.Scene;
   map: BattleMapDefinition;
   getBuildings: () => Building[];
+  getUnits?: () => Unit[];
   getCaptureSites: () => CaptureSite[];
   addBuilding: (building: Building) => void;
   onMessage: (message: string, x?: number, y?: number, color?: string, options?: BuildingSystemMessageOptions) => void;
@@ -24,8 +27,11 @@ interface BuildingSystemMessageOptions {
   priority?: "normal" | "command" | "pressure" | "objective";
 }
 
+const CONSTRUCTION_WORKER_FOOTPRINT_RANGE = 64;
+
 export class BuildingSystem {
   pendingBuildingId?: string;
+  pendingAssignedWorkerId?: string;
   private ghost?: Phaser.GameObjects.Rectangle;
   private ghostLabel?: Phaser.GameObjects.Text;
   placementMessage = "";
@@ -33,9 +39,10 @@ export class BuildingSystem {
 
   constructor(private readonly options: BuildingSystemOptions) {}
 
-  startPlacement(buildingId: string, preview?: { anchor?: Position; resources?: ResourceBag }): void {
+  startPlacement(buildingId: string, preview?: { anchor?: Position; resources?: ResourceBag; assignedWorkerId?: string }): void {
     const definition = requireBuilding(buildingId);
     this.pendingBuildingId = buildingId;
+    this.pendingAssignedWorkerId = preview?.assignedWorkerId;
     this.ghost?.destroy();
     this.ghostLabel?.destroy();
     this.ghost = this.options.scene.add
@@ -64,6 +71,7 @@ export class BuildingSystem {
 
   cancelPlacement(): void {
     this.pendingBuildingId = undefined;
+    this.pendingAssignedWorkerId = undefined;
     this.ghost?.destroy();
     this.ghostLabel?.destroy();
     this.ghost = undefined;
@@ -74,6 +82,9 @@ export class BuildingSystem {
   update(deltaSeconds: number): void {
     this.options.getBuildings().forEach((building) => {
       if (!building.alive || !building.isUnderConstruction()) {
+        return;
+      }
+      if (!this.canProgressConstruction(building)) {
         return;
       }
       if (building.updateConstruction(deltaSeconds)) {
@@ -124,10 +135,13 @@ export class BuildingSystem {
 
     payCost(resources, definition.cost);
     const building = new Building(this.options.scene, definition, "player", x, y, {
-      constructionState: definition.constructionTimeSeconds > 0 ? "underConstruction" : "completed"
+      constructionState: definition.constructionTimeSeconds > 0 ? "underConstruction" : "completed",
+      assignedWorkerId: this.pendingAssignedWorkerId,
+      assignedWorkerName: this.pendingAssignedWorkerId ? this.workerForId(this.pendingAssignedWorkerId)?.definition.name ?? "Worker" : undefined
     });
     this.applyFirstConstructionBoost(building);
     this.options.addBuilding(building);
+    this.assignWorkerToConstructionSite(building);
     this.options.onConstructionStarted?.(building);
     if (building.isCompleted()) {
       this.options.onBuilt?.(building);
@@ -150,6 +164,62 @@ export class BuildingSystem {
     }
     building.constructionTimeSeconds = Math.max(1, building.constructionTimeSeconds * multiplier);
     this.firstConstructionBoostUsed = true;
+  }
+
+  private canProgressConstruction(building: Building): boolean {
+    if (!building.assignedWorkerId) {
+      building.constructionProgressing = true;
+      building.constructionStatusDetail = "Under construction";
+      return true;
+    }
+
+    const worker = this.workerForId(building.assignedWorkerId);
+    if (!worker?.alive) {
+      building.constructionProgressing = false;
+      building.constructionStatusDetail = `${building.assignedWorkerName ?? "Worker"} missing`;
+      return false;
+    }
+
+    const closeEnough = isWorkerInConstructionRange(building, worker);
+    if (!closeEnough) {
+      building.constructionProgressing = false;
+      building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} traveling`;
+      const approach = findConstructionApproachPoint({
+        map: this.options.map,
+        building,
+        worker,
+        buildings: this.options.getBuildings()
+      });
+      commandWorkerToConstructionApproach(worker, approach);
+      return false;
+    }
+
+    building.constructionProgressing = true;
+    building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} building`;
+    return true;
+  }
+
+  private assignWorkerToConstructionSite(building: Building): void {
+    if (!building.assignedWorkerId || !building.isUnderConstruction()) {
+      return;
+    }
+    const worker = this.workerForId(building.assignedWorkerId);
+    if (!worker?.alive) {
+      building.constructionStatusDetail = `${building.assignedWorkerName ?? "Worker"} missing`;
+      return;
+    }
+    const approach = findConstructionApproachPoint({
+      map: this.options.map,
+      building,
+      worker,
+      buildings: this.options.getBuildings()
+    });
+    commandWorkerToConstructionApproach(worker, approach);
+    building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} assigned`;
+  }
+
+  private workerForId(workerId: string): Unit | undefined {
+    return this.options.getUnits?.().find((unit) => unit.alive && unit.team === "player" && unit.id === workerId);
   }
 
   private getPlacementResult(x: number, y: number, buildingId: string, resources: ResourceBag): PlacementResult {
@@ -196,4 +266,73 @@ export class BuildingSystem {
       y: anchor.y
     };
   }
+}
+
+export function constructionWorkerRange(building: Building, worker: Unit): number {
+  return Math.max(building.definition.size.width, building.definition.size.height) / 2 + worker.radius + 34;
+}
+
+export function isWorkerInConstructionRange(building: Building, worker: Unit): boolean {
+  const dx = Math.max(Math.abs(worker.position.x - building.position.x) - building.definition.size.width / 2, 0);
+  const dy = Math.max(Math.abs(worker.position.y - building.position.y) - building.definition.size.height / 2, 0);
+  return Math.max(dx, dy) <= CONSTRUCTION_WORKER_FOOTPRINT_RANGE;
+}
+
+export function findConstructionApproachPoint(options: {
+  map: BattleMapDefinition;
+  building: Building;
+  worker: Unit;
+  buildings: Building[];
+}): Position {
+  const { building, worker } = options;
+  const halfWidth = building.definition.size.width / 2;
+  const halfHeight = building.definition.size.height / 2;
+  const clearance = worker.radius + 28;
+  const candidates = [
+    { x: building.position.x - halfWidth - clearance, y: building.position.y },
+    { x: building.position.x + halfWidth + clearance, y: building.position.y },
+    { x: building.position.x, y: building.position.y - halfHeight - clearance },
+    { x: building.position.x, y: building.position.y + halfHeight + clearance },
+    { x: building.position.x - halfWidth - clearance, y: building.position.y - halfHeight - clearance },
+    { x: building.position.x + halfWidth + clearance, y: building.position.y - halfHeight - clearance },
+    { x: building.position.x - halfWidth - clearance, y: building.position.y + halfHeight + clearance },
+    { x: building.position.x + halfWidth + clearance, y: building.position.y + halfHeight + clearance }
+  ];
+  const grid = PathfindingGrid.fromMap(options.map, {
+    cellSize: DEFAULT_PATHFINDING_CELL_SIZE,
+    staticObstacles: staticObstaclesForConstructionBuildings(options.buildings)
+  });
+  const valid = candidates
+    .map((candidate) => ({
+      x: Math.max(worker.radius, Math.min(options.map.width - worker.radius, candidate.x)),
+      y: Math.max(worker.radius, Math.min(options.map.height - worker.radius, candidate.y))
+    }))
+    .filter((candidate) => grid.isWorldWalkable(candidate))
+    .sort((a, b) => distance(a, worker.position) - distance(b, worker.position))[0];
+
+  if (valid) {
+    return valid;
+  }
+
+  return grid.findNearestWalkablePoint(worker.position, 6) ?? { ...worker.position };
+}
+
+function commandWorkerToConstructionApproach(worker: Unit, approach: Position): void {
+  if (worker.moveTarget && distance(worker.moveTarget, approach) <= 4) {
+    return;
+  }
+  worker.commandMove(approach, false);
+}
+
+function staticObstaclesForConstructionBuildings(buildings: Building[]): PathfindingStaticObstacle[] {
+  return buildings
+    .filter((building) => building.alive)
+    .map((building) => ({
+      id: building.id,
+      x: building.position.x,
+      y: building.position.y,
+      width: building.definition.size.width,
+      height: building.definition.size.height,
+      padding: 16
+    }));
 }

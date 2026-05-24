@@ -92,6 +92,7 @@ export interface UnitDefinition {
   radius: number;
   color: number;
   visionRadius: number;
+  buildOptions?: string[];
   projectileColor?: number;
   stats: CombatStats;
   xpValue: number;

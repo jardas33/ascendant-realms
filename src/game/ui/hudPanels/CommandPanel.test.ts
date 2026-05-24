@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
+import { Unit } from "../../entities/Unit";
 import { renderCommandActions } from "./CommandPanel";
 import type { HUDSnapshot } from "./HudTypes";
 
@@ -14,6 +15,8 @@ describe("CommandPanel", () => {
 
     expect(commandHallMarkup).toContain('data-testid="command-build-barracks"');
     expect(commandHallMarkup).toContain("Cost: 180 Crowns, 120 Stone");
+    expect(commandHallMarkup).toContain('data-testid="command-train-worker"');
+    expect(commandHallMarkup).toContain("Cost: 50 Crowns");
     expect(commandHallMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
     expect(commandHallMarkup).toContain("Cost: 120 Crowns, 70 Iron");
     expect(barracksMarkup).toContain('data-testid="command-train-militia"');
@@ -29,7 +32,20 @@ describe("CommandPanel", () => {
     );
 
     expect(markup).toContain("Insufficient resources. Cost: 180 Crowns, 120 Stone");
+    expect(markup).toContain("Insufficient resources. Cost: 50 Crowns");
     expect(markup).toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
+  });
+
+  it("renders Worker building commands without production queues", () => {
+    const worker = fakeWorker();
+
+    const markup = renderCommandActions(worker, fakeSnapshot(["command_hall"]));
+
+    expect(markup).toContain('data-testid="command-build-barracks"');
+    expect(markup).toContain("Build Barracks");
+    expect(markup).toContain("Cost: 180 Crowns, 120 Stone");
+    expect(markup).not.toContain('data-action="train"');
+    expect(markup).not.toContain('data-action="upgrade"');
   });
 });
 
@@ -49,6 +65,20 @@ function fakeBuilding(id: string, buildingId: string): Building {
     upgradeQueue: [],
     isCompleted: () => true
   }) as Building;
+}
+
+function fakeWorker(): Unit {
+  return Object.assign(Object.create(Unit.prototype), {
+    id: "player-worker",
+    kind: "unit",
+    team: "player",
+    alive: true,
+    definition: {
+      id: "worker",
+      name: "Worker",
+      buildOptions: ["barracks"]
+    }
+  }) as Unit;
 }
 
 function fakeSnapshot(

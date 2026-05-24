@@ -1,6 +1,62 @@
 # Development Checkpoint
 
-Updated: 2026-05-23 v0.17.5 Ranger near-base invisible blocker fix release closeout
+Updated: 2026-05-23 v0.18 worker construction foundation local verification complete
+
+## v0.18 Worker Construction Foundation - 2026-05-23
+
+Scope: implement the first safe Worker construction vertical slice only. This pass adds one Worker unit, Command Hall Worker training, Worker-built Barracks construction sites, assigned-worker construction progress, UI feedback, package metadata, and focused tests. It does not add harvesting, repairs, multiple workers per site, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, visual overhaul, or runtime art/assets.
+
+Baseline:
+
+- Starting commit: `2fa6de3`, `Update v0.17.5 release handoff after green matrix`.
+- Branch was clean and synced with `origin/main`.
+- v0.17.5 clean package `artifacts/playtest/ascendant-realms-private-playtest-2fa6de3` existed from the previous closeout.
+- GitHub Actions baseline from the previous handoff: CI Release Matrix Dry Run #102 green for fast confidence, release simulator, and all six hosted release-matrix groups.
+
+Included work:
+
+- Added `docs/V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md`.
+- Added `docs/V018_IMPLEMENTATION_REPORT.md`.
+- Added Free Marches `worker` unit data with existing art conventions only.
+- Added `buildOptions` to unit definitions plus unit build-option content validation.
+- Command Hall can train Workers.
+- Worker selection can start Barracks placement.
+- Worker-placed Barracks sites store assigned Worker id/name, construction status detail, and progress.
+- Assigned construction only progresses while the Worker is alive and near the building footprint.
+- Worker approach movement uses the existing pathfinding grid and live building blockers.
+- Incomplete buildings still block/path like buildings but do not expose train/upgrade actions.
+- Selected-building UI shows construction progress, assigned Worker, status, and production-lock copy.
+- Existing Command Hall direct building placement remains as the fallback path, so Tutorial remains stable and does not require Worker construction yet.
+- Package metadata and validation now require the v0.18 Worker construction docs.
+- Hosted deep-battle coverage includes Worker training, Worker Barracks placement, assigned construction progress, completion, and completed Barracks production unlock.
+- Existing hosted behaviour-mode gauntlet click handling was stabilized with the standard `clickReady` path after hosted evidence showed the old custom helper could keep stale layout errors and outwait the retreat-suppression window.
+
+Verification so far:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts src/game/systems/BuildingSystem.test.ts src/game/systems/TrainingSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts PASS, 5 files / 17 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker can be trained" --reporter=line PASS, 1 hosted test.
+npm test PASS, 61 files / 440 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifests checked.
+npm run build PASS with the known Vite chunk-size warning.
+npm run test:e2e:smoke:fast PASS, 8 tests in 2.8m.
+npm run test:e2e:smoke PASS, 14 tests in 7.4m.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --reporter=line PASS after hosted helper stabilization, 1 test in 1.1m.
+npm run test:e2e:release:hosted:deep-battle PASS after hosted helper stabilization, 16 tests in 5.3m.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 3.3m.
+npm run test:e2e:release PASS, 81 tests in 40.8m.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-2fa6de3-dirty generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-2fa6de3-dirty PASS, 42 checks.
+Packaged local-server browser boot sanity PASS at http://127.0.0.1:4174/.
+```
+
+Runtime gameplay changed: yes, Worker training and Worker-assigned Barracks construction. Gameplay numbers changed: yes, one new Worker unit and Command Hall Worker training cost/time; existing army unit/building/wave/resource/global balance values were not broadly rebalanced. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no runtime combat-control behavior changed; one hosted test helper was stabilized. Tutorial impact: no Tutorial requirement change; fallback Command Hall building placement remains. Economy/production architecture rewritten: no, only a foundation slice.
+
+Pending closeout after this local-verification checkpoint: `git diff --check`, commit/push, clean package generation/verification, and GitHub Actions release matrix rerun after push.
 
 ## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
 

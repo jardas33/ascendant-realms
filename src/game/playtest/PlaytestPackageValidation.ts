@@ -44,6 +44,8 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0173_EMMANUEL_E448D18_TUTORIAL_RETEST_INTAKE.md",
   "V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md",
   "V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md",
+  "V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md",
+  "V018_IMPLEMENTATION_REPORT.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -147,7 +149,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.17.5 Ranger near-base invisible blocker fix",
+      "v0.18 worker construction foundation",
       "build info checkpoint",
       checks,
       errors

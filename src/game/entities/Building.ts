@@ -28,6 +28,10 @@ export class Building extends BaseEntity {
   constructionState: BuildingConstructionState;
   constructionProgress: number;
   constructionTimeSeconds: number;
+  assignedWorkerId?: string;
+  assignedWorkerName?: string;
+  constructionStatusDetail?: string;
+  constructionProgressing = false;
   rallyPoint?: Position;
   rallyTargetId?: string;
 
@@ -41,7 +45,12 @@ export class Building extends BaseEntity {
     team: Team,
     x: number,
     y: number,
-    options: { constructionState?: Exclude<BuildingConstructionState, "planned">; constructionProgress?: number } = {}
+    options: {
+      constructionState?: Exclude<BuildingConstructionState, "planned">;
+      constructionProgress?: number;
+      assignedWorkerId?: string;
+      assignedWorkerName?: string;
+    } = {}
   ) {
     super({
       kind: "building",
@@ -58,6 +67,13 @@ export class Building extends BaseEntity {
       options.constructionState ??
       (definition.constructionTimeSeconds > 0 && team === "player" ? "underConstruction" : "completed");
     this.constructionProgress = this.constructionState === "completed" ? 1 : clamp(options.constructionProgress ?? 0, 0, 1);
+    this.assignedWorkerId = options.assignedWorkerId;
+    this.assignedWorkerName = options.assignedWorkerName;
+    this.constructionStatusDetail = this.isUnderConstruction()
+      ? this.assignedWorkerId
+        ? `Waiting for ${this.assignedWorkerName ?? "Worker"}`
+        : "Under construction"
+      : "Complete";
     this.constructionBarWidth = Math.max(58, definition.size.width * 0.95);
     this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true);
     const layout = this.addBattleView(scene, definition, team);
@@ -92,6 +108,7 @@ export class Building extends BaseEntity {
 
   updateConstruction(deltaSeconds: number): boolean {
     if (this.constructionState !== "underConstruction") {
+      this.constructionProgressing = false;
       return false;
     }
 
@@ -100,6 +117,7 @@ export class Building extends BaseEntity {
       return true;
     }
 
+    this.constructionProgressing = true;
     this.constructionProgress = clamp(this.constructionProgress + deltaSeconds / this.constructionTimeSeconds, 0, 1);
     this.raiseConstructionHealthFloor();
     if (this.constructionProgress >= 1) {
@@ -113,6 +131,8 @@ export class Building extends BaseEntity {
   private completeConstruction(): void {
     this.constructionState = "completed";
     this.constructionProgress = 1;
+    this.constructionProgressing = false;
+    this.constructionStatusDetail = "Complete";
     this.hp = this.maxHp;
     this.updateHealthBar();
     this.updateConstructionVisuals();

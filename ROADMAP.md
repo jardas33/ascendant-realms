@@ -11,9 +11,9 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint is **v0.17.5 Ranger Near-Base Invisible Blocker Fix** on 2026-05-23. It responds to Emmanuel's mixed v0.17.4 Tutorial retest by fixing visible open ground near the Tutorial Command Hall / Barracks cluster being treated like blocked coarse static cells. It preserves v0.17.4 trained Ranger spawn recovery, v0.17.3 cost/side-panel/contact polish, save format, runtime art/assets, workers, maps, factions, unit/building stats, global balance, Tutorial pacing, and economy architecture. The v0.17.5 release closeout includes a verified clean package for the runtime commit and GitHub Actions CI Release Matrix Dry Run #100 green after hosted Playwright harness stabilization.
+The latest player-facing checkpoint under closeout is **v0.18 Worker Construction Foundation** on 2026-05-23. It follows the clean v0.17.5 release baseline and implements the first narrow Worker construction vertical slice: Command Hall trains Workers, Worker can place one Barracks construction site, assigned Worker proximity gates construction progress, incomplete Barracks cannot train or upgrade, and completed Barracks unlocks its existing production. It preserves save format, runtime art/assets, maps, factions, Tutorial requirements, Command Hall direct placement fallback, enemy AI scope, Patrol, formations, and global economy/balance architecture.
 
-The next recommended player-facing step is to send the clean v0.17.5 private package to Emmanuel/testers and continue feedback intake from the existing v0.17 Tutorial/Ranger checklist. Treat the Ranger near-base invisible blocker as resolved unless a new manual package retest reproduces it. Do not open worker economy runtime, broader pathing rewrites, Patrol, save-persistent behaviour modes, balance tuning, or UI redesign without a new explicit goal. Worker economy remains design-only; use v0.13/v0.13.1, v0.16, and v0.17 automated evidence to prioritize routes, not as human feedback. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to finish v0.18 closeout, package the clean build, and have Emmanuel retest only the Worker path: train Worker, build Barracks, verify incomplete production lock, wait for completion, then train army units from the completed Barracks. Do not expand into harvesting, repairs, enemy worker AI, multiple-worker acceleration, save migration, Tutorial Worker onboarding, broad pathing rewrites, Patrol, balance tuning, UI redesign, or runtime art replacement without a new explicit goal. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
 
 New v0.17 Tutorial/Ranger docs and outputs:
 
@@ -25,6 +25,14 @@ New v0.17 Tutorial/Ranger docs and outputs:
 - `docs/V0174_EMMANUEL_532007D_TUTORIAL_RETEST_INTAKE.md`
 - `docs/V0175_EMMANUEL_7BAA99A_TUTORIAL_RETEST_INTAKE.md`
 - `DEVELOPMENT_CHECKPOINT.md`
+- `LLM_GAME_HANDOFF.md`
+
+New v0.18 Worker construction docs:
+
+- `docs/V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md`
+- `docs/V018_IMPLEMENTATION_REPORT.md`
+- `DEVELOPMENT_CHECKPOINT.md`
+- `CHANGELOG.md`
 - `LLM_GAME_HANDOFF.md`
 
 New v0.16 control behaviour docs and outputs:

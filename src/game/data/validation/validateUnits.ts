@@ -21,6 +21,11 @@ export function validateUnits(errors: string[], context: ValidationContext): voi
     if (unit.visionRadius <= 0) {
       errors.push(`Unit ${unit.id} must have a positive vision radius.`);
     }
+    unit.buildOptions?.forEach((id) => {
+      if (!context.buildingIds.has(id)) {
+        errors.push(`Unit ${unit.id} can build missing building ${id}.`);
+      }
+    });
     validatePrerequisites(`Unit ${unit.id}`, unit.prerequisites, errors, context);
     validateCombatStats(`Unit ${unit.id}`, unit.stats, errors);
   });
