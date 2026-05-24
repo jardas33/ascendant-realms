@@ -60,6 +60,7 @@ Known current realities:
 - v0.18.3 baseline accepted after GitHub Actions CI Release Matrix Dry Run #26365296115 passed on `main` / `ce43d0e`: Fast confidence, Release simulator, and all six hosted release-matrix groups succeeded. Treat `ascendant-realms-private-playtest-ce43d0e` as the current Worker construction foundation baseline.
 - v0.19 clarifies production roles without adding new content: Command Hall trains Workers only, Barracks owns basic army training and existing basic troop research, Mystic Lodge owns existing Acolyte/Aether Study actions, Watchtower remains completed-only defense, and incomplete buildings stay inactive with clearer role/unlock copy. Rerun GitHub Actions after push because runtime production ownership and UI changed.
 - v0.19.1 verifies and lightly polishes the v0.19 production architecture before v0.20. It adds production-role audits, a focused hosted Tutorial proxy, clearer Command Hall/Mystic Lodge/Watchtower/incomplete-building copy, and a narrow hosted-layout expectation fix after exact v0.19 workflow-dispatch run #113 failed only stale Command Hall build/upgrade layout assertions.
+- v0.20 adds the first small building-owned tech-tree layer: Command Hall core upgrade `Camp Foundations I`, Barracks-owned existing troop upgrades, Mystic Lodge `Aether Study I`, and Watchtower defensive upgrade `Sentry Bracing I`. Rerun GitHub Actions after push because runtime upgrade data, upgrade effects, and upgrade UI changed.
 
 ## Required Automated Checks
 
@@ -157,6 +158,12 @@ Current v0.19.1 checkpoint result:
 
 ```text
 PASS: 62 test files, 458 tests
+```
+
+Current v0.20 checkpoint result:
+
+```text
+PASS: 63 test files, 465 tests
 ```
 
 Current v0.16.13 checkpoint result:

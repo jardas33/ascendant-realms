@@ -1,6 +1,52 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.19.1 production role verification and polish
+Updated: 2026-05-24 v0.20 upgrade and tech tree foundation
+
+## v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
+
+Scope: first structured upgrade/tech-tree foundation on top of the v0.19.1 production-role baseline. This pass does not add harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, runtime art/assets, broad AI/pathing rewrite, global rebalance, or a large upgrade roster.
+
+Baseline:
+
+- Starting commit: `a59248c`, `Checkpoint v0.19.1 production architecture verification and role polish`.
+- Starting package: `artifacts/playtest/ascendant-realms-private-playtest-a59248c`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions CI Release Matrix Dry Run #115 passed on `main` / `a59248c`: Fast confidence, Release simulator, and hosted release groups succeeded.
+
+Included work:
+
+- Added `docs/V020_TECH_TREE_FOUNDATION_SPEC.md`.
+- Added `docs/V020_IMPLEMENTATION_REPORT.md`.
+- Added explicit upgrade owner, category, tier, and effect-summary metadata.
+- Added Command Hall core upgrade `Camp Foundations I` while keeping Command Hall Worker-only for training.
+- Kept Barracks as Militia/Ranger production and clarified its existing Infantry Weapons I, Reinforced Armor I, and Ranger Training I ownership.
+- Kept Mystic Lodge on Acolyte and Aether Study I.
+- Added Watchtower defensive upgrade `Sentry Bracing I` behind completed Watchtower plus `Camp Foundations I`.
+- Added building armor upgrade application for current and future matching buildings.
+- Expanded HUD/command copy for owner, requirement, category, effect, cost, researching, and researched states.
+- Kept incomplete-building research locked and kept Tutorial step count stable.
+- Added data, system, UI, package-validation, and hosted Tutorial proxy coverage for the new upgrade foundation.
+
+Verification and closeout so far:
+
+```text
+npm exec vitest run src/game/data/techTree.test.ts src/game/data/productionRoles.test.ts src/game/systems/UpgradeSystem.test.ts src/game/systems/UpgradeEffects.test.ts src/game/ui/hudPanels/HudFormatting.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/tutorial/TutorialStepModel.test.ts src/game/systems/TrainingSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 10 files / 43 tests.
+npm test PASS, 63 files / 465 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Tutorial production route keeps Command Hall, Barracks, and Watchtower roles readable" --reporter=line PASS, 1 hosted Tutorial proxy test.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 19 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-a59248c-dirty generated.
+npm run verify:playtest-package PASS, 53 checks.
+```
+
+Closeout note: run `git diff --check`, commit, then regenerate/verify a clean package from the final v0.20 commit.
 
 ## v0.19.1 Production Role Verification And Polish - 2026-05-24
 

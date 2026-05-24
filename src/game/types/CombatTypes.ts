@@ -235,6 +235,8 @@ export interface TechPrerequisites {
   heroLevel?: number;
 }
 
+export type UpgradeCategory = "core" | "infantry" | "ranger" | "aether" | "defense" | "faction_trait";
+
 export type UpgradeEffectDefinition =
   | {
       type: "unit-stat-mod";
@@ -242,6 +244,11 @@ export type UpgradeEffectDefinition =
       damageMultiplier?: number;
       rangeMultiplier?: number;
       attackCooldownMultiplier?: number;
+      armorBonus?: number;
+    }
+  | {
+      type: "building-stat-mod";
+      buildingIds: string[];
       armorBonus?: number;
     }
   | {
@@ -253,9 +260,13 @@ export interface UpgradeDefinition {
   id: string;
   name: string;
   description: string;
+  ownerBuildingId: string;
+  category: UpgradeCategory;
+  tier: number;
   cost: Cost;
   researchTimeSeconds: number;
   prerequisites: TechPrerequisites;
+  effectSummary: string;
   effects: UpgradeEffectDefinition[];
 }
 

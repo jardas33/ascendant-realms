@@ -12,7 +12,14 @@ export const FACTIONS: FactionDefinition[] = [
       magicStyle: "Supportive Acolytes and hero-led blessings rather than raw burst damage.",
       availableUnitIds: ["worker", "militia", "ranger", "acolyte"],
       availableBuildingIds: ["command_hall", "barracks", "mystic_lodge", "watchtower"],
-      availableUpgradeIds: ["infantry_weapons_1", "ranger_training_1", "reinforced_armor_1", "aether_study_1"],
+      availableUpgradeIds: [
+        "camp_foundations_1",
+        "infantry_weapons_1",
+        "ranger_training_1",
+        "reinforced_armor_1",
+        "aether_study_1",
+        "sentry_bracing_1"
+      ],
       aiPersonalityPreferences: ["balanced_warlord", "fortress_keeper"],
       campaignReputationHooks: ["free_marches", "common_folk", "old_faith"],
       factionModifiers: []

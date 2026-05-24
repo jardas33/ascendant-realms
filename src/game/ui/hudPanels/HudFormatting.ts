@@ -2,7 +2,7 @@ import { LEVEL_XP_THRESHOLDS } from "../../core/Constants";
 import type { BuildingDefinition, UnitDefinition, UpgradeDefinition } from "../../core/GameTypes";
 import { xpProgressForLevel } from "../../core/Progression";
 import type { Hero } from "../../entities/Hero";
-import { UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
+import { BUILDING_BY_ID, UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
 
 export function escapeHtml(value: string): string {
   return value
@@ -33,9 +33,13 @@ export function upgradeName(upgradeId: string): string {
   return UPGRADE_BY_ID[upgradeId]?.name ?? upgradeId;
 }
 
+export function buildingName(buildingId: string): string {
+  return BUILDING_BY_ID[buildingId]?.name ?? buildingId;
+}
+
 export function formatBuildingRole(definition: BuildingDefinition): string {
   if (definition.id === "command_hall") {
-    return "Base hub: trains Workers only and anchors the camp.";
+    return "Base hub: trains Workers only, anchors the camp, and researches core upgrades.";
   }
   if (definition.id === "barracks") {
     return "Army production: trains Militia and Rangers and researches basic troop upgrades.";
@@ -44,7 +48,7 @@ export function formatBuildingRole(definition: BuildingDefinition): string {
     return "Mystic support: trains Acolytes and researches Aether Study I.";
   }
   if (definition.id === "watchtower") {
-    return "Defense: inactive while incomplete, attacks nearby enemies when complete.";
+    return "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses.";
   }
 
   const actions = formatBuildingActionPhrases(definition);
@@ -81,9 +85,21 @@ export function formatUnitSummary(definition: UnitDefinition): string {
 }
 
 export function formatUpgradeEffects(definition: UpgradeDefinition): string {
+  if (definition.effectSummary.trim()) {
+    return definition.effectSummary;
+  }
+
   const effects = definition.effects.flatMap((effect) => {
     if (effect.type === "hero-mana-regen") {
       return [`${formatMultiplierPercent(effect.multiplier)} hero mana regen`];
+    }
+    if (effect.type === "building-stat-mod") {
+      const buildingNames = effect.buildingIds.map((buildingId) => buildingName(buildingId)).join("/");
+      const modifiers = [];
+      if (effect.armorBonus !== undefined) {
+        modifiers.push(`${effect.armorBonus > 0 ? "+" : ""}${effect.armorBonus} armor`);
+      }
+      return modifiers.length > 0 ? [`${buildingNames}: ${modifiers.join(", ")}`] : [];
     }
 
     const unitNames = effect.unitIds.map((unitId) => unitName(unitId)).join("/");
@@ -103,6 +119,23 @@ export function formatUpgradeEffects(definition: UpgradeDefinition): string {
     return modifiers.length > 0 ? [`${unitNames}: ${modifiers.join(", ")}`] : [];
   });
   return effects.join("; ");
+}
+
+export function formatUpgradeOwner(definition: UpgradeDefinition): string {
+  return `Owner: ${buildingName(definition.ownerBuildingId)}`;
+}
+
+export function formatUpgradeRequirements(definition: UpgradeDefinition): string {
+  const requirements = [
+    ...(definition.prerequisites.buildingIds ?? []).map((buildingId) => `completed ${buildingName(buildingId)}`),
+    ...(definition.prerequisites.upgradeIds ?? []).map((upgradeId) => upgradeName(upgradeId)),
+    ...(definition.prerequisites.heroLevel !== undefined ? [`hero level ${definition.prerequisites.heroLevel}`] : [])
+  ];
+  return requirements.length > 0 ? `Requires: ${requirements.join(", ")}` : "Requires: no prerequisite";
+}
+
+export function formatUpgradeCategory(definition: UpgradeDefinition): string {
+  return `Category: ${definition.category.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase())}`;
 }
 
 export function renderProgress(label: string, progress: number): string {

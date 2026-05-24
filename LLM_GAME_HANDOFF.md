@@ -1,12 +1,64 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.19.1 production role verification and polish
+Last updated: 2026-05-24 v0.20 upgrade and tech tree foundation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
+
+Status: v0.20 adds the first clean building-owned upgrade/tech-tree foundation and is locally verified through the requested runtime, browser, and hosted release gates. Final clean package generation should happen from the final v0.20 commit after this handoff update.
+
+Baseline:
+
+- Stable starting commit: `a59248c`, `Checkpoint v0.19.1 production architecture verification and role polish`.
+- Stable starting package: `artifacts/playtest/ascendant-realms-private-playtest-a59248c`.
+- Branch was clean and synced with `origin/main`.
+- GitHub Actions CI Release Matrix Dry Run #115 passed on `main` / `a59248c`: Fast confidence, Release simulator, and hosted release groups succeeded.
+
+Docs added:
+
+- `docs/V020_TECH_TREE_FOUNDATION_SPEC.md`
+- `docs/V020_IMPLEMENTATION_REPORT.md`
+
+Runtime/UI summary:
+
+- Upgrade definitions now carry explicit owner building, category, tier, and effect-summary metadata.
+- Command Hall remains Worker-only for training and now owns the small core upgrade `Camp Foundations I`.
+- Barracks keeps Militia/Ranger production and owns Infantry Weapons I, Reinforced Armor I, and Ranger Training I with clearer owner/effect copy.
+- Mystic Lodge keeps Acolyte and Aether Study I as its existing aether role.
+- Watchtower remains defensive and gains the small defensive upgrade `Sentry Bracing I`, locked behind completed Watchtower plus `Camp Foundations I`.
+- Building armor upgrade effects are applied to existing and future matching buildings without changing unit balance.
+- Upgrade buttons now show owner, requirements, category, effect, cost, researching, and researched state.
+- Incomplete buildings still expose no completed-building research actions.
+- Tutorial keeps its step count and only lightly mentions that Barracks unlocks army and upgrades.
+- No harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new maps/factions, runtime art/assets, broad AI/pathing rewrite, global rebalance, Patrol, formations, or large upgrade roster is included.
+
+Verification:
+
+```text
+npm exec vitest run src/game/data/techTree.test.ts src/game/data/productionRoles.test.ts src/game/systems/UpgradeSystem.test.ts src/game/systems/UpgradeEffects.test.ts src/game/ui/hudPanels/HudFormatting.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/tutorial/TutorialStepModel.test.ts src/game/systems/TrainingSystem.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 10 files / 43 tests.
+npm test PASS, 63 files / 465 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Tutorial production route keeps Command Hall, Barracks, and Watchtower roles readable" --reporter=line PASS, 1 hosted Tutorial proxy test.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 19 tests after a test-only rerun fixed stale v0.19 Watchtower copy and refreshed the research-completion HUD assertion.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-a59248c-dirty generated.
+npm run verify:playtest-package PASS, 53 checks.
+```
+
+Closeout note: run `git diff --check`, then commit as `Checkpoint v0.20 upgrade and tech tree foundation` and generate/verify the clean final package from that commit.
+
+Emmanuel retest focus: Command Hall still trains Workers only and owns only the small core/base upgrade; Worker-built Barracks still completes and exposes Militia/Ranger plus existing troop upgrades; Mystic Lodge keeps Acolyte/Aether Study I; Watchtower remains defensive and exposes only Sentry Bracing I after completion; incomplete buildings cannot research; upgrade buttons show owner, requirements, cost, effect, researching, and researched state; v0.18.3 Worker pause/resume/pathing and v0.19 production roles remain stable.
 
 ## Current v0.19.1 Production Role Verification And Polish - 2026-05-24
 

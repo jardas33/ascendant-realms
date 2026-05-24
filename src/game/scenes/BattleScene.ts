@@ -99,7 +99,7 @@ import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
 import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
 import { tickStatusEffects } from "../systems/StatusEffectSystem";
-import { applyUpgradeToUnit } from "../systems/UpgradeEffects";
+import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 24;
@@ -460,6 +460,7 @@ export class BattleScene extends Phaser.Scene {
 
   private addBuilding(building: Building): void {
     this.buildings.push(building);
+    this.applyResearchedUpgradesToBuilding(building);
   }
 
   private createFogOverlay(): void {
@@ -1041,6 +1042,9 @@ export class BattleScene extends Phaser.Scene {
     this.units
       .filter((unit) => unit.alive && unit.team === team)
       .forEach((unit) => applyUpgradeToUnit(unit, upgrade));
+    this.buildings
+      .filter((building) => building.alive && building.team === team)
+      .forEach((building) => applyUpgradeToBuilding(building, upgrade));
   }
 
   private applyResearchedUpgradesToUnit(unit: Unit): void {
@@ -1051,6 +1055,18 @@ export class BattleScene extends Phaser.Scene {
       const upgrade = UPGRADE_BY_ID[upgradeId];
       if (upgrade) {
         applyUpgradeToUnit(unit, upgrade);
+      }
+    });
+  }
+
+  private applyResearchedUpgradesToBuilding(building: Building): void {
+    if (building.team !== "player" && building.team !== "enemy") {
+      return;
+    }
+    this.researchedUpgradeIds[building.team].forEach((upgradeId) => {
+      const upgrade = UPGRADE_BY_ID[upgradeId];
+      if (upgrade) {
+        applyUpgradeToBuilding(building, upgrade);
       }
     });
   }

@@ -5,7 +5,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     id: "command_hall",
     name: "Command Hall",
     factionId: "free_marches",
-    description: "Base hub that trains Workers only and anchors the camp. Losing it means defeat.",
+    description: "Base hub that trains Workers only, anchors the camp, and researches core camp upgrades. Losing it means defeat.",
     cost: {},
     maxHp: 1450,
     armor: 4,
@@ -15,7 +15,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     constructionTimeSeconds: 0,
     buildOptions: [],
     trainOptions: ["worker"],
-    upgradeOptions: [],
+    upgradeOptions: ["camp_foundations_1"],
     xpValue: 80
   },
   {
@@ -56,7 +56,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     id: "watchtower",
     name: "Watchtower",
     factionId: "free_marches",
-    description: "Defensive structure that stays inert while incomplete and attacks nearby enemies once construction is complete.",
+    description: "Defensive structure that stays inert while incomplete, attacks nearby enemies once construction is complete, and researches simple tower defenses.",
     cost: { crowns: 120, stone: 100, iron: 40 },
     maxHp: 350,
     armor: 2,
@@ -66,7 +66,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     constructionTimeSeconds: 20,
     buildOptions: [],
     trainOptions: [],
-    upgradeOptions: [],
+    upgradeOptions: ["sentry_bracing_1"],
     xpValue: 80,
     attack: {
       damage: 14,

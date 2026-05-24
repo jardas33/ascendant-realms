@@ -111,7 +111,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Select the completed Barracks and queue one Militia before the enemy army grows.",
         objectiveType: "trainUnit",
         requiredAction: "trainUnit",
-        hint: "Barracks -> army. Mystic Lodge handles Acolytes later; Watchtower -> defense once complete.",
+        hint: "Barracks -> army and upgrades. Mystic Lodge handles Acolytes later; Watchtower -> defense once complete.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["barracks"],

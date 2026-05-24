@@ -751,6 +751,7 @@ async function completeUpgradeQueues(page: Page): Promise<void> {
     for (let index = 0; index < 4; index += 1) {
       scene.upgradeSystem.update(60, scene.buildings);
     }
+    scene.refreshBattleHud?.(0);
   });
 }
 
@@ -2799,7 +2800,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedTower.state).toBe("underConstruction");
     expect(placedTower.assignedWorkerId).toBe(trainedWorker.id);
     expect(placedTower.assignedWorkerName).toBe("Worker");
-    await expect(page.locator(".side-panel")).toContainText("Defense: inactive while incomplete, attacks nearby enemies when complete.");
+    await expect(page.locator(".side-panel")).toContainText(
+      "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses."
+    );
     await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
 
     const incompleteTowerCombat = await page.evaluate((towerId) => {
@@ -3886,6 +3889,17 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']")).toBeEnabled();
     await expect(page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']")).toBeEnabled();
     await expect(page.locator("button[data-action='upgrade'][data-id='ranger_training_1']")).toBeEnabled();
+    const tutorialInfantryWeapons = page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']");
+    await expect(tutorialInfantryWeapons).toContainText("Owner: Barracks");
+    await expect(tutorialInfantryWeapons).toContainText("Effect: Militia and Raiders: +10% damage.");
+    await researchUpgradeThroughCommand(
+      tutorialInfantryWeapons,
+      page,
+      "infantry_weapons_1",
+      "deep-flow Tutorial research Infantry Weapons I"
+    );
+    await completeUpgradeQueues(page);
+    await expect(tutorialInfantryWeapons).toHaveAttribute("aria-label", /Researched/);
 
     const beforeArmy = await getBattleSnapshot(page);
     const militiaBefore = beforeArmy.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
@@ -3920,7 +3934,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       { x: 560, y: 920 },
       { x: 520, y: 700 }
     ]);
-    await expect(page.locator(".side-panel")).toContainText("Defense: inactive while incomplete, attacks nearby enemies when complete.");
+    await expect(page.locator(".side-panel")).toContainText(
+      "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses."
+    );
     await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
     await completePlayerBuilding(page, "watchtower");
     await selectPlayerBuildingFromScene(page, "watchtower");
@@ -4616,7 +4632,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerBuildingFromScene(page, "barracks");
     const infantryWeapons = page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']");
     await expect(infantryWeapons).toBeDisabled();
-    await expect(infantryWeapons).toContainText("Militia/Raider: +10% damage");
+    await expect(infantryWeapons).toContainText("Militia and Raiders: +10% damage");
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Insufficient resources/);
 
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });

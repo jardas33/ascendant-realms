@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.20 Upgrade And Tech Tree Foundation - 2026-05-24
+
+This checkpoint adds the first small, building-owned upgrade/tech-tree foundation without opening a large content or economy pass.
+
+### Included
+
+- Added `docs/V020_TECH_TREE_FOUNDATION_SPEC.md` and `docs/V020_IMPLEMENTATION_REPORT.md`.
+- Added upgrade owner building, category, tier, and effect-summary metadata.
+- Added Command Hall core upgrade `Camp Foundations I`; Command Hall still trains Workers only.
+- Kept Barracks on Militia/Ranger production and clarified ownership for Infantry Weapons I, Reinforced Armor I, and Ranger Training I.
+- Kept Mystic Lodge on Acolyte and Aether Study I.
+- Added Watchtower defensive upgrade `Sentry Bracing I`, locked behind completed Watchtower plus `Camp Foundations I`.
+- Added building armor upgrade application and validation.
+- Updated upgrade buttons to show owner, requirements, category, effect, cost, researching, and researched state.
+- Added focused unit/system/UI/package tests and a hosted Tutorial proxy for Barracks upgrade research.
+
+### Verdict
+
+- Runtime gameplay changed: yes, two small upgrades and building armor upgrade application were added.
+- Gameplay numbers changed: only the new Command Hall and Watchtower armor upgrades; existing unit upgrades, production costs, waves, maps, and global balance are unchanged.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: copy only; no new steps or rewards.
+- Economy/production architecture rewritten: no; this is a small tech-tree foundation over the v0.19 roles.
+
+### Verification
+
+- Passed: focused tech-tree/unit coverage, `npm test` with 63 files / 465 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, hosted Tutorial proxy, fast smoke, full smoke, control lab normal plus 1658-check verifier, hosted deep-battle with 19 tests, hosted smoke with 14 tests, dirty playtest package generation, and dirty package verification with 53 checks.
+
+### Next
+
+- Package and verify the final v0.20 build for Emmanuel's upgrade/role retest.
+
 ## v0.19.1 Production Role Verification And Polish - 2026-05-24
 
 This checkpoint verifies and lightly polishes the v0.19 production architecture before v0.20. It does not add new production systems or content.

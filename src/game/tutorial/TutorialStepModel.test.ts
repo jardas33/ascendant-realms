@@ -98,7 +98,7 @@ describe("TutorialStepModel", () => {
     expect(getTutorialStep(tutorial, "select_command_hall").instruction).toContain("trains Workers, not army units");
     expect(getTutorialStep(tutorial, "select_command_hall").hint).toContain("Command Hall -> Worker");
     expect(getTutorialStep(tutorial, "build_barracks").hint).toContain("Worker -> building");
-    expect(getTutorialStep(tutorial, "train_militia").hint).toContain("Barracks -> army");
+    expect(getTutorialStep(tutorial, "train_militia").hint).toContain("Barracks -> army and upgrades");
     expect(getTutorialStep(tutorial, "train_militia").hint).toContain("Watchtower -> defense");
     expect(tutorial.steps).toHaveLength(12);
   });

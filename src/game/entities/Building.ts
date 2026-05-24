@@ -34,6 +34,7 @@ export class Building extends BaseEntity {
   constructionProgressing = false;
   rallyPoint?: Position;
   rallyTargetId?: string;
+  readonly appliedUpgradeIds = new Set<string>();
 
   constructor(
     scene: Phaser.Scene,

@@ -1,4 +1,5 @@
 import type { UpgradeDefinition } from "../core/GameTypes";
+import { Building } from "../entities/Building";
 import { Hero } from "../entities/Hero";
 import { Unit } from "../entities/Unit";
 
@@ -24,6 +25,28 @@ export function applyUpgradeToUnit(unit: Unit, upgrade: UpgradeDefinition): bool
 
   if (applied) {
     unit.appliedUpgradeIds.add(upgrade.id);
+  }
+  return applied;
+}
+
+export function applyUpgradeToBuilding(building: Building, upgrade: UpgradeDefinition): boolean {
+  if (building.appliedUpgradeIds.has(upgrade.id)) {
+    return false;
+  }
+
+  let applied = false;
+  upgrade.effects.forEach((effect) => {
+    if (effect.type !== "building-stat-mod" || !effect.buildingIds.includes(building.definition.id)) {
+      return;
+    }
+    if (effect.armorBonus !== undefined) {
+      building.armor += effect.armorBonus;
+      applied = true;
+    }
+  });
+
+  if (applied) {
+    building.appliedUpgradeIds.add(upgrade.id);
   }
   return applied;
 }

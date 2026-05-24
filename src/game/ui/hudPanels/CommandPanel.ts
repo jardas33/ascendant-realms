@@ -11,7 +11,10 @@ import {
   formatBuildingSummary,
   formatBuildingUnlockSummary,
   formatUnitSummary,
-  formatUpgradeEffects
+  formatUpgradeCategory,
+  formatUpgradeEffects,
+  formatUpgradeOwner,
+  formatUpgradeRequirements
 } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
 
@@ -95,8 +98,8 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         sourceId: selectedOne.id,
         name: definition.name,
         detail: formatCommandDetail(definition.cost, lockReason),
-        description: definition.description,
-        effect: formatUpgradeEffects(definition),
+        description: `${definition.description} ${formatUpgradeOwner(definition)}. ${formatUpgradeRequirements(definition)}. ${formatUpgradeCategory(definition)}.`,
+        effect: `Effect: ${formatUpgradeEffects(definition)}`,
         locked: Boolean(lockReason)
       });
     })

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.19.1 production architecture verification and role polish";
+const CHECKPOINT = "v0.20 upgrade and tech tree foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -75,6 +75,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md", join(packageDir, "V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md"));
   await copyMarkdown("docs/V0191_REMOTE_CI_STATUS.md", join(packageDir, "V0191_REMOTE_CI_STATUS.md"));
   await copyMarkdown("docs/V0191_PRODUCTION_ROLE_POLISH_REPORT.md", join(packageDir, "V0191_PRODUCTION_ROLE_POLISH_REPORT.md"));
+  await copyMarkdown("docs/V020_TECH_TREE_FOUNDATION_SPEC.md", join(packageDir, "V020_TECH_TREE_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V020_IMPLEMENTATION_REPORT.md", join(packageDir, "V020_IMPLEMENTATION_REPORT.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -158,7 +160,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.19.1 production architecture retest, start with V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md and V0191_PRODUCTION_ROLE_POLISH_REPORT.md, then keep V019_PRODUCTION_ARCHITECTURE_SPEC.md nearby for the underlying role split. Focus on: Command Hall trains Workers only; Workers build Barracks, Mystic Lodge, and Watchtower; incomplete buildings stay inactive; completed Barracks trains Militia/Ranger and researches existing basic troop upgrades; completed Mystic Lodge trains Acolyte and researches Aether Study I; completed Watchtower attacks defensively; v0.18.3 Worker pause/resume plus base-cluster pathing stay stable. Do not judge harvesting, repair, enemy construction, save persistence, new content, or final art in this build.
+For the v0.20 tech-tree foundation retest, start with V020_TECH_TREE_FOUNDATION_SPEC.md and V020_IMPLEMENTATION_REPORT.md, then keep V019_PRODUCTION_ARCHITECTURE_SPEC.md nearby for the underlying role split. Focus on: Command Hall still trains Workers only and owns only core/base research; Workers build Barracks, Mystic Lodge, and Watchtower; incomplete buildings stay inactive; completed Barracks exposes Militia/Ranger and existing basic troop upgrades; completed Mystic Lodge exposes Acolyte and Aether Study I; completed Watchtower attacks defensively and exposes only simple defensive research; upgrade buttons show owner, requirements, cost, effect, and researched state; v0.18.3 Worker pause/resume plus base-cluster pathing stay stable. Do not judge harvesting, repair, enemy construction, save persistence, large tech rosters, new content, or final art in this build.
 
 ## Known Warning
 

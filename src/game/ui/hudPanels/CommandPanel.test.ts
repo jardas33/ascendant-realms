@@ -22,8 +22,11 @@ describe("CommandPanel", () => {
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-reinforced_armor_1"');
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-ranger_training_1"');
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-aether_study_1"');
+    expect(commandHallMarkup).toContain('data-testid="command-upgrade-camp_foundations_1"');
+    expect(commandHallMarkup).toContain("Owner: Command Hall");
+    expect(commandHallMarkup).toContain("Effect: Command Hall: +1 armor.");
     expect(commandHallMarkup).toContain("Cost: 50 Crowns");
-    expect(commandHallMarkup).toContain("Base hub: trains Workers only and anchors the camp.");
+    expect(commandHallMarkup).toContain("Base hub: trains Workers only, anchors the camp, and researches core upgrades.");
     expect(barracksMarkup).toContain('data-testid="command-train-militia"');
     expect(barracksMarkup).toContain('data-testid="command-train-ranger"');
     expect(barracksMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
@@ -31,6 +34,8 @@ describe("CommandPanel", () => {
     expect(barracksMarkup).toContain('data-testid="command-upgrade-ranger_training_1"');
     expect(barracksMarkup).toContain("Cost: 60 Crowns, 20 Iron");
     expect(barracksMarkup).toContain("Cost: 120 Crowns, 70 Iron");
+    expect(barracksMarkup).toContain("Owner: Barracks");
+    expect(barracksMarkup).toContain("Requires: completed Barracks");
   });
 
   it("keeps costs visible when a command is locked", () => {
@@ -42,6 +47,7 @@ describe("CommandPanel", () => {
     );
 
     expect(markup).toContain("Insufficient resources. Cost: 50 Crowns");
+    expect(markup).toContain("Insufficient resources. Cost: 90 Crowns, 70 Stone");
     expect(markup).not.toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
   });
 
@@ -59,8 +65,8 @@ describe("CommandPanel", () => {
       },
       {
         site: fakeBuilding("player-watchtower-site", "watchtower", false),
-        role: "Defense: inactive while incomplete, attacks nearby enemies when complete.",
-        unlocks: "Unlocks when complete: defensive attack (14 damage, 220 range)."
+        role: "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses.",
+        unlocks: "Unlocks when complete: researches Sentry Bracing I; defensive attack (14 damage, 220 range)."
       }
     ];
 
@@ -74,6 +80,28 @@ describe("CommandPanel", () => {
       expect(markup).not.toContain('data-action="train"');
       expect(markup).not.toContain('data-action="upgrade"');
     });
+  });
+
+  it("shows locked, researching, and researched upgrade states with tech-tree copy", () => {
+    const watchtower = fakeBuilding("player-watchtower", "watchtower");
+
+    const lockedMarkup = renderCommandActions(watchtower, fakeSnapshot(["command_hall", "watchtower"]));
+    expect(lockedMarkup).toContain('data-testid="command-upgrade-sentry_bracing_1"');
+    expect(lockedMarkup).toContain("Requires Camp Foundations 1. Cost: 90 Crowns, 80 Stone, 40 Iron");
+    expect(lockedMarkup).toContain("Owner: Watchtower");
+    expect(lockedMarkup).toContain("Requires: completed Watchtower, Camp Foundations I");
+    expect(lockedMarkup).toContain("Effect: Watchtowers: +1 armor.");
+
+    watchtower.upgradeQueue = [{ upgradeId: "sentry_bracing_1", remaining: 10, total: 20, announce: true, paidCost: {} }];
+    const queuedMarkup = renderCommandActions(watchtower, fakeSnapshot(["command_hall", "watchtower"], undefined, ["camp_foundations_1"]));
+    expect(queuedMarkup).toContain("Researching. Cost: 90 Crowns, 80 Stone, 40 Iron");
+
+    watchtower.upgradeQueue = [];
+    const researchedMarkup = renderCommandActions(
+      watchtower,
+      fakeSnapshot(["command_hall", "watchtower"], undefined, ["camp_foundations_1", "sentry_bracing_1"])
+    );
+    expect(researchedMarkup).toContain("Researched. Cost: 90 Crowns, 80 Stone, 40 Iron");
   });
 
   it("shows Mystic Lodge train and research ownership only when complete", () => {
@@ -149,7 +177,8 @@ function fakeWorker(): Unit {
 
 function fakeSnapshot(
   completedBuildingIds: string[],
-  resources = { crowns: 999, stone: 999, iron: 999, aether: 999 }
+  resources = { crowns: 999, stone: 999, iron: 999, aether: 999 },
+  researchedUpgradeIds: string[] = []
 ): HUDSnapshot {
   return {
     resources,
@@ -160,7 +189,7 @@ function fakeSnapshot(
     status: "",
     techState: {
       completedBuildingIds: new Set(completedBuildingIds),
-      researchedUpgradeIds: new Set<string>(),
+      researchedUpgradeIds: new Set<string>(researchedUpgradeIds),
       heroLevel: 1
     },
     minimap: {
