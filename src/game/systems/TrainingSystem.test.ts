@@ -31,7 +31,9 @@ describe("TrainingSystem", () => {
     expect(UNIT_BY_ID.worker.buildOptions).toEqual(["barracks", "mystic_lodge", "watchtower"]);
     expect(commandHall.definition.trainOptions).toEqual(["worker"]);
     expect(commandHall.definition.buildOptions).toEqual([]);
+    expect(commandHall.definition.upgradeOptions).toEqual([]);
     expect(BUILDING_BY_ID.barracks.trainOptions).toEqual(["militia", "ranger"]);
+    expect(BUILDING_BY_ID.barracks.upgradeOptions).toEqual(["infantry_weapons_1", "reinforced_armor_1", "ranger_training_1"]);
   });
 
   it("keeps later Tutorial Rangers from spawning in blocked Command Hall cells", () => {

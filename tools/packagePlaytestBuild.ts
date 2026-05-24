@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.18.3 worker assignment and construction pathing fix";
+const CHECKPOINT = "v0.19 production architecture and building roles";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -70,6 +70,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0182_IMPLEMENTATION_REPORT.md", join(packageDir, "V0182_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md", join(packageDir, "V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md"));
   await copyMarkdown("docs/V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md", join(packageDir, "V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md"));
+  await copyMarkdown("docs/V019_PRODUCTION_ARCHITECTURE_SPEC.md", join(packageDir, "V019_PRODUCTION_ARCHITECTURE_SPEC.md"));
+  await copyMarkdown("docs/V019_IMPLEMENTATION_REPORT.md", join(packageDir, "V019_IMPLEMENTATION_REPORT.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -153,7 +155,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.18.3 Worker assignment and construction pathing retest, start with V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md and V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md. Worker construction is still a bounded foundation slice: train a Worker from the Command Hall, select the Worker, build Barracks, Mystic Lodge, or Watchtower, move the assigned Worker away to confirm construction pauses without pulling the Worker back, move the Worker back to confirm construction resumes, and verify compact base-cluster movement. Do not judge harvesting, repair, enemy construction, save persistence, new content, or Tutorial onboarding in this build.
+For the v0.19 production architecture retest, start with V019_PRODUCTION_ARCHITECTURE_SPEC.md and V019_IMPLEMENTATION_REPORT.md. The expected role split is: Command Hall trains Workers only; Workers build Barracks, Mystic Lodge, and Watchtower; completed Barracks trains Militia/Ranger and researches existing basic troop upgrades; completed Mystic Lodge trains Acolyte and researches Aether Study I; completed Watchtower attacks defensively. Incomplete buildings stay inactive, and v0.18.3 Worker pause/resume plus base-cluster pathing should remain stable. Do not judge harvesting, repair, enemy construction, save persistence, new content, or final art in this build.
 
 ## Known Warning
 

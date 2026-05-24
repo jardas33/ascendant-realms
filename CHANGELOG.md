@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.19 Production Architecture And Building Roles - 2026-05-24
+
+This checkpoint starts v0.19 as a narrow production role/readability migration on top of the accepted v0.18.3 Worker construction baseline.
+
+### Included
+
+- Added `docs/V019_PRODUCTION_ARCHITECTURE_SPEC.md` and `docs/V019_IMPLEMENTATION_REPORT.md`.
+- Command Hall now exposes Worker training only in normal player-facing UI.
+- Existing basic troop research moved from Command Hall to Barracks.
+- Barracks now owns Militia/Ranger training plus Infantry Weapons I, Reinforced Armor I, and Ranger Training I.
+- Mystic Lodge remains the existing Acolyte and Aether Study I building.
+- Watchtower remains a completed-only defensive building.
+- Incomplete buildings show role/unlock/status copy and expose no completed train/research/attack behavior.
+- Selected-building and command-button copy now clarify building roles, costs, lock status, and completion unlocks using existing HUD surfaces.
+- Tutorial / Proving Grounds keeps 12 steps while explaining Command Hall -> Worker, Worker -> building, Barracks -> army, and Watchtower -> defense.
+- Hosted browser coverage was extended for Command Hall Worker-only UI, incomplete-building role/status copy, Worker construction pause/pathing retention, and Barracks-owned research.
+
+### Verdict
+
+- Runtime gameplay changed: yes, existing basic troop research ownership moved from Command Hall to Barracks, and building role/status UI changed.
+- Gameplay numbers changed: no unit stats, costs, build times, waves, resources, or global balance values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: copy only; no new Tutorial objectives or rewards.
+- Economy/production architecture rewritten: no broad rewrite; this is a role/readability migration over existing content.
+
+### Verification
+
+- Passed: focused TypeScript/unit checks, `npm test` with 61 files / 454 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke, full smoke after exact rerun, control lab normal plus 1658-check verifier, hosted deep-battle with 18 tests, extra hosted deep-campaign-pressure with 7 tests, hosted smoke with 14 tests, dirty playtest package generation, and dirty package verification with 48 checks.
+- Browser smoke note: first `npm run test:e2e:smoke` attempt hit the known cold dev-server main-menu boot timeout on test 1 while the remaining 13 tests passed; exact rerun passed all 14 tests.
+- Hosted deep-battle note: two full-lane attempts exposed an intermittent single-click miss in the existing behaviour-mode gauntlet after the Worker/building-role tests had passed. The fix keeps the same assertion and uses the existing real-canvas world-click retry helper, with no force click and no DOM fallback for canvas/world clicks.
+
+### Next
+
+- Commit the checkpoint, generate a clean package from the final commit, and use it for Emmanuel's v0.19 role retest.
+
 ## v0.18.3 Worker Assignment And Construction Pathing Fix - 2026-05-24
 
 This checkpoint fixes Emmanuel's mixed retest of `ascendant-realms-private-playtest-039fe64`. It is a narrow construction/pathing bugfix pass, not a worker-economy expansion.

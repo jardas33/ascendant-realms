@@ -7,7 +7,7 @@ export const UPGRADES: UpgradeDefinition[] = [
     description: "Sharpened blades and hafted spearheads raise melee infantry damage.",
     cost: { crowns: 120, iron: 70 },
     researchTimeSeconds: 18,
-    prerequisites: { buildingIds: ["command_hall"] },
+    prerequisites: { buildingIds: ["barracks"] },
     effects: [
       {
         type: "unit-stat-mod",
@@ -38,7 +38,7 @@ export const UPGRADES: UpgradeDefinition[] = [
     description: "Better buckles and shield facings give basic troops more staying power.",
     cost: { crowns: 130, stone: 70, iron: 50 },
     researchTimeSeconds: 22,
-    prerequisites: { buildingIds: ["command_hall"] },
+    prerequisites: { buildingIds: ["barracks"] },
     effects: [
       {
         type: "unit-stat-mod",

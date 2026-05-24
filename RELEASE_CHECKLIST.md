@@ -58,6 +58,7 @@ Known current realities:
 - v0.18.2 expands Worker construction to the existing player building set only: Barracks, Mystic Lodge, and Watchtower. Command Hall remains Worker-training only, incomplete Watchtowers cannot attack, Tutorial keeps the Worker Barracks route, and no harvesting, repair, enemy construction AI, save migration, new factions/maps, Patrol, formations, runtime art/assets, or global economy rebalance are included. Rerun GitHub Actions after push because runtime construction options changed.
 - v0.18.3 fixes Worker construction move-away/pause/resume and compact building-cluster pathing only. Explicit player move/attack orders pause construction intent, construction resumes only when the assigned Worker returns to range or construction intent is reissued, exact blocker interiors remain solid, and exact open edge points stay reachable. Rerun GitHub Actions after push because runtime construction/pathing changed.
 - v0.18.3 baseline accepted after GitHub Actions CI Release Matrix Dry Run #26365296115 passed on `main` / `ce43d0e`: Fast confidence, Release simulator, and all six hosted release-matrix groups succeeded. Treat `ascendant-realms-private-playtest-ce43d0e` as the current Worker construction foundation baseline.
+- v0.19 clarifies production roles without adding new content: Command Hall trains Workers only, Barracks owns basic army training and existing basic troop research, Mystic Lodge owns existing Acolyte/Aether Study actions, Watchtower remains completed-only defense, and incomplete buildings stay inactive with clearer role/unlock copy. Rerun GitHub Actions after push because runtime production ownership and UI changed.
 
 ## Required Automated Checks
 
@@ -143,6 +144,12 @@ Current v0.18.3 checkpoint result:
 
 ```text
 PASS: 61 test files, 450 tests
+```
+
+Current v0.19 checkpoint result:
+
+```text
+PASS: 61 test files, 454 tests
 ```
 
 Current v0.16.13 checkpoint result:

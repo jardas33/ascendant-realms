@@ -13,7 +13,7 @@ import {
   getUnitVeterancyRank
 } from "../../data/unitVeterancy";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
-import { escapeHtml, renderProgress, unitName, upgradeName } from "./HudFormatting";
+import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
 
 type SelectedEntity = HUDSnapshot["selected"][number];
@@ -78,24 +78,37 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
   }
 
   const training = selectedOne.trainingQueue[0];
+  const research = selectedOne.upgradeQueue[0];
+  const hasTrainingActions = selectedOne.definition.trainOptions.length > 0;
+  const hasResearchActions = selectedOne.definition.upgradeOptions.length > 0;
   const showRally = selectedOne.isCompleted() && selectedOne.definition.trainOptions.length > 0;
   return `
     <div class="stat-list">
       <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
       <span>Armor ${selectedOne.armor}</span>
+      <span>Role ${escapeHtml(formatBuildingRole(selectedOne.definition))}</span>
       ${
         selectedOne.isUnderConstruction()
           ? `<span>Status ${escapeHtml(selectedOne.constructionStatusDetail ?? "Under construction")}</span>
              <span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>
-             <span>Assigned ${escapeHtml(selectedOne.assignedWorkerName ?? (selectedOne.assignedWorkerId ? "Worker" : "Unassigned"))}</span>`
+             <span>Assigned ${escapeHtml(selectedOne.assignedWorkerName ?? (selectedOne.assignedWorkerId ? "Worker" : "Unassigned"))}</span>
+             <span>${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</span>`
           : training
             ? `<span>Training ${escapeHtml(unitName(training.unitId))} ${Math.ceil(training.remaining)}s</span>`
-            : "<span>Queue idle</span>"
+            : hasTrainingActions
+              ? "<span>Queue idle</span>"
+              : selectedOne.definition.attack
+                ? "<span>Defense ready</span>"
+                : "<span>No production queue</span>"
       }
       ${
-        selectedOne.upgradeQueue[0]
-          ? `<span>Research ${escapeHtml(upgradeName(selectedOne.upgradeQueue[0].upgradeId))}</span>`
-          : "<span>Research idle</span>"
+        selectedOne.isUnderConstruction()
+          ? ""
+          : research
+            ? `<span>Research ${escapeHtml(upgradeName(research.upgradeId))}</span>`
+            : hasResearchActions
+              ? "<span>Research idle</span>"
+              : ""
       }
       ${showRally ? `<span>Rally Point: ${selectedOne.rallyPoint ? "Set" : "None"}</span>` : ""}
     </div>

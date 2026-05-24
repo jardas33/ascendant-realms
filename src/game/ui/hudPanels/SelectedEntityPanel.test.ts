@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { BUILDING_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
 import { Unit } from "../../entities/Unit";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
@@ -33,7 +34,7 @@ describe("SelectedEntityPanel", () => {
   it("does not let selected buildings corrupt unit behaviour mode summary", () => {
     const markup = renderSelectionSummary(undefined, [
       fakeUnit("player-1", "Militia", "guard_area"),
-      fakeBuilding("command-hall", "Command Hall")
+      fakeBuilding("command-hall", "command_hall")
     ]);
 
     expect(markup).toContain('data-testid="behaviour-mode-current"');
@@ -42,7 +43,7 @@ describe("SelectedEntityPanel", () => {
   });
 
   it("shows assigned worker and progress for incomplete buildings", () => {
-    const markup = renderSelectionSummary(fakeBuilding("barracks", "Barracks", {
+    const markup = renderSelectionSummary(fakeBuilding("barracks", "barracks", {
       constructionProgress: 0.44,
       constructionStatusDetail: "Building",
       assignedWorkerName: "Worker",
@@ -52,6 +53,20 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Status Building");
     expect(markup).toContain("Construction 44%");
     expect(markup).toContain("Assigned Worker");
+    expect(markup).toContain("Role Army production");
+    expect(markup).toContain("Unlocks when complete: trains Militia, Ranger; researches Infantry Weapons I, Reinforced Armor I, Ranger Training I.");
+  });
+
+  it("labels completed building roles for production and defense", () => {
+    const barracksMarkup = renderSelectionSummary(fakeBuilding("barracks", "barracks"), []);
+    const lodgeMarkup = renderSelectionSummary(fakeBuilding("mystic-lodge", "mystic_lodge"), []);
+    const towerMarkup = renderSelectionSummary(fakeBuilding("watchtower", "watchtower"), []);
+
+    expect(barracksMarkup).toContain("Role Army production: trains Militia and Rangers and researches basic troop upgrades.");
+    expect(lodgeMarkup).toContain("Role Mystic support: trains Acolytes and researches Aether Study.");
+    expect(towerMarkup).toContain("Role Defense: attacks nearby enemies after construction.");
+    expect(towerMarkup).toContain("Defense ready");
+    expect(towerMarkup).not.toContain("Queue idle");
   });
 });
 
@@ -71,7 +86,7 @@ function fakeUnit(id: string, name: string, behaviourMode: "hold_ground" | "guar
 
 function fakeBuilding(
   id: string,
-  name: string,
+  buildingId: string,
   options: {
     constructionProgress?: number;
     constructionStatusDetail?: string;
@@ -79,6 +94,11 @@ function fakeBuilding(
     underConstruction?: boolean;
   } = {}
 ): Building {
+  const definition = BUILDING_BY_ID[buildingId];
+  if (!definition) {
+    throw new Error(`Missing building ${buildingId}`);
+  }
+
   return Object.assign(Object.create(Building.prototype), {
     id,
     kind: "building",
@@ -93,11 +113,7 @@ function fakeBuilding(
     constructionProgress: options.constructionProgress ?? 1,
     constructionStatusDetail: options.constructionStatusDetail,
     assignedWorkerName: options.assignedWorkerName,
-    definition: {
-      id: name.toLowerCase().replaceAll(" ", "_"),
-      name,
-      trainOptions: []
-    },
+    definition,
     isCompleted: () => !options.underConstruction,
     isUnderConstruction: () => Boolean(options.underConstruction)
   }) as Building;

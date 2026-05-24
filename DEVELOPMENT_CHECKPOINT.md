@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.18.3 green release-matrix baseline accepted
+Updated: 2026-05-24 v0.19 production architecture local verification
+
+## v0.19 Production Architecture And Building Roles - 2026-05-24
+
+Scope: clarify production architecture and building roles after the accepted v0.18.3 Worker construction baseline. This pass does not add harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, runtime art/assets, or broad global rebalance.
+
+Baseline:
+
+- Stable runtime/package baseline from v0.18.3: commit `ce43d0e`, package `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`.
+- Current starting commit: `5762120`, a docs-only descendant of `ce43d0e`.
+- Emmanuel retest result: Worker construction assignment, pause/resume, and base-cluster pathing now seem resolved.
+- v0.18.3 GitHub Actions baseline: CI Release Matrix Dry Run #26365296115 passed on `main` / `ce43d0e`.
+
+Included work:
+
+- Added `docs/V019_PRODUCTION_ARCHITECTURE_SPEC.md`.
+- Added `docs/V019_IMPLEMENTATION_REPORT.md`.
+- Kept Command Hall player-facing production to Worker training only.
+- Moved existing Infantry Weapons I and Reinforced Armor I research from Command Hall to Barracks.
+- Kept Barracks as completed Militia/Ranger production and added all existing basic troop research there.
+- Kept Mystic Lodge as completed Acolyte and Aether Study I production/research.
+- Kept Watchtower completed-only defensive behavior and incomplete inert behavior.
+- Added role and unlock summaries to existing building HUD/command surfaces.
+- Updated Tutorial copy to explain Command Hall -> Worker, Worker -> building, Barracks -> army, and Watchtower -> defense without adding steps.
+- Extended unit and hosted browser coverage for building roles, incomplete-building inactivity, Worker construction pathing retention, and Barracks-owned research.
+
+Verification and closeout so far:
+
+```text
+npm exec vitest run src/game/ui/hudPanels/HudFormatting.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/tutorial/TutorialStepModel.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/UpgradeSystem.test.ts PASS, 6 files / 27 tests.
+npm exec tsc -- --noEmit PASS.
+npm test PASS, 61 files / 454 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.7m.
+npm run test:e2e:smoke PASS, 14 tests in 7.7m after exact rerun; first attempt hit the known cold dev-server main-menu boot timeout on test 1 while the remaining 13 tests passed.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 18 tests in 8.9m after a real-canvas retry fix for the existing behaviour-gauntlet left-click attack command.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests in 2.5m. Extra coverage for updated Barracks research ownership.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.4m.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5762120-dirty generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-5762120-dirty PASS, 48 checks.
+git diff --check PASS.
+```
+
+Closeout note: commit, then generate and verify a clean package from the final v0.19 checkpoint commit.
 
 ## v0.18.3 Worker Assignment And Construction Pathing Fix - 2026-05-24
 

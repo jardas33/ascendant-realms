@@ -6,7 +6,7 @@ import { renderCommandActions } from "./CommandPanel";
 import type { HUDSnapshot } from "./HudTypes";
 
 describe("CommandPanel", () => {
-  it("labels train and upgrade command costs clearly on the Command Hall", () => {
+  it("keeps the Command Hall Worker-only and moves basic army actions to Barracks", () => {
     const commandHall = fakeBuilding("player-command-hall", "command_hall");
     const barracks = fakeBuilding("player-barracks", "barracks");
 
@@ -15,11 +15,19 @@ describe("CommandPanel", () => {
 
     expect(commandHallMarkup).not.toContain('data-command-kind="build"');
     expect(commandHallMarkup).toContain('data-testid="command-train-worker"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-train-militia"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-train-ranger"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-train-acolyte"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-infantry_weapons_1"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-reinforced_armor_1"');
     expect(commandHallMarkup).toContain("Cost: 50 Crowns");
-    expect(commandHallMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
-    expect(commandHallMarkup).toContain("Cost: 120 Crowns, 70 Iron");
     expect(barracksMarkup).toContain('data-testid="command-train-militia"');
+    expect(barracksMarkup).toContain('data-testid="command-train-ranger"');
+    expect(barracksMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
+    expect(barracksMarkup).toContain('data-testid="command-upgrade-reinforced_armor_1"');
+    expect(barracksMarkup).toContain('data-testid="command-upgrade-ranger_training_1"');
     expect(barracksMarkup).toContain("Cost: 60 Crowns, 20 Iron");
+    expect(barracksMarkup).toContain("Cost: 120 Crowns, 70 Iron");
   });
 
   it("keeps costs visible when a command is locked", () => {
@@ -31,7 +39,20 @@ describe("CommandPanel", () => {
     );
 
     expect(markup).toContain("Insufficient resources. Cost: 50 Crowns");
-    expect(markup).toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
+    expect(markup).not.toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
+  });
+
+  it("explains incomplete building roles and unlocks without exposing completed actions", () => {
+    const site = fakeBuilding("player-mystic-site", "mystic_lodge", false);
+
+    const markup = renderCommandActions(site, fakeSnapshot(["command_hall"]));
+
+    expect(markup).toContain("Construction");
+    expect(markup).toContain("Mystic support: trains Acolytes and researches Aether Study.");
+    expect(markup).toContain("Unlocks when complete: trains Acolyte; researches Aether Study I.");
+    expect(markup).toContain("Actions are inactive until this building is complete.");
+    expect(markup).not.toContain('data-action="train"');
+    expect(markup).not.toContain('data-action="upgrade"');
   });
 
   it("renders Worker building commands without production queues", () => {
@@ -66,7 +87,7 @@ describe("CommandPanel", () => {
   });
 });
 
-function fakeBuilding(id: string, buildingId: string): Building {
+function fakeBuilding(id: string, buildingId: string, completed = true): Building {
   const definition = BUILDING_BY_ID[buildingId];
   if (!definition) {
     throw new Error(`Missing building ${buildingId}`);
@@ -80,7 +101,7 @@ function fakeBuilding(id: string, buildingId: string): Building {
     definition,
     trainingQueue: [],
     upgradeQueue: [],
-    isCompleted: () => true
+    isCompleted: () => completed
   }) as Building;
 }
 

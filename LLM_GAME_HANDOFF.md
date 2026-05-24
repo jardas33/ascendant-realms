@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.18.3 green release-matrix baseline accepted
+Last updated: 2026-05-24 v0.19 production architecture local verification
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,70 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.18.3 Worker Assignment And Pathing Fix - 2026-05-24
+## Current v0.19 Production Architecture And Building Roles - 2026-05-24
+
+Status: v0.19 production architecture and building-role migration is implemented and locally verified. Final checkpoint commit and clean post-commit package generation should happen after this handoff update.
+
+Baseline:
+
+- Stable v0.18.3 runtime/package baseline: commit `ce43d0e`, package `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`.
+- Current starting commit for this pass: `5762120`, a docs-only descendant of `ce43d0e`.
+- Emmanuel manual retest: Worker construction assignment, pause/resume, and base-cluster pathing now seem resolved.
+- GitHub Actions CI Release Matrix Dry Run #26365296115 passed on `main` / `ce43d0e`; rerun the matrix after v0.19 if remote release evidence is needed.
+
+Goal:
+
+- Clarify the production architecture without a new-content explosion.
+- Keep Command Hall as base hub and Worker source.
+- Move normal basic army production/readiness to Barracks.
+- Keep Mystic Lodge on its existing Acolyte/Aether role.
+- Keep Watchtower defensive and completed-only.
+- Preserve v0.18.3 Worker construction assignment, pause/resume, and compact base-cluster pathing behavior.
+
+Docs added:
+
+- `docs/V019_PRODUCTION_ARCHITECTURE_SPEC.md`
+- `docs/V019_IMPLEMENTATION_REPORT.md`
+
+Runtime/UI summary:
+
+- Command Hall now exposes Worker training only; it no longer exposes basic troop research in normal player-facing UI.
+- Barracks now owns existing basic troop research: Infantry Weapons I, Reinforced Armor I, and Ranger Training I.
+- Infantry Weapons I and Reinforced Armor I now require a completed Barracks.
+- Completed Barracks still trains Militia/Ranger; incomplete Barracks remains inactive.
+- Completed Mystic Lodge still trains Acolyte and researches Aether Study I; incomplete Mystic Lodge remains inactive.
+- Incomplete Watchtower remains inert; completed Watchtower still attacks defensively.
+- Building descriptions, command buttons, selected-building summaries, and construction-site copy now state building roles and completion unlocks.
+- Completed Watchtower reads as defense-ready instead of as an empty production queue.
+- Tutorial / Proving Grounds keeps 12 steps and now explains Command Hall -> Worker, Worker -> building, Barracks -> army, and Watchtower -> defense.
+- Existing hosted behaviour-mode gauntlet now retries the real canvas left-click attack command with the existing no-force/no-DOM-fallback world-click helper after hosted full-lane runs exposed an intermittent single-click miss.
+
+Verification:
+
+```text
+npm exec vitest run src/game/ui/hudPanels/HudFormatting.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/tutorial/TutorialStepModel.test.ts src/game/systems/TrainingSystem.test.ts src/game/systems/UpgradeSystem.test.ts PASS, 6 files / 27 tests.
+npm exec tsc -- --noEmit PASS.
+npm test PASS, 61 files / 454 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests in 3.7m.
+npm run test:e2e:smoke PASS, 14 tests in 7.7m after exact rerun; first attempt hit a cold dev-server main-menu boot timeout on test 1 while the remaining 13 tests passed.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 18 tests in 8.9m after the real-canvas click retry fix; two earlier full-lane attempts failed only the existing behaviour-gauntlet left-click attack assertion while Worker/building-role tests passed.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests in 2.5m. This was extra coverage for the updated Barracks-owned research UI flow.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.4m.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5762120-dirty generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-5762120-dirty PASS, 48 checks.
+git diff --check PASS.
+```
+
+Handoff rule: v0.19 is a role/readability migration only. Do not broaden into harvesting, repair, multiple-worker acceleration, enemy construction AI, new factions/maps, save migration, runtime art/assets, global rebalance, Patrol, or formations unless a later goal explicitly opens that scope.
+
+Emmanuel retest focus: Command Hall trains Worker only; Worker builds Barracks/Mystic Lodge/Watchtower; incomplete buildings show role/unlocks but no completed actions; completed Barracks trains Militia/Ranger and owns basic troop research; completed Mystic Lodge exposes Acolyte/Aether Study; incomplete Watchtower is inert; completed Watchtower defends; v0.18.3 Worker pause/resume and compact cluster movement remain stable.
+
+## v0.18.3 Worker Assignment And Pathing Fix - 2026-05-24
 
 Status: v0.18.3 Worker construction assignment, pause/resume, and building-cluster pathing fixes are implemented, locally verified, packaged, pushed, and green in GitHub Actions release-matrix dry run.
 

@@ -79,10 +79,10 @@ export const TUTORIALS: TutorialDefinition[] = [
         type: "selectBuilding",
         title: "Select Command Hall",
         description: "Teach selecting the starting Command Hall to access Worker training.",
-        instruction: "Select your Command Hall to train a Worker before construction.",
+        instruction: "Select your Command Hall. It is your base hub and trains Workers, not army units.",
         objectiveType: "selectBuilding",
         requiredAction: "selectBuilding",
-        hint: "Workers handle construction. The Command Hall trains Workers.",
+        hint: "Command Hall -> Worker. Workers handle construction.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["command_hall"]
@@ -96,7 +96,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Train and select a Worker, then place a Barracks on clear ground near your base.",
         objectiveType: "buildStructure",
         requiredAction: "buildStructure",
-        hint: "If the ground is blocked, press Esc and try a nearby spot. Construction progresses while the Worker is nearby.",
+        hint: "Worker -> building. Construction progresses while the assigned Worker is nearby; move away to pause it.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["command_hall", "barracks"],
@@ -111,7 +111,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Select the completed Barracks and queue one Militia before the enemy army grows.",
         objectiveType: "trainUnit",
         requiredAction: "trainUnit",
-        hint: "When training finishes, the Militia joins your army.",
+        hint: "Barracks -> army. Mystic Lodge handles Acolytes later; Watchtower -> defense once complete.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["barracks"],

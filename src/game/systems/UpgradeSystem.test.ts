@@ -9,10 +9,10 @@ describe("UpgradeSystem", () => {
     const completed = vi.fn();
     const messages = vi.fn();
     const resources: ResourceBag = { crowns: 200, stone: 0, iron: 100, aether: 0 };
-    const building = fakeBuilding("command_hall", ["infantry_weapons_1"]);
+    const building = fakeBuilding("barracks", ["infantry_weapons_1"]);
     const system = new UpgradeSystem({
       getTechState: () => ({
-        completedBuildingIds: new Set(["command_hall"]),
+        completedBuildingIds: new Set(["command_hall", "barracks"]),
         researchedUpgradeIds: researched,
         heroLevel: 1
       }),

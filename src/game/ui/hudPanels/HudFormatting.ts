@@ -33,16 +33,44 @@ export function upgradeName(upgradeId: string): string {
   return UPGRADE_BY_ID[upgradeId]?.name ?? upgradeId;
 }
 
+export function formatBuildingRole(definition: BuildingDefinition): string {
+  if (definition.id === "command_hall") {
+    return "Base hub: trains Workers and anchors the camp.";
+  }
+  if (definition.id === "barracks") {
+    return "Army production: trains Militia and Rangers and researches basic troop upgrades.";
+  }
+  if (definition.id === "mystic_lodge") {
+    return "Mystic support: trains Acolytes and researches Aether Study.";
+  }
+  if (definition.id === "watchtower") {
+    return "Defense: attacks nearby enemies after construction.";
+  }
+
+  const actions = formatBuildingActionPhrases(definition);
+  return actions.length > 0 ? `Production: ${actions.join("; ")}.` : "Structure: no active production role.";
+}
+
+export function formatBuildingUnlockSummary(definition: BuildingDefinition): string {
+  const actions = formatBuildingActionPhrases(definition);
+  return actions.length > 0 ? `Unlocks when complete: ${actions.join("; ")}.` : "No production actions unlock on completion.";
+}
+
 export function formatBuildingSummary(definition: BuildingDefinition): string {
   const parts = [`HP ${definition.maxHp}`];
+  const trainOptions = definition.trainOptions ?? [];
+  const upgradeOptions = definition.upgradeOptions ?? [];
   if (definition.constructionTimeSeconds > 0) {
     parts.push(`${definition.constructionTimeSeconds}s build`);
   }
   if (definition.attack) {
     parts.push(`${definition.attack.damage} damage`, `${definition.attack.range} range`);
   }
-  if (definition.trainOptions.length > 0) {
-    parts.push(`trains ${definition.trainOptions.map((unitId) => unitName(unitId)).join(", ")}`);
+  if (trainOptions.length > 0) {
+    parts.push(`trains ${trainOptions.map((unitId) => unitName(unitId)).join(", ")}`);
+  }
+  if (upgradeOptions.length > 0) {
+    parts.push(`researches ${upgradeOptions.map((upgradeId) => upgradeName(upgradeId)).join(", ")}`);
   }
   return parts.join(" - ");
 }
@@ -94,4 +122,20 @@ export function formatMultiplierPercent(multiplier: number): string {
 export function formatInverseMultiplierPercent(multiplier: number): string {
   const percent = Math.round((1 - multiplier) * 100);
   return `${percent > 0 ? "-" : "+"}${Math.abs(percent)}%`;
+}
+
+function formatBuildingActionPhrases(definition: BuildingDefinition): string[] {
+  const actions: string[] = [];
+  const trainOptions = definition.trainOptions ?? [];
+  const upgradeOptions = definition.upgradeOptions ?? [];
+  if (trainOptions.length > 0) {
+    actions.push(`trains ${trainOptions.map((unitId) => unitName(unitId)).join(", ")}`);
+  }
+  if (upgradeOptions.length > 0) {
+    actions.push(`researches ${upgradeOptions.map((upgradeId) => upgradeName(upgradeId)).join(", ")}`);
+  }
+  if (definition.attack) {
+    actions.push(`defensive attack (${definition.attack.damage} damage, ${definition.attack.range} range)`);
+  }
+  return actions;
 }

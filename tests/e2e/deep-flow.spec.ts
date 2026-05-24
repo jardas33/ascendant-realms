@@ -2226,6 +2226,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
     await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeEnabled();
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='train'][data-id='ranger']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='train'][data-id='acolyte']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']")).toHaveCount(0);
     await expect(page.locator("button[data-action='build'][data-id='barracks']")).toHaveCount(0);
     await expect(page.locator("button[data-action='build'][data-id='mystic_lodge']")).toHaveCount(0);
     await expect(page.locator("button[data-action='build'][data-id='watchtower']")).toHaveCount(0);
@@ -2361,7 +2366,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedSite.assignedWorkerId).toBe(trainedWorker.id);
     expect(placedSite.assignedWorkerName).toBe("Worker");
     expect(placedSite.workerMoveTarget).toBeDefined();
-    await expect(page.locator(".side-panel")).toContainText("Production unlocks when this building is complete.");
+    await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
+    await expect(page.locator(".side-panel")).toContainText("Actions are inactive until this building is complete.");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
 
     const completed = await page.evaluate((siteId) => {
@@ -2718,7 +2724,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedTower.state).toBe("underConstruction");
     expect(placedTower.assignedWorkerId).toBe(trainedWorker.id);
     expect(placedTower.assignedWorkerName).toBe("Worker");
-    await expect(page.locator(".side-panel")).toContainText("Production unlocks when this building is complete.");
+    await expect(page.locator(".side-panel")).toContainText("Defense: attacks nearby enemies after construction.");
+    await expect(page.locator(".side-panel")).toContainText("Actions are inactive until this building is complete.");
 
     const incompleteTowerCombat = await page.evaluate((towerId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -3096,7 +3103,27 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         { message: "expected behaviour gauntlet attack cursor intent" }
       )
       .toBe("attack");
-    await clickWorldPoint(page, attackTarget, "left");
+    await clickWorldPointUntilEffect(
+      page,
+      attackTarget,
+      "left",
+      "behaviour gauntlet explicit attack command",
+      async () => {
+        try {
+          await page.waitForFunction(
+            (targetId) => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              return scene?.hero?.attackTargetId === targetId && Boolean(scene?.hero?.attackMove);
+            },
+            attackTarget.id,
+            { timeout: 500 }
+          );
+          return true;
+        } catch {
+          return false;
+        }
+      }
+    );
     await expect
       .poll(
         async () =>
@@ -4417,6 +4444,15 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await setBattlePlayerResources(page, { crowns: 0, stone: 0, iron: 0, aether: 0 });
     await selectPlayerCommandHallFromScene(page);
+    await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeDisabled();
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']")).toHaveCount(0);
+
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    await placePlayerBuildingFromScene(page, "barracks");
+    await completePlayerBuilding(page, "barracks");
+    await setBattlePlayerResources(page, { crowns: 0, stone: 0, iron: 0, aether: 0 });
+    await selectPlayerBuildingFromScene(page, "barracks");
     const infantryWeapons = page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']");
     await expect(infantryWeapons).toBeDisabled();
     await expect(infantryWeapons).toContainText("Militia/Raider: +10% damage");
@@ -4435,9 +4471,6 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await completeUpgradeQueues(page);
     await expect(reinforcedArmor).toHaveAttribute("aria-label", /Researched/);
 
-    await placePlayerBuildingFromScene(page, "barracks");
-    await completePlayerBuilding(page, "barracks");
-    await selectPlayerBuildingFromScene(page, "barracks");
     const rangerTraining = page.locator("button[data-action='upgrade'][data-id='ranger_training_1']");
     await expect(rangerTraining).toBeEnabled();
     await researchUpgradeThroughCommand(rangerTraining, page, "ranger_training_1", "deep-flow research Ranger Training I");

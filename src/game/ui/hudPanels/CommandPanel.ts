@@ -7,7 +7,9 @@ import { checkPrerequisites } from "../../systems/PrerequisiteSystem";
 import { formatCost } from "../BuildMenu";
 import {
   escapeHtml,
+  formatBuildingRole,
   formatBuildingSummary,
+  formatBuildingUnlockSummary,
   formatUnitSummary,
   formatUpgradeEffects
 } from "./HudFormatting";
@@ -19,7 +21,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
 
   if (selectedOne instanceof Building && !selectedOne.isCompleted()) {
-    return `<div class="action-group"><strong>Construction</strong><p class="quiet">Production unlocks when this building is complete.</p></div>`;
+    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Actions are inactive until this building is complete.</p></div>`;
   }
 
   const buildButtons = (selectedOne.definition.buildOptions ?? [])
