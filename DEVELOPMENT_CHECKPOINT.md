@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.18.3 worker assignment and construction pathing fix verification complete
+Updated: 2026-05-24 v0.18.3 green release-matrix baseline accepted
 
 ## v0.18.3 Worker Assignment And Construction Pathing Fix - 2026-05-24
 
@@ -11,6 +11,8 @@ Baseline:
 - Starting commit: `039fe64`, `Document v0.18.2 worker construction closeout`.
 - Branch was clean and synced with `origin/main`.
 - Current clean package before this pass: `artifacts/playtest/ascendant-realms-private-playtest-039fe64`.
+- Accepted runtime/package baseline after green matrix: commit `ce43d0e`, package `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`.
+- Baseline status: Worker construction foundation stable enough for next phase.
 
 Included work:
 
@@ -44,9 +46,12 @@ npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.3m.
 npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty generated.
 npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty PASS, 46 checks.
 git diff --check PASS.
+npm run package:playtest PASS after commit, clean package artifacts/playtest/ascendant-realms-private-playtest-ce43d0e generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-ce43d0e PASS, 46 checks.
+CI Release Matrix Dry Run #26365296115 on main / ce43d0e PASS: Fast confidence, Release simulator, and hosted release groups deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke all succeeded. Optional visual QA and Full release e2e were skipped by input.
 ```
 
-Post-commit handoff rule: generate and verify a clean package from the final commit before distributing the v0.18.3 retest build.
+Closeout note: `ce43d0e` / `ascendant-realms-private-playtest-ce43d0e` is the v0.18.3 Worker construction foundation baseline for Emmanuel retest and the next phase.
 
 ## v0.18.2 Worker Construction Expansion - 2026-05-23
 

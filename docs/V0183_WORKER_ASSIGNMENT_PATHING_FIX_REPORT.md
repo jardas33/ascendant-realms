@@ -1,13 +1,15 @@
 # v0.18.3 Worker Assignment And Pathing Fix Report
 
 Date: 2026-05-24
-Status: implementation, requested verification, dirty package validation, and diff check complete before commit
+Status: complete; green GitHub release-matrix baseline accepted
 
 ## Baseline
 
 - Starting commit: `039fe64`, `Document v0.18.2 worker construction closeout`.
 - Latest tested package: `artifacts/playtest/ascendant-realms-private-playtest-039fe64`.
 - Manual retest intake: `docs/V0183_EMMANUEL_039FE64_WORKER_RETEST_INTAKE.md`.
+- Runtime/package baseline after green matrix: commit `ce43d0e`, package `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`.
+- Baseline status: Worker construction foundation stable enough for next phase.
 
 ## Scope
 
@@ -81,6 +83,22 @@ npx vitest run src/game/systems/PathfindingGrid.test.ts src/game/systems/Trainin
 npx vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/MovementSystem.test.ts src/game/systems/PathfindingGrid.test.ts src/game/systems/TrainingSystem.test.ts --reporter=dot PASS, 4 files / 25 tests.
 npm run build PASS with the known Vite chunk-size warning.
 npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker move-away pauses construction" --reporter=line PASS, 1 hosted test in 27.7s after rebuilding production dist.
+```
+
+GitHub release-matrix baseline verification:
+
+```text
+CI Release Matrix Dry Run #26365296115 on main / ce43d0e PASS.
+Fast confidence PASS.
+Release simulator PASS.
+Release matrix (deep-meta) PASS.
+Release matrix (deep-battle) PASS.
+Release matrix (deep-campaign-pressure) PASS.
+Release matrix (layout-core) PASS.
+Release matrix (layout-cinderfen) PASS.
+Release matrix (smoke) PASS.
+Optional visual QA SKIPPED by input.
+Full release e2e SKIPPED by input.
 ```
 
 ## Emmanuel Retest Focus

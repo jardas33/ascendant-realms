@@ -30,11 +30,12 @@ This checkpoint fixes Emmanuel's mixed retest of `ascendant-realms-private-playt
 - Browser smoke note: `npm run test:e2e:smoke:fast` and `npm run test:e2e:smoke` both passed after exact rerun/prewarm. The initial failures were cold Vite dev-server app-boot timeouts before Phaser reached the main menu, not assertion failures in the v0.18.3 behavior.
 - Dirty package generated and verified: `artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty`, 46 checks.
 - `git diff --check` passed.
-- Clean package handoff rule: generate and verify a clean package from the final commit before distributing the v0.18.3 retest build.
+- Clean package generated and verified: `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`, 46 checks.
+- GitHub Actions CI Release Matrix Dry Run #26365296115 passed on `main` / `ce43d0e`: Fast confidence, Release simulator, and all six hosted release-matrix groups succeeded. Optional visual QA and Full release e2e were skipped by input.
 
 ### Next
 
-- Send Emmanuel the v0.18.3 package for focused retesting of Worker move-away pause/resume and compact base-cluster movement.
+- Treat `ce43d0e` / `ascendant-realms-private-playtest-ce43d0e` as the v0.18.3 baseline. Worker construction foundation is stable enough for the next phase.
 
 ## v0.18.2 Worker Construction Expansion - 2026-05-23
 

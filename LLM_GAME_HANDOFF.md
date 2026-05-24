@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.18.3 worker assignment and construction pathing fix verification complete
+Last updated: 2026-05-24 v0.18.3 green release-matrix baseline accepted
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,13 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.18.3 Worker Assignment And Pathing Fix - 2026-05-24
 
-Status: v0.18.3 Worker construction assignment, pause/resume, and building-cluster pathing fixes are implemented, locally verified, dirty-package verified, and diff-check clean before commit.
+Status: v0.18.3 Worker construction assignment, pause/resume, and building-cluster pathing fixes are implemented, locally verified, packaged, pushed, and green in GitHub Actions release-matrix dry run.
+
+Baseline after green matrix:
+
+- Commit: `ce43d0e`
+- Package: `artifacts/playtest/ascendant-realms-private-playtest-ce43d0e`
+- Status: Worker construction foundation stable enough for next phase.
 
 Goal:
 
@@ -56,9 +62,12 @@ npm run test:e2e:release:hosted:smoke PASS, 14 tests in 4.3m.
 npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty generated.
 npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-039fe64-dirty PASS, 46 checks.
 git diff --check PASS.
+npm run package:playtest PASS after commit, clean package artifacts/playtest/ascendant-realms-private-playtest-ce43d0e generated.
+npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms-private-playtest-ce43d0e PASS, 46 checks.
+CI Release Matrix Dry Run #26365296115 on main / ce43d0e PASS: Fast confidence, Release simulator, and hosted release groups deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke all succeeded. Optional visual QA and Full release e2e were skipped by input.
 ```
 
-Handoff rule: after the checkpoint commit, generate and verify a clean package from the final commit before sending Emmanuel the retest build.
+Handoff rule: use `ce43d0e` / `ascendant-realms-private-playtest-ce43d0e` as the v0.18.3 runtime/package baseline for Emmanuel retest and the next phase. Do not broaden into harvesting, repair, multi-worker acceleration, enemy construction AI, save migration, Patrol, formations, runtime art/assets, or global rebalance unless a later goal explicitly opens that scope.
 
 Emmanuel retest focus: train Worker, start Barracks/Mystic Lodge/Watchtower construction, move the assigned Worker away and confirm progress pauses without magnetic return, move the Worker back and confirm progress resumes, then test compact base-cluster movement and incomplete/completed Watchtower behavior.
 
