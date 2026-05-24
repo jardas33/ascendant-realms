@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.19 production architecture and building roles",
+          checkpoint: "v0.19.1 production architecture verification and role polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -96,6 +96,9 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0183_WORKER_ASSIGNMENT_PATHING_FIX_REPORT.md", sizeBytes: 20, textContent: "Worker pathing fix report" },
       { path: "V019_PRODUCTION_ARCHITECTURE_SPEC.md", sizeBytes: 20, textContent: "Production architecture spec" },
       { path: "V019_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Production architecture report" },
+      { path: "V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md", sizeBytes: 20, textContent: "Production role plan" },
+      { path: "V0191_REMOTE_CI_STATUS.md", sizeBytes: 20, textContent: "Remote CI status" },
+      { path: "V0191_PRODUCTION_ROLE_POLISH_REPORT.md", sizeBytes: 20, textContent: "Production role report" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

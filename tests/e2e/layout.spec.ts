@@ -506,7 +506,7 @@ async function expectCinderfenBattleHudReadable(
   await expectWithinViewportWidth(page, page.getByTestId("battle-minimap"), `${label} minimap`);
   await selectBattleBuilding(page, "command_hall", "Command Hall");
   await expectNoHorizontalOverflow(page, `${label} command hall commands`);
-  await expectBattleCommandButtonsReachable(page, ["build", "upgrade"], `${label} command hall`);
+  await expectBattleCommandButtonsReachable(page, ["train"], `${label} command hall`);
 }
 
 async function showVictoryResults(page: Page): Promise<void> {
@@ -728,7 +728,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       await expectInViewport(page, page.getByTestId("battle-minimap"), `${viewport.label} minimap`);
       await selectBattleBuilding(page, "command_hall", "Command Hall");
       await expectNoHorizontalOverflow(page, `${viewport.label} command hall commands`);
-      await expectBattleCommandButtonsReachable(page, ["build", "upgrade"], `${viewport.label} command hall`);
+      await expectBattleCommandButtonsReachable(page, ["train"], `${viewport.label} command hall`);
       await createCompletedBarracksAndSelect(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} barracks commands`);
       await expectBattleCommandButtonsReachable(page, ["train", "upgrade"], `${viewport.label} barracks`);

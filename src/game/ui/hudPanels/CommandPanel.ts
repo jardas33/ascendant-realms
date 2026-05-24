@@ -21,7 +21,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
 
   if (selectedOne instanceof Building && !selectedOne.isCompleted()) {
-    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Actions are inactive until this building is complete.</p></div>`;
+    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Incomplete - actions locked until construction finishes.</p></div>`;
   }
 
   const buildButtons = (selectedOne.definition.buildOptions ?? [])
@@ -103,6 +103,9 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .join("") : "";
 
   const sections = [];
+  if (selectedOne instanceof Building) {
+    sections.push(`<div class="action-group"><strong>Role</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p></div>`);
+  }
   if (trainButtons) {
     sections.push(`<div class="action-group"><strong>Train</strong>${trainButtons}</div>`);
   }

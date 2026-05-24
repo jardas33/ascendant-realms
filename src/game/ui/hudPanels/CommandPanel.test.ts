@@ -20,7 +20,10 @@ describe("CommandPanel", () => {
     expect(commandHallMarkup).not.toContain('data-testid="command-train-acolyte"');
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-infantry_weapons_1"');
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-reinforced_armor_1"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-ranger_training_1"');
+    expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-aether_study_1"');
     expect(commandHallMarkup).toContain("Cost: 50 Crowns");
+    expect(commandHallMarkup).toContain("Base hub: trains Workers only and anchors the camp.");
     expect(barracksMarkup).toContain('data-testid="command-train-militia"');
     expect(barracksMarkup).toContain('data-testid="command-train-ranger"');
     expect(barracksMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
@@ -43,16 +46,45 @@ describe("CommandPanel", () => {
   });
 
   it("explains incomplete building roles and unlocks without exposing completed actions", () => {
-    const site = fakeBuilding("player-mystic-site", "mystic_lodge", false);
+    const cases = [
+      {
+        site: fakeBuilding("player-barracks-site", "barracks", false),
+        role: "Army production: trains Militia and Rangers and researches basic troop upgrades.",
+        unlocks: "Unlocks when complete: trains Militia, Ranger; researches Infantry Weapons I, Reinforced Armor I, Ranger Training I."
+      },
+      {
+        site: fakeBuilding("player-mystic-site", "mystic_lodge", false),
+        role: "Mystic support: trains Acolytes and researches Aether Study I.",
+        unlocks: "Unlocks when complete: trains Acolyte; researches Aether Study I."
+      },
+      {
+        site: fakeBuilding("player-watchtower-site", "watchtower", false),
+        role: "Defense: inactive while incomplete, attacks nearby enemies when complete.",
+        unlocks: "Unlocks when complete: defensive attack (14 damage, 220 range)."
+      }
+    ];
 
-    const markup = renderCommandActions(site, fakeSnapshot(["command_hall"]));
+    cases.forEach(({ site, role, unlocks }) => {
+      const markup = renderCommandActions(site, fakeSnapshot(["command_hall"]));
 
-    expect(markup).toContain("Construction");
-    expect(markup).toContain("Mystic support: trains Acolytes and researches Aether Study.");
-    expect(markup).toContain("Unlocks when complete: trains Acolyte; researches Aether Study I.");
-    expect(markup).toContain("Actions are inactive until this building is complete.");
-    expect(markup).not.toContain('data-action="train"');
-    expect(markup).not.toContain('data-action="upgrade"');
+      expect(markup).toContain("Construction");
+      expect(markup).toContain(role);
+      expect(markup).toContain(unlocks);
+      expect(markup).toContain("Incomplete - actions locked until construction finishes.");
+      expect(markup).not.toContain('data-action="train"');
+      expect(markup).not.toContain('data-action="upgrade"');
+    });
+  });
+
+  it("shows Mystic Lodge train and research ownership only when complete", () => {
+    const incompleteMarkup = renderCommandActions(fakeBuilding("player-mystic-site", "mystic_lodge", false), fakeSnapshot(["command_hall"]));
+    const completedMarkup = renderCommandActions(fakeBuilding("player-mystic-lodge", "mystic_lodge"), fakeSnapshot(["command_hall", "mystic_lodge"]));
+
+    expect(incompleteMarkup).not.toContain('data-testid="command-train-acolyte"');
+    expect(incompleteMarkup).not.toContain('data-testid="command-upgrade-aether_study_1"');
+    expect(completedMarkup).toContain('data-testid="command-train-acolyte"');
+    expect(completedMarkup).toContain('data-testid="command-upgrade-aether_study_1"');
+    expect(completedMarkup).toContain("A simple rite improves Acolyte focus");
   });
 
   it("renders Worker building commands without production queues", () => {

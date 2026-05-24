@@ -35,16 +35,16 @@ export function upgradeName(upgradeId: string): string {
 
 export function formatBuildingRole(definition: BuildingDefinition): string {
   if (definition.id === "command_hall") {
-    return "Base hub: trains Workers and anchors the camp.";
+    return "Base hub: trains Workers only and anchors the camp.";
   }
   if (definition.id === "barracks") {
     return "Army production: trains Militia and Rangers and researches basic troop upgrades.";
   }
   if (definition.id === "mystic_lodge") {
-    return "Mystic support: trains Acolytes and researches Aether Study.";
+    return "Mystic support: trains Acolytes and researches Aether Study I.";
   }
   if (definition.id === "watchtower") {
-    return "Defense: attacks nearby enemies after construction.";
+    return "Defense: inactive while incomplete, attacks nearby enemies when complete.";
   }
 
   const actions = formatBuildingActionPhrases(definition);

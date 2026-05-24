@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.19.1 Production Role Verification And Polish - 2026-05-24
+
+This checkpoint verifies and lightly polishes the v0.19 production architecture before v0.20. It does not add new production systems or content.
+
+### Included
+
+- Added `docs/V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md`, `docs/V0191_REMOTE_CI_STATUS.md`, and `docs/V0191_PRODUCTION_ROLE_POLISH_REPORT.md`.
+- Added production-role data coverage for Command Hall, Worker build ownership, Barracks, Mystic Lodge, Watchtower, and upgrade prerequisites.
+- Expanded command-panel coverage for Command Hall Worker-only UI, inactive incomplete buildings, completed Barracks research ownership, and completed Mystic Lodge actions.
+- Added a focused hosted Tutorial proxy for Command Hall -> Worker -> Barracks -> army plus Watchtower role readability.
+- Updated hosted layout expectations so Command Hall reachability checks expect Train Worker instead of removed build/upgrade buttons.
+- Polished existing copy for Command Hall Worker-only role, incomplete-building action locks, Mystic Lodge Aether Study I ownership, Watchtower defensive status, and the defeat-tip production route.
+
+### Verdict
+
+- Runtime gameplay changed: no new systems; only role/readability copy changed.
+- Gameplay numbers changed: no unit stats, costs, build times, waves, resources, or global balance values changed.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no new steps or rewards; the hosted proxy verifies the existing route.
+- Economy/production architecture rewritten: no, this is a verification and polish pass over v0.19.
+
+### Verification
+
+- Passed: focused production-role/unit coverage, production build with the known Vite chunk-size warning, content validation, art-intake validation, hosted Tutorial proxy, hosted behaviour gauntlet plus Tutorial proxy, hosted layout-core, hosted layout-cinderfen, `npm test` with 62 files / 458 tests, fast smoke, full smoke, control lab normal plus 1658-check verifier, hosted deep-battle with 19 tests, hosted smoke with 14 tests, dirty playtest package generation, dirty package verification with 51 checks, and `git diff --check`.
+- Remote CI note: v0.19 workflow-dispatch run #113 passed Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, and hosted smoke. It failed only hosted layout-core/layout-cinderfen because those tests still expected removed Command Hall build/upgrade actions; v0.19.1 fixes that stale expectation and both local hosted layout lanes pass.
+
+### Next
+
+- Generate and verify the clean v0.19.1 package from the final commit for Emmanuel's focused production-role retest.
+
 ## v0.19 Production Architecture And Building Roles - 2026-05-24
 
 This checkpoint starts v0.19 as a narrow production role/readability migration on top of the accepted v0.18.3 Worker construction baseline.

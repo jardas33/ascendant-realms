@@ -89,6 +89,7 @@ describe("results reward flow", () => {
 
     expect(tips.join(" ")).toContain("Crown Shrine");
     expect(tips.join(" ")).toContain("Barracks");
+    expect(tips.join(" ")).toContain("Train a Worker from the Command Hall");
     expect(tips.join(" ")).toContain("Militia");
     expect(tips.join(" ")).toContain("Story or Easy");
   });

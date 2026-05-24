@@ -63,8 +63,8 @@ describe("SelectedEntityPanel", () => {
     const towerMarkup = renderSelectionSummary(fakeBuilding("watchtower", "watchtower"), []);
 
     expect(barracksMarkup).toContain("Role Army production: trains Militia and Rangers and researches basic troop upgrades.");
-    expect(lodgeMarkup).toContain("Role Mystic support: trains Acolytes and researches Aether Study.");
-    expect(towerMarkup).toContain("Role Defense: attacks nearby enemies after construction.");
+    expect(lodgeMarkup).toContain("Role Mystic support: trains Acolytes and researches Aether Study I.");
+    expect(towerMarkup).toContain("Role Defense: inactive while incomplete, attacks nearby enemies when complete.");
     expect(towerMarkup).toContain("Defense ready");
     expect(towerMarkup).not.toContain("Queue idle");
   });

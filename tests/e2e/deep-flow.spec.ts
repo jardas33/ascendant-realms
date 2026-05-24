@@ -1017,6 +1017,81 @@ async function trainWorkerFromCommandHall(page: Page, context: string): Promise<
   return trainedWorker;
 }
 
+async function selectWorkerFromScene(page: Page, workerId: string): Promise<void> {
+  await page.evaluate((targetWorkerId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const worker = scene.units.find((unit: any) => unit.id === targetWorkerId && unit.alive);
+    if (!worker) {
+      throw new Error(`Worker ${targetWorkerId} was not found.`);
+    }
+    scene.selectionSystem.setSelection([worker]);
+    scene.cameraSystem.centerOn(worker.position);
+    scene.refreshBattleHud?.(0);
+  }, workerId);
+  await expect(page.locator(".side-panel")).toContainText("Worker");
+}
+
+async function placePendingBuildingFromSceneAtValidPoint(
+  page: Page,
+  expectedBuildingId: string,
+  candidates: Array<{ x: number; y: number }>
+): Promise<{ id: string; x: number; y: number }> {
+  return page.evaluate((points) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    if (!scene.buildingSystem?.pendingBuildingId) {
+      throw new Error("No pending building placement was active.");
+    }
+    const pendingBuildingId = scene.buildingSystem.pendingBuildingId;
+    for (const point of points) {
+      scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
+      if (scene.buildingSystem.placementMessage?.startsWith("Valid")) {
+        if (!scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
+          continue;
+        }
+        const placed = [...scene.buildings]
+          .reverse()
+          .find(
+            (building: any) =>
+              building.team === "player" &&
+              building.definition.id === pendingBuildingId &&
+              building.alive &&
+              Math.hypot(building.position.x - point.x, building.position.y - point.y) < 6
+          );
+        if (!placed) {
+          throw new Error(`Pending ${pendingBuildingId} placement succeeded but no building was found.`);
+        }
+        scene.cameraSystem.centerOn(point);
+        scene.selectionSystem.setSelection([placed]);
+        scene.refreshBattleHud?.(0);
+        return { id: placed.id, x: placed.position.x, y: placed.position.y };
+      }
+    }
+    throw new Error(`No valid pending placement point among ${JSON.stringify(points)}.`);
+  }, candidates).then((placed) => {
+    if (!placed.id) {
+      throw new Error(`Expected ${expectedBuildingId} placement to return a building id.`);
+    }
+    return placed;
+  });
+}
+
+async function forceTutorialStepForDeepFlow(page: Page, stepId: string): Promise<void> {
+  await page.evaluate((targetStepId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.tutorialStepId = targetStepId;
+    scene.refreshBattleHud?.(0);
+  }, stepId);
+}
+
 async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat"): Promise<void> {
   await page.evaluate((selectedOutcome) => {
     const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -2367,7 +2442,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedSite.assignedWorkerName).toBe("Worker");
     expect(placedSite.workerMoveTarget).toBeDefined();
     await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
-    await expect(page.locator(".side-panel")).toContainText("Actions are inactive until this building is complete.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
 
     const completed = await page.evaluate((siteId) => {
@@ -2724,8 +2799,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedTower.state).toBe("underConstruction");
     expect(placedTower.assignedWorkerId).toBe(trainedWorker.id);
     expect(placedTower.assignedWorkerName).toBe("Worker");
-    await expect(page.locator(".side-panel")).toContainText("Defense: attacks nearby enemies after construction.");
-    await expect(page.locator(".side-panel")).toContainText("Actions are inactive until this building is complete.");
+    await expect(page.locator(".side-panel")).toContainText("Defense: inactive while incomplete, attacks nearby enemies when complete.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
 
     const incompleteTowerCombat = await page.evaluate((towerId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -3122,7 +3197,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         } catch {
           return false;
         }
-      }
+      },
+      { attempts: 5, retryDelayMs: 350 }
     );
     await expect
       .poll(
@@ -3199,10 +3275,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.selectionSystem.setSelection([scene.hero]);
       scene.cameraSystem.centerOn(scene.hero.position);
       scene.refreshBattleHud?.(0);
-      return {
-        x: Math.max(120, scene.hero.position.x - 220),
-        y: Math.max(120, scene.hero.position.y + 140)
-      };
+      return { x: 850, y: 780 };
     });
     await rightClickWorldPointUntilOrder(
       page,
@@ -3764,6 +3837,94 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     productionResult.moved.forEach((unit) => {
       expect(unit.distanceMoved, JSON.stringify(productionResult)).toBeGreaterThan(12);
     });
+  });
+
+  test("Tutorial production route keeps Command Hall, Barracks, and Watchtower roles readable @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await openFreshMainMenu(page);
+    await clickReady(page.getByTestId("menu-tutorial"), "deep-flow launch Tutorial production role proxy", SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    await forceTutorialStepForDeepFlow(page, "select_command_hall");
+
+    await selectPlayerCommandHallFromScene(page);
+    await expect(page.locator(".side-panel")).toContainText("Command Hall");
+    await expect(page.locator(".side-panel")).toContainText("Base hub: trains Workers only");
+    await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeEnabled();
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='train'][data-id='ranger']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']")).toHaveCount(0);
+
+    const tutorialWorker = await trainWorkerFromCommandHall(page, "deep-flow Tutorial production role proxy");
+    await forceTutorialStepForDeepFlow(page, "build_barracks");
+    await selectWorkerFromScene(page, tutorialWorker.id);
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='barracks']"),
+      "deep-flow Tutorial build Barracks command",
+      async () => {
+        await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i, { timeout: 2_000 });
+      },
+      async () => {
+        await selectWorkerFromScene(page, tutorialWorker.id);
+      }
+    );
+    await placePendingBuildingFromSceneAtValidPoint(page, "barracks", [
+      { x: 450, y: 930 },
+      { x: 430, y: 690 },
+      { x: 500, y: 820 }
+    ]);
+    await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+
+    await completePlayerBuilding(page, "barracks");
+    await forceTutorialStepForDeepFlow(page, "train_militia");
+    await selectPlayerBuildingFromScene(page, "barracks");
+    await expect(page.locator("button[data-action='train'][data-id='militia']")).toBeEnabled();
+    await expect(page.locator("button[data-action='train'][data-id='ranger']")).toBeEnabled();
+    await expect(page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']")).toBeEnabled();
+    await expect(page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']")).toBeEnabled();
+    await expect(page.locator("button[data-action='upgrade'][data-id='ranger_training_1']")).toBeEnabled();
+
+    const beforeArmy = await getBattleSnapshot(page);
+    const militiaBefore = beforeArmy.units.filter((unit: any) => unit.team === "player" && unit.unitId === "militia").length;
+    const rangerBefore = beforeArmy.units.filter((unit: any) => unit.team === "player" && unit.unitId === "ranger").length;
+    await trainUnitThroughCommand(page.locator("button[data-action='train'][data-id='militia']"), page, "militia", "deep-flow Tutorial train Militia");
+    await trainUnitThroughCommand(page.locator("button[data-action='train'][data-id='ranger']"), page, "ranger", "deep-flow Tutorial train Ranger");
+    await completeTrainingQueues(page);
+    await page.waitForFunction(
+      ({ beforeMilitia, beforeRanger }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const militia = scene?.units.filter((unit: any) => unit.team === "player" && unit.definition.id === "militia" && unit.alive) ?? [];
+        const rangers = scene?.units.filter((unit: any) => unit.team === "player" && unit.definition.id === "ranger" && unit.alive) ?? [];
+        return militia.length > beforeMilitia && rangers.length > beforeRanger;
+      },
+      { beforeMilitia: militiaBefore, beforeRanger: rangerBefore },
+      { timeout: 5_000 }
+    );
+
+    await selectWorkerFromScene(page, tutorialWorker.id);
+    await clickBattleCommandUntilEffect(
+      () => page.locator("button[data-action='build'][data-id='watchtower']"),
+      "deep-flow Tutorial build Watchtower command",
+      async () => {
+        await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i, { timeout: 2_000 });
+      },
+      async () => {
+        await selectWorkerFromScene(page, tutorialWorker.id);
+      }
+    );
+    await placePendingBuildingFromSceneAtValidPoint(page, "watchtower", [
+      { x: 540, y: 800 },
+      { x: 560, y: 920 },
+      { x: 520, y: 700 }
+    ]);
+    await expect(page.locator(".side-panel")).toContainText("Defense: inactive while incomplete, attacks nearby enemies when complete.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await completePlayerBuilding(page, "watchtower");
+    await selectPlayerBuildingFromScene(page, "watchtower");
+    await expect(page.locator(".side-panel")).toContainText("Defense ready");
   });
 
   test("unlocked hero ability hotkeys 1, 2, and 3 cast through keyboard input @hosted-deep-battle", async ({ page }) => {

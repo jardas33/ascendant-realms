@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.19 production architecture local verification
+Updated: 2026-05-24 v0.19.1 production role verification and polish
+
+## v0.19.1 Production Role Verification And Polish - 2026-05-24
+
+Scope: automated verification and small readability polish for the v0.19 production architecture before v0.20. This pass does not add harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, new factions, new maps, Patrol runtime, formations, runtime art/assets, broad AI/pathing rewrite, or global rebalance.
+
+Baseline:
+
+- Starting commit: `ec73568`, `Checkpoint v0.19 production architecture and building roles`.
+- Starting package: `artifacts/playtest/ascendant-realms-private-playtest-ec73568`.
+- Branch was clean and synced with `origin/main`.
+- v0.19 push run #112 passed Fast confidence and skipped release-matrix lanes by push rules.
+- v0.19 workflow-dispatch run #113 passed Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, and hosted smoke. It failed only hosted layout-core/layout-cinderfen because those tests still expected removed Command Hall build/upgrade actions; v0.19.1 fixes that stale expectation.
+
+Included work:
+
+- Added `docs/V0191_PRODUCTION_ROLE_VERIFICATION_PLAN.md`.
+- Added `docs/V0191_REMOTE_CI_STATUS.md`.
+- Added `docs/V0191_PRODUCTION_ROLE_POLISH_REPORT.md`.
+- Added a production-role data audit for Command Hall, Worker, Barracks, Mystic Lodge, Watchtower, and upgrade prerequisites.
+- Kept Command Hall normal player-facing production to Worker training only and expanded negative tests for army, direct build, and research actions.
+- Reconfirmed incomplete Barracks/Mystic Lodge/Watchtower show role/status/unlock copy with no completed train/research actions.
+- Reconfirmed completed Barracks exposes Militia/Ranger plus Infantry Weapons I, Reinforced Armor I, and Ranger Training I.
+- Reconfirmed completed Mystic Lodge exposes Acolyte and Aether Study I.
+- Reconfirmed incomplete Watchtower inert behavior and completed Watchtower defense coverage.
+- Added a focused hosted Tutorial proxy for Command Hall -> Worker -> Barracks -> army plus Watchtower role readability.
+- Polished Command Hall, Mystic Lodge, Watchtower, incomplete-building, and defeat-tip copy only.
+
+Verification and closeout so far:
+
+```text
+npm exec vitest run src/game/data/productionRoles.test.ts src/game/ui/hudPanels/HudFormatting.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/core/ResultsFlow.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 6 files / 33 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Tutorial production route" --reporter=line PASS, 1 test.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Tutorial production route|behaviour mode control gauntlet" --reporter=line PASS, 2 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm test PASS, 62 files / 458 tests.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 19 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-ec73568-dirty generated.
+npm run verify:playtest-package PASS, 51 checks.
+git diff --check PASS.
+```
+
+Closeout note: commit, then generate and verify a clean package from the final v0.19.1 commit.
 
 ## v0.19 Production Architecture And Building Roles - 2026-05-24
 

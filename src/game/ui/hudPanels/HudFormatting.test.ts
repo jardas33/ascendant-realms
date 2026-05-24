@@ -29,7 +29,11 @@ describe("HudFormatting", () => {
   });
 
   it("summarizes building roles and completion unlocks from existing actions", () => {
-    expect(formatBuildingRole(BUILDING_BY_ID.command_hall)).toBe("Base hub: trains Workers and anchors the camp.");
+    expect(formatBuildingRole(BUILDING_BY_ID.command_hall)).toBe("Base hub: trains Workers only and anchors the camp.");
+    expect(formatBuildingRole(BUILDING_BY_ID.mystic_lodge)).toBe("Mystic support: trains Acolytes and researches Aether Study I.");
+    expect(formatBuildingRole(BUILDING_BY_ID.watchtower)).toBe(
+      "Defense: inactive while incomplete, attacks nearby enemies when complete."
+    );
     expect(formatBuildingUnlockSummary(BUILDING_BY_ID.barracks)).toBe(
       "Unlocks when complete: trains Militia, Ranger; researches Infantry Weapons I, Reinforced Armor I, Ranger Training I."
     );

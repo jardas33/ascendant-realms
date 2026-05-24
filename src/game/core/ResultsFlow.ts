@@ -154,7 +154,7 @@ export function createDefeatTips(
     tips.push("Capture the Crown Shrine early so your economy starts before the first wave.");
   }
   if (!stats.builtBuildingIds.includes("barracks")) {
-    tips.push("Build a Barracks from the Command Hall, then let construction finish before queueing troops.");
+    tips.push("Train a Worker from the Command Hall, build a Barracks, then let construction finish before queueing troops.");
   }
   const trainedArmyUnits = stats.trainedUnitIds.filter((unitId) => unitId === "militia" || unitId === "ranger").length;
   if (trainedArmyUnits < 2) {
