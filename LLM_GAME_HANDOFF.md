@@ -33,7 +33,7 @@ Runtime/UI summary:
 - Assigned construction only progresses while the Worker is alive and near the building footprint.
 - Incomplete buildings still block/path like buildings but do not show train or upgrade actions.
 - Completed Barracks unlocks its existing Militia/Ranger production.
-- Existing Command Hall direct building placement is preserved as a fallback, so Tutorial does not require Worker construction yet.
+- Command Hall no longer exposes direct building placement; Tutorial keeps its objective count but routes Barracks construction through Worker training and Worker placement.
 - No harvesting, repair, multiple-worker acceleration, enemy construction AI, save migration, visual overhaul, new maps, new factions, Patrol runtime, formations, or runtime art/assets were added.
 - Existing hosted behaviour-mode gauntlet helper was stabilized with the standard `clickReady` path after hosted evidence showed stale custom-helper layout errors and a retreat-suppression timing race.
 
@@ -60,7 +60,7 @@ npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms
 Packaged local-server browser boot sanity PASS at http://127.0.0.1:4174/.
 ```
 
-Runtime gameplay changed: yes, Worker training and Worker-assigned Barracks construction. Gameplay numbers changed: yes, one new Worker unit and Worker training cost/time; no broad army, wave, resource, or global balance rewrite. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no runtime behaviour change. Worker construction implemented: yes, first foundation slice only. Tutorial impact: no new Tutorial requirement. Package changed: package metadata and validation updated for v0.18 docs; dirty package verification passed before commit.
+Runtime gameplay changed: yes, Worker training, Worker-assigned Barracks construction, and removal of player-facing Command Hall direct construction commands. Gameplay numbers changed: yes, one new Worker unit and Worker training cost/time; no broad army, wave, resource, or global balance rewrite. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no runtime behaviour change. Worker construction implemented: yes, first foundation slice only. Tutorial impact: existing Barracks objective now uses Worker training and Worker placement without adding steps. Package changed: package metadata and validation updated for v0.18 docs; dirty package verification passed before commit.
 
 Remaining closeout: `git diff --check`, commit/push, clean package generation/verification, and GitHub Actions release matrix rerun after push.
 

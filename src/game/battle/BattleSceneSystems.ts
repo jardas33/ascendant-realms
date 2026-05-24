@@ -308,7 +308,6 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
   const uiSystem = new UISystem(
     new HUD({
       onBuild: (buildingId, sourceBuildingId) => {
-        const source = getBuildings().find((entry) => entry.id === sourceBuildingId && entry.alive && entry.team === "player");
         const builder = getUnits().find(
           (entry) =>
             entry.id === sourceBuildingId &&
@@ -316,17 +315,27 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
             entry.team === "player" &&
             Boolean(entry.definition.buildOptions?.includes(buildingId))
         );
+        const definition = BUILDING_BY_ID[buildingId];
+        if (!builder) {
+          showMessage(
+            `Select a Worker to build ${definition?.name ?? "this structure"}.`,
+            undefined,
+            undefined,
+            "#ffd27a",
+            {
+              priority: "command"
+            }
+          );
+          return;
+        }
         buildingSystem.startPlacement(buildingId, {
-          anchor: builder?.position ?? source?.position,
+          anchor: builder.position,
           resources: resources.player,
-          assignedWorkerId: builder?.id
+          assignedWorkerId: builder.id
         });
         AudioManager.play("ui_click");
-        const definition = BUILDING_BY_ID[buildingId];
         showMessage(
-          builder
-            ? `${builder.definition.name} ready to build ${definition?.name ?? "building"} - place the site near your base.`
-            : `Placing ${definition?.name ?? "building"} - click a highlighted site or choose another location.`,
+          `${builder.definition.name} ready to build ${definition?.name ?? "building"} - place the site near your base.`,
           undefined,
           undefined,
           "#d9eee8",

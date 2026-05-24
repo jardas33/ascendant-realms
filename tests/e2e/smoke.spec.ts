@@ -264,10 +264,22 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
         (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
       );
       if (!commandHall) {
-        throw new Error("Missing Command Hall for Barracks placement.");
+        throw new Error("Missing Command Hall for Worker Barracks placement.");
       }
       scene.resources.player.crowns = Math.max(scene.resources.player.crowns, 500);
       scene.resources.player.stone = Math.max(scene.resources.player.stone, 500);
+      let worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+      if (!worker) {
+        scene.selectionSystem.setSelection([commandHall]);
+        if (!scene.trainingSystem.queueTraining(commandHall, "worker", scene.resources.player, { announce: false })) {
+          throw new Error("Worker training did not queue for tutorial smoke.");
+        }
+        scene.trainingSystem.update(10, scene.buildings);
+        worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+      }
+      if (!worker) {
+        throw new Error("Missing trained Worker for Barracks placement.");
+      }
       const points = [
         { x: commandHall.position.x + 170, y: commandHall.position.y - 90 },
         { x: commandHall.position.x + 180, y: commandHall.position.y + 40 },
@@ -275,15 +287,29 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
         { x: commandHall.position.x + 230, y: commandHall.position.y - 15 }
       ];
       for (const point of points) {
-        scene.buildingSystem.startPlacement("barracks", { anchor: commandHall.position, resources: scene.resources.player });
+        scene.selectionSystem.setSelection([worker]);
+        scene.buildingSystem.startPlacement("barracks", {
+          anchor: worker.position,
+          resources: scene.resources.player,
+          assignedWorkerId: worker.id
+        });
         scene.buildingSystem.updateGhost(point.x, point.y, scene.resources.player);
         if (scene.buildingSystem.tryPlace(point.x, point.y, scene.resources.player)) {
           const barracks = scene.buildings.find(
-            (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive
+            (building: any) =>
+              building.team === "player" &&
+              building.definition.id === "barracks" &&
+              building.alive &&
+              building.assignedWorkerId === worker.id
           );
           if (!barracks) {
             throw new Error("Barracks placement succeeded but no Barracks exists.");
           }
+          worker.setPosition(
+            barracks.position.x - barracks.definition.size.width / 2 - worker.radius - 12,
+            barracks.position.y
+          );
+          worker.moveTarget = undefined;
           scene.buildingSystem.update(barracks.constructionTimeSeconds + 1);
           scene.selectionSystem.setSelection([barracks]);
           refresh();

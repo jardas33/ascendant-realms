@@ -26,7 +26,7 @@ Included work:
 - Worker approach movement uses the existing pathfinding grid and live building blockers.
 - Incomplete buildings still block/path like buildings but do not expose train/upgrade actions.
 - Selected-building UI shows construction progress, assigned Worker, status, and production-lock copy.
-- Existing Command Hall direct building placement remains as the fallback path, so Tutorial remains stable and does not require Worker construction yet.
+- Command Hall no longer exposes direct building placement commands; Tutorial remains stable by routing the existing Barracks objective through Worker training and Worker placement.
 - Package metadata and validation now require the v0.18 Worker construction docs.
 - Hosted deep-battle coverage includes Worker training, Worker Barracks placement, assigned construction progress, completion, and completed Barracks production unlock.
 - Existing hosted behaviour-mode gauntlet click handling was stabilized with the standard `clickReady` path after hosted evidence showed the old custom helper could keep stale layout errors and outwait the retreat-suppression window.
@@ -54,7 +54,7 @@ npm run verify:playtest-package -- --package=artifacts/playtest/ascendant-realms
 Packaged local-server browser boot sanity PASS at http://127.0.0.1:4174/.
 ```
 
-Runtime gameplay changed: yes, Worker training and Worker-assigned Barracks construction. Gameplay numbers changed: yes, one new Worker unit and Command Hall Worker training cost/time; existing army unit/building/wave/resource/global balance values were not broadly rebalanced. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no runtime combat-control behavior changed; one hosted test helper was stabilized. Tutorial impact: no Tutorial requirement change; fallback Command Hall building placement remains. Economy/production architecture rewritten: no, only a foundation slice.
+Runtime gameplay changed: yes, Worker training, Worker-assigned Barracks construction, and removal of player-facing Command Hall direct construction commands. Gameplay numbers changed: yes, one new Worker unit and Command Hall Worker training cost/time; existing army unit/building/wave/resource/global balance values were not broadly rebalanced. Save format changed: no. Runtime art/assets changed: no. Combat-control baseline changed: no runtime combat-control behavior changed; one hosted test helper was stabilized. Tutorial impact: existing Barracks objective now uses Worker training and Worker placement without adding steps. Economy/production architecture rewritten: no, only a foundation slice.
 
 Pending closeout after this local-verification checkpoint: `git diff --check`, commit/push, clean package generation/verification, and GitHub Actions release matrix rerun after push.
 

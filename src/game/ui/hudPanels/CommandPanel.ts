@@ -101,11 +101,11 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .join("") : "";
 
   const sections = [];
-  if (buildButtons) {
-    sections.push(`<div class="action-group"><strong>Build</strong>${buildButtons}</div>`);
-  }
   if (trainButtons) {
     sections.push(`<div class="action-group"><strong>Train</strong>${trainButtons}</div>`);
+  }
+  if (buildButtons) {
+    sections.push(`<div class="action-group"><strong>Build</strong>${buildButtons}</div>`);
   }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);

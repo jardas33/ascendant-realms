@@ -13,7 +13,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     color: 0x5f8c6f,
     visionRadius: 560,
     constructionTimeSeconds: 0,
-    buildOptions: ["barracks", "mystic_lodge", "watchtower"],
+    buildOptions: [],
     trainOptions: ["worker"],
     upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1"],
     xpValue: 80

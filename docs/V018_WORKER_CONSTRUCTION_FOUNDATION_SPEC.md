@@ -47,11 +47,11 @@ Not included:
 ## Baseline Assumptions
 
 - v0.17.5 is the clean baseline.
-- Existing Command Hall direct building placement remains available as the fallback route.
+- Command Hall trains Workers but does not expose direct building placement commands.
 - Existing capture-site income remains the battle economy.
 - Existing building art/placeholders remain authoritative for v0.18.
 - Existing incomplete-building behavior already blocks production and upgrade queues, and v0.18 extends that behavior with Worker assignment.
-- Tutorial remains stable and does not require Worker construction yet.
+- Tutorial remains stable with the same objective count, and its Barracks objective now uses Worker construction.
 
 ## Worker Data
 
@@ -69,7 +69,7 @@ The Worker is intentionally not a full harvester. Resource collection stays on c
 
 The Command Hall gains Worker training.
 
-The existing Command Hall building-placement fallback remains available so older Tutorial and skirmish paths can still place Barracks directly while the Worker path proves stable.
+The Command Hall does not expose Barracks, Mystic Lodge, or Watchtower placement in the player HUD. New player construction starts from Worker selection.
 
 No existing army-production fallback is removed in this pass. In the current data model, army production already belongs to Barracks/Mystic Lodge rather than Command Hall, so v0.18 does not move army unit production.
 
@@ -113,7 +113,7 @@ Construction progresses only when:
 
 For v0.18, one construction site has one assigned Worker. Additional worker acceleration is deferred.
 
-Sites without assigned workers keep the legacy construction path so Command Hall fallback placement and existing test setups remain stable.
+Sites without assigned workers keep the internal legacy construction path for controlled test setup only; player-facing construction commands assign a Worker.
 
 ## Pathing And Blockers
 
@@ -143,9 +143,13 @@ Current mid-battle construction state remains transient battle runtime state. Fu
 
 ## Tutorial Impact
 
-Tutorial does not require Worker construction in v0.18.
+Tutorial keeps the same objective count, but its Barracks construction path now uses the v0.18 Worker command:
 
-Tutorial can keep using existing Command Hall placement/training steps until the Worker path has survived human retest and a dedicated onboarding pass.
+- select Command Hall,
+- train Worker,
+- select Worker,
+- place Barracks,
+- wait for Worker-completed construction before training Militia.
 
 ## Deferred Work
 
@@ -154,7 +158,7 @@ Tutorial can keep using existing Command Hall placement/training steps until the
 - multiple workers per site,
 - cancellation/refund UI,
 - enemy worker construction,
-- full Command Hall role change,
-- Tutorial Worker onboarding,
+- full Command Hall economy role change,
+- expanded Tutorial Worker onboarding beyond the existing Barracks objective,
 - save migration,
 - production tech-tree rebalance.

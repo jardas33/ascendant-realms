@@ -29,6 +29,7 @@ describe("TrainingSystem", () => {
     expect(trainedUnits).toHaveLength(1);
     expect(trainedUnits[0].definition.id).toBe("worker");
     expect(commandHall.definition.trainOptions).toEqual(["worker"]);
+    expect(commandHall.definition.buildOptions).toEqual([]);
     expect(BUILDING_BY_ID.barracks.trainOptions).toEqual(["militia", "ranger"]);
   });
 

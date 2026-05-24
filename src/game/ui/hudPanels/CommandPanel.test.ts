@@ -6,15 +6,14 @@ import { renderCommandActions } from "./CommandPanel";
 import type { HUDSnapshot } from "./HudTypes";
 
 describe("CommandPanel", () => {
-  it("labels build, train, and upgrade command costs clearly", () => {
+  it("labels train and upgrade command costs clearly on the Command Hall", () => {
     const commandHall = fakeBuilding("player-command-hall", "command_hall");
     const barracks = fakeBuilding("player-barracks", "barracks");
 
     const commandHallMarkup = renderCommandActions(commandHall, fakeSnapshot(["command_hall"]));
     const barracksMarkup = renderCommandActions(barracks, fakeSnapshot(["command_hall", "barracks"]));
 
-    expect(commandHallMarkup).toContain('data-testid="command-build-barracks"');
-    expect(commandHallMarkup).toContain("Cost: 180 Crowns, 120 Stone");
+    expect(commandHallMarkup).not.toContain('data-command-kind="build"');
     expect(commandHallMarkup).toContain('data-testid="command-train-worker"');
     expect(commandHallMarkup).toContain("Cost: 50 Crowns");
     expect(commandHallMarkup).toContain('data-testid="command-upgrade-infantry_weapons_1"');
@@ -31,7 +30,6 @@ describe("CommandPanel", () => {
       fakeSnapshot(["command_hall"], { crowns: 0, stone: 0, iron: 0, aether: 0 })
     );
 
-    expect(markup).toContain("Insufficient resources. Cost: 180 Crowns, 120 Stone");
     expect(markup).toContain("Insufficient resources. Cost: 50 Crowns");
     expect(markup).toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
   });

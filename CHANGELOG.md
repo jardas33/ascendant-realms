@@ -2,20 +2,21 @@
 
 ## v0.18 Worker Construction Foundation - 2026-05-23
 
-This checkpoint implements the first safe Worker construction vertical slice after the clean v0.17.5 baseline. It keeps the scope narrow: one Worker, one Worker-built military building, no harvesting, no repair loop, no enemy construction AI, no save migration, no art replacement, and no Tutorial requirement change.
+This checkpoint implements the first safe Worker construction vertical slice after the clean v0.17.5 baseline. It keeps the scope narrow: one Worker, one Worker-built military building, no harvesting, no repair loop, no enemy construction AI, no save migration, no art replacement, and no broad Tutorial rewrite.
 
 ### Included
 
 - Added `docs/V018_WORKER_CONSTRUCTION_FOUNDATION_SPEC.md` and `docs/V018_IMPLEMENTATION_REPORT.md`.
 - Added a Free Marches Worker unit using existing asset conventions only.
 - Command Hall can train Workers.
+- Removed player-facing Command Hall building placement commands; Barracks construction now starts from Worker selection.
 - Worker selection can build Barracks.
 - Worker-built Barracks begins as an incomplete construction site with assigned Worker id/name, status, and progress.
 - Assigned construction progresses only while the Worker is alive and near the building footprint.
 - Incomplete buildings remain blockers but do not expose train or upgrade commands.
 - Selected-building UI now shows construction lock copy, status, progress, and assigned Worker.
 - Package metadata and validation now require the v0.18 docs.
-- Added focused unit/UI/package tests and hosted deep-battle coverage for Worker -> Barracks -> completed production unlock.
+- Added focused unit/UI/package tests and hosted deep-battle coverage for Command Hall Worker training, Worker-only construction commands, Worker -> Barracks -> completed production unlock, and Tutorial Worker construction smoke coverage.
 - Stabilized the existing hosted behaviour-mode gauntlet click helper after hosted evidence showed a timing race unrelated to Worker construction.
 
 ### Verdict
@@ -25,7 +26,7 @@ This checkpoint implements the first safe Worker construction vertical slice aft
 - Save format changed: no.
 - Runtime art/assets changed: no.
 - Combat-control baseline changed: no runtime combat-control behavior changed.
-- Tutorial requirement changed: no.
+- Tutorial requirement changed: yes, the existing Barracks objective now routes through Worker training and Worker placement without adding new steps.
 - Economy/production architecture rewritten: no, foundation slice only.
 
 ### Verification
@@ -35,7 +36,7 @@ This checkpoint implements the first safe Worker construction vertical slice aft
 
 ### Next
 
-- Finish the closeout gates and package v0.18 for Emmanuel to retest the Worker path specifically: train Worker, build Barracks, confirm incomplete Barracks cannot train, wait for completion, then train army units from the completed Barracks.
+- Finish the closeout gates and package v0.18 for Emmanuel to retest the Worker path specifically: select Command Hall, train Worker, confirm Command Hall has no Barracks/Mystic Lodge/Watchtower build buttons, select Worker, build Barracks, confirm incomplete Barracks cannot train, wait for completion, then train army units from the completed Barracks.
 
 ## v0.17.5 Ranger Near-Base Invisible Blocker Fix - 2026-05-23
 

@@ -78,11 +78,11 @@ export const TUTORIALS: TutorialDefinition[] = [
         id: "select_command_hall",
         type: "selectBuilding",
         title: "Select Command Hall",
-        description: "Teach selecting the starting Command Hall to access construction.",
-        instruction: "Select your Command Hall to show construction commands.",
+        description: "Teach selecting the starting Command Hall to access Worker training.",
+        instruction: "Select your Command Hall to train a Worker before construction.",
         objectiveType: "selectBuilding",
         requiredAction: "selectBuilding",
-        hint: "The Command Hall starts Barracks construction before the first enemy wave.",
+        hint: "Workers handle construction. The Command Hall trains Workers.",
         references: {
           mapIds: ["first_claim"],
           buildingIds: ["command_hall"]
@@ -92,14 +92,15 @@ export const TUTORIALS: TutorialDefinition[] = [
         id: "build_barracks",
         type: "buildStructure",
         title: "Build Barracks",
-        description: "Teach Barracks placement and completed construction using existing build rules.",
-        instruction: "Place a Barracks on clear ground near your base. This is the safe path to a bigger army.",
+        description: "Teach Worker Barracks placement and completed construction using existing build rules.",
+        instruction: "Train and select a Worker, then place a Barracks on clear ground near your base.",
         objectiveType: "buildStructure",
         requiredAction: "buildStructure",
-        hint: "If the ground is blocked, press Esc and try a nearby spot.",
+        hint: "If the ground is blocked, press Esc and try a nearby spot. Construction progresses while the Worker is nearby.",
         references: {
           mapIds: ["first_claim"],
-          buildingIds: ["command_hall", "barracks"]
+          buildingIds: ["command_hall", "barracks"],
+          unitIds: ["worker"]
         }
       },
       {

@@ -671,6 +671,16 @@ async function completePlayerBuilding(page: Page, buildingId: string): Promise<v
     if (!building) {
       throw new Error(`Player building ${targetBuildingId} was not found.`);
     }
+    const worker = building.assignedWorkerId
+      ? scene.units.find((entry: any) => entry.id === building.assignedWorkerId && entry.alive)
+      : undefined;
+    if (worker) {
+      worker.setPosition(
+        building.position.x - building.definition.size.width / 2 - worker.radius - 12,
+        building.position.y
+      );
+      worker.moveTarget = undefined;
+    }
     scene.buildingSystem.update(building.constructionTimeSeconds + 1);
   }, buildingId);
   await page.waitForFunction(
@@ -923,6 +933,52 @@ async function selectPlayerCommandHallFromScene(page: Page): Promise<void> {
     scene.refreshBattleHud?.(0);
   });
   await expect(page.locator(".side-panel")).toContainText("Command Hall", { timeout: 20_000 });
+}
+
+async function trainWorkerFromCommandHall(page: Page, context: string): Promise<{ id: string; x: number; y: number }> {
+  await selectPlayerCommandHallFromScene(page);
+  const trainWorkerButton = () => page.locator("button[data-action='train'][data-id='worker']");
+  await expect(trainWorkerButton(), `${context}: Command Hall should expose Worker training`).toBeEnabled({ timeout: 5_000 });
+
+  await clickBattleCommandUntilEffect(
+    trainWorkerButton,
+    `${context} train Worker command`,
+    async () => {
+      await page.waitForFunction(() => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const commandHall = scene?.buildings.find(
+          (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+        );
+        return commandHall?.trainingQueue?.some((entry: any) => entry.unitId === "worker");
+      });
+    },
+    async () => {
+      await selectPlayerCommandHallFromScene(page);
+    }
+  );
+
+  const trainedWorker = await page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.trainingSystem.update(10, scene.buildings);
+    const workers = scene.units.filter((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+    const worker = workers[workers.length - 1];
+    if (!worker) {
+      throw new Error("Expected trained Worker.");
+    }
+    scene.selectionSystem.setSelection([worker]);
+    scene.cameraSystem.centerOn(worker.position);
+    scene.refreshBattleHud?.(0);
+    return {
+      id: worker.id,
+      x: worker.position.x,
+      y: worker.position.y
+    };
+  });
+  await expect(page.locator(".side-panel"), `${context}: Worker selection should be visible`).toContainText("Worker");
+  return trainedWorker;
 }
 
 async function forceActiveBattleOutcome(page: Page, outcome: "victory" | "defeat"): Promise<void> {
@@ -2127,39 +2183,50 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("unit-order-summary")).toContainText(MOVE_ORDER_SUMMARY_PATTERN);
   });
 
-  test("battle HUD supports command hall building placement and cancel @hosted-deep-battle", async ({ page }) => {
+  test("battle HUD keeps construction on Worker selection and supports placement cancel @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Builder QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
-    await expect(page.locator(".side-panel")).toContainText("Build");
+    await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeEnabled();
+    await expect(page.locator("button[data-action='build'][data-id='barracks']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='build'][data-id='mystic_lodge']")).toHaveCount(0);
+    await expect(page.locator("button[data-action='build'][data-id='watchtower']")).toHaveCount(0);
+
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker-only construction");
     await clickBattleCommandUntilEffect(
       () => page.locator("button[data-action='build'][data-id='barracks']"),
-      "deep-flow build Barracks command",
+      "deep-flow Worker build Barracks cancel command",
       async () => {
         await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode", { timeout: 2_000 });
       },
       async () => {
-        await selectPlayerCommandHallFromScene(page);
-        await expect(page.locator(".side-panel")).toContainText("Command Hall");
+        await page.evaluate((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+          if (worker) {
+            scene.selectionSystem.setSelection([worker]);
+            scene.refreshBattleHud?.(0);
+          }
+        }, trainedWorker.id);
+        await expect(page.locator(".side-panel")).toContainText("Worker");
       }
     );
     await expect(page.getByTestId("placement-banner")).toContainText("Placement Mode");
     await expect(page.locator(".hint-line")).toHaveCount(0);
-    await page.waitForFunction(() => {
+    await page.waitForFunction((workerId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      const commandHall = scene?.buildings.find(
-        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
-      );
+      const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
       const ghost = scene?.buildingSystem?.ghost;
       return (
         scene?.buildingSystem?.pendingBuildingId === "barracks" &&
+        scene?.buildingSystem?.pendingAssignedWorkerId === workerId &&
         ghost?.visible &&
-        commandHall &&
-        Math.hypot(ghost.x - commandHall.position.x, ghost.y - commandHall.position.y) > 40
+        worker &&
+        Math.hypot(ghost.x - worker.position.x, ghost.y - worker.position.y) > 40
       );
-    });
+    }, trainedWorker.id);
     await page.keyboard.press("Escape");
     await expect
       .poll(
@@ -2181,46 +2248,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Worker QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
-    await selectPlayerCommandHallFromScene(page);
-    await expect(page.locator("button[data-action='train'][data-id='worker']")).toBeEnabled();
-
-    await clickBattleCommandUntilEffect(
-      () => page.locator("button[data-action='train'][data-id='worker']"),
-      "deep-flow train Worker command",
-      async () => {
-        await page.waitForFunction(() => {
-          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-          const commandHall = scene?.buildings.find(
-            (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
-          );
-          return commandHall?.trainingQueue?.some((entry: any) => entry.unitId === "worker");
-        });
-      },
-      async () => {
-        await selectPlayerCommandHallFromScene(page);
-      }
-    );
-
-    const trainedWorker = await page.evaluate(() => {
-      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      if (!scene?.scene.isActive()) {
-        throw new Error("BattleScene is not active.");
-      }
-      scene.trainingSystem.update(10, scene.buildings);
-      const worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
-      if (!worker) {
-        throw new Error("Expected trained Worker.");
-      }
-      scene.selectionSystem.setSelection([worker]);
-      scene.cameraSystem.centerOn(worker.position);
-      scene.refreshBattleHud?.(0);
-      return {
-        id: worker.id,
-        x: worker.position.x,
-        y: worker.position.y
-      };
-    });
-    await expect(page.locator(".side-panel")).toContainText("Worker");
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker completion");
     await expect(page.locator("button[data-action='build'][data-id='barracks']")).toBeEnabled();
 
     await clickBattleCommandUntilEffect(
@@ -2357,7 +2385,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Hover QA");
     await setBattlePlayerResources(page, { crowns: 1000, stone: 1000, iron: 1000, aether: 1000 });
-    await selectPlayerCommandHallFromScene(page);
+    await trainWorkerFromCommandHall(page, "deep-flow Worker hover stability");
 
     const barracksButton = page.locator("button[data-action='build'][data-id='barracks']");
     await expect(barracksButton).toBeEnabled();
@@ -3625,15 +3653,24 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await selectPlayerCommandHallFromScene(page);
     await expect(page.locator(".side-panel")).toContainText("Command Hall");
+    await expect(page.locator("button[data-action='build'][data-id='barracks']")).toHaveCount(0);
+    const campaignWorker = await trainWorkerFromCommandHall(page, "deep-flow first campaign Worker construction");
     await clickBattleCommandUntilEffect(
       () => page.locator("button[data-action='build'][data-id='barracks']"),
-      "deep-flow first campaign build Barracks",
+      "deep-flow first campaign Worker build Barracks",
       async () => {
         await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i, { timeout: 2_000 });
       },
       async () => {
-        await selectPlayerCommandHallFromScene(page);
-        await expect(page.locator(".side-panel")).toContainText("Command Hall");
+        await page.evaluate((workerId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+          if (worker) {
+            scene.selectionSystem.setSelection([worker]);
+            scene.refreshBattleHud?.(0);
+          }
+        }, campaignWorker.id);
+        await expect(page.locator(".side-panel")).toContainText("Worker");
       }
     );
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);

@@ -22,7 +22,7 @@ Status: implementation and local verification complete; commit, clean package, a
 - Added Worker assignment to Worker-started building placement.
 - Added Worker construction gating: assigned Worker must be alive and near the site footprint before progress advances.
 - Added Worker approach movement using existing pathfinding/building blocker data.
-- Preserved legacy Command Hall direct building placement as the safe fallback route.
+- Removed player-facing Command Hall direct building placement after tester retest showed it conflicted with Worker-only construction.
 - Preserved completed Barracks/Mystic Lodge army production ownership; no Command Hall army-production removal was needed because the current data already keeps army units on production buildings.
 - Added incomplete-building UI feedback for production lock, assigned worker, status, and progress.
 - Kept incomplete buildings blocked from train/upgrade commands.
@@ -66,7 +66,7 @@ Worker approach and progress checks are intentionally conservative:
 - Worker selection gains Build Barracks.
 - Incomplete Barracks hides train/upgrade actions.
 - Completed Barracks retains its existing Militia/Ranger production.
-- Existing Command Hall direct build placement remains available.
+- Command Hall direct build placement is no longer available through player commands.
 
 ## Save Format
 
@@ -76,9 +76,7 @@ Worker construction state is battle-runtime state only in v0.18.
 
 ## Tutorial Impact
 
-Tutorial is intentionally not migrated to require Worker construction.
-
-The fallback Command Hall placement path remains available so Tutorial onboarding remains stable while the Worker path is tested.
+Tutorial keeps the same objective count but now routes the Barracks objective through the Worker path: train Worker from Command Hall, select Worker, place Barracks, then train Militia after construction completes.
 
 ## Art And Assets
 
