@@ -1,9 +1,11 @@
-import type { BuildingDefinition, UnitDefinition, UpgradeDefinition } from "../../core/GameTypes";
+import type { BuildingDefinition, Cost, UnitDefinition, UpgradeDefinition } from "../../core/GameTypes";
 import { canAfford } from "../../core/MathUtils";
 import { BUILDING_BY_ID, UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
+import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
 import { checkPrerequisites } from "../../systems/PrerequisiteSystem";
+import { RESOURCE_SITE_MAX_LEVEL, RESOURCE_SITE_UPGRADE_COST } from "../../systems/ResourceSystem";
 import { formatCost } from "../BuildMenu";
 import {
   escapeHtml,
@@ -19,7 +21,7 @@ import {
 import type { HUDSnapshot } from "./HudTypes";
 
 export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefined, snapshot: HUDSnapshot): string {
-  if (!(selectedOne instanceof Building) && !(selectedOne instanceof Unit)) {
+  if (!(selectedOne instanceof Building) && !(selectedOne instanceof Unit) && !(selectedOne instanceof CaptureSite)) {
     return "";
   }
 
@@ -27,7 +29,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Incomplete - completed-building actions locked. Select a Worker and right-click this site to continue construction.</p></div>`;
   }
 
-  const buildButtons = (selectedOne.definition.buildOptions ?? [])
+  const buildButtons = selectedOne instanceof Unit || selectedOne instanceof Building ? (selectedOne.definition.buildOptions ?? [])
     .map((buildingId) => BUILDING_BY_ID[buildingId])
     .filter((definition): definition is BuildingDefinition => definition !== undefined)
     .map((definition) => {
@@ -49,7 +51,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         locked: Boolean(lockReason)
       });
     })
-    .join("");
+    .join("") : "";
 
   const trainButtons = selectedOne instanceof Building ? selectedOne.definition.trainOptions
     .map((unitId) => UNIT_BY_ID[unitId])
@@ -132,9 +134,9 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     selectedOne instanceof Unit && selectedOne.definition.id === "worker"
       ? snapshot.resourceSites
           .map((site) => {
-            const locked = site.owner !== "player" || Boolean(site.assignedWorkerId && site.assignedWorkerId !== selectedOne.id);
-            const assignedToThisWorker = site.assignedWorkerId === selectedOne.id;
-            const boostedIncome = site.baseIncomeAmount + site.workerBonusAmount;
+            const assignedToThisWorker = site.workerSlots.some((slot) => slot.workerId === selectedOne.id);
+            const fullForThisWorker = site.workerSlotsUsed >= site.workerSlotCapacity && !assignedToThisWorker;
+            const locked = site.owner !== "player" || fullForThisWorker;
             return renderCommandButton({
               action: "assign-resource-site",
               verb: assignedToThisWorker ? "Reassign" : "Assign",
@@ -143,17 +145,46 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
               name: site.name,
               detail:
                 site.owner === "player"
-                  ? `Base +${site.baseIncomeAmount}, Worker +${site.workerBonusAmount}/${site.incomeInterval}s`
+                  ? `Level ${site.level}. Slots ${site.workerSlotsUsed}/${site.workerSlotCapacity}. Total +${site.totalIncomeAmount}/${site.incomeInterval}s`
                   : site.status,
               description:
                 site.owner === "player"
-                  ? `Captured ${site.resource} site. ${site.status}. Boosted tick +${boostedIncome} while Worker is assigned and nearby.`
+                  ? `Captured ${site.resource} site. Base +${site.baseIncomeAmount}, upgrade +${site.upgradeBonusAmount}, Workers +${site.workerBonusAmount}. ${site.status}.`
                   : "Capture this resource site before assigning a Worker.",
               effect: site.owner === "player" ? "Effect: adds a small bonus to this site's existing passive income." : undefined,
               locked
             });
           })
           .join("")
+      : "";
+
+  const resourceSiteUpgradeButtons =
+    selectedOne instanceof CaptureSite
+      ? (() => {
+          const site = snapshot.resourceSites.find((entry) => entry.id === selectedOne.id);
+          const level = site?.level ?? selectedOne.siteLevel;
+          const owner = site?.owner ?? selectedOne.owner;
+          const upgradeCost = site?.upgradeCost ?? RESOURCE_SITE_UPGRADE_COST;
+          const lockReason =
+            owner !== "player"
+              ? "Capture before upgrading"
+              : level >= RESOURCE_SITE_MAX_LEVEL
+                ? "Improved"
+                : canAfford(snapshot.resources, upgradeCost)
+                  ? undefined
+                  : "Insufficient resources";
+          return renderCommandButton({
+            action: "upgrade-resource-site",
+            verb: "Upgrade",
+            id: selectedOne.id,
+            sourceId: selectedOne.id,
+            name: selectedOne.definition.name,
+            detail: formatCommandDetail(upgradeCost, lockReason),
+            description: site?.upgradeStatus ?? "Upgrade captured sites to improve income and Worker capacity.",
+            effect: "Effect: adds a modest income bonus and unlocks a second Worker slot.",
+            locked: Boolean(lockReason)
+          });
+        })()
       : "";
 
   const sections = [];
@@ -172,13 +203,16 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   if (resourceSiteButtons) {
     sections.push(`<div class="action-group"><strong>Resource Sites</strong>${resourceSiteButtons}</div>`);
   }
+  if (resourceSiteUpgradeButtons) {
+    sections.push(`<div class="action-group"><strong>Site Upgrade</strong>${resourceSiteUpgradeButtons}</div>`);
+  }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
   }
   return sections.join("");
 }
 
-function formatCommandDetail(cost: BuildingDefinition["cost"], lockReason?: string): string {
+function formatCommandDetail(cost: Cost, lockReason?: string): string {
   const costText = `Cost: ${formatCost(cost)}`;
   return lockReason ? `${lockReason}. ${costText}` : costText;
 }
@@ -186,7 +220,7 @@ function formatCommandDetail(cost: BuildingDefinition["cost"], lockReason?: stri
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
 
 function renderCommandButton(options: {
-  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site";
+  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site" | "upgrade-resource-site";
   verb: string;
   id: string;
   sourceId: string;

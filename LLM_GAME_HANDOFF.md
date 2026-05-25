@@ -1,12 +1,70 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.22 resource site worker assignment foundation
+Last updated: 2026-05-25 v0.23 resource site upgrades and worker slots
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
+
+Status: v0.23 expands the v0.22 resource-site Worker assignment foundation with a small upgrade and slot-depth layer. It keeps the capturable site-control economy and does not add classic carry/drop-off harvesting.
+
+Baseline:
+
+- Starting commit: `5147639`, `Checkpoint v0.22 resource site worker assignment foundation`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- v0.22 clean package verification passed for `ascendant-realms-private-playtest-5147639`.
+- v0.22 basic behavior was reconfirmed with focused ResourceSystem/UI tests and hosted Worker assignment coverage before v0.23 began.
+
+Docs/package metadata:
+
+- Added `docs/V023_RESOURCE_SITE_UPGRADES_SPEC.md`.
+- Added `docs/V023_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V023_EMMANUEL_RETEST_CHECKLIST.md`.
+- Package checkpoint string is now `v0.23 resource site upgrades and worker slots`.
+- Private playtest package validation now requires the v0.23 spec, implementation report, and Emmanuel retest checklist.
+
+Runtime/UI summary:
+
+- Friendly captured resource sites now have battle-runtime levels.
+- Level 1 is the captured baseline: unchanged passive income and one Worker slot.
+- Level 2 is an instant site improvement costing 120 Crowns and 80 Stone: it adds a 15% rounded upgrade income bonus, minimum +1, and unlocks a second Worker slot.
+- Worker assignment now uses explicit slot state while keeping first-slot compatibility fields for existing UI/tests.
+- Duplicate assignment of the same Worker is idempotent and does not fill extra slots.
+- Full sites reject additional Worker assignment with clear command feedback.
+- Losing site control clears all Worker assignments and resets the site to Level 1.
+- Worker move, attack, build, repair, reassignment, death, and site loss clear the relevant slot/boost.
+- Selected resource-site UI shows level, base income, upgrade bonus, Worker slot usage, assigned Workers, Worker bonus, total income, and status.
+- Selected friendly captured sites expose an Upgrade command through the existing command panel.
+- Worker Resource Sites commands show level, slots used/available, total tick income, and neutral/enemy/full reasons.
+- No classic harvesting, cargo, drop-off loop, enemy Worker mining AI, enemy site upgrade AI, enemy construction AI, new maps/factions/units/buildings, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, or formations are included.
+
+Verification:
+
+```text
+In-app Browser preview PASS at http://127.0.0.1:4179/ with page title Ascendant Realms and 0 console errors.
+npm exec vitest run src/game/systems/ResourceSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 4 files / 39 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment and site upgrade" --reporter=line PASS, 1 focused hosted v0.23 regression.
+npm test PASS, 66 files / 506 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests, after a narrow existing Border Village extended-smoke test timeout budget was set to 60s.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 22 tests, after the existing first-campaign placement click retry budget was raised from 3 to 5 attempts.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5147639-dirty generated.
+npm run verify:playtest-package PASS, 68 checks.
+```
+
+Closeout note: run `git diff --check`, commit as `Checkpoint v0.23 resource site upgrades and worker slots`, regenerate/verify a clean package from the v0.23 commit, then push `main`.
+
+Emmanuel retest focus: use the clean v0.23 package. Capture a resource site, assign one Worker, confirm the v0.22 bonus still works, upgrade the site, confirm Level 2/upgrade bonus/two Worker slots, assign a second Worker, confirm both Worker bonuses and total income, confirm neutral/enemy/full sites reject assignment or upgrade clearly, and confirm moving/reassigning/death/site loss clears the relevant slot. Regression-check v0.21 Worker construction, repair, explicit attack, and Burn/status marker clarity.
 
 ## Current v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
 

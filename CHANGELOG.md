@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
+
+This checkpoint expands the v0.22 resource-site Worker assignment foundation with a small upgrade and slot-depth layer. Ascendant Realms still uses capturable site-control income; it does not add classic carry/drop-off harvesting.
+
+### Included
+
+- Added `docs/V023_RESOURCE_SITE_UPGRADES_SPEC.md`.
+- Added `docs/V023_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V023_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and package validation to name `v0.23 resource site upgrades and worker slots`.
+- Added resource-site levels: Level 1 captured sites keep base passive income and one Worker slot; Level 2 improved sites add a 15% rounded upgrade bonus and a second Worker slot.
+- Added a selected-site Upgrade command for friendly captured sites with a 120 Crowns / 80 Stone cost.
+- Preserved each site's existing resource identity and baseline income.
+- Expanded Worker assignment to explicit slot state, prevented duplicate Worker fills, rejected overfilled sites, and cleared slots on move/attack/build/repair/reassignment/death/site loss.
+- Reset site upgrades and slots when site control is lost.
+- Updated selected-site and Worker command UI to show level, base income, upgrade bonus, Worker slots, assigned Workers, Worker bonus, total income, and invalid reasons.
+- Expanded unit/UI/package coverage and hosted deep-battle coverage for site upgrade, second Worker slot, income calculation, overfill rejection, site loss clearing, and existing Worker assignment behavior.
+- Narrowly hardened two existing hosted/browser tests without changing assertions: Border Village extended smoke now has a 60s budget, and first-campaign build placement retries the real world-click up to 5 times.
+
+### Verdict
+
+- Runtime gameplay changed: yes, captured friendly resource sites can now be upgraded and upgraded sites support a second assigned Worker.
+- Gameplay numbers changed: narrowly, Level 2 sites add a modest site-local upgrade bonus; baseline site income and Worker bonus formula remain conservative.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no classic carry/drop-off harvesting, cargo, or drop-off loop.
+
+### Verification
+
+- Passed: in-app Browser preview at `http://127.0.0.1:4179/`, focused ResourceSystem/UI/package tests, focused hosted v0.23 regression, `npm test` with 66 files / 506 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, controls verifier with 1658 checks, hosted deep-battle with 22 tests, hosted smoke with 14 tests, dirty playtest package generation, and dirty package verification with 68 checks.
+
+### Next
+
+- Commit the checkpoint, regenerate/verify the clean v0.23 package from the final commit, push, and use that package for Emmanuel's resource-site upgrade/slot retest.
+
 ## v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
 
 This checkpoint adds the first resource-economy expansion after the v0.21.x Worker intent work. Ascendant Realms keeps its capturable resource-site economy; Workers now explicitly support friendly captured sites for bonus income instead of doing classic carry/drop-off harvesting.

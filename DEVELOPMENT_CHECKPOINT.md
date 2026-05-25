@@ -1,6 +1,58 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.22 resource site worker assignment foundation
+Updated: 2026-05-25 v0.23 resource site upgrades and worker slots
+
+## v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
+
+Scope: expand the v0.22 resource-site Worker assignment foundation with a small captured-site upgrade layer and second Worker slot depth. This pass keeps the existing site-control economy and does not add classic carry/drop-off harvesting, enemy Worker/resource AI, enemy construction AI, new maps/factions, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, or test weakening.
+
+Baseline:
+
+- Starting commit: `5147639`, `Checkpoint v0.22 resource site worker assignment foundation`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- v0.22 clean package and focused assignment behavior were reconfirmed before runtime work began.
+
+Included work:
+
+- Added `docs/V023_RESOURCE_SITE_UPGRADES_SPEC.md`.
+- Added `docs/V023_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V023_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and validation to name `v0.23 resource site upgrades and worker slots`.
+- Added battle-runtime resource-site levels: Level 1 captured site and Level 2 improved site.
+- Added an instant friendly captured-site upgrade costing 120 Crowns and 80 Stone.
+- Added a conservative Level 2 upgrade income bonus equal to 15% of base income, rounded, minimum +1.
+- Expanded Worker assignment from one first-slot field to explicit slot state.
+- Kept Level 1 at one Worker slot and Level 2 at two Worker slots.
+- Prevented duplicate Worker slot fills and overfilled sites.
+- Preserved baseline passive site income and existing resource identity.
+- Cleared slots on Worker move, attack, build, repair, reassignment, death, and site control loss.
+- Reset site level and slots when a site is lost.
+- Added selected-site UI for level, base income, upgrade bonus, Worker slot usage, assigned Workers, Worker bonus, total income, and upgrade state.
+- Added a selected-site Upgrade command and clearer Worker assignment button slot/total-income copy.
+- Expanded unit/UI/package and hosted deep-battle coverage for upgrades, second slots, income, invalid targets, overfill, site loss, and existing Worker assignment behavior.
+- Added narrow hosted harness hardening: the existing Border Village smoke test now has a 60s budget, and the existing first-campaign build placement world-click retry uses 5 attempts like the explicit-attack world-click helper.
+
+Verification and closeout so far:
+
+```text
+In-app Browser preview PASS at http://127.0.0.1:4179/ with page title Ascendant Realms and 0 console errors.
+npm exec vitest run src/game/systems/ResourceSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 4 files / 39 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment and site upgrade" --reporter=line PASS, 1 hosted v0.23 regression.
+npm test PASS, 66 files / 506 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 22 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5147639-dirty generated.
+npm run verify:playtest-package PASS, 68 checks.
+```
+
+Closeout note: run `git diff --check`, commit, regenerate/verify a clean package from the final v0.23 commit, then push.
 
 ## v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
 

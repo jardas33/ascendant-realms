@@ -91,11 +91,14 @@ describe("SelectedEntityPanel", () => {
     const markup = renderSelectionSummary(site, []);
 
     expect(markup).toContain("Control Friendly captured");
+    expect(markup).toContain("Level 1/2");
     expect(markup).toContain("Resource crowns");
     expect(markup).toContain("Base income +30/5s");
-    expect(markup).toContain("Worker slot Worker");
-    expect(markup).toContain("Worker bonus +6/5s");
-    expect(markup).toContain("Boosted income +36/5s");
+    expect(markup).toContain("Upgrade bonus +0/5s");
+    expect(markup).toContain("Worker slots 1/1");
+    expect(markup).toContain("Assigned Worker");
+    expect(markup).toContain("Worker bonus +6/5s (6 each)");
+    expect(markup).toContain("Total income +36/5s");
     expect(markup).toContain("Status Worker working");
   });
 
@@ -105,7 +108,8 @@ describe("SelectedEntityPanel", () => {
     const markup = renderSelectionSummary(site, []);
 
     expect(markup).toContain("Control Neutral");
-    expect(markup).toContain("Worker slot Empty");
+    expect(markup).toContain("Worker slots 0/1");
+    expect(markup).toContain("Assigned Empty");
     expect(markup).toContain("Status Capture this site before assigning a Worker.");
     expect(markup).toContain("Capture this site before assigning a Worker.");
   });
@@ -176,6 +180,17 @@ function fakeCaptureSite(
     team: options.owner,
     owner: options.owner,
     alive: true,
+    siteLevel: 1,
+    workerAssignments: options.assignedWorkerName
+      ? [
+          {
+            workerId: "worker-1",
+            workerName: options.assignedWorkerName,
+            statusDetail: options.workerAssignmentStatusDetail ?? "Worker traveling",
+            boostActive: Boolean(options.workerAssignmentBoostActive)
+          }
+        ]
+      : [],
     definition: {
       id: "crown_shrine",
       name: "Crown Shrine",

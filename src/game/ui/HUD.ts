@@ -92,6 +92,10 @@ export class HUD {
         callbacks.onAssignResourceSite(id, button.dataset.sourceId ?? "");
         handled = true;
       }
+      if (action === "upgrade-resource-site") {
+        callbacks.onUpgradeResourceSite(id);
+        handled = true;
+      }
       if (action === "ability") {
         callbacks.onAbility(id);
         handled = true;

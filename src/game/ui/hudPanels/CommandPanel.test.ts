@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID, UNIT_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
+import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
 import { renderCommandActions } from "./CommandPanel";
 import type { HUDSnapshot } from "./HudTypes";
@@ -172,37 +173,37 @@ describe("CommandPanel", () => {
     const markup = renderCommandActions(
       worker,
       fakeSnapshot(["command_hall"], undefined, [], [], [
-        {
+        fakeResourceSiteSummary({
           id: "crown_shrine",
           name: "Crown Shrine",
           resource: "crowns",
           owner: "player",
           baseIncomeAmount: 30,
           incomeInterval: 5,
-          workerBonusAmount: 6,
-          boostedIncomeAmount: 30,
+          workerBonusPerWorkerAmount: 6,
+          totalIncomeAmount: 30,
           isAssignable: true,
           status: "Captured - empty Worker slot"
-        },
-        {
+        }),
+        fakeResourceSiteSummary({
           id: "stone_quarry",
           name: "Stone Quarry",
           resource: "stone",
           owner: "neutral",
           baseIncomeAmount: 25,
           incomeInterval: 5,
-          workerBonusAmount: 5,
-          boostedIncomeAmount: 25,
+          workerBonusPerWorkerAmount: 5,
+          totalIncomeAmount: 25,
           isAssignable: false,
           status: "Neutral - capture before assigning a Worker"
-        }
+        })
       ])
     );
 
     expect(markup).toContain('data-testid="command-assign-resource-site-crown_shrine"');
     expect(markup).toContain("Assign Crown Shrine");
-    expect(markup).toContain("Base +30, Worker +6/5s");
-    expect(markup).toContain("Boosted tick +36 while Worker is assigned and nearby.");
+    expect(markup).toContain("Level 1. Slots 0/1. Total +30/5s");
+    expect(markup).toContain("Base +30, upgrade +0, Workers +0.");
     expect(markup).toContain("Neutral - capture before assigning a Worker");
     expect(markup).toContain('data-testid="command-assign-resource-site-stone_quarry"');
     expect(markup).toContain("disabled");
@@ -214,7 +215,7 @@ describe("CommandPanel", () => {
     const markup = renderCommandActions(
       worker,
       fakeSnapshot(["command_hall"], undefined, [], [], [
-        {
+        fakeResourceSiteSummary({
           id: "crown_shrine",
           name: "Crown Shrine",
           resource: "crowns",
@@ -222,17 +223,47 @@ describe("CommandPanel", () => {
           baseIncomeAmount: 30,
           incomeInterval: 5,
           workerBonusAmount: 6,
-          boostedIncomeAmount: 36,
+          totalIncomeAmount: 36,
+          workerSlotsUsed: 1,
+          workerSlotsAvailable: 0,
+          workerSlots: [{ workerId: "other-worker", workerName: "Worker", status: "Worker working", boostActive: true }],
           assignedWorkerId: "other-worker",
           assignedWorkerName: "Worker",
           isAssignable: false,
           status: "Worker working"
-        }
+        })
       ])
     );
 
     expect(markup).toContain("Worker working");
     expect(markup).toContain("disabled");
+  });
+
+  it("renders captured resource-site upgrade commands with cost and slot effect", () => {
+    const site = fakeCaptureSite("crown_shrine");
+
+    const markup = renderCommandActions(
+      site,
+      fakeSnapshot(["command_hall"], undefined, [], [], [
+        fakeResourceSiteSummary({
+          id: "crown_shrine",
+          name: "Crown Shrine",
+          resource: "crowns",
+          owner: "player",
+          level: 1,
+          baseIncomeAmount: 30,
+          incomeInterval: 5,
+          workerBonusPerWorkerAmount: 6,
+          totalIncomeAmount: 30,
+          upgradeStatus: "Upgrade to Level 2: +income and 2 Worker slots."
+        })
+      ])
+    );
+
+    expect(markup).toContain('data-testid="command-upgrade-resource-site-crown_shrine"');
+    expect(markup).toContain("Upgrade Crown Shrine");
+    expect(markup).toContain("Cost: 120 Crowns, 80 Stone");
+    expect(markup).toContain("adds a modest income bonus and unlocks a second Worker slot");
   });
 
   it("keeps Worker building costs visible when a structure is unaffordable", () => {
@@ -275,6 +306,62 @@ function fakeWorker(): Unit {
     alive: true,
     definition: UNIT_BY_ID.worker
   }) as Unit;
+}
+
+function fakeCaptureSite(id: string): CaptureSite {
+  return Object.assign(Object.create(CaptureSite.prototype), {
+    id,
+    kind: "capture-site",
+    team: "player",
+    owner: "player",
+    alive: true,
+    siteLevel: 1,
+    workerAssignments: [],
+    definition: {
+      id,
+      name: "Crown Shrine",
+      resource: "crowns",
+      x: 850,
+      y: 780,
+      radius: 76,
+      incomeAmount: 30,
+      incomeInterval: 5
+    }
+  }) as CaptureSite;
+}
+
+function fakeResourceSiteSummary(
+  overrides: Partial<HUDSnapshot["resourceSites"][number]> & Pick<HUDSnapshot["resourceSites"][number], "id" | "name" | "resource" | "owner">
+): HUDSnapshot["resourceSites"][number] {
+  const baseIncomeAmount = overrides.baseIncomeAmount ?? 30;
+  const incomeInterval = overrides.incomeInterval ?? 5;
+  const workerBonusPerWorkerAmount = overrides.workerBonusPerWorkerAmount ?? 6;
+  const workerBonusAmount = overrides.workerBonusAmount ?? 0;
+  const workerSlotCapacity = overrides.workerSlotCapacity ?? 1;
+  const workerSlotsUsed = overrides.workerSlotsUsed ?? 0;
+  return {
+    level: overrides.level ?? 1,
+    maxLevel: overrides.maxLevel ?? 2,
+    baseIncomeAmount,
+    upgradeBonusAmount: overrides.upgradeBonusAmount ?? 0,
+    incomeInterval,
+    workerBonusAmount,
+    workerBonusPerWorkerAmount,
+    boostedIncomeAmount: overrides.boostedIncomeAmount ?? baseIncomeAmount + workerBonusAmount,
+    totalIncomeAmount: overrides.totalIncomeAmount ?? baseIncomeAmount + workerBonusAmount,
+    workerSlotCapacity,
+    workerSlotsUsed,
+    workerSlotsAvailable: overrides.workerSlotsAvailable ?? Math.max(0, workerSlotCapacity - workerSlotsUsed),
+    workerSlots: overrides.workerSlots ?? Array.from({ length: workerSlotCapacity }, () => ({ status: "Empty worker slot", boostActive: false })),
+    assignedWorkerId: overrides.assignedWorkerId,
+    assignedWorkerName: overrides.assignedWorkerName,
+    isAssignable: overrides.isAssignable ?? overrides.owner === "player",
+    status: overrides.status ?? "Captured - empty Worker slot",
+    canUpgrade: overrides.canUpgrade ?? overrides.owner === "player",
+    upgradeCost: overrides.upgradeCost ?? { crowns: 120, stone: 80 },
+    upgradeStatus: overrides.upgradeStatus ?? "Upgrade to Level 2: +income and 2 Worker slots.",
+    ...overrides
+  };
 }
 
 function fakeSnapshot(

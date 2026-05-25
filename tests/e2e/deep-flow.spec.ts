@@ -2628,33 +2628,44 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Repair Damaged - select a Worker and use Repair/right-click");
   });
 
-  test("Worker assignment boosts a captured resource site and stops when recalled @hosted-deep-battle", async ({ page }) => {
+  test("Worker assignment and site upgrade boost a captured resource site @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Worker Resource QA");
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
     const captured = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine"));
     expect(captured?.owner).toBe("player");
     const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker resource-site assignment");
+    const secondWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker resource-site second slot");
 
-    const setup = await page.evaluate((workerId) => {
+    const setup = await page.evaluate(({ workerId, secondWorkerId }) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
         throw new Error("BattleScene is not active.");
       }
       const site = scene.captureSites.find((entry: any) => entry.definition.id === "crown_shrine");
       const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
-      if (!site || site.owner !== "player" || !worker) {
-        throw new Error("Expected captured Crown Shrine and trained Worker for resource-site assignment coverage.");
+      const secondWorker = scene.units.find((unit: any) => unit.id === secondWorkerId && unit.alive);
+      if (!site || site.owner !== "player" || !worker || !secondWorker) {
+        throw new Error("Expected captured Crown Shrine and trained Workers for resource-site assignment coverage.");
       }
       worker.setPosition(site.position.x, site.position.y);
+      secondWorker.setPosition(site.position.x + 16, site.position.y + 12);
       worker.moveTarget = undefined;
+      secondWorker.moveTarget = undefined;
       worker.attackTargetId = undefined;
+      secondWorker.attackTargetId = undefined;
       worker.attackMove = false;
+      secondWorker.attackMove = false;
       worker.activeConstructionSiteId = undefined;
+      secondWorker.activeConstructionSiteId = undefined;
       worker.pausedConstructionSiteId = undefined;
+      secondWorker.pausedConstructionSiteId = undefined;
       worker.activeRepairTargetId = undefined;
+      secondWorker.activeRepairTargetId = undefined;
       worker.pausedRepairTargetId = undefined;
+      secondWorker.pausedRepairTargetId = undefined;
       worker.clearResourceSiteWork?.();
+      secondWorker.clearResourceSiteWork?.();
       scene.selectionSystem.setSelection([worker]);
       scene.cameraSystem.centerOn(site.position);
       scene.refreshBattleHud?.(0);
@@ -2664,9 +2675,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         resource: site.definition.resource,
         baseIncome: site.definition.incomeAmount,
         incomeInterval: site.definition.incomeInterval,
-        bonusIncome: Math.max(1, Math.round(site.definition.incomeAmount * 0.2))
+        bonusIncome: Math.max(1, Math.round(site.definition.incomeAmount * 0.2)),
+        upgradeBonus: Math.max(1, Math.round(site.definition.incomeAmount * 0.15))
       };
-    }, trainedWorker.id);
+    }, { workerId: trainedWorker.id, secondWorkerId: secondWorker.id });
 
     const assignButton = page.locator(`button[data-action='assign-resource-site'][data-id='${setup.siteEntityId}']`);
     await expect(assignButton).toBeEnabled();
@@ -2698,45 +2710,134 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         scene.refreshBattleHud?.(0);
       }
     }, setup.siteEntityId);
-    await expect(page.locator(".side-panel")).toContainText("Worker slot Worker");
+    await expect(page.locator(".side-panel")).toContainText("Level 1/2");
+    await expect(page.locator(".side-panel")).toContainText("Worker slots 1/1");
+    await expect(page.locator(".side-panel")).toContainText("Assigned Worker");
     await expect(page.locator(".side-panel")).toContainText(`Worker bonus +${setup.bonusIncome}/${setup.incomeInterval}s`);
-    await expect(page.locator(".side-panel")).toContainText(`Boosted income +${setup.baseIncome + setup.bonusIncome}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText(`Total income +${setup.baseIncome + setup.bonusIncome}/${setup.incomeInterval}s`);
+
+    const upgradeButton = page.locator(`button[data-action='upgrade-resource-site'][data-id='${setup.siteEntityId}']`);
+    await expect(upgradeButton).toBeEnabled();
+    await expect(upgradeButton).toContainText(setup.siteName);
+    await clickBattleCommandUntilEffect(
+      () => upgradeButton,
+      "deep-flow resource-site upgrade command",
+      async () => {
+        await page.waitForFunction((siteEntityId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+          return site?.siteLevel === 2;
+        }, setup.siteEntityId);
+      },
+      async () => {
+        await page.evaluate((siteEntityId) => {
+          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+          const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+          if (site) {
+            scene.selectionSystem.setSelection([site]);
+            scene.refreshBattleHud?.(0);
+          }
+        }, setup.siteEntityId);
+      }
+    );
+    await expect(page.locator(".side-panel")).toContainText("Level 2/2");
+    await expect(page.locator(".side-panel")).toContainText("Worker slots 1/2");
+
+    await page.evaluate(
+      ({ secondWorkerId, siteEntityId }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+        const worker = scene?.units.find((unit: any) => unit.id === secondWorkerId && unit.alive);
+        if (!site || !worker) {
+          throw new Error("Expected second Worker and upgraded resource site before second-slot assignment.");
+        }
+        worker.setPosition(site.position.x + 16, site.position.y + 12);
+        worker.clearResourceSiteWork?.();
+        worker.moveTarget = undefined;
+        worker.attackTargetId = undefined;
+        worker.attackMove = false;
+        scene.selectionSystem.setSelection([worker]);
+        scene.refreshBattleHud?.(0);
+      },
+      { secondWorkerId: secondWorker.id, siteEntityId: setup.siteEntityId }
+    );
+    const secondAssignButton = page.locator(`button[data-action='assign-resource-site'][data-id='${setup.siteEntityId}']`);
+    await expect(secondAssignButton).toBeEnabled();
+    await clickBattleCommandUntilEffect(
+      () => secondAssignButton,
+      "deep-flow Worker assign upgraded second resource slot",
+      async () => {
+        await page.waitForFunction(
+          ({ secondWorkerId, siteEntityId }) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+            return site?.workerAssignments?.some((assignment: any) => assignment.workerId === secondWorkerId);
+          },
+          { secondWorkerId: secondWorker.id, siteEntityId: setup.siteEntityId }
+        );
+      },
+      async () => selectWorkerFromScene(page, secondWorker.id)
+    );
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Working Site");
+
+    await page.evaluate((siteEntityId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+      if (site) {
+        scene.selectionSystem.setSelection([site]);
+        scene.refreshBattleHud?.(0);
+      }
+    }, setup.siteEntityId);
+    await expect(page.locator(".side-panel")).toContainText("Worker slots 2/2");
+    await expect(page.locator(".side-panel")).toContainText(`Upgrade bonus +${setup.upgradeBonus}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText(`Worker bonus +${setup.bonusIncome * 2}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText(
+      `Total income +${setup.baseIncome + setup.upgradeBonus + setup.bonusIncome * 2}/${setup.incomeInterval}s`
+    );
 
     const incomeResult = await page.evaluate(
-      ({ workerId, siteEntityId }) => {
+      ({ workerId, secondWorkerId, siteEntityId }) => {
         const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
         const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
         const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
-        if (!site || !worker) {
-          throw new Error("Expected assigned Worker and resource site during income coverage.");
+        const secondWorker = scene?.units.find((unit: any) => unit.id === secondWorkerId && unit.alive);
+        if (!site || !worker || !secondWorker) {
+          throw new Error("Expected assigned Workers and resource site during income coverage.");
         }
         site.incomeTimer = 0;
         const resourceBefore = scene.resources.player[site.definition.resource];
         scene.resourceSystem.update(site.definition.incomeInterval, scene.captureSites, scene.units);
         const afterBoost = scene.resources.player[site.definition.resource];
-        site.incomeTimer = 0;
-        worker.commandMove({ x: site.position.x + site.definition.radius + 220, y: site.position.y + 40 }, false);
-        scene.resourceSystem.update(site.definition.incomeInterval, scene.captureSites, scene.units);
-        const afterRecall = scene.resources.player[site.definition.resource];
+        worker.setPosition(site.position.x + site.definition.radius + 500, site.position.y + 200);
+        secondWorker.setPosition(site.position.x + site.definition.radius + 560, site.position.y + 240);
+        site.setOwner("enemy");
+        scene.resourceSystem.update(0, scene.captureSites, scene.units);
         scene.selectionSystem.setSelection([site]);
         scene.refreshBattleHud?.(0);
         return {
           afterBoost,
-          afterRecall,
           boostDelta: afterBoost - resourceBefore,
-          recallDelta: afterRecall - afterBoost,
+          owner: site.owner,
+          level: site.siteLevel,
           assignedWorkerId: site.assignedWorkerId,
+          workerAssignmentCount: site.workerAssignments.length,
+          firstWorkerSite: worker.activeResourceSiteId,
+          secondWorkerSite: secondWorker.activeResourceSiteId,
           boostActive: site.workerAssignmentBoostActive
         };
       },
-      { workerId: trainedWorker.id, siteEntityId: setup.siteEntityId }
+      { workerId: trainedWorker.id, secondWorkerId: secondWorker.id, siteEntityId: setup.siteEntityId }
     );
 
-    expect(incomeResult.boostDelta).toBe(setup.baseIncome + setup.bonusIncome);
-    expect(incomeResult.recallDelta).toBe(setup.baseIncome);
+    expect(incomeResult.boostDelta).toBe(setup.baseIncome + setup.upgradeBonus + setup.bonusIncome * 2);
+    expect(incomeResult.owner).toBe("enemy");
+    expect(incomeResult.level).toBe(1);
     expect(incomeResult.assignedWorkerId).toBeUndefined();
+    expect(incomeResult.workerAssignmentCount).toBe(0);
+    expect(incomeResult.firstWorkerSite).toBeUndefined();
+    expect(incomeResult.secondWorkerSite).toBeUndefined();
     expect(incomeResult.boostActive).toBe(false);
-    await expect(page.locator(".side-panel")).toContainText("Worker slot Empty");
+    await expect(page.locator(".side-panel")).toContainText("Enemy controlled");
   });
 
   test("Worker explicit attack damages an enemy building and shows floating damage @hosted-deep-battle", async ({ page }) => {
@@ -4643,24 +4744,30 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-status")).toContainText(/Placing|Barracks/i);
     await expect(page.getByTestId("placement-banner")).toContainText(/left-click to place/i);
     await expect(page.locator(".hint-line")).toHaveCount(0);
-    await clickWorldPointUntilEffect(page, { x: 450, y: 930 }, "left", "deep-flow first campaign place Barracks", async () =>
-      page
-        .waitForFunction(
-          () => {
-            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-            return scene?.buildings.some(
-              (building: any) =>
-                building.team === "player" &&
-                building.definition.id === "barracks" &&
-                building.alive &&
-                building.constructionState === "underConstruction"
-            );
-          },
-          undefined,
-          { timeout: 2_000 }
-        )
-        .then(() => true)
-        .catch(() => false)
+    await clickWorldPointUntilEffect(
+      page,
+      { x: 450, y: 930 },
+      "left",
+      "deep-flow first campaign place Barracks",
+      async () =>
+        page
+          .waitForFunction(
+            () => {
+              const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+              return scene?.buildings.some(
+                (building: any) =>
+                  building.team === "player" &&
+                  building.definition.id === "barracks" &&
+                  building.alive &&
+                  building.constructionState === "underConstruction"
+              );
+            },
+            undefined,
+            { timeout: 2_000 }
+          )
+          .then(() => true)
+          .catch(() => false),
+      { attempts: 5, retryDelayMs: 350 }
     );
     await expect(page.locator(".side-panel")).toContainText(/Construction/i);
 

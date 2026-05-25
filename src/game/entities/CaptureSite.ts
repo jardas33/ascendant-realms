@@ -4,12 +4,23 @@ import type { CaptureSiteDefinition, Team } from "../core/GameTypes";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { BaseEntity } from "./BaseEntity";
 
+export type ResourceSiteLevel = 1 | 2;
+
+export interface CaptureSiteWorkerAssignment {
+  workerId: string;
+  workerName: string;
+  statusDetail: string;
+  boostActive: boolean;
+}
+
 export class CaptureSite extends BaseEntity {
   readonly definition: CaptureSiteDefinition;
   owner: Team = "neutral";
   capturingTeam: Team = "neutral";
   captureProgress = 0;
   incomeTimer = 0;
+  siteLevel: ResourceSiteLevel = 1;
+  workerAssignments: CaptureSiteWorkerAssignment[] = [];
   assignedWorkerId?: string;
   assignedWorkerName?: string;
   workerAssignmentStatusDetail = "Empty worker slot";
@@ -46,22 +57,57 @@ export class CaptureSite extends BaseEntity {
     this.captureProgress = 0;
     this.capturingTeam = "neutral";
     this.incomeTimer = 0;
-    this.clearWorkerAssignment();
+    this.siteLevel = 1;
+    this.clearAllWorkerAssignments();
     this.updateVisuals();
   }
 
   setWorkerAssignment(workerId: string, workerName: string, status = `${workerName} traveling`): void {
-    this.assignedWorkerId = workerId;
-    this.assignedWorkerName = workerName;
-    this.workerAssignmentStatusDetail = status;
-    this.workerAssignmentBoostActive = false;
+    const existing = this.workerAssignments.find((assignment) => assignment.workerId === workerId);
+    if (existing) {
+      existing.workerName = workerName;
+      existing.statusDetail = status;
+      existing.boostActive = false;
+    } else {
+      this.workerAssignments.push({
+        workerId,
+        workerName,
+        statusDetail: status,
+        boostActive: false
+      });
+    }
+    this.syncLegacyWorkerAssignmentFields();
   }
 
-  clearWorkerAssignment(status = "Empty worker slot"): void {
-    this.assignedWorkerId = undefined;
-    this.assignedWorkerName = undefined;
-    this.workerAssignmentStatusDetail = status;
-    this.workerAssignmentBoostActive = false;
+  updateWorkerAssignment(workerId: string, statusDetail: string, boostActive: boolean): void {
+    const assignment = this.workerAssignments.find((entry) => entry.workerId === workerId);
+    if (!assignment) {
+      return;
+    }
+    assignment.statusDetail = statusDetail;
+    assignment.boostActive = boostActive;
+    this.syncLegacyWorkerAssignmentFields();
+  }
+
+  clearWorkerAssignment(workerId?: string, status = "Empty worker slot"): void {
+    if (workerId) {
+      this.workerAssignments = this.workerAssignments.filter((assignment) => assignment.workerId !== workerId);
+    } else {
+      this.workerAssignments = [];
+    }
+    this.syncLegacyWorkerAssignmentFields(status);
+  }
+
+  clearAllWorkerAssignments(status = "Empty worker slot"): void {
+    this.clearWorkerAssignment(undefined, status);
+  }
+
+  hasWorkerAssignment(workerId: string): boolean {
+    return this.workerAssignments.some((assignment) => assignment.workerId === workerId);
+  }
+
+  setSiteLevel(level: ResourceSiteLevel): void {
+    this.siteLevel = level;
   }
 
   updateVisuals(): void {
@@ -95,5 +141,13 @@ export class CaptureSite extends BaseEntity {
       return 0xe15e55;
     }
     return this.siteColor();
+  }
+
+  private syncLegacyWorkerAssignmentFields(emptyStatus = "Empty worker slot"): void {
+    const firstAssignment = this.workerAssignments[0];
+    this.assignedWorkerId = firstAssignment?.workerId;
+    this.assignedWorkerName = firstAssignment?.workerName;
+    this.workerAssignmentStatusDetail = firstAssignment?.statusDetail ?? emptyStatus;
+    this.workerAssignmentBoostActive = this.workerAssignments.some((assignment) => assignment.boostActive);
   }
 }

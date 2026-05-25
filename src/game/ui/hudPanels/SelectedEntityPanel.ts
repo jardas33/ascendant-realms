@@ -8,7 +8,12 @@ import {
   summarizeBehaviourModes,
   type BehaviourMode
 } from "../../systems/BehaviourModeSystem";
-import { workerSiteBonusAmount } from "../../systems/ResourceSystem";
+import {
+  RESOURCE_SITE_MAX_LEVEL,
+  resourceSiteIncomeBreakdown,
+  resourceSiteWorkerSlotCapacity,
+  workerSiteBonusAmount
+} from "../../systems/ResourceSystem";
 import {
   formatUnitVeterancyBonusSummary,
   formatUnitVeterancyXpProgress,
@@ -80,9 +85,9 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
   }
 
   if (selectedOne instanceof CaptureSite) {
-    const bonus = selectedOne.workerAssignmentBoostActive
-      ? selectedOne.definition.incomeAmount + workerSiteBonusAmount(selectedOne)
-      : selectedOne.definition.incomeAmount;
+    const breakdown = resourceSiteIncomeBreakdown(selectedOne);
+    const workerSlotCapacity = resourceSiteWorkerSlotCapacity(selectedOne);
+    const slotNames = selectedOne.workerAssignments.map((assignment) => assignment.workerName).join(", ") || "Empty";
     const ownerLabel =
       selectedOne.owner === "player" ? "Friendly captured" : selectedOne.owner === "enemy" ? "Enemy controlled" : "Neutral";
     const assignmentInstruction = siteAssignmentInstruction(selectedOne);
@@ -90,11 +95,14 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     return `
       <div class="stat-list" data-testid="selected-resource-site-stats">
         <span>Control ${escapeHtml(ownerLabel)}</span>
+        <span>Level ${selectedOne.siteLevel}/${RESOURCE_SITE_MAX_LEVEL}</span>
         <span>Resource ${escapeHtml(selectedOne.definition.resource)}</span>
         <span>Base income +${selectedOne.definition.incomeAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Worker slot ${escapeHtml(selectedOne.assignedWorkerName ?? "Empty")}</span>
-        <span>Worker bonus +${workerSiteBonusAmount(selectedOne)}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Boosted income +${bonus}/${selectedOne.definition.incomeInterval}s</span>
+        <span>Upgrade bonus +${breakdown.upgradeBonusAmount}/${selectedOne.definition.incomeInterval}s</span>
+        <span>Worker slots ${selectedOne.workerAssignments.length}/${workerSlotCapacity}</span>
+        <span>Assigned ${escapeHtml(slotNames)}</span>
+        <span>Worker bonus +${breakdown.workerBonusAmount}/${selectedOne.definition.incomeInterval}s (${workerSiteBonusAmount(selectedOne)} each)</span>
+        <span>Total income +${breakdown.totalAmount}/${selectedOne.definition.incomeInterval}s</span>
         <span>Status ${escapeHtml(status)}</span>
       </div>
       <p class="quiet">${escapeHtml(assignmentInstruction)}</p>
@@ -157,7 +165,7 @@ function siteAssignmentInstruction(site: CaptureSite): string {
   if (site.owner !== "player") {
     return "Capture this site before assigning a Worker.";
   }
-  if (site.assignedWorkerName) {
+  if (site.workerAssignments.length >= resourceSiteWorkerSlotCapacity(site)) {
     return "Move, attack, build, repair, or assign the Worker elsewhere to stop this boost.";
   }
   return "Select a Worker and right-click this captured site, or use the Worker Resource Sites command.";

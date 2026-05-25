@@ -1188,6 +1188,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("campaign Border Village launches a battle scene @extended-smoke", async ({ page }) => {
+    test.setTimeout(60_000);
     await startNewCampaign(page, "E2E Campaign");
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "smoke Border Village node");

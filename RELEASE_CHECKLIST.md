@@ -67,6 +67,7 @@ Known current realities:
 - v0.21.2 follows Emmanuel's `f6a121b` Worker repair retest: construction and repair now require explicit Worker commands plus range instead of proximity-only start/resume, explicit Worker attack works against valid enemy buildings through existing weak Worker combat, idle Workers still do not auto-attack buildings by default, status badges sit beside healthbars, and future crossed-swords/hammer cursor affordances are docs-only. Rerun GitHub Actions after push because runtime Worker intent, combat targeting, and UI feedback changed.
 - v0.21.3 follows Emmanuel's FAIL / MIXED Worker attack/status retest: explicit Worker building attacks now visibly and measurably damage valid enemy buildings through an explicit-order-only damage floor, Worker building hits show floating damage when enabled, idle Workers still do not auto-attack buildings, and Burn/status markers render as a labeled chip above the health bar. Rerun GitHub Actions after push because runtime combat/UI feedback changed.
 - v0.22 keeps the existing capturable resource-site economy and adds explicit Worker assignment to friendly captured sites for a small site-local income bonus. Proximity alone does not assign Workers, baseline site income remains unchanged, and no classic carry/drop-off harvesting, cargo, drop-off loop, enemy worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
+- v0.23 adds controlled resource-site upgrade depth and Worker slot expansion: Level 1 captured sites keep one Worker slot, Level 2 improved sites add a modest site-local upgrade bonus and two Worker slots, and site loss clears slots/level. No classic carry/drop-off harvesting, enemy Worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 
 ## Required Automated Checks
 
@@ -200,6 +201,12 @@ Current v0.22 checkpoint result:
 
 ```text
 PASS: 66 test files, 500 tests
+```
+
+Current v0.23 checkpoint result:
+
+```text
+PASS: 66 test files, 506 tests
 ```
 
 Current v0.16.13 checkpoint result:

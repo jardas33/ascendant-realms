@@ -3,7 +3,13 @@ import { CAPTURE_TIME_SECONDS } from "../core/Constants";
 import type { CaptureSiteDefinition, ResourceBag, Team } from "../core/GameTypes";
 import { CaptureSite } from "../entities/CaptureSite";
 import type { Unit } from "../entities/Unit";
-import { ResourceSystem, workerSiteBonusAmount } from "./ResourceSystem";
+import {
+  RESOURCE_SITE_UPGRADE_COST,
+  ResourceSystem,
+  resourceSiteUpgradeBonusAmount,
+  resourceSiteWorkerSlotCapacity,
+  workerSiteBonusAmount
+} from "./ResourceSystem";
 
 const EMPTY_RESOURCES: ResourceBag = { crowns: 0, stone: 0, iron: 0, aether: 0 };
 
@@ -33,6 +39,8 @@ function createSite(definition: Partial<CaptureSiteDefinition> = {}): CaptureSit
     capturingTeam: "neutral" as Team,
     captureProgress: 0,
     incomeTimer: 0,
+    siteLevel: 1,
+    workerAssignments: [],
     position: { x: siteDefinition.x, y: siteDefinition.y },
     radius: siteDefinition.radius,
     alive: true,
@@ -46,19 +54,49 @@ function createSite(definition: Partial<CaptureSiteDefinition> = {}): CaptureSit
       this.capturingTeam = "neutral";
       this.captureProgress = 0;
       this.incomeTimer = 0;
-      this.clearWorkerAssignment();
+      this.siteLevel = 1;
+      this.clearAllWorkerAssignments();
     },
-    setWorkerAssignment(workerId: string, workerName: string, status = `${workerName} traveling`) {
-      this.assignedWorkerId = workerId;
-      this.assignedWorkerName = workerName;
-      this.workerAssignmentStatusDetail = status;
-      this.workerAssignmentBoostActive = false;
+    setWorkerAssignment(this: any, workerId: string, workerName: string, status = `${workerName} traveling`) {
+      const existing = this.workerAssignments.find((assignment: any) => assignment.workerId === workerId);
+      if (existing) {
+        existing.workerName = workerName;
+        existing.statusDetail = status;
+        existing.boostActive = false;
+      } else {
+        this.workerAssignments.push({ workerId, workerName, statusDetail: status, boostActive: false });
+      }
+      this.syncLegacyWorkerAssignmentFields();
     },
-    clearWorkerAssignment(status = "Empty worker slot") {
-      this.assignedWorkerId = undefined;
-      this.assignedWorkerName = undefined;
-      this.workerAssignmentStatusDetail = status;
-      this.workerAssignmentBoostActive = false;
+    updateWorkerAssignment(this: any, workerId: string, statusDetail: string, boostActive: boolean) {
+      const assignment = this.workerAssignments.find((entry: any) => entry.workerId === workerId);
+      if (assignment) {
+        assignment.statusDetail = statusDetail;
+        assignment.boostActive = boostActive;
+      }
+      this.syncLegacyWorkerAssignmentFields();
+    },
+    clearWorkerAssignment(this: any, workerId?: string, status = "Empty worker slot") {
+      this.workerAssignments = workerId
+        ? this.workerAssignments.filter((assignment: any) => assignment.workerId !== workerId)
+        : [];
+      this.syncLegacyWorkerAssignmentFields(status);
+    },
+    clearAllWorkerAssignments(this: any, status = "Empty worker slot") {
+      this.clearWorkerAssignment(undefined, status);
+    },
+    hasWorkerAssignment(this: any, workerId: string) {
+      return this.workerAssignments.some((assignment: any) => assignment.workerId === workerId);
+    },
+    setSiteLevel(this: any, level: 1 | 2) {
+      this.siteLevel = level;
+    },
+    syncLegacyWorkerAssignmentFields(this: any, emptyStatus = "Empty worker slot") {
+      const firstAssignment = this.workerAssignments[0];
+      this.assignedWorkerId = firstAssignment?.workerId;
+      this.assignedWorkerName = firstAssignment?.workerName;
+      this.workerAssignmentStatusDetail = firstAssignment?.statusDetail ?? emptyStatus;
+      this.workerAssignmentBoostActive = this.workerAssignments.some((assignment: any) => assignment.boostActive);
     },
     updateVisuals() {}
   };
@@ -318,6 +356,12 @@ describe("ResourceSystem Worker site assignment", () => {
     expect(site.workerAssignmentBoostActive).toBe(true);
     expect(worker.activeResourceSiteId).toBe(site.id);
     expect(resources.player.aether).toBe(20 + 20 + workerSiteBonusAmount(site));
+    expect(system.resourceSiteSummaries([site])[0]).toMatchObject({
+      level: 1,
+      workerSlotCapacity: 1,
+      workerSlotsUsed: 1,
+      totalIncomeAmount: 20 + workerSiteBonusAmount(site)
+    });
   });
 
   it("moves a Worker into range before the site bonus starts", () => {
@@ -448,5 +492,125 @@ describe("ResourceSystem Worker site assignment", () => {
     expect(site.assignedWorkerId).toBeUndefined();
     expect(site.workerAssignmentBoostActive).toBe(false);
     expect(worker.activeResourceSiteId).toBeUndefined();
+  });
+
+  it("starts captured sites at level 1 with one Worker slot", () => {
+    const site = createSite();
+    site.setOwner("player");
+
+    expect(site.siteLevel).toBe(1);
+    expect(resourceSiteWorkerSlotCapacity(site)).toBe(1);
+  });
+
+  it("upgrades a friendly captured site to level 2 with a small income bonus and second Worker slot", () => {
+    const resources = createResourceBank();
+    resources.player.crowns = 500;
+    resources.player.stone = 500;
+    const site = createSite({ incomeAmount: 20, incomeInterval: 1 });
+    site.setOwner("player");
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [site],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: vi.fn()
+    });
+
+    expect(system.requestSiteUpgrade(site, resources.player)).toBe(true);
+
+    expect(site.siteLevel).toBe(2);
+    expect(resourceSiteWorkerSlotCapacity(site)).toBe(2);
+    expect(resourceSiteUpgradeBonusAmount(site)).toBe(3);
+    expect(resources.player.crowns).toBe(500 - (RESOURCE_SITE_UPGRADE_COST.crowns ?? 0));
+    expect(resources.player.stone).toBe(500 - (RESOURCE_SITE_UPGRADE_COST.stone ?? 0));
+  });
+
+  it("rejects neutral, enemy, max-level, and unaffordable site upgrades", () => {
+    const resources = createResourceBank();
+    const neutralSite = createSite();
+    const enemySite = createSite({ id: "enemy_mine", name: "Enemy Mine" });
+    enemySite.setOwner("enemy");
+    const improvedSite = createSite({ id: "improved_mine", name: "Improved Mine" });
+    improvedSite.setOwner("player");
+    improvedSite.setSiteLevel(2);
+    const poorSite = createSite({ id: "poor_mine", name: "Poor Mine" });
+    poorSite.setOwner("player");
+    const messages: string[] = [];
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [neutralSite, enemySite, improvedSite, poorSite],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: (message) => messages.push(message)
+    });
+
+    expect(system.requestSiteUpgrade(neutralSite, resources.player)).toBe(false);
+    expect(system.requestSiteUpgrade(enemySite, resources.player)).toBe(false);
+    expect(system.requestSiteUpgrade(improvedSite, resources.player)).toBe(false);
+    expect(system.requestSiteUpgrade(poorSite, resources.player)).toBe(false);
+
+    expect(messages).toContain("Capture the resource site before upgrading it.");
+    expect(messages).toContain("Improved Mine is already improved.");
+    expect(messages).toContain("Insufficient resources for site upgrade.");
+  });
+
+  it("prevents duplicate Worker assignments and overfilled upgraded slots", () => {
+    const resources = createResourceBank();
+    const site = createSite({ incomeAmount: 20, incomeInterval: 1 });
+    site.setOwner("player");
+    site.setSiteLevel(2);
+    const firstWorker = createWorker("worker-1");
+    const secondWorker = createWorker("worker-2");
+    const thirdWorker = createWorker("worker-3");
+    const messages: string[] = [];
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [site],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: (message) => messages.push(message)
+    });
+
+    expect(system.requestWorkerAssignment(firstWorker, site)).toBe(true);
+    expect(system.requestWorkerAssignment(firstWorker, site)).toBe(true);
+    expect(site.workerAssignments).toHaveLength(1);
+    expect(system.requestWorkerAssignment(secondWorker, site)).toBe(true);
+    expect(site.workerAssignments).toHaveLength(2);
+    expect(system.requestWorkerAssignment(thirdWorker, site)).toBe(false);
+
+    expect(messages).toContain("Cinder Shrine worker slots are full.");
+  });
+
+  it("adds base, upgrade, and active Worker-slot income without changing the site resource identity", () => {
+    const resources = createResourceBank();
+    resources.player.crowns = 500;
+    resources.player.stone = 500;
+    const site = createSite({ resource: "aether", incomeAmount: 20, incomeInterval: 1 });
+    site.setOwner("player");
+    const firstWorker = createWorker("worker-1");
+    const secondWorker = createWorker("worker-2");
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [site],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: vi.fn()
+    });
+
+    expect(system.requestSiteUpgrade(site, resources.player)).toBe(true);
+    expect(system.requestWorkerAssignment(firstWorker, site)).toBe(true);
+    expect(system.requestWorkerAssignment(secondWorker, site)).toBe(true);
+    system.update(1, [site], [firstWorker, secondWorker]);
+
+    expect(resources.player.aether).toBe(20 + resourceSiteUpgradeBonusAmount(site) + workerSiteBonusAmount(site) * 2);
+    expect(resources.player.iron).toBe(0);
+    expect(system.resourceSiteSummaries([site])[0]).toMatchObject({
+      level: 2,
+      workerSlotCapacity: 2,
+      workerSlotsUsed: 2,
+      upgradeBonusAmount: resourceSiteUpgradeBonusAmount(site),
+      workerBonusAmount: workerSiteBonusAmount(site) * 2,
+      totalIncomeAmount: 20 + resourceSiteUpgradeBonusAmount(site) + workerSiteBonusAmount(site) * 2
+    });
   });
 });

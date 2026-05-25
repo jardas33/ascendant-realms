@@ -274,8 +274,11 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     },
     onIncome: (site, owner, amount, breakdown) => {
       if (owner === "player") {
-        const bonusText =
-          breakdown && breakdown.workerBonusAmount > 0 ? ` (Worker +${breakdown.workerBonusAmount})` : "";
+        const bonusParts = [
+          breakdown && breakdown.upgradeBonusAmount > 0 ? `Upgrade +${breakdown.upgradeBonusAmount}` : "",
+          breakdown && breakdown.workerBonusAmount > 0 ? `Worker +${breakdown.workerBonusAmount}` : ""
+        ].filter(Boolean);
+        const bonusText = bonusParts.length > 0 ? ` (${bonusParts.join(", ")})` : "";
         showMessage(`+${amount} ${site.definition.resource}${bonusText}`, site.position.x, site.position.y - 64, "#f5efc2");
       }
     },
@@ -393,6 +396,12 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         const worker = getUnits().find((entry) => entry.id === sourceUnitId && entry.alive && entry.team === "player");
         const site = getCaptureSites().find((entry) => entry.id === targetSiteId && entry.alive);
         if (resourceSystem.requestWorkerAssignment(worker, site, getCaptureSites())) {
+          AudioManager.play("ui_click");
+        }
+      },
+      onUpgradeResourceSite: (targetSiteId) => {
+        const site = getCaptureSites().find((entry) => entry.id === targetSiteId && entry.alive);
+        if (resourceSystem.requestSiteUpgrade(site, resources.player)) {
           AudioManager.play("ui_click");
         }
       },

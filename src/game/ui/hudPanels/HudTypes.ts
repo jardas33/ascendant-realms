@@ -18,6 +18,7 @@ export interface HUDCallbacks {
   onCancelUpgrade: (sourceBuildingId: string, queueIndex: number) => void;
   onRepair: (targetBuildingId: string, sourceUnitId: string) => void;
   onAssignResourceSite: (targetSiteId: string, sourceUnitId: string) => void;
+  onUpgradeResourceSite: (targetSiteId: string) => void;
   onAbility: (abilityId: string) => void;
   onBehaviourMode: (mode: BehaviourMode) => void;
   onTutorialNext: () => void;

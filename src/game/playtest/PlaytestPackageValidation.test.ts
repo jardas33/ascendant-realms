@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.22 resource site worker assignment foundation",
+          checkpoint: "v0.23 resource site upgrades and worker slots",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -113,6 +113,9 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V022_RESOURCE_SITE_WORKER_ASSIGNMENT_SPEC.md", sizeBytes: 20, textContent: "Resource site Worker assignment spec" },
       { path: "V022_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Resource site Worker assignment report" },
       { path: "V022_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Resource site Worker assignment retest" },
+      { path: "V023_RESOURCE_SITE_UPGRADES_SPEC.md", sizeBytes: 20, textContent: "Resource site upgrades spec" },
+      { path: "V023_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Resource site upgrades report" },
+      { path: "V023_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Resource site upgrades retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }
