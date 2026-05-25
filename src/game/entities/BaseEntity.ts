@@ -3,6 +3,8 @@ import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/Gam
 import { clamp } from "../core/MathUtils";
 
 let nextEntityNumber = 1;
+const STATUS_BADGE_RADIUS = 4;
+const STATUS_BADGE_GAP = 5;
 
 export function createEntityId(prefix: string): string {
   const id = `${prefix}-${nextEntityNumber}`;
@@ -82,7 +84,8 @@ export abstract class BaseEntity {
       this.view.add([this.healthBack, this.healthFill]);
     }
 
-    this.statusBadge = scene.add.circle(this.radius + 6, -this.radius - 10, 4, 0xff743d, 0.95).setVisible(false);
+    this.statusBadge = scene.add.circle(0, 0, STATUS_BADGE_RADIUS, 0xff743d, 0.95).setVisible(false);
+    this.updateStatusBadgePosition();
     this.view.add(this.statusBadge);
 
     this.label = scene.add
@@ -133,6 +136,7 @@ export abstract class BaseEntity {
       this.healthBack.setPosition(-width / 2 - 1.5, y).setDisplaySize(width + 3, height + 3);
       this.healthFill.setPosition(-width / 2, y).setDisplaySize(width, height);
       this.updateHealthBar();
+      this.updateStatusBadgePosition();
     }
 
     if (options.labelY !== undefined) {
@@ -212,6 +216,20 @@ export abstract class BaseEntity {
     }
     const ratio = clamp(this.hp / this.maxHp, 0, 1);
     this.healthFill.displayWidth = this.healthBarWidth * ratio;
+  }
+
+  private updateStatusBadgePosition(): void {
+    if (!this.statusBadge) {
+      return;
+    }
+    if (this.healthBack && this.healthBarWidth > 0) {
+      this.statusBadge.setPosition(this.healthBarWidth / 2 + STATUS_BADGE_RADIUS + STATUS_BADGE_GAP, this.healthBack.y);
+      return;
+    }
+    this.statusBadge.setPosition(
+      this.radius + STATUS_BADGE_RADIUS + STATUS_BADGE_GAP,
+      -this.radius - STATUS_BADGE_RADIUS - STATUS_BADGE_GAP
+    );
   }
 
   destroyView(): void {

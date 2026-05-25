@@ -658,7 +658,16 @@ export class BattleScene extends Phaser.Scene {
         minimumRadius: WORLD_ENTITY_INTERACTION_MIN_RADIUS,
         padding: (entity) => (entity instanceof Unit ? WORLD_ENTITY_UNIT_HIT_PADDING : 0),
         topPadding: (entity) =>
-          entity instanceof Unit ? WORLD_ENTITY_UNIT_TOP_HIT_PADDING : WORLD_ENTITY_BUILDING_TOP_HIT_PADDING
+          entity instanceof Unit ? WORLD_ENTITY_UNIT_TOP_HIT_PADDING : WORLD_ENTITY_BUILDING_TOP_HIT_PADDING,
+        footprint: (entity) =>
+          entity instanceof Building
+            ? {
+                x: entity.position.x - entity.definition.size.width / 2,
+                y: entity.position.y - entity.definition.size.height / 2,
+                width: entity.definition.size.width,
+                height: entity.definition.size.height
+              }
+            : undefined
       }
     );
   }

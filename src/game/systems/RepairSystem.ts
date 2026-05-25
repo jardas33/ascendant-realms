@@ -36,7 +36,7 @@ export class RepairSystem {
       if (!isRepairWorker(worker) || !worker.alive) {
         return;
       }
-      const targetId = worker.activeRepairTargetId ?? worker.pausedRepairTargetId;
+      const targetId = worker.activeRepairTargetId;
       if (!targetId) {
         return;
       }
@@ -51,20 +51,7 @@ export class RepairSystem {
       }
 
       const closeEnough = isWorkerInRepairRange(target, worker);
-      const movingAwayFromWorkRange =
-        worker.pausedRepairTargetId === target.id &&
-        worker.moveTarget !== undefined &&
-        !isPointInBuildingWorkRange(target, worker.moveTarget);
-      const attackingAwayFromRepair = worker.pausedRepairTargetId === target.id && worker.attackTargetId !== undefined;
-
-      if (movingAwayFromWorkRange || attackingAwayFromRepair) {
-        return;
-      }
-
       if (!closeEnough) {
-        if (worker.activeRepairTargetId !== target.id) {
-          return;
-        }
         const approach = findRepairApproachPoint({
           map: this.options.map,
           target,

@@ -160,7 +160,11 @@ export class CombatSystem {
       return undefined;
     }
     return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
-      return CollisionSystem.isHostile(attacker.team, entity.team) && this.isWithinEffectiveRange(attacker, entity);
+      return (
+        CollisionSystem.isHostile(attacker.team, entity.team) &&
+        this.canWorkerEngageBuilding(attacker, entity) &&
+        this.isWithinEffectiveRange(attacker, entity)
+      );
     });
   }
 
@@ -176,6 +180,9 @@ export class CombatSystem {
     const targetDistance = distance(attacker.position, target.position);
     if (attacker instanceof Building) {
       return targetDistance <= this.getRange(attacker);
+    }
+    if (!this.canWorkerEngageBuilding(attacker, target)) {
+      return false;
     }
     if (attacker.attackMove) {
       return targetDistance <= ATTACK_MOVE_SEARCH_RADIUS;
@@ -193,6 +200,13 @@ export class CombatSystem {
       return targetDistance <= PRESS_ATTACK_SEARCH_RADIUS;
     }
     return targetDistance <= DEFAULT_AGGRO_RADIUS;
+  }
+
+  private canWorkerEngageBuilding(attacker: Unit, target: BaseEntity): boolean {
+    if (attacker.definition.id !== "worker" || !(target instanceof Building)) {
+      return true;
+    }
+    return attacker.attackTargetId === target.id || attacker.attackMove;
   }
 
   private attack(attacker: Combatant, target: BaseEntity): void {

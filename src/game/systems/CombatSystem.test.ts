@@ -207,6 +207,72 @@ describe("CombatSystem", () => {
     expect(player.attackTargetId).toBe("enemy-raider");
   });
 
+  it("lets Workers weakly damage enemy buildings when explicitly ordered", () => {
+    const worker = fakeUnit({
+      id: "player-worker",
+      unitId: "worker",
+      unitName: "Worker",
+      team: "player",
+      x: 90,
+      y: 100,
+      radius: 11,
+      range: 22,
+      damage: 3,
+      attackTargetId: "enemy-stronghold"
+    });
+    const stronghold = fakeBuilding({
+      id: "enemy-stronghold",
+      buildingId: "enemy_stronghold",
+      name: "Enemy Stronghold",
+      team: "enemy",
+      x: 180,
+      y: 100,
+      width: 104,
+      height: 88,
+      hp: 500
+    });
+    const combat = createCombat([worker], [stronghold]);
+
+    combat.update(0.1);
+
+    expect(stronghold.hp).toBeLessThan(stronghold.maxHp);
+    expect(stronghold.hp).toBe(497);
+    expect(worker.moveTarget).toBeUndefined();
+    expect(worker.attackTargetLabel).toBe("Enemy Stronghold");
+  });
+
+  it("keeps idle Workers from auto-attacking nearby enemy buildings", () => {
+    const worker = fakeUnit({
+      id: "player-worker",
+      unitId: "worker",
+      unitName: "Worker",
+      team: "player",
+      x: 90,
+      y: 100,
+      radius: 11,
+      range: 22,
+      damage: 3
+    });
+    const stronghold = fakeBuilding({
+      id: "enemy-stronghold",
+      buildingId: "enemy_stronghold",
+      name: "Enemy Stronghold",
+      team: "enemy",
+      x: 180,
+      y: 100,
+      width: 104,
+      height: 88,
+      hp: 500
+    });
+    const combat = createCombat([worker], [stronghold]);
+
+    combat.update(0.1);
+
+    expect(stronghold.hp).toBe(stronghold.maxHp);
+    expect(worker.moveTarget).toBeUndefined();
+    expect(worker.attackTargetId).toBeUndefined();
+  });
+
   it("keeps Guard Area units inside the local leash", () => {
     const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, behaviourMode: "guard_area" });
     const enemy = fakeUnit({ id: "enemy-raider", team: "enemy", x: 390, y: 100 });
@@ -629,6 +695,8 @@ function createCombat(units: Unit[], buildings: Building[] = []): CombatSystem {
 
 function fakeUnit(options: {
   id: string;
+  unitId?: string;
+  unitName?: string;
   team: Team;
   x: number;
   y: number;
@@ -668,8 +736,8 @@ function fakeUnit(options: {
     factionSpeedMultiplier: 1,
     appliedUpgradeIds: new Set<string>(),
     definition: {
-      id: options.team === "player" ? "militia" : "raider",
-      name: options.team === "player" ? "Militia" : "Raider",
+      id: options.unitId ?? (options.team === "player" ? "militia" : "raider"),
+      name: options.unitName ?? (options.team === "player" ? "Militia" : "Raider"),
       factionId: options.team === "player" ? "free_marches" : "ashen_covenant",
       stats: {
         maxHp: 100,

@@ -47,7 +47,7 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   if (unit.pausedRepairTargetId) {
     return {
       label: "Repair Paused",
-      detail: "Move the Worker back near the damaged building or issue Repair again to resume.",
+      detail: "Issue Repair again on the damaged building to resume.",
       tone: "neutral"
     };
   }

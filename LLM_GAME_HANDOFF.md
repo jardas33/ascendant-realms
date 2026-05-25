@@ -1,12 +1,63 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.21.1 worker repair closeout and CI verification
+Last updated: 2026-05-24 v0.21.2 worker intent clarity and healthbar polish
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
+
+Status: v0.21.2 is a small Worker repair retest follow-up on top of `f6a121b`. It resolves Emmanuel's explicit Worker intent feedback, Worker attack/building-targeting feedback, and the healthbar red-dot/status-marker artifact without adding harvesting or opening v0.22.
+
+Baseline:
+
+- Starting commit: `f6a121b`, `Checkpoint v0.21.1 worker repair closeout and CI verification`.
+- Latest tested package before this pass: `ascendant-realms-private-playtest-f6a121b`.
+- Branch was clean and synced with `origin/main`.
+
+Docs/package metadata:
+
+- Added `docs/V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md`.
+- Added `docs/V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Package checkpoint string is now `v0.21.2 worker intent clarity and healthbar polish`.
+- Private playtest package validation now requires both v0.21.2 docs.
+
+Runtime/UI summary:
+
+- Workers already had weak combat stats; explicit Worker attack is now allowed to damage valid enemy buildings through the existing combat system.
+- Building click/target detection now uses the visible rectangular building footprint, so clicking a visible enemy-building corner can select/order against the building instead of falling through to terrain.
+- Idle Workers still do not auto-attack nearby enemy buildings by default; explicit attack and attack-move remain distinct from repair/build commands.
+- Construction progress now requires explicit Worker construction intent from building placement or a selected Worker right-clicking an incomplete friendly site; proximity alone does not start or resume construction.
+- Repair progress now requires explicit Repair intent; proximity alone does not start or resume repair, and moving back after a move-away does not resume until Repair is issued again.
+- Status/burn badges now sit beside the healthbar instead of inside the healthbar, preserving normal damage feedback while removing the red-dot marker at the start of damaged Worker bars.
+- Smoke setup keeps the same main-menu assertions but gives only cold dev-server menu boot enough time for the existing battle-texture preload path.
+- No harvesting, repair expansion, enemy repair AI, enemy construction AI, new units/buildings/maps/factions, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or test weakening is included.
+
+Verification:
+
+```text
+npm exec vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/RepairSystem.test.ts src/game/systems/CombatSystem.test.ts src/game/systems/CollisionSystem.test.ts src/game/entities/BaseEntity.test.ts src/game/ui/UnitOrderSummary.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/battle/BattleSceneAlerts.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 10 files / 88 tests.
+Browser local smoke PASS at http://127.0.0.1:5173/ with main-menu text, 1280x720 canvas, and 0 console errors.
+npx playwright test tests/e2e/smoke.spec.ts --grep "main menu boots" --reporter=line PASS, 1 test.
+npm test PASS, 65 files / 485 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-91882f2-dirty generated.
+npm run verify:playtest-package PASS, 59 checks.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.21.2 worker intent clarity and healthbar polish`, then regenerate and verify the clean final package from the v0.21.2 commit and confirm it does not end in `-dirty`.
+
+Emmanuel retest focus: Worker repair mostly passed in `ascendant-realms-private-playtest-f6a121b`. Retest that incomplete construction and damaged-building repair require explicit Worker commands plus range, moving away stops active work intent, moving back alone does not resume, reissuing Build/Resume Construction or Repair resumes, explicit Worker attack works against enemy buildings/valid targets without default Worker aggression, and ranged/status damage no longer places a stray red dot at the start of the Worker's healthbar. Future cursor work should use clearer crossed-swords attack and hammer repair/build affordances, but v0.21.2 adds no new cursor art.
 
 ## Current v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
 

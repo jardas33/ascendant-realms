@@ -178,7 +178,7 @@ export function firstBattleTutorialHint(options: {
     return playerCombatSelected ? "Right-click the Crown Shrine with your selected forces." : "Select your army, then right-click the Crown Shrine.";
   }
   if (!hasBarracks && barracksUnderConstruction) {
-    return "Barracks is under construction. Hold near your base until it completes.";
+    return "Barracks is under construction. Keep the assigned Worker building; if interrupted, select the Worker and right-click the site.";
   }
   if (!hasBarracks && !commandHallSelected) {
     return "Select your Command Hall.";

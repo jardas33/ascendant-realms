@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.21.1 worker repair closeout and CI verification
+Updated: 2026-05-24 v0.21.2 worker intent clarity and healthbar polish
+
+## v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
+
+Scope: respond to Emmanuel's v0.21.1 Worker repair retest feedback with a narrow Worker intent, combat-clarity, and healthbar polish pass. This pass does not add harvesting, repair expansion, enemy repair AI, enemy construction AI, new units/buildings/maps/factions, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or test weakening.
+
+Baseline:
+
+- Starting commit: `f6a121b`, `Checkpoint v0.21.1 worker repair closeout and CI verification`.
+- Starting package: `ascendant-realms-private-playtest-f6a121b`.
+- Branch was clean and synced with `origin/main`.
+
+Included work:
+
+- Added `docs/V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md`.
+- Added `docs/V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Updated package metadata and validation to name `v0.21.2 worker intent clarity and healthbar polish`.
+- Allowed explicit Worker attack orders to damage valid enemy buildings through the existing weak Worker combat stats.
+- Kept idle Workers from auto-attacking nearby enemy buildings by default.
+- Required explicit active Worker construction intent before incomplete friendly buildings progress.
+- Required explicit active Worker repair intent before damaged friendly completed buildings repair.
+- Kept range requirements for both construction and repair: command plus alive Worker plus in range equals progress.
+- Made move-away clear active construction/repair work intent; moving back alone no longer resumes, while reissuing Build/Resume Construction or Repair does.
+- Added right-click resume construction for selected Workers on incomplete friendly sites.
+- Added rectangular building-footprint hit testing for visible building corners without widening empty terrain selection.
+- Moved status/burn badges beside the healthbar so ranged/status damage no longer looks like a red dot at the start of the Worker's bar.
+- Added focused regression coverage for explicit construction/repair intent, no proximity-only work, reissued work commands, Worker explicit attack, idle Worker non-aggression against buildings, building footprint targeting, and the healthbar/status-badge position.
+- Kept repair/build/construction commands distinct from attack commands.
+- Kept future crossed-swords attack and hammer repair/build cursor work as documentation only; no runtime cursor art/assets were added.
+- Kept smoke assertions intact while giving only cold dev-server main-menu boot enough time for the existing texture preload path.
+
+Verification and closeout so far:
+
+```text
+npm exec vitest run src/game/systems/BuildingSystem.test.ts src/game/systems/RepairSystem.test.ts src/game/systems/CombatSystem.test.ts src/game/systems/CollisionSystem.test.ts src/game/entities/BaseEntity.test.ts src/game/ui/UnitOrderSummary.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/battle/BattleSceneAlerts.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 10 files / 88 tests.
+Browser local smoke PASS at http://127.0.0.1:5173/ with main-menu text, 1280x720 canvas, and 0 console errors.
+npx playwright test tests/e2e/smoke.spec.ts --grep "main menu boots" --reporter=line PASS, 1 test.
+npm test PASS, 65 files / 485 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-91882f2-dirty generated.
+npm run verify:playtest-package PASS, 59 checks.
+git diff --check PASS.
+```
+
+Closeout note: commit, then regenerate and verify a clean package from the final v0.21.2 commit.
 
 ## v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
 

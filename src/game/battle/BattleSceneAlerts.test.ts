@@ -73,7 +73,7 @@ describe("firstBattleTutorialHint", () => {
     } as unknown as Building;
 
     expect(tutorialHint({ selected: [barracks], buildings: [barracks] })).toBe(
-      "Barracks is under construction. Hold near your base until it completes."
+      "Barracks is under construction. Keep the assigned Worker building; if interrupted, select the Worker and right-click the site."
     );
   });
 

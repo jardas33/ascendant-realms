@@ -91,7 +91,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
         selectedOne.isCompleted() && selectedOne.team === "player"
           ? `<span>Repair ${
               selectedOne.hp < selectedOne.maxHp
-                ? "Damaged - select a Worker or right-click with a Worker"
+                ? "Damaged - select a Worker and use Repair/right-click"
                 : "Full health"
             }</span>`
           : ""
@@ -101,6 +101,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
           ? `<span>Status ${escapeHtml(selectedOne.constructionStatusDetail ?? "Under construction")}</span>
              <span>Construction ${Math.round(selectedOne.constructionProgress * 100)}%</span>
              <span>Assigned ${escapeHtml(selectedOne.assignedWorkerName ?? (selectedOne.assignedWorkerId ? "Worker" : "Unassigned"))}</span>
+             <span>Continue: select Worker and right-click site</span>
              <span>${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</span>`
           : training
             ? `<span>Training ${escapeHtml(unitName(training.unitId))} ${Math.ceil(training.remaining)}s</span>`

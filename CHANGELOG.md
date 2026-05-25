@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
+
+This checkpoint follows Emmanuel's `ascendant-realms-private-playtest-f6a121b` Worker repair retest. Worker repair mostly passed; v0.21.2 fixes explicit Worker intent rules, Worker attack clarity, and healthbar marker feedback without starting harvesting or v0.22.
+
+### Included
+
+- Added `docs/V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md`.
+- Added `docs/V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Updated package metadata and package validation to name `v0.21.2 worker intent clarity and healthbar polish`.
+- Required explicit Worker construction intent before incomplete friendly buildings progress; proximity alone no longer starts or resumes construction.
+- Required explicit Worker Repair intent before damaged friendly completed buildings repair; proximity alone no longer starts or resumes repair.
+- Added selected-Worker right-click resume construction for incomplete friendly sites.
+- Made explicit Worker attack orders work against valid enemy buildings through the existing weak Worker combat capability.
+- Kept idle Workers from auto-attacking nearby enemy buildings by default.
+- Made building target detection use visible rectangular footprints so visible enemy-building corners do not fall through to terrain orders.
+- Moved status/burn badges beside the healthbar to remove the red-dot artifact at the start of a damaged Worker's healthbar.
+- Kept future crossed-swords attack and hammer repair/build cursor work as docs-only; no runtime cursor art/assets were added.
+- Added targeted construction, repair, combat, collision, healthbar, package-validation, UI, and smoke harness coverage.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Worker construction/repair now require explicit active Worker commands, and explicit Worker attack against valid enemy buildings now resolves through existing combat.
+- Gameplay numbers changed: no global balance change; existing weak Worker combat stats are reused.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no.
+
+### Verification
+
+- Passed: focused Worker construction/repair/attack/collision/healthbar/package/UI tests, Browser local smoke, isolated main-menu smoke repro, `npm test` with 65 files / 485 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke, full smoke, control lab normal plus 1658-check verifier, dirty playtest package generation, dirty package verification with 59 checks, and `git diff --check`.
+
+### Next
+
+- Commit the checkpoint, regenerate/verify a clean v0.21.2 package from the final commit, and use it for Emmanuel's Worker intent clarity and healthbar polish retest.
+
 ## v0.21.1 Worker Repair Closeout And CI Verification - 2026-05-24
 
 This checkpoint closes out v0.21 by pushing the Worker repair foundation, recording remote CI status, and refreshing package metadata. It does not start v0.22 and does not add new gameplay.

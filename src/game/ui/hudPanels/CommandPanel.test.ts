@@ -76,7 +76,8 @@ describe("CommandPanel", () => {
       expect(markup).toContain("Construction");
       expect(markup).toContain(role);
       expect(markup).toContain(unlocks);
-      expect(markup).toContain("Incomplete - actions locked until construction finishes.");
+      expect(markup).toContain("Incomplete - completed-building actions locked.");
+      expect(markup).toContain("Select a Worker and right-click this site to continue construction.");
       expect(markup).not.toContain('data-action="train"');
       expect(markup).not.toContain('data-action="upgrade"');
     });
@@ -161,7 +162,7 @@ describe("CommandPanel", () => {
     expect(markup).toContain('data-testid="command-repair-player-barracks"');
     expect(markup).toContain("Repair Barracks");
     expect(markup).toContain("Damaged: 420/600 HP. Cost: none");
-    expect(markup).toContain("move or attack orders pause repair");
+    expect(markup).toContain("move or attack orders stop repair until Repair is issued again");
     expect(markup).toContain("Already repaired. HP 1450/1450");
   });
 

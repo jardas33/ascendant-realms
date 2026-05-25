@@ -6,6 +6,18 @@ import type { Unit } from "../entities/Unit";
 import { RepairSystem, isWorkerInRepairRange } from "./RepairSystem";
 
 describe("RepairSystem worker repair", () => {
+  it("does not repair a damaged completed building from proximity alone", () => {
+    const worker = fakeWorker({ x: 360, y: 800 });
+    const barracks = fakeBuilding("barracks", { x: 430, y: 800 }, { hp: 360 });
+    const system = createSystem([barracks], [worker]);
+
+    system.update(4);
+
+    expect(barracks.hp).toBe(360);
+    expect(worker.activeRepairTargetId).toBeUndefined();
+    expect(worker.pausedRepairTargetId).toBeUndefined();
+  });
+
   it.each(["command_hall", "barracks", "mystic_lodge", "watchtower"] as const)(
     "repairs damaged friendly completed %s buildings while the Worker is in range",
     (buildingId) => {
@@ -65,7 +77,7 @@ describe("RepairSystem worker repair", () => {
     expect(messages).toContain("Construction must finish before repairs.");
   });
 
-  it("pauses after an explicit move-away and resumes when the Worker returns to range", () => {
+  it("pauses after an explicit move-away and only resumes when Repair is issued again", () => {
     const worker = fakeWorker({ x: 360, y: 800 });
     const barracks = fakeBuilding("barracks", { x: 430, y: 800 }, { hp: 360 });
     const system = createSystem([barracks], [worker]);
@@ -86,6 +98,12 @@ describe("RepairSystem worker repair", () => {
 
     worker.commandMove({ x: 360, y: 800 });
     worker.position = { x: 360, y: 800 };
+    system.update(2);
+
+    expect(barracks.hp).toBe(repairedBeforeMove);
+    expect(worker.activeRepairTargetId).toBeUndefined();
+
+    expect(system.requestRepair(worker, barracks)).toBe(true);
     system.update(2);
 
     expect(barracks.hp).toBeGreaterThan(repairedBeforeMove);

@@ -424,6 +424,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getSelectedUnits: () => selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
     getSelectedRallyBuildings: selectedRallyBuildings,
     setRallyPoint,
+    issueConstructionOrder: (target, selectedUnits) => buildingSystem.issueConstructionOrder(target, selectedUnits),
     issueRepairOrder: (target, selectedUnits) => repairSystem.issueRepairOrder(target, selectedUnits),
     selectHero: () => {
       if (hero.alive) {

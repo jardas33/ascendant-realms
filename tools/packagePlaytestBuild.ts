@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.21.1 worker repair closeout and CI verification";
+const CHECKPOINT = "v0.21.2 worker intent clarity and healthbar polish";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -81,6 +81,8 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V021_WORKER_REPAIR_FOUNDATION_SPEC.md", join(packageDir, "V021_WORKER_REPAIR_FOUNDATION_SPEC.md"));
   await copyMarkdown("docs/V021_IMPLEMENTATION_REPORT.md", join(packageDir, "V021_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0211_WORKER_REPAIR_CLOSEOUT.md", join(packageDir, "V0211_WORKER_REPAIR_CLOSEOUT.md"));
+  await copyMarkdown("docs/V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md", join(packageDir, "V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md", join(packageDir, "V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -164,7 +166,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.21.1 Worker repair closeout retest, start with V0211_WORKER_REPAIR_CLOSEOUT.md, then use V021_WORKER_REPAIR_FOUNDATION_SPEC.md and V021_IMPLEMENTATION_REPORT.md for repair details. Focus on: Command Hall still trains Workers only; Workers still build Barracks, Mystic Lodge, and Watchtower; construction pause/resume still works; damaged friendly completed buildings can be repaired by a nearby Worker; explicit move or attack pauses repair without pulling the Worker back; moving back or reissuing Repair resumes repair; enemy, incomplete, and full-health buildings do not start repair; completed Barracks, Mystic Lodge, Watchtower, and upgrade roles remain stable. Do not judge harvesting, resource-dropoff economy, repair cost balance, enemy repair/construction AI, save persistence, new content, or final art in this build.
+For the v0.21.2 Worker intent clarity retest, start with V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md and V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md, then use V0211_WORKER_REPAIR_CLOSEOUT.md, V021_WORKER_REPAIR_FOUNDATION_SPEC.md, and V021_IMPLEMENTATION_REPORT.md for repair details. Focus on: Command Hall still trains Workers only; Workers still build Barracks, Mystic Lodge, and Watchtower; construction and repair require explicit Worker commands plus range; moving a Worker away stops active construction/repair intent; moving back by itself does not resume work; reissuing Build/Resume Construction or Repair resumes progress; enemy, incomplete, and full-health buildings remain invalid repair targets; selected Workers can weakly attack valid enemy buildings when explicitly ordered; Workers do not auto-attack enemy buildings by default; ranged/status damage reduces Worker health without a stray red dot inside the health bar. Do not judge harvesting, resource-dropoff economy, repair cost balance, enemy repair/construction AI, save persistence, new content, new cursor art, or final art in this build.
 
 ## Known Warning
 

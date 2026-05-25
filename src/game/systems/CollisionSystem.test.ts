@@ -46,6 +46,18 @@ describe("CollisionSystem", () => {
     expect(CollisionSystem.findEntityAt(100, 45, [commandHall], { topPadding: 8 })?.id).toBe("player-command-hall");
     expect(CollisionSystem.findEntityAt(157, 100, [commandHall], { topPadding: 8 })).toBeUndefined();
   });
+
+  it("can target visible building corners through an explicit footprint without widening empty terrain", () => {
+    const stronghold = fakeEntity({ id: "enemy-stronghold", kind: "building", x: 100, y: 100, radius: 52 });
+
+    const options = {
+      footprint: (entity: BaseEntity) =>
+        entity.kind === "building" ? { x: entity.position.x - 52, y: entity.position.y - 44, width: 104, height: 88 } : undefined
+    };
+
+    expect(CollisionSystem.findEntityAt(150, 144, [stronghold], options)?.id).toBe("enemy-stronghold");
+    expect(CollisionSystem.findEntityAt(158, 150, [stronghold], options)).toBeUndefined();
+  });
 });
 
 function fakeEntity(options: { id: string; x: number; y: number; radius: number; kind?: "unit" | "building" }): BaseEntity {

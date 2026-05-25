@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, ResourceBag } from "../core/GameTypes";
 import { distance, payCost } from "../core/MathUtils";
 import { requireBuilding } from "../data/contentIndex";
+import type { BaseEntity } from "../entities/BaseEntity";
 import { applyStrongholdBuildingEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { Building } from "../entities/Building";
 import type { CaptureSite } from "../entities/CaptureSite";
@@ -169,15 +170,22 @@ export class BuildingSystem {
 
   private canProgressConstruction(building: Building): boolean {
     if (!building.assignedWorkerId) {
-      building.constructionProgressing = true;
-      building.constructionStatusDetail = "Under construction";
-      return true;
+      building.constructionProgressing = false;
+      building.constructionStatusDetail = "Awaiting Worker command";
+      return false;
     }
 
     const worker = this.workerForId(building.assignedWorkerId);
     if (!worker?.alive) {
       building.constructionProgressing = false;
       building.constructionStatusDetail = `${building.assignedWorkerName ?? "Worker"} missing`;
+      return false;
+    }
+
+    if (worker.activeConstructionSiteId !== building.id) {
+      building.constructionProgressing = false;
+      building.constructionStatusDetail =
+        worker.pausedConstructionSiteId === building.id ? "Paused - issue Build to resume" : "Awaiting Worker command";
       return false;
     }
 
@@ -193,10 +201,6 @@ export class BuildingSystem {
     }
     if (!closeEnough) {
       building.constructionProgressing = false;
-      if (worker.activeConstructionSiteId !== building.id) {
-        building.constructionStatusDetail = "Paused - Worker away";
-        return false;
-      }
       building.constructionStatusDetail = `${building.assignedWorkerName ?? worker.definition.name} traveling`;
       const approach = findConstructionApproachPoint({
         map: this.options.map,
@@ -211,6 +215,59 @@ export class BuildingSystem {
     building.constructionProgressing = true;
     worker.markConstructionWork(building.id);
     building.constructionStatusDetail = "Building";
+    return true;
+  }
+
+  requestConstruction(worker: Unit | undefined, building: Building | undefined): boolean {
+    const validation = validateConstructionRequest(worker, building);
+    if (!validation.ok) {
+      const point = building?.position ?? worker?.position;
+      this.options.onMessage(validation.reason, point?.x, point ? point.y - 36 : undefined, "#ffd27a", {
+        priority: "command"
+      });
+      return false;
+    }
+
+    const constructionWorker = worker!;
+    const site = building!;
+    site.assignedWorkerId = constructionWorker.id;
+    site.assignedWorkerName = constructionWorker.definition.name;
+    if (isWorkerInConstructionRange(site, constructionWorker)) {
+      constructionWorker.markConstructionWork(site.id);
+      constructionWorker.moveTarget = undefined;
+      site.constructionStatusDetail = "Building";
+    } else {
+      const approach = findConstructionApproachPoint({
+        map: this.options.map,
+        building: site,
+        worker: constructionWorker,
+        buildings: this.options.getBuildings()
+      });
+      commandWorkerToConstructionApproach(constructionWorker, approach, site.id);
+      site.constructionStatusDetail = `${constructionWorker.definition.name} traveling`;
+    }
+
+    this.options.onMessage(
+      `Construction order accepted: ${constructionWorker.definition.name} -> ${site.definition.name}`,
+      site.position.x,
+      site.position.y - 54,
+      "#d9eee8",
+      { priority: "command" }
+    );
+    return true;
+  }
+
+  issueConstructionOrder(target: BaseEntity | undefined, selectedUnits: Unit[]): boolean {
+    if (!(target instanceof Building) || target.team !== "player" || !target.isUnderConstruction()) {
+      return false;
+    }
+
+    const workers = selectedUnits.filter((unit) => isConstructionWorkerFor(unit, target) && unit.alive && unit.team === "player");
+    if (workers.length === 0) {
+      return false;
+    }
+
+    this.requestConstruction(workers[0], target);
     return true;
   }
 
@@ -281,6 +338,32 @@ export class BuildingSystem {
       y: anchor.y
     };
   }
+}
+
+function validateConstructionRequest(
+  worker: Unit | undefined,
+  building: Building | undefined
+): { ok: true } | { ok: false; reason: string } {
+  if (!worker || !worker.alive || worker.team !== "player") {
+    return { ok: false, reason: "Select a Worker to continue construction." };
+  }
+  if (!building?.alive) {
+    return { ok: false, reason: "No construction site selected." };
+  }
+  if (building.team !== "player") {
+    return { ok: false, reason: "Workers cannot build enemy structures." };
+  }
+  if (!building.isUnderConstruction()) {
+    return { ok: false, reason: `${building.definition.name} construction is already complete.` };
+  }
+  if (!isConstructionWorkerFor(worker, building)) {
+    return { ok: false, reason: "Select a Worker to continue construction." };
+  }
+  return { ok: true };
+}
+
+function isConstructionWorkerFor(worker: Unit, building: Building): boolean {
+  return worker.definition.id === "worker" && Boolean(worker.definition.buildOptions?.includes(building.definition.id));
 }
 
 export function constructionWorkerRange(building: Building, worker: Unit): number {

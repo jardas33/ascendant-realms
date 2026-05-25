@@ -19,6 +19,7 @@ interface InputSystemOptions {
   getSelectedUnits: () => Unit[];
   getSelectedRallyBuildings: () => Building[];
   setRallyPoint: (point: Position, buildings: Building[]) => boolean;
+  issueConstructionOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   issueRepairOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   selectHero: () => void;
   centerOnHero: () => void;
@@ -240,6 +241,11 @@ export class InputSystem {
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     const target = this.options.findWorldEntityAt(point);
     if (this.issueAttackOrder(target, selectedUnits)) {
+      this.attackMoveMode = false;
+      return;
+    }
+
+    if (this.options.issueConstructionOrder(target, selectedUnits)) {
       this.attackMoveMode = false;
       return;
     }

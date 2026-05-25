@@ -35,7 +35,8 @@ const EMPTY_RESOURCES: CampaignResources = {
   aether: 0
 };
 
-const MAIN_MENU_BOOT_TIMEOUT_MS = 20_000;
+// Cold dev-server smoke runs can spend most of the first boot preloading battle textures before the menu mounts.
+const MAIN_MENU_BOOT_TIMEOUT_MS = 30_000;
 const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 15_000;
 const MAIN_MENU_NAVIGATION_ATTEMPTS = 3;
 const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;

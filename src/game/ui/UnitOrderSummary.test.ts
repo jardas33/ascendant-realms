@@ -56,7 +56,7 @@ describe("UnitOrderSummary", () => {
       })
     ).toMatchObject({
       label: "Repair Paused",
-      detail: expect.stringContaining("issue Repair again")
+      detail: expect.stringContaining("Issue Repair again")
     });
   });
 

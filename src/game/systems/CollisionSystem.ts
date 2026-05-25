@@ -6,6 +6,7 @@ interface EntityHitTestOptions<T extends BaseEntity> {
   minimumRadius?: number;
   padding?: number | ((entity: T) => number);
   topPadding?: number | ((entity: T) => number);
+  footprint?: (entity: T) => { x: number; y: number; width: number; height: number } | undefined;
 }
 
 export class CollisionSystem {
@@ -33,6 +34,10 @@ export class CollisionSystem {
         if (distance({ x, y }, entity.position) <= hitRadius) {
           return true;
         }
+        const footprint = options.footprint?.(entity);
+        if (footprint && pointInRectangle(x, y, footprint)) {
+          return true;
+        }
         const dx = Math.abs(x - entity.position.x);
         const dy = entity.position.y - y;
         return topPadding > 0 && dy > 0 && dy <= hitRadius + topPadding && dx <= hitRadius * 0.55;
@@ -55,4 +60,17 @@ export class CollisionSystem {
     });
     return best;
   }
+}
+
+function pointInRectangle(
+  x: number,
+  y: number,
+  rectangle: { x: number; y: number; width: number; height: number }
+): boolean {
+  return (
+    x >= rectangle.x &&
+    x <= rectangle.x + rectangle.width &&
+    y >= rectangle.y &&
+    y <= rectangle.y + rectangle.height
+  );
 }

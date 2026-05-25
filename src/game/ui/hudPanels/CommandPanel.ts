@@ -24,7 +24,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
 
   if (selectedOne instanceof Building && !selectedOne.isCompleted()) {
-    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Incomplete - actions locked until construction finishes.</p></div>`;
+    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Incomplete - completed-building actions locked. Select a Worker and right-click this site to continue construction.</p></div>`;
   }
 
   const buildButtons = (selectedOne.definition.buildOptions ?? [])
@@ -119,7 +119,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
                 ? `${target.status}. Cost: none`
                 : `Already repaired. HP ${Math.ceil(target.hp)}/${target.maxHp}`,
               description: target.isRepairable
-                ? "Worker must stay near the building; move or attack orders pause repair."
+                ? "Worker must stay near the building; move or attack orders stop repair until Repair is issued again."
                 : "Full health.",
               effect: target.isRepairable ? "Effect: restores building HP slowly over time." : undefined,
               locked: !target.isRepairable

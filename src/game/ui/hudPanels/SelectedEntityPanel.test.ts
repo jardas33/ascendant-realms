@@ -53,6 +53,7 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Status Building");
     expect(markup).toContain("Construction 44%");
     expect(markup).toContain("Assigned Worker");
+    expect(markup).toContain("Continue: select Worker and right-click site");
     expect(markup).toContain("Role Army production");
     expect(markup).toContain("Unlocks when complete: trains Militia, Ranger; researches Infantry Weapons I, Reinforced Armor I, Ranger Training I.");
   });
@@ -75,7 +76,7 @@ describe("SelectedEntityPanel", () => {
     const markup = renderSelectionSummary(fakeBuilding("barracks", "barracks", { hp: 420, maxHp: 600 }), []);
 
     expect(markup).toContain("HP 420/600");
-    expect(markup).toContain("Repair Damaged - select a Worker or right-click with a Worker");
+    expect(markup).toContain("Repair Damaged - select a Worker and use Repair/right-click");
   });
 });
 

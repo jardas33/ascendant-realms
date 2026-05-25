@@ -2,11 +2,33 @@ import type Phaser from "phaser";
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { FIRST_CLAIM_MAP } from "../data/maps/firstClaim";
-import type { Building } from "../entities/Building";
+import { Building } from "../entities/Building";
 import type { Unit } from "../entities/Unit";
 import { BuildingSystem, findConstructionApproachPoint, isWorkerInConstructionRange } from "./BuildingSystem";
 
 describe("BuildingSystem worker construction", () => {
+  it("does not progress construction just because the assigned Worker is already nearby", () => {
+    let progressedSeconds = 0;
+    const worker = fakeWorker({ x: 360, y: 800 });
+    const site = fakeConstructionSite({
+      x: 430,
+      y: 800,
+      assignedWorkerId: worker.id,
+      updateConstruction: (deltaSeconds) => {
+        progressedSeconds += deltaSeconds;
+        return false;
+      }
+    });
+    const system = createSystem([site], [worker]);
+
+    system.update(4);
+
+    expect(progressedSeconds).toBe(0);
+    expect(site.constructionProgressing).toBe(false);
+    expect(site.constructionStatusDetail).toBe("Awaiting Worker command");
+    expect(worker.activeConstructionSiteId).toBeUndefined();
+  });
+
   it("pauses assigned construction until the Worker is close enough", () => {
     let progressedSeconds = 0;
     const worker = fakeWorker({ x: 260, y: 800 });
@@ -41,6 +63,7 @@ describe("BuildingSystem worker construction", () => {
   it("does not pull a Worker back after an explicit move-away order", () => {
     let progressedSeconds = 0;
     const worker = fakeWorker({ x: 360, y: 800 });
+    worker.activeConstructionSiteId = "site-1";
     const site = fakeConstructionSite({
       x: 430,
       y: 800,
@@ -63,7 +86,7 @@ describe("BuildingSystem worker construction", () => {
 
     expect(progressedSeconds).toBe(1);
     expect(site.constructionProgressing).toBe(false);
-    expect(site.constructionStatusDetail).toBe("Paused - Worker away");
+    expect(site.constructionStatusDetail).toBe("Paused - issue Build to resume");
     expect(worker.moveTarget).toEqual(explicitMoveTarget);
     expect(worker.activeConstructionSiteId).toBeUndefined();
     expect(worker.pausedConstructionSiteId).toBe(site.id);
@@ -72,6 +95,7 @@ describe("BuildingSystem worker construction", () => {
   it("pauses immediately when an explicit move-away is issued before the Worker leaves range", () => {
     let progressedSeconds = 0;
     const worker = fakeWorker({ x: 360, y: 800 });
+    worker.activeConstructionSiteId = "site-1";
     const site = fakeConstructionSite({
       x: 430,
       y: 800,
@@ -89,13 +113,14 @@ describe("BuildingSystem worker construction", () => {
 
     expect(progressedSeconds).toBe(1);
     expect(site.constructionProgressing).toBe(false);
-    expect(site.constructionStatusDetail).toBe("Paused - Worker away");
+    expect(site.constructionStatusDetail).toBe("Paused - issue Build to resume");
     expect(worker.moveTarget).toEqual({ x: 160, y: 640 });
   });
 
-  it("resumes paused construction when the assigned Worker moves back into range", () => {
+  it("does not resume paused construction from proximity alone, then resumes when commanded again", () => {
     let progressedSeconds = 0;
     const worker = fakeWorker({ x: 360, y: 800 });
+    worker.activeConstructionSiteId = "site-1";
     const site = fakeConstructionSite({
       x: 430,
       y: 800,
@@ -116,7 +141,38 @@ describe("BuildingSystem worker construction", () => {
     worker.position = { x: 360, y: 800 };
     system.update(4);
 
+    expect(progressedSeconds).toBe(1);
+    expect(site.constructionProgressing).toBe(false);
+    expect(site.constructionStatusDetail).toBe("Paused - issue Build to resume");
+    expect(worker.activeConstructionSiteId).toBeUndefined();
+
+    expect(system.issueConstructionOrder(site, [worker])).toBe(true);
+    system.update(4);
+
     expect(progressedSeconds).toBe(5);
+    expect(site.constructionProgressing).toBe(true);
+    expect(site.constructionStatusDetail).toBe("Building");
+    expect(worker.activeConstructionSiteId).toBe(site.id);
+  });
+
+  it("accepts an explicit resume construction order while the Worker is alive and in range", () => {
+    let progressedSeconds = 0;
+    const worker = fakeWorker({ x: 360, y: 800 });
+    const site = fakeConstructionSite({
+      x: 430,
+      y: 800,
+      assignedWorkerId: worker.id,
+      updateConstruction: (deltaSeconds) => {
+        progressedSeconds += deltaSeconds;
+        return false;
+      }
+    });
+    const system = createSystem([site], [worker]);
+
+    expect(system.issueConstructionOrder(site, [worker])).toBe(true);
+    system.update(3);
+
+    expect(progressedSeconds).toBe(3);
     expect(site.constructionProgressing).toBe(true);
     expect(site.constructionStatusDetail).toBe("Building");
     expect(worker.activeConstructionSiteId).toBe(site.id);
@@ -126,6 +182,7 @@ describe("BuildingSystem worker construction", () => {
     const completed: string[] = [];
     const messages: string[] = [];
     const worker = fakeWorker({ x: 360, y: 800 });
+    worker.activeConstructionSiteId = "site-1";
     const site = fakeConstructionSite({
       x: 430,
       y: 800,
@@ -217,7 +274,7 @@ function createSystem(
 }
 
 function fakeWorker(position: { x: number; y: number }): Unit {
-  return Object.assign(Object.create(Object.prototype), {
+  return Object.assign(Object.create(Building.prototype), {
     id: "worker-1",
     kind: "unit",
     team: "player",
@@ -255,7 +312,7 @@ function fakeConstructionSite(options: {
   updateConstruction?: (deltaSeconds: number) => boolean;
 }): Building {
   const definition = BUILDING_BY_ID[options.buildingId ?? "barracks"];
-  return Object.assign(Object.create(Object.prototype), {
+  return Object.assign(Object.create(Building.prototype), {
     id: "site-1",
     kind: "building",
     team: "player",
