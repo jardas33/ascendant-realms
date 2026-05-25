@@ -1,4 +1,5 @@
 import { Building } from "../../entities/Building";
+import { CaptureSite } from "../../entities/CaptureSite";
 import { Hero } from "../../entities/Hero";
 import { Unit } from "../../entities/Unit";
 import {
@@ -7,6 +8,7 @@ import {
   summarizeBehaviourModes,
   type BehaviourMode
 } from "../../systems/BehaviourModeSystem";
+import { workerSiteBonusAmount } from "../../systems/ResourceSystem";
 import {
   formatUnitVeterancyBonusSummary,
   formatUnitVeterancyXpProgress,
@@ -77,6 +79,28 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     `;
   }
 
+  if (selectedOne instanceof CaptureSite) {
+    const bonus = selectedOne.workerAssignmentBoostActive
+      ? selectedOne.definition.incomeAmount + workerSiteBonusAmount(selectedOne)
+      : selectedOne.definition.incomeAmount;
+    const ownerLabel =
+      selectedOne.owner === "player" ? "Friendly captured" : selectedOne.owner === "enemy" ? "Enemy controlled" : "Neutral";
+    const assignmentInstruction = siteAssignmentInstruction(selectedOne);
+    const status = selectedOne.owner === "player" ? selectedOne.workerAssignmentStatusDetail : assignmentInstruction;
+    return `
+      <div class="stat-list" data-testid="selected-resource-site-stats">
+        <span>Control ${escapeHtml(ownerLabel)}</span>
+        <span>Resource ${escapeHtml(selectedOne.definition.resource)}</span>
+        <span>Base income +${selectedOne.definition.incomeAmount}/${selectedOne.definition.incomeInterval}s</span>
+        <span>Worker slot ${escapeHtml(selectedOne.assignedWorkerName ?? "Empty")}</span>
+        <span>Worker bonus +${workerSiteBonusAmount(selectedOne)}/${selectedOne.definition.incomeInterval}s</span>
+        <span>Boosted income +${bonus}/${selectedOne.definition.incomeInterval}s</span>
+        <span>Status ${escapeHtml(status)}</span>
+      </div>
+      <p class="quiet">${escapeHtml(assignmentInstruction)}</p>
+    `;
+  }
+
   const training = selectedOne.trainingQueue[0];
   const research = selectedOne.upgradeQueue[0];
   const hasTrainingActions = selectedOne.definition.trainOptions.length > 0;
@@ -127,6 +151,16 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
   `;
+}
+
+function siteAssignmentInstruction(site: CaptureSite): string {
+  if (site.owner !== "player") {
+    return "Capture this site before assigning a Worker.";
+  }
+  if (site.assignedWorkerName) {
+    return "Move, attack, build, repair, or assign the Worker elsewhere to stop this boost.";
+  }
+  return "Select a Worker and right-click this captured site, or use the Worker Resource Sites command.";
 }
 
 function renderBehaviourControls(units: Unit[]): string {

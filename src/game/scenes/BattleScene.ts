@@ -650,10 +650,13 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private findWorldEntityAt(point: Position): BaseEntity | undefined {
-    return CollisionSystem.findEntityAt(
+    const visibleCombatEntities = [...this.units, ...this.buildings].filter(
+      (entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position)
+    );
+    const combatEntity = CollisionSystem.findEntityAt(
       point.x,
       point.y,
-      [...this.units, ...this.buildings].filter((entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position)),
+      visibleCombatEntities,
       {
         minimumRadius: WORLD_ENTITY_INTERACTION_MIN_RADIUS,
         padding: (entity) => (entity instanceof Unit ? WORLD_ENTITY_UNIT_HIT_PADDING : 0),
@@ -670,6 +673,16 @@ export class BattleScene extends Phaser.Scene {
             : undefined
       }
     );
+    const siteEntity = CollisionSystem.findEntityAt(
+      point.x,
+      point.y,
+      this.captureSites.filter((site) => this.isPointExploredByPlayer(site.position)),
+      { minimumRadius: WORLD_ENTITY_INTERACTION_MIN_RADIUS }
+    );
+    if (combatEntity instanceof Unit && combatEntity.team === "player" && siteEntity) {
+      return siteEntity;
+    }
+    return combatEntity ?? siteEntity;
   }
 
   private centerCameraFromMinimap(normalizedX: number, normalizedY: number): void {
@@ -708,10 +721,10 @@ export class BattleScene extends Phaser.Scene {
     }));
   }
 
-  private selectedUnitOrBuildings(): Array<Unit | Building> {
+  private selectedEntities(): Array<Unit | Building | CaptureSite> {
     return this.selectionSystem
       .getSelected()
-      .filter((entity): entity is Unit | Building => entity instanceof Unit || entity instanceof Building);
+      .filter((entity): entity is Unit | Building | CaptureSite => entity instanceof Unit || entity instanceof Building || entity instanceof CaptureSite);
   }
 
   private initialPlayerSelection(): Unit[] {
@@ -719,7 +732,7 @@ export class BattleScene extends Phaser.Scene {
     return playerUnits.length > 0 ? playerUnits : [this.hero];
   }
 
-  private playSelectionAudio(selected: Array<Unit | Building>): void {
+  private playSelectionAudio(selected: Array<Unit | Building | CaptureSite>): void {
     const key = selected
       .map((entity) => entity.id)
       .sort()
@@ -882,7 +895,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private refreshBattleHud(deltaSeconds: number): void {
-    const selected = this.selectedUnitOrBuildings();
+    const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
     this.uiSystem.update(deltaSeconds, {
       resources: this.resources.player,
@@ -895,6 +908,7 @@ export class BattleScene extends Phaser.Scene {
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
       repairTargets: this.repairSystem.repairTargetSummaries(),
+      resourceSites: this.resourceSystem.resourceSiteSummaries(this.captureSites),
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       pauseMenu: this.menuPaused

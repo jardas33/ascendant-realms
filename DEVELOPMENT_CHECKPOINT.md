@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.21.3 worker explicit attack damage and status clarity
+Updated: 2026-05-24 v0.22 resource site worker assignment foundation
+
+## v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
+
+Scope: add the first resource-economy expansion by allowing Workers to explicitly support friendly captured resource sites for bonus income. This pass keeps the existing site-control economy and does not add classic carry/drop-off harvesting, enemy worker mining AI, enemy construction AI, new maps/factions/units/buildings, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, or test weakening.
+
+Baseline:
+
+- Starting commit: `460d576`, `Checkpoint v0.21.3 worker explicit attack damage and status clarity`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- v0.21.3 was pushed to `origin/main` before v0.22 work began.
+
+Included work:
+
+- Added `docs/V022_RESOURCE_SITE_WORKER_ASSIGNMENT_SPEC.md`.
+- Added `docs/V022_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V022_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and validation to name `v0.22 resource site worker assignment foundation`.
+- Added one runtime Worker slot to each capture site.
+- Added explicit Worker assignment orders from Worker command buttons and right-clicking friendly captured sites.
+- Kept proximity-only Worker/site contact from assigning or boosting income.
+- Added Worker order summary states for `Returning to Site` and `Working Site`.
+- Added site income breakdowns with unchanged baseline income plus a conservative 20% rounded Worker bonus, minimum +1.
+- Cleared assignment on move, attack, build, repair, reassignment, Worker death, and lost/invalid site control.
+- Added selected-site UI for base income, Worker slot, Worker bonus, boosted income, and invalid assignability reasons.
+- Added focused unit/UI/package and hosted deep-battle coverage for assignment, no proximity assignment, boost income, recall/reassign/death/site-loss clearing, and command override behavior.
+
+Verification and closeout so far:
+
+```text
+npm exec tsc -- --noEmit PASS.
+npm exec vitest run src/game/entities/UnitCommandState.test.ts src/game/systems/ResourceSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/UnitOrderSummary.test.ts src/game/playtest/PlaytestPackageValidation.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts -- --reporter=dot PASS, 6 files / 41 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment boosts" --reporter=line PASS, 1 hosted Worker assignment regression.
+npm test PASS, 66 files / 500 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 22 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+```
+
+Closeout note: package and verify the private playtest build, run `git diff --check`, commit, regenerate/verify a clean package from the final v0.22 commit, then push.
 
 ## v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
 

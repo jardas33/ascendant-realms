@@ -73,7 +73,7 @@ export class SelectionSystem {
     }
 
     this.getSelectableEntities().forEach((entity) => {
-      if (!entity.alive || entity.kind === "building") {
+      if (!entity.alive || (entity.kind !== "unit" && entity.kind !== "hero")) {
         return;
       }
       if (rect.contains(entity.position.x, entity.position.y)) {

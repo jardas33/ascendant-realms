@@ -8,6 +8,8 @@ export interface UnitOrderState {
   attackMove?: boolean;
   activeRepairTargetId?: string;
   pausedRepairTargetId?: string;
+  activeResourceSiteId?: string;
+  activeResourceSiteLabel?: string;
   moveOrderCombatSuppressionSeconds?: number;
   behaviourMode?: BehaviourMode;
 }
@@ -40,6 +42,16 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: "Repairing",
       detail: "Restoring a friendly completed building; Worker must stay near the footprint.",
+      tone: "active"
+    };
+  }
+
+  if (unit.activeResourceSiteId) {
+    const site = unit.activeResourceSiteLabel ? ` Site: ${unit.activeResourceSiteLabel}.` : "";
+    const moving = unit.moveTarget ? " Returning to the site; bonus starts when the Worker is in range." : "";
+    return {
+      label: unit.moveTarget ? "Returning to Site" : "Working Site",
+      detail: `${site}${moving || " Boosting captured-site income while assigned and nearby."}`.trim(),
       tone: "active"
     };
   }

@@ -707,17 +707,16 @@ async function completePlayerBuilding(page: Page, buildingId: string): Promise<v
     if (!building) {
       throw new Error(`Player building ${targetBuildingId} was not found.`);
     }
-    const worker = building.assignedWorkerId
-      ? scene.units.find((entry: any) => entry.id === building.assignedWorkerId && entry.alive)
-      : undefined;
-    if (worker) {
-      worker.setPosition(
-        building.position.x - building.definition.size.width / 2 - worker.radius - 12,
-        building.position.y
-      );
-      worker.moveTarget = undefined;
+    const wasUnderConstruction = building.constructionState === "underConstruction";
+    building.constructionState = "completed";
+    building.constructionProgress = 1;
+    building.constructionStatusDetail = "Complete";
+    building.hp = building.maxHp;
+    building.updateHealthBar?.();
+    if (wasUnderConstruction) {
+      scene.runtime?.recordBuildingBuilt?.(building.definition.id);
     }
-    scene.buildingSystem.update(building.constructionTimeSeconds + 1);
+    scene.refreshBattleHud?.(0);
   }, buildingId);
   await page.waitForFunction(
     (targetBuildingId) => {
@@ -2443,7 +2442,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(placedSite.assignedWorkerName).toBe("Worker");
     expect(placedSite.workerMoveTarget).toBeDefined();
     await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
-    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - completed-building actions locked.");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
 
     const completed = await page.evaluate((siteId) => {
@@ -2591,13 +2590,22 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
           barracks.position.y
         );
         scene.repairSystem.update(3);
+        const afterReturnWithoutCommand = barracks.hp;
+        const activeRepairTargetIdAfterReturn = worker.activeRepairTargetId;
+        const pausedRepairTargetIdAfterReturn = worker.pausedRepairTargetId;
+        const repairAccepted = scene.repairSystem.requestRepair(worker, barracks);
+        scene.repairSystem.update(3);
         scene.selectionSystem.setSelection([worker]);
         scene.refreshBattleHud?.(0);
         return {
           beforeHp,
           afterRepair,
           afterMoveAway,
-          afterReturn: barracks.hp,
+          afterReturnWithoutCommand,
+          activeRepairTargetIdAfterReturn,
+          pausedRepairTargetIdAfterReturn,
+          repairAccepted,
+          afterReissue: barracks.hp,
           activeRepairTargetId: worker.activeRepairTargetId,
           pausedRepairTargetId: worker.pausedRepairTargetId
         };
@@ -2607,13 +2615,128 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     expect(repairProgress.afterRepair).toBeGreaterThan(repairProgress.beforeHp);
     expect(repairProgress.afterMoveAway).toBe(repairProgress.afterRepair);
-    expect(repairProgress.afterReturn).toBeGreaterThan(repairProgress.afterMoveAway);
+    expect(repairProgress.afterReturnWithoutCommand).toBe(repairProgress.afterMoveAway);
+    expect(repairProgress.activeRepairTargetIdAfterReturn).toBeUndefined();
+    expect(repairProgress.pausedRepairTargetIdAfterReturn).toBe(barracksId);
+    expect(repairProgress.repairAccepted).toBe(true);
+    expect(repairProgress.afterReissue).toBeGreaterThan(repairProgress.afterReturnWithoutCommand);
     expect(repairProgress.activeRepairTargetId).toBe(barracksId);
     expect(repairProgress.pausedRepairTargetId).toBeUndefined();
     await expect(page.getByTestId("unit-order-summary")).toContainText("Repairing");
 
     await selectPlayerBuildingFromScene(page, "barracks");
-    await expect(page.locator(".side-panel")).toContainText("Repair Damaged - select a Worker or right-click with a Worker");
+    await expect(page.locator(".side-panel")).toContainText("Repair Damaged - select a Worker and use Repair/right-click");
+  });
+
+  test("Worker assignment boosts a captured resource site and stops when recalled @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Worker Resource QA");
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    const captured = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine"));
+    expect(captured?.owner).toBe("player");
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker resource-site assignment");
+
+    const setup = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const site = scene.captureSites.find((entry: any) => entry.definition.id === "crown_shrine");
+      const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
+      if (!site || site.owner !== "player" || !worker) {
+        throw new Error("Expected captured Crown Shrine and trained Worker for resource-site assignment coverage.");
+      }
+      worker.setPosition(site.position.x, site.position.y);
+      worker.moveTarget = undefined;
+      worker.attackTargetId = undefined;
+      worker.attackMove = false;
+      worker.activeConstructionSiteId = undefined;
+      worker.pausedConstructionSiteId = undefined;
+      worker.activeRepairTargetId = undefined;
+      worker.pausedRepairTargetId = undefined;
+      worker.clearResourceSiteWork?.();
+      scene.selectionSystem.setSelection([worker]);
+      scene.cameraSystem.centerOn(site.position);
+      scene.refreshBattleHud?.(0);
+      return {
+        siteEntityId: site.id,
+        siteName: site.definition.name,
+        resource: site.definition.resource,
+        baseIncome: site.definition.incomeAmount,
+        incomeInterval: site.definition.incomeInterval,
+        bonusIncome: Math.max(1, Math.round(site.definition.incomeAmount * 0.2))
+      };
+    }, trainedWorker.id);
+
+    const assignButton = page.locator(`button[data-action='assign-resource-site'][data-id='${setup.siteEntityId}']`);
+    await expect(assignButton).toBeEnabled();
+    await expect(assignButton).toContainText(`Assign ${setup.siteName}`);
+
+    await clickBattleCommandUntilEffect(
+      () => assignButton,
+      "deep-flow Worker assign captured resource site command",
+      async () => {
+        await page.waitForFunction(
+          ({ workerId, siteEntityId }) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+            const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+            return worker?.activeResourceSiteId === siteEntityId && site?.assignedWorkerId === workerId;
+          },
+          { workerId: trainedWorker.id, siteEntityId: setup.siteEntityId }
+        );
+      },
+      async () => selectWorkerFromScene(page, trainedWorker.id)
+    );
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Working Site");
+
+    await page.evaluate((siteEntityId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+      if (site) {
+        scene.selectionSystem.setSelection([site]);
+        scene.refreshBattleHud?.(0);
+      }
+    }, setup.siteEntityId);
+    await expect(page.locator(".side-panel")).toContainText("Worker slot Worker");
+    await expect(page.locator(".side-panel")).toContainText(`Worker bonus +${setup.bonusIncome}/${setup.incomeInterval}s`);
+    await expect(page.locator(".side-panel")).toContainText(`Boosted income +${setup.baseIncome + setup.bonusIncome}/${setup.incomeInterval}s`);
+
+    const incomeResult = await page.evaluate(
+      ({ workerId, siteEntityId }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+        const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+        if (!site || !worker) {
+          throw new Error("Expected assigned Worker and resource site during income coverage.");
+        }
+        site.incomeTimer = 0;
+        const resourceBefore = scene.resources.player[site.definition.resource];
+        scene.resourceSystem.update(site.definition.incomeInterval, scene.captureSites, scene.units);
+        const afterBoost = scene.resources.player[site.definition.resource];
+        site.incomeTimer = 0;
+        worker.commandMove({ x: site.position.x + site.definition.radius + 220, y: site.position.y + 40 }, false);
+        scene.resourceSystem.update(site.definition.incomeInterval, scene.captureSites, scene.units);
+        const afterRecall = scene.resources.player[site.definition.resource];
+        scene.selectionSystem.setSelection([site]);
+        scene.refreshBattleHud?.(0);
+        return {
+          afterBoost,
+          afterRecall,
+          boostDelta: afterBoost - resourceBefore,
+          recallDelta: afterRecall - afterBoost,
+          assignedWorkerId: site.assignedWorkerId,
+          boostActive: site.workerAssignmentBoostActive
+        };
+      },
+      { workerId: trainedWorker.id, siteEntityId: setup.siteEntityId }
+    );
+
+    expect(incomeResult.boostDelta).toBe(setup.baseIncome + setup.bonusIncome);
+    expect(incomeResult.recallDelta).toBe(setup.baseIncome);
+    expect(incomeResult.assignedWorkerId).toBeUndefined();
+    expect(incomeResult.boostActive).toBe(false);
+    await expect(page.locator(".side-panel")).toContainText("Worker slot Empty");
   });
 
   test("Worker explicit attack damages an enemy building and shows floating damage @hosted-deep-battle", async ({ page }) => {
@@ -2834,6 +2957,22 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
           break;
         }
       }
+      const returnedWithoutCommand = {
+        progress: barracks.constructionProgress,
+        status: barracks.constructionStatusDetail,
+        workerDistanceToSite: Math.hypot(worker.position.x - barracks.position.x, worker.position.y - barracks.position.y),
+        activeConstructionSiteId: worker.activeConstructionSiteId,
+        pausedConstructionSiteId: worker.pausedConstructionSiteId
+      };
+
+      scene.buildingSystem.requestConstruction(worker, barracks);
+      for (let index = 0; index < 120; index += 1) {
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        scene.buildingSystem.update(0.1);
+        if (barracks.constructionProgress > returnedWithoutCommand.progress + 0.04) {
+          break;
+        }
+      }
       const resumed = {
         progress: barracks.constructionProgress,
         status: barracks.constructionStatusDetail,
@@ -2917,20 +3056,25 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         progressBeforeMove,
         immediatePause,
         movedAway,
+        returnedWithoutCommand,
         resumed,
         moved
       };
     }, trainedWorker.id);
 
     expect(result.immediatePause.progress).toBe(result.progressBeforeMove);
-    expect(result.immediatePause.status).toBe("Paused - Worker away");
+    expect(result.immediatePause.status).toBe("Paused - issue Build to resume");
     expect(result.immediatePause.activeConstructionSiteId).toBeUndefined();
     expect(result.immediatePause.pausedConstructionSiteId).toBe(result.siteId);
     expect(result.immediatePause.moveTarget).toEqual(expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }));
     expect(result.movedAway.progress).toBe(result.progressBeforeMove);
-    expect(result.movedAway.status).toBe("Paused - Worker away");
+    expect(result.movedAway.status).toBe("Paused - issue Build to resume");
     expect(result.movedAway.workerFootprintDistance).toBeGreaterThan(64);
-    expect(result.resumed.progress).toBeGreaterThan(result.movedAway.progress + 0.03);
+    expect(result.returnedWithoutCommand.progress).toBe(result.movedAway.progress);
+    expect(result.returnedWithoutCommand.status).toBe("Paused - issue Build to resume");
+    expect(result.returnedWithoutCommand.activeConstructionSiteId).toBeUndefined();
+    expect(result.returnedWithoutCommand.pausedConstructionSiteId).toBe(result.siteId);
+    expect(result.resumed.progress).toBeGreaterThan(result.returnedWithoutCommand.progress + 0.03);
     expect(result.resumed.status).toBe("Building");
     expect(result.resumed.activeConstructionSiteId).toBe(result.siteId);
     expect(result.resumed.pausedConstructionSiteId).toBeUndefined();
@@ -3022,7 +3166,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText(
       "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses."
     );
-    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - completed-building actions locked.");
 
     const incompleteTowerCombat = await page.evaluate((towerId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -4097,7 +4241,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       { x: 500, y: 820 }
     ]);
     await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
-    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - completed-building actions locked.");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
 
     await completePlayerBuilding(page, "barracks");
@@ -4156,7 +4300,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText(
       "Defense: inactive while incomplete, attacks nearby enemies when complete, and researches tower defenses."
     );
-    await expect(page.locator(".side-panel")).toContainText("Incomplete - actions locked until construction finishes.");
+    await expect(page.locator(".side-panel")).toContainText("Incomplete - completed-building actions locked.");
     await completePlayerBuilding(page, "watchtower");
     await selectPlayerBuildingFromScene(page, "watchtower");
     await expect(page.locator(".side-panel")).toContainText("Defense ready");

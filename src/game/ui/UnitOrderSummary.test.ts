@@ -60,6 +60,28 @@ describe("UnitOrderSummary", () => {
     });
   });
 
+  it("describes Worker resource-site assignment travel and working states", () => {
+    expect(
+      describeUnitOrder({
+        activeResourceSiteId: "crown_shrine",
+        activeResourceSiteLabel: "Crown Shrine",
+        moveTarget: { x: 850, y: 780 }
+      })
+    ).toMatchObject({
+      label: "Returning to Site",
+      detail: expect.stringContaining("bonus starts when the Worker is in range")
+    });
+    expect(
+      describeUnitOrder({
+        activeResourceSiteId: "crown_shrine",
+        activeResourceSiteLabel: "Crown Shrine"
+      })
+    ).toMatchObject({
+      label: "Working Site",
+      detail: expect.stringContaining("Boosting captured-site income")
+    });
+  });
+
   it("keeps explicit move and attack copy ahead of behaviour mode copy", () => {
     expect(
       describeUnitOrder({
@@ -89,8 +111,9 @@ describe("UnitOrderSummary", () => {
         { moveTarget: { x: 10, y: 0 } },
         { moveTarget: { x: 12, y: 0 }, moveOrderCombatSuppressionSeconds: 0.3 },
         { attackTargetId: "enemy" },
-        { behaviourMode: "hold_ground" }
+        { behaviourMode: "hold_ground" },
+        { activeResourceSiteId: "crown_shrine" }
       ])
-    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground");
+    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground, 1 Working Site");
   });
 });

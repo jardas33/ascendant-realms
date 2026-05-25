@@ -166,6 +166,75 @@ describe("CommandPanel", () => {
     expect(markup).toContain("Already repaired. HP 1450/1450");
   });
 
+  it("renders Worker resource-site assignment commands with invalid site reasons", () => {
+    const worker = fakeWorker();
+
+    const markup = renderCommandActions(
+      worker,
+      fakeSnapshot(["command_hall"], undefined, [], [], [
+        {
+          id: "crown_shrine",
+          name: "Crown Shrine",
+          resource: "crowns",
+          owner: "player",
+          baseIncomeAmount: 30,
+          incomeInterval: 5,
+          workerBonusAmount: 6,
+          boostedIncomeAmount: 30,
+          isAssignable: true,
+          status: "Captured - empty Worker slot"
+        },
+        {
+          id: "stone_quarry",
+          name: "Stone Quarry",
+          resource: "stone",
+          owner: "neutral",
+          baseIncomeAmount: 25,
+          incomeInterval: 5,
+          workerBonusAmount: 5,
+          boostedIncomeAmount: 25,
+          isAssignable: false,
+          status: "Neutral - capture before assigning a Worker"
+        }
+      ])
+    );
+
+    expect(markup).toContain('data-testid="command-assign-resource-site-crown_shrine"');
+    expect(markup).toContain("Assign Crown Shrine");
+    expect(markup).toContain("Base +30, Worker +6/5s");
+    expect(markup).toContain("Boosted tick +36 while Worker is assigned and nearby.");
+    expect(markup).toContain("Neutral - capture before assigning a Worker");
+    expect(markup).toContain('data-testid="command-assign-resource-site-stone_quarry"');
+    expect(markup).toContain("disabled");
+  });
+
+  it("keeps a filled resource-site Worker slot locked for other Workers", () => {
+    const worker = fakeWorker();
+
+    const markup = renderCommandActions(
+      worker,
+      fakeSnapshot(["command_hall"], undefined, [], [], [
+        {
+          id: "crown_shrine",
+          name: "Crown Shrine",
+          resource: "crowns",
+          owner: "player",
+          baseIncomeAmount: 30,
+          incomeInterval: 5,
+          workerBonusAmount: 6,
+          boostedIncomeAmount: 36,
+          assignedWorkerId: "other-worker",
+          assignedWorkerName: "Worker",
+          isAssignable: false,
+          status: "Worker working"
+        }
+      ])
+    );
+
+    expect(markup).toContain("Worker working");
+    expect(markup).toContain("disabled");
+  });
+
   it("keeps Worker building costs visible when a structure is unaffordable", () => {
     const worker = fakeWorker();
 
@@ -212,7 +281,8 @@ function fakeSnapshot(
   completedBuildingIds: string[],
   resources = { crowns: 999, stone: 999, iron: 999, aether: 999 },
   researchedUpgradeIds: string[] = [],
-  repairTargets: HUDSnapshot["repairTargets"] = []
+  repairTargets: HUDSnapshot["repairTargets"] = [],
+  resourceSites: HUDSnapshot["resourceSites"] = []
 ): HUDSnapshot {
   return {
     resources,
@@ -227,6 +297,7 @@ function fakeSnapshot(
       heroLevel: 1
     },
     repairTargets,
+    resourceSites,
     minimap: {
       mapWidth: 1,
       mapHeight: 1,

@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.21.3 worker explicit attack damage and status clarity
+Last updated: 2026-05-24 v0.22 resource site worker assignment foundation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
+
+Status: v0.22 adds the first resource-economy expansion after the v0.21.x Worker intent work. It keeps the current capturable resource-site economy and lets Workers explicitly support friendly captured sites for a small bonus. It does not add classic carry/drop-off harvesting.
+
+Baseline:
+
+- Starting commit: `460d576`, `Checkpoint v0.21.3 worker explicit attack damage and status clarity`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- v0.21.3 was pushed to `origin/main` before v0.22 work began.
+- Local `gh` remains unavailable, so GitHub Actions workflow inspection/dispatch was not performed from this environment.
+
+Docs/package metadata:
+
+- Added `docs/V022_RESOURCE_SITE_WORKER_ASSIGNMENT_SPEC.md`.
+- Added `docs/V022_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V022_EMMANUEL_RETEST_CHECKLIST.md`.
+- Package checkpoint string is now `v0.22 resource site worker assignment foundation`.
+- Private playtest package validation now requires the v0.22 spec, implementation report, and Emmanuel retest checklist.
+
+Runtime/UI summary:
+
+- Captured resource sites keep their baseline passive income.
+- Capture sites now expose one runtime Worker assignment slot.
+- Selected Workers can explicitly assign to a friendly captured site from the Worker command panel or by right-clicking that site.
+- Assigned Workers travel to the site, then show `Working Site` when in range.
+- Proximity alone does not assign a Worker and does not start bonus income.
+- Moving, attacking, building, repairing, or assigning elsewhere recalls/reassigns the Worker and clears the old site boost.
+- Worker death, missing Worker state, or lost/invalid site control clears the assignment.
+- Assigned Workers add a conservative 20% rounded bonus, minimum +1, to the site's existing resource tick.
+- The selected resource-site panel shows control, resource type, base income, Worker slot, Worker bonus, boosted income, and invalid/uncaptured guidance.
+- The Worker command panel shows base income, Worker bonus, interval, and disabled reasons for neutral/enemy/filled slots.
+- No classic harvesting, cargo, drop-off, enemy worker mining AI, enemy construction AI, new maps/factions/units/buildings, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, or formations are included.
+
+Verification:
+
+```text
+npm exec tsc -- --noEmit PASS.
+npm exec vitest run src/game/entities/UnitCommandState.test.ts src/game/systems/ResourceSystem.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/SelectedEntityPanel.test.ts src/game/ui/UnitOrderSummary.test.ts src/game/playtest/PlaytestPackageValidation.test.ts -- --reporter=dot PASS, 6 files / 41 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment boosts" --reporter=line PASS, 1 focused hosted Worker assignment regression.
+npm test PASS, 66 files / 500 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 22 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+```
+
+Closeout note: after this handoff update, rerun content validation/package validation as needed, package and verify the private playtest build, run `git diff --check`, commit as `Checkpoint v0.22 resource site worker assignment foundation`, regenerate/verify the clean final package from the commit, then push `main`.
+
+Emmanuel retest focus: use the clean v0.22 package. Capture a resource site, train/select a Worker, explicitly assign the Worker, confirm `Returning to Site` then `Working Site`, confirm the selected site shows Worker slot/bonus/boosted income, confirm resources tick at base plus bonus while assigned, move/reassign the Worker and confirm the old bonus stops, confirm neutral/enemy sites block assignment, and confirm standing nearby without an explicit command does not assign. Regression-check v0.21 Worker construction, repair, explicit attack, and Burn/status marker clarity.
 
 ## Current v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
 

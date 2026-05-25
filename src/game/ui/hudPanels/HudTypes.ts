@@ -1,10 +1,12 @@
 import type { ResourceBag } from "../../core/GameTypes";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
+import type { CaptureSite } from "../../entities/CaptureSite";
 import type { Unit } from "../../entities/Unit";
 import type { BehaviourMode } from "../../systems/BehaviourModeSystem";
 import type { TechState } from "../../systems/PrerequisiteSystem";
 import type { RepairTargetSummary } from "../../systems/RepairSystem";
+import type { ResourceSiteAssignmentSummary } from "../../systems/ResourceSystem";
 import type { TutorialStepViewModel } from "../../tutorial/TutorialStepModel";
 import type { MinimapSnapshot } from "../MinimapView";
 
@@ -15,6 +17,7 @@ export interface HUDCallbacks {
   onUpgrade: (upgradeId: string, sourceBuildingId: string) => void;
   onCancelUpgrade: (sourceBuildingId: string, queueIndex: number) => void;
   onRepair: (targetBuildingId: string, sourceUnitId: string) => void;
+  onAssignResourceSite: (targetSiteId: string, sourceUnitId: string) => void;
   onAbility: (abilityId: string) => void;
   onBehaviourMode: (mode: BehaviourMode) => void;
   onTutorialNext: () => void;
@@ -27,7 +30,7 @@ export interface HUDCallbacks {
 export interface HUDSnapshot {
   resources: ResourceBag;
   hero: Hero;
-  selected: Array<Unit | Building>;
+  selected: Array<Unit | Building | CaptureSite>;
   elapsedSeconds: number;
   isPlacing: boolean;
   status: string;
@@ -35,6 +38,7 @@ export interface HUDSnapshot {
   tutorial?: TutorialStepViewModel;
   techState: TechState;
   repairTargets: RepairTargetSummary[];
+  resourceSites: ResourceSiteAssignmentSummary[];
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
   pauseMenu?: HUDPauseMenuSnapshot;

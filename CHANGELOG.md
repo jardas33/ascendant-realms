@@ -1,5 +1,42 @@
 # Changelog
 
+## v0.22 Resource Site Worker Assignment Foundation - 2026-05-24
+
+This checkpoint adds the first resource-economy expansion after the v0.21.x Worker intent work. Ascendant Realms keeps its capturable resource-site economy; Workers now explicitly support friendly captured sites for bonus income instead of doing classic carry/drop-off harvesting.
+
+### Included
+
+- Added `docs/V022_RESOURCE_SITE_WORKER_ASSIGNMENT_SPEC.md`.
+- Added `docs/V022_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V022_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and package validation to name `v0.22 resource site worker assignment foundation`.
+- Added one Worker assignment slot to each resource site.
+- Added explicit Worker assignment via Worker command buttons and selected-Worker right-click on friendly captured sites.
+- Kept proximity alone from assigning Workers or starting bonus income.
+- Preserved baseline passive site income and added a small 20% rounded Worker bonus, minimum +1, to the site's existing resource tick while the assigned Worker is alive and in range.
+- Cleared assignment on move, attack, build, repair, reassignment, Worker death, and lost/invalid site control.
+- Added Worker order text for `Returning to Site` and `Working Site`.
+- Added selected-site UI for control, resource type, base income, Worker slot, Worker bonus, boosted income, and invalid assignment reasons.
+- Added focused unit/UI/package and hosted deep-battle coverage for assignment, invalid targets, no proximity assignment, boost income, recall/reassign/death/site-loss clearing, and command override behavior.
+
+### Verdict
+
+- Runtime gameplay changed: yes, Workers can now explicitly boost friendly captured resource sites.
+- Gameplay numbers changed: narrowly, assigned Workers add a conservative site-local income bonus; baseline site income remains unchanged.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no classic carry/drop-off harvesting, cargo, or drop-off loop.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused Worker assignment/unit/UI/package tests, focused hosted Worker assignment regression, `npm test` with 66 files / 500 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, controls verifier with 1658 checks, hosted deep-battle with 22 tests, and hosted smoke with 14 tests.
+
+### Next
+
+- Generate and verify the final clean v0.22 package after the checkpoint commit, then use it for Emmanuel's Worker assignment retest before starting broader economy work.
+
 ## v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
 
 This checkpoint follows Emmanuel's FAIL / MIXED retest of the latest v0.21.x Worker package. It fixes Worker explicit attack damage visibility/proof and clarifies Burn/status marker readability without starting harvesting or v0.22.

@@ -161,7 +161,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
   const selectionSystem = new SelectionSystem(() => [
     ...getUnits().filter((unit) => unit.team === "player"),
-    ...getBuildings().filter((building) => building.team === "player")
+    ...getBuildings().filter((building) => building.team === "player"),
+    ...getCaptureSites()
   ]);
 
   const movementSystem = new MovementSystem({
@@ -258,6 +259,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
   const resourceSystem = new ResourceSystem({
     resources,
+    getCaptureSites,
     onCapture: (site, owner) => {
       if (owner === "player") {
         runtime.recordResourceCaptured(site.definition.id);
@@ -270,11 +272,14 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} captured by enemy`);
       }
     },
-    onIncome: (site, owner, amount) => {
+    onIncome: (site, owner, amount, breakdown) => {
       if (owner === "player") {
-        showMessage(`+${amount} ${site.definition.resource}`, site.position.x, site.position.y - 64, "#f5efc2");
+        const bonusText =
+          breakdown && breakdown.workerBonusAmount > 0 ? ` (Worker +${breakdown.workerBonusAmount})` : "";
+        showMessage(`+${amount} ${site.definition.resource}${bonusText}`, site.position.x, site.position.y - 64, "#f5efc2");
       }
     },
+    onMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options),
     onCaptureBonus: (site, owner, bonus) => {
       if (owner === "player") {
         const resourceText = formatResourceBonus(bonus.resources);
@@ -384,6 +389,13 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
           AudioManager.play("ui_click");
         }
       },
+      onAssignResourceSite: (targetSiteId, sourceUnitId) => {
+        const worker = getUnits().find((entry) => entry.id === sourceUnitId && entry.alive && entry.team === "player");
+        const site = getCaptureSites().find((entry) => entry.id === targetSiteId && entry.alive);
+        if (resourceSystem.requestWorkerAssignment(worker, site, getCaptureSites())) {
+          AudioManager.play("ui_click");
+        }
+      },
       onAbility: (abilityId) => {
         if (abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected())) {
           AudioManager.play("ability_cast");
@@ -426,6 +438,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     setRallyPoint,
     issueConstructionOrder: (target, selectedUnits) => buildingSystem.issueConstructionOrder(target, selectedUnits),
     issueRepairOrder: (target, selectedUnits) => repairSystem.issueRepairOrder(target, selectedUnits),
+    issueResourceSiteAssignmentOrder: (target, selectedUnits) =>
+      resourceSystem.issueWorkerAssignmentOrder(target, selectedUnits),
     selectHero: () => {
       if (hero.alive) {
         selectionSystem.setSelection([hero]);

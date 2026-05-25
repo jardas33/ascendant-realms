@@ -21,6 +21,7 @@ interface InputSystemOptions {
   setRallyPoint: (point: Position, buildings: Building[]) => boolean;
   issueConstructionOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   issueRepairOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
+  issueResourceSiteAssignmentOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   selectHero: () => void;
   centerOnHero: () => void;
   castAbilitySlot: (slot: number) => void;
@@ -240,6 +241,11 @@ export class InputSystem {
 
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     const target = this.options.findWorldEntityAt(point);
+    if (this.options.issueResourceSiteAssignmentOrder(target, selectedUnits)) {
+      this.attackMoveMode = false;
+      return;
+    }
+
     if (this.issueAttackOrder(target, selectedUnits)) {
       this.attackMoveMode = false;
       return;
@@ -273,7 +279,7 @@ export class InputSystem {
   }
 
   private issueAttackOrder(target: BaseEntity | undefined, selectedUnits: Unit[]): boolean {
-    if (!target?.alive || target.team === "player" || selectedUnits.length === 0) {
+    if (!target?.alive || target.kind === "capture-site" || target.team === "player" || selectedUnits.length === 0) {
       return false;
     }
 
@@ -289,7 +295,7 @@ export class InputSystem {
   private updateAttackCursor(point: Position): void {
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     const target = this.options.findWorldEntityAt(point);
-    this.setCanvasCursor(target?.alive && target.team !== "player" && selectedUnits.length > 0 ? "attack" : "");
+    this.setCanvasCursor(target?.alive && target.kind !== "capture-site" && target.team !== "player" && selectedUnits.length > 0 ? "attack" : "");
   }
 
   private setCanvasCursor(mode: "" | "attack"): void {

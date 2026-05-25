@@ -66,6 +66,7 @@ Known current realities:
 - v0.21.1 closes out v0.21 without runtime changes: `79d038b` was pushed, Fast confidence passed, package metadata now names the closeout checkpoint, and a manual workflow_dispatch release matrix with `run_release_matrix=true` remains recommended for exact remote hosted/simulator evidence because push workflow rules skip those lanes.
 - v0.21.2 follows Emmanuel's `f6a121b` Worker repair retest: construction and repair now require explicit Worker commands plus range instead of proximity-only start/resume, explicit Worker attack works against valid enemy buildings through existing weak Worker combat, idle Workers still do not auto-attack buildings by default, status badges sit beside healthbars, and future crossed-swords/hammer cursor affordances are docs-only. Rerun GitHub Actions after push because runtime Worker intent, combat targeting, and UI feedback changed.
 - v0.21.3 follows Emmanuel's FAIL / MIXED Worker attack/status retest: explicit Worker building attacks now visibly and measurably damage valid enemy buildings through an explicit-order-only damage floor, Worker building hits show floating damage when enabled, idle Workers still do not auto-attack buildings, and Burn/status markers render as a labeled chip above the health bar. Rerun GitHub Actions after push because runtime combat/UI feedback changed.
+- v0.22 keeps the existing capturable resource-site economy and adds explicit Worker assignment to friendly captured sites for a small site-local income bonus. Proximity alone does not assign Workers, baseline site income remains unchanged, and no classic carry/drop-off harvesting, cargo, drop-off loop, enemy worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 
 ## Required Automated Checks
 
@@ -193,6 +194,12 @@ Current v0.21.3 checkpoint result:
 
 ```text
 PASS: 65 test files, 485 tests
+```
+
+Current v0.22 checkpoint result:
+
+```text
+PASS: 66 test files, 500 tests
 ```
 
 Current v0.16.13 checkpoint result:

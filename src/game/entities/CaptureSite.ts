@@ -10,6 +10,10 @@ export class CaptureSite extends BaseEntity {
   capturingTeam: Team = "neutral";
   captureProgress = 0;
   incomeTimer = 0;
+  assignedWorkerId?: string;
+  assignedWorkerName?: string;
+  workerAssignmentStatusDetail = "Empty worker slot";
+  workerAssignmentBoostActive = false;
 
   private ring?: Phaser.GameObjects.Arc;
   private progressRing?: Phaser.GameObjects.Arc;
@@ -42,7 +46,22 @@ export class CaptureSite extends BaseEntity {
     this.captureProgress = 0;
     this.capturingTeam = "neutral";
     this.incomeTimer = 0;
+    this.clearWorkerAssignment();
     this.updateVisuals();
+  }
+
+  setWorkerAssignment(workerId: string, workerName: string, status = `${workerName} traveling`): void {
+    this.assignedWorkerId = workerId;
+    this.assignedWorkerName = workerName;
+    this.workerAssignmentStatusDetail = status;
+    this.workerAssignmentBoostActive = false;
+  }
+
+  clearWorkerAssignment(status = "Empty worker slot"): void {
+    this.assignedWorkerId = undefined;
+    this.assignedWorkerName = undefined;
+    this.workerAssignmentStatusDetail = status;
+    this.workerAssignmentBoostActive = false;
   }
 
   updateVisuals(): void {

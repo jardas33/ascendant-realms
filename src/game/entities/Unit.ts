@@ -36,6 +36,8 @@ export class Unit extends BaseEntity {
   pausedConstructionSiteId?: string;
   activeRepairTargetId?: string;
   pausedRepairTargetId?: string;
+  activeResourceSiteId?: string;
+  activeResourceSiteLabel?: string;
   behaviourMode: BehaviourMode = DEFAULT_BEHAVIOUR_MODE;
   moveOrderCombatSuppressionSeconds = 0;
   attackCooldownRemaining = 0;
@@ -117,6 +119,7 @@ export class Unit extends BaseEntity {
   commandMove(target: Position, attackMove = false): void {
     this.pauseConstructionWork();
     this.pauseRepairWork();
+    this.clearResourceSiteWork();
     this.moveTarget = { ...target };
     this.attackTargetId = undefined;
     this.attackTargetLabel = undefined;
@@ -127,6 +130,7 @@ export class Unit extends BaseEntity {
   commandAttack(targetId: string, targetLabel?: string): void {
     this.pauseConstructionWork();
     this.pauseRepairWork();
+    this.clearResourceSiteWork();
     this.attackTargetId = targetId;
     this.attackTargetLabel = targetLabel;
     this.attackMove = true;
@@ -135,6 +139,7 @@ export class Unit extends BaseEntity {
 
   commandConstructionMove(target: Position, siteId: string): void {
     this.pauseRepairWork();
+    this.clearResourceSiteWork();
     this.activeConstructionSiteId = siteId;
     this.pausedConstructionSiteId = undefined;
     this.moveTarget = { ...target };
@@ -145,12 +150,14 @@ export class Unit extends BaseEntity {
 
   markConstructionWork(siteId: string): void {
     this.pauseRepairWork();
+    this.clearResourceSiteWork();
     this.activeConstructionSiteId = siteId;
     this.pausedConstructionSiteId = undefined;
   }
 
   commandRepairMove(target: Position, repairTargetId: string): void {
     this.pauseConstructionWork();
+    this.clearResourceSiteWork();
     this.activeRepairTargetId = repairTargetId;
     this.pausedRepairTargetId = undefined;
     this.moveTarget = { ...target };
@@ -161,6 +168,7 @@ export class Unit extends BaseEntity {
 
   markRepairWork(repairTargetId: string): void {
     this.pauseConstructionWork();
+    this.clearResourceSiteWork();
     this.activeRepairTargetId = repairTargetId;
     this.pausedRepairTargetId = undefined;
     this.attackTargetId = undefined;
@@ -174,6 +182,36 @@ export class Unit extends BaseEntity {
     }
     if (!repairTargetId || this.pausedRepairTargetId === repairTargetId) {
       this.pausedRepairTargetId = undefined;
+    }
+  }
+
+  commandResourceSiteMove(target: Position, siteId: string, siteLabel: string): void {
+    this.pauseConstructionWork();
+    this.pauseRepairWork();
+    this.activeResourceSiteId = siteId;
+    this.activeResourceSiteLabel = siteLabel;
+    this.moveTarget = { ...target };
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+    this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
+  markResourceSiteWork(siteId: string, siteLabel: string): void {
+    this.pauseConstructionWork();
+    this.pauseRepairWork();
+    this.activeResourceSiteId = siteId;
+    this.activeResourceSiteLabel = siteLabel;
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+    this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
+  clearResourceSiteWork(siteId?: string): void {
+    if (!siteId || this.activeResourceSiteId === siteId) {
+      this.activeResourceSiteId = undefined;
+      this.activeResourceSiteLabel = undefined;
     }
   }
 

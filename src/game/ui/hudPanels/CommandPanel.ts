@@ -128,6 +128,34 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
           .join("")
       : "";
 
+  const resourceSiteButtons =
+    selectedOne instanceof Unit && selectedOne.definition.id === "worker"
+      ? snapshot.resourceSites
+          .map((site) => {
+            const locked = site.owner !== "player" || Boolean(site.assignedWorkerId && site.assignedWorkerId !== selectedOne.id);
+            const assignedToThisWorker = site.assignedWorkerId === selectedOne.id;
+            const boostedIncome = site.baseIncomeAmount + site.workerBonusAmount;
+            return renderCommandButton({
+              action: "assign-resource-site",
+              verb: assignedToThisWorker ? "Reassign" : "Assign",
+              id: site.id,
+              sourceId: selectedOne.id,
+              name: site.name,
+              detail:
+                site.owner === "player"
+                  ? `Base +${site.baseIncomeAmount}, Worker +${site.workerBonusAmount}/${site.incomeInterval}s`
+                  : site.status,
+              description:
+                site.owner === "player"
+                  ? `Captured ${site.resource} site. ${site.status}. Boosted tick +${boostedIncome} while Worker is assigned and nearby.`
+                  : "Capture this resource site before assigning a Worker.",
+              effect: site.owner === "player" ? "Effect: adds a small bonus to this site's existing passive income." : undefined,
+              locked
+            });
+          })
+          .join("")
+      : "";
+
   const sections = [];
   if (selectedOne instanceof Building) {
     sections.push(`<div class="action-group"><strong>Role</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p></div>`);
@@ -140,6 +168,9 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
   if (repairButtons) {
     sections.push(`<div class="action-group"><strong>Repair</strong>${repairButtons}</div>`);
+  }
+  if (resourceSiteButtons) {
+    sections.push(`<div class="action-group"><strong>Resource Sites</strong>${resourceSiteButtons}</div>`);
   }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
@@ -155,7 +186,7 @@ function formatCommandDetail(cost: BuildingDefinition["cost"], lockReason?: stri
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
 
 function renderCommandButton(options: {
-  action: "build" | "train" | "upgrade" | "repair";
+  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site";
   verb: string;
   id: string;
   sourceId: string;

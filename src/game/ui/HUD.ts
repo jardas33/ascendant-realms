@@ -88,6 +88,10 @@ export class HUD {
         callbacks.onRepair(id, button.dataset.sourceId ?? "");
         handled = true;
       }
+      if (action === "assign-resource-site") {
+        callbacks.onAssignResourceSite(id, button.dataset.sourceId ?? "");
+        handled = true;
+      }
       if (action === "ability") {
         callbacks.onAbility(id);
         handled = true;

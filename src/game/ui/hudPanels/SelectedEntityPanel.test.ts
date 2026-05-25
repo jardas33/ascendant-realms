@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID } from "../../data/contentIndex";
 import { Building } from "../../entities/Building";
+import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
 import { renderSelectionSummary } from "./SelectedEntityPanel";
 
@@ -78,6 +79,36 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("HP 420/600");
     expect(markup).toContain("Repair Damaged - select a Worker and use Repair/right-click");
   });
+
+  it("shows captured resource-site Worker slot and income boost details", () => {
+    const site = fakeCaptureSite({
+      owner: "player",
+      assignedWorkerName: "Worker",
+      workerAssignmentStatusDetail: "Worker working",
+      workerAssignmentBoostActive: true
+    });
+
+    const markup = renderSelectionSummary(site, []);
+
+    expect(markup).toContain("Control Friendly captured");
+    expect(markup).toContain("Resource crowns");
+    expect(markup).toContain("Base income +30/5s");
+    expect(markup).toContain("Worker slot Worker");
+    expect(markup).toContain("Worker bonus +6/5s");
+    expect(markup).toContain("Boosted income +36/5s");
+    expect(markup).toContain("Status Worker working");
+  });
+
+  it("explains neutral resource sites must be captured before Worker assignment", () => {
+    const site = fakeCaptureSite({ owner: "neutral", workerAssignmentStatusDetail: "Empty worker slot" });
+
+    const markup = renderSelectionSummary(site, []);
+
+    expect(markup).toContain("Control Neutral");
+    expect(markup).toContain("Worker slot Empty");
+    expect(markup).toContain("Status Capture this site before assigning a Worker.");
+    expect(markup).toContain("Capture this site before assigning a Worker.");
+  });
 });
 
 function fakeUnit(id: string, name: string, behaviourMode: "hold_ground" | "guard_area" | "press_attack"): Unit {
@@ -129,4 +160,34 @@ function fakeBuilding(
     isCompleted: () => !options.underConstruction,
     isUnderConstruction: () => Boolean(options.underConstruction)
   }) as Building;
+}
+
+function fakeCaptureSite(
+  options: {
+    owner: "player" | "enemy" | "neutral";
+    assignedWorkerName?: string;
+    workerAssignmentStatusDetail?: string;
+    workerAssignmentBoostActive?: boolean;
+  }
+): CaptureSite {
+  return Object.assign(Object.create(CaptureSite.prototype), {
+    id: "crown_shrine",
+    kind: "capture-site",
+    team: options.owner,
+    owner: options.owner,
+    alive: true,
+    definition: {
+      id: "crown_shrine",
+      name: "Crown Shrine",
+      resource: "crowns",
+      x: 850,
+      y: 780,
+      radius: 76,
+      incomeAmount: 30,
+      incomeInterval: 5
+    },
+    assignedWorkerName: options.assignedWorkerName,
+    workerAssignmentStatusDetail: options.workerAssignmentStatusDetail ?? "Empty worker slot",
+    workerAssignmentBoostActive: Boolean(options.workerAssignmentBoostActive)
+  }) as CaptureSite;
 }

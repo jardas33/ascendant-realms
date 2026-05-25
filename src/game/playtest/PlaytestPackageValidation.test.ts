@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.21.3 worker explicit attack damage and status clarity",
+          checkpoint: "v0.22 resource site worker assignment foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -110,6 +110,9 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0213_WORKER_INTENT_CLOSEOUT.md", sizeBytes: 20, textContent: "Worker intent closeout" },
       { path: "V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md", sizeBytes: 20, textContent: "Worker attack retest intake" },
       { path: "V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md", sizeBytes: 20, textContent: "Cursor note" },
+      { path: "V022_RESOURCE_SITE_WORKER_ASSIGNMENT_SPEC.md", sizeBytes: 20, textContent: "Resource site Worker assignment spec" },
+      { path: "V022_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Resource site Worker assignment report" },
+      { path: "V022_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Resource site Worker assignment retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }
