@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-05-24 v0.21.2 worker intent clarity and healthbar polish
+Updated: 2026-05-24 v0.21.3 worker explicit attack damage and status clarity
+
+## v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
+
+Scope: follow Emmanuel's FAIL / MIXED retest by fixing Worker explicit attack damage visibility/proof and clarifying the Burn/status marker. This pass does not add harvesting, repair expansion, enemy repair AI, enemy construction AI, new units/buildings/maps/factions, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or test weakening.
+
+Baseline:
+
+- Starting local commit: `5b33fc5`, `Checkpoint v0.21.3 worker intent closeout and CI verification`.
+- Starting branch state: clean `main`, ahead of `origin/main` by 1 local commit.
+- Emmanuel retest result: Worker moved to an enemy building after explicit attack but showed no damage numbers and no visible enemy-building HP reduction; Burn/status marker still looked like a red/orange dot at the start of the health bar.
+
+Included work:
+
+- Updated `docs/V0213_WORKER_INTENT_CLOSEOUT.md`.
+- Added `docs/V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md`.
+- Added `docs/V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Updated package metadata and validation to name `v0.21.3 worker explicit attack damage and status clarity`.
+- Included the v0.21.3 closeout, attack retest intake, and cursor note docs in private playtest packages.
+- Added a narrow explicit Worker building-attack damage floor only for explicit Worker building targets.
+- Kept idle Workers from auto-attacking enemy buildings by proximity.
+- Let Worker explicit building hits show floating damage by carrying source through combat damage callbacks.
+- Changed Burn/status markers into a labeled `BURN` chip above the health bar so the marker is not mistaken for broken HP fill.
+
+Remote CI:
+
+- Previous GitHub Actions push run `26377505856` / run `#120` on `main` / `ab02e9b`: Fast confidence passed.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact workflow-dispatch release matrix for `ab02e9b` was not triggered from this environment because local `gh` is unavailable, no `GITHUB_TOKEN`/`GH_TOKEN` is present, the GitHub connector exposes run/job inspection but no workflow_dispatch creation, and an unauthenticated workflow_dispatch REST attempt returned `401 Unauthorized`.
+- Run CI Release Matrix Dry Run manually on `main` with `run_release_matrix=true` after the final v0.21.3 commit if exact remote hosted/simulator evidence is needed before v0.22.
+- Non-blocking GitHub notice: the Actions page displayed a future Node.js 20 action-runtime deprecation warning for `actions/checkout@v4` and `actions/setup-node@v4`; it did not fail Fast confidence.
+
+Verification and closeout so far:
+
+```text
+npm test PASS, 65 files / 487 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Worker explicit attack damages" --reporter=line PASS, 1 focused Worker attack regression.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5b33fc5-dirty generated.
+npm run verify:playtest-package PASS, 62 checks.
+git diff --check PASS.
+```
+
+Closeout note: amend the local unpushed v0.21.3 commit, then regenerate and verify a clean package from the final v0.21.3 commit.
 
 ## v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
 

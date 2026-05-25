@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.21.2 worker intent clarity and healthbar polish";
+const CHECKPOINT = "v0.21.3 worker explicit attack damage and status clarity";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -83,6 +83,9 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0211_WORKER_REPAIR_CLOSEOUT.md", join(packageDir, "V0211_WORKER_REPAIR_CLOSEOUT.md"));
   await copyMarkdown("docs/V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md", join(packageDir, "V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md"));
   await copyMarkdown("docs/V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md", join(packageDir, "V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md"));
+  await copyMarkdown("docs/V0213_WORKER_INTENT_CLOSEOUT.md", join(packageDir, "V0213_WORKER_INTENT_CLOSEOUT.md"));
+  await copyMarkdown("docs/V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md", join(packageDir, "V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md"));
+  await copyMarkdown("docs/V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md", join(packageDir, "V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -166,7 +169,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.21.2 Worker intent clarity retest, start with V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md and V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md, then use V0211_WORKER_REPAIR_CLOSEOUT.md, V021_WORKER_REPAIR_FOUNDATION_SPEC.md, and V021_IMPLEMENTATION_REPORT.md for repair details. Focus on: Command Hall still trains Workers only; Workers still build Barracks, Mystic Lodge, and Watchtower; construction and repair require explicit Worker commands plus range; moving a Worker away stops active construction/repair intent; moving back by itself does not resume work; reissuing Build/Resume Construction or Repair resumes progress; enemy, incomplete, and full-health buildings remain invalid repair targets; selected Workers can weakly attack valid enemy buildings when explicitly ordered; Workers do not auto-attack enemy buildings by default; ranged/status damage reduces Worker health without a stray red dot inside the health bar. Do not judge harvesting, resource-dropoff economy, repair cost balance, enemy repair/construction AI, save persistence, new content, new cursor art, or final art in this build.
+For the v0.21.3 Worker explicit attack/status retest, start with V0213_WORKER_INTENT_CLOSEOUT.md, V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md, and V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md, then use V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md, V0211_WORKER_REPAIR_CLOSEOUT.md, V021_WORKER_REPAIR_FOUNDATION_SPEC.md, and V021_IMPLEMENTATION_REPORT.md for repair details. Focus on: Command Hall still trains Workers only; Workers still build Barracks, Mystic Lodge, and Watchtower; construction and repair require explicit Worker commands plus range; moving a Worker away stops active construction/repair intent; moving back by itself does not resume work; reissuing Build/Resume Construction or Repair resumes progress; enemy, incomplete, and full-health buildings remain invalid repair targets; selected Workers weakly but visibly damage valid enemy buildings when explicitly ordered; Worker building hits show floating damage when floating text is enabled; Workers do not auto-attack enemy buildings by default; ranged Burn/status damage reduces health while the labeled status marker stays clear of the health fill. Do not judge harvesting, resource-dropoff economy, repair cost balance, enemy repair/construction AI, save persistence, new content, new cursor art, or final art in this build.
 
 ## Known Warning
 

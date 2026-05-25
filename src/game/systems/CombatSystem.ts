@@ -14,8 +14,12 @@ import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 type Combatant = Unit | Building;
 
 const MELEE_VISUAL_CONTACT_MARGIN = 32;
+const MELEE_BUILDING_VISUAL_CONTACT_MARGIN = 44;
 const MELEE_VISIBLE_CONTACT_FLOOR = 66;
+const MELEE_BUILDING_APPROACH_CLEARANCE = 22;
+const MELEE_APPROACH_RANGE_BUFFER = 6;
 const PRESS_ATTACK_SEARCH_RADIUS = DEFAULT_AGGRO_RADIUS + 120;
+const EXPLICIT_WORKER_BUILDING_DAMAGE_FLOOR = 4;
 
 interface CombatSystemOptions {
   scene: Phaser.Scene;
@@ -23,7 +27,7 @@ interface CombatSystemOptions {
   getBuildings: () => Building[];
   getProjectiles: () => Projectile[];
   addProjectile: (projectile: Projectile) => void;
-  onDamage: (target: BaseEntity, amount: number) => void;
+  onDamage: (target: BaseEntity, amount: number, source: Combatant | Projectile) => void;
   onUnitDamage?: (source: Unit, target: BaseEntity, amount: number) => void;
   onKill: (killer: Combatant | Projectile, target: BaseEntity) => void;
   onStatusApplied?: (target: BaseEntity, statusName: string) => void;
@@ -80,10 +84,25 @@ export class CombatSystem {
     }
 
     const direction = normalizeVector(target.position.x - attacker.position.x, target.position.y - attacker.position.y);
+    const approachDistance = this.getApproachDistance(attacker, target, range);
     attacker.moveTarget = {
-      x: target.position.x - direction.x * Math.max(18, range * 0.7),
-      y: target.position.y - direction.y * Math.max(18, range * 0.7)
+      x: target.position.x - direction.x * approachDistance,
+      y: target.position.y - direction.y * approachDistance
     };
+  }
+
+  private getApproachDistance(attacker: Unit, target: BaseEntity, range: number): number {
+    const defaultApproachDistance = Math.max(18, range * 0.7);
+    if (!(target instanceof Building) || this.getRange(attacker) > 45) {
+      return defaultApproachDistance;
+    }
+
+    const targetFootprintRadius = Math.hypot(target.definition.size.width / 2, target.definition.size.height / 2);
+    const buildingApproachDistance = Math.min(
+      range - MELEE_APPROACH_RANGE_BUFFER,
+      targetFootprintRadius + attacker.radius + MELEE_BUILDING_APPROACH_CLEARANCE
+    );
+    return Math.max(defaultApproachDistance, buildingApproachDistance);
   }
 
   private shouldChaseTarget(attacker: Unit, target: BaseEntity): boolean {
@@ -132,9 +151,15 @@ export class CombatSystem {
       explicitTarget = undefined;
     }
 
-    const contactTarget = attacker instanceof Unit ? this.findImmediateMeleeContactTarget(attacker) : undefined;
-    if (contactTarget && (!explicitTarget || !this.isWithinEffectiveRange(attacker, explicitTarget))) {
-      return contactTarget;
+    if (attacker instanceof Unit) {
+      const contactTarget = this.findImmediateMeleeContactTarget(attacker);
+      if (
+        contactTarget &&
+        (!explicitTarget || !this.isWithinEffectiveRange(attacker, explicitTarget)) &&
+        this.shouldImmediateContactOverrideExplicitTarget(attacker, explicitTarget, contactTarget)
+      ) {
+        return contactTarget;
+      }
     }
 
     if (explicitTarget?.alive && CollisionSystem.isHostile(attacker.team, explicitTarget.team)) {
@@ -166,6 +191,20 @@ export class CombatSystem {
         this.isWithinEffectiveRange(attacker, entity)
       );
     });
+  }
+
+  private shouldImmediateContactOverrideExplicitTarget(
+    attacker: Unit,
+    explicitTarget: BaseEntity | undefined,
+    contactTarget: BaseEntity
+  ): boolean {
+    if (!explicitTarget) {
+      return true;
+    }
+    if (attacker.definition.id === "worker" && explicitTarget instanceof Building && contactTarget instanceof Building) {
+      return false;
+    }
+    return true;
   }
 
   private isWithinEffectiveRange(attacker: Combatant, target: BaseEntity): boolean {
@@ -210,7 +249,7 @@ export class CombatSystem {
   }
 
   private attack(attacker: Combatant, target: BaseEntity): void {
-    const damage = this.getDamage(attacker);
+    const damage = this.getDamage(attacker, target);
     if (attacker instanceof Unit) {
       attacker.attackCooldownRemaining = attacker.attackCooldown;
       if (attacker.range > 45) {
@@ -252,7 +291,7 @@ export class CombatSystem {
   private applyDamage(source: Combatant | Projectile, target: BaseEntity, amount: number): void {
     const wasAlive = target.alive;
     const actual = target.takeDamage(amount);
-    this.options.onDamage(target, actual);
+    this.options.onDamage(target, actual, source);
     if (actual > 0 && source instanceof Unit) {
       this.options.onUnitDamage?.(source, target, actual);
     }
@@ -265,11 +304,19 @@ export class CombatSystem {
     }
   }
 
-  private getDamage(attacker: Combatant): number {
+  private getDamage(attacker: Combatant, target: BaseEntity): number {
     if (attacker instanceof Unit) {
-      return this.applyLowHealthDamageModifiers(attacker, attacker.damage);
+      const damage = this.applyLowHealthDamageModifiers(attacker, attacker.damage);
+      if (this.isExplicitWorkerBuildingAttack(attacker, target)) {
+        return Math.max(damage, target.armor + EXPLICIT_WORKER_BUILDING_DAMAGE_FLOOR);
+      }
+      return damage;
     }
     return attacker.definition.attack?.damage ?? 0;
+  }
+
+  private isExplicitWorkerBuildingAttack(attacker: Unit, target: BaseEntity): boolean {
+    return attacker.definition.id === "worker" && target instanceof Building && attacker.attackTargetId === target.id;
   }
 
   private applyLowHealthDamageModifiers(attacker: Unit, damage: number): number {
@@ -335,7 +382,9 @@ export class CombatSystem {
       target instanceof Building
         ? Math.hypot(target.definition.size.width / 2, target.definition.size.height / 2)
         : target.radius;
-    return Math.max(range, attacker.radius + targetFootprintRadius + MELEE_VISUAL_CONTACT_MARGIN, MELEE_VISIBLE_CONTACT_FLOOR);
+    const visualContactMargin =
+      target instanceof Building ? MELEE_BUILDING_VISUAL_CONTACT_MARGIN : MELEE_VISUAL_CONTACT_MARGIN;
+    return Math.max(range, attacker.radius + targetFootprintRadius + visualContactMargin, MELEE_VISIBLE_CONTACT_FLOOR);
   }
 
   private getCooldown(attacker: Combatant): number {

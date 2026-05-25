@@ -8,6 +8,7 @@ interface SceneStub extends Phaser.Scene {
   __objects: {
     circles: Array<StubGameObject & { radius: number }>;
     rectangles: StubGameObject[];
+    texts: Array<StubGameObject & { text: string }>;
   };
 }
 
@@ -40,27 +41,33 @@ interface StubGameObject {
 }
 
 describe("BaseEntity view layout", () => {
-  it("keeps the burn status badge outside the laid-out health bar after damage", () => {
+  it("keeps the burn status marker labeled and clear of the health bar after damage", () => {
     const scene = createSceneStub();
     const worker = new Unit(scene, UNIT_BY_ID.worker, "player", 100, 100);
     const healthBack = scene.__objects.rectangles[0];
+    const healthFill = scene.__objects.rectangles[1];
     const statusBadge = scene.__objects.circles[0];
+    const statusBadgeLabel = scene.__objects.texts.find((text) => text.text === "BURN");
 
     worker.takeDamage(9);
     worker.applyStatusEffect(createBurnStatus({ damagePerSecond: 1, durationSeconds: 2, tickInterval: 1 }));
 
-    const healthBackRight = healthBack.x + healthBack.displayWidth;
-    const statusBadgeLeft = statusBadge.x - statusBadge.radius;
+    const healthBackTop = healthBack.y - healthBack.displayHeight / 2;
     expect(statusBadge.visible).toBe(true);
-    expect(statusBadge.y).toBe(healthBack.y);
-    expect(statusBadgeLeft).toBeGreaterThan(healthBackRight);
+    expect(statusBadge.y + statusBadge.radius).toBeLessThan(healthBackTop);
+    expect(statusBadgeLabel).toBeDefined();
+    expect(statusBadgeLabel?.visible).toBe(true);
+    expect(statusBadgeLabel?.x).toBeGreaterThan(statusBadge.x);
+    expect(statusBadgeLabel?.y).toBe(statusBadge.y);
+    expect(healthFill.displayWidth).toBeLessThan(42);
   });
 });
 
 function createSceneStub(): SceneStub {
   const objects = {
     circles: [] as Array<StubGameObject & { radius: number }>,
-    rectangles: [] as StubGameObject[]
+    rectangles: [] as StubGameObject[],
+    texts: [] as Array<StubGameObject & { text: string }>
   };
 
   const makeObject = (overrides: Partial<StubGameObject> = {}): StubGameObject => {
@@ -131,7 +138,11 @@ function createSceneStub(): SceneStub {
         objects.rectangles.push(object);
         return object;
       }),
-      text: vi.fn(() => makeObject())
+      text: vi.fn((x: number, y: number, text: string) => {
+        const object = Object.assign(makeObject({ x, y }), { text });
+        objects.texts.push(object);
+        return object;
+      })
     }
   } as unknown as SceneStub;
 }

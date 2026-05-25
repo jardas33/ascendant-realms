@@ -65,6 +65,7 @@ Known current realities:
 - v0.21 adds the first safe Worker repair foundation: Workers can repair damaged friendly completed buildings, explicit move/attack orders pause repair intent, moving back or reissuing Repair resumes, incomplete buildings remain construction-only, and enemy/full-health buildings cannot start repair. Rerun GitHub Actions after push because runtime Worker action and HUD behavior changed.
 - v0.21.1 closes out v0.21 without runtime changes: `79d038b` was pushed, Fast confidence passed, package metadata now names the closeout checkpoint, and a manual workflow_dispatch release matrix with `run_release_matrix=true` remains recommended for exact remote hosted/simulator evidence because push workflow rules skip those lanes.
 - v0.21.2 follows Emmanuel's `f6a121b` Worker repair retest: construction and repair now require explicit Worker commands plus range instead of proximity-only start/resume, explicit Worker attack works against valid enemy buildings through existing weak Worker combat, idle Workers still do not auto-attack buildings by default, status badges sit beside healthbars, and future crossed-swords/hammer cursor affordances are docs-only. Rerun GitHub Actions after push because runtime Worker intent, combat targeting, and UI feedback changed.
+- v0.21.3 follows Emmanuel's FAIL / MIXED Worker attack/status retest: explicit Worker building attacks now visibly and measurably damage valid enemy buildings through an explicit-order-only damage floor, Worker building hits show floating damage when enabled, idle Workers still do not auto-attack buildings, and Burn/status markers render as a labeled chip above the health bar. Rerun GitHub Actions after push because runtime combat/UI feedback changed.
 
 ## Required Automated Checks
 
@@ -183,6 +184,12 @@ PASS: 64 test files, 478 tests
 ```
 
 Current v0.21.2 checkpoint result:
+
+```text
+PASS: 65 test files, 485 tests
+```
+
+Current v0.21.3 checkpoint result:
 
 ```text
 PASS: 65 test files, 485 tests

@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
+
+This checkpoint follows Emmanuel's FAIL / MIXED retest of the latest v0.21.x Worker package. It fixes Worker explicit attack damage visibility/proof and clarifies Burn/status marker readability without starting harvesting or v0.22.
+
+### Included
+
+- Updated `docs/V0213_WORKER_INTENT_CLOSEOUT.md`.
+- Added `docs/V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md`.
+- Added `docs/V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Updated package metadata and package validation to name `v0.21.3 worker explicit attack damage and status clarity`.
+- Added the v0.21.3 closeout, attack retest intake, and cursor note docs to private playtest packages.
+- Added a narrow explicit Worker building-attack damage floor only when a Worker has an explicit building attack target.
+- Let explicit Worker building hits show floating damage by carrying the damage source through combat callbacks.
+- Kept idle Workers from auto-attacking enemy buildings by default.
+- Changed Burn/status markers into a labeled `BURN` chip above the health bar so Burn reads as status feedback rather than a broken health-fill dot.
+
+### Verdict
+
+- Runtime gameplay changed: yes, explicit Worker building attacks now visibly/measurably damage valid enemy buildings.
+- Gameplay numbers changed: narrowly, Worker building damage has a small explicit-order-only floor; there is no global combat rebalance.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no.
+
+### Verification
+
+- Passed: `npm test` with 65 files / 487 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, focused Worker attack browser regression, controls playtest with 18 scenarios / 18 pass rows, controls verifier with 1658 checks, dirty playtest package generation, dirty package verification with 62 checks, and `git diff --check`.
+- Skipped remotely by push workflow rules: Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Manual release-matrix note: exact final v0.21.3 workflow_dispatch release matrix should be run after push if exact remote hosted/simulator evidence is needed.
+
+### Next
+
+- Commit the runtime/docs/package metadata, regenerate/verify a clean v0.21.3 package from the final commit, and use it for Emmanuel's Worker explicit attack/status marker retest before v0.22.
+
 ## v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
 
 This checkpoint follows Emmanuel's `ascendant-realms-private-playtest-f6a121b` Worker repair retest. Worker repair mostly passed; v0.21.2 fixes explicit Worker intent rules, Worker attack clarity, and healthbar marker feedback without starting harvesting or v0.22.

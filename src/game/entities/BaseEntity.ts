@@ -5,6 +5,9 @@ import { clamp } from "../core/MathUtils";
 let nextEntityNumber = 1;
 const STATUS_BADGE_RADIUS = 4;
 const STATUS_BADGE_GAP = 5;
+const STATUS_BADGE_LABEL = "BURN";
+const STATUS_BADGE_LABEL_GAP = 4;
+const STATUS_BADGE_VERTICAL_GAP = 5;
 
 export function createEntityId(prefix: string): string {
   const id = `${prefix}-${nextEntityNumber}`;
@@ -36,6 +39,7 @@ export abstract class BaseEntity {
   protected healthFill?: Phaser.GameObjects.Rectangle;
   protected label?: Phaser.GameObjects.Text;
   private statusBadge?: Phaser.GameObjects.Arc;
+  private statusBadgeLabel?: Phaser.GameObjects.Text;
   private healthBarWidth = 0;
   private healthBarHeight = 0;
 
@@ -85,8 +89,18 @@ export abstract class BaseEntity {
     }
 
     this.statusBadge = scene.add.circle(0, 0, STATUS_BADGE_RADIUS, 0xff743d, 0.95).setVisible(false);
+    this.statusBadgeLabel = scene.add
+      .text(0, 0, STATUS_BADGE_LABEL, {
+        fontFamily: "Verdana, Arial, sans-serif",
+        fontSize: "8px",
+        color: "#ffb187",
+        stroke: "#111713",
+        strokeThickness: 3
+      })
+      .setOrigin(0, 0.5)
+      .setVisible(false);
     this.updateStatusBadgePosition();
-    this.view.add(this.statusBadge);
+    this.view.add([this.statusBadge, this.statusBadgeLabel]);
 
     this.label = scene.add
       .text(0, this.radius + 11, label, {
@@ -198,6 +212,7 @@ export abstract class BaseEntity {
   updateStatusVisual(): void {
     const burning = this.statusEffects.some((effect) => effect.type === "burn" && effect.remainingSeconds > 0);
     this.statusBadge?.setVisible(burning);
+    this.statusBadgeLabel?.setVisible(burning);
     if (burning) {
       this.label?.setColor("#ffb187");
       return;
@@ -223,13 +238,16 @@ export abstract class BaseEntity {
       return;
     }
     if (this.healthBack && this.healthBarWidth > 0) {
-      this.statusBadge.setPosition(this.healthBarWidth / 2 + STATUS_BADGE_RADIUS + STATUS_BADGE_GAP, this.healthBack.y);
+      const markerX = -this.healthBarWidth / 2 + STATUS_BADGE_RADIUS;
+      const markerY = this.healthBack.y - this.healthBarHeight - STATUS_BADGE_RADIUS - STATUS_BADGE_VERTICAL_GAP;
+      this.statusBadge.setPosition(markerX, markerY);
+      this.statusBadgeLabel?.setPosition(markerX + STATUS_BADGE_RADIUS + STATUS_BADGE_LABEL_GAP, markerY);
       return;
     }
-    this.statusBadge.setPosition(
-      this.radius + STATUS_BADGE_RADIUS + STATUS_BADGE_GAP,
-      -this.radius - STATUS_BADGE_RADIUS - STATUS_BADGE_GAP
-    );
+    const markerX = this.radius + STATUS_BADGE_RADIUS + STATUS_BADGE_GAP;
+    const markerY = -this.radius - STATUS_BADGE_RADIUS - STATUS_BADGE_GAP;
+    this.statusBadge.setPosition(markerX, markerY);
+    this.statusBadgeLabel?.setPosition(markerX + STATUS_BADGE_RADIUS + STATUS_BADGE_LABEL_GAP, markerY);
   }
 
   destroyView(): void {

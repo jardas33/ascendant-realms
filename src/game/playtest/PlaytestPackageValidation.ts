@@ -63,6 +63,9 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0211_WORKER_REPAIR_CLOSEOUT.md",
   "V0212_EMMANUEL_WORKER_REPAIR_RETEST_INTAKE.md",
   "V0212_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md",
+  "V0213_WORKER_INTENT_CLOSEOUT.md",
+  "V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md",
+  "V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -166,7 +169,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.21.2 worker intent clarity and healthbar polish",
+      "v0.21.3 worker explicit attack damage and status clarity",
       "build info checkpoint",
       checks,
       errors

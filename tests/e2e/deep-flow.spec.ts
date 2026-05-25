@@ -2616,6 +2616,111 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Repair Damaged - select a Worker or right-click with a Worker");
   });
 
+  test("Worker explicit attack damages an enemy building and shows floating damage @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Worker Attack QA");
+    await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
+    const trainedWorker = await trainWorkerFromCommandHall(page, "deep-flow Worker explicit building attack");
+
+    const attackResult = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+
+      scene.settings.floatingTextEnabled = true;
+      const worker = scene.units.find((unit: any) => unit.id === workerId && unit.alive);
+      const target =
+        scene.buildings.find(
+          (building: any) =>
+            building.team === "enemy" &&
+            building.alive &&
+            building.definition.id === scene.activeMap.scenario.objectives.enemyBaseBuildingId
+        ) ?? scene.buildings.find((building: any) => building.team === "enemy" && building.alive);
+      if (!worker || !target) {
+        throw new Error("Expected a trained Worker and enemy building for explicit attack coverage.");
+      }
+
+      scene.units
+        .filter((unit: any) => unit.team === "enemy")
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(
+            Math.min(scene.activeMap.width - unit.radius - 12, target.position.x + 170 + index * 12),
+            Math.min(scene.activeMap.height - unit.radius - 12, target.position.y + 220 + index * 14)
+          );
+          unit.moveTarget = undefined;
+          unit.attackTargetId = undefined;
+          unit.attackMove = false;
+          unit.attackCooldownRemaining = 999;
+        });
+      scene.buildings
+        .filter((building: any) => building.team === "enemy")
+        .forEach((building: any) => {
+          building.attackCooldownRemaining = 999;
+        });
+
+      const start = {
+        x: target.position.x - target.definition.size.width / 2 - worker.radius - 90,
+        y: target.position.y
+      };
+      worker.setPosition(start.x, start.y);
+      worker.moveTarget = undefined;
+      worker.attackCooldownRemaining = 0;
+      worker.activeConstructionSiteId = undefined;
+      worker.pausedConstructionSiteId = undefined;
+      worker.activeRepairTargetId = undefined;
+      worker.pausedRepairTargetId = undefined;
+      worker.commandAttack(target.id, target.definition.name);
+
+      const damageTextsBefore = scene.children.list.filter(
+        (child: any) => typeof child.text === "string" && /^-\d+$/u.test(child.text)
+      ).length;
+      const hpBefore = target.hp;
+      const startDistance = Math.hypot(worker.position.x - target.position.x, worker.position.y - target.position.y);
+      let minDistance = startDistance;
+
+      for (let index = 0; index < 160; index += 1) {
+        scene.combatSystem.update(0.1);
+        scene.movementSystem.update(0.1, scene.units, scene.activeMap, scene.buildings);
+        minDistance = Math.min(
+          minDistance,
+          Math.hypot(worker.position.x - target.position.x, worker.position.y - target.position.y)
+        );
+        const currentDamageTexts = scene.children.list.filter(
+          (child: any) => typeof child.text === "string" && /^-\d+$/u.test(child.text)
+        );
+        if (target.hp < hpBefore && currentDamageTexts.length > damageTextsBefore) {
+          break;
+        }
+      }
+
+      const damageTexts = scene.children.list
+        .filter((child: any) => typeof child.text === "string" && /^-\d+$/u.test(child.text))
+        .map((child: any) => child.text);
+      scene.selectionSystem.setSelection([worker]);
+      scene.cameraSystem.centerOn(target.position);
+      scene.refreshBattleHud?.(0);
+      return {
+        targetId: target.id,
+        targetName: target.definition.name,
+        hpBefore,
+        hpAfter: target.hp,
+        damageTexts,
+        startDistance,
+        minDistance,
+        attackTargetId: worker.attackTargetId,
+        attackTargetLabel: worker.attackTargetLabel
+      };
+    }, trainedWorker.id);
+
+    expect(attackResult.hpAfter).toBeLessThan(attackResult.hpBefore);
+    expect(attackResult.damageTexts.some((text: string) => /^-\d+$/u.test(text))).toBe(true);
+    expect(attackResult.minDistance).toBeLessThan(attackResult.startDistance);
+    expect(attackResult.attackTargetId).toBe(attackResult.targetId);
+    expect(attackResult.attackTargetLabel).toBe(attackResult.targetName);
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Attacking");
+  });
+
   test("Worker move-away pauses construction and base-cluster units keep moving @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Worker pause and pathing QA");

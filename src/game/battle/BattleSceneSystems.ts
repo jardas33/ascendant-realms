@@ -245,8 +245,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getBuildings,
     getProjectiles,
     addProjectile,
-    onDamage: (target, amount) => {
-      showDamageFeedback(scene, target, amount);
+    onDamage: (target, amount, source) => {
+      showDamageFeedback(scene, target, amount, { threshold: damageFeedbackThresholdFor(source, target) });
       warnIfCommandHallUnderAttack(target);
     },
     onUnitDamage: handleUnitDamage,
@@ -522,4 +522,11 @@ function formatResourceBonus(resources: CaptureSiteFirstCaptureBonusDefinition["
       return amount > 0 ? [`+${amount} ${labels[resource]}`] : [];
     })
     .join(", ");
+}
+
+function damageFeedbackThresholdFor(source: Unit | Building | Projectile, target: BaseEntity): number | undefined {
+  if (source instanceof Unit && source.definition.id === "worker" && target instanceof Building && source.attackTargetId === target.id) {
+    return 1;
+  }
+  return undefined;
 }

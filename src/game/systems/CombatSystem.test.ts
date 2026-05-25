@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import type { Position, Team } from "../core/GameTypes";
+import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
+import type { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import { CombatSystem } from "./CombatSystem";
 
@@ -208,6 +210,7 @@ describe("CombatSystem", () => {
   });
 
   it("lets Workers weakly damage enemy buildings when explicitly ordered", () => {
+    const onDamage = vi.fn();
     const worker = fakeUnit({
       id: "player-worker",
       unitId: "worker",
@@ -229,15 +232,113 @@ describe("CombatSystem", () => {
       y: 100,
       width: 104,
       height: 88,
-      hp: 500
+      maxHp: 1000,
+      hp: 1000,
+      armor: 4
+    });
+    const combat = createCombat([worker], [stronghold], { onDamage });
+
+    combat.update(0.1);
+
+    expect(stronghold.hp).toBeLessThan(stronghold.maxHp);
+    expect(stronghold.hp).toBe(996);
+    expect(onDamage).toHaveBeenCalledWith(stronghold, 4, worker);
+    expect(worker.moveTarget).toBeUndefined();
+    expect(worker.attackTargetLabel).toBe("Enemy Stronghold");
+
+    combat.update(0.99);
+    expect(stronghold.hp).toBe(996);
+
+    combat.update(0.02);
+    expect(stronghold.hp).toBe(992);
+    expect(worker.attackTargetId).toBe("enemy-stronghold");
+  });
+
+  it("moves explicit Worker building attacks to a walkable contact point inside attack range", () => {
+    const worker = fakeUnit({
+      id: "player-worker",
+      unitId: "worker",
+      unitName: "Worker",
+      team: "player",
+      x: 27,
+      y: 100,
+      radius: 11,
+      range: 22,
+      damage: 3,
+      attackTargetId: "enemy-stronghold"
+    });
+    const stronghold = fakeBuilding({
+      id: "enemy-stronghold",
+      buildingId: "enemy_stronghold",
+      name: "Enemy Stronghold",
+      team: "enemy",
+      x: 180,
+      y: 100,
+      width: 104,
+      height: 88,
+      maxHp: 1000,
+      hp: 1000,
+      armor: 4
     });
     const combat = createCombat([worker], [stronghold]);
 
     combat.update(0.1);
 
-    expect(stronghold.hp).toBeLessThan(stronghold.maxHp);
-    expect(stronghold.hp).toBe(497);
-    expect(worker.moveTarget).toBeUndefined();
+    expect(stronghold.hp).toBe(stronghold.maxHp);
+    expect(worker.moveTarget).toBeDefined();
+    const targetDistance = Math.hypot(worker.moveTarget!.x - stronghold.position.x, worker.moveTarget!.y - stronghold.position.y);
+    const footprintRadius = Math.hypot(stronghold.definition.size.width / 2, stronghold.definition.size.height / 2);
+    expect(targetDistance).toBeGreaterThan(footprintRadius + worker.radius);
+    expect(targetDistance).toBeLessThan(112);
+  });
+
+  it("keeps explicit Worker building attacks focused on the ordered building instead of nearby buildings", () => {
+    const worker = fakeUnit({
+      id: "player-worker",
+      unitId: "worker",
+      unitName: "Worker",
+      team: "player",
+      x: 27,
+      y: 100,
+      radius: 11,
+      range: 22,
+      damage: 3,
+      attackTargetId: "enemy-stronghold"
+    });
+    const nearbyBarracks = fakeBuilding({
+      id: "enemy-barracks",
+      buildingId: "enemy_barracks",
+      name: "Enemy Barracks",
+      team: "enemy",
+      x: 60,
+      y: 100,
+      width: 82,
+      height: 64,
+      maxHp: 550,
+      hp: 550,
+      armor: 3
+    });
+    const stronghold = fakeBuilding({
+      id: "enemy-stronghold",
+      buildingId: "enemy_stronghold",
+      name: "Enemy Stronghold",
+      team: "enemy",
+      x: 180,
+      y: 100,
+      width: 104,
+      height: 88,
+      maxHp: 1000,
+      hp: 1000,
+      armor: 4
+    });
+    const combat = createCombat([worker], [nearbyBarracks, stronghold]);
+
+    combat.update(0.1);
+
+    expect(nearbyBarracks.hp).toBe(nearbyBarracks.maxHp);
+    expect(stronghold.hp).toBe(stronghold.maxHp);
+    expect(worker.moveTarget).toBeDefined();
+    expect(worker.attackTargetId).toBe("enemy-stronghold");
     expect(worker.attackTargetLabel).toBe("Enemy Stronghold");
   });
 
@@ -681,14 +782,20 @@ describe("CombatSystem", () => {
   });
 });
 
-function createCombat(units: Unit[], buildings: Building[] = []): CombatSystem {
+function createCombat(
+  units: Unit[],
+  buildings: Building[] = [],
+  hooks: {
+    onDamage?: (target: BaseEntity, amount: number, source: Unit | Building | Projectile) => void;
+  } = {}
+): CombatSystem {
   return new CombatSystem({
     scene: {} as never,
     getUnits: () => units,
     getBuildings: () => buildings,
     getProjectiles: () => [],
     addProjectile: vi.fn(),
-    onDamage: vi.fn(),
+    onDamage: hooks.onDamage ?? vi.fn(),
     onKill: vi.fn()
   });
 }
@@ -769,7 +876,9 @@ function fakeBuilding(options: {
   y: number;
   width: number;
   height: number;
+  maxHp?: number;
   hp?: number;
+  armor?: number;
   isCompleted?: boolean;
   attack?: {
     damage: number;
@@ -785,9 +894,9 @@ function fakeBuilding(options: {
     team: options.team,
     position: { x: options.x, y: options.y },
     radius: Math.max(options.width, options.height) / 2,
-    maxHp: 500,
-    hp: options.hp ?? 500,
-    armor: 0,
+    maxHp: options.maxHp ?? 500,
+    hp: options.hp ?? options.maxHp ?? 500,
+    armor: options.armor ?? 0,
     attackCooldownRemaining: 0,
     definition: {
       id: options.buildingId,

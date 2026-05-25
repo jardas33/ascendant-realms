@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-24 v0.21.2 worker intent clarity and healthbar polish
+Last updated: 2026-05-24 v0.21.3 worker explicit attack damage and status clarity
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.21.3 Worker Explicit Attack Damage And Status Clarity - 2026-05-24
+
+Status: v0.21.3 follows Emmanuel's FAIL / MIXED retest of the latest v0.21.x Worker package. It fixes Worker explicit attack damage visibility/proof and makes the Burn/status marker read clearly as status feedback instead of a health-bar artifact. It does not start v0.22.
+
+Baseline:
+
+- Starting local commit: `5b33fc5`, `Checkpoint v0.21.3 worker intent closeout and CI verification`.
+- Starting branch state: clean `main`, ahead of `origin/main` by 1 local commit.
+- Emmanuel retest result: Worker moved to an enemy building after explicit attack but showed no damage numbers and no visible enemy-building HP reduction; Burn/status marker still looked like a red/orange dot at the start of the health bar.
+
+Remote CI:
+
+- Previous GitHub Actions push run `26377505856` / run `#120` on `main` / `ab02e9b`: Fast confidence passed.
+- Push workflow rules skipped Optional visual QA, Release simulator, hosted release groups, and Full release e2e.
+- Exact workflow-dispatch release matrix for `ab02e9b` was not triggered from this environment because local `gh` is unavailable, no `GITHUB_TOKEN`/`GH_TOKEN` is present, the GitHub connector exposes run/job inspection but no workflow_dispatch creation, and an unauthenticated workflow_dispatch REST attempt returned `401 Unauthorized`.
+- Run CI Release Matrix Dry Run manually on `main` with `run_release_matrix=true` after the final v0.21.3 commit if exact remote hosted/simulator evidence is needed before v0.22.
+- Non-blocking GitHub notice: the Actions page displayed a future Node.js 20 action-runtime deprecation warning for `actions/checkout@v4` and `actions/setup-node@v4`; it did not fail Fast confidence.
+
+Docs/package metadata:
+
+- Updated `docs/V0213_WORKER_INTENT_CLOSEOUT.md`.
+- Added `docs/V0213_EMMANUEL_WORKER_ATTACK_RETEST_INTAKE.md`.
+- Added `docs/V0213_CURSOR_AFFORDANCE_FUTURE_UI_NOTE.md`.
+- Package checkpoint string is now `v0.21.3 worker explicit attack damage and status clarity`.
+- Private playtest package validation now requires the v0.21.3 closeout, attack retest intake, and cursor note docs.
+
+Runtime/UI summary:
+
+- Explicit Worker building attacks now have a narrow building-only damage floor only when the Worker has an explicit attack target. This keeps Worker combat weak while making enemy-building HP loss measurable.
+- Combat damage callbacks now include the source, so explicit Worker building hits can show floating damage despite the usual enemy-side low-damage filter.
+- Idle Workers still do not auto-attack enemy buildings by proximity.
+- Burn/status markers now render as a labeled `BURN` status chip above the health bar instead of an unlabeled dot aligned with the fill.
+- Burn/status floating text and normal HP reduction remain intact.
+
+Verification:
+
+```text
+npm test PASS, 65 files / 487 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "Worker explicit attack damages" --reporter=line PASS, 1 focused Worker attack regression.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-5b33fc5-dirty generated.
+npm run verify:playtest-package PASS, 62 checks.
+git diff --check PASS.
+```
+
+Closeout note: amend the local unpushed v0.21.3 commit as `Checkpoint v0.21.3 worker explicit attack damage and status clarity`, then regenerate and verify the clean final package from that commit and confirm it does not end in `-dirty`.
+
+Emmanuel retest focus: use the clean v0.21.3 package. Explicitly order a Worker to attack an enemy building and confirm HP decreases plus floating damage appears when enabled. Confirm idle Workers still do not auto-attack buildings, repair/build commands remain distinct from attack, construction/repair still require explicit Worker commands plus range, and ranged Burn/status damage shows normal HP reduction with the labeled status marker clear of the health fill. Future cursor work should use crossed-swords attack and hammer repair/build affordances, but v0.21.3 adds no new cursor art.
 
 ## Current v0.21.2 Worker Intent Clarity And Healthbar Polish - 2026-05-24
 
