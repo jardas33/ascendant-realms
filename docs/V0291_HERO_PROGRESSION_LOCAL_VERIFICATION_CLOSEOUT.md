@@ -11,7 +11,7 @@ v0.29.1 is a closeout and documentation checkpoint for the v0.28-v0.29 hero prog
 - Baseline commit: `aa6fc05`
 - Baseline package: `ascendant-realms-private-playtest-aa6fc05`
 - Runtime checkpoint being closed out: v0.28-v0.29 hero progression and ability foundation
-- Remote CI status: blocked before checkout by GitHub HTTP 403 account-suspension response; see `docs/V0291_BLOCKED_REMOTE_CI_STATUS.md`
+- Remote CI status: the original v0.28-v0.29 push run was blocked before checkout by GitHub HTTP 403 account-suspension response; checkout was later restored for v0.29.1, and follow-up status is recorded in `docs/V0291_BLOCKED_REMOTE_CI_STATUS.md`.
 
 ## Package And Retest Guidance
 
@@ -43,7 +43,7 @@ Use the v0.29.1 package once regenerated from the closeout commit. Retest the sa
 
 ## Local Fallback Verification
 
-Remote GitHub Actions is blocked before checkout, so this local matrix is the v0.29.1 fallback evidence:
+The original remote GitHub Actions run was blocked before checkout, so this local matrix was the v0.29.1 fallback evidence before checkout recovered:
 
 ```text
 npm test PASS, 72 files / 533 tests.
@@ -64,3 +64,23 @@ npm run verify:playtest-package PASS, 85 checks.
 ```
 
 Run `git diff --check` after these docs are synchronized. After committing v0.29.1, regenerate the package from the clean final commit and rerun `npm run verify:playtest-package` before sending the package to testers.
+
+## Remote Recovery Follow-Up
+
+After v0.29.1 commit `765a995` was pushed, GitHub Actions checkout succeeded again:
+
+```text
+Push run 26478377719 PASS: Fast confidence completed successfully.
+Manual workflow_dispatch run 26478600449: Fast confidence PASS, release simulator PASS, hosted matrix PASS for deep-meta, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
+Manual workflow_dispatch run 26478600449: hosted deep-battle failed once and failed again on one job rerun at the behaviour mode control gauntlet retreat/move assertion.
+```
+
+The hosted `deep-battle` failure was not a checkout/account failure. It reproduced as a Playwright world-command stability issue around `tests/e2e/deep-flow.spec.ts:3829`. A test-only stabilization was added locally, then verified with:
+
+```text
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --reporter=line PASS, 1 test.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker move-away pauses construction" --reporter=line PASS, 1 test.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+```
+
+This follow-up does not change runtime gameplay. It only makes the hosted deep-battle e2e world-move helper choose safer ground targets and preserve unit selection across retries.

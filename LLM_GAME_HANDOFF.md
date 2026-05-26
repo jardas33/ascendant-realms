@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-26 v0.29.1 hero progression closeout and blocked CI documentation
+Last updated: 2026-05-26 v0.29.1 remote CI recovery and hosted deep-battle stabilization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
-Status: v0.29.1 is a docs/package closeout for the v0.28-v0.29 hero progression and ability foundation. It adds blocked remote-CI documentation, local fallback verification notes, and package visibility for the v0.28/v0.29 hero retest docs. It does not change runtime gameplay, balance, maps, factions, assets, save format, pathing, AI, tests, or content rules.
+Status: v0.29.1 is a docs/package closeout for the v0.28-v0.29 hero progression and ability foundation, followed by remote-CI recovery verification and a test-only hosted deep-battle stabilization. It adds blocked remote-CI documentation, local fallback verification notes, package visibility for the v0.28/v0.29 hero retest docs, and a narrow e2e helper fix for hosted world-move command determinism. It does not change runtime gameplay, balance, maps, factions, assets, save format, pathing, AI, production systems, or content rules.
 
 Baseline:
 
@@ -25,7 +25,21 @@ Remote CI status:
 - The failure was GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
 - No repo commands or tests ran remotely; the runner did not reach `npm ci`, `npm test`, build, validators, smoke, or preview smoke.
 - Release matrix, full release e2e, release simulator, and optional visual QA jobs were skipped by push workflow rules.
-- Treat this as remote CI unavailable, not a code/test failure. Do not rerun Actions repeatedly until the GitHub account suspension, billing, organization access, repository permissions, or token/app condition is resolved.
+- This original run remains evidence of the old account/checkout block, not a code/test failure.
+- v0.29.1 commit `765a99548a09575f84f42e661d224a4bf3e22789` was later pushed successfully to `main`.
+- Push run `26478377719` completed successfully; Fast confidence passed and `actions/checkout@v4` succeeded.
+- Manual `workflow_dispatch` run `26478600449` was started with `run_release_matrix=true`.
+- In manual run `26478600449`, checkout succeeded for Fast confidence, Release simulator, and every hosted release-matrix job.
+- Manual Fast confidence passed, Release simulator passed, and hosted matrix lanes `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke` passed.
+- Hosted `deep-battle` failed on the initial manual matrix attempt and again on one job rerun. The residual failure was no longer GitHub account/checkout related; it was a hosted Playwright failure in `tests/e2e/deep-flow.spec.ts` at the behaviour mode control gauntlet retreat/move assertion.
+
+Hosted deep-battle follow-up:
+
+- Added a test-only e2e stabilization in `tests/e2e/deep-flow.spec.ts`.
+- The shared world-move helper now prefers ground points that do not hit capture sites/buildings and reselects the original player units before retrying a world right-click.
+- The behaviour gauntlet retreat setup now parks hostile units away before testing an explicit retreat/move order, so hosted timing cannot immediately consume the move target through nearby combat pressure.
+- This uses real canvas/world right-clicks and does not add force clicks or DOM fallbacks for world commands.
+- Local follow-up verification passed: focused behaviour gauntlet hosted test, focused Worker move-away hosted test, and full `npm run test:e2e:release:hosted:deep-battle` with 27 tests.
 
 Docs/package metadata:
 
@@ -42,11 +56,14 @@ Runtime/UI summary:
 - Battle rewards changed: no.
 - UI changed: no.
 - Tutorial changed: no.
+- E2e tests changed: yes, hosted deep-battle world-move helper and behaviour gauntlet setup only.
 
 Verification:
 
 ```text
-Remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+Original remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+Remote recovery: push run 26478377719 Fast confidence PASS with checkout success.
+Remote release matrix: manual run 26478600449 Fast confidence PASS, Release simulator PASS, hosted matrix PASS for deep-meta/deep-campaign-pressure/layout-core/layout-cinderfen/smoke, hosted deep-battle FAILED before test-only stabilization.
 npm test PASS, 72 files / 533 tests.
 npm run build PASS with the known Vite Phaser chunk-size warning.
 npm run validate:content PASS.
@@ -62,9 +79,12 @@ npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
 npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
 npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-aa6fc05-dirty generated.
 npm run verify:playtest-package PASS, 85 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --reporter=line PASS, 1 test after hosted deep-battle stabilization.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker move-away pauses construction" --reporter=line PASS, 1 test.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after hosted deep-battle stabilization.
 ```
 
-Closeout note: run the local fallback matrix, `git diff --check`, commit as `Checkpoint v0.29.1 hero progression closeout and blocked CI documentation`, package/verify the clean package from the final commit, and push `main`. Do not claim remote CI green until GitHub Actions can check out the repository and execute workflow commands.
+Closeout note: the account/checkout block is resolved. Push the test-only hosted deep-battle stabilization, rerun Fast confidence and the manual hosted release matrix, update this handoff with the final remote status if needed, then package/verify the clean package from the final commit.
 
 Emmanuel retest focus: use the clean v0.29.1 package. Read the v0.29.1 blocked-CI/local-verification notes first, then use `V029_EMMANUEL_RETEST_CHECKLIST.md` for the hero progression retest. Confirm XP from combat and first resource-site captures, live level-up HUD/stat feedback, Rally Banner/Cleave cooldown readability, no cooldown spam, Tutorial no-reward behavior, and victory XP/results clarity.
 

@@ -60,3 +60,49 @@ Do not repeatedly rerun GitHub Actions while the checkout 403 remains unresolved
 ## Local Fallback
 
 Use `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md` for local fallback verification evidence until remote CI is available again.
+
+## Recovery Update - 2026-05-26
+
+Remote checkout access was restored after the original blocked run:
+
+- v0.29.1 commit `765a99548a09575f84f42e661d224a4bf3e22789` pushed to `main` successfully.
+- Push run `26478377719` completed successfully.
+- `actions/checkout@v4` completed successfully in the `Fast confidence` job.
+- Fast confidence then ran the repo commands and passed: install, `npm test`, `npm run build`, content validation, art-intake validation, fast smoke, and production-preview smoke.
+- Release simulator, hosted release matrix, full release e2e, and optional visual QA were still skipped in the push run by workflow rules.
+
+A manual `workflow_dispatch` run, `26478600449`, was then started with `run_release_matrix=true`:
+
+- Checkout succeeded for Fast confidence, Release simulator, and every hosted release-matrix job.
+- Fast confidence passed.
+- Release simulator passed.
+- Hosted release matrix passed for `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- Hosted `deep-battle` failed on the initial attempt and on one job rerun. This was no longer an account or checkout failure; it was a hosted Playwright lane failure in `tests/e2e/deep-flow.spec.ts`.
+
+Observed hosted `deep-battle` failure:
+
+```text
+tests/e2e/deep-flow.spec.ts:3829
+behaviour mode control gauntlet preserves attack, retreat, marquee, and minimap intent @hosted-deep-battle
+
+Expected retreatState.hasMoveTarget to be true, but received false.
+```
+
+The initial failed matrix attempt also saw one `Worker assignment and site upgrade boost a captured resource site` failure, but the rerun reduced the residual failure to the behaviour gauntlet move-order assertion.
+
+Follow-up action taken locally:
+
+- Added a test-only hosted deep-battle stabilization in `tests/e2e/deep-flow.spec.ts`.
+- The shared world-move helper now prefers safe ground points that do not hit capture sites/buildings and reselects the original player units before retrying world right-clicks.
+- The behaviour gauntlet retreat setup now parks hostile units away from the command target before testing the explicit retreat/move order.
+- No runtime gameplay, balance, maps, factions, assets, save format, pathing, or production systems were changed.
+
+Local follow-up verification:
+
+```text
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --reporter=line PASS, 1 test.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker move-away pauses construction" --reporter=line PASS, 1 test.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+```
+
+Remote CI is no longer blocked at checkout. Treat the remaining work as hosted release-lane verification for the follow-up test-only stabilization.

@@ -512,7 +512,7 @@ async function clickWorldPointUntilEffect(
 async function prepareMovementCommandTargets(
   page: Page,
   initialPoint: { x: number; y: number }
-): Promise<{ selectedCount: number; points: { x: number; y: number }[] }> {
+): Promise<{ selectedCount: number; selectedIds: string[]; points: { x: number; y: number }[] }> {
   return page.evaluate((target) => {
     const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
     if (!scene?.scene.isActive()) {
@@ -534,16 +534,25 @@ async function prepareMovementCommandTargets(
     });
     const points = [
       target,
+      { x: 650, y: 920 },
+      { x: 720, y: 860 },
       { x: anchor.x + 180, y: anchor.y + 80 },
       { x: anchor.x + 120, y: anchor.y + 160 },
       { x: anchor.x + 220, y: anchor.y - 60 },
-      { x: anchor.x - 140, y: anchor.y + 120 }
+      { x: anchor.x - 140, y: anchor.y + 120 },
+      { x: anchor.x + 280, y: anchor.y + 140 },
+      { x: anchor.x - 220, y: anchor.y - 120 }
     ].map(clampPoint);
     const uniquePoints = points.filter(
       (point, index, entries) =>
         entries.findIndex((entry) => Math.hypot(entry.x - point.x, entry.y - point.y) < 24) === index
     );
-    return { selectedCount: selected.length, points: uniquePoints };
+    const groundPoints = uniquePoints.filter((point) => !scene.findWorldEntityAt?.(point));
+    return {
+      selectedCount: selected.length,
+      selectedIds: selected.map((entity: any) => entity.id),
+      points: groundPoints.length ? groundPoints : uniquePoints
+    };
   }, initialPoint);
 }
 
@@ -590,6 +599,19 @@ async function rightClickWorldPointUntilOrder(
   let lastError: unknown;
   for (let attempt = 1; attempt <= prepared.points.length; attempt += 1) {
     const candidatePoint = prepared.points[attempt - 1];
+    await page.evaluate((selectedIds) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        return;
+      }
+      const selected = selectedIds
+        .map((id) => scene.units.find((unit: any) => unit.id === id && unit.team === "player" && unit.alive))
+        .filter(Boolean);
+      if (selected.length > 0) {
+        scene.selectionSystem.setSelection(selected);
+        scene.refreshBattleHud?.(0);
+      }
+    }, prepared.selectedIds);
     try {
       await expectWorldClickTargetsCanvas(page, candidatePoint, `${context} attempt ${attempt}`);
     } catch (error) {
@@ -4035,8 +4057,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     const retreatPoint = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-      const target = scene?.units.find((unit: any) => unit.team !== "player" && unit.alive);
-      if (!scene?.scene.isActive() || !scene.hero?.alive || !target) {
+      const hostiles = scene?.units.filter((unit: any) => unit.team !== "player" && unit.alive);
+      if (!scene?.scene.isActive() || !scene.hero?.alive || !hostiles?.length) {
         throw new Error("Expected active hero and hostile target for retreat gauntlet.");
       }
       scene.hero.attackTargetId = undefined;
@@ -4045,8 +4067,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.hero.moveTarget = undefined;
       scene.hero.attackCooldownRemaining = 0;
       scene.hero.factionSpeedMultiplier = 0.25;
-      target.factionSpeedMultiplier = 0;
-      target.setPosition(Math.min(scene.activeMap.width - 180, scene.hero.position.x + 220), scene.hero.position.y - 80);
+      hostiles.forEach((unit: any, index: number) => {
+        unit.factionSpeedMultiplier = 0;
+        unit.attackTargetId = undefined;
+        unit.attackTargetLabel = undefined;
+        unit.attackMove = false;
+        unit.moveTarget = undefined;
+        unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 24);
+      });
       scene.selectionSystem.setSelection([scene.hero]);
       scene.cameraSystem.centerOn(scene.hero.position);
       scene.refreshBattleHud?.(0);
