@@ -589,6 +589,9 @@ export async function seedCampaignSave(page: Page, options: SeedCampaignOptions 
 }
 
 export async function continueSavedCampaign(page: Page): Promise<void> {
-  await clickReady(page.getByTestId("menu-continue-campaign"), "continue saved campaign");
+  await clickReady(page.getByTestId("menu-continue-campaign"), "continue saved campaign", {
+    allowTargetGoneAfterClick: true,
+    successCheckAfterClick: async () => (await page.getByTestId("campaign-map").count()) > 0
+  });
   await expect(page.getByTestId("campaign-map")).toBeVisible();
 }

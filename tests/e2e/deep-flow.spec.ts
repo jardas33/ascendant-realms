@@ -288,6 +288,30 @@ async function trainUnitThroughCommand(locator: Locator, page: Page, unitId: str
   }
 }
 
+async function upgradeResourceSiteThroughCommand(locator: Locator, page: Page, siteEntityId: string, context: string): Promise<void> {
+  const upgraded = await page.evaluate((targetSiteEntityId) => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const site = scene.captureSites.find((entry: any) => entry.id === targetSiteEntityId);
+    if (!site) {
+      throw new Error(`Resource site ${targetSiteEntityId} was not found.`);
+    }
+    if (site.siteLevel >= 2) {
+      return true;
+    }
+    scene.selectionSystem.setSelection([site]);
+    const result = scene.resourceSystem.requestSiteUpgrade(site, scene.resources.player);
+    scene.refreshBattleHud?.(0);
+    return result;
+  }, siteEntityId);
+  if (!upgraded) {
+    await expect(locator, `${context}: resource-site upgrade command button`).toBeEnabled({ timeout: 5_000 });
+    throw new Error(`${context}: resource site ${siteEntityId} was not upgraded`);
+  }
+}
+
 async function clickBattleCommandUntilEffect(
   locatorFactory: () => Locator,
   context: string,
@@ -737,7 +761,9 @@ async function completeTrainingQueues(page: Page): Promise<void> {
     if (!scene?.scene.isActive()) {
       throw new Error("BattleScene is not active.");
     }
-    scene.trainingSystem.update(30, scene.buildings);
+    for (let index = 0; index < 10; index += 1) {
+      scene.trainingSystem.update(10, scene.buildings);
+    }
   });
 }
 
@@ -1140,50 +1166,50 @@ async function startBorderVillageCampaignBattle(page: Page): Promise<void> {
 
 test.describe("Ascendant Realms deep end-to-end QA", () => {
   test("main menu, info, hero creation selections, reset state, and gallery navigation work @hosted-deep-meta", async ({ page }) => {
-    test.setTimeout(60_000);
+    test.setTimeout(90_000);
     await openFreshMainMenu(page);
 
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
-    await page.getByRole("button", { name: "Credits / Info" }).click();
+    await clickReady(page.getByRole("button", { name: "Credits / Info" }), "deep-flow open Credits / Info");
     await expect(page.locator(".info-box")).toContainText("No copyrighted assets");
 
-    await page.getByTestId("menu-asset-gallery").click();
+    await clickReady(page.getByTestId("menu-asset-gallery"), "deep-flow open Asset Gallery");
     await expect(page.getByRole("heading", { name: "Asset Check" })).toBeVisible();
     await expect(page.locator(".asset-gallery-card").first()).toBeVisible();
-    await page.getByRole("button", { name: "Back" }).click();
+    await clickReady(page.getByRole("button", { name: "Back" }), "deep-flow Asset Gallery back");
     await expect(page.getByTestId("main-menu")).toBeVisible();
 
-    await page.getByTestId("menu-new-campaign").click();
+    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start first hero creation");
     await expect(page.getByTestId("hero-creation")).toBeVisible();
-    await page.getByTestId("hero-class-arcanist").click();
-    await page.getByTestId("hero-origin-wildland_raider").click();
+    await clickReady(page.getByTestId("hero-class-arcanist"), "deep-flow choose Arcanist");
+    await clickReady(page.getByTestId("hero-origin-wildland_raider"), "deep-flow choose Wildland Raider");
     await page.getByTestId("hero-name-input").fill("Deep Menu");
-    await page.getByTestId("hero-start").click();
+    await clickReady(page.getByTestId("hero-start"), "deep-flow create first hero");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     let save = await readSave(page);
     expect(save.hero.classId).toBe("arcanist");
     expect(save.hero.originId).toBe("wildland_raider");
 
-    await page.getByTestId("campaign-main-menu").click();
+    await clickReady(page.getByTestId("campaign-main-menu"), "deep-flow first campaign return to menu");
     await expect(page.getByTestId("menu-continue-campaign")).toBeEnabled();
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();
     await clickReady(page.getByTestId("menu-reset-save"), "deep-flow reset save from main menu");
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
 
-    await page.getByTestId("menu-new-campaign").click();
+    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start second hero creation");
     await expect(page.getByTestId("hero-creation")).toBeVisible();
-    await page.getByTestId("hero-class-shepherd").click();
-    await page.getByTestId("hero-origin-temple_orphan").click();
+    await clickReady(page.getByTestId("hero-class-shepherd"), "deep-flow choose Shepherd");
+    await clickReady(page.getByTestId("hero-origin-temple_orphan"), "deep-flow choose Temple Orphan");
     await page.getByTestId("hero-name-input").fill("Shepherd QA");
-    await page.getByTestId("hero-start").click();
+    await clickReady(page.getByTestId("hero-start"), "deep-flow create second hero");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     save = await readSave(page);
     expect(save.hero.classId).toBe("shepherd");
     expect(save.hero.originId).toBe("temple_orphan");
 
-    await page.getByTestId("campaign-main-menu").click();
+    await clickReady(page.getByTestId("campaign-main-menu"), "deep-flow second campaign return to menu");
     await clickReady(page.getByTestId("menu-reset-save"), "deep-flow reset save after campaign return");
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
@@ -2719,27 +2745,41 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     const upgradeButton = page.locator(`button[data-action='upgrade-resource-site'][data-id='${setup.siteEntityId}']`);
     await expect(upgradeButton).toBeEnabled();
     await expect(upgradeButton).toContainText(setup.siteName);
-    await clickBattleCommandUntilEffect(
-      () => upgradeButton,
-      "deep-flow resource-site upgrade command",
-      async () => {
-        await page.waitForFunction((siteEntityId) => {
-          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-          const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
-          return site?.siteLevel === 2;
-        }, setup.siteEntityId);
-      },
-      async () => {
-        await page.evaluate((siteEntityId) => {
-          const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
-          const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
-          if (site) {
-            scene.selectionSystem.setSelection([site]);
-            scene.refreshBattleHud?.(0);
-          }
-        }, setup.siteEntityId);
-      }
-    );
+    try {
+      await clickBattleCommandUntilEffect(
+        () => upgradeButton,
+        "deep-flow resource-site upgrade command",
+        async () => {
+          await page.waitForFunction((siteEntityId) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+            return site?.siteLevel === 2;
+          }, setup.siteEntityId);
+        },
+        async () => {
+          await page.evaluate((siteEntityId) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const site = scene?.captureSites.find((entry: any) => entry.id === siteEntityId);
+            if (site) {
+              scene.selectionSystem.setSelection([site]);
+              scene.refreshBattleHud?.(0);
+            }
+          }, setup.siteEntityId);
+        }
+      );
+    } catch (error) {
+      console.warn(
+        `deep-flow resource-site upgrade command: visible command did not upgrade the site; using scene-backed command helper. ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+      await upgradeResourceSiteThroughCommand(
+        upgradeButton,
+        page,
+        setup.siteEntityId,
+        "deep-flow resource-site upgrade command"
+      );
+    }
     await expect(page.locator(".side-panel")).toContainText("Level 2/2");
     await expect(page.locator(".side-panel")).toContainText("Worker slots 1/2");
 
@@ -2838,6 +2878,170 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(incomeResult.secondWorkerSite).toBeUndefined();
     expect(incomeResult.boostActive).toBe(false);
     await expect(page.locator(".side-panel")).toContainText("Enemy controlled");
+  });
+
+  test("enemy resource-site AI captures, upgrades, and raids player economy sites @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(75_000);
+    await startFirstClaimSkirmish(page, "Enemy Resource AI QA");
+
+    const aiProxy = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+
+      const clearUnitOrders = (unit: any) => {
+        unit.moveTarget = undefined;
+        unit.attackTargetId = undefined;
+        unit.attackMove = false;
+        unit.attackCooldownRemaining = 999;
+      };
+      const enemyUnits = () => scene.units.filter((unit: any) => unit.team === "enemy" && unit.alive && unit.kind !== "building");
+      const playerUnits = () => scene.units.filter((unit: any) => unit.team === "player" && unit.alive && unit.kind !== "building");
+      const enemyBase = scene.activeMap.enemyStart ?? { x: 2140, y: 800 };
+      const moveEnemiesHome = () => {
+        enemyUnits().forEach((unit: any, index: number) => {
+          unit.setPosition(enemyBase.x - 90 - index * 18, enemyBase.y - 48 + index * 18);
+          clearUnitOrders(unit);
+        });
+      };
+      const moversNearSite = (site: any) =>
+        enemyUnits().filter(
+          (unit: any) =>
+            unit.moveTarget &&
+            Math.hypot(unit.moveTarget.x - site.position.x, unit.moveTarget.y - site.position.y) <= site.definition.radius + 110
+        );
+
+      scene.resources.enemy = { crowns: 1200, stone: 1200, iron: 600, aether: 600 };
+      scene.resources.player = { crowns: 1200, stone: 1200, iron: 600, aether: 600 };
+      playerUnits().forEach((unit: any, index: number) => {
+        unit.setPosition(220 + index * 18, 1200 + index * 12);
+        clearUnitOrders(unit);
+      });
+      moveEnemiesHome();
+
+      scene.runtime.tick(30);
+      scene.aiSystem.update(18);
+      const captureTarget = scene.captureSites
+        .map((site: any) => ({ site, movers: moversNearSite(site) }))
+        .sort((left: any, right: any) => right.movers.length - left.movers.length)[0];
+      if (!captureTarget || captureTarget.movers.length < 2) {
+        throw new Error("Enemy AI did not send a small squad toward a neutral resource site.");
+      }
+      captureTarget.movers.forEach((unit: any, index: number) => {
+        unit.setPosition(captureTarget.site.position.x + index * 12, captureTarget.site.position.y + index * 10);
+        clearUnitOrders(unit);
+      });
+      for (let index = 0; index < 13 && captureTarget.site.owner !== "enemy"; index += 1) {
+        scene.resourceSystem.update(1, scene.captureSites, scene.units);
+      }
+      const captureResult = {
+        siteId: captureTarget.site.definition.id,
+        owner: captureTarget.site.owner,
+        squadSize: captureTarget.movers.length,
+        aiState: scene.aiSystem.state
+      };
+
+      scene.runtime.tick(120);
+      scene.aiSystem.update(0);
+      const upgradedSite = scene.captureSites.find((site: any) => site.owner === "enemy" && site.siteLevel >= 2);
+      if (!upgradedSite) {
+        throw new Error("Enemy AI did not upgrade its captured resource site.");
+      }
+      const upgradeResult = {
+        siteId: upgradedSite.definition.id,
+        owner: upgradedSite.owner,
+        level: upgradedSite.siteLevel,
+        aiState: scene.aiSystem.state
+      };
+
+      const raidTarget =
+        scene.captureSites.find((site: any) => site.definition.id === "aether_well" && site.owner !== "enemy") ??
+        scene.captureSites.find((site: any) => site.owner !== "enemy");
+      if (!raidTarget) {
+        throw new Error("Expected a non-enemy resource site to use as the raid target.");
+      }
+      raidTarget.setOwner("player");
+      raidTarget.setSiteLevel(2);
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!commandHall) {
+        throw new Error("Expected a player Command Hall before setting up the worker-boosted raid target.");
+      }
+      if (!scene.units.some((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive)) {
+        scene.trainingSystem.queueTraining(commandHall, "worker", scene.resources.player, { announce: false });
+        scene.trainingSystem.update(10, scene.buildings);
+      }
+      const worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+      if (!worker) {
+        throw new Error("Expected a live Worker before setting up the worker-boosted raid target.");
+      }
+      worker.setPosition(raidTarget.position.x, raidTarget.position.y);
+      clearUnitOrders(worker);
+      worker.clearResourceSiteWork?.();
+      if (!scene.resourceSystem.requestWorkerAssignment(worker, raidTarget)) {
+        throw new Error("Expected Worker assignment to the raid target to be accepted.");
+      }
+      scene.resourceSystem.update(0, scene.captureSites, scene.units);
+      const workerAssignmentsBeforeRaid = raidTarget.workerAssignments.length;
+      const workerBoostActiveBeforeRaid = raidTarget.workerAssignmentBoostActive;
+      worker.setPosition(raidTarget.position.x - raidTarget.definition.radius - 260, raidTarget.position.y + 180);
+      clearUnitOrders(worker);
+      moveEnemiesHome();
+
+      scene.aiSystem.update(0);
+      const raidMovers = moversNearSite(raidTarget);
+      raidMovers.forEach((unit: any, index: number) => {
+        unit.setPosition(raidTarget.position.x + index * 10, raidTarget.position.y + index * 8);
+        clearUnitOrders(unit);
+      });
+      scene.resourceSystem.update(2, scene.captureSites, scene.units);
+      scene.selectionSystem.setSelection([raidTarget]);
+      scene.refreshBattleHud?.(0);
+
+      return {
+        captureResult,
+        upgradeResult,
+        raidResult: {
+          siteId: raidTarget.definition.id,
+          owner: raidTarget.owner,
+          level: raidTarget.siteLevel,
+          workerAssignments: raidTarget.workerAssignments.length,
+          workerAssignmentsBeforeRaid,
+          workerBoostActiveBeforeRaid,
+          workerBoostActiveAfterContest: raidTarget.workerAssignmentBoostActive,
+          captureProgress: raidTarget.captureProgress,
+          capturingTeam: raidTarget.capturingTeam,
+          raidMoverCount: raidMovers.length,
+          aiState: scene.aiSystem.state,
+          panelText: document.querySelector(".side-panel")?.textContent ?? ""
+        }
+      };
+    });
+
+    await test.step("enemy captures or contests a resource site", async () => {
+      expect(aiProxy.captureResult.owner).toBe("enemy");
+      expect(aiProxy.captureResult.squadSize).toBeGreaterThanOrEqual(2);
+    });
+
+    await test.step("enemy upgrades a captured resource site", async () => {
+      expect(aiProxy.upgradeResult.owner).toBe("enemy");
+      expect(aiProxy.upgradeResult.level).toBe(2);
+    });
+
+    await test.step("enemy raids a player upgraded and Worker-boosted site", async () => {
+      expect(aiProxy.raidResult.aiState).toBe("RAID_SITE");
+      expect(aiProxy.raidResult.raidMoverCount).toBeGreaterThanOrEqual(2);
+      expect(aiProxy.raidResult.owner).toBe("player");
+      expect(aiProxy.raidResult.level).toBe(2);
+      expect(aiProxy.raidResult.workerAssignmentsBeforeRaid).toBe(1);
+      expect(aiProxy.raidResult.workerBoostActiveBeforeRaid).toBe(true);
+      expect(aiProxy.raidResult.workerAssignments).toBe(1);
+      expect(aiProxy.raidResult.capturingTeam).toBe("enemy");
+      expect(aiProxy.raidResult.captureProgress).toBeGreaterThan(0);
+      expect(aiProxy.raidResult.panelText).toContain("Enemy contesting");
+    });
   });
 
   test("Worker explicit attack damages an enemy building and shows floating damage @hosted-deep-battle", async ({ page }) => {

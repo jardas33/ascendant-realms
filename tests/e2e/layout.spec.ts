@@ -433,7 +433,14 @@ async function createCompletedBarracksAndSelect(page: Page): Promise<void> {
           (entry: any) => entry.team === "player" && entry.definition.id === "barracks" && entry.alive
         );
       }
-      scene.buildingSystem.update((barracks.definition.constructionTimeSeconds ?? 25) + 1);
+      const wasUnderConstruction = barracks.constructionState === "underConstruction";
+      barracks.constructionState = "completed";
+      barracks.constructionProgress = 1;
+      barracks.constructionProgressing = false;
+      barracks.hp = Math.max(barracks.hp, barracks.maxHp);
+      if (wasUnderConstruction) {
+        scene.runtime?.recordBuildingBuilt?.(barracks.definition.id);
+      }
       scene.cameraSystem.centerOn(barracks.position);
       scene.selectionSystem.setSelection([barracks]);
       (document.activeElement as HTMLElement | null)?.blur?.();

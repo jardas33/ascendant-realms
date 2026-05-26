@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "generatedBy": "ControlBehaviourScenarioRunner",
-  "generatedAt": "2026-05-24T21:26:06.213Z",
-  "buildCommit": "1ae687e",
-  "iterationCount": 1,
+  "generatedAt": "2026-05-25T21:39:28.117Z",
+  "buildCommit": "b231632",
+  "iterationCount": 5,
   "scenarioCount": 18,
-  "passCount": 18,
+  "passCount": 90,
   "monitorCount": 0,
   "failCount": 0,
   "notMeasuredCount": 0,
@@ -18,7 +18,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "attack_hover_tolerance_boundary",
@@ -28,7 +28,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "combat_edge_building_aggro_matrix",
@@ -38,7 +38,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "combat_edge_hero_three_melee_followup",
@@ -48,7 +48,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "combat_edge_mode_difference_matrix",
@@ -58,7 +58,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "combat_edge_two_friendlies_three_enemies",
@@ -68,7 +68,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "enemy_melee_building_aggro",
@@ -78,7 +78,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "explicit_attack_overrides_mode",
@@ -88,7 +88,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "group_mixed_mode_application",
@@ -98,7 +98,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "guard_area_default_local_defence",
@@ -108,7 +108,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "hold_ground_contact_defence",
@@ -118,7 +118,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "hold_ground_distant_threat_refusal",
@@ -128,7 +128,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "hud_minimap_selection_regression",
@@ -138,7 +138,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "manual_proxy_group_retreat_resume",
@@ -148,7 +148,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "manual_proxy_hold_ground_adjacent_followup",
@@ -158,7 +158,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "move_away_suppression",
@@ -168,7 +168,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "post_kill_adjacent_reacquisition",
@@ -178,7 +178,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     },
     {
       "scenarioId": "press_attack_bounded_pursuit",
@@ -188,7 +188,7 @@
       "passRate": 1,
       "monitorRate": 0,
       "failRate": 0,
-      "iterationCount": 1
+      "iterationCount": 5
     }
   ],
   "limitations": [

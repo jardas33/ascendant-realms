@@ -270,6 +270,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       }
       if (owner === "enemy") {
         addMinimapPing(site.position.x, site.position.y, "#f0d978", `${site.definition.name} captured by enemy`);
+        showMessage(`${site.definition.name} captured by enemy.`, site.position.x, site.position.y - 70, "#f0d978", {
+          priority: "pressure"
+        });
       }
     },
     onIncome: (site, owner, amount, breakdown) => {
@@ -470,6 +473,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getUnits,
     getBuildings,
     getCaptureSites,
+    resourceSystem,
     training: trainingSystem,
     getAttackTarget: findPlayerBaseBuilding,
     getElapsedSeconds: () => runtime.elapsedSeconds,

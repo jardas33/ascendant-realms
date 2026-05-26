@@ -48,6 +48,7 @@ function createSite(definition: Partial<CaptureSiteDefinition> = {}): CaptureSit
     assignedWorkerName: undefined as string | undefined,
     workerAssignmentStatusDetail: "Empty worker slot",
     workerAssignmentBoostActive: false,
+    abstractEnemyWorkerSlots: 0,
     setOwner(owner: Team) {
       this.owner = owner;
       this.team = owner;
@@ -56,6 +57,7 @@ function createSite(definition: Partial<CaptureSiteDefinition> = {}): CaptureSit
       this.incomeTimer = 0;
       this.siteLevel = 1;
       this.clearAllWorkerAssignments();
+      this.abstractEnemyWorkerSlots = 0;
     },
     setWorkerAssignment(this: any, workerId: string, workerName: string, status = `${workerName} traveling`) {
       const existing = this.workerAssignments.find((assignment: any) => assignment.workerId === workerId);
@@ -90,6 +92,9 @@ function createSite(definition: Partial<CaptureSiteDefinition> = {}): CaptureSit
     },
     setSiteLevel(this: any, level: 1 | 2) {
       this.siteLevel = level;
+    },
+    setAbstractEnemyWorkerSlots(this: any, slots: number) {
+      this.abstractEnemyWorkerSlots = Math.max(0, Math.min(2, Math.floor(slots)));
     },
     syncLegacyWorkerAssignmentFields(this: any, emptyStatus = "Empty worker slot") {
       const firstAssignment = this.workerAssignments[0];
@@ -492,6 +497,8 @@ describe("ResourceSystem Worker site assignment", () => {
     expect(site.assignedWorkerId).toBeUndefined();
     expect(site.workerAssignmentBoostActive).toBe(false);
     expect(worker.activeResourceSiteId).toBeUndefined();
+    expect(site.siteLevel).toBe(1);
+    expect(site.abstractEnemyWorkerSlots).toBe(0);
   });
 
   it("starts captured sites at level 1 with one Worker slot", () => {
@@ -554,6 +561,34 @@ describe("ResourceSystem Worker site assignment", () => {
     expect(messages).toContain("Insufficient resources for site upgrade.");
   });
 
+  it("lets the enemy upgrade only enemy-controlled resource sites under the same cost rule", () => {
+    const resources = createResourceBank();
+    resources.enemy.crowns = 500;
+    resources.enemy.stone = 500;
+    const enemySite = createSite({ id: "enemy_mine", name: "Enemy Mine" });
+    enemySite.setOwner("enemy");
+    const playerSite = createSite({ id: "player_mine", name: "Player Mine" });
+    playerSite.setOwner("player");
+    const neutralSite = createSite({ id: "neutral_mine", name: "Neutral Mine" });
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [enemySite, playerSite, neutralSite],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: vi.fn()
+    });
+
+    expect(system.requestSiteUpgrade(playerSite, resources.enemy, { owner: "enemy", announce: false })).toBe(false);
+    expect(system.requestSiteUpgrade(neutralSite, resources.enemy, { owner: "enemy", announce: false })).toBe(false);
+    expect(system.requestSiteUpgrade(enemySite, resources.enemy, { owner: "enemy", announce: false })).toBe(true);
+
+    expect(enemySite.siteLevel).toBe(2);
+    expect(playerSite.siteLevel).toBe(1);
+    expect(neutralSite.siteLevel).toBe(1);
+    expect(resources.enemy.crowns).toBe(500 - (RESOURCE_SITE_UPGRADE_COST.crowns ?? 0));
+    expect(resources.enemy.stone).toBe(500 - (RESOURCE_SITE_UPGRADE_COST.stone ?? 0));
+  });
+
   it("prevents duplicate Worker assignments and overfilled upgraded slots", () => {
     const resources = createResourceBank();
     const site = createSite({ incomeAmount: 20, incomeInterval: 1 });
@@ -612,5 +647,33 @@ describe("ResourceSystem Worker site assignment", () => {
       workerBonusAmount: workerSiteBonusAmount(site) * 2,
       totalIncomeAmount: 20 + resourceSiteUpgradeBonusAmount(site) + workerSiteBonusAmount(site) * 2
     });
+  });
+
+  it("counts abstract enemy logistics as an enemy-only Worker-slot income bonus", () => {
+    const resources = createResourceBank();
+    const site = createSite({ resource: "stone", incomeAmount: 20, incomeInterval: 1 });
+    site.setOwner("enemy");
+    site.setSiteLevel(2);
+    site.setAbstractEnemyWorkerSlots(1);
+    const system = new ResourceSystem({
+      resources,
+      getCaptureSites: () => [site],
+      onCapture: vi.fn(),
+      onIncome: vi.fn(),
+      onMessage: vi.fn()
+    });
+
+    system.update(1, [site], []);
+
+    expect(resources.enemy.stone).toBe(20 + resourceSiteUpgradeBonusAmount(site) + workerSiteBonusAmount(site));
+    expect(system.resourceSiteSummaries([site])[0]).toMatchObject({
+      owner: "enemy",
+      abstractEnemyWorkerSlotsUsed: 1,
+      workerBonusAmount: workerSiteBonusAmount(site),
+      totalIncomeAmount: 20 + resourceSiteUpgradeBonusAmount(site) + workerSiteBonusAmount(site)
+    });
+
+    site.setOwner("player");
+    expect(site.abstractEnemyWorkerSlots).toBe(0);
   });
 });

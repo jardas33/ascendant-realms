@@ -25,6 +25,7 @@ export class CaptureSite extends BaseEntity {
   assignedWorkerName?: string;
   workerAssignmentStatusDetail = "Empty worker slot";
   workerAssignmentBoostActive = false;
+  abstractEnemyWorkerSlots = 0;
 
   private ring?: Phaser.GameObjects.Arc;
   private progressRing?: Phaser.GameObjects.Arc;
@@ -59,6 +60,7 @@ export class CaptureSite extends BaseEntity {
     this.incomeTimer = 0;
     this.siteLevel = 1;
     this.clearAllWorkerAssignments();
+    this.abstractEnemyWorkerSlots = 0;
     this.updateVisuals();
   }
 
@@ -108,6 +110,13 @@ export class CaptureSite extends BaseEntity {
 
   setSiteLevel(level: ResourceSiteLevel): void {
     this.siteLevel = level;
+    if (level < 2) {
+      this.abstractEnemyWorkerSlots = Math.min(this.abstractEnemyWorkerSlots, 1);
+    }
+  }
+
+  setAbstractEnemyWorkerSlots(slots: number): void {
+    this.abstractEnemyWorkerSlots = Math.max(0, Math.min(2, Math.floor(slots)));
   }
 
   updateVisuals(): void {

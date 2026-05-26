@@ -24,12 +24,18 @@ interface ResourceSystemMessageOptions {
   priority?: "normal" | "command" | "pressure" | "objective";
 }
 
+interface ResourceSiteUpgradeOptions {
+  owner?: Extract<Team, "player" | "enemy">;
+  announce?: boolean;
+}
+
 export interface ResourceIncomeBreakdown {
   baseAmount: number;
   upgradeBonusAmount: number;
   workerBonusAmount: number;
   totalAmount: number;
   activeWorkerCount: number;
+  abstractEnemyWorkerCount: number;
   assignedWorkerName?: string;
   assignedWorkerNames: string[];
 }
@@ -59,6 +65,7 @@ export interface ResourceSiteAssignmentSummary {
   workerSlotsUsed: number;
   workerSlotsAvailable: number;
   workerSlots: ResourceSiteWorkerSlotSummary[];
+  abstractEnemyWorkerSlotsUsed: number;
   assignedWorkerId?: string;
   assignedWorkerName?: string;
   isAssignable: boolean;
@@ -136,26 +143,34 @@ export class ResourceSystem {
     return true;
   }
 
-  requestSiteUpgrade(site: CaptureSite | undefined, resources: ResourceBag): boolean {
-    const validation = validateResourceSiteUpgradeRequest(site, resources);
+  requestSiteUpgrade(site: CaptureSite | undefined, resources: ResourceBag, options: ResourceSiteUpgradeOptions = {}): boolean {
+    const owner = options.owner ?? "player";
+    const announce = options.announce ?? true;
+    const validation = validateResourceSiteUpgradeRequest(site, resources, owner);
     if (!validation.ok) {
       const point = site?.position;
-      this.showAssignmentMessage(validation.reason, point?.x, point ? point.y - 46 : undefined, "#ffd27a");
+      if (announce) {
+        this.showAssignmentMessage(validation.reason, point?.x, point ? point.y - 46 : undefined, "#ffd27a");
+      }
       return false;
     }
 
     const targetSite = site!;
     if (!payCost(resources, RESOURCE_SITE_UPGRADE_COST)) {
-      this.showAssignmentMessage("Insufficient resources for site upgrade.", targetSite.position.x, targetSite.position.y - 46, "#ffd27a");
+      if (announce) {
+        this.showAssignmentMessage("Insufficient resources for site upgrade.", targetSite.position.x, targetSite.position.y - 46, "#ffd27a");
+      }
       return false;
     }
     targetSite.setSiteLevel(2);
-    this.showAssignmentMessage(
-      `${targetSite.definition.name} improved: income bonus online and a second Worker slot unlocked.`,
-      targetSite.position.x,
-      targetSite.position.y - 58,
-      "#d9eee8"
-    );
+    if (announce) {
+      this.showAssignmentMessage(
+        `${targetSite.definition.name} improved: income bonus online and a second Worker slot unlocked.`,
+        targetSite.position.x,
+        targetSite.position.y - 58,
+        "#d9eee8"
+      );
+    }
     return true;
   }
 
@@ -184,6 +199,7 @@ export class ResourceSystem {
         workerSlotsUsed: site.workerAssignments.length,
         workerSlotsAvailable: Math.max(0, workerSlotCapacity - site.workerAssignments.length),
         workerSlots,
+        abstractEnemyWorkerSlotsUsed: site.owner === "enemy" ? site.abstractEnemyWorkerSlots : 0,
         assignedWorkerId: site.assignedWorkerId,
         assignedWorkerName,
         isAssignable: site.owner === "player" && site.workerAssignments.length < workerSlotCapacity,
@@ -352,7 +368,8 @@ export function resourceSiteWorkerSlotCapacity(site: CaptureSite): number {
 
 export function resourceSiteIncomeBreakdown(site: CaptureSite): ResourceIncomeBreakdown {
   const activeAssignments = site.workerAssignments.filter((assignment) => assignment.boostActive);
-  const workerBonusAmount = activeAssignments.length * workerSiteBonusAmount(site);
+  const abstractEnemyWorkerCount = site.owner === "enemy" ? site.abstractEnemyWorkerSlots : 0;
+  const workerBonusAmount = (activeAssignments.length + abstractEnemyWorkerCount) * workerSiteBonusAmount(site);
   const upgradeBonusAmount = resourceSiteUpgradeBonusAmount(site);
   const totalAmount = site.definition.incomeAmount + upgradeBonusAmount + workerBonusAmount;
   return {
@@ -360,7 +377,8 @@ export function resourceSiteIncomeBreakdown(site: CaptureSite): ResourceIncomeBr
     upgradeBonusAmount,
     workerBonusAmount,
     totalAmount,
-    activeWorkerCount: activeAssignments.length,
+    activeWorkerCount: activeAssignments.length + abstractEnemyWorkerCount,
+    abstractEnemyWorkerCount,
     assignedWorkerName: activeAssignments[0]?.workerName,
     assignedWorkerNames: activeAssignments.map((assignment) => assignment.workerName)
   };
@@ -391,13 +409,20 @@ export function validateWorkerSiteAssignmentRequest(
 
 export function validateResourceSiteUpgradeRequest(
   site: CaptureSite | undefined,
-  resources: ResourceBag
+  resources: ResourceBag,
+  owner: Extract<Team, "player" | "enemy"> = "player"
 ): { ok: true } | { ok: false; reason: string } {
   if (!site?.alive) {
     return { ok: false, reason: "No resource site selected." };
   }
-  if (site.owner !== "player") {
-    return { ok: false, reason: "Capture the resource site before upgrading it." };
+  if (site.owner !== owner) {
+    return {
+      ok: false,
+      reason:
+        owner === "player"
+          ? "Capture the resource site before upgrading it."
+          : "Enemy can only upgrade enemy-controlled resource sites."
+    };
   }
   if (site.siteLevel >= RESOURCE_SITE_MAX_LEVEL) {
     return { ok: false, reason: `${site.definition.name} is already improved.` };
@@ -438,10 +463,17 @@ function resourceSiteWorkerSlots(site: CaptureSite): ResourceSiteWorkerSlotSumma
 }
 
 function resourceSiteAssignmentStatus(site: CaptureSite): string {
+  if (site.captureProgress > 0 && site.capturingTeam !== "neutral") {
+    const teamLabel = site.capturingTeam === "player" ? "Player" : "Enemy";
+    return `${teamLabel} contesting - ${Math.round(site.captureProgress * 100)}%`;
+  }
   if (site.owner === "neutral") {
     return "Neutral - capture before assigning a Worker";
   }
   if (site.owner === "enemy") {
+    if (site.abstractEnemyWorkerSlots > 0) {
+      return `Enemy logistics ${site.abstractEnemyWorkerSlots}/${resourceSiteWorkerSlotCapacity(site)} boosting`;
+    }
     return "Enemy controlled - capture before assigning a Worker";
   }
   if (site.workerAssignments.length > 0) {
@@ -458,7 +490,7 @@ function resourceSiteUpgradeStatus(site: CaptureSite): string {
     return "Capture before upgrading.";
   }
   if (site.owner === "enemy") {
-    return "Enemy controlled.";
+    return site.siteLevel >= RESOURCE_SITE_MAX_LEVEL ? "Enemy Level 2 improved site." : "Enemy controlled.";
   }
   if (site.siteLevel >= RESOURCE_SITE_MAX_LEVEL) {
     return "Level 2 improved site.";

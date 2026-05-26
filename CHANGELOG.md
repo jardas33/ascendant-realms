@@ -1,5 +1,43 @@
 # Changelog
 
+## v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
+
+This checkpoint makes enemy AI interact strategically with the v0.22/v0.23 resource-site economy. Enemies can capture, retake, defend, upgrade, and raid around sites without adding classic carry/drop-off harvesting or globally overbuffing army pressure.
+
+### Included
+
+- Added `docs/V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md`.
+- Added `docs/V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md`.
+- Added `docs/V024_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and package validation to name `v0.24-v0.25 enemy resource-site strategy and economy pressure AI`.
+- Added a pure enemy resource-site strategy/scoring helper that values site type, level, distance, local threat/support, owner, player Worker/boost value, and known lost enemy sites.
+- Added controlled enemy neutral-site capture, lost-site retake, valuable-site defense, conservative Level 2 site upgrades, and periodic economy-pressure raids.
+- Added abstract enemy logistics slots on enemy-owned Level 2 sites without simulating visible enemy Workers, harvesting, cargo, or drop-off loops.
+- Added UI/status copy for site contesting, enemy improved sites, and abstract enemy logistics.
+- Expanded unit/system/hosted coverage for scoring, capture, retake, defense, upgrades, invalid upgrade rejection, raids, raid cooldowns, weak-raid regrouping, abstract logistics, and existing Worker slot/site-loss behavior.
+- Narrowly hardened existing e2e harness paths for full-release confidence: serial training queue completion, completed-Barracks layout setup, Continue Campaign success recognition, and first deep-meta menu actionability.
+
+### Verdict
+
+- Runtime gameplay changed: yes, enemy AI now uses and pressures resource sites.
+- Gameplay numbers changed: narrowly, through local AI cooldowns/budgets/scoring and enemy-owned site income; no global army rebalance.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no classic carry/drop-off harvesting, cargo, drop-off loop, or full enemy Worker economy.
+
+### Verification
+
+- Passed: GitHub Actions v0.23 push run `26385642398` Fast confidence, `npm test` with 66 files / 516 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, focused hosted enemy resource-site AI proxy, focused hosted v0.23 Worker/site upgrade regression, hosted deep-battle with 23 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors, full release e2e with 88 tests, dirty playtest package generation, dirty package verification with 73 checks, and production preview smoke with 0 browser console errors.
+- Browser plugin note: in-app Browser was attempted but its runtime failed before page control with a kernel asset path error, so `npm run smoke:preview` is the local browser sanity fallback.
+
+### Next
+
+- Commit the checkpoint, regenerate/verify the clean v0.24-v0.25 package from the final commit, push, and use that package for Emmanuel's enemy resource-site strategy/economy-pressure retest.
+
 ## v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
 
 This checkpoint expands the v0.22 resource-site Worker assignment foundation with a small upgrade and slot-depth layer. Ascendant Realms still uses capturable site-control income; it does not add classic carry/drop-off harvesting.

@@ -1,6 +1,65 @@
 # Development Checkpoint
 
-Updated: 2026-05-25 v0.23 resource site upgrades and worker slots
+Updated: 2026-05-25 v0.24-v0.25 enemy resource-site strategy and economy pressure AI
+
+## v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
+
+Scope: add controlled enemy strategic interaction with the v0.22/v0.23 resource-site economy. This pass keeps the existing site-control economy and does not add classic carry/drop-off harvesting, new maps/factions, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, a large roster, or test weakening.
+
+Baseline:
+
+- Starting commit: `b231632`, `Checkpoint v0.23 resource site upgrades and worker slots`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this pass: `ascendant-realms-private-playtest-b231632`.
+- GitHub Actions push run `26385642398` passed Fast confidence; Optional visual QA, Release simulator, Full release e2e, and Release matrix jobs were skipped by push workflow rules.
+
+Included work:
+
+- Added `docs/V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md`.
+- Added `docs/V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md`.
+- Added `docs/V024_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and validation to name `v0.24-v0.25 enemy resource-site strategy and economy pressure AI`.
+- Added a testable enemy resource-site scoring module.
+- Scored sites by resource value, level, distance, nearby player/enemy power, owner, player Worker/boost value, and known lost enemy sites.
+- Added enemy neutral-site capture and lost-site retake plans using existing unit movement/pathing and capture systems.
+- Added high-value enemy-site defense focus when player pressure threatens enemy-owned sites.
+- Added outmatched checks so enemy site plans avoid obviously suicidal attacks and weak raids can retreat/regroup.
+- Added conservative enemy Level 2 site upgrades through the existing resource-site upgrade system.
+- Added abstract enemy logistics slots on enemy-owned Level 2 sites without visible enemy Workers or harvesting.
+- Added periodic economy-pressure raids against player resource sites, with upgraded/Worker-boosted sites valued more highly.
+- Added status/UI copy for contesting, enemy improved sites, and enemy abstract logistics.
+- Added unit/system/e2e coverage for scoring, capture, retake, defense, upgrades, no invalid upgrades, raids, raid cooldowns, weak-raid regrouping, abstract logistics, and existing v0.22/v0.23 Worker/site-loss behavior.
+- Added narrow hosted/full-release harness hardening where existing DOM actionability and serial training queue assumptions were exposed by the broad release lane.
+
+Verification and closeout so far:
+
+```text
+GitHub Actions v0.23 push run 26385642398: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test PASS, 66 files / 516 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "enemy resource-site AI" --reporter=line PASS, 1 focused hosted proxy.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment and site upgrade" --reporter=line PASS, 1 focused hosted v0.23 regression.
+npm run test:e2e:release:hosted:deep-battle PASS, 23 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run test:e2e:release PASS, 88 tests.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-b231632-dirty generated.
+npm run verify:playtest-package PASS, 73 checks.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+In-app Browser plugin note: attempted, but its runtime failed before page control with a kernel asset path error; production preview smoke is the local browser sanity fallback.
+```
+
+Closeout note: run `git diff --check`, commit, regenerate/verify a clean package from the final v0.24-v0.25 commit, then push.
 
 ## v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
 

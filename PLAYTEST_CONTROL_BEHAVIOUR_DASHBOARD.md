@@ -1,13 +1,13 @@
 # Playtest Control Behaviour Dashboard
 
-Generated: 2026-05-24T21:26:06.213Z
-Build commit: 1ae687e
-Iterations: 1
+Generated: 2026-05-25T21:39:28.117Z
+Build commit: b231632
+Iterations: 5
 Scenarios: 18
 
 ## Summary
 
-- Pass rows: 18
+- Pass rows: 90
 - Monitor rows: 0
 - Fail rows: 0
 - Not-measured rows: 0

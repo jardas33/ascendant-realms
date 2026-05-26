@@ -68,6 +68,7 @@ Known current realities:
 - v0.21.3 follows Emmanuel's FAIL / MIXED Worker attack/status retest: explicit Worker building attacks now visibly and measurably damage valid enemy buildings through an explicit-order-only damage floor, Worker building hits show floating damage when enabled, idle Workers still do not auto-attack buildings, and Burn/status markers render as a labeled chip above the health bar. Rerun GitHub Actions after push because runtime combat/UI feedback changed.
 - v0.22 keeps the existing capturable resource-site economy and adds explicit Worker assignment to friendly captured sites for a small site-local income bonus. Proximity alone does not assign Workers, baseline site income remains unchanged, and no classic carry/drop-off harvesting, cargo, drop-off loop, enemy worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 - v0.23 adds controlled resource-site upgrade depth and Worker slot expansion: Level 1 captured sites keep one Worker slot, Level 2 improved sites add a modest site-local upgrade bonus and two Worker slots, and site loss clears slots/level. No classic carry/drop-off harvesting, enemy Worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
+- v0.24-v0.25 adds controlled enemy resource-site strategy and economy pressure: enemy AI can capture, retake, defend, upgrade, and raid around resource sites; enemy Worker slots are abstract logistics only; no classic carry/drop-off harvesting, full enemy Worker economy, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/economy behavior changed.
 
 ## Required Automated Checks
 
@@ -207,6 +208,12 @@ Current v0.23 checkpoint result:
 
 ```text
 PASS: 66 test files, 506 tests
+```
+
+Current v0.24-v0.25 checkpoint result:
+
+```text
+PASS: 66 test files, 516 tests
 ```
 
 Current v0.16.13 checkpoint result:

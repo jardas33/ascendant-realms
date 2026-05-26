@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.23 resource site upgrades and worker slots";
+const CHECKPOINT = "v0.24-v0.25 enemy resource-site strategy and economy pressure AI";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -92,6 +92,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V023_RESOURCE_SITE_UPGRADES_SPEC.md", join(packageDir, "V023_RESOURCE_SITE_UPGRADES_SPEC.md"));
   await copyMarkdown("docs/V023_IMPLEMENTATION_REPORT.md", join(packageDir, "V023_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V023_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V023_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md", join(packageDir, "V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md"));
+  await copyMarkdown("docs/V024_IMPLEMENTATION_REPORT.md", join(packageDir, "V024_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md", join(packageDir, "V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md"));
+  await copyMarkdown("docs/V025_IMPLEMENTATION_REPORT.md", join(packageDir, "V025_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V025_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V025_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -175,7 +180,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.23 resource-site upgrade retest, start with V023_RESOURCE_SITE_UPGRADES_SPEC.md, V023_IMPLEMENTATION_REPORT.md, and V023_EMMANUEL_RETEST_CHECKLIST.md. Focus on: captured sites keep baseline passive income; selected Workers still require explicit assignment; Level 1 sites have one Worker slot; friendly captured sites can upgrade to Level 2; Level 2 shows upgrade bonus, total income, and two Worker slots; a second explicitly assigned Worker adds the second Worker bonus; full, neutral, and enemy sites reject assignment or upgrade clearly; moving, attacking, building, repairing, death, site loss, or reassignment clears the relevant slot and boost; losing a site clears assignments and returns it to Level 1; v0.21 Worker construction, repair, explicit attack, and Burn/status clarity still hold. Do not judge classic carry/drop-off harvesting, cargo, drop-off buildings, enemy Worker mining AI, enemy construction AI, save persistence, new content, new cursor art, or final art in this build.
+For the v0.24-v0.25 enemy resource-site strategy retest, start with V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md, V024_IMPLEMENTATION_REPORT.md, V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md, V025_IMPLEMENTATION_REPORT.md, and V025_EMMANUEL_RETEST_CHECKLIST.md. Focus on: enemy squads can capture neutral resource sites, retake lost sites, defend valuable enemy sites, upgrade enemy-owned sites conservatively, pressure upgraded or Worker-boosted player sites periodically, and regroup weak raids when outmatched. Enemy Worker-slot bonuses are abstract logistics only; do not expect enemy Worker units, cargo, harvesting, drop-off buildings, new maps, new factions, save persistence, new cursor art, or final art in this build. Also regression-check v0.22/v0.23 player Worker assignment, site upgrades, and site-loss cleanup.
 
 ## Known Warning
 

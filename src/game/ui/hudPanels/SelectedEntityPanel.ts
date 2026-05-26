@@ -87,11 +87,15 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
   if (selectedOne instanceof CaptureSite) {
     const breakdown = resourceSiteIncomeBreakdown(selectedOne);
     const workerSlotCapacity = resourceSiteWorkerSlotCapacity(selectedOne);
-    const slotNames = selectedOne.workerAssignments.map((assignment) => assignment.workerName).join(", ") || "Empty";
+    const abstractEnemySlots = selectedOne.owner === "enemy" ? selectedOne.abstractEnemyWorkerSlots : 0;
+    const workerSlotsUsed = selectedOne.owner === "enemy" ? abstractEnemySlots : selectedOne.workerAssignments.length;
+    const slotNames =
+      selectedOne.workerAssignments.map((assignment) => assignment.workerName).join(", ") ||
+      (abstractEnemySlots > 0 ? `Enemy logistics ${abstractEnemySlots}` : "Empty");
     const ownerLabel =
       selectedOne.owner === "player" ? "Friendly captured" : selectedOne.owner === "enemy" ? "Enemy controlled" : "Neutral";
     const assignmentInstruction = siteAssignmentInstruction(selectedOne);
-    const status = selectedOne.owner === "player" ? selectedOne.workerAssignmentStatusDetail : assignmentInstruction;
+    const status = siteStatusDetail(selectedOne, assignmentInstruction);
     return `
       <div class="stat-list" data-testid="selected-resource-site-stats">
         <span>Control ${escapeHtml(ownerLabel)}</span>
@@ -99,7 +103,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
         <span>Resource ${escapeHtml(selectedOne.definition.resource)}</span>
         <span>Base income +${selectedOne.definition.incomeAmount}/${selectedOne.definition.incomeInterval}s</span>
         <span>Upgrade bonus +${breakdown.upgradeBonusAmount}/${selectedOne.definition.incomeInterval}s</span>
-        <span>Worker slots ${selectedOne.workerAssignments.length}/${workerSlotCapacity}</span>
+        <span>Worker slots ${workerSlotsUsed}/${workerSlotCapacity}</span>
         <span>Assigned ${escapeHtml(slotNames)}</span>
         <span>Worker bonus +${breakdown.workerBonusAmount}/${selectedOne.definition.incomeInterval}s (${workerSiteBonusAmount(selectedOne)} each)</span>
         <span>Total income +${breakdown.totalAmount}/${selectedOne.definition.incomeInterval}s</span>
@@ -169,6 +173,20 @@ function siteAssignmentInstruction(site: CaptureSite): string {
     return "Move, attack, build, repair, or assign the Worker elsewhere to stop this boost.";
   }
   return "Select a Worker and right-click this captured site, or use the Worker Resource Sites command.";
+}
+
+function siteStatusDetail(site: CaptureSite, fallbackInstruction: string): string {
+  if (site.captureProgress > 0 && site.capturingTeam !== "neutral") {
+    const teamLabel = site.capturingTeam === "player" ? "Player" : "Enemy";
+    return `${teamLabel} contesting ${Math.round(site.captureProgress * 100)}%`;
+  }
+  if (site.owner === "player") {
+    return site.workerAssignmentStatusDetail;
+  }
+  if (site.owner === "enemy" && site.abstractEnemyWorkerSlots > 0) {
+    return `Enemy abstract logistics ${site.abstractEnemyWorkerSlots}/${resourceSiteWorkerSlotCapacity(site)} boosting`;
+  }
+  return fallbackInstruction;
 }
 
 function renderBehaviourControls(units: Unit[]): string {

@@ -353,6 +353,7 @@ function fakeResourceSiteSummary(
     workerSlotsUsed,
     workerSlotsAvailable: overrides.workerSlotsAvailable ?? Math.max(0, workerSlotCapacity - workerSlotsUsed),
     workerSlots: overrides.workerSlots ?? Array.from({ length: workerSlotCapacity }, () => ({ status: "Empty worker slot", boostActive: false })),
+    abstractEnemyWorkerSlotsUsed: overrides.abstractEnemyWorkerSlotsUsed ?? 0,
     assignedWorkerId: overrides.assignedWorkerId,
     assignedWorkerName: overrides.assignedWorkerName,
     isAssignable: overrides.isAssignable ?? overrides.owner === "player",

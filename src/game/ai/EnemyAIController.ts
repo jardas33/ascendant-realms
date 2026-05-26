@@ -24,8 +24,25 @@ import {
 import { CaptureSite } from "../entities/CaptureSite";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import { ResourceSystem, resourceSiteWorkerSlotCapacity } from "../systems/ResourceSystem";
 import { TrainingSystem } from "../systems/TrainingSystem";
 import { AIStateMachine } from "./AIStateMachine";
+import {
+  chooseEnemyResourceSitePlan,
+  combatUnitsForTeam,
+  isSitePlanOutmatched,
+  scoreEnemyResourceSite
+} from "./EnemyResourceSiteStrategy";
+
+const RESOURCE_SITE_RAID_INITIAL_DELAY_SECONDS = 150;
+const RESOURCE_SITE_RAID_INTERVAL_SECONDS = 62;
+const RESOURCE_SITE_UPGRADE_INITIAL_DELAY_SECONDS = 135;
+const RESOURCE_SITE_UPGRADE_COOLDOWN_SECONDS = 85;
+const RESOURCE_SITE_ABSTRACT_WORKER_INITIAL_DELAY_SECONDS = 170;
+const RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS = 76;
+const RESOURCE_SITE_RAID_RETREAT_CHECK_SECONDS = 7;
+const RESOURCE_SITE_RAID_MAX_SECONDS = 44;
+const RESOURCE_SITE_THREAT_PADDING = 190;
 
 interface PlayerMilestones {
   isFirstBattle: boolean;
@@ -38,6 +55,7 @@ interface EnemyAIOptions {
   getUnits: () => Unit[];
   getBuildings: () => Building[];
   getCaptureSites: () => CaptureSite[];
+  resourceSystem: ResourceSystem;
   training: TrainingSystem;
   getAttackTarget: () => Building | undefined;
   getElapsedSeconds: () => number;
@@ -58,6 +76,11 @@ export class EnemyAIController {
   private attackTimer: number;
   private trainPlanIndex = 0;
   private attacksLaunched = 0;
+  private raidTimer = RESOURCE_SITE_RAID_INTERVAL_SECONDS;
+  private siteUpgradeTimer = RESOURCE_SITE_UPGRADE_COOLDOWN_SECONDS;
+  private abstractWorkerTimer = RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS;
+  private activeRaid?: { siteId: string; unitIds: string[]; startedAt: number };
+  private readonly knownEnemySiteIds = new Set<string>();
   private readonly alerted = new Set<string>();
   private readonly difficulty: BattleDifficultyDefinition;
   private readonly config: EnemyAIConfig;
@@ -90,6 +113,10 @@ export class EnemyAIController {
     this.trainTimer += deltaSeconds;
     this.expandTimer += deltaSeconds;
     this.attackTimer += deltaSeconds;
+    this.raidTimer += deltaSeconds;
+    this.siteUpgradeTimer += deltaSeconds;
+    this.abstractWorkerTimer += deltaSeconds;
+    this.trackKnownEnemySites();
 
     if (this.incomeTimer >= this.config.incomeInterval) {
       this.incomeTimer = 0;
@@ -101,9 +128,17 @@ export class EnemyAIController {
       this.trainEnemyUnit(phase);
     }
 
-    if (this.shouldDefend()) {
+    this.maybeUpgradeEnemyResourceSite(elapsedSeconds);
+    this.maybeStaffEnemyResourceSite(elapsedSeconds);
+
+    if (this.maybeRegroupWeakRaid(elapsedSeconds)) {
+      return;
+    }
+
+    const defenseFocus = this.findDefenseFocus();
+    if (defenseFocus) {
       this.state.set("DEFEND");
-      this.defendBase();
+      this.defendFocus(defenseFocus);
       return;
     }
 
@@ -125,11 +160,15 @@ export class EnemyAIController {
       return;
     }
 
+    if (this.maybeLaunchEconomyRaid(enemyArmy, phase, elapsedSeconds)) {
+      return;
+    }
+
     if (this.expandTimer >= this.config.expandInterval) {
       this.expandTimer = 0;
       this.state.set(enemyArmy.length >= 3 ? "EXPAND" : "BUILD_ARMY");
       this.maybeAlert("scouts", "Enemy scouts are moving.", true);
-      this.captureNearestSite(enemyArmy);
+      this.executeSiteExpansionPlan(enemyArmy, phase);
     }
   }
 
@@ -170,21 +209,232 @@ export class EnemyAIController {
     return undefined;
   }
 
-  private captureNearestSite(army: Unit[]): void {
+  private executeSiteExpansionPlan(army: Unit[], phase: BattlePhaseDefinition): boolean {
     if (army.length === 0) {
-      return;
+      return false;
     }
-    const uncaptured = this.options
+    const plan = chooseEnemyResourceSitePlan(this.resourceSiteContext(), new Set(["capture", "retake"]));
+    if (!plan) {
+      return false;
+    }
+    const squad = this.selectSiteSquad(army, phase, plan.recommendedSquadSize);
+    if (squad.length === 0 || isSitePlanOutmatched(plan, squad)) {
+      return false;
+    }
+    if (plan.task === "retake") {
+      this.state.set("CONTEST_SITE");
+      this.options.onAlert(`Enemy forces are moving to retake ${plan.site.definition.name}.`, plan.site.position.x, plan.site.position.y - 74);
+    }
+    this.moveSquadToSite(squad, plan.site);
+    return true;
+  }
+
+  private maybeLaunchEconomyRaid(army: Unit[], phase: BattlePhaseDefinition, elapsedSeconds: number): boolean {
+    if (
+      elapsedSeconds < RESOURCE_SITE_RAID_INITIAL_DELAY_SECONDS ||
+      this.raidTimer < RESOURCE_SITE_RAID_INTERVAL_SECONDS ||
+      this.activeRaid
+    ) {
+      return false;
+    }
+    const plan = chooseEnemyResourceSitePlan(this.resourceSiteContext(), new Set(["raid"]));
+    if (!plan) {
+      return false;
+    }
+    const squad = this.selectSiteSquad(army, phase, plan.recommendedSquadSize);
+    if (squad.length < Math.min(2, plan.recommendedSquadSize) || isSitePlanOutmatched(plan, squad)) {
+      return false;
+    }
+    this.raidTimer = 0;
+    this.activeRaid = {
+      siteId: plan.site.id,
+      unitIds: squad.map((unit) => unit.id),
+      startedAt: elapsedSeconds
+    };
+    this.state.set("RAID_SITE");
+    this.options.onAlert(`Enemy raiders are moving on ${plan.site.definition.name}.`, plan.site.position.x, plan.site.position.y - 74);
+    this.moveSquadToSite(squad, plan.site);
+    return true;
+  }
+
+  private maybeRegroupWeakRaid(elapsedSeconds: number): boolean {
+    const raid = this.activeRaid;
+    if (!raid) {
+      return false;
+    }
+    const raidAge = elapsedSeconds - raid.startedAt;
+    const site = this.options.getCaptureSites().find((candidate) => candidate.id === raid.siteId);
+    const raidUnits = this.options.getUnits().filter((unit) => raid.unitIds.includes(unit.id) && unit.alive);
+    if (!site || site.owner !== "player" || raidUnits.length === 0 || raidAge > RESOURCE_SITE_RAID_MAX_SECONDS) {
+      this.activeRaid = undefined;
+      return false;
+    }
+    if (raidAge < RESOURCE_SITE_RAID_RETREAT_CHECK_SECONDS) {
+      return false;
+    }
+    const plan = scoreEnemyResourceSite(site, this.resourceSiteContext());
+    if (!isSitePlanOutmatched(plan, raidUnits)) {
+      return false;
+    }
+    this.activeRaid = undefined;
+    this.state.set("RETREAT");
+    this.moveSquadToPoint(raidUnits, this.enemyBasePosition());
+    this.maybeAlert("raid-regroup", "Enemy raiders are regrouping.", true);
+    return true;
+  }
+
+  private maybeUpgradeEnemyResourceSite(elapsedSeconds: number): boolean {
+    if (
+      elapsedSeconds < RESOURCE_SITE_UPGRADE_INITIAL_DELAY_SECONDS ||
+      this.siteUpgradeTimer < RESOURCE_SITE_UPGRADE_COOLDOWN_SECONDS
+    ) {
+      return false;
+    }
+    const target = this.options
       .getCaptureSites()
-      .filter((site) => site.owner !== "enemy")
-      .sort((a, b) => distance(army[0].position, a.position) - distance(army[0].position, b.position));
-    const target = uncaptured[0];
+      .filter((site) => site.alive && site.owner === "enemy" && site.siteLevel < 2)
+      .sort((a, b) => this.enemySiteUpgradeValue(b) - this.enemySiteUpgradeValue(a))[0];
     if (!target) {
-      return;
+      return false;
     }
-    army.slice(0, Math.min(this.config.expandSquadSize, army.length)).forEach((unit, index) => {
+    const upgraded = this.options.resourceSystem.requestSiteUpgrade(target, this.options.resources, {
+      owner: "enemy",
+      announce: false
+    });
+    if (!upgraded) {
+      return false;
+    }
+    this.siteUpgradeTimer = 0;
+    this.abstractWorkerTimer = 0;
+    this.state.set("UPGRADE_SITE");
+    this.options.onAlert(`${target.definition.name} has been improved by the enemy.`, target.position.x, target.position.y - 78);
+    return true;
+  }
+
+  private maybeStaffEnemyResourceSite(elapsedSeconds: number): boolean {
+    if (
+      elapsedSeconds < RESOURCE_SITE_ABSTRACT_WORKER_INITIAL_DELAY_SECONDS ||
+      this.abstractWorkerTimer < RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS
+    ) {
+      return false;
+    }
+    const target = this.options
+      .getCaptureSites()
+      .filter(
+        (site) =>
+          site.alive &&
+          site.owner === "enemy" &&
+          site.siteLevel >= 2 &&
+          site.abstractEnemyWorkerSlots < Math.min(1, resourceSiteWorkerSlotCapacity(site))
+      )
+      .sort((a, b) => this.enemySiteUpgradeValue(b) - this.enemySiteUpgradeValue(a))[0];
+    if (!target) {
+      return false;
+    }
+    target.setAbstractEnemyWorkerSlots(target.abstractEnemyWorkerSlots + 1);
+    this.abstractWorkerTimer = 0;
+    return true;
+  }
+
+  private moveSquadToSite(army: Unit[], target: CaptureSite): void {
+    army.forEach((unit, index) => {
       unit.commandMove({ x: target.position.x + index * 20, y: target.position.y + index * 16 }, true);
     });
+  }
+
+  private moveSquadToPoint(army: Unit[], target: Position): void {
+    army.forEach((unit, index) => {
+      unit.commandMove({ x: target.x + index * 18, y: target.y + index * 14 }, false);
+    });
+  }
+
+  private selectSiteSquad(army: Unit[], phase: BattlePhaseDefinition, requestedSize: number): Unit[] {
+    if (requestedSize <= 0) {
+      return [];
+    }
+    const candidates = army.filter((unit) => this.canJoinSiteStrategy(unit, phase));
+    const idle = candidates.filter((unit) => !unit.attackTargetId);
+    const pool = idle.length >= Math.min(requestedSize, candidates.length) ? idle : candidates;
+    return pool.slice(0, Math.min(requestedSize, pool.length));
+  }
+
+  private canJoinSiteStrategy(unit: Unit, phase: BattlePhaseDefinition): boolean {
+    if (!unit.alive || unit.team !== "enemy") {
+      return false;
+    }
+    if (unit.definition.id === "enemy_commander") {
+      return phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
+    }
+    return true;
+  }
+
+  private resourceSiteContext() {
+    return {
+      sites: this.options.getCaptureSites(),
+      enemyUnits: combatUnitsForTeam(this.options.getUnits(), "enemy"),
+      playerUnits: combatUnitsForTeam(this.options.getUnits(), "player"),
+      enemyBasePosition: this.enemyBasePosition(),
+      knownEnemySiteIds: this.knownEnemySiteIds
+    };
+  }
+
+  private trackKnownEnemySites(): void {
+    this.options.getCaptureSites().forEach((site) => {
+      if (site.owner === "enemy") {
+        this.knownEnemySiteIds.add(site.definition.id);
+      }
+    });
+  }
+
+  private enemySiteUpgradeValue(site: CaptureSite): number {
+    return site.definition.incomeAmount * (site.siteLevel >= 2 ? 1.35 : 1) - distance(this.enemyBasePosition(), site.position) / 190;
+  }
+
+  private enemyBasePosition(): Position {
+    return (
+      this.options
+        .getBuildings()
+        .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.config.baseBuildingId)
+        ?.position ?? { x: 0, y: 0 }
+    );
+  }
+
+  private findDefenseFocus(): { target: Unit; site?: CaptureSite } | undefined {
+    const enemyBase = this.options
+      .getBuildings()
+      .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.config.baseBuildingId);
+    if (!enemyBase) {
+      return;
+    }
+    const baseThreat = this.options
+      .getUnits()
+      .find(
+        (unit) =>
+          unit.alive &&
+          unit.team === "player" &&
+          distance(unit.position, enemyBase.position) <= this.config.defendRadius
+      );
+    if (baseThreat) {
+      return { target: baseThreat };
+    }
+
+    const plan = chooseEnemyResourceSitePlan(this.resourceSiteContext(), new Set(["defend"]));
+    if (!plan) {
+      return undefined;
+    }
+    const squad = this.enemyArmy().slice(0, this.config.defenseSquadSize);
+    if (squad.length === 0 || isSitePlanOutmatched(plan, squad)) {
+      return undefined;
+    }
+    const siteThreat = this.options
+      .getUnits()
+      .find(
+        (unit) =>
+          unit.alive &&
+          unit.team === "player" &&
+          distance(unit.position, plan.site.position as Position) <= plan.site.definition.radius + RESOURCE_SITE_THREAT_PADDING
+      );
+    return siteThreat ? { target: siteThreat, site: plan.site } : undefined;
   }
 
   private sendAttackWave(army: Unit[]): void {
@@ -308,51 +558,10 @@ export class EnemyAIController {
     return candidates.slice(0, Math.max(1, candidates.length - reserveCount));
   }
 
-  private defendBase(): void {
-    const threat = this.findDefenseThreat();
-    if (!threat) {
-      return;
-    }
+  private defendFocus(focus: { target: Unit; site?: CaptureSite }): void {
     this.enemyArmy()
       .slice(0, this.config.defenseSquadSize)
-      .forEach((unit) => unit.commandAttack(threat.id));
-  }
-
-  private findDefenseThreat(): Unit | undefined {
-    const enemyBase = this.options
-      .getBuildings()
-      .find((building) => building.alive && building.team === "enemy" && building.definition.id === this.config.baseBuildingId);
-    if (!enemyBase) {
-      return undefined;
-    }
-    const baseThreat = this.options
-      .getUnits()
-      .find(
-        (unit) =>
-          unit.alive &&
-          unit.team === "player" &&
-          distance(unit.position, enemyBase.position) <= this.config.defendRadius
-      );
-    if (baseThreat) {
-      return baseThreat;
-    }
-
-    if (!this.personality.defense.protectCaptureSites) {
-      return undefined;
-    }
-    const defendedSites = this.options.getCaptureSites().filter((site) => site.owner === "enemy");
-    return this.options
-      .getUnits()
-      .find(
-        (unit) =>
-          unit.alive &&
-          unit.team === "player" &&
-          defendedSites.some((site) => distance(unit.position, site.position as Position) <= this.config.defendRadius * 0.72)
-      );
-  }
-
-  private shouldDefend(): boolean {
-    return Boolean(this.findDefenseThreat());
+      .forEach((unit) => unit.commandAttack(focus.target.id));
   }
 
   private enemyArmy(): Unit[] {

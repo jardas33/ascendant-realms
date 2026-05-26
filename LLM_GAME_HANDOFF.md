@@ -1,12 +1,76 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-25 v0.23 resource site upgrades and worker slots
+Last updated: 2026-05-25 v0.24-v0.25 enemy resource-site strategy and economy pressure AI
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
+
+Status: v0.24-v0.25 makes the enemy care about the v0.22/v0.23 resource-site economy. Enemy AI can value, capture, retake, defend, upgrade, and pressure resource sites without adding classic carry/drop-off harvesting, new maps/factions, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, or a large roster.
+
+Baseline:
+
+- Starting commit: `b231632`, `Checkpoint v0.23 resource site upgrades and worker slots`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this work: `ascendant-realms-private-playtest-b231632`.
+- GitHub Actions push run `26385642398` for v0.23 completed successfully for Fast confidence; Optional visual QA, Release simulator, Full release e2e, and Release matrix jobs were skipped by push workflow rules.
+
+Docs/package metadata:
+
+- Added `docs/V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md`.
+- Added `docs/V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md`.
+- Added `docs/V024_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V025_EMMANUEL_RETEST_CHECKLIST.md`.
+- Package checkpoint string is now `v0.24-v0.25 enemy resource-site strategy and economy pressure AI`.
+- Private playtest package validation now requires the v0.24/v0.25 specs, implementation reports, and Emmanuel retest checklist.
+
+Runtime/UI summary:
+
+- Added a pure enemy resource-site scoring layer for neutral, friendly, and player-controlled sites.
+- Enemy site scores consider resource type, level, distance, nearby threat, nearby support, owner, lost-site memory, and player Worker/boost value.
+- Enemy AI sends small squads to capture neutral sites and retake known lost enemy sites.
+- Enemy AI prefers upgraded/high-value enemy sites for defensive attention when player units threaten them.
+- Site attacks and raids avoid heavily outmatched situations and can retreat/regroup when a raid becomes too weak.
+- Enemy can conservatively upgrade captured enemy sites to Level 2 using the existing site upgrade rules and a cooldown/budget gate.
+- Enemy can use abstract logistics slots on enemy-owned Level 2 sites; this is not full enemy Worker construction or harvesting.
+- Economy pressure raids can periodically target player sites, especially upgraded or Worker-boosted sites, without globally buffing enemy army pressure.
+- Resource-site UI/status copy now calls out contesting, enemy improved sites, and abstract enemy logistics without new art.
+- v0.22/v0.23 Worker assignment, site loss cleanup, upgrades, construction, repair, and Worker intent coverage remain intact.
+
+Verification:
+
+```text
+GitHub Actions v0.23 push run 26385642398: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test PASS, 66 files / 516 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "enemy resource-site AI" --reporter=line PASS, 1 focused hosted v0.24/v0.25 proxy.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment and site upgrade" --reporter=line PASS, 1 focused hosted v0.23 regression.
+npm run test:e2e:release:hosted:deep-battle PASS, 23 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run test:e2e:release PASS, 88 tests, after narrow e2e harness hardening for existing actionability/cold-start issues.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-b231632-dirty generated.
+npm run verify:playtest-package PASS, 73 checks.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+In-app Browser plugin note: attempted, but its runtime failed before page control with a kernel asset path error; use the production preview smoke result above as the local browser sanity evidence for this checkpoint.
+```
+
+Closeout note: run `git diff --check`, commit as `Checkpoint v0.24-v0.25 enemy resource-site strategy and economy pressure AI`, regenerate/verify a clean package from the final commit, then push `main`.
+
+Emmanuel retest focus: use the clean v0.24-v0.25 package. In First Claim or Broken Ford, watch whether the enemy captures or contests a neutral resource site, whether an enemy-held site can become Level 2 after time/resources, and whether a player upgraded or Worker-boosted site can be attacked/contested without nonstop raid spam. Confirm site loss still clears player Worker slots, player upgrades/Worker assignment still work, and enemy logistics read as abstract instead of visible enemy Workers.
 
 ## Current v0.23 Resource Site Upgrades And Worker Slots - 2026-05-25
 

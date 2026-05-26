@@ -72,6 +72,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V023_RESOURCE_SITE_UPGRADES_SPEC.md",
   "V023_IMPLEMENTATION_REPORT.md",
   "V023_EMMANUEL_RETEST_CHECKLIST.md",
+  "V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md",
+  "V024_IMPLEMENTATION_REPORT.md",
+  "V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md",
+  "V025_IMPLEMENTATION_REPORT.md",
+  "V025_EMMANUEL_RETEST_CHECKLIST.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -175,7 +180,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.23 resource site upgrades and worker slots",
+      "v0.24-v0.25 enemy resource-site strategy and economy pressure AI",
       "build info checkpoint",
       checks,
       errors
