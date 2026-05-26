@@ -1,6 +1,67 @@
 # Development Checkpoint
 
-Updated: 2026-05-25 v0.24-v0.25 enemy resource-site strategy and economy pressure AI
+Updated: 2026-05-26 v0.26-v0.27 enemy base development and tech escalation AI
+
+## v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
+
+Scope: extend the enemy resource-site economy into base development, conservative tech progression, strategic escalation, and defensive intelligence. This pass uses existing structures, existing upgrades, existing units, existing combat/pathing, and existing UI/status copy. It does not add classic carry/drop-off harvesting, visible enemy Workers, enemy construction placement, new maps/factions, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, a large roster, or test weakening.
+
+Baseline:
+
+- Starting commit: `6dfab6b`, `Checkpoint v0.24-v0.25 enemy resource-site strategy and economy pressure AI`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this pass: `ascendant-realms-private-playtest-6dfab6b`.
+- GitHub Actions push run `26426765221` passed Fast confidence; Full release e2e, Release simulator, Release matrix groups, and Optional visual QA were skipped by push workflow rules.
+
+Included work:
+
+- Added `docs/V026_ENEMY_BASE_DEVELOPMENT_SPEC.md`.
+- Added `docs/V027_ENEMY_TECH_ESCALATION_SPEC.md`.
+- Added `docs/V026_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and validation to name `v0.26-v0.27 enemy base development and tech escalation AI`.
+- Added a testable enemy base-development planner with early, mid, and late stages.
+- Stage selection considers elapsed time, enemy site control, improved enemy sites, stockpile health, researched tech, and local player threat.
+- Mapped existing enemy roles abstractly: Enemy Stronghold as base hub, Enemy Barracks as military/hexfire tech role, and existing enemy Watchtowers as defensive tech roles when present.
+- Added enemy tech planning through the existing `UpgradeSystem`, with affordability, active-queue, researched-state, building-support, cooldown, delay, and prerequisite gates.
+- Let existing shared upgrades affect relevant Ashen units/buildings only when researched by the enemy.
+- Added strategic escalation from early site capture/light raids into mid site upgrades/defense/tech and late stronger coordinated pressure when economy and site control are healthy.
+- Added defensive reserve and base/site defense priorities so raids and late attacks do not strip the enemy base while threatened.
+- Added short readable status lines for fortifying, tech, raid forming, escalation, base defense, and site defense.
+- Preserved v0.24-v0.25 enemy resource-site capture/retake/defense/upgrades/raids and v0.22/v0.23 Worker assignment/site upgrade/site-loss cleanup behavior.
+- Added unit and hosted coverage for tech choice, prerequisites, impossible upgrade rejection, stage shifts, base/site defense, raid spam prevention, and economy-backed escalation.
+- Narrowly hardened an existing smoke scene-transition click path exposed by the full release suite; it still verifies the BattleScene after the click and does not add forced clicks or canvas/world fallback.
+
+Verification and closeout so far:
+
+```text
+GitHub Actions v0.24-v0.25 push run 26426765221: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test -- src/game/ai/EnemyAIController.test.ts PASS, 18 tests.
+npm test -- src/game/ai/EnemyAIController.test.ts src/game/systems/UpgradeSystem.test.ts src/game/systems/ResourceSystem.test.ts PASS, 3 files / 40 tests.
+npm test PASS, 66 files / 522 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "enemy base tech" --reporter=line PASS, 1 focused hosted proxy.
+npm run test:e2e:release:hosted:deep-battle PASS, 24 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npx playwright test tests/e2e/smoke.spec.ts --grep "campaign Border Village launches" --reporter=line PASS, 1 focused repro after scene-transition click option fix.
+npm run test:e2e:release PASS, 89 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-6dfab6b-dirty generated.
+npm run verify:playtest-package PASS, 78 checks.
+In-app Browser plugin note: attempted, but its runtime failed before page control with a kernel asset path error; production preview smoke is the local browser sanity fallback.
+```
+
+Closeout note: run `git diff --check`, commit, regenerate/verify a clean package from the final v0.26-v0.27 commit, then push.
 
 ## v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
 

@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.24-v0.25 enemy resource-site strategy and economy pressure AI",
+          checkpoint: "v0.26-v0.27 enemy base development and tech escalation AI",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -121,6 +121,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md", sizeBytes: 20, textContent: "Economy pressure and raid AI spec" },
       { path: "V025_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Economy pressure report" },
       { path: "V025_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Enemy resource site AI retest" },
+      { path: "V026_ENEMY_BASE_DEVELOPMENT_SPEC.md", sizeBytes: 20, textContent: "Enemy base development spec" },
+      { path: "V026_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Enemy base development report" },
+      { path: "V027_ENEMY_TECH_ESCALATION_SPEC.md", sizeBytes: 20, textContent: "Enemy tech escalation spec" },
+      { path: "V027_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Enemy tech escalation report" },
+      { path: "V027_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Enemy tech retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

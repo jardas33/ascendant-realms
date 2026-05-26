@@ -26,7 +26,9 @@ import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
 import { ResourceSystem, resourceSiteWorkerSlotCapacity } from "../systems/ResourceSystem";
 import { TrainingSystem } from "../systems/TrainingSystem";
+import { UpgradeSystem } from "../systems/UpgradeSystem";
 import { AIStateMachine } from "./AIStateMachine";
+import { createEnemyBaseDevelopmentPlan, type EnemyBaseDevelopmentPlan } from "./EnemyBaseDevelopmentStrategy";
 import {
   chooseEnemyResourceSitePlan,
   combatUnitsForTeam,
@@ -43,6 +45,15 @@ const RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS = 76;
 const RESOURCE_SITE_RAID_RETREAT_CHECK_SECONDS = 7;
 const RESOURCE_SITE_RAID_MAX_SECONDS = 44;
 const RESOURCE_SITE_THREAT_PADDING = 190;
+const ENEMY_TECH_INITIAL_DELAY_SECONDS = 115;
+const ENEMY_TECH_COOLDOWN_SECONDS = 68;
+const ENEMY_TECH_UPGRADE_IDS = [
+  "camp_foundations_1",
+  "sentry_bracing_1",
+  "infantry_weapons_1",
+  "reinforced_armor_1",
+  "aether_study_1"
+] as const;
 
 interface PlayerMilestones {
   isFirstBattle: boolean;
@@ -57,6 +68,8 @@ interface EnemyAIOptions {
   getCaptureSites: () => CaptureSite[];
   resourceSystem: ResourceSystem;
   training: TrainingSystem;
+  upgradeSystem: UpgradeSystem;
+  isUpgradeResearched?: (upgradeId: string) => boolean;
   getAttackTarget: () => Building | undefined;
   getElapsedSeconds: () => number;
   getPlayerMilestones: () => PlayerMilestones;
@@ -79,12 +92,14 @@ export class EnemyAIController {
   private raidTimer = RESOURCE_SITE_RAID_INTERVAL_SECONDS;
   private siteUpgradeTimer = RESOURCE_SITE_UPGRADE_COOLDOWN_SECONDS;
   private abstractWorkerTimer = RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS;
+  private techTimer = ENEMY_TECH_COOLDOWN_SECONDS;
   private activeRaid?: { siteId: string; unitIds: string[]; startedAt: number };
   private readonly knownEnemySiteIds = new Set<string>();
   private readonly alerted = new Set<string>();
   private readonly difficulty: BattleDifficultyDefinition;
   private readonly config: EnemyAIConfig;
   private readonly personality: EnemyAIPersonalityDefinition;
+  private currentBasePlan?: EnemyBaseDevelopmentPlan;
 
   constructor(private readonly options: EnemyAIOptions) {
     this.personality = getAIPersonality(options.aiPersonalityId);
@@ -116,7 +131,11 @@ export class EnemyAIController {
     this.raidTimer += deltaSeconds;
     this.siteUpgradeTimer += deltaSeconds;
     this.abstractWorkerTimer += deltaSeconds;
+    this.techTimer += deltaSeconds;
     this.trackKnownEnemySites();
+    const basePlan = this.createBaseDevelopmentPlan(elapsedSeconds);
+    this.currentBasePlan = basePlan;
+    this.maybeAnnounceBaseDevelopment(basePlan);
 
     if (this.incomeTimer >= this.config.incomeInterval) {
       this.incomeTimer = 0;
@@ -130,6 +149,7 @@ export class EnemyAIController {
 
     this.maybeUpgradeEnemyResourceSite(elapsedSeconds);
     this.maybeStaffEnemyResourceSite(elapsedSeconds);
+    this.maybeResearchEnemyTech(elapsedSeconds, basePlan);
 
     if (this.maybeRegroupWeakRaid(elapsedSeconds)) {
       return;
@@ -153,8 +173,8 @@ export class EnemyAIController {
     if (this.canSendAttackWave(attackWave, phase)) {
       this.attackTimer = 0;
       this.attacksLaunched += 1;
-      this.state.set("ATTACK");
-      this.options.onAlert("Enemy attack incoming.");
+      this.state.set(basePlan.stage === "late" ? "ESCALATE" : "ATTACK");
+      this.options.onAlert(basePlan.stage === "late" ? "Enemy pressure is escalating." : "Enemy attack incoming.");
       this.sendAttackWave(attackWave);
       this.options.onWaveLaunched(attackWave);
       return;
@@ -252,7 +272,7 @@ export class EnemyAIController {
       startedAt: elapsedSeconds
     };
     this.state.set("RAID_SITE");
-    this.options.onAlert(`Enemy raiders are moving on ${plan.site.definition.name}.`, plan.site.position.x, plan.site.position.y - 74);
+    this.options.onAlert(`Enemy raid forming at ${plan.site.definition.name}.`, plan.site.position.x, plan.site.position.y - 74);
     this.moveSquadToSite(squad, plan.site);
     return true;
   }
@@ -281,6 +301,36 @@ export class EnemyAIController {
     this.moveSquadToPoint(raidUnits, this.enemyBasePosition());
     this.maybeAlert("raid-regroup", "Enemy raiders are regrouping.", true);
     return true;
+  }
+
+  private maybeResearchEnemyTech(elapsedSeconds: number, basePlan: EnemyBaseDevelopmentPlan): boolean {
+    if (
+      elapsedSeconds < ENEMY_TECH_INITIAL_DELAY_SECONDS ||
+      this.techTimer < ENEMY_TECH_COOLDOWN_SECONDS ||
+      this.enemyUpgradeQueueDepth() > 0
+    ) {
+      return false;
+    }
+
+    for (const candidate of basePlan.techCandidates) {
+      const researched = this.options.upgradeSystem.queueUpgrade(candidate.building, candidate.upgradeId, this.options.resources, {
+        announce: false
+      });
+      if (!researched) {
+        continue;
+      }
+      this.techTimer = 0;
+      const defensive = candidate.upgradeId === "camp_foundations_1" || candidate.upgradeId === "sentry_bracing_1";
+      this.state.set(defensive ? "FORTIFY_BASE" : "TECH_UP");
+      this.options.onAlert(
+        defensive ? "Enemy is fortifying." : "Enemy tech is advancing.",
+        candidate.building.position.x,
+        candidate.building.position.y - 74
+      );
+      return true;
+    }
+
+    return false;
   }
 
   private maybeUpgradeEnemyResourceSite(elapsedSeconds: number): boolean {
@@ -355,7 +405,9 @@ export class EnemyAIController {
     const candidates = army.filter((unit) => this.canJoinSiteStrategy(unit, phase));
     const idle = candidates.filter((unit) => !unit.attackTargetId);
     const pool = idle.length >= Math.min(requestedSize, candidates.length) ? idle : candidates;
-    return pool.slice(0, Math.min(requestedSize, pool.length));
+    const reserve = this.currentBasePlan?.defenseReserveUnits ?? 0;
+    const availableCount = Math.max(0, pool.length - reserve);
+    return pool.slice(0, Math.min(requestedSize, availableCount));
   }
 
   private canJoinSiteStrategy(unit: Unit, phase: BattlePhaseDefinition): boolean {
@@ -376,6 +428,46 @@ export class EnemyAIController {
       enemyBasePosition: this.enemyBasePosition(),
       knownEnemySiteIds: this.knownEnemySiteIds
     };
+  }
+
+  private createBaseDevelopmentPlan(elapsedSeconds: number): EnemyBaseDevelopmentPlan {
+    return createEnemyBaseDevelopmentPlan({
+      elapsedSeconds,
+      resources: this.options.resources,
+      buildings: this.options.getBuildings(),
+      sites: this.options.getCaptureSites(),
+      enemyUnits: combatUnitsForTeam(this.options.getUnits(), "enemy"),
+      playerUnits: combatUnitsForTeam(this.options.getUnits(), "player"),
+      enemyBasePosition: this.enemyBasePosition(),
+      researchedUpgradeIds: this.currentEnemyResearchedUpgradeIds()
+    });
+  }
+
+  private currentEnemyResearchedUpgradeIds(): ReadonlySet<string> {
+    const ids = new Set<string>();
+    ENEMY_TECH_UPGRADE_IDS.forEach((upgradeId) => {
+      if (this.options.isUpgradeResearched?.(upgradeId)) {
+        ids.add(upgradeId);
+      }
+    });
+    this.options.getUnits().forEach((unit) => {
+      if (unit.team === "enemy") {
+        unit.appliedUpgradeIds?.forEach((upgradeId) => ids.add(upgradeId));
+      }
+    });
+    this.options.getBuildings().forEach((building) => {
+      if (building.team === "enemy") {
+        building.appliedUpgradeIds?.forEach((upgradeId) => ids.add(upgradeId));
+      }
+    });
+    return ids;
+  }
+
+  private enemyUpgradeQueueDepth(): number {
+    return this.options
+      .getBuildings()
+      .filter((building) => building.alive && building.team === "enemy")
+      .reduce((sum, building) => sum + building.upgradeQueue.length, 0);
   }
 
   private trackKnownEnemySites(): void {
@@ -510,7 +602,8 @@ export class EnemyAIController {
   private maxAttackWaveSize(phase: BattlePhaseDefinition): number {
     const milestones = this.options.getPlayerMilestones();
     const elapsedSeconds = this.options.getElapsedSeconds();
-    let maxSize = Math.min(this.config.attackWaveSize, phase.enemy.maxAttackWaveSize);
+    const strategicBonus = this.currentBasePlan?.attackWaveSizeBonus ?? 0;
+    let maxSize = Math.min(this.config.attackWaveSize + strategicBonus, phase.enemy.maxAttackWaveSize + strategicBonus);
     if (
       milestones.isFirstBattle &&
       !milestones.hasBuiltProduction &&
@@ -551,7 +644,11 @@ export class EnemyAIController {
 
   private attackCandidates(army: Unit[], phase: BattlePhaseDefinition): Unit[] {
     const candidates = army.filter((unit) => this.canJoinAttack(unit, phase));
-    const reserveCount = Math.min(this.personality.defense.reserveDefenseUnits, Math.max(0, candidates.length - 1));
+    const strategicReserve = this.currentBasePlan?.defenseReserveUnits ?? 0;
+    const reserveCount = Math.min(
+      this.personality.defense.reserveDefenseUnits + strategicReserve,
+      Math.max(0, candidates.length - 1)
+    );
     if (reserveCount <= 0) {
       return candidates;
     }
@@ -559,9 +656,23 @@ export class EnemyAIController {
   }
 
   private defendFocus(focus: { target: Unit; site?: CaptureSite }): void {
+    if (focus.site) {
+      this.maybeAlert(`defending-site-${focus.site.definition.id}`, `Enemy defending site: ${focus.site.definition.name}.`, true);
+    } else {
+      this.maybeAlert("defending-base", "Enemy defending base.", true);
+    }
     this.enemyArmy()
       .slice(0, this.config.defenseSquadSize)
       .forEach((unit) => unit.commandAttack(focus.target.id));
+  }
+
+  private maybeAnnounceBaseDevelopment(basePlan: EnemyBaseDevelopmentPlan): void {
+    if (basePlan.stage === "mid") {
+      this.maybeAlert("base-stage-mid", basePlan.status, basePlan.ownedSiteCount > 0 || basePlan.baseThreatPower > 0);
+    }
+    if (basePlan.stage === "late") {
+      this.maybeAlert("base-stage-late", basePlan.status, basePlan.ownedSiteCount > 0);
+    }
   }
 
   private enemyArmy(): Unit[] {

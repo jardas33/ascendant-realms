@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.24-v0.25 enemy resource-site strategy and economy pressure AI";
+const CHECKPOINT = "v0.26-v0.27 enemy base development and tech escalation AI";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -97,6 +97,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md", join(packageDir, "V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md"));
   await copyMarkdown("docs/V025_IMPLEMENTATION_REPORT.md", join(packageDir, "V025_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V025_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V025_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V026_ENEMY_BASE_DEVELOPMENT_SPEC.md", join(packageDir, "V026_ENEMY_BASE_DEVELOPMENT_SPEC.md"));
+  await copyMarkdown("docs/V026_IMPLEMENTATION_REPORT.md", join(packageDir, "V026_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V027_ENEMY_TECH_ESCALATION_SPEC.md", join(packageDir, "V027_ENEMY_TECH_ESCALATION_SPEC.md"));
+  await copyMarkdown("docs/V027_IMPLEMENTATION_REPORT.md", join(packageDir, "V027_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V027_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V027_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -180,7 +185,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.24-v0.25 enemy resource-site strategy retest, start with V024_ENEMY_RESOURCE_SITE_STRATEGY_SPEC.md, V024_IMPLEMENTATION_REPORT.md, V025_ECONOMY_PRESSURE_AND_RAID_AI_SPEC.md, V025_IMPLEMENTATION_REPORT.md, and V025_EMMANUEL_RETEST_CHECKLIST.md. Focus on: enemy squads can capture neutral resource sites, retake lost sites, defend valuable enemy sites, upgrade enemy-owned sites conservatively, pressure upgraded or Worker-boosted player sites periodically, and regroup weak raids when outmatched. Enemy Worker-slot bonuses are abstract logistics only; do not expect enemy Worker units, cargo, harvesting, drop-off buildings, new maps, new factions, save persistence, new cursor art, or final art in this build. Also regression-check v0.22/v0.23 player Worker assignment, site upgrades, and site-loss cleanup.
+For the v0.26-v0.27 enemy base development and tech escalation retest, start with V026_ENEMY_BASE_DEVELOPMENT_SPEC.md, V026_IMPLEMENTATION_REPORT.md, V027_ENEMY_TECH_ESCALATION_SPEC.md, V027_IMPLEMENTATION_REPORT.md, and V027_EMMANUEL_RETEST_CHECKLIST.md. Focus on: enemy base stages shift from early site capture to mid fortifying and late coordinated pressure, enemy tech uses existing upgrade queues and prerequisites, base/site defense can override raids, and stronger pressure depends on healthy economy/site control. Enemy Worker-slot bonuses remain abstract logistics only; do not expect enemy Worker units, enemy construction placement, cargo, harvesting, drop-off buildings, new maps, new factions, save persistence, new cursor art, or final art in this build. Also regression-check v0.22/v0.23 player Worker assignment/site upgrades and v0.24-v0.25 enemy resource-site capture/upgrades/raids.
 
 ## Known Warning
 

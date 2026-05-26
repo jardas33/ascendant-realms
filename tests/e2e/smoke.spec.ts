@@ -1193,7 +1193,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "smoke Border Village node");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await clickReady(page.getByTestId("campaign-start-node"), "smoke Border Village start");
+    await clickReady(page.getByTestId("campaign-start-node"), "smoke Border Village start", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     const fogVisibility = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

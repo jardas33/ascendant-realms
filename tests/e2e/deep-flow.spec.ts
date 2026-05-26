@@ -3044,6 +3044,110 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
   });
 
+  test("enemy base tech, defense, and escalation respond to a healthy economy @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(75_000);
+    await startFirstClaimSkirmish(page, "Enemy Tech Escalation QA");
+
+    const result = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+
+      const enemyUnits = () => scene.units.filter((unit: any) => unit.team === "enemy" && unit.alive);
+      const playerUnits = () => scene.units.filter((unit: any) => unit.team === "player" && unit.alive);
+      const clearUnitOrders = (unit: any) => {
+        unit.moveTarget = undefined;
+        unit.attackTargetId = undefined;
+        unit.attackMove = false;
+        unit.attackCooldownRemaining = 999;
+      };
+      const enemyStronghold = scene.buildings.find(
+        (building: any) => building.team === "enemy" && building.definition.id === "enemy_stronghold" && building.alive
+      );
+      const enemyBarracks = scene.buildings.find(
+        (building: any) => building.team === "enemy" && building.definition.id === "enemy_barracks" && building.alive
+      );
+      const playerCommandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.definition.id === "command_hall" && building.alive
+      );
+      if (!enemyStronghold || !enemyBarracks || !playerCommandHall) {
+        throw new Error("Expected enemy stronghold, enemy barracks, and player command hall.");
+      }
+
+      scene.resources.enemy = { crowns: 2400, stone: 2400, iron: 1600, aether: 1200 };
+      scene.captureSites.forEach((site: any) => {
+        site.setOwner("enemy");
+        site.setSiteLevel(2);
+      });
+      playerUnits().forEach((unit: any, index: number) => {
+        unit.setPosition(240 + index * 18, 1220 + index * 14);
+        clearUnitOrders(unit);
+      });
+      enemyUnits().forEach((unit: any, index: number) => {
+        unit.setPosition(enemyStronghold.position.x - 130 - index * 18, enemyStronghold.position.y + 70 + index * 12);
+        clearUnitOrders(unit);
+      });
+
+      scene.runtime.tick(280);
+      scene.aiSystem.update(280);
+      scene.upgradeSystem.update(60, scene.buildings);
+      const researchedAfterEconomy = Array.from(scene.researchedUpgradeIds.enemy ?? []);
+      const economyQueued =
+        enemyStronghold.upgradeQueue[0]?.upgradeId ?? enemyBarracks.upgradeQueue[0]?.upgradeId ?? researchedAfterEconomy[0];
+
+      const playerThreat = playerUnits()[0];
+      if (!playerThreat) {
+        throw new Error("Expected a player unit for the base defense proxy.");
+      }
+      playerThreat.setPosition(enemyStronghold.position.x - 80, enemyStronghold.position.y + 20);
+      clearUnitOrders(playerThreat);
+      scene.aiSystem.update(5);
+      const baseDefenders = enemyUnits().filter((unit: any) => unit.attackTargetId === playerThreat.id).length;
+      const defenseState = scene.aiSystem.state;
+
+      playerUnits().forEach((unit: any, index: number) => {
+        unit.setPosition(250 + index * 18, 1240 + index * 10);
+        clearUnitOrders(unit);
+      });
+      enemyUnits().forEach((unit: any, index: number) => {
+        unit.setPosition(enemyStronghold.position.x - 120 - index * 16, enemyStronghold.position.y + 70 + index * 12);
+        clearUnitOrders(unit);
+      });
+      scene.runtime.tick(430);
+      scene.aiSystem.update(430);
+      const attackUnits = enemyUnits().filter((unit: any) => unit.attackTargetId === playerCommandHall.id);
+
+      return {
+        researchedAfterEconomy,
+        economyQueued,
+        defenseState,
+        baseDefenders,
+        escalationState: scene.aiSystem.state,
+        attackUnitCount: attackUnits.length,
+        enemySiteCount: scene.captureSites.filter((site: any) => site.owner === "enemy").length,
+        improvedEnemySiteCount: scene.captureSites.filter((site: any) => site.owner === "enemy" && site.siteLevel >= 2).length,
+        enemyStrongholdArmor: enemyStronghold.armor
+      };
+    });
+
+    await test.step("enemy progresses economy-backed tech after holding sites", async () => {
+      expect(result.enemySiteCount).toBeGreaterThanOrEqual(1);
+      expect(result.improvedEnemySiteCount).toBeGreaterThanOrEqual(1);
+      expect(["infantry_weapons_1", "aether_study_1", "camp_foundations_1"]).toContain(result.economyQueued);
+    });
+
+    await test.step("enemy defends or fortifies the base when approached", async () => {
+      expect(result.defenseState).toBe("DEFEND");
+      expect(result.baseDefenders).toBeGreaterThanOrEqual(1);
+    });
+
+    await test.step("enemy escalates pressure once economy and time are healthy", async () => {
+      expect(result.escalationState).toBe("ESCALATE");
+      expect(result.attackUnitCount).toBeGreaterThanOrEqual(3);
+    });
+  });
+
   test("Worker explicit attack damages an enemy building and shows floating damage @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(90_000);
     await startFirstClaimSkirmish(page, "Worker Attack QA");

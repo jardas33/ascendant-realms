@@ -11,11 +11,11 @@ export const UPGRADES: UpgradeDefinition[] = [
     cost: { crowns: 90, stone: 70 },
     researchTimeSeconds: 18,
     prerequisites: { buildingIds: ["command_hall"] },
-    effectSummary: "Command Hall: +1 armor.",
+    effectSummary: "Base hub: +1 armor.",
     effects: [
       {
         type: "building-stat-mod",
-        buildingIds: ["command_hall"],
+        buildingIds: ["command_hall", "enemy_stronghold"],
         armorBonus: 1
       }
     ]
@@ -69,11 +69,11 @@ export const UPGRADES: UpgradeDefinition[] = [
     cost: { crowns: 130, stone: 70, iron: 50 },
     researchTimeSeconds: 22,
     prerequisites: { buildingIds: ["barracks"] },
-    effectSummary: "Militia, Rangers, and Acolytes: +1 armor.",
+    effectSummary: "Basic troops and Ashen squads: +1 armor.",
     effects: [
       {
         type: "unit-stat-mod",
-        unitIds: ["militia", "ranger", "acolyte"],
+        unitIds: ["militia", "ranger", "acolyte", "raider", "hexer", "brute"],
         armorBonus: 1
       }
     ]
@@ -88,11 +88,11 @@ export const UPGRADES: UpgradeDefinition[] = [
     cost: { crowns: 100, aether: 90 },
     researchTimeSeconds: 24,
     prerequisites: { buildingIds: ["mystic_lodge"] },
-    effectSummary: "Acolytes: +10% damage; hero: +25% mana regen.",
+    effectSummary: "Acolytes and Hexers: +10% damage; hero: +25% mana regen.",
     effects: [
       {
         type: "unit-stat-mod",
-        unitIds: ["acolyte"],
+        unitIds: ["acolyte", "hexer"],
         damageMultiplier: 1.1
       },
       {

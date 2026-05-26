@@ -1,12 +1,78 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-25 v0.24-v0.25 enemy resource-site strategy and economy pressure AI
+Last updated: 2026-05-26 v0.26-v0.27 enemy base development and tech escalation AI
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
+
+Status: v0.26-v0.27 extends the v0.24-v0.25 enemy resource-site economy into abstract base development, conservative tech progression, staged strategic escalation, and stronger defensive intelligence. It uses existing structures, existing upgrades, existing units, existing pathing/combat, and existing UI/status surfaces. It does not add classic harvesting, visible enemy Workers, enemy construction placement, new maps/factions, runtime art/assets, save migration, broad pathing rewrite, global rebalance, Patrol, formations, or a large roster.
+
+Baseline:
+
+- Starting commit: `6dfab6b`, `Checkpoint v0.24-v0.25 enemy resource-site strategy and economy pressure AI`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this work: `ascendant-realms-private-playtest-6dfab6b`.
+- GitHub Actions push run `26426765221` for v0.24-v0.25 completed successfully for Fast confidence; Full release e2e, Release simulator, Release matrix groups, and Optional visual QA were skipped by push workflow rules.
+
+Docs/package metadata:
+
+- Added `docs/V026_ENEMY_BASE_DEVELOPMENT_SPEC.md`.
+- Added `docs/V027_ENEMY_TECH_ESCALATION_SPEC.md`.
+- Added `docs/V026_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_EMMANUEL_RETEST_CHECKLIST.md`.
+- Package checkpoint string is now `v0.26-v0.27 enemy base development and tech escalation AI`.
+- Private playtest package validation now requires the v0.26/v0.27 specs, implementation reports, and Emmanuel retest checklist.
+
+Runtime/UI summary:
+
+- Added a pure enemy base-development planner with early, mid, and late strategy stages.
+- Enemy strategy stage now depends on elapsed time, enemy-owned sites, upgraded enemy sites, resource stockpile health, researched tech, and nearby player threat.
+- Enemy Stronghold acts as the existing abstract base hub role; enemy Barracks acts as existing military/hexfire tech role; existing enemy Watchtowers remain defensive roles when a map already includes them.
+- Enemy AI can queue existing upgrades through `UpgradeSystem` using enemy resources and existing upgrade/building support.
+- Enemy tech is delayed, cooldown-gated, affordability-gated, active-queue-gated, prerequisite-gated, and filtered against already researched or unsupported upgrades.
+- Shared tech effects now include relevant Ashen units where research can unlock them: Enemy Stronghold for Camp Foundations, Raiders/Hexers/Brutes for Reinforced Armor, and Hexers for Aether Study. These are research-gated effects, not free global buffs.
+- Strategic escalation stays staged: early site capture and light raids, mid site improvement/defense/tech, and late stronger coordinated pressure only when enemy economy and site control are healthy.
+- Defensive intelligence reserves units for base pressure, defends upgraded/high-value owned sites, can prioritize base defense over raids, and avoids sending all units away while under threat.
+- Enemy status lines now surface readable strategy states such as `Enemy is fortifying.`, `Enemy tech is advancing.`, `Enemy raid forming at ...`, `Enemy pressure is escalating.`, `Enemy defending base.`, and `Enemy defending site: ...`.
+- Enemy Worker slots remain abstract logistics only. There are still no visible enemy Workers, cargo, carry/drop-off loops, or full enemy construction/harvest AI.
+
+Verification:
+
+```text
+GitHub Actions v0.24-v0.25 push run 26426765221: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test -- src/game/ai/EnemyAIController.test.ts PASS, 18 tests.
+npm test -- src/game/ai/EnemyAIController.test.ts src/game/systems/UpgradeSystem.test.ts src/game/systems/ResourceSystem.test.ts PASS, 3 files / 40 tests.
+npm test PASS, 66 files / 522 tests.
+npm run build PASS with the known Vite chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "enemy base tech" --reporter=line PASS, 1 focused hosted v0.26/v0.27 proxy.
+npm run test:e2e:release:hosted:deep-battle PASS, 24 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npx playwright test tests/e2e/smoke.spec.ts --grep "campaign Border Village launches" --reporter=line PASS, 1 focused repro after scene-transition click option fix.
+npm run test:e2e:release PASS, 89 tests, after narrow e2e scene-transition click hardening for an existing full-suite smoke race.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-6dfab6b-dirty generated.
+npm run verify:playtest-package PASS, 78 checks.
+In-app Browser plugin note: attempted, but its runtime failed before page control with a kernel asset path error; use the production preview smoke result above as the local browser sanity evidence for this checkpoint.
+```
+
+Closeout note: run `git diff --check`, commit as `Checkpoint v0.26-v0.27 enemy base development and tech escalation AI`, regenerate/verify a clean package from the final commit, then push `main`.
+
+Emmanuel retest focus: use the clean v0.26-v0.27 package. Let the enemy hold sites long enough to move from early capture into mid fortifying/tech and late stronger pressure. Confirm tech is delayed and prerequisite-gated, base/site defense can interrupt raids, late pressure is readable rather than constant, v0.24-v0.25 resource-site behavior still works, v0.22/v0.23 Worker assignment/upgrades/site-loss cleanup still work, and enemy logistics remain abstract with no visible enemy Workers or harvesting loop.
 
 ## Current v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
 

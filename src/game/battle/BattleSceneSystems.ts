@@ -475,6 +475,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     getCaptureSites,
     resourceSystem,
     training: trainingSystem,
+    upgradeSystem,
+    isUpgradeResearched: (upgradeId) => isUpgradeResearched("enemy", upgradeId),
     getAttackTarget: findPlayerBaseBuilding,
     getElapsedSeconds: () => runtime.elapsedSeconds,
     getPlayerMilestones: () => ({

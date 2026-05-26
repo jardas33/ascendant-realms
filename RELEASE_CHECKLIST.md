@@ -69,6 +69,7 @@ Known current realities:
 - v0.22 keeps the existing capturable resource-site economy and adds explicit Worker assignment to friendly captured sites for a small site-local income bonus. Proximity alone does not assign Workers, baseline site income remains unchanged, and no classic carry/drop-off harvesting, cargo, drop-off loop, enemy worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 - v0.23 adds controlled resource-site upgrade depth and Worker slot expansion: Level 1 captured sites keep one Worker slot, Level 2 improved sites add a modest site-local upgrade bonus and two Worker slots, and site loss clears slots/level. No classic carry/drop-off harvesting, enemy Worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 - v0.24-v0.25 adds controlled enemy resource-site strategy and economy pressure: enemy AI can capture, retake, defend, upgrade, and raid around resource sites; enemy Worker slots are abstract logistics only; no classic carry/drop-off harvesting, full enemy Worker economy, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/economy behavior changed.
+- v0.26-v0.27 adds abstract enemy base development, existing-tech progression, staged escalation, and defensive reserves: enemy AI can fortify, research, defend base/sites, and escalate when economy/site control is healthy. No classic harvesting, visible enemy Workers, enemy construction placement, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/upgrade behavior changed.
 
 ## Required Automated Checks
 
@@ -216,6 +217,12 @@ Current v0.24-v0.25 checkpoint result:
 PASS: 66 test files, 516 tests
 ```
 
+Current v0.26-v0.27 checkpoint result:
+
+```text
+PASS: 66 test files, 522 tests
+```
+
 Current v0.16.13 checkpoint result:
 
 ```text
@@ -310,6 +317,12 @@ Expected current prototype result:
 
 ```text
 PASS: 67 Playwright tests
+```
+
+Current v0.26-v0.27 checkpoint result:
+
+```text
+PASS: 89 Playwright tests
 ```
 
 Current v0.16.7 checkpoint result:
@@ -543,7 +556,7 @@ Open the local preview URL and confirm:
 
 Browser Use preview sanity is optional after the automated suite. Use the local preview URL printed by Vite for a manual fallback; previous clean preview checks used `127.0.0.1` ports with browser console errors at 0. The current visible product copy is `Prototype v0.3` / `Cinderfen Route Baseline`.
 
-Latest production preview smoke, 2026-05-11:
+Latest production preview smoke, 2026-05-26:
 
 ```text
 PASS: http://127.0.0.1:4173/
@@ -569,7 +582,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.27 implementation/retest docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

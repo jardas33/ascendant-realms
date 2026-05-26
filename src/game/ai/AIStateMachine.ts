@@ -1,4 +1,15 @@
-export type AIState = "EXPAND" | "BUILD_ARMY" | "ATTACK" | "DEFEND" | "RETREAT" | "CONTEST_SITE" | "RAID_SITE" | "UPGRADE_SITE";
+export type AIState =
+  | "EXPAND"
+  | "BUILD_ARMY"
+  | "ATTACK"
+  | "DEFEND"
+  | "RETREAT"
+  | "CONTEST_SITE"
+  | "RAID_SITE"
+  | "UPGRADE_SITE"
+  | "FORTIFY_BASE"
+  | "TECH_UP"
+  | "ESCALATE";
 
 export class AIStateMachine {
   current: AIState = "EXPAND";

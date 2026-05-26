@@ -68,6 +68,7 @@ import {
   warnIfCommandHallUnderAttack as warnCommandHallUnderAttack,
   type TrackedEnemyWave
 } from "../battle/BattleSceneAlerts";
+import { completedEnemyTechBuildingIds } from "../ai/EnemyBaseDevelopmentStrategy";
 import {
   createSkirmishBattleLaunchRequest,
   resolveBattleLaunchRequest,
@@ -1044,6 +1045,13 @@ export class BattleScene extends Phaser.Scene {
   private getTechState(team: Team): TechState {
     const researchedUpgradeIds =
       team === "player" || team === "enemy" ? this.researchedUpgradeIds[team] : new Set<string>();
+    if (team === "enemy") {
+      return {
+        completedBuildingIds: completedEnemyTechBuildingIds(this.buildings),
+        researchedUpgradeIds,
+        heroLevel: this.hero?.level ?? 1
+      };
+    }
     return {
       completedBuildingIds: new Set(
         this.buildings

@@ -36,7 +36,14 @@ export const FACTIONS: FactionDefinition[] = [
       magicStyle: "Hexfire pressure applies burn damage and punishes clumped or wounded troops.",
       availableUnitIds: ["raider", "hexer", "brute", "enemy_commander"],
       availableBuildingIds: ["enemy_stronghold", "enemy_barracks"],
-      availableUpgradeIds: ["ember_blades_trait"],
+      availableUpgradeIds: [
+        "camp_foundations_1",
+        "infantry_weapons_1",
+        "reinforced_armor_1",
+        "aether_study_1",
+        "sentry_bracing_1",
+        "ember_blades_trait"
+      ],
       aiPersonalityPreferences: ["raider_rush", "hexfire_cult", "balanced_warlord"],
       campaignReputationHooks: ["ashen_covenant", "common_folk"],
       factionModifiers: [

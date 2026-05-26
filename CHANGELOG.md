@@ -1,5 +1,46 @@
 # Changelog
 
+## v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
+
+This checkpoint turns the enemy's v0.24-v0.25 site pressure into staged base development and tech escalation. Enemy AI can use site control and economy health to fortify, research existing upgrades, defend important positions, and escalate pressure without adding harvesting, visible enemy Workers, new content, or global army buffs.
+
+### Included
+
+- Added `docs/V026_ENEMY_BASE_DEVELOPMENT_SPEC.md`.
+- Added `docs/V027_ENEMY_TECH_ESCALATION_SPEC.md`.
+- Added `docs/V026_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V027_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and package validation to name `v0.26-v0.27 enemy base development and tech escalation AI`.
+- Added a pure enemy base-development planner that chooses early, mid, and late stages from time, site control, improved sites, stockpile health, researched tech, and player threat.
+- Added enemy tech planning through existing `UpgradeSystem` rules with delay, cooldown, affordability, prerequisite, researched-state, active-queue, and building-support gates.
+- Mapped existing enemy structures into abstract roles: Enemy Stronghold as base hub, Enemy Barracks as military/hexfire tech role, and existing enemy Watchtowers as defense roles.
+- Extended existing shared upgrades to relevant Ashen units/buildings only when enemy research completes.
+- Added staged escalation: early neutral-site capture/light raids, mid site upgrades/defense/tech, and late stronger coordinated pressure when economy and site control are healthy.
+- Added defensive reserve logic so base/site defense can interrupt raids and late attacks.
+- Added short battle status copy for fortifying, tech, raid forming, escalation, base defense, and site defense.
+- Expanded unit and hosted coverage for tech selection, prerequisites, impossible upgrade rejection, stage shifts, base/site defense, raid spam prevention, and economy-backed escalation.
+- Narrowly hardened an existing smoke scene-transition click path exposed by the full release lane; follow-up BattleScene assertions remain intact.
+
+### Verdict
+
+- Runtime gameplay changed: yes, enemy AI now develops abstract base stages, researches existing tech, and escalates pressure from economy/site control.
+- Gameplay numbers changed: narrowly, through research-gated Ashen eligibility for existing upgrades and local AI thresholds/cooldowns; no global army rebalance.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Economy/production architecture rewritten: no.
+- Harvesting added: no classic carry/drop-off harvesting, visible enemy Workers, cargo, drop-off loop, or full enemy Worker economy.
+
+### Verification
+
+- Passed: GitHub Actions v0.24-v0.25 push run `26426765221` Fast confidence, focused AI/system tests with 40 tests, `npm test` with 66 files / 522 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, focused hosted enemy base tech proxy, hosted deep-battle with 24 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, focused Border Village smoke repro, full release e2e with 89 tests, visual QA with 5 tests / 18 screenshots / 0 console errors, dirty playtest package generation, dirty package verification with 78 checks, and production preview smoke with 0 browser console errors.
+- Browser plugin note: in-app Browser was attempted but its runtime failed before page control with a kernel asset path error, so `npm run smoke:preview` is the local browser sanity fallback.
+
+### Next
+
+- Commit the checkpoint, regenerate/verify the clean v0.26-v0.27 package from the final commit, push, and use that package for Emmanuel's enemy base-development/tech-escalation retest.
+
 ## v0.24-v0.25 Enemy Resource-Site Strategy And Economy Pressure AI - 2026-05-25
 
 This checkpoint makes enemy AI interact strategically with the v0.22/v0.23 resource-site economy. Enemies can capture, retake, defend, upgrade, and raid around sites without adding classic carry/drop-off harvesting or globally overbuffing army pressure.

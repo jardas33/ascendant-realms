@@ -25,7 +25,7 @@ describe("CommandPanel", () => {
     expect(commandHallMarkup).not.toContain('data-testid="command-upgrade-aether_study_1"');
     expect(commandHallMarkup).toContain('data-testid="command-upgrade-camp_foundations_1"');
     expect(commandHallMarkup).toContain("Owner: Command Hall");
-    expect(commandHallMarkup).toContain("Effect: Command Hall: +1 armor.");
+    expect(commandHallMarkup).toContain("Effect: Base hub: +1 armor.");
     expect(commandHallMarkup).toContain("Cost: 50 Crowns");
     expect(commandHallMarkup).toContain("Base hub: trains Workers only, anchors the camp, and researches core upgrades.");
     expect(barracksMarkup).toContain('data-testid="command-train-militia"');

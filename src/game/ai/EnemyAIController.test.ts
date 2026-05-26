@@ -5,7 +5,13 @@ import type { Unit } from "../entities/Unit";
 import type { TrainingSystem } from "../systems/TrainingSystem";
 import type { EnemyAIConfig } from "../core/GameTypes";
 import { ResourceSystem } from "../systems/ResourceSystem";
+import { UpgradeSystem } from "../systems/UpgradeSystem";
 import { EnemyAIController } from "./EnemyAIController";
+import {
+  completedEnemyTechBuildingIds,
+  createEnemyBaseDevelopmentPlan,
+  determineEnemyStrategyStage
+} from "./EnemyBaseDevelopmentStrategy";
 import { chooseEnemyResourceSitePlan, scoreEnemyResourceSite } from "./EnemyResourceSiteStrategy";
 
 const CAPTURE_TIME_SECONDS_FOR_TEST = 12;
@@ -273,7 +279,7 @@ describe("EnemyAIController resource-site strategy", () => {
       getElapsedSeconds: () => elapsedSeconds,
       hasCapturedSite: true,
       hasBuiltProduction: true,
-      config: { initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
       onWaveLaunched: vi.fn()
     });
 
@@ -303,7 +309,7 @@ describe("EnemyAIController resource-site strategy", () => {
       getElapsedSeconds: () => elapsedSeconds,
       hasCapturedSite: true,
       hasBuiltProduction: true,
-      config: { initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
       onWaveLaunched: vi.fn()
     });
 
@@ -345,6 +351,168 @@ describe("EnemyAIController resource-site strategy", () => {
   });
 });
 
+describe("EnemyAIController base development and tech escalation", () => {
+  it("shifts from early to mid and late strategy from economy, site control, and time", () => {
+    expect(
+      determineEnemyStrategyStage({
+        elapsedSeconds: 90,
+        ownedSiteCount: 0,
+        improvedOwnedSiteCount: 0,
+        enemyStockpileScore: 100,
+        researchedUpgradeCount: 0,
+        baseThreatPower: 0
+      })
+    ).toBe("early");
+    expect(
+      determineEnemyStrategyStage({
+        elapsedSeconds: 260,
+        ownedSiteCount: 1,
+        improvedOwnedSiteCount: 0,
+        enemyStockpileScore: 320,
+        researchedUpgradeCount: 0,
+        baseThreatPower: 0
+      })
+    ).toBe("mid");
+    expect(
+      determineEnemyStrategyStage({
+        elapsedSeconds: 520,
+        ownedSiteCount: 2,
+        improvedOwnedSiteCount: 1,
+        enemyStockpileScore: 760,
+        researchedUpgradeCount: 2,
+        baseThreatPower: 0
+      })
+    ).toBe("late");
+  });
+
+  it("chooses enemy tech from economy and site control without inventing unsupported roles", () => {
+    const enemyBarracks = fakeBuilding("enemy_barracks", "enemy", {
+      upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1", "aether_study_1"]
+    });
+    const context = {
+      elapsedSeconds: 280,
+      resources: { crowns: 700, stone: 520, iron: 520, aether: 180 },
+      buildings: [fakeBuilding("enemy_stronghold", "enemy", { upgradeOptions: ["camp_foundations_1"] }), enemyBarracks],
+      sites: [fakeSite("iron_vein", "Iron Vein", "enemy", { x: 1620, y: 720, resource: "iron", siteLevel: 2 })],
+      enemyUnits: [fakeEnemyUnit("raider", "enemy_raider_1", []), fakeEnemyUnit("hexer", "enemy_hexer_1", [])],
+      playerUnits: [],
+      enemyBasePosition: { x: 2140, y: 800 },
+      researchedUpgradeIds: new Set<string>(["camp_foundations_1"])
+    };
+
+    const plan = createEnemyBaseDevelopmentPlan(context);
+
+    expect(plan.stage).toBe("mid");
+    expect(plan.techCandidates[0]).toMatchObject({
+      upgradeId: "infantry_weapons_1",
+      building: enemyBarracks
+    });
+    expect(plan.techCandidates.map((candidate) => candidate.upgradeId)).not.toContain("sentry_bracing_1");
+  });
+
+  it("queues enemy military research through the existing upgrade system and pays normal costs", () => {
+    const enemyBarracks = fakeBuilding("enemy_barracks", "enemy", {
+      upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1", "aether_study_1"]
+    });
+    const buildings = [fakeBuilding("enemy_stronghold", "enemy", { upgradeOptions: ["camp_foundations_1"] }), enemyBarracks];
+    const researched = new Set<string>(["camp_foundations_1"]);
+    const resources = { crowns: 700, stone: 520, iron: 520, aether: 180 };
+    const controller = createController({
+      units: [fakeEnemyUnit("raider", "enemy_raider_1", []), fakeEnemyUnit("hexer", "enemy_hexer_1", [])],
+      buildings,
+      captureSites: [fakeSite("iron_vein", "Iron Vein", "enemy", { x: 1620, y: 720, resource: "iron", siteLevel: 2 })],
+      resources,
+      upgradeSystem: createUpgradeSystem(buildings, researched),
+      isUpgradeResearched: (upgradeId) => researched.has(upgradeId),
+      getElapsedSeconds: () => 280,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(280);
+
+    expect(controller.state.current).toBe("TECH_UP");
+    expect(enemyBarracks.upgradeQueue[0]?.upgradeId).toBe("infantry_weapons_1");
+    expect(resources.crowns).toBe(580);
+    expect(resources.iron).toBe(450);
+  });
+
+  it("respects Camp Foundations before defensive Watchtower research", () => {
+    const enemyStronghold = fakeBuilding("enemy_stronghold", "enemy", { upgradeOptions: ["camp_foundations_1"] });
+    const watchtower = fakeBuilding("watchtower", "enemy", { upgradeOptions: ["sentry_bracing_1"] });
+    const buildings = [enemyStronghold, watchtower];
+    const researched = new Set<string>();
+    const controller = createController({
+      units: [fakeEnemyUnit("raider", "enemy_raider_1", [])],
+      buildings,
+      resources: { crowns: 500, stone: 500, iron: 500, aether: 0 },
+      upgradeSystem: createUpgradeSystem(buildings, researched),
+      isUpgradeResearched: (upgradeId) => researched.has(upgradeId),
+      getElapsedSeconds: () => 130,
+      hasCapturedSite: false,
+      hasBuiltProduction: false,
+      config: { initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(130);
+
+    expect(controller.state.current).toBe("FORTIFY_BASE");
+    expect(enemyStronghold.upgradeQueue[0]?.upgradeId).toBe("camp_foundations_1");
+    expect(watchtower.upgradeQueue).toHaveLength(0);
+  });
+
+  it("does not research impossible or locked enemy upgrades", () => {
+    const enemyBarracks = fakeBuilding("enemy_barracks", "enemy", { upgradeOptions: ["sentry_bracing_1"] });
+    const plan = createEnemyBaseDevelopmentPlan({
+      elapsedSeconds: 520,
+      resources: { crowns: 900, stone: 900, iron: 900, aether: 900 },
+      buildings: [enemyBarracks],
+      sites: [fakeSite("crown_shrine", "Crown Shrine", "enemy", { x: 1640, y: 720, siteLevel: 2 })],
+      enemyUnits: [fakeEnemyUnit("raider", "enemy_raider_1", [])],
+      playerUnits: [fakePlayerUnit("player_militia_1", { x: 1640, y: 720 }, 120)],
+      enemyBasePosition: { x: 2140, y: 800 },
+      researchedUpgradeIds: new Set<string>()
+    });
+
+    expect(plan.techCandidates.map((candidate) => candidate.upgradeId)).not.toContain("sentry_bracing_1");
+  });
+
+  it("defends the enemy base before launching an economy raid", () => {
+    const attacked: string[] = [];
+    const moved: Array<{ unitId: string; target: { x: number; y: number }; attackMove: boolean }> = [];
+    const playerSite = fakeSite("aether_well", "Aether Well", "player", {
+      x: 1580,
+      y: 610,
+      resource: "aether",
+      siteLevel: 2
+    });
+    const threat = fakePlayerUnit("player_militia_1", { x: 2130, y: 805 }, 140);
+    const controller = createController({
+      units: [
+        fakeEnemyUnit("raider", "enemy_raider_1", attacked, moved),
+        fakeEnemyUnit("hexer", "enemy_hexer_1", attacked, moved),
+        fakeEnemyUnit("brute", "enemy_brute_1", attacked, moved),
+        threat
+      ],
+      captureSites: [playerSite],
+      getElapsedSeconds: () => 151,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(151);
+
+    expect(controller.state.current).toBe("DEFEND");
+    expect(attacked).toEqual(["enemy_raider_1", "enemy_hexer_1", "enemy_brute_1"]);
+    expect(moved).toEqual([]);
+  });
+});
+
 function createController(options: {
   units: Unit[];
   getElapsedSeconds: () => number;
@@ -352,8 +520,11 @@ function createController(options: {
   hasBuiltProduction: boolean;
   onWaveLaunched: (units: Unit[]) => void;
   captureSites?: CaptureSite[];
+  buildings?: Building[];
   resources?: { crowns: number; stone: number; iron: number; aether: number };
   resourceSystem?: ResourceSystem;
+  upgradeSystem?: UpgradeSystem;
+  isUpgradeResearched?: (upgradeId: string) => boolean;
   config?: Partial<EnemyAIConfig>;
   attackWarningLeadSeconds?: number;
   onAlert?: (message: string) => void;
@@ -380,7 +551,14 @@ function createController(options: {
   return new EnemyAIController({
     resources,
     getUnits: () => options.units,
-    getBuildings: () => [fakeBuilding("enemy_stronghold", "enemy"), fakeBuilding("command_hall", "player")],
+    getBuildings: () =>
+      options.buildings ?? [
+        fakeBuilding("enemy_stronghold", "enemy", { upgradeOptions: ["camp_foundations_1"] }),
+        fakeBuilding("enemy_barracks", "enemy", {
+          upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1", "aether_study_1"]
+        }),
+        fakeBuilding("command_hall", "player", { upgradeOptions: ["camp_foundations_1"] })
+      ],
     getCaptureSites: () => options.captureSites ?? ([] as CaptureSite[]),
     resourceSystem:
       options.resourceSystem ??
@@ -388,6 +566,12 @@ function createController(options: {
         requestSiteUpgrade: vi.fn(() => false)
       } as unknown as ResourceSystem),
     training: { queueTraining: vi.fn() } as unknown as TrainingSystem,
+    upgradeSystem:
+      options.upgradeSystem ??
+      ({
+        queueUpgrade: vi.fn(() => false)
+      } as unknown as UpgradeSystem),
+    isUpgradeResearched: options.isUpgradeResearched,
     getAttackTarget: () => fakeBuilding("command_hall", "player"),
     getElapsedSeconds: options.getElapsedSeconds,
     getPlayerMilestones: () => ({
@@ -400,6 +584,19 @@ function createController(options: {
     difficulty: "normal",
     config: { ...baseConfig, ...options.config },
     attackWarningLeadSeconds: options.attackWarningLeadSeconds
+  });
+}
+
+function createUpgradeSystem(buildings: Building[], researched: Set<string>): UpgradeSystem {
+  return new UpgradeSystem({
+    getTechState: () => ({
+      completedBuildingIds: completedEnemyTechBuildingIds(buildings),
+      researchedUpgradeIds: researched
+    }),
+    isResearched: (_team, upgradeId) => researched.has(upgradeId),
+    markResearched: (_team, upgradeId) => researched.add(upgradeId),
+    onMessage: vi.fn(),
+    onUpgradeCompleted: vi.fn()
   });
 }
 
@@ -444,13 +641,27 @@ function fakePlayerUnit(id: string, position: { x: number; y: number }, hp: numb
   } as unknown as Unit;
 }
 
-function fakeBuilding(buildingId: string, team: "player" | "enemy"): Building {
+function fakeBuilding(
+  buildingId: string,
+  team: "player" | "enemy",
+  options: {
+    upgradeOptions?: string[];
+    trainOptions?: string[];
+    position?: { x: number; y: number };
+  } = {}
+): Building {
   return {
     id: `${team}_${buildingId}`,
     alive: true,
     team,
-    position: team === "enemy" ? { x: 2140, y: 800 } : { x: 260, y: 800 },
-    definition: { id: buildingId },
+    position: options.position ?? (team === "enemy" ? { x: 2140, y: 800 } : { x: 260, y: 800 }),
+    definition: {
+      id: buildingId,
+      trainOptions: options.trainOptions ?? (buildingId === "enemy_barracks" ? ["raider", "hexer", "brute"] : []),
+      upgradeOptions: options.upgradeOptions ?? []
+    },
+    upgradeQueue: [],
+    appliedUpgradeIds: new Set<string>(),
     isCompleted: () => true
   } as unknown as Building;
 }

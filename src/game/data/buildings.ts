@@ -89,7 +89,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     constructionTimeSeconds: 0,
     buildOptions: [],
     trainOptions: [],
-    upgradeOptions: [],
+    upgradeOptions: ["camp_foundations_1"],
     xpValue: 80
   },
   {
@@ -106,7 +106,7 @@ export const BUILDINGS: BuildingDefinition[] = [
     constructionTimeSeconds: 0,
     buildOptions: [],
     trainOptions: ["raider", "hexer", "brute"],
-    upgradeOptions: [],
+    upgradeOptions: ["infantry_weapons_1", "reinforced_armor_1", "aether_study_1", "ember_blades_trait"],
     xpValue: 80
   }
 ];
