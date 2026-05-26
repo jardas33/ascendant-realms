@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.28-v0.29 hero progression and ability foundation";
+const CHECKPOINT = "v0.29.1 hero progression closeout and blocked CI documentation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -107,6 +107,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V029_HERO_ABILITIES_AND_REWARDS_SPEC.md", join(packageDir, "V029_HERO_ABILITIES_AND_REWARDS_SPEC.md"));
   await copyMarkdown("docs/V029_IMPLEMENTATION_REPORT.md", join(packageDir, "V029_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V029_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V029_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0291_BLOCKED_REMOTE_CI_STATUS.md", join(packageDir, "V0291_BLOCKED_REMOTE_CI_STATUS.md"));
+  await copyMarkdown(
+    "docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md",
+    join(packageDir, "V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md")
+  );
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -190,7 +195,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.28-v0.29 hero progression and ability retest, start with V028_HERO_PROGRESSION_SPEC.md, V028_IMPLEMENTATION_REPORT.md, V029_HERO_ABILITIES_AND_REWARDS_SPEC.md, V029_IMPLEMENTATION_REPORT.md, and V029_EMMANUEL_RETEST_CHECKLIST.md. Focus on: hero XP from battle participation and first resource-site captures, live level-up HUD feedback, modest HP/Mana/damage/armor growth, ability cooldown and mana readability, Rally Banner/Cleave usefulness during economy pressure, and results-screen XP/level summaries. Tutorial remains no-save/no-reward; do not expect new art, new maps, new factions, enemy hero progression, inventory overhaul, complex loot, classic harvesting, visible enemy Workers, cargo, drop-off buildings, or final VFX in this build. Also regression-check v0.22/v0.23 player Worker/site behavior and v0.24-v0.27 enemy site/base/tech pressure.
+For the v0.28-v0.29 hero progression and ability retest, start with V028_HERO_PROGRESSION_SPEC.md, V028_IMPLEMENTATION_REPORT.md, V029_HERO_ABILITIES_AND_REWARDS_SPEC.md, V029_IMPLEMENTATION_REPORT.md, and V029_EMMANUEL_RETEST_CHECKLIST.md. Also read V0291_BLOCKED_REMOTE_CI_STATUS.md and V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md before treating remote CI as release evidence. Focus on: hero XP from battle participation and first resource-site captures, live level-up HUD feedback, modest HP/Mana/damage/armor growth, ability cooldown and mana readability, Rally Banner/Cleave usefulness during economy pressure, and results-screen XP/level summaries. Tutorial remains no-save/no-reward; do not expect new art, new maps, new factions, enemy hero progression, inventory overhaul, complex loot, classic harvesting, visible enemy Workers, cargo, drop-off buildings, or final VFX in this build. Also regression-check v0.22/v0.23 player Worker/site behavior and v0.24-v0.27 enemy site/base/tech pressure.
 
 ## Known Warning
 

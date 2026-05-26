@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
+
+This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions state and making local fallback verification/package guidance explicit. It does not change gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or tests.
+
+### Included
+
+- Added `docs/V0291_BLOCKED_REMOTE_CI_STATUS.md`.
+- Added `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md`.
+- Updated package metadata and validation to name `v0.29.1 hero progression closeout and blocked CI documentation`.
+- Kept the v0.28/v0.29 hero progression specs, implementation reports, and Emmanuel retest checklist required in private playtest packages.
+- Added the v0.29.1 blocked-CI and local-verification closeout docs to private playtest packages.
+
+### Remote CI
+
+- GitHub Actions run `26447947052` failed twice at `actions/checkout@v4`.
+- The runner received GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
+- No repo tests or package commands ran remotely.
+- Treat this as remote CI unavailable, not a code/test failure.
+- Do not claim remote CI green until the GitHub account suspension, billing, permissions, organization access, or token/app checkout issue is resolved and Actions can check out the repository.
+
+### Verdict
+
+- Runtime gameplay changed: no.
+- Gameplay numbers changed: no.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no.
+- Tests weakened: no.
+
+### Verification
+
+- Passed: `npm test` with 72 files / 533 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty playtest package generation, and dirty package verification with 85 checks.
+- Remote CI remains blocked before checkout by GitHub Actions run `26447947052`; no remote repo tests ran.
+
 ## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
 
 This checkpoint adds the first safe RPG progression layer for the player hero. The hero can gain live battle XP, level during battle, receive modest stat gains, use readable ability cooldown states, and carry battle XP into the existing victory results flow without adding new content rosters, inventory complexity, enemy hero systems, save migration, or runtime art.

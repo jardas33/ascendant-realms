@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.28-v0.29 hero progression and ability foundation",
+          checkpoint: "v0.29.1 hero progression closeout and blocked CI documentation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -131,6 +131,8 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V029_HERO_ABILITIES_AND_REWARDS_SPEC.md", sizeBytes: 20, textContent: "Hero ability rewards spec" },
       { path: "V029_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero ability rewards report" },
       { path: "V029_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Hero ability retest" },
+      { path: "V0291_BLOCKED_REMOTE_CI_STATUS.md", sizeBytes: 20, textContent: "Blocked remote CI status" },
+      { path: "V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md", sizeBytes: 20, textContent: "Local verification closeout" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

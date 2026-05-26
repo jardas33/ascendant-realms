@@ -30,6 +30,7 @@ Known current realities:
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
 - GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, hosted release groups, simulator, and full release remain local/manual release confidence.
+- v0.29.1 records GitHub Actions run `26447947052` as blocked before checkout by GitHub HTTP 403 account-suspension response. Treat that run as remote CI unavailable, not a code/test failure. Do not claim remote CI green or repeatedly rerun Actions until the account suspension, billing, permission, organization access, or token/app checkout issue is resolved.
 - v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 - v0.11.7 splits optional visual QA into 5 smaller tests and adds per-screenshot logging, a 45s screenshot timeout, one screenshot retry, and retry metadata while keeping all 18 targets and console-error failure behavior.
 - v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
@@ -71,6 +72,7 @@ Known current realities:
 - v0.24-v0.25 adds controlled enemy resource-site strategy and economy pressure: enemy AI can capture, retake, defend, upgrade, and raid around resource sites; enemy Worker slots are abstract logistics only; no classic carry/drop-off harvesting, full enemy Worker economy, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/economy behavior changed.
 - v0.26-v0.27 adds abstract enemy base development, existing-tech progression, staged escalation, and defensive reserves: enemy AI can fortify, research, defend base/sites, and escalate when economy/site control is healthy. No classic harvesting, visible enemy Workers, enemy construction placement, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/upgrade behavior changed.
 - v0.28-v0.29 adds the first safe player hero RPG foundation: live battle XP, modest live level-up stat gains, readable ability cooldown/mana states, and victory results battle XP summaries. No new factions/maps, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, huge ability roster, inventory overhaul, enemy hero system, Patrol, or formations are included. Rerun GitHub Actions after push because runtime hero progression, HUD, and reward behavior changed.
+- v0.29.1 is docs/package closeout only: blocked remote CI status, local fallback verification notes, and hero progression retest packaging. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or test behavior changed.
 
 ## Required Automated Checks
 
@@ -230,6 +232,12 @@ Current v0.28-v0.29 checkpoint result:
 PASS: 72 test files, 533 tests
 ```
 
+Current v0.29.1 checkpoint result:
+
+```text
+PASS: 72 test files, 533 tests
+```
+
 Current v0.16.13 checkpoint result:
 
 ```text
@@ -337,6 +345,13 @@ Current v0.28-v0.29 checkpoint result:
 ```text
 Attempted: npm run test:e2e:release exceeded a 30-minute tool window before producing usable output.
 PASS equivalent release coverage: shard1of3 44 tests, shard2of3 34 tests, shard3of3 14 tests.
+```
+
+Current v0.29.1 local fallback browser result:
+
+```text
+PASS: test:e2e:smoke:fast 8 tests, test:e2e:smoke 14 tests, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual:qa 5 tests / 18 screenshots / 0 console errors / 0 retries.
+Remote CI run 26447947052 remains blocked before checkout by GitHub HTTP 403 account-suspension response; no remote repo tests ran.
 ```
 
 Current v0.16.7 checkpoint result:
@@ -596,7 +611,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.29 implementation/retest docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.29.1 implementation/retest/closeout docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

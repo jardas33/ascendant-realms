@@ -1,6 +1,53 @@
 # Development Checkpoint
 
-Updated: 2026-05-26 v0.28-v0.29 hero progression and ability foundation
+Updated: 2026-05-26 v0.29.1 hero progression closeout and blocked CI documentation
+
+## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
+
+Scope: document the blocked GitHub Actions state after v0.28-v0.29, keep local fallback verification explicit, and prepare the hero progression package/retest guidance. This pass is docs/package metadata only. It does not add runtime systems, balance changes, maps, factions, assets, save migration, pathing changes, AI changes, or test weakening.
+
+Baseline:
+
+- Starting commit: `aa6fc05`, `Checkpoint v0.28-v0.29 hero progression and ability foundation`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this pass: `ascendant-realms-private-playtest-aa6fc05`.
+
+Remote CI:
+
+- GitHub Actions run `26447947052` failed twice at `actions/checkout@v4`.
+- The checkout error was GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
+- No repo tests or package commands ran remotely.
+- Push-triggered release matrix, full release e2e, release simulator, and optional visual QA jobs were skipped by workflow rules.
+- Action required: resolve the GitHub account suspension, billing, permissions, organization access, or token/app checkout condition before remote CI can be trusted again.
+
+Included work:
+
+- Added `docs/V0291_BLOCKED_REMOTE_CI_STATUS.md`.
+- Added `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md`.
+- Updated package metadata and package validation to name `v0.29.1 hero progression closeout and blocked CI documentation`.
+- Kept package validation coverage for `V028_HERO_PROGRESSION_SPEC.md`, `V028_IMPLEMENTATION_REPORT.md`, `V029_HERO_ABILITIES_AND_REWARDS_SPEC.md`, `V029_IMPLEMENTATION_REPORT.md`, and `V029_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added the two v0.29.1 closeout docs to the private playtest package and validator.
+
+Verification and closeout so far:
+
+```text
+Remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-aa6fc05-dirty generated.
+npm run verify:playtest-package PASS, 85 checks.
+```
 
 ## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
 

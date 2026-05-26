@@ -1,12 +1,72 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-26 v0.28-v0.29 hero progression and ability foundation
+Last updated: 2026-05-26 v0.29.1 hero progression closeout and blocked CI documentation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
+
+Status: v0.29.1 is a docs/package closeout for the v0.28-v0.29 hero progression and ability foundation. It adds blocked remote-CI documentation, local fallback verification notes, and package visibility for the v0.28/v0.29 hero retest docs. It does not change runtime gameplay, balance, maps, factions, assets, save format, pathing, AI, tests, or content rules.
+
+Baseline:
+
+- Starting commit: `aa6fc05`, `Checkpoint v0.28-v0.29 hero progression and ability foundation`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this work: `ascendant-realms-private-playtest-aa6fc05`.
+
+Remote CI status:
+
+- GitHub Actions run `26447947052` failed twice at `actions/checkout@v4`.
+- Run URL: `https://github.com/jardas33/ascendant-realms/actions/runs/26447947052`.
+- The failure was GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
+- No repo commands or tests ran remotely; the runner did not reach `npm ci`, `npm test`, build, validators, smoke, or preview smoke.
+- Release matrix, full release e2e, release simulator, and optional visual QA jobs were skipped by push workflow rules.
+- Treat this as remote CI unavailable, not a code/test failure. Do not rerun Actions repeatedly until the GitHub account suspension, billing, organization access, repository permissions, or token/app condition is resolved.
+
+Docs/package metadata:
+
+- Added `docs/V0291_BLOCKED_REMOTE_CI_STATUS.md`.
+- Added `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md`.
+- Package checkpoint string is now `v0.29.1 hero progression closeout and blocked CI documentation`.
+- Private playtest package validation still requires the v0.28/v0.29 hero progression specs/reports/retest checklist and now also requires the v0.29.1 blocked-CI/local-verification docs.
+
+Runtime/UI summary:
+
+- Runtime changed: no.
+- Hero progression changed: no.
+- Hero abilities changed: no.
+- Battle rewards changed: no.
+- UI changed: no.
+- Tutorial changed: no.
+
+Verification:
+
+```text
+Remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-aa6fc05-dirty generated.
+npm run verify:playtest-package PASS, 85 checks.
+```
+
+Closeout note: run the local fallback matrix, `git diff --check`, commit as `Checkpoint v0.29.1 hero progression closeout and blocked CI documentation`, package/verify the clean package from the final commit, and push `main`. Do not claim remote CI green until GitHub Actions can check out the repository and execute workflow commands.
+
+Emmanuel retest focus: use the clean v0.29.1 package. Read the v0.29.1 blocked-CI/local-verification notes first, then use `V029_EMMANUEL_RETEST_CHECKLIST.md` for the hero progression retest. Confirm XP from combat and first resource-site captures, live level-up HUD/stat feedback, Rally Banner/Cleave cooldown readability, no cooldown spam, Tutorial no-reward behavior, and victory XP/results clarity.
 
 ## Current v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
 
