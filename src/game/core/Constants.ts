@@ -32,6 +32,9 @@ export const LEVEL_XP_THRESHOLDS: Record<number, number> = {
 
 export const HERO_HP_PER_LEVEL = 18;
 export const HERO_MANA_PER_LEVEL = 10;
+export const HERO_DAMAGE_PER_LEVEL = 2;
+export const HERO_ARMOR_LEVEL_INTERVAL = 2;
+export const HERO_CAPTURE_SITE_XP = 10;
 export const CAMERA_PAN_SPEED = 520;
 export const CAPTURE_TIME_SECONDS = 4;
 export const HERO_XP_SHARE_RADIUS = 460;

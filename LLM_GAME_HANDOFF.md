@@ -1,12 +1,80 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-26 v0.26-v0.27 enemy base development and tech escalation AI
+Last updated: 2026-05-26 v0.28-v0.29 hero progression and ability foundation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
+
+Status: v0.28-v0.29 adds the first safe RPG progression foundation for the player hero. The hero can gain live battle XP from kills and first-time site captures, level during battle, receive modest live stat gains, see clearer XP/stat/ability state in the existing HUD, use readable active ability cooldown states, and carry battle XP into the existing victory reward/results flow. This checkpoint does not add new factions, maps, runtime art/assets, save migration, a broad AI/pathing rewrite, global rebalance, a large ability roster, inventory overhaul, enemy hero systems, Patrol, formations, or new canvas/world click fallbacks.
+
+Baseline:
+
+- Starting commit: `4f78ac6`, `Checkpoint v0.26-v0.27 enemy base development and tech escalation AI`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this work: `ascendant-realms-private-playtest-4f78ac6`.
+- GitHub Actions push run `26431511137` for v0.26-v0.27 completed successfully for Fast confidence; Full release e2e, Release simulator, Release matrix groups, and Optional visual QA were skipped by push workflow rules.
+
+Docs/package metadata:
+
+- Added `docs/V028_HERO_PROGRESSION_SPEC.md`.
+- Added `docs/V029_HERO_ABILITIES_AND_REWARDS_SPEC.md`.
+- Added `docs/V028_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_EMMANUEL_RETEST_CHECKLIST.md`.
+- Package checkpoint string is now `v0.28-v0.29 hero progression and ability foundation`.
+- Private playtest package validation now requires the v0.28/v0.29 specs, implementation reports, and Emmanuel retest checklist.
+
+Runtime/UI summary:
+
+- Added shared hero level stat-gain helpers so live battle level-ups match saved hero stat recalculation.
+- Live hero level-ups now apply modest damage and every-other-level armor growth in addition to the existing HP, Mana, refill, and skill-point gains.
+- Added one-time player resource-site capture XP through `XPSystem`; capture XP is small, per-site, battle-local, and disabled for no-reward launches.
+- Kill XP still uses existing unit/building XP values and the existing hero share radius.
+- Victory now preserves live battle XP before applying the existing reward-table XP flow, so results can summarize battle XP plus victory rewards without a save migration.
+- The existing hero HUD now shows level, XP progress, skill points, damage, armor, and unlocked ability count.
+- Ability buttons now expose readable ready/cooldown/insufficient-mana states with disabled states and `data-ability-state` for tests.
+- Existing Rally Banner remains the safe leadership/buff example and Cleave remains the safe close-range hostile burst example; casts spend mana and start cooldown only after successful effects.
+- Tutorial / Proving Grounds keeps its no-reward rule and step count; its Rally Banner hint now explains mana, cooldowns, and that campaign XP saves outside no-reward training.
+
+Verification:
+
+```text
+GitHub Actions v0.26-v0.27 push run 26431511137: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test -- src/game/core/progression/HeroLevelRules.test.ts src/game/entities/Hero.test.ts src/game/systems/XPSystem.test.ts src/game/systems/AbilitySystem.test.ts src/game/ui/AbilityBar.test.ts src/game/ui/hudPanels/HeroHudPanel.test.ts PASS, 6 files / 10 tests.
+npm test -- src/game/battle/BattleRuntime.test.ts PASS, 12 tests.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 tests.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "hero battle XP|hero ability buttons|victory results summarize" --reporter=line PASS, 3 focused hosted v0.28/v0.29 proxies.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release exceeded a 30-minute tool window before producing usable output; exact processes from that attempt were cleaned up.
+npm run test:e2e:release:shard1of3 PASS, 44 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-4f78ac6-dirty generated.
+npm run verify:playtest-package PASS, 83 checks.
+Browser plugin note: tool discovery in the compacted closeout turn did not expose an in-app Browser page-control tool; production preview smoke and visual QA are the local browser sanity evidence for this checkpoint.
+```
+
+Closeout note: run `git diff --check`, commit as `Checkpoint v0.28-v0.29 hero progression and ability foundation`, regenerate/verify a clean package from the final commit, then push `main`.
+
+Emmanuel retest focus: use the clean v0.28-v0.29 package. Confirm the hero gains XP from combat and first-time resource-site capture in campaign battles, levels during battle with modest stat changes, shows level/XP/stat/ability state in the HUD, uses Rally Banner/Cleave with readable cooldown and disabled states, cannot spam abilities, still keeps Tutorial no-reward behavior, and shows battle XP plus reward XP on victory Results without adding inventory/loot complexity.
 
 ## Current v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
 

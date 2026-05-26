@@ -3,7 +3,7 @@ import type { HeroClassDefinition, ItemInstance, OriginDefinition, UnitDefinitio
 import type { HeroSaveData } from "../save/SaveTypes";
 import { ABILITY_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { HERO_HP_PER_LEVEL, HERO_MANA_PER_LEVEL, LEVEL_XP_THRESHOLDS } from "../core/Constants";
-import { calculateLiveHeroStats, getUnlockedAbilityIds } from "../core/HeroProgressionRules";
+import { calculateLiveHeroStats, getUnlockedAbilityIds, heroLiveLevelStatGain } from "../core/HeroProgressionRules";
 import { applyLevelProgression } from "../core/Progression";
 import { Unit } from "./Unit";
 
@@ -102,12 +102,15 @@ export class Hero extends Unit {
     });
 
     if (result.leveledUp) {
+      const statGain = heroLiveLevelStatGain(previousLevel, result.level);
       this.level = result.level;
       this.skillPoints = result.skillPoints;
       this.maxHp = result.maxHp;
       this.hp = this.maxHp;
       this.maxMana = result.maxMana;
       this.mana = this.maxMana;
+      this.definition.stats.damage += statGain.damage;
+      this.armor += statGain.armor;
       this.updateHealthBar();
       return { leveledUp: true, levelsGained: result.levelsGained };
     }

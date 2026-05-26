@@ -141,7 +141,7 @@ export const TUTORIALS: TutorialDefinition[] = [
         instruction: "Select Aster, then cast Rally Banner or press 1.",
         objectiveType: "useHeroAbility",
         requiredAction: "useHeroAbility",
-        hint: "Hero abilities spend mana and then wait on cooldown.",
+        hint: "Hero abilities spend mana and then wait on cooldown. Campaign battles can save hero XP on victory; this training route remains no-reward.",
         references: {
           mapIds: ["first_claim"],
           abilityIds: ["rally_banner"]

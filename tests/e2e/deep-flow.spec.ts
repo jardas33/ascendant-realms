@@ -4903,6 +4903,158 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(warCryResult.enemyHp.some((hp: number, index: number) => hp < warCrySetup.enemyHp[index])).toBe(true);
   });
 
+  test("hero battle XP can level the hero and update the HUD @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(60_000);
+    await seedSave(page, {
+      hero: {
+        level: 1,
+        xp: 90,
+        skillPoints: 0
+      }
+    });
+    await startBorderVillageCampaignBattle(page);
+
+    const result = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.xpValue > 0 && unit.alive);
+      if (!enemy) {
+        throw new Error("Missing enemy unit for hero XP proxy.");
+      }
+      const before = {
+        level: scene.hero.level,
+        xp: scene.hero.xp,
+        damage: scene.hero.damage,
+        armor: scene.hero.armor,
+        skillPoints: scene.hero.skillPoints
+      };
+      enemy.setPosition(scene.hero.position.x + 28, scene.hero.position.y);
+      const wasAlive = enemy.alive;
+      enemy.takeDamage(enemy.maxHp + enemy.armor + 10_000);
+      if (wasAlive && !enemy.alive) {
+        scene.handleKill(scene.hero, enemy);
+        enemy.destroyView();
+        scene.cleanupDeadEntities();
+      }
+      scene.refreshBattleHud(0);
+      return {
+        before,
+        after: {
+          level: scene.hero.level,
+          xp: scene.hero.xp,
+          damage: scene.hero.damage,
+          armor: scene.hero.armor,
+          skillPoints: scene.hero.skillPoints
+        },
+        statsXp: scene.runtime.stats.xpGained,
+        status: scene.statusMessage
+      };
+    });
+
+    expect(result.after.level).toBeGreaterThan(result.before.level);
+    expect(result.after.xp).toBeGreaterThanOrEqual(100);
+    expect(result.after.damage).toBeGreaterThan(result.before.damage);
+    expect(result.after.skillPoints).toBeGreaterThan(result.before.skillPoints);
+    expect(result.statsXp).toBeGreaterThan(0);
+    await expect(page.getByTestId("battle-hero-panel")).toContainText("L2");
+    await expect(page.getByTestId("battle-hero-panel")).toContainText("DMG");
+  });
+
+  test("hero ability buttons show cooldown and block repeat casts @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(60_000);
+    await seedSave(page);
+    await startBorderVillageCampaignBattle(page);
+    await page.keyboard.press("H");
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toContainText("1. Rally Banner");
+
+    const prepared = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const hero = scene.hero;
+      const allies = scene.units.filter((unit: any) => unit.team === "player" && unit.id !== hero.id && unit.alive).slice(0, 2);
+      if (allies.length === 0) {
+        throw new Error("Missing allies for Rally Banner cooldown proxy.");
+      }
+      hero.mana = hero.maxMana;
+      hero.abilityCooldowns = {};
+      scene.selectionSystem.setSelection([hero]);
+      allies.forEach((unit: any, index: number) => unit.setPosition(hero.position.x - 44 - index * 18, hero.position.y + index * 12));
+      scene.refreshBattleHud(0);
+      return { mana: hero.mana };
+    });
+
+    await page.keyboard.press("1");
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute("data-ability-state", "cooldown");
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toBeDisabled();
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toContainText(/Cooldown \d+s/);
+
+    const repeated = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const manaBefore = scene.hero.mana;
+      const cooldownBefore = scene.hero.abilityCooldowns.rally_banner;
+      const cast = scene.abilitySystem.castAbility(scene.hero, "rally_banner", scene.selectionSystem.getSelected());
+      return {
+        cast,
+        manaBefore,
+        manaAfter: scene.hero.mana,
+        cooldownBefore,
+        cooldownAfter: scene.hero.abilityCooldowns.rally_banner
+      };
+    });
+
+    expect(repeated.cast).toBe(false);
+    expect(repeated.manaAfter).toBe(repeated.manaBefore);
+    expect(repeated.manaAfter).toBeLessThan(prepared.mana);
+    expect(repeated.cooldownAfter).toBe(repeated.cooldownBefore);
+  });
+
+  test("victory results summarize battle XP and level rewards @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(60_000);
+    await seedSave(page, {
+      hero: {
+        level: 1,
+        xp: 90,
+        skillPoints: 0
+      }
+    });
+    await startBorderVillageCampaignBattle(page);
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.definition.xpValue > 0 && unit.alive);
+      if (!enemy) {
+        throw new Error("Missing enemy unit for results XP proxy.");
+      }
+      enemy.setPosition(scene.hero.position.x + 28, scene.hero.position.y);
+      const wasAlive = enemy.alive;
+      enemy.takeDamage(enemy.maxHp + enemy.armor + 10_000);
+      if (wasAlive && !enemy.alive) {
+        scene.handleKill(scene.hero, enemy);
+        enemy.destroyView();
+        scene.cleanupDeadEntities();
+      }
+      scene.refreshBattleHud(0);
+    });
+    await forceActiveBattleOutcome(page, "victory");
+
+    const resultsPanel = page.locator(".results-panel");
+    await expect(resultsPanel).toContainText("Hero XP");
+    await expect(resultsPanel).toContainText("XP gained");
+    await expect(resultsPanel).toContainText("Level-up");
+    await expect(resultsPanel).toContainText("+1 level");
+    await expect(resultsPanel).toContainText("Reward XP");
+    const save = await readSave(page);
+    expect(save.hero.level).toBeGreaterThanOrEqual(2);
+    expect(save.hero.xp).toBeGreaterThan(90);
+  });
+
   test("minimap renders marker families, camera rectangle, rally marker, and live pings @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(60_000);
     await startFirstClaimSkirmish(page, "Minimap QA", "story");

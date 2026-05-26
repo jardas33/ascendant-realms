@@ -1,5 +1,46 @@
 # Changelog
 
+## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
+
+This checkpoint adds the first safe RPG progression layer for the player hero. The hero can gain live battle XP, level during battle, receive modest stat gains, use readable ability cooldown states, and carry battle XP into the existing victory results flow without adding new content rosters, inventory complexity, enemy hero systems, save migration, or runtime art.
+
+### Included
+
+- Added `docs/V028_HERO_PROGRESSION_SPEC.md`.
+- Added `docs/V029_HERO_ABILITIES_AND_REWARDS_SPEC.md`.
+- Added `docs/V028_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and package validation to name `v0.28-v0.29 hero progression and ability foundation`.
+- Added shared hero level stat-gain helpers and applied live battle damage/armor growth on level-up.
+- Added one-time player resource-site capture XP while preserving existing kill XP, level curve, reward XP, and victory persistence.
+- Updated the hero HUD with XP, skill points, damage, armor, and ability unlock count.
+- Added tested ability button states for ready, cooldown, and insufficient mana.
+- Preserved Rally Banner and Cleave as the safe active ability examples and prevented cooldown spam from spending extra mana.
+- Added victory results coverage for battle XP, level-ups, and reward XP.
+- Updated Tutorial hint copy while preserving no-reward training and the existing tutorial route.
+- Expanded unit, UI, runtime, package, and hosted coverage for hero XP, level-up, ability cooldowns, targeting, HUD state, and rewards.
+
+### Verdict
+
+- Runtime gameplay changed: yes, the player hero now has live battle XP, live level-up stat gains, clearer ability states, and battle XP on victory results.
+- Gameplay numbers changed: narrowly, site capture awards 10 hero XP and live level-ups now apply existing conservative level stat gains during battle.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, only hint copy changed.
+- Inventory/loot changed: no.
+- Enemy hero system added: no.
+
+### Verification
+
+- Passed: GitHub Actions v0.26-v0.27 push run `26431511137` Fast confidence, focused hero progression/ability/HUD tests with 6 files / 10 tests, focused BattleRuntime victory XP test with 12 tests, package validation unit tests with 3 tests, `npm test` with 72 files / 533 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, focused hosted hero progression/ability/reward proxy with 3 tests, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, 3-way release shards with 44/34/14 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty playtest package generation, dirty package verification with 83 checks, and production preview smoke with 0 browser console errors.
+- The unsharded `npm run test:e2e:release` command was attempted but exceeded a 30-minute tool window before producing usable output; the three release shards passed afterward and preserve the full release suite coverage.
+- Browser plugin note: tool discovery in the compacted closeout turn did not expose an in-app Browser page-control tool, so `npm run smoke:preview` plus visual QA are the local browser sanity fallback.
+
+### Next
+
+- Commit the checkpoint, regenerate/verify the clean v0.28-v0.29 package from the final commit, push, and use that package for Emmanuel's hero progression/ability/reward retest.
+
 ## v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
 
 This checkpoint turns the enemy's v0.24-v0.25 site pressure into staged base development and tech escalation. Enemy AI can use site control and economy health to fortify, research existing upgrades, defend important positions, and escalate pressure without adding harvesting, visible enemy Workers, new content, or global army buffs.

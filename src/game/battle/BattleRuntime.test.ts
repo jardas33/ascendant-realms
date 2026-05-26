@@ -219,6 +219,41 @@ describe("BattleRuntime", () => {
     expect(result.stats.outcome).toBe("victory");
   });
 
+  it("preserves live battle XP on victory and then applies reward XP", () => {
+    const startingHero = createFallbackHeroSave();
+    const liveBattleHero = {
+      ...startingHero,
+      xp: 105,
+      level: 2,
+      skillPoints: 1
+    };
+    const rewardTable = requireRewardTable(testMap.scenario.rewardTableId);
+    const result = completeBattle({
+      outcome: "victory",
+      stats: {
+        ...createBattleRuntime({ launch: createTestLaunch() }).stats,
+        xpGained: 15,
+        outcome: "victory"
+      },
+      startingHeroSave: startingHero,
+      heroSave: liveBattleHero,
+      rewardTable,
+      mapId: testMap.id,
+      deterministicRewards: true
+    });
+
+    expect(result.heroSave.xp).toBe(180);
+    expect(result.heroSave.level).toBe(2);
+    expect(result.heroSave.skillPoints).toBe(1);
+    expect(result.stats.xpGained).toBe(90);
+    expect(result.rewardLevelUp).toEqual({
+      previousLevel: 1,
+      newLevel: 2,
+      levelsGained: 1,
+      skillPointsGained: 1
+    });
+  });
+
   it("keeps defeat rewards empty and avoids save output", () => {
     const heroSave = createFallbackHeroSave();
     const rewardTable = requireRewardTable(testMap.scenario.rewardTableId);

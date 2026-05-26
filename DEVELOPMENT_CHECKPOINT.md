@@ -1,6 +1,67 @@
 # Development Checkpoint
 
-Updated: 2026-05-26 v0.26-v0.27 enemy base development and tech escalation AI
+Updated: 2026-05-26 v0.28-v0.29 hero progression and ability foundation
+
+## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
+
+Scope: add the first safe RPG progression foundation for the player hero. This pass uses the existing hero save, XP, level, stat, skill, ability, and results systems. It does not add new factions, new maps, runtime art/assets, save migration, broad AI/pathing changes, global rebalance, a large ability roster, inventory overhaul, enemy hero systems, Patrol, formations, test weakening, or new force-click/canvas/world fallback behavior.
+
+Baseline:
+
+- Starting commit: `4f78ac6`, `Checkpoint v0.26-v0.27 enemy base development and tech escalation AI`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this pass: `ascendant-realms-private-playtest-4f78ac6`.
+- GitHub Actions push run `26431511137` passed Fast confidence; Full release e2e, Release simulator, Release matrix groups, and Optional visual QA were skipped by push workflow rules.
+
+Included work:
+
+- Added `docs/V028_HERO_PROGRESSION_SPEC.md`.
+- Added `docs/V029_HERO_ABILITIES_AND_REWARDS_SPEC.md`.
+- Added `docs/V028_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V029_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated package metadata and validation to name `v0.28-v0.29 hero progression and ability foundation`.
+- Added shared hero level stat-gain helpers and applied live battle damage/armor gains when the hero levels.
+- Added one-time player resource-site capture XP through `XPSystem`, gated by owner, no-reward launch state, and per-site battle history.
+- Preserved existing kill XP, level curve, HP/Mana growth, skill points, reward-table XP, and victory persistence flow.
+- Updated the hero HUD to show XP progress, skill points, damage, armor, and unlocked ability count.
+- Added tested ability readiness labels and disabled states for ready, cooldown, and insufficient-mana states.
+- Preserved the existing safe Rally Banner and Cleave ability effects while making cooldown states harder to miss and harder to spam.
+- Updated Tutorial copy lightly without adding a new tutorial step or saved training reward.
+- Added unit/UI/runtime/hosted coverage for XP gain, level-up stat changes, site XP, victory reward XP, ability cooldowns, invalid/spam casts, valid ally/hostile targeting, HUD state, and package metadata.
+
+Verification and closeout so far:
+
+```text
+GitHub Actions v0.26-v0.27 push run 26431511137: Fast confidence passed; release-matrix jobs skipped by push rules.
+npm test -- src/game/core/progression/HeroLevelRules.test.ts src/game/entities/Hero.test.ts src/game/systems/XPSystem.test.ts src/game/systems/AbilitySystem.test.ts src/game/ui/AbilityBar.test.ts src/game/ui/hudPanels/HeroHudPanel.test.ts PASS, 6 files / 10 tests.
+npm test -- src/game/battle/BattleRuntime.test.ts PASS, 12 tests.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 3 tests.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "hero battle XP|hero ability buttons|victory results summarize" --reporter=line PASS, 3 focused hosted proxies.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release exceeded a 30-minute tool window before producing usable output; exact processes from that attempt were cleaned up.
+npm run test:e2e:release:shard1of3 PASS, 44 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run smoke:preview PASS at http://127.0.0.1:4173/ with Browser console errors: 0.
+npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-4f78ac6-dirty generated.
+npm run verify:playtest-package PASS, 83 checks.
+Browser plugin note: tool discovery in the compacted closeout turn did not expose an in-app Browser page-control tool; production preview smoke and visual QA are the local browser sanity fallback.
+```
+
+Closeout note: run `git diff --check`, commit, regenerate/verify a clean package from the final v0.28-v0.29 commit, then push.
 
 ## v0.26-v0.27 Enemy Base Development And Tech Escalation AI - 2026-05-26
 

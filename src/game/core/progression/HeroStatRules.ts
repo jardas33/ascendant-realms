@@ -10,6 +10,7 @@ import type {
 import { applyOriginMods } from "../Progression";
 import type { HeroSaveData } from "../../save/SaveTypes";
 import { calculateEquipmentStatMods } from "./EquipmentStatRules";
+import { heroLevelArmorBonus, heroLevelDamageBonus } from "./HeroLevelRules";
 import { calculateSkillStatMods, getUnlockedAbilityIds } from "./SkillRules";
 
 export const HERO_STAT_KEYS: Array<keyof HeroBaseStats> = [
@@ -38,8 +39,8 @@ export function calculateLiveHeroStats(
   const levelStats: HeroStatMods = {
     maxHp: levelBonus * HERO_HP_PER_LEVEL,
     maxMana: levelBonus * HERO_MANA_PER_LEVEL,
-    damage: levelBonus * 2,
-    armor: Math.floor(levelBonus / 2)
+    damage: heroLevelDamageBonus(save.level),
+    armor: heroLevelArmorBonus(save.level)
   };
 
   return applyHeroStatMods(

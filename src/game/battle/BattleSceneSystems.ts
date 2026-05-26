@@ -266,6 +266,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         onPlayerCapturedSite?.(site.definition.id);
         showMessage(`${site.definition.name} captured`, site.position.x, site.position.y - 70, "#aef7b7");
         completeSecondaryObjective("capture_site", site.definition.id, site.position);
+        if (!launch.request.rewardsDisabled) {
+          xpSystem.awardForCaptureSite(site);
+        }
         return;
       }
       if (owner === "enemy") {

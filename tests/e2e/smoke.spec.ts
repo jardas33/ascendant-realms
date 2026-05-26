@@ -1444,7 +1444,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.completedNodeIds).toContain("cinderfen_crossing");
     expect(save.campaign.nodeRewardsClaimedIds).toContain("cinderfen_crossing");
     expect(save.campaign.resources).toMatchObject({ crowns: 245, stone: 200, iron: 150, aether: 80 });
-    expect(save.hero.xp).toBe(670);
+    expect(save.hero.xp).toBe(680);
     expect(save.hero.completedBattles).toBe(6);
     expect(save.hero.clearedMapIds).toContain("cinderfen_causeway");
     expect(save.hero.inventory.map((item: any) => item.itemId)).toContain("scouts_bow");
@@ -1591,7 +1591,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.completedNodeIds).toContain("cinderfen_watch");
     expect(save.campaign.nodeRewardsClaimedIds).toContain("cinderfen_watch");
     expect(save.campaign.resources).toMatchObject({ crowns: 250, stone: 222, iron: 168, aether: 90 });
-    expect(save.hero.xp).toBe(798);
+    expect(save.hero.xp).toBe(808);
     expect(save.hero.completedBattles).toBe(7);
     expect(save.hero.clearedMapIds).toContain("cinderfen_watchpost");
     const rewardSnapshot = {
@@ -1645,7 +1645,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(save.campaign.choiceIdsClaimed).toContain("cinderfen_aftermath:aid_the_fenfolk");
     expect(save.campaign.resources).toMatchObject({ crowns: 210, stone: 222, iron: 176, aether: 90 });
     expect(save.campaign.resourcesSpent.crowns).toBe(130);
-    expect(save.hero.xp).toBe(810);
+    expect(save.hero.xp).toBe(820);
     expect(save.hero.factionReputation.common_folk).toBe(36);
     const aftermathSnapshot = {
       resources: save.campaign.resources,

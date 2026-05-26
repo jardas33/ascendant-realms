@@ -70,6 +70,7 @@ Known current realities:
 - v0.23 adds controlled resource-site upgrade depth and Worker slot expansion: Level 1 captured sites keep one Worker slot, Level 2 improved sites add a modest site-local upgrade bonus and two Worker slots, and site loss clears slots/level. No classic carry/drop-off harvesting, enemy Worker mining AI, enemy construction AI, runtime art/assets, or save migration is included. Rerun GitHub Actions after push because runtime economy/Worker command UI changed.
 - v0.24-v0.25 adds controlled enemy resource-site strategy and economy pressure: enemy AI can capture, retake, defend, upgrade, and raid around resource sites; enemy Worker slots are abstract logistics only; no classic carry/drop-off harvesting, full enemy Worker economy, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/economy behavior changed.
 - v0.26-v0.27 adds abstract enemy base development, existing-tech progression, staged escalation, and defensive reserves: enemy AI can fortify, research, defend base/sites, and escalate when economy/site control is healthy. No classic harvesting, visible enemy Workers, enemy construction placement, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/upgrade behavior changed.
+- v0.28-v0.29 adds the first safe player hero RPG foundation: live battle XP, modest live level-up stat gains, readable ability cooldown/mana states, and victory results battle XP summaries. No new factions/maps, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, huge ability roster, inventory overhaul, enemy hero system, Patrol, or formations are included. Rerun GitHub Actions after push because runtime hero progression, HUD, and reward behavior changed.
 
 ## Required Automated Checks
 
@@ -223,6 +224,12 @@ Current v0.26-v0.27 checkpoint result:
 PASS: 66 test files, 522 tests
 ```
 
+Current v0.28-v0.29 checkpoint result:
+
+```text
+PASS: 72 test files, 533 tests
+```
+
 Current v0.16.13 checkpoint result:
 
 ```text
@@ -323,6 +330,13 @@ Current v0.26-v0.27 checkpoint result:
 
 ```text
 PASS: 89 Playwright tests
+```
+
+Current v0.28-v0.29 checkpoint result:
+
+```text
+Attempted: npm run test:e2e:release exceeded a 30-minute tool window before producing usable output.
+PASS equivalent release coverage: shard1of3 44 tests, shard2of3 34 tests, shard3of3 14 tests.
 ```
 
 Current v0.16.7 checkpoint result:
@@ -582,7 +596,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.27 implementation/retest docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.29 implementation/retest docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

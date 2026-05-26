@@ -707,6 +707,16 @@
     var(--plate-bg);
 }
 
+.ability.cooldown,
+.ability.mana {
+  border-left-color: rgba(240, 217, 120, 0.62);
+}
+
+.ability.cooldown small,
+.ability.mana small {
+  color: #f0d978;
+}
+
 .ability-button-content {
   display: flex;
   gap: 8px;

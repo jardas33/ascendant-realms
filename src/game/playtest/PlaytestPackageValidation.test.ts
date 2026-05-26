@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.26-v0.27 enemy base development and tech escalation AI",
+          checkpoint: "v0.28-v0.29 hero progression and ability foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -126,6 +126,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V027_ENEMY_TECH_ESCALATION_SPEC.md", sizeBytes: 20, textContent: "Enemy tech escalation spec" },
       { path: "V027_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Enemy tech escalation report" },
       { path: "V027_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Enemy tech retest" },
+      { path: "V028_HERO_PROGRESSION_SPEC.md", sizeBytes: 20, textContent: "Hero progression spec" },
+      { path: "V028_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero progression report" },
+      { path: "V029_HERO_ABILITIES_AND_REWARDS_SPEC.md", sizeBytes: 20, textContent: "Hero ability rewards spec" },
+      { path: "V029_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero ability rewards report" },
+      { path: "V029_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Hero ability retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }
