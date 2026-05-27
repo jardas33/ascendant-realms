@@ -4,7 +4,9 @@ Date: 2026-05-26
 
 ## Summary
 
-Remote GitHub Actions is currently unavailable for reliable checkpoint validation. The v0.28-v0.29 push run failed before repository checkout completed, so the failure is not evidence of a code, test, build, content, art-intake, Playwright, or package regression.
+Remote GitHub Actions was unavailable for the original v0.28-v0.29 checkpoint validation because the push run failed before repository checkout completed. That original failure is not evidence of a code, test, build, content, art-intake, Playwright, or package regression.
+
+Checkout access was later restored for follow-up v0.29.1 runs. Remote CI is no longer blocked at checkout, but the latest manual release matrix is still not green because hosted `deep-battle` failed after checkout, build, and tests ran.
 
 ## Affected Run
 
@@ -49,17 +51,19 @@ The release matrix, full release e2e, release simulator, and optional visual QA 
 
 Treat run `26447947052` as remote CI unavailable. Do not treat it as a code failure, flaky test failure, browser failure, or release-lane failure.
 
-Do not claim remote CI is green for v0.28-v0.29 or v0.29.1 until GitHub Actions can check out the repository and actually run the workflow commands.
+Do not use the original blocked run as green evidence. Remote CI can only be treated as green after a later checkout-capable run passes the required lanes.
 
 ## Action Required
 
-Resolve the GitHub account suspension, billing, organization access, repository permissions, or GitHub App/token condition that is causing checkout to return HTTP 403. After checkout access is restored, run the normal Fast confidence job and any manual release-matrix workflow required for release confidence.
+Historical action for run `26447947052`: resolve the GitHub account suspension, billing, organization access, repository permissions, or GitHub App/token condition that caused checkout to return HTTP 403.
 
 Do not repeatedly rerun GitHub Actions while the checkout 403 remains unresolved; repeated runs will only reproduce the account-level failure and will not validate the code.
 
+Current action after recovery: investigate the latest hosted `deep-battle` failures from manual run `26484817685`, then rerun the manual release matrix before treating remote CI as release-green.
+
 ## Local Fallback
 
-Use `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md` for local fallback verification evidence until remote CI is available again.
+Use `docs/V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md` for local fallback verification evidence until the remote release matrix is green again.
 
 ## Recovery Update - 2026-05-26
 
@@ -105,4 +109,32 @@ npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-
 npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
 ```
 
-Remote CI is no longer blocked at checkout. Treat the remaining work as hosted release-lane verification for the follow-up test-only stabilization.
+## Second Recovery Update - 2026-05-26
+
+Follow-up commit `6124d716ddb6bdc4c8104d7d791f38cfae94d337` was pushed successfully after additional test-only hosted deep-battle stabilization.
+
+Push run `26484639124`:
+
+- `actions/checkout@v4` succeeded.
+- Fast confidence passed.
+- Release simulator, hosted release matrix, full release e2e, and optional visual QA were skipped by push workflow rules.
+
+Manual `workflow_dispatch` run `26484817685` was then started with `run_release_matrix=true`:
+
+- Checkout succeeded for Fast confidence, Release simulator, and every hosted release-matrix job.
+- Fast confidence passed.
+- Release simulator passed.
+- Hosted release matrix passed for `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- Hosted `deep-battle` failed in job `77989895354` after checkout, build, and the hosted release group ran.
+- Full release e2e and optional visual QA were skipped.
+
+The latest hosted `deep-battle` artifact showed three failing hosted interaction/readability tests and one resource-site test that failed once but passed on retry:
+
+```text
+battle HUD supports minimap movement, fog toggle, and move commands @hosted-deep-battle
+battle HUD keeps hovered command buttons stable across routine refreshes @hosted-deep-battle
+behaviour mode control gauntlet preserves attack, retreat, marquee, and minimap intent @hosted-deep-battle
+Worker assignment and site upgrade boost a captured resource site: flaky, passed on retry
+```
+
+Remote CI is recovered from the account/checkout blocker, but the release matrix is not green. Do not regenerate or distribute a final clean package on the basis of remote CI until hosted `deep-battle` passes in a fresh matrix run.

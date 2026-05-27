@@ -2,7 +2,7 @@
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
-This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions state and making local fallback verification/package guidance explicit. It does not change gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or tests.
+This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions state, making local fallback verification/package guidance explicit, and recording the follow-up remote CI recovery state. It does not change gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or runtime systems. Follow-up commits include test-only hosted e2e stabilization.
 
 ### Included
 
@@ -11,14 +11,17 @@ This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions
 - Updated package metadata and validation to name `v0.29.1 hero progression closeout and blocked CI documentation`.
 - Kept the v0.28/v0.29 hero progression specs, implementation reports, and Emmanuel retest checklist required in private playtest packages.
 - Added the v0.29.1 blocked-CI and local-verification closeout docs to private playtest packages.
+- Added test-only hosted deep-battle closeout stabilization in `tests/e2e/deep-flow.spec.ts`; no runtime gameplay files changed.
 
 ### Remote CI
 
 - GitHub Actions run `26447947052` failed twice at `actions/checkout@v4`.
 - The runner received GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
 - No repo tests or package commands ran remotely.
-- Treat this as remote CI unavailable, not a code/test failure.
-- Do not claim remote CI green until the GitHub account suspension, billing, permissions, organization access, or token/app checkout issue is resolved and Actions can check out the repository.
+- Treat the original run as remote CI unavailable, not a code/test failure.
+- Checkout later recovered. Push run `26484639124` on `6124d71` passed Fast confidence with checkout success.
+- Manual release-matrix run `26484817685` on `6124d71` passed Fast confidence, Release simulator, and hosted `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- Manual release-matrix run `26484817685` failed hosted `deep-battle` after checkout, build, and tests ran. Do not claim remote CI green yet.
 
 ### Verdict
 
@@ -32,7 +35,8 @@ This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions
 ### Verification
 
 - Passed: `npm test` with 72 files / 533 tests, production build with the known Vite chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty playtest package generation, and dirty package verification with 85 checks.
-- Remote CI remains blocked before checkout by GitHub Actions run `26447947052`; no remote repo tests ran.
+- Follow-up local verification after `6124d71` passed `npm test`, `npm run build`, content validation, art-intake validation, fast smoke, and hosted deep-battle.
+- Remote CI is recovered from the original checkout blocker, but manual release-matrix run `26484817685` remains red in hosted `deep-battle`.
 
 ## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26
 

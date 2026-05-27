@@ -1,10 +1,10 @@
 # Development Checkpoint
 
-Updated: 2026-05-26 v0.29.1 hero progression closeout and blocked CI documentation
+Updated: 2026-05-26 v0.29.1 remote CI recovery checked; hosted deep-battle still red
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
-Scope: document the blocked GitHub Actions state after v0.28-v0.29, keep local fallback verification explicit, and prepare the hero progression package/retest guidance. This pass is docs/package metadata only. It does not add runtime systems, balance changes, maps, factions, assets, save migration, pathing changes, AI changes, or test weakening.
+Scope: document the blocked GitHub Actions state after v0.28-v0.29, keep local fallback verification explicit, prepare the hero progression package/retest guidance, and record the follow-up remote CI recovery status. The follow-up includes test-only hosted e2e stabilization and docs updates. It does not add runtime systems, balance changes, maps, factions, assets, save migration, pathing changes, AI changes, or test weakening.
 
 Baseline:
 
@@ -18,7 +18,10 @@ Remote CI:
 - The checkout error was GitHub HTTP 403 with `remote: Your account is suspended. Please visit https://support.github.com for more information.`
 - No repo tests or package commands ran remotely.
 - Push-triggered release matrix, full release e2e, release simulator, and optional visual QA jobs were skipped by workflow rules.
-- Action required: resolve the GitHub account suspension, billing, permissions, organization access, or token/app checkout condition before remote CI can be trusted again.
+- Checkout was later restored: push run `26484639124` on commit `6124d71` passed Fast confidence with checkout success.
+- Manual release-matrix run `26484817685` on commit `6124d71` passed Fast confidence, Release simulator, and hosted `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
+- Manual release-matrix run `26484817685` failed hosted `deep-battle` after checkout, build, and tests ran. Remote CI is no longer account-blocked, but the release matrix is not green.
+- Action required: fix or isolate the hosted `deep-battle` failures and rerun the manual release matrix before treating remote CI as release-green.
 
 Included work:
 
@@ -27,11 +30,15 @@ Included work:
 - Updated package metadata and package validation to name `v0.29.1 hero progression closeout and blocked CI documentation`.
 - Kept package validation coverage for `V028_HERO_PROGRESSION_SPEC.md`, `V028_IMPLEMENTATION_REPORT.md`, `V029_HERO_ABILITIES_AND_REWARDS_SPEC.md`, `V029_IMPLEMENTATION_REPORT.md`, and `V029_EMMANUEL_RETEST_CHECKLIST.md`.
 - Added the two v0.29.1 closeout docs to the private playtest package and validator.
+- Added test-only hosted deep-battle closeout stabilization in `tests/e2e/deep-flow.spec.ts`; no runtime gameplay files changed.
+- Updated handoff and closeout docs with the recovered checkout state and the latest red hosted `deep-battle` matrix state.
 
 Verification and closeout so far:
 
 ```text
-Remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+Original remote CI: blocked before checkout in GitHub Actions run 26447947052; no repo tests ran remotely.
+Remote recovery follow-up: push run 26484639124 on 6124d71 Fast confidence PASS with checkout success.
+Remote release matrix follow-up: manual run 26484817685 on 6124d71 Fast confidence PASS, Release simulator PASS, hosted matrix PASS for deep-meta/deep-campaign-pressure/layout-core/layout-cinderfen/smoke, hosted deep-battle FAILED.
 npm test PASS, 72 files / 533 tests.
 npm run build PASS with the known Vite Phaser chunk-size warning.
 npm run validate:content PASS.
@@ -47,6 +54,8 @@ npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
 npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
 npm run package:playtest PASS, dirty package artifacts/playtest/ascendant-realms-private-playtest-aa6fc05-dirty generated.
 npm run verify:playtest-package PASS, 85 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after second hosted stabilization.
+npm run test:e2e:smoke:fast PASS, 8 tests after second hosted stabilization.
 ```
 
 ## v0.28-v0.29 Hero Progression And Ability Foundation - 2026-05-26

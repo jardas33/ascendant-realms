@@ -30,7 +30,7 @@ Known current realities:
 - Full release e2e is intentionally slow and should use a long timeout.
 - Production preview smoke should prefer `npm run smoke:preview` after `npm run build`.
 - GitHub Actions now has a conservative `.github/workflows/ci.yml` dry-run: fast PR/push confidence runs the smaller `npm run test:e2e:smoke:fast` subset automatically, while full smoke, visual QA, hosted release groups, simulator, and full release remain local/manual release confidence.
-- v0.29.1 records GitHub Actions run `26447947052` as blocked before checkout by GitHub HTTP 403 account-suspension response. Treat that run as remote CI unavailable, not a code/test failure. Do not claim remote CI green or repeatedly rerun Actions until the account suspension, billing, permission, organization access, or token/app checkout issue is resolved.
+- v0.29.1 records GitHub Actions run `26447947052` as blocked before checkout by GitHub HTTP 403 account-suspension response. Treat that historical run as remote CI unavailable, not a code/test failure. Checkout later recovered: push run `26484639124` on `6124d71` passed Fast confidence, and manual run `26484817685` checked out successfully across Fast confidence, Release simulator, and hosted release-matrix jobs. Do not claim remote CI green yet because hosted `deep-battle` failed in manual run `26484817685`.
 - v0.11.6 keeps optional visual QA manual but makes hosted setup navigation more tolerant of transient `net::ERR_ABORTED`, frame-detach, and setup-navigation timeout errors while still requiring visible main-menu controls, and gives the 18-screenshot capture test a 420s budget.
 - v0.11.7 splits optional visual QA into 5 smaller tests and adds per-screenshot logging, a 45s screenshot timeout, one screenshot retry, and retry metadata while keeping all 18 targets and console-error failure behavior.
 - v0.11.8 keeps the 3-way release matrix intact while hardening hosted release setup navigation and actionability: no e2e `page.reload()` remains, deep-flow seeding uses the shared menu-ready path, `gotoReadyMainMenu` uses commit-stage app-root navigation with 3 attempts and same-URL interruption handling, and a narrow `clickReady` helper covers reported release-path click stalls without force-clicking.
@@ -72,7 +72,7 @@ Known current realities:
 - v0.24-v0.25 adds controlled enemy resource-site strategy and economy pressure: enemy AI can capture, retake, defend, upgrade, and raid around resource sites; enemy Worker slots are abstract logistics only; no classic carry/drop-off harvesting, full enemy Worker economy, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/economy behavior changed.
 - v0.26-v0.27 adds abstract enemy base development, existing-tech progression, staged escalation, and defensive reserves: enemy AI can fortify, research, defend base/sites, and escalate when economy/site control is healthy. No classic harvesting, visible enemy Workers, enemy construction placement, runtime art/assets, save migration, global rebalance, broad pathing rewrite, Patrol, formations, new factions, or new maps are included. Rerun GitHub Actions after push because runtime enemy AI/upgrade behavior changed.
 - v0.28-v0.29 adds the first safe player hero RPG foundation: live battle XP, modest live level-up stat gains, readable ability cooldown/mana states, and victory results battle XP summaries. No new factions/maps, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, huge ability roster, inventory overhaul, enemy hero system, Patrol, or formations are included. Rerun GitHub Actions after push because runtime hero progression, HUD, and reward behavior changed.
-- v0.29.1 is docs/package closeout only: blocked remote CI status, local fallback verification notes, and hero progression retest packaging. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or test behavior changed.
+- v0.29.1 is a closeout lane for blocked remote CI status, local fallback verification notes, and hero progression retest packaging. Follow-up commits add test-only hosted e2e stabilization and remote status docs. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or content behavior changed.
 
 ## Required Automated Checks
 
@@ -351,7 +351,9 @@ Current v0.29.1 local fallback browser result:
 
 ```text
 PASS: test:e2e:smoke:fast 8 tests, test:e2e:smoke 14 tests, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual:qa 5 tests / 18 screenshots / 0 console errors / 0 retries.
-Remote CI run 26447947052 remains blocked before checkout by GitHub HTTP 403 account-suspension response; no remote repo tests ran.
+Original remote CI run 26447947052 was blocked before checkout by GitHub HTTP 403 account-suspension response; no remote repo tests ran in that historical run.
+Remote checkout recovered: push run 26484639124 on 6124d71 passed Fast confidence with checkout success.
+Latest remote release matrix: manual run 26484817685 on 6124d71 passed Fast confidence, Release simulator, deep-meta, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke; hosted deep-battle failed after tests ran.
 ```
 
 Current v0.16.7 checkpoint result:

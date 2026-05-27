@@ -30,7 +30,7 @@ v0.29.1 also includes:
 
 ## Emmanuel Retest Focus
 
-Use the v0.29.1 package once regenerated from the closeout commit. Retest the same v0.28-v0.29 hero progression surfaces:
+Use the v0.29.1 package only after it is regenerated from a clean commit with a green release matrix. Retest the same v0.28-v0.29 hero progression surfaces:
 
 - Hero gains XP from valid combat participation.
 - Hero gains one-time XP from first player capture of a resource site.
@@ -84,3 +84,27 @@ npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
 ```
 
 This follow-up does not change runtime gameplay. It only makes the hosted deep-battle e2e world-move helper choose safer ground targets and preserve unit selection across retries.
+
+## Latest Remote CI Follow-Up
+
+Commit `6124d716ddb6bdc4c8104d7d791f38cfae94d337` added further test-only hosted closeout stabilization and was pushed successfully.
+
+```text
+Push run 26484639124 PASS: Fast confidence completed successfully and checkout succeeded.
+Manual workflow_dispatch run 26484817685: Fast confidence PASS, release simulator PASS, hosted matrix PASS for deep-meta, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
+Manual workflow_dispatch run 26484817685: hosted deep-battle FAILED in job 77989895354 after checkout, build, and tests ran.
+```
+
+The latest failure is not the GitHub account/checkout blocker. It is hosted deep-battle release-lane work. Local fallback verification after the second test-only stabilization passed:
+
+```text
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Worker assignment and site upgrade boost|battle HUD keeps hovered command buttons stable" --reporter=line PASS, 2 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+```
+
+Package closeout: do not stamp a clean final package from this follow-up while manual run `26484817685` remains red in hosted `deep-battle`.
