@@ -9,8 +9,9 @@ Scope: close out the hosted deep-battle recovery before any v0.30 work.
 - Remote Fast confidence on first v0.29.2 fix commit `45c7eb1`: passed in push run `26490257582`.
 - Remote manual release matrix on first v0.29.2 fix commit `45c7eb1`: run `26490433401` passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
 - Remote hosted `deep-battle` on run `26490433401`: failed one stale duplicate movement-summary assertion after the helper had already observed the transient move summary.
-- Follow-up fix: local only until the next push/manual matrix run.
-- Clean v0.29.2 tester package: pending until remote status is documented.
+- Follow-up fix commit `b7604e5`: pushed successfully; push run `26493632871` passed Fast confidence.
+- Manual release-matrix run `26493804376` on `b7604e5`: passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Clean v0.29.2 tester package: pending final docs-only closeout commit and clean package generation.
 
 ## Required Remote Evidence
 
@@ -97,8 +98,13 @@ Do not send a v0.29.2 package until:
 
 ## Final Remote Status
 
-Pending. Latest manual matrix run `26490433401` is documented but not green because hosted `deep-battle` failed one stale duplicate assertion. Rerun after the follow-up fix is pushed.
+Green for the runtime/test fix commit.
+
+- Push run `26493632871` on `b7604e5`: Fast confidence passed; release matrix, simulator, full release, and visual QA were skipped by push rules.
+- Manual release-matrix run `26493804376` on `b7604e5`: passed.
+- Successful jobs in run `26493804376`: Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Skipped by requested manual inputs: Optional visual QA and Full release e2e.
 
 ## Final Package
 
-Pending.
+Pending final clean package generation from the final closeout commit.

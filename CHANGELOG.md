@@ -22,6 +22,8 @@ This checkpoint fixes the remaining hosted `deep-battle` release-matrix failure 
 - Classification: hosted Playwright actionability/input-delivery and stale assertion issues, plus unrelated enemy-site pressure in one Worker/site proxy.
 - First v0.29.2 fix commit `45c7eb1` passed Fast confidence in push run `26490257582`.
 - Manual release-matrix run `26490433401` on `45c7eb1` passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`, but hosted `deep-battle` still failed one stale duplicate movement-summary assertion.
+- Follow-up fix commit `b7604e5` passed Fast confidence in push run `26493632871`.
+- Manual release-matrix run `26493804376` on `b7604e5` passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
 - No hero progression, ability, enemy strategy, Worker-slot, or runtime gameplay regression was found.
 
 ### Fix
@@ -36,7 +38,7 @@ This checkpoint fixes the remaining hosted `deep-battle` release-matrix failure 
 ### Verification
 
 - Passed: targeted behaviour gauntlet soak with 5 repeats and no retries, targeted four-test hosted audit set with no retries, exact stale-summary follow-up test with 5 repeats and no retries, `npm test` with 72 files / 533 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, hosted deep-battle with 27 tests before and after the stale-summary follow-up fix, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, and `git diff --check`.
-- Remote Fast confidence passed on `45c7eb1`, but manual release matrix run `26490433401` still failed hosted `deep-battle`; the next follow-up push/matrix, final package generation, and final package verification are pending for closeout.
+- Remote Fast confidence passed on `b7604e5`, and manual release matrix run `26493804376` passed hosted `deep-battle` plus the other enabled release groups. Final package generation and final package verification are pending for closeout.
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 

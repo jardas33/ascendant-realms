@@ -57,3 +57,6 @@ The red hosted lane combined four test-harness problems:
 - Push run `26490257582` on first v0.29.2 fix commit `45c7eb1`: Fast confidence passed.
 - Manual release-matrix run `26490433401` on `45c7eb1`: checkout, Fast confidence, Release simulator, and hosted groups other than `deep-battle` passed.
 - Hosted `deep-battle` in run `26490433401` failed one stale duplicate movement-summary assertion. Follow-up fix is local-only until the next push/manual matrix run.
+- Follow-up fix commit `b7604e5`: pushed successfully.
+- Push run `26493632871` on `b7604e5`: Fast confidence passed.
+- Manual release-matrix run `26493804376` on `b7604e5`: passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.

@@ -67,4 +67,5 @@ PASS, 27 tests.
 - The follow-up exact failed movement/fog/minimap test was repeated without retries.
 - The full hosted deep-battle lane passed locally after the targeted soak.
 - Visual QA later passed with 5 tests, 18 screenshots, 0 browser console errors, and 0 screenshot retries.
+- Remote manual release-matrix run `26493804376` later passed hosted `deep-battle` and all other enabled release groups on follow-up fix commit `b7604e5`.
 - Additional full verification and remote release-matrix evidence are tracked in `docs/V0292_RELEASE_MATRIX_CLOSEOUT.md`.

@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.29.2 hosted deep-battle follow-up local recovery; remote rerun pending
+Last updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; package pending
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -29,6 +29,9 @@ Remote failure audit:
 - Push run `26490257582` on `45c7eb1` passed Fast confidence.
 - Manual release-matrix run `26490433401` on `45c7eb1` passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
 - Manual release-matrix run `26490433401` still failed hosted `deep-battle` in job `78006853454`: 1 failed, 26 passed. The remaining failure was a stale duplicate `unit-order-summary` movement assertion after the helper had already observed the transient moving/repositioning copy.
+- Follow-up fix commit `b7604e5` was pushed successfully.
+- Push run `26493632871` on `b7604e5` passed Fast confidence; release matrix, simulator, full release, and visual QA were skipped by push rules.
+- Manual release-matrix run `26493804376` on `b7604e5` passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
 
 Included work:
 
@@ -74,7 +77,7 @@ npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-
 npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: run final local checks as needed, commit the follow-up fix/docs, push, inspect Fast confidence, trigger/inspect a manual release matrix with hosted `deep-battle`, document remote status, then regenerate and verify a clean package with no `-dirty` suffix.
+Closeout still required: commit/push this docs-only remote-status update, inspect Fast confidence for that final closeout commit, then regenerate and verify a clean package with no `-dirty` suffix.
 
 Emmanuel retest focus: use only the final clean v0.29.2 package after remote status and package verification are documented. Read `V0292_EMMANUEL_RETEST_CHECKLIST.md` and then re-run the v0.28-v0.29 hero progression retest with added attention to world move/retreat clicks, minimap movement, command-button hover stability, and Worker/resource-site upgrade regressions.
 

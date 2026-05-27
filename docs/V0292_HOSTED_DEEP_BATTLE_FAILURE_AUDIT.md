@@ -69,3 +69,10 @@ Use narrow test-harness stabilization only:
 - Artifact reviewed: `playwright-release-deep-battle` / artifact id `7231966813`.
 - Remote error on both initial run and retry: final `unit-order-summary` assertion expected `/Moving|Repositioning/`, but the side panel had legitimately returned to `Guarding`.
 - Classification: stale duplicate assertion after the shared move helper had already observed the transient movement summary. The durable scene move command was the stable behavior to assert.
+
+## Recovery Run
+
+- Follow-up fix commit: `b7604e5`, `Stabilize v0.29.2 hosted deep-battle movement summary`.
+- Push run `26493632871`: Fast confidence passed.
+- Manual release-matrix run `26493804376`: passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Result: the hosted `deep-battle` blocker is recovered for the v0.29.2 runtime/test fix commit.

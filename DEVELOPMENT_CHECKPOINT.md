@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.29.2 hosted deep-battle follow-up local recovery; remote rerun pending
+Updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; package pending
 
 ## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 
@@ -22,6 +22,9 @@ Remote failure:
 - Push run `26490257582` on `45c7eb1`: Fast confidence passed.
 - Manual release-matrix run `26490433401` on `45c7eb1`: checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke` passed.
 - Hosted `deep-battle` in run `26490433401` remained red in job `78006853454`: 1 failed, 26 passed. The remaining failure was a stale duplicate `unit-order-summary` movement assertion after the helper had already observed the transient moving/repositioning copy.
+- Follow-up fix commit `b7604e5` was pushed successfully.
+- Push run `26493632871` on `b7604e5`: Fast confidence passed.
+- Manual release-matrix run `26493804376` on `b7604e5`: passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
 
 Included work:
 
@@ -65,7 +68,7 @@ npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-
 npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: final local checks as needed, follow-up commit/push, remote Fast confidence inspection, manual release-matrix rerun/inspection, package regeneration, package verification, final docs update, and final commit/package status.
+Closeout still required: commit/push this docs-only remote-status update, inspect Fast confidence for that final closeout commit, regenerate the clean package, verify the package, and report final commit/package status.
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
