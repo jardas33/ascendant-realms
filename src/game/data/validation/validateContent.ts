@@ -13,6 +13,7 @@ import { ITEMS } from "../items";
 import { ORIGINS } from "../origins";
 import { REWARD_TABLES } from "../rewards";
 import { RESOURCE_DEFINITIONS } from "../resources";
+import { RELIC_REWARD_DEFINITIONS } from "../relicRewards";
 import { RIVAL_REWARDS } from "../rivalRewards";
 import { SKILL_NODES, SKILL_TREES } from "../skillTrees";
 import { STRONGHOLD_UPGRADES } from "../strongholdUpgrades";
@@ -30,7 +31,7 @@ import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
 import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
-import { validateRewardTables, validateRivalRewards } from "./validateRewards";
+import { validateRelicRewards, validateRewardTables, validateRivalRewards } from "./validateRewards";
 import { validateStrongholdUpgrades } from "./validateStronghold";
 import { validateTutorials } from "./validateTutorials";
 import { validateUnits } from "./validateUnits";
@@ -51,6 +52,7 @@ export function validateContent(): string[] {
     skillTreeIds: idsFor(SKILL_TREES, "skill tree", errors),
     skillNodeIds: idsFor(SKILL_NODES, "skill node", errors),
     rewardTableIds: idsFor(REWARD_TABLES, "reward table", errors),
+    relicRewardIds: idsFor(RELIC_REWARD_DEFINITIONS, "relic reward", errors),
     upgradeIds: idsFor(UPGRADES, "upgrade", errors),
     strongholdUpgradeIds: idsFor(STRONGHOLD_UPGRADES, "stronghold upgrade", errors),
     campaignChapterIds: idsFor(CAMPAIGN_CHAPTERS, "campaign chapter", errors),
@@ -76,6 +78,7 @@ export function validateContent(): string[] {
   validateSkillNodes(errors, context);
   validateRewardTables(errors, context);
   validateRivalRewards(errors, context);
+  validateRelicRewards(errors, context);
   validateStrongholdUpgrades(errors, context);
   validateCampaignChapters(errors, context);
   validateCampaignNodes(errors, context);

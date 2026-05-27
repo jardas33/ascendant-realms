@@ -414,6 +414,9 @@ export class EnemyAIController {
     if (!unit.alive || unit.team !== "enemy") {
       return false;
     }
+    if (unit.enemyHeroId) {
+      return false;
+    }
     if (unit.definition.id === "enemy_commander") {
       return phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
     }
@@ -514,7 +517,7 @@ export class EnemyAIController {
     if (!plan) {
       return undefined;
     }
-    const squad = this.enemyArmy().slice(0, this.config.defenseSquadSize);
+    const squad = this.defenseSquad();
     if (squad.length === 0 || isSitePlanOutmatched(plan, squad)) {
       return undefined;
     }
@@ -618,6 +621,13 @@ export class EnemyAIController {
     if (!unit.alive || unit.team !== "enemy") {
       return false;
     }
+    if (unit.enemyHeroId) {
+      return this.canEnemyHeroJoinCoordinatedAttack(unit, phase);
+    }
+    return this.canStandardUnitJoinAttack(unit, phase);
+  }
+
+  private canStandardUnitJoinAttack(unit: Unit, phase: BattlePhaseDefinition): boolean {
     const unitId = unit.definition.id;
     if (!phase.enemy.allowedAttackUnitIds.includes(unitId)) {
       return false;
@@ -627,6 +637,26 @@ export class EnemyAIController {
       return canJoinFirstAttack && phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
     }
     return true;
+  }
+
+  private canEnemyHeroJoinCoordinatedAttack(unit: Unit, phase: BattlePhaseDefinition): boolean {
+    const unitId = unit.definition.id;
+    if (!phase.enemy.allowedAttackUnitIds.includes(unitId)) {
+      return false;
+    }
+    const basePlan = this.currentBasePlan;
+    if (
+      !basePlan ||
+      basePlan.stage !== "late" ||
+      basePlan.attackWaveSizeBonus <= 0 ||
+      !phase.enemy.commanderAllowed ||
+      this.attacksLaunched === 0 ||
+      this.options.getElapsedSeconds() < this.difficulty.commanderJoinDelay
+    ) {
+      return false;
+    }
+    const escortCount = this.enemyArmy().filter((ally) => ally !== unit && this.canStandardUnitJoinAttack(ally, phase)).length;
+    return escortCount >= Math.max(3, this.config.minAttackArmySize);
   }
 
   private hasCompositionRoom(unitId: string, counts: Record<string, number>, phase: BattlePhaseDefinition): boolean {
@@ -661,9 +691,7 @@ export class EnemyAIController {
     } else {
       this.maybeAlert("defending-base", "Enemy defending base.", true);
     }
-    this.enemyArmy()
-      .slice(0, this.config.defenseSquadSize)
-      .forEach((unit) => unit.commandAttack(focus.target.id));
+    this.defenseSquad().forEach((unit) => unit.commandAttack(focus.target.id));
   }
 
   private maybeAnnounceBaseDevelopment(basePlan: EnemyBaseDevelopmentPlan): void {
@@ -677,5 +705,13 @@ export class EnemyAIController {
 
   private enemyArmy(): Unit[] {
     return this.options.getUnits().filter((unit) => unit.alive && unit.team === "enemy");
+  }
+
+  private defenseSquad(): Unit[] {
+    const army = this.enemyArmy();
+    return [
+      ...army.filter((unit) => unit.enemyHeroId),
+      ...army.filter((unit) => !unit.enemyHeroId)
+    ].slice(0, this.config.defenseSquadSize);
   }
 }

@@ -349,6 +349,62 @@ describe("EnemyAIController resource-site strategy", () => {
     expect(controller.state.current).toBe("DEFEND");
     expect(attacked).toEqual(["enemy_raider_1", "enemy_hexer_1"]);
   });
+
+  it("keeps a rival champion out of resource-site raids", () => {
+    const moved: Array<{ unitId: string; target: { x: number; y: number }; attackMove: boolean }> = [];
+    const site = fakeSite("aether_well", "Aether Well", "player", {
+      x: 1580,
+      y: 610,
+      resource: "aether",
+      incomeAmount: 18,
+      siteLevel: 2,
+      workerAssignments: [{ workerId: "worker-1", workerName: "Worker", statusDetail: "Worker working", boostActive: true }],
+      workerAssignmentBoostActive: true
+    });
+    const champion = fakeEnemyHeroUnit("enemy_commander_1", [], moved);
+    const units = [
+      champion,
+      fakeEnemyUnit("raider", "enemy_raider_1", [], moved),
+      fakeEnemyUnit("hexer", "enemy_hexer_1", [], moved),
+      fakeEnemyUnit("brute", "enemy_brute_1", [], moved)
+    ];
+    const controller = createController({
+      units,
+      captureSites: [site],
+      getElapsedSeconds: () => 151,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(151);
+
+    expect(controller.state.current).toBe("RAID_SITE");
+    expect(moved.map((entry) => entry.unitId)).toEqual(["enemy_raider_1", "enemy_hexer_1", "enemy_brute_1"]);
+    expect(moved.map((entry) => entry.unitId)).not.toContain("enemy_commander_1");
+  });
+
+  it("uses a rival champion for threatened site defense", () => {
+    const attacked: string[] = [];
+    const site = fakeSite("crown_shrine", "Crown Shrine", "enemy", { x: 1720, y: 720, incomeAmount: 30, siteLevel: 2 });
+    const threat = fakePlayerUnit("player_militia_1", { x: 1728, y: 728 }, 80);
+    const units = [fakeEnemyHeroUnit("enemy_commander_1", attacked), fakeEnemyUnit("raider", "enemy_raider_1", attacked), threat];
+    const controller = createController({
+      units,
+      captureSites: [site],
+      getElapsedSeconds: () => 90,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(1);
+
+    expect(controller.state.current).toBe("DEFEND");
+    expect(attacked).toEqual(["enemy_commander_1", "enemy_raider_1"]);
+  });
 });
 
 describe("EnemyAIController base development and tech escalation", () => {
@@ -511,6 +567,42 @@ describe("EnemyAIController base development and tech escalation", () => {
     expect(attacked).toEqual(["enemy_raider_1", "enemy_hexer_1", "enemy_brute_1"]);
     expect(moved).toEqual([]);
   });
+
+  it("commits a rival champion only to a late coordinated attack with escorts", () => {
+    const attacked: string[] = [];
+    const waves: Unit[][] = [];
+    const siteA = fakeSite("crown_shrine", "Crown Shrine", "enemy", { x: 1720, y: 720, incomeAmount: 30, siteLevel: 2 });
+    const siteB = fakeSite("iron_vein", "Iron Vein", "enemy", { x: 1640, y: 760, resource: "iron", incomeAmount: 28 });
+    const units = [
+      fakeEnemyHeroUnit("enemy_commander_1", attacked),
+      fakeEnemyUnit("raider", "enemy_raider_1", attacked),
+      fakeEnemyUnit("raider", "enemy_raider_2", attacked),
+      fakeEnemyUnit("raider", "enemy_raider_3", attacked),
+      fakeEnemyUnit("hexer", "enemy_hexer_1", attacked),
+      fakeEnemyUnit("brute", "enemy_brute_1", attacked)
+    ];
+    let elapsedSeconds = 631;
+    const controller = createController({
+      units,
+      captureSites: [siteA, siteB],
+      resources: { crowns: 900, stone: 700, iron: 620, aether: 260 },
+      getElapsedSeconds: () => elapsedSeconds,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { incomeInterval: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: (wave) => waves.push(wave)
+    });
+
+    controller.update(631);
+    expect(attacked).not.toContain("enemy_commander_1");
+
+    attacked.length = 0;
+    elapsedSeconds = 703;
+    controller.update(72);
+
+    expect(attacked).toContain("enemy_commander_1");
+    expect(waves.at(-1)?.map((unit) => unit.id)).toContain("enemy_commander_1");
+  });
 });
 
 function createController(options: {
@@ -639,6 +731,23 @@ function fakePlayerUnit(id: string, position: { x: number; y: number }, hp: numb
       stats: { maxHp: hp, damage: 12, range: 55, armor: 2 }
     }
   } as unknown as Unit;
+}
+
+function fakeEnemyHeroUnit(
+  id: string,
+  attacked: string[],
+  moved?: Array<{ unitId: string; target: { x: number; y: number }; attackMove: boolean }>
+): Unit {
+  const unit = fakeEnemyUnit("enemy_commander", id, attacked, moved);
+  unit.enemyHeroId = "captain_malrec";
+  unit.enemyHeroName = "Captain Malrec";
+  unit.enemyHeroTitle = "Outpost Commander";
+  unit.hp = 265;
+  unit.armor = 4;
+  (unit as unknown as { damage: number; range: number }).damage = 16;
+  (unit as unknown as { damage: number; range: number }).range = 42;
+  unit.definition.stats = { maxHp: 265, damage: 16, range: 42, armor: 4, attackCooldown: 1.15, speed: 82 };
+  return unit;
 }
 
 function fakeBuilding(

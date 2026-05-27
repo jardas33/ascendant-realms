@@ -1,5 +1,6 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
+import { selectRelicRewardPreview } from "../core/RelicRewardRules";
 import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatXpProgress, titleCase } from "./ResultsFormatting";
@@ -34,6 +35,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     </div>
     ${renderVeteranSummary(data)}
     ${renderRivalOutcome(data)}
+    ${renderRelicRewardPreview(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
   `;
 }
@@ -68,6 +70,32 @@ export function renderRivalOutcome(data: ResultsData): string {
         }
       </div>
       <p class="quiet">Rival state persists on the campaign save. V1 rematch modifiers are small: escaped rivals gain +5% HP, and triumphant rivals gain +5% damage.</p>
+    </section>
+  `;
+}
+
+export function renderRelicRewardPreview(data: ResultsData): string {
+  const preview = selectRelicRewardPreview({
+    outcome: data.stats.outcome,
+    mode: data.launchRequest?.mode,
+    rewardsDisabled: data.launchRequest?.rewardsDisabled,
+    enemyHeroId: data.stats.enemyHeroId ?? data.launchRequest?.enemyHeroId,
+    enemyHeroDefeated: data.stats.enemyHeroDefeated
+  });
+  if (!preview) {
+    return "";
+  }
+  const { definition } = preview;
+  return `
+    <section class="result-block wide relic-reward-preview" data-testid="results-relic-reward-preview">
+      <h2>Relic Reward Preview</h2>
+      <div class="results-grid compact">
+        <span>Relic candidate</span><strong>${escapeHtml(definition.name)}</strong>
+        <span>Source</span><strong>${escapeHtml(definition.sourceLabel)}</strong>
+        <span>Reward status</span><strong>${escapeHtml(preview.earnedLabel)}</strong>
+        <span>Preview effect</span><strong>${escapeHtml(definition.effectLabel)}</strong>
+      </div>
+      <p class="quiet">${escapeHtml(preview.persistenceLabel)}</p>
     </section>
   `;
 }

@@ -1,5 +1,6 @@
 import { MAPS } from "../maps";
 import { REWARD_TABLES } from "../rewards";
+import { RELIC_REWARD_DEFINITIONS } from "../relicRewards";
 import { RIVAL_REWARDS } from "../rivalRewards";
 import type { RewardTableDefinition } from "../../core/GameTypes";
 import type { ValidationContext } from "./ValidationTypes";
@@ -95,6 +96,39 @@ export function validateRivalRewards(errors: string[], context: ValidationContex
     seenTrophies.add(firstDefeat.trophy.trophyId);
     if (!firstDefeat.trophy.label.trim() || !firstDefeat.trophy.description.trim()) {
       errors.push(`Rival reward ${reward.enemyHeroId} trophy needs label and description.`);
+    }
+  });
+}
+
+export function validateRelicRewards(errors: string[], context: ValidationContext): void {
+  const seenEnemyHeroes = new Set<string>();
+  RELIC_REWARD_DEFINITIONS.forEach((reward) => {
+    if (!reward.name.trim() || !reward.description.trim() || !reward.effectLabel.trim()) {
+      errors.push(`Relic reward ${reward.id} needs name, description, and effect copy.`);
+    }
+    if (reward.persistenceStatus !== "preview_only") {
+      errors.push(`Relic reward ${reward.id} must remain preview_only until persistence is designed.`);
+    }
+    if (!context.enemyHeroIds.has(reward.sourceEnemyHeroId)) {
+      errors.push(`Relic reward ${reward.id} references missing enemy hero ${reward.sourceEnemyHeroId}.`);
+    }
+    if (seenEnemyHeroes.has(reward.sourceEnemyHeroId)) {
+      errors.push(`Relic reward ${reward.id} duplicates source enemy hero ${reward.sourceEnemyHeroId}.`);
+    }
+    seenEnemyHeroes.add(reward.sourceEnemyHeroId);
+    if (reward.previewXp < 0 || reward.previewXp > 25) {
+      errors.push(`Relic reward ${reward.id} preview XP must stay modest.`);
+    }
+    Object.entries(reward.previewResources).forEach(([resource, amount]) => {
+      if (!context.resourceIds.has(resource)) {
+        errors.push(`Relic reward ${reward.id} references missing resource ${resource}.`);
+      }
+      if ((amount ?? 0) < 0 || (amount ?? 0) > 20) {
+        errors.push(`Relic reward ${reward.id} preview resource ${resource} must stay modest.`);
+      }
+    });
+    if (!Array.isArray(reward.tags) || reward.tags.length === 0) {
+      errors.push(`Relic reward ${reward.id} should include at least one tag.`);
     }
   });
 }

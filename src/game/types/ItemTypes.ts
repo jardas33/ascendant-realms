@@ -101,3 +101,16 @@ export interface RewardLevelUpSummary {
   levelsGained: number;
   skillPointsGained: number;
 }
+
+export interface RelicRewardDefinition {
+  id: string;
+  name: string;
+  sourceEnemyHeroId: string;
+  sourceLabel: string;
+  description: string;
+  effectLabel: string;
+  persistenceStatus: "preview_only";
+  previewXp: number;
+  previewResources: Partial<ResourceBag>;
+  tags: string[];
+}

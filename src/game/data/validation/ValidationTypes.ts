@@ -13,6 +13,7 @@ export interface ValidationContext {
   skillTreeIds: Set<string>;
   skillNodeIds: Set<string>;
   rewardTableIds: Set<string>;
+  relicRewardIds: Set<string>;
   upgradeIds: Set<string>;
   strongholdUpgradeIds: Set<string>;
   campaignChapterIds: Set<string>;

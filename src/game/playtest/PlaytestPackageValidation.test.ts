@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.29.2 hosted deep-battle recovery and release-matrix closeout",
+          checkpoint: "v0.30-v0.31 rival champion and relic reward foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -138,6 +138,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0292_RELEASE_MATRIX_CLOSEOUT.md", sizeBytes: 20, textContent: "Release matrix closeout" },
       { path: "V0292_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.29.2 retest" },
       { path: "V0292_LONG_SOAK_REPORT.md", sizeBytes: 20, textContent: "Long soak report" },
+      { path: "V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Rival champion spec" },
+      { path: "V031_RELIC_REWARD_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Relic reward spec" },
+      { path: "V030_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Rival champion report" },
+      { path: "V031_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic reward report" },
+      { path: "V031_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.31 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

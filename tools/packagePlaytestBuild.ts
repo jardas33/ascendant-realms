@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.29.2 hosted deep-battle recovery and release-matrix closeout";
+const CHECKPOINT = "v0.30-v0.31 rival champion and relic reward foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -117,6 +117,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0292_RELEASE_MATRIX_CLOSEOUT.md", join(packageDir, "V0292_RELEASE_MATRIX_CLOSEOUT.md"));
   await copyMarkdown("docs/V0292_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0292_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V0292_LONG_SOAK_REPORT.md", join(packageDir, "V0292_LONG_SOAK_REPORT.md"));
+  await copyMarkdown("docs/V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md", join(packageDir, "V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V031_RELIC_REWARD_FOUNDATION_SPEC.md", join(packageDir, "V031_RELIC_REWARD_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V030_IMPLEMENTATION_REPORT.md", join(packageDir, "V030_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V031_IMPLEMENTATION_REPORT.md", join(packageDir, "V031_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V031_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V031_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -200,7 +205,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.28-v0.29 hero progression and ability retest after v0.29.2 hosted deep-battle recovery, start with V028_HERO_PROGRESSION_SPEC.md, V028_IMPLEMENTATION_REPORT.md, V029_HERO_ABILITIES_AND_REWARDS_SPEC.md, V029_IMPLEMENTATION_REPORT.md, and V029_EMMANUEL_RETEST_CHECKLIST.md. Also read V0291_BLOCKED_REMOTE_CI_STATUS.md, V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md, V0292_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md, V0292_HOSTED_DEEP_BATTLE_FIX_REPORT.md, V0292_RELEASE_MATRIX_CLOSEOUT.md, V0292_LONG_SOAK_REPORT.md, and V0292_EMMANUEL_RETEST_CHECKLIST.md before treating this package as release evidence. Focus on: hero XP from battle participation and first resource-site captures, live level-up HUD feedback, modest HP/Mana/damage/armor growth, ability cooldown and mana readability, Rally Banner/Cleave usefulness during economy pressure, results-screen XP/level summaries, and regression checks for world move/retreat clicks, minimap movement, command-button hover stability, player Worker/site upgrades, and v0.24-v0.27 enemy site/base/tech pressure. Tutorial remains no-save/no-reward; do not expect new art, new maps, new factions, enemy hero progression, inventory overhaul, complex loot, classic harvesting, visible enemy Workers, cargo, drop-off buildings, or final VFX in this build.
+For the v0.30-v0.31 rival champion and relic reward foundation retest, start with V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md, V031_RELIC_REWARD_FOUNDATION_SPEC.md, V030_IMPLEMENTATION_REPORT.md, V031_IMPLEMENTATION_REPORT.md, and V031_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.29 hero progression docs and v0.29.2 hosted deep-battle closeout docs nearby as regression context. Focus on: named enemy commander readability, commander defeat XP/reward summaries, conservative commander AI that defends before joining only late coordinated attacks, the results-screen relic reward preview, and regressions for hero XP, ability cooldowns, resource-site/Worker economy, enemy economy pressure, world move/retreat clicks, minimap movement, and command-button hover stability. Tutorial remains no-save/no-reward and should not show relic reward complexity. This build does not add new art, new maps, new factions, save migration, inventory overhaul, complex loot, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, or final VFX.
 
 ## Known Warning
 

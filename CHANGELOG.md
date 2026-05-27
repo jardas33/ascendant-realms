@@ -1,5 +1,36 @@
 # Changelog
 
+## v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
+
+This checkpoint adds a safe rival champion/enemy commander foundation and a tiny preview-only relic reward foundation. It uses existing assets and systems only. No maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrite, global rebalance, Patrol, formations, or complex loot were added.
+
+### Included
+
+- Added `docs/V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md`.
+- Added `docs/V031_RELIC_REWARD_FOUNDATION_SPEC.md`.
+- Added `docs/V030_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added preview-only relic reward definitions and validation.
+- Added relic preview selection rules and a results-screen `Relic Reward Preview` block.
+- Tightened rival champion AI so commanders defend base/sites, avoid economy raids, and join only late coordinated attacks with escorts.
+- Extended results/unit/content/package and hosted Ashen Outpost coverage.
+- Updated package metadata and validation to name `v0.30-v0.31 rival champion and relic reward foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly in enemy commander AI selection and victory results display.
+- Gameplay numbers changed: no global rebalance; relic effects are preview-only and not applied.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and relic previews are blocked in Tutorial/rewards-disabled runs.
+- Inventory/loot changed: no persistent inventory or equipment changes.
+
+### Verification
+
+- Passed: focused v0.30-v0.31 unit/content/package tests with 77 tests, targeted hosted Ashen Outpost commander/relic proxy, `npm test` with 73 files / 540 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, controls normal/extended/verify, fast smoke with 8 tests, full smoke with 14 tests, hosted deep-meta with 12 tests, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, and `git diff --check`.
+- `npm run test:e2e:release` was attempted and exposed one deep-meta transition-helper issue after a New Campaign click had already reached hero creation. The narrow test helper call was fixed with the existing scene-transition click option, then the targeted test and hosted deep-meta group passed.
+
 ## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 
 This checkpoint fixes the remaining hosted `deep-battle` release-matrix failure after v0.29.1 remote-CI recovery. It is a test-harness and release-closeout pass only. It does not change runtime gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or content.

@@ -15,6 +15,7 @@ import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
+import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { RIVAL_REWARDS } from "./rivalRewards";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { TUTORIALS } from "./tutorials";
@@ -857,6 +858,21 @@ describe("content validation", () => {
       expect(reward.firstDefeat.xp).toBeGreaterThan(0);
       expect(reward.firstDefeat.trophy.trophyId).toContain("trophy_");
       expect(reward.firstDefeat.trophy.label.length).toBeGreaterThan(0);
+    });
+  });
+
+  it("defines tiny preview-only relic reward candidates for rival champion defeats", () => {
+    expect(RELIC_REWARD_DEFINITIONS.map((reward) => reward.sourceEnemyHeroId)).toEqual([
+      "gorak_emberhand",
+      "veyra_cinders",
+      "captain_malrec"
+    ]);
+    RELIC_REWARD_DEFINITIONS.forEach((reward) => {
+      expect(reward.persistenceStatus).toBe("preview_only");
+      expect(reward.previewXp).toBeGreaterThan(0);
+      expect(reward.previewXp).toBeLessThanOrEqual(25);
+      expect(reward.effectLabel).toContain("Preview effect");
+      expect(ENEMY_HEROES.some((hero) => hero.id === reward.sourceEnemyHeroId)).toBe(true);
     });
   });
 

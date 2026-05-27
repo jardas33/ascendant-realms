@@ -1,12 +1,61 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; clean package regenerated
+Last updated: 2026-05-27 v0.30-v0.31 rival champion and relic reward foundation local verification green
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
+
+Status: v0.30-v0.31 adds a narrow rival champion AI safety pass and a preview-only relic reward foundation. It uses existing enemy commander assets/systems only. It does not add maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrites, global rebalance, Patrol, formations, or complex loot.
+
+Baseline:
+
+- Starting commit/package: `8cd8f66`, `ascendant-realms-private-playtest-8cd8f66`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26504491122` on `8cd8f66` passed Fast confidence; push-only release groups were skipped by expected rules. Manual release matrix `26493804376` passed on `b7604e5`; final `8cd8f66` was docs/package closeout only.
+
+Included work:
+
+- Added `docs/V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md`.
+- Added `docs/V031_RELIC_REWARD_FOUNDATION_SPEC.md`.
+- Added `docs/V030_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added preview-only relic reward data and validation.
+- Added a pure relic preview selector and results-screen `Relic Reward Preview` block.
+- Tightened enemy AI so live rival champions avoid site capture/retake/raid squads, prioritize base/site defense, and join only late coordinated attacks with escorts.
+- Extended hosted Ashen Outpost coverage to verify the commander defeat and relic preview result.
+- Updated package metadata and validation for the v0.30-v0.31 docs/checkpoint.
+
+Verification so far:
+
+```text
+npx vitest run src/game/ai/EnemyAIController.test.ts src/game/core/RelicRewardRules.test.ts src/game/results/ResultsViewModel.test.ts src/game/data/contentValidation.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 5 files / 77 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives" --retries=1 --trace=on --reporter=line PASS, 1 test.
+npm test PASS, 73 files / 540 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:smoke:fast PASS, 8 tests, rerun with the dev server explicitly held open after an initial local server-start refusal.
+npm run test:e2e:smoke PASS, 14 tests, rerun with the dev server explicitly held open.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release ATTEMPTED: one deep-meta transition helper failed after the New Campaign click had already reached hero creation. Narrow fix applied by using the existing scene-transition click option for those two New Campaign clicks.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep "main menu, info" --reporter=line PASS, 1 test after the transition-helper fix.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests after the transition-helper fix.
+git diff --check PASS before docs closeout.
+```
+
+Closeout still required after this local doc update: commit, push, inspect Fast confidence, trigger or inspect the manual release matrix if possible, then regenerate and verify the clean package from the final commit. Do not start v0.32/runtime expansion work in the closeout turn.
 
 ## Current v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 

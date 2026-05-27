@@ -425,6 +425,29 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Trophy earned");
     expect(summaryHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
     expect(summaryHtml).toContain("Rival state persists on the campaign save");
+    expect(summaryHtml).toContain("Relic Reward Preview");
+    expect(summaryHtml).toContain("Cinder-Seer Focus");
+    expect(summaryHtml).toContain("Future persistence pending");
+  });
+
+  it("keeps tutorial results free of relic reward previews", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createTutorialBattleLaunchRequest(heroSave),
+      stats: {
+        ...baseStats(),
+        enemyHeroId: "captain_malrec",
+        enemyHeroName: "Captain Malrec",
+        enemyHeroDefeated: true
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).not.toContain("Relic Reward Preview");
+    expect(summaryHtml).not.toContain("Outpost Command Signet");
   });
 
   it("explains repeat rival defeats without duplicating first-defeat rewards", () => {

@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; clean package regenerated
+Updated: 2026-05-27 v0.30-v0.31 rival champion and relic reward foundation local verification green
+
+## v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
+
+Scope: implement a safe rival champion/enemy commander foundation and a tiny preview-only relic reward foundation using existing assets/systems. This pass changes enemy AI commander selection, data validation, results rendering, package metadata, tests, and docs. It does not add maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrites, global rebalance, Patrol, formations, or complex loot.
+
+Baseline:
+
+- Starting commit/package: `8cd8f66`, `ascendant-realms-private-playtest-8cd8f66`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26504491122` on `8cd8f66` passed Fast confidence. Manual release matrix `26493804376` passed on `b7604e5`; final `8cd8f66` was docs/package closeout only.
+
+Included work:
+
+- Added `docs/V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md`.
+- Added `docs/V031_RELIC_REWARD_FOUNDATION_SPEC.md`.
+- Added `docs/V030_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V031_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `src/game/data/relicRewards.ts` and `src/game/core/RelicRewardRules.ts`.
+- Added content validation and unit coverage for preview-only relic reward definitions.
+- Results now show `Relic Reward Preview` after victorious known rival champion defeats and explicitly state that persistence is pending.
+- Rival champions avoid resource-site raid/capture squads, defend base/sites first, and join only late coordinated attacks with escorts.
+- Updated package metadata/validation to require the v0.30-v0.31 docs.
+
+Verification so far:
+
+```text
+npx vitest run src/game/ai/EnemyAIController.test.ts src/game/core/RelicRewardRules.test.ts src/game/results/ResultsViewModel.test.ts src/game/data/contentValidation.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 5 files / 77 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives" --retries=1 --trace=on --reporter=line PASS, 1 test.
+npm test PASS, 73 files / 540 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:smoke:fast PASS, 8 tests, rerun with the dev server explicitly held open after an initial local server-start refusal.
+npm run test:e2e:smoke PASS, 14 tests, rerun with the dev server explicitly held open.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release ATTEMPTED: one deep-meta New Campaign transition helper failed after the click had already reached hero creation; the narrow helper call fix passed in targeted rerun and hosted deep-meta.
+git diff --check PASS before docs closeout.
+```
+
+Closeout still required: commit, push, inspect Fast confidence, trigger or inspect the manual release matrix if possible, then regenerate and verify the clean package from the final commit.
 
 ## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 

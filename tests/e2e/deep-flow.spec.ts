@@ -1390,7 +1390,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await clickReady(page.getByRole("button", { name: "Back" }), "deep-flow Asset Gallery back");
     await expect(page.getByTestId("main-menu")).toBeVisible();
 
-    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start first hero creation");
+    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start first hero creation", SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.getByTestId("hero-creation")).toBeVisible();
     await clickReady(page.getByTestId("hero-class-arcanist"), "deep-flow choose Arcanist");
     await clickReady(page.getByTestId("hero-origin-wildland_raider"), "deep-flow choose Wildland Raider");
@@ -1408,7 +1408,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("menu-continue-campaign")).toBeDisabled();
     await expect(page.getByTestId("menu-inventory")).toBeDisabled();
 
-    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start second hero creation");
+    await clickReady(page.getByTestId("menu-new-campaign"), "deep-flow start second hero creation", SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.getByTestId("hero-creation")).toBeVisible();
     await clickReady(page.getByTestId("hero-class-shepherd"), "deep-flow choose Shepherd");
     await clickReady(page.getByTestId("hero-origin-temple_orphan"), "deep-flow choose Temple Orphan");
@@ -5975,6 +5975,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".results-panel")).toContainText("Enemy commander");
     await expect(page.locator(".results-panel")).toContainText("Captain Malrec");
     await expect(page.locator(".results-panel")).toContainText("Commander defeated");
+    await expect(page.getByTestId("results-relic-reward-preview")).toContainText("Outpost Command Signet");
+    await expect(page.getByTestId("results-relic-reward-preview")).toContainText("Future persistence pending");
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");

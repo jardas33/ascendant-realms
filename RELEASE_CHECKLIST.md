@@ -75,6 +75,7 @@ Known current realities:
 - v0.28-v0.29 adds the first safe player hero RPG foundation: live battle XP, modest live level-up stat gains, readable ability cooldown/mana states, and victory results battle XP summaries. No new factions/maps, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, huge ability roster, inventory overhaul, enemy hero system, Patrol, or formations are included. Rerun GitHub Actions after push because runtime hero progression, HUD, and reward behavior changed.
 - v0.29.1 is a closeout lane for blocked remote CI status, local fallback verification notes, and hero progression retest packaging. Follow-up commits add test-only hosted e2e stabilization and remote status docs. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or content behavior changed.
 - v0.29.2 recovers the hosted `deep-battle` release-matrix lane before v0.30. No runtime gameplay changed. Do not start v0.30 or send a package while hosted `deep-battle` is red or undocumented.
+- v0.30-v0.31 adds protected rival champion AI rules and preview-only relic reward results. Rerun GitHub Actions after push because runtime enemy AI selection and results UI changed. The clean package must name `v0.30-v0.31 rival champion and relic reward foundation`, include the v0.30-v0.31 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 
 ## Required Automated Checks
 
@@ -358,6 +359,15 @@ Remote checkout recovered: push run 26484639124 on 6124d71 passed Fast confidenc
 Remote release matrix before v0.29.2: manual run 26484817685 on 6124d71 passed Fast confidence, Release simulator, deep-meta, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke; hosted deep-battle failed after tests ran.
 Latest remote release matrix: manual run 26493804376 on b7604e5 passed Fast confidence, Release simulator, deep-meta, deep-battle, deep-campaign-pressure, layout-core, layout-cinderfen, and smoke.
 Final package verification: npm run verify:playtest-package passed with 90 checks against a clean v0.29.2 package with no -dirty suffix.
+```
+
+Current v0.30-v0.31 rival champion/relic foundation result:
+
+```text
+PASS: npm test 73 files / 540 tests, npm run build, validate:content, validate:art-intake, smoke:fast 8 tests, smoke 14 tests, playtest controls normal/extended/verify, hosted deep-meta 12 tests, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual:qa 5 tests / 18 screenshots / 0 console errors / 0 retries, and git diff --check.
+ATTEMPTED: npm run test:e2e:release. One deep-meta New Campaign transition helper failed after the click had already reached hero creation. The narrow helper call fix passed in the targeted test and hosted deep-meta group.
+Remote Fast confidence and release-matrix rerun are required after push.
+Final package must be regenerated from the final commit after remote status is documented.
 ```
 
 Current v0.16.7 checkpoint result:

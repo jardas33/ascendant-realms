@@ -94,6 +94,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0292_RELEASE_MATRIX_CLOSEOUT.md",
   "V0292_EMMANUEL_RETEST_CHECKLIST.md",
   "V0292_LONG_SOAK_REPORT.md",
+  "V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md",
+  "V031_RELIC_REWARD_FOUNDATION_SPEC.md",
+  "V030_IMPLEMENTATION_REPORT.md",
+  "V031_IMPLEMENTATION_REPORT.md",
+  "V031_EMMANUEL_RETEST_CHECKLIST.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -197,7 +202,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.29.2 hosted deep-battle recovery and release-matrix closeout",
+      "v0.30-v0.31 rival champion and relic reward foundation",
       "build info checkpoint",
       checks,
       errors

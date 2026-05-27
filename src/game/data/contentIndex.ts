@@ -12,6 +12,7 @@ import type {
   HeroClassDefinition,
   ItemDefinition,
   OriginDefinition,
+  RelicRewardDefinition,
   RewardTableDefinition,
   SkillNodeDefinition,
   UnitDefinition,
@@ -34,6 +35,7 @@ import { ITEMS } from "./items";
 import { MAPS } from "./maps";
 import { ORIGINS } from "./origins";
 import { REWARD_TABLES } from "./rewards";
+import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { SKILL_NODES } from "./skillTrees";
 import { UNITS } from "./units";
 import { UPGRADES } from "./upgrades";
@@ -56,6 +58,7 @@ export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition
 export const ENEMY_PRESSURE_PLAN_BY_ID: Record<string, EnemyStrategicPressurePlanDefinition> = toIndex(ENEMY_PRESSURE_PLANS);
 export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
+export const RELIC_REWARD_BY_ID: Record<string, RelicRewardDefinition> = toIndex(RELIC_REWARD_DEFINITIONS);
 export const SKILL_NODE_BY_ID: Record<string, SkillNodeDefinition> = toIndex(SKILL_NODES);
 export const REWARD_TABLE_BY_ID: Record<string, RewardTableDefinition> = toIndex(REWARD_TABLES);
 export const UPGRADE_BY_ID: Record<string, UpgradeDefinition> = toIndex(UPGRADES);
