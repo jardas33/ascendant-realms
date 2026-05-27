@@ -75,7 +75,7 @@ Known current realities:
 - v0.28-v0.29 adds the first safe player hero RPG foundation: live battle XP, modest live level-up stat gains, readable ability cooldown/mana states, and victory results battle XP summaries. No new factions/maps, runtime art/assets, save migration, broad AI/pathing rewrite, global rebalance, huge ability roster, inventory overhaul, enemy hero system, Patrol, or formations are included. Rerun GitHub Actions after push because runtime hero progression, HUD, and reward behavior changed.
 - v0.29.1 is a closeout lane for blocked remote CI status, local fallback verification notes, and hero progression retest packaging. Follow-up commits add test-only hosted e2e stabilization and remote status docs. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or content behavior changed.
 - v0.29.2 recovers the hosted `deep-battle` release-matrix lane before v0.30. No runtime gameplay changed. Do not start v0.30 or send a package while hosted `deep-battle` is red or undocumented.
-- v0.30-v0.31 adds protected rival champion AI rules and preview-only relic reward results. Rerun GitHub Actions after push because runtime enemy AI selection and results UI changed. The clean package must name `v0.30-v0.31 rival champion and relic reward foundation`, include the v0.30-v0.31 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
+- v0.30-v0.31 adds protected rival champion AI rules and preview-only relic reward results. Runtime/reward checkpoint commit `4b72481` passed local verification and Fast confidence, then two hosted deep-battle harness follow-ups (`e466870`, `62e35ae`) isolated minimap/canvas actionability timing and a stale rally-order assertion. Manual release-matrix run `26519266738` on `62e35ae` passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`. The clean package must name `v0.30-v0.31 rival champion and relic reward foundation`, include the v0.30-v0.31 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 
 ## Required Automated Checks
 
@@ -366,8 +366,8 @@ Current v0.30-v0.31 rival champion/relic foundation result:
 ```text
 PASS: npm test 73 files / 540 tests, npm run build, validate:content, validate:art-intake, smoke:fast 8 tests, smoke 14 tests, playtest controls normal/extended/verify, hosted deep-meta 12 tests, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual:qa 5 tests / 18 screenshots / 0 console errors / 0 retries, and git diff --check.
 ATTEMPTED: npm run test:e2e:release. One deep-meta New Campaign transition helper failed after the click had already reached hero creation. The narrow helper call fix passed in the targeted test and hosted deep-meta group.
-Remote Fast confidence and release-matrix rerun are required after push.
-Final package must be regenerated from the final commit after remote status is documented.
+Remote follow-up: push runs 26510324409, 26512926475, and 26518961193 passed Fast confidence. Manual matrix runs 26510633476 and 26513207423 isolated hosted deep-battle harness issues. Manual matrix run 26519266738 on 62e35ae passed Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, layout-core, layout-cinderfen, and hosted smoke; full release e2e and optional visual QA were skipped by dispatch inputs.
+Final package must be regenerated from the final docs/package closeout commit after remote status is documented.
 ```
 
 Current v0.16.7 checkpoint result:

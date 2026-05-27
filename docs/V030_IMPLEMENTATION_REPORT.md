@@ -34,3 +34,15 @@ The change affects only enemy AI unit selection for live enemy champion units. I
 ## Status
 
 Local focused tests, hosted commander/relic proxy coverage, hosted deep-meta, hosted deep-battle, hosted smoke, hosted deep-campaign-pressure, visual QA, and the broad unit/build/validation/control/smoke gates passed. Full local release was attempted and exposed one transition-helper issue in the first deep-meta test; the narrow helper call fix passed in targeted rerun and hosted deep-meta.
+
+Remote closeout:
+
+- Commit `4b72481` contains the v0.30-v0.31 runtime/reward implementation.
+- Push run `26510324409` on `4b72481` passed Fast confidence.
+- Manual release-matrix run `26510633476` on `4b72481` failed hosted deep-battle only; root cause was hosted minimap click actionability/timing in an overloaded behaviour gauntlet.
+- Commit `e466870` stabilized hosted minimap clicking without force clicks or canvas/world DOM fallback.
+- Push run `26512926475` on `e466870` passed Fast confidence.
+- Manual release-matrix run `26513207423` on `e466870` still failed hosted deep-battle only; root causes were hosted canvas/minimap actionability pressure in the overloaded behaviour gauntlet and a stale first-campaign rally-order assertion after durable rally progress was already satisfied.
+- Commit `62e35ae` narrowed duplicated gauntlet setup, kept real verified canvas/world pointer input, added minimap-only coordinate fallback for the minimap UI control, and changed the stale rally assertion to durable rally progress.
+- Push run `26518961193` on `62e35ae` passed Fast confidence.
+- Manual release-matrix run `26519266738` on `62e35ae` passed Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, hosted layout-core, hosted layout-cinderfen, and hosted smoke.

@@ -61,3 +61,13 @@ Passed during implementation:
 - `git diff --check`.
 
 `npm run test:e2e:release` was attempted and found one deep-meta transition-helper issue after a New Campaign click had already reached hero creation. The narrow helper call fix passed in targeted rerun and hosted deep-meta.
+
+Remote closeout:
+
+- Push run `26510324409` on implementation commit `4b72481` passed Fast confidence.
+- Manual release-matrix run `26510633476` on `4b72481` failed hosted deep-battle only due hosted minimap click actionability/timing in an overloaded behaviour gauntlet.
+- Push run `26512926475` on first harness follow-up `e466870` passed Fast confidence.
+- Manual release-matrix run `26513207423` on `e466870` failed hosted deep-battle only due remaining hosted canvas/minimap actionability pressure plus a stale rally-order assertion after rally movement had already made durable progress.
+- Push run `26518961193` on final hosted harness follow-up `62e35ae` passed Fast confidence.
+- Manual release-matrix run `26519266738` on `62e35ae` passed Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, hosted layout-core, hosted layout-cinderfen, and hosted smoke.
+- Full release e2e and optional visual QA were skipped remotely by workflow-dispatch inputs; local visual QA passed during implementation.

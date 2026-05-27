@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.30-v0.31 rival champion and relic reward foundation local verification green
+Last updated: 2026-05-27 v0.30-v0.31 rival champion and relic reward foundation remote matrix green closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -10,7 +10,7 @@ Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for 
 
 ## Current v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
 
-Status: v0.30-v0.31 adds a narrow rival champion AI safety pass and a preview-only relic reward foundation. It uses existing enemy commander assets/systems only. It does not add maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrites, global rebalance, Patrol, formations, or complex loot.
+Status: v0.30-v0.31 adds a narrow rival champion AI safety pass and a preview-only relic reward foundation. It uses existing enemy commander assets/systems only. It does not add maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrites, global rebalance, Patrol, formations, or complex loot. Remote release-matrix closeout is green after two hosted deep-battle harness follow-ups.
 
 Baseline:
 
@@ -52,10 +52,19 @@ npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 
 npm run test:e2e:release ATTEMPTED: one deep-meta transition helper failed after the New Campaign click had already reached hero creation. Narrow fix applied by using the existing scene-transition click option for those two New Campaign clicks.
 npx playwright test tests/e2e/deep-flow.spec.ts --grep "main menu, info" --reporter=line PASS, 1 test after the transition-helper fix.
 npm run test:e2e:release:hosted:deep-meta PASS, 12 tests after the transition-helper fix.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet|first campaign battle path" --repeat-each=3 --retries=0 --trace=on --reporter=line PASS, 6 tests after the remote hosted deep-battle failure audit.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet|first campaign battle path" --retries=0 --trace=on --reporter=line PASS, 2 tests after final hosted interaction cleanup.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after final hosted interaction cleanup.
+Remote push run 26510324409 on 4b72481 PASS Fast confidence.
+Manual release-matrix run 26510633476 on 4b72481 FAILED hosted deep-battle only; failure was hosted minimap click actionability/timing in the behaviour gauntlet.
+Remote push run 26512926475 on e466870 PASS Fast confidence.
+Manual release-matrix run 26513207423 on e466870 FAILED hosted deep-battle only; failures were hosted canvas/minimap actionability pressure in the overloaded behaviour gauntlet and a stale first-campaign rally assertion after durable rally progress was already satisfied.
+Remote push run 26518961193 on 62e35ae PASS Fast confidence.
+Manual release-matrix run 26519266738 on 62e35ae PASS Fast confidence, Release simulator, hosted deep-meta, hosted deep-battle, hosted deep-campaign-pressure, hosted layout-core, hosted layout-cinderfen, and hosted smoke. Full release e2e and optional visual QA were skipped by workflow-dispatch inputs.
 git diff --check PASS before docs closeout.
 ```
 
-Closeout still required after this local doc update: commit, push, inspect Fast confidence, trigger or inspect the manual release matrix if possible, then regenerate and verify the clean package from the final commit. Do not start v0.32/runtime expansion work in the closeout turn.
+Closeout rules: the runtime/reward checkpoint is commit `4b72481`; hosted deep-battle stabilization follow-ups are `e466870` and `62e35ae`. Preserve the green manual release matrix evidence above, push the final docs/package closeout commit, confirm Fast confidence on that commit, and regenerate/verify the clean package from the final commit. Use only a package whose `PLAYTEST_BUILD_INFO.md` commit matches the final closeout commit and whose dirty status says `no`. Do not start v0.32/runtime expansion work in the closeout turn.
 
 ## Current v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 
