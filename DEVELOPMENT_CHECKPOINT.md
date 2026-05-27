@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; package pending
+Updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; clean package regenerated
 
 ## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 
@@ -68,7 +68,7 @@ npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-
 npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: commit/push this docs-only remote-status update, inspect Fast confidence for that final closeout commit, regenerate the clean package, verify the package, and report final commit/package status.
+Closeout complete: final docs-only package-status cleanup was committed, the clean v0.29.2 private playtest package was regenerated from a clean worktree, and `npm run verify:playtest-package` passed with 90 checks. Use the generated package whose `PLAYTEST_BUILD_INFO.md` commit matches the final closeout commit and whose dirty status says `no`.
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 

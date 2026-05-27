@@ -1,7 +1,7 @@
 # v0.29.2 Emmanuel Retest Checklist
 
 Date: 2026-05-27
-Package: pending final clean package.
+Package: final clean v0.29.2 package. Confirm `PLAYTEST_BUILD_INFO.md` names the v0.29.2 checkpoint and says the working tree was not dirty.
 
 ## Purpose
 
@@ -49,4 +49,3 @@ Record:
 - whether resource-site Worker assignment/upgrades still worked,
 - whether enemy pressure felt readable rather than chaotic,
 - any world-click, minimap, or hover-control issue with exact steps.
-

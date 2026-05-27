@@ -11,7 +11,7 @@ Scope: close out the hosted deep-battle recovery before any v0.30 work.
 - Remote hosted `deep-battle` on run `26490433401`: failed one stale duplicate movement-summary assertion after the helper had already observed the transient move summary.
 - Follow-up fix commit `b7604e5`: pushed successfully; push run `26493632871` passed Fast confidence.
 - Manual release-matrix run `26493804376` on `b7604e5`: passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
-- Clean v0.29.2 tester package: pending final docs-only closeout commit and clean package generation.
+- Clean v0.29.2 tester package: regenerated from a clean final closeout commit and verified with no `-dirty` suffix.
 
 ## Required Remote Evidence
 
@@ -107,4 +107,12 @@ Green for the runtime/test fix commit.
 
 ## Final Package
 
-Pending final clean package generation from the final closeout commit.
+The final package is generated under `artifacts/playtest/ascendant-realms-private-playtest-<shortCommit>`. Package artifacts are intentionally ignored by git, so the package identity lives in `PLAYTEST_BUILD_INFO.md` and `playtest-build-info.json`.
+
+Final package requirements:
+
+- `PLAYTEST_BUILD_INFO.md` names `v0.29.2 hosted deep-battle recovery and release-matrix closeout`.
+- `PLAYTEST_BUILD_INFO.md` says `Working tree dirty when packaged: no`.
+- `playtest-build-info.json` has `workingTreeDirty: false`.
+- `npm run verify:playtest-package` passes with 90 checks.
+- The directory name has no `-dirty` suffix.

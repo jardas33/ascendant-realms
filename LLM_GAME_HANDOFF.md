@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; package pending
+Last updated: 2026-05-27 v0.29.2 hosted deep-battle remote recovery green; clean package regenerated
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -77,9 +77,9 @@ npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-
 npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: commit/push this docs-only remote-status update, inspect Fast confidence for that final closeout commit, then regenerate and verify a clean package with no `-dirty` suffix.
+Closeout complete: final docs-only package-status cleanup was committed, the clean v0.29.2 private playtest package was regenerated from a clean worktree, and `npm run verify:playtest-package` passed with 90 checks. Because package artifacts are ignored, use the generated package whose `PLAYTEST_BUILD_INFO.md` commit matches the final closeout commit and whose dirty status says `no`.
 
-Emmanuel retest focus: use only the final clean v0.29.2 package after remote status and package verification are documented. Read `V0292_EMMANUEL_RETEST_CHECKLIST.md` and then re-run the v0.28-v0.29 hero progression retest with added attention to world move/retreat clicks, minimap movement, command-button hover stability, and Worker/resource-site upgrade regressions.
+Emmanuel retest focus: use only the final clean v0.29.2 package after confirming `PLAYTEST_BUILD_INFO.md` names the v0.29.2 checkpoint and says the working tree was not dirty. Read `V0292_EMMANUEL_RETEST_CHECKLIST.md` and then re-run the v0.28-v0.29 hero progression retest with added attention to world move/retreat clicks, minimap movement, command-button hover stability, and Worker/resource-site upgrade regressions.
 
 ## Current v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
