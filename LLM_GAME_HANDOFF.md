@@ -1,12 +1,74 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-26 v0.29.1 remote CI recovery checked; hosted deep-battle still red
+Last updated: 2026-05-27 v0.29.2 hosted deep-battle local recovery; remote rerun pending
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
+
+Status: v0.29.2 fixes the remaining hosted `deep-battle` release-matrix failure after v0.29.1 remote-CI recovery. This is a test-harness and release-closeout pass only. It does not add runtime gameplay, balance changes, maps, factions, assets, save migration, pathing changes, AI changes, or content.
+
+Baseline:
+
+- Starting commit: `9411dea`, `Document v0.29.1 remote CI recovery status`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Latest package before this work: no clean v0.29.1 package regenerated because hosted `deep-battle` was still red.
+
+Remote failure audit:
+
+- Push run `26485815688` on `9411dea` passed Fast confidence.
+- Manual release-matrix run `26484817685` checked out successfully and passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Manual release-matrix run `26484817685` failed hosted `deep-battle` in job `77989895354`.
+- Remote artifact `playwright-release-deep-battle` showed 3 failed, 1 flaky, and 23 passed.
+- Failures were classified as hosted Playwright actionability/input-delivery and stale assertion issues, plus unrelated enemy-site pressure in one Worker/site proxy. No runtime gameplay regression was found.
+
+Included work:
+
+- Added `docs/V0292_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md`.
+- Added `docs/V0292_HOSTED_DEEP_BATTLE_FIX_REPORT.md`.
+- Added `docs/V0292_RELEASE_MATRIX_CLOSEOUT.md`.
+- Added `docs/V0292_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V0292_LONG_SOAK_REPORT.md`.
+- Updated package metadata and validation to name `v0.29.2 hosted deep-battle recovery and release-matrix closeout`.
+- Added the v0.29.2 docs to private playtest packages.
+- Stabilized hosted `deep-battle` only in `tests/e2e/deep-flow.spec.ts`.
+
+Test-harness summary:
+
+- World right-click commands now use a normal Playwright canvas-position click after the helper verifies the target is uncovered canvas; no `force` and no DOM fallback for canvas/world commands.
+- Movement assertions use durable scene state instead of transient status text.
+- Hosted Worker/site setup parks unrelated hostile units away before testing player Worker assignment/upgrades.
+- Hover-stability coverage asserts visible enabled button state instead of DOM node identity across HUD refresh.
+- Behaviour gauntlet marquee cleanup uses another real mouse release only if the scene still reports active dragging.
+
+Verification so far:
+
+```text
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "behaviour mode control gauntlet" --repeat-each=5 --retries=0 --trace=retain-on-failure --reporter=line PASS, 5 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "battle HUD supports minimap movement|battle HUD keeps hovered command buttons stable|behaviour mode control gauntlet|Worker assignment and site upgrade boost" --retries=0 --trace=retain-on-failure --reporter=line PASS, 4 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm test PASS, 72 files / 533 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+git diff --check PASS.
+```
+
+Closeout still required: run the full local verification matrix, commit, push, inspect Fast confidence, trigger/inspect a manual release matrix with hosted `deep-battle`, document remote status, then regenerate and verify a clean package with no `-dirty` suffix.
+
+Emmanuel retest focus: use only the final clean v0.29.2 package after remote status and package verification are documented. Read `V0292_EMMANUEL_RETEST_CHECKLIST.md` and then re-run the v0.28-v0.29 hero progression retest with added attention to world move/retreat clicks, minimap movement, command-button hover stability, and Worker/resource-site upgrade regressions.
 
 ## Current v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 

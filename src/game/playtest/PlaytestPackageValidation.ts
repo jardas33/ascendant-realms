@@ -89,6 +89,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V029_EMMANUEL_RETEST_CHECKLIST.md",
   "V0291_BLOCKED_REMOTE_CI_STATUS.md",
   "V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md",
+  "V0292_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md",
+  "V0292_HOSTED_DEEP_BATTLE_FIX_REPORT.md",
+  "V0292_RELEASE_MATRIX_CLOSEOUT.md",
+  "V0292_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0292_LONG_SOAK_REPORT.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -192,7 +197,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.29.1 hero progression closeout and blocked CI documentation",
+      "v0.29.2 hosted deep-battle recovery and release-matrix closeout",
       "build info checkpoint",
       checks,
       errors

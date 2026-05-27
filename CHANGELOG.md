@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
+
+This checkpoint fixes the remaining hosted `deep-battle` release-matrix failure after v0.29.1 remote-CI recovery. It is a test-harness and release-closeout pass only. It does not change runtime gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or content.
+
+### Included
+
+- Added `docs/V0292_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md`.
+- Added `docs/V0292_HOSTED_DEEP_BATTLE_FIX_REPORT.md`.
+- Added `docs/V0292_RELEASE_MATRIX_CLOSEOUT.md`.
+- Added `docs/V0292_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V0292_LONG_SOAK_REPORT.md`.
+- Updated package metadata and validation to name `v0.29.2 hosted deep-battle recovery and release-matrix closeout`.
+- Added the v0.29.2 recovery docs and Emmanuel retest checklist to private playtest packages.
+- Stabilized hosted `deep-battle` only in `tests/e2e/deep-flow.spec.ts`.
+
+### Deep-Battle Failure
+
+- Manual release-matrix run `26484817685` failed hosted `deep-battle` after checkout, build, and tests ran.
+- Failing or flaky coverage involved movement summary timing, hover-stability DOM identity, behaviour gauntlet retreat/marquee timing, and Worker/resource-site deterministic setup.
+- Classification: hosted Playwright actionability/input-delivery and stale assertion issues, plus unrelated enemy-site pressure in one Worker/site proxy.
+- No hero progression, ability, enemy strategy, Worker-slot, or runtime gameplay regression was found.
+
+### Fix
+
+- Right-click world commands now use a normal Playwright canvas-position click after the helper verifies the target is uncovered canvas; no `force` and no DOM fallback for canvas/world clicks.
+- Movement command assertions now use durable scene state instead of transient status text.
+- Hosted Worker/site setup parks unrelated hostile units away before testing player Worker assignment/upgrades.
+- Hover-stability coverage now asserts the visible, enabled, correctly labeled button under the pointer rather than same-node identity across HUD refresh.
+- Marquee cleanup uses one additional real mouse release only if the scene still reports an active drag.
+
+### Verification
+
+- Passed: targeted behaviour gauntlet soak with 5 repeats and no retries, targeted four-test hosted audit set with no retries, `npm test` with 72 files / 533 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls playtest with 18 scenarios / 18 pass rows, extended controls with 90 pass rows, controls verifier with 1658 checks, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, and `git diff --check`.
+- Remote Fast confidence, manual release matrix, final package generation, and final package verification are pending for closeout.
+
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 
 This checkpoint closes out v0.28-v0.29 by documenting the blocked GitHub Actions state, making local fallback verification/package guidance explicit, and recording the follow-up remote CI recovery state. It does not change gameplay, balance, save data, maps, factions, runtime art/assets, AI, pathing, or runtime systems. Follow-up commits include test-only hosted e2e stabilization.

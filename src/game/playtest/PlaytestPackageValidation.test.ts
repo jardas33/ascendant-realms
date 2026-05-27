@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.29.1 hero progression closeout and blocked CI documentation",
+          checkpoint: "v0.29.2 hosted deep-battle recovery and release-matrix closeout",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -133,6 +133,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V029_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Hero ability retest" },
       { path: "V0291_BLOCKED_REMOTE_CI_STATUS.md", sizeBytes: 20, textContent: "Blocked remote CI status" },
       { path: "V0291_HERO_PROGRESSION_LOCAL_VERIFICATION_CLOSEOUT.md", sizeBytes: 20, textContent: "Local verification closeout" },
+      { path: "V0292_HOSTED_DEEP_BATTLE_FAILURE_AUDIT.md", sizeBytes: 20, textContent: "Deep battle failure audit" },
+      { path: "V0292_HOSTED_DEEP_BATTLE_FIX_REPORT.md", sizeBytes: 20, textContent: "Deep battle fix report" },
+      { path: "V0292_RELEASE_MATRIX_CLOSEOUT.md", sizeBytes: 20, textContent: "Release matrix closeout" },
+      { path: "V0292_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.29.2 retest" },
+      { path: "V0292_LONG_SOAK_REPORT.md", sizeBytes: 20, textContent: "Long soak report" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }
