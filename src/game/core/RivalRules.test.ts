@@ -51,6 +51,7 @@ describe("RivalRules", () => {
     expect(first.campaign.resources.aether).toBe(20);
     expect(first.hero.xp).toBe(90);
     expect(first.hero.inventory.map((item) => item.itemId)).toContain("cinderseer_lens");
+    expect(first.hero.inventory.map((item) => item.itemId)).toContain("cinderseer_focus");
     expect(first.hero.factionReputation.old_faith).toBe(1);
     expect(first.campaign.rivalTrophies[0]).toMatchObject({
       trophyId: "trophy_veyra_cinder_lens",
@@ -61,6 +62,8 @@ describe("RivalRules", () => {
     expect(first.rivalResult?.firstDefeatRewardEarned).toBe(true);
     expect(first.rivalResult?.rewardText).toContain("+20 Aether");
     expect(first.rivalResult?.rewardText).toContain("Trophy: Cinder-Seer's Cracked Lens");
+    expect(first.rivalResult?.relicReward?.status).toBe("granted");
+    expect(first.rivalResult?.relicRewardText).toContain("Relic effects are active when equipped");
 
     const second = updateRivalAfterBattle({
       campaign: first.campaign,
@@ -74,10 +77,52 @@ describe("RivalRules", () => {
     expect(second.campaign.resources.aether).toBe(20);
     expect(second.hero.xp).toBe(90);
     expect(second.hero.inventory.filter((item) => item.itemId === "cinderseer_lens")).toHaveLength(1);
+    expect(second.hero.inventory.filter((item) => item.itemId === "cinderseer_focus")).toHaveLength(1);
     expect(second.campaign.rivalTrophies).toHaveLength(1);
     expect(second.campaign.rivals[0]).toMatchObject({ defeats: 2, disposition: "enraged" });
     expect(second.rivalResult?.firstDefeatRewardEarned).toBe(false);
     expect(second.rivalResult?.duplicateFirstDefeatRewardPrevented).toBe(true);
+    expect(second.rivalResult?.relicReward).toBeUndefined();
+  });
+
+  it("converts a seeded relic duplicate only during an otherwise eligible relic grant", () => {
+    const relic = {
+      instanceId: "seed:outpost_command_signet:1",
+      itemId: "outpost_command_signet",
+      acquiredAt: "2026-05-27T21:00:00.000Z",
+      source: "seed",
+      affixes: [],
+      locked: false,
+      favorite: false
+    };
+
+    const first = updateRivalAfterBattle({
+      campaign: createFallbackCampaignSave(),
+      hero: {
+        ...createFallbackHeroSave(),
+        inventory: [relic]
+      },
+      nodeId: "ashen_outpost",
+      enemyHeroId: "captain_malrec",
+      playerWon: true,
+      enemyHeroDefeated: true
+    });
+
+    expect(first.hero.inventory.filter((item) => item.itemId === "outpost_command_signet")).toHaveLength(1);
+    expect(first.rivalResult?.relicReward?.status).toBe("duplicate_converted");
+    expect(first.campaign.resources.aether).toBe(45);
+
+    const second = updateRivalAfterBattle({
+      campaign: first.campaign,
+      hero: first.hero,
+      nodeId: "ashen_outpost",
+      enemyHeroId: "captain_malrec",
+      playerWon: true,
+      enemyHeroDefeated: true
+    });
+
+    expect(second.campaign.resources.aether).toBe(45);
+    expect(second.rivalResult?.relicReward).toBeUndefined();
   });
 
   it("records escaped and triumphant outcomes with small next-encounter modifiers", () => {

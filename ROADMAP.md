@@ -11,9 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint under closeout is **v0.18 Worker Construction Foundation** on 2026-05-23. It follows the clean v0.17.5 release baseline and implements the first narrow Worker construction vertical slice: Command Hall trains Workers, Worker can place one Barracks construction site, assigned Worker proximity gates construction progress, incomplete Barracks cannot train or upgrade, and completed Barracks unlocks its existing production. It preserves save format, runtime art/assets, maps, factions, Tutorial requirements, Command Hall direct placement fallback, enemy AI scope, Patrol, formations, and global economy/balance architecture.
+The latest player-facing checkpoint under closeout is **v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation** on 2026-05-27. It follows the clean v0.30-v0.31 rival champion and relic reward foundation and turns the three preview-only relic candidates into a tiny persistent RPG reward loop: eligible rival champion defeats can grant a unique relic, relics live in the existing hero inventory, `equipment.relic` equips one active relic, and modest effects apply only while equipped. It preserves the existing save version, runtime art/assets, maps, factions, Tutorial no-reward behavior, broad inventory/UI scope, Patrol, formations, and global balance architecture.
 
-The next recommended player-facing step is to finish v0.18 closeout, package the clean build, and have Emmanuel retest only the Worker path: train Worker, build Barracks, verify incomplete production lock, wait for completion, then train army units from the completed Barracks. Do not expand into harvesting, repairs, enemy worker AI, multiple-worker acceleration, save migration, Tutorial Worker onboarding, broad pathing rewrites, Patrol, balance tuning, UI redesign, or runtime art replacement without a new explicit goal. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended player-facing step is to finish v0.32-v0.33 closeout, package the clean build, and have Emmanuel retest only the relic path: defeat a rival champion, confirm the relic enters inventory, equip/unequip it, confirm the stat/effect summary, verify duplicate handling, and confirm Tutorial grants no relic. Do not expand into a reward-choice modal, random relic rolls, shop, crafting, multi-slot relic loadouts, save-version changes, new maps/factions, broad pathing rewrites, Patrol, balance tuning, UI redesign, or runtime art replacement without a new explicit goal. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+
+New v0.32-v0.33 relic docs:
+
+- `docs/V032_PERSISTENT_RELIC_INVENTORY_SPEC.md`
+- `docs/V033_HERO_RELIC_LOADOUT_SPEC.md`
+- `docs/V032_IMPLEMENTATION_REPORT.md`
+- `docs/V033_IMPLEMENTATION_REPORT.md`
+- `docs/V033_EMMANUEL_RETEST_CHECKLIST.md`
+- `DEVELOPMENT_CHECKPOINT.md`
+- `CHANGELOG.md`
+- `LLM_GAME_HANDOFF.md`
 
 New v0.17 Tutorial/Ranger docs and outputs:
 

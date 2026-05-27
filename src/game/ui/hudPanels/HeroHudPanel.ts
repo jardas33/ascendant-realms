@@ -1,7 +1,7 @@
 import { abilityIconAssetId, heroPortraitAssetId } from "../../assets/AssetKeys";
 import { AssetLoader } from "../../assets/AssetLoader";
 import type { AbilityDefinition } from "../../core/GameTypes";
-import { HERO_CLASS_BY_ID } from "../../data/contentIndex";
+import { HERO_CLASS_BY_ID, ITEM_BY_ID } from "../../data/contentIndex";
 import type { Hero } from "../../entities/Hero";
 import { abilityLabel, abilityResourceState } from "../AbilityBar";
 import { healthPercent } from "../HealthBar";
@@ -11,6 +11,10 @@ export function renderHeroHudPanel(hero: Hero): string {
   const portraitId = heroPortraitAssetId(hero.classId);
   const hasPortrait = AssetLoader.hasAsset(portraitId);
   const classAbilityCount = HERO_CLASS_BY_ID[hero.classId]?.abilityIds.length ?? hero.unlockedAbilities.length;
+  const relicInstance = hero.equipment.relic
+    ? hero.inventory.find((instance) => instance.instanceId === hero.equipment.relic)
+    : undefined;
+  const relicItem = relicInstance ? ITEM_BY_ID[relicInstance.itemId] : undefined;
   return `
     <div class="hero-panel" data-testid="battle-hero-panel">
       <div class="portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, toCssColor(hero.definition.color))}></div>
@@ -21,6 +25,7 @@ export function renderHeroHudPanel(hero: Hero): string {
         <div class="xp-meter"><span style="width:${heroXpPercent(hero)}%"></span></div>
         <small>XP ${hero.xp} - Skill ${hero.skillPoints} - DMG ${Math.round(hero.damage)} - ARM ${Math.round(hero.armor)}</small>
         <small>Abilities ${hero.unlockedAbilities.length}/${classAbilityCount} unlocked</small>
+        <small>Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active` : "Empty"}</small>
       </div>
     </div>
   `;

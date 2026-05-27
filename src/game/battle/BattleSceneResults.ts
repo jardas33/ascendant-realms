@@ -103,7 +103,8 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
         nodeLevelUp: campaignCompletion.nodeLevelUp,
         campaignResources: rivalUpdate.campaign.resources
       },
-      rivalResult
+      rivalResult,
+      relicReward: rivalResult?.relicReward
     });
     return;
   }
@@ -116,6 +117,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     reward: completion.reward,
     rewardLevelUp: completion.rewardLevelUp,
     launchRequest: cloneBattleLaunchRequestWithHero(launch.request, resultsHeroSave),
-    rivalResult
+    rivalResult,
+    relicReward: rivalResult?.relicReward
   });
 }

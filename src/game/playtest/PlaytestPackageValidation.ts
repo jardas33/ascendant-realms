@@ -99,6 +99,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V030_IMPLEMENTATION_REPORT.md",
   "V031_IMPLEMENTATION_REPORT.md",
   "V031_EMMANUEL_RETEST_CHECKLIST.md",
+  "V032_PERSISTENT_RELIC_INVENTORY_SPEC.md",
+  "V033_HERO_RELIC_LOADOUT_SPEC.md",
+  "V032_IMPLEMENTATION_REPORT.md",
+  "V033_IMPLEMENTATION_REPORT.md",
+  "V033_EMMANUEL_RETEST_CHECKLIST.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -202,7 +207,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.30-v0.31 rival champion and relic reward foundation",
+      "v0.32-v0.33 persistent relic inventory and hero loadout foundation",
       "build info checkpoint",
       checks,
       errors

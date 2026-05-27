@@ -76,6 +76,7 @@ Known current realities:
 - v0.29.1 is a closeout lane for blocked remote CI status, local fallback verification notes, and hero progression retest packaging. Follow-up commits add test-only hosted e2e stabilization and remote status docs. No runtime gameplay, balance, map, faction, asset, save, pathing, AI, or content behavior changed.
 - v0.29.2 recovers the hosted `deep-battle` release-matrix lane before v0.30. No runtime gameplay changed. Do not start v0.30 or send a package while hosted `deep-battle` is red or undocumented.
 - v0.30-v0.31 adds protected rival champion AI rules and preview-only relic reward results. Runtime/reward checkpoint commit `4b72481` passed local verification and Fast confidence, then two hosted deep-battle harness follow-ups (`e466870`, `62e35ae`) isolated minimap/canvas actionability timing and a stale rally-order assertion. Manual release-matrix run `26519266738` on `62e35ae` passed Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-battle`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`. The clean package must name `v0.30-v0.31 rival champion and relic reward foundation`, include the v0.30-v0.31 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
+- v0.32-v0.33 adds persistent relic inventory and one-slot hero relic loadout on top of existing inventory/equipment saves. It uses no save-version bump, blocks Tutorial/no-reward grants, auto-grants the tiny source relic pool after eligible rival champion defeats, and converts unique duplicates without repeat-farm loops. Rerun the requested release/package matrix because runtime reward, save, Results, Hero Inventory, and HUD behavior changed. The clean package must name `v0.32-v0.33 persistent relic inventory and hero loadout foundation`, include the v0.32-v0.33 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 
 ## Required Automated Checks
 
@@ -370,6 +371,14 @@ Remote follow-up: push runs 26510324409, 26512926475, and 26518961193 passed Fas
 Final package must be regenerated from the final docs/package closeout commit after remote status is documented.
 ```
 
+Current v0.32-v0.33 persistent relic inventory/loadout result:
+
+```text
+PASS: focused relic/rival/save/progression/results/HUD/content tests with 107 tests, npm test 73 files / 546 tests, npm run build, npm run validate:content, npm run validate:art-intake, targeted hosted Ashen Outpost relic reward/equip proxy, fast smoke 8 tests, full smoke 14 tests, controls normal/extended/verify, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, dirty pre-commit package generation, package verification 100 checks, visual QA 5 tests / 18 screenshots / 0 console errors / 0 retries, and git diff --check.
+Extra local full release: npm run test:e2e:release was attempted and reported transient local dev-server boot/layout/smoke timing failures; exact affected file:line rerun passed 7 tests. Required hosted release lanes are green.
+Final clean package must be regenerated from the final checkpoint commit before tester distribution.
+```
+
 Current v0.16.7 checkpoint result:
 
 ```text
@@ -627,7 +636,7 @@ npm run package:playtest
 npm run verify:playtest-package
 ```
 
-The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.29.1 implementation/retest/closeout docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
+The package is written under ignored `artifacts/playtest/ascendant-realms-private-playtest-<commit>/`. Send that folder or a manual zip, not the full repo. The verifier checks the built game, tester README, feedback form, route assignment plan, v0.16 control retest materials, v0.16.12 and v0.16.13 retest/fix notes, current v0.17-v0.33 implementation/retest/closeout docs, build metadata, local server helpers, package-safe relative asset URLs, and absence of `node_modules`, `.git`, raw private feedback folders, and obvious secret files.
 
 If the package name ends in `-dirty`, the working tree had uncommitted changes when it was created. Regenerate after the checkpoint commit before sending to outside testers.
 

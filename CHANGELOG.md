@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation - 2026-05-27
+
+This checkpoint turns the v0.31 relic reward preview into a tiny persistent RPG reward loop. It uses existing hero inventory/equipment save structures and adds one equipped relic slot without creating a broad inventory system. No maps, factions, runtime art/assets, shop, crafting, broad inventory UI, reward-choice modal, save-version bump, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks were added.
+
+### Included
+
+- Added `docs/V032_PERSISTENT_RELIC_INVENTORY_SPEC.md`.
+- Added `docs/V033_HERO_RELIC_LOADOUT_SPEC.md`.
+- Added `docs/V032_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V033_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V033_EMMANUEL_RETEST_CHECKLIST.md`.
+- Promoted the three v0.31 relic candidates into unique `slot: "relic"` item definitions.
+- Added persistent relic reward metadata with source champion, acquisition source, effect summary, tags, rarity/tier/category, and duplicate policy.
+- Added save-safe relic inventory helpers over existing `HeroSaveData.inventory` and `HeroSaveData.equipment.relic`.
+- Added eligible rival champion defeat relic grants and unique duplicate conversion without repeat-farming.
+- Added Results relic reward copy, inventory/duplicate status, effect/stat summaries, and an `Equip Relic` action.
+- Added Hero Inventory relic equip/unequip support through the existing equipment panel.
+- Added battle HUD equipped relic summary.
+- Updated package metadata and validation to name `v0.32-v0.33 persistent relic inventory and hero loadout foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for persistent rival relic rewards and equipped-only relic stat effects.
+- Gameplay numbers changed: narrowly, through three modest equipped relic stat packages.
+- Save format changed: no save-version bump; existing inventory/equipment fields are used.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial remains no-save/no-reward with no relic grants or Relic Reward block.
+- Inventory/loot changed: yes, only the three source relics and one relic slot.
+
+### Verification
+
+- Passed: focused relic/rival/save/progression/results/HUD/content tests with 107 tests, `npm test` with 73 files / 546 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, targeted hosted Ashen Outpost relic reward/equip proxy, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, dirty pre-commit package generation, package verification with 100 checks, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, and `git diff --check`.
+- `npm run test:e2e:release` was attempted as an extra local full-suite gate and reported transient local dev-server boot/layout/smoke timing failures; the exact affected file:line rerun passed with 7 tests. The required hosted release lanes above are green.
+
 ## v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
 
 This checkpoint adds a safe rival champion/enemy commander foundation and a tiny preview-only relic reward foundation. It uses existing assets and systems only. No maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrite, global rebalance, Patrol, formations, or complex loot were added.

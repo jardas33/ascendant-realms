@@ -18,6 +18,8 @@ function createHero(overrides: Partial<Hero> = {}): Hero {
     armor: 4,
     unlockedAbilities: ["rally_banner"],
     abilityCooldowns: {},
+    inventory: [],
+    equipment: {},
     definition: {
       color: 0xe2b34b
     },
@@ -32,6 +34,28 @@ describe("HeroHudPanel", () => {
     expect(html).toContain("Aster L2");
     expect(html).toContain("XP 125 - Skill 1 - DMG 20 - ARM 4");
     expect(html).toContain("Abilities 1/3 unlocked");
+    expect(html).toContain("Relic: Empty");
+  });
+
+  it("renders the equipped relic summary", () => {
+    const html = renderHeroHudPanel(
+      createHero({
+        inventory: [
+          {
+            instanceId: "test:outpost_command_signet:1",
+            itemId: "outpost_command_signet",
+            acquiredAt: "2026-05-27T21:30:00.000Z",
+            source: "test",
+            affixes: []
+          }
+        ],
+        equipment: {
+          relic: "test:outpost_command_signet:1"
+        }
+      })
+    );
+
+    expect(html).toContain("Relic: Outpost Command Signet active");
   });
 
   it("renders ability availability and disabled states", () => {

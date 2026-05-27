@@ -3,7 +3,9 @@ import { createSkirmishBattleLaunchRequest, createTutorialBattleLaunchRequest } 
 import type { BattleStats } from "../core/GameTypes";
 import { createItemInstance } from "../core/HeroProgressionRules";
 import { SaveSystem, createFallbackCampaignSave } from "../core/SaveSystem";
+import { ITEM_BY_ID } from "../data/contentIndex";
 import { createNewHeroSave } from "../data/heroes";
+import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
 import { keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
@@ -377,8 +379,13 @@ describe("results scene helpers", () => {
     expect(retinueHtml).toContain("Capacity Full");
   });
 
-  it("renders campaign rival outcome and consequence copy", () => {
+  it("renders campaign rival outcome and persistent relic reward copy", () => {
+    const relicInstance = createItemInstance("cinderseer_focus", "test", "2026-05-27T21:30:00.000Z", { affixes: [] });
     const data = createResultsData({
+      heroSave: {
+        ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+        inventory: [relicInstance]
+      },
       stats: {
         ...baseStats(),
         enemyHeroId: "veyra_cinders",
@@ -411,7 +418,15 @@ describe("results scene helpers", () => {
           effect: "First defeat claimed: +20 Aether, +90 XP, and +1 Old Faith reputation."
         },
         rewardXp: 90,
-        activeModifiers: []
+        activeModifiers: [],
+        relicRewardText: "Cinder-Seer Focus added to inventory. Relic effects are active when equipped."
+      },
+      relicReward: {
+        definition: RELIC_REWARD_BY_ENEMY_HERO_ID.veyra_cinders,
+        item: ITEM_BY_ID.cinderseer_focus,
+        status: "granted",
+        itemInstance: relicInstance,
+        inventoryLabel: "Cinder-Seer Focus added to hero inventory."
       }
     });
 
@@ -425,12 +440,13 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Trophy earned");
     expect(summaryHtml).toContain("Cinder-Seer&#039;s Cracked Lens");
     expect(summaryHtml).toContain("Rival state persists on the campaign save");
-    expect(summaryHtml).toContain("Relic Reward Preview");
+    expect(summaryHtml).toContain("Relic Reward");
     expect(summaryHtml).toContain("Cinder-Seer Focus");
-    expect(summaryHtml).toContain("Future persistence pending");
+    expect(summaryHtml).toContain("Relic effects are active when equipped");
+    expect(summaryHtml).toContain("Equip Relic");
   });
 
-  it("keeps tutorial results free of relic reward previews", () => {
+  it("keeps tutorial results free of relic reward grants", () => {
     const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const data = createResultsData({
       heroSave,
@@ -446,7 +462,7 @@ describe("results scene helpers", () => {
 
     const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
 
-    expect(summaryHtml).not.toContain("Relic Reward Preview");
+    expect(summaryHtml).not.toContain("Relic Reward");
     expect(summaryHtml).not.toContain("Outpost Command Signet");
   });
 

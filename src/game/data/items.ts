@@ -252,6 +252,55 @@ export const ITEMS: ItemDefinition[] = [
     }
   },
   {
+    id: "emberbrand_shard",
+    name: "Emberbrand Shard",
+    slot: "relic",
+    rarity: "rare",
+    unique: true,
+    description: "A scorched command shard that turns a rival charge into a measured counterblow.",
+    flavorText: "Warm ash clings to it no matter how often it is cleaned.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["warlord"],
+    tags: ["rival", "relic", "damage", "might"],
+    statMods: {
+      damage: 2,
+      might: 1
+    }
+  },
+  {
+    id: "cinderseer_focus",
+    name: "Cinder-Seer Focus",
+    slot: "relic",
+    rarity: "rare",
+    unique: true,
+    description: "A cracked emberglass focus that steadies spellcraft under pressure.",
+    flavorText: "Its fractures glow brightest when the battlefield goes quiet.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["arcanist", "shepherd"],
+    tags: ["rival", "relic", "mana", "arcana"],
+    statMods: {
+      maxMana: 18,
+      arcana: 2
+    }
+  },
+  {
+    id: "outpost_command_signet",
+    name: "Outpost Command Signet",
+    slot: "relic",
+    rarity: "epic",
+    unique: true,
+    description: "A compact field signet used to hold an Ashen outpost line together.",
+    flavorText: "It feels less like jewelry than a piece of the wall.",
+    factionOrigin: "ashen_covenant",
+    classAffinity: ["warlord", "shepherd"],
+    tags: ["rival", "relic", "hp", "armor", "command"],
+    statMods: {
+      maxHp: 24,
+      armor: 1,
+      command: 1
+    }
+  },
+  {
     id: "oathbound_aegis",
     name: "Oathbound Aegis",
     slot: "armor",

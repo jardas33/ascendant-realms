@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.30-v0.31 rival champion and relic reward foundation";
+const CHECKPOINT = "v0.32-v0.33 persistent relic inventory and hero loadout foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -122,6 +122,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V030_IMPLEMENTATION_REPORT.md", join(packageDir, "V030_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V031_IMPLEMENTATION_REPORT.md", join(packageDir, "V031_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V031_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V031_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V032_PERSISTENT_RELIC_INVENTORY_SPEC.md", join(packageDir, "V032_PERSISTENT_RELIC_INVENTORY_SPEC.md"));
+  await copyMarkdown("docs/V033_HERO_RELIC_LOADOUT_SPEC.md", join(packageDir, "V033_HERO_RELIC_LOADOUT_SPEC.md"));
+  await copyMarkdown("docs/V032_IMPLEMENTATION_REPORT.md", join(packageDir, "V032_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V033_IMPLEMENTATION_REPORT.md", join(packageDir, "V033_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V033_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V033_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -205,7 +210,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.30-v0.31 rival champion and relic reward foundation retest, start with V030_RIVAL_CHAMPION_FOUNDATION_SPEC.md, V031_RELIC_REWARD_FOUNDATION_SPEC.md, V030_IMPLEMENTATION_REPORT.md, V031_IMPLEMENTATION_REPORT.md, and V031_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.29 hero progression docs and v0.29.2 hosted deep-battle closeout docs nearby as regression context. Focus on: named enemy commander readability, commander defeat XP/reward summaries, conservative commander AI that defends before joining only late coordinated attacks, the results-screen relic reward preview, and regressions for hero XP, ability cooldowns, resource-site/Worker economy, enemy economy pressure, world move/retreat clicks, minimap movement, and command-button hover stability. Tutorial remains no-save/no-reward and should not show relic reward complexity. This build does not add new art, new maps, new factions, save migration, inventory overhaul, complex loot, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, or final VFX.
+For the v0.32-v0.33 persistent relic inventory and hero loadout retest, start with V032_PERSISTENT_RELIC_INVENTORY_SPEC.md, V033_HERO_RELIC_LOADOUT_SPEC.md, V032_IMPLEMENTATION_REPORT.md, V033_IMPLEMENTATION_REPORT.md, and V033_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.31 hero progression, rival champion, and relic foundation docs nearby as regression context. Focus on: Captain Malrec/Gorak/Veyra commander-defeat results, persistent relic inventory entries, duplicate conversion, Equip Relic from Results, Hero Inventory relic slot/equip/unequip, battle HUD equipped-relic summary, modest equipped-only stat effects, old-save compatibility, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, broad inventory UI, reward-choice modal, shop, crafting, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

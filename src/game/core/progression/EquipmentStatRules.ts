@@ -9,7 +9,7 @@ import { getItemTotalStatMods } from "../../data/itemAffixes";
 import { findItemInstance } from "./AffixRules";
 import type { ProgressionActionResult } from "./SkillRules";
 
-export const EQUIPMENT_SLOTS: EquipmentSlot[] = ["weapon", "armor", "trinket"];
+export const EQUIPMENT_SLOTS: EquipmentSlot[] = ["weapon", "armor", "trinket", "relic"];
 
 export function calculateEquipmentStatMods(
   inventory: ItemInstance[],

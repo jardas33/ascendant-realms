@@ -15,8 +15,10 @@ import {
 } from "./SaveSystem";
 import { DEFAULT_SETTINGS, normalizeSettingsData, shouldShowFloatingText } from "./Settings";
 import { createItemInstance } from "./HeroProgressionRules";
+import { getRelicInventoryState } from "./progression/RelicInventoryRules";
 import { applyCampaignChoice, createStartedCampaignSave } from "./CampaignRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
+import { ITEM_BY_ID } from "../data/contentIndex";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 describe("calculateLevelFromXp", () => {
@@ -94,6 +96,37 @@ describe("calculateLevelFromXp", () => {
       favorite: true
     });
     expect(normalized?.equipment.trinket).toBe(itemInstance.instanceId);
+  });
+
+  it("loads old saves without relic fields as an empty relic inventory", () => {
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      inventory: undefined,
+      equipment: undefined
+    });
+
+    expect(normalized).not.toBeNull();
+    expect(normalized?.equipment.relic).toBeUndefined();
+    expect(getRelicInventoryState(normalized!, ITEM_BY_ID)).toEqual({
+      acquiredRelicIds: [],
+      equippedRelicIds: []
+    });
+  });
+
+  it("ignores unknown relic ids in relic inventory helpers without rejecting the save", () => {
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      inventory: ["future_unknown_relic"],
+      equipment: {
+        relic: "future_unknown_relic"
+      }
+    });
+
+    expect(normalized?.equipment.relic).toBe(normalized?.inventory[0].instanceId);
+    expect(getRelicInventoryState(normalized!, ITEM_BY_ID)).toEqual({
+      acquiredRelicIds: [],
+      equippedRelicIds: []
+    });
   });
 
   it("normalizes numeric progression fields into safe ranges", () => {

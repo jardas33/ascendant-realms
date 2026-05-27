@@ -26,7 +26,7 @@ Current v0.3 feature snapshot:
 
 - Compact Chapter 2 Cinderfen route after Ashen Outpost: Overlook, optional Waystation, Crossing, Watch, and Aftermath. The current playable v0.3 slice ends at Cinderfen Aftermath; more Cinderfen content is upcoming.
 - Named enemy heroes/rival commanders on important Ashen campaign battles, with compact persistent rival state.
-- Rival Rewards and Trophies V1 with once-only first-defeat rewards and cosmetic trophy records.
+- Rival Rewards and Trophies V1 with once-only first-defeat rewards, cosmetic trophy records, and the first tiny persistent relic reward loop.
 - Retinue Camp V1 for a small save-backed roster of surviving veteran units.
 - Unit Veterancy V1 with Recruit, Seasoned, Veteran, and Elite ranks.
 - Stronghold Development Tier II with compact persistent upgrade effects.
@@ -358,11 +358,13 @@ Skirmish mode remains separate through the `Skirmish` button.
 
 ## Post-Battle Rewards
 
-After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, and campaign node rewards when applicable. Earned equipment creates an inventory instance immediately. Equippable rewards show rarity, slot, stat modifiers, source details, the currently equipped item in that slot, and an Equip Now comparison.
+After victory, the Results screen summarizes the map, difficulty, battle time, XP gained, level progress before and after, level-ups, skill points gained, battle rewards, campaign node rewards when applicable, and eligible rival relic rewards. Earned equipment creates an inventory instance immediately. Equippable rewards show rarity, slot, stat modifiers, source details, the currently equipped item in that slot, and an Equip Now comparison.
 
 Using Equip Now equips the earned item instance, saves the updated hero equipment, and recalculates stats, including valid affix stat modifiers. Leaving the screen without equipping keeps the instance in inventory. Campaign node item rewards are claimed once. If a unique reward is already owned, the reward converts into campaign Crowns or Aether and the Results screen shows the conversion.
 
 Campaign resource awards are added to a persistent campaign bank with Crowns, Stone, Iron, and Aether. That bank is separate from temporary battle resources. Marcher Camp and Stronghold Development spend from it now; later shops, mercenaries, repairs, and broader upgrades should use the same bank.
+
+Rival relic rewards use the existing hero inventory and `equipment.relic` slot. Relic effects are active only when equipped, and Tutorial / Proving Grounds remains no-save and no-reward.
 
 ## Controls
 
@@ -400,7 +402,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Skill point allocation after level-up.
 - Rarity-weighted item rewards after victory.
 - Randomized item affixes V1 with slot-filtered stat packages, deterministic test generation, save persistence, equipment stat contribution, and Results/Inventory display.
-- Equipment slots: weapon, armor, trinket.
+- Equipment slots: weapon, armor, trinket, and the first one-slot relic loadout.
 - Five playable skirmish/campaign battle maps: First Claim, Broken Ford, Ashen Outpost, Cinderfen Crossing, and Cinderfen Watch.
 - Player base, enemy base, neutral camps, and capturable resource sites.
 - Four resources: Crowns, Stone, Iron, Aether.
@@ -417,6 +419,7 @@ Campaign resource awards are added to a persistent campaign bank with Crowns, St
 - Enemy Hero / Rival Commander V1 with Gorak Emberhand, Veyra of the Cinders, and Captain Malrec assigned to important campaign battles, plus scout feedback, minimap markers, modest abilities, XP/objective/results credit, and playtest telemetry.
 - Rival/Nemesis Persistence V1 with save-backed rival encounters, defeats, victories against the player, last outcomes, dispositions, small repeat-encounter modifiers, Campaign Map intel, Results consequences, and simulator telemetry.
 - Rival Rewards and Trophies V1 with data-driven first-defeat rewards, duplicate prevention, persistent trophy records, Campaign Map trophy display, Results reward copy, and simulator telemetry.
+- Persistent relic rewards for the three current rival champions, with unique relic inventory entries, equipped-only stat effects, duplicate conversion, Results equip action, Hero Inventory loadout support, and Tutorial no-reward protection.
 - Simple enemy AI that expands, trains, defends, sends attack waves, and uses selectable/campaign-assigned personalities.
 - Shared victory/defeat Results screen with XP summary, item rewards, Equip Now, campaign node completion details, retry/return flow, and local hero save.
 - Pure `BattleRuntime` tests for setup, objectives, battle results, rewards, and save-output decisions.

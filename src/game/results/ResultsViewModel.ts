@@ -88,6 +88,12 @@ export function initialResultsStatus(data: ResultsData): string {
   if (data.launchRequest?.mode === "tutorial") {
     return "Tutorial run complete. This training path is no-save and no-reward, so campaign progress, items, XP, and hero changes were not saved.";
   }
+  if (data.relicReward?.status === "granted") {
+    return `${data.relicReward.item.name} was added to inventory. Relic effects are active when equipped.`;
+  }
+  if (data.relicReward?.status === "duplicate_converted") {
+    return `${data.relicReward.item.name} was already owned, so the duplicate relic converted to resources.`;
+  }
   if (isRepeatBattleClear(data)) {
     return "Repeat clear complete. Reduced repeat rewards were applied; weighted item rolls and campaign node rewards do not duplicate.";
   }

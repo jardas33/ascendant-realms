@@ -79,6 +79,47 @@ describe("hero RPG progression rules", () => {
     expect(after.command - before.command).toBe(1);
   });
 
+  it("applies equipped relic effects and removes them when unequipped", () => {
+    const baseHero = createNewHeroSave("Mira", "warlord", "exiled_noble");
+    const relic = createItemInstance("outpost_command_signet", "test", "2026-05-27T21:30:00.000Z", {
+      affixes: []
+    });
+    const equippedHero = {
+      ...baseHero,
+      inventory: [relic],
+      equipment: { relic: relic.instanceId }
+    };
+
+    const before = calculateLiveHeroStats(
+      baseHero,
+      HERO_CLASS_BY_ID[baseHero.classId],
+      ORIGIN_BY_ID[baseHero.originId],
+      SKILL_NODE_BY_ID,
+      ITEM_BY_ID
+    );
+    const after = calculateLiveHeroStats(
+      equippedHero,
+      HERO_CLASS_BY_ID[equippedHero.classId],
+      ORIGIN_BY_ID[equippedHero.originId],
+      SKILL_NODE_BY_ID,
+      ITEM_BY_ID
+    );
+    const unequipped = calculateLiveHeroStats(
+      { ...equippedHero, equipment: {} },
+      HERO_CLASS_BY_ID[equippedHero.classId],
+      ORIGIN_BY_ID[equippedHero.originId],
+      SKILL_NODE_BY_ID,
+      ITEM_BY_ID
+    );
+
+    expect(after.maxHp - before.maxHp).toBe(24);
+    expect(after.armor - before.armor).toBe(1);
+    expect(after.command - before.command).toBe(1);
+    expect(unequipped.maxHp).toBe(before.maxHp);
+    expect(unequipped.armor).toBe(before.armor);
+    expect(unequipped.command).toBe(before.command);
+  });
+
   it("equips only owned items and picks new battle rewards deterministically", () => {
     const hero = createNewHeroSave("Tamsin", "shepherd", "temple_orphan");
     const denied = equipItem(hero, "green_chapel_icon", ITEM_BY_ID);

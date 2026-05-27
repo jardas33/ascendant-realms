@@ -103,11 +103,14 @@ export function validateRivalRewards(errors: string[], context: ValidationContex
 export function validateRelicRewards(errors: string[], context: ValidationContext): void {
   const seenEnemyHeroes = new Set<string>();
   RELIC_REWARD_DEFINITIONS.forEach((reward) => {
-    if (!reward.name.trim() || !reward.description.trim() || !reward.effectLabel.trim()) {
+    if (!reward.name.trim() || !reward.description.trim() || !reward.effectSummary.trim()) {
       errors.push(`Relic reward ${reward.id} needs name, description, and effect copy.`);
     }
-    if (reward.persistenceStatus !== "preview_only") {
-      errors.push(`Relic reward ${reward.id} must remain preview_only until persistence is designed.`);
+    if (reward.persistenceStatus !== "persistent_inventory") {
+      errors.push(`Relic reward ${reward.id} must use persistent_inventory status.`);
+    }
+    if (!context.itemIds.has(reward.itemId)) {
+      errors.push(`Relic reward ${reward.id} references missing item ${reward.itemId}.`);
     }
     if (!context.enemyHeroIds.has(reward.sourceEnemyHeroId)) {
       errors.push(`Relic reward ${reward.id} references missing enemy hero ${reward.sourceEnemyHeroId}.`);
@@ -116,17 +119,15 @@ export function validateRelicRewards(errors: string[], context: ValidationContex
       errors.push(`Relic reward ${reward.id} duplicates source enemy hero ${reward.sourceEnemyHeroId}.`);
     }
     seenEnemyHeroes.add(reward.sourceEnemyHeroId);
-    if (reward.previewXp < 0 || reward.previewXp > 25) {
-      errors.push(`Relic reward ${reward.id} preview XP must stay modest.`);
+    if (reward.tier !== "rival" || reward.category !== "hero_loadout") {
+      errors.push(`Relic reward ${reward.id} has invalid tier or category.`);
     }
-    Object.entries(reward.previewResources).forEach(([resource, amount]) => {
-      if (!context.resourceIds.has(resource)) {
-        errors.push(`Relic reward ${reward.id} references missing resource ${resource}.`);
-      }
-      if ((amount ?? 0) < 0 || (amount ?? 0) > 20) {
-        errors.push(`Relic reward ${reward.id} preview resource ${resource} must stay modest.`);
-      }
-    });
+    if (reward.duplicateCopiesAllowed || reward.duplicatePolicy !== "unique_duplicate_conversion") {
+      errors.push(`Relic reward ${reward.id} must block duplicate copies with unique duplicate conversion.`);
+    }
+    if (!reward.acquisitionSource.trim()) {
+      errors.push(`Relic reward ${reward.id} needs acquisition source copy.`);
+    }
     if (!Array.isArray(reward.tags) || reward.tags.length === 0) {
       errors.push(`Relic reward ${reward.id} should include at least one tag.`);
     }

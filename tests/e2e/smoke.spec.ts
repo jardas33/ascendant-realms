@@ -989,6 +989,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".results-panel")).toContainText("Victory");
     await expect(page.locator(".results-panel")).toContainText("Tutorial run complete");
     await expect(page.locator(".results-panel")).toContainText("no-save and no-reward");
+    await expect(page.locator(".results-panel")).not.toContainText("Relic Reward");
+    await expect(page.getByTestId("results-relic-reward")).toHaveCount(0);
     await expect(page.locator("button[data-results-action='retry']")).toContainText("Retry Tutorial");
     await expect(page.locator("button[data-results-action='menu']")).toContainText("Main Menu");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();

@@ -1,9 +1,8 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
 import { formatTime } from "../core/MathUtils";
-import { selectRelicRewardPreview } from "../core/RelicRewardRules";
 import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
-import { escapeHtml, formatXpProgress, titleCase } from "./ResultsFormatting";
+import { escapeHtml, formatDuplicateConversions, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
@@ -35,7 +34,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     </div>
     ${renderVeteranSummary(data)}
     ${renderRivalOutcome(data)}
-    ${renderRelicRewardPreview(data)}
+    ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
   `;
 }
@@ -68,34 +67,48 @@ export function renderRivalOutcome(data: ResultsData): string {
                <span>Trophy note</span><strong>${escapeHtml(rival.trophyEarned.description)}</strong>`
             : ""
         }
+        ${
+          rival.relicRewardText
+            ? `<span>Relic reward</span><strong>${escapeHtml(rival.relicRewardText)}</strong>`
+            : ""
+        }
       </div>
       <p class="quiet">Rival state persists on the campaign save. V1 rematch modifiers are small: escaped rivals gain +5% HP, and triumphant rivals gain +5% damage.</p>
     </section>
   `;
 }
 
-export function renderRelicRewardPreview(data: ResultsData): string {
-  const preview = selectRelicRewardPreview({
-    outcome: data.stats.outcome,
-    mode: data.launchRequest?.mode,
-    rewardsDisabled: data.launchRequest?.rewardsDisabled,
-    enemyHeroId: data.stats.enemyHeroId ?? data.launchRequest?.enemyHeroId,
-    enemyHeroDefeated: data.stats.enemyHeroDefeated
-  });
-  if (!preview) {
+export function renderRelicReward(data: ResultsData): string {
+  const reward = data.relicReward;
+  if (!reward) {
     return "";
   }
-  const { definition } = preview;
+  const { definition, item } = reward;
+  const equipped = reward.itemInstance ? data.heroSave.equipment.relic === reward.itemInstance.instanceId : false;
+  const inventoryStatus =
+    reward.status === "granted"
+      ? reward.inventoryLabel
+      : `Duplicate handling: ${formatDuplicateConversions(reward.duplicateConversion ? [reward.duplicateConversion] : [])}`;
   return `
-    <section class="result-block wide relic-reward-preview" data-testid="results-relic-reward-preview">
-      <h2>Relic Reward Preview</h2>
+    <section class="result-block wide relic-reward" data-testid="results-relic-reward">
+      <h2>Relic Reward</h2>
       <div class="results-grid compact">
-        <span>Relic candidate</span><strong>${escapeHtml(definition.name)}</strong>
+        <span>Relic result</span><strong>${escapeHtml(definition.name)}</strong>
         <span>Source</span><strong>${escapeHtml(definition.sourceLabel)}</strong>
-        <span>Reward status</span><strong>${escapeHtml(preview.earnedLabel)}</strong>
-        <span>Preview effect</span><strong>${escapeHtml(definition.effectLabel)}</strong>
+        <span>Inventory</span><strong>${escapeHtml(inventoryStatus)}</strong>
+        <span>Equipped effect</span><strong>${escapeHtml(definition.effectSummary)}</strong>
+        <span>Stat summary</span><strong>${escapeHtml(formatStatMods(item.statMods))}</strong>
       </div>
-      <p class="quiet">${escapeHtml(preview.persistenceLabel)}</p>
+      <p class="quiet">Relic effects are active when equipped.</p>
+      ${
+        reward.itemInstance
+          ? `<div class="reward-actions relic-actions">
+              <button data-results-action="equip" data-item-id="${escapeHtml(reward.itemInstance.instanceId)}" ${
+                equipped ? "disabled" : ""
+              }>${equipped ? "Relic Equipped" : "Equip Relic"}</button>
+            </div>`
+          : ""
+      }
     </section>
   `;
 }

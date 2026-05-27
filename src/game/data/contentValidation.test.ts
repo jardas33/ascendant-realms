@@ -9,6 +9,7 @@ import { BORDER_MARCHES_REWARD_TABLES, CINDERFEN_ROAD_REWARD_TABLES } from "./ca
 import { CINDERFEN_ROAD_NODES } from "./cinderfenRoadNodes";
 import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
+import { ITEMS } from "./items";
 import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
@@ -861,17 +862,20 @@ describe("content validation", () => {
     });
   });
 
-  it("defines tiny preview-only relic reward candidates for rival champion defeats", () => {
+  it("defines tiny persistent relic reward candidates for rival champion defeats", () => {
     expect(RELIC_REWARD_DEFINITIONS.map((reward) => reward.sourceEnemyHeroId)).toEqual([
       "gorak_emberhand",
       "veyra_cinders",
       "captain_malrec"
     ]);
     RELIC_REWARD_DEFINITIONS.forEach((reward) => {
-      expect(reward.persistenceStatus).toBe("preview_only");
-      expect(reward.previewXp).toBeGreaterThan(0);
-      expect(reward.previewXp).toBeLessThanOrEqual(25);
-      expect(reward.effectLabel).toContain("Preview effect");
+      const item = ITEMS.find((entry) => entry.id === reward.itemId);
+      expect(reward.persistenceStatus).toBe("persistent_inventory");
+      expect(reward.duplicateCopiesAllowed).toBe(false);
+      expect(reward.duplicatePolicy).toBe("unique_duplicate_conversion");
+      expect(reward.effectSummary).toContain("Equipped effect");
+      expect(item?.slot).toBe("relic");
+      expect(item?.unique).toBe(true);
       expect(ENEMY_HEROES.some((hero) => hero.id === reward.sourceEnemyHeroId)).toBe(true);
     });
   });

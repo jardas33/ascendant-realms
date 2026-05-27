@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.30-v0.31 rival champion and relic reward foundation",
+          checkpoint: "v0.32-v0.33 persistent relic inventory and hero loadout foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -143,6 +143,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V030_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Rival champion report" },
       { path: "V031_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic reward report" },
       { path: "V031_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.31 retest" },
+      { path: "V032_PERSISTENT_RELIC_INVENTORY_SPEC.md", sizeBytes: 20, textContent: "Persistent relic inventory spec" },
+      { path: "V033_HERO_RELIC_LOADOUT_SPEC.md", sizeBytes: 20, textContent: "Hero relic loadout spec" },
+      { path: "V032_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Persistent relic inventory report" },
+      { path: "V033_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero relic loadout report" },
+      { path: "V033_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.33 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

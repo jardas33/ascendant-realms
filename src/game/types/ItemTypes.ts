@@ -102,15 +102,22 @@ export interface RewardLevelUpSummary {
   skillPointsGained: number;
 }
 
+export type RelicRewardPersistenceStatus = "persistent_inventory";
+
 export interface RelicRewardDefinition {
   id: string;
+  itemId: string;
   name: string;
   sourceEnemyHeroId: string;
   sourceLabel: string;
   description: string;
-  effectLabel: string;
-  persistenceStatus: "preview_only";
-  previewXp: number;
-  previewResources: Partial<ResourceBag>;
+  effectSummary: string;
+  persistenceStatus: RelicRewardPersistenceStatus;
+  rarity: ItemRarity;
+  tier: "rival";
+  category: "hero_loadout";
+  acquisitionSource: string;
+  duplicateCopiesAllowed: boolean;
+  duplicatePolicy: "unique_duplicate_conversion";
   tags: string[];
 }

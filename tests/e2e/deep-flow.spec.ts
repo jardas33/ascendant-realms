@@ -6050,8 +6050,17 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".results-panel")).toContainText("Enemy commander");
     await expect(page.locator(".results-panel")).toContainText("Captain Malrec");
     await expect(page.locator(".results-panel")).toContainText("Commander defeated");
-    await expect(page.getByTestId("results-relic-reward-preview")).toContainText("Outpost Command Signet");
-    await expect(page.getByTestId("results-relic-reward-preview")).toContainText("Future persistence pending");
+    await expect(page.getByTestId("results-relic-reward")).toContainText("Outpost Command Signet");
+    await expect(page.getByTestId("results-relic-reward")).toContainText("added to hero inventory");
+    await expect(page.getByTestId("results-relic-reward")).toContainText("Relic effects are active when equipped");
+    let save = await readSave(page);
+    const relicInstance = save.hero.inventory.find((item: { itemId: string }) => item.itemId === "outpost_command_signet");
+    expect(relicInstance).toBeTruthy();
+    expect(save.hero.equipment.relic).toBeUndefined();
+    await clickReady(page.getByRole("button", { name: "Equip Relic" }), "deep-flow equip rewarded relic");
+    await expect(page.locator(".status-box")).toContainText("Outpost Command Signet equipped");
+    save = await readSave(page);
+    expect(save.hero.equipment.relic).toBe(relicInstance.instanceId);
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");
@@ -6060,6 +6069,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(summaryText).toMatch(/Capture the Burned Shrine\s+Completed/);
     expect(summaryText).toMatch(/Destroy Enemy Barracks\s+Completed/);
     expect(summaryText).toMatch(/Defeat Captain Malrec\s+Completed/);
+    await clickReady(page.locator("button[data-results-action='inventory']"), "deep-flow open inventory after relic equip");
+    await expect(page.getByTestId("hero-inventory")).toBeVisible();
+    await expect(page.getByTestId("equipment-panel")).toContainText("Relic");
+    await expect(page.getByTestId("equipment-panel")).toContainText("Outpost Command Signet");
+    await expect(page.getByTestId("hero-stats")).toContainText("HP");
   });
 
   test("Old Stone Road victory unlocks the next campaign layer without repeat-starting completed rewards @hosted-deep-campaign", async ({ page }) => {

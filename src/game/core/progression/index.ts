@@ -5,4 +5,5 @@ export * from "./HeroStatRules";
 export * from "./HeroLevelRules";
 export * from "./ItemRewardRules";
 export * from "./LevelingRules";
+export * from "./RelicInventoryRules";
 export * from "./SkillRules";

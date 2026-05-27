@@ -1,5 +1,6 @@
 import type { BattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import type { BattleRewardResult, BattleStats, ResourceBag, RewardLevelUpSummary } from "../core/GameTypes";
+import type { RelicRewardAcquisition } from "../core/RelicRewardRules";
 import type { RivalBattleOutcomeSummary } from "../core/RivalRules";
 import type { HeroSaveData } from "../save/SaveTypes";
 
@@ -23,4 +24,5 @@ export interface ResultsData {
   launchRequest?: BattleLaunchRequest;
   campaignResult?: CampaignResultsData;
   rivalResult?: RivalBattleOutcomeSummary;
+  relicReward?: RelicRewardAcquisition;
 }

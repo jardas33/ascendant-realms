@@ -90,7 +90,7 @@ export class HeroProgressionScene extends Phaser.Scene {
       }
       if (action === "unequip") {
         const slot = button.dataset.slot;
-        if (slot === "weapon" || slot === "armor" || slot === "trinket") {
+        if (slot === "weapon" || slot === "armor" || slot === "trinket" || slot === "relic") {
           const result = unequipItem(this.heroSave, slot);
           this.applyProgressionResult(result.hero, result.message, result.ok);
         }
@@ -188,6 +188,7 @@ export class HeroProgressionScene extends Phaser.Scene {
             </section>
             <section>
               <h2>Equipment</h2>
+              <p class="quiet">Relic effects are active when equipped.</p>
               <div data-testid="equipment-panel">${renderEquipmentPanel(equipment)}</div>
               <h2>Inventory</h2>
               <div data-testid="inventory-list">${renderInventoryPanel(inventory)}</div>

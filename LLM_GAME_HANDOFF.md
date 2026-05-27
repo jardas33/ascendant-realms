@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.30-v0.31 rival champion and relic reward foundation remote matrix green closeout
+Last updated: 2026-05-27 v0.32-v0.33 persistent relic inventory and hero loadout foundation closeout ready
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -8,7 +8,65 @@ This file is the main continuation note for future LLMs working on Ascendant Rea
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
 
-## Current v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
+## Current v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation - 2026-05-27
+
+Status: v0.32-v0.33 promotes the v0.31 relic reward preview into a tiny persistent RPG reward loop. It uses the existing hero item-instance inventory and `equipment.relic` slot, adds no save-version bump, and keeps Tutorial / Proving Grounds no-save/no-reward. It does not add maps, factions, runtime art/assets, shop, crafting, broad inventory UI, reward-choice modal, broad AI/pathing rewrites, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `3410b4f`, `ascendant-realms-private-playtest-3410b4f`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push Fast confidence on `3410b4f` passed. The last manual release matrix was green on `62e35ae`; final `3410b4f` was docs/package closeout only.
+
+Included work:
+
+- Added `docs/V032_PERSISTENT_RELIC_INVENTORY_SPEC.md`.
+- Added `docs/V033_HERO_RELIC_LOADOUT_SPEC.md`.
+- Added `docs/V032_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V033_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V033_EMMANUEL_RETEST_CHECKLIST.md`.
+- Promoted `emberbrand_shard`, `cinderseer_focus`, and `outpost_command_signet` into unique `slot: "relic"` item definitions.
+- Added relic inventory helpers that derive acquired/equipped relic ids from existing save-safe inventory/equipment data.
+- Updated rival champion defeat flow so eligible campaign victories grant the matching persistent relic or convert a unique duplicate once.
+- Added Results relic reward copy, inventory status, equipped-effect copy, stat summary, and an `Equip Relic` action.
+- Added Hero Inventory relic equip/unequip support through the existing equipment panel.
+- Added battle HUD equipped relic summary.
+- Updated package metadata and validation to require the v0.32-v0.33 docs.
+
+Save format:
+
+- No save version bump.
+- Existing saves without relic inventory or `equipment.relic` load safely.
+- Unknown relic/item ids remain loadable and are ignored by known relic inventory/effect helpers.
+- `equipment.relic` uses existing item instance ids; old legacy item-id equipment references normalize through the existing loader.
+
+Verification:
+
+```text
+npx vitest run src/game/core/RelicRewardRules.test.ts src/game/core/RivalRules.test.ts src/game/core/SaveSystem.test.ts src/game/core/HeroProgressionRules.test.ts src/game/results/ResultsViewModel.test.ts src/game/ui/hudPanels/HeroHudPanel.test.ts src/game/data/contentValidation.test.ts PASS, 7 files / 107 tests.
+npm test PASS, 73 files / 546 tests.
+npm run build PASS with the known Vite Phaser chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives" --reporter=line PASS, 1 hosted test.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-3410b4f-dirty` generated.
+npm run verify:playtest-package PASS, 100 checks against the dirty pre-commit package.
+npm run test:e2e:release ATTEMPTED; first local dev-server run reported transient boot/layout/smoke timing failures. Exact affected file:line rerun PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.32-v0.33 persistent relic inventory and hero loadout foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
+
+## v0.30-v0.31 Rival Champion And Relic Reward Foundation - 2026-05-27
 
 Status: v0.30-v0.31 adds a narrow rival champion AI safety pass and a preview-only relic reward foundation. It uses existing enemy commander assets/systems only. It does not add maps, factions, runtime art/assets, save migration, inventory overhaul, broad AI/pathing rewrites, global rebalance, Patrol, formations, or complex loot. Remote release-matrix closeout is green after two hosted deep-battle harness follow-ups.
 

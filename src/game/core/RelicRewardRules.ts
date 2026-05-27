@@ -1,7 +1,12 @@
 import type { BattleLaunchMode } from "../battle/BattleLaunchRequest";
-import { RELIC_REWARD_BY_ENEMY_HERO_ID, type RelicRewardDefinition } from "../data/relicRewards";
+import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
+import type { ItemDefinition, ItemDuplicateConversion, ItemInstance, RelicRewardDefinition } from "./GameTypes";
+import type { HeroSaveData } from "../save/SaveTypes";
+import { createItemInstance } from "./progression/AffixRules";
+import { createUniqueDuplicateConversion } from "./progression/DuplicateRewardRules";
+import { heroOwnsRelic } from "./progression/RelicInventoryRules";
 
-export interface RelicRewardPreviewInput {
+export interface RelicRewardEligibilityInput {
   outcome: "victory" | "defeat";
   mode?: BattleLaunchMode;
   rewardsDisabled?: boolean;
@@ -9,16 +14,18 @@ export interface RelicRewardPreviewInput {
   enemyHeroDefeated?: boolean;
 }
 
-export interface RelicRewardPreview {
+export type RelicRewardAcquisitionStatus = "granted" | "duplicate_converted";
+
+export interface RelicRewardAcquisition {
   definition: RelicRewardDefinition;
-  earnedLabel: string;
-  persistenceLabel: string;
+  item: ItemDefinition;
+  status: RelicRewardAcquisitionStatus;
+  itemInstance?: ItemInstance;
+  duplicateConversion?: ItemDuplicateConversion;
+  inventoryLabel: string;
 }
 
-export const RELIC_REWARD_PREVIEW_PERSISTENCE_COPY =
-  "Future persistence pending: this relic is shown for reward-readability testing only and is not added to inventory or saved.";
-
-export function selectRelicRewardPreview(input: RelicRewardPreviewInput): RelicRewardPreview | undefined {
+export function selectEligibleRelicRewardDefinition(input: RelicRewardEligibilityInput): RelicRewardDefinition | undefined {
   if (
     input.outcome !== "victory" ||
     input.mode === "tutorial" ||
@@ -32,9 +39,52 @@ export function selectRelicRewardPreview(input: RelicRewardPreviewInput): RelicR
   if (!definition) {
     return undefined;
   }
+  return definition;
+}
+
+export function grantEligibleRelicReward(options: {
+  hero: HeroSaveData;
+  itemById: Record<string, ItemDefinition>;
+  acquiredAt: string;
+} & RelicRewardEligibilityInput): { hero: HeroSaveData; relicReward?: RelicRewardAcquisition } {
+  const definition = selectEligibleRelicRewardDefinition(options);
+  if (!definition) {
+    return { hero: options.hero };
+  }
+  const item = options.itemById[definition.itemId];
+  if (!item || item.slot !== "relic") {
+    return { hero: options.hero };
+  }
+  if (heroOwnsRelic(options.hero, item.id, options.itemById)) {
+    const duplicateConversion = createUniqueDuplicateConversion(item);
+    return {
+      hero: options.hero,
+      relicReward: {
+        definition,
+        item,
+        status: "duplicate_converted",
+        duplicateConversion,
+        inventoryLabel: `${item.name} was already in inventory; duplicate converted.`
+      }
+    };
+  }
+
+  const itemInstance = createItemInstance(item.id, `relic_reward:${options.enemyHeroId ?? "unknown"}`, options.acquiredAt, {
+    item,
+    itemById: options.itemById,
+    affixes: []
+  });
   return {
-    definition,
-    earnedLabel: `${definition.name} previewed from ${definition.sourceLabel}.`,
-    persistenceLabel: RELIC_REWARD_PREVIEW_PERSISTENCE_COPY
+    hero: {
+      ...options.hero,
+      inventory: [...options.hero.inventory, itemInstance]
+    },
+    relicReward: {
+      definition,
+      item,
+      status: "granted",
+      itemInstance,
+      inventoryLabel: `${item.name} added to hero inventory.`
+    }
   };
 }
