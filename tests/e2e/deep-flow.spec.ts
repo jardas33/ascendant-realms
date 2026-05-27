@@ -563,6 +563,47 @@ async function clickWorldPoint(page: Page, point: { x: number; y: number }, butt
   await page.mouse.click(screen.x, screen.y, { button, delay: 40 });
 }
 
+async function clickMinimapPosition(
+  page: Page,
+  position: { x: number; y: number },
+  context: string
+): Promise<void> {
+  const target = await page.evaluate((clickPosition) => {
+    const minimap = document.querySelector<HTMLElement>("[data-testid='minimap']");
+    const box = minimap?.getBoundingClientRect();
+    if (!minimap || !box || box.width <= 0 || box.height <= 0) {
+      throw new Error("Expected visible minimap for click.");
+    }
+    const style = window.getComputedStyle(minimap);
+    const x = box.left + clickPosition.x;
+    const y = box.top + clickPosition.y;
+    const hit = document.elementFromPoint(x, y);
+    const hitMinimap = hit instanceof Element ? hit.closest("[data-minimap]") : null;
+    return {
+      x,
+      y,
+      visible:
+        style.display !== "none" &&
+        style.visibility !== "hidden" &&
+        Number(style.opacity || "1") > 0 &&
+        box.width > 0 &&
+        box.height > 0,
+      hitInsideMinimap: Boolean(hitMinimap),
+      insideBounds: x >= box.left && x <= box.right && y >= box.top && y <= box.bottom,
+      pointerEvents: style.pointerEvents
+    };
+  }, position);
+
+  expect(target.visible, `${context}: minimap is visible`).toBe(true);
+  expect(target.insideBounds, `${context}: minimap click point is inside bounds`).toBe(true);
+  expect(target.hitInsideMinimap, `${context}: minimap click point reaches the minimap`).toBe(true);
+  expect(target.pointerEvents, `${context}: minimap accepts pointer events`).not.toBe("none");
+
+  await page.mouse.move(target.x, target.y, { steps: 2 });
+  await page.waitForTimeout(50);
+  await page.mouse.click(target.x, target.y, { button: "left", delay: 40 });
+}
+
 async function clickWorldPointUntilEffect(
   page: Page,
   point: { x: number; y: number },
@@ -2489,7 +2530,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         }
       };
     });
-    await page.getByTestId("minimap").click({ position: minimapClickTarget.position });
+    await clickMinimapPosition(page, minimapClickTarget.position, "deep-flow minimap movement");
     await expect
       .poll(
         async () =>
@@ -4349,7 +4390,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         position: { x: Math.round(minimapBox.width * 0.82), y: Math.round(minimapBox.height * 0.78) }
       };
     });
-    await page.getByTestId("minimap").click({ position: minimapClickTarget.position });
+    await clickMinimapPosition(page, minimapClickTarget.position, "behaviour gauntlet minimap movement");
     await expect
       .poll(
         async () =>
