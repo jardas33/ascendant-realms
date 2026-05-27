@@ -59,3 +59,13 @@ Use narrow test-harness stabilization only:
 - Preserve coverage by asserting durable scene state instead of transient HUD copy.
 - Isolate deterministic setup from unrelated enemy-site pressure only inside hosted proxy tests.
 
+## Follow-Up Remote Run
+
+- First v0.29.2 fix commit: `45c7eb1`, `Checkpoint v0.29.2 hosted deep-battle recovery and release-matrix closeout`.
+- Push run `26490257582`: Fast confidence passed.
+- Manual release-matrix run `26490433401`: checkout succeeded; Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke` passed.
+- Hosted `deep-battle` remained red in job `78006853454`: 1 failed, 26 passed.
+- Failing test: `battle HUD supports minimap movement, fog toggle, and move commands @hosted-deep-battle`.
+- Artifact reviewed: `playwright-release-deep-battle` / artifact id `7231966813`.
+- Remote error on both initial run and retry: final `unit-order-summary` assertion expected `/Moving|Repositioning/`, but the side panel had legitimately returned to `Guarding`.
+- Classification: stale duplicate assertion after the shared move helper had already observed the transient movement summary. The durable scene move command was the stable behavior to assert.

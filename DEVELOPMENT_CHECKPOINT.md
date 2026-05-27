@@ -1,6 +1,6 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.29.2 hosted deep-battle local recovery; remote rerun pending
+Updated: 2026-05-27 v0.29.2 hosted deep-battle follow-up local recovery; remote rerun pending
 
 ## v0.29.2 Hosted Deep-Battle Recovery And Release-Matrix Closeout - 2026-05-27
 
@@ -18,6 +18,10 @@ Remote failure:
 - Manual release-matrix run `26484817685`: checkout/build/test execution succeeded, but hosted `deep-battle` failed in job `77989895354`.
 - Other release matrix groups passed in that run: Fast confidence, Release simulator, hosted `deep-meta`, `deep-campaign-pressure`, `layout-core`, `layout-cinderfen`, and `smoke`.
 - Remote artifact summary for hosted `deep-battle`: 3 failed, 1 flaky, 23 passed.
+- First v0.29.2 fix commit `45c7eb1` was pushed successfully.
+- Push run `26490257582` on `45c7eb1`: Fast confidence passed.
+- Manual release-matrix run `26490433401` on `45c7eb1`: checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke` passed.
+- Hosted `deep-battle` in run `26490433401` remained red in job `78006853454`: 1 failed, 26 passed. The remaining failure was a stale duplicate `unit-order-summary` movement assertion after the helper had already observed the transient moving/repositioning copy.
 
 Included work:
 
@@ -32,7 +36,8 @@ Included work:
 Fix summary:
 
 - Switched right-click world helper to a normal Playwright canvas-position click after explicit canvas hit-test verification; no `force` and no DOM fallback for canvas/world clicks.
-- Asserted durable scene movement state instead of transient status text.
+- Asserted durable scene movement state instead of transient status text, and now require durable scene movement before any optional transient movement-summary check.
+- Removed the older minimap/fog/move hosted test's duplicate wait against the short-lived movement summary after the helper succeeds.
 - Parked unrelated hostiles during deterministic player Worker/resource-site proxies.
 - Replaced same-DOM-node hover expectation with stable visible/enabled/label/pointer assertions.
 - Added real-mouse drag cleanup only when the scene still reports an active drag.
@@ -56,9 +61,11 @@ npm run test:e2e:release:hosted:smoke PASS, 14 tests.
 npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
 npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
 git diff --check PASS.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "battle HUD supports minimap movement, fog toggle, and move commands" --repeat-each=5 --retries=0 --trace=retain-on-failure --reporter=line PASS, 5 tests after the stale-summary follow-up fix.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: full local verification, push, remote Fast confidence inspection, manual release-matrix rerun/inspection, package regeneration, package verification, final docs update, and final commit/package status.
+Closeout still required: final local checks as needed, follow-up commit/push, remote Fast confidence inspection, manual release-matrix rerun/inspection, package regeneration, package verification, final docs update, and final commit/package status.
 
 ## v0.29.1 Hero Progression Closeout And Blocked CI Documentation - 2026-05-26
 

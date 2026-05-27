@@ -760,11 +760,11 @@ async function rightClickWorldPointUntilOrder(
         )
         .then(() => true)
         .catch(() => false);
-      if (sceneOrderReached && !requireSummary) {
-        return;
-      }
-      if (!sceneOrderReached && !requireSummary) {
+      if (!sceneOrderReached) {
         throw new Error(`${context}: expected scene move target near ${JSON.stringify(candidatePoint)}`);
+      }
+      if (!requireSummary) {
+        return;
       }
       await expect(orderSummary, `${context}: expected right-click move command to update unit order`).toContainText(
         expectedOrder,
@@ -2528,7 +2528,6 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       MOVE_ORDER_SUMMARY_PATTERN,
       "deep-flow battle HUD movement command"
     );
-    await expect(page.getByTestId("unit-order-summary")).toContainText(MOVE_ORDER_SUMMARY_PATTERN);
   });
 
   test("battle HUD keeps construction on Worker selection and supports placement cancel @hosted-deep-battle", async ({ page }) => {

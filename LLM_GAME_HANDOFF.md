@@ -1,6 +1,6 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-27 v0.29.2 hosted deep-battle local recovery; remote rerun pending
+Last updated: 2026-05-27 v0.29.2 hosted deep-battle follow-up local recovery; remote rerun pending
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
@@ -25,6 +25,10 @@ Remote failure audit:
 - Manual release-matrix run `26484817685` failed hosted `deep-battle` in job `77989895354`.
 - Remote artifact `playwright-release-deep-battle` showed 3 failed, 1 flaky, and 23 passed.
 - Failures were classified as hosted Playwright actionability/input-delivery and stale assertion issues, plus unrelated enemy-site pressure in one Worker/site proxy. No runtime gameplay regression was found.
+- First v0.29.2 fix commit `45c7eb1` was pushed successfully.
+- Push run `26490257582` on `45c7eb1` passed Fast confidence.
+- Manual release-matrix run `26490433401` on `45c7eb1` passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Manual release-matrix run `26490433401` still failed hosted `deep-battle` in job `78006853454`: 1 failed, 26 passed. The remaining failure was a stale duplicate `unit-order-summary` movement assertion after the helper had already observed the transient moving/repositioning copy.
 
 Included work:
 
@@ -41,6 +45,8 @@ Test-harness summary:
 
 - World right-click commands now use a normal Playwright canvas-position click after the helper verifies the target is uncovered canvas; no `force` and no DOM fallback for canvas/world commands.
 - Movement assertions use durable scene state instead of transient status text.
+- The shared movement helper now requires durable scene movement state before any optional transient summary check.
+- The older minimap/fog/move hosted test no longer repeats a second wait against the short-lived movement summary after the helper succeeds.
 - Hosted Worker/site setup parks unrelated hostile units away before testing player Worker assignment/upgrades.
 - Hover-stability coverage asserts visible enabled button state instead of DOM node identity across HUD refresh.
 - Behaviour gauntlet marquee cleanup uses another real mouse release only if the scene still reports active dragging.
@@ -64,9 +70,11 @@ npm run test:e2e:release:hosted:smoke PASS, 14 tests.
 npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
 npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
 git diff --check PASS.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "battle HUD supports minimap movement, fog toggle, and move commands" --repeat-each=5 --retries=0 --trace=retain-on-failure --reporter=line PASS, 5 tests after the stale-summary follow-up fix.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
-Closeout still required: run the full local verification matrix, commit, push, inspect Fast confidence, trigger/inspect a manual release matrix with hosted `deep-battle`, document remote status, then regenerate and verify a clean package with no `-dirty` suffix.
+Closeout still required: run final local checks as needed, commit the follow-up fix/docs, push, inspect Fast confidence, trigger/inspect a manual release matrix with hosted `deep-battle`, document remote status, then regenerate and verify a clean package with no `-dirty` suffix.
 
 Emmanuel retest focus: use only the final clean v0.29.2 package after remote status and package verification are documented. Read `V0292_EMMANUEL_RETEST_CHECKLIST.md` and then re-run the v0.28-v0.29 hero progression retest with added attention to world move/retreat clicks, minimap movement, command-button hover stability, and Worker/resource-site upgrade regressions.
 

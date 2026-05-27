@@ -5,9 +5,11 @@ Scope: close out the hosted deep-battle recovery before any v0.30 work.
 
 ## Current Status
 
-- Local hosted `deep-battle`: green after the narrow test-harness fix.
-- Remote Fast confidence on the v0.29.2 fix commit: pending.
-- Remote manual release matrix on the v0.29.2 fix commit: pending.
+- Local hosted `deep-battle`: green after the narrow test-harness fix and the follow-up stale-summary assertion fix.
+- Remote Fast confidence on first v0.29.2 fix commit `45c7eb1`: passed in push run `26490257582`.
+- Remote manual release matrix on first v0.29.2 fix commit `45c7eb1`: run `26490433401` passed checkout, Fast confidence, Release simulator, hosted `deep-meta`, hosted `deep-campaign-pressure`, hosted `layout-core`, hosted `layout-cinderfen`, and hosted `smoke`.
+- Remote hosted `deep-battle` on run `26490433401`: failed one stale duplicate movement-summary assertion after the helper had already observed the transient move summary.
+- Follow-up fix: local only until the next push/manual matrix run.
 - Clean v0.29.2 tester package: pending until remote status is documented.
 
 ## Required Remote Evidence
@@ -33,6 +35,12 @@ PASS, 4 tests.
 
 npm run test:e2e:release:hosted:deep-battle
 PASS, 27 tests.
+
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "battle HUD supports minimap movement, fog toggle, and move commands" --repeat-each=5 --retries=0 --trace=retain-on-failure --reporter=line
+PASS, 5 tests after the stale-summary follow-up fix.
+
+npm run test:e2e:release:hosted:deep-battle
+PASS, 27 tests after the stale-summary follow-up fix.
 ```
 
 ```text
@@ -89,7 +97,7 @@ Do not send a v0.29.2 package until:
 
 ## Final Remote Status
 
-Pending.
+Pending. Latest manual matrix run `26490433401` is documented but not green because hosted `deep-battle` failed one stale duplicate assertion. Rerun after the follow-up fix is pushed.
 
 ## Final Package
 
