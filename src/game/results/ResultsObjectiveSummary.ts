@@ -1,8 +1,9 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
+import { formatRelicBuildArchetype } from "../core/RelicRewardRules";
 import { formatTime } from "../core/MathUtils";
 import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
-import { escapeHtml, formatDuplicateConversions, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
+import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
@@ -79,6 +80,9 @@ export function renderRivalOutcome(data: ResultsData): string {
 }
 
 export function renderRelicReward(data: ResultsData): string {
+  if (!data.relicReward && data.relicRewardChoice) {
+    return renderRelicRewardChoice(data);
+  }
   const reward = data.relicReward;
   if (!reward) {
     return "";
@@ -95,9 +99,12 @@ export function renderRelicReward(data: ResultsData): string {
       <div class="results-grid compact">
         <span>Relic result</span><strong>${escapeHtml(definition.name)}</strong>
         <span>Source</span><strong>${escapeHtml(definition.sourceLabel)}</strong>
+        <span>Build identity</span><strong>${escapeHtml(formatRelicBuildArchetype(definition))}</strong>
         <span>Inventory</span><strong>${escapeHtml(inventoryStatus)}</strong>
         <span>Equipped effect</span><strong>${escapeHtml(definition.effectSummary)}</strong>
+        <span>Build support</span><strong>${escapeHtml(definition.buildSummary)}</strong>
         <span>Stat summary</span><strong>${escapeHtml(formatStatMods(item.statMods))}</strong>
+        <span>Final equipped relic</span><strong>${equipped ? escapeHtml(item.name) : "No relic equipped from this reward yet"}</strong>
       </div>
       <p class="quiet">Relic effects are active when equipped.</p>
       ${
@@ -109,6 +116,46 @@ export function renderRelicReward(data: ResultsData): string {
             </div>`
           : ""
       }
+    </section>
+  `;
+}
+
+export function renderRelicRewardChoice(data: ResultsData): string {
+  const choice = data.relicRewardChoice;
+  if (!choice) {
+    return "";
+  }
+  return `
+    <section class="result-block wide relic-reward" data-testid="results-relic-choice">
+      <h2>Relic Reward Choice</h2>
+      <div class="results-grid compact">
+        <span>Source</span><strong>${escapeHtml(choice.sourceLabel)}</strong>
+        <span>Choice rule</span><strong>${escapeHtml(choice.choiceLabel)}</strong>
+      </div>
+      <div class="reward-list relic-choice-list">
+        ${choice.options
+          .map(
+            (option) => `
+              <article class="reward-card relic-choice-card ${option.sourceMatched ? "new" : ""}" data-testid="results-relic-choice-option">
+                <div>
+                  <strong>${escapeHtml(option.definition.name)} <span class="rarity-pill rarity-${escapeHtml(option.definition.rarity)}">${titleCase(option.definition.rarity)}</span></strong>
+                  <p>${escapeHtml(option.definition.choiceCopy)}</p>
+                  <small>${option.sourceMatched ? "Source champion choice" : "Alternate build choice"} - ${escapeHtml(formatRelicBuildArchetype(option.definition))}</small>
+                  <small>${escapeHtml(option.definition.effectSummary)}</small>
+                  <small>${escapeHtml(formatStatMods(option.item.statMods))}</small>
+                  <small>${escapeHtml(option.definition.buildSummary)}</small>
+                  <small>${escapeHtml(formatTags(option.definition.tags))}</small>
+                  <small>${option.owned ? "Owned already" : "Available for inventory"}</small>
+                </div>
+                <button data-results-action="choose_relic" data-relic-id="${escapeHtml(option.definition.id)}" ${option.owned ? "disabled" : ""}>
+                  ${option.owned ? "Already Owned" : choice.options.length === 1 ? "Claim Relic" : "Choose Relic"}
+                </button>
+              </article>
+            `
+          )
+          .join("")}
+      </div>
+      <p class="quiet">Relic effects are active when equipped. Choosing a relic adds it to hero inventory; Equip Relic applies its build effects.</p>
     </section>
   `;
 }

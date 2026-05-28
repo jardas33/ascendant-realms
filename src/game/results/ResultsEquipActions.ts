@@ -1,4 +1,5 @@
 import type { EquipmentSlot, HeroBaseStats, ItemDefinition } from "../core/GameTypes";
+import { grantRelicRewardChoiceSelection } from "../core/RelicRewardRules";
 import { calculateLiveHeroStats, findItemInstance } from "../core/HeroProgressionRules";
 import { equipRewardItemNow, type StatDelta } from "../core/ResultsFlow";
 import { HERO_CLASS_BY_ID, ITEM_BY_ID, ORIGIN_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
@@ -45,6 +46,46 @@ export function keepResultsRewardItem(data: ResultsData, itemInstanceId: string)
     ok: true,
     data,
     message: `${item.name} kept in inventory. Open Hero Inventory when you want to equip it.`
+  };
+}
+
+export function chooseResultsRelicReward(data: ResultsData, relicRewardId: string): ResultsEquipActionResult {
+  if (!data.relicRewardChoice) {
+    return {
+      ok: false,
+      data,
+      message: "There is no relic choice waiting on this Results screen."
+    };
+  }
+  const result = grantRelicRewardChoiceSelection({
+    hero: data.heroSave,
+    choice: data.relicRewardChoice,
+    relicRewardId,
+    itemById: ITEM_BY_ID,
+    acquiredAt: new Date().toISOString()
+  });
+  return {
+    ok: result.ok,
+    data: result.ok
+      ? {
+          ...data,
+          heroSave: result.hero,
+          relicReward: result.relicReward,
+          relicRewardChoice: undefined,
+          rivalResult: data.rivalResult
+            ? {
+                ...data.rivalResult,
+                relicReward: result.relicReward,
+                relicRewardChoice: undefined,
+                relicRewardText:
+                  result.relicReward?.status === "granted"
+                    ? `${result.relicReward.item.name} added to inventory. Relic effects are active when equipped.`
+                    : result.message
+              }
+            : data.rivalResult
+        }
+      : data,
+    message: result.message
   };
 }
 

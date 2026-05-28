@@ -6,7 +6,7 @@ import { SaveSystem, createFallbackCampaignSave } from "../core/SaveSystem";
 import { ITEM_BY_ID } from "../data/contentIndex";
 import { createNewHeroSave } from "../data/heroes";
 import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
-import { keepResultsRewardItem } from "./ResultsEquipActions";
+import { chooseResultsRelicReward, keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
 import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
@@ -444,6 +444,51 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Cinder-Seer Focus");
     expect(summaryHtml).toContain("Relic effects are active when equipped");
     expect(summaryHtml).toContain("Equip Relic");
+  });
+
+  it("renders and resolves an inline relic reward choice", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      stats: {
+        ...baseStats(),
+        enemyHeroId: "captain_malrec",
+        enemyHeroName: "Captain Malrec",
+        enemyHeroDefeated: true
+      },
+      relicRewardChoice: {
+        sourceDefinition: RELIC_REWARD_BY_ENEMY_HERO_ID.captain_malrec,
+        sourceEnemyHeroId: "captain_malrec",
+        sourceLabel: "Captain Malrec champion relic",
+        choiceLabel: "Choose one relic for this hero build.",
+        options: [
+          {
+            definition: RELIC_REWARD_BY_ENEMY_HERO_ID.captain_malrec,
+            item: ITEM_BY_ID.outpost_command_signet,
+            sourceMatched: true,
+            owned: false
+          },
+          {
+            definition: RELIC_REWARD_BY_ENEMY_HERO_ID.veyra_cinders,
+            item: ITEM_BY_ID.cinderseer_focus,
+            sourceMatched: false,
+            owned: false
+          }
+        ]
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+    const chosen = chooseResultsRelicReward(data, "outpost_command_signet");
+
+    expect(initialResultsStatus(data)).toContain("Relic choice available");
+    expect(summaryHtml).toContain("Relic Reward Choice");
+    expect(summaryHtml).toContain("Commander");
+    expect(summaryHtml).toContain("Choose Relic");
+    expect(chosen.ok).toBe(true);
+    expect(chosen.data.relicReward?.item.id).toBe("outpost_command_signet");
+    expect(chosen.data.relicRewardChoice).toBeUndefined();
+    expect(chosen.data.heroSave.inventory.map((instance) => instance.itemId)).toContain("outpost_command_signet");
   });
 
   it("keeps tutorial results free of relic reward grants", () => {

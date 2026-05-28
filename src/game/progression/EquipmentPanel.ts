@@ -2,7 +2,15 @@ import type { EquipmentSlot } from "../core/GameTypes";
 import { EQUIPMENT_SLOTS, findItemInstance } from "../core/HeroProgressionRules";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
-import { escapeHtml, formatItemAffixes, formatItemTotalStats, rarityClass, renderItemName, titleCase } from "./ItemComparison";
+import {
+  escapeHtml,
+  formatItemAffixes,
+  formatItemTotalStats,
+  formatRelicItemBuildText,
+  rarityClass,
+  renderItemName,
+  titleCase
+} from "./ItemComparison";
 
 export interface EquipmentPanelViewModel {
   slots: EquipmentSlotViewModel[];
@@ -15,6 +23,7 @@ export interface EquipmentSlotViewModel {
   instanceId?: string;
   statModsText?: string;
   affixText?: string;
+  buildIdentityText?: string;
   description?: string;
   flavorText?: string;
   rarityClassName?: string;
@@ -40,6 +49,7 @@ export function createEquipmentViewModel(heroSave: HeroSaveData, catalogs: HeroP
       instanceId: instance?.instanceId,
       statModsText: instance ? formatItemTotalStats(item, instance) : undefined,
       affixText: instance ? formatItemAffixes(item, instance) : undefined,
+      buildIdentityText: formatRelicItemBuildText(item),
       description: item.description,
       flavorText: item.flavorText,
       rarityClassName: rarityClass(item.rarity)
@@ -64,6 +74,7 @@ export function renderEquipmentPanel(viewModel: EquipmentPanelViewModel): string
                     ? `<span>${slot.itemNameHtml} - ${escapeHtml(slot.statModsText ?? "")}</span>
                       <small>Instance: ${escapeHtml(slot.instanceId ?? "")}</small>
                       <small class="affix-line">${escapeHtml(slot.affixText ?? "")}</small>
+                      ${slot.buildIdentityText ? `<small>${escapeHtml(slot.buildIdentityText)}</small>` : ""}
                       <p>${escapeHtml(slot.description ?? "")}</p>
                       <small>${escapeHtml(slot.flavorText ?? "")}</small>`
                     : "<span>Empty</span>"

@@ -3,7 +3,13 @@ import { AssetLoader } from "../assets/AssetLoader";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
-import { currentItemInSlot, equipResultsRewardItem, keepResultsRewardItem, previewEquipDeltas } from "../results/ResultsEquipActions";
+import {
+  chooseResultsRelicReward,
+  currentItemInSlot,
+  equipResultsRewardItem,
+  keepResultsRewardItem,
+  previewEquipDeltas
+} from "../results/ResultsEquipActions";
 import { escapeHtml } from "../results/ResultsFormatting";
 import {
   createCampaignMapReturnData,
@@ -64,6 +70,9 @@ export class ResultsScene extends Phaser.Scene {
     }
     if (action === "keep_inventory") {
       this.keepRewardItem(itemId);
+    }
+    if (action === "choose_relic") {
+      this.chooseRelicReward(button.dataset.relicId ?? "");
     }
     if (action === "add_retinue") {
       this.addRetinueUnit(button.dataset.unitInstanceId ?? "");
@@ -127,6 +136,19 @@ export class ResultsScene extends Phaser.Scene {
     }
     const result = keepResultsRewardItem(this.dataSnapshot, itemId);
     this.status = result.message;
+    this.render();
+  }
+
+  private chooseRelicReward(relicRewardId: string): void {
+    if (!this.dataSnapshot) {
+      return;
+    }
+    const result = chooseResultsRelicReward(this.dataSnapshot, relicRewardId);
+    this.status = result.message;
+    if (result.ok) {
+      this.dataSnapshot = result.data;
+      SaveSystem.saveHero(result.data.heroSave);
+    }
     this.render();
   }
 

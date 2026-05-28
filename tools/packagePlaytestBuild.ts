@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.32-v0.33 persistent relic inventory and hero loadout foundation";
+const CHECKPOINT = "v0.34-v0.35 relic reward choice and hero build identity";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -127,6 +127,11 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V032_IMPLEMENTATION_REPORT.md", join(packageDir, "V032_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V033_IMPLEMENTATION_REPORT.md", join(packageDir, "V033_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V033_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V033_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V034_RELIC_REWARD_CHOICE_SPEC.md", join(packageDir, "V034_RELIC_REWARD_CHOICE_SPEC.md"));
+  await copyMarkdown("docs/V035_HERO_BUILD_IDENTITY_SPEC.md", join(packageDir, "V035_HERO_BUILD_IDENTITY_SPEC.md"));
+  await copyMarkdown("docs/V034_IMPLEMENTATION_REPORT.md", join(packageDir, "V034_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V035_IMPLEMENTATION_REPORT.md", join(packageDir, "V035_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V035_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V035_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -210,7 +215,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.32-v0.33 persistent relic inventory and hero loadout retest, start with V032_PERSISTENT_RELIC_INVENTORY_SPEC.md, V033_HERO_RELIC_LOADOUT_SPEC.md, V032_IMPLEMENTATION_REPORT.md, V033_IMPLEMENTATION_REPORT.md, and V033_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.31 hero progression, rival champion, and relic foundation docs nearby as regression context. Focus on: Captain Malrec/Gorak/Veyra commander-defeat results, persistent relic inventory entries, duplicate conversion, Equip Relic from Results, Hero Inventory relic slot/equip/unequip, battle HUD equipped-relic summary, modest equipped-only stat effects, old-save compatibility, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, broad inventory UI, reward-choice modal, shop, crafting, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
+For the v0.34-v0.35 relic reward choice and hero build identity retest, start with V034_RELIC_REWARD_CHOICE_SPEC.md, V035_HERO_BUILD_IDENTITY_SPEC.md, V034_IMPLEMENTATION_REPORT.md, V035_IMPLEMENTATION_REPORT.md, and V035_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.33 hero progression, rival champion, relic persistence, and hero loadout docs nearby as regression context. Focus on: eligible rival champion victories showing an inline relic choice, selected relics entering persistent hero inventory, duplicate conversion only when every relic is already owned, Equip Relic from Results, Warrior/Seer/Commander build identity copy, Hero Inventory relic slot/equip/unequip readability, battle HUD equipped-relic summary, modest equipped-only stat effects, old-save compatibility, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, broad inventory UI, a modal reward picker, shop, crafting, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

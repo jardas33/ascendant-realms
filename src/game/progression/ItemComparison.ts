@@ -77,6 +77,22 @@ export function formatTags(tags: string[]): string {
   return tags.length > 0 ? `Tags: ${tags.map(titleCase).join(", ")}` : "No tags";
 }
 
+export function formatRelicItemBuildText(item: ItemDefinition): string | undefined {
+  if (item.slot !== "relic") {
+    return undefined;
+  }
+  if (item.tags.includes("warrior")) {
+    return "Build: Warrior damage relic.";
+  }
+  if (item.tags.includes("seer")) {
+    return "Build: Seer mana relic.";
+  }
+  if (item.tags.includes("commander")) {
+    return "Build: Commander durability relic.";
+  }
+  return "Build: relic effects are active when equipped.";
+}
+
 export function renderItemName(item: ItemDefinition): string {
   return `${escapeHtml(item.name)} <span class="rarity-pill ${rarityClass(item.rarity)}">${titleCase(item.rarity)}</span>`;
 }

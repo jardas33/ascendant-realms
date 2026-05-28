@@ -125,11 +125,17 @@ export function validateRelicRewards(errors: string[], context: ValidationContex
     if (reward.duplicateCopiesAllowed || reward.duplicatePolicy !== "unique_duplicate_conversion") {
       errors.push(`Relic reward ${reward.id} must block duplicate copies with unique duplicate conversion.`);
     }
-    if (!reward.acquisitionSource.trim()) {
-      errors.push(`Relic reward ${reward.id} needs acquisition source copy.`);
+    if (reward.buildArchetype !== "warrior" && reward.buildArchetype !== "seer" && reward.buildArchetype !== "commander") {
+      errors.push(`Relic reward ${reward.id} has invalid build archetype ${reward.buildArchetype}.`);
+    }
+    if (!reward.buildSummary.trim() || !reward.choiceCopy.trim() || !reward.acquisitionSource.trim()) {
+      errors.push(`Relic reward ${reward.id} needs build, choice, and acquisition copy.`);
     }
     if (!Array.isArray(reward.tags) || reward.tags.length === 0) {
       errors.push(`Relic reward ${reward.id} should include at least one tag.`);
+    }
+    if (!reward.tags.includes(reward.buildArchetype)) {
+      errors.push(`Relic reward ${reward.id} tags must include build archetype ${reward.buildArchetype}.`);
     }
   });
 }

@@ -103,6 +103,7 @@ export interface RewardLevelUpSummary {
 }
 
 export type RelicRewardPersistenceStatus = "persistent_inventory";
+export type RelicBuildArchetype = "warrior" | "seer" | "commander";
 
 export interface RelicRewardDefinition {
   id: string;
@@ -116,6 +117,9 @@ export interface RelicRewardDefinition {
   rarity: ItemRarity;
   tier: "rival";
   category: "hero_loadout";
+  buildArchetype: RelicBuildArchetype;
+  buildSummary: string;
+  choiceCopy: string;
   acquisitionSource: string;
   duplicateCopiesAllowed: boolean;
   duplicatePolicy: "unique_duplicate_conversion";

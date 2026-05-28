@@ -874,6 +874,10 @@ describe("content validation", () => {
       expect(reward.duplicateCopiesAllowed).toBe(false);
       expect(reward.duplicatePolicy).toBe("unique_duplicate_conversion");
       expect(reward.effectSummary).toContain("Equipped effect");
+      expect(["warrior", "seer", "commander"]).toContain(reward.buildArchetype);
+      expect(reward.tags).toContain(reward.buildArchetype);
+      expect(reward.buildSummary.length).toBeGreaterThan(0);
+      expect(reward.choiceCopy.length).toBeGreaterThan(0);
       expect(item?.slot).toBe("relic");
       expect(item?.unique).toBe(true);
       expect(ENEMY_HEROES.some((hero) => hero.id === reward.sourceEnemyHeroId)).toBe(true);

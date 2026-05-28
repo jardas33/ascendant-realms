@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.32-v0.33 persistent relic inventory and hero loadout foundation",
+          checkpoint: "v0.34-v0.35 relic reward choice and hero build identity",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -148,6 +148,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V032_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Persistent relic inventory report" },
       { path: "V033_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero relic loadout report" },
       { path: "V033_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.33 retest" },
+      { path: "V034_RELIC_REWARD_CHOICE_SPEC.md", sizeBytes: 20, textContent: "Relic reward choice spec" },
+      { path: "V035_HERO_BUILD_IDENTITY_SPEC.md", sizeBytes: 20, textContent: "Hero build identity spec" },
+      { path: "V034_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic reward choice report" },
+      { path: "V035_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero build identity report" },
+      { path: "V035_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.35 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

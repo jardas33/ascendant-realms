@@ -1,6 +1,66 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.32-v0.33 persistent relic inventory and hero loadout foundation closeout ready
+Updated: 2026-05-27 v0.34-v0.35 relic reward choice and hero build identity closeout ready
+
+## v0.34-v0.35 Relic Reward Choice And Hero Build Identity - 2026-05-27
+
+Scope: add a small inline relic reward choice flow and readable Warrior/Seer/Commander build identity on top of the existing persistent relic inventory and one-slot loadout. This pass changes relic metadata, rival reward resolution, Results selection/equip flow, Hero Inventory/Equipment/Battle HUD copy, package metadata, tests, and docs. It does not add maps, factions, runtime art/assets, shop, crafting, full inventory overhaul, large loot table, save-version bump, broad AI/pathing rewrites, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world interactions.
+
+Baseline:
+
+- Starting commit/package: `2a411ed`, `ascendant-realms-private-playtest-2a411ed`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26544741700` on `2a411ed` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V034_RELIC_REWARD_CHOICE_SPEC.md`.
+- Added `docs/V035_HERO_BUILD_IDENTITY_SPEC.md`.
+- Added `docs/V034_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V035_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V035_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `RelicRewardChoice` rules that offer the source champion relic first and one unowned alternate when available.
+- Added one-choice confirmation when only one unowned relic remains.
+- Preserved unique duplicate conversion when every relic is owned and blocked repeat farming.
+- Added required Warrior/Seer/Commander build archetypes, build summaries, choice copy, and validation.
+- Added Results choice UI, selected reward persistence, equip-now compatibility, final equipped relic state, and Tutorial no-choice protection.
+- Added build identity copy to Hero Inventory, Equipment rows, and battle HUD equipped relic summary.
+- Updated package metadata and validation to require the v0.34-v0.35 docs.
+- Added a scoped timeout to the broad mobile layout itinerary so it uses the existing hosted-layout-core budget while keeping all assertions intact.
+
+Save format:
+
+- No save-version bump.
+- Existing `HeroSaveData.inventory` and `HeroSaveData.equipment.relic` remain the only relic persistence fields.
+- Old saves without relic data load with empty relic state.
+- Unknown relic ids remain ignored by known relic inventory/effect helpers.
+
+Verification:
+
+```text
+npx vitest run src/game/core/RelicRewardRules.test.ts src/game/core/RivalRules.test.ts src/game/results/ResultsViewModel.test.ts src/game/ui/hudPanels/HeroHudPanel.test.ts src/game/data/contentValidation.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 6 files / 70 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm test PASS, 73 files / 549 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives" --reporter=line PASS, 1 hosted test.
+npm run test:e2e:smoke:fast PASS on rerun, 8 tests.
+npm run test:e2e:smoke PASS on rerun, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS after final relic-choice helper follow-up, 7 tests.
+npm run visual:qa PASS on rerun, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-2a411ed-dirty` generated.
+npm run verify:playtest-package PASS, 105 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Optional full release note: `npm run test:e2e:release` was attempted twice as extra evidence. The first attempt exposed the mobile-short campaign/setup/inventory/gallery layout itinerary exceeding the default 35s budget; after the scoped timeout change, the exact case passed. The second attempt exposed the new relic-choice click helper treating a successful disappearing choice button as a failure; the helper call was fixed and the focused Ashen Outpost plus hosted deep-campaign group passed. The full optional lane was not used as final release evidence.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation - 2026-05-27
 

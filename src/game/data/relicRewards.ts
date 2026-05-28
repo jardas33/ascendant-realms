@@ -13,10 +13,13 @@ export const RELIC_REWARD_DEFINITIONS: RelicRewardDefinition[] = [
     rarity: "rare",
     tier: "rival",
     category: "hero_loadout",
+    buildArchetype: "warrior",
+    buildSummary: "Warrior build: direct hero damage and might for players who want Aster fighting on the front line.",
+    choiceCopy: "Choose this to lean into a Warrior damage build.",
     acquisitionSource: "Defeat Gorak Emberhand in an eligible rewarded battle.",
     duplicateCopiesAllowed: false,
     duplicatePolicy: "unique_duplicate_conversion",
-    tags: ["rival", "damage", "might", "relic"]
+    tags: ["rival", "warrior", "damage", "might", "relic"]
   },
   {
     id: "cinderseer_focus",
@@ -30,10 +33,13 @@ export const RELIC_REWARD_DEFINITIONS: RelicRewardDefinition[] = [
     rarity: "rare",
     tier: "rival",
     category: "hero_loadout",
+    buildArchetype: "seer",
+    buildSummary: "Seer build: more mana and arcana for players who want steadier ability use.",
+    choiceCopy: "Choose this to lean into a Seer ability-support build.",
     acquisitionSource: "Defeat Veyra of the Cinders in an eligible rewarded battle.",
     duplicateCopiesAllowed: false,
     duplicatePolicy: "unique_duplicate_conversion",
-    tags: ["rival", "mana", "arcana", "relic"]
+    tags: ["rival", "seer", "mana", "arcana", "relic"]
   },
   {
     id: "outpost_command_signet",
@@ -47,10 +53,13 @@ export const RELIC_REWARD_DEFINITIONS: RelicRewardDefinition[] = [
     rarity: "epic",
     tier: "rival",
     category: "hero_loadout",
+    buildArchetype: "commander",
+    buildSummary: "Commander build: durability, armor, and command for players who want a steadier battle leader.",
+    choiceCopy: "Choose this to lean into a Commander durability build.",
     acquisitionSource: "Defeat Captain Malrec in an eligible rewarded battle.",
     duplicateCopiesAllowed: false,
     duplicatePolicy: "unique_duplicate_conversion",
-    tags: ["rival", "hp", "armor", "command", "relic"]
+    tags: ["rival", "commander", "hp", "armor", "command", "relic"]
   }
 ];
 

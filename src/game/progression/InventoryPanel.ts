@@ -7,6 +7,7 @@ import {
   formatItemAffixStats,
   formatItemBaseStats,
   formatItemTotalStats,
+  formatRelicItemBuildText,
   formatTags,
   previewEquipDelta,
   rarityClass,
@@ -27,6 +28,7 @@ export interface InventoryRowViewModel {
   affixStatModsText: string;
   totalStatModsText: string;
   tagsText: string;
+  buildIdentityText?: string;
   description: string;
   flavorText: string;
   itemNameHtml: string;
@@ -62,6 +64,7 @@ export function createInventoryViewModel({ heroSave, rewardItemIds, reward, cata
         affixStatModsText: formatItemAffixStats(item, instance),
         totalStatModsText: formatItemTotalStats(item, instance),
         tagsText: formatTags(item.tags),
+        buildIdentityText: formatRelicItemBuildText(item),
         description: item.description,
         flavorText: item.flavorText,
         itemNameHtml: renderItemName(item),
@@ -93,6 +96,7 @@ export function renderInventoryPanel(viewModel: InventoryPanelViewModel): string
                   <small class="affix-line">${escapeHtml(row.affixText)}</small>
                   <small>${escapeHtml(row.baseStatModsText)}</small>
                   <small>${escapeHtml(row.affixStatModsText)}</small>
+                  ${row.buildIdentityText ? `<small>${escapeHtml(row.buildIdentityText)}</small>` : ""}
                   <p>${escapeHtml(row.description)}</p>
                   <small>${escapeHtml(row.flavorText)}</small>
                   <small>${escapeHtml(row.tagsText)}</small>

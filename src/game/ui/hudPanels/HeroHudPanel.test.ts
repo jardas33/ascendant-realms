@@ -55,7 +55,7 @@ describe("HeroHudPanel", () => {
       })
     );
 
-    expect(html).toContain("Relic: Outpost Command Signet active");
+    expect(html).toContain("Relic: Outpost Command Signet active - Commander build");
   });
 
   it("renders ability availability and disabled states", () => {

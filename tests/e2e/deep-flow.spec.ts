@@ -6050,10 +6050,24 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".results-panel")).toContainText("Enemy commander");
     await expect(page.locator(".results-panel")).toContainText("Captain Malrec");
     await expect(page.locator(".results-panel")).toContainText("Commander defeated");
+    await expect(page.getByTestId("results-relic-choice")).toContainText("Relic Reward Choice");
+    await expect(page.getByTestId("results-relic-choice")).toContainText("Outpost Command Signet");
+    await expect(page.getByTestId("results-relic-choice")).toContainText("Commander");
+    let save = await readSave(page);
+    expect(save.hero.inventory.some((item: { itemId: string }) => item.itemId === "outpost_command_signet")).toBe(false);
+    await clickReady(
+      page.locator("button[data-results-action='choose_relic'][data-relic-id='outpost_command_signet']"),
+      "deep-flow choose source relic reward",
+      {
+        allowTargetGoneAfterClick: true,
+        successCheckAfterClick: async () => (await page.getByTestId("results-relic-reward").count()) > 0
+      }
+    );
     await expect(page.getByTestId("results-relic-reward")).toContainText("Outpost Command Signet");
     await expect(page.getByTestId("results-relic-reward")).toContainText("added to hero inventory");
     await expect(page.getByTestId("results-relic-reward")).toContainText("Relic effects are active when equipped");
-    let save = await readSave(page);
+    await expect(page.getByTestId("results-relic-reward")).toContainText("Commander");
+    save = await readSave(page);
     const relicInstance = save.hero.inventory.find((item: { itemId: string }) => item.itemId === "outpost_command_signet");
     expect(relicInstance).toBeTruthy();
     expect(save.hero.equipment.relic).toBeUndefined();

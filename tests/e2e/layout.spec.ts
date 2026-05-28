@@ -656,6 +656,7 @@ test.describe("Ascendant Realms responsive layout", () => {
     });
 
     test(`campaign, setup, inventory, and asset gallery remain reachable on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout ${viewport.label}` } });
       await continueSavedCampaign(page);

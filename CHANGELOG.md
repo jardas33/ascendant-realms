@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.34-v0.35 Relic Reward Choice And Hero Build Identity - 2026-05-27
+
+This checkpoint makes persistent relic rewards feel more intentional by adding a tiny inline Results choice flow and clearer Warrior/Seer/Commander build identity copy. It keeps the existing three relics and one relic slot. No maps, factions, runtime art/assets, shop, crafting, full inventory overhaul, large loot table, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V034_RELIC_REWARD_CHOICE_SPEC.md`.
+- Added `docs/V035_HERO_BUILD_IDENTITY_SPEC.md`.
+- Added `docs/V034_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V035_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V035_EMMANUEL_RETEST_CHECKLIST.md`.
+- Replaced eligible rival champion relic auto-grants with an inline Results relic choice.
+- Kept the source champion relic first and offered one unowned alternate when available.
+- Preserved one-choice confirmation when only one unowned relic remains.
+- Preserved unique duplicate conversion when every relic is already owned.
+- Added required relic build archetype, build summary, and choice copy metadata.
+- Added Warrior/Seer/Commander build identity copy to Results, Hero Inventory, Equipment, and battle HUD summaries.
+- Updated package metadata and validation to name `v0.34-v0.35 relic reward choice and hero build identity`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for relic reward choice timing and selected relic acquisition.
+- Gameplay numbers changed: no new relic effects and no global rebalance.
+- Save format changed: no save-version bump; existing inventory/equipment fields are still used.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial remains no-save/no-reward with no relic choice or grant.
+- Inventory/loot changed: yes, only in the small Results choice flow over the existing three unique relics.
+
+### Verification
+
+- Passed: focused relic/rival/results/HUD/content/package tests with 70 tests, `npm test` with 73 files / 549 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, targeted hosted Ashen Outpost relic-choice/equip proxy, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification with 105 checks, `git diff --check`, and targeted optional full-release follow-up reruns.
+- `npm run test:e2e:release` was attempted as an extra optional local full-suite gate. The first attempt exposed an existing mobile-short layout itinerary budget issue; a scoped timeout matching the other hosted layout tests was added and the exact case passed. The second attempt exposed the new relic-choice click helper treating a successful disappearing choice button as failure; that helper call was fixed and the focused hosted Ashen Outpost plus hosted deep-campaign group passed. The optional full release lane was not used as final release evidence.
+
 ## v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation - 2026-05-27
 
 This checkpoint turns the v0.31 relic reward preview into a tiny persistent RPG reward loop. It uses existing hero inventory/equipment save structures and adds one equipped relic slot without creating a broad inventory system. No maps, factions, runtime art/assets, shop, crafting, broad inventory UI, reward-choice modal, save-version bump, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks were added.

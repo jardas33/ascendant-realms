@@ -257,11 +257,11 @@ export const ITEMS: ItemDefinition[] = [
     slot: "relic",
     rarity: "rare",
     unique: true,
-    description: "A scorched command shard that turns a rival charge into a measured counterblow.",
+    description: "A Warrior relic for a direct damage build, turning a rival charge into a measured counterblow.",
     flavorText: "Warm ash clings to it no matter how often it is cleaned.",
     factionOrigin: "ashen_covenant",
     classAffinity: ["warlord"],
-    tags: ["rival", "relic", "damage", "might"],
+    tags: ["rival", "relic", "warrior", "damage", "might"],
     statMods: {
       damage: 2,
       might: 1
@@ -273,11 +273,11 @@ export const ITEMS: ItemDefinition[] = [
     slot: "relic",
     rarity: "rare",
     unique: true,
-    description: "A cracked emberglass focus that steadies spellcraft under pressure.",
+    description: "A Seer relic for a mana and ability-support build, steadying spellcraft under pressure.",
     flavorText: "Its fractures glow brightest when the battlefield goes quiet.",
     factionOrigin: "ashen_covenant",
     classAffinity: ["arcanist", "shepherd"],
-    tags: ["rival", "relic", "mana", "arcana"],
+    tags: ["rival", "relic", "seer", "mana", "arcana"],
     statMods: {
       maxMana: 18,
       arcana: 2
@@ -289,11 +289,11 @@ export const ITEMS: ItemDefinition[] = [
     slot: "relic",
     rarity: "epic",
     unique: true,
-    description: "A compact field signet used to hold an Ashen outpost line together.",
+    description: "A Commander relic for a durable leadership build, holding an Ashen outpost line together.",
     flavorText: "It feels less like jewelry than a piece of the wall.",
     factionOrigin: "ashen_covenant",
     classAffinity: ["warlord", "shepherd"],
-    tags: ["rival", "relic", "hp", "armor", "command"],
+    tags: ["rival", "relic", "commander", "hp", "armor", "command"],
     statMods: {
       maxHp: 24,
       armor: 1,

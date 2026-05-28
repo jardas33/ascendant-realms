@@ -25,10 +25,23 @@ export function renderHeroHudPanel(hero: Hero): string {
         <div class="xp-meter"><span style="width:${heroXpPercent(hero)}%"></span></div>
         <small>XP ${hero.xp} - Skill ${hero.skillPoints} - DMG ${Math.round(hero.damage)} - ARM ${Math.round(hero.armor)}</small>
         <small>Abilities ${hero.unlockedAbilities.length}/${classAbilityCount} unlocked</small>
-        <small>Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active` : "Empty"}</small>
+        <small>Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active - ${escapeHtml(relicBuildLabel(relicItem.tags))}` : "Empty"}</small>
       </div>
     </div>
   `;
+}
+
+function relicBuildLabel(tags: string[]): string {
+  if (tags.includes("warrior")) {
+    return "Warrior build";
+  }
+  if (tags.includes("seer")) {
+    return "Seer build";
+  }
+  if (tags.includes("commander")) {
+    return "Commander build";
+  }
+  return "Build relic";
 }
 
 export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): string {

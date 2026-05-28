@@ -88,6 +88,10 @@ export function initialResultsStatus(data: ResultsData): string {
   if (data.launchRequest?.mode === "tutorial") {
     return "Tutorial run complete. This training path is no-save and no-reward, so campaign progress, items, XP, and hero changes were not saved.";
   }
+  if (data.relicRewardChoice) {
+    const optionNames = data.relicRewardChoice.options.map((option) => option.item.name).join(" or ");
+    return `Relic choice available: choose ${optionNames}. Relic effects are active when equipped.`;
+  }
   if (data.relicReward?.status === "granted") {
     return `${data.relicReward.item.name} was added to inventory. Relic effects are active when equipped.`;
   }

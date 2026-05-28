@@ -4,9 +4,10 @@ import { createItemInstance } from "./progression/AffixRules";
 import { calculateRewardLevelProgress } from "./progression/LevelingRules";
 import { heroOwnsRelic } from "./progression/RelicInventoryRules";
 import {
-  grantEligibleRelicReward,
+  createEligibleRelicRewardChoice,
   selectEligibleRelicRewardDefinition,
-  type RelicRewardAcquisition
+  type RelicRewardAcquisition,
+  type RelicRewardChoice
 } from "./RelicRewardRules";
 import type { CampaignNodeDefinition, CombatStats, ResourceBag, ResourceKey } from "./GameTypes";
 import { CAMPAIGN_NODE_BY_ID, ENEMY_HERO_BY_ID, FACTION_BY_ID, ITEM_BY_ID } from "../data/contentIndex";
@@ -38,6 +39,7 @@ export interface RivalBattleOutcomeSummary {
   duplicateFirstDefeatRewardPrevented: boolean;
   trophyEarned?: RivalTrophySaveData;
   relicReward?: RelicRewardAcquisition;
+  relicRewardChoice?: RelicRewardChoice;
   relicRewardText?: string;
   rewardXp: number;
   activeModifiers: RivalModifierId[];
@@ -221,6 +223,7 @@ export function updateRivalAfterBattle(options: {
   let duplicateFirstDefeatRewardPrevented = false;
   let trophyEarned: RivalTrophySaveData | undefined;
   let relicReward: RelicRewardAcquisition | undefined;
+  let relicRewardChoice: RelicRewardChoice | undefined;
   let relicRewardText: string | undefined;
   let consequenceText = "";
   const next: CampaignRivalSaveData = {
@@ -271,22 +274,25 @@ export function updateRivalAfterBattle(options: {
       relicDefinition && relicItem && (firstDefeat || !heroOwnsRelic(hero, relicItem.id, ITEM_BY_ID))
     );
     if (shouldAttemptRelicGrant) {
-      const relicGrant = grantEligibleRelicReward({
+      const relicChoice = createEligibleRelicRewardChoice({
         hero,
         itemById: ITEM_BY_ID,
-        acquiredAt: options.acquiredAt ?? new Date().toISOString(),
         outcome: "victory",
         mode: "campaign_node",
         rewardsDisabled: false,
         enemyHeroId,
         enemyHeroDefeated: true
       });
-      hero = relicGrant.hero;
-      relicReward = relicGrant.relicReward;
+      relicRewardChoice = relicChoice.choice;
+      relicReward = relicChoice.duplicateReward;
       if (relicReward?.duplicateConversion) {
         campaign = addCampaignResourcesLocal(campaign, relicReward.duplicateConversion.resources);
       }
-      relicRewardText = relicReward ? formatRelicRewardText(relicReward) : undefined;
+      relicRewardText = relicReward
+        ? formatRelicRewardText(relicReward)
+        : relicRewardChoice
+          ? formatRelicChoiceText(relicRewardChoice)
+          : undefined;
     }
   } else if (options.playerWon) {
     next.lastOutcome = "escaped";
@@ -323,6 +329,7 @@ export function updateRivalAfterBattle(options: {
       duplicateFirstDefeatRewardPrevented,
       trophyEarned,
       relicReward,
+      relicRewardChoice,
       relicRewardText,
       rewardXp,
       activeModifiers: [...next.activeModifiers]
@@ -533,6 +540,11 @@ function formatRelicRewardText(reward: RelicRewardAcquisition): string {
     ).join(", ")}.`;
   }
   return `${reward.item.name} added to inventory. Relic effects are active when equipped.`;
+}
+
+function formatRelicChoiceText(choice: RelicRewardChoice): string {
+  const optionNames = choice.options.map((option) => option.item.name).join(" or ");
+  return `Relic choice available: ${optionNames}. Choose one relic on Results.`;
 }
 
 function formatResourceRewardParts(resources: Partial<ResourceBag>): string[] {
