@@ -271,6 +271,59 @@ describe("results scene helpers", () => {
     expect(initialResultsStatus(data)).toContain("resolve Cinderfen Aftermath");
   });
 
+  it("distinguishes campaign replay rewards and optional objective state on Results", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: {
+        ...heroSave,
+        clearedMapIds: ["ashen_outpost"]
+      },
+      stats: {
+        ...baseStats(),
+        completedObjectiveIds: ["capture_burned_shrine"]
+      },
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost"
+      }),
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: [],
+        unlockedNodeNames: [],
+        nodeReward: { itemIds: [], resources: {}, xp: 0 },
+        nodeLevelUp: { previousLevel: 1, newLevel: 1, levelsGained: 0, skillPointsGained: 0 },
+        campaignResources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
+        wasFirstClear: false,
+        wasReplay: true,
+        nodeRewardClaimed: false,
+        nodeRewardAlreadyClaimed: true,
+        optionalObjectives: [
+          {
+            key: "ashen_outpost:capture_burned_shrine",
+            objectiveId: "capture_burned_shrine",
+            name: "Burned Shrine",
+            description: "Capture the burned shrine before the main push.",
+            completedThisRun: true,
+            persisted: true,
+            newlyRecorded: false,
+            statusLabel: "Already recorded"
+          }
+        ]
+      }
+    });
+
+    const status = initialResultsStatus(data);
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(status).toContain("replay complete");
+    expect(status).toContain("campaign node rewards and one-time objective credit do not duplicate");
+    expect(summaryHtml).toContain("Completed - already recorded");
+  });
+
   it("reports when a victory reward is intentionally kept in inventory", () => {
     const rewardInstance = createItemInstance("weathered_command_sword", "results_test");
     const heroSave = {

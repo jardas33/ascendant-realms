@@ -45,6 +45,7 @@ interface CampaignMapData {
   heroSave?: HeroSaveData;
   campaignSave?: CampaignSaveData;
   completedNodeId?: string;
+  wasReplay?: boolean;
   stats?: BattleStats;
   message?: string;
 }
@@ -144,7 +145,8 @@ export class CampaignMapScene extends Phaser.Scene {
       this.render();
       return;
     }
-    if (status !== "available") {
+    const canReplay = node.nodeType === "battle" && status === "completed";
+    if (status !== "available" && !canReplay) {
       this.message = "That node is not available yet.";
       this.render();
       return;
@@ -300,7 +302,8 @@ export class CampaignMapScene extends Phaser.Scene {
   private renderCampaignActions(): string {
     const node = this.selectedNode();
     const hasChoices = Boolean(node?.choices?.length);
-    const primaryLabel = node?.nodeType === "battle" ? "Start Battle" : "Resolve Node";
+    const isReplay = Boolean(node && node.nodeType === "battle" && getCampaignNodeStatus(node, this.campaignSave) === "completed");
+    const primaryLabel = node?.nodeType === "battle" ? (isReplay ? "Replay Battle" : "Start Battle") : "Resolve Node";
     return `
       <div class="menu-actions row">
         ${hasChoices ? "" : `<button data-testid="campaign-start-node" data-campaign-action="start" ${this.canStartSelectedNode() ? "" : "disabled"}>${primaryLabel}</button>`}

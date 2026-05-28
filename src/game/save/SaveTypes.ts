@@ -120,6 +120,7 @@ export interface CampaignSaveData {
   unlockedNodeIds: string[];
   lockedNodeIds: string[];
   nodeRewardsClaimedIds: string[];
+  optionalObjectiveCompletionIds: string[];
   choiceIdsClaimed: string[];
   townServiceClaimedIds: string[];
   townServiceUseCounts: Record<string, number>;

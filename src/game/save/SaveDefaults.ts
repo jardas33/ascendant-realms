@@ -81,6 +81,7 @@ export function createFallbackCampaignSave(): CampaignSaveData {
     unlockedNodeIds: [],
     lockedNodeIds: [],
     nodeRewardsClaimedIds: [],
+    optionalObjectiveCompletionIds: [],
     choiceIdsClaimed: [],
     townServiceClaimedIds: [],
     townServiceUseCounts: {},

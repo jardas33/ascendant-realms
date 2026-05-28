@@ -434,6 +434,27 @@ describe("campaign map presentation helpers", () => {
     });
   });
 
+  it("shows replay, reward-claimed, optional objective, and build-hint copy for completed battle nodes", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["ashen_outpost"],
+      unlockedNodeIds: ["ashen_outpost"],
+      nodeRewardsClaimedIds: ["ashen_outpost"],
+      optionalObjectiveCompletionIds: ["ashen_outpost:capture_burned_shrine"]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
+
+    expect(canStartCampaignNode(node, campaign)).toBe(true);
+    expect(html).toContain("Battle - Replayable");
+    expect(html).toContain("Replay reward");
+    expect(html).toContain("Campaign node reward already claimed");
+    expect(html).toContain("Burned Shrine: Recorded");
+    expect(html).toContain("Build hint: Commander");
+  });
+
   it("keeps future placeholder nodes upcoming and impossible to launch", () => {
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const campaign = createStartedCampaignSave({

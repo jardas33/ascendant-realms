@@ -1,12 +1,76 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-28 v0.36-v0.38 hero skill tree and relic-build synergy closeout ready
+Last updated: 2026-05-28 v0.39-v0.41 campaign progression and mission reward closeout ready
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.39-v0.41 Campaign Progression And Mission Reward Foundation - 2026-05-28
+
+Status: v0.39-v0.41 adds the first proper campaign progression, mission reward, replay, and optional-objective state foundation. It connects campaign node completion, one-time mission rewards, replay-safe reduced rewards, rival champion relic choice, hero XP/skill reminders, and optional objective completion credit through existing campaign map and Results surfaces. It does not add maps, factions, runtime art/assets, shop, crafting, giant quest systems, broad campaign rewrites, save-version bumps, broad AI/pathing rewrites, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `ba7ac16`, `ascendant-realms-private-playtest-ba7ac16`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26570226010` on `ba7ac16` passed Fast confidence; heavier release-matrix lanes were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V039_CAMPAIGN_PROGRESSION_FOUNDATION_SPEC.md`.
+- Added `docs/V040_MISSION_REWARD_STRUCTURE_SPEC.md`.
+- Added `docs/V041_REPLAY_AND_OBJECTIVE_STATE_SPEC.md`.
+- Added `docs/V039_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V040_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V041_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V041_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added campaign mission reward/objective helpers in `src/game/core/campaign/CampaignMissionRules.ts`.
+- Made completed battle nodes replayable from the existing campaign map while keeping locked placeholder/choice nodes protected.
+- Added selected-node copy for first-clear, replay, campaign reward claimed/available state, optional objective progress, and small Warrior / Seer / Commander build hints.
+- Extended campaign completion so first-clear versus replay state, node reward claim state, and optional objective credit flow into Results.
+- Added one-time optional objective completion persistence for existing mission objective signals.
+- Preserved rival champion relic choice as the special reward source and blocked repeated unique reward farming through existing claim/duplicate rules.
+- Updated package metadata and validation to require the v0.39-v0.41 docs.
+
+Save format:
+
+- No save-version bump.
+- `CampaignSaveData.optionalObjectiveCompletionIds` was added as a backward-compatible optional-objective credit list.
+- Old saves without `optionalObjectiveCompletionIds` load with an empty list.
+- Unknown mission ids and unknown objective ids are filtered during save normalization.
+- Existing `completedNodeIds`, `nodeRewardsClaimedIds`, hero XP, relic inventory/equipment, and skill data remain the main progression stores.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npx vitest run src/game/core/SaveSystem.test.ts src/game/core/CampaignRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/campaign/CampaignMapViewModel.test.ts src/game/results/ResultsViewModel.test.ts PASS, 5 files / 110 tests.
+npx vitest run src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm test PASS, 73 files / 558 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives|Old Stone Road victory" --reporter=line PASS, 2 hosted tests.
+npm run test:e2e:smoke:fast PASS on rerun, 8 tests.
+npm run test:e2e:smoke PASS on rerun after focused campaign-node helper cleanup, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-ba7ac16-dirty` generated.
+npm run verify:playtest-package PASS, 119 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Optional full release note: `npm run test:e2e:release` was attempted as extra local full-suite evidence and hit the 30-minute command timeout before returning a summary. The temporary local Playwright/dev-server processes from that attempt were stopped. The required hosted release groups and visual QA above are the final release evidence for this checkpoint.
+
+Closeout note: commit as `Checkpoint v0.39-v0.41 campaign progression and mission reward foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.36-v0.38 Hero Skill Tree And Relic-Build Synergy - 2026-05-28
 

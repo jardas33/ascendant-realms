@@ -151,6 +151,42 @@ describe("campaign rules", () => {
     expect(repeated.campaign.resources.crowns).toBe(50);
   });
 
+  it("records optional objective completion once and ignores unknown objective ids", () => {
+    const campaign = createStartedCampaignSave();
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    const completed = completeCampaignNodeWithRewards({
+      campaign,
+      hero,
+      node,
+      completedObjectiveIds: ["capture_burned_shrine", "missing_objective"]
+    });
+    const repeated = completeCampaignNodeWithRewards({
+      campaign: completed.campaign,
+      hero: completed.hero,
+      node,
+      completedObjectiveIds: ["capture_burned_shrine"]
+    });
+
+    expect(completed.wasFirstClear).toBe(true);
+    expect(completed.wasReplay).toBe(false);
+    expect(completed.campaign.optionalObjectiveCompletionIds).toEqual(["ashen_outpost:capture_burned_shrine"]);
+    expect(completed.optionalObjectives.find((objective) => objective.objectiveId === "capture_burned_shrine")).toMatchObject({
+      completedThisRun: true,
+      newlyRecorded: true,
+      statusLabel: "Newly recorded"
+    });
+    expect(repeated.wasReplay).toBe(true);
+    expect(repeated.nodeReward.itemIds).toEqual([]);
+    expect(repeated.campaign.optionalObjectiveCompletionIds).toEqual(["ashen_outpost:capture_burned_shrine"]);
+    expect(repeated.optionalObjectives.find((objective) => objective.objectiveId === "capture_burned_shrine")).toMatchObject({
+      completedThisRun: true,
+      newlyRecorded: false,
+      statusLabel: "Already recorded"
+    });
+  });
+
   it("locks choices when costs or requirements are not met", () => {
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),

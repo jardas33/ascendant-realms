@@ -9,6 +9,7 @@ export interface CampaignNodeViewModel {
   selected: boolean;
   nodeTypeLabel: string;
   statusLabel: string;
+  rewardStateLabel?: string;
   testId: string;
   cssClass: string;
   style: string;

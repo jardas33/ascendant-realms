@@ -1256,7 +1256,6 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-ashen_outpost")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Unlocked");
-    await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), "smoke Cinderfen Overlook node");
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Scout the Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Aid the Marsh Refugees");
@@ -1467,8 +1466,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
     await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke completed Cinderfen Crossing detail");
-    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expect(page.getByTestId("campaign-start-node")).toContainText("Replay Battle");
     await expect(page.locator(".campaign-node-details")).toContainText("Unlocks");
+    await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Watch");
     await expect(page.locator(".campaign-node-details")).not.toContainText("Future map not implemented");
     save = await readStoredSave(page);
@@ -1483,7 +1484,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Locked/i);
     await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "smoke reloaded Cinderfen Crossing detail");
-    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expect(page.getByTestId("campaign-start-node")).toContainText("Replay Battle");
     save = await readStoredSave(page);
     expect(save.campaign.resources).toMatchObject(rewardSnapshot.resources);
     expect(save.hero.xp).toBe(rewardSnapshot.xp);
@@ -1612,7 +1614,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Available/i);
     await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "smoke completed Cinderfen Watch detail");
-    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expect(page.getByTestId("campaign-start-node")).toContainText("Replay Battle");
     await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), "smoke Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
     await expect(page.locator(".campaign-node-details")).toContainText("Secure the Watch Road");
@@ -1671,8 +1674,6 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen trophy campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await clickReady(page.getByTestId("campaign-node-cinderfen_overlook"), "smoke trophy Cinderfen Overlook node");
-
     const standardChoice = page.locator("button[data-campaign-choice='raise_malrecs_standard']");
     await expect(standardChoice).toBeEnabled();
     await expect(standardChoice).toContainText("Raise Malrec's Standard");

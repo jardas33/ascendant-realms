@@ -67,7 +67,8 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     const campaignCompletion = completeCampaignNodeWithRewards({
       campaign: storedCampaign,
       hero: completion.heroSave,
-      node
+      node,
+      completedObjectiveIds: completion.stats.completedObjectiveIds
     });
     const rivalUpdate = updateRivalAfterBattle({
       campaign: campaignCompletion.campaign,
@@ -101,7 +102,12 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
         unlockedNodeNames: newlyUnlockedNodeIds.map((nodeId) => requireCampaignNode(nodeId).name),
         nodeReward: campaignCompletion.nodeReward,
         nodeLevelUp: campaignCompletion.nodeLevelUp,
-        campaignResources: rivalUpdate.campaign.resources
+        campaignResources: rivalUpdate.campaign.resources,
+        wasFirstClear: campaignCompletion.wasFirstClear,
+        wasReplay: campaignCompletion.wasReplay,
+        nodeRewardClaimed: campaignCompletion.nodeRewardClaimed,
+        nodeRewardAlreadyClaimed: campaignCompletion.nodeRewardAlreadyClaimed,
+        optionalObjectives: campaignCompletion.optionalObjectives
       },
       rivalResult,
       relicReward: rivalResult?.relicReward,

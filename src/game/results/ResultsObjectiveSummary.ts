@@ -231,6 +231,7 @@ export function renderSpecialObjectives(data: ResultsData, map?: BattleMapDefini
     return "";
   }
   const completed = new Set(data.stats.completedObjectiveIds ?? []);
+  const campaignStates = new Map((data.campaignResult?.optionalObjectives ?? []).map((objective) => [objective.objectiveId, objective]));
   return `
     <section class="result-block wide special-objectives">
       <h2>Special Objectives</h2>
@@ -239,13 +240,31 @@ export function renderSpecialObjectives(data: ResultsData, map?: BattleMapDefini
           .map(
             (objective) => `
               <span>${escapeHtml(objective.name)}</span>
-              <strong>${completed.has(objective.id) ? "Completed" : "Incomplete"}</strong>
+              <strong>${escapeHtml(formatObjectiveResultStatus(objective.id, completed, campaignStates))}</strong>
             `
           )
           .join("")}
       </div>
     </section>
   `;
+}
+
+function formatObjectiveResultStatus(
+  objectiveId: string,
+  completed: Set<string>,
+  campaignStates: Map<string, NonNullable<NonNullable<ResultsData["campaignResult"]>["optionalObjectives"]>[number]>
+): string {
+  const campaignState = campaignStates.get(objectiveId);
+  if (campaignState?.newlyRecorded) {
+    return "Completed - newly recorded";
+  }
+  if (completed.has(objectiveId) && campaignState?.persisted) {
+    return "Completed - already recorded";
+  }
+  if (campaignState?.persisted) {
+    return "Previously recorded";
+  }
+  return completed.has(objectiveId) ? "Completed" : "Incomplete";
 }
 
 function renderXpProgress(data: ResultsData, viewModel: ResultsViewModel): string {

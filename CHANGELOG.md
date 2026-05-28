@@ -1,5 +1,39 @@
 # Changelog
 
+## v0.39-v0.41 Campaign Progression And Mission Reward Foundation - 2026-05-28
+
+This checkpoint makes the campaign feel more like a connected RTS/RPG route: campaign node first-clear state, replay-safe rewards, optional objective credit, rival champion reward context, XP, relic choice, and skill-point reminders now meet on the campaign map and Results screen. No maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V039_CAMPAIGN_PROGRESSION_FOUNDATION_SPEC.md`.
+- Added `docs/V040_MISSION_REWARD_STRUCTURE_SPEC.md`.
+- Added `docs/V041_REPLAY_AND_OBJECTIVE_STATE_SPEC.md`.
+- Added `docs/V039_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V040_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V041_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V041_EMMANUEL_RETEST_CHECKLIST.md`.
+- Made completed battle nodes replayable through the existing campaign map.
+- Added campaign map reward preview/status copy for first-clear, replay, claimed, optional objectives, and rival build hints.
+- Added backward-compatible optional objective completion credit in campaign saves.
+- Added Results copy for campaign first-clear/replay state, node reward claimed/already-claimed state, optional objective state, relic choice, XP, and skill-point reminders.
+- Preserved Tutorial no-save/no-reward protection and existing unique relic duplicate protection.
+- Updated package metadata and validation to name `v0.39-v0.41 campaign progression and mission reward foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for campaign node replay, campaign reward labeling, and optional objective completion credit.
+- Gameplay numbers changed: no global rebalance; replay rewards use the existing reduced repeat-clear reward path.
+- Save format changed: backward-compatible campaign save field added; no save-version bump.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial remains no-save/no-reward with no campaign progress/relic reward noise.
+- Inventory/loot changed: no new relics; rival champion relic choice remains the special source and unique rewards still do not farm infinitely.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused save/campaign/view-model/results tests with 110 tests, focused package validation tests with 3 tests, `npm test` with 73 files / 558 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, targeted hosted campaign objective/replay proxy with 2 tests, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification with 119 checks, and `git diff --check`.
+- `npm run test:e2e:release` was attempted as an extra optional local full-suite gate and hit the 30-minute command timeout before returning a summary. The required hosted release groups and visual QA above are the final release evidence.
+
 ## v0.36-v0.38 Hero Skill Tree And Relic-Build Synergy - 2026-05-28
 
 This checkpoint adds the next small RPG foundation: Warrior / Seer / Commander skill branches, modest ability upgrades, and light equipped-relic synergy. It uses existing hero XP, existing skill points, existing abilities, and the existing one-slot relic loadout. No maps, factions, runtime art/assets, shop, crafting, giant skill tree, enemy hero skill tree, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

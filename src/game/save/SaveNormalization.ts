@@ -9,6 +9,7 @@ import { DEFAULT_CAMPAIGN_CHAPTER_ID, isCampaignChapterId } from "../data/campai
 import { CAMPAIGN_NODE_BY_ID, ENEMY_HERO_BY_ID, UNIT_BY_ID } from "../data/contentIndex";
 import { isStrongholdUpgradeId } from "../data/strongholdUpgrades";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
+import { isKnownMissionObjectiveCompletionId } from "../core/campaign/CampaignMissionRules";
 import { DEFAULT_FACTION_REPUTATION } from "./SaveDefaults";
 import type {
   AllocatedSkills,
@@ -125,6 +126,9 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
   const unlockedNodeIds = arrayOfStrings(value.unlockedNodeIds) ? value.unlockedNodeIds : [];
   const lockedNodeIds = arrayOfStrings(value.lockedNodeIds) ? value.lockedNodeIds : [];
   const nodeRewardsClaimedIds = arrayOfStrings(value.nodeRewardsClaimedIds) ? value.nodeRewardsClaimedIds : [];
+  const optionalObjectiveCompletionIds = arrayOfStrings(value.optionalObjectiveCompletionIds)
+    ? value.optionalObjectiveCompletionIds.filter(isKnownMissionObjectiveCompletionId)
+    : [];
   const choiceIdsClaimed = arrayOfStrings(value.choiceIdsClaimed) ? value.choiceIdsClaimed : [];
   const townServiceClaimedIds = arrayOfStrings(value.townServiceClaimedIds) ? value.townServiceClaimedIds : [];
   const activeModifierIds = arrayOfStrings(value.activeModifierIds)
@@ -139,6 +143,7 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     unlockedNodeIds: [...new Set(unlockedNodeIds)],
     lockedNodeIds: [...new Set(lockedNodeIds)],
     nodeRewardsClaimedIds: [...new Set(nodeRewardsClaimedIds)],
+    optionalObjectiveCompletionIds: [...new Set(optionalObjectiveCompletionIds)],
     choiceIdsClaimed: [...new Set(choiceIdsClaimed)],
     townServiceClaimedIds: [...new Set(townServiceClaimedIds)],
     townServiceUseCounts: normalizeStringNumberRecord(value.townServiceUseCounts),

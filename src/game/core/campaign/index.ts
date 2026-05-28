@@ -1,6 +1,7 @@
 export * from "./CampaignChoiceRules";
 export * from "./CampaignChapterRules";
 export * from "./CampaignModifierRules";
+export * from "./CampaignMissionRules";
 export * from "./CampaignNodeRules";
 export * from "./CampaignReputationRules";
 export * from "./CampaignRewardRules";

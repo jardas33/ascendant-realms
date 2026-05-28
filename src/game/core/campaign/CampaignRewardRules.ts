@@ -3,6 +3,11 @@ import { grantBattleRewards } from "../HeroProgressionRules";
 import { ITEM_BY_ID } from "../../data/contentIndex";
 import { applyCampaignResourceRewardModifiers } from "../../data/campaignModifiers";
 import type { CampaignSaveData, HeroSaveData } from "../../save/SaveTypes";
+import {
+  getCampaignMissionRewardState,
+  recordMissionOptionalObjectiveCompletions,
+  type MissionOptionalObjectiveState
+} from "./CampaignMissionRules";
 import { completeCampaignNode } from "./CampaignNodeRules";
 
 export interface CampaignNodeCompletionResult {
@@ -10,6 +15,12 @@ export interface CampaignNodeCompletionResult {
   hero: HeroSaveData;
   nodeReward: BattleRewardResult;
   nodeLevelUp: RewardLevelUpSummary;
+  wasFirstClear: boolean;
+  wasReplay: boolean;
+  nodeRewardClaimed: boolean;
+  nodeRewardAlreadyClaimed: boolean;
+  optionalObjectives: MissionOptionalObjectiveState[];
+  newlyRecordedOptionalObjectiveKeys: string[];
 }
 
 export function completeCampaignNodeWithRewards(options: {
@@ -17,8 +28,10 @@ export function completeCampaignNodeWithRewards(options: {
   hero: HeroSaveData;
   node: CampaignNodeDefinition;
   nodes?: CampaignNodeDefinition[];
+  completedObjectiveIds?: string[];
 }): CampaignNodeCompletionResult {
   const rewardAlreadyClaimed = options.campaign.nodeRewardsClaimedIds.includes(options.node.id);
+  const missionRewardState = getCampaignMissionRewardState(options.campaign, options.node);
   const adjustedReward = rewardAlreadyClaimed
     ? { resources: {}, campaign: options.campaign }
     : applyCampaignResourceRewardModifiers({
@@ -43,15 +56,26 @@ export function completeCampaignNodeWithRewards(options: {
   if (!rewardAlreadyClaimed) {
     claimed.add(options.node.id);
   }
-
-  return {
+  const optionalObjectives = recordMissionOptionalObjectiveCompletions({
     campaign: {
       ...campaign,
       nodeRewardsClaimedIds: [...claimed]
     },
+    node: options.node,
+    completedObjectiveIds: options.completedObjectiveIds
+  });
+
+  return {
+    campaign: optionalObjectives.campaign,
     hero: granted.hero,
     nodeReward: granted.reward,
-    nodeLevelUp: granted.levelUp
+    nodeLevelUp: granted.levelUp,
+    wasFirstClear: missionRewardState.isFirstClear,
+    wasReplay: missionRewardState.isReplay,
+    nodeRewardClaimed: !rewardAlreadyClaimed,
+    nodeRewardAlreadyClaimed: rewardAlreadyClaimed,
+    optionalObjectives: optionalObjectives.objectives,
+    newlyRecordedOptionalObjectiveKeys: optionalObjectives.newlyRecordedKeys
   };
 }
 

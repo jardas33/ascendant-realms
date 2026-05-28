@@ -1460,7 +1460,11 @@ async function openCampaignNode(page: Page, nodeId: string): Promise<void> {
 async function startCampaignBattle(page: Page, nodeId: string): Promise<void> {
   await clickReady(page.getByTestId("menu-continue-campaign"), `deep-flow continue campaign before ${nodeId}`);
   await expect(page.getByTestId("campaign-map")).toBeVisible();
-  await clickReady(page.getByTestId(`campaign-node-${nodeId}`), `deep-flow start campaign node ${nodeId}`);
+  const nodeButton = page.getByTestId(`campaign-node-${nodeId}`);
+  const alreadySelected = await nodeButton.evaluate((element) => element.classList.contains("selected")).catch(() => false);
+  if (!alreadySelected) {
+    await clickReady(nodeButton, `deep-flow start campaign node ${nodeId}`);
+  }
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
   await clickReady(
     page.getByTestId("campaign-start-node"),
@@ -6095,6 +6099,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".results-panel")).toContainText("Enemy commander");
     await expect(page.locator(".results-panel")).toContainText("Captain Malrec");
     await expect(page.locator(".results-panel")).toContainText("Commander defeated");
+    await expect(page.locator(".campaign-reward-block")).toContainText("First-clear reward");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Optional objectives");
+    await expect(page.locator(".campaign-reward-block")).toContainText("3/3 recorded");
     await expect(page.getByTestId("results-relic-choice")).toContainText("Relic Reward Choice");
     await expect(page.getByTestId("results-relic-choice")).toContainText("Outpost Command Signet");
     await expect(page.getByTestId("results-relic-choice")).toContainText("Commander");
@@ -6120,6 +6127,13 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".status-box")).toContainText("Outpost Command Signet equipped");
     save = await readSave(page);
     expect(save.hero.equipment.relic).toBe(relicInstance.instanceId);
+    expect(save.campaign.optionalObjectiveCompletionIds).toEqual(
+      expect.arrayContaining([
+        "ashen_outpost:capture_burned_shrine",
+        "ashen_outpost:destroy_enemy_barracks",
+        "ashen_outpost:defeat_outpost_captain"
+      ])
+    );
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");
@@ -6190,8 +6204,21 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-node-refugee_caravan")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-marcher_camp")).toContainText(/Available/i);
 
-    await page.getByTestId("campaign-node-old_stone_road").click();
-    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Replayable/i);
+    await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");
+    await expect(page.locator(".campaign-node-details")).toContainText("Campaign node reward already claimed");
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expect(page.getByTestId("campaign-start-node")).toContainText("Replay Battle");
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow replay Old Stone Road",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
+    await expectBattleLoaded(page);
+    await forceActiveBattleOutcome(page, "victory");
+    await expect(page.locator(".results-panel")).toContainText("replay complete");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Replay reward");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Already claimed");
     save = await readSave(page);
     expect(save.campaign.resources).toMatchObject({
       crowns: 60,

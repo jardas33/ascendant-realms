@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.36-v0.38 hero skill tree and relic-build synergy foundation",
+          checkpoint: "v0.39-v0.41 campaign progression and mission reward foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -160,6 +160,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V037_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Ability upgrade report" },
       { path: "V038_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic synergy report" },
       { path: "V038_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.38 retest" },
+      { path: "V039_CAMPAIGN_PROGRESSION_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Campaign progression spec" },
+      { path: "V040_MISSION_REWARD_STRUCTURE_SPEC.md", sizeBytes: 20, textContent: "Mission reward spec" },
+      { path: "V041_REPLAY_AND_OBJECTIVE_STATE_SPEC.md", sizeBytes: 20, textContent: "Replay objective spec" },
+      { path: "V039_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Campaign progression report" },
+      { path: "V040_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Mission reward report" },
+      { path: "V041_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Replay objective report" },
+      { path: "V041_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.41 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

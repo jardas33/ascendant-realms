@@ -98,6 +98,9 @@ export function initialResultsStatus(data: ResultsData): string {
   if (data.relicReward?.status === "duplicate_converted") {
     return `${data.relicReward.item.name} was already owned, so the duplicate relic converted to resources.`;
   }
+  if (data.campaignResult?.wasReplay) {
+    return `${data.campaignResult.completedNodeName} replay complete. Reduced repeat battle rewards were applied; campaign node rewards and one-time objective credit do not duplicate.`;
+  }
   if (isRepeatBattleClear(data)) {
     return "Repeat clear complete. Reduced repeat rewards were applied; weighted item rolls and campaign node rewards do not duplicate.";
   }

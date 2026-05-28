@@ -179,6 +179,12 @@ describe("calculateLevelFromXp", () => {
       unlockedNodeIds: ["border_village", "old_stone_road"],
       lockedNodeIds: ["refugee_caravan", "refugee_caravan"],
       nodeRewardsClaimedIds: ["border_village"],
+      optionalObjectiveCompletionIds: [
+        "ashen_outpost:capture_burned_shrine",
+        "ashen_outpost:capture_burned_shrine",
+        "ashen_outpost:missing_objective",
+        "missing_node:capture_burned_shrine"
+      ],
       choiceIdsClaimed: ["chapel_of_the_marches:ask_for_guidance", "chapel_of_the_marches:ask_for_guidance"],
       townServiceClaimedIds: ["marcher_camp:purchase_emberglass_wand", "marcher_camp:purchase_emberglass_wand"],
       townServiceUseCounts: { "marcher_camp:buy_supplies": 2, bad: -1 },
@@ -288,6 +294,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.completedNodeIds).toEqual(["border_village"]);
     expect(normalized?.unlockedNodeIds).toEqual(["border_village", "old_stone_road"]);
     expect(normalized?.lockedNodeIds).toEqual(["refugee_caravan"]);
+    expect(normalized?.optionalObjectiveCompletionIds).toEqual(["ashen_outpost:capture_burned_shrine"]);
     expect(normalized?.choiceIdsClaimed).toEqual(["chapel_of_the_marches:ask_for_guidance"]);
     expect(normalized?.townServiceClaimedIds).toEqual(["marcher_camp:purchase_emberglass_wand"]);
     expect(normalized?.townServiceUseCounts).toEqual({ "marcher_camp:buy_supplies": 2 });
@@ -346,6 +353,7 @@ describe("calculateLevelFromXp", () => {
 
     expect(normalized?.resources).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 0 });
     expect(normalized?.resourcesSpent).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 0 });
+    expect(normalized?.optionalObjectiveCompletionIds).toEqual([]);
     expect(normalized?.choiceIdsClaimed).toEqual([]);
     expect(normalized?.townServiceClaimedIds).toEqual([]);
     expect(normalized?.townServiceUseCounts).toEqual({});
@@ -732,6 +740,7 @@ describe("save version migration", () => {
     expect(typeof migrated?.updatedAt).toBe("string");
     expect(migrated?.campaign.resources).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 0 });
     expect(migrated?.campaign.resourcesSpent).toEqual({ crowns: 0, stone: 0, iron: 0, aether: 0 });
+    expect(migrated?.campaign.optionalObjectiveCompletionIds).toEqual([]);
     expect(migrated?.campaign.choiceIdsClaimed).toEqual([]);
     expect(migrated?.campaign.townServiceClaimedIds).toEqual([]);
     expect(migrated?.campaign.townServiceUseCounts).toEqual({});

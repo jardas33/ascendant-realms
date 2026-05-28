@@ -53,7 +53,7 @@ export function renderVictoryRewards(data: ResultsData, context: Omit<RewardRend
 }
 
 function renderBattleRewardNote(data: ResultsData): string {
-  if (isRepeatBattleClear(data)) {
+  if (data.campaignResult?.wasReplay || isRepeatBattleClear(data)) {
     return `<p class="quiet reward-note">Repeat clear: reduced repeat rewards only. Weighted item rolls and campaign node rewards are not duplicated.</p>`;
   }
   if (data.launchRequest?.mode === "campaign_node") {

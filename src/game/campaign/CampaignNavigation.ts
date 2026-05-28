@@ -6,10 +6,16 @@ import type { CampaignSaveData } from "../save/SaveTypes";
 export interface CampaignMessageData {
   completedNodeId?: string;
   stats?: BattleStats;
+  wasReplay?: boolean;
 }
 
 export function firstAvailableNodeId(save: CampaignSaveData): string {
-  return CAMPAIGN_NODES.find((node) => getCampaignNodeStatus(node, save) === "available")?.id ?? CAMPAIGN_NODES[0]?.id ?? "";
+  return (
+    CAMPAIGN_NODES.find((node) => getCampaignNodeStatus(node, save) === "available")?.id ??
+    CAMPAIGN_NODES.find((node) => node.nodeType === "battle" && getCampaignNodeStatus(node, save) === "completed")?.id ??
+    CAMPAIGN_NODES[0]?.id ??
+    ""
+  );
 }
 
 export function selectedCampaignNode(selectedNodeId: string): CampaignNodeDefinition | undefined {
@@ -17,7 +23,11 @@ export function selectedCampaignNode(selectedNodeId: string): CampaignNodeDefini
 }
 
 export function canStartCampaignNode(node: CampaignNodeDefinition | undefined, campaignSave: CampaignSaveData): boolean {
-  return Boolean(node && !node.isPlaceholder && !node.choices?.length && getCampaignNodeStatus(node, campaignSave) === "available");
+  if (!node || node.isPlaceholder || node.choices?.length) {
+    return false;
+  }
+  const status = getCampaignNodeStatus(node, campaignSave);
+  return status === "available" || (node.nodeType === "battle" && status === "completed");
 }
 
 export function formatCampaignNodeList(nodeIds: string[]): string {
@@ -29,6 +39,11 @@ export function formatCampaignNodeList(nodeIds: string[]): string {
 export function messageForCampaignMapData(data: CampaignMessageData): string {
   if (data.completedNodeId) {
     const node = CAMPAIGN_NODES.find((entry) => entry.id === data.completedNodeId);
+    if (data.wasReplay) {
+      return node
+        ? `${node.name} replay complete. Replay rewards were reduced and first-clear rewards stay claimed.`
+        : "Replay complete. Campaign progress remains saved.";
+    }
     if (data.completedNodeId === "cinderfen_watch") {
       return "Cinderfen Watch secured. Resolve Cinderfen Aftermath to finish the current v0.3 Cinderfen route.";
     }

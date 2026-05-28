@@ -46,7 +46,8 @@ export function createCampaignMapReturnData(data: ResultsData, save: CurrentStor
     heroSave: save.hero,
     campaignSave: save.campaign,
     stats: data.stats,
-    completedNodeId: data.campaignResult?.completedNodeId
+    completedNodeId: data.campaignResult?.completedNodeId,
+    wasReplay: data.campaignResult?.wasReplay
   };
 }
 

@@ -79,6 +79,7 @@ Known current realities:
 - v0.32-v0.33 adds persistent relic inventory and one-slot hero relic loadout on top of existing inventory/equipment saves. It uses no save-version bump, blocks Tutorial/no-reward grants, auto-grants the tiny source relic pool after eligible rival champion defeats, and converts unique duplicates without repeat-farm loops. Rerun the requested release/package matrix because runtime reward, save, Results, Hero Inventory, and HUD behavior changed. The clean package must name `v0.32-v0.33 persistent relic inventory and hero loadout foundation`, include the v0.32-v0.33 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 - v0.34-v0.35 adds a tiny inline relic reward choice and Warrior/Seer/Commander build identity copy while keeping the existing three relics and one relic slot. It uses no save-version bump, blocks Tutorial/no-reward choices, offers the source champion relic first plus one unowned alternate when possible, and preserves unique duplicate conversion only when every relic is owned. The clean package must name `v0.34-v0.35 relic reward choice and hero build identity`, include the v0.34-v0.35 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 - v0.36-v0.38 adds a tiny Warrior/Seer/Commander hero skill tree, modest ability upgrades, and light equipped-relic synergy. It uses no save-version bump, existing hero skill points, existing ability definitions, existing allocated-skill saves, and the existing three relics/one relic slot. The clean package must name `v0.36-v0.38 hero skill tree and relic-build synergy foundation`, include the v0.36-v0.38 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
+- v0.39-v0.41 adds campaign first-clear/replay state, mission reward labeling, one-time optional objective credit, and replay-safe campaign reward rules. It uses one backward-compatible campaign save field, no save-version bump, existing campaign nodes/maps, existing Results surfaces, existing relic choice, and existing hero XP/skill reminders. The clean package must name `v0.39-v0.41 campaign progression and mission reward foundation`, include the v0.39-v0.41 docs, have no `-dirty` suffix, and verify with `npm run verify:playtest-package`.
 
 ## Required Automated Checks
 
@@ -394,6 +395,14 @@ Current v0.36-v0.38 hero skill tree/relic-build synergy result:
 ```text
 PASS: focused skill/save/ability/HUD/results/content/package tests with 109 tests, npm test 73 files / 554 tests, npm run build, npm run validate:content, npm run validate:art-intake, targeted hosted skill-tree/relic-synergy proxy with 2 tests, fast smoke 8 tests, full smoke 14 tests, controls normal/extended/verify, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual QA 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification 112 checks, and git diff --check.
 NOT RUN: npm run test:e2e:release. Required hosted release lanes plus visual QA are the final release evidence for this checkpoint.
+Final clean package must be regenerated from the final checkpoint commit before tester distribution.
+```
+
+Current v0.39-v0.41 campaign progression/mission reward result:
+
+```text
+PASS: TypeScript no-emit, focused save/campaign/view-model/results tests with 110 tests, focused package validation tests with 3 tests, npm test 73 files / 558 tests, npm run build, npm run validate:content, npm run validate:art-intake, targeted hosted campaign objective/replay proxy with 2 tests, fast smoke 8 tests, full smoke 14 tests, controls normal/extended/verify, hosted deep-battle 27 tests, hosted smoke 14 tests, hosted deep-campaign-pressure 7 tests, visual QA 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification 119 checks, and git diff --check.
+ATTEMPTED: npm run test:e2e:release. The extra optional local full-suite run hit the 30-minute command timeout before returning a summary; temporary Playwright/dev-server processes from that attempt were stopped. Required hosted release lanes plus visual QA are the final release evidence for this checkpoint.
 Final clean package must be regenerated from the final checkpoint commit before tester distribution.
 ```
 

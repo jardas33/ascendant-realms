@@ -20,6 +20,21 @@ describe("campaign presentation view models", () => {
     expect(card.statusLabel).toBe("Completed");
   });
 
+  it("labels completed battle nodes as replayable when campaign state is present", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["ashen_outpost"],
+      unlockedNodeIds: ["ashen_outpost"],
+      nodeRewardsClaimedIds: ["ashen_outpost"]
+    });
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    const card = createCampaignNodeCardViewModel({ node, status: "completed", selected: true, campaignSave: campaign });
+
+    expect(card.statusLabel).toBe("Replayable (Completed)");
+    expect(card.rewardStateLabel).toBe("Campaign node reward already claimed");
+  });
+
   it("formats chapter card progress without involving the scene", () => {
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),
