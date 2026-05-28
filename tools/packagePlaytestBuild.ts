@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.34-v0.35 relic reward choice and hero build identity";
+const CHECKPOINT = "v0.36-v0.38 hero skill tree and relic-build synergy foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -132,6 +132,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V034_IMPLEMENTATION_REPORT.md", join(packageDir, "V034_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V035_IMPLEMENTATION_REPORT.md", join(packageDir, "V035_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V035_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V035_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md", join(packageDir, "V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md", join(packageDir, "V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V038_RELIC_BUILD_SYNERGY_SPEC.md", join(packageDir, "V038_RELIC_BUILD_SYNERGY_SPEC.md"));
+  await copyMarkdown("docs/V036_IMPLEMENTATION_REPORT.md", join(packageDir, "V036_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V037_IMPLEMENTATION_REPORT.md", join(packageDir, "V037_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V038_IMPLEMENTATION_REPORT.md", join(packageDir, "V038_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V038_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V038_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -215,7 +222,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.34-v0.35 relic reward choice and hero build identity retest, start with V034_RELIC_REWARD_CHOICE_SPEC.md, V035_HERO_BUILD_IDENTITY_SPEC.md, V034_IMPLEMENTATION_REPORT.md, V035_IMPLEMENTATION_REPORT.md, and V035_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.33 hero progression, rival champion, relic persistence, and hero loadout docs nearby as regression context. Focus on: eligible rival champion victories showing an inline relic choice, selected relics entering persistent hero inventory, duplicate conversion only when every relic is already owned, Equip Relic from Results, Warrior/Seer/Commander build identity copy, Hero Inventory relic slot/equip/unequip readability, battle HUD equipped-relic summary, modest equipped-only stat effects, old-save compatibility, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, broad inventory UI, a modal reward picker, shop, crafting, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
+For the v0.36-v0.38 hero skill tree and relic-build synergy retest, start with V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md, V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md, V038_RELIC_BUILD_SYNERGY_SPEC.md, V036_IMPLEMENTATION_REPORT.md, V037_IMPLEMENTATION_REPORT.md, V038_IMPLEMENTATION_REPORT.md, and V038_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.35 hero progression, abilities, rival champion, relic inventory, reward choice, and build identity docs nearby as regression context. Focus on: spending existing skill points in the Warrior/Seer/Commander branches, locked/unlocked and disabled skill copy, upgraded Cleave / learned-ability Mana support / Rally Banner summaries, matching equipped relic synergy only when the branch has an unlocked skill, Results skill-point reminders, old-save compatibility, unknown skill-id safety, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant skill tree, broad inventory UI, a large ability roster, enemy hero skill trees, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

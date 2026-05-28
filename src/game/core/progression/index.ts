@@ -1,4 +1,5 @@
 export * from "./AffixRules";
+export * from "./AbilityUpgradeRules";
 export * from "./DuplicateRewardRules";
 export * from "./EquipmentStatRules";
 export * from "./HeroStatRules";

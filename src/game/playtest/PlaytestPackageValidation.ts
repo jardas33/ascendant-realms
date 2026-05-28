@@ -109,6 +109,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V034_IMPLEMENTATION_REPORT.md",
   "V035_IMPLEMENTATION_REPORT.md",
   "V035_EMMANUEL_RETEST_CHECKLIST.md",
+  "V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md",
+  "V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md",
+  "V038_RELIC_BUILD_SYNERGY_SPEC.md",
+  "V036_IMPLEMENTATION_REPORT.md",
+  "V037_IMPLEMENTATION_REPORT.md",
+  "V038_IMPLEMENTATION_REPORT.md",
+  "V038_EMMANUEL_RETEST_CHECKLIST.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -212,7 +219,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.34-v0.35 relic reward choice and hero build identity",
+      "v0.36-v0.38 hero skill tree and relic-build synergy foundation",
       "build info checkpoint",
       checks,
       errors

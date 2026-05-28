@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-05-27 v0.34-v0.35 relic reward choice and hero build identity closeout ready
+Updated: 2026-05-28 v0.36-v0.38 hero skill tree and relic-build synergy closeout ready
+
+## v0.36-v0.38 Hero Skill Tree And Relic-Build Synergy - 2026-05-28
+
+Scope: add a small Warrior / Seer / Commander hero skill-tree foundation, modest ability upgrades, and light equipped-relic build synergy using existing hero XP, skill points, abilities, and relic build identities. This pass changes skill metadata, ability derivation, HUD/results/progression copy, Hero Inventory/Equipment summaries, package metadata, tests, and docs. It does not add maps, factions, runtime art/assets, shop, crafting, giant skill tree, broad inventory UI, enemy hero skill tree, save-version bump, broad AI/pathing rewrites, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world interactions.
+
+Baseline:
+
+- Starting commit/package: `b09ef96`, `ascendant-realms-private-playtest-b09ef96`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26551387988` on `b09ef96` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md`.
+- Added `docs/V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md`.
+- Added `docs/V038_RELIC_BUILD_SYNERGY_SPEC.md`.
+- Added `docs/V036_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V037_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V038_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V038_EMMANUEL_RETEST_CHECKLIST.md`.
+- Reframed visible skill branches as Warrior, Seer, and Commander with 2-3 visible nodes each.
+- Hid legacy compatibility nodes from the current player-facing tree and blocked new spending on hidden nodes.
+- Added data-driven ability-upgrade metadata for modest amount, Mana cost, cooldown, radius, and duration changes.
+- Added effective ability derivation to runtime casting and HUD ability tooltips.
+- Added Warrior Cleave, Seer learned-ability support, and Commander Rally Banner / War Cry upgrade hooks.
+- Added equipped-relic synergy for matching Emberbrand Shard / Cinder-Seer Focus / Outpost Command Signet branch identity.
+- Added build/synergy copy to Hero Progression, Hero Inventory, Equipment rows, battle HUD, ability tooltips, and Results progression reminders.
+- Updated package metadata and validation to require the v0.36-v0.38 docs.
+
+Save format:
+
+- No save-version bump.
+- Existing `HeroSaveData.allocatedSkills` carries skill unlocks.
+- Existing relic inventory/equipment fields carry equipped relic state.
+- Old saves without skill-tree data load with empty allocated skills.
+- Unknown skill ids and unknown relic ids remain loadable and are ignored by known stat, ability, and synergy helpers.
+
+Verification:
+
+```text
+npx vitest run src/game/core/HeroProgressionRules.test.ts src/game/core/SaveSystem.test.ts src/game/systems/AbilitySystem.test.ts src/game/ui/AbilityBar.test.ts src/game/ui/hudPanels/HeroHudPanel.test.ts src/game/results/ResultsViewModel.test.ts src/game/data/contentValidation.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 8 files / 109 tests.
+npm test PASS, 73 files / 554 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "inventory equipment, unequip, and skill spending|unlocked hero ability hotkeys" --reporter=line PASS after exact skill/relic locator follow-up, 2 hosted tests.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-b09ef96-dirty` generated.
+npm run verify:playtest-package PASS, 112 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Optional full release note: `npm run test:e2e:release` was not run for this closeout. The required hosted release groups and visual QA above are the final release evidence for this checkpoint.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.34-v0.35 Relic Reward Choice And Hero Build Identity - 2026-05-27
 

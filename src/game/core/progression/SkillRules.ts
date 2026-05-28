@@ -51,6 +51,9 @@ export function canAllocateSkill(
   if (!node) {
     return { ok: false, message: "Unknown skill." };
   }
+  if (node.hidden) {
+    return { ok: false, message: "This legacy skill is not available in the current tree." };
+  }
   if (node.classId && node.classId !== save.classId) {
     return { ok: false, message: "This skill belongs to another hero class." };
   }

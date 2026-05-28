@@ -1,5 +1,5 @@
 import type { EquipmentSlot } from "../core/GameTypes";
-import { EQUIPMENT_SLOTS, findItemInstance } from "../core/HeroProgressionRules";
+import { EQUIPMENT_SLOTS, findItemInstance, getActiveHeroBuildSynergy } from "../core/HeroProgressionRules";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
 import {
@@ -24,12 +24,14 @@ export interface EquipmentSlotViewModel {
   statModsText?: string;
   affixText?: string;
   buildIdentityText?: string;
+  synergyText?: string;
   description?: string;
   flavorText?: string;
   rarityClassName?: string;
 }
 
 export function createEquipmentViewModel(heroSave: HeroSaveData, catalogs: HeroProgressionCatalogs): EquipmentPanelViewModel {
+  const activeSynergy = getActiveHeroBuildSynergy(heroSave, catalogs.skillNodeById, catalogs.itemById);
   const slots = EQUIPMENT_SLOTS.map((slot) => {
     const itemId = heroSave.equipment[slot];
     const instance = itemId ? findItemInstance(heroSave.inventory, itemId) : undefined;
@@ -50,6 +52,7 @@ export function createEquipmentViewModel(heroSave: HeroSaveData, catalogs: HeroP
       statModsText: instance ? formatItemTotalStats(item, instance) : undefined,
       affixText: instance ? formatItemAffixes(item, instance) : undefined,
       buildIdentityText: formatRelicItemBuildText(item),
+      synergyText: item.slot === "relic" && activeSynergy ? `${activeSynergy.summary} ${activeSynergy.abilitySummary}` : undefined,
       description: item.description,
       flavorText: item.flavorText,
       rarityClassName: rarityClass(item.rarity)
@@ -75,6 +78,7 @@ export function renderEquipmentPanel(viewModel: EquipmentPanelViewModel): string
                       <small>Instance: ${escapeHtml(slot.instanceId ?? "")}</small>
                       <small class="affix-line">${escapeHtml(slot.affixText ?? "")}</small>
                       ${slot.buildIdentityText ? `<small>${escapeHtml(slot.buildIdentityText)}</small>` : ""}
+                      ${slot.synergyText ? `<small class="synergy-line">${escapeHtml(slot.synergyText)}</small>` : ""}
                       <p>${escapeHtml(slot.description ?? "")}</p>
                       <small>${escapeHtml(slot.flavorText ?? "")}</small>`
                     : "<span>Empty</span>"

@@ -20,6 +20,7 @@ function createHero(overrides: Partial<Hero> = {}): Hero {
     abilityCooldowns: {},
     inventory: [],
     equipment: {},
+    allocatedSkills: {},
     definition: {
       color: 0xe2b34b
     },
@@ -56,6 +57,30 @@ describe("HeroHudPanel", () => {
     );
 
     expect(html).toContain("Relic: Outpost Command Signet active - Commander build");
+  });
+
+  it("renders active relic-build synergy and effective ability copy", () => {
+    const relic = {
+      instanceId: "test:cinderseer_focus:1",
+      itemId: "cinderseer_focus",
+      acquiredAt: "2026-05-28T12:00:00.000Z",
+      source: "test",
+      affixes: []
+    };
+    const hero = createHero({
+      mana: 22,
+      inventory: [relic],
+      equipment: { relic: relic.instanceId },
+      allocatedSkills: { magic_focus: 1, magic_warding: 1 }
+    });
+
+    const panelHtml = renderHeroHudPanel(hero);
+    const abilityHtml = renderAbilities([ABILITY_BY_ID.rally_banner], hero);
+
+    expect(panelHtml).toContain("Seer synergy active");
+    expect(abilityHtml).toContain("Cost: 19 Mana");
+    expect(abilityHtml).toContain("Cooldown: 17.5s");
+    expect(abilityHtml).toContain("Seer synergy");
   });
 
   it("renders ability availability and disabled states", () => {

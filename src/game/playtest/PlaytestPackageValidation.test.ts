@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.34-v0.35 relic reward choice and hero build identity",
+          checkpoint: "v0.36-v0.38 hero skill tree and relic-build synergy foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -153,6 +153,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V034_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic reward choice report" },
       { path: "V035_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero build identity report" },
       { path: "V035_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.35 retest" },
+      { path: "V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Hero skill tree spec" },
+      { path: "V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Ability upgrade spec" },
+      { path: "V038_RELIC_BUILD_SYNERGY_SPEC.md", sizeBytes: 20, textContent: "Relic synergy spec" },
+      { path: "V036_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Hero skill tree report" },
+      { path: "V037_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Ability upgrade report" },
+      { path: "V038_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Relic synergy report" },
+      { path: "V038_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.38 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

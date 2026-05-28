@@ -1,5 +1,5 @@
 import type { ResourceBag, ResourceKey } from "./EconomyTypes";
-import type { HeroStatMods } from "./HeroTypes";
+import type { HeroBuildArchetype, HeroStatMods } from "./HeroTypes";
 
 export type EquipmentSlot = "weapon" | "armor" | "trinket" | "relic";
 
@@ -103,7 +103,7 @@ export interface RewardLevelUpSummary {
 }
 
 export type RelicRewardPersistenceStatus = "persistent_inventory";
-export type RelicBuildArchetype = "warrior" | "seer" | "commander";
+export type RelicBuildArchetype = HeroBuildArchetype;
 
 export interface RelicRewardDefinition {
   id: string;

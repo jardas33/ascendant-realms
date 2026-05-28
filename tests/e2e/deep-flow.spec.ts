@@ -2061,6 +2061,15 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
             affixes: [],
             locked: false,
             favorite: false
+          },
+          {
+            instanceId: "deep-qa:outpost_command_signet:inventory",
+            itemId: "outpost_command_signet",
+            acquiredAt: "2026-05-28T00:00:00.000Z",
+            source: "deep_e2e",
+            affixes: [],
+            locked: false,
+            favorite: false
           }
         ]
       }
@@ -2077,11 +2086,30 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     save = await readSave(page);
     expect(save.hero.equipment.weapon).toBeUndefined();
 
+    await expect(page.getByTestId("hero-inventory")).toContainText("Warrior");
+    await expect(page.getByTestId("hero-inventory")).toContainText("Seer");
+    await expect(page.getByTestId("hero-inventory")).toContainText("Commander");
+    await expect(page.locator(".skill-node", { hasText: "Cleave" })).toContainText("+6 damage");
+    await expect(
+      page.locator(".skill-node", { has: page.locator("button[data-progression-action='skill'][data-id='leadership_presence']") })
+    ).toContainText("Rally Banner");
+
     await page.locator("button[data-progression-action='skill'][data-id='combat_drill']").click();
-    await expect(page.locator(".status-box")).toContainText("Battle Drill");
+    await expect(page.locator(".status-box")).toContainText("Warrior Drill");
     save = await readSave(page);
     expect(save.hero.skillPoints).toBe(1);
     expect(save.hero.allocatedSkills.combat_drill).toBe(1);
+
+    await page.locator(".inventory-row", { hasText: "Outpost Command Signet" }).getByRole("button", { name: "Equip" }).click();
+    await expect(page.locator(".status-box")).toContainText(/equipped/i);
+    await page.locator("button[data-progression-action='skill'][data-id='leadership_presence']").click();
+    await expect(page.locator(".status-box")).toContainText("Command Presence");
+    await expect(page.getByTestId("build-identity-panel")).toContainText("Commander synergy active");
+    await expect(page.getByTestId("equipment-panel")).toContainText("Commander synergy active");
+    save = await readSave(page);
+    expect(save.hero.skillPoints).toBe(0);
+    expect(save.hero.equipment.relic).toBe("deep-qa:outpost_command_signet:inventory");
+    expect(save.hero.allocatedSkills.leadership_presence).toBe(1);
   });
 
   test("victory reward can be kept in inventory without equipping @hosted-deep-meta", async ({ page }) => {
@@ -5033,6 +5061,20 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         level: 4,
         xp: 420,
         unlockedAbilities: ["rally_banner", "cleave", "war_cry"],
+        inventory: [
+          {
+            instanceId: "deep-qa:outpost_command_signet:ability",
+            itemId: "outpost_command_signet",
+            acquiredAt: "2026-05-28T00:00:00.000Z",
+            source: "deep_e2e",
+            affixes: [],
+            locked: false,
+            favorite: false
+          }
+        ],
+        equipment: {
+          relic: "deep-qa:outpost_command_signet:ability"
+        },
         allocatedSkills: {
           combat_drill: 1,
           warlord_cleave: 1,
@@ -5047,6 +5089,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toContainText("1. Rally Banner");
     await expect(page.locator("button[data-action='ability'][data-id='cleave']")).toContainText("2. Cleave");
     await expect(page.locator("button[data-action='ability'][data-id='war_cry']")).toContainText("3. War Cry");
+    await expect(page.getByTestId("battle-hero-panel")).toContainText("Commander synergy active");
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute("title", /Commander synergy/);
+    await expect(page.locator("button[data-action='ability'][data-id='cleave']")).toHaveAttribute("title", /\+6 damage/);
 
     const prepared = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

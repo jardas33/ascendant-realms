@@ -1,16 +1,19 @@
 import { describe, expect, it } from "vitest";
 import {
   allocateSkillPoint,
+  applyHeroAbilityUpgrades,
   calculateLiveHeroStats,
   createItemInstance,
   equipItem,
+  getActiveHeroBuildSynergy,
+  getAllocatedBuildArchetypes,
   grantBattleRewards,
   grantItemRewards,
   pickBattleRewardItemIds,
   rollBattleRewards
 } from "./HeroProgressionRules";
 import type { RewardTableDefinition } from "./GameTypes";
-import { HERO_CLASS_BY_ID, ITEM_BY_ID, ORIGIN_BY_ID, REWARD_TABLE_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import { ABILITY_BY_ID, HERO_CLASS_BY_ID, ITEM_BY_ID, ORIGIN_BY_ID, REWARD_TABLE_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { createNewHeroSave } from "../data/heroes";
 
 describe("hero RPG progression rules", () => {
@@ -118,6 +121,51 @@ describe("hero RPG progression rules", () => {
     expect(unequipped.maxHp).toBe(before.maxHp);
     expect(unequipped.armor).toBe(before.armor);
     expect(unequipped.command).toBe(before.command);
+  });
+
+  it("applies Warrior, Seer, and Commander ability upgrades from allocated skills", () => {
+    const warrior = {
+      ...createNewHeroSave("Mira", "warlord", "exiled_noble"),
+      allocatedSkills: { combat_drill: 1, warlord_cleave: 1 }
+    };
+    const seer = {
+      ...createNewHeroSave("Ilya", "arcanist", "temple_orphan"),
+      allocatedSkills: { magic_focus: 1, magic_warding: 1 }
+    };
+    const commander = {
+      ...createNewHeroSave("Vale", "warlord", "exiled_noble"),
+      allocatedSkills: { leadership_presence: 2 }
+    };
+
+    const cleave = applyHeroAbilityUpgrades(ABILITY_BY_ID.cleave, warrior, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
+    const firebolt = applyHeroAbilityUpgrades(ABILITY_BY_ID.firebolt, seer, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
+    const rally = applyHeroAbilityUpgrades(ABILITY_BY_ID.rally_banner, commander, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
+
+    expect(cleave.amount).toBe(44);
+    expect(cleave.cooldown).toBe(6);
+    expect(firebolt.manaCost).toBe(26);
+    expect(rally.radius).toBe(176);
+    expect(rally.duration).toBe(9);
+  });
+
+  it("activates relic-build synergy only for equipped matching relics and allocated branch skills", () => {
+    const relic = createItemInstance("emberbrand_shard", "test", "2026-05-28T12:00:00.000Z", { affixes: [] });
+    const hero = {
+      ...createNewHeroSave("Mira", "warlord", "exiled_noble"),
+      allocatedSkills: { combat_drill: 1, warlord_cleave: 1, future_unknown_skill: 99 },
+      inventory: [relic],
+      equipment: { relic: relic.instanceId }
+    };
+
+    const synergy = getActiveHeroBuildSynergy(hero, SKILL_NODE_BY_ID, ITEM_BY_ID);
+    const upgraded = applyHeroAbilityUpgrades(ABILITY_BY_ID.cleave, hero, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
+    const unequipped = applyHeroAbilityUpgrades(ABILITY_BY_ID.cleave, { ...hero, equipment: {} }, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
+
+    expect(getAllocatedBuildArchetypes(hero, SKILL_NODE_BY_ID)).toEqual(["warrior"]);
+    expect(synergy?.summary).toContain("Warrior synergy active");
+    expect(upgraded.amount).toBe(47);
+    expect(unequipped.amount).toBe(44);
+    expect(getActiveHeroBuildSynergy({ ...hero, equipment: {} }, SKILL_NODE_BY_ID, ITEM_BY_ID)).toBeUndefined();
   });
 
   it("equips only owned items and picks new battle rewards deterministically", () => {

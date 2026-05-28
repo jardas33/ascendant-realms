@@ -384,7 +384,10 @@ describe("results scene helpers", () => {
     const data = createResultsData({
       heroSave: {
         ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
-        inventory: [relicInstance]
+        skillPoints: 1,
+        allocatedSkills: { magic_focus: 1 },
+        inventory: [relicInstance],
+        equipment: { relic: relicInstance.instanceId }
       },
       stats: {
         ...baseStats(),
@@ -443,7 +446,10 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Relic Reward");
     expect(summaryHtml).toContain("Cinder-Seer Focus");
     expect(summaryHtml).toContain("Relic effects are active when equipped");
-    expect(summaryHtml).toContain("Equip Relic");
+    expect(summaryHtml).toContain("Relic Equipped");
+    expect(summaryHtml).toContain("Equipped relic");
+    expect(summaryHtml).toContain("Seer synergy active");
+    expect(summaryHtml).toContain("Spend skill points in Hero Inventory");
   });
 
   it("renders and resolves an inline relic reward choice", () => {

@@ -14,11 +14,11 @@ import {
   normalizeHeroSaveData
 } from "./SaveSystem";
 import { DEFAULT_SETTINGS, normalizeSettingsData, shouldShowFloatingText } from "./Settings";
-import { createItemInstance } from "./HeroProgressionRules";
+import { calculateLiveHeroStats, createItemInstance, getAllocatedBuildArchetypes } from "./HeroProgressionRules";
 import { getRelicInventoryState } from "./progression/RelicInventoryRules";
 import { applyCampaignChoice, createStartedCampaignSave } from "./CampaignRules";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
-import { ITEM_BY_ID } from "../data/contentIndex";
+import { HERO_CLASS_BY_ID, ITEM_BY_ID, ORIGIN_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 describe("calculateLevelFromXp", () => {
@@ -153,6 +153,21 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.completedBattles).toBe(0);
     expect(normalized?.allocatedSkills.combat_drill).toBe(1);
     expect(normalized?.stats.might).toBe(0);
+  });
+
+  it("keeps unknown skill ids loadable while skill helpers ignore them", () => {
+    const normalized = normalizeHeroSaveData({
+      ...createFallbackHeroSave(),
+      allocatedSkills: {
+        future_unknown_skill: 4,
+        combat_drill: 1
+      }
+    });
+
+    expect(normalized?.allocatedSkills.future_unknown_skill).toBe(4);
+    expect(getAllocatedBuildArchetypes(normalized!, SKILL_NODE_BY_ID)).toEqual(["warrior"]);
+    const stats = calculateLiveHeroStats(normalized!, HERO_CLASS_BY_ID.warlord, ORIGIN_BY_ID.exiled_noble, SKILL_NODE_BY_ID, ITEM_BY_ID);
+    expect(stats.damage).toBeGreaterThan(HERO_CLASS_BY_ID.warlord.baseStats.damage);
   });
 
   it("normalizes campaign save progress", () => {

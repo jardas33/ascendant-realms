@@ -12,6 +12,7 @@ export type AbilityEffectType =
   | "sanctify-ground";
 
 export type SkillTreeId = "combat" | "magic" | "leadership";
+export type HeroBuildArchetype = "warrior" | "seer" | "commander";
 
 export interface HeroPrimaryStats {
   might: number;
@@ -62,11 +63,23 @@ export interface SkillTreeDefinition {
   id: SkillTreeId;
   name: string;
   description: string;
+  buildArchetype: HeroBuildArchetype;
+}
+
+export interface AbilityUpgradeDefinition {
+  abilityIds: string[] | "all";
+  effectSummary: string;
+  amountDelta?: number;
+  manaCostDelta?: number;
+  cooldownDelta?: number;
+  radiusDelta?: number;
+  durationDelta?: number;
 }
 
 export interface SkillNodeDefinition {
   id: string;
   treeId: SkillTreeId;
+  buildArchetype?: HeroBuildArchetype;
   name: string;
   description: string;
   maxRank: number;
@@ -74,7 +87,9 @@ export interface SkillNodeDefinition {
   classId?: string;
   unlockAbilityId?: string;
   statModsPerRank?: HeroStatMods;
+  abilityUpgrade?: AbilityUpgradeDefinition;
   requires?: SkillRequirement[];
+  hidden?: boolean;
 }
 
 export interface OriginDefinition {

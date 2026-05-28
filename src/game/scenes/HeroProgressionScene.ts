@@ -5,7 +5,15 @@ import type { BattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import { LEVEL_XP_THRESHOLDS } from "../core/Constants";
 import { getHeroProgressionGuidance } from "../core/FirstExperienceGuidance";
 import type { BattleRewardResult, BattleStats, ItemDefinition, RewardLevelUpSummary } from "../core/GameTypes";
-import { allocateSkillPoint, equipItem, saveWithRecalculatedStats, unequipItem } from "../core/HeroProgressionRules";
+import {
+  allocateSkillPoint,
+  buildArchetypeLabel,
+  equipItem,
+  getActiveHeroBuildSynergy,
+  getAllocatedBuildArchetypes,
+  saveWithRecalculatedStats,
+  unequipItem
+} from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
 import { xpProgressForLevel } from "../core/Progression";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
@@ -179,6 +187,7 @@ export class HeroProgressionScene extends Phaser.Scene {
           ${this.renderBattleResults()}
           ${this.renderGuidancePanel()}
           <div class="status-box">${escapeHtml(this.status)}</div>
+          ${this.renderBuildIdentityPanel()}
           <div class="progression-grid">
             <section>
               <h2>Hero Stats</h2>
@@ -223,6 +232,18 @@ export class HeroProgressionScene extends Phaser.Scene {
         <div class="tag-row">
           ${guidance.actions.map((action) => `<span class="tag">${escapeHtml(action)}</span>`).join("")}
         </div>
+      </div>
+    `;
+  }
+
+  private renderBuildIdentityPanel(): string {
+    const builds = getAllocatedBuildArchetypes(this.heroSave, SKILL_NODE_BY_ID).map(buildArchetypeLabel);
+    const synergy = getActiveHeroBuildSynergy(this.heroSave, SKILL_NODE_BY_ID, ITEM_BY_ID);
+    return `
+      <div class="guidance-card compact" data-testid="build-identity-panel">
+        <strong>Hero Build Identity</strong>
+        <p>${escapeHtml(builds.length > 0 ? `Unlocked branches: ${builds.join(", ")}.` : "No branch skills unlocked yet.")}</p>
+        <p>${escapeHtml(synergy ? `${synergy.summary} ${synergy.abilitySummary}` : "Equip a matching relic and unlock a branch skill to activate relic synergy.")}</p>
       </div>
     `;
   }

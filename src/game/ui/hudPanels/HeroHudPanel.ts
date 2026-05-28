@@ -1,7 +1,8 @@
 import { abilityIconAssetId, heroPortraitAssetId } from "../../assets/AssetKeys";
 import { AssetLoader } from "../../assets/AssetLoader";
 import type { AbilityDefinition } from "../../core/GameTypes";
-import { HERO_CLASS_BY_ID, ITEM_BY_ID } from "../../data/contentIndex";
+import { applyHeroAbilityUpgrades, getActiveHeroBuildSynergy } from "../../core/HeroProgressionRules";
+import { HERO_CLASS_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../../data/contentIndex";
 import type { Hero } from "../../entities/Hero";
 import { abilityLabel, abilityResourceState } from "../AbilityBar";
 import { healthPercent } from "../HealthBar";
@@ -15,6 +16,7 @@ export function renderHeroHudPanel(hero: Hero): string {
     ? hero.inventory.find((instance) => instance.instanceId === hero.equipment.relic)
     : undefined;
   const relicItem = relicInstance ? ITEM_BY_ID[relicInstance.itemId] : undefined;
+  const synergy = getActiveHeroBuildSynergy(hero, SKILL_NODE_BY_ID, ITEM_BY_ID);
   return `
     <div class="hero-panel" data-testid="battle-hero-panel">
       <div class="portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, toCssColor(hero.definition.color))}></div>
@@ -26,6 +28,7 @@ export function renderHeroHudPanel(hero: Hero): string {
         <small>XP ${hero.xp} - Skill ${hero.skillPoints} - DMG ${Math.round(hero.damage)} - ARM ${Math.round(hero.armor)}</small>
         <small>Abilities ${hero.unlockedAbilities.length}/${classAbilityCount} unlocked</small>
         <small>Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active - ${escapeHtml(relicBuildLabel(relicItem.tags))}` : "Empty"}</small>
+        ${synergy ? `<small>${escapeHtml(synergy.summary)} ${escapeHtml(synergy.abilitySummary)}</small>` : ""}
       </div>
     </div>
   `;
@@ -53,10 +56,12 @@ export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): str
       <strong>Hero</strong>
       ${abilities
         .map((ability) => {
+          const upgraded = applyHeroAbilityUpgrades(ability, hero, SKILL_NODE_BY_ID, ITEM_BY_ID);
+          const effectiveAbility = upgraded.ability;
           const cooldownRemaining = hero.abilityCooldowns[ability.id] ?? 0;
-          const label = abilityLabel(ability, cooldownRemaining);
-          const resourceState = abilityResourceState(ability, hero);
-          const description = `${ability.description} Cost: ${ability.manaCost} Mana.`;
+          const label = abilityLabel(effectiveAbility, cooldownRemaining);
+          const resourceState = abilityResourceState(effectiveAbility, hero);
+          const description = `${effectiveAbility.description} Cost: ${effectiveAbility.manaCost} Mana. Cooldown: ${effectiveAbility.cooldown}s.`;
           return `
             <button class="hud-button ability ${resourceState.className}" data-action="ability" data-id="${ability.id}" data-ability-state="${resourceState.className}" title="${escapeHtml(
               `${ability.name}: ${resourceState.label}. ${description}`

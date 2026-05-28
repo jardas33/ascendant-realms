@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.36-v0.38 Hero Skill Tree And Relic-Build Synergy - 2026-05-28
+
+This checkpoint adds the next small RPG foundation: Warrior / Seer / Commander skill branches, modest ability upgrades, and light equipped-relic synergy. It uses existing hero XP, existing skill points, existing abilities, and the existing one-slot relic loadout. No maps, factions, runtime art/assets, shop, crafting, giant skill tree, enemy hero skill tree, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V036_HERO_SKILL_TREE_FOUNDATION_SPEC.md`.
+- Added `docs/V037_ABILITY_UPGRADE_FOUNDATION_SPEC.md`.
+- Added `docs/V038_RELIC_BUILD_SYNERGY_SPEC.md`.
+- Added `docs/V036_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V037_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V038_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V038_EMMANUEL_RETEST_CHECKLIST.md`.
+- Reframed the visible skill tree around Warrior, Seer, and Commander branch identities.
+- Kept each branch tiny at 2-3 visible nodes and hid legacy compatibility nodes from new spending.
+- Added data-driven ability-upgrade metadata and effective ability derivation for casting and HUD copy.
+- Added modest Cleave, learned-ability Mana/cooldown, Rally Banner, and War Cry support hooks.
+- Added equipped-relic synergy for matching Emberbrand Shard, Cinder-Seer Focus, and Outpost Command Signet branch identity.
+- Added build/synergy copy to Hero Progression, Hero Inventory, Equipment rows, battle HUD, ability tooltips, and Results progression reminders.
+- Updated package metadata and validation to name `v0.36-v0.38 hero skill tree and relic-build synergy foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for hero skill spending, effective ability values, and equipped matching relic synergy.
+- Gameplay numbers changed: narrowly, only through modest skill and synergy bonuses when the player unlocks/equips the relevant build pieces.
+- Save format changed: no save-version bump; existing `allocatedSkills`, inventory, and equipment fields are used.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial remains no-save/no-reward with no skill-tree requirement.
+- Inventory/loot changed: no new relics and no broad inventory flow; synergy derives from the existing three relics and one relic slot.
+
+### Verification
+
+- Passed: focused skill/save/ability/HUD/results/content/package tests with 109 tests, `npm test` with 73 files / 554 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, targeted hosted skill-tree/relic-synergy proxy with 2 tests, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification with 112 checks, and `git diff --check`.
+- `npm run test:e2e:release` was not run for this closeout. The required hosted release groups and visual QA above are the final release evidence.
+
 ## v0.34-v0.35 Relic Reward Choice And Hero Build Identity - 2026-05-27
 
 This checkpoint makes persistent relic rewards feel more intentional by adding a tiny inline Results choice flow and clearer Warrior/Seer/Commander build identity copy. It keeps the existing three relics and one relic slot. No maps, factions, runtime art/assets, shop, crafting, full inventory overhaul, large loot table, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

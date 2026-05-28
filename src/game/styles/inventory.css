@@ -311,6 +311,12 @@ h2::after,
   color: #9fd8c2;
 }
 
+.equipment-row small.synergy-line,
+.inventory-row small.synergy-line,
+.skill-tree small.synergy-line {
+  color: #f1df9d;
+}
+
 .inventory-row.new {
   border-color: var(--plate-edge-strong);
   background:

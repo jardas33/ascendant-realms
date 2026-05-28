@@ -18,6 +18,8 @@ import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation
 import { REWARD_TABLES } from "./rewards";
 import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { RIVAL_REWARDS } from "./rivalRewards";
+import { SKILL_NODES, SKILL_TREES } from "./skillTrees";
+import { HERO_CLASSES } from "./heroClasses";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { TUTORIALS } from "./tutorials";
 import { validateContent } from "./contentValidation";
@@ -882,6 +884,39 @@ describe("content validation", () => {
       expect(item?.unique).toBe(true);
       expect(ENEMY_HEROES.some((hero) => hero.id === reward.sourceEnemyHeroId)).toBe(true);
     });
+  });
+
+  it("defines tiny Warrior, Seer, and Commander skill branches with modest ability upgrades", () => {
+    expect(SKILL_TREES.map((tree) => tree.name)).toEqual(["Warrior", "Seer", "Commander"]);
+    expect(SKILL_TREES.map((tree) => tree.buildArchetype)).toEqual(["warrior", "seer", "commander"]);
+
+    HERO_CLASSES.forEach((heroClass) => {
+      SKILL_TREES.forEach((tree) => {
+        const visibleNodes = SKILL_NODES.filter((node) => node.treeId === tree.id && !node.hidden && (!node.classId || node.classId === heroClass.id));
+        expect(visibleNodes.length).toBeGreaterThanOrEqual(2);
+        expect(visibleNodes.length).toBeLessThanOrEqual(3);
+        visibleNodes.forEach((node) => {
+          expect(node.buildArchetype).toBe(tree.buildArchetype);
+        });
+      });
+    });
+
+    expect(SKILL_NODES.find((node) => node.id === "warlord_cleave")?.abilityUpgrade).toMatchObject({
+      abilityIds: ["cleave"],
+      amountDelta: 6,
+      cooldownDelta: -1
+    });
+    expect(SKILL_NODES.find((node) => node.id === "magic_warding")?.abilityUpgrade).toMatchObject({
+      abilityIds: "all",
+      manaCostDelta: -4
+    });
+    expect(SKILL_NODES.find((node) => node.id === "leadership_presence")?.abilityUpgrade).toMatchObject({
+      abilityIds: ["rally_banner"],
+      radiusDelta: 8
+    });
+    expect(SKILL_NODES.filter((node) => node.hidden).map((node) => node.id)).toEqual(
+      expect.arrayContaining(["arcanist_blink", "shepherd_blessing", "shepherd_sanctify_ground"])
+    );
   });
 
   it("defines asymmetric faction mechanics", () => {

@@ -1,7 +1,8 @@
 import Phaser from "phaser";
 import type { AbilityDefinition } from "../core/GameTypes";
 import { distance } from "../core/MathUtils";
-import { requireAbility } from "../data/contentIndex";
+import { applyHeroAbilityUpgrades } from "../core/HeroProgressionRules";
+import { ITEM_BY_ID, SKILL_NODE_BY_ID, requireAbility } from "../data/contentIndex";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Hero } from "../entities/Hero";
@@ -38,7 +39,7 @@ export class AbilitySystem {
   }
 
   castAbility(hero: Hero, abilityId: string, selected: BaseEntity[]): boolean {
-    const ability = requireAbility(abilityId);
+    const ability = applyHeroAbilityUpgrades(requireAbility(abilityId), hero, SKILL_NODE_BY_ID, ITEM_BY_ID).ability;
     if (!hero.alive) {
       return false;
     }

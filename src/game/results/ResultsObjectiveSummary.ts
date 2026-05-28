@@ -1,9 +1,11 @@
 import type { BattleMapDefinition } from "../core/GameTypes";
-import { formatRelicBuildArchetype } from "../core/RelicRewardRules";
+import { getActiveHeroBuildSynergy } from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
+import { formatRelicBuildArchetype } from "../core/RelicRewardRules";
 import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
+import { ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
@@ -261,10 +263,44 @@ function renderXpProgress(data: ResultsData, viewModel: ResultsViewModel): strin
       <span>After</span><strong>Level ${afterHero.level} - ${formatXpProgress(afterHero.xp, afterHero.level, after)}</strong>
       <span>Level-up</span><strong>${levelsGained > 0 ? `+${levelsGained} level${levelsGained === 1 ? "" : "s"}` : "No level-up"}</strong>
       <span>Skill points gained</span><strong>${skillPointsGained}</strong>
+      ${renderHeroBuildProgressionRows(data, viewModel)}
     </div>
     <div class="xp-compare-bars">
       <div><span>Before</span><i style="width: ${Math.round(before.percent)}%"></i></div>
       <div><span>After</span><i style="width: ${Math.round(after.percent)}%"></i></div>
     </div>
   `;
+}
+
+function renderHeroBuildProgressionRows(data: ResultsData, viewModel: ResultsViewModel): string {
+  if (data.launchRequest?.mode === "tutorial") {
+    return "";
+  }
+  const relicInstance = data.heroSave.equipment.relic
+    ? data.heroSave.inventory.find((instance) => instance.instanceId === data.heroSave.equipment.relic)
+    : undefined;
+  const relicItem = relicInstance ? ITEM_BY_ID[relicInstance.itemId] : undefined;
+  const synergy = getActiveHeroBuildSynergy(data.heroSave, SKILL_NODE_BY_ID, ITEM_BY_ID);
+  const skillReminder =
+    viewModel.skillPointsGained > 0 || data.heroSave.skillPoints > 0
+      ? `<span>Skill point reminder</span><strong>Spend skill points in Hero Inventory</strong>`
+      : "";
+  return `
+    <span>Equipped relic</span><strong>${escapeHtml(relicItem ? `${relicItem.name} - ${relicBuildLabel(relicItem.tags)}` : "None")}</strong>
+    <span>Relic synergy</span><strong>${escapeHtml(synergy ? `${synergy.summary} ${synergy.abilitySummary}` : "No matching equipped relic and branch skill yet")}</strong>
+    ${skillReminder}
+  `;
+}
+
+function relicBuildLabel(tags: string[]): string {
+  if (tags.includes("warrior")) {
+    return "Warrior build";
+  }
+  if (tags.includes("seer")) {
+    return "Seer build";
+  }
+  if (tags.includes("commander")) {
+    return "Commander build";
+  }
+  return "Build relic";
 }

@@ -1,4 +1,5 @@
 import type { BattleRewardResult, ItemDefinition, ItemInstance } from "../core/GameTypes";
+import { getActiveHeroBuildSynergy } from "../core/HeroProgressionRules";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { HeroProgressionCatalogs } from "./HeroProgressionViewModel";
 import {
@@ -29,6 +30,8 @@ export interface InventoryRowViewModel {
   totalStatModsText: string;
   tagsText: string;
   buildIdentityText?: string;
+  synergyText?: string;
+  ownedStateText: string;
   description: string;
   flavorText: string;
   itemNameHtml: string;
@@ -47,6 +50,7 @@ export interface InventoryPanelOptions {
 }
 
 export function createInventoryViewModel({ heroSave, rewardItemIds, reward, catalogs }: InventoryPanelOptions): InventoryPanelViewModel {
+  const activeSynergy = getActiveHeroBuildSynergy(heroSave, catalogs.skillNodeById, catalogs.itemById);
   const rows = heroSave.inventory
     .map((instance) => ({ instance, item: catalogs.itemById[instance.itemId] }))
     .filter((entry): entry is { instance: ItemInstance; item: ItemDefinition } => entry.item !== undefined)
@@ -65,6 +69,8 @@ export function createInventoryViewModel({ heroSave, rewardItemIds, reward, cata
         totalStatModsText: formatItemTotalStats(item, instance),
         tagsText: formatTags(item.tags),
         buildIdentityText: formatRelicItemBuildText(item),
+        synergyText: equipped && item.slot === "relic" && activeSynergy ? `${activeSynergy.summary} ${activeSynergy.abilitySummary}` : undefined,
+        ownedStateText: equipped ? "Owned - equipped" : "Owned - available",
         description: item.description,
         flavorText: item.flavorText,
         itemNameHtml: renderItemName(item),
@@ -93,10 +99,12 @@ export function renderInventoryPanel(viewModel: InventoryPanelViewModel): string
                   <strong>${row.itemNameHtml} ${row.rewarded ? "<span>New</span>" : ""}</strong>
                   <small>Instance: ${escapeHtml(row.instanceId)} - Source: ${escapeHtml(row.source)}</small>
                   <small>${row.slotLabel} - ${escapeHtml(row.totalStatModsText)}</small>
+                  <small>${escapeHtml(row.ownedStateText)}</small>
                   <small class="affix-line">${escapeHtml(row.affixText)}</small>
                   <small>${escapeHtml(row.baseStatModsText)}</small>
                   <small>${escapeHtml(row.affixStatModsText)}</small>
                   ${row.buildIdentityText ? `<small>${escapeHtml(row.buildIdentityText)}</small>` : ""}
+                  ${row.synergyText ? `<small class="synergy-line">${escapeHtml(row.synergyText)}</small>` : ""}
                   <p>${escapeHtml(row.description)}</p>
                   <small>${escapeHtml(row.flavorText)}</small>
                   <small>${escapeHtml(row.tagsText)}</small>

@@ -48,6 +48,14 @@ export function validateHeroClasses(errors: string[], context: ValidationContext
 }
 
 export function validateSkillNodes(errors: string[], context: ValidationContext): void {
+  HERO_CLASSES.forEach((heroClass) => {
+    context.skillTreeIds.forEach((treeId) => {
+      const visibleCount = SKILL_NODES.filter((node) => node.treeId === treeId && !node.hidden && (!node.classId || node.classId === heroClass.id)).length;
+      if (visibleCount < 2 || visibleCount > 3) {
+        errors.push(`Skill tree ${treeId} must show 2-3 visible nodes for hero class ${heroClass.id}; found ${visibleCount}.`);
+      }
+    });
+  });
   SKILL_NODES.forEach((node) => {
     if (!context.skillTreeIds.has(node.treeId)) {
       errors.push(`Skill node ${node.id} references missing tree ${node.treeId}.`);
@@ -57,6 +65,9 @@ export function validateSkillNodes(errors: string[], context: ValidationContext)
     }
     if (node.unlockAbilityId && !context.abilityIds.has(node.unlockAbilityId)) {
       errors.push(`Skill node ${node.id} unlocks missing ability ${node.unlockAbilityId}.`);
+    }
+    if (node.buildArchetype && !["warrior", "seer", "commander"].includes(node.buildArchetype)) {
+      errors.push(`Skill node ${node.id} has invalid build archetype ${node.buildArchetype}.`);
     }
     if (node.maxRank <= 0) {
       errors.push(`Skill node ${node.id} must have a positive max rank.`);
@@ -72,5 +83,28 @@ export function validateSkillNodes(errors: string[], context: ValidationContext)
         errors.push(`Skill node ${node.id} has a requirement with non-positive rank.`);
       }
     });
+    if (node.abilityUpgrade) {
+      if (!node.abilityUpgrade.effectSummary.trim()) {
+        errors.push(`Skill node ${node.id} ability upgrade needs effect summary.`);
+      }
+      const abilityIds = node.abilityUpgrade.abilityIds;
+      if (abilityIds !== "all") {
+        abilityIds.forEach((abilityId) => {
+          if (!context.abilityIds.has(abilityId)) {
+            errors.push(`Skill node ${node.id} ability upgrade references missing ability ${abilityId}.`);
+          }
+        });
+      }
+      const hasDelta = [
+        node.abilityUpgrade.amountDelta,
+        node.abilityUpgrade.manaCostDelta,
+        node.abilityUpgrade.cooldownDelta,
+        node.abilityUpgrade.radiusDelta,
+        node.abilityUpgrade.durationDelta
+      ].some((value) => typeof value === "number" && value !== 0);
+      if (!hasDelta) {
+        errors.push(`Skill node ${node.id} ability upgrade must change at least one ability value.`);
+      }
+    }
   });
 }
