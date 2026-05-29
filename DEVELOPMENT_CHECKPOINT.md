@@ -1,6 +1,73 @@
 # Development Checkpoint
 
-Updated: 2026-05-28 v0.42-v0.44 mission variety and scenario modifier verification closeout
+Updated: 2026-05-29 v0.45-v0.47 Act 1 campaign spine and onboarding polish verification closeout
+
+## v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
+
+Scope: add a small Act 1 campaign spine, data-driven difficulty pacing labels, and onboarding/next-action copy using existing campaign nodes, maps, scenario metadata, rewards, hero progression, relic reward/equip flows, campaign UI, and Results UI. This pass changes Act 1 metadata, campaign node details, Results campaign guidance, first-experience guidance, package metadata, tests, and docs. It does not add factions, runtime art/assets, shop, crafting, cinematic systems, a giant quest system, save-version bump, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world interactions.
+
+Baseline:
+
+- Starting commit/package: `78df198`, `ascendant-realms-private-playtest-78df198`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26615193631` on `78df198` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V045_ACT1_CAMPAIGN_SPINE_SPEC.md`.
+- Added `docs/V046_DIFFICULTY_PACING_FOUNDATION_SPEC.md`.
+- Added `docs/V047_ONBOARDING_AND_PLAYER_GUIDANCE_SPEC.md`.
+- Added `docs/V045_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V046_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added a seven-step content-driven Act 1 path from Tutorial / Proving Grounds through Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, and replay cleanup.
+- Added Act 1 step metadata for step kind, pacing tier, mechanic focus, build tags, unlock summary, onboarding hint, Results hint, next action, and replay hint.
+- Added `CampaignActSpineRules` helpers for node-to-step lookup, recommended next step, locked reason copy, Results guidance, and replay guidance.
+- Added campaign map copy for Act 1 role, pacing tier, unlock state, locked reason, mechanic focus, onboarding hint, and next action.
+- Added Results copy for next mission unlocks, replay availability, skill spending, relic equip, optional objective cleanup, and first-clear/replay context.
+- Updated Act 1 node copy so Border Village is clearly the first persistent campaign battle, Old Stone Road teaches base development, Aether Well Ruins teaches resource control, Bandit Hillfort stages rival pressure, and Ashen Outpost anchors the champion/relic milestone.
+- Updated package metadata and validation to require the v0.45-v0.47 docs.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Act 1 progression, pacing, and onboarding guidance are derived from content metadata and existing campaign/hero/relic/reward state.
+- Existing campaign completion, reward claim, replay, optional objective, hero XP, skill-tree, relic inventory, and relic equipment saves remain valid.
+
+Verification:
+
+```text
+npm test -- src/game/core/campaign/CampaignActSpineRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/results/ResultsViewModel.test.ts PASS, 3 files / 31 tests.
+npm run validate:content PASS.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm test PASS, 74 files / 570 tests.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "first campaign battle path|Ashen Outpost special objectives|Old Stone Road victory" --reporter=line PASS, 3 hosted proxy tests.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS on final rerun after manual dev-server start, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:shard1of3 PASS, 44 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-78df198-dirty` generated.
+npm run verify:playtest-package PASS, 133 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Full release note: `npm run test:e2e:release` was attempted with a 40-minute timeout and remained non-pass evidence after timing out without a summary. The timed-out local Playwright/Vite processes were stopped. The local 3-way release shard fallback passed completely.
+
+Smoke note: the first fast smoke attempt timed out without a summary, then a rerun failed with `ERR_CONNECTION_REFUSED` because the local dev server was not running. After starting and verifying the dev server, fast smoke passed; full smoke also passed; the manual dev server was stopped.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.42-v0.44 Mission Variety And Scenario Modifier Foundation - 2026-05-28
 

@@ -64,6 +64,8 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
       completedNodeId: data.campaignResult?.completedNodeId,
       completedNodeName: data.campaignResult?.completedNodeName,
       unlockedNodeNames: data.campaignResult?.unlockedNodeNames,
+      wasReplay: data.campaignResult?.wasReplay,
+      optionalObjectives: data.campaignResult?.optionalObjectives,
       rewardItemCount,
       skillPointsGained
     }),
@@ -90,7 +92,8 @@ export function initialResultsStatus(data: ResultsData): string {
   }
   if (data.relicRewardChoice) {
     const optionNames = data.relicRewardChoice.options.map((option) => option.item.name).join(" or ");
-    return `Relic choice available: choose ${optionNames}. Relic effects are active when equipped.`;
+    const milestoneCopy = data.campaignResult?.completedNodeId === "ashen_outpost" ? " Spend skill points or replay optional objectives after the choice." : "";
+    return `Relic choice available: choose ${optionNames}. Relic effects are active when equipped.${milestoneCopy}`;
   }
   if (data.relicReward?.status === "granted") {
     return `${data.relicReward.item.name} was added to inventory. Relic effects are active when equipped.`;
@@ -111,7 +114,13 @@ export function initialResultsStatus(data: ResultsData): string {
     return "Cinderfen Watch secured. First-clear battle rewards and node rewards were applied; resolve Cinderfen Aftermath to finish the current v0.3 route.";
   }
   if (data.campaignResult) {
-    return `${data.campaignResult.completedNodeName} secured. First-clear battle rewards and campaign node rewards were applied.`;
+    const unlockCopy =
+      data.campaignResult.unlockedNodeNames.length > 0
+        ? ` Next mission unlocked: ${data.campaignResult.unlockedNodeNames.join(", ")}.`
+        : " Replay is available for completed battle nodes.";
+    const skillCopy =
+      (data.campaignResult.nodeLevelUp.skillPointsGained ?? 0) > 0 ? " Spend new skill points in Hero Inventory." : "";
+    return `${data.campaignResult.completedNodeName} secured. First-clear battle rewards and campaign node rewards were applied.${unlockCopy}${skillCopy}`;
   }
   const rewardCount = data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0;
   const skillPointsGained = data.rewardLevelUp?.skillPointsGained ?? 0;

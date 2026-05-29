@@ -1,4 +1,5 @@
 import { BATTLE_DIFFICULTIES } from "../battlePacing";
+import { ACT1_CAMPAIGN_SPINE } from "../act1CampaignSpine";
 import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
@@ -8,6 +9,14 @@ import { MAPS } from "../maps";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "../reputation";
 import type { CampaignNodeChoiceDefinition, CampaignNodeDefinition } from "../../core/GameTypes";
 import { assertUniqueIds, type ValidationContext } from "./ValidationTypes";
+
+const ACT1_REQUIRED_NODE_ORDER = [
+  "border_village",
+  "old_stone_road",
+  "aether_well_ruins",
+  "bandit_hillfort",
+  "ashen_outpost"
+];
 
 export function validateCampaignNodes(errors: string[], context: ValidationContext): void {
   CAMPAIGN_NODES.forEach((node) => {
@@ -242,6 +251,80 @@ export function validateCampaignModifiers(errors: string[], context: ValidationC
     }
     validateCampaignModifierCaptureBonuses(modifier, errors, context);
   });
+}
+
+export function validateCampaignActSpine(errors: string[], context: ValidationContext): void {
+  assertUniqueIds(ACT1_CAMPAIGN_SPINE, "Campaign Act 1 step", errors);
+  const orders = new Set<number>();
+  ACT1_CAMPAIGN_SPINE.forEach((step) => {
+    if (step.actId !== "act1") {
+      errors.push(`Campaign Act 1 step ${step.id} has invalid act id ${step.actId}.`);
+    }
+    if (!Number.isInteger(step.order) || step.order <= 0) {
+      errors.push(`Campaign Act 1 step ${step.id} has invalid order ${step.order}.`);
+    }
+    if (orders.has(step.order)) {
+      errors.push(`Campaign Act 1 step ${step.id} duplicates order ${step.order}.`);
+    }
+    orders.add(step.order);
+    if (!["training", "campaign_battle", "campaign_support", "replay_loop"].includes(step.kind)) {
+      errors.push(`Campaign Act 1 step ${step.id} has invalid kind ${step.kind}.`);
+    }
+    if (!["training", "low", "standard", "milestone", "replay"].includes(step.pacingTier)) {
+      errors.push(`Campaign Act 1 step ${step.id} has invalid pacing tier ${step.pacingTier}.`);
+    }
+    if (
+      !step.title.trim() ||
+      !step.unlockSummary.trim() ||
+      !step.playerGoal.trim() ||
+      !step.difficultyPacing.trim() ||
+      !step.onboardingHint.trim() ||
+      !step.resultsHint.trim() ||
+      !step.nextAction.trim()
+    ) {
+      errors.push(`Campaign Act 1 step ${step.id} needs complete guidance copy.`);
+    }
+    if (step.mechanicFocus.length === 0 || step.recommendedBuildTags.length === 0) {
+      errors.push(`Campaign Act 1 step ${step.id} needs mechanic focus and build tags.`);
+    }
+    if ((step.kind === "training" || step.kind === "replay_loop") && step.nodeId) {
+      errors.push(`Campaign Act 1 step ${step.id} must not bind ${step.kind} to a campaign node.`);
+    }
+    if (step.kind === "campaign_battle" && !step.nodeId) {
+      errors.push(`Campaign Act 1 step ${step.id} needs a campaign battle node.`);
+    }
+    if (step.nodeId) {
+      const node = CAMPAIGN_NODES.find((entry) => entry.id === step.nodeId);
+      if (!context.campaignNodeIds.has(step.nodeId) || !node) {
+        errors.push(`Campaign Act 1 step ${step.id} references missing node ${step.nodeId}.`);
+      } else {
+        if (step.kind === "campaign_battle" && node.nodeType !== "battle") {
+          errors.push(`Campaign Act 1 step ${step.id} references non-battle node ${step.nodeId}.`);
+        }
+        if (node.chapterId !== "border_marches") {
+          errors.push(`Campaign Act 1 step ${step.id} references non-Act 1 chapter node ${step.nodeId}.`);
+        }
+      }
+    }
+    step.supportNodeIds?.forEach((supportNodeId) => {
+      if (!context.campaignNodeIds.has(supportNodeId)) {
+        errors.push(`Campaign Act 1 step ${step.id} references missing support node ${supportNodeId}.`);
+      }
+    });
+  });
+
+  const mainNodeOrder = ACT1_CAMPAIGN_SPINE.filter((step) => step.kind === "campaign_battle").map((step) => step.nodeId);
+  if (mainNodeOrder.join("|") !== ACT1_REQUIRED_NODE_ORDER.join("|")) {
+    errors.push(`Campaign Act 1 spine node order must be ${ACT1_REQUIRED_NODE_ORDER.join(", ")}.`);
+  }
+  const training = ACT1_CAMPAIGN_SPINE.filter((step) => step.kind === "training");
+  const replay = ACT1_CAMPAIGN_SPINE.filter((step) => step.kind === "replay_loop");
+  if (training.length !== 1 || training[0]?.order !== 1) {
+    errors.push("Campaign Act 1 spine needs exactly one order 1 training step.");
+  }
+  if (replay.length !== 1 || replay[0]?.order !== ACT1_CAMPAIGN_SPINE.length) {
+    errors.push("Campaign Act 1 spine needs exactly one final replay loop step.");
+  }
 }
 
 export function validateReputationEffects(errors: string[], context: ValidationContext): void {

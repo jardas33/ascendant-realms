@@ -1,4 +1,5 @@
 import type { BattleStats } from "./GameTypes";
+import { getCampaignActRecommendedNextStep, getCampaignActResultsGuidance } from "./campaign/CampaignActSpineRules";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 export interface GuidanceMessage {
@@ -13,6 +14,8 @@ export interface ResultsGuidanceInput {
   completedNodeId?: string;
   completedNodeName?: string;
   unlockedNodeNames?: string[];
+  wasReplay?: boolean;
+  optionalObjectives?: Array<{ persisted: boolean; newlyRecorded: boolean }>;
   rewardItemCount: number;
   skillPointsGained: number;
 }
@@ -26,6 +29,7 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   const completed = new Set(campaign.completedNodeIds);
   const unlocked = new Set(campaign.unlockedNodeIds);
   const shouldImproveHero = hero.skillPoints > 0 || heroHasUnequippedItems(hero);
+  const act1Next = getCampaignActRecommendedNextStep(campaign);
 
   if (completed.has("cinderfen_aftermath")) {
     return {
@@ -38,8 +42,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("border_village")) {
     return {
       title: "Start Here",
-      body: "Begin at Border Village. It is the tutorial battle for capturing a site, building a Barracks, training troops, and defending the first wave.",
-      actions: ["Select Border Village", "Win the battle", "Look at your rewards after victory"]
+      body: "Begin at Border Village after Tutorial / Proving Grounds. It is the first persistent campaign battle for capturing a site, building a Barracks, training troops, and defending the first wave.",
+      actions: [act1Next.title, "Select Border Village", "Win the battle", "Look at your rewards after victory"]
     };
   }
 
@@ -47,14 +51,14 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
     if (shouldImproveHero) {
       return {
         title: "Strengthen Your Hero",
-        body: "You have new progression waiting. Equip rewards or spend skill points, then take Old Stone Road as your first real easy battle.",
+        body: "You have new progression waiting. Equip rewards or spend skill points, then take Old Stone Road as the base-development step.",
         actions: ["Open Hero Inventory", "Equip new items", "Spend skill points", "Launch Old Stone Road"]
       };
     }
     return {
-      title: "Next Battle",
-      body: "Old Stone Road is the next step. It is still Easy, but it asks you to use the full opening more confidently.",
-      actions: ["Select Old Stone Road", "Capture resources earlier", "Bring a larger trained army"]
+      title: "Base Development Next",
+      body: "Old Stone Road is still Easy, but it asks you to keep Workers productive, build production sooner, and use the full opening more confidently.",
+      actions: ["Select Old Stone Road", "Capture resources earlier", "Keep Workers active", "Bring a larger trained army"]
     };
   }
 
@@ -77,24 +81,24 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("aether_well_ruins") && unlocked.has("aether_well_ruins")) {
     return {
       title: "Harder Battle Available",
-      body: "Aether Well Ruins is a Normal battle on Broken Ford. Equip your best item, spend skill points, and stabilize after the first wave before pushing.",
-      actions: ["Prepare your hero", "Launch Aether Well Ruins", "Use side resources if the center is too risky"]
+      body: "Aether Well Ruins is the Act 1 resource-control step. Equip your best item, spend skill points, assign Workers to held sites, and stabilize before pushing.",
+      actions: ["Prepare your hero", "Assign and upgrade sites", "Launch Aether Well Ruins", "Use side resources if the center is too risky"]
     };
   }
 
   if (!completed.has("bandit_hillfort") && unlocked.has("bandit_hillfort")) {
     return {
       title: "Second Front",
-      body: "Bandit Hillfort is another Normal battle on Broken Ford. Use what your hero learned and build a steadier army before attacking.",
-      actions: ["Check inventory", "Launch Bandit Hillfort", "Defend before assaulting"]
+      body: "Bandit Hillfort is the rival-pressure step. Use what your hero learned, build a steadier army, and avoid attacking before production is stable.",
+      actions: ["Check inventory", "Build a mixed army", "Launch Bandit Hillfort", "Defend before assaulting"]
     };
   }
 
   if (!completed.has("ashen_outpost") && unlocked.has("ashen_outpost")) {
     return {
       title: "Current Finale",
-      body: "Ashen Outpost is the current endpoint. Enter with upgraded gear, use Chapel or camp support if available, and avoid early probes into the fortress.",
-      actions: ["Spend all skill points", "Equip best rewards", "Stage a larger army before attacking"]
+      body: "Ashen Outpost is the Act 1 champion relic milestone. Enter with upgraded gear, use Chapel or camp support if available, and avoid early probes into the fortress.",
+      actions: ["Spend all skill points", "Equip best rewards or relics", "Stage a larger army before attacking", "Replay objectives after victory"]
     };
   }
 
@@ -141,15 +145,15 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
   switch (nodeId) {
     case "border_village":
       return {
-        title: "Tutorial Battle",
-        body: "This fight teaches the core RTS loop: claim a nearby site, build production, train troops, use your hero, and win by destroying the enemy Stronghold.",
+        title: "First Campaign Battle",
+        body: "This fight starts the persistent campaign loop: claim a nearby site, build production, train troops, use your hero, and win by destroying the enemy Stronghold.",
         actions: ["Capture the Crown Shrine", "Build a Barracks", "Train Militia", "Defend the first attack"]
       };
     case "old_stone_road":
       return {
-        title: "First Real Battle",
-        body: "This is still forgiving, but the enemy gives you less room. Arrive with an equipped reward and use the opening more cleanly.",
-        actions: ["Equip a weapon or trinket", "Capture two sites", "Train before attacking"]
+        title: "Base Development",
+        body: "This is still forgiving, but the enemy gives you less room. Keep Workers active, build production earlier, and use the opening more cleanly.",
+        actions: ["Equip a weapon or trinket", "Keep Workers active", "Capture two sites", "Train before attacking"]
       };
     case "refugee_caravan":
       return {
@@ -165,21 +169,21 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
       };
     case "aether_well_ruins":
       return {
-        title: "Harder Battle",
-        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. The first wave is survivable, but later waves punish a thin army.",
-        actions: ["Scout carefully", "Use side resources", "Rebuild before attacking"]
+        title: "Resource Control",
+        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. Assign Workers to captured sites, upgrade safe sites, and rebuild before attacking.",
+        actions: ["Scout carefully", "Assign sites", "Upgrade safe income", "Rebuild before attacking"]
       };
     case "bandit_hillfort":
       return {
-        title: "Harder Battle",
-        body: "This fight checks whether you can build an army while under steadier pressure. Fortress waves are slower, but they hit harder if you attack underprepared.",
-        actions: ["Build production early", "Train a mixed army", "Attack after stabilizing"]
+        title: "Rival Pressure",
+        body: "This fight checks whether you can build an army while under steadier pressure. Fortress waves hit harder if you attack underprepared.",
+        actions: ["Build production early", "Train a mixed army", "Answer the commander", "Attack after stabilizing"]
       };
     case "ashen_outpost":
       return {
-        title: "Current Finale",
-        body: "This is the strongest current campaign battle. Bring equipment, skill points, upgrades, and enough troops to break a fortified base.",
-        actions: ["Prepare hero progression", "Use support choices", "Assault after building a real army"]
+        title: "Champion Relic Milestone",
+        body: "This is the Act 1 champion battle. Bring equipment, skill points, upgrades, and enough troops to break a fortified base and claim a relic choice.",
+        actions: ["Prepare hero progression", "Use support choices", "Defeat Captain Malrec", "Equip relic after victory"]
       };
     default:
       return {
@@ -219,7 +223,7 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.completedNodeId === "border_village") {
     return {
       title: "Border Village Secured",
-      body: "You finished the tutorial battle. Your next loop is hero growth, then Old Stone Road.",
+      body: "You finished the first persistent campaign battle. Your next loop is hero growth, then the Old Stone Road base-development mission.",
       actions: [
         input.rewardItemCount > 0 ? "Equip your new item" : "Check inventory",
         input.skillPointsGained > 0 ? "Spend your skill point" : "Review hero stats",
@@ -231,9 +235,23 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
 
   if (input.completedNodeId === "old_stone_road") {
     return {
-      title: "The Road Opens",
-      body: "Old Stone Road unlocks the campaign branch. Visit the event node to make your first campaign choice, then prepare for Normal battles.",
-      actions: ["Visit Refugee Caravan", "Use new rewards", "Prepare for Broken Ford"]
+      title: "Base Development Complete",
+      body: "Old Stone Road opens the Act 1 branch. Use support nodes if helpful, then choose resource control or rival pressure.",
+      actions: ["Visit Refugee Caravan or Marcher Camp", "Use new rewards", "Prepare for Broken Ford", "Replay available"]
+    };
+  }
+
+  if (input.completedNodeId === "ashen_outpost") {
+    const actGuidance = getCampaignActResultsGuidance(input);
+    return {
+      title: "Champion Relic Milestone",
+      body: actGuidance?.onboardingHint ?? "Captain Malrec is defeated. Choose and equip a relic, spend any skill point, then review replay objectives or continue the campaign.",
+      actions: [
+        input.rewardItemCount > 0 ? "Equip item rewards" : "Review inventory",
+        input.skillPointsGained > 0 ? "Spend skill point" : "Review skill tree",
+        "Choose or equip relic",
+        "Replay optional objectives"
+      ]
     };
   }
 
@@ -246,9 +264,10 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   }
 
   if ((input.unlockedNodeNames ?? []).length > 0) {
+    const actGuidance = getCampaignActResultsGuidance(input);
     return {
       title: "New Path Unlocked",
-      body: `${input.completedNodeName ?? "This node"} changed the campaign map. Return to see the new route.`,
+      body: actGuidance?.nextAction ?? `${input.completedNodeName ?? "This node"} changed the campaign map. Return to see the new route.`,
       actions: [...(input.unlockedNodeNames ?? []).map((name) => `New node: ${name}`), "Open Hero Inventory if you gained gear"]
     };
   }

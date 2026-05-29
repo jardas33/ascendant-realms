@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
+
+This checkpoint turns the existing campaign systems into a clearer Act 1 path: Tutorial / Proving Grounds, first persistent battle, base development, resource control, rival pressure, champion relic reward, and replayable objective cleanup. It uses existing campaign nodes, maps, scenario metadata, rewards, relic/skill systems, campaign UI, and Results UI. No factions, runtime art/assets, shop, crafting, cinematic system, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V045_ACT1_CAMPAIGN_SPINE_SPEC.md`.
+- Added `docs/V046_DIFFICULTY_PACING_FOUNDATION_SPEC.md`.
+- Added `docs/V047_ONBOARDING_AND_PLAYER_GUIDANCE_SPEC.md`.
+- Added `docs/V045_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V046_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added content-driven Act 1 step metadata for Training, First Campaign Battle, Base Development, Resource Control, Rival Pressure, Champion Relic Milestone, and Replay Cleanup.
+- Added `CampaignActSpineRules` helpers for recommended next steps, node-to-step lookup, locked reason copy, Results guidance, and replay guidance.
+- Added campaign node details for Act 1 role, pacing tier, mechanic focus, unlock summary, locked reason, onboarding hint, and next action.
+- Added Results guidance for next mission unlocks, replay availability, skill spending, relic equip, optional objective cleanup, and first-clear/replay context.
+- Updated Act 1 node copy to make Workers, buildings, upgrades, resource sites, rival champion defeat, relic choice, skill spending, and replay objectives easier to follow.
+- Updated package metadata and validation to name `v0.45-v0.47 Act 1 campaign spine and onboarding polish`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for campaign progression readability and Act 1 guidance.
+- Gameplay numbers changed: no global rebalance and no new scenario modifiers.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward.
+- Inventory/loot changed: no new relics or inventory systems; the existing relic choice/equip flow receives clearer guidance.
+
+### Verification
+
+- Passed: focused Act 1 campaign/results tests with 31 tests, content validation, production build with the known Vite Phaser chunk-size warning, `npm test` with 74 files / 570 tests, focused package validation tests with 3 tests, focused hosted Act 1 proxy with 3 tests, art-intake validation, fast smoke with 8 tests after manual dev-server start, full smoke with 14 tests, controls normal/extended/verify, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, local release shard 1/3 with 44 tests, local release shard 2/3 with 34 tests, local release shard 3/3 with 14 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, dirty package verification with 133 checks, and `git diff --check`.
+- Full local release note: `npm run test:e2e:release` exceeded a 40-minute tool timeout without returning a summary. The timed-out Playwright/Vite processes were stopped, and the 3-way release shard fallback passed completely.
+- Smoke note: an initial fast-smoke timeout and a dev-server-not-running `ERR_CONNECTION_REFUSED` rerun were non-pass setup evidence; fast smoke passed after starting the dev server, and full smoke passed afterward.
+
 ## v0.42-v0.44 Mission Variety And Scenario Modifier Foundation - 2026-05-28
 
 This checkpoint makes campaign battles read more like authored missions by adding mission types, small mission-local scenario modifiers, campaign briefing copy, Results after-action copy, and clearer pacing language. It uses existing maps, objectives, units, rewards, AI config, campaign UI, and Results UI. No new maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

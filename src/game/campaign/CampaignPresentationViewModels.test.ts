@@ -54,6 +54,27 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("Reward preview");
     expect(html).toContain("champion relic eligibility");
+    expect(html).toContain("Act 1 Step 6: Champion Relic Milestone");
+    expect(html).toContain("Pacing tier");
+    expect(html).toContain("Milestone");
+    expect(html).toContain("Equip the relic, spend skill points");
+  });
+
+  it("renders Act 1 locked reasons and onboarding hints on early campaign nodes", () => {
+    const campaign = createStartedCampaignSave();
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const border = CAMPAIGN_NODES.find((entry) => entry.id === "border_village")!;
+    const oldRoad = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
+
+    const borderHtml = renderNodeDetails({ node: border, campaignSave: campaign, heroSave: hero });
+    const oldRoadHtml = renderNodeDetails({ node: oldRoad, campaignSave: campaign, heroSave: hero });
+
+    expect(borderHtml).toContain("Act 1 Step 2: First Campaign Battle");
+    expect(borderHtml).toContain("First Campaign Battle");
+    expect(borderHtml).toContain("Ready to start.");
+    expect(oldRoadHtml).toContain("Act 1 Step 3: Base Development");
+    expect(oldRoadHtml).toContain("Complete Border Village first.");
+    expect(oldRoadHtml).toContain("Keep Workers active");
   });
 
   it("formats chapter card progress without involving the scene", () => {

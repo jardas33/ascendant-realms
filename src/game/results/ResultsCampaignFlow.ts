@@ -1,4 +1,9 @@
 import { buildRewardItemPresentations } from "../core/ResultsFlow";
+import {
+  formatCampaignActStepLabel,
+  getCampaignActResultsGuidance,
+  getCampaignActStepForNode
+} from "../core/campaign/CampaignActSpineRules";
 import { getCampaignMissionBriefing, getCampaignScenarioModifierDefinitions } from "../core/campaign/CampaignMissionRules";
 import type { CampaignNodeDefinition } from "../core/GameTypes";
 import { CAMPAIGN_NODE_BY_ID, ITEM_BY_ID } from "../data/contentIndex";
@@ -18,6 +23,15 @@ export function renderCampaignRewards(
   const node = CAMPAIGN_NODE_BY_ID[campaign.completedNodeId];
   const briefing = node ? getCampaignMissionBriefing(node) : undefined;
   const scenarioModifiers = node ? activeScenarioModifiers(data, node) : [];
+  const actStep = node ? getCampaignActStepForNode(node.id) : undefined;
+  const actGuidance = getCampaignActResultsGuidance({
+    completedNodeId: campaign.completedNodeId,
+    wasReplay: campaign.wasReplay,
+    unlockedNodeNames: campaign.unlockedNodeNames,
+    optionalObjectives: campaign.optionalObjectives,
+    rewardItemCount: (data.reward?.itemIds.length ?? data.rewardItemIds?.length ?? 0) + campaign.nodeReward.itemIds.length,
+    skillPointsGained: (data.rewardLevelUp?.skillPointsGained ?? 0) + campaign.nodeLevelUp.skillPointsGained
+  });
   const startingInventory = data.startingHeroSave?.inventory ?? [];
   const items = buildRewardItemPresentations({
     itemIds: campaign.nodeReward.itemIds,
@@ -31,8 +45,12 @@ export function renderCampaignRewards(
       <h2>Campaign Node Complete</h2>
       <div class="results-grid compact">
         <span>Completed</span><strong>${escapeHtml(campaign.completedNodeName)}</strong>
+        <span>Act 1 step</span><strong>${escapeHtml(actStep ? formatCampaignActStepLabel(actStep) : "Side route / support")}</strong>
+        <span>Act 1 unlock</span><strong>${escapeHtml(actStep?.unlockSummary ?? "Follow existing campaign prerequisites.")}</strong>
         <span>Mission type</span><strong>${escapeHtml(briefing?.missionType?.name ?? "Campaign battle")}</strong>
         <span>Primary objective</span><strong>${escapeHtml(briefing?.primaryObjective ?? "Complete the mission.")}</strong>
+        <span>Next action</span><strong>${escapeHtml(actGuidance?.nextAction ?? "Return to the campaign map.")}</strong>
+        <span>Guidance</span><strong>${escapeHtml(actGuidance?.onboardingHint ?? "Review rewards, hero progression, and available nodes.")}</strong>
         <span>Scenario modifiers</span><strong>${escapeHtml(formatScenarioModifiers(scenarioModifiers))}</strong>
         <span>Mission reward state</span><strong>${campaign.wasReplay ? "Replay reward" : "First-clear reward"}</strong>
         <span>Campaign node reward</span><strong>${campaign.nodeRewardAlreadyClaimed ? "Already claimed" : "Claimed now"}</strong>
@@ -44,6 +62,7 @@ export function renderCampaignRewards(
         <span>Campaign bank</span><strong>${escapeHtml(formatResourceRewards(campaign.campaignResources))}</strong>
       </div>
       <p class="quiet reward-note">${escapeHtml(briefing?.afterActionSummary ?? "Mission state recorded.")}</p>
+      ${actGuidance ? `<p class="quiet reward-note">${escapeHtml(actGuidance.replayHint)}</p>` : ""}
       <p class="quiet reward-note">${escapeHtml(campaignRewardNote(campaign))}</p>
       ${context.renderRewardItems(items)}
     </section>

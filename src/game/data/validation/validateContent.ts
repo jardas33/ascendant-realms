@@ -27,6 +27,7 @@ import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
 import {
   validateCampaignChapters,
+  validateCampaignActSpine,
   validateCampaignMissionTypes,
   validateCampaignModifiers,
   validateCampaignNodes,
@@ -91,6 +92,7 @@ export function validateContent(): string[] {
   validateCampaignMissionTypes(errors, context);
   validateCampaignChapters(errors, context);
   validateCampaignNodes(errors, context);
+  validateCampaignActSpine(errors, context);
   validateReputationEffects(errors, context);
   validateUpgrades(errors, context);
   validateDifficulties(errors);

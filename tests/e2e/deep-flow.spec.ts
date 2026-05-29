@@ -5506,8 +5506,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await page.getByTestId("hero-start").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
+    await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Locked/i);
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow first campaign battle node");
+    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 2: First Campaign Battle");
+    await expect(page.locator(".campaign-node-details")).toContainText("Ready to start.");
+    await expect(page.locator(".campaign-node-details")).toContainText("Capture the nearby site");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await clickReady(
       page.getByTestId("campaign-start-node"),
@@ -5722,6 +5726,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("Victory");
     await expect(page.locator(".results-panel")).toContainText("Border Village");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 2: First Campaign Battle");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Old Stone Road");
     const save = await readSave(page);
     expect(save.campaign.completedNodeIds).toContain("border_village");
     expect(save.campaign.nodeRewardsClaimedIds).toContain("border_village");
@@ -5729,6 +5735,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.completedBattles).toBe(1);
     expect(save.hero.inventory.length).toBeGreaterThan(0);
     expect(Object.values(save.hero.equipment ?? {})).toHaveLength(0);
+
+    await clickReady(page.getByRole("button", { name: "Campaign Map" }), "deep-flow first campaign results campaign map");
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Replayable/i);
+    await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Available/i);
+    await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow completed Border Village detail");
+    await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");
+    await expect(page.locator(".campaign-node-details")).toContainText("Completed battle nodes are replayable.");
   });
 
   test("first enemy wave pressure can damage the base and be survived @hosted-deep-battle", async ({ page }) => {
@@ -6041,6 +6055,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Assault");
     await expect(page.locator(".campaign-node-details")).toContainText("Fortified Enemy");
     await expect(page.locator(".campaign-node-details")).toContainText("Reward preview");
+    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 6: Champion Relic Milestone");
+    await expect(page.locator(".campaign-node-details")).toContainText("Equip the relic, spend skill points");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await clickReady(
       page.getByTestId("campaign-start-node"),
@@ -6107,6 +6123,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("Assault");
     await expect(page.locator(".campaign-reward-block")).toContainText("Fortified Enemy");
     await expect(page.locator(".campaign-reward-block")).toContainText("The outpost is broken");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 6: Champion Relic Milestone");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Choose and equip a relic");
+    await expect(page.locator(".status-box")).toContainText("Spend skill points or replay optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("Optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("3/3 recorded");
     await expect(page.getByTestId("results-relic-choice")).toContainText("Relic Reward Choice");
@@ -6189,6 +6208,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("Victory");
     await expect(page.locator(".campaign-reward-block")).toContainText("Old Stone Road");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 3: Base Development");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Aether Well Ruins");
     await expect(page.locator(".campaign-reward-block")).toContainText("Control");
     await expect(page.locator(".campaign-reward-block")).toContainText("Rich Veins");
     await expect(page.locator(".campaign-reward-block")).toContainText("The road is open");
@@ -6216,6 +6237,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Replayable/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Control");
+    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 3: Base Development");
+    await expect(page.locator(".campaign-node-details")).toContainText("Keep Workers active");
     await expect(page.locator(".campaign-node-details")).toContainText("Rich Veins");
     await expect(page.locator(".campaign-node-details")).toContainText("Reward preview");
     await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");
@@ -6231,6 +6254,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("replay complete");
     await expect(page.locator(".campaign-reward-block")).toContainText("Replay reward");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Replay complete");
     await expect(page.locator(".campaign-reward-block")).toContainText("Control");
     await expect(page.locator(".campaign-reward-block")).toContainText("Rich Veins");
     await expect(page.locator(".campaign-reward-block")).toContainText("Already claimed");

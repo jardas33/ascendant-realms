@@ -363,6 +363,62 @@ describe("results scene helpers", () => {
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("enemy defenders hold a slightly stronger reserve");
     expect(html).toContain("The outpost is broken");
+    expect(html).toContain("Act 1 Step 6: Champion Relic Milestone");
+    expect(html).toContain("Choose and equip a relic");
+    expect(html).toContain("Chapter 2 after first clear");
+  });
+
+  it("points champion relic Results toward equip, skill, and replay guidance", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost"
+      }),
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: ["cinderfen_overlook"],
+        unlockedNodeNames: ["Cinderfen Overlook"],
+        nodeReward: { itemIds: ["oathbound_aegis"], resources: { crowns: 130 }, xp: 100 },
+        nodeLevelUp: { previousLevel: 1, newLevel: 2, levelsGained: 1, skillPointsGained: 1 },
+        campaignResources: { crowns: 130, stone: 0, iron: 0, aether: 0 },
+        wasFirstClear: true,
+        wasReplay: false,
+        nodeRewardClaimed: true,
+        nodeRewardAlreadyClaimed: false
+      },
+      relicRewardChoice: {
+        sourceDefinition: RELIC_REWARD_BY_ENEMY_HERO_ID.captain_malrec,
+        sourceEnemyHeroId: "captain_malrec",
+        sourceLabel: "Captain Malrec champion relic",
+        choiceLabel: "Choose one relic for this hero build.",
+        options: [
+          {
+            definition: RELIC_REWARD_BY_ENEMY_HERO_ID.captain_malrec,
+            item: ITEM_BY_ID.outpost_command_signet,
+            sourceMatched: true,
+            owned: false
+          }
+        ]
+      }
+    });
+
+    const status = initialResultsStatus(data);
+    const guidance = createResultsViewModel(data).guidance;
+
+    expect(status).toContain("Relic choice available");
+    expect(status).toContain("Spend skill points or replay optional objectives");
+    expect(guidance).toMatchObject({
+      title: "Champion Relic Milestone"
+    });
+    expect(guidance.actions).toContain("Choose or equip relic");
+    expect(guidance.actions).toContain("Spend skill point");
+    expect(guidance.actions).toContain("Replay optional objectives");
   });
 
   it("reports when a victory reward is intentionally kept in inventory", () => {

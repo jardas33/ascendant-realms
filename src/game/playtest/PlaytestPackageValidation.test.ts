@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.42-v0.44 mission variety and scenario modifier foundation",
+          checkpoint: "v0.45-v0.47 Act 1 campaign spine and onboarding polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -174,6 +174,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V043_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Scenario modifier report" },
       { path: "V044_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Campaign pacing report" },
       { path: "V044_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.44 retest" },
+      { path: "V045_ACT1_CAMPAIGN_SPINE_SPEC.md", sizeBytes: 20, textContent: "Act 1 spine spec" },
+      { path: "V046_DIFFICULTY_PACING_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Difficulty pacing spec" },
+      { path: "V047_ONBOARDING_AND_PLAYER_GUIDANCE_SPEC.md", sizeBytes: 20, textContent: "Onboarding guidance spec" },
+      { path: "V045_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Act 1 spine report" },
+      { path: "V046_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Difficulty pacing report" },
+      { path: "V047_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Onboarding guidance report" },
+      { path: "V047_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.47 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

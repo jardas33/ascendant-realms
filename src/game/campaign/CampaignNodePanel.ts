@@ -2,6 +2,13 @@ import type { CampaignNodeDefinition } from "../core/GameTypes";
 import { getCampaignNodeGuidance } from "../core/FirstExperienceGuidance";
 import { getCampaignNodeStatus } from "../core/CampaignRules";
 import {
+  formatCampaignActMechanicFocus,
+  formatCampaignActStepLabel,
+  getCampaignActStepForNode,
+  getCampaignActStepStatus,
+  getCampaignNodeLockedReason
+} from "../core/campaign/CampaignActSpineRules";
+import {
   formatCampaignScenarioModifierSummary,
   getCampaignMissionBriefing,
   getCampaignMissionRewardState,
@@ -62,6 +69,8 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const scenarioModifiers = getCampaignScenarioModifierDefinitions(node);
   const objectiveStates = getMissionOptionalObjectiveStates({ campaign: campaignSave, node });
   const buildHint = recommendedBuildHint(node);
+  const actStep = getCampaignActStepForNode(node.id);
+  const lockedReason = getCampaignNodeLockedReason(node, campaignSave);
   return `
       <div class="campaign-node-details ${status}">
         <p class="eyebrow">${titleCase(node.nodeType)} - ${node.isPlaceholder ? "Upcoming" : status === "completed" && node.nodeType === "battle" ? "Replayable (Completed)" : titleCase(status)}</p>
@@ -78,14 +87,21 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
             : ""
         }
         ${renderGuidanceMessage(nodeGuidance.title, nodeGuidance.body, nodeGuidance.actions, "compact")}
+        ${actStep ? renderAct1SpineMessage(actStep, campaignSave) : ""}
         ${missionBriefing ? renderMissionBriefingMessage(missionBriefing, scenarioModifiers) : ""}
         ${renderMissionRewardMessage(node, missionReward)}
         ${objectiveStates.length > 0 ? renderOptionalObjectiveMessage(objectiveStates) : ""}
         ${buildHint ? renderGuidanceMessage(buildHint.title, buildHint.body, buildHint.actions, "compact") : ""}
         <div class="results-grid compact">
           <span>Map</span><strong>${escapeHtml(mapLabel)}</strong>
+          <span>Act 1 role</span><strong>${escapeHtml(actStep ? formatCampaignActStepLabel(actStep) : "Side route / support")}</strong>
+          <span>Pacing tier</span><strong>${escapeHtml(actStep ? titleCase(actStep.pacingTier) : "Standard")}</strong>
+          <span>Locked reason</span><strong>${escapeHtml(lockedReason)}</strong>
+          <span>Act 1 unlock</span><strong>${escapeHtml(actStep?.unlockSummary ?? "Follow existing campaign prerequisites.")}</strong>
           <span>Mission type</span><strong>${escapeHtml(missionBriefing?.missionType?.name ?? "None")}</strong>
           <span>Primary objective</span><strong>${escapeHtml(missionBriefing?.primaryObjective ?? "Complete the mission.")}</strong>
+          <span>Onboarding hint</span><strong>${escapeHtml(actStep?.onboardingHint ?? nodeGuidance.body)}</strong>
+          <span>Next action</span><strong>${escapeHtml(actStep?.nextAction ?? "Complete available nodes to open the next route.")}</strong>
           <span>Scenario modifiers</span><strong>${escapeHtml(formatScenarioModifierNames(scenarioModifiers))}</strong>
           <span>Modifier effects</span><strong>${escapeHtml(formatCampaignScenarioModifierSummary(node))}</strong>
           <span>Reward preview</span><strong>${escapeHtml(missionBriefing?.rewardPreview ?? "See listed rewards.")}</strong>
@@ -138,6 +154,20 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${node.choices?.length ? renderEventChoices({ node, status, campaignSave, heroSave }) : ""}
       </div>
     `;
+}
+
+function renderAct1SpineMessage(step: NonNullable<ReturnType<typeof getCampaignActStepForNode>>, campaignSave: CampaignSaveData): string {
+  const stepStatus = getCampaignActStepStatus(step, campaignSave);
+  return renderGuidanceMessage(
+    formatCampaignActStepLabel(step),
+    step.playerGoal,
+    [
+      `Pacing: ${titleCase(step.pacingTier)}`,
+      `Status: ${titleCase(String(stepStatus))}`,
+      formatCampaignActMechanicFocus(step)
+    ],
+    "compact"
+  );
 }
 
 function renderMissionBriefingMessage(

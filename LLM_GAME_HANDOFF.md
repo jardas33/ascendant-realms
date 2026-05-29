@@ -1,12 +1,78 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-28 v0.42-v0.44 mission variety and scenario modifier verification closeout
+Last updated: 2026-05-29 v0.45-v0.47 Act 1 campaign spine and onboarding polish verification closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
+
+Status: v0.45-v0.47 turns the existing campaign, mission-type, reward, relic, and hero progression layers into a clearer Act 1 spine. It uses existing campaign nodes, maps, scenarios, rewards, Results UI, campaign UI, hero inventory/progression copy, and the v0.42-v0.44 mission metadata. It does not add factions, runtime art/assets, shop, crafting, cinematic systems, a giant quest system, save-version bump, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `78df198`, `ascendant-realms-private-playtest-78df198`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26615193631` on `78df198` passed Fast confidence; heavier release-matrix lanes were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V045_ACT1_CAMPAIGN_SPINE_SPEC.md`.
+- Added `docs/V046_DIFFICULTY_PACING_FOUNDATION_SPEC.md`.
+- Added `docs/V047_ONBOARDING_AND_PLAYER_GUIDANCE_SPEC.md`.
+- Added `docs/V045_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V046_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V047_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `src/game/data/act1CampaignSpine.ts` with a seven-step Act 1 path: Tutorial / Proving Grounds, Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, Ashen Outpost, and replay/optional-objective cleanup.
+- Added `CampaignActSpineRules` helpers for node-to-step lookup, recommended next step, readable locked reasons, Results guidance, and replay guidance.
+- Added Act 1 role, pacing tier, mechanic focus, unlock summary, locked reason, onboarding hint, and next-action copy to the existing campaign node details.
+- Added Results campaign-flow copy for Act 1 step, first-clear/replay context, next mission unlocks, replay availability, skill-point reminders, relic equip reminders, and optional-objective cleanup.
+- Updated Border Village, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost copy to guide the player from first persistent battle through base development, resource control, rival pressure, champion relic reward, and replay.
+- Updated package metadata and validation to require the v0.45-v0.47 docs.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Act 1 spine, pacing, and guidance state are content-driven and derived from existing campaign, hero XP, skill, relic, reward-claim, replay, and optional-objective state.
+- Existing v0.39-v0.41 campaign completion, reward-claim, optional-objective, hero XP, skill-tree, relic inventory, and relic equipment state remains compatible.
+
+Verification:
+
+```text
+npm test -- src/game/core/campaign/CampaignActSpineRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/results/ResultsViewModel.test.ts PASS, 3 files / 31 tests.
+npm run validate:content PASS.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm test PASS, 74 files / 570 tests.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "first campaign battle path|Ashen Outpost special objectives|Old Stone Road victory" --reporter=line PASS, 3 hosted proxy tests.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS on final rerun after manual dev-server start, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:shard1of3 PASS, 44 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-78df198-dirty` generated.
+npm run verify:playtest-package PASS, 133 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Full release note: `npm run test:e2e:release` was attempted with a 40-minute timeout and remained non-pass evidence after timing out without a summary. The timed-out local Playwright/Vite processes were stopped. The 3-way local release shard fallback passed completely, and the hosted production-preview release groups above remain green.
+
+Smoke note: the first `npm run test:e2e:smoke:fast` attempt hit the command timeout without a summary, and the next rerun failed 8/8 with `ERR_CONNECTION_REFUSED` because the dev server was not running. After starting and verifying the local dev server, fast smoke passed; full smoke then passed. The manual dev server was stopped afterward.
+
+Closeout note: commit as `Checkpoint v0.45-v0.47 Act 1 campaign spine and onboarding polish`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.42-v0.44 Mission Variety And Scenario Modifier Foundation - 2026-05-28
 

@@ -5,12 +5,12 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "border_village",
     name: "Border Village",
     description:
-      "Tutorial battle. Secure a Free Marches village by learning the core loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
+      "First campaign battle. Secure a Free Marches village by practicing the persistent campaign loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "skirmish_training",
     missionBriefing: {
-      summary: "Secure the village and practice the core battle loop without extra scenario pressure.",
+      summary: "Secure the village and practice the first persistent campaign battle without extra scenario pressure.",
       primaryObjective: "Capture the Crown Shrine, build a Barracks, train troops, and destroy the enemy Stronghold.",
       rewardPreview: "First clear grants starter XP, Crowns, and the Weathered Command Sword.",
       afterActionSummary: "The village road is secure and the campaign route opens toward the old stone road.",
@@ -34,13 +34,13 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "old_stone_road",
     name: "Old Stone Road",
     description:
-      "First real battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner expansion and better use of your hero rewards.",
+      "Base development battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner Worker use, production timing, and better use of your hero rewards.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "control",
     missionBriefing: {
-      summary: "The trade road rewards clean expansion and steady control of resource sites.",
-      primaryObjective: "Hold the road economy, survive early raider pressure, and destroy the enemy Stronghold.",
+      summary: "The trade road rewards clean expansion, Worker upkeep, and steady control of resource sites.",
+      primaryObjective: "Build production, hold the road economy, survive early raider pressure, and destroy the enemy Stronghold.",
       rewardPreview: "First clear grants XP and a balanced campaign resource bundle.",
       afterActionSummary: "The road is open, but deeper Ashen routes now demand a sharper hero build.",
       recommendedBuildHint: "Commander support helps turn resource control into a stable army."
@@ -153,13 +153,13 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "aether_well_ruins",
     name: "Aether Well Ruins",
     description:
-      "Harder battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero before taking the well.",
+      "Resource control battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero and keep captured sites assigned before taking the well.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "control",
     missionBriefing: {
-      summary: "Aether pressure and tight lanes make this a control mission around the central well.",
-      primaryObjective: "Contest the ruined well, manage spell pressure, and break the Ashen base.",
+      summary: "Aether pressure and tight lanes make this a control mission around assigned and upgraded resource sites.",
+      primaryObjective: "Contest the ruined well, assign Workers to held sites, manage spell pressure, and break the Ashen base.",
       rewardPreview: "First clear grants XP, Aether, Stone, and the Aether Lens.",
       afterActionSummary: "The well is back under Free Marches guard and the chapel route is exposed.",
       recommendedBuildHint: "Seer mana and cooldown support fit the longer aether fight."
@@ -184,12 +184,12 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "bandit_hillfort",
     name: "Bandit Hillfort",
     description:
-      "Harder battle. A raider-backed hillfort checks whether you can build a stable army while holding resources under pressure.",
+      "Rival pressure battle. A raider-backed hillfort checks whether you can build a stable army while holding resources and answering commander pressure.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "assault",
     missionBriefing: {
-      summary: "The hillfort is a pressure assault against raiders who contest resources quickly.",
+      summary: "The hillfort is a pressure assault against raiders who contest resources quickly and force a real army timing.",
       primaryObjective: "Stabilize production, defeat the commander threat, and crack the hillfort base.",
       rewardPreview: "First clear grants XP, Iron-heavy resources, and the Captain's Seal.",
       afterActionSummary: "The hillfort falls, clearing the road toward the Ashen outpost.",
@@ -341,7 +341,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "ashen_outpost",
     name: "Ashen Outpost",
     description:
-      "Milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, break enemy production, and destroy the fortified Stronghold.",
+      "Act 1 milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, defeat Captain Malrec, choose a relic reward, and destroy the fortified Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "assault",

@@ -130,6 +130,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V043_IMPLEMENTATION_REPORT.md",
   "V044_IMPLEMENTATION_REPORT.md",
   "V044_EMMANUEL_RETEST_CHECKLIST.md",
+  "V045_ACT1_CAMPAIGN_SPINE_SPEC.md",
+  "V046_DIFFICULTY_PACING_FOUNDATION_SPEC.md",
+  "V047_ONBOARDING_AND_PLAYER_GUIDANCE_SPEC.md",
+  "V045_IMPLEMENTATION_REPORT.md",
+  "V046_IMPLEMENTATION_REPORT.md",
+  "V047_IMPLEMENTATION_REPORT.md",
+  "V047_EMMANUEL_RETEST_CHECKLIST.md",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -233,7 +240,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.42-v0.44 mission variety and scenario modifier foundation",
+      "v0.45-v0.47 Act 1 campaign spine and onboarding polish",
       "build info checkpoint",
       checks,
       errors

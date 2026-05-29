@@ -32,6 +32,32 @@ export type CampaignChapterStatus = "unlocked" | "locked" | "upcoming";
 
 export type CampaignMissionTypeId = "assault" | "control" | "defense" | "skirmish_training";
 
+export type CampaignActId = "act1";
+
+export type CampaignActStepKind = "training" | "campaign_battle" | "campaign_support" | "replay_loop";
+
+export type CampaignActPacingTier = "training" | "low" | "standard" | "milestone" | "replay";
+
+export interface CampaignActStepDefinition {
+  id: string;
+  actId: CampaignActId;
+  order: number;
+  title: string;
+  kind: CampaignActStepKind;
+  pacingTier: CampaignActPacingTier;
+  nodeId?: string;
+  supportNodeIds?: string[];
+  mechanicFocus: string[];
+  recommendedBuildTags: string[];
+  unlockSummary: string;
+  playerGoal: string;
+  difficultyPacing: string;
+  onboardingHint: string;
+  resultsHint: string;
+  nextAction: string;
+  replayHint?: string;
+}
+
 export interface CampaignMissionTypeDefinition {
   id: CampaignMissionTypeId;
   name: string;

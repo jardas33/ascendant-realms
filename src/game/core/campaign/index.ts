@@ -1,4 +1,5 @@
 export * from "./CampaignChoiceRules";
+export * from "./CampaignActSpineRules";
 export * from "./CampaignChapterRules";
 export * from "./CampaignModifierRules";
 export * from "./CampaignMissionRules";

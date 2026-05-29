@@ -68,7 +68,8 @@ describe("first experience guidance", () => {
       skillPointsGained: 1
     });
 
-    expect(nodeGuidance.title).toBe("Tutorial Battle");
+    expect(nodeGuidance.title).toBe("First Campaign Battle");
+    expect(nodeGuidance.body).toContain("persistent campaign loop");
     expect(resultGuidance.title).toBe("Border Village Secured");
     expect(resultGuidance.actions.join(" ")).toContain("Old Stone Road");
   });
