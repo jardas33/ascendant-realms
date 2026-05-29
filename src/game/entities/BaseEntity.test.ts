@@ -54,6 +54,7 @@ describe("BaseEntity view layout", () => {
 
     const healthBackTop = healthBack.y - healthBack.displayHeight / 2;
     expect(statusBadge.visible).toBe(true);
+    expect(statusBadge.radius).toBeGreaterThanOrEqual(5);
     expect(statusBadge.y + statusBadge.radius).toBeLessThan(healthBackTop);
     expect(statusBadgeLabel).toBeDefined();
     expect(statusBadgeLabel?.visible).toBe(true);

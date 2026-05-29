@@ -103,9 +103,9 @@ import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
 
-const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 24;
-const WORLD_ENTITY_UNIT_HIT_PADDING = 4;
-const WORLD_ENTITY_UNIT_TOP_HIT_PADDING = 6;
+const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
+const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
+const WORLD_ENTITY_UNIT_TOP_HIT_PADDING = 8;
 const WORLD_ENTITY_BUILDING_TOP_HIT_PADDING = 8;
 
 interface BattleSceneData {

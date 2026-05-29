@@ -543,6 +543,31 @@ async function worldToScreen(page: Page, point: { x: number; y: number }): Promi
   }, point);
 }
 
+async function hoverWorldPointAndExpectBattleCursor(
+  page: Page,
+  point: { x: number; y: number },
+  expected: { cursor: string; mode: string; label: string; title: string },
+  context: string
+): Promise<void> {
+  const screen = await worldToScreen(page, point);
+  await page.mouse.move(screen.x, screen.y, { steps: 2 });
+  await expect
+    .poll(
+      async () =>
+        page.evaluate(() => {
+          const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
+          return {
+            cursor: canvas?.style.cursor ?? "",
+            mode: canvas?.dataset.battleCursor ?? "",
+            label: canvas?.dataset.battleCursorLabel ?? "",
+            title: canvas?.title ?? ""
+          };
+        }),
+      { message: context }
+    )
+    .toEqual(expected);
+}
+
 async function clickWorldPoint(page: Page, point: { x: number; y: number }, button: "left" | "right" = "left"): Promise<void> {
   const screen = await worldToScreen(page, point);
   await page.mouse.move(screen.x, screen.y, { steps: 2 });
@@ -2314,21 +2339,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.refreshBattleHud?.(0);
       return { id: target.id, x: target.position.x, y: target.position.y };
     });
-    const attackHoverScreen = await worldToScreen(page, attackHoverTarget);
-    await page.mouse.move(attackHoverScreen.x, attackHoverScreen.y);
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
-            return {
-              cursor: canvas?.style.cursor ?? "",
-              mode: canvas?.dataset.battleCursor ?? ""
-            };
-          }),
-        { message: "expected hostile hover to expose attack cursor intent" }
-      )
-      .toEqual({ cursor: "crosshair", mode: "attack" });
+    await hoverWorldPointAndExpectBattleCursor(
+      page,
+      attackHoverTarget,
+      { cursor: "crosshair", mode: "attack", label: "Attack target", title: "Attack target" },
+      "expected hostile hover to expose attack cursor intent"
+    );
     await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
@@ -2337,19 +2353,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.statusMessage = "Attack cursor stability refresh";
       scene.refreshBattleHud?.(0.11);
     });
-    await expect
-      .poll(
-        async () =>
-          page.evaluate(() => {
-            const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
-            return {
-              cursor: canvas?.style.cursor ?? "",
-              mode: canvas?.dataset.battleCursor ?? ""
-            };
-          }),
-        { message: "expected attack cursor intent to survive HUD refresh" }
-      )
-      .toEqual({ cursor: "crosshair", mode: "attack" });
+    await hoverWorldPointAndExpectBattleCursor(
+      page,
+      attackHoverTarget,
+      { cursor: "crosshair", mode: "attack", label: "Attack target", title: "Attack target" },
+      "expected attack cursor intent to survive HUD refresh"
+    );
     const emptyCanvasPoint = await page.evaluate(() => {
       const canvas = document.querySelector("canvas");
       const bounds = canvas?.getBoundingClientRect();
@@ -2366,12 +2375,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
             const canvas = document.querySelector("canvas") as HTMLCanvasElement | null;
             return {
               cursor: canvas?.style.cursor ?? "",
-              mode: canvas?.dataset.battleCursor ?? ""
+              mode: canvas?.dataset.battleCursor ?? "",
+              label: canvas?.dataset.battleCursorLabel ?? "",
+              title: canvas?.title ?? ""
             };
           }),
         { message: "expected attack cursor intent to clear when no enemy is hovered" }
       )
-      .toEqual({ cursor: "", mode: "" });
+      .toEqual({ cursor: "", mode: "", label: "", title: "" });
     await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y);
     await expect
       .poll(
@@ -2794,6 +2805,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
           scene.refreshBattleHud?.(0);
           return {
             id: site.id,
+            x: site.position.x,
+            y: site.position.y,
             state: site.constructionState,
             progress: site.constructionProgress,
             assignedWorkerId: site.assignedWorkerId,
@@ -2813,6 +2826,26 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).toContainText("Army production: trains Militia and Rangers");
     await expect(page.locator(".side-panel")).toContainText("Incomplete - completed-building actions locked.");
     await expect(page.locator("button[data-action='train'][data-id='militia']")).toHaveCount(0);
+    await page.evaluate(
+      ({ workerId, siteId }) => {
+        const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+        const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+        const site = scene?.buildings.find((building: any) => building.id === siteId && building.alive);
+        if (!worker || !site) {
+          throw new Error("Expected Worker and construction site for build cursor coverage.");
+        }
+        scene.selectionSystem.setSelection([worker]);
+        scene.cameraSystem.centerOn(site.position);
+        scene.refreshBattleHud?.(0);
+      },
+      { workerId: trainedWorker.id, siteId: placedSite.id }
+    );
+    await hoverWorldPointAndExpectBattleCursor(
+      page,
+      placedSite,
+      { cursor: "copy", mode: "build", label: "Build or continue construction", title: "Build or continue construction" },
+      "expected Worker hover over an incomplete friendly building to expose build cursor intent"
+    );
 
     const completed = await page.evaluate((siteId) => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -2904,6 +2937,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         scene.cameraSystem.centerOn(barracks.position);
         scene.refreshBattleHud?.(0);
         return {
+          x: barracks.position.x,
+          y: barracks.position.y,
           hp: barracks.hp,
           maxHp: barracks.maxHp
         };
@@ -2916,6 +2951,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(repairButton).toBeEnabled();
     await expect(repairButton).toContainText("Repair Barracks");
     await expect(repairButton).toContainText(`Damaged: ${damagedState.hp}/${damagedState.maxHp} HP`);
+    await hoverWorldPointAndExpectBattleCursor(
+      page,
+      damagedState,
+      { cursor: "copy", mode: "repair", label: "Repair damaged building", title: "Repair damaged building" },
+      "expected Worker hover over a damaged friendly building to expose repair cursor intent"
+    );
 
     await clickBattleCommandUntilEffect(
       () => repairButton,
@@ -3044,6 +3085,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       scene.refreshBattleHud?.(0);
       return {
         siteEntityId: site.id,
+        x: site.position.x,
+        y: site.position.y,
         siteName: site.definition.name,
         resource: site.definition.resource,
         baseIncome: site.definition.incomeAmount,
@@ -3056,6 +3099,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     const assignButton = page.locator(`button[data-action='assign-resource-site'][data-id='${setup.siteEntityId}']`);
     await expect(assignButton).toBeEnabled();
     await expect(assignButton).toContainText(`Assign ${setup.siteName}`);
+    await hoverWorldPointAndExpectBattleCursor(
+      page,
+      setup,
+      { cursor: "alias", mode: "assign", label: "Assign Worker to resource site", title: "Assign Worker to resource site" },
+      "expected Worker hover over a captured resource site to expose assignment cursor intent"
+    );
 
     await assignWorkerToResourceSiteThroughCommand(
       assignButton,
@@ -5349,6 +5398,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.keyboard.press("1");
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute("data-ability-state", "cooldown");
+    await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute(
+      "data-ability-reason",
+      /Cooldown \d+s/
+    );
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toBeDisabled();
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toContainText(/Cooldown \d+s/);
 

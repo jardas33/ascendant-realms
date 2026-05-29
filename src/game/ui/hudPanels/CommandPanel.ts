@@ -46,6 +46,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         sourceId: selectedOne.id,
         name: definition.name,
         detail: formatCommandDetail(definition.cost, lockReason),
+        lockReason,
         description: definition.description,
         effect: formatBuildingSummary(definition),
         locked: Boolean(lockReason)
@@ -70,6 +71,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         sourceId: selectedOne.id,
         name: definition.name,
         detail: formatCommandDetail(definition.cost, lockReason),
+        lockReason,
         description: `${definition.role}. ${definition.description}`,
         effect: formatUnitSummary(definition),
         locked: Boolean(lockReason)
@@ -100,6 +102,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         sourceId: selectedOne.id,
         name: definition.name,
         detail: formatCommandDetail(definition.cost, lockReason),
+        lockReason,
         description: `${definition.description} ${formatUpgradeOwner(definition)}. ${formatUpgradeRequirements(definition)}. ${formatUpgradeCategory(definition)}.`,
         effect: `Effect: ${formatUpgradeEffects(definition)}`,
         locked: Boolean(lockReason)
@@ -119,10 +122,11 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
               name: target.name,
               detail: target.isRepairable
                 ? `${target.status}. Cost: none`
-                : `Already repaired. HP ${Math.ceil(target.hp)}/${target.maxHp}`,
+                : `Full health. HP ${Math.ceil(target.hp)}/${target.maxHp}`,
+              lockReason: target.isRepairable ? undefined : "Full health",
               description: target.isRepairable
                 ? "Worker must stay near the building; move or attack orders stop repair until Repair is issued again."
-                : "Full health.",
+                : "No repair needed.",
               effect: target.isRepairable ? "Effect: restores building HP slowly over time." : undefined,
               locked: !target.isRepairable
             })
@@ -136,7 +140,8 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
           .map((site) => {
             const assignedToThisWorker = site.workerSlots.some((slot) => slot.workerId === selectedOne.id);
             const fullForThisWorker = site.workerSlotsUsed >= site.workerSlotCapacity && !assignedToThisWorker;
-            const locked = site.owner !== "player" || fullForThisWorker;
+            const lockReason =
+              site.owner !== "player" ? "Capture before assigning" : fullForThisWorker ? "Worker slots full" : undefined;
             return renderCommandButton({
               action: "assign-resource-site",
               verb: assignedToThisWorker ? "Reassign" : "Assign",
@@ -144,15 +149,18 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
               sourceId: selectedOne.id,
               name: site.name,
               detail:
-                site.owner === "player"
+                lockReason
+                  ? `${lockReason}. ${site.status}`
+                  : site.owner === "player"
                   ? `Level ${site.level}. Slots ${site.workerSlotsUsed}/${site.workerSlotCapacity}. Total +${site.totalIncomeAmount}/${site.incomeInterval}s`
                   : site.status,
+              lockReason,
               description:
                 site.owner === "player"
                   ? `Captured ${site.resource} site. Base +${site.baseIncomeAmount}, upgrade +${site.upgradeBonusAmount}, Workers +${site.workerBonusAmount}. ${site.status}.`
                   : "Capture this resource site before assigning a Worker.",
               effect: site.owner === "player" ? "Effect: adds a small bonus to this site's existing passive income." : undefined,
-              locked
+              locked: Boolean(lockReason)
             });
           })
           .join("")
@@ -180,6 +188,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
             sourceId: selectedOne.id,
             name: selectedOne.definition.name,
             detail: formatCommandDetail(upgradeCost, lockReason),
+            lockReason,
             description: site?.upgradeStatus ?? "Upgrade captured sites to improve income and Worker capacity.",
             effect: "Effect: adds a modest income bonus and unlocks a second Worker slot.",
             locked: Boolean(lockReason)
@@ -226,6 +235,7 @@ function renderCommandButton(options: {
   sourceId: string;
   name: string;
   detail: string;
+  lockReason?: string;
   description?: string;
   effect?: string;
   locked: boolean;
@@ -238,6 +248,8 @@ function renderCommandButton(options: {
       data-action="${options.action}"
       data-command-kind="${options.action}"
       data-command-cost="${escapeHtml(options.detail)}"
+      data-command-state="${options.locked ? "locked" : "ready"}"
+      ${options.lockReason ? `data-disabled-reason="${escapeHtml(options.lockReason)}"` : ""}
       data-testid="command-${options.action}-${options.id}"
       data-id="${options.id}"
       data-source-id="${options.sourceId}"

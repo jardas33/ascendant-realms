@@ -5,6 +5,11 @@ import { formationOffset } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import {
+  battleCursorView,
+  deriveBattleCursorIntent,
+  type BattleCursorIntent
+} from "./CursorAffordance";
 import { shouldIgnoreGameKeyboardEvent } from "./KeyboardFocusGuard";
 import { SelectionSystem } from "./SelectionSystem";
 
@@ -13,7 +18,7 @@ interface InputSystemOptions {
   selection: SelectionSystem;
   findWorldEntityAt: (point: Position) => BaseEntity | undefined;
   isPlacingBuilding: () => boolean;
-  updateBuildingGhost: (point: Position) => void;
+  updateBuildingGhost: (point: Position) => boolean | undefined;
   placeBuilding: (point: Position) => boolean;
   cancelPlacement: () => void;
   getSelectedUnits: () => Unit[];
@@ -48,7 +53,7 @@ export class InputSystem {
   private keyHandlers: Array<{ event: string; handler: (event?: KeyboardEvent) => void }> = [];
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
-  private cursorMode: "" | "attack" = "";
+  private cursorMode: BattleCursorIntent = "";
 
   constructor(private readonly options: InputSystemOptions) {
     this.dragGraphic = options.scene.add.graphics().setDepth(90);
@@ -102,14 +107,15 @@ export class InputSystem {
     this.pointerMoveHandler = (pointer: Phaser.Input.Pointer) => {
       const point = this.toWorld(pointer);
       if (this.options.isPlacingBuilding()) {
-        this.options.updateBuildingGhost(point);
+        const validPlacement = this.options.updateBuildingGhost(point);
+        this.setCanvasCursor(validPlacement === false ? "invalid" : "build");
       }
       if (this.dragStart && !pointer.leftButtonDown()) {
         return;
       }
       if (!this.dragStart || this.options.isPlacingBuilding()) {
         if (!this.options.isPlacingBuilding()) {
-          this.updateAttackCursor(point);
+          this.updateCursor(point);
         }
         return;
       }
@@ -292,25 +298,30 @@ export class InputSystem {
     return true;
   }
 
-  private updateAttackCursor(point: Position): void {
+  private updateCursor(point: Position): void {
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     const target = this.options.findWorldEntityAt(point);
-    this.setCanvasCursor(target?.alive && target.kind !== "capture-site" && target.team !== "player" && selectedUnits.length > 0 ? "attack" : "");
+    this.setCanvasCursor(deriveBattleCursorIntent(target, selectedUnits));
   }
 
-  private setCanvasCursor(mode: "" | "attack"): void {
+  private setCanvasCursor(mode: BattleCursorIntent): void {
     if (this.cursorMode === mode) {
       return;
     }
     const canvas = this.options.scene.game.canvas;
     this.cursorMode = mode;
-    if (mode === "attack") {
-      canvas.style.cursor = "crosshair";
-      canvas.dataset.battleCursor = "attack";
+    const view = battleCursorView(mode);
+    if (view.intent) {
+      canvas.style.cursor = view.cursor;
+      canvas.dataset.battleCursor = view.intent;
+      canvas.dataset.battleCursorLabel = view.label;
+      canvas.title = view.label;
       return;
     }
     canvas.style.cursor = "";
+    canvas.title = "";
     delete canvas.dataset.battleCursor;
+    delete canvas.dataset.battleCursorLabel;
   }
 
   private showCommandMessage(message: string, point?: Position): void {

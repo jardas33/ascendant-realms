@@ -26,7 +26,7 @@ export function abilityResourceState(
   if (hero.mana < ability.manaCost) {
     return {
       disabled: true,
-      label: `Need ${ability.manaCost - Math.floor(hero.mana)} mana`,
+      label: `Need ${ability.manaCost - Math.floor(hero.mana)} Mana`,
       className: "mana"
     };
   }

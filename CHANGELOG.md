@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.51-v0.53 Player-Facing UX And Command Readability Polish - 2026-05-29
+
+This checkpoint improves the feel and readability of existing battle/campaign surfaces through cursor affordances, command disabled reasons, Worker intent clarity, hero ability state copy, combat status readability, and package/retest docs. No maps, factions, new gameplay systems, save migration, runtime art/assets, shop, crafting, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V051_PLAYER_UX_AUDIT_PLAN.md`.
+- Added `docs/V051_PLAYER_UX_AUDIT_REPORT.md`.
+- Added `docs/V051_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md`.
+- Added `docs/V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md`.
+- Added `docs/V053_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added pure cursor-intent rules and native cursor labels for attack, build/continue construction, repair, resource-site assignment, invalid target, and default movement states.
+- Added command state / disabled-reason metadata to existing command buttons.
+- Clarified Worker repair and resource-site assignment disabled reasons.
+- Added hero ability reason metadata and standardized Mana copy.
+- Improved Burn status chip size, contrast, and separation from health bars.
+- Increased unit hover tolerance slightly for target confidence without changing combat or command semantics.
+- Extended hosted deep-battle coverage for attack cursor labels, Worker build/repair/site hover intent, and hero ability cooldown reasons.
+- Updated package metadata and validation to name `v0.51-v0.53 player-facing UX and command readability polish`.
+
+### Verdict
+
+- Runtime gameplay changed: no new mechanics; derived cursor/HUD/readability behavior changed.
+- Gameplay numbers changed: no.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: focused cursor/HUD/package tests with 20 tests, `npm test` with 76 files / 579 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, focused hosted UX proxy with 5 tests, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, and package verification with 148 checks.
+- Optional local release shard evidence: shard 2 passed with 34 tests and shard 3 passed with 14 tests. Shard 1 had non-pass local-dev evidence with 43 passed / 1 failed on Results inventory-button retry/fallback timing; the exact failed case at `tests/e2e/deep-flow.spec.ts:6064` passed on rerun.
+
 ## v0.48-v0.50 Act 1 Playability And Release-Candidate Stabilization - 2026-05-29
 
 This checkpoint stabilizes the existing Act 1 route as a release-candidate loop through deterministic telemetry, copy/readability polish, replay/reward clarity, hosted proxy coverage, and package hardening. No maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

@@ -96,9 +96,9 @@ export class BuildingSystem {
     });
   }
 
-  updateGhost(x: number, y: number, resources: ResourceBag): void {
+  updateGhost(x: number, y: number, resources: ResourceBag): boolean | undefined {
     if (!this.pendingBuildingId || !this.ghost) {
-      return;
+      return undefined;
     }
     const definition = applyStrongholdBuildingEffects(
       requireBuilding(this.pendingBuildingId),
@@ -116,6 +116,7 @@ export class BuildingSystem {
       : `${definition.name}: ${placementReasonText(result.reason)}`;
     this.ghostLabel?.setText(this.placementMessage);
     this.ghostLabel?.setColor(valid ? "#b9ffba" : "#ffb1a9");
+    return valid;
   }
 
   tryPlace(x: number, y: number, resources: ResourceBag): boolean {

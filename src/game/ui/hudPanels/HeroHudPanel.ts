@@ -63,7 +63,7 @@ export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): str
           const resourceState = abilityResourceState(effectiveAbility, hero);
           const description = `${effectiveAbility.description} Cost: ${effectiveAbility.manaCost} Mana. Cooldown: ${effectiveAbility.cooldown}s.`;
           return `
-            <button class="hud-button ability ${resourceState.className}" data-action="ability" data-id="${ability.id}" data-ability-state="${resourceState.className}" title="${escapeHtml(
+            <button class="hud-button ability ${resourceState.className}" data-action="ability" data-id="${ability.id}" data-ability-state="${resourceState.className}" data-ability-reason="${escapeHtml(resourceState.label)}" title="${escapeHtml(
               `${ability.name}: ${resourceState.label}. ${description}`
             )}" aria-label="${escapeHtml(`${label}. ${resourceState.label}. ${description}`)}" ${resourceState.disabled ? "disabled" : ""}>
               <span class="ability-button-content">

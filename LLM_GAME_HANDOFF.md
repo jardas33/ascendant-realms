@@ -1,12 +1,75 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-29 v0.48-v0.50 Act 1 playability and release-candidate stabilization closeout
+Last updated: 2026-05-29 v0.51-v0.53 player-facing UX and command readability polish closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.51-v0.53 Player-Facing UX And Command Readability Polish - 2026-05-29
+
+Status: v0.51-v0.53 improves the current player-facing feel without adding a new major system. It focuses on cursor affordances, command disabled reasons, Worker build/repair/site intent, hero ability cooldown/Mana readability, combat status readability, and Act 1 confidence. It does not add maps, factions, gameplay systems, save fields, save-version bumps, runtime art/assets, broad UI redesigns, shop, crafting, broad AI/pathing rewrites, global rebalances, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `be51130`, `ascendant-realms-private-playtest-be51130`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26647331728` on `be51130` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V051_PLAYER_UX_AUDIT_PLAN.md`.
+- Added `docs/V051_PLAYER_UX_AUDIT_REPORT.md`.
+- Added `docs/V051_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md`.
+- Added `docs/V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md`.
+- Added `docs/V053_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `CursorAffordance` rules for attack, build, repair, assign, invalid, and default cursor states.
+- Exposed native cursor styles and readable canvas intent labels for attack/build/repair/assign/invalid hover states.
+- Made Worker build/repair/resource-site intent visible in hosted browser coverage.
+- Added stable command state and disabled-reason metadata to existing command buttons.
+- Added stable ability reason metadata to hero ability buttons and standardized `Mana` copy.
+- Made Burn status chips slightly larger, brighter, and more separated from health bars.
+- Slightly increased battle hover tolerance for unit targets to improve enemy/target confidence without changing command semantics.
+- Updated package metadata and validation to require the v0.51-v0.53 UX docs and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Cursor, command, ability, and combat readability state is derived from existing scene/UI state only.
+- Existing Act 1 campaign, replay, reward, relic, skill, inventory, equipment, and Tutorial no-reward saves remain compatible.
+
+Verification:
+
+```text
+npm test -- src/game/systems/CursorAffordance.test.ts src/game/ui/AbilityBar.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/entities/BaseEntity.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 5 files / 20 tests.
+npm test PASS, 76 files / 579 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+Focused hosted UX proxy PASS, 5 tests covering attack cursor, Worker build cursor, Worker repair cursor, Worker site assignment cursor, and hero ability cooldown reason metadata.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release:shard1of3 NON-PASS, 43 passed / 1 failed in the local dev-server shard; failed `tests/e2e/deep-flow.spec.ts:6064` on Results inventory-button retry/fallback timing.
+npx playwright test tests/e2e/deep-flow.spec.ts:6064 --reporter=line PASS, 1 exact rerun.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-be51130-dirty` generated.
+npm run verify:playtest-package PASS, 148 checks against the dirty pre-commit package.
+```
+
+Closeout note: commit as `Checkpoint v0.51-v0.53 player-facing UX and command readability polish`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.48-v0.50 Act 1 Playability And Release-Candidate Stabilization - 2026-05-29
 

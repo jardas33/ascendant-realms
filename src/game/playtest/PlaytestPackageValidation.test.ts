@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.48-v0.50 Act 1 playability and release-candidate stabilization",
+          checkpoint: "v0.51-v0.53 player-facing UX and command readability polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -188,6 +188,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V050_ACT1_RELEASE_CANDIDATE_NOTES.md", sizeBytes: 20, textContent: "Act 1 release candidate" },
       { path: "V050_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Release candidate report" },
       { path: "V050_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.50 retest" },
+      { path: "V051_PLAYER_UX_AUDIT_PLAN.md", sizeBytes: 20, textContent: "Player UX audit plan" },
+      { path: "V051_PLAYER_UX_AUDIT_REPORT.md", sizeBytes: 20, textContent: "Player UX audit report" },
+      { path: "V051_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Player UX implementation report" },
+      { path: "V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md", sizeBytes: 20, textContent: "Command cursor report" },
+      { path: "V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md", sizeBytes: 20, textContent: "Combat results report" },
+      { path: "V053_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.53 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

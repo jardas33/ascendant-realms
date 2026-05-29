@@ -3,11 +3,11 @@ import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/Gam
 import { clamp } from "../core/MathUtils";
 
 let nextEntityNumber = 1;
-const STATUS_BADGE_RADIUS = 4;
+const STATUS_BADGE_RADIUS = 5;
 const STATUS_BADGE_GAP = 5;
 const STATUS_BADGE_LABEL = "BURN";
-const STATUS_BADGE_LABEL_GAP = 4;
-const STATUS_BADGE_VERTICAL_GAP = 5;
+const STATUS_BADGE_LABEL_GAP = 5;
+const STATUS_BADGE_VERTICAL_GAP = 6;
 
 export function createEntityId(prefix: string): string {
   const id = `${prefix}-${nextEntityNumber}`;
@@ -92,10 +92,10 @@ export abstract class BaseEntity {
     this.statusBadgeLabel = scene.add
       .text(0, 0, STATUS_BADGE_LABEL, {
         fontFamily: "Verdana, Arial, sans-serif",
-        fontSize: "8px",
-        color: "#ffb187",
+        fontSize: "9px",
+        color: "#ffc29a",
         stroke: "#111713",
-        strokeThickness: 3
+        strokeThickness: 4
       })
       .setOrigin(0, 0.5)
       .setVisible(false);

@@ -20,7 +20,7 @@ describe("AbilityBar", () => {
     });
     expect(abilityResourceState(ability, { mana: 7, abilityCooldowns: {} })).toEqual({
       disabled: true,
-      label: "Need 18 mana",
+      label: "Need 18 Mana",
       className: "mana"
     });
   });

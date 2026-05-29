@@ -162,9 +162,11 @@ describe("CommandPanel", () => {
 
     expect(markup).toContain('data-testid="command-repair-player-barracks"');
     expect(markup).toContain("Repair Barracks");
+    expect(markup).toContain('data-command-state="ready"');
     expect(markup).toContain("Damaged: 420/600 HP. Cost: none");
     expect(markup).toContain("move or attack orders stop repair until Repair is issued again");
-    expect(markup).toContain("Already repaired. HP 1450/1450");
+    expect(markup).toContain("Full health. HP 1450/1450");
+    expect(markup).toContain('data-disabled-reason="Full health"');
   });
 
   it("renders Worker resource-site assignment commands with invalid site reasons", () => {
@@ -206,6 +208,7 @@ describe("CommandPanel", () => {
     expect(markup).toContain("Base +30, upgrade +0, Workers +0.");
     expect(markup).toContain("Neutral - capture before assigning a Worker");
     expect(markup).toContain('data-testid="command-assign-resource-site-stone_quarry"');
+    expect(markup).toContain('data-disabled-reason="Capture before assigning"');
     expect(markup).toContain("disabled");
   });
 
@@ -236,6 +239,7 @@ describe("CommandPanel", () => {
     );
 
     expect(markup).toContain("Worker working");
+    expect(markup).toContain('data-disabled-reason="Worker slots full"');
     expect(markup).toContain("disabled");
   });
 

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.48-v0.50 Act 1 playability and release-candidate stabilization";
+const CHECKPOINT = "v0.51-v0.53 player-facing UX and command readability polish";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -167,6 +167,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V050_ACT1_RELEASE_CANDIDATE_NOTES.md", join(packageDir, "V050_ACT1_RELEASE_CANDIDATE_NOTES.md"));
   await copyMarkdown("docs/V050_IMPLEMENTATION_REPORT.md", join(packageDir, "V050_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V050_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V050_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V051_PLAYER_UX_AUDIT_PLAN.md", join(packageDir, "V051_PLAYER_UX_AUDIT_PLAN.md"));
+  await copyMarkdown("docs/V051_PLAYER_UX_AUDIT_REPORT.md", join(packageDir, "V051_PLAYER_UX_AUDIT_REPORT.md"));
+  await copyMarkdown("docs/V051_IMPLEMENTATION_REPORT.md", join(packageDir, "V051_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md", join(packageDir, "V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md"));
+  await copyMarkdown("docs/V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md", join(packageDir, "V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md"));
+  await copyMarkdown("docs/V053_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V053_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -252,7 +258,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.48-v0.50 Act 1 release-candidate retest, start with V048_ACT1_PLAYABILITY_AUDIT_PLAN.md, V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md, V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md, V050_ACT1_RELEASE_CANDIDATE_NOTES.md, V050_IMPLEMENTATION_REPORT.md, V050_EMMANUEL_RETEST_CHECKLIST.md, and ACT1_PLAYABILITY_TELEMETRY.md/json. Also keep the v0.45-v0.47 Act 1 spine docs and the v0.39-v0.44 campaign progression, replay, mission type, and modifier docs nearby as regression context. Focus on: Tutorial no-save/no-reward protection, Border Village into Old Stone Road unlock flow, base-development Worker/building guidance, resource-control site assignment guidance, rival/champion relic and skill reminders, replay already-claimed/reduced-reward copy, optional objective visibility, and whether the deterministic telemetry matches manual feel. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, cinematic system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
+For the v0.51-v0.53 player-facing UX retest, start with V051_PLAYER_UX_AUDIT_PLAN.md, V051_PLAYER_UX_AUDIT_REPORT.md, V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md, V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md, and V053_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.48-v0.50 Act 1 release-candidate docs and ACT1_PLAYABILITY_TELEMETRY.md/json nearby as regression context. Focus on: attack/build/repair/resource-site cursor affordances, command disabled reasons, hero ability cooldown and Mana readability, Burn/status readability, Results reward/objective clarity, Tutorial no-save/no-reward protection, and Act 1 replay safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, cinematic system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 
