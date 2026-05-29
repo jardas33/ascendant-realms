@@ -52,6 +52,10 @@ export class MovementSystem {
       }
 
       if (distance(unit.position, unit.moveTarget) <= DESTINATION_REACHED_DISTANCE) {
+        if (unit.patrolRoute && unit.advancePatrolRoute()) {
+          this.unitPathStates.delete(unit.id);
+          return;
+        }
         unit.moveTarget = undefined;
         unit.moveOrderCombatSuppressionSeconds = 0;
         this.unitPathStates.delete(unit.id);
@@ -107,6 +111,10 @@ export class MovementSystem {
 
     const waypoint = state.waypoints[state.waypointIndex];
     if (!waypoint) {
+      if (unit.patrolRoute && unit.advancePatrolRoute()) {
+        this.unitPathStates.delete(unit.id);
+        return;
+      }
       unit.moveTarget = undefined;
       this.unitPathStates.delete(unit.id);
       return;
@@ -115,6 +123,10 @@ export class MovementSystem {
     const dy = waypoint.y - unit.position.y;
     const remaining = Math.hypot(dx, dy);
     if (remaining <= DESTINATION_REACHED_DISTANCE) {
+      if (unit.patrolRoute && unit.advancePatrolRoute()) {
+        this.unitPathStates.delete(unit.id);
+        return;
+      }
       unit.moveTarget = undefined;
       unit.moveOrderCombatSuppressionSeconds = 0;
       this.unitPathStates.delete(unit.id);

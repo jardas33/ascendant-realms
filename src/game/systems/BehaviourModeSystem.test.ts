@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_BEHAVIOUR_MODE,
   behaviourModeDefinition,
@@ -19,6 +19,17 @@ describe("BehaviourModeSystem", () => {
 
     expect(setBehaviourMode(units, "press_attack")).toBe(2);
     expect(units.map((unit) => unit.behaviourMode)).toEqual(["press_attack", "press_attack"]);
+  });
+
+  it("cancels patrol routes when an explicit behaviour mode is chosen", () => {
+    const units = [
+      { behaviourMode: "guard_area" as const, clearPatrolRoute: vi.fn() },
+      { behaviourMode: "guard_area" as const, clearPatrolRoute: vi.fn() }
+    ];
+
+    expect(setBehaviourMode(units, "hold_ground")).toBe(2);
+    expect(units[0].clearPatrolRoute).toHaveBeenCalledTimes(1);
+    expect(units[1].clearPatrolRoute).toHaveBeenCalledTimes(1);
   });
 
   it("applies a group command without requiring persisted unit data", () => {

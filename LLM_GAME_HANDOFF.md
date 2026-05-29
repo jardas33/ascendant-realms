@@ -1,12 +1,78 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-29 v0.51-v0.53 player-facing UX and command readability polish closeout
+Last updated: 2026-05-29 v0.54-v0.56 control groups and Patrol foundation closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
+
+Status: v0.54-v0.56 adds a controlled RTS command-depth foundation on top of the stabilized Act 1 loop. It introduces session-only control groups, conservative group movement spacing, and a minimal Patrol command for combat units/heroes. It does not add maps, factions, runtime art/assets, save fields, save-version bumps, broad pathing rewrites, global rebalance, a formation editor, enemy formation AI, a giant command rewrite, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `063fdf5`, `ascendant-realms-private-playtest-063fdf5`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26658960006` on `063fdf5` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V054_CONTROL_GROUPS_FOUNDATION_SPEC.md`.
+- Added `docs/V055_FORMATION_AWARE_MOVEMENT_SPEC.md`.
+- Added `docs/V056_PATROL_FOUNDATION_SPEC.md`.
+- Added `docs/V054_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V055_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `ControlGroupSystem` for battle-session-only Ctrl+1 through Ctrl+5 assignment and 1 through 5 recall of living player units/heroes.
+- Added compact selected-panel control-group summaries and assignment/recall feedback.
+- Added `FormationMovement` command-time destination offsets so multi-unit move and attack-move commands avoid identical targets when nearby space is safe.
+- Added `PatrolRules`, session-only unit patrol routes, `P` hotkey start, Patrol HUD command, Stop command, and order-summary copy for Patrolling.
+- Wired Patrol through existing movement/combat acquisition and cancellation through explicit move, attack, Stop, behavior-mode changes, Worker-style commands, and death.
+- Extended hosted deep-battle coverage for control-group assignment/recall, group movement spacing, Patrol start, and Patrol cancellation through real canvas pointer helpers.
+- Updated package metadata and validation to require the v0.54-v0.56 docs and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Control groups, formation offsets, and Patrol routes are battle-session state only.
+- Existing Act 1 campaign, replay, reward, relic, skill, inventory, equipment, and Tutorial no-reward saves remain compatible.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+Focused Vitest control-depth/package pass PASS, 8 files / 46 tests.
+npm test PASS, 78 files / 591 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+Focused hosted control-depth proxy PASS, 1 test.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 28 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release:shard1of3 PASS, 45 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-063fdf5-dirty` generated.
+npm run verify:playtest-package PASS, 155 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Release interaction note: hosted and local browser logs include existing verified DOM fallbacks for UI buttons and verified pointer down/up for stalled canvas right-click actionability. No force click or DOM fallback was added for canvas/world clicks.
+
+Closeout note: commit as `Checkpoint v0.54-v0.56 control groups and Patrol foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.51-v0.53 Player-Facing UX And Command Readability Polish - 2026-05-29
 

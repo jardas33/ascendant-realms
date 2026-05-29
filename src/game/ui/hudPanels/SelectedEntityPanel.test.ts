@@ -21,6 +21,21 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain('aria-pressed="true"');
   });
 
+  it("renders compact control group summaries when groups exist", () => {
+    const markup = renderSelectionSummary(
+      undefined,
+      [fakeUnit("player-1", "Militia", "guard_area"), fakeUnit("player-2", "Ranger", "guard_area")],
+      [
+        { slot: 1, count: 2 },
+        { slot: 3, count: 1 }
+      ]
+    );
+
+    expect(markup).toContain('data-testid="control-group-summary"');
+    expect(markup).toContain("1:2 3:1");
+    expect(markup).toContain("Ctrl+1-5 assigns; 1-5 recalls.");
+  });
+
   it("marks mixed behaviour groups clearly", () => {
     const markup = renderSelectionSummary(undefined, [
       fakeUnit("player-1", "Militia", "hold_ground"),

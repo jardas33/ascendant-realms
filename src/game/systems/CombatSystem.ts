@@ -48,6 +48,9 @@ export class CombatSystem {
       try {
         const target = this.resolveTarget(attacker);
         if (!target) {
+          if (attacker instanceof Unit && attacker.patrolRoute) {
+            attacker.resumePatrolRoute();
+          }
           return;
         }
 

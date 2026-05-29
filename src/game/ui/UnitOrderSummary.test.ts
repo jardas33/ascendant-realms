@@ -12,6 +12,16 @@ describe("UnitOrderSummary", () => {
 
   it("distinguishes attack-move from normal movement", () => {
     expect(describeUnitOrder({ moveTarget: { x: 100, y: 200 }, attackMove: true }).label).toBe("Attack-moving");
+    expect(
+      describeUnitOrder({
+        moveTarget: { x: 100, y: 200 },
+        attackMove: true,
+        patrolRoute: { origin: { x: 0, y: 0 }, destination: { x: 100, y: 200 } }
+      })
+    ).toMatchObject({
+      label: "Patrolling",
+      detail: expect.stringContaining("patrol point and origin")
+    });
     expect(describeUnitOrder({ moveTarget: { x: 100, y: 200 }, attackMove: false })).toMatchObject({
       label: "Moving",
       detail: expect.stringContaining("use attack-move")

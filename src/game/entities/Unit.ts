@@ -18,6 +18,12 @@ import { BaseEntity } from "./BaseEntity";
 
 const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
 
+export interface UnitPatrolRoute {
+  origin: Position;
+  destination: Position;
+  headingTo: "destination" | "origin";
+}
+
 export class Unit extends BaseEntity {
   readonly definition: UnitDefinition;
   readonly unitInstanceId: string;
@@ -32,6 +38,7 @@ export class Unit extends BaseEntity {
   attackTargetLabel?: string;
   moveTarget?: Position;
   attackMove = false;
+  patrolRoute?: UnitPatrolRoute;
   activeConstructionSiteId?: string;
   pausedConstructionSiteId?: string;
   activeRepairTargetId?: string;
@@ -116,7 +123,10 @@ export class Unit extends BaseEntity {
     return this.definition.stats.attackCooldown * this.upgradeAttackCooldownMultiplier;
   }
 
-  commandMove(target: Position, attackMove = false): void {
+  commandMove(target: Position, attackMove = false, options: { preservePatrol?: boolean } = {}): void {
+    if (!options.preservePatrol) {
+      this.clearPatrolRoute();
+    }
     this.pauseConstructionWork();
     this.pauseRepairWork();
     this.clearResourceSiteWork();
@@ -128,6 +138,7 @@ export class Unit extends BaseEntity {
   }
 
   commandAttack(targetId: string, targetLabel?: string): void {
+    this.clearPatrolRoute();
     this.pauseConstructionWork();
     this.pauseRepairWork();
     this.clearResourceSiteWork();
@@ -137,7 +148,20 @@ export class Unit extends BaseEntity {
     this.moveOrderCombatSuppressionSeconds = 0;
   }
 
+  commandStop(): void {
+    this.clearPatrolRoute();
+    this.pauseConstructionWork();
+    this.pauseRepairWork();
+    this.clearResourceSiteWork();
+    this.moveTarget = undefined;
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = false;
+    this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
   commandConstructionMove(target: Position, siteId: string): void {
+    this.clearPatrolRoute();
     this.pauseRepairWork();
     this.clearResourceSiteWork();
     this.activeConstructionSiteId = siteId;
@@ -156,6 +180,7 @@ export class Unit extends BaseEntity {
   }
 
   commandRepairMove(target: Position, repairTargetId: string): void {
+    this.clearPatrolRoute();
     this.pauseConstructionWork();
     this.clearResourceSiteWork();
     this.activeRepairTargetId = repairTargetId;
@@ -186,6 +211,7 @@ export class Unit extends BaseEntity {
   }
 
   commandResourceSiteMove(target: Position, siteId: string, siteLabel: string): void {
+    this.clearPatrolRoute();
     this.pauseConstructionWork();
     this.pauseRepairWork();
     this.activeResourceSiteId = siteId;
@@ -195,6 +221,44 @@ export class Unit extends BaseEntity {
     this.attackTargetLabel = undefined;
     this.attackMove = false;
     this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
+  commandPatrol(destination: Position): void {
+    this.pauseConstructionWork();
+    this.pauseRepairWork();
+    this.clearResourceSiteWork();
+    this.patrolRoute = {
+      origin: { ...this.position },
+      destination: { ...destination },
+      headingTo: "destination"
+    };
+    this.moveTarget = { ...destination };
+    this.attackTargetId = undefined;
+    this.attackTargetLabel = undefined;
+    this.attackMove = true;
+    this.moveOrderCombatSuppressionSeconds = 0;
+  }
+
+  advancePatrolRoute(): boolean {
+    if (!this.patrolRoute) {
+      return false;
+    }
+    this.patrolRoute.headingTo = this.patrolRoute.headingTo === "destination" ? "origin" : "destination";
+    this.resumePatrolRoute();
+    return true;
+  }
+
+  resumePatrolRoute(): boolean {
+    if (!this.patrolRoute || this.moveTarget || this.attackTargetId) {
+      return false;
+    }
+    const target = this.patrolRoute.headingTo === "destination" ? this.patrolRoute.destination : this.patrolRoute.origin;
+    this.commandMove(target, true, { preservePatrol: true });
+    return true;
+  }
+
+  clearPatrolRoute(): void {
+    this.patrolRoute = undefined;
   }
 
   markResourceSiteWork(siteId: string, siteLabel: string): void {

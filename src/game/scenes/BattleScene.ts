@@ -170,6 +170,7 @@ export class BattleScene extends Phaser.Scene {
   private trainingSystem!: BattleSceneSystems["trainingSystem"];
   private upgradeSystem!: BattleSceneSystems["upgradeSystem"];
   private selectionSystem!: BattleSceneSystems["selectionSystem"];
+  private controlGroupSystem!: BattleSceneSystems["controlGroupSystem"];
   private abilitySystem!: BattleSceneSystems["abilitySystem"];
   private enemyHeroAbilitySystem!: BattleSceneSystems["enemyHeroAbilitySystem"];
   private cameraSystem!: BattleSceneSystems["cameraSystem"];
@@ -403,6 +404,7 @@ export class BattleScene extends Phaser.Scene {
     this.trainingSystem = systems.trainingSystem;
     this.upgradeSystem = systems.upgradeSystem;
     this.selectionSystem = systems.selectionSystem;
+    this.controlGroupSystem = systems.controlGroupSystem;
     this.abilitySystem = systems.abilitySystem;
     this.enemyHeroAbilitySystem = systems.enemyHeroAbilitySystem;
     this.cameraSystem = systems.cameraSystem;
@@ -912,6 +914,7 @@ export class BattleScene extends Phaser.Scene {
       resourceSites: this.resourceSystem.resourceSiteSummaries(this.captureSites),
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
+      controlGroups: this.controlGroupSystem.summaries(this.units),
       pauseMenu: this.menuPaused
         ? {
             visible: true,

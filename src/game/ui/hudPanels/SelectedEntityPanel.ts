@@ -22,10 +22,16 @@ import {
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
+import type { ControlGroupSummary } from "../../systems/ControlGroupSystem";
 
 type SelectedEntity = HUDSnapshot["selected"][number];
 
-export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, selected: SelectedEntity[]): string {
+export function renderSelectionSummary(
+  selectedOne: SelectedEntity | undefined,
+  selected: SelectedEntity[],
+  controlGroups: ControlGroupSummary[] = []
+): string {
+  const controlGroupSummary = renderControlGroupSummary(controlGroups);
   if (!selectedOne) {
     if (selected.length > 1) {
       const selectedUnits = selected.filter((entity): entity is Unit => entity instanceof Unit);
@@ -35,6 +41,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
       const hiddenCount = Math.max(0, selected.length - 12);
       return `<p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
       ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
+      ${controlGroupSummary}
       ${renderBehaviourControls(selectedUnits)}
       <div class="selection-grid">${selected
         .slice(0, 12)
@@ -45,13 +52,14 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
           : ""
       }`;
     }
-    return `<p class="quiet">Select your hero, troops, or buildings.</p>`;
+    return `${controlGroupSummary}<p class="quiet">Select your hero, troops, or buildings.</p>`;
   }
 
   if (selectedOne instanceof Hero) {
     const order = describeUnitOrder(selectedOne);
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
       <div class="hero-command-summary">
         <span><strong>Damage</strong>${Math.round(selectedOne.damage)}</span>
@@ -69,6 +77,7 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Normal battle unit";
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
       <div class="stat-list" data-testid="selected-unit-stats">
         <span>Rank ${escapeHtml(rank.name)}</span>
@@ -162,6 +171,20 @@ export function renderSelectionSummary(selectedOne: SelectedEntity | undefined, 
     ${selectedOne.isUnderConstruction() ? renderProgress("Construction", selectedOne.constructionProgress) : ""}
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
+  `;
+}
+
+function renderControlGroupSummary(groups: ControlGroupSummary[]): string {
+  if (groups.length === 0) {
+    return "";
+  }
+
+  return `
+    <div class="control-group-summary" data-testid="control-group-summary">
+      <strong>Control Groups</strong>
+      <span>${groups.map((group) => `${group.slot}:${group.count}`).join(" ")}</span>
+      <small>Ctrl+1-5 assigns; 1-5 recalls.</small>
+    </div>
   `;
 }
 

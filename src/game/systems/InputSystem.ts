@@ -1,10 +1,13 @@
 import Phaser from "phaser";
-import { FORMATION_SPACING } from "../core/Constants";
 import type { Position } from "../core/GameTypes";
-import { formationOffset } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import type {
+  ControlGroupActionResult,
+  ControlGroupRecallResult,
+  ControlGroupSlot
+} from "./ControlGroupSystem";
 import {
   battleCursorView,
   deriveBattleCursorIntent,
@@ -27,6 +30,11 @@ interface InputSystemOptions {
   issueConstructionOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   issueRepairOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
   issueResourceSiteAssignmentOrder: (target: BaseEntity | undefined, selectedUnits: Unit[]) => boolean;
+  resolveMoveTargets: (point: Position, selectedUnits: Unit[]) => Position[];
+  assignControlGroup: (slot: ControlGroupSlot, selectedUnits: Unit[]) => ControlGroupActionResult;
+  recallControlGroup: (slot: ControlGroupSlot) => ControlGroupRecallResult;
+  canStartPatrolCommand: (selectedUnits: Unit[]) => { ok: boolean; message: string };
+  issuePatrolOrder: (point: Position, selectedUnits: Unit[]) => number;
   selectHero: () => void;
   centerOnHero: () => void;
   castAbilitySlot: (slot: number) => void;
@@ -54,6 +62,7 @@ export class InputSystem {
   private aPressedAt = 0;
   private lastAbilityKey?: { slot: number; at: number };
   private cursorMode: BattleCursorIntent = "";
+  private patrolTargetMode = false;
 
   constructor(private readonly options: InputSystemOptions) {
     this.dragGraphic = options.scene.add.graphics().setDepth(90);
@@ -99,6 +108,9 @@ export class InputSystem {
 
     this.pointerDownHandler = (pointer: Phaser.Input.Pointer) => {
       const point = this.toWorld(pointer);
+      if (this.patrolTargetMode) {
+        return;
+      }
       if (pointer.leftButtonDown() || pointer.button === 0) {
         this.dragStart = point;
       }
@@ -126,6 +138,12 @@ export class InputSystem {
       const point = this.toWorld(pointer);
       if (pointer.rightButtonReleased() || pointer.button === 2) {
         this.handleRightClick(point);
+        return;
+      }
+
+      if (this.patrolTargetMode) {
+        this.issuePatrolCommand(point);
+        this.clearDrag();
         return;
       }
 
@@ -173,15 +191,17 @@ export class InputSystem {
   private bindKeyboard(): void {
     const keyboard = this.options.scene.input.keyboard!;
     this.addKeyHandler("keydown-SPACE", () => this.options.centerOnHero());
-    this.addKeyHandler("keydown-ONE", (event) => this.triggerAbilitySlot(0, event));
-    this.addKeyHandler("keydown-NUMPAD_ONE", (event) => this.triggerAbilitySlot(0, event));
-    this.addKeyHandler("keydown-TWO", (event) => this.triggerAbilitySlot(1, event));
-    this.addKeyHandler("keydown-NUMPAD_TWO", (event) => this.triggerAbilitySlot(1, event));
-    this.addKeyHandler("keydown-THREE", (event) => this.triggerAbilitySlot(2, event));
-    this.addKeyHandler("keydown-NUMPAD_THREE", (event) => this.triggerAbilitySlot(2, event));
+    this.addNumberKeyHandlers("ONE", "NUMPAD_ONE", 1, 0);
+    this.addNumberKeyHandlers("TWO", "NUMPAD_TWO", 2, 1);
+    this.addNumberKeyHandlers("THREE", "NUMPAD_THREE", 3, 2);
+    this.addNumberKeyHandlers("FOUR", "NUMPAD_FOUR", 4);
+    this.addNumberKeyHandlers("FIVE", "NUMPAD_FIVE", 5);
     this.addKeyHandler("keydown-F", () => this.options.toggleFogDebug?.());
     this.addKeyHandler("keydown-ESC", () => {
-      if (this.options.isPlacingBuilding()) {
+      if (this.patrolTargetMode) {
+        this.patrolTargetMode = false;
+        this.showCommandMessage("Patrol cancelled");
+      } else if (this.options.isPlacingBuilding()) {
         this.options.cancelPlacement();
       } else {
         this.options.selection.clear();
@@ -202,6 +222,13 @@ export class InputSystem {
         this.attackMoveMode = false;
       }
       this.aPressedAt = 0;
+    });
+    this.addKeyHandler("keydown-P", (event) => {
+      if (event?.ctrlKey || event?.altKey || event?.metaKey || event?.repeat) {
+        return;
+      }
+      event?.preventDefault();
+      this.beginPatrolCommand();
     });
     this.keyHandlers.forEach(({ event, handler }) => keyboard.on(event, handler));
     this.globalKeyDownHandler = (event: KeyboardEvent) => {
@@ -227,6 +254,60 @@ export class InputSystem {
     });
   }
 
+  beginPatrolCommand(): boolean {
+    const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
+    const readiness = this.options.canStartPatrolCommand(selectedUnits);
+    this.showCommandMessage(readiness.message);
+    if (!readiness.ok) {
+      this.patrolTargetMode = false;
+      return false;
+    }
+    this.patrolTargetMode = true;
+    this.attackMoveMode = false;
+    return true;
+  }
+
+  private addNumberKeyHandlers(
+    keyName: string,
+    numpadKeyName: string,
+    controlGroupSlot: ControlGroupSlot,
+    abilitySlot?: number
+  ): void {
+    this.addKeyHandler(`keydown-${keyName}`, (event) => this.handleNumberKey(controlGroupSlot, abilitySlot, event));
+    this.addKeyHandler(`keydown-${numpadKeyName}`, (event) => this.handleNumberKey(controlGroupSlot, abilitySlot, event));
+  }
+
+  private handleNumberKey(controlGroupSlot: ControlGroupSlot, abilitySlot: number | undefined, event?: KeyboardEvent): void {
+    if (event?.repeat) {
+      return;
+    }
+
+    if (event?.ctrlKey && !event.altKey && !event.metaKey) {
+      event.preventDefault();
+      event.stopPropagation();
+      const result = this.options.assignControlGroup(
+        controlGroupSlot,
+        this.options.getSelectedUnits().filter((unit) => unit.alive)
+      );
+      this.showCommandMessage(result.message);
+      return;
+    }
+
+    if (!event?.ctrlKey && !event?.altKey && !event?.metaKey && !event?.shiftKey) {
+      const result = this.options.recallControlGroup(controlGroupSlot);
+      if (result.handled) {
+        event?.preventDefault();
+        result.count > 0 ? this.options.selection.setSelection(result.units) : this.options.selection.clear();
+        this.showCommandMessage(result.message);
+        return;
+      }
+    }
+
+    if (abilitySlot !== undefined) {
+      this.triggerAbilitySlot(abilitySlot, event);
+    }
+  }
+
   private triggerAbilitySlot(slot: number, event?: KeyboardEvent): void {
     if (event?.repeat) {
       return;
@@ -246,6 +327,10 @@ export class InputSystem {
     }
 
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
+    if (this.patrolTargetMode) {
+      this.issuePatrolCommand(point, selectedUnits);
+      return;
+    }
     const target = this.options.findWorldEntityAt(point);
     if (this.options.issueResourceSiteAssignmentOrder(target, selectedUnits)) {
       this.attackMoveMode = false;
@@ -273,15 +358,24 @@ export class InputSystem {
       return;
     }
 
+    const moveTargets = this.options.resolveMoveTargets(point, selectedUnits);
     selectedUnits.forEach((unit, index) => {
-      const offset = formationOffset(index, FORMATION_SPACING);
-      unit.commandMove({ x: point.x + offset.x, y: point.y + offset.y }, this.attackMoveMode);
+      unit.commandMove(moveTargets[index] ?? point, this.attackMoveMode);
     });
     this.showCommandMessage(
-      `${this.attackMoveMode ? "Attack-move accepted" : "Move order accepted"}: ${this.selectionLabel(selectedUnits)}`,
+      `${this.moveOrderVerb(selectedUnits.length)} accepted: ${this.selectionLabel(selectedUnits)}`,
       point
     );
     this.attackMoveMode = false;
+  }
+
+  private issuePatrolCommand(point: Position, selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive)): void {
+    const count = this.options.issuePatrolOrder(point, selectedUnits);
+    this.showCommandMessage(
+      count > 0 ? `Patrol accepted: ${count} ${count === 1 ? "unit" : "units"}` : "Patrol needs combat units.",
+      point
+    );
+    this.patrolTargetMode = false;
   }
 
   private issueAttackOrder(target: BaseEntity | undefined, selectedUnits: Unit[]): boolean {
@@ -299,6 +393,10 @@ export class InputSystem {
   }
 
   private updateCursor(point: Position): void {
+    if (this.patrolTargetMode) {
+      this.setCanvasCursor("");
+      return;
+    }
     const selectedUnits = this.options.getSelectedUnits().filter((unit) => unit.alive);
     const target = this.options.findWorldEntityAt(point);
     this.setCanvasCursor(deriveBattleCursorIntent(target, selectedUnits));
@@ -333,6 +431,13 @@ export class InputSystem {
       return units[0].definition.name;
     }
     return `${units.length} units`;
+  }
+
+  private moveOrderVerb(selectedCount: number): string {
+    if (selectedCount > 1) {
+      return this.attackMoveMode ? "Group attack-move" : "Group move";
+    }
+    return this.attackMoveMode ? "Attack-move" : "Move order";
   }
 
   private entityLabel(entity: BaseEntity): string {

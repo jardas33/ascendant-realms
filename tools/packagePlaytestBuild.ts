@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.51-v0.53 player-facing UX and command readability polish";
+const CHECKPOINT = "v0.54-v0.56 control groups and Patrol foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -173,6 +173,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md", join(packageDir, "V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md"));
   await copyMarkdown("docs/V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md", join(packageDir, "V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md"));
   await copyMarkdown("docs/V053_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V053_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V054_CONTROL_GROUPS_FOUNDATION_SPEC.md", join(packageDir, "V054_CONTROL_GROUPS_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V055_FORMATION_AWARE_MOVEMENT_SPEC.md", join(packageDir, "V055_FORMATION_AWARE_MOVEMENT_SPEC.md"));
+  await copyMarkdown("docs/V056_PATROL_FOUNDATION_SPEC.md", join(packageDir, "V056_PATROL_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V054_IMPLEMENTATION_REPORT.md", join(packageDir, "V054_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V055_IMPLEMENTATION_REPORT.md", join(packageDir, "V055_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V056_IMPLEMENTATION_REPORT.md", join(packageDir, "V056_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V056_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V056_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -258,7 +265,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.51-v0.53 player-facing UX retest, start with V051_PLAYER_UX_AUDIT_PLAN.md, V051_PLAYER_UX_AUDIT_REPORT.md, V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md, V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md, and V053_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.48-v0.50 Act 1 release-candidate docs and ACT1_PLAYABILITY_TELEMETRY.md/json nearby as regression context. Focus on: attack/build/repair/resource-site cursor affordances, command disabled reasons, hero ability cooldown and Mana readability, Burn/status readability, Results reward/objective clarity, Tutorial no-save/no-reward protection, and Act 1 replay safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, cinematic system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
+For the v0.54-v0.56 control-depth retest, start with V054_CONTROL_GROUPS_FOUNDATION_SPEC.md, V055_FORMATION_AWARE_MOVEMENT_SPEC.md, V056_PATROL_FOUNDATION_SPEC.md, V054_IMPLEMENTATION_REPORT.md, V055_IMPLEMENTATION_REPORT.md, V056_IMPLEMENTATION_REPORT.md, and V056_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.48-v0.53 Act 1 and UX docs nearby as regression context. Focus on: Ctrl+1-5 control group assignment, 1-5 recall, group movement spacing, Patrol start/cancel, Stop behavior, Worker build/repair/resource-site regression, hero ability hotkey regression, Tutorial no-save/no-reward protection, and Act 1 replay safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, cinematic system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, a formation editor, enemy formation AI, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

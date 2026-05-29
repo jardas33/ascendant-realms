@@ -1,6 +1,71 @@
 # Development Checkpoint
 
-Updated: 2026-05-29 v0.51-v0.53 player-facing UX and command readability polish closeout
+Updated: 2026-05-29 v0.54-v0.56 control groups and Patrol foundation closeout
+
+## v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
+
+Scope: add a controlled RTS command-depth layer without broad rewrites. This pass changes battle-session input state, selected-panel summaries, multi-unit move target assignment, unit patrol routes, HUD command buttons, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save-version bumps, new save fields, broad pathing rewrite, global rebalance, a formation editor, enemy formation AI, a giant command-system rewrite, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `063fdf5`, `ascendant-realms-private-playtest-063fdf5`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26658960006` on `063fdf5` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V054_CONTROL_GROUPS_FOUNDATION_SPEC.md`.
+- Added `docs/V055_FORMATION_AWARE_MOVEMENT_SPEC.md`.
+- Added `docs/V056_PATROL_FOUNDATION_SPEC.md`.
+- Added `docs/V054_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V055_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added session-only control group assignment/recall for living player units/heroes.
+- Added compact group summaries and assignment/recall feedback.
+- Added conservative command-time group movement spacing for normal move and attack-move commands.
+- Added minimal combat-unit Patrol with `P` hotkey, HUD command, Stop command, order summary, and explicit cancellation rules.
+- Preserved Worker build/repair/resource-site command paths, hero ability hotkeys when no recalled group consumes the number, minimap movement, drag select, and behavior modes.
+- Updated package metadata and validation to require the v0.54-v0.56 docs.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Control groups, formation offsets, and Patrol routes are session-only battle state.
+- Existing campaign, replay, reward, relic, skill, inventory, equipment, and Tutorial no-reward state remains valid.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+Focused Vitest control-depth/package pass PASS, 8 files / 46 tests.
+npm test PASS, 78 files / 591 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "control groups, group movement spacing, and Patrol" --reporter=line PASS, 1 hosted proxy test.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 28 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run test:e2e:release:shard1of3 PASS, 45 tests.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-063fdf5-dirty` generated.
+npm run verify:playtest-package PASS, 155 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Interaction note: browser tests used existing verified DOM fallbacks only for UI buttons and existing verified pointer down/up only after canvas right-click actionability stalls. No force-click or DOM fallback was introduced for canvas/world clicks.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.51-v0.53 Player-Facing UX And Command Readability Polish - 2026-05-29
 

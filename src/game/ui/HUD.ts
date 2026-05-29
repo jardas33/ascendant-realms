@@ -104,6 +104,14 @@ export class HUD {
         callbacks.onBehaviourMode(id);
         handled = true;
       }
+      if (action === "stop") {
+        callbacks.onStopCommand();
+        handled = true;
+      }
+      if (action === "patrol") {
+        callbacks.onPatrolCommand();
+        handled = true;
+      }
       if (action === "tutorial-next") {
         callbacks.onTutorialNext();
         handled = true;

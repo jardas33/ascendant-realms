@@ -585,6 +585,37 @@
   line-height: 1.2;
 }
 
+.control-group-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 8px;
+  align-items: center;
+  margin-bottom: 9px;
+  padding: 7px 8px;
+  border: 1px solid rgba(216, 222, 199, 0.12);
+  border-left: 3px solid rgba(240, 217, 120, 0.58);
+  border-radius: 5px;
+  background: var(--plate-bg);
+}
+
+.control-group-summary strong {
+  color: #f0d978;
+  font-size: 12px;
+}
+
+.control-group-summary span {
+  color: #eef2df;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.control-group-summary small {
+  grid-column: 1 / -1;
+  color: #aeb8aa;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
 .behaviour-mode-panel {
   display: grid;
   gap: 6px;

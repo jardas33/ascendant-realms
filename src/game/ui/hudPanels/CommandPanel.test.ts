@@ -282,6 +282,31 @@ describe("CommandPanel", () => {
     expect(markup).toContain('data-testid="command-build-watchtower"');
     expect(markup).toContain("Insufficient resources. Cost: 160 Crowns, 100 Stone, 80 Aether");
   });
+
+  it("renders a compact Patrol command for combat-capable selected units", () => {
+    const militia = fakeCombatUnit("player-militia", "militia");
+
+    const markup = renderCommandActions(undefined, {
+      ...fakeSnapshot(["command_hall"]),
+      selected: [militia]
+    });
+
+    expect(markup).toContain('data-action="patrol"');
+    expect(markup).toContain('data-action="stop"');
+    expect(markup).toContain('data-testid="command-patrol-selected"');
+    expect(markup).toContain('data-testid="command-stop-selected"');
+    expect(markup).toContain("Hotkey P");
+    expect(markup).toContain("session-only patrol order");
+  });
+
+  it("does not show Patrol for Worker-only selections", () => {
+    const markup = renderCommandActions(undefined, {
+      ...fakeSnapshot(["command_hall"]),
+      selected: [fakeWorker()]
+    });
+
+    expect(markup).not.toContain('data-action="patrol"');
+  });
 });
 
 function fakeBuilding(id: string, buildingId: string, completed = true): Building {
@@ -309,6 +334,20 @@ function fakeWorker(): Unit {
     team: "player",
     alive: true,
     definition: UNIT_BY_ID.worker
+  }) as Unit;
+}
+
+function fakeCombatUnit(id: string, unitId: string): Unit {
+  const definition = UNIT_BY_ID[unitId as keyof typeof UNIT_BY_ID];
+  if (!definition) {
+    throw new Error(`Missing unit ${unitId}`);
+  }
+  return Object.assign(Object.create(Unit.prototype), {
+    id,
+    kind: "unit",
+    team: "player",
+    alive: true,
+    definition
   }) as Unit;
 }
 

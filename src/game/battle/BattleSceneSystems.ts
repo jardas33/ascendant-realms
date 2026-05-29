@@ -27,10 +27,13 @@ import { behaviourModeDefinition, setBehaviourMode, type BehaviourMode } from ".
 import { BuildingSystem } from "../systems/BuildingSystem";
 import { CameraSystem } from "../systems/CameraSystem";
 import { CombatSystem } from "../systems/CombatSystem";
+import { ControlGroupSystem } from "../systems/ControlGroupSystem";
 import { FogOfWarSystem } from "../systems/FogOfWarSystem";
 import { EnemyHeroAbilitySystem } from "../systems/EnemyHeroAbilitySystem";
+import { createFormationMoveTargets } from "../systems/FormationMovement";
 import { InputSystem } from "../systems/InputSystem";
 import { MovementSystem } from "../systems/MovementSystem";
+import { isPatrolEligibleUnit, patrolEligibilityMessage } from "../systems/PatrolRules";
 import type { TechState } from "../systems/PrerequisiteSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { RepairSystem } from "../systems/RepairSystem";
@@ -57,6 +60,7 @@ export interface BattleSceneSystems {
   trainingSystem: TrainingSystem;
   upgradeSystem: UpgradeSystem;
   selectionSystem: SelectionSystem;
+  controlGroupSystem: ControlGroupSystem;
   abilitySystem: AbilitySystem;
   enemyHeroAbilitySystem: EnemyHeroAbilitySystem;
   cameraSystem: CameraSystem;
@@ -165,6 +169,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     ...getBuildings().filter((building) => building.team === "player"),
     ...getCaptureSites()
   ]);
+  const controlGroupSystem = new ControlGroupSystem();
 
   const movementSystem = new MovementSystem({
     onPathFailed: (unit, target) => {
@@ -329,6 +334,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
   });
 
   const cameraSystem = new CameraSystem(scene, activeMap);
+  let inputSystem: InputSystem;
   const uiSystem = new UISystem(
     new HUD({
       onBuild: (buildingId, sourceBuildingId) => {
@@ -430,6 +436,29 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
           AudioManager.play("ui_click");
         }
       },
+      onStopCommand: () => {
+        const selectedUnits = selectionSystem
+          .getSelected()
+          .filter((entity): entity is Unit => entity instanceof Unit && isPatrolEligibleUnit(entity));
+        selectedUnits.forEach((unit) => unit.commandStop());
+        if (selectedUnits.length > 0) {
+          showMessage(
+            `Stop: ${selectedUnits.length === 1 ? "unit" : `${selectedUnits.length} units`} awaiting orders.`,
+            undefined,
+            undefined,
+            "#d9eee8",
+            { priority: "command" }
+          );
+          AudioManager.play("ui_click");
+        } else {
+          showMessage("Stop needs selected combat units.", undefined, undefined, "#ffd27a", { priority: "command" });
+        }
+      },
+      onPatrolCommand: () => {
+        if (inputSystem.beginPatrolCommand()) {
+          AudioManager.play("ui_click");
+        }
+      },
       onTutorialNext: advanceTutorialStep,
       onMinimapMove: centerCameraFromMinimap,
       onMenu: openMainMenu,
@@ -438,7 +467,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     })
   );
 
-  const inputSystem = new InputSystem({
+  inputSystem = new InputSystem({
     scene,
     selection: selectionSystem,
     findWorldEntityAt,
@@ -456,6 +485,33 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     issueRepairOrder: (target, selectedUnits) => repairSystem.issueRepairOrder(target, selectedUnits),
     issueResourceSiteAssignmentOrder: (target, selectedUnits) =>
       resourceSystem.issueWorkerAssignmentOrder(target, selectedUnits),
+    resolveMoveTargets: (point, selectedUnits) =>
+      createFormationMoveTargets(point, selectedUnits, {
+        map: activeMap,
+        buildings: getBuildings()
+      }),
+    assignControlGroup: (slot, selectedUnits) => controlGroupSystem.assign(slot, selectedUnits),
+    recallControlGroup: (slot) => {
+      const result = controlGroupSystem.recall(slot, getUnits());
+      if (result.count > 0) {
+        selectionSystem.setSelection(result.units);
+        refreshHud();
+      }
+      return result;
+    },
+    canStartPatrolCommand: (selectedUnits) => {
+      const message = patrolEligibilityMessage(selectedUnits);
+      return { ok: selectedUnits.some(isPatrolEligibleUnit), message };
+    },
+    issuePatrolOrder: (point, selectedUnits) => {
+      const patrolUnits = selectedUnits.filter(isPatrolEligibleUnit);
+      const targets = createFormationMoveTargets(point, patrolUnits, {
+        map: activeMap,
+        buildings: getBuildings()
+      });
+      patrolUnits.forEach((unit, index) => unit.commandPatrol(targets[index] ?? point));
+      return patrolUnits.length;
+    },
     selectHero: () => {
       if (hero.alive) {
         selectionSystem.setSelection([hero]);
@@ -508,6 +564,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     trainingSystem,
     upgradeSystem,
     selectionSystem,
+    controlGroupSystem,
     abilitySystem,
     enemyHeroAbilitySystem,
     cameraSystem,

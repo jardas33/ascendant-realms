@@ -12,6 +12,7 @@ export interface UnitOrderState {
   activeResourceSiteLabel?: string;
   moveOrderCombatSuppressionSeconds?: number;
   behaviourMode?: BehaviourMode;
+  patrolRoute?: unknown;
 }
 
 export interface UnitOrderSummary {
@@ -31,6 +32,13 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
   }
 
   if (unit.moveTarget && unit.attackMove) {
+    if (unit.patrolRoute) {
+      return {
+        label: "Patrolling",
+        detail: "Moving between the patrol point and origin; fights nearby enemies by current behavior.",
+        tone: "active"
+      };
+    }
     return {
       label: "Attack-moving",
       detail: "Moving while engaging enemies along the route.",

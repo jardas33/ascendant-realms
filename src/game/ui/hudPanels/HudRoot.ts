@@ -40,7 +40,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
       </div>
       <div class="side-panel-body" data-testid="side-panel-body">
         <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero)}</div>
-        <div class="selection-summary">${renderSelectionSummary(selectedOne, selected)}</div>
+        <div class="selection-summary">${renderSelectionSummary(selectedOne, selected, snapshot.controlGroups ?? [])}</div>
       </div>
     </div>
     ${renderMinimapPanel(snapshot.minimap)}

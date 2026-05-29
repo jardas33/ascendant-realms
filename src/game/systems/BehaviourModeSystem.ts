@@ -40,6 +40,7 @@ const BEHAVIOUR_MODE_BY_ID = new Map(BEHAVIOUR_MODE_DEFINITIONS.map((definition)
 
 export interface BehaviourModeOwner {
   behaviourMode?: BehaviourMode;
+  clearPatrolRoute?: () => void;
 }
 
 export function isBehaviourMode(value: string | undefined): value is BehaviourMode {
@@ -56,6 +57,7 @@ export function behaviourModeDefinition(mode: string | undefined): BehaviourMode
 
 export function setBehaviourMode(units: BehaviourModeOwner[], mode: BehaviourMode): number {
   units.forEach((unit) => {
+    unit.clearPatrolRoute?.();
     unit.behaviourMode = mode;
   });
   return units.length;

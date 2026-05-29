@@ -4543,6 +4543,142 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".side-panel")).not.toContainText("No Selection");
   });
 
+  test("control groups, group movement spacing, and Patrol use stable canvas commands @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Groups Patrol QA", "story");
+
+    const setup = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active BattleScene for control-group coverage.");
+      }
+      const troops = scene.units.filter(
+        (unit: any) => unit.team === "player" && unit.alive && unit.id !== scene.hero.id && unit.definition.id !== "worker"
+      );
+      const selected = [scene.hero, ...troops.slice(0, 2)];
+      if (selected.length < 3) {
+        throw new Error("Expected hero plus two player combat units for control-group coverage.");
+      }
+      scene.units
+        .filter((unit: any) => unit.team !== "player" && unit.alive)
+        .forEach((unit: any, index: number) => {
+          unit.factionSpeedMultiplier = 0;
+          unit.attackTargetId = undefined;
+          unit.attackTargetLabel = undefined;
+          unit.attackMove = false;
+          unit.moveTarget = undefined;
+          unit.setPosition(scene.activeMap.width - 180, scene.activeMap.height - 180 - index * 24);
+        });
+      selected.forEach((unit: any, index: number) => {
+        unit.factionSpeedMultiplier = 1;
+        unit.clearPatrolRoute?.();
+        unit.attackTargetId = undefined;
+        unit.attackTargetLabel = undefined;
+        unit.attackMove = false;
+        unit.moveTarget = undefined;
+        unit.setPosition(340 + index * 34, 760 + index * 28);
+      });
+      scene.selectionSystem.setSelection(selected);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.refreshBattleHud?.(0);
+      return {
+        selectedIds: selected.map((unit: any) => unit.id),
+        movePoint: { x: 650, y: 760 },
+        patrolPoint: { x: 790, y: 820 },
+        cancelPoint: { x: 610, y: 910 }
+      };
+    });
+
+    await page.keyboard.down("Control");
+    await page.keyboard.press("1");
+    await page.keyboard.up("Control");
+    await expect(page.getByTestId("battle-status")).toContainText("Group 1 assigned: 3 units");
+    await expect(page.getByTestId("control-group-summary")).toContainText("1:3");
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      scene?.selectionSystem.clear();
+      scene?.refreshBattleHud?.(0);
+    });
+    await page.keyboard.press("1");
+    await expect(page.getByTestId("battle-status")).toContainText("Group 1 selected: 3 units");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return scene?.selectionSystem.getSelectedIds?.() ?? [];
+          }),
+        { message: "expected group 1 recall to restore selected ids" }
+      )
+      .toEqual(expect.arrayContaining(setup.selectedIds));
+
+    await expectWorldClickTargetsCanvas(page, setup.movePoint, "control group movement target");
+    await clickWorldPoint(page, setup.movePoint, "right");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((selectedIds) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const targets = selectedIds
+              .map((id: string) => scene?.units.find((unit: any) => unit.id === id))
+              .filter(Boolean)
+              .flatMap((unit: any) =>
+                unit.moveTarget ? [`${Math.round(unit.moveTarget.x)},${Math.round(unit.moveTarget.y)}`] : []
+              );
+            return { targetCount: targets.length, uniqueTargetCount: new Set(targets).size };
+          }, setup.selectedIds),
+        { message: "expected recalled group to receive separated move targets" }
+      )
+      .toMatchObject({ targetCount: 3, uniqueTargetCount: expect.any(Number) });
+    const uniqueMoveTargets = await page.evaluate((selectedIds) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const targets = selectedIds
+        .map((id: string) => scene?.units.find((unit: any) => unit.id === id))
+        .filter(Boolean)
+        .flatMap((unit: any) =>
+          unit.moveTarget ? [`${Math.round(unit.moveTarget.x)},${Math.round(unit.moveTarget.y)}`] : []
+        );
+      return new Set(targets).size;
+    }, setup.selectedIds);
+    expect(uniqueMoveTargets).toBeGreaterThanOrEqual(2);
+
+    await page.keyboard.press("P");
+    await expect(page.getByTestId("battle-status")).toContainText("Patrol: click a destination");
+    await expectWorldClickTargetsCanvas(page, setup.patrolPoint, "control group patrol target");
+    await clickWorldPoint(page, setup.patrolPoint, "left");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((selectedIds) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return selectedIds.filter((id: string) => {
+              const unit = scene?.units.find((entry: any) => entry.id === id);
+              return Boolean(unit?.patrolRoute);
+            }).length;
+          }, setup.selectedIds),
+        { message: "expected patrol routes to start for recalled combat group" }
+      )
+      .toBe(3);
+    await expect(page.getByTestId("unit-order-summary")).toContainText("Patrolling");
+
+    await expectWorldClickTargetsCanvas(page, setup.cancelPoint, "control group patrol cancel move target");
+    await clickWorldPoint(page, setup.cancelPoint, "right");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate((selectedIds) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            return selectedIds.filter((id: string) => {
+              const unit = scene?.units.find((entry: any) => entry.id === id);
+              return Boolean(unit?.patrolRoute);
+            }).length;
+          }, setup.selectedIds),
+        { message: "expected explicit move to cancel patrol routes" }
+      )
+      .toBe(0);
+  });
+
   test("manual combat contact regression covers adjacent follow-up, building aggro, retreat suppression, and hover tolerance @hosted-deep-battle", async ({
     page
   }) => {

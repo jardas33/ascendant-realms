@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.51-v0.53 player-facing UX and command readability polish",
+          checkpoint: "v0.54-v0.56 control groups and Patrol foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -194,6 +194,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V052_COMMAND_AND_CURSOR_READABILITY_REPORT.md", sizeBytes: 20, textContent: "Command cursor report" },
       { path: "V053_COMBAT_AND_RESULTS_READABILITY_REPORT.md", sizeBytes: 20, textContent: "Combat results report" },
       { path: "V053_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.53 retest" },
+      { path: "V054_CONTROL_GROUPS_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Control groups spec" },
+      { path: "V055_FORMATION_AWARE_MOVEMENT_SPEC.md", sizeBytes: 20, textContent: "Formation-aware movement spec" },
+      { path: "V056_PATROL_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Patrol spec" },
+      { path: "V054_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Control groups implementation report" },
+      { path: "V055_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Formation movement implementation report" },
+      { path: "V056_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Patrol implementation report" },
+      { path: "V056_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.56 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

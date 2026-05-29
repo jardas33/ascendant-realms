@@ -4,6 +4,7 @@ import type { Building } from "../../entities/Building";
 import type { CaptureSite } from "../../entities/CaptureSite";
 import type { Unit } from "../../entities/Unit";
 import type { BehaviourMode } from "../../systems/BehaviourModeSystem";
+import type { ControlGroupSummary } from "../../systems/ControlGroupSystem";
 import type { TechState } from "../../systems/PrerequisiteSystem";
 import type { RepairTargetSummary } from "../../systems/RepairSystem";
 import type { ResourceSiteAssignmentSummary } from "../../systems/ResourceSystem";
@@ -21,6 +22,8 @@ export interface HUDCallbacks {
   onUpgradeResourceSite: (targetSiteId: string) => void;
   onAbility: (abilityId: string) => void;
   onBehaviourMode: (mode: BehaviourMode) => void;
+  onStopCommand: () => void;
+  onPatrolCommand: () => void;
   onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;
@@ -42,6 +45,7 @@ export interface HUDSnapshot {
   resourceSites: ResourceSiteAssignmentSummary[];
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
+  controlGroups?: ControlGroupSummary[];
   pauseMenu?: HUDPauseMenuSnapshot;
 }
 

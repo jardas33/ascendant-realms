@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
+
+This checkpoint adds controlled RTS command depth through session-only control groups, lightweight group move spacing, and a minimal Patrol command. No maps, factions, save migration, runtime art/assets, broad pathing rewrite, global rebalance, formation editor, enemy formation AI, giant command rewrite, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V054_CONTROL_GROUPS_FOUNDATION_SPEC.md`.
+- Added `docs/V055_FORMATION_AWARE_MOVEMENT_SPEC.md`.
+- Added `docs/V056_PATROL_FOUNDATION_SPEC.md`.
+- Added `docs/V054_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V055_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V056_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added session-only Ctrl+1 through Ctrl+5 assignment and 1 through 5 recall for living player units/heroes.
+- Added dead-member cleanup and filtering so enemies, buildings, resource sites, and invalid ids do not enter control groups.
+- Added compact selected-panel group summary and HUD feedback for group assignment/recall.
+- Added conservative per-unit destination offsets for multi-unit move and attack-move commands.
+- Added minimal Patrol for combat units/heroes with `P` hotkey, HUD command, Stop command, order summary, existing combat acquisition, and explicit cancellation.
+- Extended hosted deep-battle coverage for control groups, group move spacing, Patrol start/cancel, Worker command regression, and hero ability hotkey regression.
+- Updated package metadata and validation to name `v0.54-v0.56 control groups and Patrol foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for player command depth.
+- Gameplay numbers changed: no.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no Patrol requirement.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused control-depth/package tests with 46 tests, `npm test` with 78 files / 591 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, focused hosted control-depth proxy with 1 test, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 28 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, local release shards 1/3, 2/3, and 3/3 with 45, 34, and 14 tests, dirty pre-commit package generation, package verification with 155 checks, and `git diff --check`.
+- Interaction note: existing verified DOM fallbacks were used for UI buttons, and existing verified pointer down/up handled stalled canvas right-click actionability. No force-click or DOM fallback was added for canvas/world clicks.
+
 ## v0.51-v0.53 Player-Facing UX And Command Readability Polish - 2026-05-29
 
 This checkpoint improves the feel and readability of existing battle/campaign surfaces through cursor affordances, command disabled reasons, Worker intent clarity, hero ability state copy, combat status readability, and package/retest docs. No maps, factions, new gameplay systems, save migration, runtime art/assets, shop, crafting, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

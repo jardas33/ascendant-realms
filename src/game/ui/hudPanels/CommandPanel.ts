@@ -5,6 +5,7 @@ import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
 import { checkPrerequisites } from "../../systems/PrerequisiteSystem";
+import { isPatrolEligibleUnit } from "../../systems/PatrolRules";
 import { RESOURCE_SITE_MAX_LEVEL, RESOURCE_SITE_UPGRADE_COST } from "../../systems/ResourceSystem";
 import { formatCost } from "../BuildMenu";
 import {
@@ -21,6 +22,12 @@ import {
 import type { HUDSnapshot } from "./HudTypes";
 
 export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefined, snapshot: HUDSnapshot): string {
+  const selectedUnits = snapshot.selected.filter((entity): entity is Unit => entity instanceof Unit);
+  const tacticsButtons = renderTacticsButtons(selectedUnits);
+  if (!selectedOne) {
+    return tacticsButtons ? `<div class="action-group"><strong>Tactics</strong>${tacticsButtons}</div>` : "";
+  }
+
   if (!(selectedOne instanceof Building) && !(selectedOne instanceof Unit) && !(selectedOne instanceof CaptureSite)) {
     return "";
   }
@@ -215,10 +222,44 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   if (resourceSiteUpgradeButtons) {
     sections.push(`<div class="action-group"><strong>Site Upgrade</strong>${resourceSiteUpgradeButtons}</div>`);
   }
+  if (tacticsButtons) {
+    sections.push(`<div class="action-group"><strong>Tactics</strong>${tacticsButtons}</div>`);
+  }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
   }
   return sections.join("");
+}
+
+function renderTacticsButtons(selectedUnits: Unit[]): string {
+  if (selectedUnits.length === 0 || !selectedUnits.some(isPatrolEligibleUnit)) {
+    return "";
+  }
+
+  return [
+    renderCommandButton({
+      action: "stop",
+      verb: "Stop",
+      id: "selected",
+      sourceId: "selection",
+      name: "Orders",
+      detail: "Cancels Patrol",
+      description: "Clears current move, attack, and Patrol orders for selected combat units.",
+      effect: "Effect: session-only command reset.",
+      locked: false
+    }),
+    renderCommandButton({
+      action: "patrol",
+      verb: "Patrol",
+      id: "selected",
+      sourceId: "selection",
+      name: "Route",
+      detail: "Hotkey P",
+      description: "Click a destination; combat units move between that point and their origin while fighting nearby enemies.",
+      effect: "Effect: session-only patrol order.",
+      locked: false
+    })
+  ].join("");
 }
 
 function formatCommandDetail(cost: Cost, lockReason?: string): string {
@@ -229,7 +270,7 @@ function formatCommandDetail(cost: Cost, lockReason?: string): string {
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
 
 function renderCommandButton(options: {
-  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site" | "upgrade-resource-site";
+  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site" | "upgrade-resource-site" | "stop" | "patrol";
   verb: string;
   id: string;
   sourceId: string;
