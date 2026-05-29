@@ -1,12 +1,83 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-28 v0.39-v0.41 campaign progression and mission reward closeout ready
+Last updated: 2026-05-28 v0.42-v0.44 mission variety and scenario modifier verification closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.42-v0.44 Mission Variety And Scenario Modifier Foundation - 2026-05-28
+
+Status: v0.42-v0.44 adds the first mission-type, scenario modifier, and campaign briefing/pacing foundation on top of the v0.39-v0.41 campaign progression/replay layer. It uses existing maps, units, objectives, AI config, rewards, campaign UI, Results UI, and hero build identity copy. It does not add maps, factions, runtime art/assets, shop, crafting, a giant quest system, save-version bump, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `ac3d203`, `ascendant-realms-private-playtest-ac3d203`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26607386432` on `ac3d203` passed Fast confidence; heavier release-matrix lanes were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V042_MISSION_VARIETY_FOUNDATION_SPEC.md`.
+- Added `docs/V043_SCENARIO_MODIFIERS_SPEC.md`.
+- Added `docs/V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md`.
+- Added `docs/V042_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V043_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V044_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V044_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added mission type data for Assault, Control, Defense, and Skirmish / Training.
+- Added battle-node briefing metadata for mission type, primary objective, reward preview, after-action summary, scenario modifiers, and recommended build hints.
+- Added mission-local scenario modifiers: Rich Veins, Enemy Patrols, Fortified Enemy, and Aether Surge.
+- Routed scenario modifiers through existing battle launch modifiers and existing hero/AI/resource-site systems.
+- Added campaign node briefing/modifier/reward-preview copy and Results mission type/modifier/after-action copy.
+- Preserved first-clear/replay reward rules, optional objective credit, relic choice, hero XP/skill reminders, and Tutorial no-save/no-reward protection.
+- Updated package metadata and validation to require the v0.42-v0.44 docs.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Mission type, briefing, and scenario modifier metadata are content-driven.
+- Existing campaign completion, reward claim, optional objective, hero XP, relic, and skill save fields remain compatible.
+
+Verification:
+
+```text
+npx tsc -p tsconfig.json --noEmit PASS.
+npm run validate:content PASS.
+npx vitest run src/game/data/campaignModifiers.test.ts src/game/core/CampaignRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/results/ResultsViewModel.test.ts PASS, 4 files / 71 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npx playwright test --config=playwright.hosted-release.config.ts tests/e2e/deep-flow.spec.ts --grep "Ashen Outpost special objectives|Old Stone Road victory" --reporter=line PASS after a fresh build, 2 hosted tests.
+npm test PASS, 73 files / 563 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast PASS on final rerun, 8 tests.
+npm run test:e2e:smoke PASS on final rerun, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS, 27 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 20 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npx playwright test tests/e2e/deep-flow.spec.ts --grep @hosted-deep-meta --reporter=line PASS on final local rerun, 12 tests.
+npx playwright test tests/e2e/layout.spec.ts:642 --reporter=line PASS, 4 viewport tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-ac3d203-dirty` generated.
+npm run verify:playtest-package PASS, 126 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Full release note: `npm run test:e2e:release` was attempted with a 40-minute timeout and remained non-pass evidence after timing out without a summary. `npm run test:e2e:release:shard1of3` was also attempted and timed out at 20 minutes. Focused local reruns narrowed the surfaced local failures to cold dev-server main-menu/layout boot budgets and transient Windows `net::ERR_NO_BUFFER_SPACE` app-root navigation; the relevant helper/test timeouts were increased without changing assertions, and exact/group reruns passed. The hosted production-preview release groups above are the final release-matrix evidence.
+
+The first focused hosted proxy attempt before rebuilding `dist/` served the previous production build and failed expected new-copy assertions; the same proxy passed after `npm run build`.
+
+Closeout note: commit as `Checkpoint v0.42-v0.44 mission variety and scenario modifier foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.39-v0.41 Campaign Progression And Mission Reward Foundation - 2026-05-28
 

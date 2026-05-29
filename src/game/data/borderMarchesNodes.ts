@@ -8,6 +8,14 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       "Tutorial battle. Secure a Free Marches village by learning the core loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
+    missionTypeId: "skirmish_training",
+    missionBriefing: {
+      summary: "Secure the village and practice the core battle loop without extra scenario pressure.",
+      primaryObjective: "Capture the Crown Shrine, build a Barracks, train troops, and destroy the enemy Stronghold.",
+      rewardPreview: "First clear grants starter XP, Crowns, and the Weathered Command Sword.",
+      afterActionSummary: "The village road is secure and the campaign route opens toward the old stone road.",
+      recommendedBuildHint: "Any build works here; focus on fundamentals."
+    },
     difficulty: "easy",
     mapId: "first_claim",
     enemyFactionId: "ashen_covenant",
@@ -29,6 +37,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       "First real battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner expansion and better use of your hero rewards.",
     chapterId: "border_marches",
     nodeType: "battle",
+    missionTypeId: "control",
+    missionBriefing: {
+      summary: "The trade road rewards clean expansion and steady control of resource sites.",
+      primaryObjective: "Hold the road economy, survive early raider pressure, and destroy the enemy Stronghold.",
+      rewardPreview: "First clear grants XP and a balanced campaign resource bundle.",
+      afterActionSummary: "The road is open, but deeper Ashen routes now demand a sharper hero build.",
+      recommendedBuildHint: "Commander support helps turn resource control into a stable army."
+    },
+    scenarioModifierIds: ["mission_rich_veins"],
     difficulty: "easy",
     mapId: "first_claim",
     enemyFactionId: "ashen_covenant",
@@ -139,6 +156,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       "Harder battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero before taking the well.",
     chapterId: "border_marches",
     nodeType: "battle",
+    missionTypeId: "control",
+    missionBriefing: {
+      summary: "Aether pressure and tight lanes make this a control mission around the central well.",
+      primaryObjective: "Contest the ruined well, manage spell pressure, and break the Ashen base.",
+      rewardPreview: "First clear grants XP, Aether, Stone, and the Aether Lens.",
+      afterActionSummary: "The well is back under Free Marches guard and the chapel route is exposed.",
+      recommendedBuildHint: "Seer mana and cooldown support fit the longer aether fight."
+    },
+    scenarioModifierIds: ["mission_aether_surge"],
     difficulty: "normal",
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
@@ -161,6 +187,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       "Harder battle. A raider-backed hillfort checks whether you can build a stable army while holding resources under pressure.",
     chapterId: "border_marches",
     nodeType: "battle",
+    missionTypeId: "assault",
+    missionBriefing: {
+      summary: "The hillfort is a pressure assault against raiders who contest resources quickly.",
+      primaryObjective: "Stabilize production, defeat the commander threat, and crack the hillfort base.",
+      rewardPreview: "First clear grants XP, Iron-heavy resources, and the Captain's Seal.",
+      afterActionSummary: "The hillfort falls, clearing the road toward the Ashen outpost.",
+      recommendedBuildHint: "Warrior durability helps answer raider pressure and commander duels."
+    },
+    scenarioModifierIds: ["mission_enemy_patrols"],
     difficulty: "normal",
     mapId: "broken_ford",
     enemyFactionId: "ashen_covenant",
@@ -309,6 +344,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       "Milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, break enemy production, and destroy the fortified Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
+    missionTypeId: "assault",
+    missionBriefing: {
+      summary: "This milestone assault targets a fortified Ashen production base and its commander.",
+      primaryObjective: "Capture what you can, defeat Captain Malrec, and destroy the fortified Stronghold.",
+      rewardPreview: "First clear grants a large campaign reward, item reward, and champion relic eligibility.",
+      afterActionSummary: "The outpost is broken and the Cinderfen road becomes reachable.",
+      recommendedBuildHint: "Commander rally support helps hold formation against fortified pressure."
+    },
+    scenarioModifierIds: ["mission_fortified_enemy"],
     difficulty: "normal",
     mapId: "ashen_outpost",
     enemyFactionId: "ashen_covenant",

@@ -761,7 +761,8 @@ function tutorialStepForCommand(command: SemanticCommand): string {
 
 test.describe("Ascendant Realms browser smoke flows", () => {
   test("main menu boots @ci-fast", async ({ page }) => {
-    await openFreshMainMenu(page);
+    test.setTimeout(60_000);
+    await gotoReadyMainMenu(page, "smoke main menu boots");
 
     await expect(page.getByRole("heading", { name: "Ascendant Realms" })).toBeVisible();
     await expect(page.getByText("Prototype v0.3", { exact: true })).toBeVisible();

@@ -11,19 +11,34 @@ export type CampaignModifierId =
   | "ashen_hostile_pressure"
   | "marsh_guides"
   | "ash_filters"
-  | "shrine_attunement";
+  | "shrine_attunement"
+  | "mission_rich_veins"
+  | "mission_enemy_patrols"
+  | "mission_fortified_enemy"
+  | "mission_aether_surge";
 
 export type CampaignModifierTrigger =
   | "next_battle"
   | "next_ashen_battle"
   | "next_cinderfen_battle"
-  | "next_node_resource_reward";
+  | "next_node_resource_reward"
+  | "mission_battle";
 
 export type CampaignNodeType = "battle" | "shrine" | "town" | "ruin" | "fortress" | "event";
 
 export type CampaignChapterId = "border_marches" | "cinderfen_road";
 
 export type CampaignChapterStatus = "unlocked" | "locked" | "upcoming";
+
+export type CampaignMissionTypeId = "assault" | "control" | "defense" | "skirmish_training";
+
+export interface CampaignMissionTypeDefinition {
+  id: CampaignMissionTypeId;
+  name: string;
+  shortDescription: string;
+  objectiveHint: string;
+  recommendedBuildTags: string[];
+}
 
 export interface CampaignChapterDefinition {
   id: CampaignChapterId;
@@ -49,6 +64,10 @@ export interface CampaignModifierDefinition {
     enemyWarningLeadSeconds?: number;
     campaignResourceRewardMultiplier?: number;
     firstCaptureBonusResourceAdditions?: Record<string, Partial<ResourceBag>>;
+    captureSiteIncomeMultiplier?: number;
+    enemyAttackIntervalMultiplier?: number;
+    enemyInitialAttackDelayMultiplier?: number;
+    enemyDefenseSquadSizeBonus?: number;
   };
 }
 
@@ -99,6 +118,15 @@ export interface CampaignNodeDefinition {
   description: string;
   chapterId?: CampaignChapterId;
   nodeType: CampaignNodeType;
+  missionTypeId?: CampaignMissionTypeId;
+  missionBriefing?: {
+    summary: string;
+    primaryObjective: string;
+    rewardPreview: string;
+    afterActionSummary: string;
+    recommendedBuildHint?: string;
+  };
+  scenarioModifierIds?: CampaignModifierId[];
   difficulty: BattleDifficulty;
   mapId: string;
   enemyFactionId: string;

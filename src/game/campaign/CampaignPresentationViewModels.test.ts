@@ -5,6 +5,7 @@ import { createNewHeroSave } from "../data/heroes";
 import { createCampaignChapterPanelViewModels } from "./CampaignChapterPanelViewModel";
 import { createCampaignChoiceViewModels } from "./CampaignChoiceViewModel";
 import { createCampaignNodeCardViewModel } from "./CampaignNodeCardViewModel";
+import { renderNodeDetails } from "./CampaignNodePanel";
 import { createCampaignRouteStatusViewModel } from "./CampaignRouteStatusViewModel";
 
 describe("campaign presentation view models", () => {
@@ -33,6 +34,26 @@ describe("campaign presentation view models", () => {
 
     expect(card.statusLabel).toBe("Replayable (Completed)");
     expect(card.rewardStateLabel).toBe("Campaign node reward already claimed");
+  });
+
+  it("renders campaign briefing, mission type, modifier, and reward preview copy", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      unlockedNodeIds: ["ashen_outpost"]
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const node = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    const html = renderNodeDetails({ node, campaignSave: campaign, heroSave: hero });
+
+    expect(html).toContain("Mission type");
+    expect(html).toContain("Assault");
+    expect(html).toContain("Primary objective");
+    expect(html).toContain("defeat Captain Malrec");
+    expect(html).toContain("Scenario modifiers");
+    expect(html).toContain("Fortified Enemy");
+    expect(html).toContain("Reward preview");
+    expect(html).toContain("champion relic eligibility");
   });
 
   it("formats chapter card progress without involving the scene", () => {

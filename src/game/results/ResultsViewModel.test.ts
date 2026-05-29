@@ -9,6 +9,7 @@ import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
 import { chooseResultsRelicReward, keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
+import { renderVictoryRewards } from "./ResultsRewardPanel";
 import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
 import type { ResultsData } from "./ResultsTypes";
 import { createResultsViewModel, initialResultsStatus, isRepeatBattleClear } from "./ResultsViewModel";
@@ -322,6 +323,46 @@ describe("results scene helpers", () => {
     expect(status).toContain("replay complete");
     expect(status).toContain("campaign node rewards and one-time objective credit do not duplicate");
     expect(summaryHtml).toContain("Completed - already recorded");
+  });
+
+  it("renders campaign mission type, active modifier, and after-action copy in reward results", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost",
+        modifiers: [{ id: "mission_fortified_enemy" }]
+      }),
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: ["cinderfen_overlook"],
+        unlockedNodeNames: ["Cinderfen Overlook"],
+        nodeReward: { itemIds: [], resources: { crowns: 130, stone: 70, iron: 80, aether: 55 }, xp: 100 },
+        nodeLevelUp: { previousLevel: 1, newLevel: 1, levelsGained: 0, skillPointsGained: 0 },
+        campaignResources: { crowns: 130, stone: 70, iron: 80, aether: 55 },
+        wasFirstClear: true,
+        wasReplay: false,
+        nodeRewardClaimed: true,
+        nodeRewardAlreadyClaimed: false
+      }
+    });
+
+    const html = renderVictoryRewards(data, {
+      currentItemInSlot: () => undefined,
+      previewEquipDeltas: () => []
+    });
+
+    expect(html).toContain("Mission type");
+    expect(html).toContain("Assault");
+    expect(html).toContain("Primary objective");
+    expect(html).toContain("Fortified Enemy");
+    expect(html).toContain("enemy defenders hold a slightly stronger reserve");
+    expect(html).toContain("The outpost is broken");
   });
 
   it("reports when a victory reward is intentionally kept in inventory", () => {

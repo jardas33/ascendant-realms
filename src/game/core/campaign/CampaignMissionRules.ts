@@ -1,5 +1,11 @@
-import type { BattleSecondaryObjectiveDefinition, CampaignNodeDefinition } from "../GameTypes";
-import { CAMPAIGN_NODE_BY_ID, MAP_BY_ID } from "../../data/contentIndex";
+import type {
+  BattleSecondaryObjectiveDefinition,
+  CampaignModifierDefinition,
+  CampaignMissionTypeDefinition,
+  CampaignNodeDefinition
+} from "../GameTypes";
+import type { BattleLaunchModifier } from "../../battle/BattleLaunchRequest";
+import { CAMPAIGN_MISSION_TYPE_BY_ID, CAMPAIGN_MODIFIER_BY_ID, CAMPAIGN_NODE_BY_ID, MAP_BY_ID } from "../../data/contentIndex";
 import type { CampaignSaveData } from "../../save/SaveTypes";
 
 export type MissionObjectiveStateLabel = "Newly recorded" | "Already recorded" | "Incomplete";
@@ -30,6 +36,15 @@ export interface CampaignMissionRewardState {
   rewardLabel: string;
 }
 
+export interface CampaignMissionBriefing {
+  missionType?: CampaignMissionTypeDefinition;
+  summary: string;
+  primaryObjective: string;
+  rewardPreview: string;
+  afterActionSummary: string;
+  recommendedBuildHint?: string;
+}
+
 export function getCampaignMissionRewardState(
   campaign: CampaignSaveData,
   node: CampaignNodeDefinition
@@ -48,6 +63,46 @@ export function getCampaignMissionRewardState(
         ? "Replay with unclaimed campaign node reward"
         : "First-clear campaign node reward available"
   };
+}
+
+export function getCampaignMissionType(node: CampaignNodeDefinition): CampaignMissionTypeDefinition | undefined {
+  return node.missionTypeId ? CAMPAIGN_MISSION_TYPE_BY_ID[node.missionTypeId] : undefined;
+}
+
+export function getCampaignMissionBriefing(node: CampaignNodeDefinition): CampaignMissionBriefing | undefined {
+  const missionType = getCampaignMissionType(node);
+  if (!missionType && !node.missionBriefing) {
+    return undefined;
+  }
+  return {
+    missionType,
+    summary: node.missionBriefing?.summary ?? node.description,
+    primaryObjective: node.missionBriefing?.primaryObjective ?? missionType?.objectiveHint ?? "Complete the mission objective.",
+    rewardPreview: node.missionBriefing?.rewardPreview ?? "Campaign rewards follow the mission reward state.",
+    afterActionSummary: node.missionBriefing?.afterActionSummary ?? "The mission outcome has been recorded.",
+    recommendedBuildHint: node.missionBriefing?.recommendedBuildHint
+  };
+}
+
+export function getCampaignScenarioModifierDefinitions(node: CampaignNodeDefinition): CampaignModifierDefinition[] {
+  return (node.scenarioModifierIds ?? [])
+    .map((modifierId) => CAMPAIGN_MODIFIER_BY_ID[modifierId])
+    .filter((modifier): modifier is CampaignModifierDefinition => Boolean(modifier) && modifier.trigger === "mission_battle");
+}
+
+export function getCampaignScenarioLaunchModifiers(node: CampaignNodeDefinition): BattleLaunchModifier[] {
+  if (node.nodeType !== "battle") {
+    return [];
+  }
+  return getCampaignScenarioModifierDefinitions(node).map((modifier) => ({ id: modifier.id }));
+}
+
+export function formatCampaignScenarioModifierSummary(node: CampaignNodeDefinition): string {
+  const modifiers = getCampaignScenarioModifierDefinitions(node);
+  if (modifiers.length === 0) {
+    return "None";
+  }
+  return modifiers.map((modifier) => `${modifier.name}: ${modifier.description}`).join("; ");
 }
 
 export function missionObjectiveCompletionKey(nodeId: string, objectiveId: string): string {

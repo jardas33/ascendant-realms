@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.39-v0.41 campaign progression and mission reward foundation",
+          checkpoint: "v0.42-v0.44 mission variety and scenario modifier foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -167,6 +167,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V040_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Mission reward report" },
       { path: "V041_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Replay objective report" },
       { path: "V041_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.41 retest" },
+      { path: "V042_MISSION_VARIETY_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Mission variety spec" },
+      { path: "V043_SCENARIO_MODIFIERS_SPEC.md", sizeBytes: 20, textContent: "Scenario modifier spec" },
+      { path: "V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md", sizeBytes: 20, textContent: "Campaign pacing spec" },
+      { path: "V042_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Mission variety report" },
+      { path: "V043_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Scenario modifier report" },
+      { path: "V044_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Campaign pacing report" },
+      { path: "V044_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.44 retest" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

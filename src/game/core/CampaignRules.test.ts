@@ -12,6 +12,7 @@ import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
 import { createNewHeroSave } from "../data/heroes";
 import { getReputationBattleLaunchModifiers, getReputationRank } from "../data/reputation";
+import { getCampaignMissionBriefing, getCampaignScenarioLaunchModifiers } from "./campaign/CampaignMissionRules";
 
 const CHAPTER_ONE_COMPLETED_NODE_IDS = [
   "border_village",
@@ -185,6 +186,21 @@ describe("campaign rules", () => {
       newlyRecorded: false,
       statusLabel: "Already recorded"
     });
+  });
+
+  it("defines campaign mission metadata and mission-local scenario launch modifiers", () => {
+    const battleNodes = CAMPAIGN_NODES.filter((node) => node.nodeType === "battle");
+    const oldRoad = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
+    const ashenOutpost = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+
+    expect(battleNodes.every((node) => getCampaignMissionBriefing(node))).toBe(true);
+    expect(getCampaignMissionBriefing(oldRoad)).toMatchObject({
+      missionType: { name: "Control" },
+      primaryObjective: expect.stringContaining("Hold the road economy")
+    });
+    expect(getCampaignScenarioLaunchModifiers(oldRoad)).toEqual([{ id: "mission_rich_veins" }]);
+    expect(getCampaignScenarioLaunchModifiers(ashenOutpost)).toEqual([{ id: "mission_fortified_enemy" }]);
+    expect(consumeBattleCampaignModifiers({ campaign: createStartedCampaignSave(), node: oldRoad }).launchModifiers).toEqual([]);
   });
 
   it("locks choices when costs or requirements are not met", () => {

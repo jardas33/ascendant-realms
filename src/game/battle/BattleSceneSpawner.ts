@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { applyRivalModifiersToEnemyHeroStats } from "../core/RivalRules";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
+import { applyCampaignCaptureSiteModifierEffects } from "../data/campaignModifiers";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { createEnemyHeroUnitDefinition, ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
@@ -76,7 +77,10 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
   spawnLaunchModifierUnits({ scene, activeMap, launch, addUnit });
   spawnRetinueUnits({ scene, activeMap, launch, addUnit });
 
-  const captureSites = activeMap.captureSites.map((siteDefinition) => new CaptureSite(scene, siteDefinition));
+  const captureSiteModifiers = launch.request.mode === "tutorial" ? [] : launch.request.modifiers;
+  const captureSites = activeMap.captureSites.map(
+    (siteDefinition) => new CaptureSite(scene, applyCampaignCaptureSiteModifierEffects(siteDefinition, captureSiteModifiers))
+  );
 
   const neutralCampLabels: NeutralCampLabel[] = [];
   activeMap.neutralCamps.forEach((camp) => {

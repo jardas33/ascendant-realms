@@ -2,6 +2,7 @@ import { BATTLE_DIFFICULTIES } from "../battlePacing";
 import { CAMPAIGN_CHAPTERS } from "../campaignChapters";
 import { CAMPAIGN_NODES } from "../campaignNodes";
 import { CAMPAIGN_MODIFIERS } from "../campaignModifiers";
+import { CAMPAIGN_MISSION_TYPES } from "../missionTypes";
 import { ENEMY_PRESSURE_PLANS } from "../enemyPressurePlans";
 import { MAPS } from "../maps";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "../reputation";
@@ -16,6 +17,7 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
     if (!node.name.trim() || !node.description.trim()) {
       errors.push(`Campaign node ${node.id} needs name and description.`);
     }
+    validateCampaignNodeMissionMetadata(node, errors, context);
     if (!node.chapterId) {
       errors.push(`Campaign node ${node.id} needs a campaign chapter.`);
     } else if (!context.campaignChapterIds.has(node.chapterId)) {
@@ -93,6 +95,51 @@ export function validateCampaignNodes(errors: string[], context: ValidationConte
   validateCampaignGraph(errors);
 }
 
+function validateCampaignNodeMissionMetadata(
+  node: CampaignNodeDefinition,
+  errors: string[],
+  context: ValidationContext
+): void {
+  if (node.nodeType !== "battle" && node.scenarioModifierIds?.length) {
+    errors.push(`Campaign node ${node.id} declares scenario modifiers outside a battle node.`);
+  }
+  if (node.missionTypeId && !context.campaignMissionTypeIds.has(node.missionTypeId)) {
+    errors.push(`Campaign node ${node.id} references missing mission type ${node.missionTypeId}.`);
+  }
+  if (node.nodeType === "battle" && !node.isPlaceholder && !node.missionTypeId) {
+    errors.push(`Campaign battle node ${node.id} needs a mission type.`);
+  }
+  if (node.nodeType === "battle" && !node.isPlaceholder && !node.missionBriefing) {
+    errors.push(`Campaign battle node ${node.id} needs mission briefing copy.`);
+  }
+  const briefing = node.missionBriefing;
+  if (briefing) {
+    if (
+      !briefing.summary.trim() ||
+      !briefing.primaryObjective.trim() ||
+      !briefing.rewardPreview.trim() ||
+      !briefing.afterActionSummary.trim()
+    ) {
+      errors.push(`Campaign node ${node.id} has incomplete mission briefing copy.`);
+    }
+  }
+  const seenScenarioModifiers = new Set<string>();
+  (node.scenarioModifierIds ?? []).forEach((modifierId) => {
+    if (seenScenarioModifiers.has(modifierId)) {
+      errors.push(`Campaign node ${node.id} lists scenario modifier ${modifierId} more than once.`);
+    }
+    seenScenarioModifiers.add(modifierId);
+    if (!context.campaignModifierIds.has(modifierId)) {
+      errors.push(`Campaign node ${node.id} references missing scenario modifier ${modifierId}.`);
+      return;
+    }
+    const modifier = CAMPAIGN_MODIFIERS.find((entry) => entry.id === modifierId);
+    if (modifier?.trigger !== "mission_battle") {
+      errors.push(`Campaign node ${node.id} uses non-mission modifier ${modifierId} as a scenario modifier.`);
+    }
+  });
+}
+
 export function validateCampaignChapters(errors: string[], context: ValidationContext): void {
   CAMPAIGN_CHAPTERS.forEach((chapter) => {
     if (!chapter.title.trim() || !chapter.shortDescription.trim()) {
@@ -127,12 +174,30 @@ export function validateCampaignChapters(errors: string[], context: ValidationCo
   }
 }
 
+export function validateCampaignMissionTypes(errors: string[], context: ValidationContext): void {
+  CAMPAIGN_MISSION_TYPES.forEach((missionType) => {
+    if (!missionType.name.trim() || !missionType.shortDescription.trim() || !missionType.objectiveHint.trim()) {
+      errors.push(`Campaign mission type ${missionType.id} needs name, description, and objective hint.`);
+    }
+    if (missionType.recommendedBuildTags.length === 0) {
+      errors.push(`Campaign mission type ${missionType.id} needs at least one recommended build tag.`);
+    }
+    if (!context.campaignMissionTypeIds.has(missionType.id)) {
+      errors.push(`Campaign mission type ${missionType.id} is missing from validation context.`);
+    }
+  });
+}
+
 export function validateCampaignModifiers(errors: string[], context: ValidationContext): void {
   CAMPAIGN_MODIFIERS.forEach((modifier) => {
     if (!modifier.name.trim() || !modifier.description.trim() || !modifier.durationLabel.trim()) {
       errors.push(`Campaign modifier ${modifier.id} needs name, description, and durationLabel.`);
     }
-    if (!["next_battle", "next_ashen_battle", "next_cinderfen_battle", "next_node_resource_reward"].includes(modifier.trigger)) {
+    if (
+      !["next_battle", "next_ashen_battle", "next_cinderfen_battle", "next_node_resource_reward", "mission_battle"].includes(
+        modifier.trigger
+      )
+    ) {
       errors.push(`Campaign modifier ${modifier.id} has invalid trigger ${modifier.trigger}.`);
     }
     [...(modifier.effects.extraPlayerUnitIds ?? []), ...(modifier.effects.extraEnemyUnitIds ?? [])].forEach((unitId) => {
@@ -148,6 +213,32 @@ export function validateCampaignModifiers(errors: string[], context: ValidationC
     }
     if (modifier.effects.campaignResourceRewardMultiplier !== undefined && modifier.effects.campaignResourceRewardMultiplier <= 0) {
       errors.push(`Campaign modifier ${modifier.id} has invalid resource reward multiplier.`);
+    }
+    if (
+      modifier.effects.captureSiteIncomeMultiplier !== undefined &&
+      (modifier.effects.captureSiteIncomeMultiplier < 0.8 || modifier.effects.captureSiteIncomeMultiplier > 1.25)
+    ) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid capture site income multiplier.`);
+    }
+    if (
+      modifier.effects.enemyAttackIntervalMultiplier !== undefined &&
+      (modifier.effects.enemyAttackIntervalMultiplier < 0.85 || modifier.effects.enemyAttackIntervalMultiplier > 1.15)
+    ) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid enemy attack interval multiplier.`);
+    }
+    if (
+      modifier.effects.enemyInitialAttackDelayMultiplier !== undefined &&
+      (modifier.effects.enemyInitialAttackDelayMultiplier < 0.85 || modifier.effects.enemyInitialAttackDelayMultiplier > 1.2)
+    ) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid enemy initial attack delay multiplier.`);
+    }
+    if (
+      modifier.effects.enemyDefenseSquadSizeBonus !== undefined &&
+      (!Number.isInteger(modifier.effects.enemyDefenseSquadSizeBonus) ||
+        modifier.effects.enemyDefenseSquadSizeBonus < 0 ||
+        modifier.effects.enemyDefenseSquadSizeBonus > 2)
+    ) {
+      errors.push(`Campaign modifier ${modifier.id} has invalid enemy defense squad size bonus.`);
     }
     validateCampaignModifierCaptureBonuses(modifier, errors, context);
   });

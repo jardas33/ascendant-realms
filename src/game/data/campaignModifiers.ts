@@ -1,4 +1,11 @@
-import type { CampaignModifierDefinition, CampaignModifierId, CampaignNodeDefinition, ResourceBag } from "../core/GameTypes";
+import type {
+  CampaignModifierDefinition,
+  CampaignModifierId,
+  CampaignNodeDefinition,
+  CaptureSiteDefinition,
+  EnemyAIConfig,
+  ResourceBag
+} from "../core/GameTypes";
 import { MAP_BY_ID } from "./maps";
 import type { CampaignSaveData } from "../save/SaveTypes";
 
@@ -101,6 +108,47 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
         cinder_crossing: { aether: 5 }
       }
     }
+  },
+  {
+    id: "mission_rich_veins",
+    name: "Rich Veins",
+    description: "Mission modifier: resource sites produce 10% more during this battle.",
+    trigger: "mission_battle",
+    durationLabel: "Mission modifier",
+    effects: {
+      captureSiteIncomeMultiplier: 1.1
+    }
+  },
+  {
+    id: "mission_enemy_patrols",
+    name: "Enemy Patrols",
+    description: "Mission modifier: enemy attacks arrive slightly faster during this battle.",
+    trigger: "mission_battle",
+    durationLabel: "Mission modifier",
+    effects: {
+      enemyAttackIntervalMultiplier: 0.95
+    }
+  },
+  {
+    id: "mission_fortified_enemy",
+    name: "Fortified Enemy",
+    description: "Mission modifier: enemy defenders hold a slightly stronger reserve.",
+    trigger: "mission_battle",
+    durationLabel: "Mission modifier",
+    effects: {
+      enemyInitialAttackDelayMultiplier: 1.06,
+      enemyDefenseSquadSizeBonus: 1
+    }
+  },
+  {
+    id: "mission_aether_surge",
+    name: "Aether Surge",
+    description: "Mission modifier: the hero starts with +8% maximum mana for this battle.",
+    trigger: "mission_battle",
+    durationLabel: "Mission modifier",
+    effects: {
+      heroManaMultiplier: 1.08
+    }
   }
 ];
 
@@ -110,6 +158,83 @@ export const CAMPAIGN_MODIFIER_BY_ID: Record<CampaignModifierId, CampaignModifie
 
 export function isCampaignModifierId(value: string): value is CampaignModifierId {
   return value in CAMPAIGN_MODIFIER_BY_ID;
+}
+
+export interface CampaignBattleModifierEffects {
+  captureSiteIncomeMultiplier: number;
+  enemyAttackIntervalMultiplier: number;
+  enemyInitialAttackDelayMultiplier: number;
+  enemyDefenseSquadSizeBonus: number;
+}
+
+export function getCampaignBattleModifierEffects(modifiers: CampaignLaunchModifier[] = []): CampaignBattleModifierEffects {
+  return modifiers.reduce<CampaignBattleModifierEffects>(
+    (effects, modifier) => {
+      const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id as CampaignModifierId];
+      if (!definition) {
+        return effects;
+      }
+      const modifierEffects = definition.effects;
+      return {
+        captureSiteIncomeMultiplier: Math.max(
+          effects.captureSiteIncomeMultiplier,
+          modifierEffects.captureSiteIncomeMultiplier ?? 1
+        ),
+        enemyAttackIntervalMultiplier: Math.min(
+          effects.enemyAttackIntervalMultiplier,
+          modifierEffects.enemyAttackIntervalMultiplier ?? 1
+        ),
+        enemyInitialAttackDelayMultiplier: Math.max(
+          effects.enemyInitialAttackDelayMultiplier,
+          modifierEffects.enemyInitialAttackDelayMultiplier ?? 1
+        ),
+        enemyDefenseSquadSizeBonus: Math.min(
+          2,
+          effects.enemyDefenseSquadSizeBonus + Math.max(0, modifierEffects.enemyDefenseSquadSizeBonus ?? 0)
+        )
+      };
+    },
+    {
+      captureSiteIncomeMultiplier: 1,
+      enemyAttackIntervalMultiplier: 1,
+      enemyInitialAttackDelayMultiplier: 1,
+      enemyDefenseSquadSizeBonus: 0
+    }
+  );
+}
+
+export function applyCampaignCaptureSiteModifierEffects(
+  definition: CaptureSiteDefinition,
+  modifiers: CampaignLaunchModifier[] = []
+): CaptureSiteDefinition {
+  const { captureSiteIncomeMultiplier } = getCampaignBattleModifierEffects(modifiers);
+  if (captureSiteIncomeMultiplier === 1) {
+    return definition;
+  }
+  return {
+    ...definition,
+    incomeAmount: Math.max(1, Math.round(definition.incomeAmount * captureSiteIncomeMultiplier))
+  };
+}
+
+export function applyCampaignEnemyAIModifierEffects(
+  config: EnemyAIConfig,
+  modifiers: CampaignLaunchModifier[] = []
+): EnemyAIConfig {
+  const effects = getCampaignBattleModifierEffects(modifiers);
+  if (
+    effects.enemyAttackIntervalMultiplier === 1 &&
+    effects.enemyInitialAttackDelayMultiplier === 1 &&
+    effects.enemyDefenseSquadSizeBonus === 0
+  ) {
+    return config;
+  }
+  return {
+    ...config,
+    attackInterval: Math.max(20, Math.round(config.attackInterval * effects.enemyAttackIntervalMultiplier)),
+    initialAttackDelay: Math.max(20, Math.round(config.initialAttackDelay * effects.enemyInitialAttackDelayMultiplier)),
+    defenseSquadSize: Math.max(1, config.defenseSquadSize + effects.enemyDefenseSquadSizeBonus)
+  };
 }
 
 export function grantCampaignModifiers(campaign: CampaignSaveData, modifierIds: string[] = []): CampaignSaveData {

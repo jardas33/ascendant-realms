@@ -2,7 +2,10 @@ import type { CampaignNodeDefinition } from "../core/GameTypes";
 import { getCampaignNodeGuidance } from "../core/FirstExperienceGuidance";
 import { getCampaignNodeStatus } from "../core/CampaignRules";
 import {
+  formatCampaignScenarioModifierSummary,
+  getCampaignMissionBriefing,
   getCampaignMissionRewardState,
+  getCampaignScenarioModifierDefinitions,
   getMissionOptionalObjectiveStates
 } from "../core/campaign/CampaignMissionRules";
 import { getRivalNodePreview } from "../core/RivalRules";
@@ -55,6 +58,8 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const nodeGuidance = getCampaignNodeGuidance(node.id);
   const mapLabel = node.isPlaceholder ? (node.futureMapName ?? "Future map not implemented") : (map?.name ?? node.mapId);
   const missionReward = getCampaignMissionRewardState(campaignSave, node);
+  const missionBriefing = getCampaignMissionBriefing(node);
+  const scenarioModifiers = getCampaignScenarioModifierDefinitions(node);
   const objectiveStates = getMissionOptionalObjectiveStates({ campaign: campaignSave, node });
   const buildHint = recommendedBuildHint(node);
   return `
@@ -73,11 +78,17 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
             : ""
         }
         ${renderGuidanceMessage(nodeGuidance.title, nodeGuidance.body, nodeGuidance.actions, "compact")}
+        ${missionBriefing ? renderMissionBriefingMessage(missionBriefing, scenarioModifiers) : ""}
         ${renderMissionRewardMessage(node, missionReward)}
         ${objectiveStates.length > 0 ? renderOptionalObjectiveMessage(objectiveStates) : ""}
         ${buildHint ? renderGuidanceMessage(buildHint.title, buildHint.body, buildHint.actions, "compact") : ""}
         <div class="results-grid compact">
           <span>Map</span><strong>${escapeHtml(mapLabel)}</strong>
+          <span>Mission type</span><strong>${escapeHtml(missionBriefing?.missionType?.name ?? "None")}</strong>
+          <span>Primary objective</span><strong>${escapeHtml(missionBriefing?.primaryObjective ?? "Complete the mission.")}</strong>
+          <span>Scenario modifiers</span><strong>${escapeHtml(formatScenarioModifierNames(scenarioModifiers))}</strong>
+          <span>Modifier effects</span><strong>${escapeHtml(formatCampaignScenarioModifierSummary(node))}</strong>
+          <span>Reward preview</span><strong>${escapeHtml(missionBriefing?.rewardPreview ?? "See listed rewards.")}</strong>
           <span>Difficulty</span><strong>${titleCase(node.difficulty)}</strong>
           <span>Mission status</span><strong>${escapeHtml(missionReward.statusLabel)}</strong>
           <span>Campaign reward</span><strong>${escapeHtml(missionReward.rewardLabel)}</strong>
@@ -127,6 +138,33 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${node.choices?.length ? renderEventChoices({ node, status, campaignSave, heroSave }) : ""}
       </div>
     `;
+}
+
+function renderMissionBriefingMessage(
+  briefing: NonNullable<ReturnType<typeof getCampaignMissionBriefing>>,
+  scenarioModifiers: ReturnType<typeof getCampaignScenarioModifierDefinitions>
+): string {
+  const modifierTag =
+    scenarioModifiers.length > 0 ? `${scenarioModifiers.length} known modifier${scenarioModifiers.length === 1 ? "" : "s"}` : "No mission modifier";
+  return renderGuidanceMessage(
+    briefing.missionType?.name ?? "Mission briefing",
+    briefing.summary,
+    [
+      briefing.missionType?.objectiveHint ?? briefing.primaryObjective,
+      modifierTag,
+      briefing.recommendedBuildHint ?? "Build choice optional"
+    ],
+    "compact"
+  );
+}
+
+function formatScenarioModifierNames(
+  scenarioModifiers: ReturnType<typeof getCampaignScenarioModifierDefinitions>
+): string {
+  if (scenarioModifiers.length === 0) {
+    return "None";
+  }
+  return scenarioModifiers.map((modifier) => `${modifier.name} (${modifier.durationLabel})`).join(", ");
 }
 
 function renderMissionRewardMessage(

@@ -13,6 +13,7 @@ import {
 } from "../core/CampaignRules";
 import { getStrongholdLaunchModifiers, purchaseStrongholdUpgrade } from "../core/StrongholdRules";
 import { getRivalBattleLaunchModifiers } from "../core/RivalRules";
+import { getCampaignScenarioLaunchModifiers } from "../core/campaign/CampaignMissionRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -162,6 +163,7 @@ export class CampaignMapScene extends Phaser.Scene {
       this.scene.start(SCENE_KEYS.battle, {
         launchRequest: createCampaignBattleLaunchRequest(this.heroSave, node, {
           modifiers: [
+            ...getCampaignScenarioLaunchModifiers(node),
             ...modifierResult.launchModifiers,
             ...getReputationBattleLaunchModifiers(this.heroSave, node),
             ...getStrongholdLaunchModifiers(this.campaignSave),

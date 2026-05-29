@@ -11,6 +11,7 @@ import type {
 } from "../core/GameTypes";
 import { BUILDING_BY_ID } from "../data/contentIndex";
 import { applyTutorialEnemyAIPacing } from "../data/battlePacing";
+import { applyCampaignEnemyAIModifierEffects } from "../data/campaignModifiers";
 import { getStrongholdBattleEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
@@ -469,8 +470,10 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
 
   showBattleStartSummary();
 
-  const enemyAIConfig =
-    launch.request.mode === "tutorial" ? applyTutorialEnemyAIPacing(activeMap.scenario.enemyAI) : activeMap.scenario.enemyAI;
+  const enemyAIConfig = applyCampaignEnemyAIModifierEffects(
+    launch.request.mode === "tutorial" ? applyTutorialEnemyAIPacing(activeMap.scenario.enemyAI) : activeMap.scenario.enemyAI,
+    launch.request.mode === "tutorial" ? [] : launch.request.modifiers
+  );
   const aiController = new EnemyAIController({
     resources: resources.enemy,
     getUnits,

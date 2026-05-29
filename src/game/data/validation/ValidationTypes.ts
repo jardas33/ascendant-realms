@@ -17,6 +17,7 @@ export interface ValidationContext {
   upgradeIds: Set<string>;
   strongholdUpgradeIds: Set<string>;
   campaignChapterIds: Set<string>;
+  campaignMissionTypeIds: Set<string>;
   campaignNodeIds: Set<string>;
   aiPersonalityIds: Set<string>;
   campaignModifierIds: Set<string>;

@@ -10,6 +10,7 @@ import { FACTIONS } from "../factions";
 import { HERO_CLASSES } from "../heroClasses";
 import { ITEM_AFFIXES } from "../itemAffixes";
 import { ITEMS } from "../items";
+import { CAMPAIGN_MISSION_TYPES } from "../missionTypes";
 import { ORIGINS } from "../origins";
 import { REWARD_TABLES } from "../rewards";
 import { RESOURCE_DEFINITIONS } from "../resources";
@@ -24,7 +25,13 @@ import { idsFor, type ValidationContext } from "./ValidationTypes";
 import { validateAbilities, validateHeroClasses, validateSkillNodes } from "./validateAbilities";
 import { validateAIPersonalities, validateDifficulties } from "./validateAi";
 import { validateBuildings } from "./validateBuildings";
-import { validateCampaignChapters, validateCampaignModifiers, validateCampaignNodes, validateReputationEffects } from "./validateCampaign";
+import {
+  validateCampaignChapters,
+  validateCampaignMissionTypes,
+  validateCampaignModifiers,
+  validateCampaignNodes,
+  validateReputationEffects
+} from "./validateCampaign";
 import { validateEnemyHeroes } from "./validateEnemyHeroes";
 import { validateEnemyPressurePlans } from "./validateEnemyPressurePlans";
 import { validateFactions } from "./validateFactions";
@@ -56,6 +63,7 @@ export function validateContent(): string[] {
     upgradeIds: idsFor(UPGRADES, "upgrade", errors),
     strongholdUpgradeIds: idsFor(STRONGHOLD_UPGRADES, "stronghold upgrade", errors),
     campaignChapterIds: idsFor(CAMPAIGN_CHAPTERS, "campaign chapter", errors),
+    campaignMissionTypeIds: idsFor(CAMPAIGN_MISSION_TYPES, "campaign mission type", errors),
     campaignNodeIds: idsFor(CAMPAIGN_NODES, "campaign node", errors),
     aiPersonalityIds: idsFor(AI_PERSONALITIES, "AI personality", errors),
     campaignModifierIds: idsFor(CAMPAIGN_MODIFIERS, "campaign modifier", errors),
@@ -80,6 +88,7 @@ export function validateContent(): string[] {
   validateRivalRewards(errors, context);
   validateRelicRewards(errors, context);
   validateStrongholdUpgrades(errors, context);
+  validateCampaignMissionTypes(errors, context);
   validateCampaignChapters(errors, context);
   validateCampaignNodes(errors, context);
   validateReputationEffects(errors, context);

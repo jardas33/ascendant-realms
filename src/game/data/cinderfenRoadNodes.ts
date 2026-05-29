@@ -158,6 +158,15 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
       "First Chapter 2 battle. Secure side income, claim the Cinder Shrine for its first-capture Aether surge, then break the Ashen staging camp.",
     chapterId: "cinderfen_road",
     nodeType: "battle",
+    missionTypeId: "control",
+    missionBriefing: {
+      summary: "The causeway is a control mission around side income and the first Cinder Shrine surge.",
+      primaryObjective: "Secure side income, claim the shrine if safe, and break the Ashen staging camp.",
+      rewardPreview: "First clear grants XP, modest campaign resources, and a Scout's Bow.",
+      afterActionSummary: "The crossing is held and the route toward the watchpost opens.",
+      recommendedBuildHint: "Seer or Commander builds help stretch ability uptime and site control."
+    },
+    scenarioModifierIds: ["mission_rich_veins", "mission_aether_surge"],
     difficulty: "normal",
     mapId: "cinderfen_causeway",
     enemyFactionId: "ashen_covenant",
@@ -180,6 +189,15 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
       "Second Chapter 2 battle. Hold the raised road, scout the enemy watchpost, and break the fortified camp before the tower grinds down the push.",
     chapterId: "cinderfen_road",
     nodeType: "battle",
+    missionTypeId: "defense",
+    missionBriefing: {
+      summary: "The watch road asks you to hold under Ashen pressure before the final push.",
+      primaryObjective: "Protect your Command Hall, scout the watchpost, and destroy the fortified camp.",
+      rewardPreview: "First clear grants XP and a compact campaign resource bundle.",
+      afterActionSummary: "The raised road is secure enough for the current Cinderfen arc to close.",
+      recommendedBuildHint: "Commander defense and Warrior durability both fit the hold-and-counter rhythm."
+    },
+    scenarioModifierIds: ["mission_enemy_patrols", "mission_fortified_enemy"],
     difficulty: "normal",
     mapId: "cinderfen_watchpost",
     enemyFactionId: "ashen_covenant",

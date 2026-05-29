@@ -3,8 +3,11 @@ import { createStartedCampaignSave } from "../core/CampaignRules";
 import { CAMPAIGN_NODES } from "./campaignNodes";
 import {
   CAMPAIGN_MODIFIERS,
+  applyCampaignCaptureSiteModifierEffects,
+  applyCampaignEnemyAIModifierEffects,
   applyCampaignResourceRewardModifiers,
   consumeBattleCampaignModifiers,
+  getCampaignBattleModifierEffects,
   grantCampaignModifiers
 } from "./campaignModifiers";
 import { getStrongholdBattleEffects } from "./strongholdUpgrades";
@@ -20,9 +23,71 @@ describe("campaign modifiers", () => {
       "ashen_hostile_pressure",
       "marsh_guides",
       "ash_filters",
-      "shrine_attunement"
+      "shrine_attunement",
+      "mission_rich_veins",
+      "mission_enemy_patrols",
+      "mission_fortified_enemy",
+      "mission_aether_surge"
     ]);
     expect(CAMPAIGN_MODIFIERS.filter((modifier) => modifier.trigger.includes("battle")).length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("projects mission scenario modifiers into conservative battle effects", () => {
+    const effects = getCampaignBattleModifierEffects([
+      { id: "mission_rich_veins" },
+      { id: "mission_enemy_patrols" },
+      { id: "mission_fortified_enemy" }
+    ]);
+
+    expect(effects.captureSiteIncomeMultiplier).toBe(1.1);
+    expect(effects.enemyAttackIntervalMultiplier).toBe(0.95);
+    expect(effects.enemyInitialAttackDelayMultiplier).toBe(1.06);
+    expect(effects.enemyDefenseSquadSizeBonus).toBe(1);
+  });
+
+  it("applies mission income and AI hooks only through launch modifiers", () => {
+    const site = {
+      id: "test_site",
+      name: "Test Site",
+      resource: "crowns" as const,
+      x: 100,
+      y: 100,
+      radius: 60,
+      incomeAmount: 10,
+      incomeInterval: 8
+    };
+    const aiConfig = {
+      incomeInterval: 5,
+      incomePerTick: { crowns: 12 },
+      trainInterval: 20,
+      expandInterval: 70,
+      initialExpandDelay: 45,
+      attackInterval: 80,
+      initialAttackDelay: 120,
+      minAttackArmySize: 4,
+      attackWaveSize: 5,
+      expandSquadSize: 3,
+      defenseSquadSize: 4,
+      defendRadius: 220,
+      baseBuildingId: "enemy_stronghold",
+      productionBuildingId: "enemy_barracks",
+      attackTargetBuildingId: "command_hall",
+      unitPlan: ["raider"]
+    };
+
+    expect(applyCampaignCaptureSiteModifierEffects(site, [{ id: "mission_rich_veins" }]).incomeAmount).toBe(11);
+    expect(applyCampaignCaptureSiteModifierEffects(site, []).incomeAmount).toBe(10);
+    expect(
+      applyCampaignEnemyAIModifierEffects(aiConfig, [
+        { id: "mission_enemy_patrols" },
+        { id: "mission_fortified_enemy" }
+      ])
+    ).toMatchObject({
+      attackInterval: 76,
+      initialAttackDelay: 127,
+      defenseSquadSize: 5
+    });
+    expect(applyCampaignEnemyAIModifierEffects(aiConfig, [])).toBe(aiConfig);
   });
 
   it("grants one-use battle modifiers and consumes them on matching launches", () => {

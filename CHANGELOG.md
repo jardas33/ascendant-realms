@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.42-v0.44 Mission Variety And Scenario Modifier Foundation - 2026-05-28
+
+This checkpoint makes campaign battles read more like authored missions by adding mission types, small mission-local scenario modifiers, campaign briefing copy, Results after-action copy, and clearer pacing language. It uses existing maps, objectives, units, rewards, AI config, campaign UI, and Results UI. No new maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V042_MISSION_VARIETY_FOUNDATION_SPEC.md`.
+- Added `docs/V043_SCENARIO_MODIFIERS_SPEC.md`.
+- Added `docs/V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md`.
+- Added `docs/V042_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V043_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V044_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V044_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Assault, Control, Defense, and Skirmish / Training mission type metadata.
+- Added compact briefing, primary objective, reward preview, after-action, modifier, and build-hint metadata to existing campaign battle nodes.
+- Added Rich Veins, Enemy Patrols, Fortified Enemy, and Aether Surge as conservative scenario modifiers.
+- Routed scenario modifiers through existing battle launch modifiers, capture-site income, enemy AI config, and hero Mana modifier hooks.
+- Added mission type/modifier/reward preview copy to Campaign Map node details and Results campaign reward blocks.
+- Preserved replay reward safety, optional objective credit, rival relic choice, hero XP/skill reminders, and Tutorial no-save/no-reward protection.
+- Updated package metadata and validation to name `v0.42-v0.44 mission variety and scenario modifier foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for mission-local modifier effects and campaign/Results readability.
+- Gameplay numbers changed: narrowly, only through conservative battle-local modifier effects on selected campaign missions.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial remains no-save/no-reward with no scenario modifier complexity.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: TypeScript no-emit, focused mission/modifier/campaign/results tests with 71 tests, `npm test` with 73 files / 563 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, targeted hosted campaign briefing/modifier/replay proxy with 2 tests after a fresh build, hosted deep-battle with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, hosted deep-meta with 12 tests, hosted layout-core with 20 tests, hosted layout-cinderfen with 12 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 screenshot retries, local deep-meta focused rerun with 12 tests, local layout boot group rerun with 4 viewport tests, dirty package generation, dirty package verification with 126 checks, and `git diff --check`.
+- Full local release note: `npm run test:e2e:release` exceeded a 40-minute tool timeout without returning a summary, and `npm run test:e2e:release:shard1of3` exceeded a 20-minute timeout. Focused local reruns narrowed the surfaced failures to dev-server cold-boot/socket timing; hosted production-preview release groups are green and remain the final release-matrix evidence for this checkpoint.
+
 ## v0.39-v0.41 Campaign Progression And Mission Reward Foundation - 2026-05-28
 
 This checkpoint makes the campaign feel more like a connected RTS/RPG route: campaign node first-clear state, replay-safe rewards, optional objective credit, rival champion reward context, XP, relic choice, and skill-point reminders now meet on the campaign map and Results screen. No maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

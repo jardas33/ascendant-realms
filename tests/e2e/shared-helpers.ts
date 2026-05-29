@@ -35,8 +35,8 @@ const EMPTY_RESOURCES: CampaignResources = {
   aether: 0
 };
 
-// Cold dev-server smoke runs can spend most of the first boot preloading battle textures before the menu mounts.
-const MAIN_MENU_BOOT_TIMEOUT_MS = 30_000;
+// Cold dev-server release runs can spend most of the first boot preloading battle textures before the menu mounts.
+const MAIN_MENU_BOOT_TIMEOUT_MS = 45_000;
 const MAIN_MENU_NAVIGATION_TIMEOUT_MS = 15_000;
 const MAIN_MENU_NAVIGATION_ATTEMPTS = 3;
 const MAIN_MENU_READY_PROBE_TIMEOUT_MS = 5_000;
@@ -103,6 +103,7 @@ function isTransientAppNavigationError(error: unknown): boolean {
   const message = describeNavigationError(error);
   return (
     message.includes("net::ERR_ABORTED") ||
+    message.includes("net::ERR_NO_BUFFER_SPACE") ||
     message.includes("interrupted by another navigation") ||
     message.includes("Timeout") ||
     message.includes("timeout") ||

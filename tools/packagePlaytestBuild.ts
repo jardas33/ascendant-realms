@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.39-v0.41 campaign progression and mission reward foundation";
+const CHECKPOINT = "v0.42-v0.44 mission variety and scenario modifier foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -146,6 +146,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V040_IMPLEMENTATION_REPORT.md", join(packageDir, "V040_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V041_IMPLEMENTATION_REPORT.md", join(packageDir, "V041_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V041_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V041_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V042_MISSION_VARIETY_FOUNDATION_SPEC.md", join(packageDir, "V042_MISSION_VARIETY_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V043_SCENARIO_MODIFIERS_SPEC.md", join(packageDir, "V043_SCENARIO_MODIFIERS_SPEC.md"));
+  await copyMarkdown("docs/V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md", join(packageDir, "V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md"));
+  await copyMarkdown("docs/V042_IMPLEMENTATION_REPORT.md", join(packageDir, "V042_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V043_IMPLEMENTATION_REPORT.md", join(packageDir, "V043_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V044_IMPLEMENTATION_REPORT.md", join(packageDir, "V044_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V044_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V044_EMMANUEL_RETEST_CHECKLIST.md"));
 
   const buildInfo = createBuildInfo(packageName, commit, shortCommit, dirty);
   await writeFile(join(packageDir, "playtest-build-info.json"), `${JSON.stringify(buildInfo, null, 2)}\n`, "utf-8");
@@ -229,7 +236,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.39-v0.41 campaign progression and mission reward retest, start with V039_CAMPAIGN_PROGRESSION_FOUNDATION_SPEC.md, V040_MISSION_REWARD_STRUCTURE_SPEC.md, V041_REPLAY_AND_OBJECTIVE_STATE_SPEC.md, V039_IMPLEMENTATION_REPORT.md, V040_IMPLEMENTATION_REPORT.md, V041_IMPLEMENTATION_REPORT.md, and V041_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.28-v0.38 hero progression, abilities, rival champion, relic inventory, reward choice, skill tree, and relic synergy docs nearby as regression context. Focus on: campaign node first-clear/replay labels, completed battle replay launch, one-time campaign node rewards, optional objective completion credit, Results first-clear versus replay copy, rival champion relic choice, hero XP/skill-point reminders, old-save compatibility, unknown objective-id safety, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
+For the v0.42-v0.44 mission variety and scenario modifier retest, start with V042_MISSION_VARIETY_FOUNDATION_SPEC.md, V043_SCENARIO_MODIFIERS_SPEC.md, V044_CAMPAIGN_PACING_AND_BRIEFING_SPEC.md, V042_IMPLEMENTATION_REPORT.md, V043_IMPLEMENTATION_REPORT.md, V044_IMPLEMENTATION_REPORT.md, and V044_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.39-v0.41 campaign progression/replay docs and v0.28-v0.38 hero progression, relic, skill, and rival docs nearby as regression context. Focus on: campaign node mission type, briefing, reward preview, scenario modifier visibility, Results mission type/modifier/after-action copy, first-clear versus replay safety, optional objective credit, rival champion relic choice, hero XP/skill-point reminders, and Tutorial no-save/no-reward protection. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, Patrol, formations, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

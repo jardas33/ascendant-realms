@@ -640,6 +640,7 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
 test.describe("Ascendant Realms responsive layout", () => {
   for (const viewport of LAYOUT_VIEWPORTS) {
     test(`menu and hero creation fit or scroll on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await openFreshMainMenu(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} main menu`);

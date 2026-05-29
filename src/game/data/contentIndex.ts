@@ -11,6 +11,7 @@ import type {
   ItemAffixDefinition,
   HeroClassDefinition,
   ItemDefinition,
+  CampaignMissionTypeDefinition,
   OriginDefinition,
   RelicRewardDefinition,
   RewardTableDefinition,
@@ -33,6 +34,7 @@ import { HERO_CLASSES } from "./heroClasses";
 import { ITEM_AFFIXES } from "./itemAffixes";
 import { ITEMS } from "./items";
 import { MAPS } from "./maps";
+import { CAMPAIGN_MISSION_TYPES } from "./missionTypes";
 import { ORIGINS } from "./origins";
 import { REWARD_TABLES } from "./rewards";
 import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
@@ -64,6 +66,7 @@ export const REWARD_TABLE_BY_ID: Record<string, RewardTableDefinition> = toIndex
 export const UPGRADE_BY_ID: Record<string, UpgradeDefinition> = toIndex(UPGRADES);
 export const AI_PERSONALITY_BY_ID: Record<string, EnemyAIPersonalityDefinition> = toIndex(AI_PERSONALITIES);
 export const CAMPAIGN_MODIFIER_BY_ID: Record<string, CampaignModifierDefinition> = toIndex(CAMPAIGN_MODIFIERS);
+export const CAMPAIGN_MISSION_TYPE_BY_ID: Record<string, CampaignMissionTypeDefinition> = toIndex(CAMPAIGN_MISSION_TYPES);
 
 export function requireUnit(id: string): UnitDefinition {
   const definition = UNIT_BY_ID[id];
