@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.45-v0.47 Act 1 campaign spine and onboarding polish",
+          checkpoint: "v0.48-v0.50 Act 1 playability and release-candidate stabilization",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -181,6 +181,15 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V046_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Difficulty pacing report" },
       { path: "V047_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Onboarding guidance report" },
       { path: "V047_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.47 retest" },
+      { path: "V048_ACT1_PLAYABILITY_AUDIT_PLAN.md", sizeBytes: 20, textContent: "Act 1 audit plan" },
+      { path: "V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md", sizeBytes: 20, textContent: "Act 1 telemetry report" },
+      { path: "V048_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Act 1 playability report" },
+      { path: "V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md", sizeBytes: 20, textContent: "Act 1 balance telemetry" },
+      { path: "V050_ACT1_RELEASE_CANDIDATE_NOTES.md", sizeBytes: 20, textContent: "Act 1 release candidate" },
+      { path: "V050_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Release candidate report" },
+      { path: "V050_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.50 retest" },
+      { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
+      { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
       { path: "START_GAME_WINDOWS.bat", sizeBytes: 20, textContent: "node start-playtest-server.mjs" },
       { path: "START_GAME_MAC_LINUX.sh", sizeBytes: 20, textContent: "node start-playtest-server.mjs" }

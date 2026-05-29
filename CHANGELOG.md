@@ -1,5 +1,38 @@
 # Changelog
 
+## v0.48-v0.50 Act 1 Playability And Release-Candidate Stabilization - 2026-05-29
+
+This checkpoint stabilizes the existing Act 1 route as a release-candidate loop through deterministic telemetry, copy/readability polish, replay/reward clarity, hosted proxy coverage, and package hardening. No maps, factions, runtime art/assets, shop, crafting, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V048_ACT1_PLAYABILITY_AUDIT_PLAN.md`.
+- Added `docs/V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md`.
+- Added `docs/V048_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md`.
+- Added `docs/V050_ACT1_RELEASE_CANDIDATE_NOTES.md`.
+- Added `docs/V050_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V050_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `Act1PlayabilityTelemetry`, `npm run playtest:act1`, and committed Act 1 telemetry Markdown/JSON outputs.
+- Used deterministic telemetry to confirm Safe Beginner clears every Act 1 campaign battle and to classify harder-node failures as strategy-spread watchpoints.
+- Applied copy-only Act 1 polish for Worker training, production, site assignment, site upgrades, army staging, skill spending, relic equip, champion relic choice, replay safety, and already-claimed objective credit.
+- Extended hosted proxy coverage for Act 1 route unlock, resource-control guidance, champion relic guidance, and replay-safe copy.
+- Updated package metadata and validation to require v0.48-v0.50 docs plus Act 1 telemetry artifacts.
+
+### Verdict
+
+- Runtime gameplay changed: no new mechanics; guidance/readability changed.
+- Gameplay numbers changed: no.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward.
+- Inventory/loot changed: no new relics or inventory systems.
+
+### Verification
+
+- Passed: focused v0.48-v0.50 tests with 46 tests, `npm run playtest:act1`, content validation, art-intake validation, `npm test` with 75 files / 575 tests, production build with the known Vite Phaser chunk-size warning, focused hosted Act 1 proxy with 3 tests, fast smoke with 8 tests, full smoke on rerun with 14 tests, controls normal/extended/verify, hosted deep-battle on rerun with 27 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, and local release shards 1/3, 2/3, and 3/3 after manually verifying the local dev server.
+- Non-pass evidence: full local release timed out after 40 minutes without a summary; an earlier full smoke attempt timed out without a summary; the first hosted deep-battle attempt timed out without a summary; local shard 1 initially timed out once and then failed 44/44 with `ERR_CONNECTION_REFUSED` before a manual dev server was started.
+
 ## v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
 
 This checkpoint turns the existing campaign systems into a clearer Act 1 path: Tutorial / Proving Grounds, first persistent battle, base development, resource control, rival pressure, champion relic reward, and replayable objective cleanup. It uses existing campaign nodes, maps, scenario metadata, rewards, relic/skill systems, campaign UI, and Results UI. No factions, runtime art/assets, shop, crafting, cinematic system, giant quest system, save-breaking migration, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or canvas/world force-click behavior were added.

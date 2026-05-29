@@ -1,12 +1,73 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-29 v0.45-v0.47 Act 1 campaign spine and onboarding polish verification closeout
+Last updated: 2026-05-29 v0.48-v0.50 Act 1 playability and release-candidate stabilization closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.48-v0.50 Act 1 Playability And Release-Candidate Stabilization - 2026-05-29
+
+Status: v0.48-v0.50 stabilizes the existing Act 1 route as a release-candidate loop through deterministic telemetry, copy/readability polish, replay/reward clarity, and package hardening. It uses existing campaign nodes, maps, scenario metadata, simulator tooling, rewards, relic/skill systems, campaign UI, Results UI, and package validation. It does not add factions, runtime art/assets, shop, crafting, a giant quest system, new save fields, save-version bump, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world interactions.
+
+Baseline:
+
+- Starting commit/package: `025656d`, `ascendant-realms-private-playtest-025656d`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26637454600` on `025656d` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V048_ACT1_PLAYABILITY_AUDIT_PLAN.md`.
+- Added `docs/V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md`.
+- Added `docs/V048_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md`.
+- Added `docs/V050_ACT1_RELEASE_CANDIDATE_NOTES.md`.
+- Added `docs/V050_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V050_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `src/game/playtest/Act1PlayabilityTelemetry.ts` and `npm run playtest:act1`.
+- Added committed machine-readable and Markdown telemetry outputs: `ACT1_PLAYABILITY_TELEMETRY.json` and `ACT1_PLAYABILITY_TELEMETRY.md`.
+- Summarized 180 Act 1 campaign battle runs from the 255-run deterministic simulator suite.
+- Kept gameplay numbers unchanged because Safe Beginner clears every Act 1 campaign node and harder-node failures read as strategy spread, not unfair opening pressure.
+- Polished Act 1 copy for Worker training, production, site assignment, upgrades, army staging, skill spending, relic equip, champion relic choice, replay-safe rewards, and already-claimed objective credit.
+- Extended hosted proxy coverage for Aether Well Ruins guidance and Old Stone Road replay-safe copy.
+- Updated package metadata and validation to require v0.48-v0.50 docs plus Act 1 telemetry artifacts.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Act 1 telemetry is tooling/output only.
+- Guidance state remains content-driven and derived from existing campaign, hero, relic, skill, reward-claim, replay, and optional-objective state.
+
+Verification:
+
+```text
+npm test -- src/game/playtest/Act1PlayabilityTelemetry.test.ts src/game/core/FirstExperienceGuidance.test.ts src/game/core/campaign/CampaignActSpineRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 6 files / 46 tests.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test PASS, 75 files / 575 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+Focused hosted Act 1 proxy PASS, 3 tests.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS on rerun, 14 tests; first attempt timed out without summary.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS on rerun, 27 tests; first attempt timed out without summary.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release TIMED OUT after 40 minutes without a summary; non-pass evidence.
+npm run test:e2e:release:shard1of3 PASS after manually starting and verifying the local dev server, 44 tests. Earlier shard attempts timed out once and then failed 44/44 with ERR_CONNECTION_REFUSED before the server was manually started.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+```
+
+Closeout note: commit as `Checkpoint v0.48-v0.50 Act 1 playability and release-candidate stabilization`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
 

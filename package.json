@@ -36,6 +36,7 @@
     "test:e2e:release:hosted:smoke": "playwright test --config=playwright.hosted-release.config.ts tests/e2e/smoke.spec.ts --reporter=line",
     "test:e2e:headed": "playwright test --headed",
     "visual:qa": "playwright test --config=playwright.visual-qa.config.ts --reporter=line",
+    "playtest:act1": "tsx tools/runAct1PlayabilityTelemetry.ts",
     "playtest:sim": "tsx tools/runPlaytestSim.ts",
     "playtest:lab": "tsx tools/runPlaytestLab.ts",
     "playtest:watchpoints": "tsx tools/runPlaytestLab.ts",

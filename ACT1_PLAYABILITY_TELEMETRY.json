@@ -1,0 +1,403 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "Ascendant Realms Act 1 deterministic playability telemetry v1",
+  "sourceGeneratedBy": "Ascendant Realms deterministic scripted playtest v3",
+  "sourceRunCount": 255,
+  "act1RunCount": 180,
+  "evidenceBoundary": {
+    "evidenceType": "deterministic scripted simulator over existing campaign battle nodes",
+    "measured": [
+      "mission start state",
+      "starting resources",
+      "first resource-site capture timing",
+      "first Worker-built production timing where measurable",
+      "first trained-unit timing",
+      "enemy warning and first combat timing",
+      "battle result, duration, units lost, final army size, and objective completion"
+    ],
+    "notMeasured": [
+      "human fun",
+      "moment-to-moment stress",
+      "visual readability beyond automated UI checks",
+      "audio clarity",
+      "novice comprehension without manual tester notes"
+    ]
+  },
+  "tutorialProtection": {
+    "label": "Tutorial / Proving Grounds",
+    "simulated": false,
+    "policy": "Excluded from persistent campaign telemetry and rewards; it remains no-save and no-reward."
+  },
+  "nodeSummaries": [
+    {
+      "order": 2,
+      "nodeId": "border_village",
+      "nodeName": "Border Village",
+      "actStepTitle": "First Campaign Battle",
+      "pacingTier": "low",
+      "mechanicFocus": [
+        "Capture site",
+        "Barracks",
+        "Train troops",
+        "First defense"
+      ],
+      "runCount": 36,
+      "victories": 36,
+      "defeats": 0,
+      "timeouts": 0,
+      "winRate": 1,
+      "averageStartingResources": {
+        "crowns": 380,
+        "stone": 255,
+        "iron": 140,
+        "aether": 75
+      },
+      "averageDurationSeconds": 247.9,
+      "averageFirstSiteCaptureSeconds": 21.7,
+      "averageFirstWorkerBuildingSeconds": 62.3,
+      "averageFirstBuildingCompleteSeconds": 87.3,
+      "averageFirstUnitTrainedSeconds": 91.3,
+      "averageFirstEnemyWarningSeconds": 175,
+      "averageFirstCombatSeconds": 233,
+      "averageFirstPressureSeconds": null,
+      "averageUnitsLost": 0.6,
+      "averageFinalArmySize": 10.6,
+      "enemyHeroDefeats": 0,
+      "objectiveCompletions": [
+        "destroy_enemy_stronghold"
+      ],
+      "failureCauses": [],
+      "scriptSummaries": [
+        {
+          "scriptId": "safe_beginner",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 342.3
+        },
+        {
+          "scriptId": "greedy_economy",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 292.3
+        },
+        {
+          "scriptId": "fast_army",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 108.9
+        }
+      ],
+      "verdict": "stable_forgiving",
+      "recommendedAction": "Keep forgiving pacing; watch reward and replay clarity in manual retest."
+    },
+    {
+      "order": 3,
+      "nodeId": "old_stone_road",
+      "nodeName": "Old Stone Road",
+      "actStepTitle": "Base Development",
+      "pacingTier": "standard",
+      "mechanicFocus": [
+        "Worker production",
+        "Production buildings",
+        "Research reminder",
+        "Early economy"
+      ],
+      "runCount": 36,
+      "victories": 36,
+      "defeats": 0,
+      "timeouts": 0,
+      "winRate": 1,
+      "averageStartingResources": {
+        "crowns": 380,
+        "stone": 255,
+        "iron": 140,
+        "aether": 75
+      },
+      "averageDurationSeconds": 251.3,
+      "averageFirstSiteCaptureSeconds": 21.7,
+      "averageFirstWorkerBuildingSeconds": 62.3,
+      "averageFirstBuildingCompleteSeconds": 87.3,
+      "averageFirstUnitTrainedSeconds": 91.3,
+      "averageFirstEnemyWarningSeconds": 146,
+      "averageFirstCombatSeconds": 204,
+      "averageFirstPressureSeconds": null,
+      "averageUnitsLost": 1.4,
+      "averageFinalArmySize": 10.6,
+      "enemyHeroDefeats": 0,
+      "objectiveCompletions": [
+        "destroy_enemy_stronghold"
+      ],
+      "failureCauses": [],
+      "scriptSummaries": [
+        {
+          "scriptId": "safe_beginner",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 348
+        },
+        {
+          "scriptId": "greedy_economy",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 298.7
+        },
+        {
+          "scriptId": "fast_army",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 107.2
+        }
+      ],
+      "verdict": "stable",
+      "recommendedAction": "Keep current numbers and verify feel through hosted/manual play."
+    },
+    {
+      "order": 4,
+      "nodeId": "aether_well_ruins",
+      "nodeName": "Aether Well Ruins",
+      "actStepTitle": "Resource Control",
+      "pacingTier": "standard",
+      "mechanicFocus": [
+        "Resource sites",
+        "Worker assignment",
+        "Site upgrades",
+        "Ability pacing"
+      ],
+      "runCount": 36,
+      "victories": 12,
+      "defeats": 12,
+      "timeouts": 12,
+      "winRate": 0.33,
+      "averageStartingResources": {
+        "crowns": 380,
+        "stone": 255,
+        "iron": 140,
+        "aether": 75
+      },
+      "averageDurationSeconds": 598.8,
+      "averageFirstSiteCaptureSeconds": 23,
+      "averageFirstWorkerBuildingSeconds": 62,
+      "averageFirstBuildingCompleteSeconds": 87,
+      "averageFirstUnitTrainedSeconds": 91,
+      "averageFirstEnemyWarningSeconds": 168.4,
+      "averageFirstCombatSeconds": 233.5,
+      "averageFirstPressureSeconds": null,
+      "averageUnitsLost": 4.9,
+      "averageFinalArmySize": 5.7,
+      "enemyHeroDefeats": 24,
+      "objectiveCompletions": [
+        "destroy_enemy_stronghold"
+      ],
+      "failureCauses": [
+        {
+          "cause": "army attrition defeat",
+          "count": 12
+        },
+        {
+          "cause": "post-commander clear-speed timeout",
+          "count": 12
+        }
+      ],
+      "scriptSummaries": [
+        {
+          "scriptId": "safe_beginner",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 364
+        },
+        {
+          "scriptId": "greedy_economy",
+          "runs": 12,
+          "victories": 0,
+          "defeats": 0,
+          "timeouts": 12,
+          "averageDurationSeconds": 900
+        },
+        {
+          "scriptId": "fast_army",
+          "runs": 12,
+          "victories": 0,
+          "defeats": 12,
+          "timeouts": 0,
+          "averageDurationSeconds": 532.3
+        }
+      ],
+      "verdict": "watch_strategy_spread",
+      "recommendedAction": "Do not tune numerically yet; reinforce economy, production, and staging guidance."
+    },
+    {
+      "order": 5,
+      "nodeId": "bandit_hillfort",
+      "nodeName": "Bandit Hillfort",
+      "actStepTitle": "Rival Pressure",
+      "pacingTier": "milestone",
+      "mechanicFocus": [
+        "Army staging",
+        "Commander duel",
+        "Mixed army",
+        "Support choices"
+      ],
+      "runCount": 36,
+      "victories": 12,
+      "defeats": 23,
+      "timeouts": 1,
+      "winRate": 0.33,
+      "averageStartingResources": {
+        "crowns": 395,
+        "stone": 265,
+        "iron": 145,
+        "aether": 78
+      },
+      "averageDurationSeconds": 550.3,
+      "averageFirstSiteCaptureSeconds": 22.8,
+      "averageFirstWorkerBuildingSeconds": 62,
+      "averageFirstBuildingCompleteSeconds": 86.4,
+      "averageFirstUnitTrainedSeconds": 90.4,
+      "averageFirstEnemyWarningSeconds": 195.3,
+      "averageFirstCombatSeconds": 260.4,
+      "averageFirstPressureSeconds": null,
+      "averageUnitsLost": 6.3,
+      "averageFinalArmySize": 4.8,
+      "enemyHeroDefeats": 13,
+      "objectiveCompletions": [
+        "destroy_enemy_stronghold"
+      ],
+      "failureCauses": [
+        {
+          "cause": "army attrition defeat",
+          "count": 12
+        },
+        {
+          "cause": "commander attrition defeat",
+          "count": 11
+        },
+        {
+          "cause": "post-commander clear-speed timeout",
+          "count": 1
+        }
+      ],
+      "scriptSummaries": [
+        {
+          "scriptId": "safe_beginner",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 368.7
+        },
+        {
+          "scriptId": "greedy_economy",
+          "runs": 12,
+          "victories": 0,
+          "defeats": 11,
+          "timeouts": 1,
+          "averageDurationSeconds": 742.6
+        },
+        {
+          "scriptId": "fast_army",
+          "runs": 12,
+          "victories": 0,
+          "defeats": 12,
+          "timeouts": 0,
+          "averageDurationSeconds": 539.8
+        }
+      ],
+      "verdict": "watch_strategy_spread",
+      "recommendedAction": "Do not tune numerically yet; reinforce economy, production, and staging guidance."
+    },
+    {
+      "order": 6,
+      "nodeId": "ashen_outpost",
+      "nodeName": "Ashen Outpost",
+      "actStepTitle": "Champion Relic Milestone",
+      "pacingTier": "milestone",
+      "mechanicFocus": [
+        "Fortified assault",
+        "Champion defeat",
+        "Relic choice",
+        "Skill spending"
+      ],
+      "runCount": 36,
+      "victories": 22,
+      "defeats": 0,
+      "timeouts": 14,
+      "winRate": 0.61,
+      "averageStartingResources": {
+        "crowns": 588,
+        "stone": 408,
+        "iron": 246,
+        "aether": 146
+      },
+      "averageDurationSeconds": 579.4,
+      "averageFirstSiteCaptureSeconds": 20.5,
+      "averageFirstWorkerBuildingSeconds": 62,
+      "averageFirstBuildingCompleteSeconds": 86.5,
+      "averageFirstUnitTrainedSeconds": 90.5,
+      "averageFirstEnemyWarningSeconds": 183.7,
+      "averageFirstCombatSeconds": 250.3,
+      "averageFirstPressureSeconds": null,
+      "averageUnitsLost": 2.9,
+      "averageFinalArmySize": 9.2,
+      "enemyHeroDefeats": 36,
+      "objectiveCompletions": [
+        "destroy_enemy_stronghold",
+        "capture_burned_shrine",
+        "destroy_enemy_barracks",
+        "defeat_outpost_captain"
+      ],
+      "failureCauses": [
+        {
+          "cause": "post-commander clear-speed timeout",
+          "count": 14
+        }
+      ],
+      "scriptSummaries": [
+        {
+          "scriptId": "safe_beginner",
+          "runs": 12,
+          "victories": 12,
+          "defeats": 0,
+          "timeouts": 0,
+          "averageDurationSeconds": 384.9
+        },
+        {
+          "scriptId": "greedy_economy",
+          "runs": 12,
+          "victories": 3,
+          "defeats": 0,
+          "timeouts": 9,
+          "averageDurationSeconds": 857.8
+        },
+        {
+          "scriptId": "fast_army",
+          "runs": 12,
+          "victories": 7,
+          "defeats": 0,
+          "timeouts": 5,
+          "averageDurationSeconds": 495.7
+        }
+      ],
+      "verdict": "watch_strategy_spread",
+      "recommendedAction": "Do not tune numerically yet; reinforce economy, production, and staging guidance."
+    }
+  ],
+  "overallRead": {
+    "safeBeginnerWinsAllAct1Nodes": true,
+    "numericTuningRecommendation": "No numeric tuning is recommended from simulator evidence alone.",
+    "copyPolishRecommendation": "Use onboarding copy to warn players to stabilize economy, production, and army staging before pushing Aether Well Ruins, Bandit Hillfort, Ashen Outpost."
+  }
+}

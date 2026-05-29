@@ -57,8 +57,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
     }
     return {
       title: "Base Development Next",
-      body: "Old Stone Road is still Easy, but it asks you to keep Workers productive, build production sooner, and use the full opening more confidently.",
-      actions: ["Select Old Stone Road", "Capture resources earlier", "Keep Workers active", "Bring a larger trained army"]
+      body: "Old Stone Road is still Easy, but it asks you to train Workers, keep production active, and use the full opening more confidently.",
+      actions: ["Select Old Stone Road", "Train Workers early", "Keep production active", "Bring a larger trained army"]
     };
   }
 
@@ -81,24 +81,24 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("aether_well_ruins") && unlocked.has("aether_well_ruins")) {
     return {
       title: "Harder Battle Available",
-      body: "Aether Well Ruins is the Act 1 resource-control step. Equip your best item, spend skill points, assign Workers to held sites, and stabilize before pushing.",
-      actions: ["Prepare your hero", "Assign and upgrade sites", "Launch Aether Well Ruins", "Use side resources if the center is too risky"]
+      body: "Aether Well Ruins is the Act 1 resource-control step. Equip your best item, spend skill points, hold two sites when possible, assign Workers, and rebuild before pushing.",
+      actions: ["Prepare your hero", "Assign and upgrade sites", "Launch Aether Well Ruins", "Rebuild before the center push"]
     };
   }
 
   if (!completed.has("bandit_hillfort") && unlocked.has("bandit_hillfort")) {
     return {
       title: "Second Front",
-      body: "Bandit Hillfort is the rival-pressure step. Use what your hero learned, build a steadier army, and avoid attacking before production is stable.",
-      actions: ["Check inventory", "Build a mixed army", "Launch Bandit Hillfort", "Defend before assaulting"]
+      body: "Bandit Hillfort is the rival-pressure step. Use what your hero learned, build a mixed army, hold after pressure, and avoid attacking before production is stable.",
+      actions: ["Check inventory", "Build a mixed army", "Launch Bandit Hillfort", "Hold before assaulting"]
     };
   }
 
   if (!completed.has("ashen_outpost") && unlocked.has("ashen_outpost")) {
     return {
       title: "Current Finale",
-      body: "Ashen Outpost is the Act 1 champion relic milestone. Enter with upgraded gear, use Chapel or camp support if available, and avoid early probes into the fortress.",
-      actions: ["Spend all skill points", "Equip best rewards or relics", "Stage a larger army before attacking", "Replay objectives after victory"]
+      body: "Ashen Outpost is the Act 1 champion relic milestone. Enter with upgraded gear, stage troops after the fortress wave, choose a relic after victory, and spend any waiting skill point.",
+      actions: ["Spend all skill points", "Equip best rewards or relics", "Stage before the final push", "Replay objectives after victory"]
     };
   }
 
@@ -152,8 +152,8 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
     case "old_stone_road":
       return {
         title: "Base Development",
-        body: "This is still forgiving, but the enemy gives you less room. Keep Workers active, build production earlier, and use the opening more cleanly.",
-        actions: ["Equip a weapon or trinket", "Keep Workers active", "Capture two sites", "Train before attacking"]
+        body: "This is still forgiving, but the enemy gives you less room. Train Workers, keep production active, and use the opening more cleanly.",
+        actions: ["Equip a weapon or trinket", "Train Workers early", "Capture two sites", "Train before attacking"]
       };
     case "refugee_caravan":
       return {
@@ -170,19 +170,19 @@ export function getCampaignNodeGuidance(nodeId: string): GuidanceMessage {
     case "aether_well_ruins":
       return {
         title: "Resource Control",
-        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. Assign Workers to captured sites, upgrade safe sites, and rebuild before attacking.",
-        actions: ["Scout carefully", "Assign sites", "Upgrade safe income", "Rebuild before attacking"]
+        body: "Broken Ford introduces tighter lanes and a valuable but dangerous center. Hold two sites when possible, assign Workers, upgrade safe sites, and rebuild before attacking.",
+        actions: ["Scout carefully", "Assign Workers", "Upgrade safe income", "Rebuild before attacking"]
       };
     case "bandit_hillfort":
       return {
         title: "Rival Pressure",
-        body: "This fight checks whether you can build an army while under steadier pressure. Fortress waves hit harder if you attack underprepared.",
+        body: "This fight checks whether you can build an army while under steadier pressure. Hold after waves and attack the commander only once production is stable.",
         actions: ["Build production early", "Train a mixed army", "Answer the commander", "Attack after stabilizing"]
       };
     case "ashen_outpost":
       return {
         title: "Champion Relic Milestone",
-        body: "This is the Act 1 champion battle. Bring equipment, skill points, upgrades, and enough troops to break a fortified base and claim a relic choice.",
+        body: "This is the Act 1 champion battle. Bring equipment, spent skill points, upgrades, and enough troops to break a fortified base before choosing a relic.",
         actions: ["Prepare hero progression", "Use support choices", "Defeat Captain Malrec", "Equip relic after victory"]
       };
     default:
@@ -236,8 +236,8 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
   if (input.completedNodeId === "old_stone_road") {
     return {
       title: "Base Development Complete",
-      body: "Old Stone Road opens the Act 1 branch. Use support nodes if helpful, then choose resource control or rival pressure.",
-      actions: ["Visit Refugee Caravan or Marcher Camp", "Use new rewards", "Prepare for Broken Ford", "Replay available"]
+      body: "Old Stone Road opens the Act 1 branch. Use support nodes if helpful, then choose resource control or rival pressure with Workers and production ready.",
+      actions: ["Visit Refugee Caravan or Marcher Camp", "Use new rewards", "Prepare Workers and production", "Replay available"]
     };
   }
 

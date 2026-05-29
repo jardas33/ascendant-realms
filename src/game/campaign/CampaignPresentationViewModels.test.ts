@@ -74,7 +74,7 @@ describe("campaign presentation view models", () => {
     expect(borderHtml).toContain("Ready to start.");
     expect(oldRoadHtml).toContain("Act 1 Step 3: Base Development");
     expect(oldRoadHtml).toContain("Complete Border Village first.");
-    expect(oldRoadHtml).toContain("Keep Workers active");
+    expect(oldRoadHtml).toContain("Train Workers early");
   });
 
   it("formats chapter card progress without involving the scene", () => {

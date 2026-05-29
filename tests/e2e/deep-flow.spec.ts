@@ -6234,11 +6234,16 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-node-bandit_hillfort")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-refugee_caravan")).toContainText(/Available/i);
     await expect(page.getByTestId("campaign-node-marcher_camp")).toContainText(/Available/i);
+    await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), "deep-flow Aether Well guidance check");
+    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 4: Resource Control");
+    await expect(page.locator(".campaign-node-details")).toContainText("Hold two sites");
+    await expect(page.locator(".campaign-node-details")).toContainText("assign Workers");
 
+    await clickReady(page.getByTestId("campaign-node-old_stone_road"), "deep-flow Old Stone replay detail");
     await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Replayable/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Control");
     await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 3: Base Development");
-    await expect(page.locator(".campaign-node-details")).toContainText("Keep Workers active");
+    await expect(page.locator(".campaign-node-details")).toContainText("Train Workers early");
     await expect(page.locator(".campaign-node-details")).toContainText("Rich Veins");
     await expect(page.locator(".campaign-node-details")).toContainText("Reward preview");
     await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");

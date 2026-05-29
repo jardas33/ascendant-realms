@@ -20,3 +20,4 @@ export * from "./ControlBehaviourScenarioProfiles";
 export * from "./ControlBehaviourScenarioRunner";
 export * from "./ControlBehaviourScenarioReportWriter";
 export * from "./ControlBehaviourScenarioValidation";
+export * from "./Act1PlayabilityTelemetry";

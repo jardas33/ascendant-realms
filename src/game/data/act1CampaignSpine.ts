@@ -49,7 +49,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Unlocks after Border Village and opens the first Act 1 branch plus Marcher Camp support.",
     playerGoal: "Use a cleaner economy and steadier production to turn the old road into a staging route.",
     difficultyPacing: "Still Easy, but Rich Veins and faster contesting make economy decisions matter earlier.",
-    onboardingHint: "Keep Workers active, build production before attacking, and use camp services if you need momentum.",
+    onboardingHint: "Train Workers early, keep production active, and use camp services if you need momentum.",
     resultsHint: "The branch opens after this clear; visit support nodes or prepare for Normal battles.",
     nextAction: "Choose Aether Well Ruins for resource control or Bandit Hillfort for pressure practice.",
     replayHint: "Replay this road for practice; first-clear resources and node rewards stay claimed."
@@ -68,7 +68,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Unlocks after Old Stone Road and exposes Chapel of the Marches on first clear.",
     playerGoal: "Contest the central well, assign Workers to sites, and turn Aether into sustained pressure.",
     difficultyPacing: "Normal pressure with Aether Surge favors ability use but still asks for economy discipline.",
-    onboardingHint: "Captured sites are strongest when assigned and upgraded; do not leave Workers idle in long control fights.",
+    onboardingHint: "Hold two sites when possible, assign Workers, upgrade safe income, then rebuild before pushing.",
     resultsHint: "Use the chapel or camp to prepare before the Act 1 finale route.",
     nextAction: "Clear Bandit Hillfort and resolve Chapel support before Ashen Outpost.",
     replayHint: "Replay can clean up optional objectives without duplicating one-time campaign credit."
@@ -87,7 +87,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Unlocks after Old Stone Road and helps open Ashen Outpost once chapel support is resolved.",
     playerGoal: "Stabilize against raider pressure, defeat the rival commander, and prepare the outpost assault.",
     difficultyPacing: "Enemy Patrols increase pressure modestly, so attacking before production is stable is risky.",
-    onboardingHint: "Build a real army before pushing and use Chapel support if the next assault feels tight.",
+    onboardingHint: "Do not rush the hillfort; build a mixed army, hold after pressure, and use Chapel support if needed.",
     resultsHint: "Rival defeats can feed relic eligibility, but unique rewards remain one-time.",
     nextAction: "Complete Chapel of the Marches if needed, then assault Ashen Outpost.",
     replayHint: "Replay can practice commander fights; first-defeat rival rewards stay one-time."
@@ -105,7 +105,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Requires Bandit Hillfort and Chapel of the Marches, then opens Chapter 2 after first clear.",
     playerGoal: "Break the fortified Ashen base, defeat Captain Malrec, and claim a build-defining relic choice.",
     difficultyPacing: "Fortified Enemy gives the outpost a stronger defensive posture without changing the global balance curve.",
-    onboardingHint: "Spend skill points, equip your best relic or gear, and stage troops before the final push.",
+    onboardingHint: "Spend skill points, equip your best relic or gear, stage troops, then push after the fortress wave.",
     resultsHint: "Choose and equip a relic, spend any skill point, then replay optional objectives or continue to Cinderfen.",
     nextAction: "Equip the relic, spend skill points, then review replay objectives or continue to Chapter 2.",
     replayHint: "Replay keeps the outpost available, but relics, first-clear rewards, and objective credit do not duplicate."
@@ -122,8 +122,8 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Completed battle nodes remain replayable after their first clear.",
     playerGoal: "Return to completed missions to practice builds and clean up optional objectives safely.",
     difficultyPacing: "Replay preserves mission identity while keeping persistent rewards conservative.",
-    onboardingHint: "Replay copy should make claimed rewards and open optional objectives clear.",
-    resultsHint: "Replay results say what was already claimed and which objectives remain open.",
+    onboardingHint: "Replay copy should make already-claimed rewards and open optional objectives clear.",
+    resultsHint: "Replay results say what was already claimed, what stayed reduced, and which objectives remain open.",
     nextAction: "Replay a completed battle or continue the next campaign route.",
     replayHint: "One-time rewards, unique relics, and optional-objective credit do not duplicate."
   }

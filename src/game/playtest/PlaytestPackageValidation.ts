@@ -137,6 +137,15 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V046_IMPLEMENTATION_REPORT.md",
   "V047_IMPLEMENTATION_REPORT.md",
   "V047_EMMANUEL_RETEST_CHECKLIST.md",
+  "V048_ACT1_PLAYABILITY_AUDIT_PLAN.md",
+  "V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md",
+  "V048_IMPLEMENTATION_REPORT.md",
+  "V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md",
+  "V050_ACT1_RELEASE_CANDIDATE_NOTES.md",
+  "V050_IMPLEMENTATION_REPORT.md",
+  "V050_EMMANUEL_RETEST_CHECKLIST.md",
+  "ACT1_PLAYABILITY_TELEMETRY.md",
+  "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
   "START_GAME_WINDOWS.bat",
   "START_GAME_MAC_LINUX.sh"
@@ -240,7 +249,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.45-v0.47 Act 1 campaign spine and onboarding polish",
+      "v0.48-v0.50 Act 1 playability and release-candidate stabilization",
       "build info checkpoint",
       checks,
       errors

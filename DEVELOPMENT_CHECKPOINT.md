@@ -1,6 +1,64 @@
 # Development Checkpoint
 
-Updated: 2026-05-29 v0.45-v0.47 Act 1 campaign spine and onboarding polish verification closeout
+Updated: 2026-05-29 v0.48-v0.50 Act 1 playability and release-candidate stabilization closeout
+
+## v0.48-v0.50 Act 1 Playability And Release-Candidate Stabilization - 2026-05-29
+
+Scope: stabilize the existing Act 1 campaign route as a release-candidate loop through deterministic telemetry, readability polish, replay/reward clarity, and package hardening. This pass changes simulator reporting, Act 1 guidance copy, hosted proxy expectations, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, shop, crafting, cinematic systems, a giant quest system, save-version bump, new save fields, broad campaign rewrite, broad AI/pathing rewrite, global rebalance, Patrol, formations, or force-click/DOM fallback behavior for canvas/world interactions.
+
+Baseline:
+
+- Starting commit/package: `025656d`, `ascendant-realms-private-playtest-025656d`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26637454600` on `025656d` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V048_ACT1_PLAYABILITY_AUDIT_PLAN.md`.
+- Added `docs/V048_ACT1_PLAYTEST_TELEMETRY_REPORT.md`.
+- Added `docs/V048_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V049_ACT1_BALANCE_AND_TELEMETRY_REPORT.md`.
+- Added `docs/V050_ACT1_RELEASE_CANDIDATE_NOTES.md`.
+- Added `docs/V050_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V050_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `Act1PlayabilityTelemetry` and `npm run playtest:act1`.
+- Added committed Act 1 telemetry outputs in Markdown and JSON.
+- Kept gameplay numbers unchanged because deterministic telemetry shows Safe Beginner clearing every Act 1 campaign node.
+- Polished Act 1 copy for Workers, production, site assignment, upgrades, staging, skills, relics, replay safety, and already-claimed rewards.
+- Updated package metadata and validation to require v0.48-v0.50 docs plus Act 1 telemetry artifacts.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Existing campaign completion, reward claim, replay, optional objective, hero XP, skill-tree, relic inventory, and relic equipment saves remain valid.
+
+Verification:
+
+```text
+npm test -- src/game/playtest/Act1PlayabilityTelemetry.test.ts src/game/core/FirstExperienceGuidance.test.ts src/game/core/campaign/CampaignActSpineRules.test.ts src/game/campaign/CampaignPresentationViewModels.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts PASS, 6 files / 46 tests.
+npm run playtest:act1 PASS.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test PASS, 75 files / 575 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+Focused hosted Act 1 proxy PASS, 3 tests.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS on rerun, 14 tests; first attempt timed out without a summary.
+npm run playtest:controls PASS.
+npm run playtest:controls:extended PASS.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run test:e2e:release:hosted:deep-battle PASS on rerun, 27 tests; first attempt timed out without a summary.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release TIMED OUT after 40 minutes without a summary.
+npm run test:e2e:release:shard1of3 PASS after manually starting and verifying a local dev server, 44 tests; earlier attempts were timeout/setup non-pass evidence.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+```
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.45-v0.47 Act 1 Campaign Spine And Onboarding Polish - 2026-05-29
 

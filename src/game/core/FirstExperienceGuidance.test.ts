@@ -74,6 +74,19 @@ describe("first experience guidance", () => {
     expect(resultGuidance.actions.join(" ")).toContain("Old Stone Road");
   });
 
+  it("keeps harder Act 1 guidance focused on staging instead of numeric tuning", () => {
+    const aether = getCampaignNodeGuidance("aether_well_ruins");
+    const bandit = getCampaignNodeGuidance("bandit_hillfort");
+    const ashen = getCampaignNodeGuidance("ashen_outpost");
+
+    expect(aether.body).toContain("Hold two sites");
+    expect(aether.actions).toContain("Rebuild before attacking");
+    expect(bandit.body).toContain("Hold after waves");
+    expect(bandit.actions).toContain("Attack after stabilizing");
+    expect(ashen.body).toContain("before choosing a relic");
+    expect(ashen.actions).toContain("Equip relic after victory");
+  });
+
   it("marks the Cinderfen route complete after Aftermath", () => {
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const campaign = {
