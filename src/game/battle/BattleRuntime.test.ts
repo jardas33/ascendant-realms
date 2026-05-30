@@ -156,6 +156,34 @@ describe("BattleRuntime", () => {
     expect(result?.shouldSaveHero).toBe(false);
   });
 
+  it("clones battle-only Act 1 finale telemetry into completion results", () => {
+    const runtime = createBattleRuntime({ launch: createTestLaunch() });
+    runtime.recordAct1FinalePhaseStarted({
+      nodeId: "ashen_outpost",
+      phaseId: "secure_foothold",
+      telemetryLabel: "Phase 1: Secure the Foothold started.",
+      planMatched: true
+    });
+    runtime.recordAct1FinalePhaseCompleted({
+      nodeId: "ashen_outpost",
+      phaseId: "secure_foothold",
+      telemetryLabel: "Phase 1: Secure the Foothold completed."
+    });
+    runtime.recordAct1FinaleCommanderReleased("Captain Malrec released for the final commander defense.", 312);
+    runtime.recordAct1FinaleCompleted("ashen_outpost finale completed.");
+
+    const result = runtime.completeBattle({ outcome: "defeat", heroSave: createFallbackHeroSave() });
+
+    expect(result?.stats.act1FinaleNodeId).toBe("ashen_outpost");
+    expect(result?.stats.act1FinalePhaseIds).toEqual(["secure_foothold"]);
+    expect(result?.stats.act1FinaleCompletedPhaseIds).toEqual(["secure_foothold"]);
+    expect(result?.stats.act1FinalePlanMatchedPhaseIds).toEqual(["secure_foothold"]);
+    expect(result?.stats.act1FinaleCommanderReleasedAtSeconds).toBe(312);
+    expect(result?.stats.act1FinaleCompleted).toBe(true);
+    expect(result?.stats.act1FinaleTelemetryLabels).toContain("ashen_outpost finale completed.");
+    expect(result?.shouldSaveHero).toBe(false);
+  });
+
   it("records battle-only enemy pressure telemetry without save output", () => {
     const runtime = createBattleRuntime({ launch: createTestLaunch() });
 

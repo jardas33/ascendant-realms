@@ -83,6 +83,7 @@ interface EnemyAIOptions {
   modifierIds?: string[];
   onDoctrineAction?: (label: string) => void;
   attackWarningLeadSeconds?: number;
+  canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
 }
 
 export class EnemyAIController {
@@ -731,7 +732,12 @@ export class EnemyAIController {
     }
     if (unitId === "enemy_commander") {
       const canJoinFirstAttack = this.personality.commander.joinsFirstAttack || this.attacksLaunched > 0;
-      return canJoinFirstAttack && phase.enemy.commanderAllowed && this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay;
+      return (
+        canJoinFirstAttack &&
+        phase.enemy.commanderAllowed &&
+        this.options.getElapsedSeconds() >= this.difficulty.commanderJoinDelay &&
+        (this.options.canEnemyHeroJoinAttack?.(unit) ?? true)
+      );
     }
     return true;
   }
@@ -750,6 +756,9 @@ export class EnemyAIController {
       this.attacksLaunched === 0 ||
       this.options.getElapsedSeconds() < this.difficulty.commanderJoinDelay
     ) {
+      return false;
+    }
+    if (!(this.options.canEnemyHeroJoinAttack?.(unit) ?? true)) {
       return false;
     }
     const escortCount = this.enemyArmy().filter((ally) => ally !== unit && this.canStandardUnitJoinAttack(ally, phase)).length;

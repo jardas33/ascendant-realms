@@ -199,6 +199,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V073_IMPLEMENTATION_REPORT.md",
   "V074_IMPLEMENTATION_REPORT.md",
   "V074_EMMANUEL_RETEST_CHECKLIST.md",
+  "V075_ACT1_FINALE_ENCOUNTER_SPEC.md",
+  "V076_RIVAL_COMMANDER_PHASES_SPEC.md",
+  "V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md",
+  "V075_IMPLEMENTATION_REPORT.md",
+  "V076_IMPLEMENTATION_REPORT.md",
+  "V077_IMPLEMENTATION_REPORT.md",
+  "V077_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -304,7 +311,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.72-v0.74 dynamic battlefield events and tactical objectives",
+      "v0.75-v0.77 Act 1 finale and rival commander milestone",
       "build info checkpoint",
       checks,
       errors

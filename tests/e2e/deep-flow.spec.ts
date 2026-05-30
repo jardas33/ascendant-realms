@@ -6413,7 +6413,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Assault");
     await expect(page.locator(".campaign-node-details")).toContainText("Fortified Enemy");
     await expect(page.locator(".campaign-node-details")).toContainText("Reward preview");
-    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 6: Champion Relic Milestone");
+    await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 6: Ashen Outpost Finale");
     await expect(page.locator(".campaign-node-details")).toContainText("Equip the relic, spend skill points");
     await expect(page.locator(".campaign-node-details")).toContainText("Enemy doctrine: Fortress");
     await expect(page.locator(".campaign-node-details")).toContainText("Attack economy first");
@@ -6433,8 +6433,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
-    await expect(page.getByTestId("battle-status")).toContainText("Tactical plan: Champion Hunt");
-    await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/3");
+    await expect(page.getByTestId("battle-status")).toContainText("Phase 1: Secure the Foothold");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/4");
+    await expect(page.getByTestId("battle-objectives")).toContainText("Phase 1: Secure the Foothold");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
     await expect(page.getByTestId("battle-objectives")).toContainText("Defeat Captain Malrec");
     await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Fortress");
@@ -6447,7 +6448,6 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       name: "Captain Malrec",
       title: "Outpost Commander"
     });
-    await expect(page.getByTestId("battle-status")).toContainText("Enemy commander sighted: Captain Malrec");
     await expect(page.locator(".minimap-enemy-hero")).toHaveCount(1);
 
     const eliteSquad = await page.evaluate(() => {
@@ -6527,6 +6527,16 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(completedObjectiveIds).toEqual(
       expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks"])
     );
+    await page.waitForFunction(() => {
+      const state = (window as any).__ASCENDANT_TEST_HOOKS__?.getAct1FinaleState?.();
+      return state?.activePhaseId === "defeat_rival_commander" && state?.commanderReleased === true;
+    });
+    const finaleState = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getAct1FinaleState?.());
+    expect(finaleState).toMatchObject({
+      activePhaseId: "defeat_rival_commander",
+      commanderReleased: true
+    });
+    expect(finaleState.completedPhaseIds).toEqual(expect.arrayContaining(["secure_foothold", "break_fortified_line"]));
 
     const defeatedEliteSquads = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -6564,8 +6574,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("Assault");
     await expect(page.locator(".campaign-reward-block")).toContainText("Fortified Enemy");
     await expect(page.locator(".campaign-reward-block")).toContainText("The outpost is broken");
-    await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 6: Champion Relic Milestone");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 6: Ashen Outpost Finale");
     await expect(page.locator(".campaign-reward-block")).toContainText("Choose and equip a relic");
+    await expect(page.getByTestId("results-act1-finale-summary")).toContainText("Ashen Outpost cleared");
+    await expect(page.getByTestId("results-act1-finale-summary")).toContainText("Defeat Captain Malrec");
+    await expect(page.getByTestId("results-act1-finale-summary")).toContainText("Act 1 complete");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Fortress");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Cinder Iron Guard");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Elite defeated");

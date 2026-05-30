@@ -7,6 +7,7 @@ import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import { BATTLEFIELD_EVENT_BY_ID, ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import { ACT1_FINALE_NODE_ID, ACT1_FINALE_PHASES, formatAct1FinalePhaseNames } from "../data/act1Finale";
 import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
@@ -34,6 +35,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
           <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
           <span>Battlefield events</span><strong>${escapeHtml(formatBattlefieldEventResult(data))}</strong>
+          ${renderAct1FinaleBattleRows(data)}
         </div>
       </section>
       <section class="result-block">
@@ -44,11 +46,59 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}
     ${renderTacticalPlanSummary(data)}
+    ${renderAct1FinaleSummary(data)}
     ${renderBattlefieldEventSummary(data)}
     ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+`;
+}
+
+function renderAct1FinaleBattleRows(data: ResultsData): string {
+  if (!data.stats.act1FinaleNodeId) {
+    return "";
+  }
+  return `
+    <span>Act 1 finale</span><strong>${data.stats.act1FinaleCompleted ? "Completed" : "In progress / incomplete"}</strong>
+    <span>Finale phases</span><strong>${escapeHtml(formatAct1FinalePhaseNames(data.stats.act1FinaleCompletedPhaseIds))}</strong>
+  `;
+}
+
+export function renderAct1FinaleSummary(data: ResultsData): string {
+  if (data.stats.act1FinaleNodeId !== ACT1_FINALE_NODE_ID) {
+    return "";
+  }
+  const phaseIds = data.stats.act1FinalePhaseIds ?? [];
+  const completedPhaseIds = data.stats.act1FinaleCompletedPhaseIds ?? [];
+  const planMatchedPhaseIds = data.stats.act1FinalePlanMatchedPhaseIds ?? [];
+  const missingPhaseNames = ACT1_FINALE_PHASES
+    .filter((phase) => !completedPhaseIds.includes(phase.id))
+    .map((phase) => phase.title.replace(/^Phase \d+: /u, ""));
+  const commanderReleased =
+    data.stats.act1FinaleCommanderReleasedAtSeconds !== undefined
+      ? `Yes (${formatTime(data.stats.act1FinaleCommanderReleasedAtSeconds)})`
+      : "No";
+  const nextStep = data.campaignResult?.wasReplay
+    ? "Replay complete; milestone rewards remain already claimed."
+    : data.stats.outcome === "victory"
+      ? "Act 1 complete. Choose relic rewards, spend skill points, then continue or replay optional objectives."
+      : "Regroup, prepare Retinue and tactical plan, then relaunch the outpost.";
+  return `
+    <section class="result-block wide act1-finale-summary" data-testid="results-act1-finale-summary">
+      <h2>Act 1 Finale</h2>
+      <div class="results-grid compact">
+        <span>Milestone</span><strong>${data.stats.outcome === "victory" ? "Ashen Outpost cleared" : "Ashen Outpost unresolved"}</strong>
+        <span>Phases encountered</span><strong>${escapeHtml(formatAct1FinalePhaseNames(phaseIds))}</strong>
+        <span>Phases completed</span><strong>${escapeHtml(formatAct1FinalePhaseNames(completedPhaseIds))}</strong>
+        <span>Open phase</span><strong>${escapeHtml(missingPhaseNames.length > 0 ? missingPhaseNames[0] : "None")}</strong>
+        <span>Commander released</span><strong>${escapeHtml(commanderReleased)}</strong>
+        <span>Captain Malrec defeated</span><strong>${data.stats.enemyHeroDefeated ? "Yes" : "No"}</strong>
+        <span>Plan support</span><strong>${escapeHtml(formatAct1FinalePhaseNames(planMatchedPhaseIds))}</strong>
+        <span>Next step</span><strong>${escapeHtml(nextStep)}</strong>
+      </div>
+      <p class="quiet">Finale phases are battle-local. Campaign completion, rival rewards, relic choice, Retinue status, and replay safety use existing save-safe systems.</p>
+    </section>
   `;
 }
 

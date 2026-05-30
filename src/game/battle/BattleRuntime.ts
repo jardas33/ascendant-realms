@@ -1,5 +1,6 @@
 import type {
   BattleDifficulty,
+  Act1FinalePhaseId,
   BattlefieldEventId,
   BattleRewardResult,
   BattleStats,
@@ -252,6 +253,66 @@ export class BattleRuntime {
     }
   }
 
+  recordAct1FinalePhaseStarted(options: {
+    nodeId: string;
+    phaseId: Act1FinalePhaseId;
+    telemetryLabel: string;
+    planMatched?: boolean;
+  }): void {
+    this.stats.act1FinaleNodeId = options.nodeId;
+    const phaseIds = (this.stats.act1FinalePhaseIds ??= []);
+    if (!phaseIds.includes(options.phaseId)) {
+      phaseIds.push(options.phaseId);
+    }
+    this.recordAct1FinaleTelemetry(options.telemetryLabel);
+    if (options.planMatched) {
+      const planMatched = (this.stats.act1FinalePlanMatchedPhaseIds ??= []);
+      if (!planMatched.includes(options.phaseId)) {
+        planMatched.push(options.phaseId);
+      }
+    }
+  }
+
+  recordAct1FinalePhaseCompleted(options: {
+    nodeId: string;
+    phaseId: Act1FinalePhaseId;
+    telemetryLabel: string;
+    planMatched?: boolean;
+  }): void {
+    this.stats.act1FinaleNodeId = options.nodeId;
+    const completed = (this.stats.act1FinaleCompletedPhaseIds ??= []);
+    if (!completed.includes(options.phaseId)) {
+      completed.push(options.phaseId);
+    }
+    this.recordAct1FinaleTelemetry(options.telemetryLabel);
+    if (options.planMatched) {
+      const planMatched = (this.stats.act1FinalePlanMatchedPhaseIds ??= []);
+      if (!planMatched.includes(options.phaseId)) {
+        planMatched.push(options.phaseId);
+      }
+    }
+  }
+
+  recordAct1FinaleCommanderReleased(telemetryLabel: string, releasedAtSeconds = this.elapsedSeconds): void {
+    this.stats.act1FinaleCommanderReleasedAtSeconds ??= Math.max(0, releasedAtSeconds);
+    this.recordAct1FinaleTelemetry(telemetryLabel);
+  }
+
+  recordAct1FinaleCompleted(telemetryLabel: string): void {
+    this.stats.act1FinaleCompleted = true;
+    this.recordAct1FinaleTelemetry(telemetryLabel);
+  }
+
+  private recordAct1FinaleTelemetry(label: string): void {
+    if (!label.trim()) {
+      return;
+    }
+    const labels = (this.stats.act1FinaleTelemetryLabels ??= []);
+    if (!labels.includes(label)) {
+      labels.push(label);
+    }
+  }
+
   recordBattlefieldEventCompleted(eventId: BattlefieldEventId, telemetryLabel: string): void {
     const completed = (this.stats.battlefieldEventCompletedIds ??= []);
     if (!completed.includes(eventId)) {
@@ -443,6 +504,13 @@ export function completeBattle(
     battlefieldEventPlanMatchedIds: [...(input.stats.battlefieldEventPlanMatchedIds ?? [])],
     battlefieldEventObjectiveLabels: [...(input.stats.battlefieldEventObjectiveLabels ?? [])],
     battlefieldEventTelemetryLabels: [...(input.stats.battlefieldEventTelemetryLabels ?? [])],
+    act1FinaleNodeId: input.stats.act1FinaleNodeId,
+    act1FinalePhaseIds: [...(input.stats.act1FinalePhaseIds ?? [])],
+    act1FinaleCompletedPhaseIds: [...(input.stats.act1FinaleCompletedPhaseIds ?? [])],
+    act1FinalePlanMatchedPhaseIds: [...(input.stats.act1FinalePlanMatchedPhaseIds ?? [])],
+    act1FinaleCommanderReleasedAtSeconds: input.stats.act1FinaleCommanderReleasedAtSeconds,
+    act1FinaleCompleted: input.stats.act1FinaleCompleted ?? false,
+    act1FinaleTelemetryLabels: [...(input.stats.act1FinaleTelemetryLabels ?? [])],
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const baselineHero = input.startingHeroSave ?? input.heroSave;

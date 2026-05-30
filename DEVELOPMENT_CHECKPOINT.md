@@ -1,6 +1,70 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.72-v0.74 dynamic battlefield events closeout
+Updated: 2026-05-30 v0.75-v0.77 Act 1 finale closeout
+
+## v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
+
+Scope: turn the existing Ashen Outpost / Captain Malrec milestone into a readable Act 1 climax using existing maps, commander systems, doctrines, elite squads, tactical plans, battlefield events, Retinue, hero skills, relics, and Results UI. This pass changes finale metadata, battle-session-only phase tracking, commander attack-wave gating, objective HUD copy, Results debrief copy, campaign briefing/spine copy, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save migration, a giant boss system, broad AI/pathing rewrite, shop/crafting, global rebalance, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `e019040`, `ascendant-realms-private-playtest-e019040`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26688801430` on `e019040` completed successfully.
+
+Included work:
+
+- Added `docs/V075_ACT1_FINALE_ENCOUNTER_SPEC.md`.
+- Added `docs/V076_RIVAL_COMMANDER_PHASES_SPEC.md`.
+- Added `docs/V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md`.
+- Added `docs/V075_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V076_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `Act1FinaleDirector` and finale data for three deterministic Ashen Outpost phases: secure foothold, break fortified line, defeat Captain Malrec.
+- Added battle-only finale stat fields and Results rendering for phases completed, commander release/defeat, tactical-plan support, and Act 1 completion next steps.
+- Added mission-local enemy commander attack-wave gating so Malrec does not leave the fortress before the final phase.
+- Integrated finale phase rows into the existing objective HUD and battle event trigger path without changing event save state or the one-active-major-event cap.
+- Updated Ashen Outpost briefing, Act 1 spine copy, and campaign next-action copy for `Ashen Outpost Finale`.
+- Updated hosted Ashen Outpost coverage for phase progression, commander release, commander defeat, Act 1 complete Results, and replay-safe copy.
+- Updated package metadata and validation for the v0.75-v0.77 docs.
+- Adjusted first-capture bonus status priority so one-time reward feedback remains readable when enemy pressure copy fires from the same capture trigger.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Finale phase state is battle-session-only and copied into battle stats/Results.
+- Act 1 completion remains derived from existing `ashen_outpost` campaign completion and existing reward/objective/rival/relic state.
+- Tutorial/no-reward routes do not start finale phase logic and do not mutate finale-linked persistent state.
+
+Verification:
+
+```text
+Focused finale/content Vitest PASS, 6 files / 70 tests.
+Focused hosted Ashen Outpost proxy PASS, 1 test.
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa NON-PASS first attempt due first-group app boot flake; clean rerun PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-e019040-dirty` generated.
+npm run verify:playtest-package PASS, 204 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Non-pass evidence: first broad unit run found a stale `Champion Relic Milestone` assertion after the Act 1 spine was renamed; updated the assertion and reran green. Full smoke found Cinder Shrine reward status hidden by a simultaneous pressure warning; first-capture bonus status now survives that same-trigger warning, and exact/full smoke reran green. Hosted smoke first rerun served stale production `dist`; fresh build plus hosted smoke rerun passed. Visual QA first attempt missed the opening screenshot group after app boot did not reach the main menu in time; clean rerun captured all 18 screenshots with zero console errors.
+
+Closeout note: run package generation/verification, commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
 

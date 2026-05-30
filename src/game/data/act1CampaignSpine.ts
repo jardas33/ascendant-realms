@@ -96,7 +96,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     id: "act1_ashen_outpost_champion_relic",
     actId: "act1",
     order: 6,
-    title: "Champion Relic Milestone",
+    title: "Ashen Outpost Finale",
     kind: "campaign_battle",
     pacingTier: "milestone",
     nodeId: "ashen_outpost",

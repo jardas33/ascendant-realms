@@ -54,7 +54,7 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("Reward preview");
     expect(html).toContain("champion relic eligibility");
-    expect(html).toContain("Act 1 Step 6: Champion Relic Milestone");
+    expect(html).toContain("Act 1 Step 6: Ashen Outpost Finale");
     expect(html).toContain("Pacing tier");
     expect(html).toContain("Milestone");
     expect(html).toContain("Equip the relic, spend skill points");

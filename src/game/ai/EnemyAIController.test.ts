@@ -669,7 +669,63 @@ describe("EnemyAIController base development and tech escalation", () => {
     expect(attacked).toContain("enemy_commander_1");
     expect(waves.at(-1)?.map((unit) => unit.id)).toContain("enemy_commander_1");
   });
+
+  it("honors finale commander release gating before adding a rival champion to waves", () => {
+    const siteA = fakeSite("crown_shrine", "Crown Shrine", "enemy", { x: 1720, y: 720, incomeAmount: 30, siteLevel: 2 });
+    const siteB = fakeSite("iron_vein", "Iron Vein", "enemy", { x: 1640, y: 760, resource: "iron", incomeAmount: 28 });
+    const blockedAttacks: string[] = [];
+    let blockedElapsed = 631;
+    const blockedController = createController({
+      units: lateCommanderWaveUnits(blockedAttacks),
+      captureSites: [siteA, siteB],
+      resources: { crowns: 900, stone: 700, iron: 620, aether: 260 },
+      getElapsedSeconds: () => blockedElapsed,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { incomeInterval: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      canEnemyHeroJoinAttack: () => false,
+      onWaveLaunched: vi.fn()
+    });
+
+    blockedController.update(631);
+    blockedElapsed = 703;
+    blockedController.update(72);
+    expect(blockedAttacks).not.toContain("enemy_commander_1");
+
+    const releasedAttacks: string[] = [];
+    const releasedWaves: Unit[][] = [];
+    let releasedElapsed = 631;
+    const releasedController = createController({
+      units: lateCommanderWaveUnits(releasedAttacks),
+      captureSites: [siteA, siteB],
+      resources: { crowns: 900, stone: 700, iron: 620, aether: 260 },
+      getElapsedSeconds: () => releasedElapsed,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      config: { incomeInterval: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      canEnemyHeroJoinAttack: () => true,
+      onWaveLaunched: (wave) => releasedWaves.push(wave)
+    });
+
+    releasedController.update(631);
+    releasedAttacks.length = 0;
+    releasedElapsed = 703;
+    releasedController.update(72);
+    expect(releasedAttacks).toContain("enemy_commander_1");
+    expect(releasedWaves.at(-1)?.map((unit) => unit.id)).toContain("enemy_commander_1");
+  });
 });
+
+function lateCommanderWaveUnits(attacked: string[]): Unit[] {
+  return [
+    fakeEnemyHeroUnit("enemy_commander_1", attacked),
+    fakeEnemyUnit("raider", "enemy_raider_1", attacked),
+    fakeEnemyUnit("raider", "enemy_raider_2", attacked),
+    fakeEnemyUnit("raider", "enemy_raider_3", attacked),
+    fakeEnemyUnit("hexer", "enemy_hexer_1", attacked),
+    fakeEnemyUnit("brute", "enemy_brute_1", attacked)
+  ];
+}
 
 function createController(options: {
   units: Unit[];
@@ -689,6 +745,7 @@ function createController(options: {
   doctrine?: typeof ENEMY_DOCTRINE_BY_ID.raider;
   modifierIds?: string[];
   onDoctrineAction?: (label: string) => void;
+  canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
 }): EnemyAIController {
   const baseConfig: EnemyAIConfig = {
     incomeInterval: 5,
@@ -747,6 +804,7 @@ function createController(options: {
     doctrine: options.doctrine,
     modifierIds: options.modifierIds,
     onDoctrineAction: options.onDoctrineAction,
+    canEnemyHeroJoinAttack: options.canEnemyHeroJoinAttack,
     attackWarningLeadSeconds: options.attackWarningLeadSeconds
   });
 }

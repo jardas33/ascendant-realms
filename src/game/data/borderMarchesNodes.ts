@@ -341,16 +341,16 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "ashen_outpost",
     name: "Ashen Outpost",
     description:
-      "Act 1 milestone battle. Assault the Ashen fortress map, capture the Burned Shrine if you can, defeat Captain Malrec, choose a relic reward, and destroy the fortified Stronghold.",
+      "Act 1 finale battle. Assault the Ashen fortress map, secure a foothold, break the fortified line, defeat Captain Malrec, choose a relic reward, and destroy the fortified Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "assault",
     missionBriefing: {
-      summary: "This milestone assault targets a fortified Ashen production base and its commander.",
-      primaryObjective: "Capture what you can, defeat Captain Malrec, and destroy the fortified Stronghold.",
-      rewardPreview: "First clear grants a large campaign reward, item reward, and champion relic eligibility.",
-      afterActionSummary: "The outpost is broken and the Cinderfen road becomes reachable.",
-      recommendedBuildHint: "Commander rally support helps hold formation against fortified pressure."
+      summary: "Act 1 finale: secure a resource foothold, break the fortified line, then force Captain Malrec into the final defense.",
+      primaryObjective: "Capture the Burned Shrine, destroy the enemy Barracks, defeat Captain Malrec, and destroy the fortified Stronghold.",
+      rewardPreview: "First clear grants a large campaign reward, item reward, Act 1 completion credit, and champion relic eligibility.",
+      afterActionSummary: "The outpost is broken, Act 1 is complete, and the Cinderfen road becomes reachable.",
+      recommendedBuildHint: "Champion Hunt helps finish Malrec; Guarded Advance and Commander support help survive the fortified counter-pressure."
     },
     scenarioModifierIds: ["mission_fortified_enemy"],
     difficulty: "normal",

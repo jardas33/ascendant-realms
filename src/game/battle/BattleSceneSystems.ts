@@ -115,6 +115,7 @@ interface CreateBattleSceneSystemsOptions {
   resumeBattle: () => void;
   exitToMainMenu: () => void;
   callRetinueReinforcement?: () => boolean;
+  canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
 }
 
 // BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
@@ -163,7 +164,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     openMainMenu,
     resumeBattle,
     exitToMainMenu,
-    callRetinueReinforcement
+    callRetinueReinforcement,
+    canEnemyHeroJoinAttack
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
@@ -303,7 +305,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         const resourceText = formatResourceBonus(bonus.resources);
         const message = resourceText ? `${bonus.label}: ${resourceText}` : bonus.label;
         addMinimapPing(site.position.x, site.position.y, "#f6e27d", bonus.label);
-        showMessage(message, site.position.x, site.position.y - 96, "#f6e27d", { priority: "objective" });
+        // First-capture bonuses are one-time tactical rewards; let them survive
+        // simultaneous pressure warnings from the same capture trigger.
+        showMessage(message, site.position.x, site.position.y - 96, "#f6e27d", { priority: "pressure" });
       }
     },
     adjustFirstCaptureBonus: (site, owner, bonus) => {
@@ -572,6 +576,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     doctrine: enemyDoctrine,
     modifierIds: launch.request.modifiers.map((modifier) => modifier.id),
     onDoctrineAction: (label) => runtime.recordEnemyDoctrineAction(label),
+    canEnemyHeroJoinAttack,
     aiPersonalityId: launch.request.aiPersonalityId,
     attackWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds
   });

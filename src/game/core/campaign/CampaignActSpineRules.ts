@@ -102,11 +102,15 @@ export function getCampaignActResultsGuidance(options: {
 
   const unlockedCopy =
     (options.unlockedNodeNames ?? []).length > 0 ? `Next mission unlocked: ${options.unlockedNodeNames!.join(", ")}.` : step.nextAction;
+  const finaleCopy =
+    options.completedNodeId === "ashen_outpost"
+      ? "Act 1 complete. Continue to Chapter 2 when ready, or replay optional objectives safely."
+      : unlockedCopy;
   const skillCopy = (options.skillPointsGained ?? 0) > 0 ? " Spend skill points in Hero Inventory." : "";
   const equipCopy = (options.rewardItemCount ?? 0) > 0 ? " Equip new rewards before the next launch." : "";
   return {
     actStepLabel: formatCampaignActStepLabel(step),
-    nextAction: `${unlockedCopy}${skillCopy}${equipCopy}`.trim(),
+    nextAction: `${finaleCopy}${skillCopy}${equipCopy}`.trim(),
     onboardingHint: step.resultsHint,
     replayHint: step.replayHint ?? "Completed battle nodes are replayable with safe repeat rewards."
   };

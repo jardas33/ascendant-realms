@@ -22,7 +22,7 @@ describe("campaign Act 1 spine rules", () => {
       "Base Development",
       "Resource Control",
       "Rival Pressure",
-      "Champion Relic Milestone",
+      "Ashen Outpost Finale",
       "Replay / Optional Objective Loop"
     ]);
     expect(spine[0]).toMatchObject({
@@ -87,6 +87,17 @@ describe("campaign Act 1 spine rules", () => {
       nextAction: "Replay objective still open.",
       onboardingHint: "Replay rewards stay reduced and one-time node rewards remain claimed."
     });
+
+    const finale = getCampaignActResultsGuidance({
+      completedNodeId: "ashen_outpost",
+      wasReplay: false,
+      unlockedNodeNames: [],
+      rewardItemCount: 1,
+      skillPointsGained: 1
+    });
+    expect(finale?.nextAction).toContain("Act 1 complete");
+    expect(finale?.nextAction).toContain("Spend skill points");
+    expect(finale?.nextAction).toContain("Equip new rewards");
   });
 
   it("validates Act 1 spine content with the broader content validator", () => {

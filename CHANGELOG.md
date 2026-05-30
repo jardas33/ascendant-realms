@@ -1,5 +1,35 @@
 # Changelog
 
+# v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
+
+This checkpoint turns Ashen Outpost into a readable Act 1 climax around Captain Malrec, existing doctrines/elites, tactical plans, battlefield events, Retinue, hero skills, relics, and Results debriefs. No maps, factions, runtime art/assets, save migration, giant boss system, broad AI/pathing rewrite, global rebalance, shop/crafting, or canvas/world force-click behavior were added.
+
+Added:
+
+- Added `docs/V075_ACT1_FINALE_ENCOUNTER_SPEC.md`.
+- Added `docs/V076_RIVAL_COMMANDER_PHASES_SPEC.md`.
+- Added `docs/V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md`.
+- Added `docs/V075_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V076_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Added deterministic Ashen Outpost finale data and `Act1FinaleDirector` with three phases: secure foothold, break fortified line, defeat Captain Malrec.
+- Added battle-only finale stats and Results debrief rows for phase completion, commander release/defeat, tactical-plan support, and Act 1 completion next steps.
+- Gated Captain Malrec out of coordinated attack waves until the final phase.
+- Reused existing objective HUD and battlefield-event surfaces for phase titles, short objectives, commander alerts, and event hooks.
+- Updated Ashen Outpost briefing, reward/debrief copy, and Act 1 spine label to `Ashen Outpost Finale`.
+- Updated hosted Ashen Outpost proxy coverage for phase progression, commander behavior, Act 1 complete Results, and replay-safe milestone rewards.
+- Updated package metadata and validation to name `v0.75-v0.77 Act 1 finale and rival commander milestone`.
+- Adjusted first-capture reward status priority so one-time capture bonuses remain readable when pressure warnings fire from the same trigger.
+
+Verification:
+
+- Passed: focused finale/content tests with 70 tests, focused hosted Ashen Outpost proxy, `npm test` with 86 files / 644 tests, production build with the known Vite Phaser vendor chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA rerun with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package verification with 204 checks, and `git diff --check`.
+- Non-pass evidence: initial unit run had one stale Act 1 label assertion; full smoke found Cinder Shrine reward status hidden by a same-trigger pressure warning; hosted smoke first rerun served stale `dist`; visual QA first attempt missed the first screenshot group after an app-boot flake. Each issue was either fixed or rerun clean with the original checks intact.
+
 # v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
 
 This checkpoint adds a small battle-session-only event layer that reacts to mission type, enemy doctrine, elite squads, player tactical plan, Retinue readiness, and resource-site state. It uses existing maps, units, AI hooks, HUD, and Results surfaces only. No maps, factions, runtime art/assets, save migration, persistent event state, broad AI/pathing rewrite, global rebalance, giant event system, shop/crafting, formation editor, or canvas/world force-click behavior were added.

@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.72-v0.74 dynamic battlefield events and tactical objectives",
+          checkpoint: "v0.75-v0.77 Act 1 finale and rival commander milestone",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -243,6 +243,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V073_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Dynamic objectives implementation report" },
       { path: "V074_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Adaptive pressure implementation report" },
       { path: "V074_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.74 retest" },
+      { path: "V075_ACT1_FINALE_ENCOUNTER_SPEC.md", sizeBytes: 20, textContent: "Act 1 finale spec" },
+      { path: "V076_RIVAL_COMMANDER_PHASES_SPEC.md", sizeBytes: 20, textContent: "Rival commander phases spec" },
+      { path: "V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md", sizeBytes: 20, textContent: "Milestone reward debrief spec" },
+      { path: "V075_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Act 1 finale implementation report" },
+      { path: "V076_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Rival commander implementation report" },
+      { path: "V077_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Milestone reward implementation report" },
+      { path: "V077_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.77 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

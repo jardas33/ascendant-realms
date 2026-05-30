@@ -1246,7 +1246,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   test("post-Ashen campaign resolves Cinderfen Overlook, wins Cinderfen Crossing, and persists rewards @extended-smoke", async ({ page }) => {
     // This Chapter 2 route covers event choice, town service, battle launch,
     // victory rewards, campaign return, and a persistence reload in one flow.
-    test.setTimeout(115_000);
+    // Keep the assertions intact and budget for slower hosted actionability retries.
+    test.setTimeout(150_000);
     await seedPostAshenCampaign(page);
 
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen campaign");

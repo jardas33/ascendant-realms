@@ -1,12 +1,77 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.72-v0.74 dynamic battlefield events closeout
+Last updated: 2026-05-30 v0.75-v0.77 Act 1 finale closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
+
+Status: v0.75-v0.77 turns Ashen Outpost into a readable Act 1 finale using existing maps, rival commander systems, enemy doctrines, elite squads, tactical plans, battlefield events, Retinue/reinforcement, hero progression, relic rewards, HUD, and Results surfaces. It does not add maps, factions, runtime art/assets, save migration, a giant boss system, broad AI/pathing rewrite, shop/crafting, global rebalance, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `e019040`, `ascendant-realms-private-playtest-e019040`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26688801430` on `e019040` completed successfully.
+
+Included work:
+
+- Added `docs/V075_ACT1_FINALE_ENCOUNTER_SPEC.md`.
+- Added `docs/V076_RIVAL_COMMANDER_PHASES_SPEC.md`.
+- Added `docs/V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md`.
+- Added `docs/V075_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V076_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V077_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `src/game/data/act1Finale.ts` and `Act1FinaleDirector` for a deterministic three-phase Ashen Outpost finale: foothold, fortified line, and Captain Malrec.
+- Added battle-only finale stats for phase ids, completed phases, plan-supported phases, commander release time, finale completion, and telemetry labels.
+- Gated Captain Malrec out of coordinated attack waves until the finale director releases him for phase 3.
+- Integrated finale phase copy into the existing objective HUD and existing battlefield-event trigger surface while preserving the one-active-major-event cap.
+- Updated Results with an Act 1 Finale debrief block and Act 1 completion next-step copy.
+- Updated Ashen Outpost campaign briefing and Act 1 spine labels to `Ashen Outpost Finale`.
+- Updated hosted Ashen Outpost proxy coverage for phase progression, commander release, commander defeat, Act 1 complete Results, and replay-safe copy.
+- Updated package metadata and validation to require the v0.75-v0.77 docs.
+- Tightened first-capture reward status priority so one-time capture bonuses remain readable when an enemy-pressure warning fires from the same capture trigger.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Finale phase state is battle-session-only and copied into battle stats for Results.
+- Act 1 complete state remains derived from existing `ashen_outpost` campaign completion, campaign reward claim state, optional objective state, rival defeat, and relic/reward rules.
+- Tutorial/no-reward routes do not start finale phase logic and do not mutate finale-linked persistent state.
+
+Verification:
+
+```text
+Focused finale/content tests PASS, 6 files / 70 tests.
+Focused hosted Ashen Outpost proxy PASS, 1 test.
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS after Cinder Shrine status-priority fix and scoped long-route timeout, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS after production rebuild, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa NON-PASS first attempt due first-group app boot flake; clean rerun PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-e019040-dirty` generated.
+npm run verify:playtest-package PASS, 204 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Non-pass evidence: initial broad `npm test` found one stale old Act 1 label assertion; updated to `Ashen Outpost Finale` and reran green. Full smoke found a real status-readability collision where Cinder Shrine Surge could be hidden by the simultaneous enemy-pressure warning; first-capture bonus messages now survive that same-trigger warning, and exact/full smoke reran green. Hosted smoke initially served stale production `dist`; a fresh `npm run build` fixed it and hosted smoke reran green. Visual QA first attempt missed the first screenshot group after an app-boot flake; a clean rerun captured all 18 screenshots with zero console errors.
+
+Closeout note: run package generation/verification after these docs are updated, commit as `Checkpoint v0.75-v0.77 Act 1 finale and rival commander milestone`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
 

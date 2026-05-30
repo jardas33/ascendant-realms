@@ -18,6 +18,11 @@ export type BattlefieldEventId =
   | "reinforcement_window"
   | "aether_surge";
 
+export type Act1FinalePhaseId =
+  | "secure_foothold"
+  | "break_fortified_line"
+  | "defeat_rival_commander";
+
 export type BattlefieldEventObjectiveKind =
   | "hold_site"
   | "protect_command_hall"

@@ -1,4 +1,4 @@
-import type { BattlefieldEventId, EnemyDoctrineId, UnitVeterancyBattleSummary } from "./CombatTypes";
+import type { Act1FinalePhaseId, BattlefieldEventId, EnemyDoctrineId, UnitVeterancyBattleSummary } from "./CombatTypes";
 import type { ResourceBag, ResourceKey } from "./EconomyTypes";
 import type { Position, Team } from "./UITypes";
 
@@ -170,4 +170,11 @@ export interface BattleStats {
   battlefieldEventPlanMatchedIds?: BattlefieldEventId[];
   battlefieldEventObjectiveLabels?: string[];
   battlefieldEventTelemetryLabels?: string[];
+  act1FinaleNodeId?: string;
+  act1FinalePhaseIds?: Act1FinalePhaseId[];
+  act1FinaleCompletedPhaseIds?: Act1FinalePhaseId[];
+  act1FinalePlanMatchedPhaseIds?: Act1FinalePhaseId[];
+  act1FinaleCommanderReleasedAtSeconds?: number;
+  act1FinaleCompleted?: boolean;
+  act1FinaleTelemetryLabels?: string[];
 }

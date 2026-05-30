@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import type {
+  Act1FinalePhaseId,
   BattleSecondaryObjectiveType,
   BattlefieldEventId,
   Position,
@@ -34,6 +35,7 @@ import { ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
+import { ACT1_FINALE_NODE_ID, ACT1_FINALE_PHASE_BY_ID, isAct1FinaleBattle } from "../data/act1Finale";
 import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import { TUTORIALS } from "../data/tutorials";
 import {
@@ -55,6 +57,7 @@ import {
   type BattlefieldEventDirectorContext,
   type BattlefieldEventTransition
 } from "../battle/BattlefieldEventDirector";
+import { Act1FinaleDirector, type Act1FinaleDirectorContext, type Act1FinaleTransition } from "../battle/Act1FinaleDirector";
 import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
 import {
   battleStatusDurationSeconds,
@@ -175,6 +178,14 @@ interface AscendantBattleTestHooks {
     outcome: "completed" | "failed";
     telemetry: string;
   } | null;
+  getAct1FinaleState?: () => {
+    activePhaseId?: Act1FinalePhaseId;
+    activePhaseTitle?: string;
+    completedPhaseIds: Act1FinalePhaseId[];
+    commanderReleased: boolean;
+    commanderReleasedAtSeconds?: number;
+    completed: boolean;
+  } | null;
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -210,6 +221,7 @@ export class BattleScene extends Phaser.Scene {
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
   private battlefieldEventDirector?: BattlefieldEventDirector;
+  private act1FinaleDirector?: Act1FinaleDirector;
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
@@ -265,6 +277,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection(this.initialPlayerSelection());
+    this.updateAct1Finale();
     this.installTestHooks();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
   }
@@ -304,6 +317,7 @@ export class BattleScene extends Phaser.Scene {
     this.trainingSystem.update(deltaSeconds, this.buildings);
     this.upgradeSystem.update(deltaSeconds, this.buildings);
     this.enemyPressureRuntime?.update();
+    this.updateAct1Finale();
     this.aiSystem.update(deltaSeconds);
     this.updateBattlefieldEvents(deltaSeconds);
     this.cleanupDeadEntities();
@@ -334,6 +348,14 @@ export class BattleScene extends Phaser.Scene {
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.enemyPressureRuntime = undefined;
     this.battlefieldEventDirector = undefined;
+    this.act1FinaleDirector = isAct1FinaleBattle({
+      mode: this.launch.request.mode,
+      campaignNodeId: this.launch.request.campaignNodeId,
+      mapId: this.activeMap.id,
+      rewardsDisabled: this.launch.request.rewardsDisabled
+    })
+      ? new Act1FinaleDirector()
+      : undefined;
     this.enemyDoctrine = selectEnemyDoctrineForBattleLaunch({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -440,7 +462,8 @@ export class BattleScene extends Phaser.Scene {
       openMainMenu: () => this.openBattleMenu(),
       resumeBattle: () => this.resumeBattle(),
       exitToMainMenu: () => this.exitToMainMenu(),
-      callRetinueReinforcement: () => this.callRetinueReinforcement()
+      callRetinueReinforcement: () => this.callRetinueReinforcement(),
+      canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit)
     });
 
     this.movementSystem = systems.movementSystem;
@@ -783,12 +806,27 @@ export class BattleScene extends Phaser.Scene {
   private createObjectiveSnapshot() {
     const objectives = this.activeMap.scenario.objectives.secondaryObjectives ?? [];
     const completed = new Set(this.runtime.stats.completedObjectiveIds);
-    return objectives.map((objective) => ({
+    const missionObjectives = objectives.map((objective) => ({
       id: objective.id,
       name: objective.name,
       description: objective.description,
       completed: completed.has(objective.id)
     }));
+    const finalePhase = this.createAct1FinaleObjectiveSnapshot();
+    return finalePhase ? [finalePhase, ...missionObjectives] : missionObjectives;
+  }
+
+  private createAct1FinaleObjectiveSnapshot() {
+    const phase = this.act1FinaleDirector?.currentPhaseSnapshot(this.createAct1FinaleContext());
+    if (!phase || this.act1FinaleDirector?.isCompleted) {
+      return undefined;
+    }
+    return {
+      id: `act1_finale_${phase.id}`,
+      name: phase.title,
+      description: `${phase.objective}${phase.planMatched ? " Tactical plan support active." : ""}`,
+      completed: phase.completed
+    };
   }
 
   private createBattlefieldEventSnapshot() {
@@ -1077,6 +1115,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private endBattle(outcome: "victory" | "defeat"): void {
+    this.updateAct1Finale();
     this.finalizeBattlefieldEventForResults(outcome);
     this.finalizeUnitVeterancy(outcome);
     endBattleAndOpenResults({
@@ -1154,6 +1193,13 @@ export class BattleScene extends Phaser.Scene {
       readyReserveCount: availability.readyReserveCount,
       used: availability.used
     };
+  }
+
+  private canEnemyHeroJoinAttack(unit: Unit): boolean {
+    if (!unit.enemyHeroId || !this.act1FinaleDirector) {
+      return true;
+    }
+    return this.act1FinaleDirector.isCommanderReleased;
   }
 
   private callRetinueReinforcement(): boolean {
@@ -1346,6 +1392,113 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     this.applyBattlefieldEventTransitions(result.transitions);
+  }
+
+  private updateAct1Finale(): void {
+    if (!this.act1FinaleDirector) {
+      return;
+    }
+    const result = this.act1FinaleDirector.update(this.createAct1FinaleContext());
+    if (result.transitions.length === 0) {
+      return;
+    }
+    this.applyAct1FinaleTransitions(result.transitions);
+  }
+
+  private createAct1FinaleContext(): Act1FinaleDirectorContext {
+    const playerOwnedSiteCount = this.captureSites.filter((site) => site.alive && site.owner === "player").length;
+    const enemyProductionId = this.activeMap.scenario.enemyAI.productionBuildingId;
+    return {
+      elapsedSeconds: this.runtime.elapsedSeconds,
+      tacticalPlanId: this.launch.request.tacticalPlanId,
+      completedObjectiveIds: this.runtime.stats.completedObjectiveIds,
+      resourcesCaptured: this.runtime.stats.resourcesCaptured,
+      playerOwnedSiteCount,
+      enemyProductionAlive: this.buildings.some(
+        (building) => building.alive && building.team === "enemy" && building.definition.id === enemyProductionId
+      ),
+      enemyCommanderAlive: this.enemyHeroUnits().some((unit) => unit.enemyHeroId === this.launch.request.enemyHeroId),
+      enemyCommanderDefeated: Boolean(this.runtime.stats.enemyHeroDefeated)
+    };
+  }
+
+  private applyAct1FinaleTransitions(transitions: Act1FinaleTransition[]): void {
+    transitions.forEach((transition) => {
+      if (transition.type === "phase_started") {
+        this.runtime.recordAct1FinalePhaseStarted({
+          nodeId: ACT1_FINALE_NODE_ID,
+          phaseId: transition.phase.id,
+          telemetryLabel: transition.telemetryLabel,
+          planMatched: transition.planMatched
+        });
+        this.showAct1FinaleMessage(`${transition.phase.title}: ${transition.phase.objective}`, transition.phase.id);
+        if (transition.phase.id !== "secure_foothold") {
+          this.tryStartAct1FinaleEvent(transition.eventIds);
+        }
+        return;
+      }
+      if (transition.type === "phase_completed") {
+        this.runtime.recordAct1FinalePhaseCompleted({
+          nodeId: ACT1_FINALE_NODE_ID,
+          phaseId: transition.phase.id,
+          telemetryLabel: transition.telemetryLabel,
+          planMatched: transition.planMatched
+        });
+        this.showAct1FinaleMessage(transition.phase.completionHint, transition.phase.id);
+        this.tryStartAct1FinaleEvent(transition.eventIds);
+        return;
+      }
+      if (transition.type === "commander_released") {
+        this.runtime.recordAct1FinaleCommanderReleased(transition.telemetryLabel, this.runtime.elapsedSeconds);
+        this.showAct1FinaleMessage("Captain Malrec commits to the final defense.", transition.phase.id);
+        const commander = this.enemyHeroUnits().find((unit) => unit.enemyHeroId === this.launch.request.enemyHeroId);
+        if (commander) {
+          this.addMinimapPing(commander.position.x, commander.position.y, "#ff9a64", "Captain Malrec committed");
+        }
+        this.tryStartAct1FinaleEvent(transition.eventIds);
+        return;
+      }
+      this.runtime.recordAct1FinaleCompleted(transition.telemetryLabel);
+      this.showAct1FinaleMessage("Act 1 finale completed. Captain Malrec is defeated.", transition.phase.id);
+    });
+    this.refreshBattleHud(0);
+  }
+
+  private tryStartAct1FinaleEvent(eventIds: readonly BattlefieldEventId[] | undefined): void {
+    if (!eventIds || eventIds.length === 0 || !this.battlefieldEventDirector) {
+      return;
+    }
+    for (const eventId of eventIds) {
+      const transition = this.battlefieldEventDirector.forceStartEvent(eventId, this.createBattlefieldEventContext());
+      if (transition) {
+        this.applyBattlefieldEventTransitions([transition]);
+        return;
+      }
+    }
+  }
+
+  private showAct1FinaleMessage(message: string, phaseId: Act1FinalePhaseId): void {
+    const point = this.act1FinaleMessagePoint(phaseId);
+    this.addMinimapPing(point.x, point.y, "#f6e27d", ACT1_FINALE_PHASE_BY_ID[phaseId]?.title ?? "Act 1 finale");
+    this.showMessage(message, point.x, point.y - 84, "#f6e27d", { priority: "objective", durationSeconds: 5.5 });
+  }
+
+  private act1FinaleMessagePoint(phaseId: Act1FinalePhaseId): Position {
+    if (phaseId === "secure_foothold") {
+      const targetSite = this.captureSites.find((site) => site.definition.id === "burned_shrine") ?? this.captureSites[0];
+      return targetSite?.position ?? this.hero.position;
+    }
+    if (phaseId === "break_fortified_line") {
+      return (
+        this.buildings.find(
+          (building) =>
+            building.alive &&
+            building.team === "enemy" &&
+            building.definition.id === this.activeMap.scenario.enemyAI.productionBuildingId
+        )?.position ?? this.activeMap.enemyStart
+      );
+    }
+    return this.enemyHeroUnits().find((unit) => unit.enemyHeroId === this.launch.request.enemyHeroId)?.position ?? this.activeMap.enemyStart;
   }
 
   private createBattlefieldEventContext(): BattlefieldEventDirectorContext {
@@ -1823,6 +1976,20 @@ export class BattleScene extends Phaser.Scene {
           outcome,
           telemetry: transition.telemetryLabel
         };
+      },
+      getAct1FinaleState: () => {
+        if (!this.act1FinaleDirector) {
+          return null;
+        }
+        const active = this.act1FinaleDirector.currentPhaseSnapshot(this.createAct1FinaleContext());
+        return {
+          activePhaseId: active?.id,
+          activePhaseTitle: active?.title,
+          completedPhaseIds: [...(this.runtime.stats.act1FinaleCompletedPhaseIds ?? [])],
+          commanderReleased: this.act1FinaleDirector.isCommanderReleased,
+          commanderReleasedAtSeconds: this.runtime.stats.act1FinaleCommanderReleasedAtSeconds,
+          completed: this.act1FinaleDirector.isCompleted
+        };
       }
     };
   }
@@ -1839,6 +2006,7 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.defeatEnemyHero;
     delete target.__ASCENDANT_TEST_HOOKS__.triggerBattlefieldEvent;
     delete target.__ASCENDANT_TEST_HOOKS__.resolveBattlefieldEvent;
+    delete target.__ASCENDANT_TEST_HOOKS__.getAct1FinaleState;
   }
 
   private cleanup(): void {

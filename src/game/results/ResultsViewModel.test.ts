@@ -364,9 +364,65 @@ describe("results scene helpers", () => {
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("enemy defenders hold a slightly stronger reserve");
     expect(html).toContain("The outpost is broken");
-    expect(html).toContain("Act 1 Step 6: Champion Relic Milestone");
+    expect(html).toContain("Act 1 Step 6: Ashen Outpost Finale");
     expect(html).toContain("Choose and equip a relic");
     expect(html).toContain("Chapter 2 after first clear");
+  });
+
+  it("renders the Act 1 finale debrief without adding persistent save fields", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost",
+        tacticalPlanId: "champion_hunt"
+      }),
+      stats: {
+        ...baseStats(),
+        enemyHeroId: "captain_malrec",
+        enemyHeroName: "Captain Malrec",
+        enemyHeroDefeated: true,
+        enemyHeroDefeatedAtSeconds: 388,
+        act1FinaleNodeId: "ashen_outpost",
+        act1FinalePhaseIds: ["secure_foothold", "break_fortified_line", "defeat_rival_commander"],
+        act1FinaleCompletedPhaseIds: ["secure_foothold", "break_fortified_line", "defeat_rival_commander"],
+        act1FinalePlanMatchedPhaseIds: ["defeat_rival_commander"],
+        act1FinaleCommanderReleasedAtSeconds: 312,
+        act1FinaleCompleted: true,
+        act1FinaleTelemetryLabels: [
+          "Phase 1: Secure the Foothold completed: Foothold secured.",
+          "Captain Malrec released for the final commander defense."
+        ]
+      },
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: [],
+        unlockedNodeNames: [],
+        nodeReward: { itemIds: [], resources: { crowns: 130, stone: 70, iron: 80, aether: 55 }, xp: 100 },
+        nodeLevelUp: { previousLevel: 1, newLevel: 2, levelsGained: 1, skillPointsGained: 1 },
+        campaignResources: { crowns: 130, stone: 70, iron: 80, aether: 55 },
+        wasFirstClear: true,
+        wasReplay: false,
+        nodeRewardClaimed: true,
+        nodeRewardAlreadyClaimed: false
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Act 1 Finale");
+    expect(summaryHtml).toContain("Ashen Outpost cleared");
+    expect(summaryHtml).toContain("Secure the Foothold");
+    expect(summaryHtml).toContain("Break the Fortified Line");
+    expect(summaryHtml).toContain("Defeat Captain Malrec");
+    expect(summaryHtml).toContain("Yes (5:12)");
+    expect(summaryHtml).toContain("Act 1 complete");
+    expect(summaryHtml).toContain("battle-local");
   });
 
   it("renders enemy doctrine and elite squad after-action summary", () => {
