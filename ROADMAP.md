@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.79 Emmanuel Creative Review Incorporation And Direction Lock** on 2026-05-30. It is docs-only and follows the clean v0.78 creative identity package. It records Emmanuel-approved direction: `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, `JARDAS` as the dominant logo word, `Ascendant Realms` as the internal repository codename, Salto, the Barrosan Marches, Lume, the Jardas meaning, Captain Malrec's rival direction, the one-human/one-mixed/six-non-human race-roster structure, Barrosan/Ashen/Wolfveil vertical-slice priority, future Race + Class + Origin + Oath hero architecture, Lume Network as first future signature-system design priority, the five-act campaign direction, visual direction, and browser-prototype-to-desktop principles.
+The current checkpoint is **v0.80 Salto, Lume, and Display-Copy Migration Plan** on 2026-05-30. It is docs-only and follows the clean v0.79 Emmanuel direction lock. It inventories current runtime-facing terminology, separates safe future display-copy candidates from prohibited identifier/save changes, recommends Lume as future world-facing living land-power while keeping Mana as tactical hero ability resource for now, and prepares an Emmanuel review packet before any runtime copy migration.
 
-The next recommended step is a separately supplied v0.80 goal: **Salto, Lume, and Display-Copy Migration Plan**. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step remains a separately supplied v0.81 goal: **Lume Site Network Prototype Specification and Smallest-Fun-Slice Gate**. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+
+New v0.80 docs:
+
+- `docs/V080_RUNTIME_FACING_STRING_INVENTORY.json`
+- `docs/V080_TERMINOLOGY_TAXONOMY.md`
+- `docs/V080_DISPLAY_COPY_MIGRATION_MAP.md`
+- `docs/V080_SAFE_COPY_BATCHES.md`
+- `docs/V080_TEST_AND_ROLLBACK_PLAN.md`
+- `docs/V080_EMMANUEL_REVIEW_PACKET.md`
+- `docs/V080_IMPLEMENTATION_REPORT.md`
 
 New v0.79 docs:
 

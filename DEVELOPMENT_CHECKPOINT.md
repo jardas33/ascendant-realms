@@ -1,6 +1,63 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.79 Emmanuel creative review direction lock
+Updated: 2026-05-30 v0.80 Salto Lume and display-copy migration plan
+
+## v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
+
+Scope: docs-only terminology audit and migration planning checkpoint. This pass inventories current runtime-facing strings and adjacent stable IDs, classifies safe display-copy candidates, defines Lume/Mana/Aether recommendations, prepares safe copy batches, and gives Emmanuel a review packet before any runtime migration. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer, perform runtime copy migration, implement Lume Network, or start v0.81.
+
+Baseline:
+
+- Starting commit/package: `535c388`, `ascendant-realms-private-playtest-535c388`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26692391100` on `535c388` completed successfully.
+
+Included work:
+
+- Added `docs/V080_RUNTIME_FACING_STRING_INVENTORY.json`.
+- Added `docs/V080_TERMINOLOGY_TAXONOMY.md`.
+- Added `docs/V080_DISPLAY_COPY_MIGRATION_MAP.md`.
+- Added `docs/V080_SAFE_COPY_BATCHES.md`.
+- Added `docs/V080_TEST_AND_ROLLBACK_PLAN.md`.
+- Added `docs/V080_EMMANUEL_REVIEW_PACKET.md`.
+- Added `docs/V080_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation so the v0.80 docs can ship inside the private playtest package.
+- Updated README, roadmap, changelog, release checklist, and LLM handoff for docs-only closeout.
+
+Inventory:
+
+- 72 runtime-facing string/identifier rows.
+- Surface counts: title/brand/package 7, faction/world 8, campaign nodes/briefing 15, resources/economy/sites 14, hero/abilities/builds 9, items/relics/rewards 8, battle events/AI/Results 7, Tutorial/onboarding 4.
+- Change categories: keep runtime copy now 32, low-risk copy candidates 5, approval-required copy candidates 8, Lume/Aether review items 12, prohibited identifier changes 15.
+
+Recommendation:
+
+- Treat Lume as the future world-facing living land-power term.
+- Keep Mana as the tactical hero ability resource for now.
+- Review Aether case by case rather than blanket-renaming it.
+- Keep all stable IDs and save fields unchanged until a separately approved migration gate.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Stable internal IDs remain unchanged.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+Explicit JSON inventory parse PASS, 72 rows.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-535c388-dirty` generated.
+npm run verify:playtest-package PASS, 233 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.80 Salto Lume and display-copy migration plan`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
 

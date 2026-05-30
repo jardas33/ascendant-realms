@@ -1,12 +1,69 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.79 Emmanuel creative review direction lock
+Last updated: 2026-05-30 v0.80 Salto Lume and display-copy migration plan
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. No runtime rebrand is approved.
+
+## Current v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
+
+Status: v0.80 is docs-only. It audits current runtime-facing terminology, classifies safe future copy batches, and prepares Emmanuel review decisions for Salto, Barrosan, Lume, Aether, Mana, title, faction, campaign, class, item, event, package, and Tutorial copy. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer/PvP/co-op, perform runtime copy migration, implement Lume Network, or start v0.81.
+
+Baseline:
+
+- Starting commit/package: `535c388`, `ascendant-realms-private-playtest-535c388`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26692391100` on `535c388` completed successfully.
+
+Included work:
+
+- Added `docs/V080_RUNTIME_FACING_STRING_INVENTORY.json`.
+- Added `docs/V080_TERMINOLOGY_TAXONOMY.md`.
+- Added `docs/V080_DISPLAY_COPY_MIGRATION_MAP.md`.
+- Added `docs/V080_SAFE_COPY_BATCHES.md`.
+- Added `docs/V080_TEST_AND_ROLLBACK_PLAN.md`.
+- Added `docs/V080_EMMANUEL_REVIEW_PACKET.md`.
+- Added `docs/V080_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation to require the v0.80 docs in the private playtest package.
+- Updated README, ROADMAP, CHANGELOG, DEVELOPMENT_CHECKPOINT, RELEASE_CHECKLIST, and this handoff.
+
+Inventory and recommendations:
+
+- Inventory row count: 72.
+- Surface counts: title/brand/package 7, faction/world 8, campaign nodes/briefing 15, resources/economy/sites 14, hero/abilities/builds 9, items/relics/rewards 8, battle events/AI/Results 7, Tutorial/onboarding 4.
+- Change category counts: keep runtime copy now 32, low-risk copy candidates 5, approval-required copy candidates 8, Lume/Aether review items 12, prohibited identifier changes 15.
+- Lume should become the future world-facing living land-power term.
+- Mana should remain the tactical hero ability resource for now.
+- Aether should be reviewed case by case; do not blanket-rename it.
+
+Runtime/save/art boundary:
+
+- No runtime behavior changed.
+- No save-version bump or save field change.
+- No internal IDs renamed.
+- No runtime title/display-name migration was performed.
+- No Lume Network behavior was implemented.
+- No art was generated, imported, downloaded, or wired.
+- No desktop port, wrapper, engine choice, multiplayer, PvP, co-op, race, map, unit, building, class, campaign, or broad UI work was started.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+Explicit JSON inventory parse PASS, 72 rows.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-535c388-dirty` generated.
+npm run verify:playtest-package PASS, 233 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Next recommended action: after closeout, Emmanuel should review `docs/V080_EMMANUEL_REVIEW_PACKET.md`. Do not start v0.81 Lume Site Network specification, runtime copy migration, Lume Network implementation, art generation, runtime rebrand, ID/save migration, or desktop work without a new explicit goal.
 
 ## Current v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
 

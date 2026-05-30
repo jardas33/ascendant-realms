@@ -228,6 +228,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V079_DEFERRED_DECISIONS_REGISTER.md",
   "V079_SAFE_NEXT_MILESTONE_SEQUENCE.md",
   "V079_IMPLEMENTATION_REPORT.md",
+  "V080_RUNTIME_FACING_STRING_INVENTORY.json",
+  "V080_TERMINOLOGY_TAXONOMY.md",
+  "V080_DISPLAY_COPY_MIGRATION_MAP.md",
+  "V080_SAFE_COPY_BATCHES.md",
+  "V080_TEST_AND_ROLLBACK_PLAN.md",
+  "V080_EMMANUEL_REVIEW_PACKET.md",
+  "V080_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -333,7 +340,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.79 Emmanuel creative review incorporation and direction lock",
+      "v0.80 Salto Lume and display-copy migration plan",
       "build info checkpoint",
       checks,
       errors

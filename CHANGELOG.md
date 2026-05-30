@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
+
+This checkpoint is docs-only. It inventories current runtime-facing terminology and creates a safe migration plan for future Salto, Barrosan, Lume, title, and display-copy work without starting runtime copy migration.
+
+Added:
+
+- `docs/V080_RUNTIME_FACING_STRING_INVENTORY.json`.
+- `docs/V080_TERMINOLOGY_TAXONOMY.md`.
+- `docs/V080_DISPLAY_COPY_MIGRATION_MAP.md`.
+- `docs/V080_SAFE_COPY_BATCHES.md`.
+- `docs/V080_TEST_AND_ROLLBACK_PLAN.md`.
+- `docs/V080_EMMANUEL_REVIEW_PACKET.md`.
+- `docs/V080_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Updated README, roadmap, handoff, checkpoint, release checklist, package metadata, and package validation lists so the v0.80 display-copy planning packet is discoverable and package-verifiable.
+
+Inventory:
+
+- 72 rows across title/brand/package, faction/world terms, campaign nodes/briefings, resources/economy/sites, hero/abilities/builds, items/relics/rewards, battle events/AI/Results, and Tutorial/onboarding surfaces.
+- Recommended keeping Mana as the tactical hero ability resource for now, treating Lume as the future living land-power term, and reviewing Aether case by case instead of blanket-renaming it.
+
+Not changed:
+
+- No runtime behavior, save format, internal IDs, gameplay balance, enemy AI, pathing, controls, runtime UI, maps, factions, races, units, buildings, classes, assets, art generation/import, desktop wrapper, engine choice, runtime rebrand, runtime copy migration, Lume Network implementation, multiplayer, PvP, or co-op code changed.
+
+Verification:
+
+- Passed: `npm test` with 86 files / 644 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, focused package validation test with 3 tests, explicit JSON parse of the v0.80 inventory, dirty pre-commit package generation, dirty package verification with 233 checks, and final `git diff --check`.
+
 # v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
 
 This checkpoint is docs-only. It records Emmanuel's human-approved decisions after the v0.78 review packet, converts the approved proposals into an explicit direction lock, lists provisional/deferred decisions, and defines the safe next milestone sequence without starting v0.80.

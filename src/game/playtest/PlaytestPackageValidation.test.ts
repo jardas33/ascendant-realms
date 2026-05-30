@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.79 Emmanuel creative review incorporation and direction lock",
+          checkpoint: "v0.80 Salto Lume and display-copy migration plan",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -272,6 +272,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V079_DEFERRED_DECISIONS_REGISTER.md", sizeBytes: 20, textContent: "Deferred decisions" },
       { path: "V079_SAFE_NEXT_MILESTONE_SEQUENCE.md", sizeBytes: 20, textContent: "Safe next sequence" },
       { path: "V079_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Implementation report" },
+      { path: "V080_RUNTIME_FACING_STRING_INVENTORY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
+      { path: "V080_TERMINOLOGY_TAXONOMY.md", sizeBytes: 20, textContent: "Terminology taxonomy" },
+      { path: "V080_DISPLAY_COPY_MIGRATION_MAP.md", sizeBytes: 20, textContent: "Migration map" },
+      { path: "V080_SAFE_COPY_BATCHES.md", sizeBytes: 20, textContent: "Safe copy batches" },
+      { path: "V080_TEST_AND_ROLLBACK_PLAN.md", sizeBytes: 20, textContent: "Test and rollback plan" },
+      { path: "V080_EMMANUEL_REVIEW_PACKET.md", sizeBytes: 20, textContent: "Review packet" },
+      { path: "V080_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Implementation report" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
