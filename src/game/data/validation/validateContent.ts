@@ -24,6 +24,7 @@ import { UPGRADES } from "../upgrades";
 import { idsFor, type ValidationContext } from "./ValidationTypes";
 import { validateAbilities, validateHeroClasses, validateSkillNodes } from "./validateAbilities";
 import { validateAIPersonalities, validateDifficulties } from "./validateAi";
+import { validateBattlefieldEvents } from "./validateBattlefieldEvents";
 import { validateBuildings } from "./validateBuildings";
 import {
   validateCampaignChapters,
@@ -101,6 +102,7 @@ export function validateContent(): string[] {
   validateAIPersonalities(errors, context);
   validateEnemyDoctrines(errors, context);
   validateEnemyEliteSquads(errors, context);
+  validateBattlefieldEvents(errors, context);
   validateTacticalPlans(errors);
   validateCampaignModifiers(errors, context);
   validateEnemyHeroes(errors, context);

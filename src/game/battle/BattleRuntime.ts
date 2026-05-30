@@ -1,5 +1,6 @@
 import type {
   BattleDifficulty,
+  BattlefieldEventId,
   BattleRewardResult,
   BattleStats,
   EnemyDoctrineId,
@@ -228,6 +229,55 @@ export class BattleRuntime {
     defeated.push(squadId);
   }
 
+  recordBattlefieldEventStarted(options: {
+    eventId: BattlefieldEventId;
+    objectiveLabel: string;
+    telemetryLabel: string;
+    planMatched?: boolean;
+  }): void {
+    const ids = (this.stats.battlefieldEventIds ??= []);
+    if (!ids.includes(options.eventId)) {
+      ids.push(options.eventId);
+    }
+    const objectiveLabels = (this.stats.battlefieldEventObjectiveLabels ??= []);
+    if (options.objectiveLabel.trim() && !objectiveLabels.includes(options.objectiveLabel)) {
+      objectiveLabels.push(options.objectiveLabel);
+    }
+    this.recordBattlefieldEventTelemetry(options.telemetryLabel);
+    if (options.planMatched) {
+      const planMatchedIds = (this.stats.battlefieldEventPlanMatchedIds ??= []);
+      if (!planMatchedIds.includes(options.eventId)) {
+        planMatchedIds.push(options.eventId);
+      }
+    }
+  }
+
+  recordBattlefieldEventCompleted(eventId: BattlefieldEventId, telemetryLabel: string): void {
+    const completed = (this.stats.battlefieldEventCompletedIds ??= []);
+    if (!completed.includes(eventId)) {
+      completed.push(eventId);
+    }
+    this.recordBattlefieldEventTelemetry(telemetryLabel);
+  }
+
+  recordBattlefieldEventFailed(eventId: BattlefieldEventId, telemetryLabel: string): void {
+    const failed = (this.stats.battlefieldEventFailedIds ??= []);
+    if (!failed.includes(eventId)) {
+      failed.push(eventId);
+    }
+    this.recordBattlefieldEventTelemetry(telemetryLabel);
+  }
+
+  private recordBattlefieldEventTelemetry(label: string): void {
+    if (!label.trim()) {
+      return;
+    }
+    const labels = (this.stats.battlefieldEventTelemetryLabels ??= []);
+    if (!labels.includes(label)) {
+      labels.push(label);
+    }
+  }
+
   recordEnemyPressureStage(options: {
     planId: string;
     stageId: string;
@@ -387,6 +437,12 @@ export function completeBattle(
     enemyDoctrineTelemetryLabels: [...(input.stats.enemyDoctrineTelemetryLabels ?? [])],
     enemyEliteSquadIds: [...(input.stats.enemyEliteSquadIds ?? [])],
     enemyEliteUnitsDefeated: [...(input.stats.enemyEliteUnitsDefeated ?? [])],
+    battlefieldEventIds: [...(input.stats.battlefieldEventIds ?? [])],
+    battlefieldEventCompletedIds: [...(input.stats.battlefieldEventCompletedIds ?? [])],
+    battlefieldEventFailedIds: [...(input.stats.battlefieldEventFailedIds ?? [])],
+    battlefieldEventPlanMatchedIds: [...(input.stats.battlefieldEventPlanMatchedIds ?? [])],
+    battlefieldEventObjectiveLabels: [...(input.stats.battlefieldEventObjectiveLabels ?? [])],
+    battlefieldEventTelemetryLabels: [...(input.stats.battlefieldEventTelemetryLabels ?? [])],
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const baselineHero = input.startingHeroSave ?? input.heroSave;

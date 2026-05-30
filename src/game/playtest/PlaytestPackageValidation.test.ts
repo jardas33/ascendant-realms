@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.69-v0.71 pre-battle tactical preparation foundation",
+          checkpoint: "v0.72-v0.74 dynamic battlefield events and tactical objectives",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -236,6 +236,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V070_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Tactical plan implementation report" },
       { path: "V071_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Counter doctrine implementation report" },
       { path: "V071_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.71 retest" },
+      { path: "V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md", sizeBytes: 20, textContent: "Battlefield event director spec" },
+      { path: "V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md", sizeBytes: 20, textContent: "Dynamic tactical objectives spec" },
+      { path: "V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md", sizeBytes: 20, textContent: "Adaptive pressure spec" },
+      { path: "V072_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Battlefield event implementation report" },
+      { path: "V073_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Dynamic objectives implementation report" },
+      { path: "V074_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Adaptive pressure implementation report" },
+      { path: "V074_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.74 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

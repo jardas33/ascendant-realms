@@ -44,7 +44,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
       </div>
     </div>
     ${renderMinimapPanel(snapshot.minimap)}
-    ${renderObjectives(snapshot.objectives, snapshot.enemyDoctrine)}
+    ${renderObjectives(snapshot.objectives, snapshot.enemyDoctrine, snapshot.battlefieldEvent)}
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}

@@ -5222,6 +5222,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await clickReady(page.getByTestId("menu-tutorial"), "deep-flow launch Tutorial for Ranger production regression", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
+    const tutorialEventAttempt = await page.evaluate(() =>
+      (window as any).__ASCENDANT_TEST_HOOKS__?.triggerBattlefieldEvent?.("aether_surge")
+    );
+    expect(tutorialEventAttempt).toBeNull();
+    await expect(page.getByTestId("battlefield-event-status")).toHaveCount(0);
 
     const productionResult = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -6476,6 +6481,26 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(eliteSquad.bonus).toContain("HP");
     expect(eliteSquad.counterplay).toContain("Focus fragile support");
 
+    const eliteStrikeEvent = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.triggerBattlefieldEvent?.("elite_strike"));
+    expect(eliteStrikeEvent).toMatchObject({
+      eventId: "elite_strike",
+      title: "Elite Strike"
+    });
+    await expect(page.getByTestId("battlefield-event-status")).toContainText("Elite Strike");
+    await expect(page.getByTestId("battlefield-event-status")).toContainText("Defeat Cinder Iron Guard");
+    await expect(page.getByTestId("battlefield-event-status")).toContainText("Plan support: active");
+    const blockedSecondEvent = await page.evaluate(() =>
+      (window as any).__ASCENDANT_TEST_HOOKS__?.triggerBattlefieldEvent?.("hold_the_line")
+    );
+    expect(blockedSecondEvent).toBeNull();
+    const eliteStrikeResolved = await page.evaluate(() =>
+      (window as any).__ASCENDANT_TEST_HOOKS__?.resolveBattlefieldEvent?.("completed")
+    );
+    expect(eliteStrikeResolved).toMatchObject({
+      eventId: "elite_strike",
+      outcome: "completed"
+    });
+
     const completedObjectiveIds = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
@@ -6546,6 +6571,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Elite defeated");
     await expect(page.getByTestId("results-tactical-plan-summary")).toContainText("Champion Hunt");
     await expect(page.getByTestId("results-tactical-plan-summary")).toContainText("launch-local");
+    await expect(page.getByTestId("results-battlefield-event-summary")).toContainText("Elite Strike");
+    await expect(page.getByTestId("results-battlefield-event-summary")).toContainText("Defeat Cinder Iron Guard");
+    await expect(page.getByTestId("results-battlefield-event-summary")).toContainText("battle-local");
     await expect(page.locator(".status-box")).toContainText("Spend skill points or replay optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("Optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("3/3 recorded");
@@ -6628,6 +6656,25 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await startCampaignBattle(page, "old_stone_road");
     await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Raider");
     await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Protect sites");
+    const capturedSite = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine"));
+    expect(capturedSite).toMatchObject({
+      siteId: "crown_shrine",
+      owner: "player"
+    });
+    const siteThreatEvent = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.triggerBattlefieldEvent?.("site_under_threat"));
+    expect(siteThreatEvent).toMatchObject({
+      eventId: "site_under_threat",
+      title: "Site Under Threat"
+    });
+    await expect(page.getByTestId("battlefield-event-status")).toContainText("Site Under Threat");
+    await expect(page.getByTestId("battlefield-event-status")).toContainText("Hold Crown Shrine");
+    const siteThreatResolved = await page.evaluate(() =>
+      (window as any).__ASCENDANT_TEST_HOOKS__?.resolveBattlefieldEvent?.("completed")
+    );
+    expect(siteThreatResolved).toMatchObject({
+      eventId: "site_under_threat",
+      outcome: "completed"
+    });
     const oldRoadDoctrine = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       if (!scene?.scene.isActive()) {
@@ -6640,6 +6687,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".results-panel")).toContainText("Victory");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Raider");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Protect sites");
+    await expect(page.getByTestId("results-battlefield-event-summary")).toContainText("Site Under Threat");
+    await expect(page.getByTestId("results-battlefield-event-summary")).toContainText("Hold Crown Shrine");
     await expect(page.locator(".campaign-reward-block")).toContainText("Old Stone Road");
     await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 3: Base Development");
     await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Aether Well Ruins");

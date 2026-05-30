@@ -47,4 +47,21 @@ describe("ObjectivePanel", () => {
     expect(html).toContain("Elite: Elite Vanguard");
     expect(html).toContain("Objectives 0/0");
   });
+
+  it("renders a dynamic battlefield event with plan support", () => {
+    const html = renderObjectives([], undefined, {
+      title: "Site Under Threat",
+      objective: "Hold Crown Shrine",
+      progress: "Held - 24s",
+      counterplay: "Screen the site with Militia.",
+      remainingSeconds: 24,
+      planMatched: true
+    });
+
+    expect(html).toContain('data-testid="battlefield-event-status"');
+    expect(html).toContain("Site Under Threat");
+    expect(html).toContain("Hold Crown Shrine - Held - 24s");
+    expect(html).toContain("Counterplay: Screen the site");
+    expect(html).toContain("Plan support: active");
+  });
 });

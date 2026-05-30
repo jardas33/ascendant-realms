@@ -49,6 +49,7 @@ export interface HUDSnapshot {
   objectives?: HUDObjectiveSnapshot[];
   controlGroups?: ControlGroupSummary[];
   enemyDoctrine?: HUDEnemyDoctrineSnapshot;
+  battlefieldEvent?: HUDBattlefieldEventSnapshot;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
 }
@@ -68,6 +69,15 @@ export interface HUDRetinueReinforcementSnapshot {
   reserveCount: number;
   readyReserveCount: number;
   used: boolean;
+}
+
+export interface HUDBattlefieldEventSnapshot {
+  title: string;
+  objective: string;
+  progress: string;
+  counterplay: string;
+  remainingSeconds: number;
+  planMatched: boolean;
 }
 
 export interface HUDPauseMenuSnapshot {

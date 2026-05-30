@@ -8,8 +8,8 @@ export interface BattleStatusOptions {
 const BATTLE_STATUS_PRIORITY_RANK: Record<BattleStatusPriority, number> = {
   normal: 0,
   command: 1,
-  pressure: 2,
-  objective: 3
+  objective: 2,
+  pressure: 3
 };
 
 export function shouldReplaceBattleStatus(options: {

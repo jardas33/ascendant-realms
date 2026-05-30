@@ -42,12 +42,22 @@ describe("BattleStatusPriority", () => {
     ).toBe(false);
   });
 
-  it("lets objective feedback replace active pressure warnings", () => {
+  it("keeps active pressure warnings ahead of objective feedback", () => {
     expect(
       shouldReplaceBattleStatus({
         currentPriority: "pressure",
         currentTimerSeconds: 4,
         incomingPriority: "objective"
+      })
+    ).toBe(false);
+  });
+
+  it("lets pressure warnings replace active objective feedback", () => {
+    expect(
+      shouldReplaceBattleStatus({
+        currentPriority: "objective",
+        currentTimerSeconds: 4,
+        incomingPriority: "pressure"
       })
     ).toBe(true);
   });

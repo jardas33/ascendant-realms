@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.69-v0.71 pre-battle tactical preparation closeout
+Updated: 2026-05-30 v0.72-v0.74 dynamic battlefield events closeout
+
+## v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
+
+Scope: add a small data-driven, battle-session-only event layer using existing mission type, enemy doctrine, elite squad, tactical plan, Retinue/reinforcement, resource-site, HUD, and Results systems. This pass changes event data/validation, battle-local event selection/resolution, HUD event copy, Results event summaries, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save migration, persistent event fields, broad AI/pathing rewrite, shop/crafting, formation editor, global rebalance, giant event system, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `515c8a1`, `ascendant-realms-private-playtest-515c8a1`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest CI Release Matrix Dry Run `26687186080` on `515c8a1` completed successfully.
+
+Included work:
+
+- Added `docs/V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md`.
+- Added `docs/V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md`.
+- Added `docs/V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md`.
+- Added `docs/V072_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V073_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added five validated Battlefield Event definitions: Site Under Threat, Hold the Line, Elite Strike, Reinforcement Window, and Aether Surge.
+- Added `BattlefieldEventDirector` with Tutorial/no-reward protection, one-active-major-event cap, event cooldowns, max-per-battle cap, and deterministic mission/doctrine/modifier/tactical-plan weighting.
+- Added battle-local objectives for holding or recapturing sites, protecting the Command Hall, defeating an elite squad, using Retinue reinforcement opportunity, and using a hero ability during Aether Surge.
+- Added small battle-local completion bonuses and event battle stats without persistent reward state.
+- Added HUD event objective copy and Results event after-action summary.
+- Added hosted deep-campaign proxy coverage for Tutorial protection, Site Under Threat, Elite Strike, tactical-plan support, and Results summaries.
+- Added package validation requirements for the v0.72-v0.74 docs.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Event state is battle-session-only and summarized through battle stats/Results.
+- Existing campaign, replay, optional objective, Retinue, reinforcement, tactical plan, doctrine, elite squad, hero, relic, skill, Worker/site, control group, Patrol, and Act 1 telemetry state remains valid.
+- Tutorial/no-reward routes do not start events or mutate event-linked persistent state.
+
+Verification:
+
+```text
+Focused event/runtime/HUD/Results/content Vitest PASS, 5 files / 86 tests.
+Focused hosted Tutorial/Site Under Threat/Elite Strike proxy PASS, 3 tests.
+npm test PASS, 84 files / 637 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure NON-PASS first attempt due event objective status outranking an existing pressure warning; exact failed Cinderfen Watch pressure case PASS after fix; full hosted deep-campaign-pressure rerun PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-515c8a1-dirty` generated.
+npm run verify:playtest-package PASS, 197 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Non-pass evidence: the first hosted deep-campaign-pressure run surfaced a real priority regression where the new Elite Strike event objective could overwrite the existing Cinderfen Watch pressure warning in the status line. The fix keeps active pressure warnings ahead of event objective feedback; the exact failed case and the full hosted lane reran green.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
 

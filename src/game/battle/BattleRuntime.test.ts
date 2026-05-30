@@ -100,6 +100,13 @@ describe("BattleRuntime", () => {
     runtime.recordEnemyHeroJoinedAttack("captain_malrec", 390);
     runtime.recordEnemyHeroPressure("captain_malrec", "Captain Malrec");
     runtime.recordEnemyHeroDefeated("captain_malrec", "Captain Malrec", 420);
+    runtime.recordBattlefieldEventStarted({
+      eventId: "site_under_threat",
+      objectiveLabel: "Hold Crown Shrine",
+      telemetryLabel: "Site Under Threat started: Hold Crown Shrine",
+      planMatched: true
+    });
+    runtime.recordBattlefieldEventCompleted("site_under_threat", "Site Under Threat completed: Crown Shrine held.");
     expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(true);
     expect(runtime.recordSecondaryObjective("capture_burned_shrine")).toBe(false);
 
@@ -121,8 +128,32 @@ describe("BattleRuntime", () => {
       enemyHeroJoinedAttackAtSeconds: 390,
       lossesInvolvingEnemyHero: 1,
       enemyHeroDefeated: true,
-      enemyHeroDefeatedAtSeconds: 420
+      enemyHeroDefeatedAtSeconds: 420,
+      battlefieldEventIds: ["site_under_threat"],
+      battlefieldEventCompletedIds: ["site_under_threat"],
+      battlefieldEventPlanMatchedIds: ["site_under_threat"],
+      battlefieldEventObjectiveLabels: ["Hold Crown Shrine"]
     });
+  });
+
+  it("clones battle-only battlefield event telemetry into completion results", () => {
+    const runtime = createBattleRuntime({ launch: createTestLaunch() });
+    runtime.recordBattlefieldEventStarted({
+      eventId: "hold_the_line",
+      objectiveLabel: "Protect Command Hall",
+      telemetryLabel: "Hold the Line started: Protect Command Hall"
+    });
+    runtime.recordBattlefieldEventFailed("hold_the_line", "Hold the Line failed: Command Hall destroyed.");
+
+    const result = runtime.completeBattle({ outcome: "defeat", heroSave: createFallbackHeroSave() });
+
+    expect(result?.stats.battlefieldEventIds).toEqual(["hold_the_line"]);
+    expect(result?.stats.battlefieldEventFailedIds).toEqual(["hold_the_line"]);
+    expect(result?.stats.battlefieldEventTelemetryLabels).toEqual([
+      "Hold the Line started: Protect Command Hall",
+      "Hold the Line failed: Command Hall destroyed."
+    ]);
+    expect(result?.shouldSaveHero).toBe(false);
   });
 
   it("records battle-only enemy pressure telemetry without save output", () => {

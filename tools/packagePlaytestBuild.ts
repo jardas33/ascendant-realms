@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.69-v0.71 pre-battle tactical preparation foundation";
+const CHECKPOINT = "v0.72-v0.74 dynamic battlefield events and tactical objectives";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -215,6 +215,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V070_IMPLEMENTATION_REPORT.md", join(packageDir, "V070_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V071_IMPLEMENTATION_REPORT.md", join(packageDir, "V071_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V071_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V071_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md", join(packageDir, "V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md"));
+  await copyMarkdown("docs/V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md", join(packageDir, "V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md"));
+  await copyMarkdown("docs/V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md", join(packageDir, "V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md"));
+  await copyMarkdown("docs/V072_IMPLEMENTATION_REPORT.md", join(packageDir, "V072_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V073_IMPLEMENTATION_REPORT.md", join(packageDir, "V073_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V074_IMPLEMENTATION_REPORT.md", join(packageDir, "V074_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V074_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V074_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -300,7 +307,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.69-v0.71 tactical preparation retest, start with V069_PRE_BATTLE_INTELLIGENCE_SPEC.md, V070_TACTICAL_PLAN_SELECTION_SPEC.md, V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md, V069_IMPLEMENTATION_REPORT.md, V070_IMPLEMENTATION_REPORT.md, V071_IMPLEMENTATION_REPORT.md, and V071_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.66-v0.68 enemy doctrine docs and v0.63-v0.65 Retinue recovery docs nearby as baseline context. Focus on: campaign briefing doctrine intel, elite risk, tactical plan recommendation/selection, Guarded Advance Retinue cost support, Resource Push starting resources, Champion Hunt hero Mana readiness, battle-start active-plan copy, Results tactical-plan after-action copy, Tutorial/no-reward protection, replay safety, Retinue/reinforcement survivability, Worker/site command regression, control group/Patrol regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant strategy system, a giant roster UI, permanent control groups, a formation editor, broad AI/pathing rewrite, enemy formation rewrite, or final VFX.
+For the v0.72-v0.74 battlefield event retest, start with V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md, V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md, V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md, V072_IMPLEMENTATION_REPORT.md, V073_IMPLEMENTATION_REPORT.md, V074_IMPLEMENTATION_REPORT.md, and V074_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.69-v0.71 tactical plan docs, v0.66-v0.68 enemy doctrine docs, and v0.63-v0.65 Retinue recovery docs nearby as baseline context. Focus on: Site Under Threat readability, Hold the Line pressure, capped Elite Strike, Reinforcement Window reminder, Aether Surge opportunity, tactical-plan support hints, doctrine-aware event selection, Results event/objective summaries, Tutorial/no-reward protection, replay safety, Retinue/reinforcement survivability, Worker/site command regression, control group/Patrol regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant event system, a giant roster UI, permanent control groups, a formation editor, broad AI/pathing rewrite, enemy formation rewrite, or final VFX.
 
 ## Known Warning
 

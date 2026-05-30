@@ -1,4 +1,4 @@
-import type { EnemyDoctrineId, UnitVeterancyBattleSummary } from "./CombatTypes";
+import type { BattlefieldEventId, EnemyDoctrineId, UnitVeterancyBattleSummary } from "./CombatTypes";
 import type { ResourceBag, ResourceKey } from "./EconomyTypes";
 import type { Position, Team } from "./UITypes";
 
@@ -164,4 +164,10 @@ export interface BattleStats {
   enemyDoctrineTelemetryLabels?: string[];
   enemyEliteSquadIds?: string[];
   enemyEliteUnitsDefeated?: string[];
+  battlefieldEventIds?: BattlefieldEventId[];
+  battlefieldEventCompletedIds?: BattlefieldEventId[];
+  battlefieldEventFailedIds?: BattlefieldEventId[];
+  battlefieldEventPlanMatchedIds?: BattlefieldEventId[];
+  battlefieldEventObjectiveLabels?: string[];
+  battlefieldEventTelemetryLabels?: string[];
 }

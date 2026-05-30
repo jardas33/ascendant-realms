@@ -11,6 +11,20 @@ export type EnemyDoctrineId = "raider" | "fortress" | "hunter" | "warband";
 
 export type TacticalPlanId = "guarded_advance" | "resource_push" | "champion_hunt";
 
+export type BattlefieldEventId =
+  | "site_under_threat"
+  | "hold_the_line"
+  | "elite_strike"
+  | "reinforcement_window"
+  | "aether_surge";
+
+export type BattlefieldEventObjectiveKind =
+  | "hold_site"
+  | "protect_command_hall"
+  | "defeat_elite"
+  | "use_reinforcement"
+  | "use_ability";
+
 export type EnemyHeroAbilityId = "ember_strike" | "rally_raiders" | "hexfire_bolt" | "hold_the_line";
 
 export type EnemyHeroArchetype = "melee_commander" | "hexfire_seer" | "fortress_commander";
@@ -153,6 +167,27 @@ export interface TacticalPlanDefinition {
   recommendedCounterplay: string;
   tags: string[];
   launchModifierId: string;
+}
+
+export interface BattlefieldEventDefinition {
+  id: BattlefieldEventId;
+  name: string;
+  shortLabel: string;
+  description: string;
+  objectiveKind: BattlefieldEventObjectiveKind;
+  objectiveSummary: string;
+  counterplay: string;
+  afterActionSummary: string;
+  eligibleDoctrineIds: EnemyDoctrineId[];
+  preferredMissionTypeIds: string[];
+  preferredModifierIds: string[];
+  recommendedTacticalPlanIds: TacticalPlanId[];
+  durationSeconds: number;
+  cooldownSeconds: number;
+  pressureNudgeSeconds?: number;
+  startHeroManaGain?: number;
+  completionBonus?: Partial<ResourceBag>;
+  tags: string[];
 }
 
 export type EnemyHeroAbilityEffectDefinition =

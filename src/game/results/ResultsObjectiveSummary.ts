@@ -6,7 +6,7 @@ import { formatRetinueDeploymentLabel, isRetinueEligibleVeteran, retinueEligibil
 import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
-import { ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import { BATTLEFIELD_EVENT_BY_ID, ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
@@ -33,6 +33,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Enemy doctrine</span><strong>${escapeHtml(formatEnemyDoctrineResult(data))}</strong>
           <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
           <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
+          <span>Battlefield events</span><strong>${escapeHtml(formatBattlefieldEventResult(data))}</strong>
         </div>
       </section>
       <section class="result-block">
@@ -43,10 +44,35 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}
     ${renderTacticalPlanSummary(data)}
+    ${renderBattlefieldEventSummary(data)}
     ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+  `;
+}
+
+export function renderBattlefieldEventSummary(data: ResultsData): string {
+  const eventIds = data.stats.battlefieldEventIds ?? [];
+  if (eventIds.length === 0) {
+    return "";
+  }
+  const completed = new Set(data.stats.battlefieldEventCompletedIds ?? []);
+  const failed = new Set(data.stats.battlefieldEventFailedIds ?? []);
+  const planMatched = new Set(data.stats.battlefieldEventPlanMatchedIds ?? []);
+  return `
+    <section class="result-block wide battlefield-event-summary" data-testid="results-battlefield-event-summary">
+      <h2>Battlefield Events</h2>
+      <div class="results-grid compact">
+        <span>Events encountered</span><strong>${escapeHtml(eventIds.map(formatBattlefieldEventName).join(", "))}</strong>
+        <span>Completed</span><strong>${escapeHtml(formatBattlefieldEventNames([...completed]))}</strong>
+        <span>Failed or missed</span><strong>${escapeHtml(formatBattlefieldEventNames([...failed]))}</strong>
+        <span>Plan support</span><strong>${escapeHtml(formatBattlefieldEventNames([...planMatched]))}</strong>
+        <span>Event objectives</span><strong>${escapeHtml(formatEventTelemetry(data.stats.battlefieldEventObjectiveLabels ?? []))}</strong>
+        <span>After-action notes</span><strong>${escapeHtml(formatEventTelemetry(data.stats.battlefieldEventTelemetryLabels ?? []))}</strong>
+      </div>
+      <p class="quiet">Battlefield events are battle-local. They do not add save fields or persistent farming rewards.</p>
+    </section>
   `;
 }
 
@@ -118,6 +144,34 @@ function formatTacticalPlanResult(data: ResultsData): string {
     ? getTacticalPlan(data.launchRequest.tacticalPlanId)
     : tacticalPlanFromLaunchModifiers(data.launchRequest?.modifiers);
   return plan ? `${plan.name} - ${plan.effectSummary}` : "None";
+}
+
+function formatBattlefieldEventResult(data: ResultsData): string {
+  const eventIds = data.stats.battlefieldEventIds ?? [];
+  if (eventIds.length === 0) {
+    return "None";
+  }
+  const completed = data.stats.battlefieldEventCompletedIds?.length ?? 0;
+  const failed = data.stats.battlefieldEventFailedIds?.length ?? 0;
+  return `${eventIds.map(formatBattlefieldEventName).join(", ")}; completed ${completed}, missed ${failed}`;
+}
+
+function formatBattlefieldEventNames(ids: string[]): string {
+  if (ids.length === 0) {
+    return "None";
+  }
+  return ids.map(formatBattlefieldEventName).join(", ");
+}
+
+function formatBattlefieldEventName(id: string): string {
+  return BATTLEFIELD_EVENT_BY_ID[id]?.name ?? id;
+}
+
+function formatEventTelemetry(labels: string[]): string {
+  if (labels.length === 0) {
+    return "None";
+  }
+  return labels.slice(0, 4).join("; ");
 }
 
 function formatEliteSquadNames(ids: string[]): string {

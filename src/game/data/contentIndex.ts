@@ -21,6 +21,7 @@ import type {
   CampaignModifierDefinition,
   EnemyDoctrineDefinition,
   EnemyEliteSquadDefinition,
+  BattlefieldEventDefinition,
   TacticalPlanDefinition,
   UpgradeDefinition
 } from "../core/GameTypes";
@@ -32,6 +33,7 @@ import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "./enemyHeroes";
 import { ENEMY_DOCTRINES, ENEMY_ELITE_SQUADS } from "./enemyDoctrines";
+import { BATTLEFIELD_EVENTS } from "./battlefieldEvents";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
@@ -68,6 +70,7 @@ export const ENEMY_HERO_BY_ID: Record<string, EnemyHeroDefinition> = toIndex(ENE
 export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition> = toIndex(ENEMY_HERO_ABILITIES);
 export const ENEMY_DOCTRINE_BY_ID: Record<string, EnemyDoctrineDefinition> = toIndex(ENEMY_DOCTRINES);
 export const ENEMY_ELITE_SQUAD_BY_ID: Record<string, EnemyEliteSquadDefinition> = toIndex(ENEMY_ELITE_SQUADS);
+export const BATTLEFIELD_EVENT_BY_ID: Record<string, BattlefieldEventDefinition> = toIndex(BATTLEFIELD_EVENTS);
 export const ENEMY_PRESSURE_PLAN_BY_ID: Record<string, EnemyStrategicPressurePlanDefinition> = toIndex(ENEMY_PRESSURE_PLANS);
 export const TACTICAL_PLAN_BY_ID: Record<string, TacticalPlanDefinition> = toIndex(TACTICAL_PLANS);
 export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);

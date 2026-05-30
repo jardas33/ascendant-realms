@@ -1,8 +1,12 @@
-import type { HUDEnemyDoctrineSnapshot, HUDObjectiveSnapshot } from "./HudTypes";
+import type { HUDBattlefieldEventSnapshot, HUDEnemyDoctrineSnapshot, HUDObjectiveSnapshot } from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
 
-export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined, enemyDoctrine?: HUDEnemyDoctrineSnapshot): string {
-  if ((!objectives || objectives.length === 0) && !enemyDoctrine) {
+export function renderObjectives(
+  objectives: HUDObjectiveSnapshot[] | undefined,
+  enemyDoctrine?: HUDEnemyDoctrineSnapshot,
+  battlefieldEvent?: HUDBattlefieldEventSnapshot
+): string {
+  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent) {
     return "";
   }
   const missionObjectives = objectives ?? [];
@@ -10,6 +14,7 @@ export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined,
   const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
+      ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
       <strong>Objectives ${completedCount}/${missionObjectives.length}</strong>
       ${missionObjectives
@@ -30,6 +35,20 @@ export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined,
           `;
         })
         .join("")}
+    </div>
+  `;
+}
+
+function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot): string {
+  return `
+    <div class="battlefield-event-row" data-testid="battlefield-event-status">
+      <span>Event</span>
+      <div>
+        <b>${escapeHtml(event.title)}</b>
+        <small>${escapeHtml(event.objective)} - ${escapeHtml(event.progress)}</small>
+        <small>Counterplay: ${escapeHtml(event.counterplay)}</small>
+        ${event.planMatched ? `<small>Plan support: active</small>` : ""}
+      </div>
     </div>
   `;
 }

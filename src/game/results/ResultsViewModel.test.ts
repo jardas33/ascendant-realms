@@ -383,7 +383,15 @@ describe("results scene helpers", () => {
         enemyDoctrineActionCount: 2,
         enemyDoctrineTelemetryLabels: ["Fortress tech: fortify enemy base hub"],
         enemyEliteSquadIds: ["cinder_iron_guard"],
-        enemyEliteUnitsDefeated: ["cinder_iron_guard"]
+        enemyEliteUnitsDefeated: ["cinder_iron_guard"],
+        battlefieldEventIds: ["elite_strike"],
+        battlefieldEventCompletedIds: ["elite_strike"],
+        battlefieldEventPlanMatchedIds: ["elite_strike"],
+        battlefieldEventObjectiveLabels: ["Defeat Cinder Iron Guard"],
+        battlefieldEventTelemetryLabels: [
+          "Elite Strike started: Defeat Cinder Iron Guard",
+          "Elite Strike completed: Cinder Iron Guard defeated."
+        ]
       }
     });
 
@@ -397,6 +405,10 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Tactical Plan");
     expect(summaryHtml).toContain("Champion Hunt");
     expect(summaryHtml).toContain("Hero starts with +6% maximum Mana");
+    expect(summaryHtml).toContain("Battlefield Events");
+    expect(summaryHtml).toContain("Elite Strike");
+    expect(summaryHtml).toContain("Defeat Cinder Iron Guard");
+    expect(summaryHtml).toContain("battle-local");
     expect(summaryHtml).toContain("battle-only readability signals");
   });
 

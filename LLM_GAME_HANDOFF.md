@@ -1,12 +1,76 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.69-v0.71 pre-battle tactical preparation closeout
+Last updated: 2026-05-30 v0.72-v0.74 dynamic battlefield events closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
+
+Status: v0.72-v0.74 adds a small battle-session-only event layer so battles can react to mission type, enemy doctrine, elite squads, launch-local tactical plan, Retinue readiness, and resource-site state. It does not add maps, factions, runtime art/assets, save migration, persistent event state, broad AI/pathing rewrite, shop/crafting, formation editor, global rebalance, giant event system, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `515c8a1`, `ascendant-realms-private-playtest-515c8a1`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest CI Release Matrix Dry Run `26687186080` on `515c8a1` completed successfully.
+
+Included work:
+
+- Added `docs/V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md`.
+- Added `docs/V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md`.
+- Added `docs/V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md`.
+- Added `docs/V072_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V073_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added validated Battlefield Event definitions for Site Under Threat, Hold the Line, Elite Strike, Reinforcement Window, and Aether Surge.
+- Added `BattlefieldEventDirector` with Tutorial/no-reward protection, one-active-major-event cap, cooldowns, max-per-battle limits, and deterministic mission/doctrine/modifier/plan scoring.
+- Added battle-local event objectives for site pressure, Command Hall defense, elite defeat, Retinue reinforcement opportunity, and Aether Surge ability use.
+- Added small battle-local event completion bonuses only; no persistent event rewards or repeat-farm save state.
+- Added HUD event copy with title, objective, timer/progress, counterplay hint, and matching tactical-plan support note.
+- Added Results battlefield-event after-action summary.
+- Updated hosted proxy coverage for Tutorial protection, Site Under Threat, Elite Strike, tactical-plan support, and Results summaries.
+- Updated package metadata and validation to require the v0.72-v0.74 docs.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Battlefield events are battle-session-only and recorded only into battle stats/Results.
+- Existing campaign progression, replay, optional objective, reward, Retinue, reinforcement, tactical plan, doctrine, elite squad, hero, relic, skill, control group, Patrol, Worker/site, and Act 1 telemetry state remains compatible.
+- Tutorial/no-reward routes do not start battlefield events or mutate persistent state.
+
+Verification:
+
+```text
+Focused event/runtime/HUD/Results/content tests PASS, 5 files / 86 tests.
+Focused hosted Tutorial/Site Under Threat/Elite Strike proxy PASS, 3 tests.
+npm test PASS, 84 files / 637 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure NON-PASS first attempt due event objective status outranking an existing pressure warning; exact failed Cinderfen Watch pressure case PASS after fix; full hosted deep-campaign-pressure rerun PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-515c8a1-dirty` generated.
+npm run verify:playtest-package PASS, 197 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Non-pass evidence: the first hosted deep-campaign-pressure run showed the new Elite Strike objective status could replace the older Cinderfen Watch pressure warning before it had enough read time. The runtime status priority now keeps active pressure warnings ahead of event objective feedback while the dedicated event HUD row and Results still carry event details. The exact failed test and the full hosted lane reran green.
+
+Closeout note: commit as `Checkpoint v0.72-v0.74 dynamic battlefield events and tactical objectives`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
 

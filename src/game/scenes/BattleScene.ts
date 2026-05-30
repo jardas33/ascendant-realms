@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type {
   BattleSecondaryObjectiveType,
+  BattlefieldEventId,
   Position,
   ResourceBag,
   ResourceKey,
@@ -9,7 +10,7 @@ import type {
   UnitVeterancyRankUpEvent,
   EnemyDoctrineDefinition
 } from "../core/GameTypes";
-import { formatTime, payCost } from "../core/MathUtils";
+import { addResources, formatTime, payCost } from "../core/MathUtils";
 import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
 import { formatRivalBattleStartCopy, rivalLaunchModifierName } from "../core/RivalRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
@@ -17,6 +18,7 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
 import {
   AI_PERSONALITY_BY_ID,
+  CAMPAIGN_NODE_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
   requireUnit,
@@ -47,6 +49,12 @@ import {
 } from "../data/unitVeterancy";
 import { CAPTURE_TIME_SECONDS } from "../core/Constants";
 import { BattleRuntime, createBattleRuntime } from "../battle/BattleRuntime";
+import {
+  BattlefieldEventDirector,
+  type ActiveBattlefieldEvent,
+  type BattlefieldEventDirectorContext,
+  type BattlefieldEventTransition
+} from "../battle/BattlefieldEventDirector";
 import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
 import {
   battleStatusDurationSeconds,
@@ -156,6 +164,17 @@ interface AscendantBattleTestHooks {
     xpGained: number;
     enemyHeroDefeated: boolean;
   } | null;
+  triggerBattlefieldEvent?: (eventId: BattlefieldEventId) => {
+    eventId: BattlefieldEventId;
+    title: string;
+    objective: string;
+    progress: string;
+  } | null;
+  resolveBattlefieldEvent?: (outcome?: "completed" | "failed") => {
+    eventId: BattlefieldEventId;
+    outcome: "completed" | "failed";
+    telemetry: string;
+  } | null;
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -190,6 +209,7 @@ export class BattleScene extends Phaser.Scene {
   private aiSystem!: BattleSceneSystems["aiSystem"];
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
+  private battlefieldEventDirector?: BattlefieldEventDirector;
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
@@ -285,6 +305,7 @@ export class BattleScene extends Phaser.Scene {
     this.upgradeSystem.update(deltaSeconds, this.buildings);
     this.enemyPressureRuntime?.update();
     this.aiSystem.update(deltaSeconds);
+    this.updateBattlefieldEvents(deltaSeconds);
     this.cleanupDeadEntities();
     this.updateTrackedEnemyWaves();
     this.updateTutorialHint();
@@ -312,6 +333,7 @@ export class BattleScene extends Phaser.Scene {
     this.lastSelectionAudioKey = "";
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.enemyPressureRuntime = undefined;
+    this.battlefieldEventDirector = undefined;
     this.enemyDoctrine = selectEnemyDoctrineForBattleLaunch({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -447,6 +469,7 @@ export class BattleScene extends Phaser.Scene {
         this.showMessage(message, this.hero.position.x, this.hero.position.y - 112, "#f6e27d", { priority: "pressure" }),
       adjustNextWaveTiming: (seconds) => this.aiSystem.adjustNextAttackTiming(seconds)
     });
+    this.battlefieldEventDirector = new BattlefieldEventDirector();
   }
 
   private showBattleStartSummary(): void {
@@ -768,6 +791,21 @@ export class BattleScene extends Phaser.Scene {
     }));
   }
 
+  private createBattlefieldEventSnapshot() {
+    const event = this.battlefieldEventDirector?.getActiveEvent(this.createBattlefieldEventContext());
+    if (!event) {
+      return undefined;
+    }
+    return {
+      title: event.name,
+      objective: event.objectiveLabel,
+      progress: event.progressLabel,
+      counterplay: event.counterplay,
+      remainingSeconds: event.remainingSeconds,
+      planMatched: event.planMatched
+    };
+  }
+
   private selectedEntities(): Array<Unit | Building | CaptureSite> {
     return this.selectionSystem
       .getSelected()
@@ -968,6 +1006,7 @@ export class BattleScene extends Phaser.Scene {
       resourceSites: this.resourceSystem.resourceSiteSummaries(this.captureSites),
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
+      battlefieldEvent: this.createBattlefieldEventSnapshot(),
       controlGroups: this.controlGroupSystem.summaries(this.units),
       enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),
@@ -1038,6 +1077,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private endBattle(outcome: "victory" | "defeat"): void {
+    this.finalizeBattlefieldEventForResults(outcome);
     this.finalizeUnitVeterancy(outcome);
     endBattleAndOpenResults({
       scene: this,
@@ -1298,6 +1338,171 @@ export class BattleScene extends Phaser.Scene {
       addMinimapPing: (x, y, color, label) => this.addMinimapPing(x, y, color, label),
       showMessage: (message, x, y, color, options) => this.showMessage(message, x, y, color, options)
     });
+  }
+
+  private updateBattlefieldEvents(deltaSeconds: number): void {
+    const result = this.battlefieldEventDirector?.update(deltaSeconds, this.createBattlefieldEventContext());
+    if (!result || result.transitions.length === 0) {
+      return;
+    }
+    this.applyBattlefieldEventTransitions(result.transitions);
+  }
+
+  private createBattlefieldEventContext(): BattlefieldEventDirectorContext {
+    const campaignNode = this.launch.request.campaignNodeId ? CAMPAIGN_NODE_BY_ID[this.launch.request.campaignNodeId] : undefined;
+    return {
+      elapsedSeconds: this.runtime.elapsedSeconds,
+      mode: this.launch.request.mode,
+      rewardsDisabled: this.launch.request.rewardsDisabled,
+      missionTypeId: campaignNode?.missionTypeId,
+      modifierIds: this.launch.request.modifiers.map((modifier) => modifier.id),
+      doctrineId: this.enemyDoctrine?.id,
+      tacticalPlanId: this.launch.request.tacticalPlanId,
+      captureSites: this.captureSites.map((site) => ({
+        siteId: site.definition.id,
+        name: site.definition.name,
+        owner: site.owner,
+        position: { ...site.position },
+        incomeAmount: site.definition.incomeAmount,
+        siteLevel: site.siteLevel,
+        workerCount: site.workerAssignments.length
+      })),
+      units: this.units.map((unit) => ({
+        id: unit.id,
+        unitTypeId: unit.definition.id,
+        name: unit.definition.name,
+        team: unit.team,
+        alive: unit.alive,
+        position: { ...unit.position },
+        enemyEliteSquadId: unit.enemyEliteSquadId,
+        enemyEliteSquadName: unit.enemyEliteSquadName ?? unit.enemyEliteSquadLabel
+      })),
+      buildings: this.buildings.map((building) => ({
+        id: building.id,
+        buildingId: building.definition.id,
+        name: building.definition.name,
+        team: building.team,
+        alive: building.alive,
+        position: { ...building.position }
+      })),
+      commandHallAlive: Boolean(this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player")),
+      retinueReinforcementAvailable: Boolean(this.createRetinueReinforcementSnapshot()?.available),
+      retinueReinforcementUsed: this.retinueReinforcementUsed,
+      usedAbilityIds: Object.entries(this.hero?.abilityCooldowns ?? {})
+        .filter(([, remainingSeconds]) => remainingSeconds > 0)
+        .map(([abilityId]) => abilityId)
+    };
+  }
+
+  private applyBattlefieldEventTransitions(transitions: BattlefieldEventTransition[]): void {
+    transitions.forEach((transition) => {
+      if (transition.type === "started") {
+        this.runtime.recordBattlefieldEventStarted({
+          eventId: transition.event.id,
+          objectiveLabel: transition.event.objectiveLabel,
+          telemetryLabel: transition.telemetryLabel,
+          planMatched: transition.event.planMatched
+        });
+        this.applyBattlefieldEventStartEffects(transition);
+        this.applyBattlefieldEventPressure(transition.event);
+        const supportText = transition.event.planMatched ? " Plan support active." : "";
+        this.showBattlefieldEventMessage(`${transition.event.name}: ${transition.event.objectiveLabel}.${supportText}`, transition.event);
+        return;
+      }
+      if (transition.type === "completed") {
+        this.runtime.recordBattlefieldEventCompleted(transition.event.id, transition.telemetryLabel);
+        this.applyBattlefieldEventCompletionBonus(transition);
+        this.showBattlefieldEventMessage(`${transition.event.name} completed.`, transition.event);
+        return;
+      }
+      this.runtime.recordBattlefieldEventFailed(transition.event.id, transition.telemetryLabel);
+      this.showBattlefieldEventMessage(`${transition.event.name}: opportunity missed.`, transition.event);
+    });
+    this.refreshBattleHud(0);
+  }
+
+  private applyBattlefieldEventStartEffects(transition: BattlefieldEventTransition): void {
+    if ((transition.pressureNudgeSeconds ?? 0) > 0) {
+      this.aiSystem.adjustNextAttackTiming(transition.pressureNudgeSeconds ?? 0);
+    }
+    if ((transition.heroManaGain ?? 0) > 0) {
+      this.grantHeroMana(transition.heroManaGain ?? 0);
+    }
+  }
+
+  private applyBattlefieldEventCompletionBonus(transition: BattlefieldEventTransition): void {
+    if (transition.resourceBonus && Object.values(transition.resourceBonus).some((amount) => (amount ?? 0) > 0)) {
+      addResources(this.resources.player, transition.resourceBonus);
+      this.showMessage(
+        `Objective bonus: ${formatResourceBonusText(transition.resourceBonus)}`,
+        undefined,
+        undefined,
+        "#f6e27d",
+        { priority: "objective" }
+      );
+    }
+  }
+
+  private grantHeroMana(amount: number): void {
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return;
+    }
+    const before = this.hero.mana;
+    this.hero.mana = Math.min(this.hero.maxMana, this.hero.mana + amount);
+    const gained = Math.floor(this.hero.mana - before);
+    if (gained > 0) {
+      this.showMessage(`Aether Surge: +${gained} Mana`, this.hero.position.x, this.hero.position.y - 58, "#74d3f2", {
+        priority: "objective"
+      });
+    }
+  }
+
+  private applyBattlefieldEventPressure(event: ActiveBattlefieldEvent): void {
+    if (event.id === "site_under_threat" && event.targetPosition) {
+      this.enemyEventSquad(event.targetPosition, 2).forEach((unit, index) => {
+        unit.commandMove({ x: event.targetPosition!.x + index * 18, y: event.targetPosition!.y + index * 14 }, true);
+      });
+      this.addMinimapPing(event.targetPosition.x, event.targetPosition.y, "#f0d978", event.name);
+      this.runtime.recordEnemyDoctrineAction(`Battlefield event: ${event.name}`);
+      return;
+    }
+    if (event.id === "hold_the_line") {
+      const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+      if (!commandHall) {
+        return;
+      }
+      this.enemyEventSquad(commandHall.position, 3).forEach((unit) => unit.commandAttack(commandHall.id, commandHall.definition.name));
+      this.addMinimapPing(commandHall.position.x, commandHall.position.y, "#f0d978", event.name);
+      this.runtime.recordEnemyDoctrineAction(`Battlefield event: ${event.name}`);
+      return;
+    }
+    if (event.id === "elite_strike" && event.eliteSquadId) {
+      const target = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player") ?? this.hero;
+      this.units
+        .filter((unit) => unit.alive && unit.team === "enemy" && unit.enemyEliteSquadId === event.eliteSquadId)
+        .forEach((unit) => unit.commandAttack(target.id, target.definition.name));
+      this.addMinimapPing(target.position.x, target.position.y, "#ff9a64", event.name);
+      this.runtime.recordEnemyDoctrineAction(`Battlefield event: ${event.name}`);
+    }
+  }
+
+  private enemyEventSquad(target: Position, count: number): Unit[] {
+    return this.units
+      .filter((unit) => unit.alive && unit.team === "enemy" && unit.kind === "unit")
+      .sort((left, right) => distanceBetween(left.position, target) - distanceBetween(right.position, target))
+      .slice(0, count);
+  }
+
+  private showBattlefieldEventMessage(message: string, event: ActiveBattlefieldEvent): void {
+    const point = event.targetPosition ?? this.hero.position;
+    this.showMessage(message, point.x, point.y - 82, "#f6e27d", { priority: "objective" });
+  }
+
+  private finalizeBattlefieldEventForResults(_outcome: "victory" | "defeat"): void {
+    const transition = this.battlefieldEventDirector?.finishActiveForBattleEnd(this.createBattlefieldEventContext());
+    if (transition) {
+      this.applyBattlefieldEventTransitions([transition]);
+    }
   }
 
   private trackEnemyWave(units: Unit[]): void {
@@ -1584,6 +1789,40 @@ export class BattleScene extends Phaser.Scene {
           xpGained: this.runtime.stats.xpGained,
           enemyHeroDefeated: Boolean(this.runtime.stats.enemyHeroDefeated)
         };
+      },
+      triggerBattlefieldEvent: (eventId: BattlefieldEventId) => {
+        if (this.runtime.ended || !this.battlefieldEventDirector) {
+          return null;
+        }
+        const transition = this.battlefieldEventDirector.forceStartEvent(eventId, this.createBattlefieldEventContext());
+        if (!transition) {
+          return null;
+        }
+        this.applyBattlefieldEventTransitions([transition]);
+        const active = this.battlefieldEventDirector.getActiveEvent(this.createBattlefieldEventContext());
+        return active
+          ? {
+              eventId: active.id,
+              title: active.name,
+              objective: active.objectiveLabel,
+              progress: active.progressLabel
+            }
+          : null;
+      },
+      resolveBattlefieldEvent: (outcome = "completed") => {
+        if (this.runtime.ended || !this.battlefieldEventDirector) {
+          return null;
+        }
+        const transition = this.battlefieldEventDirector.resolveActiveEvent(outcome, this.createBattlefieldEventContext());
+        if (!transition) {
+          return null;
+        }
+        this.applyBattlefieldEventTransitions([transition]);
+        return {
+          eventId: transition.event.id,
+          outcome,
+          telemetry: transition.telemetryLabel
+        };
       }
     };
   }
@@ -1598,6 +1837,8 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.captureSite;
     delete target.__ASCENDANT_TEST_HOOKS__.scoutEnemyHero;
     delete target.__ASCENDANT_TEST_HOOKS__.defeatEnemyHero;
+    delete target.__ASCENDANT_TEST_HOOKS__.triggerBattlefieldEvent;
+    delete target.__ASCENDANT_TEST_HOOKS__.resolveBattlefieldEvent;
   }
 
   private cleanup(): void {
@@ -1631,4 +1872,23 @@ export class BattleScene extends Phaser.Scene {
     }
     return fallback.launch;
   }
+}
+
+function distanceBetween(left: Position, right: Position): number {
+  return Math.hypot(left.x - right.x, left.y - right.y);
+}
+
+function formatResourceBonusText(resources: Partial<ResourceBag>): string {
+  const labels: Record<ResourceKey, string> = {
+    crowns: "Crowns",
+    stone: "Stone",
+    iron: "Iron",
+    aether: "Aether"
+  };
+  return (Object.keys(labels) as ResourceKey[])
+    .flatMap((resource) => {
+      const amount = resources[resource] ?? 0;
+      return amount > 0 ? [`+${amount} ${labels[resource]}`] : [];
+    })
+    .join(", ");
 }

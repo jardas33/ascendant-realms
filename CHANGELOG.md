@@ -1,5 +1,34 @@
 # Changelog
 
+# v0.72-v0.74 Dynamic Battlefield Events And Tactical Objectives - 2026-05-30
+
+This checkpoint adds a small battle-session-only event layer that reacts to mission type, enemy doctrine, elite squads, player tactical plan, Retinue readiness, and resource-site state. It uses existing maps, units, AI hooks, HUD, and Results surfaces only. No maps, factions, runtime art/assets, save migration, persistent event state, broad AI/pathing rewrite, global rebalance, giant event system, shop/crafting, formation editor, or canvas/world force-click behavior were added.
+
+Added:
+
+- Added `docs/V072_BATTLEFIELD_EVENT_DIRECTOR_SPEC.md`.
+- Added `docs/V073_DYNAMIC_TACTICAL_OBJECTIVES_SPEC.md`.
+- Added `docs/V074_ADAPTIVE_PRESSURE_AND_READABILITY_SPEC.md`.
+- Added `docs/V072_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V073_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V074_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Added validated Battlefield Event definitions for Site Under Threat, Hold the Line, Elite Strike, Reinforcement Window, and Aether Surge.
+- Added a battle-local `BattlefieldEventDirector` with Tutorial/no-reward protection, one-active-major-event cap, cooldowns, max-per-battle cap, and deterministic mission/doctrine/modifier/plan weighting.
+- Added event HUD copy with event title, short objective, timer/progress, counterplay hint, and plan-support note.
+- Added dynamic objective outcomes and small battle-local bonuses for completed event objectives only.
+- Added Results battlefield-event summaries for events encountered, completed/failed objectives, and plan-supported outcomes.
+- Added hosted deep-campaign proxy coverage for Tutorial protection, Site Under Threat, Elite Strike, tactical-plan interaction, and Results summaries.
+- Updated package metadata and validation to name `v0.72-v0.74 dynamic battlefield events and tactical objectives`.
+
+Verification:
+
+- Full checkpoint verification passed locally: `npm test`, `npm run build`, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast`, `npm run test:e2e:smoke`, control playtests, Act 1 telemetry, hosted deep-battle, hosted smoke, hosted deep-campaign-pressure, visual QA, package generation, package verification, and `git diff --check`.
+- Non-pass evidence: first hosted deep-campaign-pressure run found event objective status could outrank an existing pressure warning. Status priority was fixed so active pressure warnings stay readable, then the exact failed test and full hosted lane reran green.
+
 ## v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
 
 This checkpoint turns enemy doctrine readability into actionable pre-battle preparation through concise campaign intelligence, launch-local tactical plan selection, and counter-doctrine recommendations. No maps, factions, runtime art/assets, save migration, new persistent save fields, broad AI/pathing rewrite, global rebalance, shop/crafting, formation editor, or canvas/world force-click behavior were added.

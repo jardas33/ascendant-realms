@@ -14,6 +14,7 @@ import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { ENEMY_DOCTRINES, ENEMY_ELITE_SQUADS } from "./enemyDoctrines";
+import { BATTLEFIELD_EVENTS } from "./battlefieldEvents";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
@@ -63,6 +64,21 @@ describe("content validation", () => {
     expect(TACTICAL_PLANS.find((plan) => plan.id === "resource_push")?.effectSummary).toContain("Crowns");
     expect(TACTICAL_PLANS.find((plan) => plan.id === "champion_hunt")?.effectSummary).toContain("Mana");
     expect(TACTICAL_PLANS.every((plan) => plan.launchModifierId.startsWith("tactical_"))).toBe(true);
+  });
+
+  it("validates dynamic battlefield event readability data", () => {
+    expect(BATTLEFIELD_EVENTS.map((event) => event.id)).toEqual([
+      "site_under_threat",
+      "hold_the_line",
+      "elite_strike",
+      "reinforcement_window",
+      "aether_surge"
+    ]);
+    expect(BATTLEFIELD_EVENTS.find((event) => event.id === "site_under_threat")?.objectiveSummary).toContain("site");
+    expect(BATTLEFIELD_EVENTS.find((event) => event.id === "elite_strike")?.recommendedTacticalPlanIds).toContain(
+      "champion_hunt"
+    );
+    expect(BATTLEFIELD_EVENTS.every((event) => event.cooldownSeconds >= 45)).toBe(true);
   });
 
   it("defines the initial visual asset metadata manifest without production-final claims", () => {
