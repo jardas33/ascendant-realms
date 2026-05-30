@@ -11,9 +11,25 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.80 Salto, Lume, and Display-Copy Migration Plan** on 2026-05-30. It is docs-only and follows the clean v0.79 Emmanuel direction lock. It inventories current runtime-facing terminology, separates safe future display-copy candidates from prohibited identifier/save changes, recommends Lume as future world-facing living land-power while keeping Mana as tactical hero ability resource for now, and prepares an Emmanuel review packet before any runtime copy migration.
+The current checkpoint is **v0.81 Lume Site Network Prototype Specification and Smallest-Fun-Slice Gate** on 2026-05-30. It is docs-only and follows the clean v0.80 Salto/Lume/display-copy planning pass. It audits the existing resource-site, Worker, campaign, HUD, Results, battlefield-event, AI, save, replay, Tutorial, and test architecture, then recommends a future mission-local Linked Control prototype before any runtime Lume Network implementation.
 
-The next recommended step remains a separately supplied v0.81 goal: **Lume Site Network Prototype Specification and Smallest-Fun-Slice Gate**. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel review of `docs/V081_EMMANUEL_REVIEW_PACKET.md`. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+
+New v0.81 docs:
+
+- `docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md`
+- `docs/V081_LUME_NETWORK_DESIGN_PRINCIPLES.md`
+- `docs/V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md`
+- `docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md`
+- `docs/V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md`
+- `docs/V081_DATA_MODEL_AND_INTEGRATION_PLAN.md`
+- `docs/V081_UI_READABILITY_AND_TEACHING_SPEC.md`
+- `docs/V081_RACE_EXTENSIBILITY_MATRIX.md`
+- `docs/V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md`
+- `docs/V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md`
+- `docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md`
+- `docs/V081_EMMANUEL_REVIEW_PACKET.md`
+- `docs/V081_IMPLEMENTATION_REPORT.md`
 
 New v0.80 docs:
 

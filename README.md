@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.75-v0.77: Ashen Outpost now serves as the Act 1 finale around Captain Malrec using existing maps, doctrines, elites, tactical plans, battlefield events, Retinue/reinforcement, hero progression, relic rewards, HUD, and Results surfaces.
 
-Current v0.80 work is a docs-only Salto, Lume, and display-copy migration plan after the clean v0.79 Emmanuel direction lock. It inventories 72 current runtime-facing strings/IDs, separates display-copy candidates from prohibited identifier changes, recommends Lume as the future living land-power term while keeping Mana as the tactical hero ability resource for now, and prepares an Emmanuel review packet before any runtime copy migration. It does not change runtime behavior, save format, internal IDs, gameplay balance, art/assets, maps, races, units, buildings, classes, desktop packaging, engine choice, runtime copy, Lume Network behavior, multiplayer, PvP, or co-op.
+Current v0.81 work is a docs-only Lume Site Network prototype specification and smallest-fun-slice gate after the clean v0.80 Salto/Lume/display-copy planning pass. It audits the existing resource-site, Worker, campaign, HUD, Results, event, AI, save, replay, Tutorial, and test architecture, then recommends a mission-local Linked Control prototype for `aether_well_ruins` on `broken_ford`. It does not change runtime behavior, save format, internal IDs, gameplay balance, art/assets, maps, races, units, buildings, classes, desktop packaging, engine choice, runtime copy, Lume Network behavior, multiplayer, PvP, or co-op.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.80 package metadata includes the display-copy inventory and migration-planning docs without changing the playable build.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.81 package metadata includes the Lume Site Network planning docs without changing the playable build.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -29,6 +29,9 @@ v0.79 Emmanuel approval ledger: `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`.
 v0.79 safe next milestone sequence: `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`.
 v0.80 Emmanuel display-copy review packet: `docs/V080_EMMANUEL_REVIEW_PACKET.md`.
 v0.80 runtime-facing string inventory: `docs/V080_RUNTIME_FACING_STRING_INVENTORY.json`.
+v0.81 Emmanuel Lume Site Network review packet: `docs/V081_EMMANUEL_REVIEW_PACKET.md`.
+v0.81 recommended smallest-fun-slice spec: `docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md`.
+v0.81 existing site-system audit: `docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md`.
 
 Current v0.3 feature snapshot:
 

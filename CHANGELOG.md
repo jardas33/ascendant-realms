@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.81 Lume Site Network Prototype Specification And Smallest-Fun-Slice Gate - 2026-05-30
+
+This checkpoint is docs-only. It audits the existing resource-site and campaign architecture, compares small Lume Network prototype candidates, and recommends a mission-local Linked Control slice for Emmanuel review before any runtime implementation.
+
+Added:
+
+- `docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md`.
+- `docs/V081_LUME_NETWORK_DESIGN_PRINCIPLES.md`.
+- `docs/V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md`.
+- `docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md`.
+- `docs/V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md`.
+- `docs/V081_DATA_MODEL_AND_INTEGRATION_PLAN.md`.
+- `docs/V081_UI_READABILITY_AND_TEACHING_SPEC.md`.
+- `docs/V081_RACE_EXTENSIBILITY_MATRIX.md`.
+- `docs/V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md`.
+- `docs/V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md`.
+- `docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md`.
+- `docs/V081_EMMANUEL_REVIEW_PACKET.md`.
+- `docs/V081_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Updated README, roadmap, handoff, checkpoint, release checklist, package metadata, and package validation lists so the v0.81 Lume Site Network planning packet is discoverable and package-verifiable.
+
+Recommendation:
+
+- Use `aether_well_ruins` on `broken_ford` as the first future testbed.
+- Start with battle-local Linked Control, maximum three eligible sites, maximum two active links, and `Linked Ward` as the first non-stacking defensive benefit.
+- Keep hero/Jardas binding deferred unless Emmanuel chooses a stronger identity-first prototype.
+
+Not changed:
+
+- No runtime behavior, save format, internal IDs, gameplay balance, enemy AI, pathing, controls, runtime UI, maps, factions, races, units, buildings, classes, assets, art generation/import, desktop wrapper, engine choice, runtime rebrand, runtime copy migration, Lume Network implementation, multiplayer, PvP, or co-op code changed.
+
+Verification:
+
+- Passed: `npm test` with 86 files / 644 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, focused package validation test with 3 tests, dirty pre-commit package generation, dirty package verification with 246 checks, and final `git diff --check`.
+
 # v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
 
 This checkpoint is docs-only. It inventories current runtime-facing terminology and creates a safe migration plan for future Salto, Barrosan, Lume, title, and display-copy work without starting runtime copy migration.

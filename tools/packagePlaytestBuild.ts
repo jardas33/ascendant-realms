@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.80 Salto Lume and display-copy migration plan";
+const CHECKPOINT = "v0.81 Lume Site Network prototype specification and smallest-fun-slice gate";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -258,6 +258,19 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V080_TEST_AND_ROLLBACK_PLAN.md", join(packageDir, "V080_TEST_AND_ROLLBACK_PLAN.md"));
   await copyMarkdown("docs/V080_EMMANUEL_REVIEW_PACKET.md", join(packageDir, "V080_EMMANUEL_REVIEW_PACKET.md"));
   await copyMarkdown("docs/V080_IMPLEMENTATION_REPORT.md", join(packageDir, "V080_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md", join(packageDir, "V081_EXISTING_SITE_SYSTEM_AUDIT.md"));
+  await copyMarkdown("docs/V081_LUME_NETWORK_DESIGN_PRINCIPLES.md", join(packageDir, "V081_LUME_NETWORK_DESIGN_PRINCIPLES.md"));
+  await copyMarkdown("docs/V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md", join(packageDir, "V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md"));
+  await copyMarkdown("docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md", join(packageDir, "V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md"));
+  await copyMarkdown("docs/V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md", join(packageDir, "V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md"));
+  await copyMarkdown("docs/V081_DATA_MODEL_AND_INTEGRATION_PLAN.md", join(packageDir, "V081_DATA_MODEL_AND_INTEGRATION_PLAN.md"));
+  await copyMarkdown("docs/V081_UI_READABILITY_AND_TEACHING_SPEC.md", join(packageDir, "V081_UI_READABILITY_AND_TEACHING_SPEC.md"));
+  await copyMarkdown("docs/V081_RACE_EXTENSIBILITY_MATRIX.md", join(packageDir, "V081_RACE_EXTENSIBILITY_MATRIX.md"));
+  await copyMarkdown("docs/V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md", join(packageDir, "V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md"));
+  await copyMarkdown("docs/V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md", join(packageDir, "V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md"));
+  await copyMarkdown("docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md", join(packageDir, "V081_FUTURE_IMPLEMENTATION_SEQUENCE.md"));
+  await copyMarkdown("docs/V081_EMMANUEL_REVIEW_PACKET.md", join(packageDir, "V081_EMMANUEL_REVIEW_PACKET.md"));
+  await copyMarkdown("docs/V081_IMPLEMENTATION_REPORT.md", join(packageDir, "V081_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -343,7 +356,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.80 Salto/Lume/display-copy migration plan, start with V080_EMMANUEL_REVIEW_PACKET.md and V080_RUNTIME_FACING_STRING_INVENTORY.json, then use the taxonomy, migration map, safe copy batches, and test/rollback plan. This package is still the unchanged browser prototype plus docs: v0.80 does not add new gameplay, runtime rebranding, runtime copy migration, Lume Network runtime behavior, new art, new maps, new factions, new races, new units, new buildings, hero classes, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.79 direction-lock docs and the v0.78 review packet as the approved direction reference.
+For the v0.81 Lume Site Network prototype specification and smallest-fun-slice gate, start with V081_EMMANUEL_REVIEW_PACKET.md, then read the existing site-system audit, recommended smallest-fun-slice spec, first testbed mission recommendation, data model/integration plan, safety plan, and test/rollback plan. This package is still the unchanged browser prototype plus docs: v0.81 does not add new gameplay, runtime rebranding, runtime copy migration, Lume Network runtime behavior, new art, new maps, new factions, new races, new units, new buildings, hero classes, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.80 terminology plan, v0.79 direction-lock docs, and v0.78 review packet as the approved direction reference.
 
 ## Known Warning
 

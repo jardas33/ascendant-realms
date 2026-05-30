@@ -1,6 +1,67 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.80 Salto Lume and display-copy migration plan
+Updated: 2026-05-30 v0.81 Lume Site Network prototype specification and smallest-fun-slice gate
+
+## v0.81 Lume Site Network Prototype Specification And Smallest-Fun-Slice Gate - 2026-05-30
+
+Scope: docs-only Lume Site Network specification and smallest-fun-slice checkpoint. This pass audits the existing resource-site, Worker, campaign, HUD, Results, battlefield-event, AI, save, replay, Tutorial, and test architecture, then recommends a small future runtime prototype. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer, perform runtime copy migration, implement Lume Network runtime behavior, or start v0.82.
+
+Baseline:
+
+- Starting commit/package: `5ef4f92`, `ascendant-realms-private-playtest-5ef4f92`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26693314243` on `5ef4f92` completed successfully.
+
+Included work:
+
+- Added `docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md`.
+- Added `docs/V081_LUME_NETWORK_DESIGN_PRINCIPLES.md`.
+- Added `docs/V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md`.
+- Added `docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md`.
+- Added `docs/V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md`.
+- Added `docs/V081_DATA_MODEL_AND_INTEGRATION_PLAN.md`.
+- Added `docs/V081_UI_READABILITY_AND_TEACHING_SPEC.md`.
+- Added `docs/V081_RACE_EXTENSIBILITY_MATRIX.md`.
+- Added `docs/V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md`.
+- Added `docs/V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md`.
+- Added `docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md`.
+- Added `docs/V081_EMMANUEL_REVIEW_PACKET.md`.
+- Added `docs/V081_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation so the v0.81 docs can ship inside the private playtest package.
+- Updated README, roadmap, changelog, release checklist, and LLM handoff for docs-only closeout.
+
+Recommendation:
+
+- Smallest future prototype: mission-local Linked Control.
+- First testbed: `aether_well_ruins` on `broken_ford`.
+- Recommended nodes: `west_stone_cut`, `ford_toll`, `north_aether_spring`.
+- Limits: maximum three eligible nodes and maximum two active links.
+- First link: `west_stone_cut` <-> `ford_toll`.
+- First benefit: `Linked Ward`, a small non-stacking defensive readiness benefit near active linked sites.
+- Activation: capture-only first.
+- Hero/Jardas binding: deferred for Emmanuel decision.
+- State: battle-local only.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Stable internal IDs remain unchanged, including `aether_well_ruins`, `broken_ford`, `aether`, `mission_aether_surge`, `aether_surge`, `aether_lens`, and `maxMana`.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-5ef4f92-dirty` generated.
+npm run verify:playtest-package PASS, 246 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.81 Lume Site Network prototype specification and smallest-fun-slice gate`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
 

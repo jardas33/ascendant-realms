@@ -1,12 +1,76 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.80 Salto Lume and display-copy migration plan
+Last updated: 2026-05-30 v0.81 Lume Site Network prototype specification and smallest-fun-slice gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specifies the future Lume Site Network smallest fun slice without implementing runtime behavior. No runtime rebrand is approved.
+
+## Current v0.81 Lume Site Network Prototype Specification And Smallest-Fun-Slice Gate - 2026-05-30
+
+Status: v0.81 is docs-only. It audits the existing resource-site, Worker, campaign, HUD, Results, battlefield-event, AI, save, replay, Tutorial, and test architecture, then recommends a small future Lume Site Network prototype. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer/PvP/co-op, perform runtime copy migration, implement Lume Network runtime behavior, or start v0.82.
+
+Baseline:
+
+- Starting commit/package: `5ef4f92`, `ascendant-realms-private-playtest-5ef4f92`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26693314243` on `5ef4f92` completed successfully.
+
+Included work:
+
+- Added `docs/V081_EXISTING_SITE_SYSTEM_AUDIT.md`.
+- Added `docs/V081_LUME_NETWORK_DESIGN_PRINCIPLES.md`.
+- Added `docs/V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md`.
+- Added `docs/V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md`.
+- Added `docs/V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md`.
+- Added `docs/V081_DATA_MODEL_AND_INTEGRATION_PLAN.md`.
+- Added `docs/V081_UI_READABILITY_AND_TEACHING_SPEC.md`.
+- Added `docs/V081_RACE_EXTENSIBILITY_MATRIX.md`.
+- Added `docs/V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md`.
+- Added `docs/V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md`.
+- Added `docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md`.
+- Added `docs/V081_EMMANUEL_REVIEW_PACKET.md`.
+- Added `docs/V081_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation to require the v0.81 docs in the private playtest package.
+- Updated README, ROADMAP, CHANGELOG, DEVELOPMENT_CHECKPOINT, RELEASE_CHECKLIST, and this handoff.
+
+Recommendation:
+
+- Smallest future prototype: mission-local Linked Control.
+- First testbed: `aether_well_ruins` on `broken_ford`.
+- Recommended nodes: `west_stone_cut`, `ford_toll`, `north_aether_spring`.
+- Limits: maximum three eligible nodes and maximum two active links.
+- First benefit: `Linked Ward`, a small non-stacking defensive readiness benefit near active linked sites.
+- Activation: capture-only first.
+- Hero/Jardas binding: deferred for Emmanuel decision.
+- State: battle-local only.
+
+Runtime/save/art boundary:
+
+- No runtime behavior changed.
+- No save-version bump or save field change.
+- No internal IDs renamed.
+- No runtime title/display-name migration was performed.
+- No Lume Network behavior was implemented.
+- No art was generated, imported, downloaded, or wired.
+- No desktop port, wrapper, engine choice, multiplayer, PvP, co-op, race, map, unit, building, class, campaign, or broad UI work was started.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-5ef4f92-dirty` generated.
+npm run verify:playtest-package PASS, 246 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Next recommended action: after closeout, Emmanuel should review `docs/V081_EMMANUEL_REVIEW_PACKET.md`. Do not start a runtime Lume Network prototype, runtime copy migration, art generation, runtime rebrand, ID/save migration, v0.82, or desktop work without a new explicit goal.
 
 ## Current v0.80 Salto Lume And Display-Copy Migration Plan - 2026-05-30
 

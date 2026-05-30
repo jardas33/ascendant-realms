@@ -235,6 +235,19 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V080_TEST_AND_ROLLBACK_PLAN.md",
   "V080_EMMANUEL_REVIEW_PACKET.md",
   "V080_IMPLEMENTATION_REPORT.md",
+  "V081_EXISTING_SITE_SYSTEM_AUDIT.md",
+  "V081_LUME_NETWORK_DESIGN_PRINCIPLES.md",
+  "V081_SMALLEST_FUN_SLICE_CANDIDATE_COMPARISON.md",
+  "V081_RECOMMENDED_SMALLEST_FUN_SLICE_SPEC.md",
+  "V081_FIRST_TESTBED_MISSION_RECOMMENDATION.md",
+  "V081_DATA_MODEL_AND_INTEGRATION_PLAN.md",
+  "V081_UI_READABILITY_AND_TEACHING_SPEC.md",
+  "V081_RACE_EXTENSIBILITY_MATRIX.md",
+  "V081_SAVE_REPLAY_TUTORIAL_SAFETY_PLAN.md",
+  "V081_TEST_STRATEGY_AND_ROLLBACK_PLAN.md",
+  "V081_FUTURE_IMPLEMENTATION_SEQUENCE.md",
+  "V081_EMMANUEL_REVIEW_PACKET.md",
+  "V081_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -340,7 +353,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.80 Salto Lume and display-copy migration plan",
+      "v0.81 Lume Site Network prototype specification and smallest-fun-slice gate",
       "build info checkpoint",
       checks,
       errors
