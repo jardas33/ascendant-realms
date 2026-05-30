@@ -7,6 +7,7 @@ describe("PlaytestPackageValidation", () => {
 
     expect(result.errors).toEqual([]);
     expect(result.checks).toContain("game/index.html uses package-safe relative asset URLs");
+    expect(result.checks).toContain("private playtest tools flag present");
     expect(result.checks).toContain("built game assets present");
   });
 
@@ -48,7 +49,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
   return {
     packageName: "ascendant-realms-private-playtest-afbb37f",
     files: [
-      { path: "game/index.html", sizeBytes: 128, textContent: '<script type="module" src="./assets/index.js"></script>' },
+      {
+        path: "game/index.html",
+        sizeBytes: 128,
+        textContent: '<script>window.__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__=true;</script><script type="module" src="./assets/index.js"></script>'
+      },
       { path: "game/assets/index.js", sizeBytes: 1024, textContent: "console.log('game');" },
       { path: "README_FOR_TESTERS.md", sizeBytes: 20, textContent: "Read me" },
       { path: "PLAYTEST_BUILD_INFO.md", sizeBytes: 20, textContent: "Build info" },
@@ -59,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.82 mission-local Lume Network runtime prototype",
+          checkpoint: "v0.83 campaign map UX rescue and private playtest quick launch",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -297,6 +302,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md", sizeBytes: 20, textContent: "Lume test safety report" },
       { path: "V082_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.82 implementation report" },
       { path: "V082_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Emmanuel retest checklist" },
+      { path: "V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md", sizeBytes: 20, textContent: "v0.83 campaign map UX rescue spec" },
+      { path: "V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md", sizeBytes: 20, textContent: "v0.83 private launch spec" },
+      { path: "V083_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.83 implementation report" },
+      { path: "V083_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.83 visual QA report" },
+      { path: "V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md", sizeBytes: 20, textContent: "v0.83 launch notes" },
+      { path: "V083_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.83 Emmanuel checklist" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

@@ -31,6 +31,23 @@ describe("LumeNetworkDirector", () => {
         rewardsDisabled: true
       })
     ).toBeUndefined();
+    expect(
+      selectLumeNetworkForLaunch({
+        mode: "campaign_node",
+        campaignNodeId: "aether_well_ruins",
+        mapId: "broken_ford",
+        rewardsDisabled: true
+      })
+    ).toBeUndefined();
+    expect(
+      selectLumeNetworkForLaunch({
+        mode: "campaign_node",
+        campaignNodeId: "aether_well_ruins",
+        mapId: "broken_ford",
+        rewardsDisabled: true,
+        privatePlaytestDemoId: "aether_well_lume_private_demo"
+      })?.id
+    ).toBe("aether_well_ruins_lume_ward");
   });
 
   it("activates, severs, and reactivates capture-only links from live site ownership", () => {

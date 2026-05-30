@@ -258,7 +258,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     mode: launch.request.mode,
     campaignNodeId: launch.request.campaignNodeId,
     mapId: activeMap.id,
-    rewardsDisabled: launch.request.rewardsDisabled
+    rewardsDisabled: launch.request.rewardsDisabled,
+    privatePlaytestDemoId: launch.request.privatePlaytestDemoId
   });
   const lumeNetworkDirector = lumeNetworkDefinition
     ? new LumeNetworkDirector({

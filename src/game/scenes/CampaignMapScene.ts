@@ -13,7 +13,11 @@ import {
 } from "../core/CampaignRules";
 import { getStrongholdLaunchModifiers, purchaseStrongholdUpgrade } from "../core/StrongholdRules";
 import { getRivalBattleLaunchModifiers } from "../core/RivalRules";
-import { getCampaignScenarioLaunchModifiers } from "../core/campaign/CampaignMissionRules";
+import {
+  getCampaignMissionBriefing,
+  getCampaignMissionRewardState,
+  getCampaignScenarioLaunchModifiers
+} from "../core/campaign/CampaignMissionRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -42,6 +46,18 @@ import { renderRetinuePanel } from "../campaign/RetinuePanel";
 import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
 import { dismissRetinueUnit, retinueDeploymentUnits, retinueReserveUnits, toggleRetinueDeployment } from "../core/RetinueRules";
+import { isPrivatePlaytestToolsEnabled, PRIVATE_LUME_DEMO_ID, PRIVATE_LUME_DEMO_NOTICE } from "../playtest/PrivatePlaytestTools";
+
+type CampaignTabId = "map" | "stronghold" | "hero" | "inventory" | "intel" | "reputation";
+
+const CAMPAIGN_TABS: Array<{ id: CampaignTabId; label: string }> = [
+  { id: "map", label: "Map" },
+  { id: "stronghold", label: "Stronghold" },
+  { id: "hero", label: "Hero" },
+  { id: "inventory", label: "Inventory" },
+  { id: "intel", label: "Intel" },
+  { id: "reputation", label: "Reputation" }
+];
 
 interface CampaignMapData {
   heroSave?: HeroSaveData;
@@ -59,6 +75,7 @@ export class CampaignMapScene extends Phaser.Scene {
   private campaignSave: CampaignSaveData = createStartedCampaignSave();
   private selectedNodeId = CAMPAIGN_NODES[0]?.id ?? "";
   private selectedTacticalPlanId: TacticalPlanId = DEFAULT_TACTICAL_PLAN_ID;
+  private activeTab: CampaignTabId = "map";
   private message = "Choose an available campaign node.";
 
   constructor() {
@@ -117,6 +134,12 @@ export class CampaignMapScene extends Phaser.Scene {
         return;
       }
 
+      const tabButton = target.closest<HTMLButtonElement>("button[data-campaign-tab]");
+      if (tabButton) {
+        this.selectTab(tabButton.dataset.campaignTab);
+        return;
+      }
+
       const retinueDismissButton = target.closest<HTMLButtonElement>("button[data-retinue-dismiss]");
       if (retinueDismissButton) {
         this.dismissRetinueUnit(retinueDismissButton.dataset.retinueDismiss ?? "");
@@ -132,6 +155,9 @@ export class CampaignMapScene extends Phaser.Scene {
       const action = target.closest<HTMLButtonElement>("button[data-campaign-action]")?.dataset.campaignAction;
       if (action === "start") {
         this.startSelectedNode();
+      }
+      if (action === "private-lume-demo") {
+        this.startPrivateLumeDemo();
       }
       if (action === "menu") {
         this.scene.start(SCENE_KEYS.mainMenu);
@@ -209,6 +235,33 @@ export class CampaignMapScene extends Phaser.Scene {
     this.render();
   }
 
+  private startPrivateLumeDemo(): void {
+    if (!isPrivatePlaytestToolsEnabled()) {
+      this.message = "Private playtest tools are not available in this build.";
+      this.render();
+      return;
+    }
+    const node = selectedCampaignNode("aether_well_ruins");
+    if (!node || node.nodeType !== "battle") {
+      this.message = "Aether Well Lume demo is unavailable.";
+      this.render();
+      return;
+    }
+
+    this.scene.start(SCENE_KEYS.battle, {
+      launchRequest: createCampaignBattleLaunchRequest(this.heroSave, node, {
+        requestId: `private-playtest:${PRIVATE_LUME_DEMO_ID}:${node.mapId}`,
+        sourceId: "private_playtest_aether_well_lume_demo",
+        rewardsDisabled: true,
+        privatePlaytestDemoId: PRIVATE_LUME_DEMO_ID,
+        privatePlaytestNotice: PRIVATE_LUME_DEMO_NOTICE,
+        modifiers: getCampaignScenarioLaunchModifiers(node),
+        retinueUnits: [],
+        retinueReserveUnits: []
+      })
+    });
+  }
+
   private dismissRetinueUnit(retinueUnitId: string): void {
     if (!retinueUnitId) {
       return;
@@ -223,6 +276,14 @@ export class CampaignMapScene extends Phaser.Scene {
     this.selectedTacticalPlanId = normalizeTacticalPlanId(value);
     const plan = getTacticalPlan(this.selectedTacticalPlanId);
     this.message = `Tactical plan selected: ${plan.name}. ${plan.effectSummary}`;
+    this.render();
+  }
+
+  private selectTab(value: string | undefined): void {
+    if (!isCampaignTabId(value)) {
+      return;
+    }
+    this.activeTab = value;
     this.render();
   }
 
@@ -294,8 +355,8 @@ export class CampaignMapScene extends Phaser.Scene {
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell campaign-shell asset-screen-bg" data-testid="campaign-map" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
-        <section class="menu-panel extra-wide campaign-panel">
-          <div class="progression-header">
+        <section class="menu-panel extra-wide campaign-panel campaign-map-panel">
+          <div class="progression-header campaign-top-strip">
             <div>
               <p class="eyebrow">Campaign Map</p>
               <h1>Border Marches</h1>
@@ -307,41 +368,9 @@ export class CampaignMapScene extends Phaser.Scene {
             </div>
           </div>
           <div class="status-box" data-testid="campaign-status">${escapeHtml(this.message)}</div>
-          ${this.renderNextActionPanel()}
-          <div class="campaign-layout">
-            <section>
-              <h2>Hero</h2>
-              ${this.renderHeroSummary()}
-              <h2>Campaign Bank</h2>
-              ${renderCampaignResourceBank(this.campaignSave)}
-              ${renderStrongholdPanel(this.campaignSave, this.heroSave)}
-              ${renderRetinuePanel(this.campaignSave)}
-              ${renderRivalIntelPanel(this.campaignSave)}
-              <h2>Reputation</h2>
-              ${renderReputation(viewModel.reputation)}
-              <h2>Active Modifiers</h2>
-              ${renderActiveModifiers(this.campaignSave)}
-              <h2>Campaign Chapters</h2>
-              ${renderCampaignChapterPanel(viewModel.chapters)}
-              <h2>Nodes</h2>
-              <div class="campaign-map-grid">
-                ${viewModel.nodes.map((node) => renderNodeButton(node)).join("")}
-              </div>
-            </section>
-            <section>
-              <h2>Selected Node</h2>
-              ${
-                viewModel.selectedNode
-                  ? renderNodeDetails({
-                      node: viewModel.selectedNode,
-                      campaignSave: this.campaignSave,
-                      heroSave: this.heroSave,
-                      selectedTacticalPlanId: this.selectedTacticalPlanId
-                    })
-                  : `<p class="quiet">No campaign node selected.</p>`
-              }
-            </section>
-          </div>
+          ${this.renderPrivatePlaytestTools()}
+          ${this.renderCampaignTabs()}
+          ${this.renderActiveTab(viewModel)}
           ${this.renderCampaignActions()}
         </section>
       </main>
@@ -349,16 +378,164 @@ export class CampaignMapScene extends Phaser.Scene {
   }
 
   private renderCampaignActions(): string {
+    return `
+      <div class="menu-actions row campaign-secondary-actions">
+        <button data-testid="campaign-inventory" data-campaign-action="inventory">Hero Inventory</button>
+        <button data-testid="campaign-main-menu" data-campaign-action="menu">Main Menu</button>
+      </div>
+    `;
+  }
+
+  private renderSelectedPrimaryAction(): string {
     const node = this.selectedNode();
     const hasChoices = Boolean(node?.choices?.length);
     const isReplay = Boolean(node && node.nodeType === "battle" && getCampaignNodeStatus(node, this.campaignSave) === "completed");
     const primaryLabel = node?.nodeType === "battle" ? (isReplay ? "Replay Battle" : "Start Battle") : "Resolve Node";
+    return hasChoices
+      ? ""
+      : `<button class="campaign-primary-action" data-testid="campaign-start-node" data-campaign-action="start" ${this.canStartSelectedNode() ? "" : "disabled"}>${primaryLabel}</button>`;
+  }
+
+  private renderCampaignTabs(): string {
     return `
-      <div class="menu-actions row">
-        ${hasChoices ? "" : `<button data-testid="campaign-start-node" data-campaign-action="start" ${this.canStartSelectedNode() ? "" : "disabled"}>${primaryLabel}</button>`}
-        <button data-testid="campaign-inventory" data-campaign-action="inventory">Hero Inventory</button>
-        <button data-testid="campaign-main-menu" data-campaign-action="menu">Main Menu</button>
+      <nav class="campaign-tabs" data-testid="campaign-tabs" aria-label="Campaign sections">
+        ${CAMPAIGN_TABS.map(
+          (tab) => `
+            <button
+              class="campaign-tab ${this.activeTab === tab.id ? "selected" : ""}"
+              data-testid="campaign-tab-${tab.id}"
+              data-campaign-tab="${tab.id}"
+              aria-pressed="${this.activeTab === tab.id ? "true" : "false"}"
+            >${escapeHtml(tab.label)}</button>
+          `
+        ).join("")}
+      </nav>
+    `;
+  }
+
+  private renderActiveTab(viewModel: ReturnType<typeof createCampaignMapViewModel>): string {
+    if (this.activeTab === "stronghold") {
+      return `
+        <div class="campaign-tab-panel" data-testid="campaign-tab-panel-stronghold">
+          <section class="campaign-support-grid">
+            <div>
+              <h2>Campaign Bank</h2>
+              ${renderCampaignResourceBank(this.campaignSave)}
+              <h2>Active Modifiers</h2>
+              ${renderActiveModifiers(this.campaignSave)}
+            </div>
+            <div>${renderStrongholdPanel(this.campaignSave, this.heroSave)}</div>
+          </section>
+        </div>
+      `;
+    }
+    if (this.activeTab === "hero") {
+      return `
+        <div class="campaign-tab-panel" data-testid="campaign-tab-panel-hero">
+          <section class="campaign-support-grid">
+            <div>
+              <h2>Hero</h2>
+              ${this.renderHeroSummary()}
+              ${this.renderNextActionPanel()}
+            </div>
+            <div>${renderRetinuePanel(this.campaignSave)}</div>
+          </section>
+        </div>
+      `;
+    }
+    if (this.activeTab === "inventory") {
+      return `
+        <div class="campaign-tab-panel compact" data-testid="campaign-tab-panel-inventory">
+          <h2>Inventory And Progression</h2>
+          ${this.renderHeroSummary()}
+          <p class="quiet">Open Hero Inventory to equip rewards, inspect relic synergy, and spend skill points before launching the next battle.</p>
+          <button data-testid="campaign-inventory-inline" data-campaign-action="inventory">Open Hero Inventory</button>
+        </div>
+      `;
+    }
+    if (this.activeTab === "intel") {
+      return `
+        <div class="campaign-tab-panel" data-testid="campaign-tab-panel-intel">
+          <section class="campaign-support-grid">
+            <div>
+              ${renderRivalIntelPanel(this.campaignSave)}
+              <h2>Campaign Chapters</h2>
+              ${renderCampaignChapterPanel(viewModel.chapters)}
+            </div>
+            <div>
+              <h2>Active Modifiers</h2>
+              ${renderActiveModifiers(this.campaignSave)}
+            </div>
+          </section>
+        </div>
+      `;
+    }
+    if (this.activeTab === "reputation") {
+      return `
+        <div class="campaign-tab-panel" data-testid="campaign-tab-panel-reputation">
+          <h2>Reputation</h2>
+          ${renderReputation(viewModel.reputation)}
+        </div>
+      `;
+    }
+    return `
+      <div class="campaign-map-workspace" data-testid="campaign-tab-panel-map">
+        <section class="campaign-map-stage" aria-label="Campaign node map">
+          <div class="campaign-map-grid">
+            ${viewModel.nodes.map((node) => renderNodeButton(node)).join("")}
+          </div>
+        </section>
+        <aside class="campaign-selected-panel" data-testid="campaign-selected-panel">
+          ${viewModel.selectedNode ? this.renderSelectedNodePanel(viewModel.selectedNode) : `<p class="quiet">No campaign node selected.</p>`}
+        </aside>
       </div>
+    `;
+  }
+
+  private renderSelectedNodePanel(node: CampaignNodeDefinition): string {
+    const status = getCampaignNodeStatus(node, this.campaignSave);
+    const missionReward = getCampaignMissionRewardState(this.campaignSave, node);
+    const briefing = getCampaignMissionBriefing(node);
+    const hasChoices = Boolean(node.choices?.length);
+    const detailOpen = hasChoices ? " open" : "";
+    return `
+      <div class="campaign-selected-summary">
+        <p class="eyebrow">${escapeHtml(node.nodeType)} - ${escapeHtml(node.isPlaceholder ? "upcoming" : status)}</p>
+        <h2>${escapeHtml(node.name)}</h2>
+        <p>${escapeHtml(node.description)}</p>
+        <div class="results-grid compact campaign-selected-facts">
+          <span>Mission type</span><strong>${escapeHtml(briefing?.missionType?.name ?? "Campaign node")}</strong>
+          <span>Reward</span><strong>${escapeHtml(briefing?.rewardPreview ?? missionReward.rewardLabel)}</strong>
+          <span>Status</span><strong>${escapeHtml(missionReward.statusLabel)}</strong>
+          <span>Replay</span><strong>${missionReward.isReplay ? "Replay-safe reduced reward" : "First-clear rules"}</strong>
+        </div>
+        ${this.renderSelectedPrimaryAction()}
+        ${this.renderNextActionPanel()}
+      </div>
+      <details class="campaign-node-more"${detailOpen}>
+        <summary>${hasChoices ? "Choices And Details" : "More Details"}</summary>
+        ${renderNodeDetails({
+          node,
+          campaignSave: this.campaignSave,
+          heroSave: this.heroSave,
+          selectedTacticalPlanId: this.selectedTacticalPlanId
+        })}
+      </details>
+    `;
+  }
+
+  private renderPrivatePlaytestTools(): string {
+    if (!isPrivatePlaytestToolsEnabled()) {
+      return "";
+    }
+    return `
+      <section class="campaign-private-tools" data-testid="campaign-private-playtest-tools">
+        <div>
+          <strong>Private playtest tools</strong>
+          <p>${escapeHtml(PRIVATE_LUME_DEMO_NOTICE)}</p>
+        </div>
+        <button data-testid="campaign-private-lume-demo" data-campaign-action="private-lume-demo">Launch Aether Well Lume Demo</button>
+      </section>
     `;
   }
 
@@ -397,4 +574,8 @@ export class CampaignMapScene extends Phaser.Scene {
       this.root.removeEventListener("click", this.handler);
     }
   }
+}
+
+function isCampaignTabId(value: string | undefined): value is CampaignTabId {
+  return CAMPAIGN_TABS.some((tab) => tab.id === value);
 }

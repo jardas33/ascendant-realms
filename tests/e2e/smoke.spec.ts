@@ -174,6 +174,50 @@ async function selectCampaignNodeDetails(
   await expect(page.locator(".campaign-node-details"), `${context}: node details`).toContainText(expectedTitle);
 }
 
+async function expectCampaignMapNodesDoNotOverlap(page: Page): Promise<void> {
+  const layout = await page.evaluate(() => {
+    const map = document.querySelector<HTMLElement>(".campaign-map-grid");
+    const nodes = [...document.querySelectorAll<HTMLElement>(".campaign-map-grid .campaign-node")].map((node) => {
+      const rect = node.getBoundingClientRect();
+      return {
+        testId: node.dataset.testid ?? node.textContent?.trim() ?? "node",
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height
+      };
+    });
+    const mapRect = map?.getBoundingClientRect();
+    return {
+      map: mapRect
+        ? { left: mapRect.left, top: mapRect.top, right: mapRect.right, bottom: mapRect.bottom, width: mapRect.width, height: mapRect.height }
+        : undefined,
+      nodes
+    };
+  });
+
+  expect(layout.map).toBeTruthy();
+  expect(layout.nodes.length).toBeGreaterThan(4);
+  for (const node of layout.nodes) {
+    expect(node.width, `${node.testId} has stable width`).toBeGreaterThan(70);
+    expect(node.height, `${node.testId} has stable height`).toBeGreaterThan(38);
+    expect(node.left, `${node.testId} stays inside map left edge`).toBeGreaterThanOrEqual((layout.map?.left ?? 0) - 1);
+    expect(node.right, `${node.testId} stays inside map right edge`).toBeLessThanOrEqual((layout.map?.right ?? 0) + 1);
+    expect(node.top, `${node.testId} stays inside map top edge`).toBeGreaterThanOrEqual((layout.map?.top ?? 0) - 1);
+    expect(node.bottom, `${node.testId} stays inside map bottom edge`).toBeLessThanOrEqual((layout.map?.bottom ?? 0) + 1);
+  }
+  for (let outerIndex = 0; outerIndex < layout.nodes.length; outerIndex += 1) {
+    for (let innerIndex = outerIndex + 1; innerIndex < layout.nodes.length; innerIndex += 1) {
+      const a = layout.nodes[outerIndex];
+      const b = layout.nodes[innerIndex];
+      const separated = a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top;
+      expect(separated, `${a.testId} should not overlap ${b.testId}`).toBe(true);
+    }
+  }
+}
+
 async function readDifficultyBattleState(page: Page): Promise<{
   difficulty: SmokeDifficulty;
   fogActive: boolean;
@@ -1166,9 +1210,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     test.setTimeout(60_000);
     await startNewCampaign(page, "E2E Campaign");
 
+    await expectCampaignMapNodesDoNotOverlap(page);
+    await clickReady(page.getByTestId("campaign-tab-intel"), "smoke campaign intel tab");
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
+    await clickReady(page.getByTestId("campaign-tab-map"), "smoke campaign map tab");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
     await selectCampaignNodeDetails(page, "aether_well_ruins", "Aether Well Ruins", "smoke locked Aether Well node");
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
@@ -1189,6 +1236,84 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await selectCampaignNodeDetails(page, "cinderfen_aftermath", "Cinderfen Aftermath", "smoke locked Cinderfen Aftermath node");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
     await expect(page.getByTestId("campaign-start-node")).toHaveCount(0);
+  });
+
+  test("private playtest Aether Well Lume demo launches from a locked campaign without saving rewards @ci-fast", async ({ page }) => {
+    test.setTimeout(70_000);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+    await startNewCampaign(page, "E2E Private Demo");
+
+    const beforeSave = await readStoredSave(page);
+    await expect(page.getByTestId("campaign-private-playtest-tools")).toBeVisible();
+    await expect(page.getByTestId("campaign-private-lume-demo")).toContainText("Aether Well Lume Demo");
+    await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
+    await clickReady(
+      page.getByTestId("campaign-private-lume-demo"),
+      "smoke private Lume demo launch",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("Private Playtest Demo");
+    await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("rewards and campaign progress are disabled");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Linked Ward");
+
+    const launchSnapshot = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      return {
+        privatePlaytestDemoId: scene.launch.request.privatePlaytestDemoId,
+        rewardsDisabled: scene.launch.request.rewardsDisabled,
+        tacticalPlanId: scene.launch.request.tacticalPlanId,
+        campaignNodeId: scene.launch.request.campaignNodeId,
+        mapId: scene.launch.request.mapId,
+        lumeNetworkId: scene.runtime.stats.lumeNetworkId
+      };
+    });
+    expect(launchSnapshot).toMatchObject({
+      privatePlaytestDemoId: "aether_well_lume_private_demo",
+      rewardsDisabled: true,
+      campaignNodeId: "aether_well_ruins",
+      mapId: "broken_ford",
+      lumeNetworkId: "aether_well_ruins_lume_ward"
+    });
+    expect(launchSnapshot.tacticalPlanId).toBeUndefined();
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const hook = (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite;
+      hook?.("west_stone_cut");
+      hook?.("ford_toll");
+      scene.update(performance.now(), 250);
+      scene.refreshBattleHud?.(0);
+      const objectiveId = scene.activeMap.scenario.objectives.enemyBaseBuildingId;
+      const target = scene.buildings.find(
+        (building: any) => building.team === "enemy" && building.definition.id === objectiveId && building.alive
+      );
+      if (!target) {
+        throw new Error(`Could not find enemy objective building ${objectiveId}.`);
+      }
+      target.takeDamage(target.maxHp + target.armor + 10_000);
+      scene.checkEndConditions();
+    });
+    await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator(".results-panel")).toContainText("Private playtest demo complete");
+    await expect(page.getByTestId("results-private-playtest-demo-summary")).toContainText(
+      "Rewards, campaign progress, hero XP, Retinue, and reputation disabled"
+    );
+    await expect(page.getByTestId("results-private-playtest-demo-summary")).toContainText("Linked Ward");
+
+    const afterSave = await readStoredSave(page);
+    expect(afterSave.campaign.completedNodeIds).toEqual(beforeSave.campaign.completedNodeIds);
+    expect(afterSave.campaign.nodeRewardsClaimedIds).toEqual(beforeSave.campaign.nodeRewardsClaimedIds);
+    expect(afterSave.hero.xp).toBe(beforeSave.hero.xp);
+    expect(afterSave.hero.completedBattles).toBe(beforeSave.hero.completedBattles);
   });
 
   test("campaign Border Village launches a battle scene @extended-smoke", async ({ page }) => {
@@ -1252,12 +1377,14 @@ test.describe("Ascendant Realms browser smoke flows", () => {
 
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await clickReady(page.getByTestId("campaign-tab-intel"), "smoke post-Ashen intel tab");
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: Border Marches");
+    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
+    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Unlocked");
+    await clickReady(page.getByTestId("campaign-tab-map"), "smoke post-Ashen map tab");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Completed/i);
     await expect(page.getByTestId("campaign-node-ashen_outpost")).toContainText(/Completed/i);
-    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
-    await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Unlocked");
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
     await expect(page.locator(".campaign-node-details")).toContainText("Scout the Causeway");
     await expect(page.locator(".campaign-node-details")).toContainText("Aid the Marsh Refugees");

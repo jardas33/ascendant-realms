@@ -54,6 +54,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}
     ${renderTacticalPlanSummary(data)}
+    ${renderPrivatePlaytestDemoSummary(data)}
     ${renderAct1FinaleSummary(data)}
     ${renderBattlefieldEventSummary(data)}
     ${renderLumeNetworkSummary(data)}
@@ -62,6 +63,24 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
 `;
+}
+
+export function renderPrivatePlaytestDemoSummary(data: ResultsData): string {
+  if (!data.launchRequest?.privatePlaytestDemoId) {
+    return "";
+  }
+  return `
+    <section class="result-block wide private-playtest-summary" data-testid="results-private-playtest-demo-summary">
+      <h2>Private Playtest Demo</h2>
+      <div class="results-grid compact">
+        <span>Demo</span><strong>${escapeHtml(data.launchRequest.privatePlaytestDemoId)}</strong>
+        <span>Save isolation</span><strong>Rewards, campaign progress, hero XP, Retinue, and reputation disabled</strong>
+        <span>Battlefield</span><strong>${escapeHtml(data.launchRequest.campaignNodeId ?? data.launchRequest.mapId)}</strong>
+        <span>Lume status</span><strong>${escapeHtml(formatLumeNetworkResult(data))}</strong>
+      </div>
+      <p class="quiet">${escapeHtml(data.launchRequest.privatePlaytestNotice ?? "Private playtest demo only.")}</p>
+    </section>
+  `;
 }
 
 function renderAct1FinaleBattleRows(data: ResultsData): string {

@@ -6,9 +6,10 @@ export function renderObjectives(
   objectives: HUDObjectiveSnapshot[] | undefined,
   enemyDoctrine?: HUDEnemyDoctrineSnapshot,
   battlefieldEvent?: HUDBattlefieldEventSnapshot,
-  lumeNetwork?: LumeNetworkHudSummary
+  lumeNetwork?: LumeNetworkHudSummary,
+  privatePlaytestNotice?: string
 ): string {
-  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork) {
+  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork && !privatePlaytestNotice) {
     return "";
   }
   const missionObjectives = objectives ?? [];
@@ -16,6 +17,7 @@ export function renderObjectives(
   const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
+      ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice) : ""}
       ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
       ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
@@ -38,6 +40,18 @@ export function renderObjectives(
           `;
         })
         .join("")}
+    </div>
+  `;
+}
+
+function renderPrivatePlaytestNotice(notice: string): string {
+  return `
+    <div class="private-playtest-row" data-testid="private-playtest-demo-warning">
+      <span>Demo</span>
+      <div>
+        <b>Private Playtest Demo</b>
+        <small>${escapeHtml(notice)}</small>
+      </div>
     </div>
   `;
 }

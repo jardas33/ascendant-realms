@@ -82,6 +82,9 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
 
 export function initialResultsStatus(data: ResultsData): string {
   if (data.stats.outcome === "defeat") {
+    if (data.launchRequest?.privatePlaytestDemoId) {
+      return "Private playtest demo ended. Rewards, campaign progress, hero XP, Retinue, and reputation were not saved.";
+    }
     if (data.launchRequest?.mode === "tutorial") {
       return "Tutorial attempt ended. This training run is no-save and no-reward, so no campaign progress, items, XP, or hero changes were saved.";
     }
@@ -89,6 +92,9 @@ export function initialResultsStatus(data: ResultsData): string {
   }
   if (data.launchRequest?.mode === "tutorial") {
     return "Tutorial run complete. This training path is no-save and no-reward, so campaign progress, items, XP, and hero changes were not saved.";
+  }
+  if (data.launchRequest?.privatePlaytestDemoId) {
+    return "Private playtest demo complete. Lume behavior was available for testing, but rewards, campaign progress, hero XP, Retinue, and reputation were not saved.";
   }
   if (data.relicRewardChoice) {
     const optionNames = data.relicRewardChoice.options.map((option) => option.item.name).join(" or ");

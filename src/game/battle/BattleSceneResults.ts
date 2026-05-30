@@ -40,7 +40,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
   let rivalResult: RivalBattleOutcomeSummary | undefined;
   let finalStats = completion.stats;
 
-  if (launch.request.mode === "campaign_node" && outcome !== "victory") {
+  if (launch.request.mode === "campaign_node" && !rewardsDisabled && outcome !== "victory") {
     const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
     const retinueUpdate = updateRetinueAfterBattleDetailed(
       storedCampaign,
@@ -67,7 +67,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     SaveSystem.saveCampaign(rivalUpdate.campaign, rivalUpdate.hero);
   }
 
-  if (outcome === "victory" && launch.request.mode === "campaign_node" && launch.request.campaignNodeId) {
+  if (outcome === "victory" && launch.request.mode === "campaign_node" && !rewardsDisabled && launch.request.campaignNodeId) {
     const node = requireCampaignNode(launch.request.campaignNodeId);
     const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
     const unlockedBefore = new Set(storedCampaign.unlockedNodeIds);

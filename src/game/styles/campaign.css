@@ -194,12 +194,40 @@
 
 .campaign-shell {
   place-items: stretch center;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .campaign-panel {
   align-self: start;
   margin-block: 0;
+}
+
+.campaign-map-panel {
+  width: min(1560px, 100%);
+  height: min(100%, calc(100vh - clamp(24px, 4vw, 48px)));
+  display: grid;
+  grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.campaign-top-strip {
+  margin-bottom: 0;
+}
+
+.campaign-top-strip h1 {
+  margin-bottom: 6px;
+  font-size: clamp(28px, 3.2vw, 42px);
+}
+
+.campaign-top-strip .menu-copy {
+  margin-bottom: 0;
+}
+
+.campaign-map-panel > .status-box {
+  margin: 0;
+  padding: 7px 10px;
+  line-height: 1.25;
 }
 
 .campaign-layout {
@@ -209,15 +237,82 @@
 }
 
 .campaign-layout > *,
+.campaign-map-workspace > *,
+.campaign-support-grid > *,
 .campaign-node-details,
 .event-choice {
   min-width: 0;
 }
 
+.campaign-private-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid rgba(116, 211, 242, 0.24);
+  border-left: 3px solid rgba(116, 211, 242, 0.76);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.1), transparent 44%),
+    rgba(8, 12, 12, 0.48);
+}
+
+.campaign-private-tools strong {
+  color: #f6edb4;
+  font-size: 13px;
+}
+
+.campaign-private-tools p {
+  margin: 2px 0 0;
+  color: #cbd6c2;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.campaign-private-tools button {
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.campaign-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.campaign-tab {
+  min-height: 34px;
+  padding: 7px 11px;
+  border-image-width: 8px;
+  font-size: 13px;
+}
+
+.campaign-tab.selected {
+  border-color: rgba(240, 217, 120, 0.7);
+  border-image-source: var(--ui-button-hover, var(--ui-button-idle));
+  color: #101511;
+  background: #f0d978;
+}
+
+.campaign-map-workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(560px, 1fr) minmax(330px, 400px);
+  gap: 14px;
+  overflow: hidden;
+}
+
+.campaign-map-stage {
+  min-height: 0;
+  display: grid;
+}
+
 .campaign-map-grid {
   position: relative;
   min-width: 0;
-  min-height: 430px;
+  min-height: 0;
+  height: 100%;
   border: 1px solid rgba(246, 237, 180, 0.18);
   border-style: solid;
   border-image-source: var(--ui-panel-frame);
@@ -247,15 +342,16 @@
 
 .campaign-node {
   position: absolute;
-  left: var(--node-x);
-  top: var(--node-y);
-  width: 142px;
-  min-height: 70px;
-  padding: 9px 10px;
+  left: clamp(62px, var(--node-x), calc(100% - 62px));
+  top: clamp(30px, var(--node-y), calc(100% - 30px));
+  width: 116px;
+  min-height: 54px;
+  padding: 6px 8px;
   transform: translate(-50%, -50%);
   text-align: center;
   max-width: calc(100% - 12px);
   overflow-wrap: anywhere;
+  font-size: 12px;
 }
 
 .campaign-node span {
@@ -301,6 +397,113 @@
   border-radius: 8px;
   background: var(--plate-bg);
   box-shadow: var(--plate-shadow);
+}
+
+.campaign-selected-panel {
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--plate-edge);
+  border-style: solid;
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 8px;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.campaign-selected-summary {
+  display: grid;
+  gap: 10px;
+}
+
+.campaign-selected-summary h2,
+.campaign-selected-summary p {
+  margin: 0;
+}
+
+.campaign-selected-summary h2 {
+  color: #f6edb4;
+  font-size: 22px;
+}
+
+.campaign-selected-summary p {
+  color: #c8d0bd;
+  line-height: 1.4;
+}
+
+.campaign-selected-facts {
+  margin: 0;
+}
+
+.campaign-primary-action {
+  width: 100%;
+  min-height: 44px;
+}
+
+.campaign-node-more {
+  margin-top: 10px;
+}
+
+.campaign-node-more summary {
+  cursor: pointer;
+  color: #f0d978;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.campaign-node-more .campaign-node-details {
+  min-height: 0;
+  margin-top: 10px;
+  padding: 12px;
+}
+
+.campaign-tab-panel {
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid var(--plate-edge);
+  border-style: solid;
+  border-image-source: var(--ui-inventory-slot-frame);
+  border-image-slice: 54;
+  border-image-width: 10px;
+  border-image-repeat: stretch;
+  border-radius: 8px;
+  background: var(--plate-bg);
+  box-shadow: var(--plate-shadow);
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+.campaign-tab-panel h2 {
+  margin: 0 0 10px;
+  color: #f6edb4;
+  font-size: 20px;
+}
+
+.campaign-tab-panel.compact {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.campaign-tab-panel.compact button {
+  width: fit-content;
+}
+
+.campaign-support-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: 14px;
+}
+
+.campaign-secondary-actions {
+  margin-top: 0;
 }
 
 .campaign-node-details h3 {
@@ -489,4 +692,57 @@
 .choice.selected::after {
   opacity: 1;
   background: linear-gradient(180deg, #f0d978, #74d3f2, #f0d978);
+}
+
+@media (max-width: 1300px) {
+  .campaign-shell {
+    overflow: auto;
+  }
+
+  .campaign-map-panel {
+    height: auto;
+    min-height: 100%;
+    overflow: visible;
+  }
+
+  .campaign-map-workspace,
+  .campaign-support-grid,
+  .campaign-private-tools {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-map-grid {
+    min-height: 460px;
+  }
+
+  .campaign-node[data-campaign-node="cinderfen_waystation"] {
+    top: clamp(30px, 50%, calc(100% - 30px));
+  }
+
+  .campaign-selected-panel,
+  .campaign-tab-panel {
+    overflow: visible;
+  }
+}
+
+@media (max-width: 760px) {
+  .campaign-map-grid {
+    min-height: 360px;
+  }
+
+  .campaign-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .campaign-tab,
+  .campaign-private-tools button {
+    width: 100%;
+  }
+
+  .campaign-node {
+    width: 108px;
+    min-height: 52px;
+    font-size: 11px;
+  }
 }

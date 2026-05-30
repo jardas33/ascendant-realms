@@ -1062,6 +1062,7 @@ export class BattleScene extends Phaser.Scene {
       battlefieldEvent: this.createBattlefieldEventSnapshot(),
       lumeNetwork: this.lumeNetworkDirector?.hudSummary(),
       lumeSiteSummaries: this.createLumeSiteSummaries(),
+      privatePlaytestNotice: this.launch.request.privatePlaytestNotice,
       controlGroups: this.controlGroupSystem.summaries(this.units),
       enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),

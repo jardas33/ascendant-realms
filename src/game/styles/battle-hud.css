@@ -158,9 +158,25 @@
     var(--plate-bg);
 }
 
+.private-playtest-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 7px;
+  align-items: start;
+  min-width: 0;
+  padding: 6px 7px;
+  border: 1px solid rgba(116, 211, 242, 0.3);
+  border-left: 3px solid rgba(116, 211, 242, 0.86);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.13), transparent 45%),
+    var(--plate-bg);
+}
+
 .enemy-doctrine-row span,
 .battlefield-event-row span,
-.lume-network-row span {
+.lume-network-row span,
+.private-playtest-row span {
   color: #ffbd8c;
   font-size: 10px;
   font-weight: 700;
@@ -173,7 +189,9 @@
 .battlefield-event-row b,
 .battlefield-event-row small,
 .lume-network-row b,
-.lume-network-row small {
+.lume-network-row small,
+.private-playtest-row b,
+.private-playtest-row small {
   display: block;
   min-width: 0;
   overflow: hidden;
@@ -182,7 +200,8 @@
 
 .enemy-doctrine-row b,
 .battlefield-event-row b,
-.lume-network-row b {
+.lume-network-row b,
+.private-playtest-row b {
   color: #ffe0a6;
   font-size: 11px;
   line-height: 1.15;
@@ -190,7 +209,8 @@
 
 .enemy-doctrine-row small,
 .battlefield-event-row small,
-.lume-network-row small {
+.lume-network-row small,
+.private-playtest-row small {
   color: #f4cfb7;
   font-size: 10px;
   line-height: 1.18;

@@ -10,7 +10,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "../e2e/chapter2-helpers";
-import { continueSavedCampaign, createHero, openFreshMainMenu } from "../e2e/shared-helpers";
+import { continueSavedCampaign, createHero, openFreshMainMenu, startNewCampaign } from "../e2e/shared-helpers";
 
 type VisualViewport = {
   label: string;
@@ -28,10 +28,12 @@ type CaptureRecord = {
 };
 
 const OUTPUT_DIR = path.resolve(process.cwd(), "visual-qa", "latest");
+const FULL_HD: VisualViewport = { label: "full-hd", width: 1920, height: 1080 };
+const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 18;
+const EXPECTED_SCREENSHOT_COUNT = 26;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 2;
@@ -287,7 +289,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 18-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 26-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -369,6 +371,106 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await createHero(page, "Visual QA");
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();
     await captureView(page, group, "Skirmish setup", "skirmish-setup-desktop.png", DESKTOP, "Skirmish setup map and difficulty selection.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.83 campaign map rescue and private Lume launch views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v083-campaign-map-private-lume";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v083");
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "Campaign map rescue 1920",
+      "v083-campaign-map-1920.png",
+      FULL_HD,
+      "Map-first campaign layout at 1920x1080 with selected node panel beside the map."
+    );
+
+    await useViewport(page, LAPTOP);
+    await captureView(
+      page,
+      group,
+      "Campaign map rescue 1366",
+      "v083-campaign-map-1366.png",
+      LAPTOP,
+      "Map-first campaign layout at 1366x768; node cards should not overlap."
+    );
+
+    await useViewport(page, FULL_HD);
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await captureView(
+      page,
+      group,
+      "Locked Aether Well selected",
+      "v083-aether-well-locked-1920.png",
+      FULL_HD,
+      "Locked Aether Well node selected with concise status and no normal launch access."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("campaign-tab-stronghold").click();
+    await expect(page.getByTestId("campaign-tab-panel-stronghold")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "Stronghold support tab",
+      "v083-stronghold-tab-1366.png",
+      LAPTOP,
+      "Support content moved into tabs instead of burying the campaign map."
+    );
+
+    await useViewport(page, FULL_HD);
+    await page.getByTestId("campaign-tab-map").click();
+    await expect(page.getByTestId("campaign-private-playtest-tools")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "Private playtest launch tools",
+      "v083-private-playtest-tools-1920.png",
+      FULL_HD,
+      "Package/dev private demo action is visible above the map and clearly marked no-save."
+    );
+
+    await page.getByTestId("campaign-private-lume-demo").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("private-playtest-demo-warning")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "Private Lume demo HUD",
+      "v083-private-lume-hud-1920.png",
+      FULL_HD,
+      "Private Aether Well Lume demo battle HUD with no-save warning and Lume objective row."
+    );
+
+    await centerCaptureSite(page, "west_stone_cut", true);
+    await centerCaptureSite(page, "ford_toll", true);
+    await expect(page.getByTestId("lume-network-status")).toContainText(/active/i);
+    await captureView(
+      page,
+      group,
+      "Private Lume demo linked ward active",
+      "v083-private-lume-active-1920.png",
+      FULL_HD,
+      "Linked Ward activated in the private demo through the existing capture-site hook."
+    );
+
+    await useViewport(page, LAPTOP);
+    await captureView(
+      page,
+      group,
+      "Private Lume demo laptop HUD",
+      "v083-private-lume-hud-1366.png",
+      LAPTOP,
+      "Private demo HUD at 1366x768 with warning and Lume row still readable."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

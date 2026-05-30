@@ -56,6 +56,8 @@ export interface BattleLaunchRequest {
   retinueReserveUnits?: RetinueUnitSaveData[];
   tacticalPlanId?: TacticalPlanId;
   rewardsDisabled?: boolean;
+  privatePlaytestDemoId?: string;
+  privatePlaytestNotice?: string;
 }
 
 export interface ResolvedBattleLaunch {
@@ -92,6 +94,8 @@ export interface CreateBattleLaunchRequestOptions {
   retinueReserveUnits?: RetinueUnitSaveData[];
   tacticalPlanId?: TacticalPlanId;
   rewardsDisabled?: boolean;
+  privatePlaytestDemoId?: string;
+  privatePlaytestNotice?: string;
 }
 
 const defaultIndexes: BattleLaunchIndexes = {
@@ -179,7 +183,9 @@ export function createBattleLaunchRequest(
     retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits),
     retinueReserveUnits: sanitizeLaunchRetinueUnits(options.retinueReserveUnits),
     tacticalPlanId,
-    rewardsDisabled
+    rewardsDisabled,
+    privatePlaytestDemoId: options.privatePlaytestDemoId,
+    privatePlaytestNotice: options.privatePlaytestNotice
   };
 }
 
@@ -195,7 +201,9 @@ export function cloneBattleLaunchRequestWithHero(
     heroSave,
     retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
     retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
-    tacticalPlanId: request.tacticalPlanId
+    tacticalPlanId: request.tacticalPlanId,
+    privatePlaytestDemoId: request.privatePlaytestDemoId,
+    privatePlaytestNotice: request.privatePlaytestNotice
   };
 }
 
@@ -280,7 +288,9 @@ export function resolveBattleLaunchRequest(
         retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
         retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
         tacticalPlanId: resolvedTacticalPlanId,
-        rewardsDisabled: request.rewardsDisabled
+        rewardsDisabled: request.rewardsDisabled,
+        privatePlaytestDemoId: request.privatePlaytestDemoId,
+        privatePlaytestNotice: request.privatePlaytestNotice
       },
       map,
       rewardTable,

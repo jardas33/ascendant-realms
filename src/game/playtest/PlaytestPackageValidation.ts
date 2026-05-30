@@ -253,6 +253,12 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md",
   "V082_IMPLEMENTATION_REPORT.md",
   "V082_EMMANUEL_RETEST_CHECKLIST.md",
+  "V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md",
+  "V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md",
+  "V083_IMPLEMENTATION_REPORT.md",
+  "V083_VISUAL_QA_REPORT.md",
+  "V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md",
+  "V083_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -333,6 +339,11 @@ export function validatePlaytestPackageSnapshot(snapshot: PlaytestPackageSnapsho
   } else if (indexHtml.length > 0) {
     checks.push("game/index.html uses package-safe relative asset URLs");
   }
+  if (indexHtml.includes("__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__")) {
+    checks.push("private playtest tools flag present");
+  } else if (indexHtml.length > 0) {
+    errors.push("Missing private playtest tools flag in game/index.html.");
+  }
 
   const buildInfoText = files.find((file) => file.path.toLowerCase() === "playtest-build-info.json")?.textContent;
   if (buildInfoText) {
@@ -358,7 +369,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.82 mission-local Lume Network runtime prototype",
+      "v0.83 campaign map UX rescue and private playtest quick launch",
       "build info checkpoint",
       checks,
       errors

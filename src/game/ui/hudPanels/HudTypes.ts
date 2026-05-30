@@ -53,6 +53,7 @@ export interface HUDSnapshot {
   battlefieldEvent?: HUDBattlefieldEventSnapshot;
   lumeNetwork?: LumeNetworkHudSummary;
   lumeSiteSummaries?: Record<string, LumeNetworkSiteSummary>;
+  privatePlaytestNotice?: string;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
 }

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.82 mission-local Lume Network runtime prototype";
+const CHECKPOINT = "v0.83 campaign map UX rescue and private playtest quick launch";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -37,6 +37,7 @@ async function main(): Promise<void> {
   await rm(packageDir, { recursive: true, force: true });
   await mkdir(packageDir, { recursive: true });
   await cp(DIST_DIR, join(packageDir, "game"), { recursive: true });
+  await injectPrivatePlaytestToolsFlag(join(packageDir, "game", "index.html"));
 
   await copyMarkdown("docs/V014_PRIVATE_PLAYTEST_TESTER_README.md", join(packageDir, "README_FOR_TESTERS.md"));
   await copyMarkdown("docs/V0126_TESTER_QUICK_START.md", join(packageDir, "TESTER_QUICK_START.md"));
@@ -279,6 +280,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md", join(packageDir, "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md"));
   await copyMarkdown("docs/V082_IMPLEMENTATION_REPORT.md", join(packageDir, "V082_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V082_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V082_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md", join(packageDir, "V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md", join(packageDir, "V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md"));
+  await copyMarkdown("docs/V083_IMPLEMENTATION_REPORT.md", join(packageDir, "V083_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V083_VISUAL_QA_REPORT.md", join(packageDir, "V083_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md", join(packageDir, "V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md"));
+  await copyMarkdown("docs/V083_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V083_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -323,6 +330,20 @@ async function copyMarkdown(sourcePath: string, targetPath: string): Promise<voi
   await writeFile(targetPath, content, "utf-8");
 }
 
+async function injectPrivatePlaytestToolsFlag(indexPath: string): Promise<void> {
+  const marker = "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__";
+  const content = await readFile(indexPath, "utf-8");
+  if (content.includes(marker)) {
+    return;
+  }
+  const injection = '<script>window.__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__=true;</script>';
+  const next = content.replace(/(<script\s+type="module")/u, `${injection}\n    $1`);
+  if (next === content) {
+    throw new Error("Could not inject private playtest tools flag into package index.html.");
+  }
+  await writeFile(indexPath, next, "utf-8");
+}
+
 async function assertDirectoryExists(path: string, label: string): Promise<void> {
   try {
     const stats = await stat(path);
@@ -364,7 +385,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.82, start with V082_EMMANUEL_RETEST_CHECKLIST.md, then read V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md, V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md, and V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md. The build adds one mission-local Lume Network prototype only on Aether Well Ruins / Broken Ford: capture West Stone Cut plus Ford Toll or Ford Toll plus North Aether Spring to activate Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites. It does not add new maps, factions, art, save fields, desktop work, Jardas binding, Worker binding, hero binding, runtime display-copy migration, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.81 docs as the design background and the v0.80/v0.79/v0.78 packets as approved direction reference.
+For v0.83, start with V083_EMMANUEL_RETEST_CHECKLIST.md, then read V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md, V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md, and V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md. The build keeps normal production progression unchanged, makes the campaign screen map-first at desktop playtest sizes, and enables one package-only Aether Well Lume demo button with rewards and campaign progress disabled. It does not add new maps, factions, art, save fields, desktop work, Jardas binding, Worker binding, hero binding, broad runtime copy migration, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.82 docs as the Lume runtime background and the v0.81/v0.80/v0.79/v0.78 packets as approved direction reference.
 
 ## Known Warning
 

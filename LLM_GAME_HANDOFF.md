@@ -1,12 +1,71 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.82 mission-local Lume Network runtime prototype
+Last updated: 2026-05-30 v0.83 campaign map UX rescue and private playtest quick launch
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, and v0.82 implements the first mission-local runtime prototype on Aether Well Ruins only. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, and v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice. No runtime rebrand is approved.
+
+## Current v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
+
+Status: v0.83 makes the campaign screen map-first again and adds a private Aether Well Lume demo shortcut for package/dev playtesting. It uses existing campaign nodes, existing `aether_well_ruins` / `broken_ford`, existing Lume runtime, existing HUD/Results/package systems, and an explicit private-tool flag only. It does not add maps, factions, art/assets, save fields, rewards, broader Lume expansion, internal ID renames, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration.
+
+Baseline:
+
+- Starting commit/package: `319730c`, `ascendant-realms-private-playtest-319730c`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26695542266` on `319730c` completed successfully.
+
+Included work:
+
+- Added `docs/V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md`.
+- Added `docs/V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md`.
+- Added `docs/V083_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V083_VISUAL_QA_REPORT.md`.
+- Added `docs/V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md`.
+- Added `docs/V083_EMMANUEL_RETEST_CHECKLIST.md`.
+- Reworked Campaign Map into a map-first tab layout with a visible selected-node summary and primary action.
+- Moved Stronghold, Hero, Inventory, Intel, and Reputation support surfaces behind campaign tabs to stop pushing the map below the fold.
+- Added a private package/dev-only Aether Well Lume demo shortcut that launches the existing Aether Well Ruins Lume slice from a fresh campaign without changing normal campaign unlock rules.
+- Added HUD and Results copy that labels the private demo as no-save/no-reward.
+- Kept generic no-reward launches excluded from Lume; only the explicit private demo id can run the no-reward Lume shortcut.
+- Updated package generation to inject `window.__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__ = true` only into private playtest packages.
+- Updated package validation to require v0.83 docs and the private playtest marker.
+- Added smoke and visual QA coverage for map overlap/readability and private Lume quick-launch isolation.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- The private demo does not persist campaign node completion, battle rewards, hero XP, Retinue status, rival state, reputation, resource rewards, relic rewards, or optional-objective credit.
+- No maps, factions, art/assets, IDs, public campaign prerequisites, Lume rules, desktop packaging, multiplayer, PvP, co-op, or runtime rebrand/display-copy behavior changed.
+
+Verification:
+
+```text
+npx vitest run src/game/battle/LumeNetworkDirector.test.ts src/game/battle/BattleLaunchRequest.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts --reporter=dot PASS, 4 files / 45 tests.
+npm test PASS, 87 files / 656 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "new campaign flow|private playtest" --reporter=line PASS, 2 tests.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 26 screenshots / 0 console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-319730c-dirty` generated.
+npm run verify:playtest-package PASS, 258 checks against the dirty pre-commit package.
+```
+
+Next recommended action: commit as `Checkpoint v0.83 campaign map UX rescue and private playtest quick launch`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V083_EMMANUEL_RETEST_CHECKLIST.md`. Do not start broader Lume expansion, runtime copy migration, art generation, runtime rebrand, ID/save migration, v0.84, desktop work, multiplayer, PvP, or co-op without a new explicit goal.
 
 ## Current v0.82 Mission-Local Lume Network Runtime Prototype - 2026-05-30
 

@@ -180,6 +180,28 @@ describe("BattleLaunchRequest", () => {
     }
   });
 
+  it("preserves private playtest demo metadata without enabling campaign rewards or tactical plans", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "aether_well_ruins", {
+      requestId: "private-playtest:aether_well_lume_private_demo:broken_ford",
+      rewardsDisabled: true,
+      privatePlaytestDemoId: "aether_well_lume_private_demo",
+      privatePlaytestNotice: "Private playtest demo only."
+    });
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request.rewardsDisabled).toBe(true);
+    expect(request.tacticalPlanId).toBeUndefined();
+    expect(request.modifiers).toEqual([]);
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.request.privatePlaytestDemoId).toBe("aether_well_lume_private_demo");
+      expect(resolved.launch.request.privatePlaytestNotice).toBe("Private playtest demo only.");
+      expect(resolved.launch.request.rewardsDisabled).toBe(true);
+      expect(resolved.launch.request.tacticalPlanId).toBeUndefined();
+    }
+  });
+
   it("carries campaign enemy hero assignments into battle launches", () => {
     const heroSave = createFallbackHeroSave();
     const request = createCampaignBattleLaunchRequest(heroSave, "ashen_outpost");

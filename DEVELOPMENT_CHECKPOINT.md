@@ -1,6 +1,62 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.82 mission-local Lume Network runtime prototype
+Updated: 2026-05-30 v0.83 campaign map UX rescue and private playtest quick launch
+
+## v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
+
+Scope: campaign map readability rescue plus a private package/dev quick-launch for the existing Aether Well Lume runtime slice. This pass uses existing campaign nodes, existing `aether_well_ruins` / `broken_ford`, existing Lume systems, existing HUD/Results/package paths, and an explicit private-tool flag. It does not change save format, rename internal IDs, add maps/factions/races/units/buildings/classes/art/assets, add rewards, broaden Lume rules, start desktop work, add multiplayer/PvP/co-op, or perform runtime rebrand/display-copy migration.
+
+Baseline:
+
+- Starting commit/package: `319730c`, `ascendant-realms-private-playtest-319730c`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26695542266` on `319730c` completed successfully.
+
+Included work:
+
+- Added `docs/V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md`.
+- Added `docs/V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md`.
+- Added `docs/V083_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V083_VISUAL_QA_REPORT.md`.
+- Added `docs/V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md`.
+- Added `docs/V083_EMMANUEL_RETEST_CHECKLIST.md`.
+- Campaign Map now opens map-first, with selected-node summary and primary action visible beside/below the map.
+- Stronghold, Hero, Inventory, Intel, and Reputation are available through compact campaign tabs.
+- Private playtest packages inject an explicit `window.__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__ = true` marker so testers can launch the Aether Well Lume demo from a fresh campaign.
+- The private Lume demo uses `rewardsDisabled: true`, private HUD warning copy, private Results no-save copy, and no campaign progression mutation.
+- Smoke coverage now guards campaign-node overlap and the private Lume no-save path.
+- Visual QA now captures 26 screenshots, including eight v0.83 campaign/private-demo views.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Private demo runs do not persist campaign node completion, battle rewards, hero XP, Retinue state, rival state, reputation, relic rewards, optional-objective credit, or resource rewards.
+
+Verification:
+
+```text
+npx vitest run src/game/battle/LumeNetworkDirector.test.ts src/game/battle/BattleLaunchRequest.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts --reporter=dot PASS, 4 files / 45 tests.
+npm test PASS, 87 files / 656 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npx playwright test tests/e2e/smoke.spec.ts --grep "new campaign flow|private playtest" --reporter=line PASS, 2 tests.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 26 screenshots / 0 console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-319730c-dirty` generated.
+npm run verify:playtest-package PASS, 258 checks against the dirty pre-commit package.
+```
+
+Closeout note: commit as `Checkpoint v0.83 campaign map UX rescue and private playtest quick launch`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.82 Mission-Local Lume Network Runtime Prototype - 2026-05-30
 

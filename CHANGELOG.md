@@ -1,5 +1,38 @@
 # Changelog
 
+# v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
+
+This checkpoint rescues the campaign screen by making the node map the first visible surface again, while adding a private playtest shortcut for the existing Aether Well Lume runtime slice.
+
+Added:
+
+- `src/game/playtest/PrivatePlaytestTools.ts`.
+- `docs/V083_CAMPAIGN_MAP_UX_RESCUE_SPEC.md`.
+- `docs/V083_PRIVATE_PLAYTEST_QUICK_LAUNCH_SPEC.md`.
+- `docs/V083_IMPLEMENTATION_REPORT.md`.
+- `docs/V083_VISUAL_QA_REPORT.md`.
+- `docs/V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md`.
+- `docs/V083_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Reworked Campaign Map into a map-first tabbed layout with a visible selected-node summary and primary action.
+- Moved Stronghold, Hero, Inventory, Intel, and Reputation support surfaces behind campaign tabs.
+- Added an explicit private-tool flag path for private playtest packages and development builds.
+- Added a private Aether Well Lume demo launch that reaches the existing Aether Well Ruins Lume slice from a fresh campaign while disabling rewards/progress.
+- Added private demo HUD and Results no-save/no-reward copy.
+- Updated package generation and package verification to require v0.83 docs plus the private tool marker.
+- Added smoke coverage for campaign map node overlap and private Lume demo no-save isolation.
+- Added visual QA coverage for campaign map rescue and the private Lume launch at 1920x1080 and 1366x768.
+
+Not changed:
+
+- No save-version bump, save fields, persistent rewards, maps, factions, races, units, buildings, classes, art/assets, internal ID renames, public campaign prerequisite changes, broad Lume expansion, global balance change, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration was added.
+
+Verification:
+
+- Passed: focused Lume/package Vitest coverage with 4 files / 45 tests, `npm test` with 87 files / 656 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, targeted map/private smoke with 2 tests, fast smoke with 9 tests, full smoke with 15 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted smoke with 15 tests, hosted deep-campaign-pressure with 8 tests, visual QA with 6 tests / 26 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, and dirty package verification with 258 checks.
+
 # v0.82 Mission-Local Lume Network Runtime Prototype - 2026-05-30
 
 This checkpoint implements the smallest runtime Lume Network slice approved by v0.81. Aether Well Ruins on Broken Ford now supports a battle-local linked-site objective: capture West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, to activate Linked Ward.

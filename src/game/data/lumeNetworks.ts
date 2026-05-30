@@ -50,8 +50,10 @@ export function selectLumeNetworkForLaunch(options: {
   campaignNodeId?: string;
   mapId: string;
   rewardsDisabled?: boolean;
+  privatePlaytestDemoId?: string;
 }): LumeNetworkDefinition | undefined {
-  if (options.mode !== "campaign_node" || options.rewardsDisabled) {
+  const privateLumeDemo = options.privatePlaytestDemoId === "aether_well_lume_private_demo";
+  if (options.mode !== "campaign_node" || (options.rewardsDisabled && !privateLumeDemo)) {
     return undefined;
   }
   return LUME_NETWORKS.find(

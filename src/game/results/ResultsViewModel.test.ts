@@ -502,6 +502,38 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("battle-local and does not change campaign saves");
   });
 
+  it("renders private Lume demo Results as no-save and no-reward", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        campaignNodeId: "aether_well_ruins",
+        mapId: "broken_ford",
+        difficulty: "normal",
+        rewardsDisabled: true,
+        privatePlaytestDemoId: "aether_well_lume_private_demo",
+        privatePlaytestNotice: "Private playtest demo only."
+      }),
+      stats: {
+        ...baseStats(),
+        lumeNetworkId: "aether_well_ruins_lume_ward",
+        lumeLinkActivatedIds: ["west_stone_cut_to_ford_toll"],
+        lumeObjectiveCompleted: true
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(initialResultsStatus(data)).toContain("Private playtest demo complete");
+    expect(initialResultsStatus(data)).toContain("were not saved");
+    expect(summaryHtml).toContain("Private Playtest Demo");
+    expect(summaryHtml).toContain("aether_well_lume_private_demo");
+    expect(summaryHtml).toContain("Rewards, campaign progress, hero XP, Retinue, and reputation disabled");
+    expect(summaryHtml).toContain("Linked Ward; activated 1, severed 0");
+  });
+
   it("points champion relic Results toward equip, skill, and replay guidance", () => {
     const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const data = createResultsData({
