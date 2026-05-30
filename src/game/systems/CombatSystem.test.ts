@@ -626,6 +626,27 @@ describe("CombatSystem", () => {
     expect(raider.moveTarget).toBeUndefined();
   });
 
+  it("lets battle-local systems modestly adjust incoming damage before armor", () => {
+    const raider = fakeUnit({ id: "enemy-raider", team: "enemy", x: 188, y: 100, radius: 13, range: 28, damage: 10 });
+    const commandHall = fakeBuilding({
+      id: "player-command-hall",
+      buildingId: "command_hall",
+      name: "Command Hall",
+      team: "player",
+      x: 100,
+      y: 100,
+      width: 96,
+      height: 82
+    });
+    const combat = createCombat([raider], [commandHall], {
+      adjustIncomingDamage: (amount, target) => (target.team === "player" ? amount * 0.92 : amount)
+    });
+
+    combat.update(0.1);
+
+    expect(commandHall.hp).toBe(commandHall.maxHp - 9);
+  });
+
   it("lets enemy ranged units target a nearby Command Hall without requiring melee contact", () => {
     const addProjectile = vi.fn();
     const ranger = fakeUnit({ id: "enemy-ranger", team: "enemy", x: 210, y: 100, radius: 13, range: 140 });
@@ -787,6 +808,7 @@ function createCombat(
   buildings: Building[] = [],
   hooks: {
     onDamage?: (target: BaseEntity, amount: number, source: Unit | Building | Projectile) => void;
+    adjustIncomingDamage?: (amount: number, target: BaseEntity, source: Unit | Building | Projectile) => number;
   } = {}
 ): CombatSystem {
   return new CombatSystem({
@@ -796,7 +818,8 @@ function createCombat(
     getProjectiles: () => [],
     addProjectile: vi.fn(),
     onDamage: hooks.onDamage ?? vi.fn(),
-    onKill: vi.fn()
+    onKill: vi.fn(),
+    adjustIncomingDamage: hooks.adjustIncomingDamage
   });
 }
 

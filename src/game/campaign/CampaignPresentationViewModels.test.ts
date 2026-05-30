@@ -72,6 +72,25 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("data-tactical-plan=\"champion_hunt\"");
   });
 
+  it("renders mission-local Lume Network briefing for Aether Well Ruins only", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["aether_well_ruins", "bandit_hillfort"]
+    });
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const aetherWell = CAMPAIGN_NODES.find((entry) => entry.id === "aether_well_ruins")!;
+    const hillfort = CAMPAIGN_NODES.find((entry) => entry.id === "bandit_hillfort")!;
+
+    const aetherHtml = renderNodeDetails({ node: aetherWell, campaignSave: campaign, heroSave: hero });
+    const hillfortHtml = renderNodeDetails({ node: hillfort, campaignSave: campaign, heroSave: hero });
+
+    expect(aetherHtml).toContain("Linked Ward");
+    expect(aetherHtml).toContain("Hold two linked sites to wake a Lume Ward. Enemy recapture severs the link.");
+    expect(aetherHtml).toContain("8% less incoming damage");
+    expect(hillfortHtml).not.toContain("Hold two linked sites to wake a Lume Ward");
+  });
+
   it("renders Act 1 locked reasons and onboarding hints on early campaign nodes", () => {
     const campaign = createStartedCampaignSave();
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");

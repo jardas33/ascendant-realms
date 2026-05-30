@@ -2130,6 +2130,62 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(save.hero.inventory.some((item: any) => item.itemId === "cinderseer_lens")).toBe(true);
   });
 
+  test("Aether Well Lume Network activates, severs, and summarizes in Results @hosted-deep-campaign", async ({ page }) => {
+    test.setTimeout(80_000);
+    await seedSave(page, {
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road"],
+        unlockedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins"],
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road"],
+        selectedNodeId: "aether_well_ruins"
+      }
+    });
+
+    await openCampaignNode(page, "aether_well_ruins");
+    await expect(page.locator(".campaign-node-details")).toContainText("Linked Ward");
+    await expect(page.locator(".campaign-node-details")).toContainText("Hold two linked sites to wake a Lume Ward");
+
+    await clickReady(
+      page.getByTestId("campaign-start-node"),
+      "deep-flow start Aether Well Lume battle",
+      SCENE_TRANSITION_CLICK_OPTIONS
+    );
+    await expectBattleLoaded(page);
+    await waitForBattleScene(page);
+    await expect(page.getByTestId("lume-network-status")).toContainText("Linked Ward");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Inactive");
+
+    const captures = await page.evaluate(() => {
+      const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+      return [hooks?.captureSite?.("west_stone_cut"), hooks?.captureSite?.("ford_toll")];
+    });
+    expect(captures.map((entry: any) => entry?.owner)).toEqual(["player", "player"]);
+    await expect(page.getByTestId("lume-network-status")).toContainText("1/2 active");
+    await expect(page.getByTestId("lume-network-status")).toContainText("West Stone Cut + Ford Toll");
+
+    const severed = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const site = scene?.captureSites.find((entry: any) => entry.definition.id === "ford_toll");
+      site?.setOwner("enemy");
+      scene?.lumeNetworkDirector?.update();
+      scene?.refreshBattleHud?.(0);
+      return {
+        severed: scene?.runtime.stats.lumeLinkSeveredIds ?? [],
+        objectiveCompleted: scene?.runtime.stats.lumeObjectiveCompleted
+      };
+    });
+    expect(severed).toMatchObject({
+      severed: ["west_stone_cut_to_ford_toll"],
+      objectiveCompleted: true
+    });
+    await expect(page.getByTestId("lume-network-status")).toContainText("Severed");
+
+    await forceActiveBattleOutcome(page, "victory");
+    await expect(page.getByTestId("results-lume-network-summary")).toContainText("Linked Ward");
+    await expect(page.getByTestId("results-lume-network-summary")).toContainText("West Stone Cut to Ford Toll");
+    await expect(page.getByTestId("results-lume-network-summary")).toContainText("battle-local");
+  });
+
   test("alternate Refugee Caravan and Chapel choices apply rewards and completion @hosted-deep-meta", async ({ page }) => {
     test.setTimeout(100_000);
 

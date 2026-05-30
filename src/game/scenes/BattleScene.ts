@@ -218,6 +218,7 @@ export class BattleScene extends Phaser.Scene {
   private uiSystem!: BattleSceneSystems["uiSystem"];
   private xpSystem!: BattleSceneSystems["xpSystem"];
   private aiSystem!: BattleSceneSystems["aiSystem"];
+  private lumeNetworkDirector?: BattleSceneSystems["lumeNetworkDirector"];
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
   private battlefieldEventDirector?: BattlefieldEventDirector;
@@ -313,6 +314,7 @@ export class BattleScene extends Phaser.Scene {
     this.buildingSystem.update(deltaSeconds);
     this.repairSystem.update(deltaSeconds);
     this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
+    this.lumeNetworkDirector?.update();
     this.updateResourceSiteWarnings(deltaSeconds);
     this.trainingSystem.update(deltaSeconds, this.buildings);
     this.upgradeSystem.update(deltaSeconds, this.buildings);
@@ -348,6 +350,7 @@ export class BattleScene extends Phaser.Scene {
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.enemyPressureRuntime = undefined;
     this.battlefieldEventDirector = undefined;
+    this.lumeNetworkDirector = undefined;
     this.act1FinaleDirector = isAct1FinaleBattle({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -482,6 +485,7 @@ export class BattleScene extends Phaser.Scene {
     this.uiSystem = systems.uiSystem;
     this.xpSystem = systems.xpSystem;
     this.aiSystem = systems.aiSystem;
+    this.lumeNetworkDirector = systems.lumeNetworkDirector;
     this.enemyPressureRuntime = createEnemyPressureRuntime({
       planId: this.launch.request.enemyPressurePlanId,
       mode: this.launch.request.mode,
@@ -844,6 +848,17 @@ export class BattleScene extends Phaser.Scene {
     };
   }
 
+  private createLumeSiteSummaries() {
+    if (!this.lumeNetworkDirector) {
+      return undefined;
+    }
+    const entries = this.captureSites.flatMap((site) => {
+      const summary = this.lumeNetworkDirector?.siteSummary(site);
+      return summary ? [[site.definition.id, summary] as const] : [];
+    });
+    return Object.fromEntries(entries);
+  }
+
   private selectedEntities(): Array<Unit | Building | CaptureSite> {
     return this.selectionSystem
       .getSelected()
@@ -1045,6 +1060,8 @@ export class BattleScene extends Phaser.Scene {
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       battlefieldEvent: this.createBattlefieldEventSnapshot(),
+      lumeNetwork: this.lumeNetworkDirector?.hudSummary(),
+      lumeSiteSummaries: this.createLumeSiteSummaries(),
       controlGroups: this.controlGroupSystem.summaries(this.units),
       enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),
@@ -1117,6 +1134,7 @@ export class BattleScene extends Phaser.Scene {
   private endBattle(outcome: "victory" | "defeat"): void {
     this.updateAct1Finale();
     this.finalizeBattlefieldEventForResults(outcome);
+    this.lumeNetworkDirector?.update();
     this.finalizeUnitVeterancy(outcome);
     endBattleAndOpenResults({
       scene: this,
@@ -1881,6 +1899,7 @@ export class BattleScene extends Phaser.Scene {
         for (let index = 0; index < 12 && site.owner !== "player"; index += 1) {
           this.resourceSystem.update(step, [site], this.units);
         }
+        this.lumeNetworkDirector?.update();
         this.refreshBattleHud(0);
         const strongholdEffects = getStrongholdBattleEffects(this.launch.request.modifiers);
         const firstCaptureBonus = site.definition.firstCaptureBonus

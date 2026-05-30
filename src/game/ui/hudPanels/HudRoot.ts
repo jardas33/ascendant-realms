@@ -40,11 +40,16 @@ export function renderHud(snapshot: HUDSnapshot): string {
       </div>
       <div class="side-panel-body" data-testid="side-panel-body">
         <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero)}</div>
-        <div class="selection-summary">${renderSelectionSummary(selectedOne, selected, snapshot.controlGroups ?? [])}</div>
+        <div class="selection-summary">${renderSelectionSummary(
+          selectedOne,
+          selected,
+          snapshot.controlGroups ?? [],
+          snapshot.lumeSiteSummaries ?? {}
+        )}</div>
       </div>
     </div>
     ${renderMinimapPanel(snapshot.minimap)}
-    ${renderObjectives(snapshot.objectives, snapshot.enemyDoctrine, snapshot.battlefieldEvent)}
+    ${renderObjectives(snapshot.objectives, snapshot.enemyDoctrine, snapshot.battlefieldEvent, snapshot.lumeNetwork)}
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}

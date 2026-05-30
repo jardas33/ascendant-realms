@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.81 Lume Site Network prototype specification and smallest-fun-slice gate";
+const CHECKPOINT = "v0.82 mission-local Lume Network runtime prototype";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -271,6 +271,14 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V081_FUTURE_IMPLEMENTATION_SEQUENCE.md", join(packageDir, "V081_FUTURE_IMPLEMENTATION_SEQUENCE.md"));
   await copyMarkdown("docs/V081_EMMANUEL_REVIEW_PACKET.md", join(packageDir, "V081_EMMANUEL_REVIEW_PACKET.md"));
   await copyMarkdown("docs/V081_IMPLEMENTATION_REPORT.md", join(packageDir, "V081_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md", join(packageDir, "V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md"));
+  await copyMarkdown(
+    "docs/V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md",
+    join(packageDir, "V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md")
+  );
+  await copyMarkdown("docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md", join(packageDir, "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md"));
+  await copyMarkdown("docs/V082_IMPLEMENTATION_REPORT.md", join(packageDir, "V082_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V082_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V082_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -356,7 +364,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.81 Lume Site Network prototype specification and smallest-fun-slice gate, start with V081_EMMANUEL_REVIEW_PACKET.md, then read the existing site-system audit, recommended smallest-fun-slice spec, first testbed mission recommendation, data model/integration plan, safety plan, and test/rollback plan. This package is still the unchanged browser prototype plus docs: v0.81 does not add new gameplay, runtime rebranding, runtime copy migration, Lume Network runtime behavior, new art, new maps, new factions, new races, new units, new buildings, hero classes, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.80 terminology plan, v0.79 direction-lock docs, and v0.78 review packet as the approved direction reference.
+For v0.82, start with V082_EMMANUEL_RETEST_CHECKLIST.md, then read V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md, V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md, and V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md. The build adds one mission-local Lume Network prototype only on Aether Well Ruins / Broken Ford: capture West Stone Cut plus Ford Toll or Ford Toll plus North Aether Spring to activate Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites. It does not add new maps, factions, art, save fields, desktop work, Jardas binding, Worker binding, hero binding, runtime display-copy migration, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.81 docs as the design background and the v0.80/v0.79/v0.78 packets as approved direction reference.
 
 ## Known Warning
 

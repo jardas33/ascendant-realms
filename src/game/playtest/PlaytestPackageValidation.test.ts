@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.81 Lume Site Network prototype specification and smallest-fun-slice gate",
+          checkpoint: "v0.82 mission-local Lume Network runtime prototype",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -292,6 +292,11 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V081_FUTURE_IMPLEMENTATION_SEQUENCE.md", sizeBytes: 20, textContent: "Future implementation sequence" },
       { path: "V081_EMMANUEL_REVIEW_PACKET.md", sizeBytes: 20, textContent: "Emmanuel v0.81 review packet" },
       { path: "V081_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.81 implementation report" },
+      { path: "V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md", sizeBytes: 20, textContent: "v0.82 Lume runtime spec" },
+      { path: "V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md", sizeBytes: 20, textContent: "Linked Ward balance" },
+      { path: "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md", sizeBytes: 20, textContent: "Lume test safety report" },
+      { path: "V082_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.82 implementation report" },
+      { path: "V082_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "Emmanuel retest checklist" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

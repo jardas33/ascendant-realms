@@ -10,6 +10,7 @@ import { FACTIONS } from "../factions";
 import { HERO_CLASSES } from "../heroClasses";
 import { ITEM_AFFIXES } from "../itemAffixes";
 import { ITEMS } from "../items";
+import { LUME_NETWORKS } from "../lumeNetworks";
 import { CAMPAIGN_MISSION_TYPES } from "../missionTypes";
 import { ORIGINS } from "../origins";
 import { REWARD_TABLES } from "../rewards";
@@ -39,6 +40,7 @@ import { validateEnemyDoctrines, validateEnemyEliteSquads } from "./validateEnem
 import { validateEnemyPressurePlans } from "./validateEnemyPressurePlans";
 import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
+import { validateLumeNetworks } from "./validateLumeNetworks";
 import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
 import { validateRelicRewards, validateRewardTables, validateRivalRewards } from "./validateRewards";
@@ -74,6 +76,7 @@ export function validateContent(): string[] {
     enemyHeroIds: idsFor(ENEMY_HEROES, "enemy hero", errors),
     enemyHeroAbilityIds: idsFor(ENEMY_HERO_ABILITIES, "enemy hero ability", errors),
     enemyPressurePlanIds: idsFor(ENEMY_PRESSURE_PLANS, "enemy pressure plan", errors),
+    lumeNetworkIds: idsFor(LUME_NETWORKS, "Lume network", errors),
     tutorialIds: idsFor(TUTORIALS, "tutorial", errors),
     rivalTrophyIds: new Set(RIVAL_REWARDS.map((reward) => reward.firstDefeat.trophy.trophyId))
   };
@@ -105,6 +108,7 @@ export function validateContent(): string[] {
   validateBattlefieldEvents(errors, context);
   validateTacticalPlans(errors);
   validateCampaignModifiers(errors, context);
+  validateLumeNetworks(errors, context);
   validateEnemyHeroes(errors, context);
   validateEnemyPressurePlans(errors, context);
   validateMaps(errors, context);

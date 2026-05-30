@@ -4,6 +4,7 @@ export type * from "./EconomyTypes";
 export type * from "./EnemyPressureTypes";
 export type * from "./HeroTypes";
 export type * from "./ItemTypes";
+export type * from "./LumeNetworkTypes";
 export type * from "./MapTypes";
 export type * from "./TutorialTypes";
 export type * from "./UITypes";

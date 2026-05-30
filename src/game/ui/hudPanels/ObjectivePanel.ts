@@ -1,12 +1,14 @@
+import type { LumeNetworkHudSummary } from "../../core/GameTypes";
 import type { HUDBattlefieldEventSnapshot, HUDEnemyDoctrineSnapshot, HUDObjectiveSnapshot } from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
 
 export function renderObjectives(
   objectives: HUDObjectiveSnapshot[] | undefined,
   enemyDoctrine?: HUDEnemyDoctrineSnapshot,
-  battlefieldEvent?: HUDBattlefieldEventSnapshot
+  battlefieldEvent?: HUDBattlefieldEventSnapshot,
+  lumeNetwork?: LumeNetworkHudSummary
 ): string {
-  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent) {
+  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork) {
     return "";
   }
   const missionObjectives = objectives ?? [];
@@ -15,6 +17,7 @@ export function renderObjectives(
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
       ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
+      ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
       <strong>Objectives ${completedCount}/${missionObjectives.length}</strong>
       ${missionObjectives
@@ -35,6 +38,20 @@ export function renderObjectives(
           `;
         })
         .join("")}
+    </div>
+  `;
+}
+
+function renderLumeNetwork(network: LumeNetworkHudSummary): string {
+  return `
+    <div class="lume-network-row" data-testid="lume-network-status">
+      <span>Lume</span>
+      <div>
+        <b>${escapeHtml(network.title)} - ${escapeHtml(network.status)}</b>
+        <small>${escapeHtml(network.objective)}</small>
+        <small>${escapeHtml(network.benefit)}</small>
+        <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
+      </div>
     </div>
   `;
 }

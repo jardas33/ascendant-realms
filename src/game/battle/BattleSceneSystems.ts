@@ -13,6 +13,7 @@ import { BUILDING_BY_ID } from "../data/contentIndex";
 import { applyTutorialEnemyAIPacing } from "../data/battlePacing";
 import { applyCampaignEnemyAIModifierEffects } from "../data/campaignModifiers";
 import { selectEnemyDoctrineForBattleLaunch } from "../data/enemyDoctrines";
+import { selectLumeNetworkForLaunch } from "../data/lumeNetworks";
 import { getStrongholdBattleEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
@@ -49,6 +50,7 @@ import { HUD } from "../ui/HUD";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
 import type { BattleStatusOptions } from "./BattleStatusPriority";
+import { LumeNetworkDirector } from "./LumeNetworkDirector";
 
 const BATTLE_FOG_CELL_SIZE = 96;
 
@@ -69,6 +71,7 @@ export interface BattleSceneSystems {
   uiSystem: UISystem;
   xpSystem: XPSystem;
   aiSystem: AISystem;
+  lumeNetworkDirector?: LumeNetworkDirector;
 }
 
 interface CreateBattleSceneSystemsOptions {
@@ -251,6 +254,28 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     showMessage(leveledUp ? `Level up! +${amount} XP` : `+${amount} XP`, hero.position.x, hero.position.y - 54, "#f6e27d");
   });
 
+  const lumeNetworkDefinition = selectLumeNetworkForLaunch({
+    mode: launch.request.mode,
+    campaignNodeId: launch.request.campaignNodeId,
+    mapId: activeMap.id,
+    rewardsDisabled: launch.request.rewardsDisabled
+  });
+  const lumeNetworkDirector = lumeNetworkDefinition
+    ? new LumeNetworkDirector({
+        definition: lumeNetworkDefinition,
+        getCaptureSites,
+        recordNetworkStarted: (networkId) => runtime.recordLumeNetworkStarted(networkId),
+        recordLinkActivated: (linkId, label) => runtime.recordLumeLinkActivated(linkId, label),
+        recordLinkSevered: (linkId, label) => runtime.recordLumeLinkSevered(linkId, label),
+        recordObjectiveCompleted: (label) => runtime.recordLumeObjectiveCompleted(label),
+        showMessage: (message, point) =>
+          showMessage(message, point?.x, point ? point.y - 82 : undefined, "#74d3f2", {
+            priority: "objective",
+            durationSeconds: 4.5
+          })
+      })
+    : undefined;
+
   const combatSystem = new CombatSystem({
     scene,
     getUnits,
@@ -265,7 +290,13 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onStatusApplied: (target, statusName) => {
       FloatingText.show(scene, statusName, target.position.x, target.position.y - target.radius - 18, "#ff9a64");
     },
-    onKill: handleKill
+    onKill: handleKill,
+    adjustIncomingDamage: (amount, target, source) => {
+      if (source.team === "player") {
+        return amount;
+      }
+      return lumeNetworkDirector?.adjustIncomingDamage(amount, target) ?? amount;
+    }
   });
 
   const resourceSystem = new ResourceSystem({
@@ -598,7 +629,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     inputSystem,
     uiSystem,
     xpSystem,
-    aiSystem
+    aiSystem,
+    lumeNetworkDirector
   };
 }
 

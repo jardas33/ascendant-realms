@@ -1,7 +1,7 @@
 # Playtest Control Behaviour Dashboard
 
-Generated: 2026-05-30T15:46:04.480Z
-Build commit: 515c8a1
+Generated: 2026-05-30T21:03:20.162Z
+Build commit: 1e3f94b
 Iterations: 5
 Scenarios: 18
 

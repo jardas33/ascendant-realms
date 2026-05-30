@@ -11,9 +11,17 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.81 Lume Site Network Prototype Specification and Smallest-Fun-Slice Gate** on 2026-05-30. It is docs-only and follows the clean v0.80 Salto/Lume/display-copy planning pass. It audits the existing resource-site, Worker, campaign, HUD, Results, battlefield-event, AI, save, replay, Tutorial, and test architecture, then recommends a future mission-local Linked Control prototype before any runtime Lume Network implementation.
+The current checkpoint is **v0.82 Mission-Local Lume Network Runtime Prototype** on 2026-05-30. It implements the smallest approved runtime Lume slice on Aether Well Ruins / Broken Ford only: capture linked resource sites to activate Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-The next recommended step is Emmanuel review of `docs/V081_EMMANUEL_REVIEW_PACKET.md`. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel retest with `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`. Do not start runtime rebranding, ID migration, save migration, broader Lume Network expansion, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+
+New v0.82 docs:
+
+- `docs/V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md`
+- `docs/V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md`
+- `docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md`
+- `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V082_IMPLEMENTATION_REPORT.md`
 
 New v0.81 docs:
 

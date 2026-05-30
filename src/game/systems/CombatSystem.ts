@@ -31,6 +31,7 @@ interface CombatSystemOptions {
   onUnitDamage?: (source: Unit, target: BaseEntity, amount: number) => void;
   onKill: (killer: Combatant | Projectile, target: BaseEntity) => void;
   onStatusApplied?: (target: BaseEntity, statusName: string) => void;
+  adjustIncomingDamage?: (amount: number, target: BaseEntity, source: Combatant | Projectile) => number;
 }
 
 export class CombatSystem {
@@ -293,7 +294,8 @@ export class CombatSystem {
 
   private applyDamage(source: Combatant | Projectile, target: BaseEntity, amount: number): void {
     const wasAlive = target.alive;
-    const actual = target.takeDamage(amount);
+    const adjustedAmount = this.options.adjustIncomingDamage?.(amount, target, source) ?? amount;
+    const actual = target.takeDamage(Math.max(0, adjustedAmount));
     this.options.onDamage(target, actual, source);
     if (actual > 0 && source instanceof Unit) {
       this.options.onUnitDamage?.(source, target, actual);

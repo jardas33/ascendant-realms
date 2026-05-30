@@ -64,4 +64,22 @@ describe("ObjectivePanel", () => {
     expect(html).toContain("Counterplay: Screen the site");
     expect(html).toContain("Plan support: active");
   });
+
+  it("renders a compact Lume Network row in the objective surface", () => {
+    const html = renderObjectives([], undefined, undefined, {
+      title: "Linked Ward",
+      objective: "Hold West Stone Cut and Ford Toll.",
+      status: "Inactive",
+      benefit: "Friendly units and buildings near active linked sites take 8% less incoming damage.",
+      counterplay: "Enemy recapture severs the link; retake both endpoints to restore it.",
+      activeLinkCount: 0,
+      maxActiveLinks: 2
+    });
+
+    expect(html).toContain('data-testid="lume-network-status"');
+    expect(html).toContain("Linked Ward - Inactive");
+    expect(html).toContain("Hold West Stone Cut and Ford Toll.");
+    expect(html).toContain("8% less incoming damage");
+    expect(html).toContain("Counterplay: Enemy recapture severs the link");
+  });
 });

@@ -1,6 +1,70 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.81 Lume Site Network prototype specification and smallest-fun-slice gate
+Updated: 2026-05-30 v0.82 mission-local Lume Network runtime prototype
+
+## v0.82 Mission-Local Lume Network Runtime Prototype - 2026-05-30
+
+Scope: smallest approved runtime Lume Network prototype. This pass implements one mission-local Linked Control network on Aether Well Ruins / Broken Ford using existing resource sites, battle runtime, HUD, selected-site panel, Results, validation, hosted proxy coverage, and package docs only. It does not change save format, rename internal IDs, add maps/factions/races/units/buildings/classes, add runtime art/assets, start a desktop port, choose an engine, perform runtime rebrand/display-copy migration, add Jardas binding, Worker binding, hero binding, resource-production bonuses, global balance changes, enemy AI tuning, multiplayer, PvP, co-op, or a broader Lume system.
+
+Baseline:
+
+- Starting commit/package: `1e3f94b`, `ascendant-realms-private-playtest-1e3f94b`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26693901039` on `1e3f94b` completed successfully.
+
+Included work:
+
+- Added `docs/V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md`.
+- Added `docs/V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md`.
+- Added `docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md`.
+- Added `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V082_IMPLEMENTATION_REPORT.md`.
+- Added Lume Network data/types/validation around `aether_well_ruins_lume_ward`.
+- Added battle-local Lume link resolution and telemetry through `LumeNetworkDirector`.
+- Added Linked Ward, a non-stacking 8% incoming-damage reduction near active linked sites.
+- Added Aether Well Ruins briefing copy, HUD status, selected-site summary, and Results debrief.
+- Added focused runtime/content/UI/package tests and a hosted Aether Well Lume proxy.
+- Updated README, roadmap, changelog, release checklist, package metadata, package validation, and this handoff for v0.82 closeout.
+
+Runtime boundaries:
+
+- Active only for eligible `campaign_node` launches on `aether_well_ruins` / `broken_ford`.
+- Tutorial/no-reward launches are excluded.
+- Eligible sites are `west_stone_cut`, `ford_toll`, and `north_aether_spring`.
+- Active links are `west_stone_cut_to_ford_toll` and `ford_toll_to_north_aether_spring`.
+- Maximum eligible sites: 3. Maximum active links: 2.
+- Enemy recapture/severing is readable but does not add new persistent penalties.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Lume state is battle-session-only and summarized through existing battle stats/results structures.
+
+Verification:
+
+```text
+npm test PASS, 87 files / 654 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npx vitest run src/game/playtest/PlaytestPackageValidation.test.ts --reporter=dot PASS, 1 file / 3 tests.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests, including the Aether Well Lume proxy.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-1e3f94b-dirty` generated.
+npm run verify:playtest-package PASS, 251 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.82 mission-local Lume Network runtime prototype`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.81 Lume Site Network Prototype Specification And Smallest-Fun-Slice Gate - 2026-05-30
 

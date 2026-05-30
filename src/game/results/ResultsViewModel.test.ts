@@ -468,6 +468,40 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("battle-only readability signals");
   });
 
+  it("renders battle-local Lume Network Results for the chosen mission only", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        campaignNodeId: "aether_well_ruins",
+        mapId: "broken_ford",
+        difficulty: "normal"
+      }),
+      stats: {
+        ...baseStats(),
+        lumeNetworkId: "aether_well_ruins_lume_ward",
+        lumeLinkActivatedIds: ["west_stone_cut_to_ford_toll"],
+        lumeLinkSeveredIds: ["west_stone_cut_to_ford_toll"],
+        lumeObjectiveCompleted: true,
+        lumeTelemetryLabels: [
+          "West Stone Cut to Ford Toll activated Linked Ward.",
+          "West Stone Cut to Ford Toll severed by site control loss."
+        ]
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Lume Network");
+    expect(summaryHtml).toContain("Linked Ward");
+    expect(summaryHtml).toContain("West Stone Cut to Ford Toll");
+    expect(summaryHtml).toContain("Objective</span><strong>Completed");
+    expect(summaryHtml).toContain("8% less incoming damage");
+    expect(summaryHtml).toContain("battle-local and does not change campaign saves");
+  });
+
   it("points champion relic Results toward equip, skill, and replay guidance", () => {
     const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const data = createResultsData({

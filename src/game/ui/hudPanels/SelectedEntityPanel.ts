@@ -36,7 +36,8 @@ type SelectedEntity = HUDSnapshot["selected"][number];
 export function renderSelectionSummary(
   selectedOne: SelectedEntity | undefined,
   selected: SelectedEntity[],
-  controlGroups: ControlGroupSummary[] = []
+  controlGroups: ControlGroupSummary[] = [],
+  lumeSiteSummaries: NonNullable<HUDSnapshot["lumeSiteSummaries"]> = {}
 ): string {
   const controlGroupSummary = renderControlGroupSummary(controlGroups);
   if (!selectedOne) {
@@ -113,6 +114,7 @@ export function renderSelectionSummary(
   }
 
   if (selectedOne instanceof CaptureSite) {
+    const lumeSummary = lumeSiteSummaries[selectedOne.definition.id];
     const breakdown = resourceSiteIncomeBreakdown(selectedOne);
     const workerSlotCapacity = resourceSiteWorkerSlotCapacity(selectedOne);
     const abstractEnemySlots = selectedOne.owner === "enemy" ? selectedOne.abstractEnemyWorkerSlots : 0;
@@ -137,6 +139,7 @@ export function renderSelectionSummary(
         <span>Total income +${breakdown.totalAmount}/${selectedOne.definition.incomeInterval}s</span>
         <span>Status ${escapeHtml(status)}</span>
       </div>
+      ${lumeSummary ? renderLumeSiteSummary(lumeSummary) : ""}
       <p class="quiet">${escapeHtml(assignmentInstruction)}</p>
     `;
   }
@@ -190,6 +193,18 @@ export function renderSelectionSummary(
     ${selectedOne.isUnderConstruction() ? renderProgress("Construction", selectedOne.constructionProgress) : ""}
     ${renderProductionQueue(selectedOne)}
     ${renderUpgradeQueue(selectedOne)}
+  `;
+}
+
+function renderLumeSiteSummary(summary: NonNullable<HUDSnapshot["lumeSiteSummaries"]>[string]): string {
+  const stateLabel = summary.state.charAt(0).toUpperCase() + summary.state.slice(1);
+  return `
+    <div class="role-identity-summary lume-site-summary" data-testid="selected-lume-site-summary">
+      <strong>${escapeHtml(summary.title)}: ${escapeHtml(stateLabel)}</strong>
+      <span>Linked to ${escapeHtml(summary.linkedSites)}</span>
+      <small>${escapeHtml(summary.benefit)}</small>
+      <small>${escapeHtml(summary.counterplay)}</small>
+    </div>
   `;
 }
 

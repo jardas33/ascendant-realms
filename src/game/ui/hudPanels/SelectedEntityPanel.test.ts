@@ -172,6 +172,25 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Status Capture this site before assigning a Worker.");
     expect(markup).toContain("Capture this site before assigning a Worker.");
   });
+
+  it("shows Lume link status for eligible selected sites", () => {
+    const site = fakeCaptureSite({ id: "ford_toll", name: "Ford Toll", owner: "player" });
+
+    const markup = renderSelectionSummary(site, [], [], {
+      ford_toll: {
+        title: "Lume Link",
+        state: "active",
+        linkedSites: "West Stone Cut, North Aether Spring",
+        benefit: "Friendly units and buildings near active linked sites take 8% less incoming damage.",
+        counterplay: "Enemy recapture severs the link; retake both endpoints to restore it."
+      }
+    });
+
+    expect(markup).toContain('data-testid="selected-lume-site-summary"');
+    expect(markup).toContain("Lume Link: Active");
+    expect(markup).toContain("Linked to West Stone Cut, North Aether Spring");
+    expect(markup).toContain("8% less incoming damage");
+  });
 });
 
 function fakeUnit(
@@ -263,6 +282,8 @@ function fakeBuilding(
 
 function fakeCaptureSite(
   options: {
+    id?: string;
+    name?: string;
     owner: "player" | "enemy" | "neutral";
     assignedWorkerName?: string;
     workerAssignmentStatusDetail?: string;
@@ -270,7 +291,7 @@ function fakeCaptureSite(
   }
 ): CaptureSite {
   return Object.assign(Object.create(CaptureSite.prototype), {
-    id: "crown_shrine",
+    id: options.id ?? "crown_shrine",
     kind: "capture-site",
     team: options.owner,
     owner: options.owner,
@@ -287,8 +308,8 @@ function fakeCaptureSite(
         ]
       : [],
     definition: {
-      id: "crown_shrine",
-      name: "Crown Shrine",
+      id: options.id ?? "crown_shrine",
+      name: options.name ?? "Crown Shrine",
       resource: "crowns",
       x: 850,
       y: 780,

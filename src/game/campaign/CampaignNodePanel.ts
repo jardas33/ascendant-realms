@@ -17,6 +17,7 @@ import {
 } from "../core/campaign/CampaignMissionRules";
 import { getRivalNodePreview } from "../core/RivalRules";
 import { selectEnemyDoctrineForCampaignNode, selectEnemyEliteSquadForBattle } from "../data/enemyDoctrines";
+import { lumeNetworkForCampaignNode } from "../data/lumeNetworks";
 import {
   DEFAULT_TACTICAL_PLAN_ID,
   formatTacticalPlanRecommendation,
@@ -76,6 +77,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const mapLabel = node.isPlaceholder ? (node.futureMapName ?? "Future map not implemented") : (map?.name ?? node.mapId);
   const missionReward = getCampaignMissionRewardState(campaignSave, node);
   const missionBriefing = getCampaignMissionBriefing(node);
+  const lumeNetwork = lumeNetworkForCampaignNode(node.id);
   const scenarioModifiers = getCampaignScenarioModifierDefinitions(node);
   const enemyDoctrine = selectEnemyDoctrineForCampaignNode(node);
   const eliteSquad = selectEnemyEliteSquadForBattle({
@@ -110,6 +112,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${renderGuidanceMessage(nodeGuidance.title, nodeGuidance.body, nodeGuidance.actions, "compact")}
         ${actStep ? renderAct1SpineMessage(actStep, campaignSave) : ""}
         ${missionBriefing ? renderMissionBriefingMessage(missionBriefing, scenarioModifiers) : ""}
+        ${lumeNetwork ? renderLumeBriefingMessage(lumeNetwork) : ""}
         ${enemyDoctrine ? renderEnemyDoctrineMessage(enemyDoctrine, eliteSquad) : ""}
         ${renderPreBattleIntelligenceMessage(node, heroSave, enemyDoctrine, eliteSquad, selectedTacticalPlan)}
         ${renderTacticalPlanSelector(node, enemyDoctrine, selectedTacticalPlan)}
@@ -128,6 +131,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
           <span>Next action</span><strong>${escapeHtml(actStep?.nextAction ?? "Complete available nodes to open the next route.")}</strong>
           <span>Scenario modifiers</span><strong>${escapeHtml(formatScenarioModifierNames(scenarioModifiers))}</strong>
           <span>Modifier effects</span><strong>${escapeHtml(formatCampaignScenarioModifierSummary(node))}</strong>
+          <span>Lume Network</span><strong>${escapeHtml(lumeNetwork ? `${lumeNetwork.benefit.name}: ${lumeNetwork.briefingCopy}` : "None")}</strong>
           <span>Reward preview</span><strong>${escapeHtml(missionBriefing?.rewardPreview ?? "See listed rewards.")}</strong>
           <span>Difficulty</span><strong>${titleCase(node.difficulty)}</strong>
           <span>Mission status</span><strong>${escapeHtml(missionReward.statusLabel)}</strong>
@@ -183,6 +187,15 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${node.choices?.length ? renderEventChoices({ node, status, campaignSave, heroSave }) : ""}
       </div>
     `;
+}
+
+function renderLumeBriefingMessage(network: NonNullable<ReturnType<typeof lumeNetworkForCampaignNode>>): string {
+  return renderGuidanceMessage(
+    network.benefit.name,
+    network.briefingCopy,
+    [network.benefit.summary, network.counterplay, "Battle-local only"],
+    "compact"
+  );
 }
 
 function renderPreBattleIntelligenceMessage(

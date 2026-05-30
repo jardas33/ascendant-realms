@@ -156,6 +156,25 @@ describe("BattleRuntime", () => {
     expect(result?.shouldSaveHero).toBe(false);
   });
 
+  it("clones battle-only Lume Network telemetry into completion results", () => {
+    const runtime = createBattleRuntime({ launch: createTestLaunch() });
+    runtime.recordLumeNetworkStarted("aether_well_ruins_lume_ward");
+    runtime.recordLumeLinkActivated("west_stone_cut_to_ford_toll", "West Stone Cut to Ford Toll activated Linked Ward.");
+    runtime.recordLumeLinkSevered("west_stone_cut_to_ford_toll", "West Stone Cut to Ford Toll severed by site control loss.");
+
+    const result = runtime.completeBattle({ outcome: "defeat", heroSave: createFallbackHeroSave() });
+
+    expect(result?.stats.lumeNetworkId).toBe("aether_well_ruins_lume_ward");
+    expect(result?.stats.lumeLinkActivatedIds).toEqual(["west_stone_cut_to_ford_toll"]);
+    expect(result?.stats.lumeLinkSeveredIds).toEqual(["west_stone_cut_to_ford_toll"]);
+    expect(result?.stats.lumeObjectiveCompleted).toBe(true);
+    expect(result?.stats.lumeTelemetryLabels).toEqual([
+      "West Stone Cut to Ford Toll activated Linked Ward.",
+      "West Stone Cut to Ford Toll severed by site control loss."
+    ]);
+    expect(result?.shouldSaveHero).toBe(false);
+  });
+
   it("clones battle-only Act 1 finale telemetry into completion results", () => {
     const runtime = createBattleRuntime({ launch: createTestLaunch() });
     runtime.recordAct1FinalePhaseStarted({

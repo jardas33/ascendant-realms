@@ -6,7 +6,14 @@ import { formatRetinueDeploymentLabel, isRetinueEligibleVeteran, retinueEligibil
 import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
-import { BATTLEFIELD_EVENT_BY_ID, ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import {
+  BATTLEFIELD_EVENT_BY_ID,
+  ENEMY_DOCTRINE_BY_ID,
+  ENEMY_ELITE_SQUAD_BY_ID,
+  ITEM_BY_ID,
+  LUME_NETWORK_BY_ID,
+  SKILL_NODE_BY_ID
+} from "../data/contentIndex";
 import { ACT1_FINALE_NODE_ID, ACT1_FINALE_PHASES, formatAct1FinalePhaseNames } from "../data/act1Finale";
 import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import type { ResultsData } from "./ResultsTypes";
@@ -35,6 +42,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
           <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
           <span>Battlefield events</span><strong>${escapeHtml(formatBattlefieldEventResult(data))}</strong>
+          <span>Lume Network</span><strong>${escapeHtml(formatLumeNetworkResult(data))}</strong>
           ${renderAct1FinaleBattleRows(data)}
         </div>
       </section>
@@ -48,6 +56,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderTacticalPlanSummary(data)}
     ${renderAct1FinaleSummary(data)}
     ${renderBattlefieldEventSummary(data)}
+    ${renderLumeNetworkSummary(data)}
     ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
@@ -62,6 +71,29 @@ function renderAct1FinaleBattleRows(data: ResultsData): string {
   return `
     <span>Act 1 finale</span><strong>${data.stats.act1FinaleCompleted ? "Completed" : "In progress / incomplete"}</strong>
     <span>Finale phases</span><strong>${escapeHtml(formatAct1FinalePhaseNames(data.stats.act1FinaleCompletedPhaseIds))}</strong>
+  `;
+}
+
+export function renderLumeNetworkSummary(data: ResultsData): string {
+  const network = data.stats.lumeNetworkId ? LUME_NETWORK_BY_ID[data.stats.lumeNetworkId] : undefined;
+  if (!network) {
+    return "";
+  }
+  const activated = data.stats.lumeLinkActivatedIds ?? [];
+  const severed = data.stats.lumeLinkSeveredIds ?? [];
+  return `
+    <section class="result-block wide lume-network-summary" data-testid="results-lume-network-summary">
+      <h2>Lume Network</h2>
+      <div class="results-grid compact">
+        <span>Network</span><strong>${escapeHtml(network.benefit.name)}</strong>
+        <span>Links activated</span><strong>${escapeHtml(formatLumeLinkNames(network.id, activated))}</strong>
+        <span>Links severed</span><strong>${escapeHtml(formatLumeLinkNames(network.id, severed))}</strong>
+        <span>Objective</span><strong>${data.stats.lumeObjectiveCompleted ? "Completed" : "Incomplete"}</strong>
+        <span>Benefit</span><strong>${escapeHtml(network.benefit.summary)}</strong>
+        <span>After-action notes</span><strong>${escapeHtml(formatEventTelemetry(data.stats.lumeTelemetryLabels ?? []))}</strong>
+      </div>
+      <p class="quiet">${escapeHtml(network.battleLocalCopy)}</p>
+    </section>
   `;
 }
 
@@ -204,6 +236,26 @@ function formatBattlefieldEventResult(data: ResultsData): string {
   const completed = data.stats.battlefieldEventCompletedIds?.length ?? 0;
   const failed = data.stats.battlefieldEventFailedIds?.length ?? 0;
   return `${eventIds.map(formatBattlefieldEventName).join(", ")}; completed ${completed}, missed ${failed}`;
+}
+
+function formatLumeNetworkResult(data: ResultsData): string {
+  const network = data.stats.lumeNetworkId ? LUME_NETWORK_BY_ID[data.stats.lumeNetworkId] : undefined;
+  if (!network) {
+    return "None";
+  }
+  const activated = data.stats.lumeLinkActivatedIds?.length ?? 0;
+  const severed = data.stats.lumeLinkSeveredIds?.length ?? 0;
+  return `${network.benefit.name}; activated ${activated}, severed ${severed}`;
+}
+
+function formatLumeLinkNames(networkId: string, linkIds: string[]): string {
+  if (linkIds.length === 0) {
+    return "None";
+  }
+  const network = LUME_NETWORK_BY_ID[networkId];
+  return linkIds
+    .map((linkId) => network?.links.find((link) => link.id === linkId)?.displayName ?? linkId)
+    .join(", ");
 }
 
 function formatBattlefieldEventNames(ids: string[]): string {

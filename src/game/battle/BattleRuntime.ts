@@ -329,6 +329,57 @@ export class BattleRuntime {
     this.recordBattlefieldEventTelemetry(telemetryLabel);
   }
 
+  recordLumeNetworkStarted(networkId: string): void {
+    if (!networkId.trim()) {
+      return;
+    }
+    this.stats.lumeNetworkId = networkId;
+    this.stats.lumeLinkActivatedIds ??= [];
+    this.stats.lumeLinkSeveredIds ??= [];
+    this.stats.lumeTelemetryLabels ??= [];
+  }
+
+  recordLumeLinkActivated(linkId: string, telemetryLabel: string): void {
+    if (!this.stats.lumeNetworkId || !linkId.trim()) {
+      return;
+    }
+    const ids = (this.stats.lumeLinkActivatedIds ??= []);
+    if (!ids.includes(linkId)) {
+      ids.push(linkId);
+    }
+    this.recordLumeTelemetry(telemetryLabel);
+    this.stats.lumeObjectiveCompleted = true;
+  }
+
+  recordLumeLinkSevered(linkId: string, telemetryLabel: string): void {
+    if (!this.stats.lumeNetworkId || !linkId.trim()) {
+      return;
+    }
+    const ids = (this.stats.lumeLinkSeveredIds ??= []);
+    if (!ids.includes(linkId)) {
+      ids.push(linkId);
+    }
+    this.recordLumeTelemetry(telemetryLabel);
+  }
+
+  recordLumeObjectiveCompleted(telemetryLabel: string): void {
+    if (!this.stats.lumeNetworkId) {
+      return;
+    }
+    this.stats.lumeObjectiveCompleted = true;
+    this.recordLumeTelemetry(telemetryLabel);
+  }
+
+  private recordLumeTelemetry(label: string): void {
+    if (!label.trim()) {
+      return;
+    }
+    const labels = (this.stats.lumeTelemetryLabels ??= []);
+    if (!labels.includes(label)) {
+      labels.push(label);
+    }
+  }
+
   private recordBattlefieldEventTelemetry(label: string): void {
     if (!label.trim()) {
       return;
@@ -511,6 +562,11 @@ export function completeBattle(
     act1FinaleCommanderReleasedAtSeconds: input.stats.act1FinaleCommanderReleasedAtSeconds,
     act1FinaleCompleted: input.stats.act1FinaleCompleted ?? false,
     act1FinaleTelemetryLabels: [...(input.stats.act1FinaleTelemetryLabels ?? [])],
+    lumeNetworkId: input.stats.lumeNetworkId,
+    lumeLinkActivatedIds: [...(input.stats.lumeLinkActivatedIds ?? [])],
+    lumeLinkSeveredIds: [...(input.stats.lumeLinkSeveredIds ?? [])],
+    lumeObjectiveCompleted: input.stats.lumeObjectiveCompleted ?? false,
+    lumeTelemetryLabels: [...(input.stats.lumeTelemetryLabels ?? [])],
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const baselineHero = input.startingHeroSave ?? input.heroSave;

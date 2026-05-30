@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.82 Mission-Local Lume Network Runtime Prototype - 2026-05-30
+
+This checkpoint implements the smallest runtime Lume Network slice approved by v0.81. Aether Well Ruins on Broken Ford now supports a battle-local linked-site objective: capture West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, to activate Linked Ward.
+
+Added:
+
+- `src/game/types/LumeNetworkTypes.ts`.
+- `src/game/data/lumeNetworks.ts`.
+- `src/game/data/validation/validateLumeNetworks.ts`.
+- `src/game/battle/LumeNetworkDirector.ts`.
+- `src/game/battle/LumeNetworkDirector.test.ts`.
+- `docs/V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md`.
+- `docs/V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md`.
+- `docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md`.
+- `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V082_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added content validation for Lume Network definitions and package validation for the v0.82 docs.
+- Added Lume Network briefing copy to the Aether Well Ruins campaign node.
+- Added battle-local Lume telemetry fields to Results stats without adding save fields.
+- Added HUD, selected-site, and Results summaries for active, contested, and severed Lume links.
+- Added Linked Ward as a non-stacking mission-local defensive benefit: friendly units and buildings near active linked sites take 8% less incoming damage from enemy attacks.
+- Added a hosted proxy covering activation, enemy recapture/severing, and Results summary for Aether Well Ruins.
+
+Not changed:
+
+- No save-version bump, save fields, internal ID migration, maps, factions, races, units, buildings, classes, art/assets, desktop wrapper, engine choice, runtime rebrand, runtime display-copy migration, Jardas binding, Worker binding, hero binding, resource-production bonus, global balance change, enemy AI bump, multiplayer, PvP, or co-op was added.
+
+Verification:
+
+- Passed: `npm test` with 87 files / 654 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, focused package validation with 3 tests, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted deep-campaign-pressure with 8 tests including the Aether Well Lume proxy, hosted smoke with 14 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, dirty package verification with 251 checks, and `git diff --check`.
+
 # v0.81 Lume Site Network Prototype Specification And Smallest-Fun-Slice Gate - 2026-05-30
 
 This checkpoint is docs-only. It audits the existing resource-site and campaign architecture, compares small Lume Network prototype candidates, and recommends a mission-local Linked Control slice for Emmanuel review before any runtime implementation.

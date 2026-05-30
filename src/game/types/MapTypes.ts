@@ -177,4 +177,9 @@ export interface BattleStats {
   act1FinaleCommanderReleasedAtSeconds?: number;
   act1FinaleCompleted?: boolean;
   act1FinaleTelemetryLabels?: string[];
+  lumeNetworkId?: string;
+  lumeLinkActivatedIds?: string[];
+  lumeLinkSeveredIds?: string[];
+  lumeObjectiveCompleted?: boolean;
+  lumeTelemetryLabels?: string[];
 }

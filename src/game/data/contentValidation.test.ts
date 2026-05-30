@@ -11,6 +11,7 @@ import { DEFAULT_AGGRO_RADIUS, FORMATION_SPACING } from "../core/Constants";
 import { FACTIONS } from "./factions";
 import { ITEMS } from "./items";
 import { ITEM_AFFIXES } from "./itemAffixes";
+import { LUME_NETWORKS } from "./lumeNetworks";
 import { MAPS } from "./maps";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { ENEMY_DOCTRINES, ENEMY_ELITE_SQUADS } from "./enemyDoctrines";
@@ -79,6 +80,29 @@ describe("content validation", () => {
       "champion_hunt"
     );
     expect(BATTLEFIELD_EVENTS.every((event) => event.cooldownSeconds >= 45)).toBe(true);
+  });
+
+  it("validates the v0.82 mission-local Lume Network slice", () => {
+    expect(LUME_NETWORKS).toHaveLength(1);
+    const network = LUME_NETWORKS[0];
+    expect(network.campaignNodeId).toBe("aether_well_ruins");
+    expect(network.mapId).toBe("broken_ford");
+    expect(network.eligibleSiteIds).toEqual(["west_stone_cut", "ford_toll", "north_aether_spring"]);
+    expect(network.links.map((link) => [link.fromSiteId, link.toSiteId])).toEqual([
+      ["west_stone_cut", "ford_toll"],
+      ["ford_toll", "north_aether_spring"]
+    ]);
+    expect(network.maxEligibleSites).toBe(3);
+    expect(network.maxActiveLinks).toBe(2);
+    expect(network.activationMode).toBe("capture_only");
+    expect(network.benefit).toMatchObject({
+      id: "linked_ward",
+      name: "Linked Ward",
+      damageTakenMultiplier: 0.92,
+      nonStacking: true
+    });
+    expect(network.tutorialExcluded).toBe(true);
+    expect(network.rewardsDisabledExcluded).toBe(true);
   });
 
   it("defines the initial visual asset metadata manifest without production-final claims", () => {

@@ -248,6 +248,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V081_FUTURE_IMPLEMENTATION_SEQUENCE.md",
   "V081_EMMANUEL_REVIEW_PACKET.md",
   "V081_IMPLEMENTATION_REPORT.md",
+  "V082_LUME_NETWORK_RUNTIME_PROTOTYPE_SPEC.md",
+  "V082_LINKED_WARD_BALANCE_AND_READABILITY_REPORT.md",
+  "V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md",
+  "V082_IMPLEMENTATION_REPORT.md",
+  "V082_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -353,7 +358,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.81 Lume Site Network prototype specification and smallest-fun-slice gate",
+      "v0.82 mission-local Lume Network runtime prototype",
       "build info checkpoint",
       checks,
       errors

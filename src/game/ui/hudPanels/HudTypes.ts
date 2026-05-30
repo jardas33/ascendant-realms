@@ -1,5 +1,6 @@
 import type { ResourceBag } from "../../core/GameTypes";
 import type { Cost } from "../../core/GameTypes";
+import type { LumeNetworkHudSummary, LumeNetworkSiteSummary } from "../../core/GameTypes";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
 import type { CaptureSite } from "../../entities/CaptureSite";
@@ -50,6 +51,8 @@ export interface HUDSnapshot {
   controlGroups?: ControlGroupSummary[];
   enemyDoctrine?: HUDEnemyDoctrineSnapshot;
   battlefieldEvent?: HUDBattlefieldEventSnapshot;
+  lumeNetwork?: LumeNetworkHudSummary;
+  lumeSiteSummaries?: Record<string, LumeNetworkSiteSummary>;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
 }
