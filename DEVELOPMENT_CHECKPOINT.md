@@ -1,6 +1,71 @@
 # Development Checkpoint
 
-Updated: 2026-05-29 v0.54-v0.56 control groups and Patrol foundation closeout
+Updated: 2026-05-29 v0.57-v0.59 army veterancy and tactical feedback closeout
+
+## v0.57-v0.59 Army Veterancy And Tactical Feedback Foundation - 2026-05-29
+
+Scope: add a small battle-only army veterancy and unit-role readability layer without creating a permanent army roster or broad stat rewrite. This pass changes unit role metadata, validation, selected-panel summaries, command copy, Results veteran scope copy, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save-version bumps, new save fields, broad pathing rewrite, global rebalance, a huge unit stat overhaul, formation editor, Patrol rewrite, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `c1d25de`, `ascendant-realms-private-playtest-c1d25de`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26665697999` on `c1d25de` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V057_ARMY_VETERANCY_FOUNDATION_SPEC.md`.
+- Added `docs/V058_UNIT_ROLE_IDENTITY_SPEC.md`.
+- Added `docs/V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md`.
+- Added `docs/V057_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V058_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added validated unit role metadata and content-index coverage.
+- Added selected-unit role, tags, rank, XP, kills, and modest veteran-bonus copy.
+- Added selected-group role mix and ranked-member summaries.
+- Added role-aware training command descriptions.
+- Added Worker construction order summaries for build movement, active build, and paused build states.
+- Added Results copy that keeps normal unit veterancy battle-only while preserving the existing opt-in Retinue survivor system.
+- Extended hosted deep-battle coverage for role copy, veteran status, control groups, group movement spacing, Patrol start/cancel, and Worker command regression.
+- Updated package metadata and validation to require the v0.57-v0.59 docs.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Normal trained-unit veterancy is live battle state and Results summary only.
+- Existing Retinue Camp survivor recruitment remains the existing opt-in campaign system.
+- Control groups, Patrol routes, formation offsets, role summaries, and tactical feedback remain session-derived.
+- Existing campaign, replay, reward, relic, skill, inventory, equipment, and Tutorial no-reward state remains valid.
+
+Verification:
+
+```text
+Focused role/veterancy/tactical Vitest pass PASS, 8 files / 99 tests.
+npm test -- PlaytestPackageValidation PASS, 1 file / 3 tests.
+npm test PASS, 80 files / 602 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run test:e2e:smoke:fast PASS on rerun with explicit local dev server, 8 tests; earlier setup attempts were non-pass evidence.
+npm run test:e2e:smoke PASS on clean rerun, 14 tests; exact rerun covered the intermediate settings persistence failure.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS on full rerun, 28 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run test:e2e:release:shard1of3 NON-PASS, timed out after 20 minutes with no summary; timed-out local processes were stopped.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-c1d25de-dirty` generated.
+npm run verify:playtest-package PASS, 162 checks against the dirty pre-commit package.
+```
+
+Interaction note: browser tests used existing verified DOM fallbacks only for UI controls. No force-click or DOM fallback was introduced for canvas/world clicks.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
 

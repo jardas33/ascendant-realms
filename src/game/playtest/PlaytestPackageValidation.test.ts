@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.54-v0.56 control groups and Patrol foundation",
+          checkpoint: "v0.57-v0.59 army veterancy and tactical feedback foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -201,6 +201,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V055_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Formation movement implementation report" },
       { path: "V056_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Patrol implementation report" },
       { path: "V056_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.56 retest" },
+      { path: "V057_ARMY_VETERANCY_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Army veterancy spec" },
+      { path: "V058_UNIT_ROLE_IDENTITY_SPEC.md", sizeBytes: 20, textContent: "Unit role identity spec" },
+      { path: "V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md", sizeBytes: 20, textContent: "Tactical feedback spec" },
+      { path: "V057_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Army veterancy implementation report" },
+      { path: "V058_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Unit role identity implementation report" },
+      { path: "V059_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Tactical feedback implementation report" },
+      { path: "V059_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.59 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

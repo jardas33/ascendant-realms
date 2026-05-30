@@ -37,6 +37,9 @@ describe("CommandPanel", () => {
     expect(barracksMarkup).toContain("Cost: 120 Crowns, 70 Iron");
     expect(barracksMarkup).toContain("Owner: Barracks");
     expect(barracksMarkup).toContain("Requires: completed Barracks");
+    expect(barracksMarkup).toContain("Frontline / Melee");
+    expect(barracksMarkup).toContain("Tags: Frontline / Melee / Holds Ground");
+    expect(barracksMarkup).toContain("Ranged / Focus Fire");
   });
 
   it("keeps costs visible when a command is locked", () => {

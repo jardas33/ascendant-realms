@@ -8,6 +8,8 @@ export interface UnitOrderState {
   attackMove?: boolean;
   activeRepairTargetId?: string;
   pausedRepairTargetId?: string;
+  activeConstructionSiteId?: string;
+  pausedConstructionSiteId?: string;
   activeResourceSiteId?: string;
   activeResourceSiteLabel?: string;
   moveOrderCombatSuppressionSeconds?: number;
@@ -54,6 +56,16 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     };
   }
 
+  if (unit.activeConstructionSiteId) {
+    return {
+      label: unit.moveTarget ? "Moving to Build" : "Building",
+      detail: unit.moveTarget
+        ? "Worker is moving to the construction site; progress resumes when it arrives."
+        : "Worker is building or finishing this construction site.",
+      tone: "active"
+    };
+  }
+
   if (unit.activeResourceSiteId) {
     const site = unit.activeResourceSiteLabel ? ` Site: ${unit.activeResourceSiteLabel}.` : "";
     const moving = unit.moveTarget ? " Returning to the site; bonus starts when the Worker is in range." : "";
@@ -68,6 +80,14 @@ export function describeUnitOrder(unit: UnitOrderState): UnitOrderSummary {
     return {
       label: "Repair Paused",
       detail: "Issue Repair again on the damaged building to resume.",
+      tone: "neutral"
+    };
+  }
+
+  if (unit.pausedConstructionSiteId) {
+    return {
+      label: "Construction Paused",
+      detail: "Issue Build/Resume on the construction site, or right-click it with a Worker, to continue.",
       tone: "neutral"
     };
   }

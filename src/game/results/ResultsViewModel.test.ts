@@ -522,6 +522,9 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("140/230 XP to Elite");
     expect(summaryHtml).toContain("Rank bonus: +8% HP, +8% damage");
     expect(summaryHtml).toContain("Eligible: survived at Seasoned rank or better.");
+    expect(summaryHtml).toContain("Veterancy scope");
+    expect(summaryHtml).toContain("Battle-only for normal trained units");
+    expect(summaryHtml).toContain("this checkpoint adds no new permanent army roster");
     expect(retinueHtml).toContain("2/2 active");
     expect(retinueHtml).toContain("Retinue is full");
     expect(retinueHtml).toContain("Eligible recruits this battle: 1");

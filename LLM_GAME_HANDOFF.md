@@ -1,12 +1,78 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-29 v0.54-v0.56 control groups and Patrol foundation closeout
+Last updated: 2026-05-29 v0.57-v0.59 army veterancy and tactical feedback closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.57-v0.59 Army Veterancy And Tactical Feedback Foundation - 2026-05-29
+
+Status: v0.57-v0.59 adds battle-only army veterancy, unit role identity copy, and clearer tactical feedback on top of the v0.54-v0.56 command-depth layer. It does not add maps, factions, runtime art/assets, save fields, save-version bumps, a permanent army roster, broad pathing rewrites, global rebalance, huge stat overhaul, formation editor, Patrol rewrite, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `c1d25de`, `ascendant-realms-private-playtest-c1d25de`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26665697999` on `c1d25de` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V057_ARMY_VETERANCY_FOUNDATION_SPEC.md`.
+- Added `docs/V058_UNIT_ROLE_IDENTITY_SPEC.md`.
+- Added `docs/V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md`.
+- Added `docs/V057_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V058_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added validated `unitRoles` metadata for Militia, Ranger, Acolyte, Hero, Worker, Watchtower/building-adjacent readability, enemies, and neutral targets.
+- Added role tags/archetype copy to selected-unit, selected-group, and training command surfaces.
+- Added selected-unit battle veterancy summary for rank, XP, kills, modest bonuses, and battle-only scope.
+- Added selected-group role mix and ranked-member counts so control-group selections read as an army composition instead of only a count.
+- Added Worker construction order summaries for moving to build, building, and construction paused states.
+- Added Results veteran scope copy that distinguishes battle-only normal unit XP from the existing opt-in Retinue survivor flow.
+- Extended tests for role metadata validation, role UI, battle-only veterancy display, control-group recall of veteran units, Patrol eligibility, command copy, and Results veteran scope.
+- Extended hosted deep-battle coverage for role copy, veteran status, control-group recall, group movement spacing, Patrol start/cancel, and Worker command regression.
+- Updated package metadata and validation to require the v0.57-v0.59 docs and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No new save fields.
+- Normal trained-unit veterancy is live battle state plus Results summary only.
+- Existing Retinue Camp survivor recruitment remains the existing opt-in campaign system and was not broadened into a permanent army roster.
+- Control groups, Patrol routes, formation offsets, role summaries, and tactical feedback remain session-derived.
+- Existing Act 1 campaign, replay, reward, relic, skill, inventory, equipment, and Tutorial no-reward saves remain compatible.
+
+Verification:
+
+```text
+Focused role/veterancy/tactical Vitest pass PASS, 8 files / 99 tests.
+npm test -- PlaytestPackageValidation PASS, 1 file / 3 tests.
+npm test PASS, 80 files / 602 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run test:e2e:smoke:fast PASS on rerun with explicit local dev server, 8 tests; earlier attempts were timeout/no-summary and dev-server-not-running setup non-pass evidence.
+npm run test:e2e:smoke PASS on clean rerun, 14 tests; earlier attempts were timeout/no-summary and one intermediate 13/14 run whose exact failed settings case passed on rerun.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS on full rerun, 28 tests; one intermediate changed-test expectation was fixed and exact-rerun passed first.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run test:e2e:release:shard1of3 NON-PASS, timed out after 20 minutes with no summary; timed-out local processes were stopped. Hosted release lanes and local smoke evidence passed.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-c1d25de-dirty` generated.
+npm run verify:playtest-package PASS, 162 checks against the dirty pre-commit package.
+```
+
+Release interaction note: hosted and local browser coverage uses existing verified DOM fallbacks only for UI controls. No force-click or DOM fallback was added for canvas/world clicks.
+
+Closeout note: commit as `Checkpoint v0.57-v0.59 army veterancy and tactical feedback foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
 

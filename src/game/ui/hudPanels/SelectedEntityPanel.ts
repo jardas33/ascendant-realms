@@ -19,6 +19,13 @@ import {
   formatUnitVeterancyXpProgress,
   getUnitVeterancyRank
 } from "../../data/unitVeterancy";
+import {
+  HERO_ROLE_IDENTITY,
+  formatUnitRoleTags,
+  getUnitRoleIdentity,
+  summarizeUnitRoleMix,
+  type UnitRoleIdentity
+} from "../../data/unitRoles";
 import { describeUnitOrder, summarizeUnitOrders } from "../UnitOrderSummary";
 import { escapeHtml, formatBuildingRole, formatBuildingUnlockSummary, renderProgress, unitName, upgradeName } from "./HudFormatting";
 import type { HUDSnapshot } from "./HudTypes";
@@ -41,6 +48,7 @@ export function renderSelectionSummary(
       const hiddenCount = Math.max(0, selected.length - 12);
       return `<p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
       ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
+      ${selectedUnits.length > 0 ? renderGroupRoleSummary(selectedUnits) : ""}
       ${controlGroupSummary}
       ${renderBehaviourControls(selectedUnits)}
       <div class="selection-grid">${selected
@@ -59,6 +67,7 @@ export function renderSelectionSummary(
     const order = describeUnitOrder(selectedOne);
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY)}
       ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
       <div class="hero-command-summary">
@@ -74,17 +83,21 @@ export function renderSelectionSummary(
     const rank = getUnitVeterancyRank(selectedOne.veterancy.rank);
     const xpProgress = formatUnitVeterancyXpProgress(selectedOne.veterancy.xp);
     const bonuses = formatUnitVeterancyBonusSummary(selectedOne.veterancy.rank);
-    const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Normal battle unit";
+    const roleIdentity = getUnitRoleIdentity(selectedOne.definition.id);
+    const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Battle-only unit";
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
+      ${renderRoleIdentitySummary(roleIdentity)}
       ${controlGroupSummary}
       ${renderBehaviourControls([selectedOne])}
       <div class="stat-list" data-testid="selected-unit-stats">
+        <span>Role ${escapeHtml(roleIdentity.label)}</span>
+        <span>Tags ${escapeHtml(formatUnitRoleTags(roleIdentity))}</span>
         <span>Rank ${escapeHtml(rank.name)}</span>
         <span>XP ${escapeHtml(xpProgress)}</span>
         <span>Kills ${selectedOne.veterancy.kills}</span>
         <span>Bonuses ${escapeHtml(bonuses)}</span>
-        <span>Retinue ${escapeHtml(retinueState)}</span>
+        <span>Veterancy ${escapeHtml(retinueState)}</span>
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
         <span>Damage ${Math.round(selectedOne.damage)}</span>
         <span>Range ${selectedOne.range}</span>
@@ -184,6 +197,31 @@ function renderControlGroupSummary(groups: ControlGroupSummary[]): string {
       <strong>Control Groups</strong>
       <span>${groups.map((group) => `${group.slot}:${group.count}`).join(" ")}</span>
       <small>Ctrl+1-5 assigns; 1-5 recalls.</small>
+    </div>
+  `;
+}
+
+function renderRoleIdentitySummary(identity: UnitRoleIdentity): string {
+  return `
+    <div class="role-identity-summary" data-testid="selected-role-summary">
+      <strong>${escapeHtml(identity.label)}</strong>
+      <span>${escapeHtml(identity.summary)}</span>
+      <small>${escapeHtml(identity.tacticalHint)}</small>
+    </div>
+  `;
+}
+
+function renderGroupRoleSummary(units: Unit[]): string {
+  const veteranCount = units.filter((unit) => unit.veterancy?.rank && unit.veterancy.rank !== "recruit").length;
+  const veteranLine =
+    veteranCount > 0
+      ? `${veteranCount} ranked unit${veteranCount === 1 ? "" : "s"} selected; control groups and Patrol preserve rank state.`
+      : "No ranked units selected yet; units gain battle XP from combat contribution.";
+  return `
+    <div class="role-identity-summary group-role-summary" data-testid="selected-role-summary">
+      <strong>Army Roles</strong>
+      <span>${escapeHtml(summarizeUnitRoleMix(units))}</span>
+      <small>${escapeHtml(veteranLine)}</small>
     </div>
   `;
 }

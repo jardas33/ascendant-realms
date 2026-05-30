@@ -70,6 +70,26 @@ describe("UnitOrderSummary", () => {
     });
   });
 
+  it("describes active and paused Worker construction orders", () => {
+    expect(
+      describeUnitOrder({
+        activeConstructionSiteId: "player-barracks-site",
+        moveTarget: { x: 340, y: 360 }
+      })
+    ).toMatchObject({
+      label: "Moving to Build",
+      detail: expect.stringContaining("construction site")
+    });
+    expect(describeUnitOrder({ activeConstructionSiteId: "player-barracks-site" })).toMatchObject({
+      label: "Building",
+      detail: expect.stringContaining("finishing this construction site")
+    });
+    expect(describeUnitOrder({ pausedConstructionSiteId: "player-barracks-site" })).toMatchObject({
+      label: "Construction Paused",
+      detail: expect.stringContaining("right-click it with a Worker")
+    });
+  });
+
   it("describes Worker resource-site assignment travel and working states", () => {
     expect(
       describeUnitOrder({
@@ -122,8 +142,9 @@ describe("UnitOrderSummary", () => {
         { moveTarget: { x: 12, y: 0 }, moveOrderCombatSuppressionSeconds: 0.3 },
         { attackTargetId: "enemy" },
         { behaviourMode: "hold_ground" },
+        { activeConstructionSiteId: "barracks-site" },
         { activeResourceSiteId: "crown_shrine" }
       ])
-    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground, 1 Working Site");
+    ).toBe("1 Moving, 1 Repositioning, 1 Attacking, 1 Holding Ground, 1 Building, 1 Working Site");
   });
 });

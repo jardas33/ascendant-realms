@@ -585,6 +585,37 @@
   line-height: 1.2;
 }
 
+.role-identity-summary {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 8px;
+  padding: 7px 8px;
+  border: 1px solid rgba(216, 222, 199, 0.12);
+  border-left: 3px solid rgba(143, 207, 145, 0.64);
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, rgba(143, 207, 145, 0.1), transparent 45%),
+    var(--plate-bg);
+}
+
+.role-identity-summary strong {
+  color: #f6edb4;
+  font-size: 12px;
+  line-height: 1.05;
+}
+
+.role-identity-summary span {
+  color: #dce2d0;
+  font-size: 11px;
+  line-height: 1.22;
+}
+
+.role-identity-summary small {
+  color: #aeb8aa;
+  font-size: 10px;
+  line-height: 1.22;
+}
+
 .control-group-summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

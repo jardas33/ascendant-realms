@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.54-v0.56 control groups and Patrol foundation";
+const CHECKPOINT = "v0.57-v0.59 army veterancy and tactical feedback foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -180,6 +180,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V055_IMPLEMENTATION_REPORT.md", join(packageDir, "V055_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V056_IMPLEMENTATION_REPORT.md", join(packageDir, "V056_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V056_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V056_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V057_ARMY_VETERANCY_FOUNDATION_SPEC.md", join(packageDir, "V057_ARMY_VETERANCY_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V058_UNIT_ROLE_IDENTITY_SPEC.md", join(packageDir, "V058_UNIT_ROLE_IDENTITY_SPEC.md"));
+  await copyMarkdown("docs/V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md", join(packageDir, "V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md"));
+  await copyMarkdown("docs/V057_IMPLEMENTATION_REPORT.md", join(packageDir, "V057_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V058_IMPLEMENTATION_REPORT.md", join(packageDir, "V058_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V059_IMPLEMENTATION_REPORT.md", join(packageDir, "V059_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V059_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V059_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -265,7 +272,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.54-v0.56 control-depth retest, start with V054_CONTROL_GROUPS_FOUNDATION_SPEC.md, V055_FORMATION_AWARE_MOVEMENT_SPEC.md, V056_PATROL_FOUNDATION_SPEC.md, V054_IMPLEMENTATION_REPORT.md, V055_IMPLEMENTATION_REPORT.md, V056_IMPLEMENTATION_REPORT.md, and V056_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.48-v0.53 Act 1 and UX docs nearby as regression context. Focus on: Ctrl+1-5 control group assignment, 1-5 recall, group movement spacing, Patrol start/cancel, Stop behavior, Worker build/repair/resource-site regression, hero ability hotkey regression, Tutorial no-save/no-reward protection, and Act 1 replay safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, cinematic system, broad inventory UI, classic harvesting, visible enemy Workers, cargo, drop-off buildings, a formation editor, enemy formation AI, broad AI/pathing rewrite, or final VFX.
+For the v0.57-v0.59 army veterancy and tactical feedback retest, start with V057_ARMY_VETERANCY_FOUNDATION_SPEC.md, V058_UNIT_ROLE_IDENTITY_SPEC.md, V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md, V057_IMPLEMENTATION_REPORT.md, V058_IMPLEMENTATION_REPORT.md, V059_IMPLEMENTATION_REPORT.md, and V059_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.51-v0.56 UX/control docs nearby as regression context. Focus on: Militia/Ranger/Acolyte/Worker/Hero role copy, selected unit rank/XP/bonus copy, battle-only veterancy wording, Results notable veteran summary, Ctrl+1-5 control group assignment/recall with veteran units, Patrol start/cancel, Worker build/repair/resource-site regression, hero XP/skill/relic regression, Tutorial no-save/no-reward protection, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, permanent army roster expansion, enemy veterancy, a formation editor, enemy formation AI, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

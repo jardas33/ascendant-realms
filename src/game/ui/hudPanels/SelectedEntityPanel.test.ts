@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { BUILDING_BY_ID } from "../../data/contentIndex";
+import { createUnitVeterancyState } from "../../data/unitVeterancy";
 import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
@@ -34,6 +35,31 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain('data-testid="control-group-summary"');
     expect(markup).toContain("1:2 3:1");
     expect(markup).toContain("Ctrl+1-5 assigns; 1-5 recalls.");
+  });
+
+  it("shows role identity and battle-only veteran progress for a selected army unit", () => {
+    const militia = fakeUnit("player-1", "Militia", "hold_ground", { unitId: "militia", veterancyXp: 140 });
+
+    const markup = renderSelectionSummary(militia, [militia]);
+
+    expect(markup).toContain('data-testid="selected-role-summary"');
+    expect(markup).toContain("Frontline / Melee");
+    expect(markup).toContain("Put Militia in front");
+    expect(markup).toContain("Role Frontline / Melee");
+    expect(markup).toContain("Tags Frontline / Melee / Holds Ground");
+    expect(markup).toContain("Rank Veteran");
+    expect(markup).toContain("Veterancy Battle-only unit");
+  });
+
+  it("summarizes selected group roles and ranked members", () => {
+    const militia = fakeUnit("player-1", "Militia", "guard_area", { unitId: "militia", veterancyXp: 140 });
+    const ranger = fakeUnit("player-2", "Ranger", "guard_area", { unitId: "ranger" });
+
+    const markup = renderSelectionSummary(undefined, [militia, ranger]);
+
+    expect(markup).toContain("Army Roles");
+    expect(markup).toContain("1 Frontline / Melee, 1 Ranged / Focus Fire");
+    expect(markup).toContain("1 ranked unit selected");
   });
 
   it("marks mixed behaviour groups clearly", () => {
@@ -130,16 +156,39 @@ describe("SelectedEntityPanel", () => {
   });
 });
 
-function fakeUnit(id: string, name: string, behaviourMode: "hold_ground" | "guard_area" | "press_attack"): Unit {
+function fakeUnit(
+  id: string,
+  name: string,
+  behaviourMode: "hold_ground" | "guard_area" | "press_attack",
+  options: { unitId?: string; veterancyXp?: number } = {}
+): Unit {
+  const unitId = options.unitId ?? name.toLowerCase();
   return Object.assign(Object.create(Unit.prototype), {
     id,
     kind: "unit",
     team: "player",
     alive: true,
     behaviourMode,
+    hp: 90,
+    maxHp: 90,
+    armor: 1,
+    veterancy: createUnitVeterancyState(id, unitId, options.veterancyXp ?? 0),
+    damageBuffMultiplier: 1,
+    upgradeDamageMultiplier: 1,
+    veterancyDamageMultiplier: 1,
+    upgradeRangeMultiplier: 1,
+    upgradeAttackCooldownMultiplier: 1,
     definition: {
-      id: name.toLowerCase(),
-      name
+      id: unitId,
+      name,
+      stats: {
+        maxHp: 90,
+        damage: 9,
+        range: 28,
+        attackCooldown: 1,
+        speed: 90,
+        armor: 1
+      }
     }
   }) as Unit;
 }

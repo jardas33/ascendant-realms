@@ -1,6 +1,7 @@
 import type { BuildingDefinition, Cost, UnitDefinition, UpgradeDefinition } from "../../core/GameTypes";
 import { canAfford } from "../../core/MathUtils";
 import { BUILDING_BY_ID, UNIT_BY_ID, UPGRADE_BY_ID } from "../../data/contentIndex";
+import { formatUnitRoleTags, getUnitRoleIdentity } from "../../data/unitRoles";
 import { Building } from "../../entities/Building";
 import { CaptureSite } from "../../entities/CaptureSite";
 import { Unit } from "../../entities/Unit";
@@ -40,6 +41,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .map((buildingId) => BUILDING_BY_ID[buildingId])
     .filter((definition): definition is BuildingDefinition => definition !== undefined)
     .map((definition) => {
+      const roleIdentity = getUnitRoleIdentity(definition.id);
       const prerequisite = checkPrerequisites(definition.prerequisites, snapshot.techState);
       const lockReason = !prerequisite.ok
         ? prerequisite.reason
@@ -65,6 +67,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
     .map((unitId) => UNIT_BY_ID[unitId])
     .filter((definition): definition is UnitDefinition => definition !== undefined)
     .map((definition) => {
+      const roleIdentity = getUnitRoleIdentity(definition.id);
       const prerequisite = checkPrerequisites(definition.prerequisites, snapshot.techState);
       const lockReason = !prerequisite.ok
         ? prerequisite.reason
@@ -79,8 +82,8 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
         name: definition.name,
         detail: formatCommandDetail(definition.cost, lockReason),
         lockReason,
-        description: `${definition.role}. ${definition.description}`,
-        effect: formatUnitSummary(definition),
+        description: `${roleIdentity.label}. ${roleIdentity.summary} ${definition.description}`,
+        effect: `${formatUnitSummary(definition)} - Tags: ${formatUnitRoleTags(roleIdentity)}`,
         locked: Boolean(lockReason)
       });
     })

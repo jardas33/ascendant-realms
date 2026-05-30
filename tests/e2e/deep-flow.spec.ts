@@ -1707,7 +1707,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("selected-unit-stats")).toContainText("XP 140/230 XP to Elite");
     await expect(page.locator(".stat-list")).toContainText("Kills 0");
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Bonuses +8% HP, +8% damage");
-    await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Normal battle unit");
+    await expect(page.getByTestId("selected-role-summary")).toContainText("Frontline / Melee");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Role Frontline / Melee");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Veterancy Battle-only unit");
 
     const forced = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.forceBattleVictory?.());
     expect(forced).toBe(true);
@@ -1718,6 +1720,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".veteran-summary")).toContainText("Rank-up");
     await expect(page.locator(".veteran-summary")).toContainText("152/230 XP to Elite");
     await expect(page.locator(".veteran-summary")).toContainText("Rank bonus: +8% HP, +8% damage");
+    await expect(page.locator(".veteran-summary")).toContainText("Battle-only for normal trained units");
     await expect(page.locator(".veteran-summary")).toContainText("Eligible: survived at Seasoned rank or better.");
     await expect(page.locator(".veteran-summary")).toContainText("Retinue Camp");
   });
@@ -4589,6 +4592,21 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       };
     });
 
+    const veteran = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.grantSelectedUnitVeterancyXp?.(140));
+    expect(veteran).toMatchObject({ rank: "Veteran" });
+    await expect(page.getByTestId("selected-role-summary")).toContainText("Frontline / Melee");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Rank Veteran");
+    await page.evaluate((selectedIds) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const selectable = [scene?.hero, ...(scene?.units ?? [])].filter(Boolean);
+      const selected = selectedIds
+        .map((id: string) => selectable.find((unit: any) => unit.id === id))
+        .filter(Boolean);
+      scene?.selectionSystem.setSelection(selected);
+      scene?.refreshBattleHud?.(0);
+    }, setup.selectedIds);
+    await expect(page.getByTestId("selected-role-summary")).toContainText("Army Roles");
+
     await page.keyboard.down("Control");
     await page.keyboard.press("1");
     await page.keyboard.up("Control");
@@ -4602,6 +4620,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await page.keyboard.press("1");
     await expect(page.getByTestId("battle-status")).toContainText("Group 1 selected: 3 units");
+    await expect(page.getByTestId("selected-role-summary")).toContainText("Army Roles");
+    await expect(page.getByTestId("selected-role-summary")).toContainText("ranked unit");
     await expect
       .poll(
         async () =>

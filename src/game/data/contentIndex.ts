@@ -40,6 +40,7 @@ import { REWARD_TABLES } from "./rewards";
 import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { SKILL_NODES } from "./skillTrees";
 import { UNITS } from "./units";
+import { UNIT_ROLE_IDENTITIES, type UnitRoleIdentity } from "./unitRoles";
 import { UPGRADES } from "./upgrades";
 
 function toIndex<T extends { id: string }>(entries: T[]): Record<string, T> {
@@ -47,6 +48,9 @@ function toIndex<T extends { id: string }>(entries: T[]): Record<string, T> {
 }
 
 export const UNIT_BY_ID: Record<string, UnitDefinition> = toIndex(UNITS);
+export const UNIT_ROLE_BY_ID: Record<string, UnitRoleIdentity> = Object.fromEntries(
+  UNIT_ROLE_IDENTITIES.map((entry) => [entry.unitId, entry])
+);
 export const BUILDING_BY_ID: Record<string, BuildingDefinition> = toIndex(BUILDINGS);
 export const ABILITY_BY_ID: Record<string, AbilityDefinition> = toIndex(ABILITIES);
 export const HERO_CLASS_BY_ID: Record<string, HeroClassDefinition> = toIndex(HERO_CLASSES);

@@ -198,6 +198,7 @@ export function renderVeteranSummary(data: ResultsData): string {
                 .join("")
             : `<span>Rank-ups this battle</span><strong>None</strong>`
         }
+        <span>Veterancy scope</span><strong>Battle-only for normal trained units</strong>
         <span>Retinue candidates</span><strong>${eligibleCount}</strong>
       </div>
       ${
@@ -220,7 +221,7 @@ export function renderVeteranSummary(data: ResultsData): string {
             </div>`
           : ""
       }
-      <p class="quiet">Campaign victories can add selected surviving Seasoned or better units to the Retinue Camp. Retinue death is permanent in V1.</p>
+      <p class="quiet">Battle XP is earned by live units here. Existing Retinue Camp recruitment stays opt-in for eligible campaign survivors; this checkpoint adds no new permanent army roster.</p>
     </section>
   `;
 }

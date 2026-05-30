@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Unit } from "../entities/Unit";
+import { createUnitVeterancyState } from "../data/unitVeterancy";
 import { ControlGroupSystem } from "./ControlGroupSystem";
 
 describe("ControlGroupSystem", () => {
@@ -47,6 +48,27 @@ describe("ControlGroupSystem", () => {
     expect(system.summaries([hero])).toEqual([]);
   });
 
+  it("recalls veteran units without stripping their battle rank state", () => {
+    const system = new ControlGroupSystem();
+    const militia = fakeUnit("militia-veteran", {
+      veterancy: {
+        ...createUnitVeterancyState("militia-veteran", "militia", 140),
+        kills: 2
+      }
+    });
+
+    system.assign(1, [militia]);
+    const recalled = system.recall(1, [militia]);
+
+    expect(recalled.units[0]).toBe(militia);
+    expect(recalled.units[0].veterancy).toMatchObject({
+      rank: "veteran",
+      xp: 140,
+      kills: 2
+    });
+  });
+
+
   it("leaves unknown slots unhandled so ability hotkeys can keep working", () => {
     const system = new ControlGroupSystem();
 
@@ -60,12 +82,18 @@ describe("ControlGroupSystem", () => {
 
 function fakeUnit(
   id: string,
-  options: { alive?: boolean; team?: "player" | "enemy"; kind?: "unit" | "hero" | "building" } = {}
+  options: {
+    alive?: boolean;
+    team?: "player" | "enemy";
+    kind?: "unit" | "hero" | "building";
+    veterancy?: Unit["veterancy"];
+  } = {}
 ): Unit {
   return {
     id,
     alive: options.alive ?? true,
     team: options.team ?? "player",
-    kind: options.kind ?? "unit"
+    kind: options.kind ?? "unit",
+    veterancy: options.veterancy
   } as unknown as Unit;
 }

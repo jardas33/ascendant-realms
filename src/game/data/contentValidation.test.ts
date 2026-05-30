@@ -23,7 +23,7 @@ import { HERO_CLASSES } from "./heroClasses";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
 import { TUTORIALS } from "./tutorials";
 import { validateContent } from "./contentValidation";
-import { UNIT_BY_ID } from "./contentIndex";
+import { UNIT_BY_ID, UNIT_ROLE_BY_ID } from "./contentIndex";
 import { VISUAL_ASSET_MANIFEST } from "../assets/visualAssetManifest";
 import { validateVisualAssetManifest, type VisualAssetValidationOptions } from "./validation/validateVisualAssets";
 
@@ -36,6 +36,16 @@ function validateVisualAssets(options: VisualAssetValidationOptions = {}): strin
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
     expect(validateContent()).toEqual([]);
+  });
+
+  it("validates player-facing unit role identities", () => {
+    expect(Object.keys(UNIT_ROLE_BY_ID)).toEqual(
+      expect.arrayContaining(["worker", "militia", "ranger", "acolyte", "enemy_commander"])
+    );
+    expect(UNIT_ROLE_BY_ID.militia.tags).toEqual(expect.arrayContaining(["frontline", "melee", "holds-ground"]));
+    expect(UNIT_ROLE_BY_ID.ranger.label).toBe("Ranged / Focus Fire");
+    expect(UNIT_ROLE_BY_ID.acolyte.summary).toContain("aether");
+    expect(UNIT_ROLE_BY_ID.worker.tacticalHint).toContain("build");
   });
 
   it("defines the initial visual asset metadata manifest without production-final claims", () => {

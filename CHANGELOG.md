@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.57-v0.59 Army Veterancy And Tactical Feedback Foundation - 2026-05-29
+
+This checkpoint adds small battle-only army veterancy, unit-role identity copy, and tactical feedback polish. No maps, factions, runtime art/assets, save migration, permanent army roster, broad pathing rewrite, global rebalance, huge unit stat overhaul, formation editor, Patrol rewrite, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V057_ARMY_VETERANCY_FOUNDATION_SPEC.md`.
+- Added `docs/V058_UNIT_ROLE_IDENTITY_SPEC.md`.
+- Added `docs/V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md`.
+- Added `docs/V057_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V058_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V059_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added validated role metadata for player combat units, Hero, Worker utility, buildings where relevant, enemy readability, and neutral targets.
+- Added selected-unit role tags, rank, XP, kills, modest veteran-bonus copy, and battle-only scope.
+- Added selected-group role mix and ranked-member summaries so recalled groups stay readable.
+- Added role-aware training command copy.
+- Added clearer Worker construction order summaries.
+- Added Results copy for veteran units survived and battle-only normal-unit veterancy scope.
+- Extended hosted deep-battle coverage for role copy, veteran display, control-group recall, movement spacing, Patrol start/cancel, and Worker command regression.
+- Updated package metadata and validation to name `v0.57-v0.59 army veterancy and tactical feedback foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for battle-only unit veterancy/readability.
+- Gameplay numbers changed: only modest battle-local veteran bonuses for units that earn Veteran status.
+- Save format changed: no save-version bump and no new save fields.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no veterancy requirement.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: focused role/veterancy/tactical tests with 99 tests, package validation tests, `npm test` with 80 files / 602 tests, content validation, art-intake validation, production build with the known Vite Phaser chunk-size warning, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 28 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, and package verification with 162 checks.
+- Non-pass evidence: early local smoke attempts included timeout/no-summary and dev-server-not-running setup failures before green reruns; one intermediate full-smoke settings failure passed exact rerun and later clean full-smoke rerun; local release shard 1 timed out after 20 minutes without a summary. Hosted release lanes and local smoke evidence passed after cleanup.
+
 ## v0.54-v0.56 Control Groups And Patrol Foundation - 2026-05-29
 
 This checkpoint adds controlled RTS command depth through session-only control groups, lightweight group move spacing, and a minimal Patrol command. No maps, factions, save migration, runtime art/assets, broad pathing rewrite, global rebalance, formation editor, enemy formation AI, giant command rewrite, or canvas/world force-click behavior were added.
