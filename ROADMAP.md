@@ -11,9 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.78 Creative Identity Lock And Original-IP Separation Pass** on 2026-05-30. It is docs-only and follows the clean v0.75-v0.77 Act 1 finale package. It keeps `Ascendant Realms` as the internal codename while proposing `JARDAS: Oath of the Barrosan Marches` as a human-review public-title direction, defines Jardas/Lume/Salto/Barrosan Marches, drafts eight distinct playable race identities, outlines future Race + Class + Origin + Oath hero architecture, classifies signature gameplay pillars, sketches a five-act campaign, clarifies browser-to-desktop transition gates, records visual/AI-art governance, protects display-name migration safety, and separates original-IP inspiration from protected expression.
+The current checkpoint is **v0.79 Emmanuel Creative Review Incorporation And Direction Lock** on 2026-05-30. It is docs-only and follows the clean v0.78 creative identity package. It records Emmanuel-approved direction: `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, `JARDAS` as the dominant logo word, `Ascendant Realms` as the internal repository codename, Salto, the Barrosan Marches, Lume, the Jardas meaning, Captain Malrec's rival direction, the one-human/one-mixed/six-non-human race-roster structure, Barrosan/Ashen/Wolfveil vertical-slice priority, future Race + Class + Origin + Oath hero architecture, Lume Network as first future signature-system design priority, the five-act campaign direction, visual direction, and browser-prototype-to-desktop principles.
 
-The next recommended step is Emmanuel review of `docs/V078_EMMANUEL_REVIEW_PACKET.md`. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, or new gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step is a separately supplied v0.80 goal: **Salto, Lume, and Display-Copy Migration Plan**. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+
+New v0.79 docs:
+
+- `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`
+- `docs/V079_DIRECTION_LOCK_SUMMARY.md`
+- `docs/V079_VERTICAL_SLICE_PRIORITY_LOCK.md`
+- `docs/V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md`
+- `docs/V079_DEFERRED_DECISIONS_REGISTER.md`
+- `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`
+- `docs/V079_IMPLEMENTATION_REPORT.md`
 
 New v0.78 docs:
 

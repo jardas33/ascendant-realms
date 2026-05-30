@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.78 creative identity lock and original-IP separation pass";
+const CHECKPOINT = "v0.79 Emmanuel creative review incorporation and direction lock";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -244,6 +244,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V078_FUTURE_IMPLEMENTATION_SEQUENCE.md", join(packageDir, "V078_FUTURE_IMPLEMENTATION_SEQUENCE.md"));
   await copyMarkdown("docs/V078_EMMANUEL_REVIEW_PACKET.md", join(packageDir, "V078_EMMANUEL_REVIEW_PACKET.md"));
   await copyMarkdown("docs/V078_IMPLEMENTATION_REPORT.md", join(packageDir, "V078_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V079_EMMANUEL_APPROVAL_LEDGER.md", join(packageDir, "V079_EMMANUEL_APPROVAL_LEDGER.md"));
+  await copyMarkdown("docs/V079_DIRECTION_LOCK_SUMMARY.md", join(packageDir, "V079_DIRECTION_LOCK_SUMMARY.md"));
+  await copyMarkdown("docs/V079_VERTICAL_SLICE_PRIORITY_LOCK.md", join(packageDir, "V079_VERTICAL_SLICE_PRIORITY_LOCK.md"));
+  await copyMarkdown("docs/V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md", join(packageDir, "V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md"));
+  await copyMarkdown("docs/V079_DEFERRED_DECISIONS_REGISTER.md", join(packageDir, "V079_DEFERRED_DECISIONS_REGISTER.md"));
+  await copyMarkdown("docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md", join(packageDir, "V079_SAFE_NEXT_MILESTONE_SEQUENCE.md"));
+  await copyMarkdown("docs/V079_IMPLEMENTATION_REPORT.md", join(packageDir, "V079_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -329,7 +336,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.78 creative identity review, start with V078_EMMANUEL_REVIEW_PACKET.md, then use the V078 title, lore, race, hero, visual, desktop-transition, migration, original-IP, future-sequence, and implementation docs as reference. This package is still the unchanged browser prototype plus docs: v0.78 does not add new gameplay, runtime rebranding, new art, new maps, new factions, new races, new units, new buildings, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.75-v0.77 finale docs only as the latest runtime baseline for Act 1.
+For the v0.79 Emmanuel creative review incorporation, start with V079_EMMANUEL_APPROVAL_LEDGER.md and V079_SAFE_NEXT_MILESTONE_SEQUENCE.md, then use the V079 direction-lock docs and the V078 review packet as reference. This package is still the unchanged browser prototype plus docs: v0.79 does not add new gameplay, runtime rebranding, runtime copy migration, new art, new maps, new factions, new races, new units, new buildings, hero classes, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.75-v0.77 finale docs only as the latest runtime baseline for Act 1.
 
 ## Known Warning
 

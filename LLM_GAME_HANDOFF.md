@@ -1,12 +1,70 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.78 creative identity lock closeout
+Last updated: 2026-05-30 v0.79 Emmanuel creative review direction lock
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.78 proposes `JARDAS: Oath of the Barrosan Marches` as the leading public title direction for human review only; no runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. No runtime rebrand is approved.
+
+## Current v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
+
+Status: v0.79 is docs-only. It records Emmanuel-approved direction after v0.78 and locks the next planning sequence. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer/PvP/co-op, perform runtime copy migration, implement Lume Network, or start v0.80.
+
+Baseline:
+
+- Starting commit/package: `54d2f0e`, `ascendant-realms-private-playtest-54d2f0e`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26691982219` on `54d2f0e` completed successfully.
+
+Included work:
+
+- Added `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`.
+- Added `docs/V079_DIRECTION_LOCK_SUMMARY.md`.
+- Added `docs/V079_VERTICAL_SLICE_PRIORITY_LOCK.md`.
+- Added `docs/V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md`.
+- Added `docs/V079_DEFERRED_DECISIONS_REGISTER.md`.
+- Added `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`.
+- Added `docs/V079_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation to require the v0.79 docs in the private playtest package.
+- Updated README, ROADMAP, CHANGELOG, DEVELOPMENT_CHECKPOINT, RELEASE_CHECKLIST, and this handoff.
+
+Direction lock:
+
+- Approved `JARDAS: Oath of the Barrosan Marches` as the leading public-title direction.
+- Approved Salto, the Barrosan Marches, Lume, and the Jardas meaning.
+- Approved Captain Malrec as intelligent, charismatic, dangerous, disciplined, and partially understandable.
+- Approved the one-human, one-mixed-altered, six-non-human race-roster direction.
+- Approved Barrosan Freeholds, Ashen Covenant, and Wolfveil Clans as first vertical-slice priorities.
+- Approved future Race + Class + Origin + Oath hero architecture and the Marshal/Warden/Seer/Binder/Hunter/Artificer/Shepherd class-direction roster.
+- Approved Lume Network as the first future signature-system design priority, not as a runtime implementation.
+- Approved the five-act campaign direction and the modern dark heroic-fantasy Barrosan-highland visual target.
+- Approved browser prototype now and a later deliberate desktop engine/package gate. The final desktop game must not feel like a browser game merely wrapped inside an executable.
+
+Runtime/save/art boundary:
+
+- No runtime behavior changed.
+- No save-version bump or save field change.
+- No internal IDs renamed.
+- No runtime title/display-name migration was performed.
+- No art was generated, imported, downloaded, or wired.
+- No desktop port, wrapper, engine choice, multiplayer, PvP, co-op, race, map, unit, building, class, campaign, or broad UI work was started.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-54d2f0e-dirty` generated.
+npm run verify:playtest-package PASS, 226 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Next recommended action: wait for the next separately supplied goal. The documented safe sequence is v0.80 Salto/Lume/display-copy migration planning, then v0.81 Lume Site Network specification/smallest-fun-slice gate, then v0.82 controlled visual style-frame and silhouette review gate. Do not start any of those milestones from this handoff alone.
 
 ## Current v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
 

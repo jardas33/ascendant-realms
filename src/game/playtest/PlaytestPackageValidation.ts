@@ -221,6 +221,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V078_FUTURE_IMPLEMENTATION_SEQUENCE.md",
   "V078_EMMANUEL_REVIEW_PACKET.md",
   "V078_IMPLEMENTATION_REPORT.md",
+  "V079_EMMANUEL_APPROVAL_LEDGER.md",
+  "V079_DIRECTION_LOCK_SUMMARY.md",
+  "V079_VERTICAL_SLICE_PRIORITY_LOCK.md",
+  "V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md",
+  "V079_DEFERRED_DECISIONS_REGISTER.md",
+  "V079_SAFE_NEXT_MILESTONE_SEQUENCE.md",
+  "V079_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -326,7 +333,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.78 creative identity lock and original-IP separation pass",
+      "v0.79 Emmanuel creative review incorporation and direction lock",
       "build info checkpoint",
       checks,
       errors

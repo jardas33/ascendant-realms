@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.78 creative identity lock and original-IP separation pass",
+          checkpoint: "v0.79 Emmanuel creative review incorporation and direction lock",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -265,6 +265,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V078_FUTURE_IMPLEMENTATION_SEQUENCE.md", sizeBytes: 20, textContent: "Future sequence" },
       { path: "V078_EMMANUEL_REVIEW_PACKET.md", sizeBytes: 20, textContent: "Review packet" },
       { path: "V078_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Implementation report" },
+      { path: "V079_EMMANUEL_APPROVAL_LEDGER.md", sizeBytes: 20, textContent: "Approval ledger" },
+      { path: "V079_DIRECTION_LOCK_SUMMARY.md", sizeBytes: 20, textContent: "Direction lock summary" },
+      { path: "V079_VERTICAL_SLICE_PRIORITY_LOCK.md", sizeBytes: 20, textContent: "Vertical slice lock" },
+      { path: "V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md", sizeBytes: 20, textContent: "Signature system priority" },
+      { path: "V079_DEFERRED_DECISIONS_REGISTER.md", sizeBytes: 20, textContent: "Deferred decisions" },
+      { path: "V079_SAFE_NEXT_MILESTONE_SEQUENCE.md", sizeBytes: 20, textContent: "Safe next sequence" },
+      { path: "V079_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Implementation report" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

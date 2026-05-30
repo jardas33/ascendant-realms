@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.78 creative identity lock closeout
+Updated: 2026-05-30 v0.79 Emmanuel creative review direction lock
+
+## v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
+
+Scope: docs-only human approval milestone. This pass records Emmanuel-approved decisions from the v0.78 review packet, converts those decisions into a direction lock, captures deferred decisions, and defines the safe next milestone sequence. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer, or start v0.80.
+
+Baseline:
+
+- Starting commit/package: `54d2f0e`, `ascendant-realms-private-playtest-54d2f0e`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26691982219` on `54d2f0e` completed successfully.
+
+Included work:
+
+- Added `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`.
+- Added `docs/V079_DIRECTION_LOCK_SUMMARY.md`.
+- Added `docs/V079_VERTICAL_SLICE_PRIORITY_LOCK.md`.
+- Added `docs/V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md`.
+- Added `docs/V079_DEFERRED_DECISIONS_REGISTER.md`.
+- Added `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`.
+- Added `docs/V079_IMPLEMENTATION_REPORT.md`.
+- Updated package metadata and validation so the v0.79 docs can ship inside the private playtest package.
+- Updated README, roadmap, changelog, release checklist, and LLM handoff for docs-only closeout.
+
+Direction lock:
+
+- `JARDAS: Oath of the Barrosan Marches` is approved as the leading public-title direction.
+- `JARDAS` is approved as the dominant logo word, with `Oath of the Barrosan Marches` as subtitle.
+- `Ascendant Realms` remains the internal repository codename until a later explicit runtime-rebrand gate.
+- Salto, the Barrosan Marches, Lume, the Jardas meaning, Captain Malrec's rival direction, the approved race-roster structure, Barrosan/Ashen/Wolfveil vertical-slice priority, future hero architecture, Lume Network priority, five-act campaign direction, visual target, and browser-to-desktop roadmap principles are recorded as approved strategic direction.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Stable internal IDs remain unchanged, including `free_marches`, `ashen_covenant`, `ashen_outpost`, current class IDs, unit IDs, item IDs, ability IDs, map IDs, node IDs, and save fields.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-54d2f0e-dirty` generated.
+npm run verify:playtest-package PASS, 226 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.79 Emmanuel creative review incorporation and direction lock`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
 

@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.79 Emmanuel Creative Review Incorporation And Direction Lock - 2026-05-30
+
+This checkpoint is docs-only. It records Emmanuel's human-approved decisions after the v0.78 review packet, converts the approved proposals into an explicit direction lock, lists provisional/deferred decisions, and defines the safe next milestone sequence without starting v0.80.
+
+Added:
+
+- `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`.
+- `docs/V079_DIRECTION_LOCK_SUMMARY.md`.
+- `docs/V079_VERTICAL_SLICE_PRIORITY_LOCK.md`.
+- `docs/V079_FIRST_SIGNATURE_SYSTEM_PRIORITY.md`.
+- `docs/V079_DEFERRED_DECISIONS_REGISTER.md`.
+- `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`.
+- `docs/V079_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Updated README, roadmap, handoff, checkpoint, release checklist, package metadata, and package validation lists so the v0.79 direction-lock docs are discoverable and package-verifiable.
+
+Locked direction:
+
+- Approved `JARDAS: Oath of the Barrosan Marches` as the leading public-title direction, with `JARDAS` as the dominant logo word and `Ascendant Realms` retained as the internal repository codename.
+- Approved Salto, the Barrosan Marches, Lume, the Jardas meaning, Captain Malrec's rival direction, the one-human/one-mixed/six-non-human race-roster structure, Barrosan/Ashen/Wolfveil vertical-slice priority, future Race + Class + Origin + Oath hero architecture, Lume Network as the first future signature-system design gate, five-act campaign direction, visual direction, and browser-prototype-to-desktop roadmap principles.
+
+Not changed:
+
+- No runtime behavior, save format, internal IDs, gameplay balance, enemy AI, pathing, controls, runtime UI, maps, factions, races, units, buildings, hero classes, assets, art generation/import, desktop wrapper, engine choice, runtime rebrand, runtime copy migration, Lume Network implementation, multiplayer, PvP, or co-op code changed.
+
+Verification:
+
+- Passed: `npm test` with 86 files / 644 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, focused package validation test with 3 tests, dirty pre-commit package generation, dirty package verification with 226 checks, and `git diff --check`.
+
 # v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
 
 This checkpoint is docs-only. It defines the proposed public identity and long-term product direction before further runtime expansion: `JARDAS: Oath of the Barrosan Marches` as the leading title proposal, Jardas/Lume/Salto/Barrosan Marches lore, an eight-race master roster draft, future Race + Class + Origin + Oath hero architecture, signature gameplay pillars, a five-act campaign outline, browser-to-desktop transition gates, visual direction and AI-art governance, display-name migration safety, original-IP separation, future implementation sequence, and an Emmanuel review packet.

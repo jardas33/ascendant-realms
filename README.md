@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.75-v0.77: Ashen Outpost now serves as the Act 1 finale around Captain Malrec using existing maps, doctrines, elites, tactical plans, battlefield events, Retinue/reinforcement, hero progression, relic rewards, HUD, and Results surfaces.
 
-Current v0.78 work is a docs-only Creative Identity Lock and Original-IP Separation Pass after the clean v0.75-v0.77 Act 1 finale checkpoint. It keeps `Ascendant Realms` as the internal repository codename while proposing `JARDAS: Oath of the Barrosan Marches` as a human-review public-title direction. It defines Jardas, Salto, the Barrosan Marches, Lume, an eight-race master roster draft, future Race + Class + Origin + Oath hero architecture, signature gameplay pillars, a five-act campaign outline, visual governance, browser-to-desktop transition gates, display-name migration safety, original-IP separation, and an Emmanuel review packet. It does not change runtime behavior, save format, internal IDs, gameplay balance, art/assets, maps, races, units, buildings, desktop packaging, engine choice, multiplayer, PvP, or co-op.
+Current v0.79 work is a docs-only Emmanuel Creative Review Incorporation and Direction Lock after the clean v0.78 creative identity package. It records `JARDAS: Oath of the Barrosan Marches` as the approved leading public-title direction, with `JARDAS` as the dominant logo word while `Ascendant Realms` remains the internal repository codename. It locks Salto, the Barrosan Marches, Lume, the Jardas meaning, Captain Malrec's rival direction, the one-human/one-mixed/six-non-human race-roster direction, Barrosan/Ashen/Wolfveil vertical-slice priority, future Race + Class + Origin + Oath hero architecture, Lume Network as the first future signature-system design gate, the five-act campaign direction, visual direction, and browser-prototype-to-desktop principles. It does not change runtime behavior, save format, internal IDs, gameplay balance, art/assets, maps, races, units, buildings, classes, desktop packaging, engine choice, runtime copy, multiplayer, PvP, or co-op.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.78 package metadata includes the creative identity review docs for Emmanuel without changing the playable build.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.79 package metadata includes the Emmanuel approval/direction-lock docs without changing the playable build.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -25,6 +25,8 @@ v0.18 worker construction foundation spec: `docs/V018_WORKER_CONSTRUCTION_FOUNDA
 v0.18 implementation report: `docs/V018_IMPLEMENTATION_REPORT.md`.
 v0.78 Emmanuel creative identity review packet: `docs/V078_EMMANUEL_REVIEW_PACKET.md`.
 v0.78 implementation report: `docs/V078_IMPLEMENTATION_REPORT.md`.
+v0.79 Emmanuel approval ledger: `docs/V079_EMMANUEL_APPROVAL_LEDGER.md`.
+v0.79 safe next milestone sequence: `docs/V079_SAFE_NEXT_MILESTONE_SEQUENCE.md`.
 
 Current v0.3 feature snapshot:
 
