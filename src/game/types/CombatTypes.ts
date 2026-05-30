@@ -7,6 +7,8 @@ export type BattlePhaseId = "opening" | "expansion" | "pressure" | "assault";
 
 export type EnemyAIPersonalityId = "balanced_warlord" | "raider_rush" | "fortress_keeper" | "hexfire_cult";
 
+export type EnemyDoctrineId = "raider" | "fortress" | "hunter" | "warband";
+
 export type EnemyHeroAbilityId = "ember_strike" | "rally_raiders" | "hexfire_bolt" | "hold_the_line";
 
 export type EnemyHeroArchetype = "melee_commander" | "hexfire_seer" | "fortress_commander";
@@ -97,6 +99,44 @@ export interface UnitDefinition {
   stats: CombatStats;
   xpValue: number;
   prerequisites?: TechPrerequisites;
+}
+
+export interface EnemyDoctrineDefinition {
+  id: EnemyDoctrineId;
+  name: string;
+  shortDescription: string;
+  statusLabel: string;
+  threatWarning: string;
+  counterplay: string;
+  preferredMissionTypeIds: string[];
+  preferredModifierIds: string[];
+  tags: string[];
+  activity: {
+    resourceRaidInitialDelaySeconds?: number;
+    resourceRaidCooldownMultiplier?: number;
+    resourceRaidSquadBonus?: number;
+    defenseReserveBonus?: number;
+    attackWaveSizeBonus?: number;
+    hunterInitialDelaySeconds?: number;
+    hunterCooldownSeconds?: number;
+    hunterEscortCount?: number;
+    techCooldownMultiplier?: number;
+  };
+}
+
+export interface EnemyEliteSquadDefinition {
+  id: string;
+  name: string;
+  shortLabel: string;
+  description: string;
+  counterplay: string;
+  eligibleDoctrineIds: EnemyDoctrineId[];
+  eligibleMissionTypeIds: string[];
+  eligibleUnitIds: string[];
+  maxUnitsPerBattle: number;
+  maxHpMultiplier: number;
+  damageMultiplier: number;
+  armorBonus: number;
 }
 
 export type EnemyHeroAbilityEffectDefinition =

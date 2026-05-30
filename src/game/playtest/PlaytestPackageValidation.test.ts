@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.63-v0.65 Retinue recovery and reinforcement foundation",
+          checkpoint: "v0.66-v0.68 enemy tactical doctrines and elite squad foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -222,6 +222,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V064_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Reserve management report" },
       { path: "V065_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Battlefield reinforcement report" },
       { path: "V065_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.65 retest" },
+      { path: "V066_ENEMY_TACTICAL_DOCTRINES_SPEC.md", sizeBytes: 20, textContent: "Enemy tactical doctrines spec" },
+      { path: "V067_ELITE_SQUAD_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Elite squad foundation spec" },
+      { path: "V068_COUNTERPLAY_READABILITY_SPEC.md", sizeBytes: 20, textContent: "Counterplay readability spec" },
+      { path: "V066_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Enemy doctrine implementation report" },
+      { path: "V067_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Elite squad implementation report" },
+      { path: "V068_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Counterplay implementation report" },
+      { path: "V068_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.68 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

@@ -1,6 +1,70 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.63-v0.65 Retinue recovery and reinforcement closeout
+Updated: 2026-05-30 v0.66-v0.68 enemy tactical doctrines and elite squad closeout
+
+## v0.66-v0.68 Enemy Tactical Doctrines And Elite Squad Foundation - 2026-05-30
+
+Scope: add readable enemy tactical variety using existing units, AI, maps, and UI only. This pass changes enemy doctrine data/validation, mission-local AI hooks, elite squad tagging, battle stats, campaign briefing copy, battle HUD doctrine copy, Results after-action copy, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save-version bump, new save fields, global rebalance, broad pathing rewrite, enemy formation rewrite, giant roster UI, shop/crafting, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `7048665`, `ascendant-realms-private-playtest-7048665`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26673950830` on `7048665` completed successfully.
+
+Included work:
+
+- Added `docs/V066_ENEMY_TACTICAL_DOCTRINES_SPEC.md`.
+- Added `docs/V067_ELITE_SQUAD_FOUNDATION_SPEC.md`.
+- Added `docs/V068_COUNTERPLAY_READABILITY_SPEC.md`.
+- Added `docs/V066_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V067_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V068_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V068_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Raider, Fortress, Hunter, and Warband doctrine data plus content validation.
+- Added doctrine selection from existing mission type, scenario modifiers, enemy hero milestones, and Tutorial/no-reward guards.
+- Added conservative doctrine hooks for resource-site raids, defensive reserves/tech, escorted hero/Retinue pressure, and late mixed pushes.
+- Added Ash Raider Vanguard and Cinder Iron Guard elite squads with capped modest bonuses.
+- Added battle stats for doctrine id/actions, elite squads present, and elite squads defeated.
+- Added campaign, HUD, selected-unit renderer, and Results copy for doctrine warnings, elite labels, and counterplay.
+- Added hosted deep-campaign coverage for Raider doctrine, Fortress doctrine, Cinder Iron Guard stat/readability, and elite Results summary.
+- Added package validation requirements for the v0.66-v0.68 docs.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Doctrine and elite state is content-driven and battle-stat-only.
+- Existing Retinue, campaign replay, rewards, relics, skills, control groups, Patrol, and Tutorial no-reward state remains valid.
+
+Verification:
+
+```text
+Focused doctrine/AI/HUD/Results/campaign Vitest PASS, 6 files / 70 tests.
+Focused hosted Raider/Fortress/elite proxy PASS, 2 tests.
+npm test initial NON-PASS, then fixed elite damage multiplier fallback for test doubles.
+npm test PASS, 82 files / 620 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke NON-PASS first attempt, command wrapper timed out after 364 seconds with no Playwright summary; longer rerun PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-7048665-dirty` generated.
+npm run verify:playtest-package PASS, 183 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Interaction note: no new force-click or DOM fallback was introduced for canvas/world clicks. Existing hosted lanes still log pre-existing verified pointer down/up world-click helpers and DOM helpers for HUD/menu buttons.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.63-v0.65 Retinue Recovery And Reinforcement Foundation - 2026-05-30
 

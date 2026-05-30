@@ -58,6 +58,12 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("Pacing tier");
     expect(html).toContain("Milestone");
     expect(html).toContain("Equip the relic, spend skill points");
+    expect(html).toContain("Enemy doctrine: Fortress");
+    expect(html).toContain("The enemy will preserve reserves");
+    expect(html).toContain("Counterplay");
+    expect(html).toContain("Attack economy first");
+    expect(html).toContain("Elite squad");
+    expect(html).toContain("Cinder Iron Guard");
   });
 
   it("renders Act 1 locked reasons and onboarding hints on early campaign nodes", () => {

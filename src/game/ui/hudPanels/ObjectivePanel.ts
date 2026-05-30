@@ -1,16 +1,18 @@
-import type { HUDObjectiveSnapshot } from "./HudTypes";
+import type { HUDEnemyDoctrineSnapshot, HUDObjectiveSnapshot } from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
 
-export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined): string {
-  if (!objectives || objectives.length === 0) {
+export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined, enemyDoctrine?: HUDEnemyDoctrineSnapshot): string {
+  if ((!objectives || objectives.length === 0) && !enemyDoctrine) {
     return "";
   }
-  const completedCount = objectives.filter((objective) => objective.completed).length;
-  const nextObjectiveIndex = objectives.findIndex((objective) => !objective.completed);
+  const missionObjectives = objectives ?? [];
+  const completedCount = missionObjectives.filter((objective) => objective.completed).length;
+  const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
-      <strong>Objectives ${completedCount}/${objectives.length}</strong>
-      ${objectives
+      ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
+      <strong>Objectives ${completedCount}/${missionObjectives.length}</strong>
+      ${missionObjectives
         .map((objective, index) => {
           const isNext = index === nextObjectiveIndex;
           const state = objective.completed ? "Done" : isNext ? "Next" : "Open";
@@ -28,6 +30,21 @@ export function renderObjectives(objectives: HUDObjectiveSnapshot[] | undefined)
           `;
         })
         .join("")}
+    </div>
+  `;
+}
+
+function renderEnemyDoctrine(doctrine: HUDEnemyDoctrineSnapshot): string {
+  return `
+    <div class="enemy-doctrine-row" data-testid="enemy-doctrine-status">
+      <span>Doctrine</span>
+      <div>
+        <b>${escapeHtml(doctrine.name)}</b>
+        <small>${escapeHtml(doctrine.status)}</small>
+        <small>${escapeHtml(doctrine.warning)}</small>
+        <small>Counterplay: ${escapeHtml(doctrine.counterplay)}</small>
+        ${doctrine.elite ? `<small>Elite: ${escapeHtml(doctrine.elite)}</small>` : ""}
+      </div>
     </div>
   `;
 }

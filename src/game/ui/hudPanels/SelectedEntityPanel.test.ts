@@ -51,6 +51,24 @@ describe("SelectedEntityPanel", () => {
     expect(markup).toContain("Veterancy Battle-only unit");
   });
 
+  it("shows enemy elite squad label, modest bonus, and counterplay on selected units", () => {
+    const raider = fakeUnit("enemy-1", "Raider", "guard_area", {
+      unitId: "raider",
+      team: "enemy",
+      enemyEliteSquadId: "ash_raider_vanguard",
+      enemyEliteSquadName: "Ash Raider Vanguard",
+      enemyEliteBonusSummary: "+8% HP, +6% damage",
+      enemyEliteCounterplay: "Screen with Militia and fight near towers or your main army."
+    });
+
+    const markup = renderSelectionSummary(raider, [raider]);
+
+    expect(markup).toContain("Enemy Pressure / Melee");
+    expect(markup).toContain("Elite Ash Raider Vanguard");
+    expect(markup).toContain("Elite bonus +8% HP, +6% damage");
+    expect(markup).toContain("Counterplay Screen with Militia");
+  });
+
   it("summarizes selected group roles and ranked members", () => {
     const militia = fakeUnit("player-1", "Militia", "guard_area", { unitId: "militia", veterancyXp: 140 });
     const ranger = fakeUnit("player-2", "Ranger", "guard_area", { unitId: "ranger" });
@@ -160,13 +178,21 @@ function fakeUnit(
   id: string,
   name: string,
   behaviourMode: "hold_ground" | "guard_area" | "press_attack",
-  options: { unitId?: string; veterancyXp?: number } = {}
+  options: {
+    unitId?: string;
+    veterancyXp?: number;
+    team?: "player" | "enemy";
+    enemyEliteSquadId?: string;
+    enemyEliteSquadName?: string;
+    enemyEliteBonusSummary?: string;
+    enemyEliteCounterplay?: string;
+  } = {}
 ): Unit {
   const unitId = options.unitId ?? name.toLowerCase();
   return Object.assign(Object.create(Unit.prototype), {
     id,
     kind: "unit",
-    team: "player",
+    team: options.team ?? "player",
     alive: true,
     behaviourMode,
     hp: 90,
@@ -178,6 +204,11 @@ function fakeUnit(
     veterancyDamageMultiplier: 1,
     upgradeRangeMultiplier: 1,
     upgradeAttackCooldownMultiplier: 1,
+    eliteDamageMultiplier: 1,
+    enemyEliteSquadId: options.enemyEliteSquadId,
+    enemyEliteSquadName: options.enemyEliteSquadName,
+    enemyEliteBonusSummary: options.enemyEliteBonusSummary,
+    enemyEliteCounterplay: options.enemyEliteCounterplay,
     definition: {
       id: unitId,
       name,

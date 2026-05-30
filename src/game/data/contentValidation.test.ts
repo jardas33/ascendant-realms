@@ -13,6 +13,7 @@ import { ITEMS } from "./items";
 import { ITEM_AFFIXES } from "./itemAffixes";
 import { MAPS } from "./maps";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
+import { ENEMY_DOCTRINES, ENEMY_ELITE_SQUADS } from "./enemyDoctrines";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES, createEnemyHeroUnitDefinition } from "./enemyHeroes";
 import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation";
 import { REWARD_TABLES } from "./rewards";
@@ -46,6 +47,13 @@ describe("content validation", () => {
     expect(UNIT_ROLE_BY_ID.ranger.label).toBe("Ranged / Focus Fire");
     expect(UNIT_ROLE_BY_ID.acolyte.summary).toContain("aether");
     expect(UNIT_ROLE_BY_ID.worker.tacticalHint).toContain("build");
+  });
+
+  it("validates enemy doctrine and elite squad readability data", () => {
+    expect(ENEMY_DOCTRINES.map((doctrine) => doctrine.id)).toEqual(["raider", "fortress", "hunter", "warband"]);
+    expect(ENEMY_DOCTRINES.find((doctrine) => doctrine.id === "raider")?.counterplay).toContain("Protect");
+    expect(ENEMY_ELITE_SQUADS.map((squad) => squad.id)).toEqual(["ash_raider_vanguard", "cinder_iron_guard"]);
+    expect(ENEMY_ELITE_SQUADS.every((squad) => squad.maxUnitsPerBattle <= 2)).toBe(true);
   });
 
   it("defines the initial visual asset metadata manifest without production-final claims", () => {

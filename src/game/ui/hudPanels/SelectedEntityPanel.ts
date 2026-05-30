@@ -85,6 +85,11 @@ export function renderSelectionSummary(
     const bonuses = formatUnitVeterancyBonusSummary(selectedOne.veterancy.rank);
     const roleIdentity = getUnitRoleIdentity(selectedOne.definition.id);
     const retinueState = selectedOne.retinueUnitId ? "Deployed retinue veteran" : "Battle-only unit";
+    const eliteState = selectedOne.enemyEliteSquadId
+      ? `<span>Elite ${escapeHtml(selectedOne.enemyEliteSquadName ?? selectedOne.enemyEliteSquadLabel ?? "Enemy squad")}</span>
+        <span>Elite bonus ${escapeHtml(selectedOne.enemyEliteBonusSummary ?? "Modest enemy bonus")}</span>
+        <span>Counterplay ${escapeHtml(selectedOne.enemyEliteCounterplay ?? "Focus fire with a grouped army.")}</span>`
+      : "";
     return `
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(roleIdentity)}
@@ -98,6 +103,7 @@ export function renderSelectionSummary(
         <span>Kills ${selectedOne.veterancy.kills}</span>
         <span>Bonuses ${escapeHtml(bonuses)}</span>
         <span>Veterancy ${escapeHtml(retinueState)}</span>
+        ${eliteState}
         <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
         <span>Damage ${Math.round(selectedOne.damage)}</span>
         <span>Range ${selectedOne.range}</span>

@@ -19,7 +19,7 @@ if (errors.length > 0) {
       "Checked units, buildings, abilities, hero classes, skills, items, affixes, origins,",
       "resources, factions, reward tables, rival rewards, relic rewards, Stronghold upgrades, campaign chapters,",
       "campaign nodes, reputation effects, upgrades, difficulties, AI personalities, campaign",
-      "modifiers, enemy heroes, enemy pressure plans, maps, tutorial metadata, and visual asset metadata."
+      "modifiers, enemy doctrines, elite squads, enemy heroes, enemy pressure plans, maps, tutorial metadata, and visual asset metadata."
     ].join(" ")
   );
 }

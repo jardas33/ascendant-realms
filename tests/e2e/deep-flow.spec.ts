@@ -6409,6 +6409,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Reward preview");
     await expect(page.locator(".campaign-node-details")).toContainText("Act 1 Step 6: Champion Relic Milestone");
     await expect(page.locator(".campaign-node-details")).toContainText("Equip the relic, spend skill points");
+    await expect(page.locator(".campaign-node-details")).toContainText("Enemy doctrine: Fortress");
+    await expect(page.locator(".campaign-node-details")).toContainText("Attack economy first");
+    await expect(page.locator(".campaign-node-details")).toContainText("Cinder Iron Guard");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await clickReady(
       page.getByTestId("campaign-start-node"),
@@ -6420,6 +6423,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/3");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
     await expect(page.getByTestId("battle-objectives")).toContainText("Defeat Captain Malrec");
+    await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Fortress");
+    await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Attack economy first");
+    await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Cinder Iron Guard");
 
     const scouted = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.scoutEnemyHero?.());
     expect(scouted).toMatchObject({
@@ -6429,6 +6435,37 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await expect(page.getByTestId("battle-status")).toContainText("Enemy commander sighted: Captain Malrec");
     await expect(page.locator(".minimap-enemy-hero")).toHaveCount(1);
+
+    const eliteSquad = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const unit = scene.units.find((entry: any) => entry.team === "enemy" && entry.enemyEliteSquadId && !entry.enemyHeroId);
+      if (!unit) {
+        throw new Error("Expected an elite enemy unit in Ashen Outpost.");
+      }
+      scene.selectionSystem.setSelection([unit]);
+      scene.refreshBattleHud?.(0);
+      return {
+        squadId: unit.enemyEliteSquadId,
+        name: unit.enemyEliteSquadName,
+        bonus: unit.enemyEliteBonusSummary,
+        counterplay: unit.enemyEliteCounterplay,
+        damage: unit.damage,
+        baseDamage: unit.definition.stats.damage,
+        maxHp: unit.maxHp,
+        baseMaxHp: unit.definition.stats.maxHp
+      };
+    });
+    expect(eliteSquad).toMatchObject({
+      squadId: "cinder_iron_guard",
+      name: "Cinder Iron Guard"
+    });
+    expect(eliteSquad.damage).toBeGreaterThan(eliteSquad.baseDamage);
+    expect(eliteSquad.maxHp).toBeGreaterThan(eliteSquad.baseMaxHp);
+    expect(eliteSquad.bonus).toContain("HP");
+    expect(eliteSquad.counterplay).toContain("Focus fragile support");
 
     const completedObjectiveIds = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -6457,6 +6494,24 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       expect.arrayContaining(["capture_burned_shrine", "destroy_enemy_barracks"])
     );
 
+    const defeatedEliteSquads = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      const unit = scene.units.find((entry: any) => entry.team === "enemy" && entry.enemyEliteSquadId && !entry.enemyHeroId);
+      if (!unit) {
+        throw new Error("Expected an elite enemy unit to defeat.");
+      }
+      unit.takeDamage(unit.maxHp + unit.armor + 10_000);
+      scene.handleKill(scene.hero, unit);
+      unit.destroyView?.();
+      scene.cleanupDeadEntities?.();
+      scene.refreshBattleHud?.(0);
+      return [...(scene.runtime.stats.enemyEliteUnitsDefeated ?? [])];
+    });
+    expect(defeatedEliteSquads).toContain("cinder_iron_guard");
+
     const defeated = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.defeatEnemyHero?.());
     expect(defeated).toMatchObject({
       enemyHeroId: "captain_malrec",
@@ -6477,6 +6532,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("The outpost is broken");
     await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 6: Champion Relic Milestone");
     await expect(page.locator(".campaign-reward-block")).toContainText("Choose and equip a relic");
+    await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Fortress");
+    await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Cinder Iron Guard");
+    await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Elite defeated");
     await expect(page.locator(".status-box")).toContainText("Spend skill points or replay optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("Optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("3/3 recorded");
@@ -6557,8 +6615,20 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
 
     await startCampaignBattle(page, "old_stone_road");
+    await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Raider");
+    await expect(page.getByTestId("enemy-doctrine-status")).toContainText("Protect sites");
+    const oldRoadDoctrine = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      return scene.runtime.stats.enemyDoctrineId;
+    });
+    expect(oldRoadDoctrine).toBe("raider");
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("Victory");
+    await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Raider");
+    await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Protect sites");
     await expect(page.locator(".campaign-reward-block")).toContainText("Old Stone Road");
     await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 3: Base Development");
     await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Aether Well Ruins");

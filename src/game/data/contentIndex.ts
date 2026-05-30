@@ -17,9 +17,11 @@ import type {
   RewardTableDefinition,
   SkillNodeDefinition,
   UnitDefinition,
-  UpgradeDefinition,
   EnemyAIPersonalityDefinition,
-  CampaignModifierDefinition
+  CampaignModifierDefinition,
+  EnemyDoctrineDefinition,
+  EnemyEliteSquadDefinition,
+  UpgradeDefinition
 } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
 import { AI_PERSONALITIES } from "./aiPersonalities";
@@ -28,6 +30,7 @@ import { CAMPAIGN_NODES } from "./campaignNodes";
 import { CAMPAIGN_CHAPTERS } from "./campaignChapters";
 import { CAMPAIGN_MODIFIERS } from "./campaignModifiers";
 import { ENEMY_HERO_ABILITIES, ENEMY_HEROES } from "./enemyHeroes";
+import { ENEMY_DOCTRINES, ENEMY_ELITE_SQUADS } from "./enemyDoctrines";
 import { ENEMY_PRESSURE_PLANS } from "./enemyPressurePlans";
 import { FACTIONS } from "./factions";
 import { HERO_CLASSES } from "./heroClasses";
@@ -61,6 +64,8 @@ export const CAMPAIGN_CHAPTER_BY_ID: Record<string, CampaignChapterDefinition> =
 export const FACTION_BY_ID: Record<string, FactionDefinition> = toIndex(FACTIONS);
 export const ENEMY_HERO_BY_ID: Record<string, EnemyHeroDefinition> = toIndex(ENEMY_HEROES);
 export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition> = toIndex(ENEMY_HERO_ABILITIES);
+export const ENEMY_DOCTRINE_BY_ID: Record<string, EnemyDoctrineDefinition> = toIndex(ENEMY_DOCTRINES);
+export const ENEMY_ELITE_SQUAD_BY_ID: Record<string, EnemyEliteSquadDefinition> = toIndex(ENEMY_ELITE_SQUADS);
 export const ENEMY_PRESSURE_PLAN_BY_ID: Record<string, EnemyStrategicPressurePlanDefinition> = toIndex(ENEMY_PRESSURE_PLANS);
 export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);

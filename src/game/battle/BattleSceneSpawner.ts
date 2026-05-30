@@ -3,6 +3,7 @@ import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import { applyRivalModifiersToEnemyHeroStats } from "../core/RivalRules";
 import { CAMPAIGN_MODIFIER_BY_ID, requireBuilding, requireHeroClass, requireOrigin, requireUnit } from "../data/contentIndex";
 import { applyCampaignCaptureSiteModifierEffects } from "../data/campaignModifiers";
+import { selectEnemyEliteSquadForBattle, shouldApplyEliteSquadToUnit } from "../data/enemyDoctrines";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { createEnemyHeroUnitDefinition, ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
@@ -59,10 +60,20 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
 
   const difficulty = getBattleDifficulty(launch.request.difficulty);
   const enemyStartingSpawns = new Set(difficulty.enemyStartingUnitSpawnIds);
+  const eliteSquad = selectEnemyEliteSquadForBattle({
+    mode: launch.request.mode,
+    campaignNodeId: launch.request.campaignNodeId,
+    modifierIds: launch.request.modifiers.map((modifier) => modifier.id),
+    enemyHeroId: launch.request.enemyHeroId,
+    difficulty: launch.request.difficulty,
+    rewardsDisabled: launch.request.rewardsDisabled
+  });
+  let eliteAssigned = 0;
   scenario.unitSpawns.forEach((spawn) => {
     if (spawn.team === "enemy" && !enemyStartingSpawns.has(spawn.id)) {
       return;
     }
+    const applyElite = spawn.team === "enemy" && shouldApplyEliteSquadToUnit(eliteSquad, spawn.unitId, eliteAssigned);
     spawnUnit({
       scene,
       addUnit,
@@ -71,8 +82,12 @@ export function spawnBattleScenario(options: SpawnBattleScenarioOptions): SpawnB
       x: spawn.x,
       y: spawn.y,
       enemyHeroId: spawn.team === "enemy" && spawn.unitId === "enemy_commander" ? launch.request.enemyHeroId : undefined,
-      modifiers: launch.request.modifiers
+      modifiers: launch.request.modifiers,
+      eliteSquad: applyElite ? eliteSquad : undefined
     });
+    if (applyElite) {
+      eliteAssigned += 1;
+    }
   });
   spawnLaunchModifierUnits({ scene, activeMap, launch, addUnit });
   spawnRetinueUnits({ scene, activeMap, launch, addUnit });
@@ -125,6 +140,7 @@ function spawnUnit(options: {
   id?: string;
   enemyHeroId?: string;
   modifiers?: ResolvedBattleLaunch["request"]["modifiers"];
+  eliteSquad?: ReturnType<typeof selectEnemyEliteSquadForBattle>;
 }): Unit {
   const baseDefinition = requireUnit(options.unitId);
   const enemyHero = options.enemyHeroId ? ENEMY_HERO_BY_ID[options.enemyHeroId] : undefined;
@@ -146,6 +162,9 @@ function spawnUnit(options: {
     unit.enemyHeroId = enemyHero.id;
     unit.enemyHeroName = enemyHero.name;
     unit.enemyHeroTitle = enemyHero.title;
+  }
+  if (options.eliteSquad) {
+    unit.applyEnemyEliteSquad(options.eliteSquad);
   }
   options.addUnit(unit);
   return unit;

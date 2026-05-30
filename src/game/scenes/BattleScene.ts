@@ -6,7 +6,8 @@ import type {
   ResourceKey,
   Team,
   UpgradeDefinition,
-  UnitVeterancyRankUpEvent
+  UnitVeterancyRankUpEvent,
+  EnemyDoctrineDefinition
 } from "../core/GameTypes";
 import { formatTime, payCost } from "../core/MathUtils";
 import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
@@ -22,6 +23,11 @@ import {
   UPGRADE_BY_ID
 } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
+import {
+  ENEMY_ELITE_SQUAD_BY_ID,
+  selectEnemyDoctrineForBattleLaunch,
+  selectEnemyEliteSquadForBattle
+} from "../data/enemyDoctrines";
 import { ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
@@ -182,6 +188,7 @@ export class BattleScene extends Phaser.Scene {
   private xpSystem!: BattleSceneSystems["xpSystem"];
   private aiSystem!: BattleSceneSystems["aiSystem"];
   private enemyPressureRuntime?: EnemyPressureRuntime;
+  private enemyDoctrine?: EnemyDoctrineDefinition;
 
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
@@ -304,6 +311,17 @@ export class BattleScene extends Phaser.Scene {
     this.lastSelectionAudioKey = "";
     this.runtime = createBattleRuntime({ launch: this.launch });
     this.enemyPressureRuntime = undefined;
+    this.enemyDoctrine = selectEnemyDoctrineForBattleLaunch({
+      mode: this.launch.request.mode,
+      campaignNodeId: this.launch.request.campaignNodeId,
+      modifierIds: this.launch.request.modifiers.map((modifier) => modifier.id),
+      enemyHeroId: this.launch.request.enemyHeroId,
+      difficulty: this.launch.request.difficulty,
+      retinueUnitCount: this.launch.request.retinueUnits?.length ?? 0,
+      retinueReserveCount: this.launch.request.retinueReserveUnits?.length ?? 0,
+      rewardsDisabled: this.launch.request.rewardsDisabled
+    });
+    this.runtime.recordEnemyDoctrine(this.enemyDoctrine?.id);
     this.resources = this.runtime.resources;
     this.units = [];
     this.buildings = [];
@@ -454,13 +472,25 @@ export class BattleScene extends Phaser.Scene {
     const enemyText = faction
       ? `${faction.name} (${personality?.name ?? "Balanced Warlord"})`
       : personality?.name ?? "Unknown enemy";
+    const doctrineText = this.enemyDoctrine
+      ? ` Doctrine: ${this.enemyDoctrine.name}. ${this.enemyDoctrine.threatWarning} Counterplay: ${this.enemyDoctrine.counterplay}`
+      : "";
+    const eliteSquad = selectEnemyEliteSquadForBattle({
+      mode: this.launch.request.mode,
+      campaignNodeId: this.launch.request.campaignNodeId,
+      modifierIds: this.launch.request.modifiers.map((modifier) => modifier.id),
+      enemyHeroId: this.launch.request.enemyHeroId,
+      difficulty: this.launch.request.difficulty,
+      rewardsDisabled: this.launch.request.rewardsDisabled
+    });
+    const eliteText = eliteSquad ? ` Elite squad possible: ${eliteSquad.name}.` : "";
     this.showMessage(
-      `${retinueText}${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${enemyHeroText}${modifierText}`,
+      `${retinueText}${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${enemyHeroText}${modifierText}${doctrineText}${eliteText}`,
       this.hero.position.x,
       this.hero.position.y - 96,
       "#f6e27d"
     );
-    if (retinueNames.length > 0 || enemyHero) {
+    if (retinueNames.length > 0 || enemyHero || this.enemyDoctrine) {
       this.statusTimer = 4.5;
     }
   }
@@ -468,6 +498,9 @@ export class BattleScene extends Phaser.Scene {
   private addUnit(unit: Unit): void {
     this.units.push(unit);
     this.applyResearchedUpgradesToUnit(unit);
+    if (unit.team === "enemy" && unit.enemyEliteSquadId) {
+      this.runtime.recordEnemyEliteSquad(unit.enemyEliteSquadId);
+    }
   }
 
   private addBuilding(building: Building): void {
@@ -798,6 +831,16 @@ export class BattleScene extends Phaser.Scene {
           this.runtime.recordEnemyHeroDefeated(target.enemyHeroId, target.enemyHeroName, this.runtime.elapsedSeconds);
           this.enemyPressureRuntime?.recordEnemyHeroDefeated(target.enemyHeroId);
         }
+        if (target.enemyEliteSquadId) {
+          this.runtime.recordEnemyEliteUnitDefeated(target.enemyEliteSquadId);
+          this.showMessage(
+            `${target.enemyEliteSquadName ?? target.enemyEliteSquadLabel ?? "Elite squad"} defeated`,
+            target.position.x,
+            target.position.y - 58,
+            "#f6e27d",
+            { priority: "objective" }
+          );
+        }
       }
     }
     if (!this.launch.request.rewardsDisabled && target.team !== "player" && killer instanceof Unit && this.isUnitVeterancyEligible(killer)) {
@@ -921,6 +964,7 @@ export class BattleScene extends Phaser.Scene {
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       controlGroups: this.controlGroupSystem.summaries(this.units),
+      enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),
       pauseMenu: this.menuPaused
         ? {
@@ -1025,6 +1069,23 @@ export class BattleScene extends Phaser.Scene {
           hpRatio: unit.maxHp > 0 ? unit.hp / unit.maxHp : 0
         }))
     );
+  }
+
+  private createEnemyDoctrineSnapshot() {
+    if (!this.enemyDoctrine) {
+      return undefined;
+    }
+    const eliteSquadIds = this.runtime.stats.enemyEliteSquadIds ?? [];
+    const eliteNames = eliteSquadIds
+      .map((squadId) => ENEMY_ELITE_SQUAD_BY_ID[squadId]?.name ?? ENEMY_ELITE_SQUAD_BY_ID[squadId]?.shortLabel ?? squadId)
+      .filter((name, index, names) => names.indexOf(name) === index);
+    return {
+      name: this.enemyDoctrine.name,
+      status: this.enemyDoctrine.statusLabel,
+      warning: this.enemyDoctrine.threatWarning,
+      counterplay: this.enemyDoctrine.counterplay,
+      elite: eliteNames.length > 0 ? eliteNames.join(", ") : undefined
+    };
   }
 
   private createRetinueReinforcementSnapshot() {

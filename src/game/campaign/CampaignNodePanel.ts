@@ -16,6 +16,7 @@ import {
   getMissionOptionalObjectiveStates
 } from "../core/campaign/CampaignMissionRules";
 import { getRivalNodePreview } from "../core/RivalRules";
+import { selectEnemyDoctrineForCampaignNode, selectEnemyEliteSquadForBattle } from "../data/enemyDoctrines";
 import {
   AI_PERSONALITY_BY_ID,
   ENEMY_HERO_ABILITY_BY_ID,
@@ -67,6 +68,15 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   const missionReward = getCampaignMissionRewardState(campaignSave, node);
   const missionBriefing = getCampaignMissionBriefing(node);
   const scenarioModifiers = getCampaignScenarioModifierDefinitions(node);
+  const enemyDoctrine = selectEnemyDoctrineForCampaignNode(node);
+  const eliteSquad = selectEnemyEliteSquadForBattle({
+    mode: node.nodeType === "battle" ? "campaign_node" : undefined,
+    campaignNodeId: node.id,
+    missionTypeId: node.missionTypeId,
+    modifierIds: node.scenarioModifierIds,
+    enemyHeroId: node.enemyHeroId,
+    difficulty: node.difficulty
+  });
   const objectiveStates = getMissionOptionalObjectiveStates({ campaign: campaignSave, node });
   const buildHint = recommendedBuildHint(node);
   const actStep = getCampaignActStepForNode(node.id);
@@ -89,6 +99,7 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${renderGuidanceMessage(nodeGuidance.title, nodeGuidance.body, nodeGuidance.actions, "compact")}
         ${actStep ? renderAct1SpineMessage(actStep, campaignSave) : ""}
         ${missionBriefing ? renderMissionBriefingMessage(missionBriefing, scenarioModifiers) : ""}
+        ${enemyDoctrine ? renderEnemyDoctrineMessage(enemyDoctrine, eliteSquad) : ""}
         ${renderMissionRewardMessage(node, missionReward)}
         ${objectiveStates.length > 0 ? renderOptionalObjectiveMessage(objectiveStates) : ""}
         ${buildHint ? renderGuidanceMessage(buildHint.title, buildHint.body, buildHint.actions, "compact") : ""}
@@ -111,6 +122,9 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
           <span>Replay rule</span><strong>${missionReward.isReplay ? "Reduced repeat battle rewards; node rewards do not duplicate" : "Full first-clear mission rewards available"}</strong>
           <span>Enemy</span><strong>${escapeHtml(faction?.name ?? node.enemyFactionId)}</strong>
           <span>Enemy Style</span><strong>${escapeHtml(personality ? `${personality.name}: ${personality.shortDescription}` : "Balanced Warlord: Mixed expansion and attacks.")}</strong>
+          <span>Enemy doctrine</span><strong>${escapeHtml(enemyDoctrine ? enemyDoctrine.statusLabel : "Standard pressure")}</strong>
+          <span>Counterplay</span><strong>${escapeHtml(enemyDoctrine ? enemyDoctrine.counterplay : "Use normal scouting, economy, and army timing.")}</strong>
+          <span>Elite squad</span><strong>${escapeHtml(eliteSquad ? `${eliteSquad.name}: ${eliteSquad.counterplay}` : "None expected")}</strong>
           <span>Enemy Commander</span><strong>${escapeHtml(enemyHero ? `${enemyHero.name}, ${enemyHero.title}` : "None scouted")}</strong>
           <span>Rival Status</span><strong>${escapeHtml(rivalPreview?.summaryText ?? "No known rival")}</strong>
           <span>Prerequisites</span><strong>${escapeHtml(formatCampaignNodeList(node.prerequisites) || "None")}</strong>
@@ -183,6 +197,22 @@ function renderMissionBriefingMessage(
       briefing.missionType?.objectiveHint ?? briefing.primaryObjective,
       modifierTag,
       briefing.recommendedBuildHint ?? "Build choice optional"
+    ],
+    "compact"
+  );
+}
+
+function renderEnemyDoctrineMessage(
+  doctrine: NonNullable<ReturnType<typeof selectEnemyDoctrineForCampaignNode>>,
+  eliteSquad: ReturnType<typeof selectEnemyEliteSquadForBattle>
+): string {
+  return renderGuidanceMessage(
+    `Enemy doctrine: ${doctrine.name}`,
+    doctrine.threatWarning,
+    [
+      doctrine.counterplay,
+      eliteSquad ? `Elite: ${eliteSquad.shortLabel}` : "No elite squad expected",
+      doctrine.tags.slice(0, 2).join(" / ")
     ],
     "compact"
   );

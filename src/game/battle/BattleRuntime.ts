@@ -2,6 +2,7 @@ import type {
   BattleDifficulty,
   BattleRewardResult,
   BattleStats,
+  EnemyDoctrineId,
   EnemyAIPersonalityId,
   Position,
   ResourceBag,
@@ -189,6 +190,42 @@ export class BattleRuntime {
     this.stats.enemyPressurePlanId = planId;
   }
 
+  recordEnemyDoctrine(doctrineId: EnemyDoctrineId | undefined): void {
+    if (!doctrineId) {
+      return;
+    }
+    this.stats.enemyDoctrineId = doctrineId;
+  }
+
+  recordEnemyDoctrineAction(label: string): void {
+    if (!label.trim()) {
+      return;
+    }
+    this.stats.enemyDoctrineActionCount = (this.stats.enemyDoctrineActionCount ?? 0) + 1;
+    const labels = (this.stats.enemyDoctrineTelemetryLabels ??= []);
+    if (!labels.includes(label)) {
+      labels.push(label);
+    }
+  }
+
+  recordEnemyEliteSquad(squadId: string | undefined): void {
+    if (!squadId) {
+      return;
+    }
+    const ids = (this.stats.enemyEliteSquadIds ??= []);
+    if (!ids.includes(squadId)) {
+      ids.push(squadId);
+    }
+  }
+
+  recordEnemyEliteUnitDefeated(squadId: string | undefined): void {
+    if (!squadId) {
+      return;
+    }
+    const defeated = (this.stats.enemyEliteUnitsDefeated ??= []);
+    defeated.push(squadId);
+  }
+
   recordEnemyPressureStage(options: {
     planId: string;
     stageId: string;
@@ -341,6 +378,11 @@ export function completeBattle(
     enemyPressureWarningsShown: input.stats.enemyPressureWarningsShown ?? 0,
     enemyPressureFirstTriggeredAtSeconds: input.stats.enemyPressureFirstTriggeredAtSeconds,
     enemyPressureReinforcementApplied: input.stats.enemyPressureReinforcementApplied ?? false,
+    enemyDoctrineId: input.stats.enemyDoctrineId,
+    enemyDoctrineActionCount: input.stats.enemyDoctrineActionCount ?? 0,
+    enemyDoctrineTelemetryLabels: [...(input.stats.enemyDoctrineTelemetryLabels ?? [])],
+    enemyEliteSquadIds: [...(input.stats.enemyEliteSquadIds ?? [])],
+    enemyEliteUnitsDefeated: [...(input.stats.enemyEliteUnitsDefeated ?? [])],
     veteranSummary: input.stats.veteranSummary ? cloneVeterancySummary(input.stats.veteranSummary) : undefined
   };
   const baselineHero = input.startingHeroSave ?? input.heroSave;

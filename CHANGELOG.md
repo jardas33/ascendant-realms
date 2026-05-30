@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.66-v0.68 Enemy Tactical Doctrines And Elite Squad Foundation - 2026-05-30
+
+This checkpoint adds readable enemy tactical variety through small data-driven doctrines, occasional capped elite squads, and concise counterplay copy. No maps, factions, runtime art/assets, save-version bump, new save fields, global rebalance, broad pathing rewrite, enemy formation rewrite, giant roster, shop/crafting, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V066_ENEMY_TACTICAL_DOCTRINES_SPEC.md`.
+- Added `docs/V067_ELITE_SQUAD_FOUNDATION_SPEC.md`.
+- Added `docs/V068_COUNTERPLAY_READABILITY_SPEC.md`.
+- Added `docs/V066_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V067_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V068_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V068_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Raider, Fortress, Hunter, and Warband doctrine definitions.
+- Added mission/modifier/enemy-hero doctrine selection with Tutorial/no-reward protection.
+- Added conservative doctrine hooks for resource raids, defensive reserves, guarded hero/Retinue pressure, and late mixed pushes.
+- Added Ash Raider Vanguard and Cinder Iron Guard elite squad definitions with modest capped stat bonuses.
+- Added campaign briefing, battle HUD, selected-unit renderer, and Results copy for doctrine, elite squad, and counterplay readability.
+- Updated hosted deep-campaign coverage for Raider/Fortress doctrine and Cinder Iron Guard elite after-action summary.
+- Updated package metadata and validation to name `v0.66-v0.68 enemy tactical doctrines and elite squad foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for enemy tactical AI hooks and battle-only elite squad tags.
+- Gameplay numbers changed: only mission-local doctrine timing/size/reserve hooks and capped elite unit bonuses; no global balance changes.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no doctrine or elite complexity.
+- Retinue/reinforcement changed: no, but Hunter doctrine can target exposed hero/Retinue only when escorted and cooldown-gated.
+
+### Verification
+
+- Passed: focused doctrine/AI/HUD/Results/campaign tests, focused hosted Raider/Fortress/elite proxy with 2 tests, `npm test` with 82 files / 620 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke rerun with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, dirty package verification with 183 checks, and `git diff --check`.
+- Non-pass evidence: initial `npm test` failed because the new elite damage multiplier lacked a fallback for lightweight Unit/Hero test doubles; fixed with a `?? 1` fallback and reran green. First full-smoke attempt timed out at the command wrapper after 364 seconds with no Playwright summary; a longer clean rerun passed all 14 tests.
+
 ## v0.63-v0.65 Retinue Recovery And Reinforcement Foundation - 2026-05-30
 
 This checkpoint adds save-safe Retinue recovery, clearer reserve management, and one controlled Call Retinue battle command. No maps, factions, runtime art/assets, save-version bump, giant roster UI, permanent control groups, shop/crafting, broad AI/pathing rewrite, global rebalance, formation editor, or canvas/world force-click behavior were added.

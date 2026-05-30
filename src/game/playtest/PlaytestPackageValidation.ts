@@ -178,6 +178,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V064_IMPLEMENTATION_REPORT.md",
   "V065_IMPLEMENTATION_REPORT.md",
   "V065_EMMANUEL_RETEST_CHECKLIST.md",
+  "V066_ENEMY_TACTICAL_DOCTRINES_SPEC.md",
+  "V067_ELITE_SQUAD_FOUNDATION_SPEC.md",
+  "V068_COUNTERPLAY_READABILITY_SPEC.md",
+  "V066_IMPLEMENTATION_REPORT.md",
+  "V067_IMPLEMENTATION_REPORT.md",
+  "V068_IMPLEMENTATION_REPORT.md",
+  "V068_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -283,7 +290,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.63-v0.65 Retinue recovery and reinforcement foundation",
+      "v0.66-v0.68 enemy tactical doctrines and elite squad foundation",
       "build info checkpoint",
       checks,
       errors

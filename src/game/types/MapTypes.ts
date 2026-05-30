@@ -1,4 +1,4 @@
-import type { UnitVeterancyBattleSummary } from "./CombatTypes";
+import type { EnemyDoctrineId, UnitVeterancyBattleSummary } from "./CombatTypes";
 import type { ResourceBag, ResourceKey } from "./EconomyTypes";
 import type { Position, Team } from "./UITypes";
 
@@ -159,4 +159,9 @@ export interface BattleStats {
   enemyPressureWarningsShown?: number;
   enemyPressureFirstTriggeredAtSeconds?: number;
   enemyPressureReinforcementApplied?: boolean;
+  enemyDoctrineId?: EnemyDoctrineId;
+  enemyDoctrineActionCount?: number;
+  enemyDoctrineTelemetryLabels?: string[];
+  enemyEliteSquadIds?: string[];
+  enemyEliteUnitsDefeated?: string[];
 }

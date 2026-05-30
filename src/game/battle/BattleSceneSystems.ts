@@ -12,6 +12,7 @@ import type {
 import { BUILDING_BY_ID } from "../data/contentIndex";
 import { applyTutorialEnemyAIPacing } from "../data/battlePacing";
 import { applyCampaignEnemyAIModifierEffects } from "../data/campaignModifiers";
+import { selectEnemyDoctrineForBattleLaunch } from "../data/enemyDoctrines";
 import { getStrongholdBattleEffects, type StrongholdBattleEffects } from "../data/strongholdUpgrades";
 import { EnemyAIController } from "../ai/EnemyAIController";
 import type { BaseEntity } from "../entities/BaseEntity";
@@ -537,6 +538,17 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     launch.request.mode === "tutorial" ? applyTutorialEnemyAIPacing(activeMap.scenario.enemyAI) : activeMap.scenario.enemyAI,
     launch.request.mode === "tutorial" ? [] : launch.request.modifiers
   );
+  const enemyDoctrine = selectEnemyDoctrineForBattleLaunch({
+    mode: launch.request.mode,
+    campaignNodeId: launch.request.campaignNodeId,
+    modifierIds: launch.request.modifiers.map((modifier) => modifier.id),
+    enemyHeroId: launch.request.enemyHeroId,
+    difficulty: launch.request.difficulty,
+    retinueUnitCount: launch.request.retinueUnits?.length ?? 0,
+    retinueReserveCount: launch.request.retinueReserveUnits?.length ?? 0,
+    rewardsDisabled: launch.request.rewardsDisabled
+  });
+  runtime.recordEnemyDoctrine(enemyDoctrine?.id);
   const aiController = new EnemyAIController({
     resources: resources.enemy,
     getUnits,
@@ -557,6 +569,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onWaveLaunched: trackEnemyWave,
     difficulty: launch.request.difficulty,
     config: enemyAIConfig,
+    doctrine: enemyDoctrine,
+    modifierIds: launch.request.modifiers.map((modifier) => modifier.id),
+    onDoctrineAction: (label) => runtime.recordEnemyDoctrineAction(label),
     aiPersonalityId: launch.request.aiPersonalityId,
     attackWarningLeadSeconds: strongholdEffects.enemyWarningLeadSeconds
   });

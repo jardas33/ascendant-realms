@@ -369,6 +369,28 @@ describe("results scene helpers", () => {
     expect(html).toContain("Chapter 2 after first clear");
   });
 
+  it("renders enemy doctrine and elite squad after-action summary", () => {
+    const data = createResultsData({
+      stats: {
+        ...baseStats(),
+        enemyDoctrineId: "fortress",
+        enemyDoctrineActionCount: 2,
+        enemyDoctrineTelemetryLabels: ["Fortress tech: fortify enemy base hub"],
+        enemyEliteSquadIds: ["cinder_iron_guard"],
+        enemyEliteUnitsDefeated: ["cinder_iron_guard"]
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Enemy Tactics");
+    expect(summaryHtml).toContain("Fortress");
+    expect(summaryHtml).toContain("Attack economy first");
+    expect(summaryHtml).toContain("Cinder Iron Guard");
+    expect(summaryHtml).toContain("Elite defeated");
+    expect(summaryHtml).toContain("battle-only readability signals");
+  });
+
   it("points champion relic Results toward equip, skill, and replay guidance", () => {
     const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const data = createResultsData({

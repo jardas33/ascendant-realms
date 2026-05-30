@@ -2,6 +2,7 @@ import type {
   BattleDifficulty,
   BattleDifficultyDefinition,
   BattlePhaseDefinition,
+  EnemyDoctrineDefinition,
   EnemyAIPersonalityDefinition,
   EnemyAIPersonalityId,
   EnemyAIConfig,
@@ -78,6 +79,9 @@ interface EnemyAIOptions {
   difficulty: BattleDifficulty;
   config: EnemyAIConfig;
   aiPersonalityId?: EnemyAIPersonalityId;
+  doctrine?: EnemyDoctrineDefinition;
+  modifierIds?: string[];
+  onDoctrineAction?: (label: string) => void;
   attackWarningLeadSeconds?: number;
 }
 
@@ -93,6 +97,7 @@ export class EnemyAIController {
   private siteUpgradeTimer = RESOURCE_SITE_UPGRADE_COOLDOWN_SECONDS;
   private abstractWorkerTimer = RESOURCE_SITE_ABSTRACT_WORKER_COOLDOWN_SECONDS;
   private techTimer = ENEMY_TECH_COOLDOWN_SECONDS;
+  private hunterTimer = 0;
   private activeRaid?: { siteId: string; unitIds: string[]; startedAt: number };
   private readonly knownEnemySiteIds = new Set<string>();
   private readonly alerted = new Set<string>();
@@ -107,6 +112,7 @@ export class EnemyAIController {
     this.config = applyAIPersonalityToConfig(options.config, this.personality);
     this.expandTimer = Math.max(0, this.config.expandInterval - this.config.initialExpandDelay);
     this.attackTimer = 0;
+    this.hunterTimer = options.doctrine?.activity.hunterCooldownSeconds ?? 0;
   }
 
   adjustNextAttackTiming(seconds: number): void {
@@ -132,6 +138,7 @@ export class EnemyAIController {
     this.siteUpgradeTimer += deltaSeconds;
     this.abstractWorkerTimer += deltaSeconds;
     this.techTimer += deltaSeconds;
+    this.hunterTimer += deltaSeconds;
     this.trackKnownEnemySites();
     const basePlan = this.createBaseDevelopmentPlan(elapsedSeconds);
     this.currentBasePlan = basePlan;
@@ -163,6 +170,9 @@ export class EnemyAIController {
     }
 
     const enemyArmy = this.enemyArmy();
+    if (this.maybeLaunchHunterPressure(enemyArmy, phase, elapsedSeconds)) {
+      return;
+    }
     const attackWave = this.selectAttackWave(enemyArmy, phase);
     this.maybeAlert(
       "gathering",
@@ -175,6 +185,9 @@ export class EnemyAIController {
       this.attacksLaunched += 1;
       this.state.set(basePlan.stage === "late" ? "ESCALATE" : "ATTACK");
       this.options.onAlert(basePlan.stage === "late" ? "Enemy pressure is escalating." : "Enemy attack incoming.");
+      if (this.options.doctrine) {
+        this.options.onDoctrineAction?.(`${this.options.doctrine.name} attack wave`);
+      }
       this.sendAttackWave(attackWave);
       this.options.onWaveLaunched(attackWave);
       return;
@@ -251,8 +264,8 @@ export class EnemyAIController {
 
   private maybeLaunchEconomyRaid(army: Unit[], phase: BattlePhaseDefinition, elapsedSeconds: number): boolean {
     if (
-      elapsedSeconds < RESOURCE_SITE_RAID_INITIAL_DELAY_SECONDS ||
-      this.raidTimer < RESOURCE_SITE_RAID_INTERVAL_SECONDS ||
+      elapsedSeconds < this.resourceSiteRaidInitialDelaySeconds() ||
+      this.raidTimer < this.resourceSiteRaidIntervalSeconds() ||
       this.activeRaid
     ) {
       return false;
@@ -261,7 +274,7 @@ export class EnemyAIController {
     if (!plan) {
       return false;
     }
-    const squad = this.selectSiteSquad(army, phase, plan.recommendedSquadSize);
+    const squad = this.selectSiteSquad(army, phase, plan.recommendedSquadSize + this.doctrineRaidSquadBonus());
     if (squad.length < Math.min(2, plan.recommendedSquadSize) || isSitePlanOutmatched(plan, squad)) {
       return false;
     }
@@ -273,6 +286,7 @@ export class EnemyAIController {
     };
     this.state.set("RAID_SITE");
     this.options.onAlert(`Enemy raid forming at ${plan.site.definition.name}.`, plan.site.position.x, plan.site.position.y - 74);
+    this.options.onDoctrineAction?.(`${this.options.doctrine?.name ?? "Enemy"} raid at ${plan.site.definition.name}`);
     this.moveSquadToSite(squad, plan.site);
     return true;
   }
@@ -306,7 +320,7 @@ export class EnemyAIController {
   private maybeResearchEnemyTech(elapsedSeconds: number, basePlan: EnemyBaseDevelopmentPlan): boolean {
     if (
       elapsedSeconds < ENEMY_TECH_INITIAL_DELAY_SECONDS ||
-      this.techTimer < ENEMY_TECH_COOLDOWN_SECONDS ||
+      this.techTimer < this.enemyTechCooldownSeconds() ||
       this.enemyUpgradeQueueDepth() > 0
     ) {
       return false;
@@ -327,6 +341,7 @@ export class EnemyAIController {
         candidate.building.position.x,
         candidate.building.position.y - 74
       );
+      this.options.onDoctrineAction?.(`${this.options.doctrine?.name ?? "Enemy"} tech: ${candidate.reason}`);
       return true;
     }
 
@@ -392,6 +407,88 @@ export class EnemyAIController {
     });
   }
 
+  private maybeLaunchHunterPressure(army: Unit[], phase: BattlePhaseDefinition, elapsedSeconds: number): boolean {
+    const doctrine = this.options.doctrine;
+    if (!doctrine || doctrine.id !== "hunter") {
+      return false;
+    }
+    const initialDelay = doctrine.activity.hunterInitialDelaySeconds ?? 215;
+    const cooldown = doctrine.activity.hunterCooldownSeconds ?? 118;
+    const requestedSize = doctrine.activity.hunterEscortCount ?? 3;
+    if (elapsedSeconds < initialDelay || this.hunterTimer < cooldown) {
+      return false;
+    }
+    const target = this.hunterPressureTarget();
+    if (!target) {
+      return false;
+    }
+    const candidates = army.filter((unit) => this.canStandardUnitJoinAttack(unit, phase));
+    const squad = candidates.slice(0, requestedSize);
+    if (squad.length < requestedSize) {
+      return false;
+    }
+    this.hunterTimer = 0;
+    this.state.set("HUNTER_PRESSURE");
+    squad.forEach((unit) => unit.commandAttack(target.id, target.definition.name));
+    this.options.onAlert(
+      `Hunter squad is probing ${target.retinueUnitId ? "your Retinue" : "your hero"}.`,
+      target.position.x,
+      target.position.y - 70
+    );
+    this.options.onDoctrineAction?.(
+      target.retinueUnitId ? "Hunter pressure on Retinue" : "Hunter pressure on hero"
+    );
+    return true;
+  }
+
+  private hunterPressureTarget(): Unit | undefined {
+    const playerBase = this.options.getAttackTarget();
+    const enemyBase = this.enemyBasePosition();
+    return this.options
+      .getUnits()
+      .filter((unit) => unit.alive && unit.team === "player" && (unit.kind === "hero" || Boolean(unit.retinueUnitId)))
+      .filter((unit) => !playerBase || distance(unit.position, playerBase.position) >= 320 || distance(unit.position, enemyBase) <= 760)
+      .sort((left, right) => {
+        const leftPriority = left.retinueUnitId ? 0 : 1;
+        const rightPriority = right.retinueUnitId ? 0 : 1;
+        return leftPriority - rightPriority || distance(left.position, enemyBase) - distance(right.position, enemyBase);
+      })[0];
+  }
+
+  private resourceSiteRaidInitialDelaySeconds(): number {
+    return this.options.doctrine?.activity.resourceRaidInitialDelaySeconds ?? RESOURCE_SITE_RAID_INITIAL_DELAY_SECONDS;
+  }
+
+  private resourceSiteRaidIntervalSeconds(): number {
+    const multiplier = this.doctrineActivityMultiplier(this.options.doctrine?.activity.resourceRaidCooldownMultiplier ?? 1);
+    return Math.max(42, RESOURCE_SITE_RAID_INTERVAL_SECONDS * multiplier);
+  }
+
+  private enemyTechCooldownSeconds(): number {
+    return Math.max(50, ENEMY_TECH_COOLDOWN_SECONDS * (this.options.doctrine?.activity.techCooldownMultiplier ?? 1));
+  }
+
+  private doctrineRaidSquadBonus(): number {
+    return Math.max(0, Math.min(1, this.options.doctrine?.activity.resourceRaidSquadBonus ?? 0));
+  }
+
+  private doctrineDefenseReserveBonus(): number {
+    return Math.max(0, Math.min(1, this.options.doctrine?.activity.defenseReserveBonus ?? 0));
+  }
+
+  private doctrineAttackWaveSizeBonus(): number {
+    const bonus = this.options.doctrine?.activity.attackWaveSizeBonus ?? 0;
+    if (bonus <= 0 || this.options.getElapsedSeconds() < 300) {
+      return 0;
+    }
+    return Math.min(1, bonus);
+  }
+
+  private doctrineActivityMultiplier(baseMultiplier: number): number {
+    const patrolModifier = this.options.modifierIds?.includes("mission_enemy_patrols") ? 0.94 : 1;
+    return baseMultiplier * patrolModifier;
+  }
+
   private moveSquadToPoint(army: Unit[], target: Position): void {
     army.forEach((unit, index) => {
       unit.commandMove({ x: target.x + index * 18, y: target.y + index * 14 }, false);
@@ -405,7 +502,7 @@ export class EnemyAIController {
     const candidates = army.filter((unit) => this.canJoinSiteStrategy(unit, phase));
     const idle = candidates.filter((unit) => !unit.attackTargetId);
     const pool = idle.length >= Math.min(requestedSize, candidates.length) ? idle : candidates;
-    const reserve = this.currentBasePlan?.defenseReserveUnits ?? 0;
+    const reserve = (this.currentBasePlan?.defenseReserveUnits ?? 0) + this.doctrineDefenseReserveBonus();
     const availableCount = Math.max(0, pool.length - reserve);
     return pool.slice(0, Math.min(requestedSize, availableCount));
   }
@@ -605,7 +702,7 @@ export class EnemyAIController {
   private maxAttackWaveSize(phase: BattlePhaseDefinition): number {
     const milestones = this.options.getPlayerMilestones();
     const elapsedSeconds = this.options.getElapsedSeconds();
-    const strategicBonus = this.currentBasePlan?.attackWaveSizeBonus ?? 0;
+    const strategicBonus = (this.currentBasePlan?.attackWaveSizeBonus ?? 0) + this.doctrineAttackWaveSizeBonus();
     let maxSize = Math.min(this.config.attackWaveSize + strategicBonus, phase.enemy.maxAttackWaveSize + strategicBonus);
     if (
       milestones.isFirstBattle &&
@@ -674,7 +771,7 @@ export class EnemyAIController {
 
   private attackCandidates(army: Unit[], phase: BattlePhaseDefinition): Unit[] {
     const candidates = army.filter((unit) => this.canJoinAttack(unit, phase));
-    const strategicReserve = this.currentBasePlan?.defenseReserveUnits ?? 0;
+    const strategicReserve = (this.currentBasePlan?.defenseReserveUnits ?? 0) + this.doctrineDefenseReserveBonus();
     const reserveCount = Math.min(
       this.personality.defense.reserveDefenseUnits + strategicReserve,
       Math.max(0, candidates.length - 1)

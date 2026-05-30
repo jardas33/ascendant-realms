@@ -34,6 +34,7 @@ import {
   validateReputationEffects
 } from "./validateCampaign";
 import { validateEnemyHeroes } from "./validateEnemyHeroes";
+import { validateEnemyDoctrines, validateEnemyEliteSquads } from "./validateEnemyDoctrines";
 import { validateEnemyPressurePlans } from "./validateEnemyPressurePlans";
 import { validateFactions } from "./validateFactions";
 import { validateItemAffixes, validateItems } from "./validateItems";
@@ -97,6 +98,8 @@ export function validateContent(): string[] {
   validateUpgrades(errors, context);
   validateDifficulties(errors);
   validateAIPersonalities(errors, context);
+  validateEnemyDoctrines(errors, context);
+  validateEnemyEliteSquads(errors, context);
   validateCampaignModifiers(errors, context);
   validateEnemyHeroes(errors, context);
   validateEnemyPressurePlans(errors, context);

@@ -6,6 +6,7 @@ export type AIState =
   | "RETREAT"
   | "CONTEST_SITE"
   | "RAID_SITE"
+  | "HUNTER_PRESSURE"
   | "UPGRADE_SITE"
   | "FORTIFY_BASE"
   | "TECH_UP"

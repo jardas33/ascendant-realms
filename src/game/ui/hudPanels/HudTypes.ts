@@ -48,8 +48,17 @@ export interface HUDSnapshot {
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
   controlGroups?: ControlGroupSummary[];
+  enemyDoctrine?: HUDEnemyDoctrineSnapshot;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
+}
+
+export interface HUDEnemyDoctrineSnapshot {
+  name: string;
+  status: string;
+  warning: string;
+  counterplay: string;
+  elite?: string;
 }
 
 export interface HUDRetinueReinforcementSnapshot {

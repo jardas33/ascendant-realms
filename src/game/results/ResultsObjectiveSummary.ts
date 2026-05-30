@@ -6,7 +6,7 @@ import { formatRetinueDeploymentLabel, isRetinueEligibleVeteran, retinueEligibil
 import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
-import { ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import { ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
@@ -29,6 +29,8 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Sites captured</span><strong>${stats.resourcesCaptured}</strong>
           <span>Enemy commander</span><strong>${escapeHtml(stats.enemyHeroName ?? "None")}</strong>
           <span>Commander defeated</span><strong>${stats.enemyHeroId ? (stats.enemyHeroDefeated ? `Yes (${formatTime(stats.enemyHeroDefeatedAtSeconds ?? stats.timeSeconds)})` : "No") : "None"}</strong>
+          <span>Enemy doctrine</span><strong>${escapeHtml(formatEnemyDoctrineResult(data))}</strong>
+          <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
         </div>
       </section>
       <section class="result-block">
@@ -38,10 +40,63 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     </div>
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}
+    ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
   `;
+}
+
+export function renderEnemyDoctrineSummary(data: ResultsData): string {
+  const doctrine = data.stats.enemyDoctrineId ? ENEMY_DOCTRINE_BY_ID[data.stats.enemyDoctrineId] : undefined;
+  const eliteIds = data.stats.enemyEliteSquadIds ?? [];
+  const defeatedIds = data.stats.enemyEliteUnitsDefeated ?? [];
+  if (!doctrine && eliteIds.length === 0) {
+    return "";
+  }
+  const defeatedNames = defeatedIds.map((id) => ENEMY_ELITE_SQUAD_BY_ID[id]?.name ?? id);
+  return `
+    <section class="result-block wide enemy-doctrine-summary" data-testid="results-enemy-doctrine-summary">
+      <h2>Enemy Tactics</h2>
+      <div class="results-grid compact">
+        <span>Doctrine</span><strong>${escapeHtml(doctrine ? doctrine.name : "Standard pressure")}</strong>
+        <span>Threat read</span><strong>${escapeHtml(doctrine?.threatWarning ?? "No special doctrine was active.")}</strong>
+        <span>Counterplay</span><strong>${escapeHtml(doctrine?.counterplay ?? "Use normal economy, scouting, and army control.")}</strong>
+        <span>Doctrine actions</span><strong>${escapeHtml(formatDoctrineActions(data.stats.enemyDoctrineTelemetryLabels ?? []))}</strong>
+        <span>Elite present</span><strong>${escapeHtml(formatEliteSquadNames(eliteIds))}</strong>
+        <span>Elite defeated</span><strong>${defeatedNames.length > 0 ? escapeHtml(defeatedNames.join(", ")) : "None"}</strong>
+      </div>
+      <p class="quiet">Enemy doctrine and elite tags are battle-only readability signals. They do not change campaign saves.</p>
+    </section>
+  `;
+}
+
+function formatEnemyDoctrineResult(data: ResultsData): string {
+  const doctrine = data.stats.enemyDoctrineId ? ENEMY_DOCTRINE_BY_ID[data.stats.enemyDoctrineId] : undefined;
+  return doctrine ? `${doctrine.name} - ${doctrine.counterplay}` : "Standard pressure";
+}
+
+function formatEliteSquadResult(data: ResultsData): string {
+  const eliteIds = data.stats.enemyEliteSquadIds ?? [];
+  const defeated = data.stats.enemyEliteUnitsDefeated?.length ?? 0;
+  if (eliteIds.length === 0) {
+    return "None";
+  }
+  return `${formatEliteSquadNames(eliteIds)}; defeated ${defeated}`;
+}
+
+function formatEliteSquadNames(ids: string[]): string {
+  const names = ids
+    .map((id) => ENEMY_ELITE_SQUAD_BY_ID[id]?.name ?? id)
+    .filter((name, index, entries) => entries.indexOf(name) === index);
+  return names.length > 0 ? names.join(", ") : "None";
+}
+
+function formatDoctrineActions(labels: string[]): string {
+  if (labels.length === 0) {
+    return "No special actions recorded";
+  }
+  return labels.slice(0, 4).join("; ");
 }
 
 export function renderRetinueBattleSummary(data: ResultsData): string {

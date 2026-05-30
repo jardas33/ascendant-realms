@@ -5,6 +5,7 @@ import type {
   Position,
   Team,
   UnitDefinition,
+  EnemyEliteSquadDefinition,
   UnitVeterancyRankId,
   UnitVeterancyState
 } from "../core/GameTypes";
@@ -33,6 +34,11 @@ export class Unit extends BaseEntity {
   enemyHeroId?: string;
   enemyHeroName?: string;
   enemyHeroTitle?: string;
+  enemyEliteSquadId?: string;
+  enemyEliteSquadName?: string;
+  enemyEliteSquadLabel?: string;
+  enemyEliteCounterplay?: string;
+  enemyEliteBonusSummary?: string;
   enemyHeroAbilityCooldowns = new Map<string, number>();
   attackTargetId?: string;
   attackTargetLabel?: string;
@@ -53,6 +59,7 @@ export class Unit extends BaseEntity {
   armorBuffBonus = 0;
   armorBuffRemaining = 0;
   upgradeDamageMultiplier = 1;
+  eliteDamageMultiplier = 1;
   upgradeRangeMultiplier = 1;
   upgradeAttackCooldownMultiplier = 1;
   veterancyDamageMultiplier = 1;
@@ -109,8 +116,9 @@ export class Unit extends BaseEntity {
   get damage(): number {
     return (
       this.definition.stats.damage *
-      this.damageBuffMultiplier *
-      this.upgradeDamageMultiplier *
+      (this.damageBuffMultiplier ?? 1) *
+      (this.upgradeDamageMultiplier ?? 1) *
+      (this.eliteDamageMultiplier ?? 1) *
       (this.veterancyDamageMultiplier ?? 1)
     );
   }
@@ -259,6 +267,27 @@ export class Unit extends BaseEntity {
 
   clearPatrolRoute(): void {
     this.patrolRoute = undefined;
+  }
+
+  applyEnemyEliteSquad(squad: EnemyEliteSquadDefinition): void {
+    if (this.team !== "enemy") {
+      return;
+    }
+    this.enemyEliteSquadId = squad.id;
+    this.enemyEliteSquadName = squad.name;
+    this.enemyEliteSquadLabel = squad.shortLabel;
+    this.enemyEliteCounterplay = squad.counterplay;
+    this.enemyEliteBonusSummary = `+${Math.round((squad.maxHpMultiplier - 1) * 100)}% HP, +${Math.round(
+      (squad.damageMultiplier - 1) * 100
+    )}% damage${squad.armorBonus > 0 ? `, +${squad.armorBonus} armor` : ""}`;
+    const hpRatio = this.maxHp > 0 ? this.hp / this.maxHp : 1;
+    this.maxHp = Math.round(this.maxHp * squad.maxHpMultiplier);
+    this.hp = Math.max(1, Math.round(this.maxHp * hpRatio));
+    this.armor += squad.armorBonus;
+    this.eliteDamageMultiplier = Math.max(this.eliteDamageMultiplier, squad.damageMultiplier);
+    this.label?.setText(`${squad.shortLabel} ${this.definition.name}`);
+    this.label?.setColor("#ffd27a");
+    this.updateHealthBar();
   }
 
   markResourceSiteWork(siteId: string, siteLabel: string): void {

@@ -4,6 +4,7 @@ import type { CaptureSite } from "../entities/CaptureSite";
 import type { Unit } from "../entities/Unit";
 import type { TrainingSystem } from "../systems/TrainingSystem";
 import type { EnemyAIConfig } from "../core/GameTypes";
+import { ENEMY_DOCTRINE_BY_ID } from "../data/enemyDoctrines";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { UpgradeSystem } from "../systems/UpgradeSystem";
 import { EnemyAIController } from "./EnemyAIController";
@@ -385,6 +386,71 @@ describe("EnemyAIController resource-site strategy", () => {
     expect(moved.map((entry) => entry.unitId)).not.toContain("enemy_commander_1");
   });
 
+  it("Raider doctrine pressures player sites earlier without every-tick spam", () => {
+    const moved: Array<{ unitId: string; target: { x: number; y: number }; attackMove: boolean }> = [];
+    const doctrineActions: string[] = [];
+    const site = fakeSite("stone_quarry", "Stone Quarry", "player", {
+      x: 1580,
+      y: 610,
+      resource: "stone",
+      incomeAmount: 24,
+      workerAssignments: [{ workerId: "worker-1", workerName: "Worker", statusDetail: "Worker working", boostActive: true }]
+    });
+    const controller = createController({
+      units: [
+        fakeEnemyUnit("raider", "enemy_raider_1", [], moved),
+        fakeEnemyUnit("hexer", "enemy_hexer_1", [], moved),
+        fakeEnemyUnit("brute", "enemy_brute_1", [], moved)
+      ],
+      captureSites: [site],
+      getElapsedSeconds: () => 120,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      doctrine: ENEMY_DOCTRINE_BY_ID.raider,
+      onDoctrineAction: (label) => doctrineActions.push(label),
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(120);
+    const firstMoveCount = moved.length;
+    controller.update(1);
+
+    expect(controller.state.current).toBe("RAID_SITE");
+    expect(firstMoveCount).toBeGreaterThan(0);
+    expect(moved).toHaveLength(firstMoveCount);
+    expect(doctrineActions[0]).toContain("Raider raid at Stone Quarry");
+  });
+
+  it("Hunter doctrine sends escorted pressure toward exposed Retinue and respects cooldown", () => {
+    const attacked: string[] = [];
+    const doctrineActions: string[] = [];
+    const retinue = fakePlayerUnit("retinue_militia_1", { x: 1740, y: 720 }, 120);
+    retinue.retinueUnitId = "retinue:militia:1";
+    const controller = createController({
+      units: [
+        fakeEnemyUnit("raider", "enemy_raider_1", attacked),
+        fakeEnemyUnit("raider", "enemy_raider_2", attacked),
+        fakeEnemyUnit("raider", "enemy_raider_3", attacked),
+        retinue
+      ],
+      getElapsedSeconds: () => 230,
+      hasCapturedSite: true,
+      hasBuiltProduction: true,
+      doctrine: ENEMY_DOCTRINE_BY_ID.hunter,
+      onDoctrineAction: (label) => doctrineActions.push(label),
+      config: { incomeInterval: 9999, initialAttackDelay: 9999, expandInterval: 9999, initialExpandDelay: 9999 },
+      onWaveLaunched: vi.fn()
+    });
+
+    controller.update(230);
+    controller.update(1);
+
+    expect(controller.state.current).toBe("HUNTER_PRESSURE");
+    expect(attacked).toEqual(["enemy_raider_1", "enemy_raider_2", "enemy_raider_3"]);
+    expect(doctrineActions).toEqual(["Hunter pressure on Retinue"]);
+  });
+
   it("uses a rival champion for threatened site defense", () => {
     const attacked: string[] = [];
     const site = fakeSite("crown_shrine", "Crown Shrine", "enemy", { x: 1720, y: 720, incomeAmount: 30, siteLevel: 2 });
@@ -620,6 +686,9 @@ function createController(options: {
   config?: Partial<EnemyAIConfig>;
   attackWarningLeadSeconds?: number;
   onAlert?: (message: string) => void;
+  doctrine?: typeof ENEMY_DOCTRINE_BY_ID.raider;
+  modifierIds?: string[];
+  onDoctrineAction?: (label: string) => void;
 }): EnemyAIController {
   const baseConfig: EnemyAIConfig = {
     incomeInterval: 5,
@@ -675,6 +744,9 @@ function createController(options: {
     onWaveLaunched: options.onWaveLaunched,
     difficulty: "normal",
     config: { ...baseConfig, ...options.config },
+    doctrine: options.doctrine,
+    modifierIds: options.modifierIds,
+    onDoctrineAction: options.onDoctrineAction,
     attackWarningLeadSeconds: options.attackWarningLeadSeconds
   });
 }
@@ -722,6 +794,7 @@ function fakePlayerUnit(id: string, position: { x: number; y: number }, hp: numb
     alive: true,
     team: "player",
     position,
+    kind: "unit",
     hp,
     armor: 2,
     damage: 12,

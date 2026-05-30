@@ -31,4 +31,20 @@ describe("ObjectivePanel", () => {
     expect(html).toContain('data-objective-id="clear_camp"');
     expect(html).toContain('class="objective-row current"');
   });
+
+  it("renders enemy doctrine counterplay inside the objective surface", () => {
+    const html = renderObjectives([], {
+      name: "Raider",
+      status: "Raider doctrine: economy pressure",
+      warning: "Raiders will look for exposed Workers and resource sites.",
+      counterplay: "Protect sites with Militia screens.",
+      elite: "Elite Vanguard"
+    });
+
+    expect(html).toContain('data-testid="enemy-doctrine-status"');
+    expect(html).toContain("Raider doctrine: economy pressure");
+    expect(html).toContain("Counterplay: Protect sites");
+    expect(html).toContain("Elite: Elite Vanguard");
+    expect(html).toContain("Objectives 0/0");
+  });
 });
