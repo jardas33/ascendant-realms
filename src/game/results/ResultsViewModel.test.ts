@@ -98,7 +98,8 @@ describe("results scene helpers", () => {
             acquiredAt: "2026-05-02T12:00:00.000Z",
             status: "active"
           }
-        ]
+        ],
+        retinueDeploymentIds: ["retinue:saved:ranger"]
       });
       const defeatedHero = {
         ...startingHero,
@@ -500,7 +501,9 @@ describe("results scene helpers", () => {
           kills: 3,
           sourceBattleId: "old_stone_road",
           acquiredAt: "2026-05-02T12:00:00.000Z",
-          status: "active" as const
+          status: "active" as const,
+          battlesSurvived: 3,
+          missionsDeployed: 2
         },
         {
           retinueUnitId: "retinue:old:ranger",
@@ -510,9 +513,48 @@ describe("results scene helpers", () => {
           kills: 1,
           sourceBattleId: "old_stone_road",
           acquiredAt: "2026-05-02T12:00:00.000Z",
-          status: "active" as const
+          status: "active" as const,
+          battlesSurvived: 2,
+          missionsDeployed: 1
+        },
+        {
+          retinueUnitId: "retinue:old:acolyte",
+          unitTypeId: "acolyte",
+          rank: "seasoned" as const,
+          xp: 70,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const,
+          battlesSurvived: 1,
+          missionsDeployed: 0
+        },
+        {
+          retinueUnitId: "retinue:old:militia-2",
+          unitTypeId: "militia",
+          rank: "seasoned" as const,
+          xp: 60,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const,
+          battlesSurvived: 1,
+          missionsDeployed: 0
+        },
+        {
+          retinueUnitId: "retinue:old:ranger-2",
+          unitTypeId: "ranger",
+          rank: "seasoned" as const,
+          xp: 65,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active" as const,
+          battlesSurvived: 1,
+          missionsDeployed: 0
         }
-      ]
+      ],
+      retinueDeploymentIds: ["retinue:old:militia", "retinue:old:ranger"]
     };
 
     const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
@@ -524,12 +566,66 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Eligible: survived at Seasoned rank or better.");
     expect(summaryHtml).toContain("Veterancy scope");
     expect(summaryHtml).toContain("Battle-only for normal trained units");
-    expect(summaryHtml).toContain("this checkpoint adds no new permanent army roster");
-    expect(retinueHtml).toContain("2/2 active");
-    expect(retinueHtml).toContain("Retinue is full");
+    expect(summaryHtml).toContain("Normal trained units stay battle-only unless you add an eligible survivor");
+    expect(retinueHtml).toContain("5/5 roster");
+    expect(retinueHtml).toContain("2/2 selected");
+    expect(retinueHtml).toContain("Retinue roster is full");
     expect(retinueHtml).toContain("Eligible recruits this battle: 1");
     expect(retinueHtml).toContain("Not eligible: needs Seasoned rank or better.");
     expect(retinueHtml).toContain("Capacity Full");
+  });
+
+  it("renders deployed retinue survivor and loss summary in campaign Results", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "first_claim",
+        difficulty: "easy",
+        campaignNodeId: "border_village",
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:old:militia",
+            unitTypeId: "militia",
+            rank: "veteran",
+            xp: 140,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active",
+            battlesSurvived: 3,
+            missionsDeployed: 2
+          },
+          {
+            retinueUnitId: "retinue:old:ranger",
+            unitTypeId: "ranger",
+            rank: "seasoned",
+            xp: 80,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active",
+            battlesSurvived: 2,
+            missionsDeployed: 1
+          }
+        ]
+      }),
+      stats: {
+        ...baseStats(),
+        retinueUnitIdsLost: ["retinue:old:ranger"]
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Retinue Deployed");
+    expect(summaryHtml).toContain("2 units");
+    expect(summaryHtml).toContain("Survived");
+    expect(summaryHtml).toContain("Veteran Militia");
+    expect(summaryHtml).toContain("Lost");
+    expect(summaryHtml).toContain("Seasoned Ranger");
+    expect(summaryHtml).toContain("Surviving deployed Retinue units update their campaign record");
   });
 
   it("renders campaign rival outcome and persistent relic reward copy", () => {

@@ -22,16 +22,17 @@ export function renderRetinueRecruitment(data: ResultsData, campaign?: CampaignS
   const sourceBattleId = retinueSourceBattleId(data);
   const currentRetinue = activeRetinueUnits(campaign);
   const capacity = getRetinueCapacityBreakdown(campaign);
-  const capacityFull = capacity.activeCount >= capacity.capacity;
+  const capacityFull = capacity.activeCount >= capacity.rosterCapacity;
 
   return `
     <section class="result-block wide retinue-results" data-testid="results-retinue-panel">
       <h2>Retinue Camp</h2>
-      <p class="quiet">Add selected surviving Seasoned or better units to deploy near your hero in future campaign battles. If a retinue unit dies, it is permanently removed after the battle in V1.</p>
+      <p class="quiet">Add selected surviving Seasoned or better units to the roster, then choose a small deployment from the Campaign Map. If a retinue unit dies, it is permanently removed after the battle in V1.</p>
       <div class="results-grid compact">
-        <span>Capacity</span><strong data-testid="results-retinue-capacity">${capacity.activeCount}/${capacity.capacity} active</strong>
-        <span>Base camp</span><strong>${capacity.baseCapacity} slots</strong>
-        <span>Training Yard II</span><strong>${capacity.trainingYardBonus > 0 ? "+1 capacity active" : "No capacity bonus"}</strong>
+        <span>Roster capacity</span><strong data-testid="results-retinue-capacity">${capacity.activeCount}/${capacity.rosterCapacity} roster</strong>
+        <span>Deployment selected</span><strong>${capacity.deploymentCount}/${capacity.deploymentCapacity} selected</strong>
+        <span>Base camp</span><strong>${capacity.baseRosterCapacity} roster slots</strong>
+        <span>Training Yard II</span><strong>${capacity.trainingYardDeploymentBonus > 0 ? "+1 deployment slot" : "No deployment bonus"}</strong>
         ${
           currentRetinue.length > 0
             ? `<span>Current retinue</span><strong>${currentRetinue.map(formatRetinueUnitSummary).map(escapeHtml).join("; ")}</strong>`
@@ -40,7 +41,7 @@ export function renderRetinueRecruitment(data: ResultsData, campaign?: CampaignS
       </div>
       ${
         capacityFull
-          ? `<p class="quiet retinue-full-message" data-testid="retinue-full-message">Retinue is full. Skip recruitment here, or return to the Campaign Map and dismiss a unit before adding another veteran.</p>`
+          ? `<p class="quiet retinue-full-message" data-testid="retinue-full-message">Retinue roster is full. Skip recruitment here, or return to the Campaign Map and dismiss a unit before adding another veteran.</p>`
           : ""
       }
       ${

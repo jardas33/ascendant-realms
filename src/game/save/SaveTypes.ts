@@ -83,6 +83,8 @@ export interface RetinueUnitSaveData {
   sourceBattleId: string;
   acquiredAt: string;
   status: RetinueUnitStatus;
+  battlesSurvived?: number;
+  missionsDeployed?: number;
 }
 
 export type RivalLastOutcome = "unseen" | "escaped" | "defeated" | "wounded" | "triumphant";
@@ -127,6 +129,7 @@ export interface CampaignSaveData {
   activeModifierIds: string[];
   strongholdUpgradeRanks: Record<string, number>;
   retinueUnits: RetinueUnitSaveData[];
+  retinueDeploymentIds: string[];
   rivals: CampaignRivalSaveData[];
   rivalTrophies: RivalTrophySaveData[];
   selectedChapterId: CampaignChapterId;

@@ -2,7 +2,7 @@ import type { BattleMapDefinition } from "../core/GameTypes";
 import { getActiveHeroBuildSynergy } from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
 import { formatRelicBuildArchetype } from "../core/RelicRewardRules";
-import { isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
+import { formatRetinueDeploymentLabel, isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import { ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
@@ -36,9 +36,32 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
       </section>
     </div>
     ${renderVeteranSummary(data)}
+    ${renderRetinueBattleSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+  `;
+}
+
+export function renderRetinueBattleSummary(data: ResultsData): string {
+  const deployed = data.launchRequest?.mode === "campaign_node" ? data.launchRequest.retinueUnits ?? [] : [];
+  if (deployed.length === 0) {
+    return "";
+  }
+  const lostIds = new Set(data.stats.retinueUnitIdsLost ?? []);
+  const lost = deployed.filter((unit) => lostIds.has(unit.retinueUnitId));
+  const survived = deployed.filter((unit) => !lostIds.has(unit.retinueUnitId));
+  return `
+    <section class="result-block wide retinue-battle-summary" data-testid="results-retinue-battle-summary">
+      <h2>Retinue Deployed</h2>
+      <div class="results-grid compact">
+        <span>Deployed count</span><strong>${deployed.length} ${deployed.length === 1 ? "unit" : "units"}</strong>
+        <span>Deployed</span><strong>${escapeHtml(deployed.map(formatRetinueDeploymentLabel).join(", "))}</strong>
+        <span>Survived</span><strong>${survived.length > 0 ? escapeHtml(survived.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
+        <span>Lost</span><strong>${lost.length > 0 ? escapeHtml(lost.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
+      </div>
+      <p class="quiet">Surviving deployed Retinue units update their campaign record. Lost Retinue units are removed from the roster after battle.</p>
+    </section>
   `;
 }
 
@@ -221,7 +244,7 @@ export function renderVeteranSummary(data: ResultsData): string {
             </div>`
           : ""
       }
-      <p class="quiet">Battle XP is earned by live units here. Existing Retinue Camp recruitment stays opt-in for eligible campaign survivors; this checkpoint adds no new permanent army roster.</p>
+      <p class="quiet">Battle XP is earned by live units here. Normal trained units stay battle-only unless you add an eligible survivor to the small Retinue Camp.</p>
     </section>
   `;
 }

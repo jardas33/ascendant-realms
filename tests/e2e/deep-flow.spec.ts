@@ -69,6 +69,7 @@ const BASE_CAMPAIGN = {
   activeModifierIds: [],
   strongholdUpgradeRanks: {},
   retinueUnits: [],
+  retinueDeploymentIds: [],
   rivals: [],
   rivalTrophies: []
 };
@@ -1778,7 +1779,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       }
     });
     await startSyntheticResults(page, "victory", { veteranSummary });
-    await expect(page.getByTestId("results-retinue-panel")).toContainText("0/2 active");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("0/5 roster");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("0/2 selected");
     await expect(page.getByTestId("results-retinue-panel")).toContainText("Eligible recruits this battle: 1");
     await expect(page.getByTestId("results-retinue-panel")).toContainText("Veteran Militia");
     await expect(page.getByTestId("results-retinue-panel")).toContainText("Not eligible: needs Seasoned rank or better.");
@@ -1789,6 +1791,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".status-box")).toContainText("joined the retinue");
     let save = await readSave(page);
     expect(save.campaign.retinueUnits).toHaveLength(1);
+    expect(save.campaign.retinueDeploymentIds).toEqual(["retinue:border_village:retinue-e2e-veteran"]);
 
     await seedSave(page, {
       campaign: {
@@ -1816,17 +1819,52 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
             sourceBattleId: "old_stone_road",
             acquiredAt: "2026-05-02T12:00:00.000Z",
             status: "active"
+          },
+          {
+            retinueUnitId: "retinue:e2e:full_acolyte",
+            unitTypeId: "acolyte",
+            name: "Ford Acolyte",
+            rank: "seasoned",
+            xp: 70,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          },
+          {
+            retinueUnitId: "retinue:e2e:full_militia_2",
+            unitTypeId: "militia",
+            name: "Hill Militia",
+            rank: "seasoned",
+            xp: 60,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          },
+          {
+            retinueUnitId: "retinue:e2e:full_ranger_2",
+            unitTypeId: "ranger",
+            name: "Hill Ranger",
+            rank: "seasoned",
+            xp: 65,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
           }
-        ]
+        ],
+        retinueDeploymentIds: ["retinue:e2e:full_militia", "retinue:e2e:full_ranger"]
       }
     });
     await startSyntheticResults(page, "victory", { veteranSummary });
-    await expect(page.getByTestId("results-retinue-capacity")).toContainText("2/2 active");
-    await expect(page.getByTestId("retinue-full-message")).toContainText("Retinue is full");
+    await expect(page.getByTestId("results-retinue-capacity")).toContainText("5/5 roster");
+    await expect(page.getByTestId("results-retinue-panel")).toContainText("2/2 selected");
+    await expect(page.getByTestId("retinue-full-message")).toContainText("Retinue roster is full");
     await expect(page.locator("button[data-results-action='add_retinue'][data-unit-instance-id='retinue-e2e-veteran']")).toBeDisabled();
     await expect(page.locator("button[data-results-action='add_retinue'][data-unit-instance-id='retinue-e2e-veteran']")).toContainText("Capacity Full");
     save = await readSave(page);
-    expect(save.campaign.retinueUnits).toHaveLength(2);
+    expect(save.campaign.retinueUnits).toHaveLength(5);
   });
 
   test("campaign retinue units deploy with saved veterancy rank @hosted-deep-meta", async ({ page }) => {
@@ -1844,20 +1882,33 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
             kills: 3,
             sourceBattleId: "old_stone_road",
             acquiredAt: "2026-05-02T12:00:00.000Z",
-            status: "active"
+            status: "active",
+            battlesSurvived: 2,
+            missionsDeployed: 1
           }
-        ]
+        ],
+        retinueDeploymentIds: ["retinue:e2e:veteran_militia"]
       }
     });
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await expect(page.getByTestId("retinue-panel")).toContainText("1/2 active");
+    await expect(page.getByTestId("retinue-panel")).toContainText("1/5 roster");
+    await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Deploying");
     await expect(page.getByTestId("retinue-panel")).toContainText("Gate Militia");
     await expect(page.getByTestId("retinue-panel")).toContainText("Veteran");
     await expect(page.getByTestId("retinue-panel")).toContainText("140/230 XP to Elite");
+    await expect(page.getByTestId("retinue-panel")).toContainText("2 survived / 1 deployed.");
     await expect(page.getByTestId("retinue-panel")).toContainText("Retinue death is permanent in V1");
     await expect(page.getByTestId("retinue-panel")).toContainText("Training Yard II");
+
+    await page.locator("button[data-retinue-deploy-toggle='retinue:e2e:veteran_militia']").click();
+    await expect(page.getByTestId("retinue-panel")).toContainText("0/2 selected");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Reserve");
+    await page.locator("button[data-retinue-deploy-toggle='retinue:e2e:veteran_militia']").click();
+    await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Deploying");
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow retinue campaign node");
     await clickReady(
@@ -1894,7 +1945,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("selected-unit-stats")).toContainText("XP 140/230 XP to Elite");
     await expect(page.locator(".stat-list")).toContainText("Kills 3");
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Bonuses +8% HP, +8% damage");
-    await expect(page.getByTestId("selected-unit-stats")).toContainText("Retinue Deployed retinue veteran");
+    await expect(page.getByTestId("selected-unit-stats")).toContainText("Veterancy Deployed retinue veteran");
   });
 
   test("known rival state previews, resolves, and persists after a commander defeat @hosted-deep-meta", async ({ page }) => {

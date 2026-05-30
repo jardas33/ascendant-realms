@@ -91,6 +91,7 @@ const BASE_CAMPAIGN = {
   activeModifierIds: [],
   strongholdUpgradeRanks: {},
   retinueUnits: [],
+  retinueDeploymentIds: [],
   rivals: [],
   rivalTrophies: []
 };

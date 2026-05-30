@@ -88,6 +88,7 @@ export function createFallbackCampaignSave(): CampaignSaveData {
     activeModifierIds: [],
     strongholdUpgradeRanks: {},
     retinueUnits: [],
+    retinueDeploymentIds: [],
     rivals: [],
     rivalTrophies: [],
     selectedChapterId: DEFAULT_CAMPAIGN_CHAPTER_ID

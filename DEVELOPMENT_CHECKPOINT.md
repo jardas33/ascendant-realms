@@ -1,6 +1,75 @@
 # Development Checkpoint
 
-Updated: 2026-05-29 v0.57-v0.59 army veterancy and tactical feedback closeout
+Updated: 2026-05-29 v0.60-v0.62 persistent Retinue and deployment closeout
+
+## v0.60-v0.62 Persistent Retinue And Deployment Foundation - 2026-05-29
+
+Scope: turn the existing opt-in Retinue Camp into a small persistent survivor roster with explicit pre-battle deployment selection. This pass changes Retinue save normalization, campaign Retinue panel copy/actions, campaign battle launch selection, Results recruitment/continuity copy, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, a giant roster UI, permanent control groups, broad pathing/AI rewrite, global rebalance, shop/crafting, save-version bump, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `27e7f9e`, `ascendant-realms-private-playtest-27e7f9e`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26669380994` on `27e7f9e` passed Fast confidence; heavier release groups were skipped by expected push rules.
+
+Included work:
+
+- Added `docs/V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md`.
+- Added `docs/V061_PRE_BATTLE_DEPLOYMENT_SPEC.md`.
+- Added `docs/V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md`.
+- Added `docs/V060_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V061_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V062_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V062_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added eligible Retinue type validation for Militia, Ranger, and Acolyte only.
+- Added explicit five-unit Retinue roster capacity.
+- Added two-unit base deployment selection with Training Yard II adding one deployment slot.
+- Added Campaign Map Retinue deploy/reserve controls and selected/roster count copy.
+- Added persistent Retinue `battlesSurvived` and `missionsDeployed` counters.
+- Added Results continuity summary for deployed, survived, and lost Retinue units.
+- Preserved normal trained-unit veterancy as battle-only unless explicitly added to the Retinue.
+- Updated package metadata and validation to require the v0.60-v0.62 docs.
+
+Save format:
+
+- No save-version bump.
+- Added backward-compatible `campaign.retinueDeploymentIds`.
+- Added optional Retinue counters: `battlesSurvived` and `missionsDeployed`.
+- Existing saves without Retinue fields load with an empty roster and no selected deployment.
+- Existing saves with older Retinue entries but no deployment field default to first active eligible Retinue units up to the cap.
+- Invalid Retinue unit types, unknown ids, duplicate ids, and stale deployment ids normalize safely.
+- Existing campaign, replay, reward, relic, skill, inventory, equipment, control-group, Patrol, and Tutorial no-reward state remains valid.
+
+Verification:
+
+```text
+Focused Retinue/save/results/package Vitest passes PASS.
+npm test PASS, 80 files / 603 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+Focused hosted Retinue proxy PASS, 2 tests, after rebuilding production dist.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke NON-PASS first attempt, timed out after 5 minutes with no summary; clean rerun PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 28 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run test:e2e:release:shard1of3 NON-PASS, timed out after 20 minutes with no summary.
+npm run test:e2e:release:shard2of3 PASS, 34 tests.
+npm run test:e2e:release:shard3of3 PASS, 14 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-27e7f9e-dirty` generated.
+npm run verify:playtest-package PASS, 169 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Interaction note: no force-click or DOM fallback was introduced for canvas/world clicks.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.57-v0.59 Army Veterancy And Tactical Feedback Foundation - 2026-05-29
 

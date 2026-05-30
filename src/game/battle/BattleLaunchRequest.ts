@@ -5,6 +5,7 @@ import type {
   EnemyAIPersonalityId,
   RewardTableDefinition
 } from "../core/GameTypes";
+import { isRetinueEligibleUnitTypeId } from "../core/RetinueRules";
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
 import { DEFAULT_AI_PERSONALITY_ID, isAIPersonalityId } from "../data/aiPersonalities";
 import { DEFAULT_BATTLE_DIFFICULTY, isBattleDifficulty } from "../data/battlePacing";
@@ -283,6 +284,7 @@ function sanitizeLaunchRetinueUnits(value: unknown): RetinueUnitSaveData[] {
         typeof entry.retinueUnitId !== "string" ||
         typeof entry.unitTypeId !== "string" ||
         !UNIT_BY_ID[entry.unitTypeId] ||
+        !isRetinueEligibleUnitTypeId(entry.unitTypeId) ||
         !isUnitVeterancyRankId(entry.rank) ||
         seen.has(entry.retinueUnitId)
       ) {

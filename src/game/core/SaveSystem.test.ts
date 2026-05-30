@@ -200,7 +200,9 @@ describe("calculateLevelFromXp", () => {
           kills: 2.4,
           sourceBattleId: "border_village",
           acquiredAt: "2026-05-02T12:00:00.000Z",
-          status: "active"
+          status: "active",
+          battlesSurvived: 2.9,
+          missionsDeployed: 1.2
         },
         {
           retinueUnitId: "retinue:border_village:unit-1",
@@ -221,8 +223,19 @@ describe("calculateLevelFromXp", () => {
           sourceBattleId: "bad",
           acquiredAt: "bad",
           status: "active"
+        },
+        {
+          retinueUnitId: "bad-worker",
+          unitTypeId: "worker",
+          rank: "veteran",
+          xp: 120,
+          kills: 2,
+          sourceBattleId: "bad",
+          acquiredAt: "bad",
+          status: "active"
         }
       ],
+      retinueDeploymentIds: ["retinue:border_village:unit-1", "missing-retinue", "retinue:border_village:unit-1"],
       rivals: [
         {
           enemyHeroId: "veyra_cinders",
@@ -310,9 +323,12 @@ describe("calculateLevelFromXp", () => {
         kills: 2,
         sourceBattleId: "border_village",
         acquiredAt: "2026-05-02T12:00:00.000Z",
-        status: "active"
+        status: "active",
+        battlesSurvived: 2,
+        missionsDeployed: 1
       }
     ]);
+    expect(normalized?.retinueDeploymentIds).toEqual(["retinue:border_village:unit-1"]);
     expect(normalized?.rivals).toEqual([
       {
         enemyHeroId: "veyra_cinders",
@@ -361,6 +377,7 @@ describe("calculateLevelFromXp", () => {
     expect(normalized?.activeModifierIds).toEqual([]);
     expect(normalized?.strongholdUpgradeRanks).toEqual({});
     expect(normalized?.retinueUnits).toEqual([]);
+    expect(normalized?.retinueDeploymentIds).toEqual([]);
     expect(normalized?.rivals).toEqual([]);
     expect(normalized?.rivalTrophies).toEqual([]);
     expect(normalized?.selectedChapterId).toBe("border_marches");
@@ -745,6 +762,7 @@ describe("save version migration", () => {
     expect(migrated?.campaign.townServiceClaimedIds).toEqual([]);
     expect(migrated?.campaign.townServiceUseCounts).toEqual({});
     expect(migrated?.campaign.strongholdUpgradeRanks).toEqual({});
+    expect(migrated?.campaign.retinueDeploymentIds).toEqual([]);
     expect(migrated?.settings).toEqual(DEFAULT_SETTINGS);
     expect(migrated?.statistics).toEqual({});
   });
@@ -821,15 +839,19 @@ describe("save version migration", () => {
           kills: 3,
           sourceBattleId: "border_village",
           acquiredAt: "2026-05-02T12:00:00.000Z",
-          status: "active" as const
+          status: "active" as const,
+          battlesSurvived: 1,
+          missionsDeployed: 0
         }
-      ]
+      ],
+      retinueDeploymentIds: ["retinue:border_village:unit-1"]
     };
 
     expect(SaveSystem.saveGame(hero, campaign)).toBe(true);
     const loaded = SaveSystem.load();
 
     expect(loaded?.campaign.retinueUnits).toEqual(campaign.retinueUnits);
+    expect(loaded?.campaign.retinueDeploymentIds).toEqual(["retinue:border_village:unit-1"]);
   });
 
   it("saves and loads rival state and trophy records through campaign data", () => {

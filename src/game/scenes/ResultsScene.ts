@@ -167,7 +167,7 @@ export class ResultsScene extends Phaser.Scene {
     }
     const result = addVeteranToRetinue(save.campaign, entry, retinueSourceBattleId(this.dataSnapshot));
     this.status = result.ok
-      ? `${result.retinueUnit?.name ?? entry.unitName} joined the retinue.`
+      ? `${result.retinueUnit?.name ?? entry.unitName} joined the retinue. Deployment can be changed on the Campaign Map.`
       : result.reason ?? "That veteran could not join the retinue.";
     if (result.ok) {
       SaveSystem.saveGame(this.dataSnapshot.heroSave, result.campaign);

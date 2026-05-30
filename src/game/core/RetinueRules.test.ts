@@ -8,6 +8,8 @@ import {
   getRetinueCapacity,
   retinueDeploymentUnits,
   retinueEligibilityReason,
+  selectedRetinueUnitIds,
+  toggleRetinueDeployment,
   updateRetinueAfterBattle
 } from "./RetinueRules";
 import type { UnitVeterancySummaryEntry } from "./GameTypes";
@@ -51,9 +53,13 @@ describe("RetinueRules", () => {
 
     expect(getRetinueCapacityBreakdown(campaign)).toMatchObject({
       activeCount: 0,
-      capacity: 3,
-      baseCapacity: 2,
-      trainingYardBonus: 1
+      capacity: 5,
+      rosterCapacity: 5,
+      baseRosterCapacity: 5,
+      deploymentCount: 0,
+      deploymentCapacity: 3,
+      baseDeploymentCapacity: 2,
+      trainingYardDeploymentBonus: 1
     });
     expect(retinueEligibilityReason({ ...veteranMilitia, rank: "recruit", rankName: "Recruit" })).toBe(
       "Not eligible: needs Seasoned rank or better."
@@ -61,30 +67,39 @@ describe("RetinueRules", () => {
     expect(retinueEligibilityReason({ ...veteranMilitia, survivedBattle: false })).toBe(
       "Not eligible: did not survive the battle."
     );
+    expect(retinueEligibilityReason({ ...veteranMilitia, unitTypeId: "worker", unitName: "Worker" })).toBe(
+      "Not eligible: only Militia, Rangers, and Acolytes can join the retinue."
+    );
     expect(retinueEligibilityReason(veteranMilitia)).toBe("Eligible: survived at Seasoned rank or better.");
     expect(formatRetinueDeploymentLabel(addVeteranToRetinue(createFallbackCampaignSave(), veteranMilitia, "border_village").campaign.retinueUnits[0])).toBe(
       "Veteran Militia"
     );
   });
 
-  it("enforces capacity and Training Yard II capacity bonus", () => {
-    const campaign = {
-      ...createFallbackCampaignSave(),
-      retinueUnits: [
-        { ...addVeteranToRetinue(createFallbackCampaignSave(), veteranMilitia, "a").campaign.retinueUnits[0] },
-        { ...addVeteranToRetinue(createFallbackCampaignSave(), { ...veteranMilitia, unitInstanceId: "unit-2" }, "b").campaign.retinueUnits[0] }
-      ]
-    };
+  it("enforces roster capacity separately from deployment capacity", () => {
+    let campaign = createFallbackCampaignSave();
+    for (let index = 1; index <= 5; index += 1) {
+      const result = addVeteranToRetinue(campaign, { ...veteranMilitia, unitInstanceId: `unit-${index}` }, `battle-${index}`);
+      expect(result.ok).toBe(true);
+      campaign = result.campaign;
+    }
 
-    expect(getRetinueCapacity(campaign)).toBe(2);
-    expect(addVeteranToRetinue(campaign, { ...veteranMilitia, unitInstanceId: "unit-3" }, "c").ok).toBe(false);
+    expect(getRetinueCapacity(campaign)).toBe(5);
+    expect(campaign.retinueUnits).toHaveLength(5);
+    expect(retinueDeploymentUnits(campaign)).toHaveLength(2);
+    expect(addVeteranToRetinue(campaign, { ...veteranMilitia, unitInstanceId: "unit-6" }, "battle-6")).toMatchObject({
+      ok: false,
+      reason: "Retinue roster is full."
+    });
 
     const upgraded = {
       ...campaign,
       strongholdUpgradeRanks: { training_yard_ii: 1 }
     };
-    expect(getRetinueCapacity(upgraded)).toBe(3);
-    expect(addVeteranToRetinue(upgraded, { ...veteranMilitia, unitInstanceId: "unit-3" }, "c").ok).toBe(true);
+    expect(retinueDeploymentUnits(upgraded)).toHaveLength(2);
+    const toggled = toggleRetinueDeployment(upgraded, upgraded.retinueUnits[2].retinueUnitId);
+    expect(toggled.ok).toBe(true);
+    expect(retinueDeploymentUnits(toggled.campaign)).toHaveLength(3);
   });
 
   it("updates survivor progress and removes dead retinue units after battle", () => {
@@ -107,16 +122,37 @@ describe("RetinueRules", () => {
     });
 
     expect(updated.retinueUnits[0]).toMatchObject({ rank: "elite", xp: 190, kills: 4 });
+    expect(updated.retinueUnits[0]).toMatchObject({ battlesSurvived: 2, missionsDeployed: 1 });
 
     const removed = updateRetinueAfterBattle(updated, undefined, [existing.retinueUnitId]);
     expect(removed.retinueUnits).toEqual([]);
+    expect(removed.retinueDeploymentIds).toEqual([]);
   });
 
-  it("dismisses and deploys only active units up to capacity", () => {
+  it("dismisses and deploys only selected active units up to capacity", () => {
     const first = addVeteranToRetinue(createFallbackCampaignSave(), veteranMilitia, "border_village").campaign;
     const second = addVeteranToRetinue(first, { ...veteranMilitia, unitInstanceId: "unit-2" }, "old_stone_road").campaign;
+    const third = addVeteranToRetinue(second, { ...veteranMilitia, unitInstanceId: "unit-3" }, "watchtower_ridge").campaign;
 
-    expect(retinueDeploymentUnits(second).map((unit) => unit.unitTypeId)).toEqual(["militia", "militia"]);
-    expect(dismissRetinueUnit(second, second.retinueUnits[0].retinueUnitId).retinueUnits).toHaveLength(1);
+    expect(retinueDeploymentUnits(third).map((unit) => unit.retinueUnitId)).toEqual([
+      third.retinueUnits[0].retinueUnitId,
+      third.retinueUnits[1].retinueUnitId
+    ]);
+    expect(toggleRetinueDeployment(third, third.retinueUnits[2].retinueUnitId)).toMatchObject({
+      ok: false,
+      reason: "Retinue deployment cap reached."
+    });
+    const reserved = toggleRetinueDeployment(third, third.retinueUnits[0].retinueUnitId);
+    expect(reserved.ok).toBe(true);
+    expect(selectedRetinueUnitIds(reserved.campaign)).toEqual([third.retinueUnits[1].retinueUnitId]);
+    const deployed = toggleRetinueDeployment(reserved.campaign, third.retinueUnits[2].retinueUnitId);
+    expect(deployed.ok).toBe(true);
+    expect(retinueDeploymentUnits(deployed.campaign).map((unit) => unit.retinueUnitId)).toEqual([
+      third.retinueUnits[1].retinueUnitId,
+      third.retinueUnits[2].retinueUnitId
+    ]);
+    const dismissed = dismissRetinueUnit(deployed.campaign, third.retinueUnits[1].retinueUnitId);
+    expect(dismissed.retinueUnits).toHaveLength(2);
+    expect(dismissed.retinueDeploymentIds).toEqual([third.retinueUnits[2].retinueUnitId]);
   });
 });

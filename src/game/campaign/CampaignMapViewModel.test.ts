@@ -668,19 +668,27 @@ describe("campaign map presentation helpers", () => {
           kills: 3,
           sourceBattleId: "old_stone_road",
           acquiredAt: "2026-05-02T12:00:00.000Z",
-          status: "active"
+          status: "active",
+          battlesSurvived: 2,
+          missionsDeployed: 1
         }
-      ]
+      ],
+      retinueDeploymentIds: ["retinue:test:militia"]
     });
 
     const html = renderRetinuePanel(campaign);
 
-    expect(html).toContain("1/3 active");
+    expect(html).toContain("1/5 roster");
+    expect(html).toContain("1/3 selected");
     expect(html).toContain("Training Yard II");
-    expect(html).toContain("+1 capacity active");
+    expect(html).toContain("+1 deployment slot");
     expect(html).toContain("Retinue death is permanent in V1");
+    expect(html).toContain("Deploying");
     expect(html).toContain("Veteran Militia");
+    expect(html).toContain("Frontline");
     expect(html).toContain("140/230 XP to Elite");
+    expect(html).toContain("2 survived / 1 deployed.");
+    expect(html).toContain("Reserve");
     expect(html).toContain("Dismiss from Retinue");
   });
 });

@@ -237,6 +237,16 @@ describe("BattleLaunchRequest", () => {
           sourceBattleId: "bad",
           acquiredAt: "bad",
           status: "active"
+        },
+        {
+          retinueUnitId: "worker-not-retinue",
+          unitTypeId: "worker",
+          rank: "elite",
+          xp: 200,
+          kills: 4,
+          sourceBattleId: "bad",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
         }
       ]
     });

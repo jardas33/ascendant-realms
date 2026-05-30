@@ -89,6 +89,7 @@ export async function seedPostAshenCampaign(page: Page, options: SeedPostAshenOp
             activeModifierIds: [],
             strongholdUpgradeRanks: {},
             retinueUnits: [],
+            retinueDeploymentIds: [],
             rivals: [],
             rivalTrophies: options.includeMalrecTrophy === true
               ? [
@@ -179,6 +180,7 @@ export async function seedPostCinderfenCrossingCampaign(page: Page): Promise<voi
             activeModifierIds: [],
             strongholdUpgradeRanks: {},
             retinueUnits: [],
+            retinueDeploymentIds: [],
             rivals: [],
             rivalTrophies: [],
             selectedChapterId: "cinderfen_road",
@@ -290,6 +292,7 @@ export async function seedCompletedCinderfenRouteCampaign(page: Page): Promise<v
                 status: "active"
               }
             ],
+            retinueDeploymentIds: ["retinue:e2e:cinderfen_militia", "retinue:e2e:cinderfen_ranger"],
             rivals: [
               {
                 enemyHeroId: "captain_malrec",

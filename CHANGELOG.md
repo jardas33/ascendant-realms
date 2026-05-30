@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.60-v0.62 Persistent Retinue And Deployment Foundation - 2026-05-29
+
+This checkpoint turns the existing opt-in Retinue Camp into a small persistent survivor roster with explicit pre-battle deployment selection. No maps, factions, runtime art/assets, save-version bump, giant roster UI, permanent control groups, shop/crafting, broad AI/pathing rewrite, global rebalance, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md`.
+- Added `docs/V061_PRE_BATTLE_DEPLOYMENT_SPEC.md`.
+- Added `docs/V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md`.
+- Added `docs/V060_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V061_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V062_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V062_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added eligible Retinue validation for Militia, Ranger, and Acolyte only.
+- Added explicit Retinue roster capacity and separate deployment selection.
+- Added `retinueDeploymentIds` save normalization and Campaign Map deploy/reserve toggles.
+- Added Retinue survival/deployment counters and Results survived/lost continuity copy.
+- Updated Results Retinue recruitment copy to distinguish roster capacity, deployment selected count, eligibility, and full-roster state.
+- Updated hosted Retinue proxy coverage for recruitment, full roster, deployment toggles, and battle spawn.
+- Updated package metadata and validation to name `v0.60-v0.62 persistent Retinue and deployment foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for persistent Retinue roster/deployment choice.
+- Gameplay numbers changed: Retinue roster/deployment caps only; no global balance changes.
+- Save format changed: no save-version bump; added backward-compatible `retinueDeploymentIds` plus optional Retinue counters.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no Retinue recruitment/deployment complexity.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: focused Retinue/save/results/package tests, `npm test` with 80 files / 603 tests, content validation, art-intake validation, production build with the known Vite Phaser chunk-size warning, focused hosted Retinue proxy with 2 tests, fast smoke with 8 tests, full smoke rerun with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 28 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, local release shards 2/3 and 3/3 with 34 and 14 tests, dirty pre-commit package generation, package verification with 169 checks, and `git diff --check`.
+- Non-pass evidence: first full-smoke attempt timed out after 5 minutes with no summary before the clean rerun passed; local release shard 1/3 timed out after 20 minutes with no summary. Required hosted lanes passed.
+
 ## v0.57-v0.59 Army Veterancy And Tactical Feedback Foundation - 2026-05-29
 
 This checkpoint adds small battle-only army veterancy, unit-role identity copy, and tactical feedback polish. No maps, factions, runtime art/assets, save migration, permanent army roster, broad pathing rewrite, global rebalance, huge unit stat overhaul, formation editor, Patrol rewrite, or canvas/world force-click behavior were added.

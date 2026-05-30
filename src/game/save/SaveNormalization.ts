@@ -1,5 +1,10 @@
 import type { BattleDifficulty, EquipmentSlot, ItemInstance, ResourceBag, ResourceKey } from "../core/GameTypes";
 import {
+  RETINUE_BASE_DEPLOYMENT_CAPACITY,
+  RETINUE_TRAINING_YARD_II_DEPLOYMENT_BONUS,
+  isRetinueEligibleUnitTypeId
+} from "../core/RetinueRules";
+import {
   isRivalDisposition,
   isRivalLastOutcome,
   isRivalModifierId
@@ -134,6 +139,8 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
   const activeModifierIds = arrayOfStrings(value.activeModifierIds)
     ? value.activeModifierIds.filter(isCampaignModifierId)
     : [];
+  const strongholdUpgradeRanks = normalizeStrongholdUpgradeRanks(value.strongholdUpgradeRanks, value.strongholdUpgradeIds);
+  const retinueUnits = normalizeRetinueUnits(value.retinueUnits);
   return {
     started: value.started,
     difficulty,
@@ -148,8 +155,9 @@ export function normalizeCampaignSaveData(value: unknown): CampaignSaveData | nu
     townServiceClaimedIds: [...new Set(townServiceClaimedIds)],
     townServiceUseCounts: normalizeStringNumberRecord(value.townServiceUseCounts),
     activeModifierIds: [...new Set(activeModifierIds)],
-    strongholdUpgradeRanks: normalizeStrongholdUpgradeRanks(value.strongholdUpgradeRanks, value.strongholdUpgradeIds),
-    retinueUnits: normalizeRetinueUnits(value.retinueUnits),
+    strongholdUpgradeRanks,
+    retinueUnits,
+    retinueDeploymentIds: normalizeRetinueDeploymentIds(value.retinueDeploymentIds, retinueUnits, strongholdUpgradeRanks),
     rivals: normalizeRivalStates(value.rivals),
     rivalTrophies: normalizeRivalTrophies(value.rivalTrophies),
     selectedChapterId: isCampaignChapterId(value.selectedChapterId) ? value.selectedChapterId : DEFAULT_CAMPAIGN_CHAPTER_ID,
@@ -309,6 +317,26 @@ function normalizeRetinueUnits(value: unknown): RetinueUnitSaveData[] {
     });
 }
 
+function normalizeRetinueDeploymentIds(
+  value: unknown,
+  retinueUnits: RetinueUnitSaveData[],
+  strongholdUpgradeRanks: Record<string, number>
+): string[] {
+  const activeIds = retinueUnits.filter((unit) => unit.status === "active").map((unit) => unit.retinueUnitId);
+  const activeIdSet = new Set(activeIds);
+  const source = arrayOfStrings(value) ? value : activeIds;
+  const deploymentCap =
+    RETINUE_BASE_DEPLOYMENT_CAPACITY +
+    ((strongholdUpgradeRanks.training_yard_ii ?? 0) > 0 ? RETINUE_TRAINING_YARD_II_DEPLOYMENT_BONUS : 0);
+  const selected: string[] = [];
+  source.forEach((unitId) => {
+    if (activeIdSet.has(unitId) && !selected.includes(unitId)) {
+      selected.push(unitId);
+    }
+  });
+  return selected.slice(0, deploymentCap);
+}
+
 function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
   if (!isRecord(value)) {
     return undefined;
@@ -318,6 +346,7 @@ function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
     !value.retinueUnitId.trim() ||
     typeof value.unitTypeId !== "string" ||
     !UNIT_BY_ID[value.unitTypeId] ||
+    !isRetinueEligibleUnitTypeId(value.unitTypeId) ||
     !isUnitVeterancyRankId(value.rank)
   ) {
     return undefined;
@@ -331,7 +360,9 @@ function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
     kills: clampInteger(value.kills, 0),
     sourceBattleId: typeof value.sourceBattleId === "string" && value.sourceBattleId.trim() ? value.sourceBattleId : "unknown",
     acquiredAt: typeof value.acquiredAt === "string" ? value.acquiredAt : new Date().toISOString(),
-    status: value.status === "wounded" ? "wounded" : "active"
+    status: value.status === "wounded" ? "wounded" : "active",
+    battlesSurvived: clampInteger(value.battlesSurvived, 0),
+    missionsDeployed: clampInteger(value.missionsDeployed, 0)
   };
 }
 

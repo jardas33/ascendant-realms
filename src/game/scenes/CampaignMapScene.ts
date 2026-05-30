@@ -40,7 +40,7 @@ import {
 import { renderRetinuePanel } from "../campaign/RetinuePanel";
 import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
-import { dismissRetinueUnit, retinueDeploymentUnits } from "../core/RetinueRules";
+import { dismissRetinueUnit, retinueDeploymentUnits, toggleRetinueDeployment } from "../core/RetinueRules";
 
 interface CampaignMapData {
   heroSave?: HeroSaveData;
@@ -112,6 +112,12 @@ export class CampaignMapScene extends Phaser.Scene {
       const retinueDismissButton = target.closest<HTMLButtonElement>("button[data-retinue-dismiss]");
       if (retinueDismissButton) {
         this.dismissRetinueUnit(retinueDismissButton.dataset.retinueDismiss ?? "");
+        return;
+      }
+
+      const retinueDeployButton = target.closest<HTMLButtonElement>("button[data-retinue-deploy-toggle]");
+      if (retinueDeployButton) {
+        this.toggleRetinueDeployment(retinueDeployButton.dataset.retinueDeployToggle ?? "");
         return;
       }
 
@@ -199,6 +205,21 @@ export class CampaignMapScene extends Phaser.Scene {
     }
     this.campaignSave = dismissRetinueUnit(this.campaignSave, retinueUnitId);
     this.message = "Retinue unit dismissed.";
+    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.render();
+  }
+
+  private toggleRetinueDeployment(retinueUnitId: string): void {
+    if (!retinueUnitId) {
+      return;
+    }
+    const result = toggleRetinueDeployment(this.campaignSave, retinueUnitId);
+    this.campaignSave = result.campaign;
+    this.message = result.ok
+      ? result.selected
+        ? "Retinue unit selected for deployment."
+        : "Retinue unit moved to reserve."
+      : result.reason ?? "Retinue deployment could not change.";
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
     this.render();
   }

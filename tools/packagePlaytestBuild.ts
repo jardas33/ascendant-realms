@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.57-v0.59 army veterancy and tactical feedback foundation";
+const CHECKPOINT = "v0.60-v0.62 persistent Retinue and deployment foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -187,6 +187,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V058_IMPLEMENTATION_REPORT.md", join(packageDir, "V058_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V059_IMPLEMENTATION_REPORT.md", join(packageDir, "V059_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V059_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V059_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md", join(packageDir, "V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md"));
+  await copyMarkdown("docs/V061_PRE_BATTLE_DEPLOYMENT_SPEC.md", join(packageDir, "V061_PRE_BATTLE_DEPLOYMENT_SPEC.md"));
+  await copyMarkdown("docs/V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md", join(packageDir, "V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md"));
+  await copyMarkdown("docs/V060_IMPLEMENTATION_REPORT.md", join(packageDir, "V060_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V061_IMPLEMENTATION_REPORT.md", join(packageDir, "V061_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V062_IMPLEMENTATION_REPORT.md", join(packageDir, "V062_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V062_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V062_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -272,7 +279,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.57-v0.59 army veterancy and tactical feedback retest, start with V057_ARMY_VETERANCY_FOUNDATION_SPEC.md, V058_UNIT_ROLE_IDENTITY_SPEC.md, V059_TACTICAL_COMBAT_FEEDBACK_SPEC.md, V057_IMPLEMENTATION_REPORT.md, V058_IMPLEMENTATION_REPORT.md, V059_IMPLEMENTATION_REPORT.md, and V059_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.51-v0.56 UX/control docs nearby as regression context. Focus on: Militia/Ranger/Acolyte/Worker/Hero role copy, selected unit rank/XP/bonus copy, battle-only veterancy wording, Results notable veteran summary, Ctrl+1-5 control group assignment/recall with veteran units, Patrol start/cancel, Worker build/repair/resource-site regression, hero XP/skill/relic regression, Tutorial no-save/no-reward protection, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, permanent army roster expansion, enemy veterancy, a formation editor, enemy formation AI, broad AI/pathing rewrite, or final VFX.
+For the v0.60-v0.62 Retinue retest, start with V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md, V061_PRE_BATTLE_DEPLOYMENT_SPEC.md, V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md, V060_IMPLEMENTATION_REPORT.md, V061_IMPLEMENTATION_REPORT.md, V062_IMPLEMENTATION_REPORT.md, and V062_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.57-v0.59 army veterancy docs nearby as regression context. Focus on: adding eligible Seasoned or better Militia/Ranger/Acolyte survivors from Results, roster capacity versus deployment capacity, Campaign Map deploy/reserve toggles, selected Retinue units spawning near the hero, Retinue survivor/loss Results copy, veteran counters updating after campaign battles, Worker/Hero/building/enemy ineligibility, replay/Tutorial protection, control group/Patrol regression, hero XP/skill/relic regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, a giant roster UI, permanent control groups, a formation editor, enemy formation AI, broad AI/pathing rewrite, or final VFX.
 
 ## Known Warning
 

@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.57-v0.59 army veterancy and tactical feedback foundation",
+          checkpoint: "v0.60-v0.62 persistent Retinue and deployment foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -208,6 +208,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V058_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Unit role identity implementation report" },
       { path: "V059_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Tactical feedback implementation report" },
       { path: "V059_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.59 retest" },
+      { path: "V060_RETINUE_PERSISTENCE_FOUNDATION_SPEC.md", sizeBytes: 20, textContent: "Retinue persistence spec" },
+      { path: "V061_PRE_BATTLE_DEPLOYMENT_SPEC.md", sizeBytes: 20, textContent: "Retinue deployment spec" },
+      { path: "V062_SURVIVOR_CONTINUITY_AND_RESULTS_SPEC.md", sizeBytes: 20, textContent: "Retinue survivor continuity spec" },
+      { path: "V060_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue persistence report" },
+      { path: "V061_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue deployment report" },
+      { path: "V062_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue survivor continuity report" },
+      { path: "V062_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.62 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
