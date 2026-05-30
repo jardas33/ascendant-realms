@@ -21,6 +21,7 @@ import type {
   CampaignModifierDefinition,
   EnemyDoctrineDefinition,
   EnemyEliteSquadDefinition,
+  TacticalPlanDefinition,
   UpgradeDefinition
 } from "../core/GameTypes";
 import { ABILITIES } from "./abilities";
@@ -42,6 +43,7 @@ import { ORIGINS } from "./origins";
 import { REWARD_TABLES } from "./rewards";
 import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { SKILL_NODES } from "./skillTrees";
+import { TACTICAL_PLANS } from "./tacticalPlans";
 import { UNITS } from "./units";
 import { UNIT_ROLE_IDENTITIES, type UnitRoleIdentity } from "./unitRoles";
 import { UPGRADES } from "./upgrades";
@@ -67,6 +69,7 @@ export const ENEMY_HERO_ABILITY_BY_ID: Record<string, EnemyHeroAbilityDefinition
 export const ENEMY_DOCTRINE_BY_ID: Record<string, EnemyDoctrineDefinition> = toIndex(ENEMY_DOCTRINES);
 export const ENEMY_ELITE_SQUAD_BY_ID: Record<string, EnemyEliteSquadDefinition> = toIndex(ENEMY_ELITE_SQUADS);
 export const ENEMY_PRESSURE_PLAN_BY_ID: Record<string, EnemyStrategicPressurePlanDefinition> = toIndex(ENEMY_PRESSURE_PLANS);
+export const TACTICAL_PLAN_BY_ID: Record<string, TacticalPlanDefinition> = toIndex(TACTICAL_PLANS);
 export const ITEM_AFFIX_BY_ID: Record<string, ItemAffixDefinition> = toIndex(ITEM_AFFIXES);
 export const ITEM_BY_ID: Record<string, ItemDefinition> = toIndex(ITEMS);
 export const RELIC_REWARD_BY_ID: Record<string, RelicRewardDefinition> = toIndex(RELIC_REWARD_DEFINITIONS);

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.66-v0.68 enemy tactical doctrines and elite squad foundation";
+const CHECKPOINT = "v0.69-v0.71 pre-battle tactical preparation foundation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -208,6 +208,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V067_IMPLEMENTATION_REPORT.md", join(packageDir, "V067_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V068_IMPLEMENTATION_REPORT.md", join(packageDir, "V068_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V068_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V068_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V069_PRE_BATTLE_INTELLIGENCE_SPEC.md", join(packageDir, "V069_PRE_BATTLE_INTELLIGENCE_SPEC.md"));
+  await copyMarkdown("docs/V070_TACTICAL_PLAN_SELECTION_SPEC.md", join(packageDir, "V070_TACTICAL_PLAN_SELECTION_SPEC.md"));
+  await copyMarkdown("docs/V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md", join(packageDir, "V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md"));
+  await copyMarkdown("docs/V069_IMPLEMENTATION_REPORT.md", join(packageDir, "V069_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V070_IMPLEMENTATION_REPORT.md", join(packageDir, "V070_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V071_IMPLEMENTATION_REPORT.md", join(packageDir, "V071_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V071_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V071_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -293,7 +300,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.66-v0.68 enemy doctrine retest, start with V066_ENEMY_TACTICAL_DOCTRINES_SPEC.md, V067_ELITE_SQUAD_FOUNDATION_SPEC.md, V068_COUNTERPLAY_READABILITY_SPEC.md, V066_IMPLEMENTATION_REPORT.md, V067_IMPLEMENTATION_REPORT.md, V068_IMPLEMENTATION_REPORT.md, and V068_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.63-v0.65 Retinue recovery docs nearby as baseline context. Focus on: Raider site/Worker pressure readability, Fortress defensive posture readability, Hunter hero/Retinue pressure gating, Warband late-push warning, elite squad labels and modest stat bumps, Results after-action notes, Retinue/reinforcement survivability, Worker/site command regression, control group/Patrol regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant quest system, a giant roster UI, permanent control groups, a formation editor, broad AI/pathing rewrite, enemy formation rewrite, or final VFX.
+For the v0.69-v0.71 tactical preparation retest, start with V069_PRE_BATTLE_INTELLIGENCE_SPEC.md, V070_TACTICAL_PLAN_SELECTION_SPEC.md, V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md, V069_IMPLEMENTATION_REPORT.md, V070_IMPLEMENTATION_REPORT.md, V071_IMPLEMENTATION_REPORT.md, and V071_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.66-v0.68 enemy doctrine docs and v0.63-v0.65 Retinue recovery docs nearby as baseline context. Focus on: campaign briefing doctrine intel, elite risk, tactical plan recommendation/selection, Guarded Advance Retinue cost support, Resource Push starting resources, Champion Hunt hero Mana readiness, battle-start active-plan copy, Results tactical-plan after-action copy, Tutorial/no-reward protection, replay safety, Retinue/reinforcement survivability, Worker/site command regression, control group/Patrol regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant strategy system, a giant roster UI, permanent control groups, a formation editor, broad AI/pathing rewrite, enemy formation rewrite, or final VFX.
 
 ## Known Warning
 

@@ -61,6 +61,23 @@ describe("BattleRuntime", () => {
     expect(runtime.resources.player.aether).toBe(testMap.scenario.startingResources.player.aether + 30);
   });
 
+  it("applies Resource Push tactical plan starting resources at launch", () => {
+    const launch = requireBattleLaunch(
+      createSkirmishBattleLaunchRequest(testHeroSave, {
+        mode: "campaign_node",
+        campaignNodeId: "border_village",
+        mapId: testMap.id,
+        sourceId: "runtime_test",
+        tacticalPlanId: "resource_push"
+      })
+    );
+    const runtime = createBattleRuntime({ launch });
+
+    expect(runtime.setup.tacticalPlanId).toBe("resource_push");
+    expect(runtime.resources.player.crowns).toBe(testMap.scenario.startingResources.player.crowns + 35);
+    expect(runtime.resources.player.stone).toBe(testMap.scenario.startingResources.player.stone + 20);
+  });
+
   it("keeps objective resolution compatible with current skirmish rules", () => {
     expect(evaluateBattleObjectives({ playerBaseAlive: true, enemyBaseAlive: true })).toBeUndefined();
     expect(evaluateBattleObjectives({ playerBaseAlive: true, enemyBaseAlive: false })).toBe("victory");

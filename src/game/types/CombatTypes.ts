@@ -9,6 +9,8 @@ export type EnemyAIPersonalityId = "balanced_warlord" | "raider_rush" | "fortres
 
 export type EnemyDoctrineId = "raider" | "fortress" | "hunter" | "warband";
 
+export type TacticalPlanId = "guarded_advance" | "resource_push" | "champion_hunt";
+
 export type EnemyHeroAbilityId = "ember_strike" | "rally_raiders" | "hexfire_bolt" | "hold_the_line";
 
 export type EnemyHeroArchetype = "melee_commander" | "hexfire_seer" | "fortress_commander";
@@ -137,6 +139,20 @@ export interface EnemyEliteSquadDefinition {
   maxHpMultiplier: number;
   damageMultiplier: number;
   armorBonus: number;
+}
+
+export interface TacticalPlanDefinition {
+  id: TacticalPlanId;
+  name: string;
+  shortLabel: string;
+  description: string;
+  effectSummary: string;
+  hudSummary: string;
+  afterActionSummary: string;
+  recommendedDoctrineIds: EnemyDoctrineId[];
+  recommendedCounterplay: string;
+  tags: string[];
+  launchModifierId: string;
 }
 
 export type EnemyHeroAbilityEffectDefinition =

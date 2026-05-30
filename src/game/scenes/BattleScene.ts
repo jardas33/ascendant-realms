@@ -32,6 +32,7 @@ import { ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { DEFAULT_MAP_ID, MAPS } from "../data/maps";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
 import { getStrongholdBattleEffects, strongholdUpgradeForModifier } from "../data/strongholdUpgrades";
+import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import { TUTORIALS } from "../data/tutorials";
 import {
   UNIT_VETERANCY_XP_RULES,
@@ -461,6 +462,10 @@ export class BattleScene extends Phaser.Scene {
       )
       .filter((name): name is string => Boolean(name));
     const modifierText = names.length > 0 ? ` Modifiers: ${names.join(", ")}.` : "";
+    const tacticalPlan = this.launch.request.tacticalPlanId
+      ? getTacticalPlan(this.launch.request.tacticalPlanId)
+      : tacticalPlanFromLaunchModifiers(this.launch.request.modifiers);
+    const planText = tacticalPlan ? ` Tactical plan: ${tacticalPlan.name}. ${tacticalPlan.hudSummary}` : "";
     const retinueNames = (this.launch.request.mode === "campaign_node" ? this.launch.request.retinueUnits ?? [] : [])
       .map(formatRetinueDeploymentLabel);
     const retinueText = retinueNames.length > 0 ? `Retinue deployed: ${retinueNames.join(", ")}. ` : "";
@@ -485,12 +490,12 @@ export class BattleScene extends Phaser.Scene {
     });
     const eliteText = eliteSquad ? ` Elite squad possible: ${eliteSquad.name}.` : "";
     this.showMessage(
-      `${retinueText}${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${enemyHeroText}${modifierText}${doctrineText}${eliteText}`,
+      `${retinueText}${this.activeMap.name} - ${difficulty.name}. Enemy: ${enemyText}.${enemyHeroText}${modifierText}${planText}${doctrineText}${eliteText}`,
       this.hero.position.x,
       this.hero.position.y - 96,
       "#f6e27d"
     );
-    if (retinueNames.length > 0 || enemyHero || this.enemyDoctrine) {
+    if (retinueNames.length > 0 || enemyHero || this.enemyDoctrine || tacticalPlan) {
       this.statusTimer = 4.5;
     }
   }
@@ -1098,7 +1103,8 @@ export class BattleScene extends Phaser.Scene {
       alreadyUsed: this.retinueReinforcementUsed,
       commandHallAlive: Boolean(this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player")),
       resources: this.resources.player,
-      reserveUnits: this.launch.request.retinueReserveUnits ?? []
+      reserveUnits: this.launch.request.retinueReserveUnits ?? [],
+      modifiers: this.launch.request.modifiers
     });
     return {
       available: availability.ok,
@@ -1119,7 +1125,8 @@ export class BattleScene extends Phaser.Scene {
       alreadyUsed: this.retinueReinforcementUsed,
       commandHallAlive: Boolean(commandHall),
       resources: this.resources.player,
-      reserveUnits
+      reserveUnits,
+      modifiers: this.launch.request.modifiers
     });
     if (!availability.ok || !commandHall) {
       this.showMessage(`Call Retinue unavailable: ${availability.reason ?? "Unavailable"}`, undefined, undefined, "#ffd27a", {

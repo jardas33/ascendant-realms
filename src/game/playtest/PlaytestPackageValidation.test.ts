@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.66-v0.68 enemy tactical doctrines and elite squad foundation",
+          checkpoint: "v0.69-v0.71 pre-battle tactical preparation foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -229,6 +229,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V067_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Elite squad implementation report" },
       { path: "V068_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Counterplay implementation report" },
       { path: "V068_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.68 retest" },
+      { path: "V069_PRE_BATTLE_INTELLIGENCE_SPEC.md", sizeBytes: 20, textContent: "Pre-battle intelligence spec" },
+      { path: "V070_TACTICAL_PLAN_SELECTION_SPEC.md", sizeBytes: 20, textContent: "Tactical plan selection spec" },
+      { path: "V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md", sizeBytes: 20, textContent: "Counter doctrine preparation spec" },
+      { path: "V069_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Pre-battle intelligence report" },
+      { path: "V070_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Tactical plan implementation report" },
+      { path: "V071_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Counter doctrine implementation report" },
+      { path: "V071_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.71 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

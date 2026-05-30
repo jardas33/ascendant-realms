@@ -42,6 +42,7 @@ import { validateMaps } from "./validateMaps";
 import { validateOrigins, validateResources } from "./validateResources";
 import { validateRelicRewards, validateRewardTables, validateRivalRewards } from "./validateRewards";
 import { validateStrongholdUpgrades } from "./validateStronghold";
+import { validateTacticalPlans } from "./validateTacticalPlans";
 import { validateTutorials } from "./validateTutorials";
 import { validateUnits } from "./validateUnits";
 import { validateUpgrades } from "./validateUpgrades";
@@ -100,6 +101,7 @@ export function validateContent(): string[] {
   validateAIPersonalities(errors, context);
   validateEnemyDoctrines(errors, context);
   validateEnemyEliteSquads(errors, context);
+  validateTacticalPlans(errors);
   validateCampaignModifiers(errors, context);
   validateEnemyHeroes(errors, context);
   validateEnemyPressurePlans(errors, context);

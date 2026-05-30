@@ -371,6 +371,12 @@ describe("results scene helpers", () => {
 
   it("renders enemy doctrine and elite squad after-action summary", () => {
     const data = createResultsData({
+      launchRequest: createSkirmishBattleLaunchRequest(createNewHeroSave("Aster", "warlord", "exiled_noble"), {
+        mode: "campaign_node",
+        campaignNodeId: "ashen_outpost",
+        mapId: "ashen_outpost",
+        tacticalPlanId: "champion_hunt"
+      }),
       stats: {
         ...baseStats(),
         enemyDoctrineId: "fortress",
@@ -388,6 +394,9 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Attack economy first");
     expect(summaryHtml).toContain("Cinder Iron Guard");
     expect(summaryHtml).toContain("Elite defeated");
+    expect(summaryHtml).toContain("Tactical Plan");
+    expect(summaryHtml).toContain("Champion Hunt");
+    expect(summaryHtml).toContain("Hero starts with +6% maximum Mana");
     expect(summaryHtml).toContain("battle-only readability signals");
   });
 

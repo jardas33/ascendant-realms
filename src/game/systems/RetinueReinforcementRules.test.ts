@@ -3,6 +3,7 @@ import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import {
   RETINUE_REINFORCEMENT_COST,
   evaluateRetinueReinforcement,
+  retinueReinforcementCost,
   selectRetinueReinforcementUnit
 } from "./RetinueReinforcementRules";
 
@@ -34,6 +35,22 @@ describe("RetinueReinforcementRules", () => {
       readyReserveCount: 1
     });
     expect(selectRetinueReinforcementUnit([readyReserve])?.retinueUnitId).toBe("retinue:test:ranger");
+  });
+
+  it("uses Guarded Advance to modestly reduce the one-use reinforcement cost", () => {
+    const result = evaluateRetinueReinforcement({
+      mode: "campaign_node",
+      resources: { crowns: 60, stone: 0, iron: 0, aether: 0 },
+      reserveUnits: [readyReserve],
+      commandHallAlive: true,
+      modifiers: [{ id: "tactical_guarded_advance" }]
+    });
+
+    expect(retinueReinforcementCost([{ id: "tactical_guarded_advance" }])).toEqual({ crowns: 60 });
+    expect(result).toMatchObject({
+      ok: true,
+      cost: { crowns: 60 }
+    });
   });
 
   it("blocks tutorial, repeat use, destroyed base, insufficient Crowns, and recovering reserves", () => {

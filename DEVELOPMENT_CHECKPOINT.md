@@ -1,6 +1,69 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.66-v0.68 enemy tactical doctrines and elite squad closeout
+Updated: 2026-05-30 v0.69-v0.71 pre-battle tactical preparation closeout
+
+## v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
+
+Scope: turn enemy doctrine readability into actionable pre-battle preparation using existing campaign, Retinue, hero, relic, skill, mission modifier, enemy doctrine, elite squad, and battle-launch systems. This pass changes tactical-plan data/validation, campaign briefing copy, session-only plan selection, launch modifiers, battle HUD copy, Results after-action copy, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, save migration, new persistent save fields, broad AI/pathing rewrite, shop/crafting, formation editor, global rebalance, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `b89e6c3`, `ascendant-realms-private-playtest-b89e6c3`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26675513313` on `b89e6c3` completed successfully.
+
+Included work:
+
+- Added `docs/V069_PRE_BATTLE_INTELLIGENCE_SPEC.md`.
+- Added `docs/V070_TACTICAL_PLAN_SELECTION_SPEC.md`.
+- Added `docs/V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md`.
+- Added `docs/V069_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V070_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Guarded Advance, Resource Push, and Champion Hunt tactical plan data plus content validation.
+- Added doctrine-to-plan recommendation helpers for Raider, Fortress, Hunter, and Warband.
+- Added campaign node pre-battle intelligence for doctrine summary, elite risk, mission modifiers, counterplay, Retinue/reinforcement reminder, hero/relic hint, and plan recommendations.
+- Added session-only tactical plan selection with safe Guarded Advance default for eligible campaign battles.
+- Added one non-stacking launch-local tactical modifier for eligible campaign battles only.
+- Added conservative effects: Guarded Advance reduces Call Retinue to 60 Crowns, Resource Push grants +35 Crowns and +20 Stone at battle start, and Champion Hunt grants +6% hero max Mana.
+- Added battle HUD plan copy and Results tactical-plan after-action summary.
+- Added hosted deep-campaign coverage for pre-battle intel, Champion Hunt selection, battle HUD propagation, and Results summary.
+- Added package validation requirements for the v0.69-v0.71 docs.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Tactical plan selection is session/launch-local and is not saved.
+- Missing or unknown tactical plan ids normalize safely at launch resolution.
+- Tutorial/no-reward routes do not receive tactical-plan modifiers or plan Results noise.
+
+Verification:
+
+```text
+Focused tactical-plan/launch/runtime/Retinue Vitest PASS, 4 files / 33 tests.
+Focused campaign/Results/content Vitest PASS, 3 files / 70 tests.
+Playtest package validation focused test PASS.
+npm test PASS, 83 files / 627 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle NON-PASS first attempt due old Retinue cost expectation; exact rerun PASS; full rerun PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+```
+
+Interaction note: no new force-click or DOM fallback was introduced for canvas/world clicks. Existing hosted lanes still log pre-existing verified pointer down/up world-click helpers and DOM helpers for HUD/menu buttons.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.66-v0.68 Enemy Tactical Doctrines And Elite Squad Foundation - 2026-05-30
 

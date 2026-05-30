@@ -7,6 +7,7 @@ import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import { ENEMY_DOCTRINE_BY_ID, ENEMY_ELITE_SQUAD_BY_ID, ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
+import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tacticalPlans";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
@@ -31,6 +32,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
           <span>Commander defeated</span><strong>${stats.enemyHeroId ? (stats.enemyHeroDefeated ? `Yes (${formatTime(stats.enemyHeroDefeatedAtSeconds ?? stats.timeSeconds)})` : "No") : "None"}</strong>
           <span>Enemy doctrine</span><strong>${escapeHtml(formatEnemyDoctrineResult(data))}</strong>
           <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
+          <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
         </div>
       </section>
       <section class="result-block">
@@ -40,10 +42,33 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     </div>
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}
+    ${renderTacticalPlanSummary(data)}
     ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
     ${renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
+  `;
+}
+
+export function renderTacticalPlanSummary(data: ResultsData): string {
+  const plan = data.launchRequest?.tacticalPlanId
+    ? getTacticalPlan(data.launchRequest.tacticalPlanId)
+    : tacticalPlanFromLaunchModifiers(data.launchRequest?.modifiers);
+  if (!plan || data.launchRequest?.mode === "tutorial") {
+    return "";
+  }
+  const doctrine = data.stats.enemyDoctrineId ? ENEMY_DOCTRINE_BY_ID[data.stats.enemyDoctrineId] : undefined;
+  return `
+    <section class="result-block wide tactical-plan-summary" data-testid="results-tactical-plan-summary">
+      <h2>Tactical Plan</h2>
+      <div class="results-grid compact">
+        <span>Selected plan</span><strong>${escapeHtml(plan.name)}</strong>
+        <span>Plan effect</span><strong>${escapeHtml(plan.effectSummary)}</strong>
+        <span>After-action note</span><strong>${escapeHtml(plan.afterActionSummary)}</strong>
+        <span>Doctrine response</span><strong>${escapeHtml(doctrine ? doctrine.counterplay : plan.recommendedCounterplay)}</strong>
+      </div>
+      <p class="quiet">Tactical plans are launch-local. They do not add save fields or stack across battles.</p>
+    </section>
   `;
 }
 
@@ -83,6 +108,16 @@ function formatEliteSquadResult(data: ResultsData): string {
     return "None";
   }
   return `${formatEliteSquadNames(eliteIds)}; defeated ${defeated}`;
+}
+
+function formatTacticalPlanResult(data: ResultsData): string {
+  if (data.launchRequest?.mode === "tutorial") {
+    return "Tutorial plan disabled";
+  }
+  const plan = data.launchRequest?.tacticalPlanId
+    ? getTacticalPlan(data.launchRequest.tacticalPlanId)
+    : tacticalPlanFromLaunchModifiers(data.launchRequest?.modifiers);
+  return plan ? `${plan.name} - ${plan.effectSummary}` : "None";
 }
 
 function formatEliteSquadNames(ids: string[]): string {

@@ -7,6 +7,7 @@ import { selectEnemyEliteSquadForBattle, shouldApplyEliteSquadToUnit } from "../
 import { getBattleDifficulty } from "../data/battlePacing";
 import { createEnemyHeroUnitDefinition, ENEMY_HERO_BY_ID } from "../data/enemyHeroes";
 import { applyStrongholdBuildingEffects, getStrongholdBattleEffects } from "../data/strongholdUpgrades";
+import { getTacticalPlanBattleEffects } from "../data/tacticalPlans";
 import { createUnitVeterancyState } from "../data/unitVeterancy";
 import { Building } from "../entities/Building";
 import { CaptureSite } from "../entities/CaptureSite";
@@ -172,10 +173,11 @@ function spawnUnit(options: {
 
 function applyHeroLaunchModifiers(hero: Hero, launch: ResolvedBattleLaunch): void {
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
+  const tacticalPlanEffects = getTacticalPlanBattleEffects(launch.request.modifiers);
   const manaMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroManaMultiplier ?? multiplier);
-  }, strongholdEffects.heroMaxManaMultiplier);
+  }, Math.max(strongholdEffects.heroMaxManaMultiplier, tacticalPlanEffects.heroMaxManaMultiplier));
   const hpMultiplier = launch.request.modifiers.reduce((multiplier, modifier) => {
     const definition = CAMPAIGN_MODIFIER_BY_ID[modifier.id];
     return Math.max(multiplier, definition?.effects.heroMaxHpMultiplier ?? multiplier);

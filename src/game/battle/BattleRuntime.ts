@@ -14,6 +14,7 @@ import { grantBattleRewards, rollBattleRewards } from "../core/HeroProgressionRu
 import { addResources, cloneResources } from "../core/MathUtils";
 import { ITEM_BY_ID } from "../data/contentIndex";
 import { getStrongholdBattleEffects } from "../data/strongholdUpgrades";
+import { getTacticalPlanBattleEffects } from "../data/tacticalPlans";
 import type { HeroSaveData } from "../save/SaveTypes";
 import type { BattleLaunchMode, ResolvedBattleLaunch } from "./BattleLaunchRequest";
 
@@ -50,6 +51,7 @@ export interface BattleSetupSnapshot {
   };
   enemyHeroId?: string;
   enemyPressurePlanId?: string;
+  tacticalPlanId?: string;
 }
 
 export interface BattleCompletionInput {
@@ -309,6 +311,7 @@ export function createInitialBattleStats(): BattleStats {
 export function createInitialBattleResources(launch: ResolvedBattleLaunch): Record<"player" | "enemy", ResourceBag> {
   const player = cloneResources(launch.map.scenario.startingResources.player);
   addResources(player, getStrongholdBattleEffects(launch.request.modifiers).startingResources);
+  addResources(player, getTacticalPlanBattleEffects(launch.request.modifiers).startingResources);
   return {
     player,
     enemy: cloneResources(launch.map.scenario.startingResources.enemy)
@@ -342,7 +345,8 @@ export function createBattleSetupSnapshot(launch: ResolvedBattleLaunch): BattleS
       enemyBase: map.scenario.objectives.enemyBaseBuildingId
     },
     enemyHeroId: request.enemyHeroId,
-    enemyPressurePlanId: request.enemyPressurePlanId
+    enemyPressurePlanId: request.enemyPressurePlanId,
+    tacticalPlanId: request.tacticalPlanId
   };
 }
 

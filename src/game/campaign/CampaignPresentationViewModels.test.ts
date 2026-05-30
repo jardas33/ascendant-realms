@@ -64,6 +64,12 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("Attack economy first");
     expect(html).toContain("Elite squad");
     expect(html).toContain("Cinder Iron Guard");
+    expect(html).toContain("Pre-battle intelligence");
+    expect(html).toContain("Tactical plan");
+    expect(html).toContain("Resource Push");
+    expect(html).toContain("Selected plan");
+    expect(html).toContain("Guarded Advance");
+    expect(html).toContain("data-tactical-plan=\"champion_hunt\"");
   });
 
   it("renders Act 1 locked reasons and onboarding hints on early campaign nodes", () => {

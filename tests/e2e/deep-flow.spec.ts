@@ -2008,6 +2008,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     const reinforcementButton = page.locator("button[data-action='retinue-reinforcement']");
     await expect(reinforcementButton).toContainText("Call Retinue");
+    await expect(reinforcementButton).toContainText("Cost: 60 Crowns");
     await expect(reinforcementButton).toContainText("Ready reserves 1/1");
     await clickBattleCommand(reinforcementButton, "deep-flow Retinue reinforcement command");
 
@@ -2024,7 +2025,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       };
     });
 
-    expect(reinforcement.crownsAfter).toBe(setup.crownsBefore - 75);
+    expect(reinforcement.crownsAfter).toBe(setup.crownsBefore - 60);
     expect(reinforcement).toMatchObject({
       reinforcementId: "retinue:e2e:reserve_ranger",
       selected: true
@@ -6412,6 +6413,13 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-node-details")).toContainText("Enemy doctrine: Fortress");
     await expect(page.locator(".campaign-node-details")).toContainText("Attack economy first");
     await expect(page.locator(".campaign-node-details")).toContainText("Cinder Iron Guard");
+    await expect(page.getByTestId("campaign-tactical-plan-panel")).toContainText("Tactical plan");
+    await expect(page.getByTestId("campaign-tactical-plan-panel")).toContainText("Resource Push");
+    await expect(page.getByTestId("campaign-tactical-plan-panel")).toContainText("Recommended response");
+    await clickReady(page.getByTestId("campaign-tactical-plan-champion_hunt"), "deep-flow select Champion Hunt tactical plan");
+    await expect(page.getByTestId("campaign-status")).toContainText("Tactical plan selected: Champion Hunt");
+    await expect(page.locator(".campaign-node-details")).toContainText("Selected plan");
+    await expect(page.locator(".campaign-node-details")).toContainText("Hero starts with +6% maximum Mana");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await clickReady(
       page.getByTestId("campaign-start-node"),
@@ -6420,6 +6428,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Tactical plan: Champion Hunt");
     await expect(page.getByTestId("battle-objectives")).toContainText("Objectives 0/3");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");
     await expect(page.getByTestId("battle-objectives")).toContainText("Defeat Captain Malrec");
@@ -6535,6 +6544,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Fortress");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Cinder Iron Guard");
     await expect(page.getByTestId("results-enemy-doctrine-summary")).toContainText("Elite defeated");
+    await expect(page.getByTestId("results-tactical-plan-summary")).toContainText("Champion Hunt");
+    await expect(page.getByTestId("results-tactical-plan-summary")).toContainText("launch-local");
     await expect(page.locator(".status-box")).toContainText("Spend skill points or replay optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("Optional objectives");
     await expect(page.locator(".campaign-reward-block")).toContainText("3/3 recorded");

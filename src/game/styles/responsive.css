@@ -142,6 +142,10 @@
     grid-template-columns: 1fr;
   }
 
+  .tactical-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
   .progression-title-row {
     align-items: flex-start;
   }

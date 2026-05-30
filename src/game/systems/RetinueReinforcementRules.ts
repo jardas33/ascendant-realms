@@ -1,7 +1,8 @@
 import type { Cost, ResourceBag } from "../core/GameTypes";
 import { canAfford } from "../core/MathUtils";
 import { isRetinueEligibleUnitTypeId } from "../core/RetinueRules";
-import type { BattleLaunchMode } from "../battle/BattleLaunchRequest";
+import type { BattleLaunchMode, BattleLaunchModifier } from "../battle/BattleLaunchRequest";
+import { getTacticalPlanBattleEffects } from "../data/tacticalPlans";
 import type { RetinueUnitSaveData } from "../save/SaveTypes";
 
 export const RETINUE_REINFORCEMENT_COST: Cost = { crowns: 75 };
@@ -13,6 +14,7 @@ export interface RetinueReinforcementState {
   commandHallAlive?: boolean;
   resources: ResourceBag;
   reserveUnits: readonly RetinueUnitSaveData[];
+  modifiers?: readonly BattleLaunchModifier[];
 }
 
 export interface RetinueReinforcementAvailability {
@@ -34,10 +36,18 @@ export function selectRetinueReinforcementUnit(units: readonly RetinueUnitSaveDa
   return readyReinforcementReserveUnits(units)[0];
 }
 
+export function retinueReinforcementCost(modifiers: readonly BattleLaunchModifier[] = []): Cost {
+  const multiplier = getTacticalPlanBattleEffects(modifiers).retinueReinforcementCostMultiplier;
+  return {
+    crowns: Math.max(1, Math.round((RETINUE_REINFORCEMENT_COST.crowns ?? 0) * multiplier))
+  };
+}
+
 export function evaluateRetinueReinforcement(state: RetinueReinforcementState): RetinueReinforcementAvailability {
   const readyReserveCount = readyReinforcementReserveUnits(state.reserveUnits).length;
+  const cost = retinueReinforcementCost(state.modifiers);
   const base = {
-    cost: RETINUE_REINFORCEMENT_COST,
+    cost,
     reserveCount: state.reserveUnits.length,
     readyReserveCount,
     used: Boolean(state.alreadyUsed)
@@ -54,7 +64,7 @@ export function evaluateRetinueReinforcement(state: RetinueReinforcementState): 
   if (readyReserveCount === 0) {
     return { ...base, ok: false, reason: "No Ready reserve Retinue" };
   }
-  if (!canAfford(state.resources, RETINUE_REINFORCEMENT_COST)) {
+  if (!canAfford(state.resources, cost)) {
     return { ...base, ok: false, reason: "Insufficient Crowns" };
   }
   return { ...base, ok: true };

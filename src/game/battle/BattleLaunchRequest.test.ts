@@ -52,6 +52,8 @@ describe("BattleLaunchRequest", () => {
       difficulty: "story",
       rewardsDisabled: true
     });
+    expect(request.tacticalPlanId).toBeUndefined();
+    expect(request.modifiers).toEqual([]);
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
       expect(resolved.launch.request.rewardsDisabled).toBe(true);
@@ -146,14 +148,36 @@ describe("BattleLaunchRequest", () => {
       mapId: "first_claim",
       difficulty: "easy",
       enemyProfileId: "ashen_covenant",
-      aiPersonalityId: "balanced_warlord"
+      aiPersonalityId: "balanced_warlord",
+      tacticalPlanId: "guarded_advance"
     });
+    expect(request.modifiers.map((modifier) => modifier.id)).toContain("tactical_guarded_advance");
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
       expect(resolved.launch.request.campaignNodeId).toBe("border_village");
       expect(resolved.launch.map.id).toBe("first_claim");
     }
     expect(roadRequest.aiPersonalityId).toBe("raider_rush");
+  });
+
+  it("carries one selected tactical plan on eligible campaign launches", () => {
+    const heroSave = createFallbackHeroSave();
+    const request = createCampaignBattleLaunchRequest(heroSave, "old_stone_road", {
+      tacticalPlanId: "resource_push",
+      modifiers: [{ id: "mission_rich_veins" }]
+    });
+    const resolved = resolveBattleLaunchRequest(request);
+
+    expect(request.tacticalPlanId).toBe("resource_push");
+    expect(request.modifiers.map((modifier) => modifier.id)).toEqual(["mission_rich_veins", "tactical_resource_push"]);
+    expect(resolved.ok).toBe(true);
+    if (resolved.ok) {
+      expect(resolved.launch.request.tacticalPlanId).toBe("resource_push");
+      expect(resolved.launch.request.modifiers.map((modifier) => modifier.id)).toEqual([
+        "mission_rich_veins",
+        "tactical_resource_push"
+      ]);
+    }
   });
 
   it("carries campaign enemy hero assignments into battle launches", () => {

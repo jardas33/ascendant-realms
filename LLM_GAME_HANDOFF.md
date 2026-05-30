@@ -1,12 +1,76 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.66-v0.68 enemy tactical doctrines and elite squad closeout
+Last updated: 2026-05-30 v0.69-v0.71 pre-battle tactical preparation closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
+
+Status: v0.69-v0.71 turns enemy doctrine readability into player-facing preparation through pre-battle intelligence, launch-local tactical plan selection, and counter-doctrine recommendations. It does not add maps, factions, runtime art/assets, save migration, broad AI/pathing rewrite, shop/crafting, formation editor, global rebalance, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `b89e6c3`, `ascendant-realms-private-playtest-b89e6c3`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: latest push run `26675513313` on `b89e6c3` completed successfully.
+
+Included work:
+
+- Added `docs/V069_PRE_BATTLE_INTELLIGENCE_SPEC.md`.
+- Added `docs/V070_TACTICAL_PLAN_SELECTION_SPEC.md`.
+- Added `docs/V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md`.
+- Added `docs/V069_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V070_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Guarded Advance, Resource Push, and Champion Hunt tactical plan definitions and validation.
+- Added campaign-node pre-battle intelligence for expected doctrine, elite risk, mission modifiers, counterplay, Retinue/reinforcement reminder, and hero/relic build hint.
+- Added launch-local tactical plan selection on eligible campaign battle nodes with safe Guarded Advance default.
+- Added one non-stacking tactical launch modifier per eligible campaign battle.
+- Added conservative plan effects: cheaper Call Retinue for Guarded Advance, small starting resources for Resource Push, and small hero max-Mana support for Champion Hunt.
+- Added battle HUD tactical-plan start/status copy and Results after-action summary.
+- Updated hosted Ashen Outpost proxy coverage for doctrine intel, plan selection, battle HUD propagation, and Results summary.
+- Updated package metadata and validation to require the v0.69-v0.71 docs.
+
+Save format:
+
+- No save-version bump.
+- No new persistent save fields.
+- Tactical plan choice is session/launch-local and is not written to campaign or hero saves.
+- Existing campaign, Retinue, replay, reward, relic, skill, control group, Patrol, enemy doctrine, elite squad, and Tutorial save state remains valid.
+- Tutorial/no-reward routes do not receive tactical plan modifiers or tactical-plan Results noise.
+
+Verification:
+
+```text
+Focused tactical-plan/launch/runtime/Retinue tests PASS, 4 files / 33 tests.
+Focused campaign/Results/content tests PASS, 3 files / 70 tests.
+Playtest package validation focused test PASS.
+npm test PASS, 83 files / 627 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle NON-PASS first attempt, then exact failed Retinue reinforcement case PASS and full rerun PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+```
+
+Non-pass evidence: the first hosted deep-battle attempt still expected the old 75-Crowns Call Retinue cost. v0.69-v0.71 intentionally gives the default Guarded Advance plan a 60-Crowns Call Retinue cost, so the hosted proxy assertion was updated to check the new button copy and battle resource delta. The exact failed test and the full hosted deep-battle lane reran green.
+
+Interaction note: this checkpoint did not add force-clicks or DOM fallback for canvas/world clicks. Existing hosted lanes still log pre-existing verified pointer down/up world-click helpers and DOM helpers for HUD/menu buttons.
+
+Closeout note: commit as `Checkpoint v0.69-v0.71 pre-battle tactical preparation foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.66-v0.68 Enemy Tactical Doctrines And Elite Squad Foundation - 2026-05-30
 

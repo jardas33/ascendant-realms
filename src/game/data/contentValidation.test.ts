@@ -22,6 +22,7 @@ import { RIVAL_REWARDS } from "./rivalRewards";
 import { SKILL_NODES, SKILL_TREES } from "./skillTrees";
 import { HERO_CLASSES } from "./heroClasses";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
+import { TACTICAL_PLANS } from "./tacticalPlans";
 import { TUTORIALS } from "./tutorials";
 import { validateContent } from "./contentValidation";
 import { UNIT_BY_ID, UNIT_ROLE_BY_ID } from "./contentIndex";
@@ -54,6 +55,14 @@ describe("content validation", () => {
     expect(ENEMY_DOCTRINES.find((doctrine) => doctrine.id === "raider")?.counterplay).toContain("Protect");
     expect(ENEMY_ELITE_SQUADS.map((squad) => squad.id)).toEqual(["ash_raider_vanguard", "cinder_iron_guard"]);
     expect(ENEMY_ELITE_SQUADS.every((squad) => squad.maxUnitsPerBattle <= 2)).toBe(true);
+  });
+
+  it("validates launch-local tactical preparation plans", () => {
+    expect(TACTICAL_PLANS.map((plan) => plan.id)).toEqual(["guarded_advance", "resource_push", "champion_hunt"]);
+    expect(TACTICAL_PLANS.find((plan) => plan.id === "guarded_advance")?.effectSummary).toContain("Retinue");
+    expect(TACTICAL_PLANS.find((plan) => plan.id === "resource_push")?.effectSummary).toContain("Crowns");
+    expect(TACTICAL_PLANS.find((plan) => plan.id === "champion_hunt")?.effectSummary).toContain("Mana");
+    expect(TACTICAL_PLANS.every((plan) => plan.launchModifierId.startsWith("tactical_"))).toBe(true);
   });
 
   it("defines the initial visual asset metadata manifest without production-final claims", () => {

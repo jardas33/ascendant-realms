@@ -315,6 +315,39 @@
   overflow-wrap: anywhere;
 }
 
+.tactical-plan-panel {
+  display: grid;
+  gap: 10px;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid rgba(246, 237, 180, 0.16);
+  background: rgba(8, 12, 12, 0.28);
+}
+
+.tactical-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tactical-plan-button {
+  min-height: 92px;
+  text-align: left;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
+.tactical-plan-button > span {
+  display: grid;
+  gap: 3px;
+}
+
+.tactical-plan-button.selected {
+  border-color: rgba(143, 216, 155, 0.72);
+  box-shadow: 0 0 0 1px rgba(143, 216, 155, 0.2);
+}
+
 .chapter-list {
   display: grid;
   gap: 10px;

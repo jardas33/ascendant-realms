@@ -3,7 +3,7 @@ import { ASSET_IDS, heroPortraitAssetId } from "../assets/AssetKeys";
 import { AssetLoader } from "../assets/AssetLoader";
 import { createCampaignBattleLaunchRequest } from "../battle/BattleLaunchRequest";
 import { getCampaignNextAction } from "../core/FirstExperienceGuidance";
-import type { BattleStats, CampaignNodeDefinition } from "../core/GameTypes";
+import type { BattleStats, CampaignNodeDefinition, TacticalPlanId } from "../core/GameTypes";
 import {
   applyCampaignChoice,
   completeCampaignNodeWithRewards,
@@ -19,6 +19,7 @@ import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
 import { HERO_CLASS_BY_ID, ORIGIN_BY_ID } from "../data/contentIndex";
 import { consumeBattleCampaignModifiers } from "../data/campaignModifiers";
+import { DEFAULT_TACTICAL_PLAN_ID, getTacticalPlan, normalizeTacticalPlanId } from "../data/tacticalPlans";
 import { getReputationBattleLaunchModifiers } from "../data/reputation";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 import { formatCampaignChoiceResultMessage } from "../campaign/CampaignChoiceResultMessage";
@@ -57,6 +58,7 @@ export class CampaignMapScene extends Phaser.Scene {
   private heroSave: HeroSaveData = createFallbackHeroSave();
   private campaignSave: CampaignSaveData = createStartedCampaignSave();
   private selectedNodeId = CAMPAIGN_NODES[0]?.id ?? "";
+  private selectedTacticalPlanId: TacticalPlanId = DEFAULT_TACTICAL_PLAN_ID;
   private message = "Choose an available campaign node.";
 
   constructor() {
@@ -106,6 +108,12 @@ export class CampaignMapScene extends Phaser.Scene {
       const strongholdButton = target.closest<HTMLButtonElement>("button[data-stronghold-upgrade]");
       if (strongholdButton) {
         this.purchaseStrongholdUpgrade(strongholdButton.dataset.strongholdUpgrade ?? "");
+        return;
+      }
+
+      const tacticalPlanButton = target.closest<HTMLButtonElement>("button[data-tactical-plan]");
+      if (tacticalPlanButton) {
+        this.selectTacticalPlan(tacticalPlanButton.dataset.tacticalPlan);
         return;
       }
 
@@ -175,6 +183,7 @@ export class CampaignMapScene extends Phaser.Scene {
             ...getStrongholdLaunchModifiers(this.campaignSave),
             ...getRivalBattleLaunchModifiers(this.campaignSave, node)
           ],
+          tacticalPlanId: this.selectedTacticalPlanId,
           retinueUnits: retinueDeploymentUnits(this.campaignSave),
           retinueReserveUnits: retinueReserveUnits(this.campaignSave)
         })
@@ -207,6 +216,13 @@ export class CampaignMapScene extends Phaser.Scene {
     this.campaignSave = dismissRetinueUnit(this.campaignSave, retinueUnitId);
     this.message = "Retinue unit dismissed.";
     SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.render();
+  }
+
+  private selectTacticalPlan(value: string | undefined): void {
+    this.selectedTacticalPlanId = normalizeTacticalPlanId(value);
+    const plan = getTacticalPlan(this.selectedTacticalPlanId);
+    this.message = `Tactical plan selected: ${plan.name}. ${plan.effectSummary}`;
     this.render();
   }
 
@@ -314,7 +330,16 @@ export class CampaignMapScene extends Phaser.Scene {
             </section>
             <section>
               <h2>Selected Node</h2>
-              ${viewModel.selectedNode ? renderNodeDetails({ node: viewModel.selectedNode, campaignSave: this.campaignSave, heroSave: this.heroSave }) : `<p class="quiet">No campaign node selected.</p>`}
+              ${
+                viewModel.selectedNode
+                  ? renderNodeDetails({
+                      node: viewModel.selectedNode,
+                      campaignSave: this.campaignSave,
+                      heroSave: this.heroSave,
+                      selectedTacticalPlanId: this.selectedTacticalPlanId
+                    })
+                  : `<p class="quiet">No campaign node selected.</p>`
+              }
             </section>
           </div>
           ${this.renderCampaignActions()}

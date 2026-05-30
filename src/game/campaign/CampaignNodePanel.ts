@@ -1,4 +1,4 @@
-import type { CampaignNodeDefinition } from "../core/GameTypes";
+import type { CampaignNodeDefinition, EnemyDoctrineDefinition, TacticalPlanDefinition, TacticalPlanId } from "../core/GameTypes";
 import { getCampaignNodeGuidance } from "../core/FirstExperienceGuidance";
 import { getCampaignNodeStatus } from "../core/CampaignRules";
 import {
@@ -18,6 +18,14 @@ import {
 import { getRivalNodePreview } from "../core/RivalRules";
 import { selectEnemyDoctrineForCampaignNode, selectEnemyEliteSquadForBattle } from "../data/enemyDoctrines";
 import {
+  DEFAULT_TACTICAL_PLAN_ID,
+  formatTacticalPlanRecommendation,
+  getTacticalPlan,
+  getTacticalPlanRecommendations,
+  tacticalPlanMatchesDoctrine,
+  TACTICAL_PLANS
+} from "../data/tacticalPlans";
+import {
   AI_PERSONALITY_BY_ID,
   ENEMY_HERO_ABILITY_BY_ID,
   ENEMY_HERO_BY_ID,
@@ -36,6 +44,7 @@ interface RenderNodeDetailsOptions {
   node: CampaignNodeDefinition;
   campaignSave: CampaignSaveData;
   heroSave: HeroSaveData;
+  selectedTacticalPlanId?: TacticalPlanId;
 }
 
 export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
@@ -56,7 +65,7 @@ export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
 }
 
 export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
-  const { node, campaignSave, heroSave } = options;
+  const { node, campaignSave, heroSave, selectedTacticalPlanId } = options;
   const status = getCampaignNodeStatus(node, campaignSave);
   const map = MAP_BY_ID[node.mapId];
   const faction = FACTION_BY_ID[node.enemyFactionId];
@@ -79,6 +88,8 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
   });
   const objectiveStates = getMissionOptionalObjectiveStates({ campaign: campaignSave, node });
   const buildHint = recommendedBuildHint(node);
+  const selectedTacticalPlan = getTacticalPlan(selectedTacticalPlanId ?? DEFAULT_TACTICAL_PLAN_ID);
+  const showsTacticalPlan = node.nodeType === "battle" && !node.isPlaceholder;
   const actStep = getCampaignActStepForNode(node.id);
   const lockedReason = getCampaignNodeLockedReason(node, campaignSave);
   return `
@@ -100,6 +111,8 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${actStep ? renderAct1SpineMessage(actStep, campaignSave) : ""}
         ${missionBriefing ? renderMissionBriefingMessage(missionBriefing, scenarioModifiers) : ""}
         ${enemyDoctrine ? renderEnemyDoctrineMessage(enemyDoctrine, eliteSquad) : ""}
+        ${renderPreBattleIntelligenceMessage(node, heroSave, enemyDoctrine, eliteSquad, selectedTacticalPlan)}
+        ${renderTacticalPlanSelector(node, enemyDoctrine, selectedTacticalPlan)}
         ${renderMissionRewardMessage(node, missionReward)}
         ${objectiveStates.length > 0 ? renderOptionalObjectiveMessage(objectiveStates) : ""}
         ${buildHint ? renderGuidanceMessage(buildHint.title, buildHint.body, buildHint.actions, "compact") : ""}
@@ -125,6 +138,8 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
           <span>Enemy doctrine</span><strong>${escapeHtml(enemyDoctrine ? enemyDoctrine.statusLabel : "Standard pressure")}</strong>
           <span>Counterplay</span><strong>${escapeHtml(enemyDoctrine ? enemyDoctrine.counterplay : "Use normal scouting, economy, and army timing.")}</strong>
           <span>Elite squad</span><strong>${escapeHtml(eliteSquad ? `${eliteSquad.name}: ${eliteSquad.counterplay}` : "None expected")}</strong>
+          <span>Recommended plan</span><strong>${escapeHtml(showsTacticalPlan ? formatTacticalPlanRecommendation(enemyDoctrine?.id) : "Not applicable")}</strong>
+          <span>Selected plan</span><strong>${escapeHtml(showsTacticalPlan ? `${selectedTacticalPlan.name}: ${selectedTacticalPlan.effectSummary}` : "Not applicable")}</strong>
           <span>Enemy Commander</span><strong>${escapeHtml(enemyHero ? `${enemyHero.name}, ${enemyHero.title}` : "None scouted")}</strong>
           <span>Rival Status</span><strong>${escapeHtml(rivalPreview?.summaryText ?? "No known rival")}</strong>
           <span>Prerequisites</span><strong>${escapeHtml(formatCampaignNodeList(node.prerequisites) || "None")}</strong>
@@ -168,6 +183,87 @@ export function renderNodeDetails(options: RenderNodeDetailsOptions): string {
         ${node.choices?.length ? renderEventChoices({ node, status, campaignSave, heroSave }) : ""}
       </div>
     `;
+}
+
+function renderPreBattleIntelligenceMessage(
+  node: CampaignNodeDefinition,
+  heroSave: HeroSaveData,
+  doctrine: EnemyDoctrineDefinition | undefined,
+  eliteSquad: ReturnType<typeof selectEnemyEliteSquadForBattle>,
+  selectedPlan: TacticalPlanDefinition
+): string {
+  if (node.nodeType !== "battle" || node.isPlaceholder) {
+    return "";
+  }
+  const doctrineName = doctrine?.name ?? "Standard pressure";
+  const planFit = tacticalPlanMatchesDoctrine(selectedPlan.id, doctrine?.id)
+    ? "Plan fits scouted doctrine"
+    : `Suggested: ${formatTacticalPlanRecommendation(doctrine?.id)}`;
+  return renderGuidanceMessage(
+    "Pre-battle intelligence",
+    `${doctrineName}. ${doctrine?.shortDescription ?? "No special doctrine scouted."} ${eliteSquad ? `Elite risk: ${eliteSquad.shortLabel}.` : "No elite squad expected."}`,
+    [
+      planFit,
+      `Retinue: deploy Ready units or keep zero selected safely`,
+      formatHeroLoadoutHint(heroSave)
+    ],
+    "compact"
+  );
+}
+
+function renderTacticalPlanSelector(
+  node: CampaignNodeDefinition,
+  doctrine: EnemyDoctrineDefinition | undefined,
+  selectedPlan: TacticalPlanDefinition
+): string {
+  if (node.nodeType !== "battle" || node.isPlaceholder) {
+    return "";
+  }
+  const recommendations = new Set(getTacticalPlanRecommendations(doctrine?.id).map((plan) => plan.id));
+  return `
+      <section class="tactical-plan-panel" data-testid="campaign-tactical-plan-panel">
+        <div>
+          <strong>Tactical plan</strong>
+          <p class="quiet">Choose one launch-local plan before battle. It does not change saves and will not stack.</p>
+        </div>
+        <div class="tactical-plan-grid">
+          ${TACTICAL_PLANS.map((plan) => {
+            const selected = plan.id === selectedPlan.id;
+            const recommended = recommendations.has(plan.id);
+            return `
+              <button
+                class="tactical-plan-button ${selected ? "selected" : ""}"
+                data-tactical-plan="${escapeHtml(plan.id)}"
+                data-testid="campaign-tactical-plan-${escapeHtml(plan.id)}"
+                aria-pressed="${selected ? "true" : "false"}"
+                title="${escapeHtml(`${plan.name}. ${plan.description} ${plan.effectSummary}`)}"
+              >
+                <span>
+                  <strong>${escapeHtml(plan.name)}</strong>
+                  <small>${escapeHtml(recommended ? "Recommended response" : plan.shortLabel)}</small>
+                </span>
+                <small>${escapeHtml(plan.effectSummary)}</small>
+              </button>
+            `;
+          }).join("")}
+        </div>
+      </section>
+    `;
+}
+
+function formatHeroLoadoutHint(heroSave: HeroSaveData): string {
+  const relicInstance = heroSave.equipment.relic
+    ? heroSave.inventory.find((item) => item.instanceId === heroSave.equipment.relic)
+    : undefined;
+  const relic = relicInstance ? ITEM_BY_ID[relicInstance.itemId] : undefined;
+  const skillCount = Object.values(heroSave.allocatedSkills ?? {}).reduce((total, rank) => total + Math.max(0, rank), 0);
+  if (relic) {
+    return `Hero: ${relic.name} equipped, ${skillCount} skill unlock${skillCount === 1 ? "" : "s"}`;
+  }
+  if (heroSave.skillPoints > 0) {
+    return `Hero: ${heroSave.skillPoints} skill point${heroSave.skillPoints === 1 ? "" : "s"} ready`;
+  }
+  return "Hero: equip a relic or spend skill points when available";
 }
 
 function renderAct1SpineMessage(step: NonNullable<ReturnType<typeof getCampaignActStepForNode>>, campaignSave: CampaignSaveData): string {

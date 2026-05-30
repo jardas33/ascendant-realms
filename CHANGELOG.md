@@ -1,5 +1,41 @@
 # Changelog
 
+## v0.69-v0.71 Pre-Battle Tactical Preparation Foundation - 2026-05-30
+
+This checkpoint turns enemy doctrine readability into actionable pre-battle preparation through concise campaign intelligence, launch-local tactical plan selection, and counter-doctrine recommendations. No maps, factions, runtime art/assets, save migration, new persistent save fields, broad AI/pathing rewrite, global rebalance, shop/crafting, formation editor, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V069_PRE_BATTLE_INTELLIGENCE_SPEC.md`.
+- Added `docs/V070_TACTICAL_PLAN_SELECTION_SPEC.md`.
+- Added `docs/V071_COUNTER_DOCTRINE_PREPARATION_SPEC.md`.
+- Added `docs/V069_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V070_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V071_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Guarded Advance, Resource Push, and Champion Hunt tactical plan definitions.
+- Added doctrine-to-plan recommendations for Raider, Fortress, Hunter, and Warband.
+- Added pre-battle intelligence to campaign node details: expected doctrine, elite risk, mission modifiers, counterplay, Retinue/reinforcement reminder, and hero/relic build hint.
+- Added session-only tactical plan selection and one non-stacking tactical launch modifier for eligible campaign battles.
+- Added modest plan effects: cheaper Call Retinue, small starting resources, and small hero max-Mana support.
+- Added battle HUD active-plan copy and Results tactical-plan after-action summary.
+- Updated hosted deep-campaign coverage for tactical intel, plan selection, battle HUD propagation, and Results summary.
+- Updated package metadata and validation to name `v0.69-v0.71 pre-battle tactical preparation foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly through eligible campaign battle launch-local tactical modifiers.
+- Gameplay numbers changed: only small launch-local plan effects; no global balance changes.
+- Save format changed: no.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no tactical-plan complexity.
+- Retinue/reinforcement changed: Guarded Advance can reduce Call Retinue cost to 60 Crowns in eligible campaign battles.
+
+### Verification
+
+- Passed: focused tactical-plan/launch/runtime/Retinue tests with 33 tests, focused campaign/Results/content tests with 70 tests, package validation focused test, `npm test` with 83 files / 627 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle rerun with 29 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, and visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries.
+- Non-pass evidence: first hosted deep-battle attempt failed because an existing Retinue reinforcement proxy still expected the old 75-Crowns cost. The checkpoint intentionally gives default Guarded Advance a 60-Crowns Call Retinue cost; the proxy was updated to assert the new button copy and resource delta, then the exact failed test and full hosted deep-battle lane passed.
+
 ## v0.66-v0.68 Enemy Tactical Doctrines And Elite Squad Foundation - 2026-05-30
 
 This checkpoint adds readable enemy tactical variety through small data-driven doctrines, occasional capped elite squads, and concise counterplay copy. No maps, factions, runtime art/assets, save-version bump, new save fields, global rebalance, broad pathing rewrite, enemy formation rewrite, giant roster, shop/crafting, or canvas/world force-click behavior were added.

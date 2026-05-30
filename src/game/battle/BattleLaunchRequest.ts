@@ -3,7 +3,8 @@ import type {
   BattleMapDefinition,
   CampaignNodeDefinition,
   EnemyAIPersonalityId,
-  RewardTableDefinition
+  RewardTableDefinition,
+  TacticalPlanId
 } from "../core/GameTypes";
 import { isRetinueEligibleUnitTypeId } from "../core/RetinueRules";
 import { isHeroSaveData, normalizeHeroSaveData } from "../core/SaveSystem";
@@ -20,6 +21,13 @@ import {
 } from "../data/contentIndex";
 import { DEFAULT_MAP_ID } from "../data/maps";
 import { isUnitVeterancyRankId } from "../data/unitVeterancy";
+import {
+  addTacticalPlanLaunchModifier,
+  DEFAULT_TACTICAL_PLAN_ID,
+  isTacticalPlanId,
+  normalizeTacticalPlanId,
+  tacticalPlanFromLaunchModifiers
+} from "../data/tacticalPlans";
 import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
 
 export type BattleLaunchMode = "skirmish" | "campaign_node" | "scenario_mission" | "tutorial";
@@ -46,6 +54,7 @@ export interface BattleLaunchRequest {
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
   retinueReserveUnits?: RetinueUnitSaveData[];
+  tacticalPlanId?: TacticalPlanId;
   rewardsDisabled?: boolean;
 }
 
@@ -81,6 +90,7 @@ export interface CreateBattleLaunchRequestOptions {
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
   retinueReserveUnits?: RetinueUnitSaveData[];
+  tacticalPlanId?: TacticalPlanId;
   rewardsDisabled?: boolean;
 }
 
@@ -133,6 +143,7 @@ export function createCampaignBattleLaunchRequest(
     enemyHeroId: options.enemyHeroId ?? definition.enemyHeroId,
     enemyPressurePlanId: options.enemyPressurePlanId ?? definition.enemyPressurePlanId,
     campaignNodeId: definition.id,
+    tacticalPlanId: options.tacticalPlanId ?? DEFAULT_TACTICAL_PLAN_ID,
     sourceId: options.sourceId ?? `campaign_${definition.id}`
   });
 }
@@ -145,6 +156,11 @@ export function createBattleLaunchRequest(
   const mapId = options.mapId ?? DEFAULT_MAP_ID;
   const sourceId = options.sourceId ?? mode;
   const rewardsDisabled = options.rewardsDisabled ?? (mode === "tutorial" ? true : undefined);
+  const tacticalPlanId =
+    mode === "campaign_node" && !rewardsDisabled
+      ? normalizeTacticalPlanId(options.tacticalPlanId ?? DEFAULT_TACTICAL_PLAN_ID)
+      : undefined;
+  const modifiers = tacticalPlanId ? addTacticalPlanLaunchModifier(options.modifiers ?? [], tacticalPlanId) : options.modifiers ?? [];
   return {
     requestId: options.requestId ?? buildBattleLaunchRequestId(mode, mapId, sourceId),
     mode,
@@ -153,7 +169,7 @@ export function createBattleLaunchRequest(
     sourceId,
     rewardTableId: options.rewardTableId,
     difficulty: options.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
-    modifiers: options.modifiers ?? [],
+    modifiers,
     enemyProfileId: options.enemyProfileId,
     aiPersonalityId: options.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
     enemyHeroId: options.enemyHeroId,
@@ -162,6 +178,7 @@ export function createBattleLaunchRequest(
     scenarioMissionId: options.scenarioMissionId,
     retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits),
     retinueReserveUnits: sanitizeLaunchRetinueUnits(options.retinueReserveUnits),
+    tacticalPlanId,
     rewardsDisabled
   };
 }
@@ -177,7 +194,8 @@ export function cloneBattleLaunchRequestWithHero(
     sourceId: overrides.sourceId ?? request.sourceId,
     heroSave,
     retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
-    retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits)
+    retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
+    tacticalPlanId: request.tacticalPlanId
   };
 }
 
@@ -240,6 +258,11 @@ export function resolveBattleLaunchRequest(
     return { ok: false, errors };
   }
 
+  const resolvedTacticalPlanId =
+    request.mode === "campaign_node" && request.rewardsDisabled !== true
+      ? normalizeResolvedTacticalPlanId(request.tacticalPlanId, request.modifiers)
+      : undefined;
+
   return {
     ok: true,
     launch: {
@@ -248,12 +271,15 @@ export function resolveBattleLaunchRequest(
         heroSave,
         rewardTableId,
         difficulty: request.difficulty ?? DEFAULT_BATTLE_DIFFICULTY,
-        modifiers: request.modifiers ?? [],
+        modifiers: resolvedTacticalPlanId
+          ? addTacticalPlanLaunchModifier(request.modifiers ?? [], resolvedTacticalPlanId)
+          : request.modifiers ?? [],
         aiPersonalityId: request.aiPersonalityId ?? DEFAULT_AI_PERSONALITY_ID,
         enemyHeroId: request.enemyHeroId,
         enemyPressurePlanId: request.enemyPressurePlanId,
         retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
         retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
+        tacticalPlanId: resolvedTacticalPlanId,
         rewardsDisabled: request.rewardsDisabled
       },
       map,
@@ -261,6 +287,13 @@ export function resolveBattleLaunchRequest(
       rewardTableId
     }
   };
+}
+
+function normalizeResolvedTacticalPlanId(value: unknown, modifiers: readonly BattleLaunchModifier[] = []): TacticalPlanId {
+  const candidate = typeof value === "string" ? value : undefined;
+  return isTacticalPlanId(candidate)
+    ? candidate
+    : tacticalPlanFromLaunchModifiers(modifiers)?.id ?? DEFAULT_TACTICAL_PLAN_ID;
 }
 
 export function requireBattleLaunch(request: BattleLaunchRequest): ResolvedBattleLaunch {
