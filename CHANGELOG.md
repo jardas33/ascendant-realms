@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
+
+This checkpoint is docs-only. It defines the proposed public identity and long-term product direction before further runtime expansion: `JARDAS: Oath of the Barrosan Marches` as the leading title proposal, Jardas/Lume/Salto/Barrosan Marches lore, an eight-race master roster draft, future Race + Class + Origin + Oath hero architecture, signature gameplay pillars, a five-act campaign outline, browser-to-desktop transition gates, visual direction and AI-art governance, display-name migration safety, original-IP separation, future implementation sequence, and an Emmanuel review packet.
+
+Added:
+
+- `docs/V078_CREATIVE_IDENTITY_LOCK_PLAN.md`.
+- `docs/V078_PUBLIC_TITLE_AND_BRAND_OPTIONS.md`.
+- `docs/V078_WORLD_AND_LORE_BIBLE_DRAFT.md`.
+- `docs/V078_RACE_AND_FACTION_MASTER_MATRIX.md`.
+- `docs/V078_HERO_RACE_CLASS_ORIGIN_OATH_ARCHITECTURE.md`.
+- `docs/V078_SIGNATURE_GAMEPLAY_PILLARS.md`.
+- `docs/V078_LONG_CAMPAIGN_MASTER_OUTLINE.md`.
+- `docs/V078_BROWSER_TO_DESKTOP_TRANSITION_GATE.md`.
+- `docs/V078_VISUAL_DIRECTION_AND_AI_ART_GOVERNANCE.md`.
+- `docs/V078_VISUAL_VERTICAL_SLICE_BRIEF.md`.
+- `docs/V078_DISPLAY_NAME_MIGRATION_MAP.md`.
+- `docs/V078_ORIGINAL_IP_SEPARATION_LEDGER.md`.
+- `docs/V078_FUTURE_IMPLEMENTATION_SEQUENCE.md`.
+- `docs/V078_EMMANUEL_REVIEW_PACKET.md`.
+- `docs/V078_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Updated README, roadmap, handoff, checkpoint, release checklist, package metadata, and package validation lists so the docs-only v0.78 review packet is discoverable and package-verifiable.
+
+Not changed:
+
+- No runtime behavior, save format, internal IDs, gameplay balance, enemy AI, pathing, controls, runtime UI, maps, factions, races, units, buildings, assets, art generation/import, desktop wrapper, engine choice, multiplayer, PvP, or co-op code changed.
+
+Verification:
+
+- Passed: `npm test` with 86 files / 644 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, focused package validation test with 3 tests, dirty pre-commit package generation, dirty package verification with 219 checks, and `git diff --check`.
+
 # v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
 
 This checkpoint turns Ashen Outpost into a readable Act 1 climax around Captain Malrec, existing doctrines/elites, tactical plans, battlefield events, Retinue, hero skills, relics, and Results debriefs. No maps, factions, runtime art/assets, save migration, giant boss system, broad AI/pathing rewrite, global rebalance, shop/crafting, or canvas/world force-click behavior were added.

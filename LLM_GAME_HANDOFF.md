@@ -1,12 +1,52 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.75-v0.77 Act 1 finale closeout
+Last updated: 2026-05-30 v0.78 creative identity lock closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.78 proposes `JARDAS: Oath of the Barrosan Marches` as the leading public title direction for human review only; no runtime rebrand is approved.
+
+## Current v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
+
+Status: v0.78 is docs-only. It defines the proposed creative identity and long-term destination before any new runtime expansion: Jardas, Salto, the Barrosan Marches, Lume, Captain Malrec's lore framing, eight playable race proposals, future Race + Class + Origin + Oath hero architecture, signature pillars, five-act campaign direction, browser-to-desktop transition gates, visual governance, display-name migration safety, original-IP separation, and Emmanuel review questions.
+
+Baseline:
+
+- Starting commit/package: `8bc1241`, `ascendant-realms-private-playtest-8bc1241`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26690930073` on `8bc1241` completed successfully.
+
+Included work:
+
+- Added all `docs/V078_*` review docs, including `docs/V078_EMMANUEL_REVIEW_PACKET.md`.
+- Updated package metadata and validation to require the v0.78 docs in the private playtest package.
+- Updated README, ROADMAP, CHANGELOG, DEVELOPMENT_CHECKPOINT, RELEASE_CHECKLIST, and this handoff.
+
+Runtime/save/art boundary:
+
+- No runtime behavior changed.
+- No save-version bump or save field change.
+- No internal IDs renamed.
+- No runtime title/display-name migration was performed.
+- No art was generated, imported, downloaded, or wired.
+- No desktop port, wrapper, engine choice, multiplayer, PvP, co-op, race, map, unit, building, class, campaign, or broad UI work was started.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-8bc1241-dirty` generated.
+npm run verify:playtest-package PASS, 219 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Next recommended action: Emmanuel should review `docs/V078_EMMANUEL_REVIEW_PACKET.md` before any v0.79 or runtime milestone begins. Do not implement the title, race roster, Lume Network, desktop transition, runtime rebrand, art generation, or new systems until a future explicit goal approves the next narrow step.
 
 ## Current v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
 

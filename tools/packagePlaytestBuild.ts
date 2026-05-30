@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.75-v0.77 Act 1 finale and rival commander milestone";
+const CHECKPOINT = "v0.78 creative identity lock and original-IP separation pass";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -229,6 +229,21 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V076_IMPLEMENTATION_REPORT.md", join(packageDir, "V076_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V077_IMPLEMENTATION_REPORT.md", join(packageDir, "V077_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V077_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V077_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V078_CREATIVE_IDENTITY_LOCK_PLAN.md", join(packageDir, "V078_CREATIVE_IDENTITY_LOCK_PLAN.md"));
+  await copyMarkdown("docs/V078_PUBLIC_TITLE_AND_BRAND_OPTIONS.md", join(packageDir, "V078_PUBLIC_TITLE_AND_BRAND_OPTIONS.md"));
+  await copyMarkdown("docs/V078_WORLD_AND_LORE_BIBLE_DRAFT.md", join(packageDir, "V078_WORLD_AND_LORE_BIBLE_DRAFT.md"));
+  await copyMarkdown("docs/V078_RACE_AND_FACTION_MASTER_MATRIX.md", join(packageDir, "V078_RACE_AND_FACTION_MASTER_MATRIX.md"));
+  await copyMarkdown("docs/V078_HERO_RACE_CLASS_ORIGIN_OATH_ARCHITECTURE.md", join(packageDir, "V078_HERO_RACE_CLASS_ORIGIN_OATH_ARCHITECTURE.md"));
+  await copyMarkdown("docs/V078_SIGNATURE_GAMEPLAY_PILLARS.md", join(packageDir, "V078_SIGNATURE_GAMEPLAY_PILLARS.md"));
+  await copyMarkdown("docs/V078_LONG_CAMPAIGN_MASTER_OUTLINE.md", join(packageDir, "V078_LONG_CAMPAIGN_MASTER_OUTLINE.md"));
+  await copyMarkdown("docs/V078_BROWSER_TO_DESKTOP_TRANSITION_GATE.md", join(packageDir, "V078_BROWSER_TO_DESKTOP_TRANSITION_GATE.md"));
+  await copyMarkdown("docs/V078_VISUAL_DIRECTION_AND_AI_ART_GOVERNANCE.md", join(packageDir, "V078_VISUAL_DIRECTION_AND_AI_ART_GOVERNANCE.md"));
+  await copyMarkdown("docs/V078_VISUAL_VERTICAL_SLICE_BRIEF.md", join(packageDir, "V078_VISUAL_VERTICAL_SLICE_BRIEF.md"));
+  await copyMarkdown("docs/V078_DISPLAY_NAME_MIGRATION_MAP.md", join(packageDir, "V078_DISPLAY_NAME_MIGRATION_MAP.md"));
+  await copyMarkdown("docs/V078_ORIGINAL_IP_SEPARATION_LEDGER.md", join(packageDir, "V078_ORIGINAL_IP_SEPARATION_LEDGER.md"));
+  await copyMarkdown("docs/V078_FUTURE_IMPLEMENTATION_SEQUENCE.md", join(packageDir, "V078_FUTURE_IMPLEMENTATION_SEQUENCE.md"));
+  await copyMarkdown("docs/V078_EMMANUEL_REVIEW_PACKET.md", join(packageDir, "V078_EMMANUEL_REVIEW_PACKET.md"));
+  await copyMarkdown("docs/V078_IMPLEMENTATION_REPORT.md", join(packageDir, "V078_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -314,7 +329,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For the v0.75-v0.77 Act 1 finale retest, start with V075_ACT1_FINALE_ENCOUNTER_SPEC.md, V076_RIVAL_COMMANDER_PHASES_SPEC.md, V077_MILESTONE_REWARD_AND_DEBRIEF_SPEC.md, V075_IMPLEMENTATION_REPORT.md, V076_IMPLEMENTATION_REPORT.md, V077_IMPLEMENTATION_REPORT.md, and V077_EMMANUEL_RETEST_CHECKLIST.md. Also keep the v0.72-v0.74 battlefield event docs, v0.69-v0.71 tactical plan docs, v0.66-v0.68 enemy doctrine docs, and v0.63-v0.65 Retinue recovery docs nearby as baseline context. Focus on: Ashen Outpost phase readability, Captain Malrec final-phase release, battlefield event cap/cooldown preservation, Champion Hunt / Guarded Advance / Resource Push interaction, Results finale debrief, relic reward choice, skill-point reminder, Retinue/reinforcement summary, replay safety, Tutorial/no-reward protection, Worker/site command regression, control group/Patrol regression, and Act 1 telemetry safety. This build does not add new art, new maps, new factions, a save-version bump, shop, crafting, a giant boss system, a giant event system, a giant roster UI, permanent control groups, a formation editor, broad AI/pathing rewrite, enemy formation rewrite, or final VFX.
+For the v0.78 creative identity review, start with V078_EMMANUEL_REVIEW_PACKET.md, then use the V078 title, lore, race, hero, visual, desktop-transition, migration, original-IP, future-sequence, and implementation docs as reference. This package is still the unchanged browser prototype plus docs: v0.78 does not add new gameplay, runtime rebranding, new art, new maps, new factions, new races, new units, new buildings, save-version changes, a desktop port, a wrapper, an engine switch, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.75-v0.77 finale docs only as the latest runtime baseline for Act 1.
 
 ## Known Warning
 

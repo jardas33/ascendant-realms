@@ -1,6 +1,43 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.75-v0.77 Act 1 finale closeout
+Updated: 2026-05-30 v0.78 creative identity lock closeout
+
+## v0.78 Creative Identity Lock And Original-IP Separation Pass - 2026-05-30
+
+Scope: docs-only strategic product-definition milestone. This pass defines the proposed public identity, original world direction, eight-race roster, future hero architecture, signature gameplay pillars, long campaign outline, visual governance, browser-to-desktop transition gates, display-name migration safety, original-IP separation, future implementation sequence, and Emmanuel review packet. It does not implement gameplay, alter runtime behavior, rename runtime identifiers, migrate saves, generate/import assets, add races/maps/units/buildings/classes, start a desktop port, choose an engine, add multiplayer, or make broad UI changes.
+
+Baseline:
+
+- Starting commit/package: `8bc1241`, `ascendant-realms-private-playtest-8bc1241`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run `26690930073` on `8bc1241` completed successfully.
+
+Included work:
+
+- Added the v0.78 docs packet: title/brand options, world/lore bible, race matrix, hero architecture, gameplay pillars, campaign outline, browser-to-desktop gate, visual governance, vertical-slice brief, display-name migration map, original-IP ledger, future implementation sequence, Emmanuel review packet, and implementation report.
+- Updated package metadata and validation so the v0.78 docs can ship inside the private playtest package.
+- Updated README, roadmap, changelog, release checklist, and LLM handoff for docs-only closeout.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Stable internal IDs remain unchanged, including `free_marches`, `ashen_covenant`, `sylvan_concord`, map IDs, node IDs, ability IDs, item IDs, unit IDs, building IDs, and save fields.
+
+Verification:
+
+```text
+npm test PASS, 86 files / 644 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm test -- src/game/playtest/PlaytestPackageValidation.test.ts PASS, 1 file / 3 tests.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-8bc1241-dirty` generated.
+npm run verify:playtest-package PASS, 219 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.78 creative identity lock and original-IP separation pass`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.75-v0.77 Act 1 Finale And Rival Commander Milestone - 2026-05-30
 

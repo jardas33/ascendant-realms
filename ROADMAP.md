@@ -11,17 +11,27 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The latest player-facing checkpoint under closeout is **v0.32-v0.33 Persistent Relic Inventory And Hero Loadout Foundation** on 2026-05-27. It follows the clean v0.30-v0.31 rival champion and relic reward foundation and turns the three preview-only relic candidates into a tiny persistent RPG reward loop: eligible rival champion defeats can grant a unique relic, relics live in the existing hero inventory, `equipment.relic` equips one active relic, and modest effects apply only while equipped. It preserves the existing save version, runtime art/assets, maps, factions, Tutorial no-reward behavior, broad inventory/UI scope, Patrol, formations, and global balance architecture.
+The current checkpoint is **v0.78 Creative Identity Lock And Original-IP Separation Pass** on 2026-05-30. It is docs-only and follows the clean v0.75-v0.77 Act 1 finale package. It keeps `Ascendant Realms` as the internal codename while proposing `JARDAS: Oath of the Barrosan Marches` as a human-review public-title direction, defines Jardas/Lume/Salto/Barrosan Marches, drafts eight distinct playable race identities, outlines future Race + Class + Origin + Oath hero architecture, classifies signature gameplay pillars, sketches a five-act campaign, clarifies browser-to-desktop transition gates, records visual/AI-art governance, protects display-name migration safety, and separates original-IP inspiration from protected expression.
 
-The next recommended player-facing step is to finish v0.32-v0.33 closeout, package the clean build, and have Emmanuel retest only the relic path: defeat a rival champion, confirm the relic enters inventory, equip/unequip it, confirm the stat/effect summary, verify duplicate handling, and confirm Tutorial grants no relic. Do not expand into a reward-choice modal, random relic rolls, shop, crafting, multi-slot relic loadouts, save-version changes, new maps/factions, broad pathing rewrites, Patrol, balance tuning, UI redesign, or runtime art replacement without a new explicit goal. The next recommended visual phase remains **v0.9.2 Controlled Cinderfen Style-Frame Candidate Review**, but only after Emmanuel provides source/license-documented candidate images. Do not start the 2026 runtime visual overhaul until a future goal explicitly scopes art-source review, asset metadata, before/after screenshots, and runtime replacement approval.
+The next recommended step is Emmanuel review of `docs/V078_EMMANUEL_REVIEW_PACKET.md`. Do not start runtime rebranding, ID migration, save migration, Lume Network implementation, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, or new gameplay systems until a future explicit goal approves a narrow next step.
 
-New v0.32-v0.33 relic docs:
+New v0.78 docs:
 
-- `docs/V032_PERSISTENT_RELIC_INVENTORY_SPEC.md`
-- `docs/V033_HERO_RELIC_LOADOUT_SPEC.md`
-- `docs/V032_IMPLEMENTATION_REPORT.md`
-- `docs/V033_IMPLEMENTATION_REPORT.md`
-- `docs/V033_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V078_CREATIVE_IDENTITY_LOCK_PLAN.md`
+- `docs/V078_PUBLIC_TITLE_AND_BRAND_OPTIONS.md`
+- `docs/V078_WORLD_AND_LORE_BIBLE_DRAFT.md`
+- `docs/V078_RACE_AND_FACTION_MASTER_MATRIX.md`
+- `docs/V078_HERO_RACE_CLASS_ORIGIN_OATH_ARCHITECTURE.md`
+- `docs/V078_SIGNATURE_GAMEPLAY_PILLARS.md`
+- `docs/V078_LONG_CAMPAIGN_MASTER_OUTLINE.md`
+- `docs/V078_BROWSER_TO_DESKTOP_TRANSITION_GATE.md`
+- `docs/V078_VISUAL_DIRECTION_AND_AI_ART_GOVERNANCE.md`
+- `docs/V078_VISUAL_VERTICAL_SLICE_BRIEF.md`
+- `docs/V078_DISPLAY_NAME_MIGRATION_MAP.md`
+- `docs/V078_ORIGINAL_IP_SEPARATION_LEDGER.md`
+- `docs/V078_FUTURE_IMPLEMENTATION_SEQUENCE.md`
+- `docs/V078_EMMANUEL_REVIEW_PACKET.md`
+- `docs/V078_IMPLEMENTATION_REPORT.md`
 - `DEVELOPMENT_CHECKPOINT.md`
 - `CHANGELOG.md`
 - `LLM_GAME_HANDOFF.md`
