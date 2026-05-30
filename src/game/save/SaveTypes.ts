@@ -71,7 +71,7 @@ export interface StoredGameSaveV2 {
 export type CurrentStoredGameSave = StoredGameSaveV2;
 export type StoredGameSave = CurrentStoredGameSave;
 
-export type RetinueUnitStatus = "active" | "wounded";
+export type RetinueUnitStatus = "active" | "recovering";
 
 export interface RetinueUnitSaveData {
   retinueUnitId: string;
@@ -85,6 +85,7 @@ export interface RetinueUnitSaveData {
   status: RetinueUnitStatus;
   battlesSurvived?: number;
   missionsDeployed?: number;
+  recoveryMissionsRemaining?: number;
 }
 
 export type RivalLastOutcome = "unseen" | "escaped" | "defeated" | "wounded" | "triumphant";

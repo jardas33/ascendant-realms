@@ -137,6 +137,18 @@ export class BattleRuntime {
     this.stats.retinueUnitIdsLost = [...new Set(retinueUnitIds)];
   }
 
+  recordRetinueSurvivorHealth(survivors: Array<{ retinueUnitId: string; hpRatio: number }>): void {
+    this.stats.retinueSurvivorHealth = survivors.map((survivor) => ({
+      retinueUnitId: survivor.retinueUnitId,
+      hpRatio: Math.max(0, Math.min(1, survivor.hpRatio))
+    }));
+  }
+
+  recordRetinueReinforcement(retinueUnitId: string): void {
+    this.stats.retinueReinforcementUsed = true;
+    this.stats.retinueReinforcementUnitId = retinueUnitId;
+  }
+
   recordEnemyHeroPresence(enemyHeroId: string | undefined, enemyHeroName?: string): void {
     if (!enemyHeroId) {
       return;
@@ -315,6 +327,12 @@ export function completeBattle(
     completedObjectiveIds: [...input.stats.completedObjectiveIds],
     outcome: input.outcome,
     retinueUnitIdsLost: [...(input.stats.retinueUnitIdsLost ?? [])],
+    retinueParticipatingUnitIds: [...(input.stats.retinueParticipatingUnitIds ?? [])],
+    retinueUnitIdsRecovering: [...(input.stats.retinueUnitIdsRecovering ?? [])],
+    retinueUnitIdsReturnedReady: [...(input.stats.retinueUnitIdsReturnedReady ?? [])],
+    retinueSurvivorHealth: (input.stats.retinueSurvivorHealth ?? []).map((entry) => ({ ...entry })),
+    retinueReinforcementUsed: input.stats.retinueReinforcementUsed ?? false,
+    retinueReinforcementUnitId: input.stats.retinueReinforcementUnitId,
     enemyHeroDefeated: input.stats.enemyHeroDefeated ?? false,
     lossesInvolvingEnemyHero: input.stats.lossesInvolvingEnemyHero ?? 0,
     enemyPressureTriggeredStageIds: [...(input.stats.enemyPressureTriggeredStageIds ?? [])],

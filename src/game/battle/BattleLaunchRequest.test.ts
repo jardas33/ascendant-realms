@@ -248,17 +248,45 @@ describe("BattleLaunchRequest", () => {
           acquiredAt: "2026-05-02T12:00:00.000Z",
           status: "active"
         }
+      ],
+      retinueReserveUnits: [
+        {
+          retinueUnitId: "retinue:border_village:reserve-1",
+          unitTypeId: "ranger",
+          rank: "seasoned",
+          xp: 80,
+          kills: 1,
+          sourceBattleId: "border_village",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        },
+        {
+          retinueUnitId: "bad-reserve",
+          unitTypeId: "worker",
+          rank: "veteran",
+          xp: 120,
+          kills: 2,
+          sourceBattleId: "bad",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        }
       ]
     });
     const resolved = resolveBattleLaunchRequest(request);
 
     expect(request.retinueUnits).toHaveLength(1);
+    expect(request.retinueReserveUnits).toHaveLength(1);
     expect(resolved.ok).toBe(true);
     if (resolved.ok) {
       expect(resolved.launch.request.retinueUnits?.[0]).toMatchObject({
         retinueUnitId: "retinue:border_village:unit-1",
         unitTypeId: "militia",
         rank: "veteran"
+      });
+      expect(resolved.launch.request.retinueReserveUnits?.[0]).toMatchObject({
+        retinueUnitId: "retinue:border_village:reserve-1",
+        unitTypeId: "ranger",
+        rank: "seasoned"
       });
     }
   });

@@ -351,6 +351,11 @@ function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
   ) {
     return undefined;
   }
+  if (value.status === "lost") {
+    return undefined;
+  }
+  const recovering = value.status === "recovering" || value.status === "wounded";
+  const recoveryMissionsRemaining = recovering ? Math.max(1, clampInteger(value.recoveryMissionsRemaining, 1)) : undefined;
   return {
     retinueUnitId: value.retinueUnitId,
     unitTypeId: value.unitTypeId,
@@ -360,9 +365,10 @@ function normalizeRetinueUnit(value: unknown): RetinueUnitSaveData | undefined {
     kills: clampInteger(value.kills, 0),
     sourceBattleId: typeof value.sourceBattleId === "string" && value.sourceBattleId.trim() ? value.sourceBattleId : "unknown",
     acquiredAt: typeof value.acquiredAt === "string" ? value.acquiredAt : new Date().toISOString(),
-    status: value.status === "wounded" ? "wounded" : "active",
+    status: recovering ? "recovering" : "active",
     battlesSurvived: clampInteger(value.battlesSurvived, 0),
-    missionsDeployed: clampInteger(value.missionsDeployed, 0)
+    missionsDeployed: clampInteger(value.missionsDeployed, 0),
+    recoveryMissionsRemaining
   };
 }
 

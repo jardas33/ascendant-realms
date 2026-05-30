@@ -625,7 +625,72 @@ describe("results scene helpers", () => {
     expect(summaryHtml).toContain("Veteran Militia");
     expect(summaryHtml).toContain("Lost");
     expect(summaryHtml).toContain("Seasoned Ranger");
-    expect(summaryHtml).toContain("Surviving deployed Retinue units update their campaign record");
+    expect(summaryHtml).toContain("Low-HP Retinue survivors recover");
+  });
+
+  it("renders retinue recovery, returned-ready, and reinforcement results", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "first_claim",
+        difficulty: "easy",
+        campaignNodeId: "border_village",
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:old:militia",
+            unitTypeId: "militia",
+            rank: "veteran",
+            xp: 140,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          }
+        ],
+        retinueReserveUnits: [
+          {
+            retinueUnitId: "retinue:reserve:ranger",
+            unitTypeId: "ranger",
+            rank: "seasoned",
+            xp: 85,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active"
+          },
+          {
+            retinueUnitId: "retinue:recovering:acolyte",
+            unitTypeId: "acolyte",
+            rank: "seasoned",
+            xp: 92,
+            kills: 2,
+            sourceBattleId: "aether_well_ruins",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "recovering",
+            recoveryMissionsRemaining: 1
+          }
+        ]
+      }),
+      stats: {
+        ...baseStats(),
+        retinueParticipatingUnitIds: ["retinue:old:militia", "retinue:reserve:ranger"],
+        retinueUnitIdsRecovering: ["retinue:old:militia"],
+        retinueUnitIdsReturnedReady: ["retinue:recovering:acolyte"],
+        retinueReinforcementUsed: true,
+        retinueReinforcementUnitId: "retinue:reserve:ranger"
+      }
+    });
+
+    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+
+    expect(summaryHtml).toContain("Reinforcement");
+    expect(summaryHtml).toContain("Seasoned Ranger");
+    expect(summaryHtml).toContain("Entering recovery");
+    expect(summaryHtml).toContain("Veteran Militia");
+    expect(summaryHtml).toContain("Returned Ready");
+    expect(summaryHtml).toContain("Seasoned Acolyte");
   });
 
   it("renders campaign rival outcome and persistent relic reward copy", () => {

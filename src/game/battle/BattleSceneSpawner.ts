@@ -11,7 +11,7 @@ import { Building } from "../entities/Building";
 import { CaptureSite } from "../entities/CaptureSite";
 import { Hero } from "../entities/Hero";
 import { Unit } from "../entities/Unit";
-import type { HeroSaveData } from "../save/SaveTypes";
+import type { HeroSaveData, RetinueUnitSaveData } from "../save/SaveTypes";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 
 interface SpawnBattleScenarioOptions {
@@ -229,21 +229,38 @@ function spawnRetinueUnits(options: {
     return;
   }
   options.launch.request.retinueUnits?.forEach((retinueUnit, index) => {
-    const unit = spawnUnit({
+    spawnRetinueUnitFromSave({
       scene: options.scene,
       addUnit: options.addUnit,
-      unitId: retinueUnit.unitTypeId,
-      team: "player",
+      retinueUnit,
       x: options.activeMap.playerStart.x + 92 + index * 34,
-      y: options.activeMap.playerStart.y + 132,
-      id: retinueUnit.retinueUnitId
+      y: options.activeMap.playerStart.y + 132
     });
-    unit.retinueUnitId = retinueUnit.retinueUnitId;
-    unit.veterancy = {
-      ...createUnitVeterancyState(retinueUnit.retinueUnitId, retinueUnit.unitTypeId, retinueUnit.xp),
-      rank: retinueUnit.rank,
-      kills: retinueUnit.kills
-    };
-    unit.applyVeterancyRank(retinueUnit.rank);
   });
+}
+
+export function spawnRetinueUnitFromSave(options: {
+  scene: Phaser.Scene;
+  addUnit: (unit: Unit) => void;
+  retinueUnit: RetinueUnitSaveData;
+  x: number;
+  y: number;
+}): Unit {
+  const unit = spawnUnit({
+    scene: options.scene,
+    addUnit: options.addUnit,
+    unitId: options.retinueUnit.unitTypeId,
+    team: "player",
+    x: options.x,
+    y: options.y,
+    id: options.retinueUnit.retinueUnitId
+  });
+  unit.retinueUnitId = options.retinueUnit.retinueUnitId;
+  unit.veterancy = {
+    ...createUnitVeterancyState(options.retinueUnit.retinueUnitId, options.retinueUnit.unitTypeId, options.retinueUnit.xp),
+    rank: options.retinueUnit.rank,
+    kills: options.retinueUnit.kills
+  };
+  unit.applyVeterancyRank(options.retinueUnit.rank);
+  return unit;
 }

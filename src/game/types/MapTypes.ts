@@ -140,6 +140,12 @@ export interface BattleStats {
   outcome: "victory" | "defeat";
   veteranSummary?: UnitVeterancyBattleSummary;
   retinueUnitIdsLost?: string[];
+  retinueParticipatingUnitIds?: string[];
+  retinueUnitIdsRecovering?: string[];
+  retinueUnitIdsReturnedReady?: string[];
+  retinueSurvivorHealth?: Array<{ retinueUnitId: string; hpRatio: number }>;
+  retinueReinforcementUsed?: boolean;
+  retinueReinforcementUnitId?: string;
   enemyHeroId?: string;
   enemyHeroName?: string;
   enemyHeroDefeated?: boolean;

@@ -59,7 +59,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.60-v0.62 persistent Retinue and deployment foundation",
+          checkpoint: "v0.63-v0.65 Retinue recovery and reinforcement foundation",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -215,6 +215,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V061_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue deployment report" },
       { path: "V062_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue survivor continuity report" },
       { path: "V062_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.62 retest" },
+      { path: "V063_RETINUE_RECOVERY_SPEC.md", sizeBytes: 20, textContent: "Retinue recovery spec" },
+      { path: "V064_RESERVE_MANAGEMENT_SPEC.md", sizeBytes: 20, textContent: "Reserve management spec" },
+      { path: "V065_BATTLEFIELD_REINFORCEMENT_SPEC.md", sizeBytes: 20, textContent: "Battlefield reinforcement spec" },
+      { path: "V063_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Retinue recovery report" },
+      { path: "V064_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Reserve management report" },
+      { path: "V065_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "Battlefield reinforcement report" },
+      { path: "V065_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.65 retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

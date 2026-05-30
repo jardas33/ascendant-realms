@@ -1,6 +1,72 @@
 # Development Checkpoint
 
-Updated: 2026-05-29 v0.60-v0.62 persistent Retinue and deployment closeout
+Updated: 2026-05-30 v0.63-v0.65 Retinue recovery and reinforcement closeout
+
+## v0.63-v0.65 Retinue Recovery And Reinforcement Foundation - 2026-05-30
+
+Scope: deepen the small Retinue survivor loop with recovery status, reserve readability, and one safe once-per-battle reinforcement option. This pass changes Retinue save normalization, campaign Retinue panel state copy, campaign battle launch reserve payloads, battle HUD command wiring, Results Retinue summaries, hosted proxy coverage, package metadata/validation, and docs. It does not add maps, factions, runtime art/assets, giant roster UI, permanent control groups, broad pathing/AI rewrite, global rebalance, shop/crafting, save-version bump, formation editor, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `3c10913`, `ascendant-realms-private-playtest-3c10913`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run run `26672416357` on `3c10913` completed successfully.
+
+Included work:
+
+- Added `docs/V063_RETINUE_RECOVERY_SPEC.md`.
+- Added `docs/V064_RESERVE_MANAGEMENT_SPEC.md`.
+- Added `docs/V065_BATTLEFIELD_REINFORCEMENT_SPEC.md`.
+- Added `docs/V063_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V064_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `recovering` Retinue status and optional one-step recovery timer.
+- Added legacy `wounded` to `recovering` migration and safe lost/invalid Retinue filtering.
+- Added Ready reserve and Recovering counts to the Campaign Map Retinue Camp.
+- Blocked Recovering units from deployment and Call Retinue.
+- Added campaign battle reserve launch payloads separate from selected deployment payloads.
+- Added campaign-only Call Retinue with 75 Crowns battle cost, one-use cap, Command Hall gating, Ready reserve selection, safe Command Hall spawn, minimap ping, and Results recording.
+- Added Results copy for participating Retinue, reinforcement, survived/lost units, entering recovery, and returned Ready.
+- Added package validation requirements for the v0.63-v0.65 docs.
+
+Save format:
+
+- No save-version bump.
+- Added optional `recoveryMissionsRemaining` on Retinue entries.
+- `active` remains Ready; Deployed remains derived from `campaign.retinueDeploymentIds`.
+- Existing saves without recovery fields load Ready by default.
+- Legacy `wounded` Retinue entries load as `recovering` with one mission remaining.
+- `lost`, invalid, duplicate, unknown-unit, non-Retinue, and stale deployment ids normalize safely.
+- Tutorial/no-reward routes do not alter Retinue recovery or reinforcement state.
+
+Verification:
+
+```text
+Focused Retinue/save/results/HUD/package Vitest PASS, 8 files / 110 tests.
+Focused hosted Retinue reinforcement/recovery proxy PASS, 1 test, after rebuilding production dist.
+npm test PASS, 81 files / 610 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast NON-PASS first attempt, timed out after 184 seconds with no summary; clean rerun PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 console errors / 0 retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-3c10913-dirty` generated.
+npm run verify:playtest-package PASS, 176 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Interaction note: the new reinforcement proxy uses the existing command-button helper for HUD DOM commands. No force-click or DOM fallback was introduced for canvas/world clicks.
+
+Closeout note: commit this checkpoint, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.60-v0.62 Persistent Retinue And Deployment Foundation - 2026-05-29
 

@@ -310,6 +310,37 @@ describe("CommandPanel", () => {
 
     expect(markup).not.toContain('data-action="patrol"');
   });
+
+  it("renders Retinue reinforcement availability and disabled reasons", () => {
+    const readyMarkup = renderCommandActions(undefined, {
+      ...fakeSnapshot(["command_hall"]),
+      retinueReinforcement: {
+        available: true,
+        cost: { crowns: 75 },
+        reserveCount: 2,
+        readyReserveCount: 1,
+        used: false
+      }
+    });
+    const lockedMarkup = renderCommandActions(undefined, {
+      ...fakeSnapshot(["command_hall"]),
+      retinueReinforcement: {
+        available: false,
+        reason: "No Ready reserve Retinue",
+        cost: { crowns: 75 },
+        reserveCount: 1,
+        readyReserveCount: 0,
+        used: false
+      }
+    });
+
+    expect(readyMarkup).toContain('data-action="retinue-reinforcement"');
+    expect(readyMarkup).toContain('data-testid="command-retinue-reinforcement-retinue"');
+    expect(readyMarkup).toContain("Ready reserves 1/2");
+    expect(readyMarkup).toContain("Cost: 75 Crowns");
+    expect(lockedMarkup).toContain('data-disabled-reason="No Ready reserve Retinue"');
+    expect(lockedMarkup).toContain("No Ready reserve Retinue. Cost: 75 Crowns");
+  });
 });
 
 function fakeBuilding(id: string, buildingId: string, completed = true): Building {

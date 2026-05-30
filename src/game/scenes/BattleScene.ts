@@ -8,7 +8,7 @@ import type {
   UpgradeDefinition,
   UnitVeterancyRankUpEvent
 } from "../core/GameTypes";
-import { formatTime } from "../core/MathUtils";
+import { formatTime, payCost } from "../core/MathUtils";
 import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
 import { formatRivalBattleStartCopy, rivalLaunchModifierName } from "../core/RivalRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
@@ -18,6 +18,7 @@ import {
   AI_PERSONALITY_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
+  requireUnit,
   UPGRADE_BY_ID
 } from "../data/contentIndex";
 import { getBattleDifficulty } from "../data/battlePacing";
@@ -51,7 +52,7 @@ import { endBattleAndOpenResults } from "../battle/BattleSceneResults";
 import { createBattleMinimapSnapshot } from "../battle/BattleSceneSnapshots";
 import { completeBattleSecondaryObjective } from "../battle/BattleSceneObjectives";
 import { applySecondaryObjectiveBattleEffect } from "../battle/SecondaryObjectiveEffects";
-import { spawnBattleScenario, type NeutralCampLabel } from "../battle/BattleSceneSpawner";
+import { spawnBattleScenario, spawnRetinueUnitFromSave, type NeutralCampLabel } from "../battle/BattleSceneSpawner";
 import {
   applyFirstCaptureBonusAdditions,
   createBattleFogOfWar,
@@ -99,7 +100,9 @@ import { AudioManager } from "../systems/AudioManager";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
 import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
+import { evaluateRetinueReinforcement, selectRetinueReinforcementUnit } from "../systems/RetinueReinforcementRules";
 import { tickStatusEffects } from "../systems/StatusEffectSystem";
+import { findWalkableTrainedUnitSpawnPoint } from "../systems/TrainingSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
 
@@ -202,6 +205,7 @@ export class BattleScene extends Phaser.Scene {
   private nextEnemyWaveId = 1;
   private unitVeterancyRankUps: UnitVeterancyRankUpEvent[] = [];
   private lostRetinueUnitIds = new Set<string>();
+  private retinueReinforcementUsed = false;
   private scoutedEnemyHeroIds = new Set<string>();
   private menuPaused = false;
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
@@ -322,6 +326,7 @@ export class BattleScene extends Phaser.Scene {
     this.nextEnemyWaveId = 1;
     this.unitVeterancyRankUps = [];
     this.lostRetinueUnitIds = new Set<string>();
+    this.retinueReinforcementUsed = false;
     this.scoutedEnemyHeroIds = new Set<string>();
     this.menuPaused = false;
     this.researchedUpgradeIds = {
@@ -393,7 +398,8 @@ export class BattleScene extends Phaser.Scene {
       onPlayerUnitTrained: (unitId) => this.enemyPressureRuntime?.recordPlayerTrainedUnit(unitId),
       openMainMenu: () => this.openBattleMenu(),
       resumeBattle: () => this.resumeBattle(),
-      exitToMainMenu: () => this.exitToMainMenu()
+      exitToMainMenu: () => this.exitToMainMenu(),
+      callRetinueReinforcement: () => this.callRetinueReinforcement()
     });
 
     this.movementSystem = systems.movementSystem;
@@ -915,6 +921,7 @@ export class BattleScene extends Phaser.Scene {
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       controlGroups: this.controlGroupSystem.summaries(this.units),
+      retinueReinforcement: this.createRetinueReinforcementSnapshot(),
       pauseMenu: this.menuPaused
         ? {
             visible: true,
@@ -1010,6 +1017,101 @@ export class BattleScene extends Phaser.Scene {
       )
     );
     this.runtime.recordRetinueLosses([...this.lostRetinueUnitIds]);
+    this.runtime.recordRetinueSurvivorHealth(
+      this.units
+        .filter((unit) => unit.alive && unit.retinueUnitId)
+        .map((unit) => ({
+          retinueUnitId: unit.retinueUnitId!,
+          hpRatio: unit.maxHp > 0 ? unit.hp / unit.maxHp : 0
+        }))
+    );
+  }
+
+  private createRetinueReinforcementSnapshot() {
+    if (this.launch.request.mode !== "campaign_node" || this.launch.request.rewardsDisabled) {
+      return undefined;
+    }
+    const availability = evaluateRetinueReinforcement({
+      mode: this.launch.request.mode,
+      rewardsDisabled: this.launch.request.rewardsDisabled,
+      alreadyUsed: this.retinueReinforcementUsed,
+      commandHallAlive: Boolean(this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player")),
+      resources: this.resources.player,
+      reserveUnits: this.launch.request.retinueReserveUnits ?? []
+    });
+    return {
+      available: availability.ok,
+      reason: availability.reason,
+      cost: availability.cost,
+      reserveCount: availability.reserveCount,
+      readyReserveCount: availability.readyReserveCount,
+      used: availability.used
+    };
+  }
+
+  private callRetinueReinforcement(): boolean {
+    const reserveUnits = this.launch.request.retinueReserveUnits ?? [];
+    const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    const availability = evaluateRetinueReinforcement({
+      mode: this.launch.request.mode,
+      rewardsDisabled: this.launch.request.rewardsDisabled,
+      alreadyUsed: this.retinueReinforcementUsed,
+      commandHallAlive: Boolean(commandHall),
+      resources: this.resources.player,
+      reserveUnits
+    });
+    if (!availability.ok || !commandHall) {
+      this.showMessage(`Call Retinue unavailable: ${availability.reason ?? "Unavailable"}`, undefined, undefined, "#ffd27a", {
+        priority: "command"
+      });
+      return false;
+    }
+    const retinueUnit = selectRetinueReinforcementUnit(reserveUnits);
+    if (!retinueUnit) {
+      this.showMessage("Call Retinue unavailable: no Ready reserve.", undefined, undefined, "#ffd27a", {
+        priority: "command"
+      });
+      return false;
+    }
+    if (!payCost(this.resources.player, availability.cost)) {
+      this.showMessage("Call Retinue unavailable: insufficient Crowns.", undefined, undefined, "#ffd27a", {
+        priority: "command"
+      });
+      return false;
+    }
+    const definition = requireUnit(retinueUnit.unitTypeId);
+    const preferredPoint = {
+      x: commandHall.position.x + commandHall.radius + definition.radius + 24,
+      y: commandHall.position.y
+    };
+    const spawnPoint = findWalkableTrainedUnitSpawnPoint({
+      building: commandHall,
+      unitDefinition: definition,
+      preferredPoint,
+      spawnIndex: this.units.length,
+      map: this.activeMap,
+      buildings: this.buildings
+    });
+    const unit = spawnRetinueUnitFromSave({
+      scene: this,
+      addUnit: (entry) => this.addUnit(entry),
+      retinueUnit,
+      x: spawnPoint.x,
+      y: spawnPoint.y
+    });
+    this.retinueReinforcementUsed = true;
+    this.runtime.recordRetinueReinforcement(retinueUnit.retinueUnitId);
+    this.selectionSystem.setSelection([unit]);
+    this.addMinimapPing(unit.position.x, unit.position.y, "#9cf7b1", "Retinue reinforcement");
+    this.showMessage(
+      `Retinue reinforcement arrived: ${formatRetinueDeploymentLabel(retinueUnit)}`,
+      unit.position.x,
+      unit.position.y - 42,
+      "#d9eee8",
+      { priority: "command" }
+    );
+    this.refreshBattleHud(0);
+    return true;
   }
 
   private castAbilitySlot(slot: number): void {

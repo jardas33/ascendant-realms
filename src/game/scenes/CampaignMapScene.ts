@@ -40,7 +40,7 @@ import {
 import { renderRetinuePanel } from "../campaign/RetinuePanel";
 import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
-import { dismissRetinueUnit, retinueDeploymentUnits, toggleRetinueDeployment } from "../core/RetinueRules";
+import { dismissRetinueUnit, retinueDeploymentUnits, retinueReserveUnits, toggleRetinueDeployment } from "../core/RetinueRules";
 
 interface CampaignMapData {
   heroSave?: HeroSaveData;
@@ -175,7 +175,8 @@ export class CampaignMapScene extends Phaser.Scene {
             ...getStrongholdLaunchModifiers(this.campaignSave),
             ...getRivalBattleLaunchModifiers(this.campaignSave, node)
           ],
-          retinueUnits: retinueDeploymentUnits(this.campaignSave)
+          retinueUnits: retinueDeploymentUnits(this.campaignSave),
+          retinueReserveUnits: retinueReserveUnits(this.campaignSave)
         })
       });
       return;

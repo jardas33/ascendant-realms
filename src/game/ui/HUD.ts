@@ -112,6 +112,10 @@ export class HUD {
         callbacks.onPatrolCommand();
         handled = true;
       }
+      if (action === "retinue-reinforcement") {
+        callbacks.onRetinueReinforcement();
+        handled = true;
+      }
       if (action === "tutorial-next") {
         callbacks.onTutorialNext();
         handled = true;

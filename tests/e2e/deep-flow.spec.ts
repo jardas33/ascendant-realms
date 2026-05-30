@@ -1895,7 +1895,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("retinue-panel")).toContainText("1/5 roster");
     await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
-    await expect(page.getByTestId("retinue-panel")).toContainText("Deploying");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Deployed");
     await expect(page.getByTestId("retinue-panel")).toContainText("Gate Militia");
     await expect(page.getByTestId("retinue-panel")).toContainText("Veteran");
     await expect(page.getByTestId("retinue-panel")).toContainText("140/230 XP to Elite");
@@ -1908,7 +1908,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("retinue-panel")).toContainText("Reserve");
     await page.locator("button[data-retinue-deploy-toggle='retinue:e2e:veteran_militia']").click();
     await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
-    await expect(page.getByTestId("retinue-panel")).toContainText("Deploying");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Deployed");
 
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow retinue campaign node");
     await clickReady(
@@ -1946,6 +1946,98 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".stat-list")).toContainText("Kills 3");
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Bonuses +8% HP, +8% damage");
     await expect(page.getByTestId("selected-unit-stats")).toContainText("Veterancy Deployed retinue veteran");
+  });
+
+  test("Retinue reserve reinforcement arrives once and Results explains recovery status @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(80_000);
+    await seedSave(page, {
+      campaign: {
+        unlockedNodeIds: ["border_village"],
+        selectedNodeId: "border_village",
+        retinueUnits: [
+          {
+            retinueUnitId: "retinue:e2e:recovering_militia",
+            unitTypeId: "militia",
+            name: "Gate Militia",
+            rank: "veteran",
+            xp: 140,
+            kills: 3,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active",
+            battlesSurvived: 2,
+            missionsDeployed: 1
+          },
+          {
+            retinueUnitId: "retinue:e2e:reserve_ranger",
+            unitTypeId: "ranger",
+            name: "Road Ranger",
+            rank: "seasoned",
+            xp: 85,
+            kills: 1,
+            sourceBattleId: "old_stone_road",
+            acquiredAt: "2026-05-02T12:00:00.000Z",
+            status: "active",
+            battlesSurvived: 1,
+            missionsDeployed: 0
+          }
+        ],
+        retinueDeploymentIds: ["retinue:e2e:recovering_militia"]
+      }
+    });
+
+    await startBorderVillageCampaignBattle(page);
+    await expect(page.getByTestId("battle-status")).toContainText("Retinue deployed: Veteran Militia");
+
+    const setup = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      scene.resources.player.crowns = 120;
+      scene.refreshBattleHud?.(0);
+      const deployed = scene.units.find((unit: any) => unit.retinueUnitId === "retinue:e2e:recovering_militia");
+      if (!deployed) {
+        throw new Error("Expected deployed Retinue militia.");
+      }
+      deployed.hp = Math.max(1, Math.floor(deployed.maxHp * 0.25));
+      return {
+        crownsBefore: scene.resources.player.crowns
+      };
+    });
+
+    const reinforcementButton = page.locator("button[data-action='retinue-reinforcement']");
+    await expect(reinforcementButton).toContainText("Call Retinue");
+    await expect(reinforcementButton).toContainText("Ready reserves 1/1");
+    await clickBattleCommand(reinforcementButton, "deep-flow Retinue reinforcement command");
+
+    const reinforcement = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const unit = scene?.units.find((entry: any) => entry.retinueUnitId === "retinue:e2e:reserve_ranger");
+      if (!scene || !unit) {
+        throw new Error("Expected reserve Retinue ranger reinforcement to spawn.");
+      }
+      return {
+        crownsAfter: scene.resources.player.crowns,
+        reinforcementId: unit.retinueUnitId,
+        selected: scene.selectionSystem?.getSelected?.().some((entry: any) => entry.retinueUnitId === unit.retinueUnitId)
+      };
+    });
+
+    expect(reinforcement.crownsAfter).toBe(setup.crownsBefore - 75);
+    expect(reinforcement).toMatchObject({
+      reinforcementId: "retinue:e2e:reserve_ranger",
+      selected: true
+    });
+    await expect(reinforcementButton).toContainText("Already used this battle");
+
+    await forceActiveBattleOutcome(page, "victory");
+    const resultsPanel = page.locator(".results-panel");
+    await expect(resultsPanel).toContainText("Retinue Deployed");
+    await expect(resultsPanel).toContainText("Reinforcement");
+    await expect(resultsPanel).toContainText("Seasoned Ranger");
+    await expect(resultsPanel).toContainText("Entering recovery");
+    await expect(resultsPanel).toContainText("Veteran Militia");
   });
 
   test("known rival state previews, resolves, and persists after a commander defeat @hosted-deep-meta", async ({ page }) => {

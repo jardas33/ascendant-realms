@@ -3,6 +3,7 @@ import { getActiveHeroBuildSynergy } from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
 import { formatRelicBuildArchetype } from "../core/RelicRewardRules";
 import { formatRetinueDeploymentLabel, isRetinueEligibleVeteran, retinueEligibilityReason } from "../core/RetinueRules";
+import type { RetinueUnitSaveData } from "../save/SaveTypes";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
 import { escapeHtml, formatDuplicateConversions, formatTags, formatXpProgress, formatStatMods, titleCase } from "./ResultsFormatting";
 import { ITEM_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
@@ -44,25 +45,57 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
 }
 
 export function renderRetinueBattleSummary(data: ResultsData): string {
-  const deployed = data.launchRequest?.mode === "campaign_node" ? data.launchRequest.retinueUnits ?? [] : [];
-  if (deployed.length === 0) {
+  const participants = retinueResultParticipants(data);
+  const lostIds = new Set(data.stats.retinueUnitIdsLost ?? []);
+  const recoveryIds = new Set(data.stats.retinueUnitIdsRecovering ?? []);
+  const returnedIds = new Set(data.stats.retinueUnitIdsReturnedReady ?? []);
+  const lost = participants.filter((unit) => lostIds.has(unit.retinueUnitId));
+  const survived = participants.filter((unit) => !lostIds.has(unit.retinueUnitId));
+  const recovering = participants.filter((unit) => recoveryIds.has(unit.retinueUnitId));
+  const returnedReady = retinueResultRoster(data).filter((unit) => returnedIds.has(unit.retinueUnitId));
+  const reinforcement = data.stats.retinueReinforcementUnitId
+    ? retinueResultRoster(data).find((unit) => unit.retinueUnitId === data.stats.retinueReinforcementUnitId)
+    : undefined;
+  if (participants.length === 0 && returnedReady.length === 0 && !data.stats.retinueReinforcementUsed) {
     return "";
   }
-  const lostIds = new Set(data.stats.retinueUnitIdsLost ?? []);
-  const lost = deployed.filter((unit) => lostIds.has(unit.retinueUnitId));
-  const survived = deployed.filter((unit) => !lostIds.has(unit.retinueUnitId));
   return `
     <section class="result-block wide retinue-battle-summary" data-testid="results-retinue-battle-summary">
       <h2>Retinue Deployed</h2>
       <div class="results-grid compact">
-        <span>Deployed count</span><strong>${deployed.length} ${deployed.length === 1 ? "unit" : "units"}</strong>
-        <span>Deployed</span><strong>${escapeHtml(deployed.map(formatRetinueDeploymentLabel).join(", "))}</strong>
+        <span>Participated</span><strong>${participants.length} ${participants.length === 1 ? "unit" : "units"}</strong>
+        <span>Battle Retinue</span><strong>${escapeHtml(participants.map(formatRetinueDeploymentLabel).join(", "))}</strong>
+        <span>Reinforcement</span><strong>${reinforcement ? escapeHtml(formatRetinueDeploymentLabel(reinforcement)) : data.stats.retinueReinforcementUsed ? "Used" : "Not used"}</strong>
         <span>Survived</span><strong>${survived.length > 0 ? escapeHtml(survived.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
         <span>Lost</span><strong>${lost.length > 0 ? escapeHtml(lost.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
+        <span>Entering recovery</span><strong>${recovering.length > 0 ? escapeHtml(recovering.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
+        <span>Returned Ready</span><strong>${returnedReady.length > 0 ? escapeHtml(returnedReady.map(formatRetinueDeploymentLabel).join(", ")) : "None"}</strong>
       </div>
-      <p class="quiet">Surviving deployed Retinue units update their campaign record. Lost Retinue units are removed from the roster after battle.</p>
+      <p class="quiet">Low-HP Retinue survivors recover for one first-clear campaign progression step. Lost Retinue units are removed from the roster after battle.</p>
     </section>
   `;
+}
+
+function retinueResultRoster(data: ResultsData): RetinueUnitSaveData[] {
+  if (data.launchRequest?.mode !== "campaign_node") {
+    return [];
+  }
+  const seen = new Set<string>();
+  return [...(data.launchRequest.retinueUnits ?? []), ...(data.launchRequest.retinueReserveUnits ?? [])].filter((unit) => {
+    if (seen.has(unit.retinueUnitId)) {
+      return false;
+    }
+    seen.add(unit.retinueUnitId);
+    return true;
+  });
+}
+
+function retinueResultParticipants(data: ResultsData): RetinueUnitSaveData[] {
+  const participants = new Set(
+    data.stats.retinueParticipatingUnitIds ??
+      (data.launchRequest?.mode === "campaign_node" ? (data.launchRequest.retinueUnits ?? []).map((unit) => unit.retinueUnitId) : [])
+  );
+  return retinueResultRoster(data).filter((unit) => participants.has(unit.retinueUnitId));
 }
 
 export function renderRivalOutcome(data: ResultsData): string {

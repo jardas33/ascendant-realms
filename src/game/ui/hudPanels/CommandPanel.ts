@@ -25,8 +25,11 @@ import type { HUDSnapshot } from "./HudTypes";
 export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefined, snapshot: HUDSnapshot): string {
   const selectedUnits = snapshot.selected.filter((entity): entity is Unit => entity instanceof Unit);
   const tacticsButtons = renderTacticsButtons(selectedUnits);
+  const reinforcementButton = renderRetinueReinforcementButton(snapshot);
   if (!selectedOne) {
-    return tacticsButtons ? `<div class="action-group"><strong>Tactics</strong>${tacticsButtons}</div>` : "";
+    return tacticsButtons || reinforcementButton
+      ? `<div class="action-group"><strong>Tactics</strong>${reinforcementButton}${tacticsButtons}</div>`
+      : "";
   }
 
   if (!(selectedOne instanceof Building) && !(selectedOne instanceof Unit) && !(selectedOne instanceof CaptureSite)) {
@@ -225,13 +228,35 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   if (resourceSiteUpgradeButtons) {
     sections.push(`<div class="action-group"><strong>Site Upgrade</strong>${resourceSiteUpgradeButtons}</div>`);
   }
-  if (tacticsButtons) {
-    sections.push(`<div class="action-group"><strong>Tactics</strong>${tacticsButtons}</div>`);
+  if (tacticsButtons || reinforcementButton) {
+    sections.push(`<div class="action-group"><strong>Tactics</strong>${reinforcementButton}${tacticsButtons}</div>`);
   }
   if (upgradeButtons) {
     sections.push(`<div class="action-group"><strong>Upgrades</strong>${upgradeButtons}</div>`);
   }
   return sections.join("");
+}
+
+function renderRetinueReinforcementButton(snapshot: HUDSnapshot): string {
+  const state = snapshot.retinueReinforcement;
+  if (!state) {
+    return "";
+  }
+  const detail = state.available
+    ? `Cost: ${formatCost(state.cost)}`
+    : `${state.reason ?? "Unavailable"}. Cost: ${formatCost(state.cost)}`;
+  return renderCommandButton({
+    action: "retinue-reinforcement",
+    verb: "Call",
+    id: "retinue",
+    sourceId: "reserve",
+    name: "Retinue",
+    detail,
+    lockReason: state.available ? undefined : state.reason ?? "Unavailable",
+    description: `Once per battle. Ready reserves ${state.readyReserveCount}/${state.reserveCount}.`,
+    effect: "Effect: deploys one Ready reserve near the Command Hall.",
+    locked: !state.available
+  });
 }
 
 function renderTacticsButtons(selectedUnits: Unit[]): string {
@@ -273,7 +298,16 @@ function formatCommandDetail(cost: Cost, lockReason?: string): string {
 type UnitDefinitionOwner = HUDSnapshot["selected"][number];
 
 function renderCommandButton(options: {
-  action: "build" | "train" | "upgrade" | "repair" | "assign-resource-site" | "upgrade-resource-site" | "stop" | "patrol";
+  action:
+    | "build"
+    | "train"
+    | "upgrade"
+    | "repair"
+    | "assign-resource-site"
+    | "upgrade-resource-site"
+    | "stop"
+    | "patrol"
+    | "retinue-reinforcement";
   verb: string;
   id: string;
   sourceId: string;

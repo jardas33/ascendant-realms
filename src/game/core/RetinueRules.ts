@@ -16,6 +16,8 @@ export type RetinueEligibleUnitTypeId = (typeof RETINUE_ELIGIBLE_UNIT_TYPE_IDS)[
 export const RETINUE_ROSTER_CAPACITY = 5;
 export const RETINUE_BASE_DEPLOYMENT_CAPACITY = 2;
 export const RETINUE_TRAINING_YARD_II_DEPLOYMENT_BONUS = 1;
+export const RETINUE_RECOVERY_HP_RATIO_THRESHOLD = 0.35;
+export const RETINUE_RECOVERY_MISSION_STEPS = 1;
 
 export interface RetinueAddResult {
   ok: boolean;
@@ -29,6 +31,9 @@ export interface RetinueCapacityBreakdown {
   capacity: number;
   rosterCapacity: number;
   baseRosterCapacity: number;
+  readyCount: number;
+  recoveringCount: number;
+  reserveCount: number;
   deploymentCount: number;
   deploymentCapacity: number;
   baseDeploymentCapacity: number;
@@ -40,6 +45,35 @@ export interface RetinueDeploymentToggleResult {
   campaign: CampaignSaveData;
   selected: boolean;
   reason?: string;
+}
+
+export interface RetinueHealthSnapshot {
+  retinueUnitId: string;
+  hpRatio: number;
+}
+
+export interface RetinueBattleUpdateSummary {
+  participatingUnitIds: string[];
+  survivedIds: string[];
+  lostIds: string[];
+  enteredRecoveryIds: string[];
+  returnedReadyIds: string[];
+  reinforcementUsed: boolean;
+  reinforcementUnitId?: string;
+}
+
+export interface RetinueBattleUpdateResult {
+  campaign: CampaignSaveData;
+  summary: RetinueBattleUpdateSummary;
+}
+
+export interface RetinueBattleUpdateOptions {
+  lostRetinueUnitIds?: string[];
+  participatingRetinueUnitIds?: string[];
+  survivorHealth?: RetinueHealthSnapshot[];
+  progressionStepCompleted?: boolean;
+  reinforcementUsed?: boolean;
+  reinforcementUnitId?: string;
 }
 
 export function getRetinueCapacity(campaign: CampaignSaveData): number {
@@ -62,17 +96,38 @@ export function activeRetinueUnits(campaign: CampaignSaveData): RetinueUnitSaveD
   return campaign.retinueUnits.filter((unit) => unit.status === "active" && isRetinueEligibleUnitTypeId(unit.unitTypeId));
 }
 
+export function retinueRosterUnits(campaign: CampaignSaveData): RetinueUnitSaveData[] {
+  return campaign.retinueUnits.filter(
+    (unit) => (unit.status === "active" || unit.status === "recovering") && isRetinueEligibleUnitTypeId(unit.unitTypeId)
+  );
+}
+
+export function recoveringRetinueUnits(campaign: CampaignSaveData): RetinueUnitSaveData[] {
+  return retinueRosterUnits(campaign).filter((unit) => unit.status === "recovering");
+}
+
+export function retinueReserveUnits(campaign: CampaignSaveData): RetinueUnitSaveData[] {
+  const selectedIds = new Set(selectedRetinueUnitIds(campaign));
+  return retinueRosterUnits(campaign).filter((unit) => !selectedIds.has(unit.retinueUnitId));
+}
+
 export function getRetinueCapacityBreakdown(campaign: CampaignSaveData): RetinueCapacityBreakdown {
   const trainingYardBonus =
     (campaign.strongholdUpgradeRanks.training_yard_ii ?? 0) > 0
       ? RETINUE_TRAINING_YARD_II_DEPLOYMENT_BONUS
       : 0;
+  const roster = retinueRosterUnits(campaign);
+  const ready = activeRetinueUnits(campaign);
+  const selected = retinueDeploymentUnits(campaign);
   const selectedCount = retinueDeploymentUnits(campaign).length;
   return {
-    activeCount: activeRetinueUnits(campaign).length,
+    activeCount: roster.length,
     capacity: getRetinueRosterCapacity(campaign),
     rosterCapacity: getRetinueRosterCapacity(campaign),
     baseRosterCapacity: RETINUE_ROSTER_CAPACITY,
+    readyCount: ready.length,
+    recoveringCount: roster.length - ready.length,
+    reserveCount: Math.max(0, ready.length - selected.length),
     deploymentCount: selectedCount,
     deploymentCapacity: RETINUE_BASE_DEPLOYMENT_CAPACITY + trainingYardBonus,
     baseDeploymentCapacity: RETINUE_BASE_DEPLOYMENT_CAPACITY,
@@ -149,7 +204,7 @@ export function addVeteranToRetinue(
     };
   }
 
-  if (activeRetinueUnits(campaign).length >= getRetinueRosterCapacity(campaign)) {
+  if (retinueRosterUnits(campaign).length >= getRetinueRosterCapacity(campaign)) {
     return {
       ok: false,
       campaign,
@@ -188,37 +243,104 @@ export function updateRetinueAfterBattle(
   summary: UnitVeterancyBattleSummary | undefined,
   lostRetinueUnitIds: string[] = []
 ): CampaignSaveData {
-  const lost = new Set(lostRetinueUnitIds);
-  const deployedIds = new Set(retinueDeploymentUnits(campaign).map((unit) => unit.retinueUnitId));
+  return updateRetinueAfterBattleDetailed(campaign, summary, { lostRetinueUnitIds }).campaign;
+}
+
+export function updateRetinueAfterBattleDetailed(
+  campaign: CampaignSaveData,
+  summary: UnitVeterancyBattleSummary | undefined,
+  options: RetinueBattleUpdateOptions = {}
+): RetinueBattleUpdateResult {
+  const lost = new Set(options.lostRetinueUnitIds ?? []);
+  const participatingUnitIds = uniqueStrings(
+    options.participatingRetinueUnitIds ?? retinueDeploymentUnits(campaign).map((unit) => unit.retinueUnitId)
+  );
+  const participatingIds = new Set(participatingUnitIds);
+  const lowHealthIds = new Set(
+    (options.survivorHealth ?? [])
+      .filter((snapshot) => snapshot.hpRatio <= RETINUE_RECOVERY_HP_RATIO_THRESHOLD)
+      .map((snapshot) => snapshot.retinueUnitId)
+  );
   const entriesById = new Map((summary?.notableVeterans ?? []).map((entry) => [entry.unitInstanceId, entry]));
+  const enteredRecoveryIds: string[] = [];
+  const returnedReadyIds: string[] = [];
+  const lostIds: string[] = [];
   const nextRetinueUnits = campaign.retinueUnits
-    .filter((unit) => !lost.has(unit.retinueUnitId))
+    .filter((unit) => {
+      const removed = lost.has(unit.retinueUnitId);
+      if (removed) {
+        lostIds.push(unit.retinueUnitId);
+      }
+      return !removed;
+    })
     .map((unit) => {
       const entry = entriesById.get(unit.retinueUnitId);
-      const deployed = deployedIds.has(unit.retinueUnitId);
-      const base = {
+      const participated = participatingIds.has(unit.retinueUnitId);
+      const base: RetinueUnitSaveData = {
         ...unit,
-        missionsDeployed: (unit.missionsDeployed ?? 0) + (deployed ? 1 : 0),
-        battlesSurvived: (unit.battlesSurvived ?? 0) + (deployed ? 1 : 0)
+        missionsDeployed: (unit.missionsDeployed ?? 0) + (participated ? 1 : 0),
+        battlesSurvived: (unit.battlesSurvived ?? 0) + (participated ? 1 : 0)
       };
-      if (!entry) {
-        return base;
+      const withVeterancy = entry
+        ? {
+            ...base,
+            rank: higherRank(unit.rank, entry.rank),
+            xp: Math.max(unit.xp, Math.floor(entry.xp)),
+            kills: Math.max(unit.kills, Math.floor(entry.kills))
+          }
+        : base;
+      if (participated && lowHealthIds.has(unit.retinueUnitId)) {
+        enteredRecoveryIds.push(unit.retinueUnitId);
+        return {
+          ...withVeterancy,
+          status: "recovering" as const,
+          recoveryMissionsRemaining: RETINUE_RECOVERY_MISSION_STEPS
+        };
+      }
+      if (withVeterancy.status === "recovering") {
+        const remaining = options.progressionStepCompleted
+          ? Math.max(0, (withVeterancy.recoveryMissionsRemaining ?? RETINUE_RECOVERY_MISSION_STEPS) - 1)
+          : withVeterancy.recoveryMissionsRemaining ?? RETINUE_RECOVERY_MISSION_STEPS;
+        if (remaining <= 0) {
+          returnedReadyIds.push(unit.retinueUnitId);
+          return {
+            ...withVeterancy,
+            status: "active" as const,
+            recoveryMissionsRemaining: undefined
+          };
+        }
+        return {
+          ...withVeterancy,
+          status: "recovering" as const,
+          recoveryMissionsRemaining: remaining
+        };
       }
       return {
-        ...base,
-        rank: higherRank(unit.rank, entry.rank),
-        xp: Math.max(unit.xp, Math.floor(entry.xp)),
-        kills: Math.max(unit.kills, Math.floor(entry.kills)),
-        status: "active" as const
+        ...withVeterancy,
+        status: "active" as const,
+        recoveryMissionsRemaining: undefined
       };
     });
-  return {
+  const nextCampaign = {
     ...campaign,
     retinueUnits: nextRetinueUnits,
     retinueDeploymentIds: selectedRetinueUnitIds({
       ...campaign,
       retinueUnits: nextRetinueUnits
-    }).filter((unitId) => !lost.has(unitId))
+    })
+  };
+  const survivedIds = participatingUnitIds.filter((unitId) => !lost.has(unitId));
+  return {
+    campaign: nextCampaign,
+    summary: {
+      participatingUnitIds,
+      survivedIds,
+      lostIds: uniqueStrings(lostIds),
+      enteredRecoveryIds: uniqueStrings(enteredRecoveryIds),
+      returnedReadyIds: uniqueStrings(returnedReadyIds),
+      reinforcementUsed: Boolean(options.reinforcementUsed),
+      reinforcementUnitId: options.reinforcementUnitId
+    }
   };
 }
 
@@ -246,13 +368,21 @@ export function selectedRetinueUnitIds(campaign: CampaignSaveData): string[] {
 }
 
 export function toggleRetinueDeployment(campaign: CampaignSaveData, retinueUnitId: string): RetinueDeploymentToggleResult {
-  const activeIds = new Set(activeRetinueUnits(campaign).map((unit) => unit.retinueUnitId));
-  if (!activeIds.has(retinueUnitId)) {
+  const unit = retinueRosterUnits(campaign).find((entry) => entry.retinueUnitId === retinueUnitId);
+  if (!unit) {
     return {
       ok: false,
       campaign,
       selected: false,
       reason: "That Retinue unit is not available."
+    };
+  }
+  if (unit.status === "recovering") {
+    return {
+      ok: false,
+      campaign,
+      selected: false,
+      reason: "Recovering Retinue units cannot deploy until ready."
     };
   }
   const selectedIds = selectedRetinueUnitIds(campaign);
@@ -290,13 +420,21 @@ export function formatRetinueUnitName(unit: RetinueUnitSaveData): string {
 
 export function formatRetinueUnitSummary(unit: RetinueUnitSaveData): string {
   const rank = getUnitVeterancyRank(unit.rank);
-  return `${rank.name} ${formatRetinueUnitName(unit)} (${unit.xp} XP, ${unit.kills} kills, ${unit.battlesSurvived ?? 0} survived, ${unit.missionsDeployed ?? 0} deployed)`;
+  return `${rank.name} ${formatRetinueUnitName(unit)} (${formatRetinueStatusLabel(unit)}, ${unit.xp} XP, ${unit.kills} kills, ${unit.battlesSurvived ?? 0} survived, ${unit.missionsDeployed ?? 0} deployed)`;
 }
 
 export function formatRetinueDeploymentLabel(unit: RetinueUnitSaveData): string {
   const rank = getUnitVeterancyRank(unit.rank);
   const unitTypeName = UNIT_BY_ID[unit.unitTypeId]?.name ?? formatRetinueUnitName(unit);
   return `${rank.name} ${unitTypeName}`;
+}
+
+export function formatRetinueStatusLabel(unit: RetinueUnitSaveData, selected = false): string {
+  if (unit.status === "recovering") {
+    const remaining = Math.max(1, unit.recoveryMissionsRemaining ?? RETINUE_RECOVERY_MISSION_STEPS);
+    return `Recovering (${remaining} mission${remaining === 1 ? "" : "s"})`;
+  }
+  return selected ? "Deployed" : "Ready";
 }
 
 function createRetinueUnitId(sourceBattleId: string, unitInstanceId: string): string {
@@ -309,4 +447,8 @@ function sanitizeId(value: string): string {
 
 function higherRank(left: UnitVeterancyRankId, right: UnitVeterancyRankId): UnitVeterancyRankId {
   return getUnitVeterancyRank(right).minXp > getUnitVeterancyRank(left).minXp ? right : left;
+}
+
+function uniqueStrings(values: readonly string[]): string[] {
+  return [...new Set(values.filter((value) => typeof value === "string" && value.trim()))];
 }

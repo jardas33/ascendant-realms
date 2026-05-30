@@ -45,6 +45,7 @@ export interface BattleLaunchRequest {
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
+  retinueReserveUnits?: RetinueUnitSaveData[];
   rewardsDisabled?: boolean;
 }
 
@@ -79,6 +80,7 @@ export interface CreateBattleLaunchRequestOptions {
   campaignNodeId?: string;
   scenarioMissionId?: string;
   retinueUnits?: RetinueUnitSaveData[];
+  retinueReserveUnits?: RetinueUnitSaveData[];
   rewardsDisabled?: boolean;
 }
 
@@ -159,6 +161,7 @@ export function createBattleLaunchRequest(
     campaignNodeId: options.campaignNodeId,
     scenarioMissionId: options.scenarioMissionId,
     retinueUnits: sanitizeLaunchRetinueUnits(options.retinueUnits),
+    retinueReserveUnits: sanitizeLaunchRetinueUnits(options.retinueReserveUnits),
     rewardsDisabled
   };
 }
@@ -173,7 +176,8 @@ export function cloneBattleLaunchRequestWithHero(
     requestId: overrides.requestId ?? request.requestId,
     sourceId: overrides.sourceId ?? request.sourceId,
     heroSave,
-    retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits)
+    retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
+    retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits)
   };
 }
 
@@ -249,6 +253,7 @@ export function resolveBattleLaunchRequest(
         enemyHeroId: request.enemyHeroId,
         enemyPressurePlanId: request.enemyPressurePlanId,
         retinueUnits: sanitizeLaunchRetinueUnits(request.retinueUnits),
+        retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
         rewardsDisabled: request.rewardsDisabled
       },
       map,

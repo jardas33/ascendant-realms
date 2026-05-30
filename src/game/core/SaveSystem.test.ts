@@ -854,6 +854,57 @@ describe("save version migration", () => {
     expect(loaded?.campaign.retinueDeploymentIds).toEqual(["retinue:border_village:unit-1"]);
   });
 
+  it("loads Retinue recovery fields safely and filters unavailable deployment ids", () => {
+    const normalized = normalizeCampaignSaveData({
+      ...createFallbackCampaignSave(),
+      started: true,
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:ready:militia",
+          unitTypeId: "militia",
+          rank: "veteran",
+          xp: 140,
+          kills: 3,
+          sourceBattleId: "border_village",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "active"
+        },
+        {
+          retinueUnitId: "retinue:legacy:wounded",
+          unitTypeId: "ranger",
+          rank: "seasoned",
+          xp: 80,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "wounded",
+          recoveryMissionsRemaining: 0
+        },
+        {
+          retinueUnitId: "retinue:lost:acolyte",
+          unitTypeId: "acolyte",
+          rank: "veteran",
+          xp: 150,
+          kills: 2,
+          sourceBattleId: "aether_well_ruins",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "lost"
+        }
+      ],
+      retinueDeploymentIds: ["retinue:ready:militia", "retinue:legacy:wounded", "retinue:lost:acolyte"]
+    });
+
+    expect(normalized?.retinueUnits).toEqual([
+      expect.objectContaining({ retinueUnitId: "retinue:ready:militia", status: "active" }),
+      expect.objectContaining({
+        retinueUnitId: "retinue:legacy:wounded",
+        status: "recovering",
+        recoveryMissionsRemaining: 1
+      })
+    ]);
+    expect(normalized?.retinueDeploymentIds).toEqual(["retinue:ready:militia"]);
+  });
+
   it("saves and loads rival state and trophy records through campaign data", () => {
     const hero = createFallbackHeroSave();
     const campaign = {

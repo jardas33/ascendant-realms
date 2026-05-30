@@ -1,11 +1,15 @@
 import Phaser from "phaser";
 import { completeCampaignNodeWithRewards, createStartedCampaignSave } from "../core/CampaignRules";
-import { updateRetinueAfterBattle } from "../core/RetinueRules";
+import {
+  updateRetinueAfterBattleDetailed,
+  type RetinueBattleUpdateSummary
+} from "../core/RetinueRules";
 import { updateRivalAfterBattle, type RivalBattleOutcomeSummary } from "../core/RivalRules";
 import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { requireCampaignNode } from "../data/contentIndex";
 import { Hero } from "../entities/Hero";
+import type { BattleStats } from "../core/GameTypes";
 import type { BattleRuntime } from "./BattleRuntime";
 import { cloneBattleLaunchRequestWithHero, type ResolvedBattleLaunch } from "./BattleLaunchRequest";
 
@@ -34,35 +38,38 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     SaveSystem.saveHero(completion.heroSave);
   }
   let rivalResult: RivalBattleOutcomeSummary | undefined;
+  let finalStats = completion.stats;
 
-  if (launch.request.mode === "campaign_node") {
+  if (launch.request.mode === "campaign_node" && outcome !== "victory") {
     const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
-    const campaignWithRetinueUpdates = updateRetinueAfterBattle(
+    const retinueUpdate = updateRetinueAfterBattleDetailed(
       storedCampaign,
       completion.stats.veteranSummary,
-      completion.stats.retinueUnitIdsLost
+      {
+        lostRetinueUnitIds: completion.stats.retinueUnitIdsLost,
+        survivorHealth: completion.stats.retinueSurvivorHealth,
+        participatingRetinueUnitIds: retinueBattleParticipatingIds(launch, completion.stats),
+        reinforcementUsed: completion.stats.retinueReinforcementUsed,
+        reinforcementUnitId: completion.stats.retinueReinforcementUnitId,
+        progressionStepCompleted: false
+      }
     );
-    if (outcome !== "victory") {
-      const rivalUpdate = updateRivalAfterBattle({
-        campaign: campaignWithRetinueUpdates,
-        hero: startingHeroSave,
-        nodeId: launch.request.campaignNodeId,
-        enemyHeroId: launch.request.enemyHeroId,
-        playerWon: false,
-        enemyHeroDefeated: false
-      });
-      rivalResult = rivalUpdate.rivalResult;
-      SaveSystem.saveCampaign(rivalUpdate.campaign, rivalUpdate.hero);
-    }
+    finalStats = withRetinueSummaryStats(finalStats, retinueUpdate.summary);
+    const rivalUpdate = updateRivalAfterBattle({
+      campaign: retinueUpdate.campaign,
+      hero: startingHeroSave,
+      nodeId: launch.request.campaignNodeId,
+      enemyHeroId: launch.request.enemyHeroId,
+      playerWon: false,
+      enemyHeroDefeated: false
+    });
+    rivalResult = rivalUpdate.rivalResult;
+    SaveSystem.saveCampaign(rivalUpdate.campaign, rivalUpdate.hero);
   }
 
   if (outcome === "victory" && launch.request.mode === "campaign_node" && launch.request.campaignNodeId) {
     const node = requireCampaignNode(launch.request.campaignNodeId);
-    const storedCampaign = updateRetinueAfterBattle(
-      SaveSystem.load()?.campaign ?? createStartedCampaignSave(),
-      completion.stats.veteranSummary,
-      completion.stats.retinueUnitIdsLost
-    );
+    const storedCampaign = SaveSystem.load()?.campaign ?? createStartedCampaignSave();
     const unlockedBefore = new Set(storedCampaign.unlockedNodeIds);
     const campaignCompletion = completeCampaignNodeWithRewards({
       campaign: storedCampaign,
@@ -70,8 +77,16 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
       node,
       completedObjectiveIds: completion.stats.completedObjectiveIds
     });
+    const retinueUpdate = updateRetinueAfterBattleDetailed(campaignCompletion.campaign, completion.stats.veteranSummary, {
+      lostRetinueUnitIds: completion.stats.retinueUnitIdsLost,
+      survivorHealth: completion.stats.retinueSurvivorHealth,
+      participatingRetinueUnitIds: retinueBattleParticipatingIds(launch, completion.stats),
+      reinforcementUsed: completion.stats.retinueReinforcementUsed,
+      reinforcementUnitId: completion.stats.retinueReinforcementUnitId,
+      progressionStepCompleted: campaignCompletion.wasFirstClear
+    });
     const rivalUpdate = updateRivalAfterBattle({
-      campaign: campaignCompletion.campaign,
+      campaign: retinueUpdate.campaign,
       hero: campaignCompletion.hero,
       nodeId: node.id,
       enemyHeroId: launch.request.enemyHeroId,
@@ -80,7 +95,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     });
     rivalResult = rivalUpdate.rivalResult;
     const stats = {
-      ...completion.stats,
+      ...withRetinueSummaryStats(completion.stats, retinueUpdate.summary),
       xpGained: completion.stats.xpGained + campaignCompletion.nodeReward.xp + (rivalUpdate.rivalResult?.rewardXp ?? 0)
     };
     const newlyUnlockedNodeIds = campaignCompletion.campaign.unlockedNodeIds.filter(
@@ -117,7 +132,7 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
   }
 
   scene.scene.start(SCENE_KEYS.results, {
-    stats: completion.stats,
+    stats: finalStats,
     heroSave: resultsHeroSave,
     startingHeroSave,
     rewardItemIds: completion.rewardItemIds,
@@ -128,4 +143,26 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     relicReward: rivalResult?.relicReward,
     relicRewardChoice: rivalResult?.relicRewardChoice
   });
+}
+
+function retinueBattleParticipatingIds(launch: ResolvedBattleLaunch, stats: BattleStats): string[] {
+  if (launch.request.mode !== "campaign_node") {
+    return [];
+  }
+  return [
+    ...(launch.request.retinueUnits ?? []).map((unit) => unit.retinueUnitId),
+    ...(stats.retinueReinforcementUnitId ? [stats.retinueReinforcementUnitId] : [])
+  ];
+}
+
+function withRetinueSummaryStats(stats: BattleStats, summary: RetinueBattleUpdateSummary): BattleStats {
+  return {
+    ...stats,
+    retinueParticipatingUnitIds: summary.participatingUnitIds,
+    retinueUnitIdsLost: summary.lostIds,
+    retinueUnitIdsRecovering: summary.enteredRecoveryIds,
+    retinueUnitIdsReturnedReady: summary.returnedReadyIds,
+    retinueReinforcementUsed: summary.reinforcementUsed,
+    retinueReinforcementUnitId: summary.reinforcementUnitId
+  };
 }

@@ -1,5 +1,40 @@
 # Changelog
 
+## v0.63-v0.65 Retinue Recovery And Reinforcement Foundation - 2026-05-30
+
+This checkpoint adds save-safe Retinue recovery, clearer reserve management, and one controlled Call Retinue battle command. No maps, factions, runtime art/assets, save-version bump, giant roster UI, permanent control groups, shop/crafting, broad AI/pathing rewrite, global rebalance, formation editor, or canvas/world force-click behavior were added.
+
+### Included
+
+- Added `docs/V063_RETINUE_RECOVERY_SPEC.md`.
+- Added `docs/V064_RESERVE_MANAGEMENT_SPEC.md`.
+- Added `docs/V065_BATTLEFIELD_REINFORCEMENT_SPEC.md`.
+- Added `docs/V063_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V064_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `recovering` Retinue status with optional one-step recovery timer.
+- Added legacy `wounded` normalization, lost-entry filtering, and Ready-only deployment selection.
+- Added Retinue Camp Ready reserve and Recovering count/readability copy.
+- Added campaign-only Call Retinue with 75 Crowns battle cost, Ready reserve requirement, Command Hall gating, one-use cap, safe Command Hall spawn, minimap ping, and Results recording.
+- Added Results summaries for reinforcement, participating Retinue, survivors, losses, entering recovery, and returned Ready.
+- Updated hosted deep-battle coverage for Retinue reinforcement/recovery.
+- Updated package metadata and validation to name `v0.63-v0.65 Retinue recovery and reinforcement foundation`.
+
+### Verdict
+
+- Runtime gameplay changed: yes, narrowly for Retinue recovery and one controlled reinforcement call.
+- Gameplay numbers changed: 35% recovery threshold and 75 Crowns battle reinforcement cost only; no global balance changes.
+- Save format changed: no save-version bump; added optional `recoveryMissionsRemaining` on Retinue entries.
+- Runtime art/assets changed: no.
+- Tutorial requirement changed: no, and Tutorial / Proving Grounds remains no-save/no-reward with no Retinue mutation or reinforcement option.
+- Inventory/loot changed: no.
+
+### Verification
+
+- Passed: focused Retinue/save/results/HUD/package tests, focused hosted Retinue reinforcement/recovery proxy, `npm test` with 81 files / 610 tests, production build with the known Vite Phaser chunk-size warning, content validation, art-intake validation, fast smoke rerun with 8 tests, full smoke with 14 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted smoke with 14 tests, hosted deep-campaign-pressure with 7 tests, visual QA with 5 tests / 18 screenshots / 0 console errors / 0 retries, dirty pre-commit package generation, package verification with 176 checks, and `git diff --check`.
+- Non-pass evidence: the first fast-smoke attempt timed out after 184 seconds with no summary before the clean rerun passed.
+
 ## v0.60-v0.62 Persistent Retinue And Deployment Foundation - 2026-05-29
 
 This checkpoint turns the existing opt-in Retinue Camp into a small persistent survivor roster with explicit pre-battle deployment selection. No maps, factions, runtime art/assets, save-version bump, giant roster UI, permanent control groups, shop/crafting, broad AI/pathing rewrite, global rebalance, or canvas/world force-click behavior were added.

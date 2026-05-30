@@ -113,6 +113,7 @@ interface CreateBattleSceneSystemsOptions {
   openMainMenu: () => void;
   resumeBattle: () => void;
   exitToMainMenu: () => void;
+  callRetinueReinforcement?: () => boolean;
 }
 
 // BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
@@ -160,7 +161,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     onPlayerUnitTrained,
     openMainMenu,
     resumeBattle,
-    exitToMainMenu
+    exitToMainMenu,
+    callRetinueReinforcement
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
@@ -456,6 +458,11 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       },
       onPatrolCommand: () => {
         if (inputSystem.beginPatrolCommand()) {
+          AudioManager.play("ui_click");
+        }
+      },
+      onRetinueReinforcement: () => {
+        if (callRetinueReinforcement?.()) {
           AudioManager.play("ui_click");
         }
       },

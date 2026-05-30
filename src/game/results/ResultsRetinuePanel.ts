@@ -1,10 +1,10 @@
 import {
-  activeRetinueUnits,
   createRetinueUnitFromVeteran,
   formatRetinueDeploymentLabel,
   formatRetinueUnitSummary,
   getRetinueCapacityBreakdown,
   isRetinueEligibleVeteran,
+  retinueRosterUnits,
   retinueEligibilityReason
 } from "../core/RetinueRules";
 import { formatUnitVeterancyBonusSummary, formatUnitVeterancyXpProgress } from "../data/unitVeterancy";
@@ -20,7 +20,7 @@ export function renderRetinueRecruitment(data: ResultsData, campaign?: CampaignS
   const candidates = summary?.notableVeterans ?? [];
   const eligible = candidates.filter(isRetinueEligibleVeteran);
   const sourceBattleId = retinueSourceBattleId(data);
-  const currentRetinue = activeRetinueUnits(campaign);
+  const currentRetinue = retinueRosterUnits(campaign);
   const capacity = getRetinueCapacityBreakdown(campaign);
   const capacityFull = capacity.activeCount >= capacity.rosterCapacity;
 

@@ -10,7 +10,8 @@ import {
   retinueEligibilityReason,
   selectedRetinueUnitIds,
   toggleRetinueDeployment,
-  updateRetinueAfterBattle
+  updateRetinueAfterBattle,
+  updateRetinueAfterBattleDetailed
 } from "./RetinueRules";
 import type { UnitVeterancySummaryEntry } from "./GameTypes";
 
@@ -127,6 +128,53 @@ describe("RetinueRules", () => {
     const removed = updateRetinueAfterBattle(updated, undefined, [existing.retinueUnitId]);
     expect(removed.retinueUnits).toEqual([]);
     expect(removed.retinueDeploymentIds).toEqual([]);
+  });
+
+  it("moves critically wounded survivors into recovery and blocks deployment until a first-clear step passes", () => {
+    const added = addVeteranToRetinue(createFallbackCampaignSave(), veteranMilitia, "border_village");
+    const retinueUnitId = added.campaign.retinueUnits[0].retinueUnitId;
+
+    const injured = updateRetinueAfterBattleDetailed(
+      added.campaign,
+      {
+        rankedUpUnits: [],
+        notableVeterans: [{ ...veteranMilitia, unitInstanceId: retinueUnitId }],
+        topSurvivor: undefined
+      },
+      {
+        participatingRetinueUnitIds: [retinueUnitId],
+        survivorHealth: [{ retinueUnitId, hpRatio: 0.25 }],
+        progressionStepCompleted: false
+      }
+    );
+
+    expect(injured.summary.enteredRecoveryIds).toEqual([retinueUnitId]);
+    expect(injured.campaign.retinueUnits[0]).toMatchObject({
+      status: "recovering",
+      recoveryMissionsRemaining: 1
+    });
+    expect(injured.campaign.retinueDeploymentIds).toEqual([]);
+    expect(toggleRetinueDeployment(injured.campaign, retinueUnitId)).toMatchObject({
+      ok: false,
+      reason: "Recovering Retinue units cannot deploy until ready."
+    });
+
+    const replaySafe = updateRetinueAfterBattleDetailed(injured.campaign, undefined, {
+      progressionStepCompleted: false
+    });
+    expect(replaySafe.campaign.retinueUnits[0]).toMatchObject({
+      status: "recovering",
+      recoveryMissionsRemaining: 1
+    });
+
+    const recovered = updateRetinueAfterBattleDetailed(replaySafe.campaign, undefined, {
+      progressionStepCompleted: true
+    });
+    expect(recovered.summary.returnedReadyIds).toEqual([retinueUnitId]);
+    expect(recovered.campaign.retinueUnits[0]).toMatchObject({
+      status: "active",
+      recoveryMissionsRemaining: undefined
+    });
   });
 
   it("dismisses and deploys only selected active units up to capacity", () => {

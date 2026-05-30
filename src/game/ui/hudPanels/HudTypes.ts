@@ -1,4 +1,5 @@
 import type { ResourceBag } from "../../core/GameTypes";
+import type { Cost } from "../../core/GameTypes";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
 import type { CaptureSite } from "../../entities/CaptureSite";
@@ -24,6 +25,7 @@ export interface HUDCallbacks {
   onBehaviourMode: (mode: BehaviourMode) => void;
   onStopCommand: () => void;
   onPatrolCommand: () => void;
+  onRetinueReinforcement: () => void;
   onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;
@@ -46,7 +48,17 @@ export interface HUDSnapshot {
   minimap: MinimapSnapshot;
   objectives?: HUDObjectiveSnapshot[];
   controlGroups?: ControlGroupSummary[];
+  retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
+}
+
+export interface HUDRetinueReinforcementSnapshot {
+  available: boolean;
+  reason?: string;
+  cost: Cost;
+  reserveCount: number;
+  readyReserveCount: number;
+  used: boolean;
 }
 
 export interface HUDPauseMenuSnapshot {

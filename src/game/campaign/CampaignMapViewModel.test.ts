@@ -683,12 +683,45 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("Training Yard II");
     expect(html).toContain("+1 deployment slot");
     expect(html).toContain("Retinue death is permanent in V1");
-    expect(html).toContain("Deploying");
+    expect(html).toContain("Deployed");
     expect(html).toContain("Veteran Militia");
     expect(html).toContain("Frontline");
     expect(html).toContain("140/230 XP to Elite");
     expect(html).toContain("2 survived / 1 deployed.");
     expect(html).toContain("Reserve");
     expect(html).toContain("Dismiss from Retinue");
+  });
+
+  it("renders recovering Retinue reserves as blocked from deployment", () => {
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      retinueUnits: [
+        {
+          retinueUnitId: "retinue:test:ranger",
+          unitTypeId: "ranger",
+          name: "Road Ranger",
+          rank: "seasoned",
+          xp: 85,
+          kills: 1,
+          sourceBattleId: "old_stone_road",
+          acquiredAt: "2026-05-02T12:00:00.000Z",
+          status: "recovering",
+          recoveryMissionsRemaining: 1
+        }
+      ],
+      retinueDeploymentIds: ["retinue:test:ranger"]
+    });
+
+    const html = renderRetinuePanel(campaign);
+
+    expect(html).toContain("1/5 roster");
+    expect(html).toContain("0/2 selected");
+    expect(html).toContain("Ready reserves");
+    expect(html).toContain("<strong>0</strong>");
+    expect(html).toContain("Recovering");
+    expect(html).toContain("<strong>1</strong>");
+    expect(html).toContain("Recovering (1 mission)");
+    expect(html).toContain("Blocked: recovering units return Ready after one first-clear campaign progression step.");
+    expect(html).toContain("Recovering");
   });
 });

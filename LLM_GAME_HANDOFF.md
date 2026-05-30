@@ -1,12 +1,77 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-29 v0.60-v0.62 Retinue persistence and deployment closeout
+Last updated: 2026-05-30 v0.63-v0.65 Retinue recovery and reinforcement closeout
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
 Ascendant Realms is a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid.
+
+## Current v0.63-v0.65 Retinue Recovery And Reinforcement Foundation - 2026-05-30
+
+Status: v0.63-v0.65 deepens the small Retinue system with save-safe recovery state, clearer reserve management, and one controlled Call Retinue reinforcement option. It does not add maps, factions, runtime art/assets, a giant roster UI, permanent control groups, broad pathing/AI rewrites, global rebalance, shop/crafting, a formation editor, or force-click/DOM fallback behavior for canvas/world clicks.
+
+Baseline:
+
+- Starting commit/package: `3c10913`, `ascendant-realms-private-playtest-3c10913`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: CI Release Matrix Dry Run run `26672416357` on `3c10913` completed successfully.
+
+Included work:
+
+- Added `docs/V063_RETINUE_RECOVERY_SPEC.md`.
+- Added `docs/V064_RESERVE_MANAGEMENT_SPEC.md`.
+- Added `docs/V065_BATTLEFIELD_REINFORCEMENT_SPEC.md`.
+- Added `docs/V063_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V064_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V065_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added Retinue `recovering` status with one-step recovery timers and legacy `wounded` normalization.
+- Removed explicit lost/invalid Retinue entries safely during save normalization.
+- Kept Ready, Deployed, Recovering, and reserve states derived through existing Campaign Map and battle launch surfaces.
+- Blocked Recovering units from deployment and reinforcement with readable copy.
+- Added one campaign-only, once-per-battle Call Retinue command that spends 75 battle Crowns and spawns one Ready reserve near the player Command Hall.
+- Results now summarize participating Retinue, reinforcement use, losses, low-HP recovery, and returned Ready units.
+- Added pure-rule, save, launch, Results, HUD, package, and hosted deep-battle coverage for recovery/reserves/reinforcement.
+
+Save format:
+
+- No save-version bump.
+- Added optional `recoveryMissionsRemaining` on Retinue entries.
+- `active` remains the Ready save status; Deployed is still derived from `campaign.retinueDeploymentIds`.
+- Legacy `wounded` status loads as `recovering` with one mission remaining.
+- Explicit `lost`, invalid, duplicate, unknown-unit, and non-Retinue entries normalize away safely.
+- Deployment ids select only Ready active Retinue units up to the deployment cap.
+- Tutorial/no-reward routes do not mutate Retinue status, recovery, or reinforcement state.
+
+Verification:
+
+```text
+Focused Retinue/save/results/HUD/package Vitest PASS, 8 files / 110 tests.
+Focused hosted Retinue reinforcement/recovery proxy PASS, 1 test, after rebuilding production dist.
+npm test PASS, 81 files / 610 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON and 0 review manifest JSON files checked.
+npm run test:e2e:smoke:fast NON-PASS first attempt, timed out after 184 seconds with no summary; clean rerun PASS, 8 tests.
+npm run test:e2e:smoke PASS, 14 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 18 scenarios / 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 14 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 7 tests.
+npm run visual:qa PASS, 5 tests / 18 screenshots / 0 browser console errors / 0 screenshot retries.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-3c10913-dirty` generated.
+npm run verify:playtest-package PASS, 176 checks against the dirty pre-commit package.
+git diff --check PASS.
+```
+
+Interaction note: the new hosted Retinue test uses the existing DOM command-button helper for a HUD command. No force-click or DOM fallback was added for canvas/world clicks.
+
+Closeout note: commit as `Checkpoint v0.63-v0.65 Retinue recovery and reinforcement foundation`, regenerate and verify the clean package from the final commit, then push when safe. Use only a clean package whose `PLAYTEST_BUILD_INFO.md` commit matches the final checkpoint commit and whose dirty status says `no`.
 
 ## Current v0.60-v0.62 Persistent Retinue And Deployment Foundation - 2026-05-29
 
