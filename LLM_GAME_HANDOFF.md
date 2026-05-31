@@ -1,12 +1,58 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.90 UX visual-regression harness and desktop-viewport acceptance hardening
+Last updated: 2026-05-31 v0.91 desktop full-game transition technical audit and vertical-slice roadmap
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, and v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, and v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior. No runtime rebrand is approved.
+
+## Current v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
+
+Status: v0.91 is a docs-only strategic engineering checkpoint. It classifies the current architecture for desktop-transition reuse, defines engine-decision criteria without choosing a winner, scopes a future installable vertical slice, stages gated transition experiments, and records save/content/test reuse plus deferred multiplayer/co-op requirements. The browser prototype remains the active development and testing environment.
+
+Baseline:
+
+- Starting commit/package: `c849ffb`, `ascendant-realms-private-playtest-c849ffb`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26721555321` on `c849ffb` completed successfully.
+
+Included work:
+
+- Added `docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md`.
+- Added `docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md`.
+- Added `docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md`.
+- Added `docs/V091_STAGED_TRANSITION_EXPERIMENTS.md`.
+- Added `docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md`.
+- Added `docs/V091_MULTIPLAYER_AND_COOP_DEFERRED_REQUIREMENTS.md`.
+- Added `docs/V091_EMMANUEL_DESKTOP_TRANSITION_REVIEW_PACKET.md`.
+- Added `docs/V091_IMPLEMENTATION_REPORT.md`.
+- Classified content data, hero progression, Race + Class architecture, campaign data, saves, combat, pathing, AI, resource sites, Lume Network, Retinue, HUD, campaign shell, Results, visual pipeline, audio, input, resolution handling, accessibility, tests, deterministic simulator, packaging, and multiplayer future scope.
+- Compared decision criteria for staying Phaser/browser for prototype work, a later desktop packaging experiment, Godot evaluation, Unity evaluation, Unreal evaluation, and other options only if justified. No winner is selected.
+- Scoped a future Salto-inspired Barrosan vs Ashen desktop vertical slice with one hero, one Worker, two military units, Command Hall, Barracks, mine, shrine, Lume link, one mission, campaign shell, Results, settings, key rebinding, resolution options, save handling, audio placeholder posture, performance target, and packaging target.
+- Staged future experiments: browser fun proof, art-pipeline proof, desktop-engine benchmark, content-reuse proof, save-translation proof, representative battle benchmark, desktop vertical slice, and only later full transition.
+
+Runtime/save/art boundary:
+
+- No runtime code changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, gameplay systems, rewards, XP, balance values, campaign progression, maps, factions, races, units, buildings, art/assets, package scripts, dependencies, desktop wrapper, engine choice, multiplayer/PvP/co-op, or runtime title changed.
+- Package metadata was not changed; no package validation or clean package generation is required by v0.91.
+
+Verification:
+
+```text
+Required v0.91 docs existence check - PASS, all 8 required docs present.
+JSON validation - not applicable; v0.91 adds no JSON files.
+npm test - PASS, 92 files / 678 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+git diff --check - PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.91 desktop full-game transition technical audit and vertical-slice roadmap`, push safely, and stop. Do not start v0.92, port the game, create a wrapper, choose an engine, add dependencies, generate/import art, implement multiplayer, change saves, or alter runtime behavior without a new explicit goal.
 
 ## Current v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
 

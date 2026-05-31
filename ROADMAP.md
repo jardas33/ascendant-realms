@@ -11,11 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.90 UX Visual-Regression Harness and Desktop-Viewport Acceptance Hardening** on 2026-05-31. It is a QA-hardening milestone: deterministic screenshot coverage, desktop viewport acceptance rules, layout assertions, visual-regression manifest review rules, and lightweight performance baselines.
+The current checkpoint is **v0.91 Desktop Full-Game Transition Technical Audit and Vertical-Slice Roadmap** on 2026-05-31. It is a docs-only strategic engineering milestone: current architecture reuse classification, desktop engine decision criteria, future vertical-slice scope, staged transition experiments, save/content/test reuse planning, multiplayer/co-op deferrals, and Emmanuel review guidance.
 
-The next recommended step is to use the v0.90 matrix as a guardrail while planning any future visual, UI, or runtime content work. Do not start v0.91, generate/import art, begin desktop implementation, change saves, rename IDs, alter balance, or add gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step is to keep the browser prototype as the active development and testing environment while using the v0.91 audit to frame any future desktop-related experiment. Do not start v0.92, port the game, create a wrapper, choose an engine, add dependencies, generate/import art, implement multiplayer, change saves, or alter runtime behavior until a future explicit goal approves a narrow next step.
 
-New v0.90 docs:
+New v0.91 docs:
+
+- `docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md`
+- `docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md`
+- `docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md`
+- `docs/V091_STAGED_TRANSITION_EXPERIMENTS.md`
+- `docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md`
+- `docs/V091_MULTIPLAYER_AND_COOP_DEFERRED_REQUIREMENTS.md`
+- `docs/V091_EMMANUEL_DESKTOP_TRANSITION_REVIEW_PACKET.md`
+- `docs/V091_IMPLEMENTATION_REPORT.md`
+
+Recent v0.90 docs:
 
 - `docs/V090_VISUAL_REGRESSION_MATRIX.json`
 - `docs/V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md`

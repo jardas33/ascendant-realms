@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
+
+This checkpoint documents future desktop-transition strategy without porting the game, creating a wrapper, choosing an engine, adding dependencies, generating/importing art, implementing multiplayer, changing saves, or altering runtime behavior.
+
+Added:
+
+- `docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md`.
+- `docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md`.
+- `docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md`.
+- `docs/V091_STAGED_TRANSITION_EXPERIMENTS.md`.
+- `docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md`.
+- `docs/V091_MULTIPLAYER_AND_COOP_DEFERRED_REQUIREMENTS.md`.
+- `docs/V091_EMMANUEL_DESKTOP_TRANSITION_REVIEW_PACKET.md`.
+- `docs/V091_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Roadmap, handoff, checkpoint, changelog, and release checklist now record v0.91 as a docs-only desktop-transition audit and make clear that the browser prototype remains the active development and testing environment.
+- The architecture audit classifies content data, hero progression, Race + Class architecture, campaign data, saves, combat, pathing, AI, resource sites, Lume Network, Retinue, HUD, campaign shell, Results, visual pipeline, audio, input, resolution handling, accessibility, tests, deterministic simulator, packaging, and multiplayer future scope.
+- The engine-decision criteria compare Phaser/browser prototype continuation, a later desktop packaging experiment, Godot, Unity, Unreal, and justified alternatives without selecting a final engine.
+
+Not changed:
+
+- No runtime code, save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, gameplay systems, rewards, XP, campaign progression, balance values, maps, factions, races, units, buildings, art/assets, dependencies, package scripts, desktop wrapper, engine choice, multiplayer/PvP/co-op, or runtime title changed.
+
+Verification:
+
+- Passed: required v0.91 docs existence check, `npm test` with 92 files / 678 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake` with 1 candidate metadata JSON file checked and 0 review manifests, and `git diff --check`.
+- JSON validation is not applicable because v0.91 adds no JSON files.
+- Package validation is not required because package metadata and package contents did not change.
+
 # v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
 
 This checkpoint hardens QA coverage for visual/layout regressions without adding gameplay, changing balance, altering saves, renaming stable IDs, generating/importing art, or starting desktop implementation.

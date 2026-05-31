@@ -23,6 +23,7 @@ Use the focused gate that matches the changed surface during routine work, then 
 
 Known current realities:
 
+- v0.91 is a docs-only desktop-transition technical audit. Use the docs-only routine gate. Package generation and package verification are not required unless package metadata or private package contents change in a later follow-up.
 - `npm run validate:art-intake` is part of the routine gate and must remain safe with an empty intake.
 - `npm run visual:qa` is useful, optional, human-reviewed, and non-pixel-perfect.
 - The local 3-way release shards remain a better-balanced local split than 2-way shards, but they do not replace the full release lane.

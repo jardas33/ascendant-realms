@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.90 UX visual-regression harness and desktop-viewport acceptance hardening
+Updated: 2026-05-31 v0.91 desktop full-game transition technical audit and vertical-slice roadmap
+
+## v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
+
+Scope: docs-only strategic engineering milestone. This pass audits current architecture reuse, desktop engine decision criteria, future vertical-slice scope, staged transition experiments, save/content/test reuse, and deferred multiplayer/co-op requirements. It does not port the game, create a wrapper, choose an engine, add dependencies, generate/import art, implement multiplayer, change runtime behavior, alter saves, or start v0.92.
+
+Baseline:
+
+- Starting commit/package: `c849ffb`, `ascendant-realms-private-playtest-c849ffb`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26721555321` on `c849ffb` completed successfully.
+
+Included work:
+
+- Added `docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md`.
+- Added `docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md`.
+- Added `docs/V091_DESKTOP_VERTICAL_SLICE_SCOPE.md`.
+- Added `docs/V091_STAGED_TRANSITION_EXPERIMENTS.md`.
+- Added `docs/V091_SAVE_CONTENT_AND_TEST_REUSE_PLAN.md`.
+- Added `docs/V091_MULTIPLAYER_AND_COOP_DEFERRED_REQUIREMENTS.md`.
+- Added `docs/V091_EMMANUEL_DESKTOP_TRANSITION_REVIEW_PACKET.md`.
+- Added `docs/V091_IMPLEMENTATION_REPORT.md`.
+- Classified every requested major subsystem by reuse category for a future desktop transition.
+- Defined engine-decision criteria for Phaser/browser prototype continuation, later desktop packaging experiment, Godot, Unity, Unreal, and justified alternatives without choosing a winner.
+- Scoped a future installable Salto/Barrosan/Ashen desktop vertical slice and staged the gated experiments required before full transition.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, serialized IDs, or `CURRENT_SAVE_VERSION` changed.
+
+Runtime/package boundary:
+
+- No runtime code changed.
+- No package metadata or package validation requirements changed because v0.91 does not alter package contents or private playtest distribution.
+
+Verification:
+
+```text
+Required v0.91 docs existence check - PASS, all 8 required docs present.
+JSON validation - not applicable; v0.91 adds no JSON files.
+npm test - PASS, 92 files / 678 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+git diff --check - PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.91 desktop full-game transition technical audit and vertical-slice roadmap`, push safely, and do not start v0.92 automatically.
 
 ## v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
 
