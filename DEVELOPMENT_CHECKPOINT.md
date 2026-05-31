@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.92 visual review pack generator and unified Emmanuel retest packet
+Updated: 2026-05-31 v0.93 runtime UI foundation tokens and mission-panel state reset
+
+## v0.93 Runtime UI Foundation Tokens And Mission-Panel State Reset - 2026-05-31
+
+Scope: presentation foundation and campaign-shell bugfix. This pass promotes the v0.88 design-token proposal into runtime CSS variables, improves baseline typography/hierarchy across existing UI surfaces, and makes selected-mission panel state reset deterministic when switching nodes. It does not add gameplay, alter rewards, change saves, rename IDs, add art, import assets, change campaign progression, or start desktop work.
+
+Baseline:
+
+- Starting commit: `b9c7bb2`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26722963239` on `b9c7bb2` completed successfully.
+
+Included work:
+
+- Added `src/game/styles/tokens.css`.
+- Imported runtime UI tokens before the existing UI style stack.
+- Tokenized base, main menu, form, inventory, campaign, Results, and battle-HUD typography/panel hierarchy.
+- Enlarged campaign node click targets while preserving map visibility and non-overlap acceptance.
+- Reset selected mission scroll/details/focus when changing campaign nodes, including the Salto return path after inspecting locked Aether Well details.
+- Added v0.93 layout and visual-QA coverage.
+- Added all required v0.93 specs, reports, and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, persistent settings, campaign progression, rewards, XP, or package folder naming changed.
+
+Verification:
+
+```text
+npm test - PASS, 93 files / 683 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 26 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run visual:qa - PASS, 9 tests / 65 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 65 screenshots / 7 contact sheets.
+```
+
+Final `git diff --check`, package generation, and package verification run during commit/package closeout.
 
 ## v0.92 Visual Review Pack Generator And Unified Emmanuel Retest Packet - 2026-05-31
 

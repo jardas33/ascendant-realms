@@ -1,0 +1,82 @@
+/* v0.93 runtime UI tokens promoted from the v0.88 design-token proposal. */
+
+:root {
+  --ui-font-family: Verdana, Arial, sans-serif;
+
+  --ui-type-display-title-size: 42px;
+  --ui-type-display-title-line-height: 1.03;
+  --ui-type-section-heading-size: 30px;
+  --ui-type-section-heading-line-height: 1.1;
+  --ui-type-panel-heading-size: 22px;
+  --ui-type-panel-heading-line-height: 1.16;
+  --ui-type-card-heading-size: 16px;
+  --ui-type-card-heading-line-height: 1.22;
+  --ui-type-body-primary-size: 16px;
+  --ui-type-body-primary-line-height: 1.5;
+  --ui-type-body-compact-size: 14px;
+  --ui-type-body-compact-line-height: 1.38;
+  --ui-type-caption-size: 12px;
+  --ui-type-caption-line-height: 1.28;
+  --ui-type-hud-numeric-size: 15px;
+  --ui-type-hud-numeric-line-height: 1.15;
+
+  --ui-space-4: 4px;
+  --ui-space-8: 8px;
+  --ui-space-12: 12px;
+  --ui-space-16: 16px;
+  --ui-space-24: 24px;
+  --ui-space-32: 32px;
+  --ui-space-48: 48px;
+
+  --ui-radius-panel: 8px;
+  --ui-radius-card: 6px;
+
+  --ui-lume-teal: #74d3f2;
+  --ui-lume-teal-soft: rgba(116, 211, 242, 0.46);
+  --ui-ashen-fire: #ff9a64;
+  --ui-barrosan-granite: #c8d0bd;
+  --ui-barrosan-hearth: #f0d978;
+  --ui-text-primary: #f1ead1;
+  --ui-text-secondary: #c8d0bd;
+  --ui-text-muted: #aeb8aa;
+  --ui-bg-shell: #121813;
+
+  --ui-panel-shell: rgba(9, 12, 12, 0.9);
+  --ui-panel-primary:
+    linear-gradient(145deg, rgba(255, 246, 200, 0.08), transparent 34%),
+    linear-gradient(180deg, rgba(22, 28, 25, 0.96), rgba(8, 10, 10, 0.94));
+  --ui-panel-secondary:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.075), rgba(7, 9, 9, 0.52)),
+    linear-gradient(90deg, rgba(116, 211, 242, 0.06), transparent 38%, rgba(240, 217, 120, 0.055)),
+    rgba(14, 18, 18, 0.88);
+  --ui-panel-tertiary: rgba(8, 12, 12, 0.28);
+  --ui-panel-overlay: rgba(12, 15, 15, 0.84);
+  --ui-panel-alert:
+    linear-gradient(90deg, rgba(240, 217, 120, 0.12), transparent 48%),
+    rgba(12, 15, 15, 0.82);
+
+  --ui-border-hairline: rgba(246, 237, 180, 0.12);
+  --ui-border-panel: rgba(222, 190, 94, 0.62);
+  --ui-border-selected: rgba(240, 217, 120, 0.72);
+  --ui-border-available: rgba(116, 211, 242, 0.56);
+  --ui-border-locked: rgba(174, 182, 173, 0.32);
+  --ui-border-hostile: rgba(255, 154, 100, 0.58);
+  --ui-border-objective: rgba(116, 211, 242, 0.36);
+
+  --ui-state-selected: #f0d978;
+  --ui-state-available: #74d3f2;
+  --ui-state-locked: #aeb6ad;
+  --ui-state-hostile: #ff9a64;
+  --ui-state-friendly: #8fd89b;
+  --ui-state-neutral: #c8d0bd;
+  --ui-state-completed: #9cf7b1;
+  --ui-state-replayable: #9fd8c2;
+
+  --ui-shadow-panel:
+    0 24px 70px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 246, 200, 0.11),
+    inset 0 0 0 1px rgba(255, 246, 200, 0.035);
+  --ui-shadow-card:
+    inset 0 1px 0 rgba(255, 246, 200, 0.1),
+    0 10px 24px rgba(0, 0, 0, 0.2);
+}

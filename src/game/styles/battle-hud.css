@@ -61,7 +61,8 @@
   justify-content: space-between;
   gap: 9px;
   color: #e2e8d9;
-  font-size: 13px;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }
 
@@ -95,8 +96,8 @@
 
 .objectives-panel > strong {
   color: #f0d978;
-  font-size: 12px;
-  line-height: 1.1;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   text-transform: uppercase;
 }
 
@@ -178,9 +179,9 @@
 .lume-network-row span,
 .private-playtest-row span {
   color: #ffbd8c;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.18;
   text-transform: uppercase;
 }
 
@@ -203,8 +204,8 @@
 .lume-network-row b,
 .private-playtest-row b {
   color: #ffe0a6;
-  font-size: 11px;
-  line-height: 1.15;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
 }
 
 .enemy-doctrine-row small,
@@ -212,8 +213,8 @@
 .lume-network-row small,
 .private-playtest-row small {
   color: #f4cfb7;
-  font-size: 10px;
-  line-height: 1.18;
+  font-size: 11px;
+  line-height: 1.22;
 }
 
 .compact-tracker-row {
@@ -383,7 +384,8 @@
 
 .hud-button small {
   color: #c5cfb7;
-  font-size: 11px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
 }
 
 .hud-button.locked small {
@@ -418,6 +420,8 @@
   min-width: 0;
   overflow: hidden;
   color: #eef2df;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -446,9 +450,9 @@
   width: fit-content;
   cursor: pointer;
   color: #aee6d7;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.18;
   text-transform: uppercase;
 }
 
@@ -458,8 +462,8 @@
   display: block;
   min-width: 0;
   color: #cbd6c2;
-  font-size: 11px;
-  line-height: 1.22;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
 }
 
 .command-details-description {
@@ -636,8 +640,9 @@
   padding-bottom: 7px;
   border-bottom: 1px solid rgba(246, 237, 180, 0.16);
   color: #f6edb4;
+  font-size: var(--ui-type-card-heading-size);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: var(--ui-type-card-heading-line-height);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
 }
 
@@ -707,7 +712,8 @@
   border-left: 2px solid rgba(116, 211, 242, 0.5);
   background: var(--plate-bg);
   color: #dce2d0;
-  font-size: 12px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   box-shadow:
     inset 0 1px 0 rgba(255, 246, 200, 0.08),
     0 5px 12px rgba(0, 0, 0, 0.15);
@@ -732,9 +738,9 @@
   border-radius: 5px;
   background: var(--plate-bg);
   color: #f6edb4;
-  font-size: 13px;
+  font-size: var(--ui-type-hud-numeric-size);
   font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  line-height: var(--ui-type-hud-numeric-line-height);
 }
 
 .hero-command-summary strong {

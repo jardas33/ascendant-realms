@@ -227,7 +227,7 @@
   padding: clamp(12px, 1.4vw, 16px);
   display: grid;
   grid-template-rows: auto auto auto auto minmax(0, 1fr) auto;
-  gap: 7px;
+  gap: 5px;
   overflow: hidden;
 }
 
@@ -238,13 +238,14 @@
 
 .campaign-top-strip h1 {
   margin-bottom: 3px;
-  font-size: clamp(24px, 2.5vw, 34px);
+  font-size: var(--ui-type-section-heading-size);
+  line-height: var(--ui-type-section-heading-line-height);
 }
 
 .campaign-top-strip .menu-copy {
   margin-bottom: 0;
-  font-size: 13px;
-  line-height: 1.25;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .campaign-top-strip .skill-points {
@@ -310,10 +311,11 @@
 }
 
 .campaign-tab {
-  min-height: 31px;
-  padding: 5px 10px;
+  min-height: 34px;
+  padding: 6px 11px;
   border-image-width: 8px;
-  font-size: 13px;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .campaign-tab.selected {
@@ -441,16 +443,17 @@
 
 .campaign-node {
   position: absolute;
-  left: clamp(62px, var(--node-x), calc(100% - 62px));
-  top: clamp(30px, var(--node-y), calc(100% - 30px));
-  width: 108px;
-  min-height: 48px;
-  padding: 6px 7px;
+  left: clamp(68px, var(--node-x), calc(100% - 68px));
+  top: clamp(34px, var(--node-y), calc(100% - 34px));
+  width: 118px;
+  min-height: 54px;
+  padding: 7px 8px;
   transform: translate(-50%, -50%);
   text-align: center;
   max-width: calc(100% - 12px);
   overflow-wrap: anywhere;
-  font-size: 11px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   z-index: 3;
 }
 
@@ -460,8 +463,8 @@
   display: block;
   margin-top: 3px;
   color: #c8d0bd;
-  font-size: 10px;
-  line-height: 1.1;
+  font-size: 11px;
+  line-height: 1.18;
 }
 
 .campaign-node .campaign-node-state {
@@ -478,16 +481,16 @@
 }
 
 .campaign-node.available {
-  border-color: rgba(116, 211, 242, 0.62);
+  border-color: var(--ui-border-available);
   z-index: 4;
 }
 
 .campaign-node.completed {
-  border-color: rgba(143, 216, 155, 0.64);
+  border-color: var(--ui-state-completed);
 }
 
 .campaign-node.replayable .campaign-node-state {
-  color: #9fd8c2;
+  color: var(--ui-state-replayable);
 }
 
 .campaign-node.locked span {
@@ -496,7 +499,7 @@
 
 .campaign-node.selected {
   z-index: 6;
-  border-color: #f0d978;
+  border-color: var(--ui-border-selected);
   box-shadow:
     0 0 0 1px rgba(240, 217, 120, 0.18),
     0 0 24px rgba(240, 217, 120, 0.14),
@@ -520,17 +523,15 @@
 .campaign-selected-panel {
   min-height: 0;
   overflow: auto;
-  padding: 10px;
-  border: 1px solid var(--plate-edge);
-  border-style: solid;
-  border-image-source: var(--ui-inventory-slot-frame);
-  border-image-slice: 54;
-  border-image-width: 10px;
-  border-image-repeat: stretch;
-  border-radius: 8px;
-  background: var(--plate-bg);
+  padding: 12px;
+  border: 1px solid var(--ui-border-panel);
+  border-radius: var(--ui-radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.07), rgba(7, 9, 9, 0.5)),
+    var(--ui-panel-secondary);
   box-shadow: var(--plate-shadow);
   overscroll-behavior: contain;
+  scroll-behavior: auto;
   scrollbar-gutter: stable;
 }
 
@@ -546,13 +547,14 @@
 
 .campaign-selected-summary h2 {
   color: #f6edb4;
-  font-size: 20px;
+  font-size: var(--ui-type-panel-heading-size);
+  line-height: var(--ui-type-panel-heading-line-height);
 }
 
 .campaign-selected-summary p {
   color: #c8d0bd;
-  line-height: 1.34;
-  font-size: 13px;
+  line-height: var(--ui-type-body-compact-line-height);
+  font-size: var(--ui-type-body-compact-size);
 }
 
 .campaign-selected-facts {
@@ -561,12 +563,13 @@
 
 .campaign-primary-action {
   width: 100%;
-  min-height: 40px;
+  min-height: 44px;
+  font-size: var(--ui-type-body-compact-size);
 }
 
 .campaign-node-more {
   margin-top: 9px;
-  border: 1px solid rgba(246, 237, 180, 0.14);
+  border: 1px solid var(--ui-border-hairline);
   border-radius: 6px;
   background: rgba(4, 9, 7, 0.22);
 }
@@ -576,7 +579,8 @@
   padding: 9px 10px;
   color: #f0d978;
   font-weight: 700;
-  line-height: 1.2;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .campaign-node-more .campaign-node-details {
@@ -588,15 +592,12 @@
 .campaign-tab-panel {
   min-height: 0;
   overflow: auto;
-  padding: 10px;
-  border: 1px solid var(--plate-edge);
-  border-style: solid;
-  border-image-source: var(--ui-inventory-slot-frame);
-  border-image-slice: 54;
-  border-image-width: 10px;
-  border-image-repeat: stretch;
-  border-radius: 8px;
-  background: var(--plate-bg);
+  padding: 12px;
+  border: 1px solid rgba(246, 237, 180, 0.18);
+  border-radius: var(--ui-radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.055), rgba(7, 9, 9, 0.45)),
+    var(--ui-panel-secondary);
   box-shadow: var(--plate-shadow);
   overscroll-behavior: contain;
   scrollbar-gutter: stable;
@@ -605,7 +606,8 @@
 .campaign-tab-panel h2 {
   margin: 0 0 10px;
   color: #f6edb4;
-  font-size: 20px;
+  font-size: var(--ui-type-panel-heading-size);
+  line-height: var(--ui-type-panel-heading-line-height);
 }
 
 .campaign-tab-panel.compact {
@@ -631,9 +633,9 @@
   align-content: start;
   gap: 10px;
   padding: 12px;
-  border: 1px solid rgba(246, 237, 180, 0.14);
+  border: 1px solid var(--ui-border-hairline);
   border-radius: 7px;
-  background: rgba(8, 12, 12, 0.24);
+  background: var(--ui-panel-tertiary);
 }
 
 .campaign-card-details {
@@ -665,12 +667,14 @@
 .campaign-node-details h3 {
   margin: 0 0 10px;
   color: #f6edb4;
-  font-size: 24px;
+  font-size: var(--ui-type-panel-heading-size);
+  line-height: var(--ui-type-panel-heading-line-height);
 }
 
 .campaign-node-details p {
   color: #c8d0bd;
-  line-height: 1.45;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   overflow-wrap: anywhere;
 }
 
@@ -785,8 +789,8 @@
 
 .event-choice .choice-description {
   color: #d4ddcf;
-  font-size: 12px;
-  line-height: 1.32;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .choice-meta-grid {

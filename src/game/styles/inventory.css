@@ -47,18 +47,21 @@
 
 .skill-points span {
   color: #c8d0bd;
-  font-size: 12px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
 }
 
 .skill-points strong {
   color: #f0d978;
-  font-size: 28px;
+  font-size: var(--ui-type-section-heading-size);
+  line-height: var(--ui-type-section-heading-line-height);
 }
 
 .eyebrow {
   margin: 0 0 8px;
   color: #f0d978;
-  font-size: 13px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   text-transform: uppercase;
 }
 
@@ -70,13 +73,14 @@ p {
 
 h1 {
   margin-bottom: 12px;
-  font-size: clamp(30px, 5vw, 58px);
-  line-height: 1;
+  font-size: var(--ui-type-display-title-size);
+  line-height: var(--ui-type-display-title-line-height);
   overflow-wrap: anywhere;
 }
 
 h2 {
-  font-size: 18px;
+  font-size: var(--ui-type-panel-heading-size);
+  line-height: var(--ui-type-panel-heading-line-height);
 }
 
 h2::after,
@@ -100,7 +104,8 @@ h2::after,
 .menu-copy,
 .quiet {
   color: #c8d0bd;
-  line-height: 1.55;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .menu-actions {
@@ -194,7 +199,8 @@ h2::after,
 .guidance-card p {
   margin: 0;
   color: #d7e8de;
-  line-height: 1.45;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .results-guidance {
@@ -239,7 +245,8 @@ h2::after,
   border-radius: 999px;
   color: #f2e5a8;
   background: rgba(240, 217, 120, 0.08);
-  font-size: 12px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   text-transform: capitalize;
 }
 
@@ -290,8 +297,8 @@ h2::after,
 .skill-tree p {
   margin: 5px 0 0;
   color: #c8d0bd;
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   overflow-wrap: anywhere;
 }
 

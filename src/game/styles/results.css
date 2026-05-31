@@ -21,6 +21,8 @@
 
 .results-grid span {
   color: #c8d0bd;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .results-grid strong,
@@ -167,7 +169,8 @@
 .results-overview-heading h2 {
   margin: 0;
   color: #f6edb4;
-  font-size: clamp(20px, 2vw, 28px);
+  font-size: var(--ui-type-section-heading-size);
+  line-height: var(--ui-type-section-heading-line-height);
 }
 
 .results-outcome-pill {
@@ -175,7 +178,8 @@
   padding: 5px 9px;
   border-radius: 999px;
   color: #101511;
-  font-size: 12px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   text-transform: uppercase;
   background: #f0d978;
 }
@@ -194,7 +198,8 @@
 .results-overview-grid span {
   display: block;
   color: #c8d0bd;
-  font-size: 11px;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
   text-transform: uppercase;
 }
 
@@ -202,7 +207,8 @@
   display: block;
   margin-top: 2px;
   color: #f1ead1;
-  line-height: 1.25;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   overflow-wrap: anywhere;
 }
 
@@ -227,6 +233,8 @@
   cursor: pointer;
   padding: 11px 13px;
   color: #d9fbf3;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   font-weight: 700;
   text-transform: uppercase;
 }
@@ -320,8 +328,8 @@
 .reward-card p {
   margin: 6px 0 0;
   color: #c8d0bd;
-  font-size: 12px;
-  line-height: 1.35;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 .reward-card small {

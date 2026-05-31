@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.90 UX visual-regression harness and desktop-viewport acceptance hardening";
+const CHECKPOINT = "v0.93 runtime UI foundation tokens and mission-panel state reset";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -338,6 +338,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md", join(packageDir, "V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md"));
   await copyMarkdown("docs/V090_VISUAL_QA_REVIEW_RULES.md", join(packageDir, "V090_VISUAL_QA_REVIEW_RULES.md"));
   await copyMarkdown("docs/V090_IMPLEMENTATION_REPORT.md", join(packageDir, "V090_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md", join(packageDir, "V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md"));
+  await copyMarkdown("docs/V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md", join(packageDir, "V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md"));
+  await copyMarkdown("docs/V093_DESKTOP_TYPOGRAPHY_READABILITY_REPORT.md", join(packageDir, "V093_DESKTOP_TYPOGRAPHY_READABILITY_REPORT.md"));
+  await copyMarkdown("docs/V093_VISUAL_QA_REPORT.md", join(packageDir, "V093_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V093_IMPLEMENTATION_REPORT.md", join(packageDir, "V093_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V093_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V093_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -437,7 +443,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.90, start with V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md, V090_VISUAL_REGRESSION_MATRIX.json, V090_LAYOUT_ASSERTION_COVERAGE.md, and V090_VISUAL_QA_REVIEW_RULES.md. This package adds QA hardening only: deterministic desktop viewport screenshot coverage, layout assertions, and visual review rules. It changes no saves, rewards, campaign logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
+For v0.93, start with V093_EMMANUEL_RETEST_CHECKLIST.md, V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md, V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md, and V093_VISUAL_QA_REPORT.md. This package adds runtime UI foundation tokens and a selected-mission panel reset fix only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
 
 ## Known Warning
 

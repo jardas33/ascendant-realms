@@ -4,7 +4,8 @@
   display: block;
   margin-bottom: 6px;
   color: #d8dec7;
-  font-size: 13px;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
 }
 
 input {
@@ -146,8 +147,8 @@ input {
 
 .choice span {
   color: #c8d0bd;
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   overflow-wrap: anywhere;
 }
 
@@ -172,7 +173,7 @@ input {
   z-index: 1;
   margin: 2px 0 0;
   color: #c8d0bd;
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
   overflow-wrap: anywhere;
 }

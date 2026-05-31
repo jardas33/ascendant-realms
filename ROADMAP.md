@@ -11,11 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.92 Visual Review Pack Generator and Unified Emmanuel Retest Packet** on 2026-05-31. It is a QA tooling and documentation milestone: deterministic visual-QA screenshots are packaged into a static local review page, viewport/focused contact sheets, and a short Emmanuel retest packet.
+The current checkpoint is **v0.93 Runtime UI Foundation Tokens and Mission-Panel State Reset** on 2026-05-31. It is a presentation-foundation and bugfix milestone: runtime UI tokens now exist, existing UI surfaces use the first token pass, and returning to Salto Outskirts after a scrolled locked-mission preview resets the selected-mission panel cleanly.
 
-The next recommended step is to use the v0.92 review pack for fast human visual review while keeping the browser prototype as the active development and testing environment. Do not start v0.93, alter gameplay, change runtime behavior, change saves, rename IDs, generate/import art, start a desktop port, choose an engine, or add dependencies until a future explicit goal approves a narrow next step.
+The next recommended step is manual review of the v0.93 package and visual review pack. Do not start v0.94, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, or rebrand the runtime until a future explicit goal approves a narrow next step.
 
-New v0.92 docs:
+New v0.93 docs:
+
+- `docs/V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md`
+- `docs/V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md`
+- `docs/V093_DESKTOP_TYPOGRAPHY_READABILITY_REPORT.md`
+- `docs/V093_VISUAL_QA_REPORT.md`
+- `docs/V093_IMPLEMENTATION_REPORT.md`
+- `docs/V093_EMMANUEL_RETEST_CHECKLIST.md`
+
+Recent v0.92 docs:
 
 - `docs/V092_VISUAL_REVIEW_PACK_SPEC.md`
 - `docs/V092_CONTACT_SHEET_INDEX.md`

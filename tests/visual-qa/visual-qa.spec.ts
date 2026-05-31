@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 64;
+const EXPECTED_SCREENSHOT_COUNT = 65;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -695,7 +695,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 64-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 65-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -864,6 +864,25 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v090-selected-locked-mission-1366.png",
       LAPTOP,
       "Locked Aether Well preview keeps lock reason and disabled primary action visible at 1366x768."
+    );
+
+    await page.locator(".campaign-node-more summary").click();
+    await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+    await page.locator("[data-testid='campaign-selected-panel']").evaluate((panel) => {
+      const target = panel as HTMLElement;
+      target.scrollTop = Math.min(220, Math.max(0, target.scrollHeight - target.clientHeight));
+    });
+    await page.getByTestId("campaign-node-border_village").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+    await expectCampaignPrimaryActionAboveFold(page, `${group} Salto reset 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.93 Salto panel reset",
+      "v093-salto-panel-reset-1366.png",
+      LAPTOP,
+      "Salto Outskirts selected after inspecting and scrolling the locked Aether Well preview; More Details collapsed and Start Battle visible."
     );
 
     await useViewport(page, WIDE_DESKTOP);

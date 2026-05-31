@@ -2,34 +2,26 @@
 
 :root {
   color-scheme: dark;
-  font-family: Verdana, Arial, sans-serif;
-  background: #121813;
-  color: #edf0df;
+  font-family: var(--ui-font-family);
+  background: var(--ui-bg-shell);
+  color: var(--ui-text-primary);
   letter-spacing: 0;
   --asset-bg: radial-gradient(circle at 66% 18%, #273546 0, #10161a 42%, #050707 100%);
   --panel-texture:
     linear-gradient(145deg, rgba(255, 246, 200, 0.07), transparent 34%),
     linear-gradient(180deg, rgba(20, 25, 25, 0.96), rgba(8, 10, 10, 0.94));
-  --panel-ink: rgba(9, 12, 12, 0.9);
-  --panel-gold: rgba(222, 190, 94, 0.62);
-  --panel-blue: rgba(103, 161, 194, 0.28);
-  --panel-shadow:
-    0 24px 70px rgba(0, 0, 0, 0.52),
-    inset 0 1px 0 rgba(255, 246, 200, 0.11),
-    inset 0 0 0 1px rgba(255, 246, 200, 0.035);
-  --plate-bg:
-    linear-gradient(180deg, rgba(255, 246, 200, 0.075), rgba(7, 9, 9, 0.52)),
-    linear-gradient(90deg, rgba(103, 161, 194, 0.08), transparent 38%, rgba(222, 190, 94, 0.055)),
-    rgba(14, 18, 18, 0.88);
+  --panel-ink: var(--ui-panel-shell);
+  --panel-gold: var(--ui-border-panel);
+  --panel-blue: var(--ui-border-objective);
+  --panel-shadow: var(--ui-shadow-panel);
+  --plate-bg: var(--ui-panel-secondary);
   --plate-edge: rgba(246, 237, 180, 0.2);
   --plate-edge-strong: rgba(240, 217, 120, 0.46);
-  --plate-shadow:
-    inset 0 1px 0 rgba(255, 246, 200, 0.11),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.42),
-    0 10px 24px rgba(0, 0, 0, 0.2);
-  --aether-line: rgba(116, 211, 242, 0.48);
+  --plate-shadow: var(--ui-shadow-card);
+  --aether-line: var(--ui-lume-teal-soft);
   --ui-scale: 1;
-  font-size: calc(16px * var(--ui-scale));
+  font-size: calc(var(--ui-type-body-primary-size) * var(--ui-scale));
+  line-height: var(--ui-type-body-primary-line-height);
 }
 
 * {
@@ -47,8 +39,10 @@ body,
 }
 
 body {
-  background: #121813;
+  background: var(--ui-bg-shell);
   min-width: 320px;
+  font-size: var(--ui-type-body-primary-size);
+  line-height: var(--ui-type-body-primary-line-height);
 }
 
 :root[data-reduced-motion="true"] *,

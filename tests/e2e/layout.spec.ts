@@ -10,6 +10,7 @@ import {
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
 import {
+  SAVE_KEY,
   clickReady,
   continueSavedCampaign,
   expectBattleLoaded,
@@ -170,6 +171,57 @@ async function expectNoTextOverflowForSelectors(page: Page, selectors: string[],
   }, selectors);
 
   expect(offenders, `${label} key cards should not clip text horizontally`).toEqual([]);
+}
+
+async function expectReadableFontSizes(
+  page: Page,
+  selectors: string[],
+  minimumPx: number,
+  label: string
+): Promise<void> {
+  const offenders = await page.evaluate(
+    ({ selectorList, minSize }) => {
+      return selectorList
+        .flatMap((selector) => Array.from(document.querySelectorAll<HTMLElement>(selector)))
+        .map((element) => {
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          if (style.display === "none" || style.visibility === "hidden" || rect.width === 0 || rect.height === 0) {
+            return undefined;
+          }
+          const fontSize = Number.parseFloat(style.fontSize);
+          if (fontSize + 0.1 < minSize) {
+            return {
+              className: String(element.className),
+              testId: element.getAttribute("data-testid") ?? "",
+              fontSize,
+              text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 80)
+            };
+          }
+          return undefined;
+        })
+        .filter(Boolean)
+        .slice(0, 10);
+    },
+    { selectorList: selectors, minSize: minimumPx }
+  );
+
+  expect(offenders, `${label} should use readable ${minimumPx}px+ type`).toEqual([]);
+}
+
+async function expectNoNestedCardExplosion(page: Page, label: string): Promise<void> {
+  const offenders = await page.evaluate(() => {
+    return Array.from(
+      document.querySelectorAll<HTMLElement>(
+        ".campaign-selected-panel .campaign-support-card .campaign-support-card, .campaign-tab-panel .campaign-support-card .campaign-support-card, .results-panel .reward-card .reward-card"
+      )
+    ).map((element) => ({
+      className: String(element.className),
+      text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 90)
+    }));
+  });
+
+  expect(offenders, `${label} should not introduce nested-card clutter`).toEqual([]);
 }
 
 async function scrollMainToBottom(page: Page): Promise<void> {
@@ -924,6 +976,98 @@ test.describe("Ascendant Realms responsive layout", () => {
       }
     });
   }
+
+  test("v0.93 Salto mission panel resets after inspecting locked details @hosted-layout-core", async ({ page }) => {
+    test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await startNewCampaign(page, "Layout v093 Salto Reset");
+
+    const borderNode = page.getByTestId("campaign-node-border_village");
+    const borderNodeBox = await waitForLayoutBox(page, borderNode);
+    expect(borderNodeBox, "Border Village node has a click target").not.toBeNull();
+    if (borderNodeBox) {
+      expect(borderNodeBox.width, "Border Village node target width").toBeGreaterThanOrEqual(44);
+      expect(borderNodeBox.height, "Border Village node target height").toBeGreaterThanOrEqual(44);
+    }
+
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+    await expectActionAboveFold(page, page.getByTestId("campaign-start-node"), "v0.93 fresh Salto action");
+
+    const saveBefore = await page.evaluate((key) => {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }, SAVE_KEY);
+
+    await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), "v0.93 locked Aether Well preview", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Aether Well Ruins");
+    await page.locator(".campaign-node-more summary").click();
+    await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+    await expect(page.locator(".campaign-node-more")).toContainText("Pre-battle intelligence");
+
+    const scrolledPreview = await page.evaluate(() => {
+      const panel = document.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']");
+      if (!panel) {
+        throw new Error("Missing selected mission panel.");
+      }
+      const maxScroll = Math.max(0, panel.scrollHeight - panel.clientHeight);
+      panel.scrollTop = Math.min(220, maxScroll);
+      return {
+        clientHeight: panel.clientHeight,
+        scrollHeight: panel.scrollHeight,
+        scrollTop: panel.scrollTop
+      };
+    });
+    expect(scrolledPreview.scrollHeight, "Locked mission details should be scrollable for reset coverage").toBeGreaterThan(
+      scrolledPreview.clientHeight
+    );
+    expect(scrolledPreview.scrollTop, "Locked mission panel should have prior scroll before reset").toBeGreaterThan(0);
+
+    await clickReady(borderNode, "v0.93 return to Salto after locked details", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expectActionAboveFold(page, page.getByTestId("campaign-start-node"), "v0.93 reset Salto action");
+    await expectNoHorizontalOverflow(page, "v0.93 reset Salto campaign map");
+    await expectNoCampaignNodeOverlap(page, "v0.93 reset Salto campaign map");
+    await expectNoTextOverflowForSelectors(
+      page,
+      [".campaign-selected-panel", ".campaign-selected-facts", ".campaign-node"],
+      "v0.93 reset Salto campaign map"
+    );
+    await expectReadableFontSizes(
+      page,
+      [".campaign-selected-summary p", ".campaign-selected-facts span", ".campaign-selected-facts strong", ".campaign-node strong"],
+      12,
+      "v0.93 campaign body copy"
+    );
+    await expectNoNestedCardExplosion(page, "v0.93 campaign shell");
+
+    const resetState = await page.evaluate(() => {
+      const panel = document.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']");
+      const details = panel?.querySelector<HTMLDetailsElement>(".campaign-node-more");
+      const action = document.querySelector<HTMLElement>("[data-testid='campaign-start-node']");
+      const panelRect = panel?.getBoundingClientRect();
+      const actionRect = action?.getBoundingClientRect();
+      return {
+        activeInPanel: panel ? panel.contains(document.activeElement) || document.activeElement === panel : false,
+        actionVisibleInPanel:
+          Boolean(panelRect && actionRect) && actionRect!.bottom <= panelRect!.bottom + 2 && actionRect!.top >= panelRect!.top - 2,
+        detailsOpen: Boolean(details?.open),
+        scrollTop: panel?.scrollTop ?? -1
+      };
+    });
+    expect(resetState.scrollTop, "Salto panel scroll should reset").toBe(0);
+    expect(resetState.detailsOpen, "Salto More Details should collapse after node change").toBe(false);
+    expect(resetState.actionVisibleInPanel, "Salto primary action should remain visible after reset").toBe(true);
+    expect(resetState.activeInPanel, "Selected mission panel should receive safe focus after reset").toBe(true);
+
+    const saveAfter = await page.evaluate((key) => {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    }, SAVE_KEY);
+    expect(saveAfter?.campaign?.completedNodeIds ?? []).toEqual(saveBefore?.campaign?.completedNodeIds ?? []);
+    expect(saveAfter?.campaign?.nodeRewardsClaimedIds ?? []).toEqual(saveBefore?.campaign?.nodeRewardsClaimedIds ?? []);
+  });
 
   test("v0.90 Results primary actions and disclosure remain above the fold @hosted-layout-core", async ({ page }) => {
     test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);

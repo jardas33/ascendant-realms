@@ -69,6 +69,16 @@ interface CampaignMapData {
   message?: string;
 }
 
+interface CampaignRenderOptions {
+  preserveSelectedPanelState?: boolean;
+  resetSelectedPanelState?: boolean;
+}
+
+interface SelectedMissionPanelState {
+  detailsOpen: boolean;
+  scrollTop: number;
+}
+
 export class CampaignMapScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
@@ -105,7 +115,9 @@ export class CampaignMapScene extends Phaser.Scene {
       const target = event.target as HTMLElement;
       const nodeButton = target.closest<HTMLButtonElement>("button[data-campaign-node]");
       if (nodeButton) {
-        this.selectedNodeId = nodeButton.dataset.campaignNode ?? this.selectedNodeId;
+        const nextNodeId = nodeButton.dataset.campaignNode ?? this.selectedNodeId;
+        const nodeChanged = nextNodeId !== this.selectedNodeId;
+        this.selectedNodeId = nextNodeId;
         const selectedNode = this.selectedNode();
         this.campaignSave = {
           ...this.campaignSave,
@@ -113,7 +125,10 @@ export class CampaignMapScene extends Phaser.Scene {
           selectedChapterId: selectedNode?.chapterId ?? this.campaignSave.selectedChapterId
         };
         SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
-        this.render();
+        this.render({
+          preserveSelectedPanelState: !nodeChanged,
+          resetSelectedPanelState: nodeChanged
+        });
         return;
       }
 
@@ -343,11 +358,12 @@ export class CampaignMapScene extends Phaser.Scene {
     this.render();
   }
 
-  private render(): void {
+  private render(options: CampaignRenderOptions = {}): void {
     if (!this.root) {
       return;
     }
 
+    const preservedPanelState = options.preserveSelectedPanelState ? this.readSelectedMissionPanelState() : undefined;
     const viewModel = createCampaignMapViewModel({
       heroSave: this.heroSave,
       campaignSave: this.campaignSave,
@@ -376,6 +392,58 @@ export class CampaignMapScene extends Phaser.Scene {
         </section>
       </main>
     `;
+    if (options.resetSelectedPanelState) {
+      this.resetSelectedMissionPanelState();
+    } else if (preservedPanelState) {
+      this.restoreSelectedMissionPanelState(preservedPanelState);
+    }
+  }
+
+  private readSelectedMissionPanelState(): SelectedMissionPanelState | undefined {
+    const panel = this.root?.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']");
+    if (!panel) {
+      return undefined;
+    }
+    const details = panel.querySelector<HTMLDetailsElement>("details.campaign-node-more");
+    return {
+      detailsOpen: Boolean(details?.open),
+      scrollTop: panel.scrollTop
+    };
+  }
+
+  private resetSelectedMissionPanelState(): void {
+    const panel = this.root?.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']");
+    if (!panel) {
+      return;
+    }
+    panel.scrollTop = 0;
+    const details = panel.querySelector<HTMLDetailsElement>("details.campaign-node-more");
+    if (details && details.dataset.hasChoices !== "true") {
+      details.open = false;
+    }
+    panel.focus({ preventScroll: true });
+    window.requestAnimationFrame(() => {
+      panel.scrollTop = 0;
+      panel.focus({ preventScroll: true });
+    });
+    window.setTimeout(() => {
+      panel.focus({ preventScroll: true });
+    }, 0);
+  }
+
+  private restoreSelectedMissionPanelState(state: SelectedMissionPanelState): void {
+    const panel = this.root?.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']");
+    if (!panel) {
+      return;
+    }
+    const details = panel.querySelector<HTMLDetailsElement>("details.campaign-node-more");
+    if (details) {
+      details.open = state.detailsOpen;
+    }
+    panel.scrollTop = state.scrollTop;
+    window.requestAnimationFrame(() => {
+      panel.scrollTop = state.scrollTop;
+    });
   }
 
   private renderCampaignActions(): string {
@@ -505,7 +573,7 @@ export class CampaignMapScene extends Phaser.Scene {
             </div>
           </div>
         </section>
-        <aside class="campaign-selected-panel" data-testid="campaign-selected-panel">
+        <aside class="campaign-selected-panel" data-testid="campaign-selected-panel" tabindex="-1">
           ${viewModel.selectedNode ? this.renderSelectedNodePanel(viewModel.selectedNode) : `<p class="quiet">No campaign node selected.</p>`}
         </aside>
       </div>
@@ -540,7 +608,7 @@ export class CampaignMapScene extends Phaser.Scene {
           ${lockReason ? `<span>Lock reason</span><strong>${escapeHtml(lockReason)}</strong>` : ""}
         </div>
       </div>
-      <details class="campaign-node-more"${detailOpen}>
+      <details class="campaign-node-more" data-testid="campaign-node-more" data-has-choices="${hasChoices ? "true" : "false"}"${detailOpen}>
         <summary>${hasChoices ? "Choices And Details" : "More Details"}</summary>
         ${renderNodeDetails({
           node,

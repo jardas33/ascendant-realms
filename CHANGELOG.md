@@ -1,5 +1,36 @@
 # Changelog
 
+# v0.93 Runtime UI Foundation Tokens And Mission-Panel State Reset - 2026-05-31
+
+This checkpoint promotes the approved visual-token direction into a runtime CSS-token layer and fixes selected-mission panel reset/readability issues. It does not add gameplay, alter rewards, change saves, rename stable IDs, add art/assets, change campaign progression logic, rebrand the runtime, or start desktop work.
+
+Added:
+
+- `src/game/styles/tokens.css`.
+- `docs/V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md`.
+- `docs/V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md`.
+- `docs/V093_DESKTOP_TYPOGRAPHY_READABILITY_REPORT.md`.
+- `docs/V093_VISUAL_QA_REPORT.md`.
+- `docs/V093_IMPLEMENTATION_REPORT.md`.
+- `docs/V093_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Base, menu, form, inventory, campaign, Results, and battle-HUD styles now consume shared runtime UI tokens for typography, spacing, panels, borders, and state colors.
+- Campaign node targets are larger while retaining map visibility and non-overlap checks.
+- Switching selected campaign nodes now resets the selected mission panel to the top, collapses ordinary `More Details`, and keeps the primary action framed.
+- Layout and visual-QA coverage now includes the Salto return-after-locked-preview reset path.
+- Package generation and validation now require/copy the v0.93 docs and report the v0.93 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, gameplay systems, rewards, XP, campaign progression, replay rules, Tutorial state, balance values, maps, factions, units, buildings, art assets, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 93 files / 683 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted smoke with 16 tests, hosted layout-core with 26 tests, hosted layout-cinderfen with 12 tests, hosted deep-battle with 29 tests, hosted deep-campaign-pressure with 8 tests, `npm run visual:qa` with 9 tests / 65 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 65 screenshots / 7 contact sheets.
+- Final `git diff --check`, package generation, and package verification run during commit/package closeout.
+
 # v0.92 Visual Review Pack Generator And Unified Emmanuel Retest Packet - 2026-05-31
 
 This checkpoint adds QA tooling and documentation for reviewing existing deterministic visual-QA screenshots quickly. It does not alter gameplay, runtime behavior, saves, stable IDs, balance, art assets, desktop implementation, engine choice, or dependencies.
