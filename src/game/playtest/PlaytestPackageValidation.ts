@@ -286,6 +286,16 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V087_IMPLEMENTATION_REPORT.md",
   "V087_EMMANUEL_RETEST_CHECKLIST.md",
   "V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md",
+  "V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md",
+  "V088_UI_DESIGN_TOKEN_PROPOSAL.md",
+  "V088_BARROSAN_STYLE_FRAME_BRIEF.md",
+  "V088_ASHEN_STYLE_FRAME_BRIEF.md",
+  "V088_WOLFVEIL_SILHOUETTE_BRIEF.md",
+  "V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md",
+  "V088_VERTICAL_SLICE_ASSET_MANIFEST.json",
+  "V088_ART_INTAKE_AND_REVIEW_GATE.md",
+  "V088_EMMANUEL_VISUAL_REVIEW_PACKET.md",
+  "V088_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -396,7 +406,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.87 campaign-shell second polish and Results information architecture",
+      "v0.88 visual foundation style-frame preparation and AI-art intake gate",
       "build info checkpoint",
       checks,
       errors

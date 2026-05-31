@@ -11,9 +11,31 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.82 Mission-Local Lume Network Runtime Prototype** on 2026-05-30. It implements the smallest approved runtime Lume slice on Aether Well Ruins / Broken Ford only: capture linked resource sites to activate Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
+The current checkpoint is **v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate** on 2026-05-31. It is a docs-first preparation milestone: screen-by-screen hierarchy, UI token proposal, Barrosan/Ashen/Wolfveil future style-frame briefs, controlled prompt templates, a planning-only vertical-slice asset manifest, and an art-intake review gate.
 
-The next recommended step is Emmanuel retest with `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`. Do not start runtime rebranding, ID migration, save migration, broader Lume Network expansion, race implementation, new art generation/import, desktop porting, engine selection, multiplayer, PvP, co-op, runtime copy migration, or new gameplay systems until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel visual review with `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md`. Do not generate images, import assets, replace runtime art, wire runtime tokens, start runtime rebranding, change stable IDs, migrate saves, choose a desktop engine, or start v0.89 until a future explicit goal approves a narrow next step.
+
+New v0.88 docs:
+
+- `docs/V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md`
+- `docs/V088_UI_DESIGN_TOKEN_PROPOSAL.md`
+- `docs/V088_BARROSAN_STYLE_FRAME_BRIEF.md`
+- `docs/V088_ASHEN_STYLE_FRAME_BRIEF.md`
+- `docs/V088_WOLFVEIL_SILHOUETTE_BRIEF.md`
+- `docs/V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md`
+- `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json`
+- `docs/V088_ART_INTAKE_AND_REVIEW_GATE.md`
+- `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md`
+- `docs/V088_IMPLEMENTATION_REPORT.md`
+
+Recent v0.87 docs:
+
+- `docs/V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md`
+- `docs/V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md`
+- `docs/V087_VISUAL_QA_REPORT.md`
+- `docs/V087_IMPLEMENTATION_REPORT.md`
+- `docs/V087_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md`
 
 New v0.82 docs:
 

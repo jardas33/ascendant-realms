@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.87 campaign-shell second polish and Results information architecture";
+const CHECKPOINT = "v0.88 visual foundation style-frame preparation and AI-art intake gate";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -316,6 +316,16 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V087_IMPLEMENTATION_REPORT.md", join(packageDir, "V087_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V087_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V087_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md", join(packageDir, "V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md"));
+  await copyMarkdown("docs/V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md", join(packageDir, "V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md"));
+  await copyMarkdown("docs/V088_UI_DESIGN_TOKEN_PROPOSAL.md", join(packageDir, "V088_UI_DESIGN_TOKEN_PROPOSAL.md"));
+  await copyMarkdown("docs/V088_BARROSAN_STYLE_FRAME_BRIEF.md", join(packageDir, "V088_BARROSAN_STYLE_FRAME_BRIEF.md"));
+  await copyMarkdown("docs/V088_ASHEN_STYLE_FRAME_BRIEF.md", join(packageDir, "V088_ASHEN_STYLE_FRAME_BRIEF.md"));
+  await copyMarkdown("docs/V088_WOLFVEIL_SILHOUETTE_BRIEF.md", join(packageDir, "V088_WOLFVEIL_SILHOUETTE_BRIEF.md"));
+  await copyMarkdown("docs/V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md", join(packageDir, "V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md"));
+  await copyMarkdown("docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json", join(packageDir, "V088_VERTICAL_SLICE_ASSET_MANIFEST.json"));
+  await copyMarkdown("docs/V088_ART_INTAKE_AND_REVIEW_GATE.md", join(packageDir, "V088_ART_INTAKE_AND_REVIEW_GATE.md"));
+  await copyMarkdown("docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md", join(packageDir, "V088_EMMANUEL_VISUAL_REVIEW_PACKET.md"));
+  await copyMarkdown("docs/V088_IMPLEMENTATION_REPORT.md", join(packageDir, "V088_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -415,7 +425,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.87, start with V087_EMMANUEL_RETEST_CHECKLIST.md, then read V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md and V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md. The build keeps gameplay, saves, balance, rewards, Lume rules, maps, factions, and art unchanged while polishing the campaign shell, selected-mission disclosure, campaign tabs, and ordinary Results information architecture. Use the v0.85 private-demo Results packet as the preserved disclosure baseline.
+For v0.88, start with V088_EMMANUEL_VISUAL_REVIEW_PACKET.md, then read V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md, V088_UI_DESIGN_TOKEN_PROPOSAL.md, and V088_ART_INTAKE_AND_REVIEW_GATE.md. This package includes planning documents for future visual style-frame review only. It generated no images, imports no art, changes no runtime assets, changes no saves, and keeps gameplay, rewards, campaign logic, stable IDs, maps, factions, and engine decisions unchanged.
 
 ## Known Warning
 

@@ -1,12 +1,59 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.87 campaign-shell second polish and Results information architecture
+Last updated: 2026-05-31 v0.88 visual foundation style-frame preparation and AI-art intake gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, and v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, and v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art. No runtime rebrand is approved.
+
+## Current v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
+
+Status: v0.88 is a docs-first visual-foundation checkpoint. It prepares a controlled professional visual pipeline before any AI-assisted art generation begins. It does not generate images, import assets, add runtime art, redesign gameplay, change saves, change stable IDs, choose a desktop engine, or start v0.89.
+
+Baseline:
+
+- Starting commit/package: `b571205`, `ascendant-realms-private-playtest-b571205`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26712580008` on `b571205` completed successfully.
+
+Included work:
+
+- Added `docs/V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md`.
+- Added `docs/V088_UI_DESIGN_TOKEN_PROPOSAL.md`.
+- Added `docs/V088_BARROSAN_STYLE_FRAME_BRIEF.md`.
+- Added `docs/V088_ASHEN_STYLE_FRAME_BRIEF.md`.
+- Added `docs/V088_WOLFVEIL_SILHOUETTE_BRIEF.md`.
+- Added `docs/V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md`.
+- Added `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json`.
+- Added `docs/V088_ART_INTAKE_AND_REVIEW_GATE.md`.
+- Added `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md`.
+- Added `docs/V088_IMPLEMENTATION_REPORT.md`.
+- Defined screen-by-screen hierarchy for main menu, campaign map, battle HUD, command panel, minimap, capture sites, Lume links, Results, hero screen, inventory, stronghold, Intel, and reputation.
+- Proposed docs-only UI token vocabulary for typography, spacing, panels, borders, corners, icon sizes, states, notification tiers, tooltips, overlay opacity, Lume teal, Ashen fire, Barrosan granite/hearth, and accessibility.
+- Prepared future-only style-frame briefs for Barrosan Freeholds, Ashen Covenant, and Wolfveil Clans.
+- Prepared future-only prompt templates for style frames, silhouettes, units, buildings, battlefield environments, and HUD frames.
+- Added a deterministic planning manifest for the first future vertical slice, with every entry marked not-created, not-approved, and reference-only.
+- Updated package generation and package verification metadata so v0.88 review docs ship with the clean private playtest package.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, XP, campaign progression, mission IDs, stable IDs, maps, factions, races, units, buildings, classes, runtime CSS, gameplay systems, balance values, broad AI/pathing behavior, desktop work, multiplayer, PvP, co-op, runtime rebrand/display-copy migration, image generation, asset import, or runtime art changed.
+- Current placeholder and procedural rendering remains the approved runtime state until a future explicit art-integration gate.
+
+Verification:
+
+```text
+JSON validation for docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json PASS.
+npm test PASS, 91 files / 675 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+```
+
+Closeout note: commit as `Checkpoint v0.88 visual foundation style-frame preparation and AI-art intake gate`, regenerate and verify a clean package from the final commit, then push. Emmanuel should review `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md` before any future generation. Do not generate images, import art, wire runtime tokens, change saves, rename stable IDs, choose a desktop engine, or start v0.89 without a new explicit goal.
 
 ## Current v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
 

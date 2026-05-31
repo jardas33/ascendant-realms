@@ -1,6 +1,55 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.87 campaign-shell second polish and Results information architecture
+Updated: 2026-05-31 v0.88 visual foundation style-frame preparation and AI-art intake gate
+
+## v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
+
+Scope: docs-first visual foundation for future controlled AI-assisted art review. This pass defines screen hierarchy, UI token proposals, Barrosan/Ashen/Wolfveil style-frame briefs, prompt templates, a vertical-slice planning manifest, and an art-intake gate. It does not generate images, import assets, change runtime art, change gameplay, alter saves, rename stable IDs, choose a desktop engine, or start v0.89.
+
+Baseline:
+
+- Starting commit/package: `b571205`, `ascendant-realms-private-playtest-b571205`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26712580008` on `b571205` completed successfully.
+
+Included work:
+
+- Added `docs/V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md`.
+- Added `docs/V088_UI_DESIGN_TOKEN_PROPOSAL.md`.
+- Added `docs/V088_BARROSAN_STYLE_FRAME_BRIEF.md`.
+- Added `docs/V088_ASHEN_STYLE_FRAME_BRIEF.md`.
+- Added `docs/V088_WOLFVEIL_SILHOUETTE_BRIEF.md`.
+- Added `docs/V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md`.
+- Added `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json`.
+- Added `docs/V088_ART_INTAKE_AND_REVIEW_GATE.md`.
+- Added `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md`.
+- Added `docs/V088_IMPLEMENTATION_REPORT.md`.
+- Updated package generation and package validation requirements for the v0.88 review packet.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, XP, campaign state, mission IDs, or stable IDs changed.
+
+Art/runtime boundary:
+
+- No images generated.
+- No art imported.
+- No runtime asset slots changed.
+- No runtime CSS tokens wired.
+- Current placeholder/procedural rendering remains untouched.
+
+Verification:
+
+```text
+JSON validation for docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json PASS.
+npm test PASS, 91 files / 675 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+```
+
+Closeout note: commit as `Checkpoint v0.88 visual foundation style-frame preparation and AI-art intake gate`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
 

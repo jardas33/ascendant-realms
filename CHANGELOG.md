@@ -1,5 +1,35 @@
 # Changelog
 
+# v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
+
+This checkpoint prepares a controlled professional visual pipeline before any AI-assisted art generation begins. It is docs-first and does not generate images, import assets, add runtime art, redesign gameplay, alter saves, rename stable IDs, choose a desktop engine, or start v0.89.
+
+Added:
+
+- `docs/V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md`.
+- `docs/V088_UI_DESIGN_TOKEN_PROPOSAL.md`.
+- `docs/V088_BARROSAN_STYLE_FRAME_BRIEF.md`.
+- `docs/V088_ASHEN_STYLE_FRAME_BRIEF.md`.
+- `docs/V088_WOLFVEIL_SILHOUETTE_BRIEF.md`.
+- `docs/V088_AI_ART_PROMPT_TEMPLATE_LIBRARY.md`.
+- `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json`.
+- `docs/V088_ART_INTAKE_AND_REVIEW_GATE.md`.
+- `docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md`.
+- `docs/V088_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Package generation now includes the v0.88 visual foundation docs, prompt templates, planning manifest, intake gate, and Emmanuel review packet.
+- Package verification now requires the v0.88 package docs and build-info checkpoint.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, rewards, XP, campaign progression, mission IDs, stable IDs, maps, factions, races, units, buildings, classes, runtime CSS, gameplay systems, balance values, broad AI/pathing behavior, desktop work, multiplayer, PvP, co-op, runtime rebrand/display-copy migration, image generation, asset import, or runtime art changed.
+
+Verification:
+
+- Passed: JSON validation for `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json`, `npm test` with 91 files / 675 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, and `npm run validate:art-intake`.
+
 # v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
 
 This checkpoint polishes campaign and ordinary Results presentation without adding gameplay systems, changing campaign progression, altering rewards, altering saves, renaming stable IDs, adding art/assets, maps, factions, desktop work, multiplayer, PvP, co-op, or broad creative changes.
