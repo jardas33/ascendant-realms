@@ -116,6 +116,18 @@ export class HUD {
         callbacks.onRetinueReinforcement();
         handled = true;
       }
+      if (action === "lume-focus") {
+        callbacks.onLumeFocus(id);
+        handled = true;
+      }
+      if (action === "private-demo-exit") {
+        callbacks.onPrivateDemoExit();
+        handled = true;
+      }
+      if (action === "private-demo-finish") {
+        callbacks.onPrivateDemoFinish();
+        handled = true;
+      }
       if (action === "tutorial-next") {
         callbacks.onTutorialNext();
         handled = true;

@@ -123,6 +123,7 @@ import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { findWalkableTrainedUnitSpawnPoint } from "../systems/TrainingSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
+import { isPrivateLumeDemoLaunch } from "../playtest/PrivatePlaytestTools";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -186,6 +187,40 @@ interface AscendantBattleTestHooks {
     commanderReleasedAtSeconds?: number;
     completed: boolean;
   } | null;
+  getLumeNetworkSnapshot?: () => {
+    hud: ReturnType<NonNullable<BattleSceneSystems["lumeNetworkDirector"]>["hudSummary"]>;
+    state: ReturnType<NonNullable<BattleSceneSystems["lumeNetworkDirector"]>["currentState"]>;
+    render: LumeRenderSnapshot;
+  } | null;
+  focusLumeSite?: (siteId: string) => boolean;
+  finishPrivateDemo?: () => boolean;
+}
+
+interface LumeRenderLinkSnapshot {
+  id: string;
+  state: string;
+  style: "inactive" | "active" | "contested" | "severed" | "restored";
+  fromSiteId: string;
+  toSiteId: string;
+  from: Position;
+  to: Position;
+  color: number;
+  alpha: number;
+  width: number;
+}
+
+interface LumeRenderSiteMarkerSnapshot {
+  siteId: string;
+  state: string;
+  position: Position;
+  radius: number;
+  color: number;
+  alpha: number;
+}
+
+interface LumeRenderSnapshot {
+  links: LumeRenderLinkSnapshot[];
+  siteMarkers: LumeRenderSiteMarkerSnapshot[];
 }
 
 export class BattleScene extends Phaser.Scene {
@@ -219,6 +254,7 @@ export class BattleScene extends Phaser.Scene {
   private xpSystem!: BattleSceneSystems["xpSystem"];
   private aiSystem!: BattleSceneSystems["aiSystem"];
   private lumeNetworkDirector?: BattleSceneSystems["lumeNetworkDirector"];
+  private lumeLinkGraphics?: Phaser.GameObjects.Graphics;
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
   private battlefieldEventDirector?: BattlefieldEventDirector;
@@ -275,6 +311,7 @@ export class BattleScene extends Phaser.Scene {
     this.spawnScenario();
     this.createFogOverlay();
     this.createSystems();
+    this.renderLumeNetworkLinks();
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection(this.initialPlayerSelection());
@@ -315,6 +352,7 @@ export class BattleScene extends Phaser.Scene {
     this.repairSystem.update(deltaSeconds);
     this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
     this.lumeNetworkDirector?.update();
+    this.renderLumeNetworkLinks();
     this.updateResourceSiteWarnings(deltaSeconds);
     this.trainingSystem.update(deltaSeconds, this.buildings);
     this.upgradeSystem.update(deltaSeconds, this.buildings);
@@ -351,6 +389,8 @@ export class BattleScene extends Phaser.Scene {
     this.enemyPressureRuntime = undefined;
     this.battlefieldEventDirector = undefined;
     this.lumeNetworkDirector = undefined;
+    this.lumeLinkGraphics?.destroy();
+    this.lumeLinkGraphics = undefined;
     this.act1FinaleDirector = isAct1FinaleBattle({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -466,6 +506,9 @@ export class BattleScene extends Phaser.Scene {
       resumeBattle: () => this.resumeBattle(),
       exitToMainMenu: () => this.exitToMainMenu(),
       callRetinueReinforcement: () => this.callRetinueReinforcement(),
+      focusLumeSite: (siteId) => this.focusLumeSite(siteId),
+      exitPrivateDemo: () => this.exitPrivateDemo(),
+      finishPrivateDemo: () => this.finishPrivateDemo(),
       canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit)
     });
 
@@ -789,6 +832,56 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  private isPrivateLumeDemo(): boolean {
+    return isPrivateLumeDemoLaunch(this.launch.request) && Boolean(this.lumeNetworkDirector);
+  }
+
+  private focusLumeSite(siteId: string): boolean {
+    if (!this.isPrivateLumeDemo()) {
+      return false;
+    }
+    const site = this.captureSites.find((entry) => entry.definition.id === siteId || entry.id === siteId);
+    if (!site) {
+      this.showMessage("Lume focus target unavailable.", undefined, undefined, "#ffd27a", { priority: "command" });
+      return false;
+    }
+    this.cameraSystem.centerOn(site.position);
+    this.addMinimapPing(site.position.x, site.position.y, "#74d3f2", site.definition.name);
+    this.showMessage(`Focus: ${site.definition.name}`, site.position.x, site.position.y - 86, "#74d3f2", {
+      priority: "command"
+    });
+    this.refreshBattleHud(0);
+    return true;
+  }
+
+  private exitPrivateDemo(): boolean {
+    if (!this.isPrivateLumeDemo()) {
+      return false;
+    }
+    this.menuPaused = false;
+    const saved = SaveSystem.load();
+    this.scene.start(SCENE_KEYS.campaignMap, {
+      heroSave: saved?.hero ?? this.launch.request.heroSave,
+      campaignSave: saved?.campaign,
+      message: "Private Lume demo exited. No rewards or campaign progress were saved."
+    });
+    return true;
+  }
+
+  private finishPrivateDemo(): boolean {
+    if (!this.isPrivateLumeDemo()) {
+      return false;
+    }
+    if (!this.lumeNetworkDirector?.currentState().objectiveCompleted) {
+      this.showMessage("Awaken the first Lume Ward link before finishing the demo.", undefined, undefined, "#ffd27a", {
+        priority: "command"
+      });
+      return false;
+    }
+    this.endBattle("victory");
+    return true;
+  }
+
   private createMinimapSnapshot(): MinimapSnapshot {
     return createBattleMinimapSnapshot({
       activeMap: this.activeMap,
@@ -857,6 +950,89 @@ export class BattleScene extends Phaser.Scene {
       return summary ? [[site.definition.id, summary] as const] : [];
     });
     return Object.fromEntries(entries);
+  }
+
+  private renderLumeNetworkLinks(): void {
+    if (!this.lumeNetworkDirector) {
+      this.lumeLinkGraphics?.clear();
+      return;
+    }
+    const snapshot = this.createLumeRenderSnapshot();
+    const graphics = this.lumeLinkGraphics ?? this.add.graphics().setDepth(1.6);
+    this.lumeLinkGraphics = graphics;
+    graphics.clear();
+    snapshot.links.forEach((link) => {
+      graphics.lineStyle(link.width, link.color, link.alpha);
+      graphics.strokeLineShape(new Phaser.Geom.Line(link.from.x, link.from.y, link.to.x, link.to.y));
+      const midpoint = { x: (link.from.x + link.to.x) / 2, y: (link.from.y + link.to.y) / 2 };
+      if (link.style === "active" || link.style === "restored") {
+        graphics.fillStyle(link.color, Math.min(0.22, link.alpha * 0.28));
+        graphics.fillCircle(midpoint.x, midpoint.y, 16);
+      }
+    });
+    snapshot.siteMarkers.forEach((marker) => {
+      graphics.lineStyle(3, marker.color, marker.alpha);
+      graphics.strokeCircle(marker.position.x, marker.position.y, marker.radius);
+      graphics.lineStyle(1, marker.color, Math.min(0.38, marker.alpha));
+      graphics.strokeCircle(marker.position.x, marker.position.y, Math.max(12, marker.radius - 12));
+    });
+  }
+
+  private createLumeRenderSnapshot(): LumeRenderSnapshot {
+    if (!this.lumeNetworkDirector) {
+      return { links: [], siteMarkers: [] };
+    }
+    const state = this.lumeNetworkDirector.currentState();
+    const siteById = new Map(this.captureSites.map((site) => [site.definition.id, site]));
+    const pulse = 0.5 + Math.sin(this.runtime.elapsedSeconds * 4.2) * 0.5;
+    const links = state.links.flatMap((link): LumeRenderLinkSnapshot[] => {
+      const from = siteById.get(link.fromSiteId);
+      const to = siteById.get(link.toSiteId);
+      if (!from || !to) {
+        return [];
+      }
+      const restored = link.active && state.lifetimeSeveredLinkIds.includes(link.id);
+      const style = restored ? "restored" : link.state;
+      const visual = lumeLinkVisual(style, pulse);
+      return [
+        {
+          id: link.id,
+          state: link.state,
+          style,
+          fromSiteId: link.fromSiteId,
+          toSiteId: link.toSiteId,
+          from: { ...from.position },
+          to: { ...to.position },
+          ...visual
+        }
+      ];
+    });
+    const linkedSiteIds = new Set(state.links.flatMap((link) => [link.fromSiteId, link.toSiteId]));
+    const siteMarkers = [...linkedSiteIds].flatMap((siteId): LumeRenderSiteMarkerSnapshot[] => {
+      const site = siteById.get(siteId);
+      if (!site) {
+        return [];
+      }
+      const touchingLinks = state.links.filter((link) => link.fromSiteId === siteId || link.toSiteId === siteId);
+      const linkState = touchingLinks.some((link) => link.active)
+        ? "active"
+        : touchingLinks.some((link) => link.state === "contested")
+          ? "contested"
+          : touchingLinks.some((link) => link.state === "severed")
+            ? "severed"
+            : "inactive";
+      const markerVisual = lumeSiteMarkerVisual(linkState, pulse);
+      return [
+        {
+          siteId,
+          state: linkState,
+          position: { ...site.position },
+          radius: site.definition.radius + 9,
+          ...markerVisual
+        }
+      ];
+    });
+    return { links, siteMarkers };
   }
 
   private selectedEntities(): Array<Unit | Building | CaptureSite> {
@@ -1060,7 +1236,7 @@ export class BattleScene extends Phaser.Scene {
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       battlefieldEvent: this.createBattlefieldEventSnapshot(),
-      lumeNetwork: this.lumeNetworkDirector?.hudSummary(),
+      lumeNetwork: this.lumeNetworkDirector?.hudSummary({ privateDemo: this.isPrivateLumeDemo() }),
       lumeSiteSummaries: this.createLumeSiteSummaries(),
       privatePlaytestNotice: this.launch.request.privatePlaytestNotice,
       controlGroups: this.controlGroupSystem.summaries(this.units),
@@ -1901,6 +2077,7 @@ export class BattleScene extends Phaser.Scene {
           this.resourceSystem.update(step, [site], this.units);
         }
         this.lumeNetworkDirector?.update();
+        this.renderLumeNetworkLinks();
         this.refreshBattleHud(0);
         const strongholdEffects = getStrongholdBattleEffects(this.launch.request.modifiers);
         const firstCaptureBonus = site.definition.firstCaptureBonus
@@ -2010,7 +2187,19 @@ export class BattleScene extends Phaser.Scene {
           commanderReleasedAtSeconds: this.runtime.stats.act1FinaleCommanderReleasedAtSeconds,
           completed: this.act1FinaleDirector.isCompleted
         };
-      }
+      },
+      getLumeNetworkSnapshot: () => {
+        if (!this.lumeNetworkDirector) {
+          return null;
+        }
+        return {
+          hud: this.lumeNetworkDirector.hudSummary({ privateDemo: this.isPrivateLumeDemo() }),
+          state: this.lumeNetworkDirector.currentState(),
+          render: this.createLumeRenderSnapshot()
+        };
+      },
+      focusLumeSite: (siteId: string) => this.focusLumeSite(siteId),
+      finishPrivateDemo: () => this.finishPrivateDemo()
     };
   }
 
@@ -2027,6 +2216,9 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.triggerBattlefieldEvent;
     delete target.__ASCENDANT_TEST_HOOKS__.resolveBattlefieldEvent;
     delete target.__ASCENDANT_TEST_HOOKS__.getAct1FinaleState;
+    delete target.__ASCENDANT_TEST_HOOKS__.getLumeNetworkSnapshot;
+    delete target.__ASCENDANT_TEST_HOOKS__.focusLumeSite;
+    delete target.__ASCENDANT_TEST_HOOKS__.finishPrivateDemo;
   }
 
   private cleanup(): void {
@@ -2038,6 +2230,8 @@ export class BattleScene extends Phaser.Scene {
     this.rallyMarkers.clear();
     this.neutralCampLabels.forEach((entry) => entry.label.destroy());
     this.neutralCampLabels = [];
+    this.lumeLinkGraphics?.destroy();
+    this.lumeLinkGraphics = undefined;
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
   }
@@ -2079,4 +2273,39 @@ function formatResourceBonusText(resources: Partial<ResourceBag>): string {
       return amount > 0 ? [`+${amount} ${labels[resource]}`] : [];
     })
     .join(", ");
+}
+
+function lumeLinkVisual(
+  style: LumeRenderLinkSnapshot["style"],
+  pulse: number
+): Pick<LumeRenderLinkSnapshot, "color" | "alpha" | "width"> {
+  if (style === "active") {
+    return { color: 0x74d3f2, alpha: 0.74, width: 4 };
+  }
+  if (style === "restored") {
+    return { color: 0x8ff6e5, alpha: 0.72 + pulse * 0.18, width: 5 };
+  }
+  if (style === "contested") {
+    return { color: 0xf0d978, alpha: 0.44 + pulse * 0.32, width: 4 };
+  }
+  if (style === "severed") {
+    return { color: 0xff6b6b, alpha: 0.26 + pulse * 0.28, width: 4 };
+  }
+  return { color: 0x74d3f2, alpha: 0.2, width: 2 };
+}
+
+function lumeSiteMarkerVisual(
+  state: string,
+  pulse: number
+): Pick<LumeRenderSiteMarkerSnapshot, "color" | "alpha"> {
+  if (state === "active") {
+    return { color: 0x8ff6e5, alpha: 0.48 + pulse * 0.18 };
+  }
+  if (state === "contested") {
+    return { color: 0xf0d978, alpha: 0.42 + pulse * 0.26 };
+  }
+  if (state === "severed") {
+    return { color: 0xff6b6b, alpha: 0.34 + pulse * 0.22 };
+  }
+  return { color: 0x74d3f2, alpha: 0.26 };
 }

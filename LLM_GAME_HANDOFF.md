@@ -1,12 +1,69 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.83 campaign map UX rescue and private playtest quick launch
+Last updated: 2026-05-30 v0.84 guided Lume demo readability and fast-retest polish
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, and v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, and v0.84 polishes that guided private demo for clearer Lume retesting. No runtime rebrand is approved.
+
+## Current v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
+
+Status: v0.84 improves the package/dev-only Aether Well Lume demo without expanding Lume rules or changing saves. It keeps `aether_well_ruins`, `broken_ford`, `west_stone_cut`, `ford_toll`, `north_aether_spring`, `west_stone_cut_to_ford_toll`, `ford_toll_to_north_aether_spring`, `linked_ward`, and the 0.92 incoming-damage multiplier unchanged.
+
+Baseline:
+
+- Starting commit/package: `a368b55`, `ascendant-realms-private-playtest-a368b55`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26698221908` on `a368b55` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md`.
+- Added `docs/V084_LUME_LINK_RENDERING_SPEC.md`.
+- Added `docs/V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md`.
+- Added `docs/V084_VISUAL_QA_REPORT.md`.
+- Added `docs/V084_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V084_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md`.
+- Replaced the dense Lume HUD paragraph with a progressive `LUME WARD` / `LUME LINKS` tracker.
+- Added private-demo focus controls for West Stone Cut, Ford Toll, and the optional North Aether Spring reveal.
+- Added session-only `Exit Demo` and post-activation `Finish Demo & View Results` actions for fast private retesting.
+- Added procedural battlefield link/endpoint rendering for inactive, active, contested, severed, and restored Lume states.
+- Added deduped high-priority Lume notifications for awaken, sever, restore, and full-network activation.
+- Updated package generation and validation to require the v0.84 docs and explain the v0.84 tester flow.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- No maps, factions, art/assets, internal IDs, campaign prerequisites, Lume balance values, Linked Ward stacking rules, resource-production behavior, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy behavior changed.
+- Private demo exit and finish controls are battle-session-only and keep rewards/progress disabled.
+- Tutorial and generic no-reward launches remain excluded from normal Lume reward/progression behavior.
+
+Verification:
+
+```text
+npm test PASS, 87 files / 659 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests after a focused Lume test-race fix.
+npm run visual:qa PASS, 6 tests / 26 screenshots / 0 console errors / 0 screenshot retries after a test-only Cinderfen helper fallback.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-a368b55-dirty` generated.
+npm run verify:playtest-package PASS, 265 checks against the dirty pre-commit package.
+```
+
+Closeout note: commit as `Checkpoint v0.84 guided Lume demo readability and fast-retest polish`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V084_EMMANUEL_RETEST_CHECKLIST.md`. Do not start v0.85, broader Lume rules, Living Mines, Jardas binding, Worker binding, hero binding, runtime copy migration, art generation, ID/save migration, desktop work, multiplayer, PvP, or co-op without a new explicit goal.
 
 ## Current v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
 

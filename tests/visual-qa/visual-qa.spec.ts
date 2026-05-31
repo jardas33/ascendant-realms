@@ -375,9 +375,9 @@ test.describe("Ascendant Realms visual QA capture", () => {
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
 
-  test("captures v0.83 campaign map rescue and private Lume launch views", async ({ page }) => {
+  test("captures v0.84 guided private Lume demo views", async ({ page }) => {
     test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
-    const group = "v083-campaign-map-private-lume";
+    const group = "v084-guided-private-lume";
     const consoleErrors = attachConsoleCollector(page, group);
 
     await useViewport(page, FULL_HD);
@@ -445,21 +445,23 @@ test.describe("Ascendant Realms visual QA capture", () => {
       page,
       group,
       "Private Lume demo HUD",
-      "v083-private-lume-hud-1920.png",
+      "v084-private-lume-hud-1920.png",
       FULL_HD,
-      "Private Aether Well Lume demo battle HUD with no-save warning and Lume objective row."
+      "Private Aether Well Lume demo battle HUD with compact no-save ribbon, Lume tracker, focus controls, and Exit Demo."
     );
 
     await centerCaptureSite(page, "west_stone_cut", true);
     await centerCaptureSite(page, "ford_toll", true);
-    await expect(page.getByTestId("lume-network-status")).toContainText(/active/i);
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
+    await expect(page.getByTestId("private-demo-finish")).toBeVisible();
+    await expect(page.getByTestId("lume-focus-north_aether_spring")).toBeVisible();
     await captureView(
       page,
       group,
       "Private Lume demo linked ward active",
-      "v083-private-lume-active-1920.png",
+      "v084-private-lume-active-1920.png",
       FULL_HD,
-      "Linked Ward activated in the private demo through the existing capture-site hook."
+      "Linked Ward activated in the private demo with optional North Aether focus and Finish Demo action visible."
     );
 
     await useViewport(page, LAPTOP);
@@ -467,7 +469,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
       page,
       group,
       "Private Lume demo laptop HUD",
-      "v083-private-lume-hud-1366.png",
+      "v084-private-lume-hud-1366.png",
       LAPTOP,
       "Private demo HUD at 1366x768 with warning and Lume row still readable."
     );

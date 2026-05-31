@@ -118,6 +118,9 @@ interface CreateBattleSceneSystemsOptions {
   resumeBattle: () => void;
   exitToMainMenu: () => void;
   callRetinueReinforcement?: () => boolean;
+  focusLumeSite?: (siteId: string) => void;
+  exitPrivateDemo?: () => void;
+  finishPrivateDemo?: () => void;
   canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
 }
 
@@ -168,6 +171,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     resumeBattle,
     exitToMainMenu,
     callRetinueReinforcement,
+    focusLumeSite,
+    exitPrivateDemo,
+    finishPrivateDemo,
     canEnemyHeroJoinAttack
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
@@ -502,6 +508,18 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         if (callRetinueReinforcement?.()) {
           AudioManager.play("ui_click");
         }
+      },
+      onLumeFocus: (siteId) => {
+        focusLumeSite?.(siteId);
+        AudioManager.play("ui_click");
+      },
+      onPrivateDemoExit: () => {
+        exitPrivateDemo?.();
+        AudioManager.play("ui_click");
+      },
+      onPrivateDemoFinish: () => {
+        finishPrivateDemo?.();
+        AudioManager.play("ui_click");
       },
       onTutorialNext: advanceTutorialStep,
       onMinimapMove: centerCameraFromMinimap,

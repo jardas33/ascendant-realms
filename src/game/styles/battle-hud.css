@@ -216,6 +216,59 @@
   line-height: 1.18;
 }
 
+.lume-network-row .lume-objective-line {
+  color: #d9fbf3;
+  font-weight: 700;
+}
+
+.lume-network-row .lume-optional-line {
+  color: #f4df9a;
+}
+
+.lume-network-row .lume-optional-line strong {
+  color: #f0d978;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.objective-details {
+  margin-top: 2px;
+}
+
+.objective-details summary {
+  width: fit-content;
+  cursor: pointer;
+  color: #aee6d7;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.objective-details[open] {
+  display: grid;
+  gap: 2px;
+}
+
+.lume-control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.lume-control-row .hud-button.compact {
+  min-width: 0;
+  min-height: 26px;
+  padding: 5px 7px;
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.private-demo-actions .hud-button.compact {
+  border-color: rgba(116, 211, 242, 0.4);
+}
+
 .objective-row.completed {
   border-left-color: rgba(156, 247, 177, 0.76);
 }

@@ -2152,22 +2152,48 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     );
     await expectBattleLoaded(page);
     await waitForBattleScene(page);
-    await expect(page.getByTestId("lume-network-status")).toContainText("Linked Ward");
-    await expect(page.getByTestId("lume-network-status")).toContainText("Inactive");
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Capture West Stone Cut");
+    await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 0/2");
 
     const captures = await page.evaluate(() => {
       const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
       return [hooks?.captureSite?.("west_stone_cut"), hooks?.captureSite?.("ford_toll")];
     });
     expect(captures.map((entry: any) => entry?.owner)).toEqual(["player", "player"]);
-    await expect(page.getByTestId("lume-network-status")).toContainText("1/2 active");
-    await expect(page.getByTestId("lume-network-status")).toContainText("West Stone Cut + Ford Toll");
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
+    await expect(page.getByTestId("lume-network-status")).toContainText("West Stone Cut");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Ford Toll");
+    await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
+    const activeRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(activeRender.render.links).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "west_stone_cut_to_ford_toll",
+          style: "active"
+        })
+      ])
+    );
 
     const severed = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
       const site = scene?.captureSites.find((entry: any) => entry.definition.id === "ford_toll");
+      if (!site) {
+        throw new Error("Missing Ford Toll capture site.");
+      }
+      scene.units
+        .filter((unit: any) => unit.alive && unit.team === "player")
+        .forEach((unit: any, index: number) => {
+          unit.setPosition(site.position.x + 420 + index * 22, site.position.y + 360 + index * 18);
+          unit.moveTarget = undefined;
+          unit.attackTargetId = undefined;
+          unit.attackMove = false;
+        });
       site?.setOwner("enemy");
+      site.captureProgress = 0;
+      site.capturingTeam = "neutral";
       scene?.lumeNetworkDirector?.update();
+      scene?.renderLumeNetworkLinks?.();
       scene?.refreshBattleHud?.(0);
       return {
         severed: scene?.runtime.stats.lumeLinkSeveredIds ?? [],
@@ -2178,7 +2204,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
       severed: ["west_stone_cut_to_ford_toll"],
       objectiveCompleted: true
     });
-    await expect(page.getByTestId("lume-network-status")).toContainText("Severed");
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME LINK SEVERED");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Recapture Ford Toll");
 
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.getByTestId("results-lume-network-summary")).toContainText("Linked Ward");

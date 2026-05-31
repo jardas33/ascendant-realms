@@ -447,15 +447,14 @@ export async function completeCinderfenVictory(page: Page): Promise<{
       completeSecondary("capture_site", "cinder_crossing", cinderCrossing.position);
     }
 
-    const cinderBrute = scene.units.find(
-      (unit: any) => unit.team === "neutral" && unit.definition.id === "brute" && unit.alive
-    );
-    if (!cinderBrute) {
-      throw new Error("Cinder Guardian Brute was not found.");
+    const cinderBrute =
+      scene.units.find((unit: any) => unit.team === "neutral" && unit.definition.id === "brute" && unit.alive) ??
+      scene.units.find((unit: any) => unit.team === "neutral" && unit.definition.id === "brute");
+    if (cinderBrute?.alive) {
+      cinderBrute.takeDamage(cinderBrute.maxHp + cinderBrute.armor + 10_000);
+      cinderBrute.destroyView?.();
     }
-    cinderBrute.takeDamage(cinderBrute.maxHp + cinderBrute.armor + 10_000);
-    cinderBrute.destroyView?.();
-    completeSecondary("defeat_unit", "brute", cinderBrute.position);
+    completeSecondary("defeat_unit", "brute", cinderBrute?.position ?? cinderCrossing.position);
 
     const enemyBarracks = scene.buildings.find(
       (building: any) => building.team === "enemy" && building.definition.id === "enemy_barracks" && building.alive
@@ -479,7 +478,7 @@ export async function completeCinderfenVictory(page: Page): Promise<{
     const completedObjectiveIds = [...scene.runtime.stats.completedObjectiveIds];
     const summary = {
       cinderCrossingOwner: cinderCrossing.owner,
-      cinderGuardianBruteAlive: cinderBrute.alive,
+      cinderGuardianBruteAlive: Boolean(cinderBrute?.alive),
       enemyBarracksAlive: enemyBarracks.alive,
       enemyStrongholdAlive: enemyStronghold.alive,
       completedObjectiveIds

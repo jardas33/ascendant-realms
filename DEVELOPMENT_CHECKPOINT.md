@@ -1,6 +1,61 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.83 campaign map UX rescue and private playtest quick launch
+Updated: 2026-05-30 v0.84 guided Lume demo readability and fast-retest polish
+
+## v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
+
+Scope: guided readability and fast-retest polish for the package/dev-only Aether Well Lume demo. This pass uses existing `aether_well_ruins` / `broken_ford`, existing Lume rules, existing HUD/Results/package paths, and session-only private-demo controls. It does not change save format, rename internal IDs, add maps/factions/races/units/buildings/classes/art/assets, broaden Lume rules, alter `linked_ward`, alter the 0.92 damage multiplier, start desktop work, add multiplayer/PvP/co-op, or perform runtime rebrand/display-copy migration.
+
+Baseline:
+
+- Starting commit/package: `a368b55`, `ascendant-realms-private-playtest-a368b55`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26698221908` on `a368b55` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md`.
+- Added `docs/V084_LUME_LINK_RENDERING_SPEC.md`.
+- Added `docs/V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md`.
+- Added `docs/V084_VISUAL_QA_REPORT.md`.
+- Added `docs/V084_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V084_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md`.
+- Progressive HUD tracker now teaches `LUME WARD`, current capture target, `LUME LINKS x/2`, severed/restored state, and optional North Aether focus after the first link.
+- Private demo controls now support focus buttons, `Exit Demo`, and post-activation `Finish Demo & View Results`.
+- Battlefield rendering now draws procedural Lume links/endpoints for inactive, active, contested, severed, and restored states.
+- Lume notifications are shorter and deduped for awaken, sever, restore, and full-network activation.
+- Package generation and verification now include all v0.84 tester docs and the v0.84 build-info guidance.
+
+Save format:
+
+- No save-version bump.
+- No save fields added, removed, renamed, or migrated.
+- Private demo focus, exit, finish, and link rendering are battle-session-only.
+- Private demo rewards/progress remain disabled, and Tutorial/generic no-reward launch protection remains intact.
+
+Verification:
+
+```text
+npm test PASS, 87 files / 659 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests after a focused Lume test-race fix.
+npm run visual:qa PASS, 6 tests / 26 screenshots / 0 console errors / 0 screenshot retries after a test-only Cinderfen helper fallback.
+npm run package:playtest PASS, dirty pre-commit package `ascendant-realms-private-playtest-a368b55-dirty` generated.
+npm run verify:playtest-package PASS, 265 checks against the dirty pre-commit package.
+```
+
+Closeout note: commit as `Checkpoint v0.84 guided Lume demo readability and fast-retest polish`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
 

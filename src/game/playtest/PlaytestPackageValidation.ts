@@ -259,6 +259,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V083_VISUAL_QA_REPORT.md",
   "V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md",
   "V083_EMMANUEL_RETEST_CHECKLIST.md",
+  "V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md",
+  "V084_LUME_LINK_RENDERING_SPEC.md",
+  "V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md",
+  "V084_VISUAL_QA_REPORT.md",
+  "V084_EMMANUEL_RETEST_CHECKLIST.md",
+  "V084_IMPLEMENTATION_REPORT.md",
+  "V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -369,7 +376,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.83 campaign map UX rescue and private playtest quick launch",
+      "v0.84 guided Lume demo readability and fast-retest polish",
       "build info checkpoint",
       checks,
       errors

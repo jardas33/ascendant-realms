@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { LumeSiteSnapshot, LumeTargetSnapshot } from "../core/GameTypes";
 import { LUME_NETWORKS, selectLumeNetworkForLaunch } from "../data/lumeNetworks";
-import { isLinkedWardTarget, resolveLumeNetworkState } from "./LumeNetworkDirector";
+import { isLinkedWardTarget, LumeNetworkDirector, resolveLumeNetworkState } from "./LumeNetworkDirector";
 
 const network = LUME_NETWORKS[0];
 
@@ -113,6 +113,97 @@ describe("LumeNetworkDirector", () => {
     expect(network.benefit.damageTakenMultiplier).toBe(0.92);
     expect(network.benefit.nonStacking).toBe(true);
   });
+
+  it("builds progressive v0.84 HUD copy and private demo focus controls", () => {
+    const sites = [
+      captureSite("west_stone_cut", "West Stone Cut", "neutral"),
+      captureSite("ford_toll", "Ford Toll", "neutral"),
+      captureSite("north_aether_spring", "North Aether Spring", "neutral")
+    ];
+    const messages: string[] = [];
+    const director = new LumeNetworkDirector({
+      definition: network,
+      getCaptureSites: () => sites as any,
+      recordNetworkStarted: () => undefined,
+      recordLinkActivated: () => undefined,
+      recordLinkSevered: () => undefined,
+      recordObjectiveCompleted: () => undefined,
+      showMessage: (message) => messages.push(message)
+    });
+
+    expect(director.hudSummary({ privateDemo: true })).toMatchObject({
+      title: "LUME WARD",
+      objective: "Capture West Stone Cut",
+      status: "LUME LINKS 0/2",
+      progressLabel: "LUME LINKS 0/2",
+      finishDemoAvailable: false
+    });
+    expect(director.hudSummary({ privateDemo: true }).focusControls?.map((control) => control.siteId)).toEqual([
+      "west_stone_cut",
+      "ford_toll"
+    ]);
+
+    sites[0].owner = "player";
+    director.update();
+    expect(director.hudSummary({ privateDemo: true })).toMatchObject({
+      title: "LUME WARD",
+      objective: "Capture Ford Toll",
+      status: "1 of 2 sites held"
+    });
+
+    sites[1].owner = "player";
+    director.update();
+    const activeHud = director.hudSummary({ privateDemo: true });
+    expect(activeHud.title).toBe("LUME WARD ACTIVE");
+    expect(activeHud.objective).toContain("West Stone Cut");
+    expect(activeHud.objective).toContain("Ford Toll");
+    expect(activeHud.optionalSiteName).toBe("North Aether Spring");
+    expect(activeHud.focusControls?.map((control) => control.siteId)).toEqual([
+      "west_stone_cut",
+      "ford_toll",
+      "north_aether_spring"
+    ]);
+    expect(activeHud.finishDemoAvailable).toBe(true);
+    expect(messages).toContain("Lume Ward awakened");
+  });
+
+  it("dedupes severed, restored, and fully awakened Lume notifications", () => {
+    const sites = [
+      captureSite("west_stone_cut", "West Stone Cut", "player"),
+      captureSite("ford_toll", "Ford Toll", "player"),
+      captureSite("north_aether_spring", "North Aether Spring", "neutral")
+    ];
+    const messages: string[] = [];
+    const director = new LumeNetworkDirector({
+      definition: network,
+      getCaptureSites: () => sites as any,
+      recordNetworkStarted: () => undefined,
+      recordLinkActivated: () => undefined,
+      recordLinkSevered: () => undefined,
+      recordObjectiveCompleted: () => undefined,
+      showMessage: (message) => messages.push(message)
+    });
+
+    director.update();
+    sites[1].owner = "enemy";
+    director.update();
+    expect(director.hudSummary()).toMatchObject({
+      title: "LUME LINK SEVERED",
+      objective: "Recapture Ford Toll"
+    });
+    director.update();
+    expect(messages.filter((message) => message.includes("severed"))).toEqual(["Lume Link severed: Ford Toll lost"]);
+
+    sites[1].owner = "player";
+    director.update();
+    expect(director.hudSummary().title).toBe("LUME WARD RESTORED");
+    expect(messages).toContain("Lume Ward restored");
+
+    sites[2].owner = "player";
+    director.update();
+    expect(director.hudSummary().title).toBe("LUME NETWORK ACTIVE - 2/2");
+    expect(messages).toContain("Lume Network fully awakened: 2/2 links active");
+  });
 });
 
 function site(id: string, name: string, owner: LumeSiteSnapshot["owner"], position = { x: 100, y: 100 }): LumeSiteSnapshot {
@@ -133,5 +224,20 @@ function target(team: LumeTargetSnapshot["team"], position: LumeTargetSnapshot["
     team,
     position,
     alive: true
+  };
+}
+
+function captureSite(id: string, name: string, owner: LumeSiteSnapshot["owner"], position = { x: 100, y: 100 }) {
+  return {
+    definition: {
+      id,
+      name,
+      radius: 76
+    },
+    owner,
+    alive: true,
+    position,
+    captureProgress: 0,
+    capturingTeam: "neutral"
   };
 }

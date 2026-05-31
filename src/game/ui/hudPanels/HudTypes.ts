@@ -27,6 +27,9 @@ export interface HUDCallbacks {
   onStopCommand: () => void;
   onPatrolCommand: () => void;
   onRetinueReinforcement: () => void;
+  onLumeFocus: (siteId: string) => void;
+  onPrivateDemoExit: () => void;
+  onPrivateDemoFinish: () => void;
   onTutorialNext: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;

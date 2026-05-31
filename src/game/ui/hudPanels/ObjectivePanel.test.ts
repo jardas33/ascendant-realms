@@ -67,19 +67,57 @@ describe("ObjectivePanel", () => {
 
   it("renders a compact Lume Network row in the objective surface", () => {
     const html = renderObjectives([], undefined, undefined, {
-      title: "Linked Ward",
-      objective: "Hold West Stone Cut and Ford Toll.",
-      status: "Inactive",
+      title: "LUME WARD",
+      objective: "Capture West Stone Cut",
+      status: "LUME LINKS 0/2",
       benefit: "Friendly units and buildings near active linked sites take 8% less incoming damage.",
       counterplay: "Enemy recapture severs the link; retake both endpoints to restore it.",
       activeLinkCount: 0,
-      maxActiveLinks: 2
+      maxActiveLinks: 2,
+      progressLabel: "LUME LINKS 0/2"
     });
 
     expect(html).toContain('data-testid="lume-network-status"');
-    expect(html).toContain("Linked Ward - Inactive");
-    expect(html).toContain("Hold West Stone Cut and Ford Toll.");
+    expect(html).toContain("LUME WARD");
+    expect(html).toContain("Capture West Stone Cut");
+    expect(html).toContain("LUME LINKS 0/2");
+    expect(html).toContain('data-testid="lume-links-progress"');
+    expect(html).not.toContain("Objectives 0/0");
     expect(html).toContain("8% less incoming damage");
-    expect(html).toContain("Counterplay: Enemy recapture severs the link");
+  });
+
+  it("renders private Lume demo focus, finish, and exit controls after activation", () => {
+    const html = renderObjectives(
+      [],
+      undefined,
+      undefined,
+      {
+        title: "LUME WARD ACTIVE",
+        objective: "West Stone Cut ↔ Ford Toll",
+        status: "Nearby allies take 8% less damage",
+        benefit: "Friendly units and buildings near active linked sites take 8% less incoming damage.",
+        counterplay: "Enemy recapture severs the link; retake both endpoints to restore it.",
+        activeLinkCount: 1,
+        maxActiveLinks: 2,
+        progressLabel: "LUME LINKS 1/2",
+        optionalSiteName: "North Aether Spring",
+        privateDemo: true,
+        finishDemoAvailable: true,
+        focusControls: [
+          { siteId: "west_stone_cut", siteName: "West Stone Cut", label: "Focus West Stone Cut" },
+          { siteId: "ford_toll", siteName: "Ford Toll", label: "Focus Ford Toll" },
+          { siteId: "north_aether_spring", siteName: "North Aether Spring", label: "Focus North Aether Spring" }
+        ]
+      },
+      "Private playtest demo: rewards and campaign progress are disabled for this Aether Well Lume run."
+    );
+
+    expect(html).toContain("PRIVATE DEMO - rewards and campaign progress disabled");
+    expect(html).toContain('data-testid="lume-focus-west_stone_cut"');
+    expect(html).toContain('data-testid="lume-focus-ford_toll"');
+    expect(html).toContain('data-testid="lume-focus-north_aether_spring"');
+    expect(html).toContain('data-testid="private-demo-exit"');
+    expect(html).toContain('data-testid="private-demo-finish"');
+    expect(html).toContain("OPTIONAL LINK");
   });
 });

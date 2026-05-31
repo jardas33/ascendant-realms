@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
+
+This checkpoint polishes the package/dev-only Aether Well Lume demo so Emmanuel can understand and retest the existing Lume slice faster, without changing Lume balance, save data, campaign progression, or runtime identity.
+
+Added:
+
+- `docs/V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md`.
+- `docs/V084_LUME_LINK_RENDERING_SPEC.md`.
+- `docs/V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md`.
+- `docs/V084_VISUAL_QA_REPORT.md`.
+- `docs/V084_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V084_IMPLEMENTATION_REPORT.md`.
+- `docs/V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md`.
+
+Changed:
+
+- Replaced the dense private Lume HUD paragraph with a progressive `LUME WARD` and `LUME LINKS x/2` tracker.
+- Added compact private-demo copy with a Details disclosure so the no-save/no-reward warning stays visible but less bulky.
+- Added private-demo focus controls for West Stone Cut, Ford Toll, and the optional North Aether Spring reveal.
+- Added private-demo `Exit Demo` and post-activation `Finish Demo & View Results` actions.
+- Added procedural Lume link/endpoint rendering for inactive, active, contested, severed, and restored battlefield states.
+- Shortened and deduped Lume notifications for awakened, severed, restored, and full-network states.
+- Updated package generation and package verification to include the v0.84 docs and tester guidance.
+- Hardened the hosted Lume proxy against a test race where a nearby player unit could instantly recapture Ford Toll after the test forced enemy ownership.
+- Hardened an existing Cinderfen visual-QA helper with a test-only fallback when the neutral brute has already been cleared.
+
+Not changed:
+
+- No save-version bump, save fields, persistent rewards, maps, factions, races, units, buildings, classes, art/assets, internal ID renames, public campaign prerequisite changes, Lume balance changes, `linked_ward` stacking changes, resource-production bonuses, global balance changes, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration was added.
+
+Verification:
+
+- Passed: focused Lume director/objective-panel Vitest coverage with 2 files / 10 tests, package validation tests with 3 tests, targeted private Lume smoke with 1 test, targeted Lume deep-flow with 1 test, hosted Lume proxy with 1 test, `npm test` with 87 files / 659 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, fast smoke with 9 tests, full smoke with 15 tests after an infrastructure-only timeout/server-kill rerun, controls normal/extended/verify, Act 1 telemetry, hosted smoke with 15 tests, hosted deep-battle with 29 tests, hosted deep-campaign-pressure with 8 tests after the Lume race fix, visual QA with 6 tests / 26 screenshots / 0 console errors / 0 retries after the Cinderfen helper fallback, dirty pre-commit package generation, and dirty package verification with 265 checks.
+
 # v0.83 Campaign Map UX Rescue And Private Playtest Quick Launch - 2026-05-30
 
 This checkpoint rescues the campaign screen by making the node map the first visible surface again, while adding a private playtest shortcut for the existing Aether Well Lume runtime slice.

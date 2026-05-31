@@ -88,6 +88,23 @@ export interface LumeNetworkHudSummary {
   counterplay: string;
   activeLinkCount: number;
   maxActiveLinks: number;
+  progressLabel?: string;
+  detailsLabel?: string;
+  heldRequiredSiteCount?: number;
+  requiredSiteCount?: number;
+  primaryLinkName?: string;
+  optionalLinkName?: string;
+  optionalSiteName?: string;
+  severedSiteName?: string;
+  focusControls?: LumeNetworkFocusControl[];
+  privateDemo?: boolean;
+  finishDemoAvailable?: boolean;
+}
+
+export interface LumeNetworkFocusControl {
+  siteId: string;
+  label: string;
+  siteName: string;
 }
 
 export interface LumeNetworkSiteSummary {

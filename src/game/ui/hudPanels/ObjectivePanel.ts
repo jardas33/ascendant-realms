@@ -15,13 +15,18 @@ export function renderObjectives(
   const missionObjectives = objectives ?? [];
   const completedCount = missionObjectives.filter((objective) => objective.completed).length;
   const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
+  const showLumeProgressOnly = Boolean(lumeNetwork && missionObjectives.length === 0);
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
       ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice) : ""}
       ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
       ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
-      <strong>Objectives ${completedCount}/${missionObjectives.length}</strong>
+      ${
+        showLumeProgressOnly
+          ? `<strong data-testid="lume-links-progress">${escapeHtml(lumeNetwork?.progressLabel ?? `LUME LINKS ${lumeNetwork?.activeLinkCount ?? 0}/${lumeNetwork?.maxActiveLinks ?? 0}`)}</strong>`
+          : `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
+      }
       ${missionObjectives
         .map((objective, index) => {
           const isNext = index === nextObjectiveIndex;
@@ -47,10 +52,13 @@ export function renderObjectives(
 function renderPrivatePlaytestNotice(notice: string): string {
   return `
     <div class="private-playtest-row" data-testid="private-playtest-demo-warning">
-      <span>Demo</span>
+      <span>Private</span>
       <div>
-        <b>Private Playtest Demo</b>
-        <small>${escapeHtml(notice)}</small>
+        <b>PRIVATE DEMO - rewards and campaign progress disabled</b>
+        <details class="objective-details">
+          <summary>Details</summary>
+          <small>${escapeHtml(notice)}</small>
+        </details>
       </div>
     </div>
   `;
@@ -61,11 +69,59 @@ function renderLumeNetwork(network: LumeNetworkHudSummary): string {
     <div class="lume-network-row" data-testid="lume-network-status">
       <span>Lume</span>
       <div>
-        <b>${escapeHtml(network.title)} - ${escapeHtml(network.status)}</b>
-        <small>${escapeHtml(network.objective)}</small>
-        <small>${escapeHtml(network.benefit)}</small>
-        <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
+        <b>${escapeHtml(network.title)}</b>
+        <small class="lume-objective-line">${escapeHtml(network.objective)}</small>
+        <small>${escapeHtml(network.status)}</small>
+        ${
+          network.optionalSiteName
+            ? `<small class="lume-optional-line"><strong>OPTIONAL LINK</strong> Capture ${escapeHtml(network.optionalSiteName)}</small>`
+            : ""
+        }
+        <details class="objective-details" data-testid="lume-network-details">
+          <summary>Details</summary>
+          <small>${escapeHtml(network.benefit)}</small>
+          <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
+          ${network.detailsLabel ? `<small>${escapeHtml(network.detailsLabel)}</small>` : ""}
+        </details>
+        ${renderLumeFocusControls(network)}
+        ${renderPrivateDemoActions(network)}
       </div>
+    </div>
+  `;
+}
+
+function renderLumeFocusControls(network: LumeNetworkHudSummary): string {
+  const controls = network.focusControls ?? [];
+  if (controls.length === 0) {
+    return "";
+  }
+  return `
+    <div class="lume-control-row" data-testid="lume-focus-controls">
+      ${controls
+        .map(
+          (control) => `
+            <button class="hud-button compact mini" type="button" data-testid="lume-focus-${escapeHtml(
+              control.siteId
+            )}" data-action="lume-focus" data-id="${escapeHtml(control.siteId)}">${escapeHtml(control.label)}</button>
+          `
+        )
+        .join("")}
+    </div>
+  `;
+}
+
+function renderPrivateDemoActions(network: LumeNetworkHudSummary): string {
+  if (!network.privateDemo) {
+    return "";
+  }
+  return `
+    <div class="lume-control-row private-demo-actions" data-testid="private-demo-actions">
+      <button class="hud-button compact mini" type="button" data-testid="private-demo-exit" data-action="private-demo-exit">Exit Demo</button>
+      ${
+        network.finishDemoAvailable
+          ? `<button class="hud-button compact mini" type="button" data-testid="private-demo-finish" data-action="private-demo-finish">Finish Demo &amp; View Results</button>`
+          : ""
+      }
     </div>
   `;
 }

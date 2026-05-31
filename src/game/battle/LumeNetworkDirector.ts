@@ -21,6 +21,10 @@ export interface LumeNetworkDirectorOptions {
   showMessage?: (message: string, point?: { x: number; y: number }) => void;
 }
 
+interface LumeNetworkHudOptions {
+  privateDemo?: boolean;
+}
+
 export class LumeNetworkDirector {
   private state: LumeNetworkResolvedState;
   private objectiveCompletionRecorded = false;
@@ -43,23 +47,59 @@ export class LumeNetworkDirector {
     return amount * this.options.definition.benefit.damageTakenMultiplier;
   }
 
-  hudSummary(): LumeNetworkHudSummary {
+  hudSummary(options: LumeNetworkHudOptions = {}): LumeNetworkHudSummary {
+    const sites = this.siteSnapshots();
     const active = this.state.activeLinkIds.length;
-    const status = active > 0
-      ? `${active}/${this.options.definition.maxActiveLinks} active`
-      : this.state.contestedLinkIds.length > 0
-        ? "Contested"
-        : this.state.currentSeveredLinkIds.length > 0
-          ? "Severed"
-          : "Inactive";
+    const progressLabel = `LUME LINKS ${active}/${this.options.definition.maxActiveLinks}`;
+    const firstLink = this.state.links[0];
+    const optionalLink = this.state.links[1];
+    const firstLinkHeld = firstLink ? playerHeldRequiredSiteCount(firstLink, sites) : 0;
+    const severedLink = this.state.links.find((link) => this.state.currentSeveredLinkIds.includes(link.id));
+    const severedSiteName = severedLink ? linkRecoverySiteName(severedLink, sites) : undefined;
+    const activeLinks = this.state.links.filter((link) => link.active);
+    const activeLinkName = activeLinks[0] ? linkDisplayName(activeLinks[0]) : undefined;
+    let title = "LUME WARD";
+    let objective = firstLink ? `Capture ${firstLink.fromSiteName}` : this.options.definition.hudObjective;
+    let status = progressLabel;
+
+    if (active >= this.options.definition.maxActiveLinks) {
+      title = `LUME NETWORK ACTIVE - ${active}/${this.options.definition.maxActiveLinks}`;
+      objective = "All known Lume links are active.";
+      status = "Nearby allies take 8% less damage";
+    } else if (severedLink && active === 0) {
+      title = "LUME LINK SEVERED";
+      objective = `Recapture ${severedSiteName ?? severedLink.displayName}`;
+      status = progressLabel;
+    } else if (active > 0) {
+      const restored = activeLinks.some((link) => this.state.lifetimeSeveredLinkIds.includes(link.id));
+      title = restored ? "LUME WARD RESTORED" : "LUME WARD ACTIVE";
+      objective = activeLinkName ?? "Linked Ward active";
+      status = "Nearby allies take 8% less damage";
+    } else if (firstLink && firstLinkHeld > 0) {
+      const missingSiteName = missingRequiredSiteName(firstLink, sites);
+      objective = `Capture ${missingSiteName ?? firstLink.toSiteName}`;
+      status = `${firstLinkHeld} of 2 sites held`;
+    }
+
     return {
-      title: this.options.definition.benefit.name,
-      objective: this.hudObjective(),
+      title,
+      objective,
       status,
       benefit: this.options.definition.benefit.summary,
       counterplay: this.options.definition.counterplay,
       activeLinkCount: active,
-      maxActiveLinks: this.options.definition.maxActiveLinks
+      maxActiveLinks: this.options.definition.maxActiveLinks,
+      progressLabel,
+      detailsLabel: this.options.definition.battleLocalCopy,
+      heldRequiredSiteCount: firstLinkHeld,
+      requiredSiteCount: firstLink ? 2 : 0,
+      primaryLinkName: activeLinkName,
+      optionalLinkName: optionalLink && this.state.objectiveCompleted ? linkDisplayName(optionalLink) : undefined,
+      optionalSiteName: optionalLink && this.state.objectiveCompleted ? optionalLink.toSiteName : undefined,
+      severedSiteName,
+      focusControls: options.privateDemo ? this.focusControls() : undefined,
+      privateDemo: options.privateDemo,
+      finishDemoAvailable: Boolean(options.privateDemo && this.state.objectiveCompleted)
     };
   }
 
@@ -110,34 +150,37 @@ export class LumeNetworkDirector {
     }));
   }
 
-  private hudObjective(): string {
-    const activeLinks = this.state.links.filter((link) => link.active);
-    if (activeLinks.length > 0) {
-      return `Linked: ${activeLinks.map((link) => `${link.fromSiteName} + ${link.toSiteName}`).join("; ")}`;
-    }
-    const firstLink = this.state.links[0];
-    if (!firstLink) {
-      return this.options.definition.hudObjective;
-    }
-    return `Hold ${firstLink.fromSiteName} and ${firstLink.toSiteName}.`;
-  }
-
   private recordTransitions(previous: LumeNetworkResolvedState, current: LumeNetworkResolvedState): void {
+    const sites = this.siteSnapshots();
+    const networkFullyAwakened =
+      previous.activeLinkIds.length < this.options.definition.maxActiveLinks &&
+      current.activeLinkIds.length >= this.options.definition.maxActiveLinks;
     current.activeLinkIds
       .filter((linkId) => !previous.activeLinkIds.includes(linkId))
       .forEach((linkId) => {
         const link = current.links.find((entry) => entry.id === linkId);
-        const point = this.messagePoint(link, this.siteSnapshots());
-        this.options.recordLinkActivated(linkId, `${link?.displayName ?? linkId} activated Linked Ward.`);
-        this.options.showMessage?.(`Linked Ward active: ${link?.displayName ?? linkId}`, point);
+        const point = this.messagePoint(link, sites);
+        const restored = Boolean(
+          link && (previous.currentSeveredLinkIds.includes(link.id) || previous.lifetimeSeveredLinkIds.includes(link.id))
+        );
+        this.options.recordLinkActivated(
+          linkId,
+          restored ? `${link?.displayName ?? linkId} restored Linked Ward.` : `${link?.displayName ?? linkId} activated Linked Ward.`
+        );
+        if (networkFullyAwakened) {
+          this.options.showMessage?.(`Lume Network fully awakened: ${current.activeLinkIds.length}/${this.options.definition.maxActiveLinks} links active`, point);
+          return;
+        }
+        this.options.showMessage?.(restored ? "Lume Ward restored" : "Lume Ward awakened", point);
       });
     current.currentSeveredLinkIds
       .filter((linkId) => !previous.currentSeveredLinkIds.includes(linkId))
       .forEach((linkId) => {
         const link = current.links.find((entry) => entry.id === linkId);
-        const point = this.messagePoint(link, this.siteSnapshots());
+        const point = this.messagePoint(link, sites);
+        const lostSiteName = link ? linkRecoverySiteName(link, sites) : undefined;
         this.options.recordLinkSevered(linkId, `${link?.displayName ?? linkId} severed by site control loss.`);
-        this.options.showMessage?.(`Lume link severed: ${link?.displayName ?? linkId}`, point);
+        this.options.showMessage?.(`Lume Link severed: ${lostSiteName ?? link?.displayName ?? linkId} lost`, point);
       });
     if (current.objectiveCompleted && !this.objectiveCompletionRecorded) {
       this.objectiveCompletionRecorded = true;
@@ -161,6 +204,27 @@ export class LumeNetworkDirector {
       x: (from.position.x + to.position.x) / 2,
       y: (from.position.y + to.position.y) / 2
     };
+  }
+
+  private focusControls(): LumeNetworkHudSummary["focusControls"] {
+    const firstLink = this.state.links[0];
+    if (!firstLink) {
+      return [];
+    }
+    const controls = [
+      { siteId: firstLink.fromSiteId, siteName: firstLink.fromSiteName },
+      { siteId: firstLink.toSiteId, siteName: firstLink.toSiteName }
+    ];
+    const optionalLink = this.state.links[1];
+    if (optionalLink && this.state.objectiveCompleted) {
+      controls.push({ siteId: optionalLink.toSiteId, siteName: optionalLink.toSiteName });
+    }
+    return controls
+      .filter((control, index, entries) => entries.findIndex((entry) => entry.siteId === control.siteId) === index)
+      .map((control) => ({
+        ...control,
+        label: `Focus ${control.siteName}`
+      }));
   }
 }
 
@@ -268,4 +332,28 @@ function siteLinkState(states: LumeNetworkCurrentLinkState[]): LumeNetworkCurren
     return "severed";
   }
   return "inactive";
+}
+
+function linkDisplayName(link: LumeNetworkResolvedState["links"][number]): string {
+  return `${link.fromSiteName} ↔ ${link.toSiteName}`;
+}
+
+function playerHeldRequiredSiteCount(link: LumeNetworkResolvedState["links"][number], sites: LumeSiteSnapshot[]): number {
+  return [link.fromSiteId, link.toSiteId].filter((siteId) => sites.find((site) => site.id === siteId)?.owner === "player").length;
+}
+
+function missingRequiredSiteName(link: LumeNetworkResolvedState["links"][number], sites: LumeSiteSnapshot[]): string | undefined {
+  const from = sites.find((site) => site.id === link.fromSiteId);
+  const to = sites.find((site) => site.id === link.toSiteId);
+  if (from?.owner !== "player") {
+    return from?.name ?? link.fromSiteName;
+  }
+  if (to?.owner !== "player") {
+    return to?.name ?? link.toSiteName;
+  }
+  return undefined;
+}
+
+function linkRecoverySiteName(link: LumeNetworkResolvedState["links"][number], sites: LumeSiteSnapshot[]): string | undefined {
+  return missingRequiredSiteName(link, sites) ?? link.toSiteName;
 }

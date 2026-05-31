@@ -1255,9 +1255,13 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       SCENE_TRANSITION_CLICK_OPTIONS
     );
     await expectBattleLoaded(page);
-    await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("Private Playtest Demo");
+    await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("PRIVATE DEMO");
     await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("rewards and campaign progress are disabled");
-    await expect(page.getByTestId("lume-network-status")).toContainText("Linked Ward");
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD");
+    await expect(page.getByTestId("lume-network-status")).toContainText("Capture West Stone Cut");
+    await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 0/2");
+    await expect(page.getByTestId("private-demo-exit")).toBeVisible();
+    await expect(page.getByTestId("private-demo-finish")).toHaveCount(0);
 
     const launchSnapshot = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1292,16 +1296,12 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       hook?.("ford_toll");
       scene.update(performance.now(), 250);
       scene.refreshBattleHud?.(0);
-      const objectiveId = scene.activeMap.scenario.objectives.enemyBaseBuildingId;
-      const target = scene.buildings.find(
-        (building: any) => building.team === "enemy" && building.definition.id === objectiveId && building.alive
-      );
-      if (!target) {
-        throw new Error(`Could not find enemy objective building ${objectiveId}.`);
-      }
-      target.takeDamage(target.maxHp + target.armor + 10_000);
-      scene.checkEndConditions();
     });
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
+    await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
+    await expect(page.getByTestId("lume-focus-north_aether_spring")).toBeVisible();
+    await expect(page.getByTestId("private-demo-finish")).toBeVisible();
+    await clickReady(page.getByTestId("private-demo-finish"), "smoke finish private Lume demo", SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator(".results-panel")).toContainText("Private playtest demo complete");
     await expect(page.getByTestId("results-private-playtest-demo-summary")).toContainText(

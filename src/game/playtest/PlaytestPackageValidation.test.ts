@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.83 campaign map UX rescue and private playtest quick launch",
+          checkpoint: "v0.84 guided Lume demo readability and fast-retest polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -308,6 +308,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V083_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.83 visual QA report" },
       { path: "V083_PRIVATE_PLAYTEST_LAUNCH_NOTES.md", sizeBytes: 20, textContent: "v0.83 launch notes" },
       { path: "V083_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.83 Emmanuel checklist" },
+      { path: "V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md", sizeBytes: 20, textContent: "v0.84 Lume readability spec" },
+      { path: "V084_LUME_LINK_RENDERING_SPEC.md", sizeBytes: 20, textContent: "v0.84 Lume rendering spec" },
+      { path: "V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md", sizeBytes: 20, textContent: "v0.84 private demo retest spec" },
+      { path: "V084_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.84 visual QA report" },
+      { path: "V084_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.84 Emmanuel checklist" },
+      { path: "V084_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.84 implementation report" },
+      { path: "V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md", sizeBytes: 20, textContent: "v0.84 deferred UX findings" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },
