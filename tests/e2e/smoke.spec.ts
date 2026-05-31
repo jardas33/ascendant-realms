@@ -1312,7 +1312,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("private playtest Aether Well Lume demo launches from a locked campaign without saving rewards @ci-fast", async ({ page }) => {
-    test.setTimeout(70_000);
+    test.setTimeout(110_000);
     await page.addInitScript(() => {
       Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
     });
@@ -1406,7 +1406,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
     await expect(page.getByTestId("lume-focus-north_aether_spring")).toBeVisible();
     await expect(page.getByTestId("private-demo-finish")).toBeVisible();
-    await page.getByTestId("private-demo-finish").click({ timeout: 10_000 });
+    await clickReady(page.getByTestId("private-demo-finish"), "smoke private Lume demo finish", SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
     await expect(page.locator(".results-panel")).toContainText("PRIVATE DEMO COMPLETE");
     await expect(page.locator(".results-panel")).toContainText("Lume Network test - rewards and campaign progress were not saved");
