@@ -15,8 +15,11 @@ describe("campaign presentation view models", () => {
     const card = createCampaignNodeCardViewModel({ node, status: "completed", selected: true });
 
     expect(card.testId).toBe("campaign-node-cinderfen_aftermath");
-    expect(card.cssClass).toBe("campaign-node completed selected");
+    expect(card.cssClass).toContain("campaign-node completed selected");
+    expect(card.cssClass).toContain("chapter-cinderfen_road");
     expect(card.style).toBe("--node-x: 88%; --node-y: 14%");
+    expect(card.mapX).toBe(88);
+    expect(card.mapY).toBe(14);
     expect(card.nodeTypeLabel).toBe("Event");
     expect(card.statusLabel).toBe("Completed");
   });

@@ -1578,6 +1578,7 @@ export class BattleScene extends Phaser.Scene {
     }
     if (this.abilitySystem.castAbility(this.hero, abilityId, this.selectionSystem.getSelected())) {
       AudioManager.play("ability_cast");
+      this.refreshBattleHud(0);
     }
   }
 

@@ -76,6 +76,7 @@ export function renderPrimaryActions(data: ResultsData): string {
   }
   return `
     ${isCampaign ? `<button data-results-action="campaign">Campaign Map</button>` : `<button data-results-action="skirmish">Continue Skirmish</button>`}
+    ${isCampaign ? `<button data-results-action="retry">Replay Battle</button>` : ""}
     <button data-results-action="inventory">Open Hero Inventory</button>
     <button data-results-action="menu">Main Menu</button>
   `;

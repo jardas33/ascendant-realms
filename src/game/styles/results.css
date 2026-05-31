@@ -43,6 +43,12 @@
   max-height: min(92vh, 860px);
 }
 
+.results-panel:not(.private-demo) {
+  max-height: min(94vh, 900px);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
 .results-title-row {
   display: flex;
   justify-content: space-between;
@@ -134,6 +140,98 @@
 }
 
 .private-demo-details-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 13px 13px;
+}
+
+.results-overview {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid rgba(116, 211, 242, 0.26);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.1), rgba(240, 217, 120, 0.05) 54%, transparent),
+    rgba(4, 9, 7, 0.32);
+}
+
+.results-overview-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.results-overview-heading h2 {
+  margin: 0;
+  color: #f6edb4;
+  font-size: clamp(20px, 2vw, 28px);
+}
+
+.results-outcome-pill {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #101511;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #f0d978;
+}
+
+.results-outcome-pill.defeat {
+  color: #f8d2cb;
+  background: rgba(131, 38, 34, 0.8);
+}
+
+.results-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 14px;
+}
+
+.results-overview-grid span {
+  display: block;
+  color: #c8d0bd;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.results-overview-grid strong {
+  display: block;
+  margin-top: 2px;
+  color: #f1ead1;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.results-primary-actions {
+  margin-top: 12px;
+}
+
+.results-priority-stack {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.results-full-details {
+  margin-top: 14px;
+  border: 1px solid rgba(158, 187, 161, 0.2);
+  border-radius: 6px;
+  background: rgba(4, 9, 7, 0.28);
+}
+
+.results-full-details summary {
+  cursor: pointer;
+  padding: 11px 13px;
+  color: #d9fbf3;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.results-full-details-body {
   display: grid;
   gap: 14px;
   padding: 0 13px 13px;
@@ -241,6 +339,25 @@
   color: #9fd8c2;
 }
 
+.reward-card-details {
+  margin-top: 7px;
+  border: 1px solid rgba(246, 237, 180, 0.12);
+  border-radius: 6px;
+  background: rgba(4, 9, 7, 0.2);
+}
+
+.reward-card-details summary {
+  cursor: pointer;
+  padding: 7px 9px;
+  color: #f0d978;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.reward-card-details > :not(summary) {
+  margin-inline: 9px;
+}
+
 .reward-state {
   display: inline-block;
   margin-left: 7px;
@@ -273,4 +390,20 @@
 
 .hero-stat-strip {
   margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .results-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .results-overview-heading {
+    display: grid;
+  }
+
+  .results-overview-grid {
+    grid-template-columns: 1fr;
+  }
 }

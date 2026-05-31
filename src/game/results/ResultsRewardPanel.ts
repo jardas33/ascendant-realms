@@ -123,15 +123,18 @@ function renderRewardItem(
       <div class="reward-card-main">
         <div>
           <strong>${renderItemName(item)} <span class="reward-state">${escapeHtml(rewardStateLabel(entry.state))}</span></strong>
-          ${entry.instance ? `<small>Instance: ${escapeHtml(entry.instance.instanceId)} - Source: ${escapeHtml(entry.instance.source)}</small>` : ""}
           <small>${titleCase(item.slot)} - Total: ${escapeHtml(totalStatText)}</small>
           <small class="affix-line">Affixes: ${escapeHtml(affixNames)}</small>
-          <small>Base: ${escapeHtml(formatStatMods(item.statMods))}</small>
-          <small>Affix stats: ${escapeHtml(affixStatText)}</small>
           <p>${escapeHtml(item.description)}</p>
-          <small>${escapeHtml(item.flavorText)}</small>
-          <small>${escapeHtml(formatTags(item.tags))}</small>
           <small>${entry.state === "new" ? "Added to inventory." : "Inventory kept one copy."}</small>
+          <details class="reward-card-details">
+            <summary>Item Details</summary>
+            ${entry.instance ? `<small>Instance: ${escapeHtml(entry.instance.instanceId)} - Source: ${escapeHtml(entry.instance.source)}</small>` : ""}
+            <small>Base: ${escapeHtml(formatStatMods(item.statMods))}</small>
+            <small>Affix stats: ${escapeHtml(affixStatText)}</small>
+            <small>${escapeHtml(item.flavorText)}</small>
+            <small>${escapeHtml(formatTags(item.tags))}</small>
+          </details>
         </div>
         <div class="reward-actions">
           <small>Current ${titleCase(item.slot)}: ${currentItem ? escapeHtml(currentItem.name) : "Empty"}</small>

@@ -9,6 +9,7 @@ import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
 import { chooseResultsRelicReward, keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
+import { renderResultsOverview } from "./ResultsOverviewPanel";
 import { renderPrivateDemoLumeSummary, renderPrivateDemoPrimaryActions } from "./ResultsPrivateDemoPanel";
 import { renderVictoryRewards } from "./ResultsRewardPanel";
 import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
@@ -325,6 +326,91 @@ describe("results scene helpers", () => {
     expect(status).toContain("replay complete");
     expect(status).toContain("campaign node rewards and one-time objective credit do not duplicate");
     expect(summaryHtml).toContain("Completed - already recorded");
+  });
+
+  it("renders ordinary victory Results as a compact overview before full details", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave: {
+        ...heroSave,
+        xp: heroSave.xp + 50
+      },
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "first_claim",
+        difficulty: "easy",
+        campaignNodeId: "border_village"
+      }),
+      reward: {
+        xp: 20,
+        itemIds: ["weathered_command_sword"],
+        resources: { crowns: 25, stone: 0, iron: 0, aether: 0 }
+      },
+      campaignResult: {
+        completedNodeId: "border_village",
+        completedNodeName: "Border Village",
+        unlockedNodeIds: ["old_stone_road"],
+        unlockedNodeNames: ["Old Stone Road"],
+        nodeReward: { xp: 20, itemIds: [], resources: { crowns: 10, stone: 0, iron: 0, aether: 0 } },
+        nodeLevelUp: { previousLevel: 1, newLevel: 1, levelsGained: 0, skillPointsGained: 0 },
+        campaignResources: { crowns: 10, stone: 0, iron: 0, aether: 0 },
+        wasFirstClear: true
+      }
+    });
+
+    const html = renderResultsOverview(data, createResultsViewModel(data));
+
+    expect(html).toContain('data-testid="results-overview"');
+    expect(html).toContain("Mission Complete");
+    expect(html).toContain("Border Village");
+    expect(html).toContain("First-clear rewards");
+    expect(html).toContain("Next mission unlocked: Old Stone Road");
+  });
+
+  it("renders defeat and replay overview copy without changing reward state", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const defeatData = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "cinderfen_crossing",
+        difficulty: "normal",
+        campaignNodeId: "cinderfen_crossing"
+      }),
+      stats: {
+        ...baseStats(),
+        outcome: "defeat"
+      }
+    });
+    const replayData = createResultsData({
+      heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost"
+      }),
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: [],
+        unlockedNodeNames: [],
+        nodeReward: { xp: 0, itemIds: [], resources: { crowns: 0, stone: 0, iron: 0, aether: 0 } },
+        nodeLevelUp: { previousLevel: 2, newLevel: 2, levelsGained: 0, skillPointsGained: 0 },
+        campaignResources: { crowns: 0, stone: 0, iron: 0, aether: 0 },
+        wasReplay: true,
+        nodeRewardAlreadyClaimed: true
+      }
+    });
+
+    const defeatHtml = renderResultsOverview(defeatData, createResultsViewModel(defeatData));
+    const replayHtml = renderResultsOverview(replayData, createResultsViewModel(replayData));
+
+    expect(defeatHtml).toContain("Mission Failed");
+    expect(defeatHtml).toContain("No victory rewards saved");
+    expect(replayHtml).toContain("Replay clear");
+    expect(replayHtml).toContain("Replay-safe rewards");
   });
 
   it("renders campaign mission type, active modifier, and after-action copy in reward results", () => {

@@ -55,12 +55,14 @@ export function renderNodeButton(nodeView: CampaignNodeViewModel): string {
         class="${escapeHtml(nodeView.cssClass)}"
         data-testid="${escapeHtml(nodeView.testId)}"
         data-campaign-node="${node.id}"
+        data-campaign-chapter="${escapeHtml(nodeView.chapterId)}"
+        data-campaign-state="${escapeHtml(nodeView.status)}"
         aria-label="${escapeHtml(`${node.name} ${nodeView.nodeTypeLabel} ${nodeView.statusLabel}${nodeView.rewardStateLabel ? ` ${nodeView.rewardStateLabel}` : ""}`)}"
         title="${escapeHtml(nodeView.rewardStateLabel ?? nodeView.statusLabel)}"
         style="${escapeHtml(nodeView.style)}"
       >
         <strong>${escapeHtml(node.name)}</strong>
-        <span>${escapeHtml(nodeView.nodeTypeLabel)} - ${escapeHtml(nodeView.statusLabel)}</span>
+        <span class="campaign-node-meta campaign-node-state">${escapeHtml(`${nodeView.nodeTypeLabel} - ${nodeView.statusLabel}`)}</span>
       </button>
     `;
 }

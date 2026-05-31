@@ -7,6 +7,9 @@ export interface CampaignNodeViewModel {
   node: CampaignNodeDefinition;
   status: CampaignNodeStatus;
   selected: boolean;
+  mapX: number;
+  mapY: number;
+  chapterId: string;
   nodeTypeLabel: string;
   statusLabel: string;
   rewardStateLabel?: string;

@@ -1,5 +1,40 @@
 # Changelog
 
+# v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
+
+This checkpoint polishes campaign and ordinary Results presentation without adding gameplay systems, changing campaign progression, altering rewards, altering saves, renaming stable IDs, adding art/assets, maps, factions, desktop work, multiplayer, PvP, co-op, or broad creative changes.
+
+Added:
+
+- `src/game/results/ResultsOverviewPanel.ts`.
+- `docs/V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md`.
+- `docs/V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md`.
+- `docs/V087_VISUAL_QA_REPORT.md`.
+- `docs/V087_IMPLEMENTATION_REPORT.md`.
+- `docs/V087_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md`.
+
+Changed:
+
+- Campaign nodes now expose presentation-only map coordinates and chapter metadata for a wider map-first shell.
+- The Campaign Map tab now uses larger chapter lanes, clearer routes, stronger node-state styling, and wider spacing while preserving fresh Border Village selection and locked Aether Well preview.
+- The selected mission panel is compact by default, with build hints, doctrine details, modifiers, rival information, replay notes, extended rewards, and telemetry-style copy behind `More Details`.
+- Stronghold, Hero, Inventory, Intel, and Reputation tabs now use card hierarchy and details disclosures for long explanatory copy.
+- Ordinary Results screens now place victory/defeat, mission name, time, primary objective, key rewards, hero XP, important veterans, and return/replay actions above collapsed full battle details.
+- Replay Results now keep the replay action visible with the primary action row.
+- A stale hero ability button refresh path now updates immediately after successful casts so the presentation surface reflects cooldown/mana state without changing ability logic.
+- Visual QA now captures v0.87 campaign and Results screenshots, including 1920x1080 and 1366x768 campaign shells.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, rewards, XP, campaign progression, mission IDs, stable IDs, maps, factions, races, units, buildings, classes, art/assets, Lume rules, balance values, broad AI/pathing behavior, desktop work, multiplayer, PvP, co-op, runtime rebrand/display-copy migration, canvas/world force-click behavior, or DOM fallback behavior changed.
+- The v0.85 private-demo Results branch remains separate and preserved.
+
+Verification:
+
+- Passed: `npm test` with 91 files / 675 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, controls normal/extended/verify, Act 1 telemetry, fast smoke with 9 tests, full smoke with 16 tests, layout with 32 tests, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, and visual QA with 6 tests / 36 screenshots / 0 console errors / 0 retries.
+- Non-pass evidence: broad local `npm run test:e2e:release` exceeded a 40-minute command timeout without a usable summary; the layout shard and required hosted release lanes passed after focused cleanup.
+
 # v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
 
 This checkpoint rescues the general battlefield shell presentation without changing gameplay, save data, Lume rules, balance, campaign progression, runtime identity, or stable IDs.

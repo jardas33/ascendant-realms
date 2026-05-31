@@ -18,6 +18,7 @@ import {
   getCampaignMissionRewardState,
   getCampaignScenarioLaunchModifiers
 } from "../core/campaign/CampaignMissionRules";
+import { getCampaignActStepForNode, getCampaignNodeLockedReason } from "../core/campaign/CampaignActSpineRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { CAMPAIGN_NODES } from "../data/campaignNodes";
@@ -36,7 +37,7 @@ import {
   selectedCampaignNode
 } from "../campaign/CampaignNavigation";
 import { formatNodeRewardSummary, renderGuidanceMessage, renderNodeButton, renderNodeDetails } from "../campaign/CampaignNodePanel";
-import { escapeHtml, toCssColor } from "../campaign/CampaignPresentationTypes";
+import { escapeHtml, toCssColor, type CampaignMapViewModel, type CampaignNodeViewModel } from "../campaign/CampaignPresentationTypes";
 import {
   renderActiveModifiers,
   renderCampaignResourceBank,
@@ -418,13 +419,15 @@ export class CampaignMapScene extends Phaser.Scene {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-stronghold">
           <section class="campaign-support-grid">
-            <div>
+            <div class="campaign-support-card">
               <h2>Campaign Bank</h2>
               ${renderCampaignResourceBank(this.campaignSave)}
-              <h2>Active Modifiers</h2>
-              ${renderActiveModifiers(this.campaignSave)}
+              <details class="campaign-card-details">
+                <summary>Active Modifiers</summary>
+                ${renderActiveModifiers(this.campaignSave)}
+              </details>
             </div>
-            <div>${renderStrongholdPanel(this.campaignSave, this.heroSave)}</div>
+            <div class="campaign-support-card">${renderStrongholdPanel(this.campaignSave, this.heroSave)}</div>
           </section>
         </div>
       `;
@@ -433,12 +436,15 @@ export class CampaignMapScene extends Phaser.Scene {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-hero">
           <section class="campaign-support-grid">
-            <div>
+            <div class="campaign-support-card">
               <h2>Hero</h2>
               ${this.renderHeroSummary()}
-              ${this.renderNextActionPanel()}
+              <details class="campaign-card-details" open>
+                <summary>Next Step</summary>
+                ${this.renderNextActionPanel()}
+              </details>
             </div>
-            <div>${renderRetinuePanel(this.campaignSave)}</div>
+            <div class="campaign-support-card">${renderRetinuePanel(this.campaignSave)}</div>
           </section>
         </div>
       `;
@@ -446,10 +452,16 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "inventory") {
       return `
         <div class="campaign-tab-panel compact" data-testid="campaign-tab-panel-inventory">
+          <section class="campaign-support-card">
           <h2>Inventory And Progression</h2>
           ${this.renderHeroSummary()}
           <p class="quiet">Open Hero Inventory to equip rewards, inspect relic synergy, and spend skill points before launching the next battle.</p>
           <button data-testid="campaign-inventory-inline" data-campaign-action="inventory">Open Hero Inventory</button>
+          <details class="campaign-card-details">
+            <summary>Why Visit Inventory?</summary>
+            <p class="quiet">Use this before harder missions to equip relics, spend skill points, and compare hero build support without changing campaign state.</p>
+          </details>
+          </section>
         </div>
       `;
     }
@@ -457,14 +469,16 @@ export class CampaignMapScene extends Phaser.Scene {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-intel">
           <section class="campaign-support-grid">
-            <div>
+            <div class="campaign-support-card">
               ${renderRivalIntelPanel(this.campaignSave)}
               <h2>Campaign Chapters</h2>
               ${renderCampaignChapterPanel(viewModel.chapters)}
             </div>
-            <div>
-              <h2>Active Modifiers</h2>
-              ${renderActiveModifiers(this.campaignSave)}
+            <div class="campaign-support-card">
+              <details class="campaign-card-details" open>
+                <summary>Active Modifiers</summary>
+                ${renderActiveModifiers(this.campaignSave)}
+              </details>
             </div>
           </section>
         </div>
@@ -473,16 +487,22 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "reputation") {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-reputation">
+          <section class="campaign-support-card">
           <h2>Reputation</h2>
           ${renderReputation(viewModel.reputation)}
+          </section>
         </div>
       `;
     }
     return `
       <div class="campaign-map-workspace" data-testid="campaign-tab-panel-map">
         <section class="campaign-map-stage" aria-label="Campaign node map">
-          <div class="campaign-map-grid">
-            ${viewModel.nodes.map((node) => renderNodeButton(node)).join("")}
+          <div class="campaign-map-grid" data-testid="campaign-map-grid">
+            ${this.renderCampaignMapLanes(viewModel)}
+            ${this.renderCampaignRouteLayer(viewModel.nodes)}
+            <div class="campaign-node-layer">
+              ${viewModel.nodes.map((node) => renderNodeButton(node)).join("")}
+            </div>
           </div>
         </section>
         <aside class="campaign-selected-panel" data-testid="campaign-selected-panel">
@@ -496,21 +516,29 @@ export class CampaignMapScene extends Phaser.Scene {
     const status = getCampaignNodeStatus(node, this.campaignSave);
     const missionReward = getCampaignMissionRewardState(this.campaignSave, node);
     const briefing = getCampaignMissionBriefing(node);
+    const actStep = getCampaignActStepForNode(node.id);
+    const description = shortDescription(node.description);
+    const stateLabel = node.isPlaceholder ? "upcoming" : status === "completed" && node.nodeType === "battle" ? "completed / replayable" : status;
+    const lockReason = status === "locked" || node.isPlaceholder ? getCampaignNodeLockedReason(node, this.campaignSave) : "";
+    const pacingLabel = actStep ? `${actStep.pacingTier} - ${actStep.mechanicFocus}` : node.difficulty;
     const hasChoices = Boolean(node.choices?.length);
     const detailOpen = hasChoices ? " open" : "";
     return `
       <div class="campaign-selected-summary">
-        <p class="eyebrow">${escapeHtml(node.nodeType)} - ${escapeHtml(node.isPlaceholder ? "upcoming" : status)}</p>
+        <p class="eyebrow">${escapeHtml(node.nodeType)} - ${escapeHtml(stateLabel)}</p>
         <h2>${escapeHtml(node.name)}</h2>
-        <p>${escapeHtml(node.description)}</p>
+        <p>${escapeHtml(description)}</p>
+        <div class="campaign-selected-actions">
+          ${this.renderSelectedPrimaryAction()}
+        </div>
         <div class="results-grid compact campaign-selected-facts">
           <span>Mission type</span><strong>${escapeHtml(briefing?.missionType?.name ?? "Campaign node")}</strong>
-          <span>Reward</span><strong>${escapeHtml(briefing?.rewardPreview ?? missionReward.rewardLabel)}</strong>
           <span>Status</span><strong>${escapeHtml(missionReward.statusLabel)}</strong>
-          <span>Replay</span><strong>${missionReward.isReplay ? "Replay-safe reduced reward" : "First-clear rules"}</strong>
+          <span>Primary objective</span><strong>${escapeHtml(briefing?.primaryObjective ?? "Complete the mission.")}</strong>
+          <span>Reward</span><strong>${escapeHtml(briefing?.rewardPreview ?? missionReward.rewardLabel)}</strong>
+          <span>Difficulty / pacing</span><strong>${escapeHtml(pacingLabel)}</strong>
+          ${lockReason ? `<span>Lock reason</span><strong>${escapeHtml(lockReason)}</strong>` : ""}
         </div>
-        ${this.renderSelectedPrimaryAction()}
-        ${this.renderNextActionPanel()}
       </div>
       <details class="campaign-node-more"${detailOpen}>
         <summary>${hasChoices ? "Choices And Details" : "More Details"}</summary>
@@ -521,6 +549,46 @@ export class CampaignMapScene extends Phaser.Scene {
           selectedTacticalPlanId: this.selectedTacticalPlanId
         })}
       </details>
+    `;
+  }
+
+  private renderCampaignMapLanes(viewModel: CampaignMapViewModel): string {
+    const border = viewModel.chapters.find((chapter) => chapter.chapter.id === "border_marches");
+    const cinderfen = viewModel.chapters.find((chapter) => chapter.chapter.id === "cinderfen_road");
+    return `
+      <div class="campaign-map-lane lane-border-marches" data-testid="campaign-lane-border_marches">
+        <strong data-testid="campaign-chapter-border_marches">${escapeHtml(border?.chapter.title ?? "Chapter 1: Border Marches")}</strong>
+        <span>${escapeHtml(border?.statusLabel ?? "Unlocked")} - main Act 1 route</span>
+      </div>
+      <div class="campaign-map-lane lane-cinderfen-road" data-testid="campaign-lane-cinderfen_road">
+        <strong data-testid="campaign-chapter-cinderfen_road">${escapeHtml(cinderfen?.chapter.title ?? "Chapter 2: Cinderfen Road")}</strong>
+        <span>${escapeHtml(cinderfen?.statusLabel ?? "Locked")} - later route</span>
+      </div>
+    `;
+  }
+
+  private renderCampaignRouteLayer(nodes: CampaignNodeViewModel[]): string {
+    const nodeById = new Map(nodes.map((node) => [node.node.id, node]));
+    const routeKeys = new Set<string>();
+    const lines: string[] = [];
+    for (const source of nodes) {
+      for (const unlockId of source.node.unlocks) {
+        const target = nodeById.get(unlockId);
+        if (!target || routeKeys.has(`${source.node.id}->${target.node.id}`)) {
+          continue;
+        }
+        routeKeys.add(`${source.node.id}->${target.node.id}`);
+        const complete = source.status === "completed";
+        const available = source.status === "completed" || target.status === "available" || target.status === "completed";
+        lines.push(
+          `<line class="campaign-route ${complete ? "completed" : available ? "available" : "locked"}" x1="${source.mapX}%" y1="${source.mapY}%" x2="${target.mapX}%" y2="${target.mapY}%" />`
+        );
+      }
+    }
+    return `
+      <svg class="campaign-route-layer" data-testid="campaign-route-layer" aria-hidden="true" focusable="false">
+        ${lines.join("")}
+      </svg>
     `;
   }
 
@@ -578,4 +646,16 @@ export class CampaignMapScene extends Phaser.Scene {
 
 function isCampaignTabId(value: string | undefined): value is CampaignTabId {
   return CAMPAIGN_TABS.some((tab) => tab.id === value);
+}
+
+function shortDescription(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length <= 118) {
+    return trimmed;
+  }
+  const sentenceEnd = trimmed.slice(0, 140).search(/[.!?]\s/u);
+  if (sentenceEnd >= 52) {
+    return trimmed.slice(0, sentenceEnd + 1);
+  }
+  return `${trimmed.slice(0, 115).trimEnd()}...`;
 }

@@ -469,6 +469,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       onAbility: (abilityId) => {
         if (abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected())) {
           AudioManager.play("ability_cast");
+          refreshHud();
         }
       },
       onBehaviourMode: (mode: BehaviourMode) => {

@@ -470,17 +470,19 @@ async function expectBottomActionReachable(page: Page, locator: Locator, label: 
 }
 
 async function expectCampaignSupportPanelsReadable(page: Page, label: string): Promise<void> {
-  for (const [testId, expectedText] of [
-    ["campaign-bank", "Crowns"],
-    ["stronghold-panel", "Stronghold"],
-    ["retinue-panel", "Retinue"],
-    ["rival-intel-panel", "Rival Intel"],
-    ["campaign-reputation", "Common Folk"]
+  for (const [tab, testId, expectedText] of [
+    ["stronghold", "campaign-bank", "Crowns"],
+    ["stronghold", "stronghold-panel", "Stronghold"],
+    ["hero", "retinue-panel", "Retinue"],
+    ["intel", "rival-intel-panel", "Rival Intel"],
+    ["reputation", "campaign-reputation", "Common Folk"]
   ] as const) {
+    await clickReady(page.getByTestId(`campaign-tab-${tab}`), `${label} ${tab} tab`, UI_TRANSITION_CLICK_OPTIONS);
     const panel = page.getByTestId(testId);
     await expect(panel, `${label} ${testId}`).toContainText(expectedText);
     await expectWithinViewportWidth(page, panel, `${label} ${testId}`);
   }
+  await clickReady(page.getByTestId("campaign-tab-map"), `${label} map tab`, UI_TRANSITION_CLICK_OPTIONS);
 }
 
 async function expectCinderfenBattleHudReadable(
@@ -822,12 +824,14 @@ test.describe("Ascendant Realms responsive layout", () => {
       await continueSavedCampaign(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} completed Cinderfen campaign map`);
       await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Completed/i);
+      await clickReady(page.getByTestId("campaign-tab-hero"), `${viewport.label} completed route hero tab`, UI_TRANSITION_CLICK_OPTIONS);
       await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
         "Chapter 2 route complete"
       );
       await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
         "future Cinderfen roads"
       );
+      await clickReady(page.getByTestId("campaign-tab-map"), `${viewport.label} completed route map tab`, UI_TRANSITION_CLICK_OPTIONS);
       await clickReady(page.getByTestId("campaign-node-cinderfen_aftermath"), `${viewport.label} Cinderfen Aftermath node`);
       await expect(page.locator(".campaign-node-details")).toContainText("Cinderfen Aftermath");
       await expect(page.locator(".campaign-node-details")).toContainText("Secure the Watch Road");
@@ -877,6 +881,7 @@ test.describe("Ascendant Realms responsive layout", () => {
         await expect(resultsPanel).toContainText("Cinderfen Watch");
         await expect(resultsPanel).toContainText("Reward XP");
         await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Aftermath");
+        await page.getByTestId("results-full-details").locator("summary").click();
         await expect(page.locator(".special-objectives")).toContainText("Capture the Watch Road");
         await expect(page.locator(".special-objectives")).toContainText("Destroy the Watchpost Tower");
         await expectNoHorizontalOverflow(page, "mobile portrait Cinderfen Watch results");

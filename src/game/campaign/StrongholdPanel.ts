@@ -51,10 +51,14 @@ function renderStrongholdUpgrade(
         <strong>${escapeHtml(upgrade.name)}</strong>
         <span>Tier ${upgrade.tier} - Rank ${rank}/${upgrade.maxRank}</span>
       </div>
-      <p>${escapeHtml(upgrade.description)}</p>
       <small>Cost: ${escapeHtml(formatStrongholdCost(upgrade, heroSave))}</small>
-      <small>Effect: ${escapeHtml(formatStrongholdEffects(upgrade))}</small>
-      <small class="flavor">${escapeHtml(upgrade.flavorText)}</small>
+      <small>Status: ${purchased ? "Purchased" : locked ? escapeHtml(reason || "Locked") : "Available"}</small>
+      <details class="support-card-details">
+        <summary>Effect Details</summary>
+        <p>${escapeHtml(upgrade.description)}</p>
+        <small>Effect: ${escapeHtml(formatStrongholdEffects(upgrade))}</small>
+        <small class="flavor">${escapeHtml(upgrade.flavorText)}</small>
+      </details>
       <div class="stronghold-upgrade-footer">
         <span>${purchased ? "Purchased" : locked ? escapeHtml(reason || "Locked") : "Available"}</span>
         <button

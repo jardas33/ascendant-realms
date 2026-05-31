@@ -33,7 +33,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 31;
+const EXPECTED_SCREENSHOT_COUNT = 36;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 2;
@@ -316,7 +316,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 31-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 36-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -418,6 +418,14 @@ test.describe("Ascendant Realms visual QA capture", () => {
       FULL_HD,
       "Map-first campaign layout at 1920x1080 with selected node panel beside the map."
     );
+    await captureView(
+      page,
+      group,
+      "v0.87 campaign shell 1920",
+      "v087-campaign-shell-1920.png",
+      FULL_HD,
+      "Second-polish campaign shell at 1920x1080: enlarged map, chapter lanes, selected Border Village, and primary action visible."
+    );
 
     await useViewport(page, LAPTOP);
     await captureView(
@@ -427,6 +435,14 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v083-campaign-map-1366.png",
       LAPTOP,
       "Map-first campaign layout at 1366x768; node cards should not overlap."
+    );
+    await captureView(
+      page,
+      group,
+      "v0.87 campaign shell 1366",
+      "v087-campaign-shell-1366.png",
+      LAPTOP,
+      "Second-polish campaign shell at 1366x768 with no default map-tab page scroll and compact selected mission panel."
     );
 
     await useViewport(page, FULL_HD);
@@ -439,6 +455,14 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v083-aether-well-locked-1920.png",
       FULL_HD,
       "Locked Aether Well node selected with concise status and no normal launch access."
+    );
+    await captureView(
+      page,
+      group,
+      "v0.87 locked Aether Well preview",
+      "v087-aether-well-preview-1920.png",
+      FULL_HD,
+      "Locked Aether Well preview keeps the primary action disabled while More Details holds extended briefing text."
     );
 
     await useViewport(page, LAPTOP);
@@ -580,6 +604,17 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await captureView(page, group, "Cinderfen Crossing pressure warning", "cinderfen-crossing-pressure-desktop.png", DESKTOP, "Causeway pressure status warning after Cinder Shrine capture.");
     await completeCinderfenVictory(page);
     await captureView(page, group, "Results victory", "results-victory-desktop.png", DESKTOP, "Cinderfen Crossing victory rewards and objective summary.");
+    await page.getByRole("button", { name: "Replay Battle" }).click();
+    await expectBattleLoaded(page);
+    await completeCinderfenVictory(page);
+    await captureView(
+      page,
+      group,
+      "v0.87 Results replay",
+      "v087-results-replay-desktop.png",
+      DESKTOP,
+      "Replay Results retain the compact overview, replay-safe reward copy, and collapsed full battle details."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
@@ -597,6 +632,15 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await captureView(page, group, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");
     await forceBattleDefeat(page);
     await captureView(page, group, "Results defeat", "results-defeat-desktop.png", DESKTOP, "Cinderfen Watch defeat results and guidance tips.");
+    await useViewport(page, LAPTOP);
+    await captureView(
+      page,
+      group,
+      "v0.87 Results defeat 1366",
+      "v087-results-defeat-1366.png",
+      LAPTOP,
+      "Normal defeat Results at 1366x768 keep retry and prep actions above collapsed full battle details."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

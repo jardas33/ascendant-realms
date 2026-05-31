@@ -1,6 +1,63 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.86 general battlefield-shell UX rescue
+Updated: 2026-05-31 v0.87 campaign-shell second polish and Results information architecture
+
+## v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
+
+Scope: presentation-only second polish for the campaign shell and ordinary Results screens. This pass improves map-first campaign width/height usage, progression lanes, selected-mission compactness, campaign tab hierarchy, and Results progressive disclosure. It does not add gameplay systems, alter campaign progression, alter rewards/XP, alter saves, rename stable IDs, add maps/factions/races/units/buildings/classes/art/assets, start desktop work, add multiplayer/PvP/co-op, or change runtime rebrand/display-copy behavior.
+
+Baseline:
+
+- Starting commit/package: `b046d80`, `ascendant-realms-private-playtest-b046d80`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26705661613` on `b046d80` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md`.
+- Added `docs/V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md`.
+- Added `docs/V087_VISUAL_QA_REPORT.md`.
+- Added `docs/V087_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V087_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md`.
+- Added `src/game/results/ResultsOverviewPanel.ts`.
+- Campaign nodes now expose presentation-only `mapX`, `mapY`, and `chapterId` fields for a wider map-first layout.
+- The Map tab now uses larger chapter lanes, route lines, clearer selected/available/completed/locked/future/replayable states, stronger prerequisite readability, and wider node spacing.
+- Fresh campaigns still select Border Village, locked Aether Well Ruins remains previewable, and normal unlock/progression logic is unchanged.
+- The selected mission panel now keeps title, type, state, short description, objective, reward preview, pacing, lock reason, primary action, and `More Details` visible first.
+- Stronghold, Hero, Inventory, Intel, and Reputation tabs now use compact cards and details disclosures for longer guidance.
+- Ordinary Results screens now show the key result, mission, time, primary objective, key rewards, hero XP, veteran highlights, and return/replay actions before collapsed full battle details.
+- The private-demo Results mode remains preserved.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, XP, campaign progression, mission IDs, stable IDs, or balance values changed.
+- The campaign coordinate/chapter fields are view-model presentation metadata only.
+
+Verification:
+
+```text
+npm test PASS, 91 files / 675 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run test:e2e:layout PASS, 32 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 36 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Non-pass evidence: broad local `npm run test:e2e:release` exceeded a 40-minute command timeout without a usable summary. The layout shard later passed 32/32, and the required hosted release lanes passed.
+
+Closeout note: commit as `Checkpoint v0.87 campaign-shell second polish and Results information architecture`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
 

@@ -143,6 +143,25 @@ async function launchSettingsSmokeBattle(page: Page): Promise<void> {
   await expectBattleLoaded(page);
 }
 
+async function forceBattleDefeat(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const objectiveId = scene.activeMap.scenario.objectives.playerBaseBuildingId;
+    const target = scene.buildings.find(
+      (building: any) => building.team === "player" && building.definition.id === objectiveId && building.alive
+    );
+    if (!target) {
+      throw new Error(`Could not find player objective building ${objectiveId}.`);
+    }
+    target.takeDamage(target.maxHp + target.armor + 10_000);
+    scene.checkEndConditions();
+  });
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+}
+
 async function waitForBattlePauseState(page: Page, expectedPaused: boolean, timeout = 1_000): Promise<boolean> {
   return page
     .waitForFunction(
@@ -216,6 +235,32 @@ async function expectCampaignMapNodesDoNotOverlap(page: Page): Promise<void> {
       expect(separated, `${a.testId} should not overlap ${b.testId}`).toBe(true);
     }
   }
+}
+
+async function expectCampaignMapShellFitsViewport(page: Page, context: string): Promise<void> {
+  const layout = await page.evaluate(() => {
+    const map = document.querySelector<HTMLElement>(".campaign-map-grid")?.getBoundingClientRect();
+    const selectedPanel = document.querySelector<HTMLElement>("[data-testid='campaign-selected-panel']")?.getBoundingClientRect();
+    const primaryAction = document.querySelector<HTMLElement>("[data-testid='campaign-start-node']")?.getBoundingClientRect();
+    const documentElement = document.documentElement;
+    return {
+      viewportWidth: window.innerWidth,
+      viewportHeight: window.innerHeight,
+      scrollHeight: documentElement.scrollHeight,
+      map: map ? { top: map.top, bottom: map.bottom, width: map.width, height: map.height } : undefined,
+      selectedPanel: selectedPanel ? { top: selectedPanel.top, bottom: selectedPanel.bottom, width: selectedPanel.width } : undefined,
+      primaryAction: primaryAction ? { top: primaryAction.top, bottom: primaryAction.bottom } : undefined
+    };
+  });
+
+  expect(layout.map, `${context}: campaign map visible`).toBeTruthy();
+  expect(layout.selectedPanel, `${context}: selected mission panel visible`).toBeTruthy();
+  expect(layout.primaryAction, `${context}: primary action visible`).toBeTruthy();
+  expect(layout.map?.width, `${context}: map uses available width`).toBeGreaterThan(680);
+  expect(layout.map?.height, `${context}: map uses available height`).toBeGreaterThan(410);
+  expect(layout.selectedPanel?.width, `${context}: selected panel stays compact`).toBeLessThanOrEqual(390);
+  expect(layout.primaryAction?.bottom, `${context}: primary action above fold`).toBeLessThanOrEqual(layout.viewportHeight + 2);
+  expect(layout.scrollHeight, `${context}: default map tab avoids page scroll`).toBeLessThanOrEqual(layout.viewportHeight + 4);
 }
 
 async function readDifficultyBattleState(page: Page): Promise<{
@@ -1206,19 +1251,47 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(resumedState).toMatchObject({ menuPaused: false, stillInBattle: true });
   });
 
+  test("normal defeat Results keep retry actions above collapsed details @extended-smoke", async ({ page }) => {
+    test.setTimeout(55_000);
+    await launchSkirmishBattle(page, "easy", "E2E Defeat IA");
+    await forceBattleDefeat(page);
+
+    await expect(page.getByTestId("results-overview")).toContainText("Mission Failed");
+    await expect(page.getByTestId("results-overview")).toContainText("No victory rewards saved");
+    await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Open Hero Inventory" })).toBeVisible();
+    await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+    await expect(page.getByText("Show Full Battle Details")).toBeVisible();
+    await expect(page.locator(".defeat-tips")).toContainText("Next Attempt");
+  });
+
   test("new campaign flow opens the campaign map and blocks locked nodes @ci-fast", async ({ page }) => {
     test.setTimeout(60_000);
+    await page.setViewportSize({ width: 1366, height: 768 });
     await startNewCampaign(page, "E2E Campaign");
 
+    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Border Village");
+    await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
+    await expectCampaignMapShellFitsViewport(page, "fresh campaign 1366x768");
     await expectCampaignMapNodesDoNotOverlap(page);
+    await page.setViewportSize({ width: 1920, height: 1080 });
+    await expectCampaignMapShellFitsViewport(page, "fresh campaign 1920x1080");
+    await expectCampaignMapNodesDoNotOverlap(page);
+    await expect(page.getByTestId("campaign-lane-border_marches")).toContainText("Chapter 1: Border Marches");
+    await expect(page.getByTestId("campaign-lane-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
+    await expect(page.getByTestId("campaign-route-layer")).toBeVisible();
     await clickReady(page.getByTestId("campaign-tab-intel"), "smoke campaign intel tab");
     await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Unlocked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await clickReady(page.getByTestId("campaign-tab-map"), "smoke campaign map tab");
+    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Border Village");
+    await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+    await expect(page.locator(".campaign-node-more summary")).toContainText("More Details");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
     await selectCampaignNodeDetails(page, "aether_well_ruins", "Aether Well Ruins", "smoke locked Aether Well node");
     await expect(page.getByTestId("campaign-node-aether_well_ruins")).toContainText(/Locked/i);
+    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Lock reason");
     await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
     await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Locked/i);
     await expect(page.getByTestId("campaign-node-cinderfen_waystation")).toContainText(/Locked/i);
@@ -1590,6 +1663,13 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     const resultsPanel = page.locator(".results-panel");
     await expect(resultsPanel).toContainText("Victory");
     await expect(resultsPanel).toContainText("Cinderfen Crossing");
+    await expect(page.getByTestId("results-overview")).toContainText("Mission Complete");
+    await expect(page.getByTestId("results-overview")).toContainText("Primary objective");
+    await expect(page.getByTestId("results-overview")).toContainText("Key rewards");
+    await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+    await expect(page.getByText("Show Full Battle Details")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Campaign Map" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Replay Battle" })).toBeVisible();
     await expect(resultsPanel).toContainText("Normal");
     await expect(resultsPanel).toContainText("Reward XP");
     await expect(resultsPanel).toContainText("65");
@@ -1600,6 +1680,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("60");
     await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 20 Stone, 20 Iron, 12 Aether");
     await expect(page.locator(".campaign-reward-block")).toContainText("Scout's Bow");
+    await page.getByTestId("results-full-details").locator("summary").click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Claim the Cinder Shrine");
     await expect(objectiveSummary).toContainText("Clear Cinder Guardians");
@@ -1754,6 +1835,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("Node XP");
     await expect(page.locator(".campaign-reward-block")).toContainText("62");
     await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 22 Stone, 18 Iron, 10 Aether");
+    await page.getByTestId("results-full-details").locator("summary").click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Watch Road");
     await expect(objectiveSummary).toContainText("Clear the Marsh Raider Camp");
@@ -1809,9 +1891,11 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-status")).toContainText("Cinderfen route secured");
     await expect(page.getByTestId("campaign-status")).toContainText("Chapter 2 route complete");
     await expect(page.getByTestId("campaign-status")).toContainText("future Cinderfen roads");
+    await clickReady(page.getByTestId("campaign-tab-hero"), "smoke Cinderfen route complete hero guidance tab");
     await expect(page.locator(".guidance-card").filter({ hasText: "Cinderfen route secured" })).toContainText(
       "Chapter 2 route complete"
     );
+    await clickReady(page.getByTestId("campaign-tab-map"), "smoke Cinderfen route complete map tab");
     await expect(page.getByTestId("campaign-node-cinderfen_aftermath")).toContainText(/Completed/i);
     save = await readStoredSave(page);
     expect(save.campaign.completedNodeIds).toContain("cinderfen_aftermath");

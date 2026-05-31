@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.86 general battlefield-shell UX rescue";
+const CHECKPOINT = "v0.87 campaign-shell second polish and Results information architecture";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -310,6 +310,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V086_IMPLEMENTATION_REPORT.md", join(packageDir, "V086_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V086_DEFERRED_UX_FINDINGS.md", join(packageDir, "V086_DEFERRED_UX_FINDINGS.md"));
   await copyMarkdown("docs/V086_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V086_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md", join(packageDir, "V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md"));
+  await copyMarkdown("docs/V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md", join(packageDir, "V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md"));
+  await copyMarkdown("docs/V087_VISUAL_QA_REPORT.md", join(packageDir, "V087_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V087_IMPLEMENTATION_REPORT.md", join(packageDir, "V087_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V087_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V087_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md", join(packageDir, "V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -409,7 +415,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.86, start with V086_EMMANUEL_RETEST_CHECKLIST.md, then read V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md, V086_NOTIFICATION_PRIORITY_SPEC.md, and V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md. The build keeps gameplay, saves, balance, Lume rules, maps, factions, and art unchanged while rescuing the battlefield shell presentation: compact command actions, notification priority, objective tracker presentation, capture-site chips, selection rings, fog softness, and minimap readability. Use the v0.84 and v0.85 packets as the Lume/private-demo baseline.
+For v0.87, start with V087_EMMANUEL_RETEST_CHECKLIST.md, then read V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md and V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md. The build keeps gameplay, saves, balance, rewards, Lume rules, maps, factions, and art unchanged while polishing the campaign shell, selected-mission disclosure, campaign tabs, and ordinary Results information architecture. Use the v0.85 private-demo Results packet as the preserved disclosure baseline.
 
 ## Known Warning
 

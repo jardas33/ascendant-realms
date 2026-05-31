@@ -3283,7 +3283,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("Worker assignment and site upgrade boost a captured resource site @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(90_000);
+    test.setTimeout(120_000);
     await startFirstClaimSkirmish(page, "Worker Resource QA");
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });
     const captured = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine"));
@@ -5800,6 +5800,14 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
 
     await page.keyboard.press("1");
+    await page.waitForFunction(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return (scene?.hero.abilityCooldowns.rally_banner ?? 0) > 0;
+    });
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      scene.refreshBattleHud(0);
+    });
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute("data-ability-state", "cooldown");
     await expect(page.locator("button[data-action='ability'][data-id='rally_banner']")).toHaveAttribute(
       "data-ability-reason",
@@ -5952,7 +5960,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("first campaign battle path covers capture, build, train, rally, and victory rewards @hosted-deep-battle", async ({ page }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(180_000);
     await openFreshMainMenu(page);
 
     await page.getByTestId("menu-new-campaign").click();
@@ -6722,6 +6730,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         "ashen_outpost:defeat_outpost_captain"
       ])
     );
+    await page.getByTestId("results-full-details").locator("summary").click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");

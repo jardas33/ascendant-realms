@@ -17,7 +17,8 @@ import {
   createRetryBattleData,
   renderPrimaryActions
 } from "../results/ResultsNavigation";
-import { renderBattleSummary } from "../results/ResultsObjectiveSummary";
+import { renderBattleSummary, renderRelicReward } from "../results/ResultsObjectiveSummary";
+import { renderResultsOverview } from "../results/ResultsOverviewPanel";
 import { renderPrivateDemoLumeSummary, renderPrivateDemoPrimaryActions } from "../results/ResultsPrivateDemoPanel";
 import { renderRetinueRecruitment, retinueSourceBattleId } from "../results/ResultsRetinuePanel";
 import { renderDefeatTips, renderHeroStats, renderVictoryRewards } from "../results/ResultsRewardPanel";
@@ -203,9 +204,16 @@ export class ResultsScene extends Phaser.Scene {
               <strong>${viewModel.xp.afterHero.level}</strong>
             </div>
           </div>
-          ${renderBattleSummary(data, viewModel)}
-          ${this.renderGuidancePanel(viewModel.guidance)}
-          ${renderRetinueRecruitment(data, currentCampaign)}
+          <div class="menu-actions row results-primary-actions">
+            ${renderPrimaryActions(data)}
+          </div>
+          ${renderResultsOverview(data, viewModel)}
+          <div class="status-box">${escapeHtml(this.status)}</div>
+          <div class="results-priority-stack">
+            ${this.renderGuidancePanel(viewModel.guidance)}
+            ${renderRetinueRecruitment(data, currentCampaign)}
+            ${renderRelicReward(data)}
+          </div>
           ${
             viewModel.isVictory
               ? renderVictoryRewards(data, {
@@ -214,11 +222,13 @@ export class ResultsScene extends Phaser.Scene {
                 })
               : renderDefeatTips(displayedData)
           }
-          <div class="status-box">${escapeHtml(this.status)}</div>
-          ${renderHeroStats(displayedData)}
-          <div class="menu-actions row">
-            ${renderPrimaryActions(data)}
-          </div>
+          <details class="results-full-details" data-testid="results-full-details">
+            <summary>Show Full Battle Details</summary>
+            <div class="results-full-details-body">
+              ${renderBattleSummary(data, viewModel, { omitRelicReward: true })}
+              ${renderHeroStats(displayedData)}
+            </div>
+          </details>
         </section>
       </main>
     `;

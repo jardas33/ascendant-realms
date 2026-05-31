@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.86 general battlefield-shell UX rescue",
+          checkpoint: "v0.87 campaign-shell second polish and Results information architecture",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -329,6 +329,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V086_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.86 implementation report" },
       { path: "V086_DEFERRED_UX_FINDINGS.md", sizeBytes: 20, textContent: "v0.86 deferred UX findings" },
       { path: "V086_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.86 Emmanuel checklist" },
+      { path: "V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md", sizeBytes: 20, textContent: "v0.87 campaign shell spec" },
+      { path: "V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md", sizeBytes: 20, textContent: "v0.87 results information architecture spec" },
+      { path: "V087_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.87 visual QA report" },
+      { path: "V087_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.87 implementation report" },
+      { path: "V087_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.87 Emmanuel checklist" },
+      { path: "V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md", sizeBytes: 20, textContent: "v0.87 deferred findings" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

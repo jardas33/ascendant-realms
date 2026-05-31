@@ -19,7 +19,11 @@ import { getTacticalPlan, tacticalPlanFromLaunchModifiers } from "../data/tactic
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
 
-export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewModel): string {
+interface BattleSummaryRenderOptions {
+  omitRelicReward?: boolean;
+}
+
+export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewModel, options: BattleSummaryRenderOptions = {}): string {
   const { stats } = data;
   return `
     <div class="results-sections">
@@ -60,7 +64,7 @@ export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewMod
     ${renderLumeNetworkSummary(data)}
     ${renderEnemyDoctrineSummary(data)}
     ${renderRivalOutcome(data)}
-    ${renderRelicReward(data)}
+    ${options.omitRelicReward ? "" : renderRelicReward(data)}
     ${renderSpecialObjectives(data, viewModel.map)}
 `;
 }

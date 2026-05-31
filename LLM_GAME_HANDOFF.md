@@ -1,12 +1,68 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.86 general battlefield-shell UX rescue
+Last updated: 2026-05-31 v0.87 campaign-shell second polish and Results information architecture
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, and v0.86 rescues the general battlefield shell presentation without changing gameplay. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, and v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay. No runtime rebrand is approved.
+
+## Current v0.87 Campaign-Shell Second Polish And General Results Information Architecture - 2026-05-31
+
+Status: v0.87 is a presentation-only campaign and Results polish checkpoint. It improves map-first campaign shell space usage, progression lanes, selected-mission compactness, campaign tab hierarchy, and ordinary Results progressive disclosure without changing gameplay systems, progression logic, rewards, saves, stable IDs, maps, factions, art/assets, desktop work, multiplayer, PvP, co-op, or broad creative direction.
+
+Baseline:
+
+- Starting commit/package: `b046d80`, `ascendant-realms-private-playtest-b046d80`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26705661613` on `b046d80` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V087_CAMPAIGN_SHELL_SECOND_POLISH_SPEC.md`.
+- Added `docs/V087_RESULTS_INFORMATION_ARCHITECTURE_SPEC.md`.
+- Added `docs/V087_VISUAL_QA_REPORT.md`.
+- Added `docs/V087_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V087_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added `docs/V087_DEFERRED_CAMPAIGN_AND_RESULTS_FINDINGS.md`.
+- Added `src/game/results/ResultsOverviewPanel.ts`.
+- Campaign nodes expose presentation-only `mapX`, `mapY`, and `chapterId` view-model fields.
+- The Map tab uses larger chapter lanes, route lines, clearer selected/available/completed/locked/future/replayable states, and wider spacing while preserving fresh Border Village selection, locked Aether Well preview, and normal unlock rules.
+- The selected mission panel defaults to mission title, type, state, short description, primary objective, concise reward preview, pacing, lock reason, primary action, and `More Details`; secondary prose remains available behind details disclosure.
+- Stronghold, Hero, Inventory, Intel, and Reputation tabs now use compact card hierarchy and collapsible extended explanations.
+- Ordinary Results screens keep primary actions above the fold and collapse telemetry-heavy unit/resource/Retinue/modifier details behind `Show Full Battle Details`.
+- Private-demo Results mode remains preserved.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, XP, campaign progression, mission IDs, stable IDs, maps, factions, races, units, buildings, classes, art/assets, Lume rules, balance values, broad AI/pathing behavior, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration changed.
+- This checkpoint adds no gameplay systems and no canvas/world force-click or DOM fallback behavior.
+
+Verification:
+
+```text
+npm test PASS, 91 files / 675 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run test:e2e:layout PASS, 32 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 36 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Non-pass evidence: a broad local `npm run test:e2e:release` attempt exceeded a 40-minute command timeout without a usable summary. The layout shard and required hosted release lanes passed afterward.
+
+Closeout note: commit as `Checkpoint v0.87 campaign-shell second polish and Results information architecture`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V087_EMMANUEL_RETEST_CHECKLIST.md`. Do not start v0.88, gameplay systems, progression changes, reward changes, save migration, art generation, runtime rebrand, desktop work, multiplayer, PvP, or co-op without a new explicit goal.
 
 ## Current v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
 

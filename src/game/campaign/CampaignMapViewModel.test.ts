@@ -41,6 +41,28 @@ describe("campaign map presentation helpers", () => {
     });
   });
 
+  it("uses presentation-only chapter lanes for map spacing without changing node identity", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave();
+
+    const viewModel = createCampaignMapViewModel({
+      heroSave: hero,
+      campaignSave: campaign,
+      selectedNodeId: "border_village"
+    });
+    const borderVillage = viewModel.nodes.find((entry) => entry.node.id === "border_village")!;
+    const aetherWell = viewModel.nodes.find((entry) => entry.node.id === "aether_well_ruins")!;
+    const cinderfenCrossing = viewModel.nodes.find((entry) => entry.node.id === "cinderfen_crossing")!;
+
+    expect(borderVillage.node.x).toBe(12);
+    expect(borderVillage.mapX).toBeGreaterThan(borderVillage.node.x);
+    expect(aetherWell.mapX).toBeLessThan(70);
+    expect(cinderfenCrossing.mapX).toBeGreaterThan(70);
+    expect(borderVillage.cssClass).toContain("chapter-border_marches");
+    expect(cinderfenCrossing.cssClass).toContain("chapter-cinderfen_road");
+    expect(cinderfenCrossing.style).toContain("--node-x:");
+  });
+
   it("shows Chapter 2 as unlocked after Ashen with a playable event gate before the battle", () => {
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const campaign = createStartedCampaignSave({
