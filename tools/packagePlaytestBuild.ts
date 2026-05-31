@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.85 contextual Lume overlay and Results-screen UX rescue";
+const CHECKPOINT = "v0.86 general battlefield-shell UX rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -303,6 +303,13 @@ async function main(): Promise<void> {
     join(packageDir, "V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md")
   );
   await copyMarkdown("docs/V085_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V085_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md", join(packageDir, "V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V086_NOTIFICATION_PRIORITY_SPEC.md", join(packageDir, "V086_NOTIFICATION_PRIORITY_SPEC.md"));
+  await copyMarkdown("docs/V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md", join(packageDir, "V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md"));
+  await copyMarkdown("docs/V086_VISUAL_QA_REPORT.md", join(packageDir, "V086_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V086_IMPLEMENTATION_REPORT.md", join(packageDir, "V086_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V086_DEFERRED_UX_FINDINGS.md", join(packageDir, "V086_DEFERRED_UX_FINDINGS.md"));
+  await copyMarkdown("docs/V086_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V086_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -402,7 +409,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.85, start with V085_EMMANUEL_RETEST_CHECKLIST.md, then read V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md, V085_LUME_VISIBILITY_CONTROL_SPEC.md, and V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md. The build keeps normal production progression unchanged, keeps the package-only Aether Well Lume demo rewards/progress disabled, and rescues the Lume overlay and private-demo Results readability. It does not add new maps, factions, art, save fields, persistent overlay settings, desktop work, Jardas binding, Worker binding, hero binding, broad runtime copy migration, Lume balance changes, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.82 docs as the Lume runtime background and the v0.84 packet as the prior guided-demo baseline.
+For v0.86, start with V086_EMMANUEL_RETEST_CHECKLIST.md, then read V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md, V086_NOTIFICATION_PRIORITY_SPEC.md, and V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md. The build keeps gameplay, saves, balance, Lume rules, maps, factions, and art unchanged while rescuing the battlefield shell presentation: compact command actions, notification priority, objective tracker presentation, capture-site chips, selection rings, fog softness, and minimap readability. Use the v0.84 and v0.85 packets as the Lume/private-demo baseline.
 
 ## Known Warning
 

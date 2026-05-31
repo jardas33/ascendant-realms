@@ -41,6 +41,11 @@ export function createBattleMinimapSnapshot(options: BattleMinimapSnapshotOption
   } = options;
   const cameraWidth = Math.min(activeMap.width, camera.width / camera.zoom);
   const cameraHeight = Math.min(activeMap.height, camera.height / camera.zoom);
+  const objectiveSiteIds = new Set(
+    (activeMap.scenario.objectives.secondaryObjectives ?? [])
+      .filter((objective) => objective.type === "capture_site")
+      .map((objective) => objective.targetId)
+  );
   const markers: MinimapSnapshot["markers"] = [
     ...captureSites
       .filter((site) => isPointExploredByPlayer(site.position))
@@ -51,7 +56,8 @@ export function createBattleMinimapSnapshot(options: BattleMinimapSnapshotOption
         x: site.position.x,
         y: site.position.y,
         resource: site.definition.resource,
-        resourceColor: resourceColor(site.definition.resource)
+        resourceColor: resourceColor(site.definition.resource),
+        isObjective: objectiveSiteIds.has(site.definition.id)
       })),
     ...activeMap.neutralCamps
       .filter((camp) =>

@@ -16,7 +16,8 @@ describe("renderMinimap", () => {
         x: 1200,
         y: 800,
         resource: "crowns",
-        resourceColor: "#f0d978"
+        resourceColor: "#f0d978",
+        isObjective: true
       }
     ],
     camera: { x: 600, y: 400, width: 1200, height: 800 },
@@ -32,7 +33,8 @@ describe("renderMinimap", () => {
     expect(markup).toContain("cx=\"10\"");
     expect(markup).toContain("class=\"minimap-building\"");
     expect(markup).toContain("x=\"88\"");
-    expect(markup).toContain("class=\"minimap-site\"");
+    expect(markup).toContain("class=\"minimap-site-marker neutral objective\"");
+    expect(markup).toContain("Objective resource site");
     expect(markup).toContain("stroke=\"#f0d978\"");
     expect(markup).toContain("class=\"minimap-camera\"");
     expect(markup).toContain("x=\"25\"");

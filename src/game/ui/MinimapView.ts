@@ -1,4 +1,5 @@
 import type { ResourceKey, Team, VisibilityState } from "../core/GameTypes";
+import { resolveFogCellPresentation } from "./FogPresentation";
 
 export type MinimapMarkerKind = "unit" | "enemy-hero" | "building" | "capture-site" | "camp" | "rally";
 
@@ -11,6 +12,7 @@ export interface MinimapMarker {
   size?: number;
   resource?: ResourceKey;
   resourceColor?: string;
+  isObjective?: boolean;
 }
 
 export interface MinimapCameraRect {
@@ -104,8 +106,8 @@ function renderFog(snapshot: MinimapSnapshot): string {
       const y = worldToMinimapY(snapshot, cell.y);
       const width = formatNumber(clamp((cell.width / snapshot.mapWidth) * 100, 0, 100));
       const height = formatNumber(clamp((cell.height / snapshot.mapHeight) * 100, 0, 100));
-      const opacity = cell.state === "unseen" ? 0.78 : 0.34;
-      return `<rect class="minimap-fog ${cell.state}" x="${x}" y="${y}" width="${width}" height="${height}" fill="#020503" opacity="${formatNumber(opacity)}"></rect>`;
+      const presentation = resolveFogCellPresentation(cell.state === "unseen" ? "unseen" : "explored");
+      return `<rect class="minimap-fog ${cell.state}" x="${x}" y="${y}" width="${width}" height="${height}" rx="0.8" fill="${presentation.fillColorCss}" opacity="${formatNumber(presentation.fillAlpha)}"></rect>`;
     })
     .join("");
 }
@@ -115,9 +117,15 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
   const y = worldToMinimapY(snapshot, marker.y);
   if (marker.kind === "capture-site") {
     const color = marker.resourceColor ?? "#f5efc2";
-    const fill = marker.team === "neutral" ? "transparent" : teamColor(marker.team, snapshot);
-    const opacity = marker.team === "neutral" ? 0 : 0.26;
-    return `<circle class="minimap-site" cx="${x}" cy="${y}" r="3.2" fill="${fill}" fill-opacity="${opacity}" stroke="${color}" stroke-width="1.25"></circle>`;
+    const fill = marker.team === "neutral" ? "#18251e" : teamColor(marker.team, snapshot);
+    const stroke = marker.isObjective ? "#b8efff" : color;
+    const innerStroke = marker.team === "neutral" ? color : teamStroke(marker.team, snapshot);
+    return `
+      <g class="minimap-site-marker ${marker.team}${marker.isObjective ? " objective" : ""}" aria-label="${escapeAttribute(marker.isObjective ? "Objective resource site" : "Resource site")}">
+        <circle cx="${x}" cy="${y}" r="${marker.isObjective ? "4.4" : "3.7"}" fill="${fill}" fill-opacity="${marker.team === "neutral" ? "0.58" : "0.42"}" stroke="${stroke}" stroke-width="${marker.isObjective ? "1.35" : "1"}"></circle>
+        <circle cx="${x}" cy="${y}" r="1.4" fill="${color}" stroke="${innerStroke}" stroke-width="0.55"></circle>
+      </g>
+    `;
   }
 
   if (marker.kind === "building") {

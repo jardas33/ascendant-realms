@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.85 contextual Lume overlay and Results-screen UX rescue
+Last updated: 2026-05-31 v0.86 general battlefield-shell UX rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, and v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, and v0.86 rescues the general battlefield shell presentation without changing gameplay. No runtime rebrand is approved.
+
+## Current v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
+
+Status: v0.86 is a presentation-only battlefield-shell rescue. It improves command density, battlefield notification priority, objective tracker clutter, capture-site labels, selected-ring contrast, fog presentation, and minimap site readability without adding gameplay systems or changing saves.
+
+Baseline:
+
+- Starting commit/package: `4e5618f`, `ascendant-realms-private-playtest-4e5618f`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26702405524` on `4e5618f` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md`.
+- Added `docs/V086_NOTIFICATION_PRIORITY_SPEC.md`.
+- Added `docs/V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md`.
+- Added `docs/V086_VISUAL_QA_REPORT.md`.
+- Added `docs/V086_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V086_DEFERRED_UX_FINDINGS.md`.
+- Added `docs/V086_EMMANUEL_RETEST_CHECKLIST.md`.
+- Compact command panel entries now surface action, cost, and short lock reason first, with longer effect/owner copy behind details disclosures.
+- Battlefield status messages now map to critical, important, routine, or debug presentation categories, with routine command confirmations shortened and deduplicated.
+- Objective tracker presentation no longer shows misleading `Objectives 0/0` when special event/doctrine/Lume context exists without ordinary objectives.
+- Capture-site labels, selection rings, fog cells, and minimap capture-site markers now use clearer presentation helpers and tests.
+- Visual QA now captures two v0.86 battlefield-shell screenshots at 1920x1080 and 1366x768.
+- Package generation and verification now require all v0.86 tester docs and v0.86 build-info guidance.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, campaign progression, internal IDs, maps, factions, races, units, buildings, classes, art/assets, Lume rules, linked-site rules, balance values, broad AI/pathing behavior, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration changed.
+- This checkpoint adds no gameplay systems and no canvas/world force-click or DOM fallback behavior.
+- Tutorial, no-reward routes, Lume demo behavior, Retinue, tactical plans, control groups, Patrol, and Results reward rules remain intact.
+
+Verification:
+
+```text
+npm test -- --run src/game/battle/BattleStatusPriority.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/ObjectivePanel.test.ts src/game/ui/MinimapView.test.ts src/game/ui/CaptureSitePresentation.test.ts src/game/ui/FogPresentation.test.ts src/game/ui/SelectionPresentation.test.ts PASS, 7 files / 37 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm test PASS, 91 files / 672 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests after an exact Broken Ford scene-transition rerun.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests after compact-command/minimap/details expectation updates and exact reruns.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests after an exact compact-upgrade-details rerun.
+npm run visual:qa PASS, 6 tests / 31 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Closeout note: commit as `Checkpoint v0.86 general battlefield-shell UX rescue`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V086_EMMANUEL_RETEST_CHECKLIST.md`. Do not start gameplay systems, balance changes, save migration, broader Lume rules, art generation, runtime rebrand, desktop work, multiplayer, PvP, or co-op without a new explicit goal.
 
 ## Current v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
 

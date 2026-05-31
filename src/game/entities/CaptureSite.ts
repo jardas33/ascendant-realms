@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { resourceIconAssetId } from "../assets/AssetKeys";
 import type { CaptureSiteDefinition, Team } from "../core/GameTypes";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
+import { resolveCaptureSitePresentation } from "../ui/CaptureSitePresentation";
 import { BaseEntity } from "./BaseEntity";
 
 export type ResourceSiteLevel = 1 | 2;
@@ -42,6 +43,7 @@ export class CaptureSite extends BaseEntity {
     });
     this.definition = definition;
     this.createCommonView(scene, definition.name, this.siteColor(), false);
+    this.label?.setStroke("#06100c", 4).setPadding(5, 2, 5, 2).setY(-definition.radius - 30);
     this.ring = scene.add.circle(0, 0, definition.radius, 0x223029, 0.22).setStrokeStyle(4, this.siteColor(), 0.9);
     this.progressRing = scene.add.circle(0, 0, definition.radius - 8).setStrokeStyle(3, 0xf3e7a3, 0.85);
     this.progressRing.setVisible(false);
@@ -61,6 +63,11 @@ export class CaptureSite extends BaseEntity {
     this.siteLevel = 1;
     this.clearAllWorkerAssignments();
     this.abstractEnemyWorkerSlots = 0;
+    this.updateVisuals();
+  }
+
+  setSelected(selected: boolean): void {
+    super.setSelected(selected);
     this.updateVisuals();
   }
 
@@ -120,11 +127,22 @@ export class CaptureSite extends BaseEntity {
   }
 
   updateVisuals(): void {
-    const ownerColor = this.ownerColor();
-    this.ring?.setStrokeStyle(4, ownerColor, 0.95);
+    const presentation = resolveCaptureSitePresentation({
+      owner: this.owner,
+      capturingTeam: this.capturingTeam,
+      captureProgress: this.captureProgress,
+      selected: this.selected,
+      resourceColor: this.siteColor()
+    });
+    this.ring?.setStrokeStyle(presentation.ringWidth, presentation.ringColor, presentation.ringAlpha);
+    this.label
+      ?.setText(`${presentation.labelPrefix} - ${this.definition.name}`)
+      .setColor(presentation.labelColor)
+      .setBackgroundColor(presentation.labelBackground);
     if (this.progressRing) {
       this.progressRing.setVisible(this.captureProgress > 0 && this.captureProgress < 1);
       this.progressRing.setScale(0.35 + this.captureProgress * 0.65);
+      this.progressRing.setStrokeStyle(3, presentation.progressColor, 0.9);
     }
   }
 
@@ -140,16 +158,6 @@ export class CaptureSite extends BaseEntity {
       return image;
     }
     return scene.add.circle(0, 0, 18, this.siteColor(), 0.95).setStrokeStyle(2, 0x0f1512, 0.8);
-  }
-
-  private ownerColor(): number {
-    if (this.owner === "player") {
-      return 0x7de087;
-    }
-    if (this.owner === "enemy") {
-      return 0xe15e55;
-    }
-    return this.siteColor();
   }
 
   private syncLegacyWorkerAssignmentFields(emptyStatus = "Empty worker slot"): void {

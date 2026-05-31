@@ -55,6 +55,20 @@ describe("CommandPanel", () => {
     expect(markup).not.toContain("Insufficient resources. Cost: 120 Crowns, 70 Iron");
   });
 
+  it("keeps long command copy behind compact details without removing accessible labels", () => {
+    const barracks = fakeBuilding("player-barracks", "barracks");
+
+    const markup = renderCommandActions(barracks, fakeSnapshot(["command_hall", "barracks"]));
+
+    expect(markup).toContain('class="command-entry ready"');
+    expect(markup).toContain("command-details");
+    expect(markup).toContain('aria-describedby="command-details-train-militia"');
+    expect(markup).toContain("Show command details for Train Militia");
+    expect(markup).toContain("Tags: Frontline / Melee / Holds Ground");
+    expect(markup).not.toContain("command-description");
+    expect(markup).not.toContain("command-effect");
+  });
+
   it("explains incomplete building roles and unlocks without exposing completed actions", () => {
     const cases = [
       {

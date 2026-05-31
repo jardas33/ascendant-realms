@@ -1869,6 +1869,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("skirmish setup lists maps and launches Broken Ford @extended-smoke", async ({ page }) => {
+    test.setTimeout(SKIRMISH_DIFFICULTY_SMOKE_TIMEOUT_MS);
+
     await openFreshMainMenu(page);
     await clickReady(page.getByTestId("menu-skirmish"), "smoke Broken Ford skirmish menu");
     await createHero(page, "E2E Skirmish");
@@ -1883,7 +1885,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("setup-difficulty-normal")).toBeVisible();
 
     await clickReady(page.getByTestId("setup-map-broken_ford"), "smoke Broken Ford map selection");
-    await clickReady(page.getByTestId("setup-start-battle"), "smoke Broken Ford start battle");
+    await clickReady(page.getByTestId("setup-start-battle"), "smoke Broken Ford start battle", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
   });
 

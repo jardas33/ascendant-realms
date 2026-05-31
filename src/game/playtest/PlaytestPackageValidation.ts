@@ -273,6 +273,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V085_VISUAL_QA_REPORT.md",
   "V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md",
   "V085_EMMANUEL_RETEST_CHECKLIST.md",
+  "V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md",
+  "V086_NOTIFICATION_PRIORITY_SPEC.md",
+  "V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md",
+  "V086_VISUAL_QA_REPORT.md",
+  "V086_IMPLEMENTATION_REPORT.md",
+  "V086_DEFERRED_UX_FINDINGS.md",
+  "V086_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -383,7 +390,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.85 contextual Lume overlay and Results-screen UX rescue",
+      "v0.86 general battlefield-shell UX rescue",
       "build info checkpoint",
       checks,
       errors

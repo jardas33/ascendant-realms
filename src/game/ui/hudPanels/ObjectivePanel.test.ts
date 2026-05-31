@@ -43,9 +43,10 @@ describe("ObjectivePanel", () => {
 
     expect(html).toContain('data-testid="enemy-doctrine-status"');
     expect(html).toContain("Raider doctrine: economy pressure");
-    expect(html).toContain("Counterplay: Protect sites");
+    expect(html).toContain("Counterplay");
+    expect(html).toContain("Protect sites with Militia screens.");
     expect(html).toContain("Elite: Elite Vanguard");
-    expect(html).toContain("Objectives 0/0");
+    expect(html).not.toContain("Objectives 0/0");
   });
 
   it("renders a dynamic battlefield event with plan support", () => {
@@ -60,9 +61,11 @@ describe("ObjectivePanel", () => {
 
     expect(html).toContain('data-testid="battlefield-event-status"');
     expect(html).toContain("Site Under Threat");
-    expect(html).toContain("Hold Crown Shrine - Held - 24s");
+    expect(html).toContain("Hold Crown Shrine");
+    expect(html).toContain("Held - 24s");
     expect(html).toContain("Counterplay: Screen the site");
     expect(html).toContain("Plan support: active");
+    expect(html).not.toContain("Objectives 0/0");
   });
 
   it("renders a compact Lume Network row in the objective surface", () => {

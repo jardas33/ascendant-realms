@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.85 contextual Lume overlay and Results-screen UX rescue
+Updated: 2026-05-31 v0.86 general battlefield-shell UX rescue
+
+## v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
+
+Scope: presentation-only rescue for the general battlefield shell. This pass improves command panel density, status priority, objective tracker presentation, capture-site labels, selection-ring contrast, fog readability, and minimap capture-site markers. It does not change gameplay, save format, stable IDs, Lume rules, mission logic, rewards, balance, maps/factions/races/units/buildings/classes, art/assets, desktop work, multiplayer/PvP/co-op, or runtime rebrand/display-copy behavior.
+
+Baseline:
+
+- Starting commit/package: `4e5618f`, `ascendant-realms-private-playtest-4e5618f`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26702405524` on `4e5618f` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md`.
+- Added `docs/V086_NOTIFICATION_PRIORITY_SPEC.md`.
+- Added `docs/V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md`.
+- Added `docs/V086_VISUAL_QA_REPORT.md`.
+- Added `docs/V086_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V086_DEFERRED_UX_FINDINGS.md`.
+- Added `docs/V086_EMMANUEL_RETEST_CHECKLIST.md`.
+- Command entries now keep the visible button compact while preserving long owner/effect/description copy in details and accessible labels.
+- Battlefield status messages now use critical, important, routine, and debug categories; routine command confirmations are shortened and deduplicated.
+- Objective tracker special-context rows are compact, and empty ordinary objectives no longer render as misleading `Objectives 0/0`.
+- Capture-site, selection-ring, fog, and minimap presentation helpers provide tested readable variants without changing underlying state or rules.
+- Visual QA includes new v0.86 battlefield-shell captures at 1920x1080 and 1366x768.
+- Package generation and verification now include all v0.86 tester docs.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, campaign progression, internal IDs, mission IDs, Lume IDs, or balance values changed.
+- No canvas/world force-click or DOM fallback behavior was added.
+
+Verification:
+
+```text
+npm test -- --run src/game/battle/BattleStatusPriority.test.ts src/game/ui/hudPanels/CommandPanel.test.ts src/game/ui/hudPanels/ObjectivePanel.test.ts src/game/ui/MinimapView.test.ts src/game/ui/CaptureSitePresentation.test.ts src/game/ui/FogPresentation.test.ts src/game/ui/SelectionPresentation.test.ts PASS, 7 files / 37 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm test PASS, 91 files / 672 tests.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 15 tests after an exact Broken Ford scene-transition rerun.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests after compact-command/minimap/details expectation updates and exact reruns.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests after an exact compact-upgrade-details rerun.
+npm run visual:qa PASS, 6 tests / 31 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Closeout note: commit as `Checkpoint v0.86 general battlefield-shell UX rescue`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
 

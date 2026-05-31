@@ -70,8 +70,12 @@ import {
 import { Act1FinaleDirector, type Act1FinaleDirectorContext, type Act1FinaleTransition } from "../battle/Act1FinaleDirector";
 import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
 import {
+  battleStatusCategory,
+  battleStatusDedupeSeconds,
   battleStatusDurationSeconds,
+  formatBattleStatusMessage,
   shouldReplaceBattleStatus,
+  shouldDisplayBattleStatus,
   type BattleStatusOptions,
   type BattleStatusPriority
 } from "../battle/BattleStatusPriority";
@@ -115,6 +119,7 @@ import type { HeroSaveData } from "../save/SaveTypes";
 import type { SaveSettingsData } from "../save/SaveTypes";
 import { FloatingText } from "../ui/FloatingText";
 import { showDamageFeedback } from "../ui/DamageFeedback";
+import { resolveFogCellPresentation } from "../ui/FogPresentation";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
 import {
   advanceTutorialStep,
@@ -283,6 +288,7 @@ export class BattleScene extends Phaser.Scene {
   private statusMessage = "Capture resource sites to grow your army.";
   private statusTimer = 4;
   private statusPriority: BattleStatusPriority = "normal";
+  private recentStatusMessages = new Map<string, number>();
   private tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
   private tutorialStepId?: string;
   private tutorialDefeatedUnitIds = new Set<string>();
@@ -442,6 +448,7 @@ export class BattleScene extends Phaser.Scene {
     this.statusMessage = "Capture resource sites to grow your army.";
     this.statusTimer = 4;
     this.statusPriority = "normal";
+    this.recentStatusMessages.clear();
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
     this.tutorialDefeatedUnitIds = new Set<string>();
@@ -696,9 +703,11 @@ export class BattleScene extends Phaser.Scene {
       if (cell.state === "visible") {
         return;
       }
-      const alpha = cell.state === "unseen" ? 0.86 : 0.48;
-      this.fogOverlay?.fillStyle(0x020503, alpha);
-      this.fogOverlay?.fillRect(cell.x, cell.y, cell.width, cell.height);
+      const presentation = resolveFogCellPresentation(cell.state);
+      this.fogOverlay?.fillStyle(presentation.fillColor, presentation.fillAlpha);
+      this.fogOverlay?.fillRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
+      this.fogOverlay?.lineStyle(1, presentation.strokeColor, presentation.strokeAlpha);
+      this.fogOverlay?.strokeRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
     });
   }
 
@@ -1322,6 +1331,7 @@ export class BattleScene extends Phaser.Scene {
       elapsedSeconds: this.runtime.elapsedSeconds,
       isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
       status: this.statusMessage,
+      statusCategory: battleStatusCategory(this.statusPriority),
       hint: this.tutorialHint,
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
@@ -2102,22 +2112,47 @@ export class BattleScene extends Phaser.Scene {
 
   private showMessage(message: string, x?: number, y?: number, color = "#f5efc2", options: BattleStatusOptions = {}): void {
     const priority = options.priority ?? "normal";
+    if (!shouldDisplayBattleStatus(priority, false)) {
+      return;
+    }
+    const displayMessage = formatBattleStatusMessage(message, priority);
+    if (this.shouldSuppressRecentStatus(displayMessage, priority)) {
+      return;
+    }
     const replaceStatus = shouldReplaceBattleStatus({
       currentPriority: this.statusPriority,
       currentTimerSeconds: this.statusTimer,
       incomingPriority: priority
     });
     if (replaceStatus) {
-      this.statusMessage = message;
+      this.statusMessage = displayMessage;
       this.statusTimer = options.durationSeconds ?? battleStatusDurationSeconds(priority);
       this.statusPriority = priority;
     }
     if (x !== undefined && y !== undefined) {
-      FloatingText.show(this, message, x, y, color);
+      FloatingText.show(this, displayMessage, x, y, color);
     }
     if (replaceStatus && this.uiSystem && this.hero && !this.runtime.ended) {
       this.refreshBattleHud(0);
     }
+  }
+
+  private shouldSuppressRecentStatus(message: string, priority: BattleStatusPriority): boolean {
+    const dedupeSeconds = battleStatusDedupeSeconds(priority);
+    if (dedupeSeconds <= 0) {
+      return false;
+    }
+    const now = this.runtime?.elapsedSeconds ?? 0;
+    const category = battleStatusCategory(priority);
+    const key = `${category}:${message}`;
+    const previous = this.recentStatusMessages.get(key);
+    this.recentStatusMessages.set(key, now);
+    for (const [entryKey, lastSeen] of this.recentStatusMessages.entries()) {
+      if (now - lastSeen > 5) {
+        this.recentStatusMessages.delete(entryKey);
+      }
+    }
+    return previous !== undefined && now - previous < dedupeSeconds;
   }
 
   private installTestHooks(): void {

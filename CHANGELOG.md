@@ -1,5 +1,49 @@
 # Changelog
 
+# v0.86 General Battlefield-Shell UX Rescue - 2026-05-31
+
+This checkpoint rescues the general battlefield shell presentation without changing gameplay, save data, Lume rules, balance, campaign progression, runtime identity, or stable IDs.
+
+Added:
+
+- `src/game/battle/BattleStatusPriority.ts`.
+- `src/game/battle/BattleStatusPriority.test.ts`.
+- `src/game/ui/CaptureSitePresentation.ts`.
+- `src/game/ui/CaptureSitePresentation.test.ts`.
+- `src/game/ui/FogPresentation.ts`.
+- `src/game/ui/FogPresentation.test.ts`.
+- `src/game/ui/SelectionPresentation.ts`.
+- `src/game/ui/SelectionPresentation.test.ts`.
+- `docs/V086_BATTLEFIELD_SHELL_UX_RESCUE_SPEC.md`.
+- `docs/V086_NOTIFICATION_PRIORITY_SPEC.md`.
+- `docs/V086_OBJECTIVE_TRACKER_PRESENTATION_SPEC.md`.
+- `docs/V086_VISUAL_QA_REPORT.md`.
+- `docs/V086_IMPLEMENTATION_REPORT.md`.
+- `docs/V086_DEFERRED_UX_FINDINGS.md`.
+- `docs/V086_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Command panel entries now show compact action/cost/lock copy first, with long descriptions and effect text preserved in details disclosures and accessible labels.
+- Battlefield status lines now use critical, important, routine, and debug categories; routine command confirmations are shorter and deduped.
+- Objective tracker rows avoid misleading empty `Objectives 0/0` text when only event/doctrine/Lume context exists.
+- Battlefield event and doctrine rows use compact details for longer counterplay copy.
+- Capture-site labels now use clearer contrast chips and state prefixes.
+- Selection rings use restrained team-specific presentation.
+- Fog presentation uses softer rounded cells for unexplored and explored-muted states while preserving visibility logic.
+- Minimap capture-site markers distinguish neutral, owned, and objective sites more clearly.
+- Visual QA now captures two v0.86 battlefield-shell review screenshots at 1920x1080 and 1366x768.
+- Package generation and package verification now include v0.86 docs and tester guidance.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, rewards, campaign progression, maps, factions, races, units, buildings, classes, art/assets, internal ID renames, Lume rule expansion, linked-site rule changes, resource-production changes, global balance changes, broad AI/pathing changes, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration was added.
+- No canvas/world force-click or DOM fallback behavior was added.
+
+Verification:
+
+- Passed: focused battlefield-shell Vitest coverage with 7 files / 37 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm test` with 91 files / 672 tests, `npm run validate:content`, `npm run validate:art-intake`, fast smoke with 9 tests, full smoke with 15 tests after an exact Broken Ford scene-transition rerun, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests after compact-command/minimap/details expectation updates and exact reruns, hosted smoke with 15 tests, hosted deep-campaign-pressure with 8 tests after an exact compact-upgrade-details rerun, and visual QA with 6 tests / 31 screenshots / 0 console errors / 0 retries.
+
 # v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
 
 This checkpoint makes the Aether Well Lume overlay contextual and rescues the private-demo Results screen, without changing Lume balance, save data, campaign progression, runtime identity, or stable Lume IDs.

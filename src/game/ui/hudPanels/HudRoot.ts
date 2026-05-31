@@ -59,7 +59,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}
-    ${renderStatusLine(snapshot.status, snapshot.isPlacing)}
+    ${renderStatusLine(snapshot.status, snapshot.isPlacing, snapshot.statusCategory)}
     ${renderHintLine(snapshot.hint)}
   `;
 }

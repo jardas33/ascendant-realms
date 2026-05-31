@@ -1,7 +1,8 @@
 import { escapeHtml } from "./HudFormatting";
+import type { BattleStatusCategory } from "../../battle/BattleStatusPriority";
 
-export function renderStatusLine(status: string, isPlacing: boolean): string {
-  return `<div class="status-line ${isPlacing ? "active" : ""}" data-testid="battle-status">${escapeHtml(status)}</div>`;
+export function renderStatusLine(status: string, isPlacing: boolean, category: BattleStatusCategory = "routine"): string {
+  return `<div class="status-line ${isPlacing ? "active" : ""} status-${category}" data-status-priority="${category}" data-testid="battle-status">${escapeHtml(status)}</div>`;
 }
 
 export function renderHintLine(hint: string | undefined): string {

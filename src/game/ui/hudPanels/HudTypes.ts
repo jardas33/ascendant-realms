@@ -1,6 +1,7 @@
 import type { ResourceBag } from "../../core/GameTypes";
 import type { Cost } from "../../core/GameTypes";
 import type { LumeNetworkHudSummary, LumeNetworkSiteSummary, LumeNetworkVisibilityMode } from "../../core/GameTypes";
+import type { BattleStatusCategory } from "../../battle/BattleStatusPriority";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
 import type { CaptureSite } from "../../entities/CaptureSite";
@@ -45,6 +46,7 @@ export interface HUDSnapshot {
   elapsedSeconds: number;
   isPlacing: boolean;
   status: string;
+  statusCategory?: BattleStatusCategory;
   hint?: string;
   tutorial?: TutorialStepViewModel;
   techState: TechState;

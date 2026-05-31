@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { battleStatusDurationSeconds, shouldReplaceBattleStatus } from "./BattleStatusPriority";
+import {
+  battleStatusCategory,
+  battleStatusDedupeSeconds,
+  battleStatusDurationSeconds,
+  formatBattleStatusMessage,
+  shouldDisplayBattleStatus,
+  shouldReplaceBattleStatus
+} from "./BattleStatusPriority";
 
 describe("BattleStatusPriority", () => {
   it("keeps active pressure warnings ahead of normal status messages", () => {
@@ -79,5 +86,24 @@ describe("BattleStatusPriority", () => {
   it("gives command acknowledgements a longer read window than routine messages", () => {
     expect(battleStatusDurationSeconds("command")).toBeGreaterThan(battleStatusDurationSeconds("normal"));
     expect(battleStatusDurationSeconds("command")).toBeLessThan(battleStatusDurationSeconds("pressure"));
+  });
+
+  it("maps legacy priorities into v0.86 notification categories", () => {
+    expect(battleStatusCategory("pressure")).toBe("critical");
+    expect(battleStatusCategory("objective")).toBe("important");
+    expect(battleStatusCategory("command")).toBe("routine");
+    expect(battleStatusCategory("debug")).toBe("debug");
+  });
+
+  it("keeps debug messages hidden unless explicitly enabled", () => {
+    expect(shouldDisplayBattleStatus("debug")).toBe(false);
+    expect(shouldDisplayBattleStatus("debug", true)).toBe(true);
+  });
+
+  it("shortens routine command confirmations and dedupes routine chatter", () => {
+    expect(formatBattleStatusMessage("Move order accepted: 3 units", "command")).toBe("Move: 3 units");
+    expect(formatBattleStatusMessage("Your Command Hall is under attack.", "pressure")).toBe("Your Command Hall is under attack.");
+    expect(battleStatusDedupeSeconds("command")).toBeGreaterThan(0);
+    expect(battleStatusDedupeSeconds("pressure")).toBe(0);
   });
 });

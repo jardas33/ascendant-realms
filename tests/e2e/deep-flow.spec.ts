@@ -2009,7 +2009,8 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     const reinforcementButton = page.locator("button[data-action='retinue-reinforcement']");
     await expect(reinforcementButton).toContainText("Call Retinue");
     await expect(reinforcementButton).toContainText("Cost: 60 Crowns");
-    await expect(reinforcementButton).toContainText("Ready reserves 1/1");
+    await expect(reinforcementButton).toHaveAttribute("title", /Ready reserves 1\/1/);
+    await expect(page.locator("#command-details-retinue-reinforcement-retinue")).toContainText("Ready reserves 1/1");
     await clickBattleCommand(reinforcementButton, "deep-flow Retinue reinforcement command");
 
     const reinforcement = await page.evaluate(() => {
@@ -2685,7 +2686,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         targetId: attackHoverTarget.id,
         heroAttackTargetId: attackHoverTarget.id,
         heroAttackMove: true,
-        status: expect.stringContaining("Attack order accepted")
+        status: expect.stringContaining("Attack:")
       });
     await expect(page.getByTestId("unit-order-summary")).toContainText("Attacking");
     await page.evaluate(() => {
@@ -4432,7 +4433,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
               resource: siteMarker.resource
             }
           : undefined,
-        renderedSiteMarkers: document.querySelectorAll(".minimap-site").length
+        renderedSiteMarkers: document.querySelectorAll(".minimap-site-marker").length
       };
     });
 
@@ -5455,8 +5456,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator("button[data-action='upgrade'][data-id='reinforced_armor_1']")).toBeEnabled();
     await expect(page.locator("button[data-action='upgrade'][data-id='ranger_training_1']")).toBeEnabled();
     const tutorialInfantryWeapons = page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']");
-    await expect(tutorialInfantryWeapons).toContainText("Owner: Barracks");
-    await expect(tutorialInfantryWeapons).toContainText("Effect: Militia and Raiders: +10% damage.");
+    await expect(tutorialInfantryWeapons).toHaveAttribute("title", /Owner: Barracks/);
+    await expect(page.locator("#command-details-upgrade-infantry_weapons_1")).toContainText("Owner: Barracks");
+    await expect(page.locator("#command-details-upgrade-infantry_weapons_1")).toContainText("Effect: Militia and Raiders: +10% damage.");
     await researchUpgradeThroughCommand(
       tutorialInfantryWeapons,
       page,
@@ -5919,7 +5921,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         barracksId: barracks.id,
         crownShrineId: crownShrine.id,
         renderedCounts: {
-          sites: document.querySelectorAll(".minimap-site").length,
+          sites: document.querySelectorAll(".minimap-site-marker").length,
           buildings: document.querySelectorAll(".minimap-building").length,
           units: document.querySelectorAll(".minimap-unit").length,
           camps: document.querySelectorAll(".minimap-camp").length,
@@ -6369,7 +6371,9 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await selectPlayerBuildingFromScene(page, "barracks");
     const infantryWeapons = page.locator("button[data-action='upgrade'][data-id='infantry_weapons_1']");
     await expect(infantryWeapons).toBeDisabled();
-    await expect(infantryWeapons).toContainText("Militia and Raiders: +10% damage");
+    await expect(page.locator("#command-details-upgrade-infantry_weapons_1")).toContainText(
+      "Militia and Raiders: +10% damage",
+    );
     await expect(infantryWeapons).toHaveAttribute("aria-label", /Insufficient resources/);
 
     await setBattlePlayerResources(page, { crowns: 2000, stone: 2000, iron: 2000, aether: 2000 });

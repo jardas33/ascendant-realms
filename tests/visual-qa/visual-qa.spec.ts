@@ -33,7 +33,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 29;
+const EXPECTED_SCREENSHOT_COUNT = 31;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 2;
@@ -214,6 +214,33 @@ async function triggerCrossingPressureWarning(page: Page): Promise<void> {
   await expect(page.getByTestId("battle-status")).toContainText("Ashen scouts mark the center road");
 }
 
+async function stageV086BattlefieldShell(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const commandHall = scene.buildings.find(
+      (building: any) => building.alive && building.team === "player" && building.definition.id === "command_hall"
+    );
+    const site = scene.captureSites.find((entry: any) => entry.definition.id === "cinder_crossing") ?? scene.captureSites[0];
+    if (!commandHall || !site) {
+      throw new Error("Missing Command Hall or capture site for v0.86 shell staging.");
+    }
+    const hook = (window as any).__ASCENDANT_TEST_HOOKS__?.captureSite;
+    if (hook) {
+      hook(site.definition.id);
+    }
+    scene.selectionSystem.setSelection([commandHall]);
+    scene.cameraSystem.centerOn(site.position);
+    scene.update(performance.now(), 250);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("selection-side-panel")).toContainText("Command Hall");
+  await expect(page.getByTestId("command-train-worker")).toBeVisible();
+  await expect(page.getByTestId("battle-minimap")).toBeVisible();
+}
+
 async function forceBattleDefeat(page: Page): Promise<void> {
   await page.evaluate(() => {
     const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -289,7 +316,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 26-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 31-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -521,7 +548,28 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await continueSavedCampaign(page);
     await page.getByTestId("campaign-node-cinderfen_overlook").click();
     await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
+    await useViewport(page, FULL_HD);
     await launchCinderfenCrossing(page);
+    await stageV086BattlefieldShell(page);
+    await captureView(
+      page,
+      group,
+      "v0.86 battlefield shell 1920",
+      "v086-battlefield-shell-1920.png",
+      FULL_HD,
+      "Compact Command Hall actions, capture-site label chips, fog softness, and minimap markers at 1920x1080."
+    );
+    await useViewport(page, LAPTOP);
+    await stageV086BattlefieldShell(page);
+    await captureView(
+      page,
+      group,
+      "v0.86 battlefield shell 1366",
+      "v086-battlefield-shell-1366.png",
+      LAPTOP,
+      "Compact battlefield shell at 1366x768 with right-side actions, objective tracker, capture labels, and minimap legibility."
+    );
+    await useViewport(page, DESKTOP);
     await captureView(page, group, "Cinderfen Crossing launch", "cinderfen-crossing-desktop.png", DESKTOP, "Cinderfen Crossing initial battle view.");
     await useViewport(page, TABLET);
     await captureView(page, group, "Cinderfen Crossing tablet", "cinderfen-crossing-tablet.png", TABLET, "Tablet Cinderfen battle HUD density.");

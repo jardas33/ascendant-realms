@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/GameTypes";
 import { clamp } from "../core/MathUtils";
+import { resolveSelectionRingPresentation } from "../ui/SelectionPresentation";
 
 let nextEntityNumber = 1;
 const STATUS_BADGE_RADIUS = 5;
@@ -222,7 +223,14 @@ export abstract class BaseEntity {
 
   setSelected(selected: boolean): void {
     this.selected = selected;
-    this.selectionRing?.setVisible(selected);
+    if (!this.selectionRing) {
+      return;
+    }
+    const presentation = resolveSelectionRingPresentation(this.team, this.kind);
+    this.selectionRing
+      .setVisible(selected)
+      .setStrokeStyle(presentation.strokeWidth, presentation.strokeColor, presentation.strokeAlpha)
+      .setFillStyle(presentation.fillColor, presentation.fillAlpha);
   }
 
   updateHealthBar(): void {

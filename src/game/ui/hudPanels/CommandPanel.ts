@@ -37,7 +37,14 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
   }
 
   if (selectedOne instanceof Building && !selectedOne.isCompleted()) {
-    return `<div class="action-group"><strong>Construction</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p><p class="quiet">${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</p><p class="quiet">Incomplete - completed-building actions locked. Select a Worker and right-click this site to continue construction.</p></div>`;
+    return `<div class="action-group"><strong>Construction</strong>
+      <details class="command-details command-info-details" open>
+        <summary>Build state</summary>
+        <small>${escapeHtml(formatBuildingRole(selectedOne.definition))}</small>
+        <small>${escapeHtml(formatBuildingUnlockSummary(selectedOne.definition))}</small>
+        <small>Incomplete - completed-building actions locked. Select a Worker and right-click this site to continue construction.</small>
+      </details>
+    </div>`;
   }
 
   const buildButtons = selectedOne instanceof Unit || selectedOne instanceof Building ? (selectedOne.definition.buildOptions ?? [])
@@ -211,7 +218,7 @@ export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefine
 
   const sections = [];
   if (selectedOne instanceof Building) {
-    sections.push(`<div class="action-group"><strong>Role</strong><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p></div>`);
+    sections.push(`<details class="action-group command-role-details"><summary>Building role</summary><p class="quiet">${escapeHtml(formatBuildingRole(selectedOne.definition))}</p></details>`);
   }
   if (trainButtons) {
     sections.push(`<div class="action-group"><strong>Train</strong>${trainButtons}</div>`);
@@ -320,28 +327,45 @@ function renderCommandButton(options: {
 }): string {
   const extra = [options.description, options.effect].filter(Boolean).join(" ");
   const label = `${options.verb} ${options.name}. ${options.detail}${extra ? `. ${extra}` : ""}`;
+  const detailsId = `command-details-${options.action}-${sanitizeCommandId(options.id)}`;
+  const hasDetails = Boolean(options.description || options.effect);
   return `
-    <button
-      class="hud-button command-button ${options.locked ? "locked" : ""}"
-      data-action="${options.action}"
-      data-command-kind="${options.action}"
-      data-command-cost="${escapeHtml(options.detail)}"
-      data-command-state="${options.locked ? "locked" : "ready"}"
-      ${options.lockReason ? `data-disabled-reason="${escapeHtml(options.lockReason)}"` : ""}
-      data-testid="command-${options.action}-${options.id}"
-      data-id="${options.id}"
-      data-source-id="${options.sourceId}"
-      aria-label="${escapeHtml(label)}"
-      title="${escapeHtml(label)}"
-      ${options.locked ? "disabled" : ""}
-    >
-      <span class="command-label">
-        <span class="command-verb">${escapeHtml(options.verb)}</span>
-        <span class="command-name">${escapeHtml(options.name)}</span>
-      </span>
-      <small>${escapeHtml(options.detail)}</small>
-      ${options.description ? `<span class="command-description">${escapeHtml(options.description)}</span>` : ""}
-      ${options.effect ? `<span class="command-effect">${escapeHtml(options.effect)}</span>` : ""}
-    </button>
+    <div class="command-entry ${options.locked ? "locked" : "ready"}">
+      <button
+        class="hud-button command-button ${options.locked ? "locked" : ""}"
+        data-action="${options.action}"
+        data-command-kind="${options.action}"
+        data-command-cost="${escapeHtml(options.detail)}"
+        data-command-state="${options.locked ? "locked" : "ready"}"
+        ${options.lockReason ? `data-disabled-reason="${escapeHtml(options.lockReason)}"` : ""}
+        data-testid="command-${options.action}-${options.id}"
+        data-id="${options.id}"
+        data-source-id="${options.sourceId}"
+        aria-label="${escapeHtml(label)}"
+        ${hasDetails ? `aria-describedby="${detailsId}"` : ""}
+        title="${escapeHtml(label)}"
+        ${options.locked ? "disabled" : ""}
+      >
+        <span class="command-label">
+          <span class="command-verb">${escapeHtml(options.verb)}</span>
+          <span class="command-name">${escapeHtml(options.name)}</span>
+        </span>
+        <small>${escapeHtml(options.detail)}</small>
+        ${options.lockReason ? `<small class="command-lock">Locked: ${escapeHtml(options.lockReason)}</small>` : ""}
+      </button>
+      ${
+        hasDetails
+          ? `<details id="${detailsId}" class="command-details">
+              <summary aria-label="Show command details for ${escapeHtml(options.verb)} ${escapeHtml(options.name)}">Details</summary>
+              ${options.description ? `<small class="command-details-description">${escapeHtml(options.description)}</small>` : ""}
+              ${options.effect ? `<small class="command-details-effect">${escapeHtml(options.effect)}</small>` : ""}
+            </details>`
+          : ""
+      }
+    </div>
   `;
+}
+
+function sanitizeCommandId(id: string): string {
+  return id.replace(/[^a-zA-Z0-9_-]/g, "-");
 }

@@ -16,6 +16,7 @@ export function renderObjectives(
   const completedCount = missionObjectives.filter((objective) => objective.completed).length;
   const nextObjectiveIndex = missionObjectives.findIndex((objective) => !objective.completed);
   const showLumeProgressOnly = Boolean(lumeNetwork && missionObjectives.length === 0);
+  const showMissionSummary = missionObjectives.length > 0;
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
       ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice) : ""}
@@ -23,9 +24,11 @@ export function renderObjectives(
       ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
       ${
-        showLumeProgressOnly
+        showMissionSummary
+          ? `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
+          : showLumeProgressOnly
           ? `<strong data-testid="lume-links-progress">${escapeHtml(lumeNetwork?.progressLabel ?? `LUME LINKS ${lumeNetwork?.activeLinkCount ?? 0}/${lumeNetwork?.maxActiveLinks ?? 0}`)}</strong>`
-          : `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
+          : ""
       }
       ${missionObjectives
         .map((objective, index) => {
@@ -154,13 +157,17 @@ function renderPrivateDemoActions(network: LumeNetworkHudSummary): string {
 
 function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot): string {
   return `
-    <div class="battlefield-event-row" data-testid="battlefield-event-status">
+    <div class="battlefield-event-row compact-tracker-row" data-testid="battlefield-event-status">
       <span>Event</span>
       <div>
         <b>${escapeHtml(event.title)}</b>
-        <small>${escapeHtml(event.objective)} - ${escapeHtml(event.progress)}</small>
-        <small>Counterplay: ${escapeHtml(event.counterplay)}</small>
-        ${event.planMatched ? `<small>Plan support: active</small>` : ""}
+        <small>${escapeHtml(event.objective)}</small>
+        <small>${escapeHtml(event.progress)}</small>
+        <details class="objective-details">
+          <summary>Details</summary>
+          <small>Counterplay: ${escapeHtml(event.counterplay)}</small>
+          ${event.planMatched ? `<small>Plan support: active</small>` : ""}
+        </details>
       </div>
     </div>
   `;
@@ -168,14 +175,17 @@ function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot): string {
 
 function renderEnemyDoctrine(doctrine: HUDEnemyDoctrineSnapshot): string {
   return `
-    <div class="enemy-doctrine-row" data-testid="enemy-doctrine-status">
+    <div class="enemy-doctrine-row compact-tracker-row" data-testid="enemy-doctrine-status">
       <span>Doctrine</span>
       <div>
         <b>${escapeHtml(doctrine.name)}</b>
         <small>${escapeHtml(doctrine.status)}</small>
         <small>${escapeHtml(doctrine.warning)}</small>
-        <small>Counterplay: ${escapeHtml(doctrine.counterplay)}</small>
-        ${doctrine.elite ? `<small>Elite: ${escapeHtml(doctrine.elite)}</small>` : ""}
+        <details class="objective-details">
+          <summary>Counterplay</summary>
+          <small>${escapeHtml(doctrine.counterplay)}</small>
+          ${doctrine.elite ? `<small>Elite: ${escapeHtml(doctrine.elite)}</small>` : ""}
+        </details>
       </div>
     </div>
   `;
