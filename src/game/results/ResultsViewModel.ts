@@ -26,6 +26,7 @@ export interface ResultsXpViewModel {
 
 export interface ResultsViewModel {
   isVictory: boolean;
+  isPrivatePlaytestDemo: boolean;
   title: string;
   backgroundId: string;
   map?: BattleMapDefinition;
@@ -39,6 +40,7 @@ export interface ResultsViewModel {
 
 export function createResultsViewModel(data: ResultsData): ResultsViewModel {
   const isVictory = data.stats.outcome === "victory";
+  const isPrivatePlaytestDemo = Boolean(data.launchRequest?.privatePlaytestDemoId);
   const map = data.launchRequest ? MAP_BY_ID[data.launchRequest.mapId] : undefined;
   const difficulty = data.launchRequest ? getBattleDifficulty(data.launchRequest.difficulty) : undefined;
   const beforeHero = data.startingHeroSave ?? data.heroSave;
@@ -51,11 +53,14 @@ export function createResultsViewModel(data: ResultsData): ResultsViewModel {
     : 0;
   return {
     isVictory,
-    title: isVictory ? "Victory" : "Defeat",
+    isPrivatePlaytestDemo,
+    title: isPrivatePlaytestDemo ? "PRIVATE DEMO COMPLETE" : isVictory ? "Victory" : "Defeat",
     backgroundId: isVictory ? ASSET_IDS.ui.victoryScreenBackground : ASSET_IDS.ui.defeatScreenBackground,
     map,
     difficulty,
-    subtitle: `${map?.name ?? "Unknown battlefield"} - ${difficulty?.name ?? "Unknown difficulty"} - ${formatTime(data.stats.timeSeconds)}`,
+    subtitle: isPrivatePlaytestDemo
+      ? "Lume Network test - rewards and campaign progress were not saved"
+      : `${map?.name ?? "Unknown battlefield"} - ${difficulty?.name ?? "Unknown difficulty"} - ${formatTime(data.stats.timeSeconds)}`,
     rewardItemCount,
     skillPointsGained,
     guidance: getResultsGuidance({
@@ -94,7 +99,7 @@ export function initialResultsStatus(data: ResultsData): string {
     return "Tutorial run complete. This training path is no-save and no-reward, so campaign progress, items, XP, and hero changes were not saved.";
   }
   if (data.launchRequest?.privatePlaytestDemoId) {
-    return "Private playtest demo complete. Lume behavior was available for testing, but rewards, campaign progress, hero XP, Retinue, and reputation were not saved.";
+    return "Private demo complete. Lume behavior was available for testing, but rewards, campaign progress, hero XP, Retinue, and reputation were not saved.";
   }
   if (data.relicRewardChoice) {
     const optionNames = data.relicRewardChoice.options.map((option) => option.item.name).join(" or ");

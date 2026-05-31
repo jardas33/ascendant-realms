@@ -74,7 +74,14 @@ describe("ObjectivePanel", () => {
       counterplay: "Enemy recapture severs the link; retake both endpoints to restore it.",
       activeLinkCount: 0,
       maxActiveLinks: 2,
-      progressLabel: "LUME LINKS 0/2"
+      progressLabel: "LUME LINKS 0/2",
+      visibilityMode: "auto",
+      visibilityLabel: "Auto",
+      visibilityControls: [
+        { mode: "auto", label: "Auto", active: true, description: "Show contextual links only." },
+        { mode: "always", label: "Always", active: false, description: "Keep eligible links visible." },
+        { mode: "hidden", label: "Hidden", active: false, description: "Hide stable links." }
+      ]
     });
 
     expect(html).toContain('data-testid="lume-network-status"');
@@ -82,6 +89,9 @@ describe("ObjectivePanel", () => {
     expect(html).toContain("Capture West Stone Cut");
     expect(html).toContain("LUME LINKS 0/2");
     expect(html).toContain('data-testid="lume-links-progress"');
+    expect(html).toContain('data-testid="lume-visibility-controls"');
+    expect(html).toContain('data-testid="lume-visibility-auto"');
+    expect(html).toContain('aria-pressed="true"');
     expect(html).not.toContain("Objectives 0/0");
     expect(html).toContain("8% less incoming damage");
   });

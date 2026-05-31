@@ -1,6 +1,6 @@
 import type { ResourceBag } from "../../core/GameTypes";
 import type { Cost } from "../../core/GameTypes";
-import type { LumeNetworkHudSummary, LumeNetworkSiteSummary } from "../../core/GameTypes";
+import type { LumeNetworkHudSummary, LumeNetworkSiteSummary, LumeNetworkVisibilityMode } from "../../core/GameTypes";
 import type { Hero } from "../../entities/Hero";
 import type { Building } from "../../entities/Building";
 import type { CaptureSite } from "../../entities/CaptureSite";
@@ -28,6 +28,7 @@ export interface HUDCallbacks {
   onPatrolCommand: () => void;
   onRetinueReinforcement: () => void;
   onLumeFocus: (siteId: string) => void;
+  onLumeVisibilityMode: (mode: LumeNetworkVisibilityMode) => void;
   onPrivateDemoExit: () => void;
   onPrivateDemoFinish: () => void;
   onTutorialNext: () => void;

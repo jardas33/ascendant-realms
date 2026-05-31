@@ -1260,8 +1260,40 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD");
     await expect(page.getByTestId("lume-network-status")).toContainText("Capture West Stone Cut");
     await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 0/2");
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Auto");
+    await expect(page.getByTestId("lume-visibility-auto")).toHaveAttribute("aria-pressed", "true");
     await expect(page.getByTestId("private-demo-exit")).toBeVisible();
     await expect(page.getByTestId("private-demo-finish")).toHaveCount(0);
+
+    const autoIntroRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(autoIntroRender.render.links).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "west_stone_cut_to_ford_toll",
+          style: "guide",
+          emphasis: "teaching"
+        })
+      ])
+    );
+    expect(autoIntroRender.render.links).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ id: "ford_toll_to_north_aether_spring" })])
+    );
+
+    await page.getByTestId("lume-visibility-hidden").click({ timeout: 10_000 });
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Hidden");
+    const hiddenIntroRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(hiddenIntroRender.render.links).toHaveLength(0);
+
+    await page.getByTestId("lume-visibility-always").click({ timeout: 10_000 });
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Always");
+    const alwaysIntroRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(alwaysIntroRender.render.links).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: "west_stone_cut_to_ford_toll" }),
+        expect.objectContaining({ id: "ford_toll_to_north_aether_spring" })
+      ])
+    );
+    await page.getByTestId("lume-visibility-auto").click({ timeout: 10_000 });
 
     const launchSnapshot = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1301,13 +1333,19 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
     await expect(page.getByTestId("lume-focus-north_aether_spring")).toBeVisible();
     await expect(page.getByTestId("private-demo-finish")).toBeVisible();
-    await clickReady(page.getByTestId("private-demo-finish"), "smoke finish private Lume demo", SCENE_TRANSITION_CLICK_OPTIONS);
+    await page.getByTestId("private-demo-finish").click({ timeout: 10_000 });
     await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator(".results-panel")).toContainText("Private playtest demo complete");
-    await expect(page.getByTestId("results-private-playtest-demo-summary")).toContainText(
-      "Rewards, campaign progress, hero XP, Retinue, and reputation disabled"
-    );
-    await expect(page.getByTestId("results-private-playtest-demo-summary")).toContainText("Linked Ward");
+    await expect(page.locator(".results-panel")).toContainText("PRIVATE DEMO COMPLETE");
+    await expect(page.locator(".results-panel")).toContainText("Lume Network test - rewards and campaign progress were not saved");
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("LUME NETWORK SUMMARY");
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("Linked Ward awakened");
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("West Stone Cut ↔ Ford Toll");
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("Rewards");
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("Disabled");
+    await expect(page.getByTestId("private-demo-primary-actions")).toContainText("Return to Campaign Map");
+    await expect(page.getByTestId("private-demo-primary-actions")).toContainText("Replay Lume Demo");
+    await expect(page.getByTestId("private-demo-full-details")).not.toHaveAttribute("open", "");
+    await expect(page.getByText("Show Full Battle Details")).toBeVisible();
 
     const afterSave = await readStoredSave(page);
     expect(afterSave.campaign.completedNodeIds).toEqual(beforeSave.campaign.completedNodeIds);

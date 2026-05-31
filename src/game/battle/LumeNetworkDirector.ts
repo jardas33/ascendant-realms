@@ -4,6 +4,7 @@ import type {
   LumeNetworkHudSummary,
   LumeNetworkResolvedState,
   LumeNetworkSiteSummary,
+  LumeNetworkVisibilityMode,
   LumeSiteSnapshot,
   LumeTargetSnapshot
 } from "../core/GameTypes";
@@ -23,6 +24,7 @@ export interface LumeNetworkDirectorOptions {
 
 interface LumeNetworkHudOptions {
   privateDemo?: boolean;
+  visibilityMode?: LumeNetworkVisibilityMode;
 }
 
 export class LumeNetworkDirector {
@@ -58,6 +60,7 @@ export class LumeNetworkDirector {
     const severedSiteName = severedLink ? linkRecoverySiteName(severedLink, sites) : undefined;
     const activeLinks = this.state.links.filter((link) => link.active);
     const activeLinkName = activeLinks[0] ? linkDisplayName(activeLinks[0]) : undefined;
+    const visibilityMode = options.visibilityMode ?? "auto";
     let title = "LUME WARD";
     let objective = firstLink ? `Capture ${firstLink.fromSiteName}` : this.options.definition.hudObjective;
     let status = progressLabel;
@@ -98,6 +101,9 @@ export class LumeNetworkDirector {
       optionalSiteName: optionalLink && this.state.objectiveCompleted ? optionalLink.toSiteName : undefined,
       severedSiteName,
       focusControls: options.privateDemo ? this.focusControls() : undefined,
+      visibilityMode,
+      visibilityLabel: visibilityLabel(visibilityMode),
+      visibilityControls: visibilityControls(visibilityMode),
       privateDemo: options.privateDemo,
       finishDemoAvailable: Boolean(options.privateDemo && this.state.objectiveCompleted)
     };
@@ -226,6 +232,39 @@ export class LumeNetworkDirector {
         label: `Focus ${control.siteName}`
       }));
   }
+}
+
+function visibilityControls(activeMode: LumeNetworkVisibilityMode): LumeNetworkHudSummary["visibilityControls"] {
+  return [
+    {
+      mode: "auto",
+      label: "Auto",
+      active: activeMode === "auto",
+      description: "Show contextual links only."
+    },
+    {
+      mode: "always",
+      label: "Always",
+      active: activeMode === "always",
+      description: "Keep eligible links visible."
+    },
+    {
+      mode: "hidden",
+      label: "Hidden",
+      active: activeMode === "hidden",
+      description: "Hide stable links; keep transition pulses."
+    }
+  ];
+}
+
+function visibilityLabel(mode: LumeNetworkVisibilityMode): string {
+  if (mode === "always") {
+    return "Always";
+  }
+  if (mode === "hidden") {
+    return "Hidden";
+  }
+  return "Auto";
 }
 
 export function resolveLumeNetworkState(

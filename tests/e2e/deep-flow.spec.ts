@@ -2165,15 +2165,28 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("lume-network-status")).toContainText("West Stone Cut");
     await expect(page.getByTestId("lume-network-status")).toContainText("Ford Toll");
     await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Auto");
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      scene.runtime.elapsedSeconds += 3.2;
+      scene.renderLumeNetworkLinks?.();
+      scene.refreshBattleHud?.(0);
+    });
     const activeRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(activeRender.hud.visibilityMode).toBe("auto");
     expect(activeRender.render.links).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           id: "west_stone_cut_to_ford_toll",
-          style: "active"
+          style: "active",
+          emphasis: "stable",
+          visible: true
         })
       ])
     );
+    const activeLink = activeRender.render.links.find((entry: any) => entry.id === "west_stone_cut_to_ford_toll");
+    expect(activeLink.alpha).toBeLessThanOrEqual(0.35);
+    expect(activeLink.layerDepth).toBe(1.2);
 
     const severed = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

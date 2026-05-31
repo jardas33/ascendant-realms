@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.84 guided Lume demo readability and fast-retest polish";
+const CHECKPOINT = "v0.85 contextual Lume overlay and Results-screen UX rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -293,6 +293,16 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V084_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V084_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V084_IMPLEMENTATION_REPORT.md", join(packageDir, "V084_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md", join(packageDir, "V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md"));
+  await copyMarkdown("docs/V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md", join(packageDir, "V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md"));
+  await copyMarkdown("docs/V085_LUME_VISIBILITY_CONTROL_SPEC.md", join(packageDir, "V085_LUME_VISIBILITY_CONTROL_SPEC.md"));
+  await copyMarkdown("docs/V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md", join(packageDir, "V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md"));
+  await copyMarkdown("docs/V085_IMPLEMENTATION_REPORT.md", join(packageDir, "V085_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V085_VISUAL_QA_REPORT.md", join(packageDir, "V085_VISUAL_QA_REPORT.md"));
+  await copyMarkdown(
+    "docs/V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md",
+    join(packageDir, "V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md")
+  );
+  await copyMarkdown("docs/V085_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V085_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -392,7 +402,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.84, start with V084_EMMANUEL_RETEST_CHECKLIST.md, then read V084_GUIDED_LUME_DEMO_READABILITY_SPEC.md, V084_LUME_LINK_RENDERING_SPEC.md, and V084_PRIVATE_DEMO_FAST_RETEST_SPEC.md. The build keeps normal production progression unchanged, keeps the package-only Aether Well Lume demo rewards/progress disabled, and improves the guided Lume tracker, link readability, and fast retest controls. It does not add new maps, factions, art, save fields, desktop work, Jardas binding, Worker binding, hero binding, broad runtime copy migration, Lume balance changes, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.82 docs as the Lume runtime background and the v0.81/v0.80/v0.79/v0.78 packets as approved direction reference.
+For v0.85, start with V085_EMMANUEL_RETEST_CHECKLIST.md, then read V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md, V085_LUME_VISIBILITY_CONTROL_SPEC.md, and V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md. The build keeps normal production progression unchanged, keeps the package-only Aether Well Lume demo rewards/progress disabled, and rescues the Lume overlay and private-demo Results readability. It does not add new maps, factions, art, save fields, persistent overlay settings, desktop work, Jardas binding, Worker binding, hero binding, broad runtime copy migration, Lume balance changes, resource production bonuses, global balance changes, multiplayer, PvP, co-op, broad UI changes, or final VFX. Use the v0.82 docs as the Lume runtime background and the v0.84 packet as the prior guided-demo baseline.
 
 ## Known Warning
 

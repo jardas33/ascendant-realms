@@ -7,7 +7,8 @@ import type {
   ResourceBag,
   ResourceKey,
   Team,
-  UpgradeDefinition
+  UpgradeDefinition,
+  LumeNetworkVisibilityMode
 } from "../core/GameTypes";
 import { BUILDING_BY_ID } from "../data/contentIndex";
 import { applyTutorialEnemyAIPacing } from "../data/battlePacing";
@@ -119,6 +120,7 @@ interface CreateBattleSceneSystemsOptions {
   exitToMainMenu: () => void;
   callRetinueReinforcement?: () => boolean;
   focusLumeSite?: (siteId: string) => void;
+  setLumeVisibilityMode?: (mode: LumeNetworkVisibilityMode) => void;
   exitPrivateDemo?: () => void;
   finishPrivateDemo?: () => void;
   canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
@@ -172,6 +174,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     exitToMainMenu,
     callRetinueReinforcement,
     focusLumeSite,
+    setLumeVisibilityMode,
     exitPrivateDemo,
     finishPrivateDemo,
     canEnemyHeroJoinAttack
@@ -511,6 +514,10 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       },
       onLumeFocus: (siteId) => {
         focusLumeSite?.(siteId);
+        AudioManager.play("ui_click");
+      },
+      onLumeVisibilityMode: (mode) => {
+        setLumeVisibilityMode?.(mode);
         AudioManager.play("ui_click");
       },
       onPrivateDemoExit: () => {

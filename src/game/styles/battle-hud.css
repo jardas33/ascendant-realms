@@ -257,12 +257,47 @@
   margin-top: 5px;
 }
 
+.lume-visibility-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 7px;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.lume-visibility-row > span {
+  color: #d9fbf3;
+  font-size: 10px;
+  text-transform: none;
+}
+
+.lume-visibility-row > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .lume-control-row .hud-button.compact {
   min-width: 0;
   min-height: 26px;
   padding: 5px 7px;
   font-size: 10px;
   line-height: 1.1;
+}
+
+.lume-visibility-row .hud-button.compact {
+  min-width: 0;
+  min-height: 24px;
+  padding: 4px 7px;
+  border-color: rgba(116, 211, 242, 0.28);
+  font-size: 10px;
+  line-height: 1.1;
+}
+
+.lume-visibility-row .hud-button.compact.active {
+  border-color: rgba(143, 246, 229, 0.75);
+  color: #d9fbf3;
+  background: rgba(116, 211, 242, 0.16);
 }
 
 .private-demo-actions .hud-button.compact {

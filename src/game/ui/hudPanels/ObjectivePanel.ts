@@ -83,8 +83,34 @@ function renderLumeNetwork(network: LumeNetworkHudSummary): string {
           <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
           ${network.detailsLabel ? `<small>${escapeHtml(network.detailsLabel)}</small>` : ""}
         </details>
+        ${renderLumeVisibilityControls(network)}
         ${renderLumeFocusControls(network)}
         ${renderPrivateDemoActions(network)}
+      </div>
+    </div>
+  `;
+}
+
+function renderLumeVisibilityControls(network: LumeNetworkHudSummary): string {
+  const controls = network.visibilityControls ?? [];
+  if (controls.length === 0) {
+    return "";
+  }
+  return `
+    <div class="lume-visibility-row" data-testid="lume-visibility-controls" aria-label="Lume link visibility">
+      <span>Links: <strong>${escapeHtml(network.visibilityLabel ?? "Auto")}</strong></span>
+      <div>
+        ${controls
+          .map(
+            (control) => `
+              <button class="hud-button compact mini${control.active ? " active" : ""}" type="button" data-testid="lume-visibility-${
+                control.mode
+              }" data-action="lume-visibility" data-id="${control.mode}" aria-pressed="${control.active ? "true" : "false"}" title="${escapeHtml(
+                control.description
+              )}">${escapeHtml(control.label)}</button>
+            `
+          )
+          .join("")}
       </div>
     </div>
   `;

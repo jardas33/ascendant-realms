@@ -9,6 +9,7 @@ import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
 import { chooseResultsRelicReward, keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
+import { renderPrivateDemoLumeSummary, renderPrivateDemoPrimaryActions } from "./ResultsPrivateDemoPanel";
 import { renderVictoryRewards } from "./ResultsRewardPanel";
 import { renderRetinueRecruitment } from "./ResultsRetinuePanel";
 import type { ResultsData } from "./ResultsTypes";
@@ -524,14 +525,28 @@ describe("results scene helpers", () => {
       }
     });
 
-    const summaryHtml = renderBattleSummary(data, createResultsViewModel(data));
+    const viewModel = createResultsViewModel(data);
+    const summaryHtml = renderBattleSummary(data, viewModel);
+    const privateSummaryHtml = renderPrivateDemoLumeSummary(data);
+    const privateActionsHtml = renderPrivateDemoPrimaryActions();
 
-    expect(initialResultsStatus(data)).toContain("Private playtest demo complete");
+    expect(viewModel.title).toBe("PRIVATE DEMO COMPLETE");
+    expect(viewModel.subtitle).toBe("Lume Network test - rewards and campaign progress were not saved");
+    expect(initialResultsStatus(data)).toContain("Private demo complete");
     expect(initialResultsStatus(data)).toContain("were not saved");
     expect(summaryHtml).toContain("Private Playtest Demo");
     expect(summaryHtml).toContain("aether_well_lume_private_demo");
     expect(summaryHtml).toContain("Rewards, campaign progress, hero XP, Retinue, and reputation disabled");
     expect(summaryHtml).toContain("Linked Ward; activated 1, severed 0");
+    expect(privateSummaryHtml).toContain('data-testid="private-demo-lume-summary"');
+    expect(privateSummaryHtml).toContain("LUME NETWORK SUMMARY");
+    expect(privateSummaryHtml).toContain("Linked Ward awakened");
+    expect(privateSummaryHtml).toContain("Yes");
+    expect(privateSummaryHtml).toContain("West Stone Cut &harr; Ford Toll");
+    expect(privateSummaryHtml).toContain("Rewards</span><strong>Disabled");
+    expect(privateSummaryHtml).toContain("Campaign progress</span><strong>Not saved");
+    expect(privateActionsHtml).toContain("Return to Campaign Map");
+    expect(privateActionsHtml).toContain("Replay Lume Demo");
   });
 
   it("points champion relic Results toward equip, skill, and replay guidance", () => {

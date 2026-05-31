@@ -266,6 +266,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V084_EMMANUEL_RETEST_CHECKLIST.md",
   "V084_IMPLEMENTATION_REPORT.md",
   "V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md",
+  "V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md",
+  "V085_LUME_VISIBILITY_CONTROL_SPEC.md",
+  "V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md",
+  "V085_IMPLEMENTATION_REPORT.md",
+  "V085_VISUAL_QA_REPORT.md",
+  "V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md",
+  "V085_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -376,7 +383,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.84 guided Lume demo readability and fast-retest polish",
+      "v0.85 contextual Lume overlay and Results-screen UX rescue",
       "build info checkpoint",
       checks,
       errors

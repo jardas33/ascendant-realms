@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.84 guided Lume demo readability and fast-retest polish",
+          checkpoint: "v0.85 contextual Lume overlay and Results-screen UX rescue",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -315,6 +315,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V084_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.84 Emmanuel checklist" },
       { path: "V084_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.84 implementation report" },
       { path: "V084_DEFERRED_BATTLEFIELD_UX_FINDINGS.md", sizeBytes: 20, textContent: "v0.84 deferred UX findings" },
+      { path: "V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md", sizeBytes: 20, textContent: "v0.85 contextual overlay spec" },
+      { path: "V085_LUME_VISIBILITY_CONTROL_SPEC.md", sizeBytes: 20, textContent: "v0.85 visibility control spec" },
+      { path: "V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md", sizeBytes: 20, textContent: "v0.85 private results spec" },
+      { path: "V085_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.85 implementation report" },
+      { path: "V085_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.85 visual QA report" },
+      { path: "V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md", sizeBytes: 20, textContent: "v0.85 deferred UX findings" },
+      { path: "V085_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.85 Emmanuel checklist" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

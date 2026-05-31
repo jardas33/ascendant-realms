@@ -39,11 +39,19 @@
   border-image-source: var(--ui-defeat-panel-frame, var(--ui-panel-frame));
 }
 
+.results-panel.private-demo {
+  max-height: min(92vh, 860px);
+}
+
 .results-title-row {
   display: flex;
   justify-content: space-between;
   gap: 18px;
   align-items: flex-start;
+}
+
+.private-demo-title-row {
+  margin-bottom: 14px;
 }
 
 .skill-points.compact {
@@ -83,6 +91,52 @@
 
 .result-block h2 {
   margin-top: 0;
+}
+
+.private-demo-summary-card {
+  padding: 15px;
+  border: 1px solid rgba(116, 211, 242, 0.34);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.11), rgba(240, 217, 120, 0.05) 52%, rgba(0, 0, 0, 0.1)),
+    var(--plate-bg);
+}
+
+.private-demo-summary-card h2 {
+  margin: 0;
+}
+
+.private-demo-grid {
+  margin-top: 12px;
+}
+
+.private-demo-status {
+  margin-top: 14px;
+}
+
+.private-demo-primary-actions {
+  margin-top: 12px;
+}
+
+.private-demo-full-details {
+  margin-top: 14px;
+  border: 1px solid rgba(158, 187, 161, 0.2);
+  border-radius: 6px;
+  background: rgba(4, 9, 7, 0.28);
+}
+
+.private-demo-full-details summary {
+  cursor: pointer;
+  padding: 11px 13px;
+  color: #d9fbf3;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.private-demo-details-body {
+  display: grid;
+  gap: 14px;
+  padding: 0 13px 13px;
 }
 
 .xp-compare-bars {

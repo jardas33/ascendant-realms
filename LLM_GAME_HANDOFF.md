@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-30 v0.84 guided Lume demo readability and fast-retest polish
+Last updated: 2026-05-31 v0.85 contextual Lume overlay and Results-screen UX rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, and v0.84 polishes that guided private demo for clearer Lume retesting. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, and v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen. No runtime rebrand is approved.
+
+## Current v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
+
+Status: v0.85 makes the existing Aether Well Lume overlay contextual and lowers Results-screen friction for the private demo. It does not expand Lume rules, add persistent state, rename IDs, change `linked_ward`, or alter the 0.92 incoming-damage multiplier.
+
+Baseline:
+
+- Starting commit/package: `187f272`, `ascendant-realms-private-playtest-187f272`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26700439551` on `187f272` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md`.
+- Added `docs/V085_LUME_VISIBILITY_CONTROL_SPEC.md`.
+- Added `docs/V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md`.
+- Added `docs/V085_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V085_VISUAL_QA_REPORT.md`.
+- Added `docs/V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md`.
+- Added `docs/V085_EMMANUEL_RETEST_CHECKLIST.md`.
+- Added contextual Lume link rendering rules so Auto mode hides inactive clutter in normal play and shows only the relevant guide link in the private demo.
+- Added battle-session-only `Links: Auto`, `Links: Always`, and `Links: Hidden` HUD controls.
+- Reduced stable active-link opacity while keeping activation, restore, contested, severed, selected-endpoint, and Always-mode states readable.
+- Added render snapshots for visibility mode, visibility state, emphasis, pulse kind, alpha, width, and depth so hosted tests can guard the overlay.
+- Added a private-demo Results branch with `PRIVATE DEMO COMPLETE`, Lume/no-save summary above the fold, primary actions, and collapsed full telemetry.
+- Updated package generation and validation to require the v0.85 docs and tester guidance.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, campaign progression, internal IDs, maps, factions, art/assets, broader Lume rules, Linked Ward stacking rules, or balance values changed.
+- Visibility mode is battle-session-only and defaults to `Auto` each eligible Lume battle.
+- Tutorial and generic no-reward launches remain excluded from Lume overlay controls and persistent rewards/progress.
+
+Verification:
+
+```text
+npx vitest run src/game/battle/LumeNetworkRendering.test.ts src/game/battle/LumeNetworkDirector.test.ts src/game/ui/hudPanels/ObjectivePanel.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts --reporter=dot PASS, 5 files / 42 tests.
+npm test PASS, 88 files / 664 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests. Initial short shell timeout was non-pass evidence; rerun passed.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests. Initial 10-minute shell timeout was non-pass evidence; 15-minute rerun passed.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 29 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Closeout note: commit as `Checkpoint v0.85 contextual Lume overlay and Results-screen UX rescue`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V085_EMMANUEL_RETEST_CHECKLIST.md`. Do not start broader Lume rules, Living Mines, Jardas binding, Worker binding, hero binding, runtime copy migration, art generation, ID/save migration, desktop work, multiplayer, PvP, co-op, or v0.86 without a new explicit goal.
 
 ## Current v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
 

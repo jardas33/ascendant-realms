@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-05-30 v0.84 guided Lume demo readability and fast-retest polish
+Updated: 2026-05-31 v0.85 contextual Lume overlay and Results-screen UX rescue
+
+## v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
+
+Scope: contextual overlay and Results-screen rescue for the package/dev-only Aether Well Lume demo. This pass uses existing `aether_well_ruins` / `broken_ford`, existing Lume state, existing HUD/Results/package paths, and battle-session-only display controls. It does not change save format, add persistent settings, rename internal IDs, add maps/factions/races/units/buildings/classes/art/assets, broaden Lume rules, alter `linked_ward`, alter the 0.92 damage multiplier, start desktop work, add multiplayer/PvP/co-op, or perform runtime rebrand/display-copy migration.
+
+Baseline:
+
+- Starting commit/package: `187f272`, `ascendant-realms-private-playtest-187f272`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26700439551` on `187f272` completed successfully with Fast confidence green and heavier lanes skipped by workflow design.
+
+Included work:
+
+- Added `docs/V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md`.
+- Added `docs/V085_LUME_VISIBILITY_CONTROL_SPEC.md`.
+- Added `docs/V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md`.
+- Added `docs/V085_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V085_VISUAL_QA_REPORT.md`.
+- Added `docs/V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md`.
+- Added `docs/V085_EMMANUEL_RETEST_CHECKLIST.md`.
+- Contextual Lume rendering now hides inactive clutter in Auto mode, teaches only the relevant private-demo guide link, and keeps stable active links subtle.
+- Existing Lume HUD now exposes `Links: Auto`, `Links: Always`, and `Links: Hidden` as session-only controls.
+- Lume render snapshots now include visibility mode, visible state, emphasis, pulse kind, alpha, width, and layer depth for hosted proxy coverage.
+- Private-demo Results now use `PRIVATE DEMO COMPLETE`, show the Lume/no-save summary above the fold, keep primary actions visible, and collapse full telemetry behind `Show Full Battle Details`.
+- Package generation and verification now include all v0.85 tester docs and v0.85 build-info guidance.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, rewards, campaign progression, internal IDs, Lume balance values, or Linked Ward stacking rules changed.
+- Visibility mode is battle-session-only and defaults to `Auto` per eligible Lume battle.
+- Private demo rewards/progress remain disabled, and Tutorial/generic no-reward launch protection remains intact.
+
+Verification:
+
+```text
+npx vitest run src/game/battle/LumeNetworkRendering.test.ts src/game/battle/LumeNetworkDirector.test.ts src/game/ui/hudPanels/ObjectivePanel.test.ts src/game/results/ResultsViewModel.test.ts src/game/playtest/PlaytestPackageValidation.test.ts --reporter=dot PASS, 5 files / 42 tests.
+npm test PASS, 88 files / 664 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests. Initial short shell timeout was non-pass evidence; rerun passed.
+npm run test:e2e:smoke PASS, 15 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests. Initial 10-minute shell timeout was non-pass evidence; 15-minute rerun passed.
+npm run test:e2e:release:hosted:smoke PASS, 15 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 29 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Closeout note: commit as `Checkpoint v0.85 contextual Lume overlay and Results-screen UX rescue`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
 

@@ -33,7 +33,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 26;
+const EXPECTED_SCREENSHOT_COUNT = 29;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 2;
@@ -450,6 +450,29 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "Private Aether Well Lume demo battle HUD with compact no-save ribbon, Lume tracker, focus controls, and Exit Demo."
     );
 
+    await page.getByTestId("lume-visibility-hidden").click();
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Hidden");
+    await captureView(
+      page,
+      group,
+      "Private Lume demo hidden links",
+      "v085-private-lume-hidden-links-1920.png",
+      FULL_HD,
+      "Private Lume demo with stable link overlay hidden while HUD guidance remains visible."
+    );
+
+    await page.getByTestId("lume-visibility-always").click();
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Always");
+    await captureView(
+      page,
+      group,
+      "Private Lume demo always links",
+      "v085-private-lume-always-links-1920.png",
+      FULL_HD,
+      "Private Lume demo with all eligible links visible for deliberate overlay inspection."
+    );
+    await page.getByTestId("lume-visibility-auto").click();
+
     await centerCaptureSite(page, "west_stone_cut", true);
     await centerCaptureSite(page, "ford_toll", true);
     await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
@@ -472,6 +495,18 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v084-private-lume-hud-1366.png",
       LAPTOP,
       "Private demo HUD at 1366x768 with warning and Lume row still readable."
+    );
+
+    await page.getByTestId("private-demo-finish").click();
+    await expect(page.locator(".results-panel")).toBeVisible();
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("LUME NETWORK SUMMARY");
+    await captureView(
+      page,
+      group,
+      "Private Lume demo Results rescue",
+      "v085-private-lume-results-1366.png",
+      LAPTOP,
+      "Private demo Results show a no-save heading, Lume summary, and primary actions before full telemetry."
     );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);

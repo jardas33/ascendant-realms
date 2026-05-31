@@ -120,6 +120,10 @@ export class HUD {
         callbacks.onLumeFocus(id);
         handled = true;
       }
+      if (action === "lume-visibility" && (id === "auto" || id === "always" || id === "hidden")) {
+        callbacks.onLumeVisibilityMode(id);
+        handled = true;
+      }
       if (action === "private-demo-exit") {
         callbacks.onPrivateDemoExit();
         handled = true;

@@ -18,6 +18,7 @@ import {
   renderPrimaryActions
 } from "../results/ResultsNavigation";
 import { renderBattleSummary } from "../results/ResultsObjectiveSummary";
+import { renderPrivateDemoLumeSummary, renderPrivateDemoPrimaryActions } from "../results/ResultsPrivateDemoPanel";
 import { renderRetinueRecruitment, retinueSourceBattleId } from "../results/ResultsRetinuePanel";
 import { renderDefeatTips, renderHeroStats, renderVictoryRewards } from "../results/ResultsRewardPanel";
 import type { ResultsData } from "../results/ResultsTypes";
@@ -184,6 +185,10 @@ export class ResultsScene extends Phaser.Scene {
     const displayedData = viewModel.isVictory ? data : { ...data, heroSave: viewModel.xp.afterHero };
     const currentCampaign = SaveSystem.load()?.campaign;
     this.root.className = "ui-root menu-ui";
+    if (viewModel.isPrivatePlaytestDemo) {
+      this.root.innerHTML = this.renderPrivateDemoResults(data, viewModel, displayedData, currentCampaign);
+      return;
+    }
     this.root.innerHTML = `
       <main class="menu-shell progression-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: viewModel.backgroundId })}>
         <section class="menu-panel extra-wide results-panel ${data.stats.outcome}">
@@ -214,6 +219,51 @@ export class ResultsScene extends Phaser.Scene {
           <div class="menu-actions row">
             ${renderPrimaryActions(data)}
           </div>
+        </section>
+      </main>
+    `;
+  }
+
+  private renderPrivateDemoResults(
+    data: ResultsData,
+    viewModel: ReturnType<typeof createResultsViewModel>,
+    displayedData: ResultsData,
+    currentCampaign: Parameters<typeof renderRetinueRecruitment>[1]
+  ): string {
+    return `
+      <main class="menu-shell progression-shell asset-screen-bg" ${AssetLoader.screenStyle({ backgroundAssetId: viewModel.backgroundId })}>
+        <section class="menu-panel extra-wide results-panel private-demo ${data.stats.outcome}">
+          <p class="eyebrow">Private Demo Results</p>
+          <div class="results-title-row private-demo-title-row">
+            <div>
+              <h1>${viewModel.title}</h1>
+              <p class="menu-copy">${escapeHtml(viewModel.subtitle)}</p>
+            </div>
+            <div class="skill-points compact">
+              <span>Save</span>
+              <strong>No changes</strong>
+            </div>
+          </div>
+          ${renderPrivateDemoLumeSummary(data)}
+          <div class="status-box private-demo-status">${escapeHtml(this.status)}</div>
+          ${renderPrivateDemoPrimaryActions()}
+          <details class="private-demo-full-details" data-testid="private-demo-full-details">
+            <summary>Show Full Battle Details</summary>
+            <div class="private-demo-details-body">
+              ${renderBattleSummary(data, viewModel)}
+              ${this.renderGuidancePanel(viewModel.guidance)}
+              ${renderRetinueRecruitment(data, currentCampaign)}
+              ${
+                viewModel.isVictory
+                  ? renderVictoryRewards(data, {
+                      currentItemInSlot: (slot) => currentItemInSlot(data, slot),
+                      previewEquipDeltas: (itemInstanceId) => previewEquipDeltas(data, itemInstanceId)
+                    })
+                  : renderDefeatTips(displayedData)
+              }
+              ${renderHeroStats(displayedData)}
+            </div>
+          </details>
         </section>
       </main>
     `;

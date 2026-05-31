@@ -1,5 +1,40 @@
 # Changelog
 
+# v0.85 Contextual Lume Overlay And Results-Screen UX Rescue - 2026-05-31
+
+This checkpoint makes the Aether Well Lume overlay contextual and rescues the private-demo Results screen, without changing Lume balance, save data, campaign progression, runtime identity, or stable Lume IDs.
+
+Added:
+
+- `src/game/battle/LumeNetworkRendering.ts`.
+- `src/game/battle/LumeNetworkRendering.test.ts`.
+- `src/game/results/ResultsPrivateDemoPanel.ts`.
+- `docs/V085_CONTEXTUAL_LUME_OVERLAY_SPEC.md`.
+- `docs/V085_LUME_VISIBILITY_CONTROL_SPEC.md`.
+- `docs/V085_PRIVATE_DEMO_RESULTS_UX_SPEC.md`.
+- `docs/V085_IMPLEMENTATION_REPORT.md`.
+- `docs/V085_VISUAL_QA_REPORT.md`.
+- `docs/V085_DEFERRED_RESULTS_AND_BATTLEFIELD_UX_FINDINGS.md`.
+- `docs/V085_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Auto Lume rendering now hides inactive clutter in normal play and shows only the relevant private-demo guide link before it matters.
+- Stable active Lume links now fade to a subtler line while activation, restore, contested, severed, selected-endpoint, and Always-mode states stay readable.
+- Added battle-session-only `Links: Auto`, `Links: Always`, and `Links: Hidden` controls to the existing Lume HUD row.
+- Expanded Lume render snapshots so hosted tests can assert visibility mode, visible state, emphasis, pulse kind, alpha, width, and layer depth.
+- Private-demo Results now use `PRIVATE DEMO COMPLETE`, show the Lume/no-save summary above the fold, expose primary actions immediately, and collapse full battle telemetry behind `Show Full Battle Details`.
+- Updated package generation and package verification to include v0.85 docs and tester guidance.
+- Extended smoke, hosted, unit, and visual QA coverage around the contextual overlay and Results rescue.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, persistent rewards, campaign progression, maps, factions, races, units, buildings, classes, art/assets, internal ID renames, Lume balance changes, `linked_ward` stacking changes, resource-production bonuses, global balance changes, desktop work, multiplayer, PvP, co-op, or runtime rebrand/display-copy migration was added.
+
+Verification:
+
+- Passed: focused Lume rendering/director/objective/Results/package Vitest coverage with 5 files / 42 tests, `npm test` with 88 files / 664 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, fast smoke with 9 tests after an initial short shell timeout, full smoke with 15 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests after an initial 10-minute shell timeout, hosted smoke with 15 tests, hosted deep-campaign-pressure with 8 tests, and visual QA with 6 tests / 29 screenshots / 0 console errors / 0 retries.
+
 # v0.84 Guided Lume Demo Readability And Fast-Retest Polish - 2026-05-30
 
 This checkpoint polishes the package/dev-only Aether Well Lume demo so Emmanuel can understand and retest the existing Lume slice faster, without changing Lume balance, save data, campaign progression, or runtime identity.

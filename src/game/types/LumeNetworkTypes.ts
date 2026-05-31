@@ -3,6 +3,7 @@ import type { Position, Team } from "./UITypes";
 export type LumeNetworkActivationMode = "capture_only";
 export type LumeNetworkBenefitId = "linked_ward";
 export type LumeNetworkCurrentLinkState = "inactive" | "active" | "contested" | "severed";
+export type LumeNetworkVisibilityMode = "auto" | "always" | "hidden";
 
 export interface LumeNetworkBenefitDefinition {
   id: LumeNetworkBenefitId;
@@ -97,6 +98,9 @@ export interface LumeNetworkHudSummary {
   optionalSiteName?: string;
   severedSiteName?: string;
   focusControls?: LumeNetworkFocusControl[];
+  visibilityMode?: LumeNetworkVisibilityMode;
+  visibilityLabel?: string;
+  visibilityControls?: LumeNetworkVisibilityControl[];
   privateDemo?: boolean;
   finishDemoAvailable?: boolean;
 }
@@ -105,6 +109,13 @@ export interface LumeNetworkFocusControl {
   siteId: string;
   label: string;
   siteName: string;
+}
+
+export interface LumeNetworkVisibilityControl {
+  mode: LumeNetworkVisibilityMode;
+  label: string;
+  active: boolean;
+  description: string;
 }
 
 export interface LumeNetworkSiteSummary {

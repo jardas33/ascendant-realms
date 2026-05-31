@@ -9,7 +9,9 @@ import type {
   Team,
   UpgradeDefinition,
   UnitVeterancyRankUpEvent,
-  EnemyDoctrineDefinition
+  EnemyDoctrineDefinition,
+  LumeNetworkCurrentLinkState,
+  LumeNetworkVisibilityMode
 } from "../core/GameTypes";
 import { addResources, formatTime, payCost } from "../core/MathUtils";
 import { formatRetinueDeploymentLabel } from "../core/RetinueRules";
@@ -57,6 +59,14 @@ import {
   type BattlefieldEventDirectorContext,
   type BattlefieldEventTransition
 } from "../battle/BattlefieldEventDirector";
+import {
+  resolveLumeLinkPresentation,
+  type LumeRenderEmphasis,
+  type LumeRenderLinkStyle,
+  type LumeRenderPresentation,
+  type LumeRenderPulse,
+  type LumeRenderPulseKind
+} from "../battle/LumeNetworkRendering";
 import { Act1FinaleDirector, type Act1FinaleDirectorContext, type Act1FinaleTransition } from "../battle/Act1FinaleDirector";
 import { createEnemyPressureRuntime, type EnemyPressureRuntime } from "../battle/EnemyPressureRuntime";
 import {
@@ -193,13 +203,16 @@ interface AscendantBattleTestHooks {
     render: LumeRenderSnapshot;
   } | null;
   focusLumeSite?: (siteId: string) => boolean;
+  setLumeVisibilityMode?: (mode: LumeNetworkVisibilityMode) => boolean;
   finishPrivateDemo?: () => boolean;
 }
 
 interface LumeRenderLinkSnapshot {
   id: string;
   state: string;
-  style: "inactive" | "active" | "contested" | "severed" | "restored";
+  style: LumeRenderLinkStyle;
+  emphasis: LumeRenderEmphasis;
+  visible: boolean;
   fromSiteId: string;
   toSiteId: string;
   from: Position;
@@ -207,15 +220,19 @@ interface LumeRenderLinkSnapshot {
   color: number;
   alpha: number;
   width: number;
+  pulseKind?: LumeRenderPulseKind;
+  layerDepth: number;
 }
 
 interface LumeRenderSiteMarkerSnapshot {
   siteId: string;
   state: string;
+  emphasis: LumeRenderEmphasis;
   position: Position;
   radius: number;
   color: number;
   alpha: number;
+  layerDepth: number;
 }
 
 interface LumeRenderSnapshot {
@@ -255,6 +272,9 @@ export class BattleScene extends Phaser.Scene {
   private aiSystem!: BattleSceneSystems["aiSystem"];
   private lumeNetworkDirector?: BattleSceneSystems["lumeNetworkDirector"];
   private lumeLinkGraphics?: Phaser.GameObjects.Graphics;
+  private lumeVisibilityMode: LumeNetworkVisibilityMode = "auto";
+  private lumeRenderPulses = new Map<string, LumeRenderPulse>();
+  private previousLumeRenderStates?: Map<string, LumeNetworkCurrentLinkState>;
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
   private battlefieldEventDirector?: BattlefieldEventDirector;
@@ -391,6 +411,9 @@ export class BattleScene extends Phaser.Scene {
     this.lumeNetworkDirector = undefined;
     this.lumeLinkGraphics?.destroy();
     this.lumeLinkGraphics = undefined;
+    this.lumeVisibilityMode = "auto";
+    this.lumeRenderPulses.clear();
+    this.previousLumeRenderStates = undefined;
     this.act1FinaleDirector = isAct1FinaleBattle({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -507,6 +530,7 @@ export class BattleScene extends Phaser.Scene {
       exitToMainMenu: () => this.exitToMainMenu(),
       callRetinueReinforcement: () => this.callRetinueReinforcement(),
       focusLumeSite: (siteId) => this.focusLumeSite(siteId),
+      setLumeVisibilityMode: (mode) => this.setLumeVisibilityMode(mode),
       exitPrivateDemo: () => this.exitPrivateDemo(),
       finishPrivateDemo: () => this.finishPrivateDemo(),
       canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit)
@@ -854,6 +878,18 @@ export class BattleScene extends Phaser.Scene {
     return true;
   }
 
+  private setLumeVisibilityMode(mode: LumeNetworkVisibilityMode): boolean {
+    if (!this.lumeNetworkDirector) {
+      return false;
+    }
+    this.lumeVisibilityMode = mode;
+    const label = mode === "always" ? "Always" : mode === "hidden" ? "Hidden" : "Auto";
+    this.showMessage(`Lume links: ${label}`, undefined, undefined, "#74d3f2", { priority: "command" });
+    this.renderLumeNetworkLinks();
+    this.refreshBattleHud(0);
+    return true;
+  }
+
   private exitPrivateDemo(): boolean {
     if (!this.isPrivateLumeDemo()) {
       return false;
@@ -955,18 +991,22 @@ export class BattleScene extends Phaser.Scene {
   private renderLumeNetworkLinks(): void {
     if (!this.lumeNetworkDirector) {
       this.lumeLinkGraphics?.clear();
+      this.previousLumeRenderStates = undefined;
+      this.lumeRenderPulses.clear();
       return;
     }
-    const snapshot = this.createLumeRenderSnapshot();
-    const graphics = this.lumeLinkGraphics ?? this.add.graphics().setDepth(1.6);
+    const state = this.lumeNetworkDirector.currentState();
+    this.updateLumeRenderPulses(state);
+    const snapshot = this.createLumeRenderSnapshot(state);
+    const graphics = this.lumeLinkGraphics ?? this.add.graphics().setDepth(1.2);
     this.lumeLinkGraphics = graphics;
     graphics.clear();
     snapshot.links.forEach((link) => {
       graphics.lineStyle(link.width, link.color, link.alpha);
       graphics.strokeLineShape(new Phaser.Geom.Line(link.from.x, link.from.y, link.to.x, link.to.y));
       const midpoint = { x: (link.from.x + link.to.x) / 2, y: (link.from.y + link.to.y) / 2 };
-      if (link.style === "active" || link.style === "restored") {
-        graphics.fillStyle(link.color, Math.min(0.22, link.alpha * 0.28));
+      if (link.emphasis === "pulse" || link.emphasis === "selected" || link.emphasis === "overlay") {
+        graphics.fillStyle(link.color, Math.min(0.18, link.alpha * 0.25));
         graphics.fillCircle(midpoint.x, midpoint.y, 16);
       }
     });
@@ -978,61 +1018,115 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
-  private createLumeRenderSnapshot(): LumeRenderSnapshot {
+  private createLumeRenderSnapshot(state = this.lumeNetworkDirector?.currentState()): LumeRenderSnapshot {
     if (!this.lumeNetworkDirector) {
       return { links: [], siteMarkers: [] };
     }
-    const state = this.lumeNetworkDirector.currentState();
+    if (!state) {
+      return { links: [], siteMarkers: [] };
+    }
     const siteById = new Map(this.captureSites.map((site) => [site.definition.id, site]));
     const pulse = 0.5 + Math.sin(this.runtime.elapsedSeconds * 4.2) * 0.5;
+    const selectedSiteIds = this.selectionSystem
+      ? this.selectionSystem
+          .getSelected()
+          .filter((entity): entity is CaptureSite => entity instanceof CaptureSite)
+          .map((site) => site.definition.id)
+      : [];
+    const firstLinkId = state.links[0]?.id;
+    const optionalLinkId = state.links[1]?.id;
+    const siteVisuals = new Map<string, Pick<LumeRenderSiteMarkerSnapshot, "color" | "alpha" | "emphasis">>();
     const links = state.links.flatMap((link): LumeRenderLinkSnapshot[] => {
       const from = siteById.get(link.fromSiteId);
       const to = siteById.get(link.toSiteId);
       if (!from || !to) {
         return [];
       }
-      const restored = link.active && state.lifetimeSeveredLinkIds.includes(link.id);
-      const style = restored ? "restored" : link.state;
-      const visual = lumeLinkVisual(style, pulse);
+      const visual = resolveLumeLinkPresentation(link, {
+        visibilityMode: this.lumeVisibilityMode,
+        privateDemo: this.isPrivateLumeDemo(),
+        objectiveCompleted: state.objectiveCompleted,
+        selectedSiteIds,
+        firstLinkId,
+        optionalLinkId,
+        pulse: this.lumeRenderPulses.get(link.id),
+        elapsedSeconds: this.runtime.elapsedSeconds,
+        pulsePhase: pulse
+      });
+      if (!visual.visible) {
+        return [];
+      }
+      mergeSiteVisual(siteVisuals, link.fromSiteId, visual);
+      mergeSiteVisual(siteVisuals, link.toSiteId, visual);
       return [
         {
           id: link.id,
           state: link.state,
-          style,
+          style: visual.style,
+          emphasis: visual.emphasis,
+          visible: visual.visible,
           fromSiteId: link.fromSiteId,
           toSiteId: link.toSiteId,
           from: { ...from.position },
           to: { ...to.position },
-          ...visual
+          color: visual.color,
+          alpha: visual.alpha,
+          width: visual.width,
+          pulseKind: visual.pulseKind,
+          layerDepth: 1.2
         }
       ];
     });
-    const linkedSiteIds = new Set(state.links.flatMap((link) => [link.fromSiteId, link.toSiteId]));
-    const siteMarkers = [...linkedSiteIds].flatMap((siteId): LumeRenderSiteMarkerSnapshot[] => {
+    const siteMarkers = [...siteVisuals.entries()].flatMap(([siteId, visual]): LumeRenderSiteMarkerSnapshot[] => {
       const site = siteById.get(siteId);
       if (!site) {
         return [];
       }
-      const touchingLinks = state.links.filter((link) => link.fromSiteId === siteId || link.toSiteId === siteId);
-      const linkState = touchingLinks.some((link) => link.active)
+      const touchingLinks = links.filter((link) => link.fromSiteId === siteId || link.toSiteId === siteId);
+      const linkState = touchingLinks.some((link) => link.state === "active")
         ? "active"
         : touchingLinks.some((link) => link.state === "contested")
           ? "contested"
           : touchingLinks.some((link) => link.state === "severed")
             ? "severed"
             : "inactive";
-      const markerVisual = lumeSiteMarkerVisual(linkState, pulse);
       return [
         {
           siteId,
           state: linkState,
+          emphasis: visual.emphasis,
           position: { ...site.position },
           radius: site.definition.radius + 9,
-          ...markerVisual
+          color: visual.color,
+          alpha: visual.alpha,
+          layerDepth: 1.2
         }
       ];
     });
     return { links, siteMarkers };
+  }
+
+  private updateLumeRenderPulses(state: ReturnType<NonNullable<BattleSceneSystems["lumeNetworkDirector"]>["currentState"]>): void {
+    const currentStates = new Map(state.links.map((link) => [link.id, link.state]));
+    if (this.previousLumeRenderStates) {
+      state.links.forEach((link) => {
+        const previous = this.previousLumeRenderStates?.get(link.id);
+        if (!previous || previous === link.state) {
+          return;
+        }
+        this.lumeRenderPulses.set(link.id, {
+          kind: lumePulseKind(previous, link.state, state.lifetimeSeveredLinkIds.includes(link.id)),
+          startedAtSeconds: this.runtime.elapsedSeconds,
+          durationSeconds: 2.8
+        });
+      });
+    }
+    [...this.lumeRenderPulses.entries()].forEach(([linkId, renderPulse]) => {
+      if (this.runtime.elapsedSeconds - renderPulse.startedAtSeconds > renderPulse.durationSeconds) {
+        this.lumeRenderPulses.delete(linkId);
+      }
+    });
+    this.previousLumeRenderStates = currentStates;
   }
 
   private selectedEntities(): Array<Unit | Building | CaptureSite> {
@@ -1236,7 +1330,10 @@ export class BattleScene extends Phaser.Scene {
       minimap: this.createMinimapSnapshot(),
       objectives: this.createObjectiveSnapshot(),
       battlefieldEvent: this.createBattlefieldEventSnapshot(),
-      lumeNetwork: this.lumeNetworkDirector?.hudSummary({ privateDemo: this.isPrivateLumeDemo() }),
+      lumeNetwork: this.lumeNetworkDirector?.hudSummary({
+        privateDemo: this.isPrivateLumeDemo(),
+        visibilityMode: this.lumeVisibilityMode
+      }),
       lumeSiteSummaries: this.createLumeSiteSummaries(),
       privatePlaytestNotice: this.launch.request.privatePlaytestNotice,
       controlGroups: this.controlGroupSystem.summaries(this.units),
@@ -2193,12 +2290,16 @@ export class BattleScene extends Phaser.Scene {
           return null;
         }
         return {
-          hud: this.lumeNetworkDirector.hudSummary({ privateDemo: this.isPrivateLumeDemo() }),
+          hud: this.lumeNetworkDirector.hudSummary({
+            privateDemo: this.isPrivateLumeDemo(),
+            visibilityMode: this.lumeVisibilityMode
+          }),
           state: this.lumeNetworkDirector.currentState(),
           render: this.createLumeRenderSnapshot()
         };
       },
       focusLumeSite: (siteId: string) => this.focusLumeSite(siteId),
+      setLumeVisibilityMode: (mode: LumeNetworkVisibilityMode) => this.setLumeVisibilityMode(mode),
       finishPrivateDemo: () => this.finishPrivateDemo()
     };
   }
@@ -2218,6 +2319,7 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.getAct1FinaleState;
     delete target.__ASCENDANT_TEST_HOOKS__.getLumeNetworkSnapshot;
     delete target.__ASCENDANT_TEST_HOOKS__.focusLumeSite;
+    delete target.__ASCENDANT_TEST_HOOKS__.setLumeVisibilityMode;
     delete target.__ASCENDANT_TEST_HOOKS__.finishPrivateDemo;
   }
 
@@ -2232,6 +2334,8 @@ export class BattleScene extends Phaser.Scene {
     this.neutralCampLabels = [];
     this.lumeLinkGraphics?.destroy();
     this.lumeLinkGraphics = undefined;
+    this.lumeRenderPulses.clear();
+    this.previousLumeRenderStates = undefined;
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
   }
@@ -2275,37 +2379,35 @@ function formatResourceBonusText(resources: Partial<ResourceBag>): string {
     .join(", ");
 }
 
-function lumeLinkVisual(
-  style: LumeRenderLinkSnapshot["style"],
-  pulse: number
-): Pick<LumeRenderLinkSnapshot, "color" | "alpha" | "width"> {
-  if (style === "active") {
-    return { color: 0x74d3f2, alpha: 0.74, width: 4 };
+function mergeSiteVisual(
+  siteVisuals: Map<string, Pick<LumeRenderSiteMarkerSnapshot, "color" | "alpha" | "emphasis">>,
+  siteId: string,
+  linkVisual: LumeRenderPresentation
+): void {
+  const next = {
+    color: linkVisual.color,
+    alpha: linkVisual.markerAlpha,
+    emphasis: linkVisual.emphasis
+  };
+  const existing = siteVisuals.get(siteId);
+  if (!existing || next.alpha > existing.alpha) {
+    siteVisuals.set(siteId, next);
   }
-  if (style === "restored") {
-    return { color: 0x8ff6e5, alpha: 0.72 + pulse * 0.18, width: 5 };
-  }
-  if (style === "contested") {
-    return { color: 0xf0d978, alpha: 0.44 + pulse * 0.32, width: 4 };
-  }
-  if (style === "severed") {
-    return { color: 0xff6b6b, alpha: 0.26 + pulse * 0.28, width: 4 };
-  }
-  return { color: 0x74d3f2, alpha: 0.2, width: 2 };
 }
 
-function lumeSiteMarkerVisual(
-  state: string,
-  pulse: number
-): Pick<LumeRenderSiteMarkerSnapshot, "color" | "alpha"> {
-  if (state === "active") {
-    return { color: 0x8ff6e5, alpha: 0.48 + pulse * 0.18 };
+function lumePulseKind(
+  previous: LumeNetworkCurrentLinkState,
+  current: LumeNetworkCurrentLinkState,
+  wasPreviouslySevered: boolean
+): LumeRenderPulseKind {
+  if (current === "contested") {
+    return "contested";
   }
-  if (state === "contested") {
-    return { color: 0xf0d978, alpha: 0.42 + pulse * 0.26 };
+  if (current === "severed") {
+    return "severed";
   }
-  if (state === "severed") {
-    return { color: 0xff6b6b, alpha: 0.34 + pulse * 0.22 };
+  if (current === "active" && (previous === "severed" || wasPreviouslySevered)) {
+    return "restored";
   }
-  return { color: 0x74d3f2, alpha: 0.26 };
+  return "activated";
 }
