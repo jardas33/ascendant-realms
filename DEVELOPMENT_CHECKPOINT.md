@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.91 desktop full-game transition technical audit and vertical-slice roadmap
+Updated: 2026-05-31 v0.92 visual review pack generator and unified Emmanuel retest packet
+
+## v0.92 Visual Review Pack Generator And Unified Emmanuel Retest Packet - 2026-05-31
+
+Scope: QA tooling and documentation milestone. This pass adds a deterministic visual review-pack generator, static local review artifact, contact sheets, and unified Emmanuel retest packet. It does not alter gameplay, runtime behavior, saves, stable IDs, balance, art assets, desktop implementation, engine choice, or dependencies.
+
+Baseline:
+
+- Starting commit: `90e687e`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26721957259` on `90e687e` completed successfully.
+
+Included work:
+
+- Added `src/game/playtest/VisualReviewPack.ts`.
+- Added `src/game/playtest/VisualReviewPack.test.ts`.
+- Added `tools/generateVisualReviewPack.ts`.
+- Added `npm run visual:review-pack`.
+- Added `/artifacts/visual-review/` to `.gitignore`.
+- Added `docs/V092_VISUAL_REVIEW_PACK_SPEC.md`.
+- Added `docs/V092_CONTACT_SHEET_INDEX.md`.
+- Added `docs/V092_EMMANUEL_UNIFIED_RETEST_PACKET.md`.
+- Added `docs/V092_IMPLEMENTATION_REPORT.md`.
+
+Generated artifact:
+
+- `artifacts/visual-review/latest/index.html`.
+- `artifacts/visual-review/latest/review-manifest.json`.
+- `artifacts/visual-review/latest/README.md`.
+- 64 copied screenshots.
+- 7 contact sheets.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, persistent settings, or package metadata changed.
+
+Verification:
+
+```text
+npx vitest run src/game/playtest/VisualReviewPack.test.ts - PASS, 1 file / 5 tests.
+npm test - PASS, 93 files / 683 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run visual:qa - PASS, 9 tests / 64 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS after visual:qa, 64 screenshots / 7 contact sheets.
+git diff --check - PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.92 visual review pack generator and unified Emmanuel retest packet`, push safely, and do not start v0.93 automatically. Non-pass evidence: an initial build caught a TypeScript narrowing issue in the new contact-sheet screen-family filter; the type was tightened before final verification.
 
 ## v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
 

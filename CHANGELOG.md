@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.92 Visual Review Pack Generator And Unified Emmanuel Retest Packet - 2026-05-31
+
+This checkpoint adds QA tooling and documentation for reviewing existing deterministic visual-QA screenshots quickly. It does not alter gameplay, runtime behavior, saves, stable IDs, balance, art assets, desktop implementation, engine choice, or dependencies.
+
+Added:
+
+- `src/game/playtest/VisualReviewPack.ts`.
+- `src/game/playtest/VisualReviewPack.test.ts`.
+- `tools/generateVisualReviewPack.ts`.
+- `docs/V092_VISUAL_REVIEW_PACK_SPEC.md`.
+- `docs/V092_CONTACT_SHEET_INDEX.md`.
+- `docs/V092_EMMANUEL_UNIFIED_RETEST_PACKET.md`.
+- `docs/V092_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added `npm run visual:review-pack`.
+- Added `/artifacts/visual-review/` to `.gitignore`.
+- Roadmap, handoff, checkpoint, changelog, and release checklist now document the v0.92 QA tooling boundary.
+
+Generated:
+
+- `artifacts/visual-review/latest/index.html`.
+- `artifacts/visual-review/latest/review-manifest.json`.
+- `artifacts/visual-review/latest/README.md`.
+- 64 copied screenshots and 7 contact sheets.
+
+Not changed:
+
+- No runtime code path, gameplay system, save-version bump, save fields, stable IDs, serialized IDs, reward logic, balance value, campaign progression, map, faction, unit, building, art asset, imported asset, desktop port, engine choice, or package metadata changed.
+
+Verification:
+
+- Passed: `npm test` with 93 files / 683 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run visual:qa` with 9 tests / 64 screenshots / 0 console errors / 0 retries, final `npm run visual:review-pack` with 64 screenshots / 7 contact sheets, and `git diff --check`.
+- Focused generator evidence passed: `npx vitest run src/game/playtest/VisualReviewPack.test.ts`, 1 file / 5 tests.
+- Non-pass evidence: an initial build caught a TypeScript narrowing issue in the new contact-sheet screen-family filter; the type was tightened before final verification.
+- Package validation is not required because package metadata did not change.
+
 # v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
 
 This checkpoint documents future desktop-transition strategy without porting the game, creating a wrapper, choosing an engine, adding dependencies, generating/importing art, implementing multiplayer, changing saves, or altering runtime behavior.

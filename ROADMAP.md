@@ -11,11 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.91 Desktop Full-Game Transition Technical Audit and Vertical-Slice Roadmap** on 2026-05-31. It is a docs-only strategic engineering milestone: current architecture reuse classification, desktop engine decision criteria, future vertical-slice scope, staged transition experiments, save/content/test reuse planning, multiplayer/co-op deferrals, and Emmanuel review guidance.
+The current checkpoint is **v0.92 Visual Review Pack Generator and Unified Emmanuel Retest Packet** on 2026-05-31. It is a QA tooling and documentation milestone: deterministic visual-QA screenshots are packaged into a static local review page, viewport/focused contact sheets, and a short Emmanuel retest packet.
 
-The next recommended step is to keep the browser prototype as the active development and testing environment while using the v0.91 audit to frame any future desktop-related experiment. Do not start v0.92, port the game, create a wrapper, choose an engine, add dependencies, generate/import art, implement multiplayer, change saves, or alter runtime behavior until a future explicit goal approves a narrow next step.
+The next recommended step is to use the v0.92 review pack for fast human visual review while keeping the browser prototype as the active development and testing environment. Do not start v0.93, alter gameplay, change runtime behavior, change saves, rename IDs, generate/import art, start a desktop port, choose an engine, or add dependencies until a future explicit goal approves a narrow next step.
 
-New v0.91 docs:
+New v0.92 docs:
+
+- `docs/V092_VISUAL_REVIEW_PACK_SPEC.md`
+- `docs/V092_CONTACT_SHEET_INDEX.md`
+- `docs/V092_EMMANUEL_UNIFIED_RETEST_PACKET.md`
+- `docs/V092_IMPLEMENTATION_REPORT.md`
+
+Recent v0.91 docs:
 
 - `docs/V091_CURRENT_ARCHITECTURE_REUSE_MATRIX.md`
 - `docs/V091_DESKTOP_ENGINE_DECISION_CRITERIA.md`

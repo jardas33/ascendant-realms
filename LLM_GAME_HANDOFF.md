@@ -1,12 +1,57 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.91 desktop full-game transition technical audit and vertical-slice roadmap
+Last updated: 2026-05-31 v0.92 visual review pack generator and unified Emmanuel retest packet
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, and v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, and v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior. No runtime rebrand is approved.
+
+## Current v0.92 Visual Review Pack Generator And Unified Emmanuel Retest Packet - 2026-05-31
+
+Status: v0.92 is a QA tooling and documentation checkpoint. It turns existing deterministic visual-QA screenshots plus the v0.90 visual-regression manifest into a static local review pack and short Emmanuel retest packet. It does not alter gameplay, runtime behavior, saves, stable IDs, balance, art assets, desktop implementation, engine choice, or dependencies.
+
+Baseline:
+
+- Starting commit: `90e687e`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26721957259` on `90e687e` completed successfully.
+
+Included work:
+
+- Added `src/game/playtest/VisualReviewPack.ts`.
+- Added `src/game/playtest/VisualReviewPack.test.ts`.
+- Added `tools/generateVisualReviewPack.ts`.
+- Added `npm run visual:review-pack`.
+- Added `/artifacts/visual-review/` to `.gitignore`.
+- Added `docs/V092_VISUAL_REVIEW_PACK_SPEC.md`.
+- Added `docs/V092_CONTACT_SHEET_INDEX.md`.
+- Added `docs/V092_EMMANUEL_UNIFIED_RETEST_PACKET.md`.
+- Added `docs/V092_IMPLEMENTATION_REPORT.md`.
+- Generated `artifacts/visual-review/latest/` with a static `index.html`, `review-manifest.json`, `README.md`, 64 copied screenshots, and 7 contact sheets.
+
+Runtime/save/art boundary:
+
+- No runtime gameplay or UI behavior changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, campaign progression, balance values, maps, factions, units, buildings, art assets, imported assets, desktop port, engine choice, or package metadata changed.
+- Contact sheets are static review pages over existing screenshots, not generated game art.
+
+Verification:
+
+```text
+npx vitest run src/game/playtest/VisualReviewPack.test.ts - PASS, 1 file / 5 tests.
+npm test - PASS, 93 files / 683 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run visual:qa - PASS, 9 tests / 64 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS after visual:qa, 64 screenshots / 7 contact sheets.
+git diff --check - PASS.
+```
+
+Closeout note: commit as `Checkpoint v0.92 visual review pack generator and unified Emmanuel retest packet`, push safely, and stop. Package validation is not required unless package metadata changes. Do not start v0.93 automatically. Non-pass evidence: an initial build caught a TypeScript narrowing issue in the new contact-sheet screen-family filter; the type was tightened before final verification.
 
 ## Current v0.91 Desktop Full-Game Transition Technical Audit And Vertical-Slice Roadmap - 2026-05-31
 
