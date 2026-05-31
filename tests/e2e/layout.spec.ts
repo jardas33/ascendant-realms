@@ -727,13 +727,13 @@ test.describe("Ascendant Realms responsive layout", () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await seedCampaignSave(page, { hero: { heroName: `Layout Battle ${viewport.label}` } });
       await continueSavedCampaign(page);
-      await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Border Village node`);
+      await clickReady(page.getByTestId("campaign-node-border_village"), `${viewport.label} Salto Outskirts node`);
       await clickReady(
         page.getByTestId("campaign-start-node"),
-        `${viewport.label} Border Village start`,
+        `${viewport.label} Salto Outskirts start`,
         UI_TRANSITION_CLICK_OPTIONS
       );
-      await expectBattleLoaded(page, `${viewport.label} Border Village battle`);
+      await expectBattleLoaded(page, `${viewport.label} Salto Outskirts battle`);
       await expectNoHorizontalOverflow(page, `${viewport.label} battle hud`);
       await expectInViewport(page, page.getByTestId("battle-hero-panel"), `${viewport.label} hero panel`);
       await expectInViewport(page, page.getByTestId("battle-minimap"), `${viewport.label} minimap`);
@@ -775,7 +775,7 @@ test.describe("Ascendant Realms responsive layout", () => {
 
       await continueSavedCampaign(page);
       await expectNoHorizontalOverflow(page, `${viewport.label} post-Ashen campaign map`);
-      await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: Border Marches");
+      await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: The Barrosan Marches");
       await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
       await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Completed/i);
       await expect(page.getByTestId("campaign-node-cinderfen_overlook")).toContainText(/Available/i);
@@ -789,7 +789,7 @@ test.describe("Ascendant Realms responsive layout", () => {
       const standardChoice = page.locator("button[data-campaign-choice='raise_malrecs_standard']");
       await expect(standardChoice).toContainText("Cost: None");
       await expect(standardChoice).toContainText("Rewards: 10 XP");
-      await expect(standardChoice).toContainText("Reputation: +3 The Free Marches");
+      await expect(standardChoice).toContainText("Reputation: +3 Barrosan Freeholds");
       await expect(standardChoice).toContainText("Modifiers: Gain Well Rested");
       await expectReachableButton(page, standardChoice, `${viewport.label} Malrec trophy choice`);
       await expectNoHorizontalOverflow(page, `${viewport.label} Cinderfen Overlook details`);

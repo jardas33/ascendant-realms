@@ -13,9 +13,9 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     unlockSummary: "Available from the main menu; no campaign save or reward state is changed.",
     playerGoal: "Practice the opening loop before committing to the campaign.",
     difficultyPacing: "No persistent pressure. The tutorial teaches commands without campaign reward noise.",
-    onboardingHint: "Use this for practice, then start the campaign at Border Village.",
+    onboardingHint: "Use this for practice, then start the campaign at Salto Outskirts.",
     resultsHint: "Tutorial results remain no-save and no-reward.",
-    nextAction: "Start Border Village when ready."
+    nextAction: "Start Salto Outskirts when ready."
   },
   {
     id: "act1_border_village_first_battle",
@@ -46,7 +46,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     supportNodeIds: ["marcher_camp"],
     mechanicFocus: ["Worker production", "Production buildings", "Research reminder", "Early economy"],
     recommendedBuildTags: ["commander", "economy"],
-    unlockSummary: "Unlocks after Border Village and opens the first Act 1 branch plus Marcher Camp support.",
+    unlockSummary: "Unlocks after Salto Outskirts and opens the first Act 1 branch plus Marcher Camp support.",
     playerGoal: "Use a cleaner economy and steadier production to turn the old road into a staging route.",
     difficultyPacing: "Still Easy, but Rich Veins and faster contesting make economy decisions matter earlier.",
     onboardingHint: "Train Workers early, keep production active, and use camp services if you need momentum.",
@@ -65,9 +65,9 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     supportNodeIds: ["refugee_caravan"],
     mechanicFocus: ["Resource sites", "Worker assignment", "Site upgrades", "Ability pacing"],
     recommendedBuildTags: ["seer", "mana", "control"],
-    unlockSummary: "Unlocks after Old Stone Road and exposes Chapel of the Marches on first clear.",
+    unlockSummary: "Unlocks after Old Stone Road and exposes Chapel of the Barrosan Marches on first clear.",
     playerGoal: "Contest the central well, assign Workers to sites, and turn Aether into sustained pressure.",
-    difficultyPacing: "Normal pressure with Aether Surge favors ability use but still asks for economy discipline.",
+    difficultyPacing: "Normal pressure with Lume Surge favors ability use but still asks for economy discipline.",
     onboardingHint: "Hold two sites when possible, assign Workers, upgrade safe income, then rebuild before pushing.",
     resultsHint: "Use the chapel or camp to prepare before the Act 1 finale route.",
     nextAction: "Clear Bandit Hillfort and resolve Chapel support before Ashen Outpost.",
@@ -89,7 +89,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     difficultyPacing: "Enemy Patrols increase pressure modestly, so attacking before production is stable is risky.",
     onboardingHint: "Do not rush the hillfort; build a mixed army, hold after pressure, and use Chapel support if needed.",
     resultsHint: "Rival defeats can feed relic eligibility, but unique rewards remain one-time.",
-    nextAction: "Complete Chapel of the Marches if needed, then assault Ashen Outpost.",
+    nextAction: "Complete Chapel of the Barrosan Marches if needed, then assault Ashen Outpost.",
     replayHint: "Replay can practice commander fights; first-defeat rival rewards stay one-time."
   },
   {
@@ -102,7 +102,7 @@ export const ACT1_CAMPAIGN_SPINE: CampaignActStepDefinition[] = [
     nodeId: "ashen_outpost",
     mechanicFocus: ["Fortified assault", "Champion defeat", "Relic choice", "Skill spending"],
     recommendedBuildTags: ["commander", "relic", "skills"],
-    unlockSummary: "Requires Bandit Hillfort and Chapel of the Marches, then opens Chapter 2 after first clear.",
+    unlockSummary: "Requires Bandit Hillfort and Chapel of the Barrosan Marches, then opens Chapter 2 after first clear.",
     playerGoal: "Break the fortified Ashen base, defeat Captain Malrec, and claim a build-defining relic choice.",
     difficultyPacing: "Fortified Enemy gives the outpost a stronger defensive posture without changing the global balance curve.",
     onboardingHint: "Spend skill points, equip your best relic or gear, stage troops, then push after the fortress wave.",

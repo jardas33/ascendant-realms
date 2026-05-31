@@ -3,17 +3,17 @@ import type { CampaignNodeDefinition } from "../core/GameTypes";
 export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
   {
     id: "border_village",
-    name: "Border Village",
+    name: "Salto Outskirts",
     description:
-      "First campaign battle. Secure a Free Marches village by practicing the persistent campaign loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
+      "First campaign battle. Secure Salto's outskirts by practicing the persistent campaign loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "skirmish_training",
     missionBriefing: {
-      summary: "Secure the village and practice the first persistent campaign battle without extra scenario pressure.",
+      summary: "Secure Salto's outskirts and practice the first persistent campaign battle without extra scenario pressure.",
       primaryObjective: "Capture the Crown Shrine, build a Barracks, train troops, and destroy the enemy Stronghold.",
       rewardPreview: "First clear grants starter XP, Crowns, and the Weathered Command Sword.",
-      afterActionSummary: "The village road is secure and the campaign route opens toward the old stone road.",
+      afterActionSummary: "Salto's village road is secure and the campaign route opens toward the old stone road.",
       recommendedBuildHint: "Any build works here; focus on fundamentals."
     },
     difficulty: "easy",
@@ -34,7 +34,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "old_stone_road",
     name: "Old Stone Road",
     description:
-      "Base development battle. The old trade road gives you less breathing room than Border Village, but it is still an Easy fight built to reward cleaner Worker use, production timing, and better use of your hero rewards.",
+      "Base development battle. The old trade road gives you less breathing room than Salto Outskirts, but it is still an Easy fight built to reward cleaner Worker use, production timing, and better use of your hero rewards.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "control",
@@ -73,7 +73,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     prerequisites: ["old_stone_road"],
     rewards: {},
     eventText:
-      "Canvas tents, field kitchens, and forge smoke gather under Free Marches banners. The quartermaster can turn saved Crowns into a little momentum before the next road.",
+      "Canvas tents, field kitchens, and forge smoke gather under Barrosan Freeholds banners. The quartermaster can turn saved Crowns into a little momentum before the next road.",
     choices: [
       {
         id: "rest_and_recovery",
@@ -161,7 +161,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       summary: "Aether pressure and tight lanes make this a control mission around assigned and upgraded resource sites.",
       primaryObjective: "Contest the ruined well, assign Workers to held sites, manage spell pressure, and break the Ashen base.",
       rewardPreview: "First clear grants XP, Aether, Stone, and the Aether Lens.",
-      afterActionSummary: "The well is back under Free Marches guard and the chapel route is exposed.",
+      afterActionSummary: "The well is back under Barrosan Freeholds guard and the chapel route is exposed.",
       recommendedBuildHint: "Seer mana and cooldown support fit the longer aether fight."
     },
     scenarioModifierIds: ["mission_aether_surge"],
@@ -213,7 +213,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
   },
   {
     id: "chapel_of_the_marches",
-    name: "Chapel of the Marches",
+    name: "Chapel of the Barrosan Marches",
     description:
       "Campaign choice node. A roadside chapel shelters wounded scouts and old oaths. Choose a blessing, spend campaign resources, or ask for guidance before the next fight.",
     chapterId: "border_marches",
@@ -243,7 +243,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       {
         id: "repair_chapel",
         label: "Repair the Chapel",
-        description: "Spend campaign supplies to restore the signal fire. The Marches remember visible acts of stewardship.",
+        description: "Spend campaign supplies to restore the signal fire. The Barrosan Marches remember visible acts of stewardship.",
         costs: { crowns: 45, stone: 55 },
         rewards: {
           resources: { aether: 35 },
@@ -293,7 +293,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
       {
         id: "protect_them",
         label: "Protect Them",
-        description: "Assign supplies and outriders to escort the families. It is costly, but the Marches will know who stood guard.",
+        description: "Assign supplies and outriders to escort the families. It is costly, but the Barrosan Marches will know who stood guard.",
         costs: { crowns: 40 },
         rewards: {
           xp: 40,

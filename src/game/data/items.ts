@@ -72,7 +72,7 @@ export const ITEMS: ItemDefinition[] = [
     name: "Marcher Plate",
     slot: "armor",
     rarity: "uncommon",
-    description: "Sturdy armor assembled by Free Marches smiths.",
+    description: "Sturdy armor assembled by Barrosan Freeholds smiths.",
     flavorText: "Every plate is stamped by a town that refused to kneel.",
     factionOrigin: "free_marches",
     classAffinity: ["warlord"],

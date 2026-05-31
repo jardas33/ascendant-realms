@@ -107,7 +107,7 @@ export class MainMenuScene extends Phaser.Scene {
     if (!this.root) {
       return;
     }
-    const emblem = AssetLoader.imageHtml(ASSET_IDS.factions.freeMarches, "Free Marches emblem", "menu-emblem");
+    const emblem = AssetLoader.imageHtml(ASSET_IDS.factions.freeMarches, "Barrosan Freeholds emblem", "menu-emblem");
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell asset-screen-bg" data-testid="main-menu" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>

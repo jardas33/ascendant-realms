@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.88 visual foundation style-frame preparation and AI-art intake gate",
+          checkpoint: "v0.89 controlled display-copy migration batch A",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -345,6 +345,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V088_ART_INTAKE_AND_REVIEW_GATE.md", sizeBytes: 20, textContent: "v0.88 intake gate" },
       { path: "V088_EMMANUEL_VISUAL_REVIEW_PACKET.md", sizeBytes: 20, textContent: "v0.88 Emmanuel packet" },
       { path: "V088_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.88 implementation report" },
+      { path: "V089_APPLIED_COPY_MIGRATION_LEDGER.md", sizeBytes: 20, textContent: "v0.89 migration ledger" },
+      { path: "V089_DEFERRED_AMBIGUOUS_TERMS.md", sizeBytes: 20, textContent: "v0.89 deferred terms" },
+      { path: "V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md", sizeBytes: 20, textContent: "v0.89 rollback report" },
+      { path: "V089_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.89 visual QA report" },
+      { path: "V089_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.89 implementation report" },
+      { path: "V089_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.89 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

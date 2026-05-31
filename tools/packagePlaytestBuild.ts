@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.88 visual foundation style-frame preparation and AI-art intake gate";
+const CHECKPOINT = "v0.89 controlled display-copy migration batch A";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -326,6 +326,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V088_ART_INTAKE_AND_REVIEW_GATE.md", join(packageDir, "V088_ART_INTAKE_AND_REVIEW_GATE.md"));
   await copyMarkdown("docs/V088_EMMANUEL_VISUAL_REVIEW_PACKET.md", join(packageDir, "V088_EMMANUEL_VISUAL_REVIEW_PACKET.md"));
   await copyMarkdown("docs/V088_IMPLEMENTATION_REPORT.md", join(packageDir, "V088_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V089_APPLIED_COPY_MIGRATION_LEDGER.md", join(packageDir, "V089_APPLIED_COPY_MIGRATION_LEDGER.md"));
+  await copyMarkdown("docs/V089_DEFERRED_AMBIGUOUS_TERMS.md", join(packageDir, "V089_DEFERRED_AMBIGUOUS_TERMS.md"));
+  await copyMarkdown("docs/V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md", join(packageDir, "V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md"));
+  await copyMarkdown("docs/V089_VISUAL_QA_REPORT.md", join(packageDir, "V089_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V089_IMPLEMENTATION_REPORT.md", join(packageDir, "V089_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V089_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V089_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -425,7 +431,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.88, start with V088_EMMANUEL_VISUAL_REVIEW_PACKET.md, then read V088_SCREEN_BY_SCREEN_VISUAL_FOUNDATION.md, V088_UI_DESIGN_TOKEN_PROPOSAL.md, and V088_ART_INTAKE_AND_REVIEW_GATE.md. This package includes planning documents for future visual style-frame review only. It generated no images, imports no art, changes no runtime assets, changes no saves, and keeps gameplay, rewards, campaign logic, stable IDs, maps, factions, and engine decisions unchanged.
+For v0.89, start with V089_EMMANUEL_RETEST_CHECKLIST.md, V089_APPLIED_COPY_MIGRATION_LEDGER.md, and V089_DEFERRED_AMBIGUOUS_TERMS.md. This package applies the approved display-copy migration batch only: Barrosan Freeholds, The Barrosan Marches, Salto Outskirts, Rootbound Concord, and Lume Surge. It changes no saves, rewards, campaign logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
 
 ## Known Warning
 

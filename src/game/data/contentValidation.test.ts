@@ -21,6 +21,7 @@ import { REPUTATION_EFFECTS, TRACKED_REPUTATION_FACTION_IDS } from "./reputation
 import { REWARD_TABLES } from "./rewards";
 import { RELIC_REWARD_DEFINITIONS } from "./relicRewards";
 import { RIVAL_REWARDS } from "./rivalRewards";
+import { RESOURCE_DEFINITIONS } from "./resources";
 import { SKILL_NODES, SKILL_TREES } from "./skillTrees";
 import { HERO_CLASSES } from "./heroClasses";
 import { STRONGHOLD_UPGRADES } from "./strongholdUpgrades";
@@ -30,6 +31,7 @@ import { validateContent } from "./contentValidation";
 import { UNIT_BY_ID, UNIT_ROLE_BY_ID } from "./contentIndex";
 import { VISUAL_ASSET_MANIFEST } from "../assets/visualAssetManifest";
 import { validateVisualAssetManifest, type VisualAssetValidationOptions } from "./validation/validateVisualAssets";
+import { CURRENT_SAVE_VERSION } from "../save/SaveDefaults";
 
 function validateVisualAssets(options: VisualAssetValidationOptions = {}): string[] {
   const errors: string[] = [];
@@ -40,6 +42,26 @@ function validateVisualAssets(options: VisualAssetValidationOptions = {}): strin
 describe("content validation", () => {
   it("keeps data references valid for non-coder edits", () => {
     expect(validateContent()).toEqual([]);
+  });
+
+  it("keeps v0.89 display-copy migration on approved visible strings without renaming stable IDs", () => {
+    expect(CURRENT_SAVE_VERSION).toBe(2);
+    expect(FACTIONS.find((faction) => faction.id === "free_marches")?.name).toBe("Barrosan Freeholds");
+    expect(FACTIONS.find((faction) => faction.id === "ashen_covenant")?.name).toBe("Ashen Covenant");
+    expect(FACTIONS.find((faction) => faction.id === "sylvan_concord")?.name).toBe("Rootbound Concord");
+    expect(CAMPAIGN_CHAPTERS.find((chapter) => chapter.id === "border_marches")?.title).toBe(
+      "Chapter 1: The Barrosan Marches"
+    );
+    expect(CAMPAIGN_NODES.find((node) => node.id === "border_village")?.name).toBe("Salto Outskirts");
+    expect(CAMPAIGN_NODES.find((node) => node.id === "aether_well_ruins")?.name).toBe("Aether Well Ruins");
+    expect(CAMPAIGN_MODIFIERS.find((modifier) => modifier.id === "mission_aether_surge")?.name).toBe("Lume Surge");
+    expect(BATTLEFIELD_EVENTS.find((event) => event.id === "aether_surge")?.name).toBe("Lume Surge");
+    expect(RESOURCE_DEFINITIONS.find((resource) => resource.id === "aether")?.name).toBe("Aether");
+    expect(HERO_CLASSES.find((heroClass) => heroClass.id === "warlord")?.name).toBe("Warlord");
+    expect(ITEMS.find((item) => item.id === "aether_lens")?.name).toBe("Aether Lens");
+    expect(ITEMS.find((item) => item.id === "cinderseer_focus")?.name).toBe("Cinder-Seer Focus");
+    expect(SKILL_NODES.find((node) => node.id === "magic_warding")?.name).toBe("Aether Flow");
+    expect(SKILL_NODES.find((node) => node.id === "magic_focus")?.description).toContain("Mana");
   });
 
   it("validates player-facing unit role identities", () => {

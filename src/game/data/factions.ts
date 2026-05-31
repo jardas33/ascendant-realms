@@ -3,8 +3,8 @@ import type { FactionDefinition } from "../core/GameTypes";
 export const FACTIONS: FactionDefinition[] = [
   {
     id: "free_marches",
-    name: "The Free Marches",
-    fantasy: "Border-town militias, scouts, and oathbound mystics fighting for self-rule.",
+    name: "Barrosan Freeholds",
+    fantasy: "Salto militias, scouts, and oathbound mystics defending the Barrosan Marches.",
     color: 0x4f8f68,
     mechanics: {
       economyStyle: "Balanced site economy with strong campaign support from trusted local communities.",
@@ -81,7 +81,7 @@ export const FACTIONS: FactionDefinition[] = [
   },
   {
     id: "sylvan_concord",
-    name: "Sylvan Concord",
+    name: "Rootbound Concord",
     fantasy: "Future faction: forest spirits, wardens, beasts, and living sanctuaries.",
     color: 0x6ab06e,
     mechanics: {

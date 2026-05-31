@@ -52,7 +52,7 @@ const heroSprites = [
     displayName,
     usage: "runtime",
     usedBy: ["src/game/assets/AssetKeys.ts", BATTLE_PRELOAD, UNIT_RENDERER],
-    visualFamily: "Free Marches hero",
+    visualFamily: "Barrosan Freeholds hero",
     scaleClass: "hero",
     intendedWorldHeightPx: 82.65,
     currentRenderHeightPx: 82.65,
@@ -64,9 +64,9 @@ const heroSprites = [
 );
 
 const unitSprites = [
-  ["militia_unit_sprite", "Militia Unit Battle Sprite", "militia", "Free Marches infantry", "infantry", 47.45],
-  ["ranger_unit_sprite", "Ranger Unit Battle Sprite", "ranger", "Free Marches infantry", "ranged", 43.8],
-  ["acolyte_unit_sprite", "Acolyte Unit Battle Sprite", "acolyte", "Free Marches infantry", "caster", 43.8],
+  ["militia_unit_sprite", "Militia Unit Battle Sprite", "militia", "Barrosan Freeholds infantry", "infantry", 47.45],
+  ["ranger_unit_sprite", "Ranger Unit Battle Sprite", "ranger", "Barrosan Freeholds infantry", "ranged", 43.8],
+  ["acolyte_unit_sprite", "Acolyte Unit Battle Sprite", "acolyte", "Barrosan Freeholds infantry", "caster", 43.8],
   ["raider_unit_sprite", "Raider Unit Battle Sprite", "raider", "Ashen Covenant enemy", "infantry", 47.45],
   ["hexer_unit_sprite", "Hexer Unit Battle Sprite", "hexer", "Ashen Covenant enemy", "caster", 43.8],
   ["brute_unit_sprite", "Brute Unit Battle Sprite", "brute", "Ashen Covenant enemy", "large-enemy", 58.4],
@@ -105,9 +105,9 @@ const unitSpriteAssets = unitSprites.map(([id, displayName, filename, visualFami
 );
 
 const unitConceptAssets = [
-  ["militia_unit_concept", "Militia Unit Concept", "militia", "Free Marches infantry"],
-  ["ranger_unit_concept", "Ranger Unit Concept", "ranger", "Free Marches infantry"],
-  ["acolyte_unit_concept", "Acolyte Unit Concept", "acolyte", "Free Marches infantry"]
+  ["militia_unit_concept", "Militia Unit Concept", "militia", "Barrosan Freeholds infantry"],
+  ["ranger_unit_concept", "Ranger Unit Concept", "ranger", "Barrosan Freeholds infantry"],
+  ["acolyte_unit_concept", "Acolyte Unit Concept", "acolyte", "Barrosan Freeholds infantry"]
 ].map(([id, displayName, filename, visualFamily]) =>
   visualAsset({
     id,
@@ -127,10 +127,10 @@ const unitConceptAssets = [
 );
 
 const buildingSprites = [
-  ["command_hall_building_sprite", "Command Hall Battle Sprite", "command_hall", "Free Marches command building", "building-large", 116.44],
-  ["barracks_building_sprite", "Barracks Battle Sprite", "barracks", "Free Marches production building", "building-medium", 90.88],
-  ["mystic_lodge_building_sprite", "Mystic Lodge Battle Sprite", "mystic_lodge", "Free Marches production building", "building-medium", 88.04],
-  ["watchtower_building_sprite", "Watchtower Battle Sprite", "watchtower", "Free Marches defense building", "building-small", 102.24],
+  ["command_hall_building_sprite", "Command Hall Battle Sprite", "command_hall", "Barrosan Freeholds command building", "building-large", 116.44],
+  ["barracks_building_sprite", "Barracks Battle Sprite", "barracks", "Barrosan Freeholds production building", "building-medium", 90.88],
+  ["mystic_lodge_building_sprite", "Mystic Lodge Battle Sprite", "mystic_lodge", "Barrosan Freeholds production building", "building-medium", 88.04],
+  ["watchtower_building_sprite", "Watchtower Battle Sprite", "watchtower", "Barrosan Freeholds defense building", "building-small", 102.24],
   [
     "enemy_stronghold_building_sprite",
     "Enemy Stronghold Battle Sprite",
@@ -162,10 +162,10 @@ const buildingSpriteAssets = buildingSprites.map(([id, displayName, filename, vi
 );
 
 const buildingConceptAssets = [
-  ["command_hall_concept", "Command Hall Concept", "command_hall", "Free Marches command building", "building-large"],
-  ["barracks_concept", "Barracks Concept", "barracks", "Free Marches production building", "building-medium"],
-  ["mystic_lodge_concept", "Mystic Lodge Concept", "mystic_lodge", "Free Marches production building", "building-medium"],
-  ["watchtower_concept", "Watchtower Concept", "watchtower", "Free Marches defense building", "building-small"]
+  ["command_hall_concept", "Command Hall Concept", "command_hall", "Barrosan Freeholds command building", "building-large"],
+  ["barracks_concept", "Barracks Concept", "barracks", "Barrosan Freeholds production building", "building-medium"],
+  ["mystic_lodge_concept", "Mystic Lodge Concept", "mystic_lodge", "Barrosan Freeholds production building", "building-medium"],
+  ["watchtower_concept", "Watchtower Concept", "watchtower", "Barrosan Freeholds defense building", "building-small"]
 ] as const;
 
 const buildingConceptVisualAssets = buildingConceptAssets.map(([id, displayName, filename, visualFamily, scaleClass]) =>
@@ -187,7 +187,7 @@ const buildingConceptVisualAssets = buildingConceptAssets.map(([id, displayName,
 );
 
 const portraits = [
-  ["warlord_hero_portrait", "Warlord Hero Portrait", "Warlord Hero Portrait.png", "Free Marches hero"],
+  ["warlord_hero_portrait", "Warlord Hero Portrait", "Warlord Hero Portrait.png", "Barrosan Freeholds hero"],
   ["arcanist_hero_portrait", "Arcanist Hero Portrait", "Arcanist Hero Portrait.png", "Arcanist hero"],
   ["shepherd_hero_portrait", "Shepherd Hero Portrait", "Shepherd Hero Portrait.png", "Shepherd hero"],
   ["enemy_commander_portrait", "Enemy Commander Portrait", "Enemy Commander Portrait.png", "Ashen Covenant commander"]
@@ -263,9 +263,9 @@ const resourceIcons = [
 );
 
 const factionEmblems = [
-  ["free_marches_emblem", "Free Marches Emblem", "Free Marches Emblem.png", "Free Marches", "runtime"],
+  ["free_marches_emblem", "Barrosan Freeholds Emblem", "Free Marches Emblem.png", "Barrosan Freeholds", "runtime"],
   ["ashen_covenant_emblem", "Ashen Covenant Emblem", "Ashen Covenant Emblem.png", "Ashen Covenant", "manual-reference"],
-  ["sylvan_concord_emblem", "Sylvan Concord Emblem", "Sylvan Concord Emblem.png", "Sylvan Concord", "manual-reference"]
+  ["sylvan_concord_emblem", "Rootbound Concord Emblem", "Sylvan Concord Emblem.png", "Rootbound Concord", "manual-reference"]
 ].map(([id, displayName, filename, visualFamily, usage]) =>
   visualAsset({
     id,

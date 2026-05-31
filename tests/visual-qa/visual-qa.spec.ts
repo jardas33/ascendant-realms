@@ -424,7 +424,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v0.87 campaign shell 1920",
       "v087-campaign-shell-1920.png",
       FULL_HD,
-      "Second-polish campaign shell at 1920x1080: enlarged map, chapter lanes, selected Border Village, and primary action visible."
+      "Second-polish campaign shell at 1920x1080: enlarged map, chapter lanes, selected Salto Outskirts, and primary action visible."
     );
 
     await useViewport(page, LAPTOP);

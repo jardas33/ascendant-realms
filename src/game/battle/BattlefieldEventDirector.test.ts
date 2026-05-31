@@ -98,7 +98,7 @@ describe("BattlefieldEventDirector", () => {
     expect(retinueCompleted.type).toBe("completed");
   });
 
-  it("uses Aether Surge only when a fresh hero ability is used", () => {
+  it("uses Lume Surge only when a fresh hero ability is used", () => {
     const director = new BattlefieldEventDirector();
     const started = director.forceStartEvent(
       "aether_surge",

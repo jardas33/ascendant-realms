@@ -1324,14 +1324,17 @@ export class BattleScene extends Phaser.Scene {
   private refreshBattleHud(deltaSeconds: number): void {
     const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
+    const isPlacing = Boolean(this.buildingSystem.pendingBuildingId);
+    const placementStatus =
+      this.buildingSystem.placementMessage || "Click valid ground near your base to place the building.";
     this.uiSystem.update(deltaSeconds, {
       resources: this.resources.player,
       hero: this.hero,
       selected,
       elapsedSeconds: this.runtime.elapsedSeconds,
-      isPlacing: Boolean(this.buildingSystem.pendingBuildingId),
-      status: this.statusMessage,
-      statusCategory: battleStatusCategory(this.statusPriority),
+      isPlacing,
+      status: isPlacing ? placementStatus : this.statusMessage,
+      statusCategory: isPlacing ? "routine" : battleStatusCategory(this.statusPriority),
       hint: this.tutorialHint,
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
@@ -1907,7 +1910,7 @@ export class BattleScene extends Phaser.Scene {
     this.hero.mana = Math.min(this.hero.maxMana, this.hero.mana + amount);
     const gained = Math.floor(this.hero.mana - before);
     if (gained > 0) {
-      this.showMessage(`Aether Surge: +${gained} Mana`, this.hero.position.x, this.hero.position.y - 58, "#74d3f2", {
+      this.showMessage(`Lume Surge: +${gained} Mana`, this.hero.position.x, this.hero.position.y - 58, "#74d3f2", {
         priority: "objective"
       });
     }

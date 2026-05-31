@@ -1283,7 +1283,7 @@ async function startSyntheticResults(page: Page, outcome: "victory" | "defeat", 
       campaignResult: selectedOutcome === "victory"
         ? {
             completedNodeId: "border_village",
-            completedNodeName: "Border Village",
+            completedNodeName: "Salto Outskirts",
             unlockedNodeIds: ["old_stone_road"],
             unlockedNodeNames: ["Old Stone Road"],
             nodeReward: {
@@ -6189,7 +6189,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("Victory");
-    await expect(page.locator(".results-panel")).toContainText("Border Village");
+    await expect(page.locator(".results-panel")).toContainText("Salto Outskirts");
     await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 2: First Campaign Battle");
     await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Old Stone Road");
     const save = await readSave(page);
@@ -6204,7 +6204,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Replayable/i);
     await expect(page.getByTestId("campaign-node-old_stone_road")).toContainText(/Available/i);
-    await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow completed Border Village detail");
+    await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow completed Salto Outskirts detail");
     await expect(page.locator(".campaign-node-details")).toContainText("Replay reward");
     await expect(page.locator(".campaign-node-details")).toContainText("Completed battle nodes are replayable.");
   });
@@ -6294,7 +6294,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(survival.hudStatusText).toContain("Enemy wave 1 defeated");
   });
 
-  test("Chapel of the Marches guidance keeps the node open before a completing repair choice @hosted-deep-campaign", async ({ page }) => {
+  test("Chapel of the Barrosan Marches guidance keeps the node open before a completing repair choice @hosted-deep-campaign", async ({ page }) => {
     await seedSave(page, {
       hero: {
         level: 3,
@@ -6320,7 +6320,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
-    await clickReady(page.getByTestId("campaign-node-chapel_of_the_marches"), "deep-flow Chapel of the Marches node");
+    await clickReady(page.getByTestId("campaign-node-chapel_of_the_marches"), "deep-flow Chapel of the Barrosan Marches node");
     await expect(page.locator("button[data-campaign-choice='ask_for_guidance']")).toContainText("Keeps this node open");
     await clickCampaignChoiceAndExpectStatus(
       page,
@@ -6883,7 +6883,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await startBorderVillageCampaignBattle(page);
     await forceActiveBattleOutcome(page, "victory");
     await expect(page.locator(".results-panel")).toContainText("Victory");
-    await expect(page.locator(".campaign-reward-block")).toContainText("Border Village");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Salto Outskirts");
     let save = await readSave(page);
     expect(save.campaign.completedNodeIds).toContain("border_village");
     expect(save.campaign.unlockedNodeIds).toContain("old_stone_road");

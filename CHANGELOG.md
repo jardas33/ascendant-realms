@@ -1,5 +1,35 @@
 # Changelog
 
+# v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
+
+This checkpoint applies the first approved low-risk player-facing display-copy migration batch without changing gameplay, saves, stable IDs, serialized values, rewards, balance, maps, factions, art/assets, runtime title, public title, class display names, or repository/package folder names.
+
+Added:
+
+- `docs/V089_APPLIED_COPY_MIGRATION_LEDGER.md`.
+- `docs/V089_DEFERRED_AMBIGUOUS_TERMS.md`.
+- `docs/V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md`.
+- `docs/V089_VISUAL_QA_REPORT.md`.
+- `docs/V089_IMPLEMENTATION_REPORT.md`.
+- `docs/V089_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Approved player-facing copy now uses Barrosan Freeholds, The Barrosan Marches, Salto Outskirts/Salto-adjacent opening copy, Rootbound Concord, and Lume Surge where v0.79/v0.80 approved the migration.
+- Content validation now guards the copy-only migration and protected IDs: `free_marches`, `sylvan_concord`, `border_marches`, `border_village`, `mission_aether_surge`, `aether_surge`, `aether_lens`, `maxMana`, `Aether`, `Mana`, and `CURRENT_SAVE_VERSION`.
+- Package generation and package verification metadata now include the v0.89 copy migration docs.
+- Active building-placement instructions now remain visible in the HUD status line while battlefield event status remains available in event/objective UI.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, serialized IDs, gameplay systems, campaign progression, reward logic, XP, replay logic, Tutorial safety, maps, factions, units, buildings, relic IDs, art/assets, runtime title, public title, class display names, or repository/package folder names changed.
+- `Aether`, `Aether Well Ruins`, `Aether Lens`, `Aether Flow`, `Mana`, and ambiguous Aether/Marcher/class/title terms remain deferred.
+
+Verification:
+
+- Passed: `npm test` with 91 files / 676 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, fast smoke with 9 tests, full smoke with 16 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, and visual QA with 6 tests / 36 screenshots / 0 console errors / 0 retries.
+- Resolved non-pass evidence: the first hosted deep-battle rerun failed 2 of 29 tests; exact reruns isolated one transient behaviour gauntlet timeout and one placement-status readability regression. After the presentation fix and rebuild, the exact failing test and full hosted deep-battle lane passed.
+
 # v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
 
 This checkpoint prepares a controlled professional visual pipeline before any AI-assisted art generation begins. It is docs-first and does not generate images, import assets, add runtime art, redesign gameplay, alter saves, rename stable IDs, choose a desktop engine, or start v0.89.

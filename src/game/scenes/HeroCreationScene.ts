@@ -90,7 +90,7 @@ export class HeroCreationScene extends Phaser.Scene {
           <p class="eyebrow">${this.nextMode === "campaign" ? "New Campaign" : "Hero Creation"}</p>
           <h1>Choose Your Ascendant</h1>
           <div class="guidance-card compact">
-            <strong>${this.nextMode === "campaign" ? "Campaign Begins At Border Village" : "Build A Persistent Hero"}</strong>
+            <strong>${this.nextMode === "campaign" ? "Campaign Begins At Salto Outskirts" : "Build A Persistent Hero"}</strong>
             <p>${
               this.nextMode === "campaign"
                 ? "Choose a hero style you like. The first battle teaches the RTS loop, then rewards feed into inventory and skill progression."

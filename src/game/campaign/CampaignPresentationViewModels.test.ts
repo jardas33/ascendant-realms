@@ -107,7 +107,7 @@ describe("campaign presentation view models", () => {
     expect(borderHtml).toContain("First Campaign Battle");
     expect(borderHtml).toContain("Ready to start.");
     expect(oldRoadHtml).toContain("Act 1 Step 3: Base Development");
-    expect(oldRoadHtml).toContain("Complete Border Village first.");
+    expect(oldRoadHtml).toContain("Complete Salto Outskirts first.");
     expect(oldRoadHtml).toContain("Train Workers early");
   });
 

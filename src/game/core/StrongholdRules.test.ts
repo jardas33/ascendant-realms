@@ -95,7 +95,7 @@ describe("stronghold development rules", () => {
     expect(tierTwo.campaign.strongholdUpgradeRanks.quartermaster_stores_ii).toBe(1);
   });
 
-  it("discounts Stronghold Crown costs when Free Marches reputation is friendly", () => {
+  it("discounts Stronghold Crown costs when Barrosan Freeholds reputation is friendly", () => {
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),
       resources: { crowns: 100, stone: 0, iron: 40, aether: 0 }

@@ -296,6 +296,12 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V088_ART_INTAKE_AND_REVIEW_GATE.md",
   "V088_EMMANUEL_VISUAL_REVIEW_PACKET.md",
   "V088_IMPLEMENTATION_REPORT.md",
+  "V089_APPLIED_COPY_MIGRATION_LEDGER.md",
+  "V089_DEFERRED_AMBIGUOUS_TERMS.md",
+  "V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md",
+  "V089_VISUAL_QA_REPORT.md",
+  "V089_IMPLEMENTATION_REPORT.md",
+  "V089_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -406,7 +412,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.88 visual foundation style-frame preparation and AI-art intake gate",
+      "v0.89 controlled display-copy migration batch A",
       "build info checkpoint",
       checks,
       errors

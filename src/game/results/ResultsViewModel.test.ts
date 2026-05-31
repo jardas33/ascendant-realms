@@ -349,7 +349,7 @@ describe("results scene helpers", () => {
       },
       campaignResult: {
         completedNodeId: "border_village",
-        completedNodeName: "Border Village",
+        completedNodeName: "Salto Outskirts",
         unlockedNodeIds: ["old_stone_road"],
         unlockedNodeNames: ["Old Stone Road"],
         nodeReward: { xp: 20, itemIds: [], resources: { crowns: 10, stone: 0, iron: 0, aether: 0 } },
@@ -363,7 +363,7 @@ describe("results scene helpers", () => {
 
     expect(html).toContain('data-testid="results-overview"');
     expect(html).toContain("Mission Complete");
-    expect(html).toContain("Border Village");
+    expect(html).toContain("Salto Outskirts");
     expect(html).toContain("First-clear rewards");
     expect(html).toContain("Next mission unlocked: Old Stone Road");
   });
@@ -987,7 +987,7 @@ describe("results scene helpers", () => {
         encounters: 2,
         defeats: 1,
         victoriesAgainstPlayer: 0,
-        consequenceText: "Veyra is humiliated, and the Border Marches celebrate the victory.",
+        consequenceText: "Veyra is humiliated, and the Barrosan Marches celebrate the victory.",
         rewardText: "+90 XP, +20 Aether, Cinder-Seer Lens, +1 Old Faith reputation, Trophy: Cinder-Seer's Cracked Lens",
         firstDefeatRewardEarned: true,
         duplicateFirstDefeatRewardPrevented: false,

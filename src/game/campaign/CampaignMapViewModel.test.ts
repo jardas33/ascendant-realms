@@ -191,7 +191,7 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("data-campaign-choice=\"raise_malrecs_standard\"");
     expect(html).toContain("Raise Malrec&#039;s Standard");
     expect(html).toContain("Rewards: 10 XP");
-    expect(html).toContain("Reputation: +3 The Free Marches");
+    expect(html).toContain("Reputation: +3 Barrosan Freeholds");
     expect(html).toContain("Modifiers: Gain Well Rested");
     expect(html).not.toContain("Requires trophy Malrec&#039;s Outpost Standard");
   });
@@ -379,7 +379,7 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("Secure the Watch Road");
     expect(html).toContain("Cost: 45 Crowns, 18 Stone");
     expect(html).toContain("Rewards: 12 XP, 10 Stone");
-    expect(html).toContain("Reputation: +4 The Free Marches");
+    expect(html).toContain("Reputation: +4 Barrosan Freeholds");
     expect(html).toContain("Modifiers: Gain Local Support");
     expect(html).toContain("Aid the Fenfolk");
     expect(html).toContain("Cost: 40 Crowns");

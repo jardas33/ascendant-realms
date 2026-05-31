@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "generatedBy": "ControlBehaviourScenarioRunner",
-  "generatedAt": "2026-05-31T10:37:22.675Z",
-  "buildCommit": "b046d80",
+  "generatedAt": "2026-05-31T14:42:11.344Z",
+  "buildCommit": "b8b9d41",
   "runMode": "extended",
   "iterationCount": 5,
   "scenarioCount": 18,
@@ -3616,8 +3616,8 @@
   "dashboard": {
     "schemaVersion": 1,
     "generatedBy": "ControlBehaviourScenarioRunner",
-    "generatedAt": "2026-05-31T10:37:22.675Z",
-    "buildCommit": "b046d80",
+    "generatedAt": "2026-05-31T14:42:11.344Z",
+    "buildCommit": "b8b9d41",
     "iterationCount": 5,
     "scenarioCount": 18,
     "passCount": 90,

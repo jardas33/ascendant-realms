@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.88 visual foundation style-frame preparation and AI-art intake gate
+Updated: 2026-05-31 v0.89 controlled display-copy migration batch A
+
+## v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
+
+Scope: narrow copy-only runtime migration based on the v0.79 direction lock and v0.80 string inventory. This pass changes approved player-facing display labels only: Barrosan Freeholds, The Barrosan Marches, Salto Outskirts/Salto onboarding, Rootbound Concord, and Lume Surge. It does not change saves, serialized values, stable IDs, gameplay, campaign progression, rewards, balance, maps, factions, art/assets, repository folders, runtime/internal title, public title, or class display names.
+
+Baseline:
+
+- Starting commit/package: `b8b9d41`, `ascendant-realms-private-playtest-b8b9d41`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26713031477` on `b8b9d41` completed successfully.
+
+Included work:
+
+- Added `docs/V089_APPLIED_COPY_MIGRATION_LEDGER.md`.
+- Added `docs/V089_DEFERRED_AMBIGUOUS_TERMS.md`.
+- Added `docs/V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md`.
+- Added `docs/V089_VISUAL_QA_REPORT.md`.
+- Added `docs/V089_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V089_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated faction, campaign, Results, onboarding, HUD/status, tooltip/test, and package-visible copy for the approved migration set.
+- Added content-validation guards that assert stable IDs are unchanged while approved display labels changed.
+- Preserved `Aether`, `Aether Well Ruins`, `Aether Lens`, `Aether Flow`, `Mana`, `maxMana`, all map/node/site/class/unit/building/relic IDs, save fields, and `CURRENT_SAVE_VERSION`.
+- Fixed active building-placement HUD status readability so battlefield event copy cannot obscure the current placement instruction.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, serialized IDs, campaign progression, replay state, rewards, XP, Tutorial behavior, or package folder naming changed.
+
+Verification:
+
+```text
+npm test PASS, 91 files / 676 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 36 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Resolved non-pass evidence: an initial hosted deep-battle rerun failed 2 of 29 tests. The behaviour-mode gauntlet passed on exact rerun; the first-campaign build placement failure was fixed as presentation priority only, rebuilt, rerun exactly, and then confirmed by a full hosted deep-battle pass.
+
+Closeout note: commit as `Checkpoint v0.89 controlled display-copy migration batch A`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
 

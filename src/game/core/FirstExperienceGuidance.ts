@@ -42,8 +42,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (!completed.has("border_village")) {
     return {
       title: "Start Here",
-      body: "Begin at Border Village after Tutorial / Proving Grounds. It is the first persistent campaign battle for capturing a site, building a Barracks, training troops, and defending the first wave.",
-      actions: [act1Next.title, "Select Border Village", "Win the battle", "Look at your rewards after victory"]
+      body: "Begin at Salto Outskirts after Tutorial / Proving Grounds. It is the first persistent campaign battle for capturing a site, building a Barracks, training troops, and defending the first wave.",
+      actions: [act1Next.title, "Select Salto Outskirts", "Win the battle", "Look at your rewards after victory"]
     };
   }
 
@@ -73,8 +73,8 @@ export function getCampaignNextAction(campaign: CampaignSaveData, hero: HeroSave
   if (unlocked.has("chapel_of_the_marches") && !completed.has("chapel_of_the_marches")) {
     return {
       title: "Campaign Choice Moment",
-      body: "Chapel of the Marches is a non-battle node. You can take a blessing, spend supplies on a lasting repair, or ask for scouting guidance without closing the chapel.",
-      actions: ["Select Chapel of the Marches", "Compare choice costs", "Use guidance if you want to scout first"]
+      body: "Chapel of the Barrosan Marches is a non-battle node. You can take a blessing, spend supplies on a lasting repair, or ask for scouting guidance without closing the chapel.",
+      actions: ["Select Chapel of the Barrosan Marches", "Compare choice costs", "Use guidance if you want to scout first"]
     };
   }
 
@@ -222,7 +222,7 @@ export function getResultsGuidance(input: ResultsGuidanceInput): GuidanceMessage
 
   if (input.completedNodeId === "border_village") {
     return {
-      title: "Border Village Secured",
+      title: "Salto Outskirts Secured",
       body: "You finished the first persistent campaign battle. Your next loop is hero growth, then the Old Stone Road base-development mission.",
       actions: [
         input.rewardItemCount > 0 ? "Equip your new item" : "Check inventory",

@@ -1270,14 +1270,14 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await page.setViewportSize({ width: 1366, height: 768 });
     await startNewCampaign(page, "E2E Campaign");
 
-    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Border Village");
+    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Salto Outskirts");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
     await expectCampaignMapShellFitsViewport(page, "fresh campaign 1366x768");
     await expectCampaignMapNodesDoNotOverlap(page);
     await page.setViewportSize({ width: 1920, height: 1080 });
     await expectCampaignMapShellFitsViewport(page, "fresh campaign 1920x1080");
     await expectCampaignMapNodesDoNotOverlap(page);
-    await expect(page.getByTestId("campaign-lane-border_marches")).toContainText("Chapter 1: Border Marches");
+    await expect(page.getByTestId("campaign-lane-border_marches")).toContainText("Chapter 1: The Barrosan Marches");
     await expect(page.getByTestId("campaign-lane-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-route-layer")).toBeVisible();
     await clickReady(page.getByTestId("campaign-tab-intel"), "smoke campaign intel tab");
@@ -1285,7 +1285,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Locked");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await clickReady(page.getByTestId("campaign-tab-map"), "smoke campaign map tab");
-    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Border Village");
+    await expect(page.getByTestId("campaign-selected-panel")).toContainText("Salto Outskirts");
     await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
     await expect(page.locator(".campaign-node-more summary")).toContainText("More Details");
     await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
@@ -1427,13 +1427,13 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(afterSave.hero.completedBattles).toBe(beforeSave.hero.completedBattles);
   });
 
-  test("campaign Border Village launches a battle scene @extended-smoke", async ({ page }) => {
+  test("campaign Salto Outskirts launches a battle scene @extended-smoke", async ({ page }) => {
     test.setTimeout(60_000);
     await startNewCampaign(page, "E2E Campaign");
 
-    await clickReady(page.getByTestId("campaign-node-border_village"), "smoke Border Village node");
+    await clickReady(page.getByTestId("campaign-node-border_village"), "smoke Salto Outskirts node");
     await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
-    await clickReady(page.getByTestId("campaign-start-node"), "smoke Border Village start", SCENE_TRANSITION_CLICK_OPTIONS);
+    await clickReady(page.getByTestId("campaign-start-node"), "smoke Salto Outskirts start", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     const fogVisibility = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -1489,7 +1489,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await clickReady(page.getByTestId("menu-continue-campaign"), "smoke continue post-Ashen campaign");
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await clickReady(page.getByTestId("campaign-tab-intel"), "smoke post-Ashen intel tab");
-    await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: Border Marches");
+    await expect(page.getByTestId("campaign-chapter-border_marches")).toContainText("Chapter 1: The Barrosan Marches");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Chapter 2: Cinderfen Road");
     await expect(page.getByTestId("campaign-chapter-cinderfen_road")).toContainText("Unlocked");
     await clickReady(page.getByTestId("campaign-tab-map"), "smoke post-Ashen map tab");
@@ -1930,7 +1930,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(standardChoice).toContainText("Raise Malrec's Standard");
     await expect(standardChoice).toContainText("Cost: None");
     await expect(standardChoice).toContainText("Rewards: 10 XP");
-    await expect(standardChoice).toContainText("Reputation: +3 The Free Marches");
+    await expect(standardChoice).toContainText("Reputation: +3 Barrosan Freeholds");
     await expect(standardChoice).toContainText("Modifiers: Gain Well Rested");
     await expect(standardChoice).toContainText("Completes this node");
     await expect(standardChoice).not.toContainText("Requires trophy");

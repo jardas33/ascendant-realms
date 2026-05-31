@@ -360,7 +360,7 @@ export class CampaignMapScene extends Phaser.Scene {
           <div class="progression-header campaign-top-strip">
             <div>
               <p class="eyebrow">Campaign Map</p>
-              <h1>Border Marches</h1>
+              <h1>The Barrosan Marches</h1>
               <p class="menu-copy">${escapeHtml(viewModel.progressSummary)}</p>
             </div>
             <div class="skill-points">
@@ -557,7 +557,7 @@ export class CampaignMapScene extends Phaser.Scene {
     const cinderfen = viewModel.chapters.find((chapter) => chapter.chapter.id === "cinderfen_road");
     return `
       <div class="campaign-map-lane lane-border-marches" data-testid="campaign-lane-border_marches">
-        <strong data-testid="campaign-chapter-border_marches">${escapeHtml(border?.chapter.title ?? "Chapter 1: Border Marches")}</strong>
+        <strong data-testid="campaign-chapter-border_marches">${escapeHtml(border?.chapter.title ?? "Chapter 1: The Barrosan Marches")}</strong>
         <span>${escapeHtml(border?.statusLabel ?? "Unlocked")} - main Act 1 route</span>
       </div>
       <div class="campaign-map-lane lane-cinderfen-road" data-testid="campaign-lane-cinderfen_road">

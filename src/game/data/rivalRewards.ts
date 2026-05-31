@@ -43,7 +43,7 @@ export const RIVAL_REWARDS: RivalRewardDefinition[] = [
         trophyId: "trophy_gorak_emberbrand",
         label: "Gorak's Emberbrand",
         description: "A scorched raider brand taken from Gorak Emberhand's warband.",
-        effect: "One-time first-defeat reward claimed: +25 Crowns, +15 Iron, +80 XP, and +2 Free Marches reputation."
+        effect: "One-time first-defeat reward claimed: +25 Crowns, +15 Iron, +80 XP, and +2 Barrosan Freeholds reputation."
       }
     }
   },
@@ -84,7 +84,7 @@ export const RIVAL_REWARDS: RivalRewardDefinition[] = [
         trophyId: "trophy_malrec_outpost_standard",
         label: "Malrec's Outpost Standard",
         description: "The torn fortress standard of Captain Malrec's Ashen Outpost command.",
-        effect: "Milestone one-time first-defeat reward claimed: +60 Crowns, +25 Iron, +140 XP, and +4 Free Marches reputation."
+        effect: "Milestone one-time first-defeat reward claimed: +60 Crowns, +25 Iron, +140 XP, and +4 Barrosan Freeholds reputation."
       }
     }
   }

@@ -1,12 +1,70 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.88 visual foundation style-frame preparation and AI-art intake gate
+Last updated: 2026-05-31 v0.89 controlled display-copy migration batch A
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, and v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, and v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title. No runtime rebrand is approved.
+
+## Current v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
+
+Status: v0.89 is a narrow copy-only runtime checkpoint based on the v0.79 direction lock and v0.80 string inventory. It changes approved player-facing display copy only; it does not change saves, stable IDs, serialized values, gameplay, campaign progression, rewards, balance, maps, factions, runtime title, class display names, art, imported assets, repository folders, or package folder naming.
+
+Baseline:
+
+- Starting commit/package: `b8b9d41`, `ascendant-realms-private-playtest-b8b9d41`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26713031477` on `b8b9d41` completed successfully.
+
+Included work:
+
+- Added `docs/V089_APPLIED_COPY_MIGRATION_LEDGER.md`.
+- Added `docs/V089_DEFERRED_AMBIGUOUS_TERMS.md`.
+- Added `docs/V089_COPY_ONLY_TEST_AND_ROLLBACK_REPORT.md`.
+- Added `docs/V089_VISUAL_QA_REPORT.md`.
+- Added `docs/V089_IMPLEMENTATION_REPORT.md`.
+- Added `docs/V089_EMMANUEL_RETEST_CHECKLIST.md`.
+- Updated approved player-facing copy:
+  - The Free Marches -> Barrosan Freeholds.
+  - Border Marches framing -> The Barrosan Marches.
+  - Border Village/opening-home copy -> Salto Outskirts and Salto-adjacent onboarding.
+  - Sylvan Concord -> Rootbound Concord.
+  - Aether Surge visible modifier/event label -> Lume Surge.
+- Preserved `Aether`, `Aether Well Ruins`, `Aether Lens`, `Aether Flow`, `Mana`, class names, runtime/internal title `Ascendant Realms`, public title migration, stable IDs, and save fields.
+- Added content-validation regression guards for the approved display-copy changes and protected IDs.
+- Updated e2e, visual QA, package generation, and package verification metadata for the v0.89 document set.
+- Fixed one presentation-only hosted release regression: active building-placement instructions now stay visible in the HUD status line while event pressure remains available in event/objective UI.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- `CURRENT_SAVE_VERSION` remains `2`.
+- No save fields, localStorage keys, serialized IDs, map IDs, node IDs, site IDs, class IDs, unit IDs, building IDs, relic IDs, rewards, XP, campaign progression, replay rules, Tutorial rules, balance values, maps, factions, races, units, buildings, art/assets, image generation, imported assets, repository folders, or runtime title changed.
+
+Verification:
+
+```text
+npm test PASS, 91 files / 676 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run visual:qa PASS, 6 tests / 36 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Resolved non-pass evidence: the first post-migration hosted deep-battle rerun failed 2 of 29 tests. The behaviour-mode gauntlet passed on exact rerun; the first-campaign placement failure was fixed by prioritizing active placement instructions in the HUD status line. The exact failing test and the full hosted deep-battle lane passed afterward.
+
+Closeout note: commit as `Checkpoint v0.89 controlled display-copy migration batch A`, regenerate and verify a clean package from the final commit, then push. Emmanuel should retest with `docs/V089_EMMANUEL_RETEST_CHECKLIST.md`. Do not start v0.90, rebrand the runtime title, rename stable IDs, change saves, alter rewards/balance, or generate/import art without a new explicit goal.
 
 ## Current v0.88 Visual Foundation, Style-Frame Preparation, And AI-Art Intake Gate - 2026-05-31
 

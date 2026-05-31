@@ -22,7 +22,7 @@ Act 1 campaign battle runs: 180
 
 | Step | Node | Pace | Record | Avg duration | First site | First building | First combat | Avg losses | Verdict |
 | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| 2 | Border Village | low | 36-0-0 | 4:08 | 0:22 | 1:27 | 3:53 | 0.6 | stable_forgiving |
+| 2 | Salto Outskirts | low | 36-0-0 | 4:08 | 0:22 | 1:27 | 3:53 | 0.6 | stable_forgiving |
 | 3 | Old Stone Road | standard | 36-0-0 | 4:11 | 0:22 | 1:27 | 3:24 | 1.4 | stable |
 | 4 | Aether Well Ruins | standard | 12-12-12 | 9:59 | 0:23 | 1:27 | 3:54 | 4.9 | watch_strategy_spread |
 | 5 | Bandit Hillfort | milestone | 12-23-1 | 9:10 | 0:23 | 1:26 | 4:20 | 6.3 | watch_strategy_spread |
@@ -32,7 +32,7 @@ Act 1 campaign battle runs: 180
 
 | Node | Safe Beginner | Greedy Economy | Fast Army | Recommended action |
 | --- | ---: | ---: | ---: | --- |
-| Border Village | 12-0-0 | 12-0-0 | 12-0-0 | Keep forgiving pacing; watch reward and replay clarity in manual retest. |
+| Salto Outskirts | 12-0-0 | 12-0-0 | 12-0-0 | Keep forgiving pacing; watch reward and replay clarity in manual retest. |
 | Old Stone Road | 12-0-0 | 12-0-0 | 12-0-0 | Keep current numbers and verify feel through hosted/manual play. |
 | Aether Well Ruins | 12-0-0 | 0-0-12 | 0-12-0 | Do not tune numerically yet; reinforce economy, production, and staging guidance. |
 | Bandit Hillfort | 12-0-0 | 0-11-1 | 0-12-0 | Do not tune numerically yet; reinforce economy, production, and staging guidance. |
@@ -40,7 +40,7 @@ Act 1 campaign battle runs: 180
 
 ## Failure Causes
 
-### Border Village
+### Salto Outskirts
 
 - No non-victory runs.
 

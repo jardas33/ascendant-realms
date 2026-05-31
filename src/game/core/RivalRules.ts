@@ -242,7 +242,7 @@ export function updateRivalAfterBattle(options: {
     const reward = RIVAL_REWARD_BY_ENEMY_HERO_ID[enemyHeroId]?.firstDefeat;
     const rewardAlreadyClaimed = reward ? hasRivalTrophy(campaign, reward.trophy.trophyId) : false;
     consequenceText = firstDefeat
-      ? `${heroDefinition.name} is humiliated, and the Border Marches celebrate the victory.`
+      ? `${heroDefinition.name} is humiliated, and the Barrosan Marches celebrate the victory.`
       : `${heroDefinition.name} withdraws with wounded pride. Their first-defeat reward was already claimed.`;
     if (firstDefeat && reward && !rewardAlreadyClaimed) {
       const rewardGrant = grantRivalFirstDefeatReward({

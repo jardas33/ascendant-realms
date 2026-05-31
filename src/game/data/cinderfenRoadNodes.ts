@@ -232,7 +232,7 @@ export const CINDERFEN_ROAD_NODES: CampaignNodeDefinition[] = [
         id: "secure_watch_road",
         label: "Secure the Watch Road",
         description:
-          "Build barricades and signal fires. The Watch Road becomes a steadier Free Marches foothold, with a little local support banked.",
+          "Build barricades and signal fires. The Watch Road becomes a steadier Barrosan Freeholds foothold, with a little local support banked.",
         costs: { crowns: 45, stone: 18 },
         rewards: {
           xp: 12,

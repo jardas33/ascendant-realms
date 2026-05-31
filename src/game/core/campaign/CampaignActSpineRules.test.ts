@@ -50,7 +50,7 @@ describe("campaign Act 1 spine rules", () => {
 
     expect(getCampaignActRecommendedNextStep(campaign).nodeId).toBe("border_village");
     expect(getCampaignNodeLockedReason(border, campaign)).toBe("Ready to start.");
-    expect(getCampaignNodeLockedReason(oldRoad, campaign)).toBe("Complete Border Village first.");
+    expect(getCampaignNodeLockedReason(oldRoad, campaign)).toBe("Complete Salto Outskirts first.");
   });
 
   it("first clear unlocks the next Act 1 step and marks completed battles replayable", () => {

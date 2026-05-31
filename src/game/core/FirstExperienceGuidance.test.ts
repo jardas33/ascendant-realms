@@ -12,18 +12,18 @@ import { createItemInstance } from "./HeroProgressionRules";
 import { createNewHeroSave } from "../data/heroes";
 
 describe("first experience guidance", () => {
-  it("points a new campaign player to Border Village", () => {
+  it("points a new campaign player to Salto Outskirts", () => {
     const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
     const campaign = createStartedCampaignSave(createFallbackCampaignSave());
 
     const guidance = getCampaignNextAction(campaign, hero);
 
     expect(guidance.title).toBe("Start Here");
-    expect(guidance.body).toContain("Border Village");
+    expect(guidance.body).toContain("Salto Outskirts");
     expect(guidance.actions).toContain("Win the battle");
   });
 
-  it("points post-Border Village players to inventory before Old Stone Road when progression is waiting", () => {
+  it("points post-Salto Outskirts players to inventory before Old Stone Road when progression is waiting", () => {
     const hero = {
       ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
       inventory: [createItemInstance("weathered_command_sword", "test")],
@@ -62,7 +62,7 @@ describe("first experience guidance", () => {
     const resultGuidance = getResultsGuidance({
       outcome: "victory",
       completedNodeId: "border_village",
-      completedNodeName: "Border Village",
+      completedNodeName: "Salto Outskirts",
       unlockedNodeNames: ["Old Stone Road"],
       rewardItemCount: 1,
       skillPointsGained: 1
@@ -70,7 +70,7 @@ describe("first experience guidance", () => {
 
     expect(nodeGuidance.title).toBe("First Campaign Battle");
     expect(nodeGuidance.body).toContain("persistent campaign loop");
-    expect(resultGuidance.title).toBe("Border Village Secured");
+    expect(resultGuidance.title).toBe("Salto Outskirts Secured");
     expect(resultGuidance.actions.join(" ")).toContain("Old Stone Road");
   });
 

@@ -5,9 +5,9 @@ export const DEFAULT_CAMPAIGN_CHAPTER_ID: CampaignChapterId = "border_marches";
 export const CAMPAIGN_CHAPTERS: CampaignChapterDefinition[] = [
   {
     id: "border_marches",
-    title: "Chapter 1: Border Marches",
+    title: "Chapter 1: The Barrosan Marches",
     shortDescription:
-      "The current playable mini-campaign: secure villages, ruins, the Marcher Camp, rival commanders, and Ashen Outpost.",
+      "The current playable mini-campaign: secure Salto's road, nearby ruins, the Marcher Camp, rival commanders, and Ashen Outpost.",
     nodeIds: [
       "border_village",
       "old_stone_road",

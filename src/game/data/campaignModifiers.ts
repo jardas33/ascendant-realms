@@ -142,7 +142,7 @@ export const CAMPAIGN_MODIFIERS: CampaignModifierDefinition[] = [
   },
   {
     id: "mission_aether_surge",
-    name: "Aether Surge",
+    name: "Lume Surge",
     description: "Mission modifier: the hero starts with +8% maximum mana for this battle.",
     trigger: "mission_battle",
     durationLabel: "Mission modifier",
