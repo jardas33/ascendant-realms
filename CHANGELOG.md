@@ -1,5 +1,37 @@
 # Changelog
 
+# v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
+
+This checkpoint hardens QA coverage for visual/layout regressions without adding gameplay, changing balance, altering saves, renaming stable IDs, generating/importing art, or starting desktop implementation.
+
+Added:
+
+- `docs/V090_VISUAL_REGRESSION_MATRIX.json`.
+- `docs/V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md`.
+- `docs/V090_LAYOUT_ASSERTION_COVERAGE.md`.
+- `docs/V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md`.
+- `docs/V090_VISUAL_QA_REVIEW_RULES.md`.
+- `docs/V090_IMPLEMENTATION_REPORT.md`.
+- `src/game/playtest/VisualRegressionMatrix.test.ts`.
+
+Changed:
+
+- Visual QA now captures 64 deterministic screenshots across main menu, campaign map, selected unlocked/locked missions, all campaign tabs, battle HUD states, Lume inactive/active/selected/hidden/always-visible states, private-demo Results compact/expanded, ordinary Victory/Defeat/Replay Results, and Tutorial.
+- Desktop visual acceptance now covers 1920x1080, 1600x900, and 1366x768.
+- Visual QA now records screenshot count, harness duration, average screenshot duration, console-error count, and retry usage, and fails on screenshot retries.
+- Layout coverage now asserts campaign node non-overlap, above-fold primary actions, Results action visibility, key-card text overflow, HUD/objective/minimap posture, Lume control isolation, and private-demo posture.
+- Hosted `deep-meta` expectations now navigate the current campaign tab architecture before asserting tab-specific panels and use current Retinue `Ready` status copy.
+- Package generation and package verification now include the v0.90 QA docs.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, gameplay systems, campaign progression, reward logic, XP, balance values, Tutorial safety, maps, factions, units, buildings, relic IDs, art/assets, runtime title, public title, desktop implementation, or package folder naming changed.
+
+Verification:
+
+- Passed: `npm test` with 92 files / 678 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, fast smoke with 9 tests, full smoke with 16 tests, controls normal/extended/verify, Act 1 telemetry, hosted deep-meta with 12 tests, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 25 tests, hosted layout-cinderfen with 12 tests, and visual QA with 9 tests / 64 screenshots / 0 console errors / 0 retries.
+- Resolved non-pass evidence: initial hosted `deep-meta` exposed stale campaign-tab/Retinue expectations and initial full local layout exposed one private posture assertion; exact reruns and hosted layout-core passed after test cleanup.
+
 # v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
 
 This checkpoint applies the first approved low-risk player-facing display-copy migration batch without changing gameplay, saves, stable IDs, serialized values, rewards, balance, maps, factions, art/assets, runtime title, public title, class display names, or repository/package folder names.

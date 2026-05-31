@@ -1,12 +1,70 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.89 controlled display-copy migration batch A
+Last updated: 2026-05-31 v0.90 UX visual-regression harness and desktop-viewport acceptance hardening
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, and v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, and v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay. No runtime rebrand is approved.
+
+## Current v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
+
+Status: v0.90 is a QA-hardening checkpoint. It expands deterministic visual QA and layout assertions so campaign, Results, battle HUD, Lume, private-demo, Tutorial, and desktop viewport regressions are caught before future systems land. It does not add gameplay, alter balance, change saves, rename IDs, generate/import art, or begin desktop implementation.
+
+Baseline:
+
+- Starting commit/package: `dffcaaa`, `ascendant-realms-private-playtest-dffcaaa`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26716281197` on `dffcaaa` completed successfully.
+
+Included work:
+
+- Added `docs/V090_VISUAL_REGRESSION_MATRIX.json`.
+- Added `docs/V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md`.
+- Added `docs/V090_LAYOUT_ASSERTION_COVERAGE.md`.
+- Added `docs/V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md`.
+- Added `docs/V090_VISUAL_QA_REVIEW_RULES.md`.
+- Added `docs/V090_IMPLEMENTATION_REPORT.md`.
+- Expanded visual QA from 36 to 64 deterministic screenshots, including 1920x1080, 1600x900, and 1366x768 desktop acceptance captures.
+- Added deterministic captures for main menu, fresh campaign map, selected unlocked/locked missions, all campaign tabs, ordinary battle start, selected units, selected building, contested capture site, Lume inactive/active/selected/hidden/always-visible states, private-demo Results compact/expanded, ordinary Victory/Defeat/Replay Results, and Tutorial.
+- Visual QA now records total harness duration, average screenshot duration, console-error count, screenshot count, and retry usage, and fails if screenshot retries occur.
+- Added automated layout assertions for campaign node overlap, above-fold mission and Results actions, key-card text overflow, HUD/objective/minimap posture, Lume control isolation, and private-demo control posture.
+- Added `src/game/playtest/VisualRegressionMatrix.test.ts` to validate the screenshot manifest shape and required desktop coverage.
+- Updated stale hosted `deep-meta` expectations to navigate the current campaign tab architecture and assert the current Retinue `Ready` status copy.
+- Updated package generation and package verification metadata so v0.90 QA docs ship with the clean private playtest package.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, gameplay systems, rewards, XP, balance values, campaign progression, maps, factions, races, units, buildings, art/assets, runtime title, public title, or desktop implementation changed.
+- No image generation or asset import occurred.
+
+Verification:
+
+```text
+npm test PASS, 92 files / 678 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 25 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run visual:qa PASS, 9 tests / 64 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Resolved non-pass evidence: hosted `deep-meta` initially found stale campaign-tab and Retinue status expectations, then passed after test cleanup. Local `npm run test:e2e:layout` initially passed 36/37 and exposed a local-dev/private-package posture expectation; the exact failed test and hosted layout-core rerun passed after the assertion distinguished local/private posture from hosted public posture.
+
+Closeout note: commit as `Checkpoint v0.90 UX visual-regression harness and desktop-viewport acceptance hardening`, regenerate and verify a clean package from the final commit, then push. Do not start v0.91, gameplay systems, save changes, ID renames, art generation/import, or desktop implementation without a new explicit goal.
 
 ## Current v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
 

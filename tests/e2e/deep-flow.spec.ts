@@ -98,6 +98,11 @@ const SCENE_TRANSITION_CLICK_OPTIONS = {
 const ONE_SHOT_CHOICE_CLICK_OPTIONS = {
   allowTargetDisabledAfterClick: true
 } as const;
+const CAMPAIGN_TAB_CLICK_OPTIONS = {
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
 
 const BEHAVIOUR_MODE_LABELS = {
   hold_ground: "Hold Ground",
@@ -124,6 +129,11 @@ async function clickCampaignChoiceAndExpectStatus(
     successCheckAfterClick: () => campaignStatusIncludes(page, expectedStatusText)
   });
   await expect(page.getByTestId("campaign-status")).toContainText(expectedStatusText);
+}
+
+async function openCampaignTab(page: Page, tabId: string, context: string): Promise<void> {
+  await clickReady(page.getByTestId(`campaign-tab-${tabId}`), context, CAMPAIGN_TAB_CLICK_OPTIONS);
+  await expect(page.getByTestId(`campaign-tab-panel-${tabId}`)).toBeVisible();
 }
 
 async function clickBattleCommand(locator: Locator, context: string): Promise<void> {
@@ -1580,8 +1590,10 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "stronghold", "deep-flow campaign resources stronghold tab");
     await expect(page.getByTestId("campaign-bank")).toContainText("260");
 
+    await openCampaignTab(page, "map", "deep-flow campaign resources map tab");
     await page.getByTestId("campaign-node-refugee_caravan").click();
     await expect(page.getByRole("button", { name: /Recruit Volunteers/i })).toBeEnabled();
     await page.getByRole("button", { name: /Demand Tribute/i }).click();
@@ -1637,15 +1649,18 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "reputation", "deep-flow reputation tab");
     await expect(page.getByTestId("reputation-common_folk")).toContainText("Friendly");
     await expect(page.getByTestId("reputation-ashen_covenant")).toContainText("Hostile");
     await expect(page.getByTestId("reputation-effect-common_folk_friendly_services")).toContainText("10% fewer resources");
     await expect(page.getByTestId("reputation-effect-free_marches_friendly_stronghold")).toContainText("10% fewer Crowns");
     await expect(page.getByTestId("reputation-effect-old_faith_friendly_chapel")).toContainText("+5 Aether");
     await expect(page.getByTestId("reputation-effect-ashen_covenant_hostile_pressure")).toContainText("one extra Raider");
+    await openCampaignTab(page, "stronghold", "deep-flow reputation stronghold tab");
     await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("72 Crowns");
     await expect(page.getByTestId("stronghold-upgrade-training_yard_i")).toContainText("base 80 Crowns");
 
+    await openCampaignTab(page, "map", "deep-flow reputation map tab");
     await page.getByTestId("campaign-node-marcher_camp").click();
     await expect(page.locator("button[data-campaign-choice='rest_and_recovery']")).toContainText("Cost: 27 Crowns (base 30 Crowns)");
 
@@ -1666,6 +1681,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "stronghold", "deep-flow stronghold tab");
     await expect(page.getByTestId("stronghold-panel")).toContainText("Stronghold");
     await expect(page.getByTestId("stronghold-upgrade-quartermaster_stores_ii")).toContainText("Requires Quartermaster Stores I rank 1");
 
@@ -1683,6 +1699,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(purchasedSave.campaign.resources).toMatchObject({ crowns: 130, stone: 115, iron: 65, aether: 40 });
     expect(purchasedSave.campaign.resourcesSpent).toMatchObject({ crowns: 190, stone: 105, iron: 35, aether: 0 });
 
+    await openCampaignTab(page, "map", "deep-flow stronghold map tab");
     await clickReady(
       page.getByTestId("campaign-start-node"),
       "deep-flow stronghold campaign start",
@@ -1893,6 +1910,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "hero", "deep-flow retinue hero tab");
     await expect(page.getByTestId("retinue-panel")).toContainText("1/5 roster");
     await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
     await expect(page.getByTestId("retinue-panel")).toContainText("Deployed");
@@ -1905,11 +1923,12 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.locator("button[data-retinue-deploy-toggle='retinue:e2e:veteran_militia']").click();
     await expect(page.getByTestId("retinue-panel")).toContainText("0/2 selected");
-    await expect(page.getByTestId("retinue-panel")).toContainText("Reserve");
+    await expect(page.getByTestId("retinue-panel")).toContainText("Ready");
     await page.locator("button[data-retinue-deploy-toggle='retinue:e2e:veteran_militia']").click();
     await expect(page.getByTestId("retinue-panel")).toContainText("1/2 selected");
     await expect(page.getByTestId("retinue-panel")).toContainText("Deployed");
 
+    await openCampaignTab(page, "map", "deep-flow retinue map tab");
     await clickReady(page.getByTestId("campaign-node-border_village"), "deep-flow retinue campaign node");
     await clickReady(
       page.getByTestId("campaign-start-node"),
@@ -2068,9 +2087,11 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.getByTestId("menu-continue-campaign").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "intel", "deep-flow rival intel tab");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("Veyra of the Cinders");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("Escaped");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("+5% HP next encounter");
+    await openCampaignTab(page, "map", "deep-flow rival map tab");
     await page.getByTestId("campaign-node-aether_well_ruins").click();
     await expect(page.locator(".campaign-node-details")).toContainText("Rival Status");
     await expect(page.locator(".campaign-node-details")).toContainText("Enemy Commander");
@@ -2105,6 +2126,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
 
     await page.locator("button[data-results-action='campaign']").click();
     await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await openCampaignTab(page, "intel", "deep-flow rival post-results intel tab");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("2 encounters");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("1 defeats");
     await expect(page.getByTestId("rival-intel-panel")).toContainText("Humiliated");

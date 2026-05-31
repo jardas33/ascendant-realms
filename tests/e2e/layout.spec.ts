@@ -9,13 +9,25 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "./chapter2-helpers";
-import { clickReady, continueSavedCampaign, expectBattleLoaded, openFreshMainMenu, seedCampaignSave } from "./shared-helpers";
+import {
+  clickReady,
+  continueSavedCampaign,
+  expectBattleLoaded,
+  openFreshMainMenu,
+  seedCampaignSave,
+  startNewCampaign
+} from "./shared-helpers";
 
 const LAYOUT_VIEWPORTS = [
   { width: 1366, height: 768, label: "desktop" },
   { width: 820, height: 620, label: "tablet-short" },
   { width: 390, height: 844, label: "mobile-tall" },
   { width: 360, height: 640, label: "mobile-short" }
+];
+const DESKTOP_ACCEPTANCE_VIEWPORTS = [
+  { width: 1920, height: 1080, label: "full-hd" },
+  { width: 1600, height: 900, label: "wide-desktop" },
+  { width: 1366, height: 768, label: "laptop" }
 ];
 const CINDERFEN_READABILITY_VIEWPORTS = [
   { width: 1366, height: 768, label: "desktop" },
@@ -73,6 +85,91 @@ async function expectNoHorizontalOverflow(page: Page, label: string): Promise<vo
   });
 
   expect(result.offenders, `${label} horizontal overflow at ${result.viewportWidth}px`).toEqual([]);
+}
+
+async function expectNoCampaignNodeOverlap(page: Page, label: string): Promise<void> {
+  const overlaps = await page.evaluate(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".campaign-map-grid .campaign-node"))
+      .filter((node) => {
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      })
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          id: node.dataset.campaignNode ?? node.getAttribute("data-testid") ?? "",
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom
+        };
+      });
+    const pairs: string[] = [];
+    for (let index = 0; index < nodes.length; index += 1) {
+      for (let compare = index + 1; compare < nodes.length; compare += 1) {
+        const first = nodes[index];
+        const second = nodes[compare];
+        const width = Math.min(first.right, second.right) - Math.max(first.left, second.left);
+        const height = Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top);
+        if (width > 2 && height > 2) {
+          pairs.push(`${first.id} overlaps ${second.id} by ${Math.round(width)}x${Math.round(height)}`);
+        }
+      }
+    }
+    return pairs;
+  });
+
+  expect(overlaps, `${label} campaign node cards should not overlap`).toEqual([]);
+}
+
+async function expectActionAboveFold(page: Page, locator: Locator, label: string): Promise<void> {
+  const box = await waitForLayoutBox(page, locator);
+  expect(box, `${label} has a layout box`).not.toBeNull();
+  const viewport = page.viewportSize();
+  expect(viewport, `${label} viewport exists`).not.toBeNull();
+  const mainScrollTop = await page.locator("main").evaluate((element) => element.scrollTop).catch(() => 0);
+  expect(mainScrollTop, `${label} should not require default page scroll`).toBe(0);
+  if (!box || !viewport) {
+    return;
+  }
+  expect(box.y, `${label} top edge`).toBeGreaterThanOrEqual(-2);
+  expect(box.y + box.height, `${label} bottom edge`).toBeLessThanOrEqual(viewport.height + 2);
+}
+
+async function expectNoTextOverflowForSelectors(page: Page, selectors: string[], label: string): Promise<void> {
+  const offenders = await page.evaluate((selectorList) => {
+    return selectorList
+      .flatMap((selector) => Array.from(document.querySelectorAll<HTMLElement>(selector)))
+      .map((element) => {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          rect.width === 0 ||
+          rect.height === 0 ||
+          style.overflowX === "auto" ||
+          style.overflowX === "scroll"
+        ) {
+          return undefined;
+        }
+        if (element.scrollWidth > element.clientWidth + 3) {
+          return {
+            testId: element.getAttribute("data-testid") ?? "",
+            className: String(element.className),
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+            text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 90)
+          };
+        }
+        return undefined;
+      })
+      .filter(Boolean)
+      .slice(0, 10);
+  }, selectors);
+
+  expect(offenders, `${label} key cards should not clip text horizontally`).toEqual([]);
 }
 
 async function scrollMainToBottom(page: Page): Promise<void> {
@@ -625,6 +722,144 @@ async function showVictoryResults(page: Page): Promise<void> {
   });
 }
 
+async function showLayoutResults(page: Page, outcome: "victory" | "defeat", wasReplay = false): Promise<void> {
+  await page.waitForFunction(() => Boolean(window.ascendantRealmsGame), undefined, { timeout: 10_000 });
+  await page.evaluate(
+    ({ outcome, wasReplay }) => {
+      const game = window.ascendantRealmsGame;
+      if (!game) {
+        throw new Error("Ascendant Realms game was not booted.");
+      }
+      const battleScene = game.scene.getScene("BattleScene");
+      if (battleScene?.scene.isActive()) {
+        game.scene.stop("BattleScene");
+      }
+      const startingHero = {
+        heroName: "Layout Results",
+        classId: "warlord",
+        originId: "exiled_noble",
+        level: 2,
+        xp: 120,
+        skillPoints: 1,
+        unlockedAbilities: ["rally_banner"],
+        completedBattles: wasReplay ? 4 : 3,
+        clearedMapIds: ["first_claim", "broken_ford"],
+        inventory: [],
+        equipment: {},
+        allocatedSkills: {},
+        factionReputation: { free_marches: 8, ashen_covenant: -8, sylvan_concord: 0, common_folk: 2, old_faith: 0 },
+        stats: { might: 8, command: 8, arcana: 2, faith: 3 }
+      };
+      const hero = {
+        ...startingHero,
+        xp: outcome === "victory" ? startingHero.xp + 55 : startingHero.xp,
+        completedBattles: outcome === "victory" ? startingHero.completedBattles + 1 : startingHero.completedBattles
+      };
+      game.scene.start("ResultsScene", {
+        heroSave: hero,
+        startingHeroSave: startingHero,
+        launchRequest: {
+          requestId: `layout-v090-${outcome}${wasReplay ? "-replay" : ""}`,
+          mode: "campaign_node",
+          mapId: "broken_ford",
+          heroSave: hero,
+          sourceId: "layout",
+          rewardTableId: "broken_ford_rewards",
+          difficulty: "easy",
+          modifiers: [],
+          enemyProfileId: "ashen_covenant",
+          aiPersonalityId: "raider_captain",
+          campaignNodeId: "old_stone_road"
+        },
+        stats: {
+          outcome,
+          unitsKilled: outcome === "victory" ? 16 : 4,
+          buildingsDestroyed: outcome === "victory" ? 2 : 0,
+          resourcesCaptured: outcome === "victory" ? 2 : 1,
+          firstSiteCaptured: "Old Stone Ford",
+          buildingsBuilt: 3,
+          builtBuildingIds: ["barracks", "watchtower"],
+          unitsTrained: 8,
+          trainedUnitIds: ["militia", "ranger"],
+          enemyWavesSurvived: outcome === "victory" ? 3 : 1,
+          xpGained: outcome === "victory" ? 55 : 10,
+          timeSeconds: outcome === "victory" ? 388 : 270,
+          completedObjectiveIds: outcome === "victory" ? ["capture_old_ford", "destroy_enemy_barracks"] : ["capture_old_ford"],
+          veteranSummary:
+            outcome === "victory"
+              ? {
+                  rankedUpUnits: [
+                    {
+                      unitInstanceId: "layout-veteran-1",
+                      unitTypeId: "militia",
+                      unitName: "Militia",
+                      xp: 120,
+                      rank: "veteran",
+                      rankName: "Veteran",
+                      kills: 3,
+                      damageDealt: 180,
+                      survivedBattle: true,
+                      rankedUp: true,
+                      previousRank: "seasoned"
+                    }
+                  ],
+                  notableVeterans: [],
+                  topSurvivor: {
+                    unitInstanceId: "layout-veteran-2",
+                    unitTypeId: "ranger",
+                    unitName: "Ranger",
+                    xp: 70,
+                    rank: "seasoned",
+                    rankName: "Seasoned",
+                    kills: 2,
+                    damageDealt: 140,
+                    survivedBattle: true,
+                    rankedUp: false
+                  }
+                }
+              : undefined
+        },
+        reward:
+          outcome === "victory"
+            ? {
+                itemIds: [],
+                itemInstances: [],
+                resources: wasReplay ? { crowns: 20 } : { crowns: 70, stone: 30 },
+                xp: wasReplay ? 18 : 55,
+                duplicateConversions: []
+              }
+            : undefined,
+        rewardLevelUp:
+          outcome === "victory" && !wasReplay
+            ? { previousLevel: 2, newLevel: 3, levelsGained: 1, skillPointsGained: 1 }
+            : { previousLevel: 2, newLevel: 2, levelsGained: 0, skillPointsGained: 0 },
+        campaignResult: {
+          completedNodeId: "old_stone_road",
+          completedNodeName: "Old Stone Road",
+          unlockedNodeIds: outcome === "victory" && !wasReplay ? ["aether_well_ruins"] : [],
+          unlockedNodeNames: outcome === "victory" && !wasReplay ? ["Aether Well Ruins"] : [],
+          wasReplay,
+          nodeRewardAlreadyClaimed: wasReplay,
+          nodeReward:
+            outcome === "victory" && !wasReplay
+              ? { itemIds: [], itemInstances: [], resources: { crowns: 60, stone: 30 }, xp: 55, duplicateConversions: [] }
+              : { itemIds: [], itemInstances: [], resources: {}, xp: 0, duplicateConversions: [] },
+          nodeLevelUp: {
+            previousLevel: 2,
+            newLevel: outcome === "victory" && !wasReplay ? 3 : 2,
+            levelsGained: outcome === "victory" && !wasReplay ? 1 : 0,
+            skillPointsGained: outcome === "victory" && !wasReplay ? 1 : 0
+          },
+          campaignResources: { crowns: 130, stone: 55, iron: 15, aether: 10 }
+        }
+      });
+    },
+    { outcome, wasReplay }
+  );
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+}
+
 async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<void> {
   await seedCampaignSave(page, { hero: { heroName } });
   await clickReady(page.getByTestId("menu-skirmish"), "layout Ashen Outpost skirmish menu");
@@ -640,6 +875,170 @@ async function startAshenOutpostSkirmish(page: Page, heroName: string): Promise<
 }
 
 test.describe("Ascendant Realms responsive layout", () => {
+  for (const viewport of DESKTOP_ACCEPTANCE_VIEWPORTS) {
+    test(`v0.90 campaign desktop viewport acceptance on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
+      test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await startNewCampaign(page, `Layout v090 ${viewport.label}`);
+      await expect(page.getByTestId("campaign-map")).toBeVisible();
+      await expect(page.getByTestId("campaign-tab-panel-map")).toBeVisible();
+      await expect(page.getByTestId("campaign-route-layer")).toBeVisible();
+      await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Primary objective");
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Reward");
+      await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+      await expect(page.locator(".campaign-node-more summary")).toContainText("More Details");
+      await expectActionAboveFold(page, page.getByTestId("campaign-start-node"), `${viewport.label} fresh campaign start`);
+      await expectNoCampaignNodeOverlap(page, `${viewport.label} fresh campaign map`);
+      await expectNoHorizontalOverflow(page, `${viewport.label} fresh campaign map`);
+      await expectNoTextOverflowForSelectors(
+        page,
+        [".campaign-node", ".campaign-selected-panel", ".campaign-selected-facts"],
+        `${viewport.label} fresh campaign map`
+      );
+
+      await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), `${viewport.label} locked Aether Well preview`, UI_TRANSITION_CLICK_OPTIONS);
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Aether Well Ruins");
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Lock reason");
+      await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+      await expectActionAboveFold(page, page.getByTestId("campaign-start-node"), `${viewport.label} locked Aether primary action`);
+      await expectNoCampaignNodeOverlap(page, `${viewport.label} locked campaign map`);
+      await expectNoHorizontalOverflow(page, `${viewport.label} locked campaign map`);
+
+      await page.locator(".campaign-node-more summary").click();
+      await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+      await expect(page.locator(".campaign-node-more")).toContainText("Pre-battle intelligence");
+
+      for (const [tab, expectedTestId, expectedText] of [
+        ["map", "campaign-tab-panel-map", "Aether Well Ruins"],
+        ["stronghold", "campaign-tab-panel-stronghold", "Stronghold"],
+        ["hero", "campaign-tab-panel-hero", "Hero"],
+        ["inventory", "campaign-tab-panel-inventory", "Inventory And Progression"],
+        ["intel", "campaign-tab-panel-intel", "Rival Intel"],
+        ["reputation", "campaign-tab-panel-reputation", "Reputation"]
+      ] as const) {
+        await clickReady(page.getByTestId(`campaign-tab-${tab}`), `${viewport.label} ${tab} tab`, UI_TRANSITION_CLICK_OPTIONS);
+        await expect(page.getByTestId(expectedTestId), `${viewport.label} ${tab} panel`).toContainText(expectedText);
+        await expectNoHorizontalOverflow(page, `${viewport.label} ${tab} tab`);
+      }
+    });
+  }
+
+  test("v0.90 Results primary actions and disclosure remain above the fold @hosted-layout-core", async ({ page }) => {
+    test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+    for (const [viewport, outcome, wasReplay, expectedText] of [
+      [{ width: 1600, height: 900, label: "wide victory" }, "victory", false, "Next mission unlocked"],
+      [{ width: 1366, height: 768, label: "laptop defeat" }, "defeat", false, "No victory rewards saved"],
+      [{ width: 1600, height: 900, label: "wide replay" }, "victory", true, "Replay"]
+    ] as const) {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await openFreshMainMenu(page);
+      await showLayoutResults(page, outcome, wasReplay);
+      await expect(page.locator(".results-panel")).toContainText(expectedText);
+      await expect(page.getByTestId("results-overview")).toBeVisible();
+      await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+      await expectActionAboveFold(page, page.locator(".results-primary-actions"), `${viewport.label} results actions`);
+      await expectNoHorizontalOverflow(page, `${viewport.label} results`);
+      await expectNoTextOverflowForSelectors(
+        page,
+        [".results-overview", ".results-primary-actions", ".results-full-details"],
+        `${viewport.label} results`
+      );
+    }
+  });
+
+  test("v0.90 private-demo Results disclosure and ordinary-battle control posture stay isolated @hosted-layout-core", async ({ page }) => {
+    test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await startNewCampaign(page, "Layout v090 Private Demo");
+    await clickReady(page.getByTestId("campaign-start-node"), "layout v090 ordinary battle start", UI_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, "layout v090 ordinary battle");
+    await expect(page.getByTestId("private-demo-actions")).toHaveCount(0);
+    await expect(page.getByTestId("private-demo-finish")).toHaveCount(0);
+    await expect(page.getByTestId("lume-visibility-controls")).toHaveCount(0);
+
+    await openFreshMainMenu(page);
+    await startNewCampaign(page, "Layout v090 Lume Demo");
+    await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), "layout v090 Aether Well preview", UI_TRANSITION_CLICK_OPTIONS);
+    const privateToolsEnabled = await page.evaluate(
+      () =>
+        Boolean(window.__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__) ||
+        Boolean(document.querySelector("script[src*='@vite/client']"))
+    );
+    await expect(page.getByTestId("campaign-private-lume-demo")).toHaveCount(privateToolsEnabled ? 1 : 0);
+    await page.evaluate(() => {
+      const game = window.ascendantRealmsGame;
+      if (!game) {
+        throw new Error("Ascendant Realms game was not booted.");
+      }
+      const battleScene = game.scene.getScene("BattleScene");
+      if (battleScene?.scene.isActive()) {
+        game.scene.stop("BattleScene");
+      }
+      const heroSave = {
+        heroName: "Layout v090 Lume Demo",
+        classId: "warlord",
+        originId: "exiled_noble",
+        level: 1,
+        xp: 0,
+        skillPoints: 0,
+        unlockedAbilities: ["rally_banner"],
+        completedBattles: 0,
+        clearedMapIds: [],
+        inventory: [],
+        equipment: {},
+        allocatedSkills: {},
+        factionReputation: { free_marches: 0, ashen_covenant: 0, sylvan_concord: 0, common_folk: 0, old_faith: 0 },
+        stats: { might: 8, command: 8, arcana: 2, faith: 3 }
+      };
+      game.scene.start("ResultsScene", {
+        heroSave,
+        startingHeroSave: heroSave,
+        launchRequest: {
+          requestId: "layout-v090-private-demo-results",
+          mode: "campaign_node",
+          mapId: "broken_ford",
+          heroSave,
+          sourceId: "layout",
+          rewardTableId: "none",
+          difficulty: "normal",
+          modifiers: [],
+          rewardsDisabled: true,
+          enemyProfileId: "ashen_covenant",
+          aiPersonalityId: "hexfire_cult",
+          campaignNodeId: "aether_well_ruins",
+          privatePlaytestDemoId: "aether_well_lume_private_demo",
+          privatePlaytestNotice: "Private playtest demo only."
+        },
+        stats: {
+          outcome: "victory",
+          unitsKilled: 7,
+          buildingsDestroyed: 0,
+          resourcesCaptured: 2,
+          firstSiteCaptured: "West Stone Cut",
+          buildingsBuilt: 1,
+          builtBuildingIds: ["barracks"],
+          unitsTrained: 4,
+          trainedUnitIds: ["militia", "ranger"],
+          enemyWavesSurvived: 1,
+          xpGained: 0,
+          timeSeconds: 184,
+          completedObjectiveIds: ["lume_network_awakened"],
+          lumeNetworkId: "aether_well_ruins_lume_ward",
+          lumeLinkActivatedIds: ["west_stone_cut_to_ford_toll"],
+          lumeObjectiveCompleted: true
+        }
+      });
+    });
+    await expect(page.getByTestId("private-demo-lume-summary")).toContainText("LUME NETWORK SUMMARY");
+    await expect(page.getByTestId("private-demo-full-details")).not.toHaveAttribute("open", "");
+    await expectActionAboveFold(page, page.getByTestId("private-demo-primary-actions"), "private demo results primary actions");
+    await page.getByTestId("private-demo-full-details").locator("summary").click();
+    await expect(page.getByTestId("private-demo-full-details")).toHaveAttribute("open", "");
+    await expectNoHorizontalOverflow(page, "private demo expanded results");
+  });
+
   for (const viewport of LAYOUT_VIEWPORTS) {
     test(`menu and hero creation fit or scroll on ${viewport.label} @hosted-layout-core`, async ({ page }) => {
       test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);

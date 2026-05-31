@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.89 controlled display-copy migration batch A",
+          checkpoint: "v0.90 UX visual-regression harness and desktop-viewport acceptance hardening",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -351,6 +351,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V089_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.89 visual QA report" },
       { path: "V089_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.89 implementation report" },
       { path: "V089_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.89 Emmanuel retest" },
+      { path: "V090_VISUAL_REGRESSION_MATRIX.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
+      { path: "V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md", sizeBytes: 20, textContent: "v0.90 viewport spec" },
+      { path: "V090_LAYOUT_ASSERTION_COVERAGE.md", sizeBytes: 20, textContent: "v0.90 layout coverage" },
+      { path: "V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md", sizeBytes: 20, textContent: "v0.90 performance baseline" },
+      { path: "V090_VISUAL_QA_REVIEW_RULES.md", sizeBytes: 20, textContent: "v0.90 review rules" },
+      { path: "V090_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.90 implementation report" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

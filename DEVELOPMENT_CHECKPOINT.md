@@ -1,6 +1,62 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.89 controlled display-copy migration batch A
+Updated: 2026-05-31 v0.90 UX visual-regression harness and desktop-viewport acceptance hardening
+
+## v0.90 UX Visual-Regression Harness And Desktop-Viewport Acceptance Hardening - 2026-05-31
+
+Scope: QA-hardening only. This pass expands deterministic screenshot coverage, desktop viewport acceptance assertions, visual-regression manifest validation, review rules, and lightweight performance baselines. It does not add gameplay, alter balance, change saves, rename stable IDs, generate/import art, or begin desktop implementation.
+
+Baseline:
+
+- Starting commit/package: `dffcaaa`, `ascendant-realms-private-playtest-dffcaaa`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: push run `26716281197` on `dffcaaa` completed successfully.
+
+Included work:
+
+- Added `docs/V090_VISUAL_REGRESSION_MATRIX.json`.
+- Added `docs/V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md`.
+- Added `docs/V090_LAYOUT_ASSERTION_COVERAGE.md`.
+- Added `docs/V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md`.
+- Added `docs/V090_VISUAL_QA_REVIEW_RULES.md`.
+- Added `docs/V090_IMPLEMENTATION_REPORT.md`.
+- Expanded `npm run visual:qa` to 64 deterministic screenshots across menu, campaign, all campaign tabs, battle HUD states, Lume states, private-demo Results, ordinary Results, replay Results, and Tutorial.
+- Added `1600x900` to visual QA desktop coverage alongside 1920x1080 and 1366x768 acceptance captures.
+- Added layout assertions for campaign node overlap, visible primary actions, Results action visibility, text overflow, HUD/objective/minimap posture, Lume control isolation, and private-demo control posture.
+- Added manifest validation in `src/game/playtest/VisualRegressionMatrix.test.ts`.
+- Updated hosted `deep-meta` to navigate current campaign tabs before asserting Stronghold/Hero/Intel/Reputation panels and to expect current Retinue `Ready` status copy.
+- Updated package generation and verification requirements for the v0.90 QA docs.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, serialized IDs, gameplay state, campaign progression, rewards, XP, or Tutorial behavior changed.
+
+Verification:
+
+```text
+npm test PASS, 92 files / 678 tests.
+npm run build PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content PASS.
+npm run validate:art-intake PASS.
+npm run test:e2e:smoke:fast PASS, 9 tests.
+npm run test:e2e:smoke PASS, 16 tests.
+npm run playtest:controls PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended PASS, 90 pass rows.
+npm run playtest:controls:verify PASS, 1658 checks.
+npm run playtest:act1 PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-meta PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core PASS, 25 tests.
+npm run test:e2e:release:hosted:layout-cinderfen PASS, 12 tests.
+npm run visual:qa PASS, 9 tests / 64 screenshots / 0 console errors / 0 screenshot retries.
+```
+
+Resolved non-pass evidence: initial hosted `deep-meta` found stale campaign-tab expectations and passed after test cleanup. Initial full local layout sweep passed 36/37, then the exact failed private-demo posture test and hosted layout-core rerun passed after distinguishing local/private posture from hosted public posture.
+
+Closeout note: commit as `Checkpoint v0.90 UX visual-regression harness and desktop-viewport acceptance hardening`, regenerate and verify a clean package from the final commit, then push when safe.
 
 ## v0.89 Controlled Display-Copy Migration Batch A - 2026-05-31
 

@@ -25,18 +25,20 @@ type CaptureRecord = {
   viewport: string;
   note: string;
   retryUsed: boolean;
+  durationMs: number;
 };
 
 const OUTPUT_DIR = path.resolve(process.cwd(), "visual-qa", "latest");
 const FULL_HD: VisualViewport = { label: "full-hd", width: 1920, height: 1080 };
+const WIDE_DESKTOP: VisualViewport = { label: "wide-desktop", width: 1600, height: 900 };
 const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 36;
-const VISUAL_QA_GROUP_TIMEOUT_MS = 180_000;
+const EXPECTED_SCREENSHOT_COUNT = 64;
+const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
-const SCREENSHOT_ATTEMPTS = 2;
+const SCREENSHOT_ATTEMPTS = 1;
 
 const visualQaRecords: CaptureRecord[] = [];
 const visualQaConsoleErrors: string[] = [];
@@ -88,7 +90,12 @@ async function settleForScreenshot(page: Page): Promise<void> {
   await page.waitForTimeout(150);
 }
 
-async function takeScreenshotWithRetry(page: Page, group: string, fileName: string, viewport: VisualViewport): Promise<boolean> {
+async function takeScreenshotWithRetry(
+  page: Page,
+  group: string,
+  fileName: string,
+  viewport: VisualViewport
+): Promise<{ retryUsed: boolean; durationMs: number }> {
   let retryUsed = false;
   let lastError: unknown;
 
@@ -107,10 +114,11 @@ async function takeScreenshotWithRetry(page: Page, group: string, fileName: stri
         caret: "hide",
         timeout: SCREENSHOT_TIMEOUT_MS
       });
+      const durationMs = Date.now() - attemptStartedAt;
       console.log(
-        `[visual-qa] DONE screenshot group="${group}" file="${fileName}" elapsed=${elapsedMs()}ms duration=${Date.now() - attemptStartedAt}ms retry=${retryUsed ? "yes" : "no"}`
+        `[visual-qa] DONE screenshot group="${group}" file="${fileName}" elapsed=${elapsedMs()}ms duration=${durationMs}ms retry=${retryUsed ? "yes" : "no"}`
       );
-      return retryUsed;
+      return { retryUsed, durationMs };
     } catch (error) {
       lastError = error;
       console.warn(
@@ -140,14 +148,15 @@ async function captureView(
   viewport: VisualViewport,
   note: string
 ): Promise<void> {
-  const retryUsed = await takeScreenshotWithRetry(page, group, fileName, viewport);
+  const { retryUsed, durationMs } = await takeScreenshotWithRetry(page, group, fileName, viewport);
   visualQaRecords.push({
     group,
     title,
     fileName,
     viewport: viewportLabel(viewport),
     note,
-    retryUsed
+    retryUsed,
+    durationMs
   });
 }
 
@@ -260,10 +269,377 @@ async function forceBattleDefeat(page: Page): Promise<void> {
   await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
 }
 
+async function expectNoVisibleHorizontalOverflow(page: Page, label: string): Promise<void> {
+  const result = await page.evaluate(() => {
+    const root = document.getElementById("ui-root");
+    const viewportWidth = window.innerWidth;
+    const offenders = Array.from(root?.querySelectorAll<HTMLElement>("*") ?? [])
+      .map((element) => {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          Number(style.opacity || "1") <= 0 ||
+          rect.width === 0 ||
+          rect.height === 0 ||
+          element.closest("[aria-hidden='true']")
+        ) {
+          return undefined;
+        }
+        if (rect.left < -2 || rect.right > viewportWidth + 2) {
+          return {
+            tag: element.tagName.toLowerCase(),
+            className: String(element.className),
+            testId: element.getAttribute("data-testid") ?? "",
+            left: Math.round(rect.left),
+            right: Math.round(rect.right),
+            text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 90)
+          };
+        }
+        return undefined;
+      })
+      .filter(Boolean)
+      .slice(0, 10);
+    return { viewportWidth, offenders };
+  });
+
+  expect(result.offenders, `${label} should not overflow ${result.viewportWidth}px viewport width`).toEqual([]);
+}
+
+async function expectNoKeyCardTextOverflow(page: Page, selectors: string[], label: string): Promise<void> {
+  const offenders = await page.evaluate((selectorList) => {
+    const roots = selectorList.flatMap((selector) => Array.from(document.querySelectorAll<HTMLElement>(selector)));
+    return roots
+      .map((element) => {
+        const style = window.getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        const overflowX = style.overflowX;
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          rect.width === 0 ||
+          rect.height === 0 ||
+          overflowX === "auto" ||
+          overflowX === "scroll"
+        ) {
+          return undefined;
+        }
+        if (element.scrollWidth > element.clientWidth + 3) {
+          return {
+            selector: selectorList.find((selector) => element.matches(selector)) ?? element.tagName.toLowerCase(),
+            testId: element.getAttribute("data-testid") ?? "",
+            className: String(element.className),
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+            text: (element.textContent ?? "").trim().replace(/\s+/g, " ").slice(0, 90)
+          };
+        }
+        return undefined;
+      })
+      .filter(Boolean)
+      .slice(0, 10);
+  }, selectors);
+
+  expect(offenders, `${label} key card text should stay inside card widths`).toEqual([]);
+}
+
+async function expectNoCampaignNodeOverlap(page: Page, label: string): Promise<void> {
+  const overlaps = await page.evaluate(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".campaign-map-grid .campaign-node"))
+      .filter((node) => {
+        const style = window.getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return style.display !== "none" && style.visibility !== "hidden" && rect.width > 0 && rect.height > 0;
+      })
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          id: node.dataset.campaignNode ?? node.getAttribute("data-testid") ?? "",
+          left: rect.left,
+          right: rect.right,
+          top: rect.top,
+          bottom: rect.bottom
+        };
+      });
+    const pairs: string[] = [];
+    for (let index = 0; index < nodes.length; index += 1) {
+      for (let compare = index + 1; compare < nodes.length; compare += 1) {
+        const first = nodes[index];
+        const second = nodes[compare];
+        const width = Math.min(first.right, second.right) - Math.max(first.left, second.left);
+        const height = Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top);
+        if (width > 2 && height > 2) {
+          pairs.push(`${first.id} overlaps ${second.id} by ${Math.round(width)}x${Math.round(height)}`);
+        }
+      }
+    }
+    return pairs;
+  });
+
+  expect(overlaps, `${label} campaign nodes should not overlap`).toEqual([]);
+}
+
+async function expectCampaignPrimaryActionAboveFold(page: Page, label: string): Promise<void> {
+  const result = await page.getByTestId("campaign-start-node").evaluate((button) => {
+    const main = document.querySelector("main");
+    const rect = button.getBoundingClientRect();
+    return {
+      top: rect.top,
+      bottom: rect.bottom,
+      viewportHeight: window.innerHeight,
+      mainScrollTop: main?.scrollTop ?? 0,
+      visible: rect.width > 0 && rect.height > 0
+    };
+  });
+  expect(result.visible, `${label} primary mission action visible`).toBe(true);
+  expect(result.mainScrollTop, `${label} primary mission action should not need default page scroll`).toBe(0);
+  expect(result.top, `${label} primary mission action top`).toBeGreaterThanOrEqual(-2);
+  expect(result.bottom, `${label} primary mission action bottom`).toBeLessThanOrEqual(result.viewportHeight + 2);
+}
+
+async function expectResultsPrimaryActionsAboveFold(page: Page, label: string): Promise<void> {
+  const selector = ".results-primary-actions, .private-demo-primary-actions";
+  const result = await page.locator(selector).first().evaluate((actions) => {
+    const main = document.querySelector("main");
+    const rect = actions.getBoundingClientRect();
+    return {
+      top: rect.top,
+      bottom: rect.bottom,
+      viewportHeight: window.innerHeight,
+      mainScrollTop: main?.scrollTop ?? 0,
+      visible: rect.width > 0 && rect.height > 0
+    };
+  });
+  expect(result.visible, `${label} Results primary actions visible`).toBe(true);
+  expect(result.mainScrollTop, `${label} Results primary actions should not need page scroll`).toBe(0);
+  expect(result.top, `${label} Results action top`).toBeGreaterThanOrEqual(-2);
+  expect(result.bottom, `${label} Results action bottom`).toBeLessThanOrEqual(result.viewportHeight + 2);
+}
+
+async function expectBattleHudAcceptance(page: Page, label: string): Promise<void> {
+  await expectBattleLoaded(page);
+  if ((await page.getByTestId("battle-objectives").count()) > 0) {
+    await expect(page.getByTestId("battle-objectives"), `${label} objective tracker`).toBeVisible();
+  } else {
+    await expect(page.getByTestId("battle-status"), `${label} battle status fallback`).toBeVisible();
+  }
+  await expect(page.getByTestId("battle-minimap"), `${label} minimap shell`).toBeVisible();
+  await expect(page.getByTestId("minimap"), `${label} minimap canvas`).toBeVisible();
+  await expectNoVisibleHorizontalOverflow(page, `${label} battle HUD`);
+  await expectNoKeyCardTextOverflow(
+    page,
+    [".top-bar", "[data-testid='battle-objectives']", ".side-panel", "[data-testid='battle-minimap']", "[data-testid='battle-hero-panel']"],
+    `${label} battle HUD`
+  );
+}
+
+async function expectPrivateDemoControlsPosture(page: Page, expectedVisible: boolean, label: string): Promise<void> {
+  const controls = page.getByTestId("private-demo-actions");
+  const finish = page.getByTestId("private-demo-finish");
+  if (expectedVisible) {
+    await expect(controls, `${label} private demo controls`).toBeVisible();
+    await expect(page.getByTestId("private-playtest-demo-warning"), `${label} private demo warning`).toBeVisible();
+    return;
+  }
+  await expect(controls, `${label} private demo controls should be absent`).toHaveCount(0);
+  await expect(finish, `${label} private demo finish should be absent`).toHaveCount(0);
+}
+
+async function expectLumeControlsAbsent(page: Page, label: string): Promise<void> {
+  await expect(page.getByTestId("lume-visibility-controls"), `${label} Lume controls should be absent`).toHaveCount(0);
+}
+
+async function selectFirstPlayerArmy(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const units = scene.units.filter((unit: any) => unit.team === "player" && unit.alive).slice(0, 4);
+    if (units.length === 0) {
+      throw new Error("No player units available for visual QA selection.");
+    }
+    scene.selectionSystem.setSelection(units);
+    scene.cameraSystem.centerOn(units[0].position);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("selection-side-panel")).toBeVisible();
+  await expect(page.getByTestId("selected-role-summary")).toBeVisible();
+}
+
+async function selectCommandHall(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const commandHall = scene.buildings.find(
+      (building: any) => building.alive && building.team === "player" && building.definition.id === "command_hall"
+    );
+    if (!commandHall) {
+      throw new Error("Missing player Command Hall.");
+    }
+    scene.selectionSystem.setSelection([commandHall]);
+    scene.cameraSystem.centerOn(commandHall.position);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("selection-side-panel")).toContainText("Command Hall");
+}
+
+async function stageContestedCaptureSite(page: Page, siteId: string): Promise<void> {
+  await page.evaluate((requestedSiteId) => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const site = scene.captureSites.find((entry: any) => entry.definition.id === requestedSiteId) ?? scene.captureSites[0];
+    if (!site) {
+      throw new Error("Missing capture site for visual QA contested state.");
+    }
+    site.owner = "player";
+    site.team = "player";
+    site.capturingTeam = "enemy";
+    site.captureProgress = 0.42;
+    site.updateVisuals?.();
+    scene.selectionSystem.setSelection([site]);
+    scene.cameraSystem.centerOn(site.position);
+    scene.refreshBattleHud?.(0);
+  }, siteId);
+  await expect(page.getByTestId("selected-resource-site-stats")).toContainText("Enemy contesting");
+}
+
+async function selectLumeSite(page: Page, siteId: string): Promise<void> {
+  await page.evaluate((requestedSiteId) => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const site = scene.captureSites.find((entry: any) => entry.definition.id === requestedSiteId);
+    if (!site) {
+      throw new Error(`Missing Lume site ${requestedSiteId}.`);
+    }
+    scene.selectionSystem.setSelection([site]);
+    scene.cameraSystem.centerOn(site.position);
+    scene.refreshBattleHud?.(0);
+    scene.renderLumeNetworkLinks?.();
+  }, siteId);
+  await expect(page.getByTestId("selected-lume-site-summary")).toBeVisible();
+}
+
+async function showVisualQaResults(page: Page, outcome: "victory" | "defeat", wasReplay = false): Promise<void> {
+  await page.waitForFunction(() => Boolean((window as any).ascendantRealmsGame), undefined, { timeout: 10_000 });
+  await page.evaluate(
+    ({ outcome, wasReplay }) => {
+      const game = (window as any).ascendantRealmsGame;
+      if (!game) {
+        throw new Error("Ascendant Realms game was not booted.");
+      }
+      const battleScene = game.scene.getScene("BattleScene");
+      if (battleScene?.scene.isActive()) {
+        game.scene.stop("BattleScene");
+      }
+      const startingHero = {
+        heroName: "Visual Results",
+        classId: "warlord",
+        originId: "exiled_noble",
+        level: 2,
+        xp: 115,
+        skillPoints: 1,
+        unlockedAbilities: ["rally_banner"],
+        completedBattles: wasReplay ? 4 : 3,
+        clearedMapIds: ["first_claim", "broken_ford"],
+        inventory: [],
+        equipment: {},
+        allocatedSkills: {},
+        factionReputation: { free_marches: 8, ashen_covenant: -8, sylvan_concord: 0, common_folk: 2, old_faith: 0 },
+        stats: { might: 8, command: 8, arcana: 2, faith: 3 }
+      };
+      const hero = {
+        ...startingHero,
+        xp: outcome === "victory" ? startingHero.xp + 65 : startingHero.xp,
+        completedBattles: outcome === "victory" ? startingHero.completedBattles + 1 : startingHero.completedBattles
+      };
+      game.scene.start("ResultsScene", {
+        heroSave: hero,
+        startingHeroSave: startingHero,
+        launchRequest: {
+          requestId: `v090-visual-${outcome}${wasReplay ? "-replay" : ""}`,
+          mode: "campaign_node",
+          mapId: "broken_ford",
+          heroSave: hero,
+          sourceId: "visual_qa",
+          rewardTableId: "broken_ford_rewards",
+          difficulty: "easy",
+          modifiers: [],
+          enemyProfileId: "ashen_covenant",
+          aiPersonalityId: "raider_captain",
+          campaignNodeId: "old_stone_road",
+          isReplay: wasReplay
+        },
+        stats: {
+          outcome,
+          unitsKilled: outcome === "victory" ? 18 : 5,
+          buildingsDestroyed: outcome === "victory" ? 2 : 0,
+          resourcesCaptured: outcome === "victory" ? 2 : 1,
+          firstSiteCaptured: "Old Stone Ford",
+          buildingsBuilt: 3,
+          builtBuildingIds: ["barracks", "watchtower"],
+          unitsTrained: 9,
+          trainedUnitIds: ["militia", "ranger"],
+          enemyWavesSurvived: outcome === "victory" ? 3 : 1,
+          xpGained: outcome === "victory" ? 65 : 12,
+          timeSeconds: outcome === "victory" ? 408 : 292,
+          completedObjectiveIds: outcome === "victory" ? ["capture_old_ford", "destroy_enemy_barracks"] : ["capture_old_ford"],
+          veteranSummary: {
+            rankedUpUnits: outcome === "victory" ? [{ unitName: "Militia", rankName: "Veteran", unitInstanceId: "visual-militia-1" }] : [],
+            topSurvivor: { unitName: "Ranger", rankName: "Seasoned", unitInstanceId: "visual-ranger-1" },
+            notableVeterans: []
+          }
+        },
+        reward:
+          outcome === "victory"
+            ? {
+                itemIds: [],
+                itemInstances: [],
+                resources: wasReplay ? { crowns: 20 } : { crowns: 80, stone: 35 },
+                xp: wasReplay ? 18 : 65,
+                duplicateConversions: []
+              }
+            : undefined,
+        rewardLevelUp:
+          outcome === "victory" && !wasReplay
+            ? { previousLevel: 2, newLevel: 3, levelsGained: 1, skillPointsGained: 1 }
+            : { previousLevel: 2, newLevel: 2, levelsGained: 0, skillPointsGained: 0 },
+        campaignResult: {
+          completedNodeId: "old_stone_road",
+          completedNodeName: "Old Stone Road",
+          unlockedNodeNames: outcome === "victory" && !wasReplay ? ["Aether Well Ruins"] : [],
+          wasReplay,
+          nodeRewardAlreadyClaimed: wasReplay,
+          unlockedNodeIds: outcome === "victory" && !wasReplay ? ["aether_well_ruins"] : [],
+          nodeReward:
+            outcome === "victory" && !wasReplay
+              ? { itemIds: [], itemInstances: [], resources: { crowns: 60, stone: 30 }, xp: 55, duplicateConversions: [] }
+              : { itemIds: [], itemInstances: [], resources: {}, xp: 0, duplicateConversions: [] },
+          nodeLevelUp: { previousLevel: 2, newLevel: outcome === "victory" && !wasReplay ? 3 : 2, levelsGained: outcome === "victory" && !wasReplay ? 1 : 0, skillPointsGained: outcome === "victory" && !wasReplay ? 1 : 0 },
+          campaignResources: { crowns: 140, stone: 60, iron: 20, aether: 15 }
+        }
+      });
+    },
+    { outcome, wasReplay }
+  );
+  await expect(page.locator(".results-panel")).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+}
+
 async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Promise<void> {
   const viewportSummary = [...new Set(records.map((record) => record.viewport))].join(", ");
   const groupSummary = [...new Set(records.map((record) => record.group))].join(", ");
   const retryCount = records.filter((record) => record.retryUsed).length;
+  const durationMs = elapsedMs();
+  const screenshotDurationTotal = records.reduce((total, record) => total + record.durationMs, 0);
+  const averageScreenshotDuration = records.length > 0 ? Math.round(screenshotDurationTotal / records.length) : 0;
   const lines = [
     "# Ascendant Realms Visual QA Capture",
     "",
@@ -278,6 +654,8 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
     `- Viewports covered: ${viewportSummary}`,
     `- Capture groups: ${groupSummary}`,
     `- Screenshot retries used: ${retryCount}`,
+    `- Total harness duration: ${durationMs} ms`,
+    `- Average screenshot duration: ${averageScreenshotDuration} ms`,
     "- Harness: `tests/visual-qa/visual-qa.spec.ts`",
     "",
     "## Captures",
@@ -288,6 +666,7 @@ async function writeIndex(records: CaptureRecord[], consoleErrors: string[]): Pr
       `  - File: \`${record.fileName}\``,
       `  - Viewport: ${record.viewport}`,
       `  - Retry used: ${record.retryUsed ? "yes" : "no"}`,
+      `  - Screenshot duration: ${record.durationMs} ms`,
       `  - Note: ${record.note}`
     ]),
     "",
@@ -316,10 +695,14 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 36-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 64-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
+    expect(
+      visualQaRecords.filter((record) => record.retryUsed).map((record) => record.fileName),
+      "v0.90 visual QA screenshots must not require retry acceptance"
+    ).toEqual([]);
   });
 
   test("captures menu, gallery, and inventory review views", async ({ page }) => {
@@ -398,6 +781,324 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await createHero(page, "Visual QA");
     await expect(page.getByTestId("skirmish-setup")).toBeVisible();
     await captureView(page, group, "Skirmish setup", "skirmish-setup-desktop.png", DESKTOP, "Skirmish setup map and difficulty selection.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.90 desktop campaign acceptance matrix", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v090-campaign-desktop-acceptance";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1920`);
+    await captureView(page, group, "v0.90 main menu 1920", "v090-main-menu-1920.png", FULL_HD, "Main menu at 1920x1080 for desktop regression intake.");
+
+    await useViewport(page, WIDE_DESKTOP);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1600`);
+    await captureView(page, group, "v0.90 main menu 1600", "v090-main-menu-1600.png", WIDE_DESKTOP, "Main menu at 1600x900 with primary actions visible.");
+
+    await useViewport(page, LAPTOP);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1366`);
+    await captureView(page, group, "v0.90 main menu 1366", "v090-main-menu-1366.png", LAPTOP, "Main menu at 1366x768 acceptance viewport.");
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v090 Campaign");
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.getByTestId("campaign-node-border_village")).toContainText(/Available/i);
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.getByTestId("campaign-route-layer")).toBeVisible();
+    await expectCampaignPrimaryActionAboveFold(page, `${group} fresh campaign 1920`);
+    await expectNoCampaignNodeOverlap(page, `${group} fresh campaign 1920`);
+    await expectNoVisibleHorizontalOverflow(page, `${group} fresh campaign 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.90 fresh campaign map 1920",
+      "v090-fresh-campaign-map-1920.png",
+      FULL_HD,
+      "Fresh campaign opens to Salto Outskirts selected, with map, routes, and primary action above the fold."
+    );
+
+    await useViewport(page, LAPTOP);
+    await expectCampaignPrimaryActionAboveFold(page, `${group} fresh campaign 1366`);
+    await expectNoCampaignNodeOverlap(page, `${group} fresh campaign 1366`);
+    await expectNoVisibleHorizontalOverflow(page, `${group} fresh campaign 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.90 fresh campaign map 1366",
+      "v090-fresh-campaign-map-1366.png",
+      LAPTOP,
+      "Fresh campaign map at 1366x768 without page scroll or node overlap."
+    );
+
+    await useViewport(page, FULL_HD);
+    await page.getByTestId("campaign-node-border_village").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expectCampaignPrimaryActionAboveFold(page, `${group} unlocked mission 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.90 selected unlocked mission",
+      "v090-selected-unlocked-mission-1920.png",
+      FULL_HD,
+      "Selected unlocked mission panel shows concise facts and Start Battle without scrolling."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Aether Well Ruins");
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expectCampaignPrimaryActionAboveFold(page, `${group} locked mission 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.90 selected locked mission",
+      "v090-selected-locked-mission-1366.png",
+      LAPTOP,
+      "Locked Aether Well preview keeps lock reason and disabled primary action visible at 1366x768."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    for (const [tab, title, fileName, expectedTestId] of [
+      ["map", "v0.90 campaign tab Map", "v090-campaign-tab-map-1600.png", "campaign-tab-panel-map"],
+      ["stronghold", "v0.90 campaign tab Stronghold", "v090-campaign-tab-stronghold-1600.png", "campaign-tab-panel-stronghold"],
+      ["hero", "v0.90 campaign tab Hero", "v090-campaign-tab-hero-1600.png", "campaign-tab-panel-hero"],
+      ["inventory", "v0.90 campaign tab Inventory", "v090-campaign-tab-inventory-1600.png", "campaign-tab-panel-inventory"],
+      ["intel", "v0.90 campaign tab Intel", "v090-campaign-tab-intel-1600.png", "campaign-tab-panel-intel"],
+      ["reputation", "v0.90 campaign tab Reputation", "v090-campaign-tab-reputation-1600.png", "campaign-tab-panel-reputation"]
+    ] as const) {
+      await page.getByTestId(`campaign-tab-${tab}`).click();
+      await expect(page.getByTestId(expectedTestId)).toBeVisible();
+      await expectNoVisibleHorizontalOverflow(page, `${group} ${tab} tab 1600`);
+      if (tab === "map") {
+        await expectNoCampaignNodeOverlap(page, `${group} map tab 1600`);
+        await expectCampaignPrimaryActionAboveFold(page, `${group} map tab 1600`);
+      }
+      await captureView(
+        page,
+        group,
+        title,
+        fileName,
+        WIDE_DESKTOP,
+        `${tab} campaign tab at 1600x900 with card hierarchy and no horizontal overflow.`
+      );
+    }
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.90 battle HUD, Lume, and private Results acceptance matrix", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v090-battle-lume-acceptance";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v090 Battle");
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleLoaded(page);
+    await expectBattleHudAcceptance(page, `${group} ordinary battle start 1920`);
+    await expectPrivateDemoControlsPosture(page, false, `${group} ordinary battle`);
+    await expectLumeControlsAbsent(page, `${group} ordinary battle`);
+    await captureView(
+      page,
+      group,
+      "v0.90 ordinary battle start",
+      "v090-ordinary-battle-start-1920.png",
+      FULL_HD,
+      "Ordinary battle start at 1920x1080 with objectives, command panel, minimap, and no private-demo/Lume controls."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await selectFirstPlayerArmy(page);
+    await expectBattleHudAcceptance(page, `${group} selected units 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.90 selected units",
+      "v090-selected-units-1600.png",
+      WIDE_DESKTOP,
+      "Selected army group at 1600x900 with role/order summary and command panel readable."
+    );
+
+    await useViewport(page, LAPTOP);
+    await selectCommandHall(page);
+    await expectBattleHudAcceptance(page, `${group} selected building 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.90 selected building",
+      "v090-selected-building-1366.png",
+      LAPTOP,
+      "Selected Command Hall at 1366x768 with building role and production actions contained."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await stageContestedCaptureSite(page, "crown_shrine");
+    await expectBattleHudAcceptance(page, `${group} contested site 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.90 contested capture site",
+      "v090-contested-capture-site-1600.png",
+      WIDE_DESKTOP,
+      "Contested resource-site selection shows capture progress and assignment guidance without HUD collision."
+    );
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v090 Lume");
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await page.getByTestId("campaign-private-lume-demo").click();
+    await expectBattleLoaded(page);
+    await expectPrivateDemoControlsPosture(page, true, `${group} Lume inactive`);
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD");
+    await captureView(
+      page,
+      group,
+      "v0.90 Lume inactive",
+      "v090-lume-inactive-1920.png",
+      FULL_HD,
+      "Private Lume mission before link activation with eligible controls and no-save warning visible."
+    );
+
+    await centerCaptureSite(page, "west_stone_cut", true);
+    await centerCaptureSite(page, "ford_toll", true);
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
+    await captureView(
+      page,
+      group,
+      "v0.90 Lume active stable",
+      "v090-lume-active-stable-1920.png",
+      FULL_HD,
+      "Linked Ward active state at 1920x1080 with stable Lume tracker and Finish Demo action."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await selectLumeSite(page, "north_aether_spring");
+    await captureView(
+      page,
+      group,
+      "v0.90 Lume selected highlighted",
+      "v090-lume-selected-highlighted-1600.png",
+      WIDE_DESKTOP,
+      "Selected Lume site at 1600x900 shows link guidance and highlight context."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("lume-visibility-hidden").click();
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Hidden");
+    await captureView(
+      page,
+      group,
+      "v0.90 Lume hidden",
+      "v090-lume-hidden-1366.png",
+      LAPTOP,
+      "Lume links hidden at 1366x768 while mission HUD remains readable."
+    );
+
+    await page.getByTestId("lume-visibility-always").click();
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Always");
+    await captureView(
+      page,
+      group,
+      "v0.90 Lume always visible",
+      "v090-lume-always-visible-1366.png",
+      LAPTOP,
+      "Lume links forced always-visible at 1366x768 for visual review."
+    );
+
+    await page.getByTestId("private-demo-finish").click();
+    await expect(page.locator(".results-panel")).toBeVisible();
+    await expect(page.getByTestId("private-demo-full-details")).not.toHaveAttribute("open", "");
+    await expectResultsPrimaryActionsAboveFold(page, `${group} private Results compact`);
+    await captureView(
+      page,
+      group,
+      "v0.90 private-demo Results compact",
+      "v090-private-results-compact-1366.png",
+      LAPTOP,
+      "Private demo Results compact state keeps no-save summary and primary actions above the fold."
+    );
+
+    await page.getByTestId("private-demo-full-details").locator("summary").click();
+    await expect(page.getByTestId("private-demo-full-details")).toHaveAttribute("open", "");
+    await captureView(
+      page,
+      group,
+      "v0.90 private-demo Results expanded",
+      "v090-private-results-expanded-1366.png",
+      LAPTOP,
+      "Private demo Results expanded full battle details remain behind deliberate disclosure."
+    );
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.90 ordinary Results and Tutorial acceptance matrix", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v090-results-tutorial-acceptance";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, WIDE_DESKTOP);
+    await openFreshMainMenu(page);
+    await showVisualQaResults(page, "victory");
+    await expectResultsPrimaryActionsAboveFold(page, `${group} victory results 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.90 normal Victory Results",
+      "v090-normal-victory-results-1600.png",
+      WIDE_DESKTOP,
+      "Ordinary victory Results at 1600x900 with outcome, mission, rewards, XP, veterans, and actions above full details."
+    );
+
+    await useViewport(page, LAPTOP);
+    await openFreshMainMenu(page);
+    await showVisualQaResults(page, "defeat");
+    await expectResultsPrimaryActionsAboveFold(page, `${group} defeat results 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.90 normal Defeat Results",
+      "v090-normal-defeat-results-1366.png",
+      LAPTOP,
+      "Ordinary defeat Results at 1366x768 with retry/prep actions visible before full battle details."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await openFreshMainMenu(page);
+    await showVisualQaResults(page, "victory", true);
+    await expectResultsPrimaryActionsAboveFold(page, `${group} replay results 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.90 replay Results",
+      "v090-replay-results-1600.png",
+      WIDE_DESKTOP,
+      "Replay Results at 1600x900 keep replay-safe reward language and visible return/replay actions."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await openFreshMainMenu(page);
+    await page.getByTestId("menu-tutorial").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await expectBattleHudAcceptance(page, `${group} tutorial 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.90 Tutorial",
+      "v090-tutorial-1600.png",
+      WIDE_DESKTOP,
+      "Tutorial battle at 1600x900 keeps overlay, objectives, minimap, and command panel readable."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

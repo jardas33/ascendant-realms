@@ -302,6 +302,12 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V089_VISUAL_QA_REPORT.md",
   "V089_IMPLEMENTATION_REPORT.md",
   "V089_EMMANUEL_RETEST_CHECKLIST.md",
+  "V090_VISUAL_REGRESSION_MATRIX.json",
+  "V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md",
+  "V090_LAYOUT_ASSERTION_COVERAGE.md",
+  "V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md",
+  "V090_VISUAL_QA_REVIEW_RULES.md",
+  "V090_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -412,7 +418,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.89 controlled display-copy migration batch A",
+      "v0.90 UX visual-regression harness and desktop-viewport acceptance hardening",
       "build info checkpoint",
       checks,
       errors

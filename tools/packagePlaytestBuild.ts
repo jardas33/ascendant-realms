@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.89 controlled display-copy migration batch A";
+const CHECKPOINT = "v0.90 UX visual-regression harness and desktop-viewport acceptance hardening";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -332,6 +332,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V089_VISUAL_QA_REPORT.md", join(packageDir, "V089_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V089_IMPLEMENTATION_REPORT.md", join(packageDir, "V089_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V089_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V089_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V090_VISUAL_REGRESSION_MATRIX.json", join(packageDir, "V090_VISUAL_REGRESSION_MATRIX.json"));
+  await copyMarkdown("docs/V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md", join(packageDir, "V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md"));
+  await copyMarkdown("docs/V090_LAYOUT_ASSERTION_COVERAGE.md", join(packageDir, "V090_LAYOUT_ASSERTION_COVERAGE.md"));
+  await copyMarkdown("docs/V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md", join(packageDir, "V090_LIGHTWEIGHT_PERFORMANCE_BASELINE.md"));
+  await copyMarkdown("docs/V090_VISUAL_QA_REVIEW_RULES.md", join(packageDir, "V090_VISUAL_QA_REVIEW_RULES.md"));
+  await copyMarkdown("docs/V090_IMPLEMENTATION_REPORT.md", join(packageDir, "V090_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -431,7 +437,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.89, start with V089_EMMANUEL_RETEST_CHECKLIST.md, V089_APPLIED_COPY_MIGRATION_LEDGER.md, and V089_DEFERRED_AMBIGUOUS_TERMS.md. This package applies the approved display-copy migration batch only: Barrosan Freeholds, The Barrosan Marches, Salto Outskirts, Rootbound Concord, and Lume Surge. It changes no saves, rewards, campaign logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
+For v0.90, start with V090_DESKTOP_VIEWPORT_ACCEPTANCE_SPEC.md, V090_VISUAL_REGRESSION_MATRIX.json, V090_LAYOUT_ASSERTION_COVERAGE.md, and V090_VISUAL_QA_REVIEW_RULES.md. This package adds QA hardening only: deterministic desktop viewport screenshot coverage, layout assertions, and visual review rules. It changes no saves, rewards, campaign logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
 
 ## Known Warning
 
