@@ -59,8 +59,8 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
       labelColor: "#b8efff",
       labelBackground: "rgba(10, 34, 44, 0.88)",
       ringColor: 0x74d3f2,
-      ringAlpha: 0.95,
-      ringWidth: 5,
+      ringAlpha: 0.86,
+      ringWidth: 4,
       progressColor: 0x74d3f2
     };
   }
@@ -71,8 +71,8 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
       labelColor: "#c9ffd2",
       labelBackground: "rgba(9, 43, 21, 0.86)",
       ringColor: 0x7de087,
-      ringAlpha: 0.96,
-      ringWidth: 4,
+      ringAlpha: 0.68,
+      ringWidth: 3,
       progressColor: 0xaef7b7
     };
   }
@@ -83,8 +83,8 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
       labelColor: "#ffc0ba",
       labelBackground: "rgba(55, 13, 13, 0.88)",
       ringColor: 0xe15e55,
-      ringAlpha: 0.98,
-      ringWidth: 4,
+      ringAlpha: 0.74,
+      ringWidth: 3,
       progressColor: 0xff9a64
     };
   }
@@ -94,8 +94,8 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
     labelColor: "#fff1bc",
     labelBackground: "rgba(40, 34, 20, 0.82)",
     ringColor: options.resourceColor,
-    ringAlpha: 0.92,
-    ringWidth: 4,
+    ringAlpha: 0.58,
+    ringWidth: 3,
     progressColor: 0xf3e7a3
   };
 }

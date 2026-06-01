@@ -122,8 +122,8 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     const innerStroke = marker.team === "neutral" ? color : teamStroke(marker.team, snapshot);
     return `
       <g class="minimap-site-marker ${marker.team}${marker.isObjective ? " objective" : ""}" aria-label="${escapeAttribute(marker.isObjective ? "Objective resource site" : "Resource site")}">
-        <circle cx="${x}" cy="${y}" r="${marker.isObjective ? "4.4" : "3.7"}" fill="${fill}" fill-opacity="${marker.team === "neutral" ? "0.58" : "0.42"}" stroke="${stroke}" stroke-width="${marker.isObjective ? "1.35" : "1"}"></circle>
-        <circle cx="${x}" cy="${y}" r="1.4" fill="${color}" stroke="${innerStroke}" stroke-width="0.55"></circle>
+        <circle cx="${x}" cy="${y}" r="${marker.isObjective ? "4.8" : "4"}" fill="${fill}" fill-opacity="${marker.team === "neutral" ? "0.52" : "0.4"}" stroke="${stroke}" stroke-width="${marker.isObjective ? "1.45" : "1.05"}"></circle>
+        <circle cx="${x}" cy="${y}" r="1.55" fill="${color}" stroke="${innerStroke}" stroke-width="0.55"></circle>
       </g>
     `;
   }
@@ -131,7 +131,7 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
   if (marker.kind === "building") {
     const size = formatNumber(marker.size ?? 3.6);
     const half = formatNumber((marker.size ?? 3.6) / 2);
-    return `<rect class="minimap-building" x="${formatNumber(Number(x) - Number(half))}" y="${formatNumber(Number(y) - Number(half))}" width="${size}" height="${size}" rx="0.5" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.6"></rect>`;
+    return `<rect class="minimap-building" x="${formatNumber(Number(x) - Number(half))}" y="${formatNumber(Number(y) - Number(half))}" width="${size}" height="${size}" rx="0.55" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.75"></rect>`;
   }
 
   if (marker.kind === "camp") {
@@ -165,7 +165,7 @@ function renderMarker(snapshot: MinimapSnapshot, marker: MinimapMarker): string 
     return `<polygon class="minimap-enemy-hero" points="${points}" fill="${teamColor(marker.team, snapshot)}" stroke="#ffd28a" stroke-width="0.8" aria-label="Enemy commander marker"></polygon>`;
   }
 
-  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.35)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.45"></circle>`;
+  return `<circle class="minimap-unit" cx="${x}" cy="${y}" r="${formatNumber(marker.size ?? 1.55)}" fill="${teamColor(marker.team, snapshot)}" stroke="${teamStroke(marker.team, snapshot)}" stroke-width="0.5"></circle>`;
 }
 
 function renderPing(snapshot: MinimapSnapshot, ping: MinimapPing): string {

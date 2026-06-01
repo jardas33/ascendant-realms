@@ -321,6 +321,14 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V094_VISUAL_QA_REPORT.md",
   "V094_IMPLEMENTATION_REPORT.md",
   "V094_EMMANUEL_RETEST_CHECKLIST.md",
+  "V095_PROCEDURAL_BATTLEFIELD_READABILITY_SPEC.md",
+  "V095_FOG_AND_TERRAIN_PLACEHOLDER_RESCUE_REPORT.md",
+  "V095_ENTITY_SILHOUETTE_PLACEHOLDER_SPEC.md",
+  "V095_CAPTURE_SITE_AND_LABEL_DENSITY_REPORT.md",
+  "V095_VISUAL_QA_REPORT.md",
+  "V095_IMPLEMENTATION_REPORT.md",
+  "V095_EMMANUEL_RETEST_CHECKLIST.md",
+  "V095_DEFERRED_FINAL_ART_REQUIREMENTS.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -431,7 +439,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.94 main menu ascendant creation and campaign-shell density rescue",
+      "v0.95 procedural battlefield readability and placeholder-world rescue",
       "build info checkpoint",
       checks,
       errors

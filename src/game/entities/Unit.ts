@@ -15,6 +15,7 @@ import {
   getUnitVeterancyRank
 } from "../data/unitVeterancy";
 import { DEFAULT_BEHAVIOUR_MODE, type BehaviourMode } from "../systems/BehaviourModeSystem";
+import { resolveUnitPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
 import { BaseEntity } from "./BaseEntity";
 
 const PLAYER_MOVE_COMBAT_SUPPRESSION_SECONDS = 1.15;
@@ -67,7 +68,7 @@ export class Unit extends BaseEntity {
   veterancyArmorBonus = 0;
   readonly appliedUpgradeIds = new Set<string>();
 
-  private body?: Phaser.GameObjects.Arc;
+  private body?: Phaser.GameObjects.Shape;
   private sprite?: Phaser.GameObjects.Image;
 
   constructor(
@@ -94,6 +95,14 @@ export class Unit extends BaseEntity {
     this.veterancy = createUnitVeterancyState(this.id, definition.id);
     const isHero = options.kind === "hero";
     this.createCommonView(scene, definition.name, this.healthColorForTeam(), true);
+    this.setLabelVisibleByDefault(
+      resolveUnitPlaceholderPresentation({
+        unitId: definition.id,
+        team,
+        kind: options.kind ?? "unit",
+        baseColor: definition.color
+      }).labelVisibleByDefault
+    );
     const layout = this.addBattleView(scene, options.kind ?? "unit");
     const selectionRadius = Math.max(this.radius + 7, isHero ? 23 : 20);
     this.configureCommonViewLayout({
@@ -287,6 +296,7 @@ export class Unit extends BaseEntity {
     this.eliteDamageMultiplier = Math.max(this.eliteDamageMultiplier, squad.damageMultiplier);
     this.label?.setText(`${squad.shortLabel} ${this.definition.name}`);
     this.label?.setColor("#ffd27a");
+    this.setLabelVisibleByDefault(true);
     this.updateHealthBar();
   }
 
@@ -414,11 +424,45 @@ export class Unit extends BaseEntity {
       };
     }
 
-    this.body = scene.add.circle(0, 0, this.radius, this.definition.color, 0.95).setStrokeStyle(2, 0x172019, 0.9);
+    const presentation = resolveUnitPlaceholderPresentation({
+      unitId: this.definition.id,
+      team: this.team,
+      kind,
+      baseColor: this.definition.color
+    });
+    this.body = scene.add
+      .ellipse(0, 0, this.radius * 1.5, this.radius * 2.05, presentation.fillColor, presentation.bodyAlpha)
+      .setStrokeStyle(2, presentation.strokeColor, presentation.strokeAlpha);
     this.view?.addAt(this.body, 1);
+    const accent = presentation.accentColor;
+    if (presentation.silhouette === "hero") {
+      this.view?.addAt(scene.add.rectangle(0, -this.radius * 1.12, 6, this.radius * 1.45, accent, 0.9), 2);
+      this.view?.addAt(scene.add.rectangle(10, -this.radius * 1.44, 22, 11, accent, 0.82), 3);
+      this.view?.addAt(scene.add.circle(0, -this.radius * 0.5, this.radius * 0.33, 0xf5efc2, 0.92), 4);
+    } else if (presentation.silhouette === "worker") {
+      this.view?.addAt(
+        scene.add.rectangle(0, this.radius * 0.12, this.radius * 1.34, this.radius * 0.82, 0x2a3a2d, 0.84).setStrokeStyle(2, accent, 0.72),
+        2
+      );
+      this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.58, this.radius * 1.04, 7, accent, 0.86), 3);
+    } else if (presentation.silhouette === "ranged") {
+      this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.68, this.radius * 1.3, 5, accent, 0.78), 2);
+      this.view?.addAt(scene.add.rectangle(this.radius * 0.62, -2, 4, this.radius * 1.35, 0xf5efc2, 0.78), 3);
+    } else if (presentation.silhouette === "caster") {
+      this.view?.addAt(scene.add.circle(0, -this.radius * 0.64, this.radius * 0.36, accent, 0.84), 2);
+      this.view?.addAt(scene.add.rectangle(0, this.radius * 0.44, this.radius * 1.24, 4, 0x8ff6e5, 0.64), 3);
+    } else if (presentation.silhouette === "commander") {
+      this.view?.addAt(scene.add.rectangle(0, -this.radius * 0.2, this.radius * 1.72, this.radius * 0.42, accent, 0.8), 2);
+      this.view?.addAt(scene.add.rectangle(0, -this.radius * 1.08, 5, this.radius * 1.1, 0xffdf7a, 0.86), 3);
+    } else {
+      this.view?.addAt(
+        scene.add.rectangle(0, this.radius * 0.12, this.radius * 1.36, this.radius * 0.76, accent, 0.72).setStrokeStyle(1, 0x101511, 0.75),
+        2
+      );
+    }
     return {
-      visualTop: -this.radius,
-      visualBottom: this.radius
+      visualTop: kind === "hero" ? -this.radius * 1.62 : -this.radius * 1.28,
+      visualBottom: this.radius * 1.04
     };
   }
 

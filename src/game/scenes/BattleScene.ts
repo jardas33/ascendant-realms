@@ -486,8 +486,18 @@ export class BattleScene extends Phaser.Scene {
     });
     this.hero = spawned.hero;
     this.captureSites = spawned.captureSites;
+    this.applyCaptureSiteObjectiveEmphasis();
     this.neutralCampLabels = spawned.neutralCampLabels;
     this.enemyHeroUnits().forEach((unit) => this.runtime.recordEnemyHeroPresence(unit.enemyHeroId, unit.enemyHeroName));
+  }
+
+  private applyCaptureSiteObjectiveEmphasis(): void {
+    const objectiveSiteIds = new Set(
+      (this.activeMap.scenario.objectives.secondaryObjectives ?? [])
+        .filter((objective) => objective.type === "capture_site")
+        .map((objective) => objective.targetId)
+    );
+    this.captureSites.forEach((site) => site.setObjectiveRelevant(objectiveSiteIds.has(site.definition.id)));
   }
 
   private createSystems(): void {
@@ -705,9 +715,11 @@ export class BattleScene extends Phaser.Scene {
       }
       const presentation = resolveFogCellPresentation(cell.state);
       this.fogOverlay?.fillStyle(presentation.fillColor, presentation.fillAlpha);
-      this.fogOverlay?.fillRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
-      this.fogOverlay?.lineStyle(1, presentation.strokeColor, presentation.strokeAlpha);
-      this.fogOverlay?.strokeRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
+      this.fogOverlay?.fillRoundedRect(cell.x - 1, cell.y - 1, cell.width + 2, cell.height + 2, presentation.cornerRadius);
+      if (presentation.strokeAlpha > 0) {
+        this.fogOverlay?.lineStyle(1, presentation.strokeColor, presentation.strokeAlpha);
+        this.fogOverlay?.strokeRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
+      }
     });
   }
 

@@ -4,8 +4,8 @@
   position: absolute;
   right: 12px;
   top: 56px;
-  width: 136px;
-  height: 94px;
+  width: 156px;
+  height: 108px;
   padding: 7px;
   border: 1px solid rgba(246, 237, 180, 0.18);
   border-style: solid;
@@ -45,7 +45,7 @@
 }
 
 .minimap-terrain {
-  fill: #223226;
+  fill: #203628;
 }
 
 .minimap-bounds {
@@ -78,9 +78,9 @@
 }
 
 .minimap-camera {
-  fill: rgba(255, 255, 255, 0.05);
+  fill: rgba(184, 239, 255, 0.08);
   stroke: #dceef0;
-  stroke-width: 1.2;
+  stroke-width: 1.35;
   vector-effect: non-scaling-stroke;
 }
 

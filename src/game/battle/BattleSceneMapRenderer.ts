@@ -28,6 +28,8 @@ function drawBaseTerrain(graphics: Phaser.GameObjects.Graphics, activeMap: Battl
   graphics.fillStyle(0x17261b, 1);
   graphics.fillRect(0, 0, activeMap.width, activeMap.height);
 
+  graphics.fillStyle(0x0c130f, 0.18);
+  graphics.fillRect(0, 0, activeMap.width, activeMap.height);
   graphics.fillStyle(0x213923, 0.6);
   graphics.fillEllipse(570, 780, 980, 720);
   graphics.fillStyle(0x243223, 0.54);
@@ -46,6 +48,14 @@ function drawBaseTerrain(graphics: Phaser.GameObjects.Graphics, activeMap: Battl
     const color = colorRoll > 0.72 ? 0x385036 : colorRoll > 0.38 ? 0x203922 : 0x293f2c;
     graphics.fillStyle(color, 0.13 + noise01(index + 503) * 0.17);
     graphics.fillEllipse(x, y, width, height);
+  }
+
+  for (let index = 0; index < 46; index += 1) {
+    const x = noise01(index + 1447) * activeMap.width;
+    const y = noise01(index + 1531) * activeMap.height;
+    const radius = 44 + noise01(index + 1613) * 98;
+    graphics.fillStyle(index % 2 === 0 ? 0x101b15 : 0x31422d, 0.1 + noise01(index + 1709) * 0.08);
+    graphics.fillEllipse(x, y, radius * 1.7, radius * 0.62);
   }
 }
 
@@ -125,6 +135,12 @@ function drawWaterGround(
       { x: centerX + zone.width * 0.22, y: y - 2 }
     ]);
   }
+  graphics.lineStyle(2, 0x05201f, 0.28);
+  strokePolyline(graphics, [
+    { x: centerX - zone.width * 0.46, y: centerY + zone.height * 0.34 },
+    { x: centerX - zone.width * 0.16, y: centerY + zone.height * 0.48 },
+    { x: centerX + zone.width * 0.42, y: centerY + zone.height * 0.36 }
+  ]);
 }
 
 function drawCaptureSiteGrounds(graphics: Phaser.GameObjects.Graphics, activeMap: BattleMapDefinition): void {
@@ -174,13 +190,17 @@ function drawMapBorder(graphics: Phaser.GameObjects.Graphics, activeMap: BattleM
 }
 
 function drawPath(graphics: Phaser.GameObjects.Graphics, points: Position[], width: number): void {
+  graphics.lineStyle(width + 28, 0x080b08, 0.28);
+  strokePolyline(graphics, points);
   graphics.lineStyle(width + 18, 0x10140f, 0.34);
   strokePolyline(graphics, points);
   graphics.lineStyle(width + 8, 0x5b462d, 0.38);
   strokePolyline(graphics, points);
-  graphics.lineStyle(width, 0x8a6a3f, 0.42);
+  graphics.lineStyle(width, 0x8a6a3f, 0.46);
   strokePolyline(graphics, points);
-  graphics.lineStyle(2, 0xd6bd76, 0.12);
+  graphics.lineStyle(Math.max(4, width * 0.16), 0xc09a5f, 0.16);
+  strokePolyline(graphics, points);
+  graphics.lineStyle(2, 0xf0d978, 0.18);
   strokePolyline(graphics, points);
 }
 

@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.94 main menu ascendant creation and campaign-shell density rescue",
+          checkpoint: "v0.95 procedural battlefield readability and placeholder-world rescue",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -370,6 +370,14 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V094_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.94 visual QA report" },
       { path: "V094_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.94 implementation report" },
       { path: "V094_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.94 Emmanuel retest" },
+      { path: "V095_PROCEDURAL_BATTLEFIELD_READABILITY_SPEC.md", sizeBytes: 20, textContent: "v0.95 battlefield readability spec" },
+      { path: "V095_FOG_AND_TERRAIN_PLACEHOLDER_RESCUE_REPORT.md", sizeBytes: 20, textContent: "v0.95 fog terrain report" },
+      { path: "V095_ENTITY_SILHOUETTE_PLACEHOLDER_SPEC.md", sizeBytes: 20, textContent: "v0.95 entity silhouette spec" },
+      { path: "V095_CAPTURE_SITE_AND_LABEL_DENSITY_REPORT.md", sizeBytes: 20, textContent: "v0.95 capture label report" },
+      { path: "V095_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.95 visual QA report" },
+      { path: "V095_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.95 implementation report" },
+      { path: "V095_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.95 Emmanuel retest" },
+      { path: "V095_DEFERRED_FINAL_ART_REQUIREMENTS.md", sizeBytes: 20, textContent: "v0.95 deferred final art" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { buildingBattleAssetIds } from "../assets/AssetKeys";
 import { clamp } from "../core/MathUtils";
 import type { BuildingConstructionState, BuildingDefinition, Cost, Position, Team } from "../core/GameTypes";
+import { resolveBuildingPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
 import { BaseEntity } from "./BaseEntity";
 
 export interface TrainingQueueItem {
@@ -72,6 +73,13 @@ export class Building extends BaseEntity {
         : "Under construction"
       : "Complete";
     this.createCommonView(scene, definition.name, team === "player" ? 0x80d982 : 0xe46960, true);
+    this.setLabelVisibleByDefault(
+      resolveBuildingPlaceholderPresentation({
+        buildingId: definition.id,
+        team,
+        baseColor: definition.color
+      }).labelVisibleByDefault
+    );
     const layout = this.addBattleView(scene, definition, team);
     const selectionRadius = Math.max(this.radius + 7, Math.max(definition.size.width, definition.size.height) * 0.64);
     this.configureCommonViewLayout({
@@ -179,10 +187,32 @@ export class Building extends BaseEntity {
       };
     }
 
-    const rect = scene.add
-      .rectangle(0, 0, definition.size.width, definition.size.height, definition.color, 0.96)
-      .setStrokeStyle(3, team === "player" ? 0xd8edc2 : 0x3b1714, 0.9);
-    this.view?.addAt(rect, 1);
+    const presentation = resolveBuildingPlaceholderPresentation({
+      buildingId: definition.id,
+      team,
+      baseColor: definition.color
+    });
+    const base = scene.add
+      .rectangle(0, 0, definition.size.width, definition.size.height, presentation.fillColor, 0.96)
+      .setStrokeStyle(3, presentation.strokeColor, 0.9);
+    this.view?.addAt(base, 1);
+    const accent = presentation.accentColor;
+    if (presentation.silhouette === "command") {
+      this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.44, definition.size.width * 0.86, 14, accent, 0.72), 2);
+      this.view?.addAt(scene.add.rectangle(0, 4, definition.size.width * 0.34, definition.size.height * 0.58, 0x111713, 0.32), 3);
+    } else if (presentation.silhouette === "barracks") {
+      this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.34, definition.size.width * 0.82, 8, accent, 0.68), 2);
+      this.view?.addAt(scene.add.rectangle(-definition.size.width * 0.32, 0, 8, definition.size.height * 0.72, 0x111713, 0.34), 3);
+      this.view?.addAt(scene.add.rectangle(definition.size.width * 0.32, 0, 8, definition.size.height * 0.72, 0x111713, 0.34), 4);
+    } else if (presentation.silhouette === "shrine") {
+      this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.08, definition.size.width * 0.28, definition.size.height * 0.92, 0x112c2f, 0.72), 2);
+      this.view?.addAt(scene.add.circle(0, -definition.size.height * 0.42, 9, accent, 0.82), 3);
+    } else if (presentation.silhouette === "tower") {
+      this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.16, definition.size.width * 0.46, definition.size.height * 0.9, 0x151d17, 0.42), 2);
+      this.view?.addAt(scene.add.rectangle(0, -definition.size.height * 0.58, definition.size.width * 0.78, 12, accent, 0.72), 3);
+    } else {
+      this.view?.addAt(scene.add.rectangle(0, 0, definition.size.width * 0.62, definition.size.height * 0.52, accent, 0.42), 2);
+    }
     return {
       visualTop: -definition.size.height / 2,
       visualBottom: definition.size.height / 2

@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.95 Procedural Battlefield Readability And Placeholder-World Rescue - 2026-05-31
+
+This checkpoint improves battle presentation only. It rescues procedural placeholder terrain, fog readability, entity silhouettes, capture-site emphasis, label density, minimap clarity, package metadata, and visual-QA coverage. It does not add gameplay, change balance, alter saves, rename stable IDs, change fog logic, change Lume mechanics, add maps/factions/assets, import/generate art, start desktop work, or start v0.96.
+
+Added:
+
+- `src/game/ui/PlaceholderBattlefieldPresentation.ts`.
+- `src/game/ui/PlaceholderBattlefieldPresentation.test.ts`.
+- `docs/V095_PROCEDURAL_BATTLEFIELD_READABILITY_SPEC.md`.
+- `docs/V095_FOG_AND_TERRAIN_PLACEHOLDER_RESCUE_REPORT.md`.
+- `docs/V095_ENTITY_SILHOUETTE_PLACEHOLDER_SPEC.md`.
+- `docs/V095_CAPTURE_SITE_AND_LABEL_DENSITY_REPORT.md`.
+- `docs/V095_VISUAL_QA_REPORT.md`.
+- `docs/V095_IMPLEMENTATION_REPORT.md`.
+- `docs/V095_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V095_DEFERRED_FINAL_ART_REQUIREMENTS.md`.
+
+Changed:
+
+- Battle terrain rendering now uses deterministic Phaser primitive detail for roads, water edges, terrain scuffs, blocked-ground shadows, and site-ground context.
+- Fog-of-war presentation is softer and less checkerboard-like without changing fog visibility logic.
+- Unit and building placeholders use role-aware silhouettes and label priority.
+- Routine unit labels are quieter; important labels remain visible when selected, statused, objective-relevant, commander/elite, hero, building, or capture site.
+- Capture-site rings better distinguish neutral, friendly, enemy, selected, contested, and objective states.
+- Minimap markers and panel sizing are slightly clearer for desktop battle review.
+- Visual QA now includes 102 screenshots after adding the v0.95 battlefield-readability states.
+- Package generation and validation now require/copy the v0.95 docs and report the v0.95 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, gameplay systems, balance values, rewards, XP, campaign progression, replay rules, Tutorial safety, pathing, collision, fog simulation, Lume mechanics, maps, factions, units, buildings, art assets, imported assets, generated images, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 94 files / 686 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 11 tests / 102 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 102 screenshots / 7 contact sheets.
+- Non-pass evidence resolved before closeout: initial unit tests caught unsupported triangle placeholders in Phaser test doubles; a filtered v0.95 visual-QA run failed only the expected global screenshot count. The final unfiltered visual-QA run passed.
+
 # v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
 
 This checkpoint improves out-of-battle presentation only. It rescues the main menu composition, makes Ascendant creation scannable, compacts campaign mission information, improves campaign tab hierarchy, and groups ordinary Results expanded details. It does not add gameplay, alter hero rules, change rewards, change saves, rename stable IDs, add maps/factions/races/art, rebrand the runtime title, or start desktop work.

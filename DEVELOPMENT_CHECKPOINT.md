@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.94 main menu ascendant creation and campaign-shell density rescue
+Updated: 2026-05-31 v0.95 procedural battlefield readability and placeholder-world rescue
+
+## v0.95 Procedural Battlefield Readability And Placeholder-World Rescue - 2026-05-31
+
+Scope: presentation-only battle-readability pass. This checkpoint rescues procedural placeholder terrain, fog presentation, entity silhouettes, capture-site emphasis, label density, minimap readability, package metadata, and visual-QA coverage. It does not add gameplay, alter balance, change saves, rename IDs, change fog logic, change Lume mechanics, import/generate art, add maps/factions/assets, start desktop work, or start v0.96.
+
+Baseline:
+
+- Starting commit: `f6f63a2`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-f6f63a2`.
+- Baseline remote status: GitHub Actions run `26729836593` on `f6f63a2` completed successfully.
+
+Included work:
+
+- Battle terrain rendering now has deterministic ground scuffs, road beds, water edges, blocked-ground shadows, and site-ground context using Phaser primitives only.
+- Fog presentation is softer and less checkerboard-like while preserving the existing fog-of-war system.
+- Units/buildings use role-aware placeholder silhouettes through `PlaceholderBattlefieldPresentation`.
+- Routine unit labels are quieter; selected/statused, hero, commander/elite, building, and capture-site labels remain visible.
+- Capture sites have calmer ownership rings, stronger contested/selected/objective priority, and objective relevance from existing secondary objective metadata.
+- Minimap panel and marker families are slightly more legible.
+- Visual QA now includes 102 screenshots after adding 18 v0.95 battlefield-readability states.
+- Package generation and validation now require/copy the v0.95 docs and report the v0.95 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, rewards, XP, or persistent settings changed.
+
+Verification:
+
+```text
+npm test - PASS, 94 files / 686 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 11 tests / 102 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 102 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence resolved during v0.95: initial unit testing caught unsupported triangle primitives in existing Phaser test doubles; the placeholder silhouettes now use rectangle/ellipse/circle primitives. A v0.95-only visual-QA grep run failed only the global expected screenshot count because the suite was intentionally filtered; the final full visual-QA run passed with all 102 screenshots.
 
 ## v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
 

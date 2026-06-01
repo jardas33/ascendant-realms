@@ -14,18 +14,18 @@ export function resolveFogCellPresentation(state: Exclude<VisibilityState, "visi
     return {
       fillColor: 0x020503,
       fillColorCss: "#020503",
-      fillAlpha: 0.76,
-      strokeColor: 0x102018,
-      strokeAlpha: 0.16,
-      cornerRadius: 10
+      fillAlpha: 0.7,
+      strokeColor: 0x0c1712,
+      strokeAlpha: 0.08,
+      cornerRadius: 14
     };
   }
   return {
     fillColor: 0x07120f,
     fillColorCss: "#07120f",
-    fillAlpha: 0.34,
+    fillAlpha: 0.28,
     strokeColor: 0x1c3028,
-    strokeAlpha: 0.12,
-    cornerRadius: 8
+    strokeAlpha: 0.06,
+    cornerRadius: 12
   };
 }

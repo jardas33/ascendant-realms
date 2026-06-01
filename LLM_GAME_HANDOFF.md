@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.94 main menu ascendant creation and campaign-shell density rescue
+Last updated: 2026-05-31 v0.95 procedural battlefield readability and placeholder-world rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, and v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, and v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance. No runtime rebrand is approved.
+
+## Current v0.95 Procedural Battlefield Readability And Placeholder-World Rescue - 2026-05-31
+
+Status: v0.95 is a presentation-only battlefield readability checkpoint. It improves deterministic terrain layers, softer fog display, role-aware placeholder silhouettes, capture-site emphasis, routine label density, minimap marker readability, package metadata, and v0.95 visual-QA coverage. It does not add gameplay, alter balance, change saves, rename stable IDs, change fog-of-war logic, change Lume mechanics, import/generate art, add maps/factions/assets, start desktop work, or start v0.96.
+
+Baseline:
+
+- Starting commit: `f6f63a2`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-f6f63a2`.
+- Baseline remote status: GitHub Actions run `26729836593` on `f6f63a2` completed successfully.
+
+Included work:
+
+- Added deterministic placeholder terrain detail in the battle map renderer: darker vignette, terrain patches, stronger road beds, clearer water edges, and subtle site-ground context.
+- Softened fog cell rendering and fog presentation colors without changing visibility calculations.
+- Added `PlaceholderBattlefieldPresentation` to centralize role-aware placeholder shapes and label priority for units/buildings.
+- Updated unit/building placeholders to use distinct Phaser primitive silhouettes for hero/commander, Worker, frontline, ranged/caster, command structures, barracks, shrines, watchtowers, and utility buildings.
+- Reduced routine unit-label noise while keeping selected/statused, hero, commander/elite, building, and capture-site labels visible.
+- Tuned capture-site ownership rings and objective emphasis, and marks objective-relevant sites from existing secondary objective metadata.
+- Enlarged minimap markers and the minimap panel slightly for desktop readability.
+- Added 18 v0.95 visual-QA screenshots, raising the deterministic visual-QA set from 84 to 102 screenshots.
+- Added all required v0.95 specs, reports, deferred final-art requirements, and Emmanuel retest checklist.
+
+Runtime/save/art boundary:
+
+- Presentation-only Phaser graphics/CSS/test/docs/package metadata changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, replay rules, reward logic, XP, balance values, pathing, collision, fog-of-war simulation, Lume mechanics, maps, factions, units, buildings, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+```text
+npm test - PASS, 94 files / 686 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 11 tests / 102 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 102 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence resolved during v0.95: an initial full unit run exposed a Phaser test double gap when the new placeholder silhouettes used triangle primitives; the placeholders were revised to rectangle/ellipse/circle primitives that match existing test doubles. A targeted visual-QA grep run intentionally captured only the v0.95 group and failed only the global expected-screenshot afterAll count because the rest of the suite was filtered; the final full visual-QA pass captured all 102 screenshots with 0 console errors and 0 retries. Hosted lanes still log existing verified actionability fallbacks in older tests; v0.95 did not add or broaden canvas/world click fallbacks.
+
+Closeout note: commit as `Checkpoint v0.95 procedural battlefield readability and placeholder-world rescue`, package cleanly on the final commit, verify, push safely, and stop. Do not start v0.96 automatically.
 
 ## Current v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
 

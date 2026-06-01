@@ -11,11 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.94 Main Menu, Ascendant Creation, and Campaign-Shell Density Rescue** on 2026-05-31. It is a presentation-only usability milestone: the main menu, Ascendant creation, campaign shell, campaign tabs, compact mission panel, and ordinary Results expanded details are clearer without changing gameplay, hero rules, saves, rewards, progression, stable IDs, maps, factions, art, runtime title, or desktop direction.
+The current checkpoint is **v0.95 Procedural Battlefield Readability and Placeholder-World Rescue** on 2026-05-31. It is a presentation-only battle-readability milestone: procedural terrain, fog display, placeholder entity silhouettes, capture-site emphasis, label density, minimap clarity, package metadata, and visual-QA coverage are clearer without changing gameplay, saves, rewards, progression, stable IDs, fog logic, Lume mechanics, maps, factions, art, runtime title, or desktop direction.
 
-The next recommended step is manual review of the v0.94 package and visual review pack. Do not start v0.95, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, or rebrand the runtime until a future explicit goal approves a narrow next step.
+The next recommended step is manual review of the v0.95 package and visual review pack. Do not start v0.96, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, change fog/Lume mechanics, or rebrand the runtime until a future explicit goal approves a narrow next step.
 
-New v0.94 docs:
+New v0.95 docs:
+
+- `docs/V095_PROCEDURAL_BATTLEFIELD_READABILITY_SPEC.md`
+- `docs/V095_FOG_AND_TERRAIN_PLACEHOLDER_RESCUE_REPORT.md`
+- `docs/V095_ENTITY_SILHOUETTE_PLACEHOLDER_SPEC.md`
+- `docs/V095_CAPTURE_SITE_AND_LABEL_DENSITY_REPORT.md`
+- `docs/V095_VISUAL_QA_REPORT.md`
+- `docs/V095_IMPLEMENTATION_REPORT.md`
+- `docs/V095_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V095_DEFERRED_FINAL_ART_REQUIREMENTS.md`
+
+Recent v0.94 docs:
 
 - `docs/V094_MAIN_MENU_RESCUE_SPEC.md`
 - `docs/V094_ASCENDANT_CREATION_UX_SPEC.md`

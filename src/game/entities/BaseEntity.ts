@@ -43,6 +43,7 @@ export abstract class BaseEntity {
   private statusBadgeLabel?: Phaser.GameObjects.Text;
   private healthBarWidth = 0;
   private healthBarHeight = 0;
+  private labelVisibleByDefault = true;
 
   protected constructor(options: {
     id?: string;
@@ -216,13 +217,16 @@ export abstract class BaseEntity {
     this.statusBadgeLabel?.setVisible(burning);
     if (burning) {
       this.label?.setColor("#ffb187");
+      this.updateLabelVisibility();
       return;
     }
     this.label?.setColor("#e9ecd8");
+    this.updateLabelVisibility();
   }
 
   setSelected(selected: boolean): void {
     this.selected = selected;
+    this.updateLabelVisibility();
     if (!this.selectionRing) {
       return;
     }
@@ -239,6 +243,16 @@ export abstract class BaseEntity {
     }
     const ratio = clamp(this.hp / this.maxHp, 0, 1);
     this.healthFill.displayWidth = this.healthBarWidth * ratio;
+  }
+
+  protected setLabelVisibleByDefault(visible: boolean): void {
+    this.labelVisibleByDefault = visible;
+    this.updateLabelVisibility();
+  }
+
+  protected updateLabelVisibility(): void {
+    const hasPriorityStatus = this.statusEffects.some((effect) => effect.remainingSeconds > 0);
+    this.label?.setVisible(this.labelVisibleByDefault || this.selected || hasPriorityStatus);
   }
 
   private updateStatusBadgePosition(): void {

@@ -27,6 +27,7 @@ export class CaptureSite extends BaseEntity {
   workerAssignmentStatusDetail = "Empty worker slot";
   workerAssignmentBoostActive = false;
   abstractEnemyWorkerSlots = 0;
+  objectiveRelevant = false;
 
   private ring?: Phaser.GameObjects.Arc;
   private progressRing?: Phaser.GameObjects.Arc;
@@ -68,6 +69,11 @@ export class CaptureSite extends BaseEntity {
 
   setSelected(selected: boolean): void {
     super.setSelected(selected);
+    this.updateVisuals();
+  }
+
+  setObjectiveRelevant(objectiveRelevant: boolean): void {
+    this.objectiveRelevant = objectiveRelevant;
     this.updateVisuals();
   }
 
@@ -132,9 +138,15 @@ export class CaptureSite extends BaseEntity {
       capturingTeam: this.capturingTeam,
       captureProgress: this.captureProgress,
       selected: this.selected,
+      objectiveRelevant: this.objectiveRelevant,
       resourceColor: this.siteColor()
     });
-    this.ring?.setStrokeStyle(presentation.ringWidth, presentation.ringColor, presentation.ringAlpha);
+    this.ring
+      ?.setFillStyle(
+        presentation.ringColor,
+        presentation.state === "selected" || presentation.state === "contested" ? 0.16 : presentation.state === "objective" ? 0.1 : 0.06
+      )
+      .setStrokeStyle(presentation.ringWidth, presentation.ringColor, presentation.ringAlpha);
     this.label
       ?.setText(`${presentation.labelPrefix} - ${this.definition.name}`)
       .setColor(presentation.labelColor)

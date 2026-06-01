@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 84;
+const EXPECTED_SCREENSHOT_COUNT = 102;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -527,6 +527,122 @@ async function selectLumeSite(page: Page, siteId: string): Promise<void> {
   await expect(page.getByTestId("selected-lume-site-summary")).toBeVisible();
 }
 
+async function stageV095FogRoadWaterView(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.settings.fogEnabledOverride = "enabled";
+    scene.fogDebugDisabled = false;
+    scene.cameraSystem.centerOn({ x: 930, y: 300 });
+    scene.updateFogOfWar?.(0, true);
+    scene.refreshBattleHud?.(0);
+  });
+}
+
+async function selectHeroForVisualQa(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.selectionSystem.setSelection([scene.hero]);
+    scene.cameraSystem.centerOn(scene.hero.position);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
+}
+
+async function trainAndSelectWorkerForVisualQa(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    const commandHall = scene.buildings.find(
+      (building: any) => building.alive && building.team === "player" && building.definition.id === "command_hall"
+    );
+    if (!commandHall) {
+      throw new Error("Missing player Command Hall.");
+    }
+    scene.resources.player.crowns = Math.max(scene.resources.player.crowns, 500);
+    scene.resources.player.stone = Math.max(scene.resources.player.stone, 250);
+    scene.trainingSystem.queueTraining(commandHall, "worker", scene.resources.player, { announce: false });
+    scene.trainingSystem.update(90, scene.buildings);
+    const worker = scene.units.find((unit: any) => unit.alive && unit.team === "player" && unit.definition.id === "worker");
+    if (!worker) {
+      throw new Error("Worker did not train for visual QA.");
+    }
+    scene.selectionSystem.setSelection([worker]);
+    scene.cameraSystem.centerOn(worker.position);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("selection-side-panel")).toContainText("Worker");
+}
+
+async function selectUnitTypeForVisualQa(page: Page, unitId: string, team: "player" | "enemy"): Promise<void> {
+  await page.evaluate(
+    ({ unitId, team }) => {
+      const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("BattleScene is not active.");
+      }
+      if (team === "enemy") {
+        scene.fogDebugDisabled = true;
+        scene.updateFogOfWar?.(0, true);
+      }
+      const unit = scene.units.find((entry: any) => entry.alive && entry.team === team && entry.definition.id === unitId);
+      if (!unit) {
+        throw new Error(`Missing ${team} ${unitId} for visual QA.`);
+      }
+      scene.selectionSystem.setSelection([unit]);
+      scene.cameraSystem.centerOn(unit.position);
+      scene.refreshBattleHud?.(0);
+    },
+    { unitId, team }
+  );
+  await expect(page.getByTestId("selection-side-panel")).toBeVisible();
+}
+
+async function stageCaptureSiteVisualState(
+  page: Page,
+  state: "neutral" | "player" | "enemy" | "contested" | "objective"
+): Promise<void> {
+  await page.evaluate((requestedState) => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.fogDebugDisabled = true;
+    scene.updateFogOfWar?.(0, true);
+    const site = scene.captureSites.find((entry: any) => entry.definition.id === "crown_shrine") ?? scene.captureSites[0];
+    if (!site) {
+      throw new Error("Missing capture site for v0.95 visual QA.");
+    }
+    site.setObjectiveRelevant?.(requestedState === "objective");
+    if (requestedState === "player") {
+      site.setOwner("player");
+    } else if (requestedState === "enemy") {
+      site.setOwner("enemy");
+    } else if (requestedState === "contested") {
+      site.setOwner("player");
+      site.capturingTeam = "enemy";
+      site.captureProgress = 0.46;
+      site.updateVisuals?.();
+    } else {
+      site.setOwner("neutral");
+      site.capturingTeam = "neutral";
+      site.captureProgress = 0;
+      site.updateVisuals?.();
+    }
+    scene.selectionSystem.setSelection([site]);
+    scene.cameraSystem.centerOn(site.position);
+    scene.refreshBattleHud?.(0);
+  }, state);
+  await expect(page.getByTestId("selected-resource-site-stats")).toBeVisible();
+}
+
 async function showVisualQaResults(page: Page, outcome: "victory" | "defeat", wasReplay = false): Promise<void> {
   await page.waitForFunction(() => Boolean((window as any).ascendantRealmsGame), undefined, { timeout: 10_000 });
   await page.evaluate(
@@ -695,7 +811,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 84-screenshot review set").toHaveLength(
+    expect(visualQaRecords, `visual QA should preserve the full ${EXPECTED_SCREENSHOT_COUNT}-screenshot review set`).toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -1256,6 +1372,187 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v090-private-results-expanded-1366.png",
       LAPTOP,
       "Private demo Results expanded full battle details remain behind deliberate disclosure."
+    );
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.95 procedural battlefield readability states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v095-battlefield-readability";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v095 Battle");
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleHudAcceptance(page, `${group} ordinary battle start 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.95 ordinary battle start 1920",
+      "v095-ordinary-battle-start-1920.png",
+      FULL_HD,
+      "Ordinary battle start at 1920x1080 with procedural terrain, capture-site rings, minimap, and HUD readable."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await expectBattleHudAcceptance(page, `${group} ordinary battle start 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.95 ordinary battle start 1600",
+      "v095-ordinary-battle-start-1600.png",
+      WIDE_DESKTOP,
+      "Ordinary battle start at 1600x900 checks mid-desktop terrain and HUD density."
+    );
+
+    await useViewport(page, LAPTOP);
+    await expectBattleHudAcceptance(page, `${group} ordinary battle start 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.95 ordinary battle start 1366",
+      "v095-ordinary-battle-start-1366.png",
+      LAPTOP,
+      "Ordinary battle start at 1366x768 keeps primary HUD and minimap readable."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await stageV095FogRoadWaterView(page);
+    await expectBattleHudAcceptance(page, `${group} fog road water 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.95 fog roads water",
+      "v095-fog-roads-water-1600.png",
+      WIDE_DESKTOP,
+      "Fog, roads, water, and terrain patches remain distinct without changing fog logic."
+    );
+
+    await useViewport(page, FULL_HD);
+    await selectHeroForVisualQa(page);
+    await captureView(
+      page,
+      group,
+      "v0.95 selected hero",
+      "v095-selected-hero-1920.png",
+      FULL_HD,
+      "Hero placeholder silhouette and label priority are readable against terrain."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await trainAndSelectWorkerForVisualQa(page);
+    await captureView(
+      page,
+      group,
+      "v0.95 selected Worker",
+      "v095-selected-worker-1600.png",
+      WIDE_DESKTOP,
+      "Worker placeholder silhouette reads as utility while selected label and command context remain clear."
+    );
+
+    await useViewport(page, LAPTOP);
+    await selectUnitTypeForVisualQa(page, "militia", "player");
+    await captureView(
+      page,
+      group,
+      "v0.95 selected melee",
+      "v095-selected-melee-1366.png",
+      LAPTOP,
+      "Militia frontline placeholder is distinct and selection feedback remains visible at 1366x768."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await selectUnitTypeForVisualQa(page, "ranger", "player");
+    await captureView(
+      page,
+      group,
+      "v0.95 selected ranged",
+      "v095-selected-ranged-1600.png",
+      WIDE_DESKTOP,
+      "Ranger ranged placeholder uses a slimmer chevron silhouette with quieter routine labels."
+    );
+
+    await useViewport(page, LAPTOP);
+    await selectUnitTypeForVisualQa(page, "raider", "enemy");
+    await captureView(
+      page,
+      group,
+      "v0.95 selected enemy",
+      "v095-selected-enemy-1366.png",
+      LAPTOP,
+      "Enemy placeholder silhouette stays readable after fog reveal without changing enemy behavior."
+    );
+
+    await useViewport(page, FULL_HD);
+    await selectCommandHall(page);
+    await captureView(
+      page,
+      group,
+      "v0.95 selected building",
+      "v095-selected-building-1920.png",
+      FULL_HD,
+      "Command Hall placeholder building silhouette and minimap marker remain readable."
+    );
+
+    const siteStates: Array<["neutral" | "player" | "enemy" | "contested" | "objective", string, string, VisualViewport]> = [
+      ["neutral", "v0.95 neutral capture site", "v095-site-neutral-1600.png", WIDE_DESKTOP],
+      ["player", "v0.95 player capture site", "v095-site-player-1366.png", LAPTOP],
+      ["enemy", "v0.95 enemy capture site", "v095-site-enemy-1600.png", WIDE_DESKTOP],
+      ["contested", "v0.95 contested capture site", "v095-site-contested-1366.png", LAPTOP],
+      ["objective", "v0.95 objective capture site", "v095-site-objective-1920.png", FULL_HD]
+    ];
+    for (const [state, title, fileName, viewport] of siteStates) {
+      await useViewport(page, viewport);
+      await stageCaptureSiteVisualState(page, state);
+      await expectBattleHudAcceptance(page, `${group} ${state} capture site`);
+      await captureView(
+        page,
+        group,
+        title,
+        fileName,
+        viewport,
+        `${state} capture-site state checks ownership ring, label priority, and minimap readability.`
+      );
+    }
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v095 Lume");
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await page.getByTestId("campaign-private-lume-demo").click();
+    await expectBattleLoaded(page);
+    await centerCaptureSite(page, "west_stone_cut", true);
+    await centerCaptureSite(page, "ford_toll", true);
+    await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
+    await captureView(
+      page,
+      group,
+      "v0.95 Lume active Auto",
+      "v095-lume-auto-1920.png",
+      FULL_HD,
+      "Lume active Auto mode remains readable over rescued placeholder terrain."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("lume-visibility-hidden").click();
+    await captureView(
+      page,
+      group,
+      "v0.95 Lume Hidden",
+      "v095-lume-hidden-1600.png",
+      WIDE_DESKTOP,
+      "Lume Hidden mode keeps the battle shell and minimap readable without link clutter."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("lume-visibility-always").click();
+    await captureView(
+      page,
+      group,
+      "v0.95 Lume Always",
+      "v095-lume-always-1366.png",
+      LAPTOP,
+      "Lume Always mode remains a deliberate review posture while terrain and labels stay legible."
     );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);

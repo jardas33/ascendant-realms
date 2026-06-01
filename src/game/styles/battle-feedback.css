@@ -43,10 +43,11 @@
 }
 
 .status-line.status-routine {
-  max-width: min(440px, calc(100vw - 32px));
-  padding: 6px 10px;
+  max-width: min(400px, calc(100vw - 32px));
+  padding: 5px 9px;
   color: #d9eee8;
-  font-size: 13px;
+  font-size: 12px;
+  opacity: 0.92;
 }
 
 .status-line.status-important {
