@@ -1,0 +1,47 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-09T09:00:00.000Z",
+  "updatedAt": "2026-02-09T09:00:00.000Z",
+  "hero": {
+    "heroName": "Settings Tester",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 1,
+    "xp": 0,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 0,
+    "clearedMapIds": [],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 10,
+      "ashen_covenant": -10
+    },
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": false,
+    "difficulty": "easy"
+  },
+  "settings": {
+    "masterVolume": 0.4,
+    "musicVolume": 0.25,
+    "sfxVolume": 0.5,
+    "screenShakeEnabled": false,
+    "floatingTextEnabled": false,
+    "fogEnabledOverride": "enabled",
+    "reducedMotionEnabled": true,
+    "uiScale": 1.25,
+    "colorblindMinimapPalette": true
+  },
+  "statistics": {
+    "settingsOnly": true
+  }
+}

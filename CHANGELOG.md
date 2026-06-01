@@ -1,5 +1,37 @@
 # Changelog
 
+# v0.102 Browser Save Fixture Library And Desktop Translation Contract Proof - 2026-06-01
+
+This checkpoint adds deterministic fictional browser save fixtures and a pure translation-contract proof for future desktop experiments. It does not alter runtime save behavior, gameplay, balance, rewards, stable IDs, `CURRENT_SAVE_VERSION`, localStorage behavior, package posture, engine posture, art/assets, desktop implementation, or start v0.103.
+
+Added:
+
+- `src/game/save/SaveTranslationContract.ts`.
+- `src/game/save/SaveTranslationContract.test.ts`.
+- `tools/testSaveTranslationContract.ts`.
+- `npm run test:save-translation-contract`.
+- `tests/fixtures/saves/v0102/manifest.json`.
+- 16 deterministic v0.102 save fixture files.
+- `docs/V0102_SAVE_FIXTURE_LIBRARY_SPEC.md`.
+- `docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md`.
+- `docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md`.
+- `docs/V0102_UNKNOWN_ID_AND_CORRUPTION_POLICY.md`.
+- `docs/V0102_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added `/artifacts/save-translation-contract/` to ignored generated artifacts.
+- Extended the save fixture README with the v0.102 fixture-library and proof-command rules.
+
+Not changed:
+
+- No save-version bump, runtime save fields, localStorage keys, real-save writes, stable IDs, serialized IDs, content definitions, gameplay rules, rewards, campaign progression, Retinue rules, settings behavior, desktop save path, profile UI, desktop port, engine choice, package metadata, generated images, imported assets, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npx vitest run src/game/save/SaveTranslationContract.test.ts --reporter=dot` with 7 tests, `npm test` with 102 files / 724 tests, `npm run build` with the known Phaser/vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run export:portable-content` with 229 manifest entries, `npm run validate:portable-content`, `npm run test:save-translation-contract` with 16 fixtures / 11 translated / 2 quarantined / 3 rejected, and `git diff --check`.
+- Note: `git diff --check` emitted only the Windows line-ending warning for `.gitignore`; it exited successfully.
+
 # v0.101 Portable Content Export Contract And Stable-ID Snapshot - 2026-06-01
 
 This checkpoint adds deterministic downstream-only portable content export tooling and a compact stable-ID snapshot for later engine experiments. TypeScript remains authoritative. It does not alter runtime behavior, gameplay, balance, saves, stable IDs, package posture, engine posture, art/assets, desktop implementation, or start v0.102.

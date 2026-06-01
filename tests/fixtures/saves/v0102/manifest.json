@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.102",
+  "fixtures": [
+    {
+      "id": "v1_fresh_hero",
+      "filename": "v1-fresh-hero.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "V1 fresh hero migrates to the current V2 shape."
+    },
+    {
+      "id": "v1_campaign_in_progress",
+      "filename": "v1-campaign-in-progress.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "V1 campaign progress, resources, and reward claims migrate safely."
+    },
+    {
+      "id": "v2_fresh_hero",
+      "filename": "v2-fresh-hero.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Current fresh save normalizes without quarantine."
+    },
+    {
+      "id": "v2_act1_in_progress",
+      "filename": "v2-act1-in-progress.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Act 1 route progress, replay posture, and reward claim ids remain portable."
+    },
+    {
+      "id": "v2_relic_equipment_state",
+      "filename": "v2-relic-equipment-state.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Relic inventory and equipment references normalize without save behavior changes."
+    },
+    {
+      "id": "v2_skill_tree_state",
+      "filename": "v2-skill-tree-state.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Skill-tree allocation and ability ids validate against stable content ids."
+    },
+    {
+      "id": "v2_retinue_ready_state",
+      "filename": "v2-retinue-ready-state.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Ready Retinue units and deployment ids survive normalization."
+    },
+    {
+      "id": "v2_retinue_recovering_state",
+      "filename": "v2-retinue-recovering-state.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Recovering Retinue unit state remains loadable but unavailable for deployment."
+    },
+    {
+      "id": "v2_completed_act1_replay_posture",
+      "filename": "v2-completed-act1-replay-posture.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Completed Act 1 and claimed rewards stay one-time while replayable nodes persist."
+    },
+    {
+      "id": "v2_rival_state",
+      "filename": "v2-rival-state.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Rival state and trophy records validate against exported enemy and node ids."
+    },
+    {
+      "id": "v2_accessibility_ui_scale_settings",
+      "filename": "v2-accessibility-ui-scale-settings.json",
+      "expectedStatus": "translated",
+      "expectedSaveVersion": 2,
+      "purpose": "Accessibility and UI-scale settings normalize without becoming desktop settings."
+    },
+    {
+      "id": "v2_unknown_extra_field",
+      "filename": "v2-unknown-extra-field.json",
+      "expectedStatus": "translated_with_quarantine",
+      "expectedSaveVersion": 2,
+      "expectedUnsafeFieldCount": 4,
+      "purpose": "Unknown save fields are quarantined for translation review."
+    },
+    {
+      "id": "v2_unknown_content_id",
+      "filename": "v2-unknown-content-id.json",
+      "expectedStatus": "translated_with_quarantine",
+      "expectedSaveVersion": 2,
+      "expectedUnknownContentIdCount": 16,
+      "purpose": "Unknown content ids are reported without changing runtime normalization."
+    },
+    {
+      "id": "corrupt_json",
+      "filename": "corrupt-json.txt",
+      "expectedStatus": "rejected",
+      "expectedRejectionReason": "corrupt_json",
+      "purpose": "Corrupt JSON is rejected by the contract proof without touching storage."
+    },
+    {
+      "id": "missing_required_object",
+      "filename": "missing-required-object.json",
+      "expectedStatus": "rejected",
+      "expectedRejectionReason": "normalization_failed",
+      "purpose": "Missing required save objects are rejected safely."
+    },
+    {
+      "id": "unsupported_future_version",
+      "filename": "unsupported-future-version.json",
+      "expectedStatus": "rejected",
+      "expectedRejectionReason": "unsupported_future_version",
+      "purpose": "Future save versions are quarantined instead of migrated."
+    }
+  ]
+}

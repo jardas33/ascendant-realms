@@ -8,6 +8,7 @@ tmp-test-logs/
 bundle-analysis/
 /artifacts/playtest/
 /artifacts/portable-content/
+/artifacts/save-translation-contract/
 /artifacts/visual-review/
 /visual-qa/
 *.log

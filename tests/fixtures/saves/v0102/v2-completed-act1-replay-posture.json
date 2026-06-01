@@ -1,0 +1,104 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-07T09:00:00.000Z",
+  "updatedAt": "2026-02-07T10:45:00.000Z",
+  "hero": {
+    "heroName": "Act One Victor",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 5,
+    "xp": 690,
+    "skillPoints": 2,
+    "unlockedAbilities": ["rally_banner", "cleave", "war_cry"],
+    "completedBattles": 10,
+    "clearedMapIds": ["first_claim", "broken_ford", "ashen_outpost", "cinderfen_causeway", "cinderfen_watchpost"],
+    "inventory": [
+      {
+        "instanceId": "fixture:outpost_command_signet:1",
+        "itemId": "outpost_command_signet",
+        "acquiredAt": "2026-02-07T10:00:00.000Z",
+        "source": "relic_reward:ashen_outpost",
+        "affixes": [],
+        "locked": false,
+        "favorite": true
+      }
+    ],
+    "equipment": {
+      "relic": "fixture:outpost_command_signet:1"
+    },
+    "allocatedSkills": {
+      "combat_drill": 1,
+      "leadership_presence": 1
+    },
+    "factionReputation": {
+      "free_marches": 35,
+      "ashen_covenant": -25,
+      "common_folk": 18,
+      "old_faith": 9
+    },
+    "stats": {
+      "might": 10,
+      "command": 12,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "completedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "chapel_of_the_marches",
+      "refugee_caravan",
+      "ashen_outpost"
+    ],
+    "unlockedNodeIds": [
+      "border_village",
+      "old_stone_road",
+      "marcher_camp",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "chapel_of_the_marches",
+      "refugee_caravan",
+      "ashen_outpost",
+      "cinderfen_overlook"
+    ],
+    "lockedNodeIds": [],
+    "nodeRewardsClaimedIds": [
+      "border_village",
+      "old_stone_road",
+      "aether_well_ruins",
+      "bandit_hillfort",
+      "ashen_outpost"
+    ],
+    "optionalObjectiveCompletionIds": ["ashen_outpost:defeat_outpost_captain", "ashen_outpost:capture_burned_shrine"],
+    "choiceIdsClaimed": ["chapel_of_the_marches:repair_chapel"],
+    "townServiceClaimedIds": ["marcher_camp:purchase_emberglass_wand"],
+    "townServiceUseCounts": {
+      "marcher_camp:buy_supplies": 1
+    },
+    "activeModifierIds": ["well_rested"],
+    "strongholdUpgradeRanks": {
+      "training_yard_i": 1,
+      "watch_post_i": 1
+    },
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "ashen_outpost"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

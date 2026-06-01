@@ -11,9 +11,65 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.95 Procedural Battlefield Readability and Placeholder-World Rescue** on 2026-05-31. It is a presentation-only battle-readability milestone: procedural terrain, fog display, placeholder entity silhouettes, capture-site emphasis, label density, minimap clarity, package metadata, and visual-QA coverage are clearer without changing gameplay, saves, rewards, progression, stable IDs, fog logic, Lume mechanics, maps, factions, art, runtime title, or desktop direction.
+The current checkpoint is **v0.102 Browser Save Fixture Library and Desktop Translation Contract Proof** on 2026-06-01. It is a save testing, schema-contract, tooling, and documentation milestone: deterministic fictional browser save fixtures now cover representative V1/V2 states, unknown IDs, corrupt data, and future-version rejection, and `npm run test:save-translation-contract` proves a proposed desktop envelope without changing runtime save behavior.
 
-The next recommended step is manual review of the v0.95 package and visual review pack. Do not start v0.96, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, change fog/Lume mechanics, or rebrand the runtime until a future explicit goal approves a narrow next step.
+The next recommended step is to review the v0.102 fixture/proof reports and keep future desktop experiments behind explicit gates. Do not start v0.103, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+
+New v0.102 docs:
+
+- `docs/V0102_SAVE_FIXTURE_LIBRARY_SPEC.md`
+- `docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md`
+- `docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md`
+- `docs/V0102_UNKNOWN_ID_AND_CORRUPTION_POLICY.md`
+- `docs/V0102_IMPLEMENTATION_REPORT.md`
+
+Recent v0.101 docs:
+
+- `docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md`
+- `docs/V0101_STABLE_ID_FREEZE_POLICY.md`
+- `docs/V0101_EXPORT_SCHEMA_REFERENCE.md`
+- `docs/V0101_CONTENT_REUSE_ROUNDTRIP_PLAN.md`
+- `docs/V0101_IMPLEMENTATION_REPORT.md`
+
+Recent v0.100 docs:
+
+- `docs/V0100_PRIVATE_PLAYTEST_HUB_SPEC.md`
+- `docs/V0100_SCENARIO_GALLERY_MANIFEST.json`
+- `docs/V0100_SAVE_ISOLATION_REPORT.md`
+- `docs/V0100_EMMANUEL_FAST_REVIEW_GUIDE.md`
+- `docs/V0100_VISUAL_QA_REPORT.md`
+- `docs/V0100_IMPLEMENTATION_REPORT.md`
+
+Recent v0.99 docs:
+
+- `docs/V099_ACT1_PRESENTATION_AUDIT.md`
+- `docs/V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md`
+- `docs/V099_WORLD_COPY_APPLIED_LEDGER.md`
+- `docs/V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md`
+- `docs/V099_VISUAL_QA_REPORT.md`
+- `docs/V099_IMPLEMENTATION_REPORT.md`
+- `docs/V099_EMMANUEL_RETEST_CHECKLIST.md`
+
+Recent v0.98 docs:
+
+- `docs/V098_HERO_OVERVIEW_UX_SPEC.md`
+- `docs/V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md`
+- `docs/V098_RETINUE_UX_RESCUE_SPEC.md`
+- `docs/V098_STRONGHOLD_UX_RESCUE_SPEC.md`
+- `docs/V098_RESULTS_TO_META_FLOW_REPORT.md`
+- `docs/V098_VISUAL_QA_REPORT.md`
+- `docs/V098_IMPLEMENTATION_REPORT.md`
+- `docs/V098_EMMANUEL_RETEST_CHECKLIST.md`
+
+Recent v0.97 docs:
+
+- `docs/V097_SELECTION_FEEDBACK_SPEC.md`
+- `docs/V097_COMMAND_MARKER_SPEC.md`
+- `docs/V097_CAMERA_USABILITY_REPORT.md`
+- `docs/V097_COMMAND_PANEL_FOLLOWUP_REPORT.md`
+- `docs/V097_VISUAL_QA_REPORT.md`
+- `docs/V097_IMPLEMENTATION_REPORT.md`
+- `docs/V097_EMMANUEL_RETEST_CHECKLIST.md`
 
 New v0.95 docs:
 

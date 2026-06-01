@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-01T09:00:00.000Z",
+  "updatedAt": "2026-02-01T09:00:00.000Z",
+  "hero": {
+    "heroName": "Fresh Contract Hero",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 1,
+    "xp": 0,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 0,
+    "clearedMapIds": [],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {},
+    "factionReputation": {
+      "free_marches": 10,
+      "ashen_covenant": -10,
+      "sylvan_concord": 0,
+      "common_folk": 0,
+      "old_faith": 0
+    },
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": false,
+    "difficulty": "easy"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

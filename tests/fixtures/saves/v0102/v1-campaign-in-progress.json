@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "createdAt": "2026-01-11T11:00:00.000Z",
+  "updatedAt": "2026-01-11T11:30:00.000Z",
+  "hero": {
+    "heroName": "Old Road Aster",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 2,
+    "xp": 125,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 1,
+    "clearedMapIds": ["first_claim"],
+    "inventory": [
+      {
+        "instanceId": "fixture:v1:weathered-command-sword:1",
+        "itemId": "weathered_command_sword",
+        "acquiredAt": "2026-01-11T11:20:00.000Z",
+        "source": "legacy_v1_fixture",
+        "affixes": [],
+        "locked": false,
+        "favorite": false
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:v1:weathered-command-sword:1"
+    },
+    "allocatedSkills": {
+      "combat_drill": 1
+    },
+    "factionReputation": {
+      "free_marches": 14,
+      "ashen_covenant": -10,
+      "common_folk": 2
+    },
+    "stats": {
+      "might": 9,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 50,
+      "stone": 20,
+      "iron": 5,
+      "aether": 0
+    },
+    "completedNodeIds": ["border_village"],
+    "unlockedNodeIds": ["border_village", "old_stone_road"],
+    "nodeRewardsClaimedIds": ["border_village"],
+    "choiceIdsClaimed": []
+  }
+}

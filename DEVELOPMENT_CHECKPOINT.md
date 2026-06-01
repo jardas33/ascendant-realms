@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.101 Portable Content Export Contract and Stable-ID Snapshot
+Updated: 2026-06-01 v0.102 Browser Save Fixture Library and Desktop Translation Contract Proof
+
+## v0.102 Browser Save Fixture Library And Desktop Translation Contract Proof - 2026-06-01
+
+Scope: save testing, schema-contract, tooling, and documentation pass. This checkpoint adds deterministic fictional save fixtures and a pure translation-contract proof for future desktop experiments. It does not alter runtime save behavior, gameplay, balance, rewards, stable IDs, `CURRENT_SAVE_VERSION`, localStorage behavior, package posture, engine posture, or desktop implementation.
+
+Baseline:
+
+- Starting commit: `fbea00d`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26786777684` on `fbea00d` passed after rerunning the Fast confidence job.
+- v0.101 package generation was not required because v0.101 changed tooling/docs only.
+
+Included work:
+
+- Added `src/game/save/SaveTranslationContract.ts`.
+- Added `src/game/save/SaveTranslationContract.test.ts`.
+- Added `tools/testSaveTranslationContract.ts`.
+- Added `npm run test:save-translation-contract`.
+- Added 16 deterministic v0.102 save fixtures plus manifest under `tests/fixtures/saves/v0102/`.
+- Added ignored generated proof output folder `artifacts/save-translation-contract/`.
+- Added `docs/V0102_SAVE_FIXTURE_LIBRARY_SPEC.md`.
+- Added `docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md`.
+- Added `docs/V0102_SAVE_TRANSLATION_PROOF_REPORT.md`.
+- Added `docs/V0102_UNKNOWN_ID_AND_CORRUPTION_POLICY.md`.
+- Added `docs/V0102_IMPLEMENTATION_REPORT.md`.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, real-save writes, stable IDs, serialized IDs, content definitions, gameplay rules, rewards, campaign progression, Retinue rules, settings behavior, desktop save path, profile UI, desktop port, or engine choice changed.
+- `CURRENT_SAVE_VERSION` remains `2`.
+
+Verification:
+
+```text
+npx vitest run src/game/save/SaveTranslationContract.test.ts --reporter=dot - PASS, 7 tests.
+npm test - PASS, 102 files / 724 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run export:portable-content - PASS, 229 manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+git diff --check - PASS; PowerShell reported only the existing Windows line-ending warning for .gitignore.
+```
 
 ## v0.101 Portable Content Export Contract And Stable-ID Snapshot - 2026-06-01
 

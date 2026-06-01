@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-04T09:00:00.000Z",
+  "updatedAt": "2026-02-04T09:40:00.000Z",
+  "hero": {
+    "heroName": "Branch Tester",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 4,
+    "xp": 420,
+    "skillPoints": 0,
+    "unlockedAbilities": ["rally_banner", "cleave", "war_cry"],
+    "completedBattles": 5,
+    "clearedMapIds": ["first_claim", "broken_ford", "ashen_outpost"],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {
+      "combat_drill": 1,
+      "combat_endurance": 1,
+      "leadership_presence": 1
+    },
+    "factionReputation": {
+      "free_marches": 24,
+      "ashen_covenant": -18,
+      "common_folk": 8,
+      "old_faith": 3
+    },
+    "stats": {
+      "might": 10,
+      "command": 10,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "completedNodeIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "unlockedNodeIds": ["border_village", "old_stone_road", "ashen_outpost", "cinderfen_overlook"],
+    "nodeRewardsClaimedIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "ashen_outpost"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

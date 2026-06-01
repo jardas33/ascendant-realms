@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-02T09:00:00.000Z",
+  "updatedAt": "2026-02-02T10:15:00.000Z",
+  "hero": {
+    "heroName": "Act One Scout",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 3,
+    "xp": 260,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner", "cleave"],
+    "completedBattles": 3,
+    "clearedMapIds": ["first_claim", "broken_ford"],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {
+      "combat_drill": 1
+    },
+    "factionReputation": {
+      "free_marches": 21,
+      "ashen_covenant": -12,
+      "common_folk": 5
+    },
+    "stats": {
+      "might": 9,
+      "command": 9,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "resources": {
+      "crowns": 78,
+      "stone": 35,
+      "iron": 12,
+      "aether": 6
+    },
+    "resourcesSpent": {
+      "crowns": 45,
+      "stone": 20,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": ["border_village", "old_stone_road", "marcher_camp"],
+    "unlockedNodeIds": ["border_village", "old_stone_road", "marcher_camp", "aether_well_ruins", "bandit_hillfort"],
+    "lockedNodeIds": ["ashen_outpost"],
+    "nodeRewardsClaimedIds": ["border_village", "old_stone_road"],
+    "optionalObjectiveCompletionIds": [],
+    "choiceIdsClaimed": ["chapel_of_the_marches:pray_for_strength"],
+    "townServiceClaimedIds": ["marcher_camp:purchase_emberglass_wand"],
+    "townServiceUseCounts": {
+      "marcher_camp:buy_supplies": 1
+    },
+    "activeModifierIds": ["inspired_militia"],
+    "strongholdUpgradeRanks": {
+      "training_yard_i": 1
+    },
+    "retinueUnits": [],
+    "retinueDeploymentIds": [],
+    "rivals": [],
+    "rivalTrophies": [],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "aether_well_ruins"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

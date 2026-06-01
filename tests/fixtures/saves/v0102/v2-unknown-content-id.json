@@ -1,0 +1,98 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-11T09:00:00.000Z",
+  "updatedAt": "2026-02-11T09:00:00.000Z",
+  "hero": {
+    "heroName": "Unknown Id Tester",
+    "classId": "future_class",
+    "originId": "future_origin",
+    "level": 2,
+    "xp": 100,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner", "future_ability"],
+    "completedBattles": 1,
+    "clearedMapIds": ["future_map"],
+    "inventory": [
+      {
+        "instanceId": "fixture:future_item:1",
+        "itemId": "future_item",
+        "acquiredAt": "2026-02-11T09:00:00.000Z",
+        "source": "fixture",
+        "affixes": ["future_affix"],
+        "locked": false,
+        "favorite": false
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:future_item:1"
+    },
+    "allocatedSkills": {
+      "future_skill": 1
+    },
+    "factionReputation": {
+      "free_marches": 10,
+      "future_faction": 5
+    },
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 25,
+      "stone": 10,
+      "iron": 0,
+      "aether": 0
+    },
+    "completedNodeIds": ["future_node"],
+    "unlockedNodeIds": ["border_village"],
+    "activeModifierIds": ["future_modifier"],
+    "strongholdUpgradeRanks": {
+      "future_stronghold_upgrade": 1
+    },
+    "retinueUnits": [
+      {
+        "retinueUnitId": "retinue:future:unit-1",
+        "unitTypeId": "future_unit",
+        "rank": "seasoned",
+        "xp": 80,
+        "kills": 1,
+        "sourceBattleId": "future_node",
+        "acquiredAt": "2026-02-11T09:00:00.000Z",
+        "status": "active"
+      }
+    ],
+    "rivals": [
+      {
+        "enemyHeroId": "future_rival",
+        "encounters": 1,
+        "defeats": 0,
+        "victoriesAgainstPlayer": 0,
+        "lastEncounterNodeId": "future_node",
+        "lastOutcome": "escaped",
+        "disposition": "wary",
+        "activeModifiers": [],
+        "isKnownToPlayer": true
+      }
+    ],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "future_node"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

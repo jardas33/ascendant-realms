@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-12T09:00:00.000Z",
+  "updatedAt": "2026-02-12T09:00:00.000Z",
+  "campaign": {
+    "started": true,
+    "difficulty": "easy"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

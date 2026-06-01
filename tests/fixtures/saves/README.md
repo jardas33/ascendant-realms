@@ -26,6 +26,8 @@ invalid-json.txt
 
 Prefer one compatibility risk per fixture. Add a new fixture instead of editing an old one unless the old file was impossible or misleading.
 
+The `v0102/` subdirectory is the browser save fixture library for the desktop translation-contract proof. Its manifest-driven fixtures cover V1/V2 migration, Act 1 progress, relic/equipment, skills, Retinue, rival state, settings, unknown fields, unknown content ids, corrupt JSON, missing required objects, and unsupported future versions. These fixtures remain fictional and deterministic; they are not user localStorage dumps.
+
 ## Update Policy
 
 - Keep fixtures small enough to review in a normal diff.
@@ -48,3 +50,8 @@ Current expectations:
 - Unknown top-level fields do not crash loading.
 - Unknown `statistics` fields are preserved under the current policy.
 
+v0.102 adds a downstream-only translation contract:
+
+- The browser runtime still owns `CURRENT_SAVE_VERSION = 2`.
+- `npm run test:save-translation-contract` loads the `v0102/` fixtures, normalizes with existing rules, wraps accepted saves in a proposed desktop envelope for proof only, validates content ids against the v0.101 stable-ID snapshot, and writes ignored summary artifacts under `artifacts/save-translation-contract/latest/`.
+- The proof command must never write localStorage, overwrite real saves, introduce a desktop save path, or become production persistence.

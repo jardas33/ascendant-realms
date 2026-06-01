@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-06T09:00:00.000Z",
+  "updatedAt": "2026-02-06T09:30:00.000Z",
+  "hero": {
+    "heroName": "Recovering Company",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 4,
+    "xp": 410,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner", "cleave"],
+    "completedBattles": 6,
+    "clearedMapIds": ["first_claim", "broken_ford", "ashen_outpost"],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {
+      "leadership_presence": 1
+    },
+    "factionReputation": {
+      "free_marches": 28,
+      "ashen_covenant": -20,
+      "common_folk": 10
+    },
+    "stats": {
+      "might": 9,
+      "command": 11,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "completedNodeIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "unlockedNodeIds": ["border_village", "old_stone_road", "ashen_outpost", "cinderfen_overlook"],
+    "nodeRewardsClaimedIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "retinueUnits": [
+      {
+        "retinueUnitId": "retinue:border_village:militia-1",
+        "unitTypeId": "militia",
+        "name": "Gate Militia",
+        "rank": "seasoned",
+        "xp": 84,
+        "kills": 3,
+        "sourceBattleId": "border_village",
+        "acquiredAt": "2026-02-02T12:00:00.000Z",
+        "status": "recovering",
+        "battlesSurvived": 2,
+        "missionsDeployed": 1,
+        "recoveryMissionsRemaining": 1
+      }
+    ],
+    "retinueDeploymentIds": ["retinue:border_village:militia-1"],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "cinderfen_overlook"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

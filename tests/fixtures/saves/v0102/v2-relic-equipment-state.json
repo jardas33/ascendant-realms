@@ -1,0 +1,75 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-03T09:00:00.000Z",
+  "updatedAt": "2026-02-03T09:30:00.000Z",
+  "hero": {
+    "heroName": "Relic Bearer",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 3,
+    "xp": 310,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner", "cleave"],
+    "completedBattles": 4,
+    "clearedMapIds": ["first_claim", "ashen_outpost"],
+    "inventory": [
+      {
+        "instanceId": "fixture:emberbrand_shard:1",
+        "itemId": "emberbrand_shard",
+        "acquiredAt": "2026-02-03T09:20:00.000Z",
+        "source": "relic_reward:ashen_outpost",
+        "affixes": [],
+        "locked": false,
+        "favorite": true
+      },
+      {
+        "instanceId": "fixture:weathered_command_sword:1",
+        "itemId": "weathered_command_sword",
+        "acquiredAt": "2026-02-02T09:20:00.000Z",
+        "source": "battle_reward:border_village",
+        "affixes": ["sharp"],
+        "locked": false,
+        "favorite": false
+      }
+    ],
+    "equipment": {
+      "weapon": "fixture:weathered_command_sword:1",
+      "relic": "fixture:emberbrand_shard:1"
+    },
+    "allocatedSkills": {
+      "combat_drill": 1
+    },
+    "factionReputation": {
+      "free_marches": 23,
+      "ashen_covenant": -15,
+      "common_folk": 5
+    },
+    "stats": {
+      "might": 9,
+      "command": 9,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "normal",
+    "completedNodeIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "unlockedNodeIds": ["border_village", "old_stone_road", "ashen_outpost", "cinderfen_overlook"],
+    "nodeRewardsClaimedIds": ["border_village", "old_stone_road", "ashen_outpost"],
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "ashen_outpost"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}

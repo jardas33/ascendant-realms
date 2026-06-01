@@ -1,0 +1,65 @@
+{
+  "version": 2,
+  "createdAt": "2026-02-10T09:00:00.000Z",
+  "updatedAt": "2026-02-10T09:00:00.000Z",
+  "futureExpansion": {
+    "chapterThreePreview": true
+  },
+  "hero": {
+    "heroName": "Extra Field Tester",
+    "classId": "warlord",
+    "originId": "exiled_noble",
+    "level": 2,
+    "xp": 140,
+    "skillPoints": 1,
+    "unlockedAbilities": ["rally_banner"],
+    "completedBattles": 1,
+    "clearedMapIds": ["first_claim"],
+    "inventory": [],
+    "equipment": {},
+    "allocatedSkills": {},
+    "futureHeroField": {
+      "unused": true
+    },
+    "factionReputation": {
+      "free_marches": 14,
+      "ashen_covenant": -10
+    },
+    "stats": {
+      "might": 8,
+      "command": 8,
+      "arcana": 2,
+      "faith": 3
+    }
+  },
+  "campaign": {
+    "started": true,
+    "difficulty": "easy",
+    "resources": {
+      "crowns": 25,
+      "stone": 10,
+      "iron": 0,
+      "aether": 0,
+      "crystals": 99
+    },
+    "completedNodeIds": ["border_village"],
+    "unlockedNodeIds": ["border_village", "old_stone_road"],
+    "futureCampaignField": {
+      "unused": true
+    },
+    "selectedChapterId": "border_marches",
+    "selectedNodeId": "old_stone_road"
+  },
+  "settings": {
+    "masterVolume": 0.8,
+    "musicVolume": 0.55,
+    "sfxVolume": 0.75,
+    "screenShakeEnabled": true,
+    "floatingTextEnabled": true,
+    "fogEnabledOverride": "default",
+    "reducedMotionEnabled": false,
+    "uiScale": 1,
+    "colorblindMinimapPalette": false
+  },
+  "statistics": {}
+}
