@@ -7,6 +7,7 @@ blob-report/
 tmp-test-logs/
 bundle-analysis/
 /artifacts/playtest/
+/artifacts/portable-content/
 /artifacts/visual-review/
 /visual-qa/
 *.log

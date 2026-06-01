@@ -1,0 +1,302 @@
+{
+  "categories": {
+    "abilities": [
+      "arcane_burst",
+      "blessing",
+      "blink",
+      "cleave",
+      "firebolt",
+      "heal",
+      "rally_banner",
+      "sanctify_ground",
+      "war_cry"
+    ],
+    "act1CampaignSpine": [
+      "act1_aether_well_resource_control",
+      "act1_ashen_outpost_champion_relic",
+      "act1_bandit_hillfort_rival_pressure",
+      "act1_border_village_first_battle",
+      "act1_old_stone_road_base_development",
+      "act1_replay_optional_objectives",
+      "act1_training_proving_grounds"
+    ],
+    "act1FinaleDefinitions": [
+      "act1_finale",
+      "act1_finale_phase:break_fortified_line",
+      "act1_finale_phase:defeat_rival_commander",
+      "act1_finale_phase:secure_foothold"
+    ],
+    "battlefieldEvents": [
+      "aether_surge",
+      "elite_strike",
+      "hold_the_line",
+      "reinforcement_window",
+      "site_under_threat"
+    ],
+    "buildings": [
+      "barracks",
+      "command_hall",
+      "enemy_barracks",
+      "enemy_stronghold",
+      "mystic_lodge",
+      "watchtower"
+    ],
+    "captureSites": [
+      "aether_well",
+      "ash_cistern",
+      "blackreed_stonecut",
+      "burned_shrine",
+      "causeway_toll",
+      "cinder_crossing",
+      "crown_shrine",
+      "ford_toll",
+      "iron_vein",
+      "north_aether_spring",
+      "north_stone_scar",
+      "reedcut_quarry",
+      "south_iron_cache",
+      "south_iron_pit",
+      "stone_quarry",
+      "sunken_iron_cache",
+      "watch_road_toll",
+      "west_stone_cut",
+      "west_supply_pyre"
+    ],
+    "chapters": [
+      "border_marches",
+      "cinderfen_road"
+    ],
+    "eliteSquads": [
+      "ash_raider_vanguard",
+      "cinder_iron_guard"
+    ],
+    "enemyDoctrines": [
+      "fortress",
+      "hunter",
+      "raider",
+      "warband"
+    ],
+    "enemyHeroAbilities": [
+      "ember_strike",
+      "hexfire_bolt",
+      "hold_the_line",
+      "rally_raiders"
+    ],
+    "enemyHeroes": [
+      "captain_malrec",
+      "gorak_emberhand",
+      "veyra_cinders"
+    ],
+    "enemyPersonalities": [
+      "balanced_warlord",
+      "fortress_keeper",
+      "hexfire_cult",
+      "raider_rush"
+    ],
+    "enemyPressurePlans": [
+      "ashen_watch_captain_pressure",
+      "causeway_contest_pressure"
+    ],
+    "equipment": [
+      "aether_lens",
+      "affix:aether_touched",
+      "affix:commanding",
+      "affix:embered",
+      "affix:faithful",
+      "affix:guarding",
+      "affix:rangers",
+      "affix:sharp",
+      "affix:sturdy",
+      "affix:swift",
+      "ascendant_signet",
+      "ashbound_censer",
+      "captains_seal",
+      "cinderseer_lens",
+      "dawnward_vestments",
+      "ember_raider_blade",
+      "emberglass_wand",
+      "fordbreaker_halberd",
+      "green_chapel_icon",
+      "malrecs_bastion_sigil",
+      "marcher_plate",
+      "oathbound_aegis",
+      "pilgrim_crook",
+      "runewoven_robes",
+      "scouts_bow",
+      "starfall_prism",
+      "weathered_command_sword"
+    ],
+    "factions": [
+      "ashen_covenant",
+      "common_folk",
+      "free_marches",
+      "old_faith",
+      "sylvan_concord",
+      "wilds"
+    ],
+    "heroClasses": [
+      "arcanist",
+      "shepherd",
+      "warlord"
+    ],
+    "lumeNetworks": [
+      "aether_well_ruins_lume_ward"
+    ],
+    "maps": [
+      "ashen_outpost",
+      "broken_ford",
+      "cinderfen_causeway",
+      "cinderfen_watchpost",
+      "first_claim"
+    ],
+    "missionTypes": [
+      "assault",
+      "control",
+      "defense",
+      "skirmish_training"
+    ],
+    "modifiers": [
+      "angered_raiders",
+      "ash_filters",
+      "ashen_hostile_pressure",
+      "blessed_road",
+      "inspired_militia",
+      "local_support",
+      "marsh_guides",
+      "mission_aether_surge",
+      "mission_enemy_patrols",
+      "mission_fortified_enemy",
+      "mission_rich_veins",
+      "shrine_attunement",
+      "well_rested"
+    ],
+    "nodes": [
+      "aether_well_ruins",
+      "ashen_outpost",
+      "bandit_hillfort",
+      "border_village",
+      "chapel_of_the_marches",
+      "cinderfen_aftermath",
+      "cinderfen_crossing",
+      "cinderfen_overlook",
+      "cinderfen_watch",
+      "cinderfen_waystation",
+      "marcher_camp",
+      "old_stone_road",
+      "refugee_caravan"
+    ],
+    "optionalObjectives": [
+      "capture_burned_shrine",
+      "capture_cinder_crossing",
+      "capture_watch_road",
+      "clear_cinder_guardians",
+      "clear_marsh_raider_camp",
+      "defeat_outpost_captain",
+      "destroy_cinderfen_barracks",
+      "destroy_enemy_barracks",
+      "destroy_watchpost_tower"
+    ],
+    "origins": [
+      "exiled_noble",
+      "temple_orphan",
+      "wildland_raider"
+    ],
+    "relics": [
+      "cinderseer_focus",
+      "emberbrand_shard",
+      "outpost_command_signet"
+    ],
+    "resources": [
+      "aether",
+      "crowns",
+      "iron",
+      "stone"
+    ],
+    "retinueRuleReferences": [
+      "retinue_rules"
+    ],
+    "rewards": [
+      "ashen_outpost_rewards",
+      "broken_ford_rewards",
+      "cinderfen_causeway_rewards",
+      "cinderfen_watchpost_rewards",
+      "first_claim_rewards",
+      "relic_reward:cinderseer_focus",
+      "relic_reward:emberbrand_shard",
+      "relic_reward:outpost_command_signet",
+      "rival_reward:captain_malrec",
+      "rival_reward:gorak_emberhand",
+      "rival_reward:veyra_cinders"
+    ],
+    "skills": [
+      "arcanist_arcane_burst",
+      "arcanist_blink",
+      "combat",
+      "combat_drill",
+      "combat_endurance",
+      "leadership",
+      "leadership_field_rites",
+      "leadership_presence",
+      "magic",
+      "magic_focus",
+      "magic_warding",
+      "shepherd_blessing",
+      "shepherd_sanctify_ground",
+      "warlord_cleave",
+      "warlord_war_cry"
+    ],
+    "strongholdUpgrades": [
+      "chapel_corner_i",
+      "chapel_corner_ii",
+      "quartermaster_stores_i",
+      "quartermaster_stores_ii",
+      "ranger_paths_i",
+      "ranger_paths_ii",
+      "training_yard_i",
+      "training_yard_ii",
+      "watch_post_i",
+      "watch_post_ii"
+    ],
+    "tacticalPlans": [
+      "champion_hunt",
+      "guarded_advance",
+      "resource_push"
+    ],
+    "unitRoles": [
+      "acolyte",
+      "brute",
+      "enemy_commander",
+      "hexer",
+      "militia",
+      "raider",
+      "ranger",
+      "stone_imp",
+      "wild_hound",
+      "worker"
+    ],
+    "units": [
+      "acolyte",
+      "brute",
+      "enemy_commander",
+      "hexer",
+      "militia",
+      "raider",
+      "ranger",
+      "stone_imp",
+      "wild_hound",
+      "worker"
+    ],
+    "upgrades": [
+      "aether_study_1",
+      "camp_foundations_1",
+      "ember_blades_trait",
+      "infantry_weapons_1",
+      "ranger_training_1",
+      "reinforced_armor_1",
+      "sentry_bracing_1"
+    ]
+  },
+  "checkpoint": "v0.101",
+  "policy": "stable-id-freeze",
+  "schemaVersion": 1
+}

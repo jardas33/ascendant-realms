@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.101 Portable Content Export Contract And Stable-ID Snapshot - 2026-06-01
+
+This checkpoint adds deterministic downstream-only portable content export tooling and a compact stable-ID snapshot for later engine experiments. TypeScript remains authoritative. It does not alter runtime behavior, gameplay, balance, saves, stable IDs, package posture, engine posture, art/assets, desktop implementation, or start v0.102.
+
+Added:
+
+- `src/game/portable/PortableContentExport.ts`.
+- `src/game/portable/PortableContentExport.test.ts`.
+- `src/game/portable/stable-id-snapshot.json`.
+- `tools/exportPortableContent.ts`.
+- `tools/validatePortableContent.ts`.
+- `npm run export:portable-content`.
+- `npm run validate:portable-content`.
+- `docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md`.
+- `docs/V0101_STABLE_ID_FREEZE_POLICY.md`.
+- `docs/V0101_EXPORT_SCHEMA_REFERENCE.md`.
+- `docs/V0101_CONTENT_REUSE_ROUNDTRIP_PLAN.md`.
+- `docs/V0101_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Added `/artifacts/portable-content/` to ignored generated artifacts.
+- Portable export writes `content-export.json`, `stable-id-manifest.json`, `content-export-summary.md`, and `content-export-hashes.json` under `artifacts/portable-content/latest/`.
+- Portable validation runs existing content validation, stable category/reference checks, snapshot drift checks, hash checks, and two-pass byte-for-byte determinism checks.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, rewards, replay rules, Retinue rules, Tutorial safety, difficulty, AI, balance values, maps, factions, generated images, imported assets, package metadata, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npx vitest run src/game/portable/PortableContentExport.test.ts` with 6 tests, `npm test` with 101 files / 717 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run export:portable-content` with 229 manifest entries, `npm run validate:portable-content` with byte-for-byte two-pass determinism, and `git diff --check`.
+- Note: `git diff --check` emitted only the Windows line-ending warning for `.gitignore`; it exited successfully.
+
 # v0.100 Private Playtest Hub And Scenario Gallery - 2026-06-01
 
 This checkpoint adds a private-package-only Playtest Hub and Scenario Gallery for faster manual QA. It exposes representative campaign, first-session, battle, Lume, meta-progression, and Results previews only in private/dev posture. It does not expose shortcuts in production posture, alter normal progression, saves, persistent rewards, gameplay rules, balance, stable IDs, maps, factions, art/assets, imported assets, desktop work, or start v0.101.

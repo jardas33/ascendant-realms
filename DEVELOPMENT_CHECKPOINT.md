@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.100 Private Playtest Hub and Scenario Gallery
+Updated: 2026-06-01 v0.101 Portable Content Export Contract and Stable-ID Snapshot
+
+## v0.101 Portable Content Export Contract And Stable-ID Snapshot - 2026-06-01
+
+Scope: tooling, schema, validation, and documentation pass. This checkpoint generates deterministic portable content from TypeScript definitions, writes ignored downstream artifacts, adds a compact stable-ID snapshot, validates references and byte-for-byte determinism, and documents the future content-reuse contract. It does not alter runtime behavior, gameplay, balance, saves, stable IDs, package posture, engine posture, art, desktop implementation, or start v0.102.
+
+Baseline:
+
+- Starting commit: `58cef40`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline remote status: GitHub Actions run `26785850168` on `58cef40` completed successfully.
+- Baseline v0.100 package and verification were complete before v0.101 work began.
+
+Included work:
+
+- Added `src/game/portable/PortableContentExport.ts`.
+- Added `src/game/portable/PortableContentExport.test.ts`.
+- Added `src/game/portable/stable-id-snapshot.json`.
+- Added `tools/exportPortableContent.ts`.
+- Added `tools/validatePortableContent.ts`.
+- Added `npm run export:portable-content` and `npm run validate:portable-content`.
+- Export output is generated under ignored `artifacts/portable-content/latest/`.
+- Added `docs/V0101_PORTABLE_CONTENT_EXPORT_CONTRACT.md`.
+- Added `docs/V0101_STABLE_ID_FREEZE_POLICY.md`.
+- Added `docs/V0101_EXPORT_SCHEMA_REFERENCE.md`.
+- Added `docs/V0101_CONTENT_REUSE_ROUNDTRIP_PLAN.md`.
+- Added `docs/V0101_IMPLEMENTATION_REPORT.md`.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, rewards, replay rules, Retinue rules, Tutorial safety, difficulty, AI, or balance values changed.
+
+Verification:
+
+```text
+npx vitest run src/game/portable/PortableContentExport.test.ts - PASS, 6 tests.
+npm run export:portable-content -- --update-snapshot src/game/portable/stable-id-snapshot.json - PASS, 229 manifest entries.
+npm test - PASS, 101 files / 717 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run export:portable-content - PASS, 229 manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+git diff --check - PASS; PowerShell reported only the existing Windows line-ending warning for .gitignore.
+```
 
 ## v0.100 Private Playtest Hub And Scenario Gallery - 2026-06-01
 

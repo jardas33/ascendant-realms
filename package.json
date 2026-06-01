@@ -17,6 +17,8 @@
     "test": "vitest run",
     "validate:content": "tsx tools/validateContent.ts",
     "validate:art-intake": "tsx tools/art-intake/validateArtIntake.ts",
+    "export:portable-content": "tsx tools/exportPortableContent.ts",
+    "validate:portable-content": "tsx tools/validatePortableContent.ts",
     "test:e2e": "playwright test",
     "test:e2e:smoke:fast": "playwright test tests/e2e/smoke.spec.ts --grep @ci-fast --reporter=line",
     "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts --reporter=line",
