@@ -11,6 +11,7 @@ import {
   previewEquipDeltas
 } from "../results/ResultsEquipActions";
 import { escapeHtml } from "../results/ResultsFormatting";
+import { renderResultsMetaProgressionSummary } from "../results/ResultsMetaProgressionPanel";
 import {
   createCampaignMapReturnData,
   createInventorySceneData,
@@ -208,6 +209,7 @@ export class ResultsScene extends Phaser.Scene {
             ${renderPrimaryActions(data)}
           </div>
           ${renderResultsOverview(data, viewModel)}
+          ${renderResultsMetaProgressionSummary(data, viewModel)}
           <div class="status-box">${escapeHtml(this.status)}</div>
           <div class="results-priority-stack">
             ${this.renderGuidancePanel(viewModel.guidance)}

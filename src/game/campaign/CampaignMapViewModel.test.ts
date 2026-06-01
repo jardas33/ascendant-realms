@@ -10,6 +10,7 @@ import { renderNodeButton, renderNodeDetails } from "./CampaignNodePanel";
 import { formatResourceRewards } from "./CampaignResourcePanel";
 import { renderRivalIntelPanel } from "./RivalIntelPanel";
 import { renderRetinuePanel } from "./RetinuePanel";
+import { renderStrongholdPanel } from "./StrongholdPanel";
 
 describe("campaign map presentation helpers", () => {
   it("creates a stable view model with selected node and node statuses", () => {
@@ -714,6 +715,25 @@ describe("campaign map presentation helpers", () => {
     expect(html).toContain("Dismiss from Retinue");
   });
 
+  it("renders Stronghold upgrades as tiered summary cards with lock reasons", () => {
+    const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const campaign = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      resources: { crowns: 10, stone: 0, iron: 0, aether: 0 }
+    });
+
+    const html = renderStrongholdPanel(campaign, hero);
+
+    expect(html).toContain('data-testid="stronghold-overview"');
+    expect(html).toContain("Current tier");
+    expect(html).toContain("Available");
+    expect(html).toContain("Locked");
+    expect(html).toContain("Prerequisite:");
+    expect(html).toContain("Benefit:");
+    expect(html).toContain("More Details");
+    expect(html).toContain("Upgrade");
+  });
+
   it("renders recovering Retinue reserves as blocked from deployment", () => {
     const campaign = createStartedCampaignSave({
       ...createStartedCampaignSave(),
@@ -738,7 +758,7 @@ describe("campaign map presentation helpers", () => {
 
     expect(html).toContain("1/5 roster");
     expect(html).toContain("0/2 selected");
-    expect(html).toContain("Ready reserves");
+    expect(html).toContain("Ready reserve");
     expect(html).toContain("<strong>0</strong>");
     expect(html).toContain("Recovering");
     expect(html).toContain("<strong>1</strong>");

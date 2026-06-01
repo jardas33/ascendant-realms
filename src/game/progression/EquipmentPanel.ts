@@ -64,23 +64,30 @@ export function createEquipmentViewModel(heroSave: HeroSaveData, catalogs: HeroP
 
 export function renderEquipmentPanel(viewModel: EquipmentPanelViewModel): string {
   return `
-      <div class="equipment-list">
+      <div class="equipment-list equipment-loadout-grid">
         ${viewModel.slots
           .map((slot) => {
             const equipped = slot.itemNameHtml !== undefined;
             return `
             <div class="equipment-row ${slot.rarityClassName ?? ""}">
               <div>
-                <strong>${slot.slotLabel}</strong>
+                <div class="inventory-row-title">
+                  <strong>${slot.slotLabel}</strong>
+                  <span class="tag">${equipped ? "Equipped" : "Empty"}</span>
+                </div>
                 ${
                   equipped
-                    ? `<span>${slot.itemNameHtml} - ${escapeHtml(slot.statModsText ?? "")}</span>
-                      <small>Instance: ${escapeHtml(slot.instanceId ?? "")}</small>
-                      <small class="affix-line">${escapeHtml(slot.affixText ?? "")}</small>
+                    ? `<span>${slot.itemNameHtml}</span>
+                      <small>${escapeHtml(slot.statModsText ?? "")}</small>
                       ${slot.buildIdentityText ? `<small>${escapeHtml(slot.buildIdentityText)}</small>` : ""}
                       ${slot.synergyText ? `<small class="synergy-line">${escapeHtml(slot.synergyText)}</small>` : ""}
-                      <p>${escapeHtml(slot.description ?? "")}</p>
-                      <small>${escapeHtml(slot.flavorText ?? "")}</small>`
+                      <details class="support-card-details equipment-row-details">
+                        <summary>More Details</summary>
+                        <small>Instance: ${escapeHtml(slot.instanceId ?? "")}</small>
+                        <small class="affix-line">${escapeHtml(slot.affixText ?? "")}</small>
+                        <p>${escapeHtml(slot.description ?? "")}</p>
+                        <small>${escapeHtml(slot.flavorText ?? "")}</small>
+                      </details>`
                     : "<span>Empty</span>"
                 }
               </div>

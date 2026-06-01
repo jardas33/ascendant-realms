@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.98 Hero Retinue Inventory And Stronghold UX Rescue - 2026-06-01
+
+This checkpoint improves meta-progression presentation only. It rescues Hero Overview, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta readability. It does not change progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, saves, stable IDs, rewards, campaign progression, gameplay balance, art/assets, imported assets, desktop work, or start v0.99.
+
+Added:
+
+- `src/game/results/ResultsMetaProgressionPanel.ts`.
+- `src/game/progression/MetaProgressionUx.test.ts`.
+- `docs/V098_HERO_OVERVIEW_UX_SPEC.md`.
+- `docs/V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md`.
+- `docs/V098_RETINUE_UX_RESCUE_SPEC.md`.
+- `docs/V098_STRONGHOLD_UX_RESCUE_SPEC.md`.
+- `docs/V098_RESULTS_TO_META_FLOW_REPORT.md`.
+- `docs/V098_VISUAL_QA_REPORT.md`.
+- `docs/V098_IMPLEMENTATION_REPORT.md`.
+- `docs/V098_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Hero Progression now opens with a concise Hero Overview card covering identity, level/XP, class/origin, primary stats, equipment, relic, skill points, Retinue, and inventory.
+- Skills now present purchased / available / locked state, cost, requirement, concise effect, and details disclosure without changing unlock logic.
+- Equipment now reads as a loadout; Inventory now groups equipped gear, stored gear, and relics with compact comparison/effect chips.
+- Relic rows now distinguish equipped, stored, duplicate/owned posture, active-only effect copy, and build synergy details without changing stats.
+- Retinue Camp now surfaces Ready, Deployed, Recovering, reserve, cap, reinforcement eligibility, recovery status, and veteran identity with member details behind disclosure.
+- Stronghold now surfaces current tier, available/locked/purchased upgrades, cost, prerequisite, benefit, and action state with extra rules behind disclosure.
+- Ordinary Results now include a compact Progression Summary for XP, rewards, relics, Retinue, and Stronghold/campaign resources.
+- Visual QA now includes 126 screenshots after adding eight v0.98 meta-progression rescue states.
+- Package generation and validation now require/copy the v0.98 docs and report the v0.98 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero progression rules, skill unlock rules, XP values, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, campaign progression, rewards, replay rules, Tutorial safety, balance values, maps, factions, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 98 files / 700 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 30 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 14 tests / 126 screenshots / 0 console errors / 0 retries, `npm run visual:review-pack` with 126 screenshots / 7 contact sheets, and pre-commit `npm run verify:playtest-package` with 350 checks.
+- Non-pass evidence resolved before closeout: initial fast smoke exposed the stale inventory assertion for `hero-stats` now hidden behind More Details, then an unrelated settings click flake passed exact rerun and full-lane rerun. Initial visual QA caught a broad Results `summary` locator after nested accordions were present; the locator was tightened and the full visual-QA rerun passed. Initial hosted deep-battle hit one behaviour-gauntlet timeout; exact rerun and full-lane rerun both passed.
+
 # v0.97 Camera Selection Orders And Tactical Feedback Polish - 2026-06-01
 
 This checkpoint improves controls readability and tactical feedback only. It adds clearer selection focus, read-only enemy inspection, short-lived command markers, camera focus/minimap confirmations, compact command-panel details, package metadata, and visual-QA coverage. It does not add gameplay systems, change unit stats, alter combat balance, change pathing rules, change saves, rename stable IDs, add maps/factions/art/assets, start desktop work, or start v0.98.

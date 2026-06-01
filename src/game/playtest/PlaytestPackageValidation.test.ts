@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.97 camera selection orders and tactical feedback polish",
+          checkpoint: "v0.98 hero Retinue inventory and Stronghold UX rescue",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -392,6 +392,14 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V097_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.97 visual QA report" },
       { path: "V097_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.97 implementation report" },
       { path: "V097_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.97 Emmanuel retest" },
+      { path: "V098_HERO_OVERVIEW_UX_SPEC.md", sizeBytes: 20, textContent: "v0.98 hero overview spec" },
+      { path: "V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md", sizeBytes: 20, textContent: "v0.98 skills equipment spec" },
+      { path: "V098_RETINUE_UX_RESCUE_SPEC.md", sizeBytes: 20, textContent: "v0.98 retinue UX spec" },
+      { path: "V098_STRONGHOLD_UX_RESCUE_SPEC.md", sizeBytes: 20, textContent: "v0.98 stronghold UX spec" },
+      { path: "V098_RESULTS_TO_META_FLOW_REPORT.md", sizeBytes: 20, textContent: "v0.98 results meta flow" },
+      { path: "V098_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.98 visual QA report" },
+      { path: "V098_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.98 implementation report" },
+      { path: "V098_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.98 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

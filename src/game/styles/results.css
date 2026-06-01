@@ -159,6 +159,18 @@
     rgba(4, 9, 7, 0.32);
 }
 
+.results-meta-summary {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid rgba(240, 217, 120, 0.18);
+  border-radius: var(--ui-radius-panel);
+  background:
+    linear-gradient(90deg, rgba(240, 217, 120, 0.08), rgba(116, 211, 242, 0.05) 55%, transparent),
+    rgba(4, 9, 7, 0.28);
+}
+
 .results-overview-heading {
   display: flex;
   justify-content: space-between;

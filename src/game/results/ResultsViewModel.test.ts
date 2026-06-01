@@ -8,6 +8,7 @@ import { createNewHeroSave } from "../data/heroes";
 import { RELIC_REWARD_BY_ENEMY_HERO_ID } from "../data/relicRewards";
 import { chooseResultsRelicReward, keepResultsRewardItem } from "./ResultsEquipActions";
 import { createInventorySceneData, createRetryBattleData, renderPrimaryActions } from "./ResultsNavigation";
+import { renderResultsMetaProgressionSummary } from "./ResultsMetaProgressionPanel";
 import { renderBattleSummary } from "./ResultsObjectiveSummary";
 import { renderResultsOverview } from "./ResultsOverviewPanel";
 import { renderPrivateDemoLumeSummary, renderPrivateDemoPrimaryActions } from "./ResultsPrivateDemoPanel";
@@ -366,6 +367,65 @@ describe("results scene helpers", () => {
     expect(html).toContain("Salto Outskirts");
     expect(html).toContain("First-clear rewards");
     expect(html).toContain("Next mission unlocked: Old Stone Road");
+  });
+
+  it("renders Results-to-meta progression summary without mutating rewards", () => {
+    const heroSave = {
+      ...createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      xp: 140,
+      skillPoints: 1
+    };
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: createNewHeroSave("Aster", "warlord", "exiled_noble"),
+      stats: {
+        ...baseStats(),
+        retinueUnitIdsRecovering: ["retinue:test:militia"],
+        retinueReinforcementUsed: true,
+        veteranSummary: {
+          rankedUpUnits: [],
+          notableVeterans: [
+            {
+              unitInstanceId: "retinue:test:militia",
+              unitName: "Gate Militia",
+              unitTypeId: "militia",
+              rank: "veteran",
+              rankName: "Veteran",
+              xp: 150,
+              kills: 3,
+              damageDealt: 220,
+              survivedBattle: true,
+              rankedUp: false
+            }
+          ]
+        }
+      },
+      reward: {
+        xp: 20,
+        itemIds: [],
+        resources: { crowns: 25, stone: 0, iron: 0, aether: 0 }
+      },
+      campaignResult: {
+        completedNodeId: "border_village",
+        completedNodeName: "Salto Outskirts",
+        unlockedNodeIds: [],
+        unlockedNodeNames: [],
+        nodeReward: { xp: 20, itemIds: [], resources: { crowns: 10, stone: 0, iron: 0, aether: 0 } },
+        nodeLevelUp: { previousLevel: 1, newLevel: 2, levelsGained: 1, skillPointsGained: 1 },
+        campaignResources: { crowns: 10, stone: 0, iron: 0, aether: 0 },
+        wasFirstClear: true
+      }
+    });
+
+    const html = renderResultsMetaProgressionSummary(data, createResultsViewModel(data));
+
+    expect(html).toContain('data-testid="results-meta-progress-summary"');
+    expect(html).toContain("Hero XP");
+    expect(html).toContain("Rewards");
+    expect(html).toContain("Relics");
+    expect(html).toContain("No relic change");
+    expect(html).toContain("1 notable veteran; 1 recovering; reinforcement used");
+    expect(html).toContain("Campaign resources now");
   });
 
   it("renders defeat and replay overview copy without changing reward state", () => {

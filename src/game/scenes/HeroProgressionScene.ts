@@ -16,18 +16,19 @@ import {
 } from "../core/HeroProgressionRules";
 import { formatTime } from "../core/MathUtils";
 import { xpProgressForLevel } from "../core/Progression";
+import { getRetinueCapacityBreakdown } from "../core/RetinueRules";
 import { SaveSystem, createFallbackHeroSave } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { getBattleDifficulty } from "../data/battlePacing";
 import { HERO_CLASS_BY_ID, ITEM_BY_ID, MAP_BY_ID, ORIGIN_BY_ID, SKILL_NODE_BY_ID } from "../data/contentIndex";
 import { SKILL_NODES, SKILL_TREES } from "../data/skillTrees";
-import { createEquipmentViewModel, renderEquipmentPanel } from "../progression/EquipmentPanel";
+import { createEquipmentViewModel, renderEquipmentPanel, type EquipmentPanelViewModel } from "../progression/EquipmentPanel";
 import { renderHeroAbilitiesPanel, renderHeroStatsPanel } from "../progression/HeroStatsPanel";
 import { createHeroProgressionViewModel, resolveHeroClass, resolveOrigin } from "../progression/HeroProgressionViewModel";
-import { createInventoryViewModel, renderInventoryPanel } from "../progression/InventoryPanel";
+import { createInventoryViewModel, renderInventoryPanel, type InventoryPanelViewModel } from "../progression/InventoryPanel";
 import { escapeHtml, formatResourceRewards, renderItemName, titleCase, toCssColor } from "../progression/ItemComparison";
-import { createSkillTreeViewModel, renderSkillTreesPanel } from "../progression/SkillTreePanel";
-import type { HeroSaveData } from "../save/SaveTypes";
+import { createSkillTreeViewModel, renderSkillTreesPanel, type SkillTreesPanelViewModel } from "../progression/SkillTreePanel";
+import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 interface HeroProgressionData {
   stats?: BattleStats;
@@ -184,29 +185,59 @@ export class HeroProgressionScene extends Phaser.Scene {
               <strong>${viewModel.skillPoints}</strong>
             </div>
           </div>
-          ${this.renderBattleResults()}
-          ${this.renderGuidancePanel()}
+          ${this.renderHeroOverview(equipment, inventory, skillTrees)}
+          ${this.renderProgressionSummary()}
           <div class="status-box">${escapeHtml(this.status)}</div>
-          ${this.renderBuildIdentityPanel()}
-          <div class="progression-grid">
-            <section>
-              <h2>Hero Stats</h2>
-              <div data-testid="hero-stats">${renderHeroStatsPanel(viewModel.stats)}</div>
-              <h2>Abilities</h2>
-              ${renderHeroAbilitiesPanel(viewModel.unlockedAbilities)}
+          <div class="meta-progression-layout">
+            <section class="meta-progression-card skills-panel" data-testid="skills-panel">
+              <div class="meta-card-heading">
+                <div>
+                  <p class="eyebrow">Skills</p>
+                  <h2>Hero Skill Trees</h2>
+                </div>
+                <span class="tag">${viewModel.skillPoints} point${viewModel.skillPoints === 1 ? "" : "s"}</span>
+              </div>
+              <div class="skill-tree-grid">
+                ${renderSkillTreesPanel(skillTrees)}
+              </div>
             </section>
-            <section>
-              <h2>Equipment</h2>
-              <p class="quiet">Relic effects are active when equipped.</p>
-              <div data-testid="equipment-panel">${renderEquipmentPanel(equipment)}</div>
-              <h2>Inventory</h2>
-              <div data-testid="inventory-list">${renderInventoryPanel(inventory)}</div>
+            <section class="meta-progression-card" data-testid="equipment-panel">
+              <div class="meta-card-heading">
+                <div>
+                  <p class="eyebrow">Equipment</p>
+                  <h2>Equipped Loadout</h2>
+                </div>
+                <span class="tag">Relics active when equipped</span>
+              </div>
+              ${renderEquipmentPanel(equipment)}
             </section>
+            <section class="meta-progression-card" data-testid="inventory-list">
+              <div class="meta-card-heading">
+                <div>
+                  <p class="eyebrow">Inventory</p>
+                  <h2>Stored Gear And Relics</h2>
+                </div>
+                <span class="tag">${inventory.rows.length} item${inventory.rows.length === 1 ? "" : "s"}</span>
+              </div>
+              ${renderInventoryPanel(inventory)}
+            </section>
+            ${this.renderRetinueMetaCard()}
           </div>
-          <h2>Skill Trees</h2>
-          <div class="skill-tree-grid">
-            ${renderSkillTreesPanel(skillTrees)}
-          </div>
+          <details class="meta-progression-details" data-testid="hero-more-details">
+            <summary>More Details</summary>
+            <div class="progression-grid">
+              <section>
+                <h2>Primary Stats</h2>
+                <div data-testid="hero-stats">${renderHeroStatsPanel(viewModel.stats)}</div>
+                <h2>Abilities</h2>
+                ${renderHeroAbilitiesPanel(viewModel.unlockedAbilities)}
+              </section>
+              <section>
+                ${this.renderBuildIdentityPanel()}
+                ${this.renderBattleResults()}
+              </section>
+            </div>
+          </details>
           <div class="menu-actions row">
             <button data-progression-action="${this.returnMode === "campaign" ? "campaign" : "skirmish"}">
               ${this.returnMode === "campaign" ? "Campaign Map" : "Continue Skirmish"}
@@ -218,21 +249,113 @@ export class HeroProgressionScene extends Phaser.Scene {
     `;
   }
 
-  private renderGuidancePanel(): string {
+  private renderHeroOverview(
+    equipment: EquipmentPanelViewModel,
+    inventory: InventoryPanelViewModel,
+    skillTrees: SkillTreesPanelViewModel
+  ): string {
+    const heroClass = resolveHeroClass(this.heroSave, PROGRESSION_CATALOGS);
+    const origin = resolveOrigin(this.heroSave, PROGRESSION_CATALOGS);
+    const progress = xpProgressForLevel(this.heroSave.xp, this.heroSave.level, LEVEL_XP_THRESHOLDS);
+    const xpText =
+      progress.nextLevelXp > progress.currentLevelXp
+        ? `${Math.max(0, this.heroSave.xp - progress.currentLevelXp)} / ${progress.nextLevelXp - progress.currentLevelXp}`
+        : "Level cap reached";
+    const equippedCount = equipment.slots.filter((slot) => slot.itemNameHtml).length;
+    const relic = equipment.slots.find((slot) => slot.slot === "relic");
+    const relicText = relic?.itemNameHtml ?? "Empty";
+    const purchasedSkills = skillTrees.trees.flatMap((tree) => tree.nodes).filter((node) => node.rank > 0).length;
+    const campaign = SaveSystem.load()?.campaign;
+    const retinueText = campaign ? formatRetinueOverview(campaign) : "No campaign Retinue loaded";
+    return `
+      <section class="hero-overview-card" data-testid="hero-overview">
+        <div class="meta-card-heading">
+          <div>
+            <p class="eyebrow">Hero Overview</p>
+            <h2>${escapeHtml(this.heroSave.heroName)}</h2>
+          </div>
+          <span class="tag">Level ${this.heroSave.level}</span>
+        </div>
+        <div class="meta-summary-grid">
+          <span><small>Class</small><strong>${escapeHtml(heroClass.name)}</strong></span>
+          <span><small>Origin</small><strong>${escapeHtml(origin.name)}</strong></span>
+          <span><small>XP</small><strong>${escapeHtml(xpText)}</strong></span>
+          <span><small>Primary stats</small><strong>Might ${this.heroSave.stats.might} - Command ${this.heroSave.stats.command} - Arcana ${this.heroSave.stats.arcana}</strong></span>
+          <span><small>Equipment</small><strong>${equippedCount}/${equipment.slots.length} slots equipped</strong></span>
+          <span><small>Relic</small><strong>${relicText}</strong></span>
+          <span><small>Skill points</small><strong>${this.heroSave.skillPoints} available / ${purchasedSkills} purchased</strong></span>
+          <span><small>Retinue</small><strong>${escapeHtml(retinueText)}</strong></span>
+          <span><small>Stored inventory</small><strong>${inventory.rows.length} item${inventory.rows.length === 1 ? "" : "s"}</strong></span>
+        </div>
+      </section>
+    `;
+  }
+
+  private renderProgressionSummary(): string {
     const guidance = getHeroProgressionGuidance({
       hero: this.heroSave,
       recentRewardItemCount: this.rewardItemIds.length,
       skillPointsGained: this.rewardLevelUp?.skillPointsGained,
       inCampaign: this.returnMode === "campaign"
     });
+    const reward = this.reward ?? { itemIds: this.rewardItemIds, resources: {}, xp: 0 };
+    const skillPointsGained = this.rewardLevelUp?.skillPointsGained ?? 0;
     return `
-      <div class="guidance-card">
-        <strong>${escapeHtml(guidance.title)}</strong>
-        <p>${escapeHtml(guidance.body)}</p>
+      <section class="meta-progression-flow" data-testid="results-progression-summary">
+        <div>
+          <strong>${escapeHtml(guidance.title)}</strong>
+          <p>${escapeHtml(guidance.body)}</p>
+        </div>
         <div class="tag-row">
           ${guidance.actions.map((action) => `<span class="tag">${escapeHtml(action)}</span>`).join("")}
         </div>
-      </div>
+        ${
+          this.stats
+            ? `<div class="meta-summary-grid compact">
+                <span><small>XP</small><strong>${this.stats.xpGained} gained</strong></span>
+                <span><small>Rewards</small><strong>${reward.itemIds.length} item${reward.itemIds.length === 1 ? "" : "s"} / ${escapeHtml(formatResourceRewards(reward.resources))}</strong></span>
+                <span><small>Skill points</small><strong>${skillPointsGained > 0 ? `+${skillPointsGained}` : "No new points"}</strong></span>
+                <span><small>Retinue</small><strong>${this.stats.veteranSummary?.notableVeterans.length ?? 0} notable veteran${(this.stats.veteranSummary?.notableVeterans.length ?? 0) === 1 ? "" : "s"}</strong></span>
+              </div>`
+            : ""
+        }
+      </section>
+    `;
+  }
+
+  private renderRetinueMetaCard(): string {
+    const campaign = SaveSystem.load()?.campaign;
+    if (!campaign) {
+      return `
+        <section class="meta-progression-card" data-testid="hero-retinue-summary">
+          <div class="meta-card-heading">
+            <div>
+              <p class="eyebrow">Retinue</p>
+              <h2>Campaign Retinue</h2>
+            </div>
+          </div>
+          <p class="quiet">Start or continue a campaign to manage saved veterans.</p>
+        </section>
+      `;
+    }
+    const capacity = getRetinueCapacityBreakdown(campaign);
+    return `
+      <section class="meta-progression-card" data-testid="hero-retinue-summary">
+        <div class="meta-card-heading">
+          <div>
+            <p class="eyebrow">Retinue</p>
+            <h2>Reserve Overview</h2>
+          </div>
+          <span class="tag">${capacity.activeCount}/${capacity.rosterCapacity} roster</span>
+        </div>
+        <div class="meta-summary-grid compact">
+          <span><small>Deployed</small><strong>${capacity.deploymentCount}/${capacity.deploymentCapacity}</strong></span>
+          <span><small>Ready reserve</small><strong>${capacity.reserveCount}</strong></span>
+          <span><small>Recovering</small><strong>${capacity.recoveringCount}</strong></span>
+          <span><small>Reinforcement</small><strong>${capacity.reserveCount > 0 ? "Eligible reserve exists" : "No ready reserve"}</strong></span>
+        </div>
+        <p class="quiet">Change deployment from the Campaign Hero tab. Member details stay there to avoid a second roster UI.</p>
+      </section>
     `;
   }
 
@@ -305,4 +428,9 @@ export class HeroProgressionScene extends Phaser.Scene {
       this.root.removeEventListener("click", this.handler);
     }
   }
+}
+
+function formatRetinueOverview(campaign: CampaignSaveData): string {
+  const capacity = getRetinueCapacityBreakdown(campaign);
+  return `${capacity.deploymentCount} deployed, ${capacity.reserveCount} reserve, ${capacity.recoveringCount} recovering`;
 }

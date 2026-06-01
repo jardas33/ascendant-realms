@@ -28,6 +28,7 @@ export interface SkillNodeViewModel {
   message: string;
   costText: string;
   statusText: string;
+  stateClassName: string;
   statModsPerRankText: string;
   abilityUpgradeText: string;
 }
@@ -57,7 +58,8 @@ export function createSkillTreeViewModel({ heroSave, skillTrees, skillNodes, cat
           canSpend: check.ok,
           message: check.message,
           costText: `${node.costPerRank} skill point${node.costPerRank === 1 ? "" : "s"}`,
-          statusText: rank > 0 ? (rank >= node.maxRank ? "Unlocked" : "Improved") : "Locked",
+          statusText: rank > 0 ? "Purchased" : check.ok ? "Available" : "Locked",
+          stateClassName: rank > 0 ? "purchased" : check.ok ? "available" : "locked",
           statModsPerRankText: node.statModsPerRank ? formatStatMods(node.statModsPerRank) : "",
           abilityUpgradeText: node.abilityUpgrade?.effectSummary ?? ""
         };
@@ -83,26 +85,43 @@ export function renderSkillTreesPanel(viewModel: SkillTreesPanelViewModel): stri
 
 function renderSkillTree(tree: SkillTreeViewModel): string {
   return `
-      <section class="skill-tree">
-        <h3>${escapeHtml(tree.name)}</h3>
-        <p>${escapeHtml(tree.description)}</p>
-        <small>${escapeHtml(tree.buildArchetypeLabel)} branch</small>
+      <section class="skill-tree" data-testid="skill-tree-${escapeHtml(tree.id)}">
+        <div class="skill-tree-header">
+          <div>
+            <h3>${escapeHtml(tree.name)}</h3>
+            <p>${escapeHtml(tree.description)}</p>
+          </div>
+          <span class="tag">${escapeHtml(tree.buildArchetypeLabel)}</span>
+        </div>
         ${tree.synergyText ? `<small class="synergy-line">${escapeHtml(tree.synergyText)}</small>` : ""}
-        ${tree.nodes.map(renderSkillNode).join("")}
+        <div class="skill-node-list">
+          ${tree.nodes.map(renderSkillNode).join("")}
+        </div>
       </section>
     `;
 }
 
 function renderSkillNode(node: SkillNodeViewModel): string {
   return `
-      <div class="skill-node">
+      <div class="skill-node ${escapeHtml(node.stateClassName)}" data-testid="skill-node-${escapeHtml(node.id)}">
         <div>
-          <strong>${escapeHtml(node.name)} <span>${node.rank}/${node.maxRank}</span></strong>
-          <small>Branch: ${escapeHtml(node.branchLabel)} - Cost: ${escapeHtml(node.costText)} - State: ${escapeHtml(node.statusText)}</small>
-          <small>${escapeHtml(node.description)}</small>
-          ${node.statModsPerRankText ? `<small>${escapeHtml(node.statModsPerRankText)} per rank</small>` : ""}
-          ${node.abilityUpgradeText ? `<small>${escapeHtml(node.abilityUpgradeText)}</small>` : ""}
-          ${!node.canSpend && node.rank < node.maxRank ? `<small>${escapeHtml(node.message)}</small>` : ""}
+          <div class="skill-node-title">
+            <strong>${escapeHtml(node.name)}</strong>
+            <span>${node.rank}/${node.maxRank}</span>
+          </div>
+          <div class="skill-node-chip-row">
+            <span class="tag">${escapeHtml(node.statusText)}</span>
+            <span class="tag">${escapeHtml(node.costText)}</span>
+          </div>
+          <small class="skill-node-effect">${escapeHtml(node.abilityUpgradeText || node.statModsPerRankText || node.description)}</small>
+          <small>Requirement: ${node.canSpend || node.rank >= node.maxRank ? "Met" : escapeHtml(node.message)}</small>
+          <details class="support-card-details skill-node-details">
+            <summary>More Details</summary>
+            <small>Branch: ${escapeHtml(node.branchLabel)}</small>
+            <small>${escapeHtml(node.description)}</small>
+            ${node.statModsPerRankText ? `<small>${escapeHtml(node.statModsPerRankText)} per rank</small>` : ""}
+            ${node.abilityUpgradeText ? `<small>${escapeHtml(node.abilityUpgradeText)}</small>` : ""}
+          </details>
         </div>
         <button data-progression-action="skill" data-id="${escapeHtml(node.id)}" ${node.canSpend ? "" : "disabled"}>${
           node.rank > 0 ? "Improve" : "Unlock"

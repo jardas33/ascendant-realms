@@ -1,12 +1,67 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-01 v0.97 camera selection orders and tactical feedback polish
+Last updated: 2026-06-01 v0.98 hero Retinue inventory and Stronghold UX rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance, v0.96 rescues first-session Tutorial/onboarding presentation with one-action steps, More Help, Focus Objective, Dismiss/Reopen, compact help surfaces, and Salto next-action guidance without changing gameplay, saves, rewards, progression, stable IDs, Lume rules, maps, factions, art assets, or balance, and v0.97 polishes selection focus, command destination markers, camera focus feedback, enemy inspection, and compact command-panel follow-up without changing gameplay systems, saves, pathing rules, stable IDs, art, rewards, or balance. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance, v0.96 rescues first-session Tutorial/onboarding presentation with one-action steps, More Help, Focus Objective, Dismiss/Reopen, compact help surfaces, and Salto next-action guidance without changing gameplay, saves, rewards, progression, stable IDs, Lume rules, maps, factions, art assets, or balance, v0.97 polishes selection focus, command destination markers, camera focus feedback, enemy inspection, and compact command-panel follow-up without changing gameplay systems, saves, pathing rules, stable IDs, art, rewards, or balance, and v0.98 rescues Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation without changing progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold rules, saves, IDs, rewards, campaign progression, art, or desktop work. No runtime rebrand is approved.
+
+## Current v0.98 Hero Retinue Inventory And Stronghold UX Rescue - 2026-06-01
+
+Status: v0.98 is a presentation-only meta-progression checkpoint. It improves Hero Overview, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta readability. It does not change progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, saves, stable IDs, rewards, campaign progression, gameplay balance, art/assets, imported assets, desktop work, or start v0.99.
+
+Baseline:
+
+- Starting commit: `3c00ffc`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-3c00ffc`.
+- Baseline package verification: `npm run verify:playtest-package` passed 342 checks before v0.98 edits.
+- Baseline remote status: GitHub Actions run `26757548780` on `3c00ffc` completed successfully.
+
+Included work:
+
+- Hero Progression now opens with a concise Hero Overview card covering identity, level/XP, class/origin, primary stats, equipment, relic, skill points, Retinue, and inventory.
+- Skills now present purchased / available / locked state, cost, requirement, concise effect, and details disclosure without changing unlock logic.
+- Equipment and Inventory now distinguish equipped versus stored gear, group relics separately, show compact comparison chips, and keep existing equip/unequip actions.
+- Retinue Camp now surfaces Ready, Deployed, Recovering, reserve, cap, reinforcement eligibility, recovery status, and veteran identity with member details behind disclosure.
+- Stronghold now surfaces current tier, available/locked/purchased upgrades, cost, prerequisite, benefit, and action state with extra rules behind disclosure.
+- Ordinary Results now include a compact Progression Summary for XP, rewards, relics, Retinue, and Stronghold/campaign resources.
+- Visual QA is expanded from 118 to 126 screenshots with v0.98 Hero, Stronghold, Retinue, Inventory, and Results progression captures.
+- Package generation and validation now require/copy the v0.98 docs and report the v0.98 checkpoint in playtest build info.
+
+Runtime/save/art boundary:
+
+- Presentation markup, CSS, tests, visual QA, docs, Results summary rendering, and package metadata changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero progression rules, skill unlock rules, XP values, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, campaign progression, rewards, replay rules, Tutorial safety, balance values, maps, factions, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+```text
+npm test - PASS, 98 files / 700 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests after updating the inventory smoke assertion for the new Hero Overview default and rerunning an unrelated transient settings click test.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 30 tests after one transient behaviour-gauntlet timeout passed on exact rerun and full-lane rerun.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 14 tests / 126 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 126 screenshots / 7 contact sheets.
+npm run package:playtest - PASS for the pre-commit dirty package; final clean package is generated after commit.
+npm run verify:playtest-package - PASS, 350 checks on the pre-commit dirty package.
+```
+
+Closeout note: commit as `Checkpoint v0.98 hero Retinue inventory and Stronghold UX rescue`, package cleanly on the final commit, verify, push safely, and stop. Do not start v0.99 automatically.
 
 ## Current v0.97 Camera Selection Orders And Tactical Feedback Polish - 2026-06-01
 

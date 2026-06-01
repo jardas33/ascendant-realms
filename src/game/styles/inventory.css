@@ -404,12 +404,242 @@ h2::after,
   gap: 9px;
 }
 
+.hero-overview-card,
+.meta-progression-card,
+.meta-progression-flow,
+.meta-progression-details,
+.inventory-group {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(246, 237, 180, 0.16);
+  border-radius: var(--ui-radius-panel);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 200, 0.055), rgba(7, 9, 9, 0.48)),
+    var(--ui-panel-secondary);
+  box-shadow: var(--plate-shadow);
+}
+
+.hero-overview-card,
+.meta-progression-flow {
+  display: grid;
+  gap: 11px;
+  margin-top: 12px;
+}
+
+.meta-card-heading,
+.inventory-group-header,
+.skill-tree-header,
+.skill-node-title,
+.inventory-row-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.meta-card-heading h2,
+.meta-card-heading p,
+.inventory-group-header strong,
+.inventory-group-header small,
+.skill-tree-header h3,
+.skill-tree-header p,
+.skill-node-title strong,
+.inventory-row-title strong {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.meta-card-heading .tag,
+.inventory-group-header .tag,
+.skill-tree-header .tag,
+.inventory-row-title .tag {
+  flex: 0 0 auto;
+}
+
+.meta-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.meta-summary-grid.compact {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.meta-summary-grid span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid rgba(246, 237, 180, 0.12);
+  border-radius: var(--ui-radius-small);
+  background: rgba(4, 9, 7, 0.24);
+}
+
+.meta-summary-grid small {
+  color: #c8d0bd;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
+  text-transform: uppercase;
+}
+
+.meta-summary-grid strong {
+  color: #f1ead1;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
+  overflow-wrap: anywhere;
+}
+
+.meta-progression-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.meta-progression-layout > .skills-panel,
+.meta-progression-layout > [data-testid="inventory-list"] {
+  grid-column: 1 / -1;
+}
+
+.meta-progression-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.meta-progression-flow p,
+.meta-progression-card .quiet,
+.hero-overview-card .quiet {
+  margin: 0;
+  color: #c8d0bd;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
+}
+
+.meta-progression-details {
+  margin-top: 12px;
+}
+
+.meta-progression-details > summary {
+  cursor: pointer;
+  color: #f0d978;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.inventory-section-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.inventory-group.relics {
+  grid-column: 1 / -1;
+}
+
+.inventory-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.inventory-chip-list .equipped {
+  border-color: rgba(143, 216, 155, 0.52);
+  color: #aef7b7;
+}
+
+.equipment-loadout-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.equipment-row,
+.inventory-row,
+.skill-node {
+  align-items: start;
+}
+
+.inventory-row-actions {
+  display: grid;
+  gap: 5px;
+  justify-items: start;
+  min-width: 140px;
+}
+
+.inventory-row-actions small {
+  color: #c8d0bd;
+  font-size: var(--ui-type-caption-size);
+  line-height: var(--ui-type-caption-line-height);
+}
+
+.inventory-row-details,
+.equipment-row-details,
+.skill-node-details {
+  margin-top: 7px;
+}
+
+.skill-tree-header {
+  align-items: center;
+}
+
 .skill-tree h3 {
   margin: 0;
   color: #f0d978;
 }
 
+.skill-node-list {
+  display: grid;
+  gap: 8px;
+}
+
+.skill-node.available {
+  border-color: rgba(116, 211, 242, 0.45);
+}
+
+.skill-node.purchased {
+  border-color: rgba(143, 216, 155, 0.56);
+}
+
+.skill-node.locked {
+  opacity: 0.76;
+}
+
+.skill-node-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.skill-node-effect {
+  color: #f1df9d;
+}
+
 .skill-node strong span {
   color: #f0d978;
   font-size: 12px;
+}
+
+@media (max-width: 980px) {
+  .meta-progression-layout,
+  .inventory-section-grid,
+  .equipment-loadout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .meta-summary-grid,
+  .meta-summary-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .meta-summary-grid,
+  .meta-summary-grid.compact,
+  .skill-tree-grid {
+    grid-template-columns: 1fr;
+  }
 }

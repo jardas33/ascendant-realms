@@ -2049,8 +2049,10 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.getByTestId("menu-inventory")).toBeEnabled();
     await clickReady(page.getByTestId("menu-inventory"), "smoke inventory screen");
     await expect(page.getByTestId("hero-inventory")).toBeVisible();
-    await expect(page.getByTestId("hero-stats")).toBeVisible();
+    await expect(page.getByTestId("hero-overview")).toBeVisible();
     await expect(page.getByTestId("equipment-panel")).toBeVisible();
     await expect(page.getByTestId("inventory-list")).toBeVisible();
+    await page.getByTestId("hero-more-details").locator("summary").click();
+    await expect(page.getByTestId("hero-stats")).toBeVisible();
   });
 });

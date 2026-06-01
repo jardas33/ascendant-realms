@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.97 camera selection orders and tactical feedback polish";
+const CHECKPOINT = "v0.98 hero Retinue inventory and Stronghold UX rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -373,6 +373,14 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V097_VISUAL_QA_REPORT.md", join(packageDir, "V097_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V097_IMPLEMENTATION_REPORT.md", join(packageDir, "V097_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V097_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V097_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V098_HERO_OVERVIEW_UX_SPEC.md", join(packageDir, "V098_HERO_OVERVIEW_UX_SPEC.md"));
+  await copyMarkdown("docs/V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md", join(packageDir, "V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md"));
+  await copyMarkdown("docs/V098_RETINUE_UX_RESCUE_SPEC.md", join(packageDir, "V098_RETINUE_UX_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V098_STRONGHOLD_UX_RESCUE_SPEC.md", join(packageDir, "V098_STRONGHOLD_UX_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V098_RESULTS_TO_META_FLOW_REPORT.md", join(packageDir, "V098_RESULTS_TO_META_FLOW_REPORT.md"));
+  await copyMarkdown("docs/V098_VISUAL_QA_REPORT.md", join(packageDir, "V098_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V098_IMPLEMENTATION_REPORT.md", join(packageDir, "V098_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V098_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V098_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -472,7 +480,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.97, start with V097_EMMANUEL_RETEST_CHECKLIST.md, V097_SELECTION_FEEDBACK_SPEC.md, V097_COMMAND_MARKER_SPEC.md, V097_CAMERA_USABILITY_REPORT.md, V097_COMMAND_PANEL_FOLLOWUP_REPORT.md, and V097_VISUAL_QA_REPORT.md. This package polishes camera focus, selection readability, command destination feedback, command-panel follow-up copy, and tactical confirmations only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.98, start with V098_EMMANUEL_RETEST_CHECKLIST.md, V098_HERO_OVERVIEW_UX_SPEC.md, V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md, V098_RETINUE_UX_RESCUE_SPEC.md, V098_STRONGHOLD_UX_RESCUE_SPEC.md, and V098_VISUAL_QA_REPORT.md. This package rescues the Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation only. It changes no saves, rewards, campaign progression logic, gameplay values, hero rules, Retinue rules, Stronghold upgrade rules, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
 
 ## Known Warning
 

@@ -1,6 +1,59 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.97 camera selection orders and tactical feedback polish
+Updated: 2026-06-01 v0.98 hero Retinue inventory and Stronghold UX rescue
+
+## v0.98 Hero Retinue Inventory And Stronghold UX Rescue - 2026-06-01
+
+Scope: presentation-only meta-progression pass. This checkpoint rescues Hero Overview, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta readability. It does not change progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, saves, stable IDs, rewards, campaign progression, gameplay balance, art/assets, imported assets, desktop work, or start v0.99.
+
+Baseline:
+
+- Starting commit: `3c00ffc`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-3c00ffc`.
+- Baseline package verification: `npm run verify:playtest-package` passed 342 checks before v0.98 edits.
+- Baseline remote status: GitHub Actions run `26757548780` on `3c00ffc` completed successfully.
+
+Included work:
+
+- Hero Progression now opens with a concise Hero Overview card covering identity, level/XP, class/origin, primary stats, equipment, relic, skill points, Retinue, and inventory.
+- Skills now present purchased / available / locked state, cost, requirement, concise effect, and details disclosure without changing unlock logic.
+- Equipment now reads as a loadout; Inventory now groups equipped gear, stored gear, and relics with compact comparison/effect chips.
+- Relic rows now distinguish equipped, stored, duplicate/owned posture, active-only effect copy, and build synergy details without changing stats.
+- Retinue Camp now surfaces Ready, Deployed, Recovering, reserve, cap, reinforcement eligibility, recovery status, and veteran identity with member details behind disclosure.
+- Stronghold now surfaces current tier, available/locked/purchased upgrades, cost, prerequisite, benefit, and action state with extra rules behind disclosure.
+- Ordinary Results now include a compact Progression Summary for XP, rewards, relics, Retinue, and Stronghold/campaign resources.
+- Added focused meta-progression tests and eight v0.98 visual-QA captures, raising the deterministic visual-QA set from 118 to 126 screenshots.
+- Package generation and validation now require/copy the v0.98 docs and report the v0.98 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero progression rules, skill unlock rules, XP values, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, campaign progression, rewards, replay rules, Tutorial safety, or balance values changed.
+
+Verification:
+
+```text
+npm test - PASS, 98 files / 700 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests after updating the inventory smoke assertion for the new Hero Overview default and rerunning an unrelated transient settings click test.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 30 tests after one transient behaviour-gauntlet timeout passed on exact rerun and full-lane rerun.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 14 tests / 126 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 126 screenshots / 7 contact sheets.
+npm run package:playtest - PASS for the pre-commit dirty package; final clean package is generated after commit.
+npm run verify:playtest-package - PASS, 350 checks on the pre-commit dirty package.
+```
 
 ## v0.97 Camera Selection Orders And Tactical Feedback Polish - 2026-06-01
 

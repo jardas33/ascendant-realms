@@ -114,7 +114,9 @@
 }
 
 .stronghold-header,
+.stronghold-heading,
 .stronghold-upgrade-title,
+.stronghold-title,
 .stronghold-upgrade-footer {
   display: flex;
   align-items: start;
@@ -122,8 +124,13 @@
   gap: 12px;
 }
 
-.stronghold-header h2 {
+.stronghold-header h2,
+.stronghold-heading h2 {
   margin: 0;
+}
+
+.stronghold-heading p {
+  margin: 4px 0 0;
 }
 
 .stronghold-resource-line {
@@ -141,7 +148,14 @@
   gap: 9px;
 }
 
-.stronghold-upgrade {
+.stronghold-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.stronghold-upgrade,
+.stronghold-card {
   display: grid;
   gap: 6px;
   padding: 10px;
@@ -150,11 +164,13 @@
   background: rgba(13, 24, 19, 0.7);
 }
 
-.stronghold-upgrade.available {
+.stronghold-upgrade.available,
+.stronghold-card.available {
   border-color: rgba(116, 211, 242, 0.48);
 }
 
-.stronghold-upgrade.purchased {
+.stronghold-upgrade.purchased,
+.stronghold-card.purchased {
   border-color: rgba(143, 216, 155, 0.56);
 }
 
@@ -164,7 +180,9 @@
 }
 
 .stronghold-upgrade p,
-.stronghold-upgrade small {
+.stronghold-upgrade small,
+.stronghold-card p,
+.stronghold-card small {
   margin: 0;
   color: rgba(245, 239, 214, 0.8);
   font-size: 12px;
@@ -194,11 +212,13 @@
   margin: 0 9px 8px;
 }
 
-.stronghold-upgrade-title strong {
+.stronghold-upgrade-title strong,
+.stronghold-title strong {
   color: #f6edb4;
 }
 
 .stronghold-upgrade-title span,
+.stronghold-title span,
 .stronghold-upgrade-footer span {
   color: #d8c982;
   font-size: 12px;
@@ -209,6 +229,16 @@
   flex: 0 0 auto;
   min-height: 34px;
   padding: 7px 10px;
+}
+
+.stronghold-card button {
+  justify-self: start;
+  min-height: 30px;
+}
+
+.stronghold-overview,
+.retinue-status-grid {
+  margin: 0;
 }
 
 .campaign-shell {
@@ -843,6 +873,10 @@
 @media (max-width: 1100px) {
   .campaign-help-surface .onboarding-help-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stronghold-grid {
+    grid-template-columns: 1fr;
   }
 }
 

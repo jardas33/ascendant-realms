@@ -12,6 +12,11 @@ import { formatResourceRewards } from "./CampaignResourcePanel";
 
 export function renderStrongholdPanel(campaignSave: CampaignSaveData, heroSave?: HeroSaveData): string {
   const purchased = getPurchasedStrongholdUpgrades(campaignSave);
+  const availableCount = STRONGHOLD_UPGRADES.filter((upgrade) => {
+    const rank = getStrongholdUpgradeRank(campaignSave, upgrade.id);
+    return rank < upgrade.maxRank && getStrongholdUpgradeAvailability(campaignSave, upgrade, heroSave).ok;
+  }).length;
+  const lockedCount = STRONGHOLD_UPGRADES.length - purchased.length - availableCount;
   return `
     <section class="stronghold-panel" data-testid="stronghold-panel">
       <div class="stronghold-header">
@@ -21,7 +26,12 @@ export function renderStrongholdPanel(campaignSave: CampaignSaveData, heroSave?:
         </div>
         <strong data-testid="stronghold-purchased-count">${purchased.length}/${STRONGHOLD_UPGRADES.length}</strong>
       </div>
-      <p class="quiet">Spend campaign resources on permanent upgrades for later battles.</p>
+      <div class="meta-summary-grid stronghold-overview" data-testid="stronghold-overview">
+        <span><small>Current tier</small><strong>${escapeHtml(formatStrongholdTier(campaignSave))}</strong></span>
+        <span><small>Available</small><strong>${availableCount}</strong></span>
+        <span><small>Locked</small><strong>${Math.max(0, lockedCount)}</strong></span>
+        <span><small>Purchased</small><strong>${purchased.length}</strong></span>
+      </div>
       <div class="stronghold-resource-line" data-testid="stronghold-resources">
         ${escapeHtml(formatResourceRewards(campaignSave.resources).join(" - ") || "No campaign resources")}
       </div>
@@ -51,12 +61,13 @@ function renderStrongholdUpgrade(
         <strong>${escapeHtml(upgrade.name)}</strong>
         <span>Tier ${upgrade.tier} - Rank ${rank}/${upgrade.maxRank}</span>
       </div>
+      <p>${escapeHtml(upgrade.description)}</p>
       <small>Cost: ${escapeHtml(formatStrongholdCost(upgrade, heroSave))}</small>
-      <small>Status: ${purchased ? "Purchased" : locked ? escapeHtml(reason || "Locked") : "Available"}</small>
+      <small>Prerequisite: ${purchased ? "Complete" : locked ? escapeHtml(reason || "Locked") : "Met"}</small>
+      <small>Benefit: ${escapeHtml(formatStrongholdEffects(upgrade))}</small>
       <details class="support-card-details">
-        <summary>Effect Details</summary>
-        <p>${escapeHtml(upgrade.description)}</p>
-        <small>Effect: ${escapeHtml(formatStrongholdEffects(upgrade))}</small>
+        <summary>More Details</summary>
+        <small>Status: ${purchased ? "Purchased" : locked ? escapeHtml(reason || "Locked") : "Available"}</small>
         <small class="flavor">${escapeHtml(upgrade.flavorText)}</small>
       </details>
       <div class="stronghold-upgrade-footer">
@@ -71,6 +82,13 @@ function renderStrongholdUpgrade(
       </div>
     </article>
   `;
+}
+
+function formatStrongholdTier(campaignSave: CampaignSaveData): string {
+  const purchasedTiers = STRONGHOLD_UPGRADES.filter((upgrade) => getStrongholdUpgradeRank(campaignSave, upgrade.id) > 0).map(
+    (upgrade) => upgrade.tier
+  );
+  return purchasedTiers.length > 0 ? `Tier ${Math.max(...purchasedTiers)}` : "Tier 0";
 }
 
 function formatStrongholdCost(upgrade: StrongholdUpgradeDefinition, heroSave?: HeroSaveData): string {

@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 118;
+const EXPECTED_SCREENSHOT_COUNT = 126;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -907,6 +907,119 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await page.getByTestId("menu-inventory").click();
     await expect(page.getByTestId("hero-inventory")).toBeVisible();
     await captureView(page, group, "Hero Inventory", "hero-inventory-desktop.png", DESKTOP, "Saved hero equipment, inventory, stats, and skill panel.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.98 meta-progression rescue views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v098-meta-progression-rescue";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await seedPostCinderfenCrossingCampaign(page);
+    await page.getByTestId("menu-inventory").click();
+    await expect(page.getByTestId("hero-overview")).toBeVisible();
+    await expect(page.getByTestId("skills-panel")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} hero overview 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.98 hero overview 1920",
+      "v098-hero-overview-1920.png",
+      FULL_HD,
+      "Hero overview, skill points, equipment, inventory, relic, and Retinue summary at 1920x1080."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await expectNoVisibleHorizontalOverflow(page, `${group} hero overview 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.98 hero overview 1600",
+      "v098-hero-overview-1600.png",
+      WIDE_DESKTOP,
+      "Hero meta-progression rescue remains readable at 1600x900."
+    );
+
+    await useViewport(page, LAPTOP);
+    await expectNoVisibleHorizontalOverflow(page, `${group} hero overview 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.98 hero overview 1366",
+      "v098-hero-overview-1366.png",
+      LAPTOP,
+      "Hero meta-progression rescue avoids card overflow at 1366x768."
+    );
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await seedPostCinderfenCrossingCampaign(page);
+    await continueSavedCampaign(page);
+    await page.getByTestId("campaign-tab-stronghold").click();
+    await expect(page.getByTestId("stronghold-overview")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} stronghold 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.98 Stronghold rescue",
+      "v098-campaign-stronghold-1920.png",
+      FULL_HD,
+      "Stronghold tab uses tier summary, available/locked counts, costs, benefits, and collapsed details."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("campaign-tab-hero").click();
+    await expect(page.getByTestId("retinue-panel")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} retinue 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.98 Retinue rescue",
+      "v098-campaign-retinue-1600.png",
+      WIDE_DESKTOP,
+      "Hero tab shows Retinue Ready/Recovering/Deployed/Reserve status without a roster prose wall."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("campaign-tab-inventory").click();
+    await expect(page.getByTestId("campaign-tab-panel-inventory")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} campaign inventory 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.98 campaign inventory action",
+      "v098-campaign-inventory-1366.png",
+      LAPTOP,
+      "Campaign Inventory tab keeps the key Hero Inventory action prominent at 1366x768."
+    );
+
+    await useViewport(page, FULL_HD);
+    await showVisualQaResults(page, "victory");
+    await expect(page.getByTestId("results-meta-progress-summary")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} results progression 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.98 Results progression summary",
+      "v098-results-progression-summary-1920.png",
+      FULL_HD,
+      "Ordinary victory Results show compact XP, reward, relic, Retinue, and Stronghold progression summary."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("results-full-details").getByText("Show Full Battle Details", { exact: true }).click();
+    await expect(page.getByTestId("results-full-details")).toHaveAttribute("open", "");
+    await expectNoVisibleHorizontalOverflow(page, `${group} results expanded 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.98 Results expanded details",
+      "v098-results-expanded-1366.png",
+      LAPTOP,
+      "Expanded Results details remain collapsed-by-default and readable after opening at 1366x768."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
