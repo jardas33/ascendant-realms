@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.96 first-time player onboarding and Tutorial UX rescue",
+          checkpoint: "v0.97 camera selection orders and tactical feedback polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -385,6 +385,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V096_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.96 visual QA report" },
       { path: "V096_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.96 implementation report" },
       { path: "V096_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.96 Emmanuel retest" },
+      { path: "V097_SELECTION_FEEDBACK_SPEC.md", sizeBytes: 20, textContent: "v0.97 selection feedback spec" },
+      { path: "V097_COMMAND_MARKER_SPEC.md", sizeBytes: 20, textContent: "v0.97 command marker spec" },
+      { path: "V097_CAMERA_USABILITY_REPORT.md", sizeBytes: 20, textContent: "v0.97 camera usability report" },
+      { path: "V097_COMMAND_PANEL_FOLLOWUP_REPORT.md", sizeBytes: 20, textContent: "v0.97 command panel follow-up report" },
+      { path: "V097_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.97 visual QA report" },
+      { path: "V097_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.97 implementation report" },
+      { path: "V097_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.97 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

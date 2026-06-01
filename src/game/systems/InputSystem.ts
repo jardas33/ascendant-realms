@@ -3,6 +3,7 @@ import type { Position } from "../core/GameTypes";
 import type { BaseEntity } from "../entities/BaseEntity";
 import { Building } from "../entities/Building";
 import { Unit } from "../entities/Unit";
+import type { CommandFeedbackMarkerEvent } from "../ui/CommandFeedbackMarker";
 import type {
   ControlGroupActionResult,
   ControlGroupRecallResult,
@@ -36,9 +37,10 @@ interface InputSystemOptions {
   canStartPatrolCommand: (selectedUnits: Unit[]) => { ok: boolean; message: string };
   issuePatrolOrder: (point: Position, selectedUnits: Unit[]) => number;
   selectHero: () => void;
-  centerOnHero: () => void;
+  focusSelectionOrHero: () => void;
   castAbilitySlot: (slot: number) => void;
   toggleFogDebug?: () => void;
+  showCommandFeedbackMarker?: (event: CommandFeedbackMarkerEvent) => void;
   showMessage: (message: string, x?: number, y?: number, color?: string, options?: InputMessageOptions) => void;
 }
 
@@ -148,7 +150,8 @@ export class InputSystem {
       }
 
       if (this.options.isPlacingBuilding()) {
-        this.options.placeBuilding(point);
+        const placed = this.options.placeBuilding(point);
+        this.options.showCommandFeedbackMarker?.({ kind: placed ? "build" : "invalid", point });
         this.clearDrag();
         return;
       }
@@ -190,7 +193,7 @@ export class InputSystem {
 
   private bindKeyboard(): void {
     const keyboard = this.options.scene.input.keyboard!;
-    this.addKeyHandler("keydown-SPACE", () => this.options.centerOnHero());
+    this.addKeyHandler("keydown-SPACE", () => this.options.focusSelectionOrHero());
     this.addNumberKeyHandlers("ONE", "NUMPAD_ONE", 1, 0);
     this.addNumberKeyHandlers("TWO", "NUMPAD_TWO", 2, 1);
     this.addNumberKeyHandlers("THREE", "NUMPAD_THREE", 3, 2);
@@ -333,6 +336,7 @@ export class InputSystem {
     }
     const target = this.options.findWorldEntityAt(point);
     if (this.options.issueResourceSiteAssignmentOrder(target, selectedUnits)) {
+      this.options.showCommandFeedbackMarker?.({ kind: "move", point, label: "Assign", count: selectedUnits.length });
       this.attackMoveMode = false;
       return;
     }
@@ -343,17 +347,33 @@ export class InputSystem {
     }
 
     if (this.options.issueConstructionOrder(target, selectedUnits)) {
+      this.options.showCommandFeedbackMarker?.({
+        kind: "build",
+        point: this.feedbackPointForTarget(target, point),
+        count: selectedUnits.length
+      });
       this.attackMoveMode = false;
       return;
     }
 
     if (this.options.issueRepairOrder(target, selectedUnits)) {
+      this.options.showCommandFeedbackMarker?.({ kind: "move", point, label: "Repair", count: selectedUnits.length });
       this.attackMoveMode = false;
       return;
     }
 
     if (selectedUnits.length === 0) {
-      this.options.setRallyPoint(point, this.options.getSelectedRallyBuildings());
+      const rallyBuildings = this.options.getSelectedRallyBuildings();
+      if (rallyBuildings.length > 0) {
+        this.options.setRallyPoint(point, rallyBuildings);
+      } else {
+        const message =
+          target && target.team !== "player" && target.kind !== "capture-site"
+            ? "Select combat units before issuing an attack."
+            : "Select a unit or rally-capable building first.";
+        this.showCommandMessage(message, point);
+        this.options.showCommandFeedbackMarker?.({ kind: "invalid", point, label: "No Selection" });
+      }
       this.attackMoveMode = false;
       return;
     }
@@ -366,6 +386,11 @@ export class InputSystem {
       `${this.moveOrderVerb(selectedUnits.length)} accepted: ${this.selectionLabel(selectedUnits)}`,
       point
     );
+    this.options.showCommandFeedbackMarker?.({
+      kind: this.attackMoveMode ? "attack-move" : "move",
+      point,
+      count: selectedUnits.length
+    });
     this.attackMoveMode = false;
   }
 
@@ -375,6 +400,14 @@ export class InputSystem {
       count > 0 ? `Patrol accepted: ${count} ${count === 1 ? "unit" : "units"}` : "Patrol needs combat units.",
       point
     );
+    if (count > 0) {
+      this.options.showCommandFeedbackMarker?.({
+        kind: "patrol",
+        point,
+        origin: selectedUnits.find((unit) => unit.alive)?.position,
+        count
+      });
+    }
     this.patrolTargetMode = false;
   }
 
@@ -389,6 +422,7 @@ export class InputSystem {
       `Attack order accepted: ${this.selectionLabel(selectedUnits)} -> ${targetLabel}`,
       target.position
     );
+    this.options.showCommandFeedbackMarker?.({ kind: "attack", point: target.position, label: targetLabel, count: selectedUnits.length });
     return true;
   }
 
@@ -468,7 +502,7 @@ export class InputSystem {
     }
     if (Math.hypot(point.x - start.x, point.y - start.y) > 12) {
       this.options.selection.selectBox(this.rectFromPoints(start, point), additive);
-    } else if (!this.issueAttackOrder(this.options.findWorldEntityAt(point), this.options.getSelectedUnits().filter((unit) => unit.alive))) {
+    } else if (!this.handleClickSelectionOrAttack(point, additive)) {
       this.options.selection.selectAt(point, additive);
     } else {
       this.attackMoveMode = false;
@@ -489,6 +523,23 @@ export class InputSystem {
     this.dragStart = undefined;
     this.dragGraphic.clear();
     this.setCanvasCursor("");
+  }
+
+  private handleClickSelectionOrAttack(point: Position, additive: boolean): boolean {
+    const target = this.options.findWorldEntityAt(point);
+    if (this.issueAttackOrder(target, this.options.getSelectedUnits().filter((unit) => unit.alive))) {
+      return true;
+    }
+    if (!additive && target?.alive && target.team !== "player" && target.kind !== "capture-site") {
+      this.options.selection.inspect(target);
+      this.showCommandMessage(`Inspect: ${this.entityLabel(target)}`, target.position);
+      return true;
+    }
+    return false;
+  }
+
+  private feedbackPointForTarget(target: BaseEntity | undefined, fallback: Position): Position {
+    return target?.position ?? fallback;
   }
 
   private rectFromPoints(a: Position, b: Position): Phaser.Geom.Rectangle {

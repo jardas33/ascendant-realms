@@ -42,12 +42,13 @@ export function renderSelectionSummary(
   const controlGroupSummary = renderControlGroupSummary(controlGroups);
   if (!selectedOne) {
     if (selected.length > 1) {
-      const selectedUnits = selected.filter((entity): entity is Unit => entity instanceof Unit);
+      const selectedUnits = selected.filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player");
       const productionBuildings = selected.filter(
         (entity): entity is Building => entity instanceof Building && entity.isCompleted() && entity.definition.trainOptions.length > 0
       );
       const hiddenCount = Math.max(0, selected.length - 12);
-      return `<p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
+      return `${renderSelectionFocus("Squad selected", `${selected.length} friendly selections`, "Orders apply to the player units in this group.", "player")}
+      <p class="selection-count"><strong>${selected.length} selected</strong><span>Commands apply to this group.</span></p>
       ${selectedUnits.length > 0 ? renderOrderSummary("Current Orders", summarizeUnitOrders(selectedUnits)) : ""}
       ${selectedUnits.length > 0 ? renderGroupRoleSummary(selectedUnits) : ""}
       ${controlGroupSummary}
@@ -67,6 +68,7 @@ export function renderSelectionSummary(
   if (selectedOne instanceof Hero) {
     const order = describeUnitOrder(selectedOne);
     return `
+      ${renderSelectionFocus("Hero selected", "Champion / commander", "Hero abilities and build identity are active from this selection.", "hero")}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(HERO_ROLE_IDENTITY)}
       ${controlGroupSummary}
@@ -91,11 +93,21 @@ export function renderSelectionSummary(
         <span>Elite bonus ${escapeHtml(selectedOne.enemyEliteBonusSummary ?? "Modest enemy bonus")}</span>
         <span>Counterplay ${escapeHtml(selectedOne.enemyEliteCounterplay ?? "Focus fire with a grouped army.")}</span>`
       : "";
+    const isWorker = selectedOne.definition.id === "worker";
+    const focusTitle = selectedOne.team === "enemy" ? "Enemy inspected" : isWorker ? "Worker selected" : "Unit selected";
+    const focusTone = selectedOne.team === "enemy" ? "enemy" : isWorker ? "worker" : "player";
+    const focusDetail =
+      selectedOne.team === "enemy"
+        ? "Read-only target information. Select your army, then right-click to attack."
+        : isWorker
+          ? "Utility unit. Build, repair, capture support, and site assignment are available when valid."
+          : "Combat unit. Move, attack, Patrol, and behaviour commands are available.";
     return `
+      ${renderSelectionFocus(focusTitle, selectedOne.definition.name, focusDetail, focusTone)}
       ${renderOrderSummary(order.label, order.detail, order.tone)}
       ${renderRoleIdentitySummary(roleIdentity)}
       ${controlGroupSummary}
-      ${renderBehaviourControls([selectedOne])}
+      ${selectedOne.team === "player" ? renderBehaviourControls([selectedOne]) : ""}
       <div class="stat-list" data-testid="selected-unit-stats">
         <span>Role ${escapeHtml(roleIdentity.label)}</span>
         <span>Tags ${escapeHtml(formatUnitRoleTags(roleIdentity))}</span>
@@ -127,6 +139,7 @@ export function renderSelectionSummary(
     const assignmentInstruction = siteAssignmentInstruction(selectedOne);
     const status = siteStatusDetail(selectedOne, assignmentInstruction);
     return `
+      ${renderSelectionFocus("Site selected", selectedOne.definition.name, assignmentInstruction, selectedOne.owner === "enemy" ? "enemy" : selectedOne.owner === "player" ? "player" : "neutral")}
       <div class="stat-list" data-testid="selected-resource-site-stats">
         <span>Control ${escapeHtml(ownerLabel)}</span>
         <span>Level ${selectedOne.siteLevel}/${RESOURCE_SITE_MAX_LEVEL}</span>
@@ -150,6 +163,7 @@ export function renderSelectionSummary(
   const hasResearchActions = selectedOne.definition.upgradeOptions.length > 0;
   const showRally = selectedOne.isCompleted() && selectedOne.definition.trainOptions.length > 0;
   return `
+    ${renderSelectionFocus(selectedOne.team === "enemy" ? "Enemy building inspected" : "Building selected", selectedOne.definition.name, selectedOne.team === "enemy" ? "Read-only structure information. Attack with selected forces." : "Building actions and rally state appear in the command tray.", selectedOne.team === "enemy" ? "enemy" : "building")}
     <div class="stat-list">
       <span>HP ${Math.ceil(selectedOne.hp)}/${selectedOne.maxHp}</span>
       <span>Armor ${selectedOne.armor}</span>
@@ -218,6 +232,21 @@ function renderControlGroupSummary(groups: ControlGroupSummary[]): string {
       <strong>Control Groups</strong>
       <span>${groups.map((group) => `${group.slot}:${group.count}`).join(" ")}</span>
       <small>Ctrl+1-5 assigns; 1-5 recalls.</small>
+    </div>
+  `;
+}
+
+function renderSelectionFocus(
+  title: string,
+  detail: string,
+  hint: string,
+  tone: "player" | "hero" | "worker" | "building" | "enemy" | "neutral"
+): string {
+  return `
+    <div class="selection-focus ${tone}" data-testid="selection-focus-summary">
+      <strong>${escapeHtml(title)}</strong>
+      <span>${escapeHtml(detail)}</span>
+      <small>${escapeHtml(hint)}</small>
     </div>
   `;
 }

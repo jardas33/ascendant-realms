@@ -772,6 +772,68 @@
     var(--plate-bg);
 }
 
+.selection-focus {
+  display: grid;
+  gap: 3px;
+  margin-bottom: 8px;
+  padding: 8px 9px;
+  border: 1px solid rgba(216, 222, 199, 0.14);
+  border-left: 4px solid rgba(156, 247, 177, 0.72);
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, rgba(156, 247, 177, 0.13), transparent 44%),
+    var(--plate-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 246, 200, 0.08);
+}
+
+.selection-focus.hero {
+  border-left-color: rgba(184, 239, 255, 0.82);
+  background:
+    linear-gradient(90deg, rgba(116, 211, 242, 0.17), transparent 44%),
+    var(--plate-bg);
+}
+
+.selection-focus.worker {
+  border-left-color: rgba(246, 237, 180, 0.78);
+  background:
+    linear-gradient(90deg, rgba(240, 217, 120, 0.13), transparent 44%),
+    var(--plate-bg);
+}
+
+.selection-focus.building {
+  border-left-color: rgba(174, 230, 215, 0.72);
+}
+
+.selection-focus.enemy {
+  border-left-color: rgba(255, 138, 125, 0.86);
+  background:
+    linear-gradient(90deg, rgba(255, 138, 125, 0.14), transparent 44%),
+    var(--plate-bg);
+}
+
+.selection-focus.neutral {
+  border-left-color: rgba(240, 217, 120, 0.72);
+}
+
+.selection-focus strong {
+  color: #f6edb4;
+  font-size: 12px;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.selection-focus span {
+  color: #eef2df;
+  font-size: 12px;
+  line-height: 1.15;
+}
+
+.selection-focus small {
+  color: #b8c4b3;
+  font-size: 10px;
+  line-height: 1.22;
+}
+
 .selection-count strong {
   color: #f6edb4;
   font-size: 12px;

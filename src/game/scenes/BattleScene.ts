@@ -122,6 +122,11 @@ import { showDamageFeedback } from "../ui/DamageFeedback";
 import { resolveFogCellPresentation } from "../ui/FogPresentation";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
 import {
+  commandFeedbackMarkerPresentation,
+  type CommandFeedbackMarkerEvent,
+  type CommandFeedbackMarkerPresentation
+} from "../ui/CommandFeedbackMarker";
+import {
   advanceTutorialStep,
   createTutorialStepViewModel,
   firstTutorialStepId,
@@ -210,6 +215,9 @@ interface AscendantBattleTestHooks {
   focusLumeSite?: (siteId: string) => boolean;
   setLumeVisibilityMode?: (mode: LumeNetworkVisibilityMode) => boolean;
   finishPrivateDemo?: () => boolean;
+  showCommandFeedbackMarker?: (kind: CommandFeedbackMarkerEvent["kind"], x?: number, y?: number) => number;
+  getCommandFeedbackMarkerCount?: () => number;
+  focusSelectedOrHero?: () => { x: number; y: number; label: string } | null;
 }
 
 interface LumeRenderLinkSnapshot {
@@ -297,6 +305,7 @@ export class BattleScene extends Phaser.Scene {
   private minimapPings: MinimapPing[] = [];
   private nextMinimapPingId = 1;
   private rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
+  private commandFeedbackMarkers = new Set<Phaser.GameObjects.Container>();
   private fogOfWar?: FogOfWarSystem;
   private fogOverlay?: Phaser.GameObjects.Graphics;
   private neutralCampLabels: NeutralCampLabel[] = [];
@@ -459,6 +468,7 @@ export class BattleScene extends Phaser.Scene {
     this.nextMinimapPingId = 1;
     this.rallyMarkers.forEach((marker) => marker.destroy(true));
     this.rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
+    this.clearCommandFeedbackMarkers();
     this.resourceSiteWarningCooldowns = new Map<string, number>();
     this.trackedEnemyWaves = [];
     this.nextEnemyWaveId = 1;
@@ -529,6 +539,7 @@ export class BattleScene extends Phaser.Scene {
       setRallyPoint: (point, buildings) => this.setRallyPoint(point, buildings),
       findWorldEntityAt: (point) => this.findWorldEntityAt(point),
       centerCameraFromMinimap: (normalizedX, normalizedY) => this.centerCameraFromMinimap(normalizedX, normalizedY),
+      showCommandFeedbackMarker: (event) => this.showCommandFeedbackMarker(event),
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
       refreshHud: () => this.refreshBattleHud(0),
       advanceTutorialStep: () => this.advanceTutorialStep(),
@@ -799,6 +810,7 @@ export class BattleScene extends Phaser.Scene {
       this.updateRallyMarker(building);
       this.showRallyLine(building, assignment.rallyPoint);
     });
+    this.showCommandFeedbackMarker({ kind: "rally", point: assignment.rallyPoint, count: assignment.updatedCount });
     this.addMinimapPing(assignment.rallyPoint.x, assignment.rallyPoint.y, "#9cf7b1", "Rally point set");
     this.showMessage(
       assignment.updatedCount === 1 ? "Rally point set" : `Rally point set for ${assignment.updatedCount} buildings`,
@@ -839,6 +851,141 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
+  private showCommandFeedbackMarker(event: CommandFeedbackMarkerEvent): void {
+    if (this.commandFeedbackMarkers.size >= 18) {
+      const [oldest] = this.commandFeedbackMarkers;
+      oldest?.destroy(true);
+      if (oldest) {
+        this.commandFeedbackMarkers.delete(oldest);
+      }
+    }
+
+    const presentation = commandFeedbackMarkerPresentation(event, {
+      reducedMotion: this.settings.reducedMotionEnabled
+    });
+    const marker = this.add.container(event.point.x, event.point.y).setDepth(88).setAlpha(0.96).setName(`command-feedback-${event.kind}`);
+    const graphics = this.add.graphics();
+    this.drawCommandFeedbackMarker(graphics, presentation, event);
+    marker.add(graphics);
+
+    const label = this.add
+      .text(0, -presentation.radius - 20, presentation.label, {
+        fontFamily: "Verdana, Arial, sans-serif",
+        fontSize: "10px",
+        color: presentation.textColor,
+        backgroundColor: "#08100c",
+        stroke: "#101511",
+        strokeThickness: 3
+      })
+      .setOrigin(0.5)
+      .setPadding(5, 2, 5, 2);
+    marker.add(label);
+    this.commandFeedbackMarkers.add(marker);
+
+    let destroyed = false;
+    const destroyMarker = () => {
+      if (destroyed) {
+        return;
+      }
+      destroyed = true;
+      this.commandFeedbackMarkers.delete(marker);
+      marker.destroy(true);
+    };
+
+    if (this.settings.reducedMotionEnabled) {
+      this.time.delayedCall(presentation.durationMs, destroyMarker);
+      globalThis.setTimeout(destroyMarker, presentation.durationMs + 100);
+      return;
+    }
+
+    this.tweens.add({
+      targets: marker,
+      alpha: 0,
+      scale: 1.14,
+      duration: presentation.durationMs,
+      ease: "Sine.easeOut",
+      onComplete: destroyMarker
+    });
+    globalThis.setTimeout(destroyMarker, presentation.durationMs + 350);
+  }
+
+  private drawCommandFeedbackMarker(
+    graphics: Phaser.GameObjects.Graphics,
+    presentation: CommandFeedbackMarkerPresentation,
+    event: CommandFeedbackMarkerEvent
+  ): void {
+    const radius = presentation.radius;
+    graphics.lineStyle(presentation.strokeWidth, presentation.strokeColor, 0.92);
+    graphics.fillStyle(presentation.fillColor, 0.18);
+
+    if (event.origin) {
+      graphics.lineStyle(2, presentation.strokeColor, 0.62);
+      graphics.lineBetween(event.origin.x - event.point.x, event.origin.y - event.point.y, 0, 0);
+      graphics.fillStyle(presentation.strokeColor, 0.72);
+      graphics.fillCircle(event.origin.x - event.point.x, event.origin.y - event.point.y, 4);
+      graphics.lineStyle(presentation.strokeWidth, presentation.strokeColor, 0.92);
+      graphics.fillStyle(presentation.fillColor, 0.18);
+    }
+
+    switch (presentation.shape) {
+      case "cross":
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(-radius * 0.58, -radius * 0.58, radius * 0.58, radius * 0.58);
+        graphics.lineBetween(-radius * 0.58, radius * 0.58, radius * 0.58, -radius * 0.58);
+        break;
+      case "hostile":
+        graphics.fillCircle(0, 0, radius);
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(-radius - 5, 0, radius + 5, 0);
+        graphics.lineBetween(0, -radius - 5, 0, radius + 5);
+        break;
+      case "route":
+        graphics.fillCircle(0, 0, radius * 0.58);
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(-radius * 0.72, radius * 0.58, radius * 0.72, radius * 0.58);
+        break;
+      case "banner":
+        graphics.fillCircle(0, 0, radius * 0.56);
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(0, 0, 0, -radius * 1.35);
+        graphics.fillTriangle(1, -radius * 1.35, radius * 0.95, -radius * 1.08, 1, -radius * 0.8);
+        break;
+      case "square":
+        graphics.fillRect(-radius, -radius, radius * 2, radius * 2);
+        graphics.strokeRect(-radius, -radius, radius * 2, radius * 2);
+        graphics.lineBetween(-radius * 0.55, 0, radius * 0.55, 0);
+        graphics.lineBetween(0, -radius * 0.55, 0, radius * 0.55);
+        break;
+      case "spark":
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(-radius, 0, radius, 0);
+        graphics.lineBetween(0, -radius, 0, radius);
+        graphics.lineBetween(-radius * 0.62, -radius * 0.62, radius * 0.62, radius * 0.62);
+        graphics.lineBetween(-radius * 0.62, radius * 0.62, radius * 0.62, -radius * 0.62);
+        break;
+      case "focus":
+        graphics.strokeCircle(0, 0, radius);
+        graphics.strokeCircle(0, 0, radius * 0.48);
+        graphics.lineBetween(-radius - 4, 0, -radius * 0.45, 0);
+        graphics.lineBetween(radius * 0.45, 0, radius + 4, 0);
+        graphics.lineBetween(0, -radius - 4, 0, -radius * 0.45);
+        graphics.lineBetween(0, radius * 0.45, 0, radius + 4);
+        break;
+      case "ring":
+      default:
+        graphics.fillCircle(0, 0, radius * 0.7);
+        graphics.strokeCircle(0, 0, radius);
+        graphics.lineBetween(-radius * 0.5, 0, radius * 0.5, 0);
+        graphics.lineBetween(0, -radius * 0.5, 0, radius * 0.5);
+        break;
+    }
+  }
+
+  private clearCommandFeedbackMarkers(): void {
+    this.commandFeedbackMarkers.forEach((marker) => marker.destroy(true));
+    this.commandFeedbackMarkers.clear();
+  }
+
   private findWorldEntityAt(point: Position): BaseEntity | undefined {
     const visibleCombatEntities = [...this.units, ...this.buildings].filter(
       (entity) => entity.team === "player" || this.isPointVisibleToPlayer(entity.position)
@@ -876,10 +1023,14 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private centerCameraFromMinimap(normalizedX: number, normalizedY: number): void {
-    this.cameraSystem.centerOn({
+    const point = {
       x: Phaser.Math.Clamp(normalizedX, 0, 1) * this.activeMap.width,
       y: Phaser.Math.Clamp(normalizedY, 0, 1) * this.activeMap.height
-    });
+    };
+    this.cameraSystem.centerOn(point);
+    this.addMinimapPing(point.x, point.y, "#74d3f2", "Camera focus");
+    this.showCommandFeedbackMarker({ kind: "focus", point, label: "Map Focus" });
+    this.showMessage("Camera focus updated.", point.x, point.y - 42, "#74d3f2", { priority: "command" });
   }
 
   private isPrivateLumeDemo(): boolean {
@@ -897,6 +1048,7 @@ export class BattleScene extends Phaser.Scene {
     }
     this.cameraSystem.centerOn(site.position);
     this.addMinimapPing(site.position.x, site.position.y, "#74d3f2", site.definition.name);
+    this.showCommandFeedbackMarker({ kind: "focus", point: site.position, label: "Lume Focus" });
     this.showMessage(`Focus: ${site.definition.name}`, site.position.x, site.position.y - 86, "#74d3f2", {
       priority: "command"
     });
@@ -2431,7 +2583,25 @@ export class BattleScene extends Phaser.Scene {
       },
       focusLumeSite: (siteId: string) => this.focusLumeSite(siteId),
       setLumeVisibilityMode: (mode: LumeNetworkVisibilityMode) => this.setLumeVisibilityMode(mode),
-      finishPrivateDemo: () => this.finishPrivateDemo()
+      finishPrivateDemo: () => this.finishPrivateDemo(),
+      showCommandFeedbackMarker: (kind, x = this.hero.position.x, y = this.hero.position.y) => {
+        this.showCommandFeedbackMarker({ kind, point: { x, y } });
+        return this.commandFeedbackMarkers.size;
+      },
+      getCommandFeedbackMarkerCount: () => this.commandFeedbackMarkers.size,
+      focusSelectedOrHero: () => {
+        const focus = this.selectionSystem.getSelected().find((entity) => entity.alive) ?? (this.hero.alive ? this.hero : undefined);
+        if (!focus) {
+          return null;
+        }
+        this.cameraSystem.centerOn(focus.position);
+        this.showCommandFeedbackMarker({ kind: "focus", point: focus.position });
+        return {
+          x: focus.position.x,
+          y: focus.position.y,
+          label: focus instanceof Unit || focus instanceof Building || focus instanceof CaptureSite ? focus.definition.name : "selection"
+        };
+      }
     };
   }
 
@@ -2452,6 +2622,9 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.focusLumeSite;
     delete target.__ASCENDANT_TEST_HOOKS__.setLumeVisibilityMode;
     delete target.__ASCENDANT_TEST_HOOKS__.finishPrivateDemo;
+    delete target.__ASCENDANT_TEST_HOOKS__.showCommandFeedbackMarker;
+    delete target.__ASCENDANT_TEST_HOOKS__.getCommandFeedbackMarkerCount;
+    delete target.__ASCENDANT_TEST_HOOKS__.focusSelectedOrHero;
   }
 
   private cleanup(): void {
@@ -2461,6 +2634,7 @@ export class BattleScene extends Phaser.Scene {
     this.buildingSystem?.cancelPlacement();
     this.rallyMarkers.forEach((marker) => marker.destroy(true));
     this.rallyMarkers.clear();
+    this.clearCommandFeedbackMarkers();
     this.neutralCampLabels.forEach((entry) => entry.label.destroy());
     this.neutralCampLabels = [];
     this.lumeLinkGraphics?.destroy();

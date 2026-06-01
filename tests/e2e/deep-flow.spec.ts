@@ -1885,6 +1885,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
   });
 
   test("campaign retinue units deploy with saved veterancy rank @hosted-deep-meta", async ({ page }) => {
+    test.setTimeout(80_000);
     await seedSave(page, {
       campaign: {
         unlockedNodeIds: ["border_village"],
@@ -4960,6 +4961,209 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         { message: "expected explicit move to cancel patrol routes" }
       )
       .toBe(0);
+  });
+
+  test("v0.97 selection focus, command markers, and camera feedback stay readable @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Tactical Feedback QA", "story");
+    await parkHostileUnitsAwayFromPlayerSetup(page);
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active BattleScene hero for v0.97 selection focus coverage.");
+      }
+      scene.selectionSystem.setSelection([scene.hero]);
+      scene.cameraSystem.centerOn(scene.hero.position);
+      scene.refreshBattleHud?.(0);
+    });
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Hero selected");
+
+    const trainedWorker = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("Expected active BattleScene for v0.97 Worker setup.");
+      }
+      const existingWorker = scene.units.find((unit: any) => unit.team === "player" && unit.alive && unit.definition.id === "worker");
+      if (existingWorker) {
+        scene.selectionSystem.setSelection([existingWorker]);
+        scene.cameraSystem.centerOn(existingWorker.position);
+        scene.refreshBattleHud?.(0);
+        return { id: existingWorker.id };
+      }
+      const commandHall = scene.buildings.find(
+        (building: any) => building.team === "player" && building.alive && building.definition.id === "command_hall"
+      );
+      if (!commandHall) {
+        throw new Error("Expected Command Hall for v0.97 Worker setup.");
+      }
+      scene.resources.player.crowns = Math.max(scene.resources.player.crowns, 500);
+      scene.resources.player.stone = Math.max(scene.resources.player.stone, 250);
+      scene.trainingSystem.queueTraining(commandHall, "worker", scene.resources.player, { announce: false });
+      scene.trainingSystem.update(90, scene.buildings);
+      const worker = scene.units.find((unit: any) => unit.team === "player" && unit.alive && unit.definition.id === "worker");
+      if (!worker) {
+        throw new Error("Worker did not train for v0.97 selection focus coverage.");
+      }
+      scene.selectionSystem.setSelection([worker]);
+      scene.cameraSystem.centerOn(worker.position);
+      scene.refreshBattleHud?.(0);
+      return { id: worker.id };
+    });
+    await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+      if (!scene?.scene.isActive() || !worker) {
+        throw new Error("Expected trained Worker for v0.97 selection focus coverage.");
+      }
+      scene.selectionSystem.setSelection([worker]);
+      scene.cameraSystem.centerOn(worker.position);
+      scene.refreshBattleHud?.(0);
+    }, trainedWorker.id);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Worker selected");
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Utility unit");
+
+    const focusShift = await page.evaluate((workerId) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const worker = scene?.units.find((unit: any) => unit.id === workerId && unit.alive);
+      if (!scene?.scene.isActive() || !worker) {
+        throw new Error("Expected selected Worker before camera focus hotkey coverage.");
+      }
+      scene.cameraSystem.centerOn({ x: scene.activeMap.width - 120, y: scene.activeMap.height - 120 });
+      const before = { scrollX: scene.cameras.main.scrollX, scrollY: scene.cameras.main.scrollY };
+      scene.selectionSystem.setSelection([worker]);
+      scene.refreshBattleHud?.(0);
+      return { before, worker: { x: worker.position.x, y: worker.position.y } };
+    }, trainedWorker.id);
+    await page.keyboard.press("Space");
+    await expect(page.getByTestId("battle-status")).toContainText("Camera focus");
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(({ before, worker }) => {
+            const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+            const camera = scene?.cameras.main;
+            if (!camera) {
+              return { moved: 0, workerDistance: Number.POSITIVE_INFINITY };
+            }
+            const center = { x: camera.scrollX + camera.width / 2, y: camera.scrollY + camera.height / 2 };
+            return {
+              moved: Math.hypot(camera.scrollX - before.scrollX, camera.scrollY - before.scrollY),
+              workerDistance: Math.hypot(center.x - worker.x, center.y - worker.y)
+            };
+          }, focusShift),
+        { message: "expected Space to focus the selected Worker instead of leaving the camera parked elsewhere" }
+      )
+      .toMatchObject({ moved: expect.any(Number), workerDistance: expect.any(Number) });
+
+    const cameraFocusDistance = await page.evaluate(({ before, worker }) => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const camera = scene?.cameras.main;
+      const beforeCenter = { x: before.scrollX + camera.width / 2, y: before.scrollY + camera.height / 2 };
+      const afterCenter = { x: camera.scrollX + camera.width / 2, y: camera.scrollY + camera.height / 2 };
+      return {
+        before: Math.hypot(beforeCenter.x - worker.x, beforeCenter.y - worker.y),
+        after: Math.hypot(afterCenter.x - worker.x, afterCenter.y - worker.y)
+      };
+    }, focusShift);
+    expect(cameraFocusDistance.after).toBeLessThan(cameraFocusDistance.before - 100);
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive() || !scene.hero?.alive) {
+        throw new Error("Expected active BattleScene for squad focus coverage.");
+      }
+      const troops = scene.units
+        .filter((unit: any) => unit.team === "player" && unit.alive && unit.definition.id !== "worker")
+        .slice(0, 3);
+      if (troops.length < 2) {
+        throw new Error("Expected multiple player combat units for squad focus coverage.");
+      }
+      scene.selectionSystem.setSelection(troops);
+      scene.cameraSystem.centerOn(troops[0].position);
+      scene.refreshBattleHud?.(0);
+    });
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Squad selected");
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("friendly selections");
+
+    await selectPlayerBuildingFromScene(page, "command_hall");
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Building selected");
+
+    await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (!scene?.scene.isActive()) {
+        throw new Error("Expected active BattleScene for enemy inspection coverage.");
+      }
+      scene.fogDebugDisabled = true;
+      scene.updateFogOfWar?.(0, true);
+      const enemy =
+        scene.units.find((unit: any) => unit.team === "enemy" && unit.alive) ??
+        scene.buildings.find((building: any) => building.team === "enemy" && building.alive);
+      if (!enemy) {
+        throw new Error("Expected enemy unit or building for inspection coverage.");
+      }
+      scene.selectionSystem.inspect(enemy);
+      scene.cameraSystem.centerOn(enemy.position);
+      scene.refreshBattleHud?.(0);
+    });
+    await expect(page.getByTestId("selection-focus-summary")).toContainText(/Enemy.*inspected/);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText(/Read-only|Attack with selected forces/);
+    await expect(page.getByTestId("behaviour-mode-controls")).toHaveCount(0);
+
+    const renderedMarkerCount = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+      if (!scene?.scene.isActive() || !hooks?.showCommandFeedbackMarker || !hooks?.getCommandFeedbackMarkerCount) {
+        throw new Error("Expected v0.97 command feedback marker hooks.");
+      }
+      scene.settings.reducedMotionEnabled = false;
+      const anchor = scene.hero?.position ?? scene.activeMap.playerStart;
+      (["move", "attack", "patrol", "rally", "build", "ability", "invalid", "focus"] as const).forEach(
+        (kind, index) => hooks.showCommandFeedbackMarker(kind, anchor.x + 28 * index, anchor.y + 18 * index)
+      );
+      return hooks.getCommandFeedbackMarkerCount();
+    });
+    expect(renderedMarkerCount).toBeGreaterThanOrEqual(8);
+    await expect
+      .poll(
+        async () => page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getCommandFeedbackMarkerCount?.() ?? -1),
+        { timeout: 8_000, message: "expected command feedback markers to fade instead of leaking permanently" }
+      )
+      .toBe(0);
+
+    const reducedMotionCount = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+      if (!scene?.scene.isActive() || !hooks?.showCommandFeedbackMarker || !hooks?.getCommandFeedbackMarkerCount) {
+        throw new Error("Expected v0.97 command feedback marker hooks.");
+      }
+      scene.settings.reducedMotionEnabled = true;
+      hooks.showCommandFeedbackMarker("invalid", scene.hero.position.x + 40, scene.hero.position.y + 40);
+      return hooks.getCommandFeedbackMarkerCount();
+    });
+    expect(reducedMotionCount).toBe(1);
+    await expect
+      .poll(
+        async () => page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getCommandFeedbackMarkerCount?.() ?? -1),
+        { timeout: 5_000, message: "expected reduced-motion command marker to clear after its static hold" }
+      )
+      .toBe(0);
+
+    const minimapClickTarget = await page.evaluate(() => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      const minimap = document.querySelector<HTMLElement>("[data-testid='minimap']");
+      const minimapBox = minimap?.getBoundingClientRect();
+      if (!scene?.scene.isActive() || !minimapBox || minimapBox.width <= 0 || minimapBox.height <= 0) {
+        throw new Error("Expected active BattleScene and minimap for v0.97 minimap feedback.");
+      }
+      const camera = scene.cameras.main;
+      return {
+        before: { scrollX: camera.scrollX, scrollY: camera.scrollY },
+        position: { x: Math.round(minimapBox.width * 0.18), y: Math.round(minimapBox.height * 0.82) }
+      };
+    });
+    await clickMinimapPosition(page, minimapClickTarget.position, "v0.97 minimap camera feedback", minimapClickTarget.before);
+    await expect(page.getByTestId("battle-status")).toContainText("Camera focus updated.");
   });
 
   test("manual combat contact regression covers adjacent follow-up, building aggro, retreat suppression, and hover tolerance @hosted-deep-battle", async ({

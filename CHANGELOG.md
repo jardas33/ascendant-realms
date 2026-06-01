@@ -1,5 +1,45 @@
 # Changelog
 
+# v0.97 Camera Selection Orders And Tactical Feedback Polish - 2026-06-01
+
+This checkpoint improves controls readability and tactical feedback only. It adds clearer selection focus, read-only enemy inspection, short-lived command markers, camera focus/minimap confirmations, compact command-panel details, package metadata, and visual-QA coverage. It does not add gameplay systems, change unit stats, alter combat balance, change pathing rules, change saves, rename stable IDs, add maps/factions/art/assets, start desktop work, or start v0.98.
+
+Added:
+
+- `src/game/ui/CommandFeedbackMarker.ts`.
+- `src/game/ui/CommandFeedbackMarker.test.ts`.
+- `src/game/systems/CameraBounds.ts`.
+- `src/game/systems/CameraSystem.test.ts`.
+- `docs/V097_SELECTION_FEEDBACK_SPEC.md`.
+- `docs/V097_COMMAND_MARKER_SPEC.md`.
+- `docs/V097_CAMERA_USABILITY_REPORT.md`.
+- `docs/V097_COMMAND_PANEL_FOLLOWUP_REPORT.md`.
+- `docs/V097_VISUAL_QA_REPORT.md`.
+- `docs/V097_IMPLEMENTATION_REPORT.md`.
+- `docs/V097_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Existing move, attack-move, attack target, Patrol, rally, build, ability, invalid, and focus flows can emit brief procedural command markers.
+- Reduced-motion users get readable command feedback without animated flourish.
+- Selected hero, Worker, squad, combat unit, building, resource site, and enemy inspection states now show a concise selection focus card.
+- Enemy inspection is read-only and does not expose friendly behavior controls.
+- Space focuses the selected entity before falling back to Aster.
+- Minimap and focus actions now show concise confirmation copy and a brief focus marker.
+- Camera center/scroll clamping now uses a shared pure helper.
+- Command-panel secondary explanations sit behind `More Details`.
+- Visual QA now includes 118 screenshots after adding the v0.97 selection/command/camera states.
+- Package generation and validation now require/copy the v0.97 docs and report the v0.97 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, replay rules, Tutorial safety, rewards, XP, combat stats, balance values, pathing rules, maps, factions, art assets, imported assets, generated images, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 97 files / 696 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 30 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, `npm run visual:qa` with 13 tests / 118 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 118 screenshots / 7 contact sheets.
+- Non-pass evidence documented before closeout: full local release exceeded the 60-minute local tool timeout with no pass/fail output; a later shard1 attempt reported three older deep-flow startup/timeout failures, and exact reruns of those three tests passed.
+
 # v0.96 First-Time Player Onboarding And Tutorial UX Rescue - 2026-06-01
 
 This checkpoint improves first-session presentation only. It rescues the playable Tutorial sequence, one-action guidance copy, compact More Help, Focus Objective, Dismiss/Reopen, shared help surfaces, Salto first-step guidance, package metadata, and visual-QA coverage. It does not add gameplay, change rewards, alter saves, rename stable IDs, change campaign progression, broaden Lume rules, add maps/factions/races/art/assets, change balance, or start v0.97.

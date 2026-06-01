@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 110;
+const EXPECTED_SCREENSHOT_COUNT = 118;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -603,6 +603,63 @@ async function selectUnitTypeForVisualQa(page: Page, unitId: string, team: "play
     { unitId, team }
   );
   await expect(page.getByTestId("selection-side-panel")).toBeVisible();
+}
+
+async function selectEnemyForV097Inspection(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    if (!scene?.scene.isActive()) {
+      throw new Error("BattleScene is not active.");
+    }
+    scene.fogDebugDisabled = true;
+    scene.updateFogOfWar?.(0, true);
+    const enemy = scene.units.find((unit: any) => unit.team === "enemy" && unit.alive);
+    if (!enemy) {
+      throw new Error("Missing enemy unit for v0.97 inspection visual QA.");
+    }
+    scene.selectionSystem.inspect(enemy);
+    scene.cameraSystem.centerOn(enemy.position);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect(page.getByTestId("selection-focus-summary")).toContainText("Enemy inspected");
+}
+
+async function stageV097CommandMarkers(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+    if (!scene?.scene.isActive() || !scene.hero?.alive || !hooks?.showCommandFeedbackMarker) {
+      throw new Error("Missing v0.97 command marker hook for visual QA.");
+    }
+    scene.settings.reducedMotionEnabled = false;
+    scene.cameraSystem.centerOn(scene.hero.position);
+    const anchor = scene.hero.position;
+    const markerKinds = ["move", "attack", "patrol", "rally", "build", "ability", "invalid", "focus"];
+    markerKinds.forEach((kind, index) => {
+      hooks.showCommandFeedbackMarker(kind, anchor.x - 130 + index * 36, anchor.y - 70 + (index % 3) * 36);
+    });
+    scene.refreshBattleHud?.(0);
+  });
+  await expect
+    .poll(async () => page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getCommandFeedbackMarkerCount?.() ?? 0))
+    .toBeGreaterThan(0);
+}
+
+async function stageV097ReducedMotionMarker(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+    const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+    if (!scene?.scene.isActive() || !scene.hero?.alive || !hooks?.showCommandFeedbackMarker) {
+      throw new Error("Missing v0.97 command marker hook for reduced-motion visual QA.");
+    }
+    scene.settings.reducedMotionEnabled = true;
+    scene.cameraSystem.centerOn(scene.hero.position);
+    hooks.showCommandFeedbackMarker("invalid", scene.hero.position.x + 64, scene.hero.position.y + 18);
+    scene.refreshBattleHud?.(0);
+  });
+  await expect
+    .poll(async () => page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getCommandFeedbackMarkerCount?.() ?? 0))
+    .toBe(1);
 }
 
 async function stageCaptureSiteVisualState(
@@ -1661,6 +1718,118 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v095-lume-always-1366.png",
       LAPTOP,
       "Lume Always mode remains a deliberate review posture while terrain and labels stay legible."
+    );
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.97 selection, command marker, and camera feedback polish", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v097-tactical-feedback-polish";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v097 Battle");
+    await page.getByTestId("campaign-start-node").click();
+    await expectBattleHudAcceptance(page, `${group} battle start`);
+
+    await selectHeroForVisualQa(page);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Hero selected");
+    await captureView(
+      page,
+      group,
+      "v0.97 selected hero focus",
+      "v097-selected-hero-focus-1920.png",
+      FULL_HD,
+      "Hero selection has a distinct champion focus card and concise order summary."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await trainAndSelectWorkerForVisualQa(page);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Worker selected");
+    await captureView(
+      page,
+      group,
+      "v0.97 selected Worker focus",
+      "v097-selected-worker-focus-1600.png",
+      WIDE_DESKTOP,
+      "Worker selection emphasizes utility commands without turning into a prose wall."
+    );
+
+    await useViewport(page, LAPTOP);
+    await selectFirstPlayerArmy(page);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Squad selected");
+    await captureView(
+      page,
+      group,
+      "v0.97 selected squad focus",
+      "v097-selected-squad-focus-1366.png",
+      LAPTOP,
+      "Multi-unit selection shows group count, roles, and current orders in a compact 1366x768 HUD."
+    );
+
+    await useViewport(page, FULL_HD);
+    await selectCommandHall(page);
+    await expect(page.getByTestId("selection-focus-summary")).toContainText("Building selected");
+    await captureView(
+      page,
+      group,
+      "v0.97 selected building focus",
+      "v097-selected-building-focus-1920.png",
+      FULL_HD,
+      "Building selection uses a distinct focus card and keeps production/rally actions readable."
+    );
+
+    await useViewport(page, LAPTOP);
+    await selectEnemyForV097Inspection(page);
+    await captureView(
+      page,
+      group,
+      "v0.97 enemy inspection focus",
+      "v097-enemy-inspection-focus-1366.png",
+      LAPTOP,
+      "Enemy inspection reads as read-only target information and does not expose player behaviour controls."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await stageV097CommandMarkers(page);
+    await captureView(
+      page,
+      group,
+      "v0.97 command marker set",
+      "v097-command-markers-1600.png",
+      WIDE_DESKTOP,
+      "Move, attack, Patrol, rally, build, ability, invalid, and focus markers are short-lived procedural canvas marks."
+    );
+
+    await useViewport(page, LAPTOP);
+    await stageV097ReducedMotionMarker(page);
+    await captureView(
+      page,
+      group,
+      "v0.97 reduced-motion invalid marker",
+      "v097-reduced-motion-invalid-marker-1366.png",
+      LAPTOP,
+      "Reduced-motion command feedback uses a static brief hold instead of animated flourish."
+    );
+
+    await page.evaluate(() => {
+      const scene: any = (window as any).ascendantRealmsGame?.scene.getScene("BattleScene");
+      if (scene?.settings) {
+        scene.settings.reducedMotionEnabled = false;
+      }
+    });
+    await useViewport(page, WIDE_DESKTOP);
+    await selectCommandHall(page);
+    await page.locator(".command-tray .command-details summary").first().click();
+    await expect(page.locator(".command-tray .command-details[open]").first()).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "v0.97 command details disclosure",
+      "v097-command-details-disclosure-1600.png",
+      WIDE_DESKTOP,
+      "Command panel keeps compact labels first while More Details carries longer command explanation."
     );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);

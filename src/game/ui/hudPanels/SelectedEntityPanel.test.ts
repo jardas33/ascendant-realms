@@ -42,6 +42,8 @@ describe("SelectedEntityPanel", () => {
 
     const markup = renderSelectionSummary(militia, [militia]);
 
+    expect(markup).toContain('data-testid="selection-focus-summary"');
+    expect(markup).toContain("Unit selected");
     expect(markup).toContain('data-testid="selected-role-summary"');
     expect(markup).toContain("Frontline / Melee");
     expect(markup).toContain("Put Militia in front");
@@ -63,10 +65,22 @@ describe("SelectedEntityPanel", () => {
 
     const markup = renderSelectionSummary(raider, [raider]);
 
+    expect(markup).toContain("Enemy inspected");
+    expect(markup).toContain("Read-only target information");
     expect(markup).toContain("Enemy Pressure / Melee");
     expect(markup).toContain("Elite Ash Raider Vanguard");
     expect(markup).toContain("Elite bonus +8% HP, +6% damage");
     expect(markup).toContain("Counterplay Screen with Militia");
+    expect(markup).not.toContain('data-testid="behaviour-mode-panel"');
+  });
+
+  it("distinguishes selected Workers as utility units", () => {
+    const worker = fakeUnit("player-worker", "Worker", "guard_area", { unitId: "worker" });
+
+    const markup = renderSelectionSummary(worker, [worker]);
+
+    expect(markup).toContain("Worker selected");
+    expect(markup).toContain("Utility unit");
   });
 
   it("summarizes selected group roles and ranked members", () => {

@@ -23,7 +23,7 @@ import {
 import type { HUDSnapshot } from "./HudTypes";
 
 export function renderCommandActions(selectedOne: UnitDefinitionOwner | undefined, snapshot: HUDSnapshot): string {
-  const selectedUnits = snapshot.selected.filter((entity): entity is Unit => entity instanceof Unit);
+  const selectedUnits = snapshot.selected.filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player");
   const tacticsButtons = renderTacticsButtons(selectedUnits);
   const reinforcementButton = renderRetinueReinforcementButton(snapshot);
   if (!selectedOne) {
@@ -356,7 +356,7 @@ function renderCommandButton(options: {
       ${
         hasDetails
           ? `<details id="${detailsId}" class="command-details">
-              <summary aria-label="Show command details for ${escapeHtml(options.verb)} ${escapeHtml(options.name)}">Details</summary>
+              <summary aria-label="Show command details for ${escapeHtml(options.verb)} ${escapeHtml(options.name)}">More Details</summary>
               ${options.description ? `<small class="command-details-description">${escapeHtml(options.description)}</small>` : ""}
               ${options.effect ? `<small class="command-details-effect">${escapeHtml(options.effect)}</small>` : ""}
             </details>`

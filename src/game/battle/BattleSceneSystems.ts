@@ -48,6 +48,7 @@ import { XPSystem } from "../systems/XPSystem";
 import { FloatingText } from "../ui/FloatingText";
 import { showDamageFeedback } from "../ui/DamageFeedback";
 import { HUD } from "../ui/HUD";
+import type { CommandFeedbackMarkerEvent } from "../ui/CommandFeedbackMarker";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
 import type { BattleStatusOptions } from "./BattleStatusPriority";
@@ -100,6 +101,7 @@ interface CreateBattleSceneSystemsOptions {
   setRallyPoint: (point: Position, buildings: Building[]) => boolean;
   findWorldEntityAt: (point: Position) => BaseEntity | undefined;
   centerCameraFromMinimap: (normalizedX: number, normalizedY: number) => void;
+  showCommandFeedbackMarker?: (event: CommandFeedbackMarkerEvent) => void;
   castAbilitySlot: (slot: number) => void;
   refreshHud: () => void;
   advanceTutorialStep: () => void;
@@ -157,6 +159,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     setRallyPoint,
     findWorldEntityAt,
     centerCameraFromMinimap,
+    showCommandFeedbackMarker,
     castAbilitySlot,
     refreshHud,
     advanceTutorialStep,
@@ -475,6 +478,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       onAbility: (abilityId) => {
         if (abilitySystem.castAbility(hero, abilityId, selectionSystem.getSelected())) {
           AudioManager.play("ability_cast");
+          showCommandFeedbackMarker?.({ kind: "ability", point: hero.position });
           refreshHud();
         }
       },
@@ -494,7 +498,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       onStopCommand: () => {
         const selectedUnits = selectionSystem
           .getSelected()
-          .filter((entity): entity is Unit => entity instanceof Unit && isPatrolEligibleUnit(entity));
+          .filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player" && isPatrolEligibleUnit(entity));
         selectedUnits.forEach((unit) => unit.commandStop());
         if (selectedUnits.length > 0) {
           showMessage(
@@ -557,7 +561,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       buildingSystem.cancelPlacement();
       showMessage("Building placement cancelled", undefined, undefined, undefined, { priority: "command" });
     },
-    getSelectedUnits: () => selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit),
+    getSelectedUnits: () =>
+      selectionSystem.getSelected().filter((entity): entity is Unit => entity instanceof Unit && entity.team === "player"),
     getSelectedRallyBuildings: selectedRallyBuildings,
     setRallyPoint,
     issueConstructionOrder: (target, selectedUnits) => buildingSystem.issueConstructionOrder(target, selectedUnits),
@@ -597,9 +602,20 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         refreshHud();
       }
     },
-    centerOnHero: () => cameraSystem.centerOn(hero.position),
+    focusSelectionOrHero: () => {
+      const focus = selectionSystem.getSelected().find((entity) => entity.alive) ?? (hero.alive ? hero : undefined);
+      if (!focus) {
+        showMessage("Camera focus target unavailable.", undefined, undefined, "#ffd27a", { priority: "command" });
+        return;
+      }
+      cameraSystem.centerOn(focus.position);
+      showCommandFeedbackMarker?.({ kind: "focus", point: focus.position, label: focus instanceof Unit || focus instanceof Building ? focus.definition.name : "Focus" });
+      const label = focus instanceof Unit || focus instanceof Building || focus instanceof CaptureSite ? focus.definition.name : "selection";
+      showMessage(`Camera focus: ${label}`, focus.position.x, focus.position.y - 56, "#74d3f2", { priority: "command" });
+    },
     castAbilitySlot,
     toggleFogDebug,
+    showCommandFeedbackMarker,
     showMessage: (message, x, y, color, options) => showMessage(message, x, y, color, options)
   });
 

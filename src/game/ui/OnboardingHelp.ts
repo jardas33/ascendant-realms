@@ -11,10 +11,10 @@ interface HelpGroup {
 }
 
 const CORE_HELP_GROUPS: HelpGroup[] = [
-  { title: "Camera", copy: "Pan with WASD or arrow keys. Space centers the hero." },
+  { title: "Camera", copy: "Pan with WASD or arrow keys. Space focuses the selection, or the hero if nothing is selected." },
   { title: "Selection", copy: "Click units or drag a box. H selects the hero." },
-  { title: "Movement", copy: "Right-click clear ground to move selected friendly units." },
-  { title: "Combat", copy: "Right-click enemies to attack. Group units before pushing." },
+  { title: "Movement", copy: "Right-click clear ground to move selected friendly units; a brief marker confirms the order." },
+  { title: "Combat", copy: "Right-click enemies to attack. Enemy inspection is read-only until you select your army." },
   { title: "Workers And Sites", copy: "Capture sites first, then assign Workers for stronger income." },
   { title: "Construction And Training", copy: "Command Hall trains Workers. Workers build. Barracks trains army." },
   { title: "Control Groups", copy: "Ctrl+1 through Ctrl+5 assigns; 1 through 5 recalls." },

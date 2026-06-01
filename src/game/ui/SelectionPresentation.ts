@@ -27,6 +27,15 @@ export function resolveSelectionRingPresentation(team: Team, kind: EntityKind): 
       fillAlpha: 0.13
     };
   }
+  if (kind === "building") {
+    return {
+      strokeColor: 0xaee6d7,
+      strokeAlpha: 0.95,
+      strokeWidth: 4,
+      fillColor: 0x123b36,
+      fillAlpha: 0.14
+    };
+  }
   return {
     strokeColor: kind === "hero" ? 0xb8efff : 0x9cf7b1,
     strokeAlpha: 0.95,

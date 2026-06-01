@@ -336,6 +336,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V096_VISUAL_QA_REPORT.md",
   "V096_IMPLEMENTATION_REPORT.md",
   "V096_EMMANUEL_RETEST_CHECKLIST.md",
+  "V097_SELECTION_FEEDBACK_SPEC.md",
+  "V097_COMMAND_MARKER_SPEC.md",
+  "V097_CAMERA_USABILITY_REPORT.md",
+  "V097_COMMAND_PANEL_FOLLOWUP_REPORT.md",
+  "V097_VISUAL_QA_REPORT.md",
+  "V097_IMPLEMENTATION_REPORT.md",
+  "V097_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -446,7 +453,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.96 first-time player onboarding and Tutorial UX rescue",
+      "v0.97 camera selection orders and tactical feedback polish",
       "build info checkpoint",
       checks,
       errors

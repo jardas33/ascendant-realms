@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.96 first-time player onboarding and Tutorial UX rescue";
+const CHECKPOINT = "v0.97 camera selection orders and tactical feedback polish";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -366,6 +366,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V096_VISUAL_QA_REPORT.md", join(packageDir, "V096_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V096_IMPLEMENTATION_REPORT.md", join(packageDir, "V096_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V096_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V096_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V097_SELECTION_FEEDBACK_SPEC.md", join(packageDir, "V097_SELECTION_FEEDBACK_SPEC.md"));
+  await copyMarkdown("docs/V097_COMMAND_MARKER_SPEC.md", join(packageDir, "V097_COMMAND_MARKER_SPEC.md"));
+  await copyMarkdown("docs/V097_CAMERA_USABILITY_REPORT.md", join(packageDir, "V097_CAMERA_USABILITY_REPORT.md"));
+  await copyMarkdown("docs/V097_COMMAND_PANEL_FOLLOWUP_REPORT.md", join(packageDir, "V097_COMMAND_PANEL_FOLLOWUP_REPORT.md"));
+  await copyMarkdown("docs/V097_VISUAL_QA_REPORT.md", join(packageDir, "V097_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V097_IMPLEMENTATION_REPORT.md", join(packageDir, "V097_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V097_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V097_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -465,7 +472,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.96, start with V096_EMMANUEL_RETEST_CHECKLIST.md, V096_FIRST_SESSION_AUDIT.md, V096_CONTEXTUAL_ONBOARDING_SPEC.md, V096_TUTORIAL_UX_RESCUE_REPORT.md, V096_HELP_SURFACE_SPEC.md, and V096_VISUAL_QA_REPORT.md. This package rescues first-session onboarding, Tutorial step order, contextual help, and first-campaign guidance only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.97, start with V097_EMMANUEL_RETEST_CHECKLIST.md, V097_SELECTION_FEEDBACK_SPEC.md, V097_COMMAND_MARKER_SPEC.md, V097_CAMERA_USABILITY_REPORT.md, V097_COMMAND_PANEL_FOLLOWUP_REPORT.md, and V097_VISUAL_QA_REPORT.md. This package polishes camera focus, selection readability, command destination feedback, command-panel follow-up copy, and tactical confirmations only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
 
 ## Known Warning
 

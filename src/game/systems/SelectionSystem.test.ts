@@ -9,7 +9,8 @@ describe("SelectionSystem", () => {
     const ranger = fakeEntity("unit-2", "unit", 140, 120);
     const outside = fakeEntity("unit-3", "unit", 260, 260);
     const building = fakeEntity("barracks", "building", 120, 110);
-    const selection = new SelectionSystem(() => [militia, ranger, outside, building]);
+    const enemy = fakeEntity("enemy-1", "unit", 125, 110, "enemy");
+    const selection = new SelectionSystem(() => [militia, ranger, outside, building, enemy]);
 
     selection.selectBox(fakeRectangle(80, 80, 90, 80), false);
 
@@ -18,14 +19,32 @@ describe("SelectionSystem", () => {
     expect(ranger.setSelected).toHaveBeenCalledWith(true);
     expect(outside.setSelected).not.toHaveBeenCalledWith(true);
     expect(building.setSelected).not.toHaveBeenCalledWith(true);
+    expect(enemy.setSelected).not.toHaveBeenCalledWith(true);
+  });
+
+  it("keeps inspected enemies readable even when they are outside player-selectable lists", () => {
+    const militia = fakeEntity("unit-1", "unit", 100, 100);
+    const enemy = fakeEntity("enemy-1", "unit", 130, 100, "enemy");
+    const selection = new SelectionSystem(() => [militia]);
+
+    selection.inspect(enemy);
+
+    expect(selection.getSelected()).toEqual([enemy]);
+    expect(selection.getSelectedIds()).toEqual(["enemy-1"]);
+    expect(enemy.setSelected).toHaveBeenCalledWith(true);
+
+    selection.clear();
+
+    expect(selection.getSelected()).toEqual([]);
+    expect(enemy.setSelected).toHaveBeenCalledWith(false);
   });
 });
 
-function fakeEntity(id: string, kind: "unit" | "building", x: number, y: number): BaseEntity {
+function fakeEntity(id: string, kind: "unit" | "building", x: number, y: number, team: "player" | "enemy" = "player"): BaseEntity {
   return {
     id,
     kind,
-    team: "player",
+    team,
     alive: true,
     position: { x, y },
     radius: 12,

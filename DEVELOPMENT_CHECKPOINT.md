@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.96 first-time player onboarding and Tutorial UX rescue
+Updated: 2026-06-01 v0.97 camera selection orders and tactical feedback polish
+
+## v0.97 Camera Selection Orders And Tactical Feedback Polish - 2026-06-01
+
+Scope: controls-readability and tactical-feedback pass. This checkpoint improves selection focus, enemy inspection, command destination markers, camera focus/minimap feedback, compact command-panel details, package metadata, and visual-QA coverage. It does not add gameplay systems, alter unit stats, change combat balance, change pathing rules, change saves, rename IDs, add art/assets, start desktop work, add multiplayer/PvP/co-op, or start v0.98.
+
+Baseline:
+
+- Starting commit: `630a8d0`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-630a8d0`.
+- Baseline remote status: GitHub Actions run `26743347152` on `630a8d0` completed successfully.
+
+Included work:
+
+- Added `CommandFeedbackMarker` presentation rules and short-lived Phaser markers for move, attack-move, attack target, Patrol, rally, build, ability, invalid, and focus feedback.
+- Reused the existing reduced-motion setting so marker cleanup remains deterministic without new saved preferences.
+- Added selection focus cards for hero, Worker, combat unit, squad, building, site, and enemy inspection.
+- Enemy inspection is explicitly read-only and no longer exposes friendly behavior controls.
+- Space now focuses the selected entity before falling back to Aster; minimap and focus actions emit concise confirmation.
+- Camera center and scroll clamping now share a pure helper.
+- Command-panel secondary command text is behind `More Details`.
+- Visual QA now includes 118 screenshots after adding eight v0.97 command/selection/focus states.
+- Package generation and validation now require/copy the v0.97 docs and report the v0.97 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, rewards, XP, combat stats, balance values, or pathing rules changed.
+
+Verification:
+
+```text
+npm test - PASS, 97 files / 696 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 30 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run visual:qa - PASS, 13 tests / 118 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 118 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence: full local `npm run test:e2e:release` exceeded the 60-minute local tool timeout with no pass/fail output. A local `npm run test:e2e:release:shard1of3` attempt later reported three older deep-flow startup/timeout failures; exact reruns of all three failed tests passed.
 
 ## v0.96 First-Time Player Onboarding And Tutorial UX Rescue - 2026-06-01
 

@@ -64,6 +64,7 @@ describe("CommandPanel", () => {
     expect(markup).toContain("command-details");
     expect(markup).toContain('aria-describedby="command-details-train-militia"');
     expect(markup).toContain("Show command details for Train Militia");
+    expect(markup).toContain(">More Details</summary>");
     expect(markup).toContain("Tags: Frontline / Melee / Holds Ground");
     expect(markup).not.toContain("command-description");
     expect(markup).not.toContain("command-effect");
