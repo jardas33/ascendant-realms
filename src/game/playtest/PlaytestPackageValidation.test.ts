@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.98 hero Retinue inventory and Stronghold UX rescue",
+          checkpoint: "v0.99 Act 1 mission presentation objective clarity and narrative polish",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -400,6 +400,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V098_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.98 visual QA report" },
       { path: "V098_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.98 implementation report" },
       { path: "V098_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.98 Emmanuel retest" },
+      { path: "V099_ACT1_PRESENTATION_AUDIT.md", sizeBytes: 20, textContent: "v0.99 Act 1 presentation audit" },
+      { path: "V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md", sizeBytes: 20, textContent: "v0.99 mission card objective spec" },
+      { path: "V099_WORLD_COPY_APPLIED_LEDGER.md", sizeBytes: 20, textContent: "v0.99 world copy ledger" },
+      { path: "V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md", sizeBytes: 20, textContent: "v0.99 results next-step report" },
+      { path: "V099_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.99 visual QA report" },
+      { path: "V099_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.99 implementation report" },
+      { path: "V099_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.99 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

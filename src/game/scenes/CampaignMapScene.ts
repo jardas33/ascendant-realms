@@ -36,7 +36,13 @@ import {
   messageForCampaignMapData,
   selectedCampaignNode
 } from "../campaign/CampaignNavigation";
-import { formatNodeRewardSummary, renderGuidanceMessage, renderNodeButton, renderNodeDetails } from "../campaign/CampaignNodePanel";
+import {
+  formatCampaignMissionPanelNextStep,
+  formatNodeRewardSummary,
+  renderGuidanceMessage,
+  renderNodeButton,
+  renderNodeDetails
+} from "../campaign/CampaignNodePanel";
 import { escapeHtml, toCssColor, type CampaignMapViewModel, type CampaignNodeViewModel } from "../campaign/CampaignPresentationTypes";
 import {
   renderActiveModifiers,
@@ -613,6 +619,8 @@ export class CampaignMapScene extends Phaser.Scene {
     const description = shortDescription(node.description);
     const stateLabel = node.isPlaceholder ? "upcoming" : status === "completed" && node.nodeType === "battle" ? "completed / replayable" : status;
     const lockReason = status === "locked" || node.isPlaceholder ? getCampaignNodeLockedReason(node, this.campaignSave) : "";
+    const nextStepLine = formatCampaignMissionPanelNextStep(node, this.campaignSave);
+    const nextStepLabel = lockReason ? "Lock reason" : "Recommended next step";
     const pacingLabel = actStep ? titleCase(actStep.pacingTier) : titleCase(node.difficulty);
     const hasChoices = Boolean(node.choices?.length);
     const detailOpen = hasChoices ? " open" : "";
@@ -635,7 +643,10 @@ export class CampaignMapScene extends Phaser.Scene {
               .map((label) => `<span class="tag reward-chip">${escapeHtml(label)}</span>`)
               .join("")}
           </div>
-          ${lockReason ? `<div class="campaign-lock-line"><span>Lock reason</span><strong>${escapeHtml(lockReason)}</strong></div>` : ""}
+          <div class="campaign-next-step-line">
+            <span>${escapeHtml(nextStepLabel)}</span>
+            <strong>${escapeHtml(nextStepLine)}</strong>
+          </div>
         </div>
         <div class="campaign-selected-actions">
           ${this.renderSelectedPrimaryAction()}

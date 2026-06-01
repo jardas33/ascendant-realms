@@ -136,7 +136,8 @@ export const ENEMY_HEROES: EnemyHeroDefinition[] = [
     },
     xpValue: 165,
     abilities: ["hold_the_line", "rally_raiders", "ember_strike"],
-    flavorText: "Malrec waits behind the outpost ridge, using the fortress line before committing to the final push.",
+    flavorText:
+      "Malrec believes disciplined control over Lume is the only way to prevent collapse; he waits behind the outpost ridge before committing to the final defense.",
     campaignNodeIds: ["ashen_outpost"],
     mapIds: ["ashen_outpost"]
   }

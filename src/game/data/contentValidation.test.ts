@@ -64,6 +64,28 @@ describe("content validation", () => {
     expect(SKILL_NODES.find((node) => node.id === "magic_focus")?.description).toContain("Mana");
   });
 
+  it("keeps v0.99 Act 1 presentation polish display-only and stable-id safe", () => {
+    expect(CURRENT_SAVE_VERSION).toBe(2);
+    expect(CAMPAIGN_NODES.map((node) => node.id)).toEqual(
+      expect.arrayContaining([
+        "border_village",
+        "old_stone_road",
+        "aether_well_ruins",
+        "chapel_of_the_marches",
+        "marcher_camp",
+        "bandit_hillfort",
+        "refugee_caravan",
+        "ashen_outpost"
+      ])
+    );
+    expect(CAMPAIGN_NODES.find((node) => node.id === "aether_well_ruins")?.name).toBe("Aether Well Ruins");
+    expect(CAMPAIGN_NODES.find((node) => node.id === "ashen_outpost")?.missionBriefing?.primaryObjective).toBe(
+      "Defeat Captain Malrec and destroy the fortified Stronghold."
+    );
+    expect(RESOURCE_DEFINITIONS.find((resource) => resource.id === "aether")?.name).toBe("Aether");
+    expect(SKILL_NODES.find((node) => node.id === "magic_focus")?.description).toContain("Mana");
+  });
+
   it("validates player-facing unit role identities", () => {
     expect(Object.keys(UNIT_ROLE_BY_ID)).toEqual(
       expect.arrayContaining(["worker", "militia", "ranger", "acolyte", "enemy_commander"])

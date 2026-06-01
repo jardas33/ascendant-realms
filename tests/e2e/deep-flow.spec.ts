@@ -6907,7 +6907,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("First-clear reward");
     await expect(page.locator(".campaign-reward-block")).toContainText("Assault");
     await expect(page.locator(".campaign-reward-block")).toContainText("Fortified Enemy");
-    await expect(page.locator(".campaign-reward-block")).toContainText("The outpost is broken");
+    await expect(page.locator(".campaign-reward-block")).toContainText("Malrec's outpost is broken");
     await expect(page.locator(".campaign-reward-block")).toContainText("Act 1 Step 6: Ashen Outpost Finale");
     await expect(page.locator(".campaign-reward-block")).toContainText("Choose and equip a relic");
     await expect(page.getByTestId("results-act1-finale-summary")).toContainText("Ashen Outpost cleared");
@@ -7042,7 +7042,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("Next mission unlocked: Aether Well Ruins");
     await expect(page.locator(".campaign-reward-block")).toContainText("Control");
     await expect(page.locator(".campaign-reward-block")).toContainText("Rich Veins");
-    await expect(page.locator(".campaign-reward-block")).toContainText("The road is open");
+    await expect(page.locator(".campaign-reward-block")).toContainText("The road opens into support choices");
 
     let save = await readSave(page);
     expect(save.campaign.completedNodeIds).toContain("old_stone_road");

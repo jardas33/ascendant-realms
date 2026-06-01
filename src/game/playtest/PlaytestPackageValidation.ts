@@ -351,6 +351,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V098_VISUAL_QA_REPORT.md",
   "V098_IMPLEMENTATION_REPORT.md",
   "V098_EMMANUEL_RETEST_CHECKLIST.md",
+  "V099_ACT1_PRESENTATION_AUDIT.md",
+  "V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md",
+  "V099_WORLD_COPY_APPLIED_LEDGER.md",
+  "V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md",
+  "V099_VISUAL_QA_REPORT.md",
+  "V099_IMPLEMENTATION_REPORT.md",
+  "V099_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -461,7 +468,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.98 hero Retinue inventory and Stronghold UX rescue",
+      "v0.99 Act 1 mission presentation objective clarity and narrative polish",
       "build info checkpoint",
       checks,
       errors

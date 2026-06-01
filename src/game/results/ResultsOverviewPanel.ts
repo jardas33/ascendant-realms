@@ -1,4 +1,7 @@
+import { getCampaignActResultsGuidance } from "../core/campaign/CampaignActSpineRules";
+import { getCampaignMissionBriefing } from "../core/campaign/CampaignMissionRules";
 import { formatTime } from "../core/MathUtils";
+import { CAMPAIGN_NODE_BY_ID } from "../data/contentIndex";
 import { escapeHtml, formatResourceRewards } from "./ResultsFormatting";
 import type { ResultsData } from "./ResultsTypes";
 import type { ResultsViewModel } from "./ResultsViewModel";
@@ -20,7 +23,7 @@ export function renderResultsOverview(data: ResultsData, viewModel: ResultsViewM
         <span>Key rewards</span><strong>${escapeHtml(formatKeyRewards(data, viewModel))}</strong>
         <span>Hero XP</span><strong>${escapeHtml(formatHeroXp(data, viewModel))}</strong>
         <span>Veterans</span><strong>${escapeHtml(formatVeteranHighlight(data))}</strong>
-        <span>Next action</span><strong>${escapeHtml(formatNextAction(data))}</strong>
+        <span>Next action</span><strong>${escapeHtml(formatNextAction(data, viewModel))}</strong>
       </div>
     </section>
   `;
@@ -37,7 +40,11 @@ function formatPrimaryObjective(data: ResultsData): string {
     return data.stats.outcome === "victory" ? "Replay clear" : "Replay failed";
   }
   if (data.campaignResult) {
-    return data.stats.outcome === "victory" ? "First clear secured" : "Campaign objective failed";
+    const node = CAMPAIGN_NODE_BY_ID[data.campaignResult.completedNodeId];
+    const briefing = node ? getCampaignMissionBriefing(node) : undefined;
+    const objective = briefing?.primaryObjective ?? "Complete the campaign mission.";
+    const outcome = data.stats.outcome === "victory" ? "Secured" : "Failed";
+    return `${outcome}: ${objective}`;
   }
   return data.stats.outcome === "victory" ? "Battle won" : "Battle lost";
 }
@@ -99,7 +106,7 @@ function formatVeteranHighlight(data: ResultsData): string {
   return "Veteran progress recorded";
 }
 
-function formatNextAction(data: ResultsData): string {
+function formatNextAction(data: ResultsData, viewModel: ResultsViewModel): string {
   if (data.stats.outcome !== "victory") {
     return data.launchRequest?.mode === "tutorial" ? "Retry Tutorial or return to Main Menu" : "Retry or return to prep";
   }
@@ -111,6 +118,19 @@ function formatNextAction(data: ResultsData): string {
   }
   if (data.relicRewardChoice) {
     return "Choose a relic, then equip or return";
+  }
+  if (data.campaignResult) {
+    const guidance = getCampaignActResultsGuidance({
+      completedNodeId: data.campaignResult.completedNodeId,
+      wasReplay: data.campaignResult.wasReplay,
+      unlockedNodeNames: data.campaignResult.unlockedNodeNames,
+      optionalObjectives: data.campaignResult.optionalObjectives,
+      rewardItemCount: viewModel.rewardItemCount,
+      skillPointsGained: viewModel.skillPointsGained
+    });
+    if (guidance?.nextAction) {
+      return guidance.nextAction;
+    }
   }
   if (data.campaignResult?.unlockedNodeNames.length) {
     return `Next mission unlocked: ${data.campaignResult.unlockedNodeNames.join(", ")}`;

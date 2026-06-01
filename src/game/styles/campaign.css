@@ -674,7 +674,8 @@
 }
 
 .campaign-objective-line,
-.campaign-lock-line {
+.campaign-lock-line,
+.campaign-next-step-line {
   display: grid;
   gap: 3px;
   padding: 6px 8px;
@@ -684,7 +685,8 @@
 }
 
 .campaign-objective-line span,
-.campaign-lock-line span {
+.campaign-lock-line span,
+.campaign-next-step-line span {
   color: #c8d0bd;
   font-size: var(--ui-type-caption-size);
   line-height: var(--ui-type-caption-line-height);
@@ -692,7 +694,8 @@
 }
 
 .campaign-objective-line strong,
-.campaign-lock-line strong {
+.campaign-lock-line strong,
+.campaign-next-step-line strong {
   color: #f1ead1;
   font-size: var(--ui-type-body-compact-size);
   line-height: var(--ui-type-body-compact-line-height);

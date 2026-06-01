@@ -5,7 +5,7 @@ import { createNewHeroSave } from "../data/heroes";
 import { createCampaignChapterPanelViewModels } from "./CampaignChapterPanelViewModel";
 import { createCampaignChoiceViewModels } from "./CampaignChoiceViewModel";
 import { createCampaignNodeCardViewModel } from "./CampaignNodeCardViewModel";
-import { renderNodeDetails } from "./CampaignNodePanel";
+import { formatCampaignMissionPanelNextStep, renderNodeDetails } from "./CampaignNodePanel";
 import { createCampaignRouteStatusViewModel } from "./CampaignRouteStatusViewModel";
 
 describe("campaign presentation view models", () => {
@@ -52,7 +52,7 @@ describe("campaign presentation view models", () => {
     expect(html).toContain("Mission type");
     expect(html).toContain("Assault");
     expect(html).toContain("Primary objective");
-    expect(html).toContain("defeat Captain Malrec");
+    expect(html).toContain("Defeat Captain Malrec");
     expect(html).toContain("Scenario modifiers");
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("Reward preview");
@@ -109,6 +109,50 @@ describe("campaign presentation view models", () => {
     expect(oldRoadHtml).toContain("Act 1 Step 3: Base Development");
     expect(oldRoadHtml).toContain("Complete Salto Outskirts first.");
     expect(oldRoadHtml).toContain("Train Workers early");
+  });
+
+  it("keeps Act 1 mission card premises concise while preserving stable node ids", () => {
+    const act1Nodes = [
+      ["border_village", "Salto Outskirts", "A first stand outside Salto"],
+      ["old_stone_road", "Old Stone Road", "The trade road tests a cleaner economy"],
+      ["aether_well_ruins", "Aether Well Ruins", "A ruined well on Broken Ford"],
+      ["chapel_of_the_marches", "Chapel of the Barrosan Marches", "A roadside chapel offers one clear support choice"],
+      ["marcher_camp", "Marcher Camp", "A Barrosan support camp"],
+      ["bandit_hillfort", "Bandit Hillfort", "A raider-backed hillfort"],
+      ["refugee_caravan", "Refugee Caravan", "A vulnerable caravan"],
+      ["ashen_outpost", "Ashen Outpost", "The Act 1 finale"]
+    ] as const;
+
+    act1Nodes.forEach(([id, name, premise]) => {
+      const node = CAMPAIGN_NODES.find((entry) => entry.id === id)!;
+      expect(node.id).toBe(id);
+      expect(node.name).toBe(name);
+      expect(node.description).toContain(premise);
+      expect(node.description.length).toBeLessThanOrEqual(120);
+    });
+  });
+
+  it("formats locked reasons or recommended next steps for compact mission cards", () => {
+    const freshCampaign = createStartedCampaignSave();
+    const postOldRoad = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["border_village", "old_stone_road"],
+      unlockedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "refugee_caravan", "marcher_camp"]
+    });
+    const aetherWell = CAMPAIGN_NODES.find((entry) => entry.id === "aether_well_ruins")!;
+    const oldRoad = CAMPAIGN_NODES.find((entry) => entry.id === "old_stone_road")!;
+    const ashenOutpost = CAMPAIGN_NODES.find((entry) => entry.id === "ashen_outpost")!;
+    const postFinale = createStartedCampaignSave({
+      ...createStartedCampaignSave(),
+      completedNodeIds: ["ashen_outpost"],
+      unlockedNodeIds: ["ashen_outpost", "cinderfen_overlook"],
+      nodeRewardsClaimedIds: ["ashen_outpost"]
+    });
+
+    expect(formatCampaignMissionPanelNextStep(aetherWell, freshCampaign)).toBe("Complete Old Stone Road first.");
+    expect(formatCampaignMissionPanelNextStep(aetherWell, postOldRoad)).toContain("Clear Bandit Hillfort");
+    expect(formatCampaignMissionPanelNextStep(oldRoad, postOldRoad)).toContain("Replay this road");
+    expect(formatCampaignMissionPanelNextStep(ashenOutpost, postFinale)).toContain("Act 1 complete");
   });
 
   it("formats chapter card progress without involving the scene", () => {

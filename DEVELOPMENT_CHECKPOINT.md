@@ -1,6 +1,59 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.98 hero Retinue inventory and Stronghold UX rescue
+Updated: 2026-06-01 v0.99 Act 1 mission presentation objective clarity and narrative polish
+
+## v0.99 Act 1 Mission Presentation Objective Clarity And Narrative Polish - 2026-06-01
+
+Scope: campaign presentation and copy-only pass. This checkpoint makes Act 1 read like a coherent journey from Salto through road control, support choices, Lume pressure, hillfort/church prerequisites, and the Ashen Outpost finale. It does not add nodes, alter unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art, imported assets, desktop work, or start v0.100.
+
+Baseline:
+
+- Starting commit: `8fefc83`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-8fefc83`.
+- Baseline package verification: `npm run verify:playtest-package` passed 350 checks before v0.99 edits.
+- Baseline remote status: GitHub Actions run `26767676334` on `8fefc83` completed successfully.
+
+Included work:
+
+- Act 1 node descriptions are now concise one-line premises.
+- Salto Outskirts, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost briefing/after-action copy now lead with clearer objectives and next-step language.
+- Campaign selected-mission panels show either an existing lock reason or existing Act 1 recommended next step in the compact default view.
+- Results overview uses campaign primary-objective copy and existing Act 1 next-step guidance when campaign completion data exists.
+- Captain Malrec copy now frames him as disciplined, dangerous, and convinced controlled Lume prevents collapse.
+- Added focused mission-card, lock-reason, stable-ID, old-save, Results, and package validation coverage.
+- Visual QA now includes 136 screenshots after adding ten v0.99 Act 1 presentation/Results captures.
+- Package generation and validation now require/copy the v0.99 docs and report the v0.99 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, skill rules, XP values, relic stats, equipment rules, Retinue rules, Stronghold rules, campaign progression, unlock rules, rewards, replay rules, optional objective logic, Tutorial safety, difficulty, AI, or balance values changed.
+
+Verification:
+
+```text
+npm test - PASS, 98 files / 704 tests after one stale Old Stone Road copy assertion was updated and the full suite reran.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 30 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests after one transient Tutorial overlay exact rerun plus full-lane rerun.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests after two stale hosted copy assertions were updated and exact/full lanes reran.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 15 tests / 136 screenshots / 0 console errors / 0 screenshot retries after the first 30-minute tool timeout was rerun with a longer timeout.
+npm run visual:review-pack - PASS, 136 screenshots / 7 contact sheets.
+npm run package:playtest - PASS for the pre-commit dirty package; final clean package is generated after commit.
+npm run verify:playtest-package - PASS, 357 checks on the pre-commit dirty package.
+git diff --check - PASS.
+```
 
 ## v0.98 Hero Retinue Inventory And Stronghold UX Rescue - 2026-06-01
 

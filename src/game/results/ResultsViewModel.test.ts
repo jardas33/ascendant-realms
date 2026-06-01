@@ -365,6 +365,7 @@ describe("results scene helpers", () => {
     expect(html).toContain('data-testid="results-overview"');
     expect(html).toContain("Mission Complete");
     expect(html).toContain("Salto Outskirts");
+    expect(html).toContain("Destroy the enemy Stronghold after securing Salto&#039;s Crown Shrine");
     expect(html).toContain("First-clear rewards");
     expect(html).toContain("Next mission unlocked: Old Stone Road");
   });
@@ -469,8 +470,46 @@ describe("results scene helpers", () => {
 
     expect(defeatHtml).toContain("Mission Failed");
     expect(defeatHtml).toContain("No victory rewards saved");
+    expect(defeatHtml).toContain("Battle lost");
     expect(replayHtml).toContain("Replay clear");
     expect(replayHtml).toContain("Replay-safe rewards");
+    expect(replayHtml).toContain("Replay complete; choose another campaign node");
+  });
+
+  it("shows Act 1 finale Results next-step copy without changing reward payloads", () => {
+    const heroSave = createNewHeroSave("Aster", "warlord", "exiled_noble");
+    const data = createResultsData({
+      heroSave,
+      startingHeroSave: heroSave,
+      launchRequest: createSkirmishBattleLaunchRequest(heroSave, {
+        mode: "campaign_node",
+        mapId: "ashen_outpost",
+        difficulty: "normal",
+        campaignNodeId: "ashen_outpost"
+      }),
+      campaignResult: {
+        completedNodeId: "ashen_outpost",
+        completedNodeName: "Ashen Outpost",
+        unlockedNodeIds: [],
+        unlockedNodeNames: [],
+        nodeReward: { itemIds: ["oathbound_aegis"], resources: { crowns: 130, stone: 70, iron: 80, aether: 55 }, xp: 100 },
+        nodeLevelUp: { previousLevel: 2, newLevel: 3, levelsGained: 1, skillPointsGained: 1 },
+        campaignResources: { crowns: 130, stone: 70, iron: 80, aether: 55 },
+        wasFirstClear: true,
+        wasReplay: false,
+        nodeRewardClaimed: true,
+        nodeRewardAlreadyClaimed: false
+      }
+    });
+
+    const html = renderResultsOverview(data, createResultsViewModel(data));
+
+    expect(html).toContain("Secured: Defeat Captain Malrec and destroy the fortified Stronghold.");
+    expect(html).toContain("Act 1 complete");
+    expect(html).toContain("Spend skill points");
+    expect(html).toContain("Equip new rewards");
+    expect(data.campaignResult?.nodeReward.itemIds).toEqual(["oathbound_aegis"]);
+    expect(data.campaignResult?.nodeReward.resources).toEqual({ crowns: 130, stone: 70, iron: 80, aether: 55 });
   });
 
   it("renders campaign mission type, active modifier, and after-action copy in reward results", () => {
@@ -510,7 +549,7 @@ describe("results scene helpers", () => {
     expect(html).toContain("Primary objective");
     expect(html).toContain("Fortified Enemy");
     expect(html).toContain("enemy defenders hold a slightly stronger reserve");
-    expect(html).toContain("The outpost is broken");
+    expect(html).toContain("Malrec&#039;s outpost is broken");
     expect(html).toContain("Act 1 Step 6: Ashen Outpost Finale");
     expect(html).toContain("Choose and equip a relic");
     expect(html).toContain("Chapter 2 after first clear");

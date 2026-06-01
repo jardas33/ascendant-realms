@@ -196,7 +196,7 @@ describe("campaign rules", () => {
     expect(battleNodes.every((node) => getCampaignMissionBriefing(node))).toBe(true);
     expect(getCampaignMissionBriefing(oldRoad)).toMatchObject({
       missionType: { name: "Control" },
-      primaryObjective: expect.stringContaining("hold the road economy")
+      primaryObjective: "Destroy the enemy Stronghold after stabilizing road income."
     });
     expect(getCampaignScenarioLaunchModifiers(oldRoad)).toEqual([{ id: "mission_rich_veins" }]);
     expect(getCampaignScenarioLaunchModifiers(ashenOutpost)).toEqual([{ id: "mission_fortified_enemy" }]);

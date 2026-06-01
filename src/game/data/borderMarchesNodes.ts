@@ -5,15 +5,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "border_village",
     name: "Salto Outskirts",
     description:
-      "First campaign battle. Secure Salto's outskirts by practicing the persistent campaign loop: capture the Crown Shrine, build a Barracks, train troops, defend the first wave, and destroy the enemy Stronghold.",
+      "A first stand outside Salto: claim the Crown Shrine, raise production, and break the Ashen foothold.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "skirmish_training",
     missionBriefing: {
-      summary: "Secure Salto's outskirts and practice the first persistent campaign battle without extra scenario pressure.",
-      primaryObjective: "Capture the Crown Shrine, build a Barracks, train troops, and destroy the enemy Stronghold.",
-      rewardPreview: "First clear grants starter XP, Crowns, and the Weathered Command Sword.",
-      afterActionSummary: "Salto's village road is secure and the campaign route opens toward the old stone road.",
+      summary: "Start the persistent campaign at Salto with one clear loop: capture, build, train, defend, win.",
+      primaryObjective: "Destroy the enemy Stronghold after securing Salto's Crown Shrine.",
+      rewardPreview: "First clear: starter XP, Crowns, and the Weathered Command Sword.",
+      afterActionSummary: "Salto's outskirts hold; Old Stone Road is the next push.",
       recommendedBuildHint: "Any build works here; focus on fundamentals."
     },
     difficulty: "easy",
@@ -34,15 +34,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "old_stone_road",
     name: "Old Stone Road",
     description:
-      "Base development battle. The old trade road gives you less breathing room than Salto Outskirts, but it is still an Easy fight built to reward cleaner Worker use, production timing, and better use of your hero rewards.",
+      "The trade road tests a cleaner economy: more Workers, steadier production, and safer resource control.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "control",
     missionBriefing: {
-      summary: "The trade road rewards clean expansion, Worker upkeep, and steady control of resource sites.",
-      primaryObjective: "Build production, hold the road economy, survive early raider pressure, and destroy the enemy Stronghold.",
-      rewardPreview: "First clear grants XP and a balanced campaign resource bundle.",
-      afterActionSummary: "The road is open, but deeper Ashen routes now demand a sharper hero build.",
+      summary: "Hold the old trade road by turning resources and Worker upkeep into a steadier army.",
+      primaryObjective: "Destroy the enemy Stronghold after stabilizing road income.",
+      rewardPreview: "First clear: XP and a balanced campaign resource bundle.",
+      afterActionSummary: "The road opens into support choices and two deeper threats.",
       recommendedBuildHint: "Commander support helps turn resource control into a stable army."
     },
     scenarioModifierIds: ["mission_rich_veins"],
@@ -63,7 +63,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "marcher_camp",
     name: "Marcher Camp",
     description:
-      "Allied town node. Spend campaign resources between battles for rest, volunteers, supplies, or a small fixed stock of early equipment. Services keep the camp open for later visits.",
+      "A Barrosan support camp where saved Crowns become rest, volunteers, supplies, or early gear.",
     chapterId: "border_marches",
     nodeType: "town",
     difficulty: "story",
@@ -153,15 +153,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "aether_well_ruins",
     name: "Aether Well Ruins",
     description:
-      "Resource control battle. Broken Ford introduces tighter lanes, fog pressure, and a dangerous central objective. Prepare your hero and keep captured sites assigned before taking the well.",
+      "A ruined well on Broken Ford pulls the fight toward site control, Worker assignment, and Lume pressure.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "control",
     missionBriefing: {
-      summary: "Aether pressure and tight lanes make this a control mission around assigned and upgraded resource sites.",
-      primaryObjective: "Contest the ruined well, assign Workers to held sites, manage spell pressure, and break the Ashen base.",
-      rewardPreview: "First clear grants XP, Aether, Stone, and the Aether Lens.",
-      afterActionSummary: "The well is back under Barrosan Freeholds guard and the chapel route is exposed.",
+      summary: "A tighter control mission around the ruined well, assigned Workers, and the Lume Surge.",
+      primaryObjective: "Destroy the Ashen base after contesting the ruined well.",
+      rewardPreview: "First clear: XP, Aether, Stone, and the Aether Lens.",
+      afterActionSummary: "The well is guarded again, and the chapel route is exposed.",
       recommendedBuildHint: "Seer mana and cooldown support fit the longer aether fight."
     },
     scenarioModifierIds: ["mission_aether_surge"],
@@ -184,15 +184,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "bandit_hillfort",
     name: "Bandit Hillfort",
     description:
-      "Rival pressure battle. A raider-backed hillfort checks whether you can build a stable army while holding resources and answering commander pressure.",
+      "A raider-backed hillfort forces a stable army timing before the rival pressure peaks.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "assault",
     missionBriefing: {
-      summary: "The hillfort is a pressure assault against raiders who contest resources quickly and force a real army timing.",
-      primaryObjective: "Stabilize production, defeat the commander threat, and crack the hillfort base.",
-      rewardPreview: "First clear grants XP, Iron-heavy resources, and the Captain's Seal.",
-      afterActionSummary: "The hillfort falls, clearing the road toward the Ashen outpost.",
+      summary: "Treat the hillfort as a staged assault, not an early probe.",
+      primaryObjective: "Defeat the commander threat and destroy the hillfort Stronghold.",
+      rewardPreview: "First clear: XP, Iron-heavy resources, and the Captain's Seal.",
+      afterActionSummary: "The hillfort falls, leaving the Ashen Outpost within reach.",
       recommendedBuildHint: "Warrior durability helps answer raider pressure and commander duels."
     },
     scenarioModifierIds: ["mission_enemy_patrols"],
@@ -215,7 +215,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "chapel_of_the_marches",
     name: "Chapel of the Barrosan Marches",
     description:
-      "Campaign choice node. A roadside chapel shelters wounded scouts and old oaths. Choose a blessing, spend campaign resources, or ask for guidance before the next fight.",
+      "A roadside chapel offers one clear support choice before the outpost road.",
     chapterId: "border_marches",
     nodeType: "shrine",
     difficulty: "story",
@@ -278,7 +278,7 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "refugee_caravan",
     name: "Refugee Caravan",
     description:
-      "Campaign choice node. A weary caravan carries news, hungry families, and a few hands still able to hold a spear. Your decision trades resources, reputation, and rewards.",
+      "A vulnerable caravan turns Act 1 into a reputation and resource choice, not another battle.",
     chapterId: "border_marches",
     nodeType: "event",
     difficulty: "story",
@@ -341,15 +341,15 @@ export const BORDER_MARCHES_NODES: CampaignNodeDefinition[] = [
     id: "ashen_outpost",
     name: "Ashen Outpost",
     description:
-      "Act 1 finale battle. Assault the Ashen fortress map, secure a foothold, break the fortified line, defeat Captain Malrec, choose a relic reward, and destroy the fortified Stronghold.",
+      "The Act 1 finale: secure a foothold, force Malrec's defense, and break the Ashen Outpost.",
     chapterId: "border_marches",
     nodeType: "battle",
     missionTypeId: "assault",
     missionBriefing: {
-      summary: "Act 1 finale: secure a resource foothold, break the fortified line, then force Captain Malrec into the final defense.",
-      primaryObjective: "Capture the Burned Shrine, destroy the enemy Barracks, defeat Captain Malrec, and destroy the fortified Stronghold.",
-      rewardPreview: "First clear grants a large campaign reward, item reward, Act 1 completion credit, and champion relic eligibility.",
-      afterActionSummary: "The outpost is broken, Act 1 is complete, and the Cinderfen road becomes reachable.",
+      summary: "A three-phase finale: foothold first, fortified line second, Captain Malrec last.",
+      primaryObjective: "Defeat Captain Malrec and destroy the fortified Stronghold.",
+      rewardPreview: "First clear: milestone XP/resources, Oathbound Aegis, Act 1 completion, and champion relic eligibility.",
+      afterActionSummary: "Malrec's outpost is broken; Act 1 is complete and Cinderfen becomes reachable.",
       recommendedBuildHint: "Champion Hunt helps finish Malrec; Guarded Advance and Commander support help survive the fortified counter-pressure."
     },
     scenarioModifierIds: ["mission_fortified_enemy"],

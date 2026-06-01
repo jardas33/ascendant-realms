@@ -1,5 +1,38 @@
 # Changelog
 
+# v0.99 Act 1 Mission Presentation Objective Clarity And Narrative Polish - 2026-06-01
+
+This checkpoint improves campaign presentation and copy only. It makes Act 1 read as a coherent route beginning near Salto, clarifies mission-card objectives and next steps, improves Captain Malrec framing, and tightens ordinary Results guidance. It does not add nodes, change unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art/assets, imported assets, desktop work, or start v0.100.
+
+Added:
+
+- `docs/V099_ACT1_PRESENTATION_AUDIT.md`.
+- `docs/V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md`.
+- `docs/V099_WORLD_COPY_APPLIED_LEDGER.md`.
+- `docs/V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md`.
+- `docs/V099_VISUAL_QA_REPORT.md`.
+- `docs/V099_IMPLEMENTATION_REPORT.md`.
+- `docs/V099_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Act 1 node descriptions now read as concise one-line premises.
+- Salto Outskirts, Old Stone Road, Aether Well Ruins, Bandit Hillfort, and Ashen Outpost briefing/after-action copy now lead with clearer objectives and next-step language.
+- Campaign selected-mission panels show compact lock-reason or recommended-next-step copy without changing action logic.
+- Results overview now uses campaign primary-objective copy and existing Act 1 guidance when campaign completion data exists.
+- Captain Malrec copy now frames him as disciplined, dangerous, and convinced controlled Lume prevents collapse.
+- Visual QA now includes 136 screenshots after adding ten v0.99 Act 1 presentation/Results captures.
+- Package generation and validation now require/copy the v0.99 docs and report the v0.99 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, skill rules, XP values, relic stats, equipment rules, Retinue rules, Stronghold rules, campaign progression, unlock rules, rewards, replay rules, optional objective logic, Tutorial safety, difficulty, AI, balance values, maps, factions, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 98 files / 704 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 30 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 15 tests / 136 screenshots / 0 console errors / 0 retries, `npm run visual:review-pack` with 136 screenshots / 7 contact sheets, and pre-commit `npm run verify:playtest-package` with 357 checks.
+- Non-pass evidence resolved before closeout: initial unit suite found one stale Old Stone Road assertion; initial hosted smoke had a transient Tutorial overlay bounding-box failure that passed exact and full reruns; initial hosted deep-campaign-pressure found two stale copy assertions that passed exact and full reruns after update; initial visual QA exceeded the 30-minute tool timeout and passed with a longer timeout after cleaning generated screenshots.
+
 # v0.98 Hero Retinue Inventory And Stronghold UX Rescue - 2026-06-01
 
 This checkpoint improves meta-progression presentation only. It rescues Hero Overview, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta readability. It does not change progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold upgrade rules, saves, stable IDs, rewards, campaign progression, gameplay balance, art/assets, imported assets, desktop work, or start v0.99.

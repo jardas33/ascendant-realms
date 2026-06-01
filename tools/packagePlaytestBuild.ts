@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.98 hero Retinue inventory and Stronghold UX rescue";
+const CHECKPOINT = "v0.99 Act 1 mission presentation objective clarity and narrative polish";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -381,6 +381,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V098_VISUAL_QA_REPORT.md", join(packageDir, "V098_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V098_IMPLEMENTATION_REPORT.md", join(packageDir, "V098_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V098_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V098_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V099_ACT1_PRESENTATION_AUDIT.md", join(packageDir, "V099_ACT1_PRESENTATION_AUDIT.md"));
+  await copyMarkdown("docs/V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md", join(packageDir, "V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md"));
+  await copyMarkdown("docs/V099_WORLD_COPY_APPLIED_LEDGER.md", join(packageDir, "V099_WORLD_COPY_APPLIED_LEDGER.md"));
+  await copyMarkdown("docs/V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md", join(packageDir, "V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md"));
+  await copyMarkdown("docs/V099_VISUAL_QA_REPORT.md", join(packageDir, "V099_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V099_IMPLEMENTATION_REPORT.md", join(packageDir, "V099_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V099_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V099_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -480,7 +487,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.98, start with V098_EMMANUEL_RETEST_CHECKLIST.md, V098_HERO_OVERVIEW_UX_SPEC.md, V098_SKILLS_AND_EQUIPMENT_UX_SPEC.md, V098_RETINUE_UX_RESCUE_SPEC.md, V098_STRONGHOLD_UX_RESCUE_SPEC.md, and V098_VISUAL_QA_REPORT.md. This package rescues the Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation only. It changes no saves, rewards, campaign progression logic, gameplay values, hero rules, Retinue rules, Stronghold upgrade rules, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.99, start with V099_EMMANUEL_RETEST_CHECKLIST.md, V099_ACT1_PRESENTATION_AUDIT.md, V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md, V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md, and V099_VISUAL_QA_REPORT.md. This package polishes Act 1 mission presentation, objective clarity, Results next-step copy, and Captain Malrec framing only. It changes no saves, rewards, campaign progression logic, gameplay values, unlock rules, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
 
 ## Known Warning
 

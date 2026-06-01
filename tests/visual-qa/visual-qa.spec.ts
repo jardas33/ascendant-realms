@@ -10,7 +10,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "../e2e/chapter2-helpers";
-import { continueSavedCampaign, createHero, openFreshMainMenu, startNewCampaign } from "../e2e/shared-helpers";
+import { continueSavedCampaign, createHero, openFreshMainMenu, seedCampaignSave, startNewCampaign } from "../e2e/shared-helpers";
 
 type VisualViewport = {
   label: string;
@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 126;
+const EXPECTED_SCREENSHOT_COUNT = 136;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -1504,6 +1504,139 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "v094-results-expanded-1366.png",
       LAPTOP,
       "Expanded ordinary Results use accordion groups and compact metrics without changing reward data."
+    );
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.99 Act 1 mission presentation and Results summary", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v099-act1-presentation";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v099 Act 1");
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Recommended next step");
+    await expectCampaignPrimaryActionAboveFold(page, `${group} Salto fresh 1920`);
+    await expectNoCampaignNodeOverlap(page, `${group} Salto fresh 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.99 Salto Outskirts fresh",
+      "v099-act1-salto-outskirts-1920.png",
+      FULL_HD,
+      "Salto Outskirts opens as a concise first mission card with premise, objective, rewards, and next-step copy."
+    );
+
+    await seedCampaignSave(page, {
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road"],
+        unlockedNodeIds: ["border_village", "old_stone_road", "marcher_camp", "refugee_caravan", "aether_well_ruins", "bandit_hillfort"],
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road"],
+        selectedNodeId: "old_stone_road"
+      }
+    });
+    await continueSavedCampaign(page);
+    await useViewport(page, WIDE_DESKTOP);
+    for (const [nodeId, title, fileName, expectedCopy] of [
+      ["old_stone_road", "v0.99 Old Stone Road replay", "v099-act1-old-stone-road-1600.png", "Replay"],
+      ["marcher_camp", "v0.99 Marcher Camp support", "v099-act1-marcher-camp-1600.png", "A Barrosan support camp"],
+      ["refugee_caravan", "v0.99 Refugee Caravan choice", "v099-act1-refugee-caravan-1600.png", "reputation and resource choice"],
+      ["aether_well_ruins", "v0.99 Aether Well Ruins", "v099-act1-aether-well-1600.png", "A ruined well on Broken Ford"],
+      ["bandit_hillfort", "v0.99 Bandit Hillfort", "v099-act1-bandit-hillfort-1600.png", "stable army timing"]
+    ] as const) {
+      await page.getByTestId(`campaign-node-${nodeId}`).click();
+      await expect(page.locator(".campaign-selected-panel")).toContainText(expectedCopy);
+      await expect(page.locator(".campaign-selected-panel")).toContainText("Recommended next step");
+      await expectNoVisibleHorizontalOverflow(page, `${group} ${nodeId} 1600`);
+      await captureView(page, group, title, fileName, WIDE_DESKTOP, `${nodeId} mission-card presentation and next-step copy.`);
+    }
+
+    await seedCampaignSave(page, {
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins"],
+        unlockedNodeIds: [
+          "border_village",
+          "old_stone_road",
+          "marcher_camp",
+          "refugee_caravan",
+          "aether_well_ruins",
+          "bandit_hillfort",
+          "chapel_of_the_marches"
+        ],
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road", "aether_well_ruins"],
+        selectedNodeId: "chapel_of_the_marches"
+      }
+    });
+    await continueSavedCampaign(page);
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("campaign-node-chapel_of_the_marches").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Chapel of the Barrosan Marches");
+    await expect(page.locator(".campaign-selected-panel")).toContainText("one clear support choice");
+    await expectNoVisibleHorizontalOverflow(page, `${group} chapel 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.99 Chapel of the Barrosan Marches",
+      "v099-act1-chapel-1366.png",
+      LAPTOP,
+      "Chapel support node keeps the default card compact and event details behind disclosure."
+    );
+
+    await seedCampaignSave(page, {
+      campaign: {
+        completedNodeIds: ["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "chapel_of_the_marches"],
+        unlockedNodeIds: [
+          "border_village",
+          "old_stone_road",
+          "marcher_camp",
+          "refugee_caravan",
+          "aether_well_ruins",
+          "bandit_hillfort",
+          "chapel_of_the_marches",
+          "ashen_outpost"
+        ],
+        nodeRewardsClaimedIds: ["border_village", "old_stone_road", "aether_well_ruins", "bandit_hillfort", "chapel_of_the_marches"],
+        selectedNodeId: "ashen_outpost"
+      }
+    });
+    await continueSavedCampaign(page);
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("campaign-node-ashen_outpost").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("The Act 1 finale");
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Defeat Captain Malrec");
+    await captureView(
+      page,
+      group,
+      "v0.99 Ashen Outpost finale",
+      "v099-act1-ashen-outpost-1600.png",
+      WIDE_DESKTOP,
+      "Ashen Outpost card frames the finale, Malrec objective, milestone reward, and next step without changing gameplay."
+    );
+    await page.locator(".campaign-node-more summary").click();
+    await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+    await expect(page.locator(".campaign-node-details")).toContainText("Malrec believes disciplined control over Lume");
+    await captureView(
+      page,
+      group,
+      "v0.99 Ashen Outpost More Details",
+      "v099-act1-ashen-outpost-details-1600.png",
+      WIDE_DESKTOP,
+      "Expanded Ashen Outpost details preserve doctrine, Malrec, tactical-plan, and reward intel behind disclosure."
+    );
+
+    await openFreshMainMenu(page);
+    await showVisualQaResults(page, "victory");
+    await expect(page.getByTestId("results-overview")).toContainText("Destroy the enemy Stronghold after stabilizing road income");
+    await expect(page.getByTestId("results-overview")).toContainText("Next mission unlocked: Aether Well Ruins");
+    await captureView(
+      page,
+      group,
+      "v0.99 ordinary Results summary",
+      "v099-act1-results-summary-1600.png",
+      WIDE_DESKTOP,
+      "Ordinary Results overview names the mission objective and recommended next action above the fold."
     );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);

@@ -428,3 +428,23 @@ export function formatNodeRewardSummary(node: CampaignNodeDefinition): string {
 export function formatNodeItemRewards(node: CampaignNodeDefinition): string[] {
   return (node.rewards.itemIds ?? []).map((itemId) => ITEM_BY_ID[itemId]?.name ?? itemId);
 }
+
+export function formatCampaignMissionPanelNextStep(node: CampaignNodeDefinition, campaignSave: CampaignSaveData): string {
+  const lockedReason = getCampaignNodeLockedReason(node, campaignSave);
+  const status = getCampaignNodeStatus(node, campaignSave);
+  if (status === "locked" || node.isPlaceholder) {
+    return lockedReason;
+  }
+  if (status === "completed" && node.nodeType === "battle") {
+    const actStep = getCampaignActStepForNode(node.id);
+    if (node.id === "ashen_outpost") {
+      return "Act 1 complete; replay optional objectives safely or continue toward Cinderfen.";
+    }
+    return actStep?.replayHint ?? "Replay safely; first-clear rewards and one-time objective credit stay claimed.";
+  }
+  if (node.choices?.length) {
+    return "Pick a support choice when useful; choices use existing campaign resources and rewards.";
+  }
+  const actStep = getCampaignActStepForNode(node.id);
+  return actStep?.nextAction ?? "Complete this node to advance the campaign route.";
+}
