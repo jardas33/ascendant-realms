@@ -33,6 +33,9 @@ export interface HUDCallbacks {
   onPrivateDemoExit: () => void;
   onPrivateDemoFinish: () => void;
   onTutorialNext: () => void;
+  onTutorialDismiss: () => void;
+  onTutorialReopen: () => void;
+  onTutorialFocus: () => void;
   onMinimapMove: (normalizedX: number, normalizedY: number) => void;
   onMenu: () => void;
   onResume: () => void;
@@ -94,6 +97,7 @@ export interface HUDPauseMenuSnapshot {
   visible: boolean;
   title: string;
   description: string;
+  includeLumeHelp?: boolean;
 }
 
 export interface HUDObjectiveSnapshot {

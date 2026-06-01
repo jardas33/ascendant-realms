@@ -5,6 +5,14 @@ export function renderTutorialPanel(step: TutorialStepViewModel | undefined): st
   if (!step) {
     return "";
   }
+  if (step.dismissed) {
+    return `
+    <section class="tutorial-panel tutorial-reopen-panel" data-testid="tutorial-overlay" aria-label="Tutorial guidance hidden" aria-live="polite">
+      <button class="hud-button compact tutorial-primary" type="button" data-testid="tutorial-reopen" data-action="tutorial-reopen">Show Tutorial Help</button>
+    </section>
+  `;
+  }
+  const helpCopy = [step.hint, step.moreHelp, `Complete: ${step.completionConditionLabel}`].filter(Boolean);
   return `
     <section class="tutorial-panel" data-testid="tutorial-overlay" aria-label="Tutorial objective" aria-live="polite" aria-describedby="tutorial-instruction tutorial-condition" title="Drag empty panel space to move the objective box">
       <div class="tutorial-panel-header">
@@ -21,9 +29,25 @@ export function renderTutorialPanel(step: TutorialStepViewModel | undefined): st
       <div class="tutorial-panel-body" data-testid="tutorial-panel-body">
         <strong data-testid="tutorial-objective" id="tutorial-objective-title">${escapeHtml(step.title)}</strong>
         <p data-testid="tutorial-instruction" id="tutorial-instruction">${escapeHtml(step.instruction)}</p>
-        ${step.hint ? `<small data-testid="tutorial-hint">${escapeHtml(step.hint)}</small>` : ""}
+        ${step.reason ? `<small class="tutorial-reason" data-testid="tutorial-reason">${escapeHtml(step.reason)}</small>` : ""}
+        ${
+          helpCopy.length > 0
+            ? `<details class="tutorial-more-help" data-testid="tutorial-more-help">
+                <summary>More Help</summary>
+                ${helpCopy.map((copy) => `<p>${escapeHtml(copy ?? "")}</p>`).join("")}
+              </details>`
+            : ""
+        }
         <div class="tutorial-panel-footer">
           <span data-testid="tutorial-condition" id="tutorial-condition">${escapeHtml(step.completionConditionLabel)}</span>
+          ${
+            step.focusTarget
+              ? `<button class="hud-button compact tutorial-secondary" data-testid="tutorial-focus" data-action="tutorial-focus" aria-label="${escapeHtml(
+                  step.focusTarget.label
+                )}">${escapeHtml(step.focusTarget.label)}</button>`
+              : ""
+          }
+          <button class="hud-button compact tutorial-secondary" data-testid="tutorial-dismiss" data-action="tutorial-dismiss" aria-label="Dismiss tutorial guidance">Dismiss</button>
           ${
             step.isComplete
               ? `<button class="hud-button compact tutorial-primary" data-testid="tutorial-next" data-action="tutorial-next" aria-label="${escapeHtml(

@@ -103,6 +103,9 @@ interface CreateBattleSceneSystemsOptions {
   castAbilitySlot: (slot: number) => void;
   refreshHud: () => void;
   advanceTutorialStep: () => void;
+  dismissTutorialGuidance: () => void;
+  reopenTutorialGuidance: () => void;
+  focusTutorialObjective: () => void;
   toggleFogDebug: () => void;
   getTechState: (team: Team) => TechState;
   isUpgradeResearched: (team: Team, upgradeId: string) => boolean;
@@ -157,6 +160,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     castAbilitySlot,
     refreshHud,
     advanceTutorialStep,
+    dismissTutorialGuidance,
+    reopenTutorialGuidance,
+    focusTutorialObjective,
     toggleFogDebug,
     getTechState,
     isUpgradeResearched,
@@ -530,6 +536,9 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         AudioManager.play("ui_click");
       },
       onTutorialNext: advanceTutorialStep,
+      onTutorialDismiss: dismissTutorialGuidance,
+      onTutorialReopen: reopenTutorialGuidance,
+      onTutorialFocus: focusTutorialObjective,
       onMinimapMove: centerCameraFromMinimap,
       onMenu: openMainMenu,
       onResume: resumeBattle,

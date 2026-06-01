@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.95 procedural battlefield readability and placeholder-world rescue
+Updated: 2026-06-01 v0.96 first-time player onboarding and Tutorial UX rescue
+
+## v0.96 First-Time Player Onboarding And Tutorial UX Rescue - 2026-06-01
+
+Scope: first-session presentation and usability pass. This checkpoint rescues Tutorial step order/readability, compact contextual help, Salto first-step guidance, package metadata, and visual-QA coverage. It does not add gameplay, alter rewards, change saves, rename IDs, change campaign progression, broaden Lume rules, add maps/factions/races/art/assets, change balance, or start v0.97.
+
+Baseline:
+
+- Starting commit: `dc54bb7`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-dc54bb7`.
+- Baseline remote status: GitHub Actions run `26734904715` on `dc54bb7` completed successfully.
+
+Included work:
+
+- Proving Grounds now starts with selecting Aster instead of camera prose and proceeds through troop selection, movement, Crown Shrine capture, Command Hall selection, Barracks construction, Worker site assignment, Militia training, rally, Rally Banner, safe pressure, and completion.
+- Tutorial steps can show a short reason, collapsed More Help, and a player-initiated Focus Objective target.
+- Tutorial completion signals now include selecting starting troops and assigning a Worker to a resource site.
+- Tutorial panel now supports More Help, Focus Objective, Dismiss, and Reopen.
+- Battle HUD, pause menu, and campaign shell now share a collapsed onboarding help surface.
+- Fresh Salto selection now has a compact next-action card while keeping Start Battle immediately visible.
+- Visual QA now includes 110 screenshots after adding eight v0.96 first-session onboarding states.
+- Package generation and validation now require/copy the v0.96 docs and report the v0.96 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent onboarding preferences, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, reward IDs, hero rules, campaign progression, rewards, XP, or persistent settings changed.
+
+Verification:
+
+```text
+npm test - PASS, 95 files / 689 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 12 tests / 110 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 110 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence resolved during v0.96: initial fast smoke caught Tutorial preselection auto-completing the opening step, campaign primary-action crowding, and Tutorial More Help drag conflict; each fix was rerun. An early visual-QA timeout was rerun with a long timeout and passed. Hosted layout-core caught stale build output and small CSS overflow issues; final build and layout-core passed.
 
 ## v0.95 Procedural Battlefield Readability And Placeholder-World Rescue - 2026-05-31
 

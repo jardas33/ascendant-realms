@@ -21,8 +21,12 @@ describe("TutorialPanel", () => {
     expect(html).toContain("Reset");
     expect(html).toContain("Select Aster");
     expect(html).toContain("Click Aster");
-    expect(html).toContain("Selected units");
-    expect(html).toContain("Step 2 of 12");
+    expect(html).toContain("hero anchors");
+    expect(html).toContain('data-testid="tutorial-more-help"');
+    expect(html).toContain("WASD");
+    expect(html).toContain('data-testid="tutorial-focus"');
+    expect(html).toContain('data-testid="tutorial-dismiss"');
+    expect(html).toContain("Step 1 of 12");
     expect(html).toContain("Select the hero");
     expect(html).not.toContain("Next Objective");
     expect(html).toContain("Exit Tutorial");
@@ -40,8 +44,19 @@ describe("TutorialPanel", () => {
     const html = renderTutorialPanel(createTutorialStepViewModel(TUTORIALS[0], "finish_training", { finished: true }));
 
     expect(html).toContain("Complete Tutorial");
-    expect(html).toContain("You practiced the core loop");
-    expect(html).toContain("No rewards: no XP, items, resources, or campaign progress");
+    expect(html).toContain("No rewards or campaign progress were granted");
+    expect(html).toContain("Use the campaign when you are ready");
+  });
+
+  it("renders a keyboard reachable reopen state when dismissed", () => {
+    const html = renderTutorialPanel({
+      ...createTutorialStepViewModel(TUTORIALS[0], "select_hero"),
+      dismissed: true
+    });
+
+    expect(html).toContain('data-testid="tutorial-reopen"');
+    expect(html).toContain("Show Tutorial Help");
+    expect(html).not.toContain('data-testid="tutorial-panel-body"');
   });
 
   it("renders nothing outside tutorial mode", () => {

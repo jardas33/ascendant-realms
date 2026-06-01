@@ -1,5 +1,6 @@
 import type { HUDPauseMenuSnapshot } from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
+import { renderOnboardingHelpSurface } from "../OnboardingHelp";
 
 export function renderPauseMenu(menu: HUDPauseMenuSnapshot | undefined): string {
   if (!menu?.visible) {
@@ -13,6 +14,11 @@ export function renderPauseMenu(menu: HUDPauseMenuSnapshot | undefined): string 
         <button class="hud-button compact" data-testid="battle-resume" data-action="resume">Resume</button>
         <button class="hud-button compact" data-testid="battle-exit-menu" data-action="exit-menu">Exit to Main Menu</button>
       </div>
+      ${renderOnboardingHelpSurface({
+        testId: "battle-pause-help-surface",
+        className: "pause-help-surface",
+        includeLume: Boolean(menu.includeLumeHelp)
+      })}
     </section>
   `;
 }

@@ -1,13 +1,20 @@
-import type { TutorialDefinition, TutorialRequiredAction, TutorialStepDefinition } from "../core/GameTypes";
+import type {
+  TutorialDefinition,
+  TutorialFocusTargetDefinition,
+  TutorialRequiredAction,
+  TutorialStepDefinition
+} from "../core/GameTypes";
 
 export interface TutorialCompletionSignals {
   acknowledged?: boolean;
   heroSelected?: boolean;
+  troopsSelected?: boolean;
   heroMoved?: boolean;
   capturedSiteIds?: string[];
   resourceAmounts?: Record<string, number | undefined>;
   selectedBuildingIds?: string[];
   completedBuildingIds?: string[];
+  assignedWorkerSiteIds?: string[];
   trainedUnitIds?: string[];
   rallyBuildingIds?: string[];
   usedAbilityIds?: string[];
@@ -22,7 +29,11 @@ export interface TutorialStepViewModel {
   totalSteps: number;
   title: string;
   instruction: string;
+  reason?: string;
   hint?: string;
+  moreHelp?: string;
+  focusTarget?: TutorialFocusTargetDefinition;
+  dismissed?: boolean;
   completionConditionLabel: string;
   progressLabel: string;
   isComplete: boolean;
@@ -71,7 +82,10 @@ export function createTutorialStepViewModel(
     totalSteps,
     title: step.title,
     instruction: step.instruction,
+    reason: step.reason,
     hint: step.hint,
+    moreHelp: step.moreHelp,
+    focusTarget: step.focusTarget,
     completionConditionLabel: createCompletionConditionLabel(step),
     progressLabel: createProgressLabel(stepNumber, totalSteps, isComplete),
     isComplete,
@@ -91,6 +105,8 @@ export function isTutorialStepComplete(step: TutorialStepDefinition, signals: Tu
       return Boolean(signals.acknowledged);
     case "selectHero":
       return Boolean(signals.heroSelected);
+    case "selectTroops":
+      return Boolean(signals.troopsSelected);
     case "moveHero":
       return Boolean(signals.heroMoved);
     case "captureSite":
@@ -101,6 +117,8 @@ export function isTutorialStepComplete(step: TutorialStepDefinition, signals: Tu
       return hasAnyReference(step.references?.buildingIds, signals.selectedBuildingIds);
     case "buildStructure":
       return hasAnyReference(preferredTargetIds(step.references?.buildingIds), signals.completedBuildingIds);
+    case "assignWorker":
+      return hasAnyReference(step.references?.captureSiteIds, signals.assignedWorkerSiteIds);
     case "trainUnit":
       return hasAnyReference(step.references?.unitIds, signals.trainedUnitIds);
     case "setRally":
@@ -122,6 +140,8 @@ export function createCompletionConditionLabel(step: TutorialStepDefinition): st
       return "Read the objective";
     case "selectHero":
       return "Select the hero";
+    case "selectTroops":
+      return "Select starting troops";
     case "moveHero":
       return "Move the hero";
     case "captureSite":
@@ -132,6 +152,8 @@ export function createCompletionConditionLabel(step: TutorialStepDefinition): st
       return `Select ${formatId(step.references?.buildingIds?.[0] ?? "building")}`;
     case "buildStructure":
       return `Build ${formatId(preferredTargetIds(step.references?.buildingIds)[0] ?? "structure")}`;
+    case "assignWorker":
+      return `Assign Worker to ${formatId(step.references?.captureSiteIds?.[0] ?? "site")}`;
     case "trainUnit":
       return `Train ${formatId(step.references?.unitIds?.[0] ?? "unit")}`;
     case "setRally":

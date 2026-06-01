@@ -1,5 +1,41 @@
 # Changelog
 
+# v0.96 First-Time Player Onboarding And Tutorial UX Rescue - 2026-06-01
+
+This checkpoint improves first-session presentation only. It rescues the playable Tutorial sequence, one-action guidance copy, compact More Help, Focus Objective, Dismiss/Reopen, shared help surfaces, Salto first-step guidance, package metadata, and visual-QA coverage. It does not add gameplay, change rewards, alter saves, rename stable IDs, change campaign progression, broaden Lume rules, add maps/factions/races/art/assets, change balance, or start v0.97.
+
+Added:
+
+- `src/game/ui/OnboardingHelp.ts`.
+- `src/game/ui/OnboardingHelp.test.ts`.
+- `docs/V096_FIRST_SESSION_AUDIT.md`.
+- `docs/V096_CONTEXTUAL_ONBOARDING_SPEC.md`.
+- `docs/V096_TUTORIAL_UX_RESCUE_REPORT.md`.
+- `docs/V096_HELP_SURFACE_SPEC.md`.
+- `docs/V096_VISUAL_QA_REPORT.md`.
+- `docs/V096_IMPLEMENTATION_REPORT.md`.
+- `docs/V096_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Proving Grounds now opens with selecting Aster and breaks the first-session flow into clearer Tutorial objectives.
+- Tutorial steps can include short reason copy, collapsed More Help, and safe player-triggered Focus Objective targets.
+- Tutorial completion now covers selecting starting troops and assigning a Worker to a resource site.
+- Tutorial panel now supports More Help, Focus Objective, Dismiss, and Reopen.
+- Battle HUD, pause menu, and campaign shell now expose a shared collapsed help surface.
+- Fresh Salto selection now shows a compact next-action card without moving the primary action below the fold.
+- Visual QA now includes 110 screenshots after adding the v0.96 first-session states.
+- Package generation and validation now require/copy the v0.96 docs and report the v0.96 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, reward IDs, gameplay systems, hero rules, rewards, XP, campaign progression, replay rules, Tutorial no-reward safety, balance values, pathing, collision, fog simulation, Lume mechanics, maps, factions, races, units, buildings, art assets, imported assets, generated images, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 95 files / 689 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 12 tests / 110 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 110 screenshots / 7 contact sheets.
+- Non-pass evidence resolved before closeout: initial fast smoke caught Tutorial preselection auto-completion, campaign action crowding, and Tutorial More Help drag conflict; initial visual QA timed out at 20 minutes; hosted layout-core caught stale build output and small CSS overflow issues. Each was fixed or rerun successfully.
+
 # v0.95 Procedural Battlefield Readability And Placeholder-World Rescue - 2026-05-31
 
 This checkpoint improves battle presentation only. It rescues procedural placeholder terrain, fog readability, entity silhouettes, capture-site emphasis, label density, minimap clarity, package metadata, and visual-QA coverage. It does not add gameplay, change balance, alter saves, rename stable IDs, change fog logic, change Lume mechanics, add maps/factions/assets, import/generate art, start desktop work, or start v0.96.

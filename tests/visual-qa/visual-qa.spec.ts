@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 102;
+const EXPECTED_SCREENSHOT_COUNT = 110;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -872,6 +872,114 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, group, "Tutorial launch mobile", "tutorial-mobile.png", MOBILE, "Mobile Proving Grounds overlay and battle HUD density.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.96 first-session onboarding and help views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v096-first-session-onboarding";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await page.getByTestId("menu-tutorial").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("tutorial-objective")).toContainText("Select Aster");
+    await expect(page.getByTestId("tutorial-next")).toHaveCount(0);
+    await captureView(
+      page,
+      group,
+      "v0.96 Tutorial first objective 1920",
+      "v096-tutorial-first-objective-1920.png",
+      FULL_HD,
+      "Tutorial opens with Select Aster as the first explicit action and no advance button before completion."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "v0.96 Tutorial first objective 1600",
+      "v096-tutorial-first-objective-1600.png",
+      WIDE_DESKTOP,
+      "Tutorial overlay remains readable at 1600x900 with reason and focus controls."
+    );
+
+    await useViewport(page, LAPTOP);
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "v0.96 Tutorial first objective 1366",
+      "v096-tutorial-first-objective-1366.png",
+      LAPTOP,
+      "Tutorial overlay stays inside the 1366x768 viewport with the first action visible."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("tutorial-more-help").locator("summary").click();
+    await expect(page.getByTestId("tutorial-more-help")).toHaveAttribute("open", "");
+    await captureView(
+      page,
+      group,
+      "v0.96 Tutorial More Help",
+      "v096-tutorial-more-help-1600.png",
+      WIDE_DESKTOP,
+      "Tutorial More Help expands without camera forcing or panel drag interference."
+    );
+
+    await page.getByTestId("tutorial-dismiss").click();
+    await expect(page.getByTestId("tutorial-reopen")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "v0.96 Tutorial dismissed",
+      "v096-tutorial-dismissed-1600.png",
+      WIDE_DESKTOP,
+      "Dismissed Tutorial guidance leaves a compact Show Tutorial Help recovery action."
+    );
+
+    await useViewport(page, FULL_HD);
+    await startNewCampaign(page, "Visual v096 Onboarding");
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.getByTestId("campaign-onboarding-card")).toBeVisible();
+    await expectCampaignPrimaryActionAboveFold(page, `${group} campaign onboarding 1920`);
+    await expectNoCampaignNodeOverlap(page, `${group} campaign onboarding 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.96 Campaign onboarding 1920",
+      "v096-campaign-onboarding-1920.png",
+      FULL_HD,
+      "Fresh campaign keeps Salto selected, Start Battle visible, and first-session guidance below the primary action."
+    );
+
+    await useViewport(page, LAPTOP);
+    await expectCampaignPrimaryActionAboveFold(page, `${group} campaign onboarding 1366`);
+    await expectNoCampaignNodeOverlap(page, `${group} campaign onboarding 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.96 Campaign onboarding 1366",
+      "v096-campaign-onboarding-1366.png",
+      LAPTOP,
+      "Campaign onboarding remains map-first at 1366x768 with the primary action above the fold."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("campaign-help-surface").locator("summary").click();
+    await expect(page.getByTestId("campaign-help-surface")).toHaveAttribute("open", "");
+    await captureView(
+      page,
+      group,
+      "v0.96 Campaign quick help",
+      "v096-campaign-quick-help-1600.png",
+      WIDE_DESKTOP,
+      "Campaign Quick Help groups controls without stealing default map-shell space."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

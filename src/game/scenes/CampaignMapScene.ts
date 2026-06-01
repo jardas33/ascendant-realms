@@ -48,6 +48,7 @@ import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
 import { dismissRetinueUnit, retinueDeploymentUnits, retinueReserveUnits, toggleRetinueDeployment } from "../core/RetinueRules";
 import { isPrivatePlaytestToolsEnabled, PRIVATE_LUME_DEMO_ID, PRIVATE_LUME_DEMO_NOTICE } from "../playtest/PrivatePlaytestTools";
+import { renderOnboardingHelpSurface } from "../ui/OnboardingHelp";
 
 type CampaignTabId = "map" | "stronghold" | "hero" | "inventory" | "intel" | "reputation";
 
@@ -451,6 +452,11 @@ export class CampaignMapScene extends Phaser.Scene {
       <div class="menu-actions row campaign-secondary-actions">
         <button data-testid="campaign-inventory" data-campaign-action="inventory">Hero Inventory</button>
         <button data-testid="campaign-main-menu" data-campaign-action="menu">Main Menu</button>
+        ${renderOnboardingHelpSurface({
+          testId: "campaign-help-surface",
+          className: "campaign-help-surface",
+          includeLume: true
+        })}
       </div>
     `;
   }
@@ -635,6 +641,7 @@ export class CampaignMapScene extends Phaser.Scene {
           ${this.renderSelectedPrimaryAction()}
         </div>
       </div>
+      ${this.renderFirstSessionCampaignCard(node)}
       <details class="campaign-node-more" data-testid="campaign-node-more" data-has-choices="${hasChoices ? "true" : "false"}"${detailOpen}>
         <summary>${hasChoices ? "Choices And Details" : "More Details"}</summary>
         ${renderNodeDetails({
@@ -644,6 +651,31 @@ export class CampaignMapScene extends Phaser.Scene {
           selectedTacticalPlanId: this.selectedTacticalPlanId
         })}
       </details>
+    `;
+  }
+
+  private renderFirstSessionCampaignCard(node: CampaignNodeDefinition): string {
+    if (node.id !== "border_village" || this.campaignSave.completedNodeIds.includes("border_village")) {
+      return "";
+    }
+    const guidance = getCampaignNextAction(this.campaignSave, this.heroSave);
+    return `
+      <section class="campaign-onboarding-card" data-testid="campaign-onboarding-card" aria-label="Recommended first campaign action">
+        <p class="eyebrow">Recommended Next Action</p>
+        <h3>Start With Salto</h3>
+        <p><strong>Select Salto Outskirts, then use Start Battle.</strong></p>
+        <p class="quiet">Salto is the first persistent battle for sites, Workers, Barracks, army training, and Results rewards.</p>
+        <div class="campaign-onboarding-chips">
+          ${guidance.actions
+            .slice(0, 3)
+            .map((action) => `<span class="tag">${escapeHtml(action)}</span>`)
+            .join("")}
+        </div>
+        <details class="campaign-card-details">
+          <summary>More Help</summary>
+          <p class="quiet">${escapeHtml(guidance.body)}</p>
+        </details>
+      </section>
     `;
   }
 

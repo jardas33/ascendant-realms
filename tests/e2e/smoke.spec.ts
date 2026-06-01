@@ -308,6 +308,18 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
       return { selectedHero: true };
     }
 
+    if (targetStepId === "select_starting_troops") {
+      const troops = scene.units.filter(
+        (unit: any) => unit.team === "player" && unit.definition.id !== "worker" && unit.alive && unit !== scene.hero
+      );
+      if (troops.length === 0) {
+        throw new Error("Missing starting troops for tutorial smoke.");
+      }
+      scene.selectionSystem.setSelection(troops.slice(0, 2));
+      refresh();
+      return { selectedTroops: troops.slice(0, 2).map((unit: any) => unit.definition.id) };
+    }
+
     if (targetStepId === "move_hero") {
       scene.selectionSystem.setSelection([scene.hero]);
       scene.hero.setPosition(scene.activeMap.scenario.heroSpawn.x + 86, scene.activeMap.scenario.heroSpawn.y - 8);
@@ -321,18 +333,6 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
       const result = window.__ASCENDANT_TEST_HOOKS__?.captureSite?.("crown_shrine") ?? null;
       refresh();
       return result;
-    }
-
-    if (targetStepId === "gather_crowns") {
-      const beforeCrowns = scene.resources.player.crowns;
-      for (let index = 0; index < 7; index += 1) {
-        scene.resourceSystem.update(1, scene.captureSites, scene.units);
-      }
-      if (scene.resources.player.crowns <= beforeCrowns) {
-        scene.resources.player.crowns = beforeCrowns + 30;
-      }
-      refresh();
-      return { beforeCrowns, afterCrowns: scene.resources.player.crowns };
     }
 
     if (targetStepId === "select_command_hall") {
@@ -409,6 +409,23 @@ async function completeTutorialSceneStep(page: Page, stepId: string): Promise<Re
       throw new Error("Could not place Barracks for tutorial smoke.");
     }
 
+    if (targetStepId === "assign_worker_to_shrine") {
+      const site = scene.captureSites.find((entry: any) => entry.definition.id === "crown_shrine");
+      const worker = scene.units.find((unit: any) => unit.team === "player" && unit.definition.id === "worker" && unit.alive);
+      if (!site || site.owner !== "player") {
+        throw new Error("Crown Shrine must be captured before Worker assignment.");
+      }
+      if (!worker) {
+        throw new Error("Missing Worker for resource site assignment.");
+      }
+      worker.setPosition(site.position.x - site.radius + worker.radius + 8, site.position.y);
+      scene.selectionSystem.setSelection([worker]);
+      const assigned = scene.resourceSystem.requestWorkerAssignment(worker, site, scene.captureSites);
+      scene.resourceSystem.update(1, scene.captureSites, scene.units);
+      refresh();
+      return { assigned, workerSlots: site.workerAssignments.length };
+    }
+
     if (targetStepId === "train_militia") {
       const barracks = scene.buildings.find(
         (building: any) => building.team === "player" && building.definition.id === "barracks" && building.alive && building.isCompleted()
@@ -483,11 +500,12 @@ async function completeTutorialFlowForSmoke(page: Page): Promise<{
   pressure: Record<string, unknown> | null;
 }> {
   await completeTutorialSceneStep(page, "select_hero");
+  await completeTutorialSceneStep(page, "select_starting_troops");
   await completeTutorialSceneStep(page, "move_hero");
   await completeTutorialSceneStep(page, "capture_crown_shrine");
-  await completeTutorialSceneStep(page, "gather_crowns");
   await completeTutorialSceneStep(page, "select_command_hall");
   const built = await completeTutorialSceneStep(page, "build_barracks");
+  await completeTutorialSceneStep(page, "assign_worker_to_shrine");
   const trained = await completeTutorialSceneStep(page, "train_militia");
   const rally = await completeTutorialSceneStep(page, "set_barracks_rally");
   const ability = await completeTutorialSceneStep(page, "use_rally_banner");
@@ -498,23 +516,29 @@ async function completeTutorialFlowForSmoke(page: Page): Promise<{
 
 const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
   {
-    id: "advance-select-hero",
-    action: "clickTestId",
-    target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Select Aster", progress: "Step 2 of 12" },
-    debugLabel: "Advance to Select Aster"
-  },
-  {
     id: "select-hero",
     action: "selectHero",
     target: { type: "battleEntity", id: "hero" },
     debugLabel: "Select Aster"
   },
   {
+    id: "advance-select-troops",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Select Starting Troops", progress: "Step 2 of 12" },
+    debugLabel: "Advance to Select Starting Troops"
+  },
+  {
+    id: "select-starting-troops",
+    action: "selectTroops",
+    target: { type: "battleEntity", id: "militia" },
+    debugLabel: "Select starting troops"
+  },
+  {
     id: "advance-move-hero",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Move Aster", progress: "Step 3 of 12" },
+    expected: { title: "Move To The Road", progress: "Step 3 of 12" },
     debugLabel: "Advance to Move Hero"
   },
   {
@@ -537,23 +561,10 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     debugLabel: "Capture Crown Shrine"
   },
   {
-    id: "advance-gather-resources",
-    action: "clickTestId",
-    target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Gather Battle Crowns", progress: "Step 5 of 12" },
-    debugLabel: "Advance to Gather Resources"
-  },
-  {
-    id: "gather-crowns",
-    action: "captureSite",
-    target: { type: "battleEntity", id: "gather_crowns" },
-    debugLabel: "Tick Crown income"
-  },
-  {
     id: "advance-command-hall",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Select Command Hall", progress: "Step 6 of 12" },
+    expected: { title: "Select Command Hall", progress: "Step 5 of 12" },
     debugLabel: "Advance to Select Command Hall"
   },
   {
@@ -566,7 +577,7 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-build-barracks",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Build Barracks", progress: "Step 7 of 12" },
+    expected: { title: "Build Barracks", progress: "Step 6 of 12" },
     debugLabel: "Advance to Build Barracks"
   },
   {
@@ -574,6 +585,19 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     action: "buildBarracks",
     target: { type: "battleEntity", id: "barracks" },
     debugLabel: "Build Barracks"
+  },
+  {
+    id: "advance-assign-worker",
+    action: "clickTestId",
+    target: { type: "testId", id: "tutorial-next" },
+    expected: { title: "Assign Worker To Shrine", progress: "Step 7 of 12" },
+    debugLabel: "Advance to Worker assignment"
+  },
+  {
+    id: "assign-worker-to-shrine",
+    action: "assignWorkerToSite",
+    target: { type: "battleEntity", id: "crown_shrine" },
+    debugLabel: "Assign Worker to Crown Shrine"
   },
   {
     id: "advance-train-militia",
@@ -631,7 +655,7 @@ const tutorialCompletionCommandLog: readonly SemanticCommand[] = [
     id: "advance-finish-training",
     action: "clickTestId",
     target: { type: "testId", id: "tutorial-next" },
-    expected: { title: "Training Complete", progress: "Step 12 of 12: complete", text: "No rewards:" },
+    expected: { title: "Training Complete", progress: "Step 12 of 12: complete", text: "No rewards or campaign progress" },
     debugLabel: "Advance to Training Complete"
   },
   {
@@ -721,12 +745,12 @@ async function clickTutorialNextAndWaitForState(page: Page, command: SemanticCom
 }
 
 const TUTORIAL_ADVANCE_TARGET_STEP_IDS: Record<string, string> = {
-  "advance-select-hero": "select_hero",
+  "advance-select-troops": "select_starting_troops",
   "advance-move-hero": "move_hero",
   "advance-capture-site": "capture_crown_shrine",
-  "advance-gather-resources": "gather_crowns",
   "advance-command-hall": "select_command_hall",
   "advance-build-barracks": "build_barracks",
+  "advance-assign-worker": "assign_worker_to_shrine",
   "advance-train-militia": "train_militia",
   "advance-set-rally": "set_barracks_rally",
   "advance-use-ability": "use_rally_banner",
@@ -821,17 +845,23 @@ function tutorialStepForCommand(command: SemanticCommand): string {
   if (command.action === "selectHero") {
     return "select_hero";
   }
+  if (command.action === "selectTroops") {
+    return "select_starting_troops";
+  }
   if (command.action === "moveHeroToSemanticLocation") {
     return "move_hero";
   }
   if (command.action === "captureSite") {
-    return command.target?.id === "gather_crowns" ? "gather_crowns" : "capture_crown_shrine";
+    return "capture_crown_shrine";
   }
   if (command.action === "selectBuilding") {
     return "select_command_hall";
   }
   if (command.action === "buildBarracks") {
     return "build_barracks";
+  }
+  if (command.action === "assignWorkerToSite") {
+    return "assign_worker_to_shrine";
   }
   if (command.action === "trainMilitia") {
     return "train_militia";
@@ -895,9 +925,28 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await clickReady(page.getByTestId("menu-tutorial"), "smoke tutorial entry launch", SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleLoaded(page);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
-    await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
-    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
-    await expect(page.getByTestId("tutorial-next")).toContainText("Next Objective");
+    await expect(page.getByTestId("tutorial-objective")).toContainText("Select Aster");
+    await expect(page.getByTestId("tutorial-instruction")).toContainText("Click Aster or press H.");
+    await expect(page.getByTestId("tutorial-reason")).toContainText("hero anchors");
+    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12");
+    await expect(page.getByTestId("tutorial-next")).toHaveCount(0);
+    await expect(page.getByTestId("tutorial-more-help")).not.toHaveAttribute("open", "");
+    await page.getByTestId("tutorial-more-help").locator("summary").click();
+    await expect(page.getByTestId("tutorial-more-help")).toHaveAttribute("open", "");
+    await expect(page.getByTestId("tutorial-more-help")).toContainText("WASD");
+    await page.getByTestId("tutorial-more-help").locator("summary").click();
+    await expect(page.getByTestId("tutorial-more-help")).not.toHaveAttribute("open", "");
+    await clickReady(page.getByTestId("tutorial-focus"), "smoke tutorial focus objective", HUD_TOGGLE_CLICK_OPTIONS);
+    await clickReady(page.getByTestId("tutorial-dismiss"), "smoke tutorial dismiss", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: async () => (await page.getByTestId("tutorial-reopen").count()) > 0
+    });
+    await expect(page.getByTestId("tutorial-reopen")).toBeVisible();
+    await clickReady(page.getByTestId("tutorial-reopen"), "smoke tutorial reopen", {
+      ...HUD_TOGGLE_CLICK_OPTIONS,
+      successCheckAfterClick: async () => (await page.getByTestId("tutorial-panel-body").count()) > 0
+    });
+    await expect(page.getByTestId("tutorial-panel-body")).toBeVisible();
     const overlayBox = await page.getByTestId("tutorial-overlay").boundingBox();
     const viewport = page.viewportSize();
     expect(overlayBox).not.toBeNull();
@@ -941,8 +990,9 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     });
     await expect(page.getByTestId("tutorial-overlay")).toHaveAttribute("data-tutorial-minimized", "false");
     await expect(page.getByTestId("tutorial-panel-body")).toBeVisible();
-    await expect(page.getByTestId("tutorial-next")).toBeVisible();
     await page.keyboard.press("H");
+    await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
+    await expect(page.getByTestId("tutorial-next")).toBeVisible();
     await expect(page.getByTestId("selection-side-panel")).toBeVisible();
     await clickReady(page.getByTestId("side-panel-minimize"), "smoke selected side panel minimize", {
       ...HUD_TOGGLE_CLICK_OPTIONS,
@@ -1070,7 +1120,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
       runtimeXp: 0
     });
     expect(Number(pressure?.unitsKilled ?? 0)).toBeGreaterThanOrEqual(1);
-    await expect(page.getByTestId("tutorial-instruction")).toContainText("No rewards:");
+    await expect(page.getByTestId("tutorial-instruction")).toContainText("No rewards or campaign progress");
     await expect(page.getByTestId("tutorial-instruction")).toContainText("campaign progress");
     await expect(page.getByTestId("tutorial-next")).toContainText("Complete Tutorial");
     expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBeNull();

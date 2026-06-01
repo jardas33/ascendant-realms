@@ -2,6 +2,7 @@ import type { AbilityDefinition } from "../../core/GameTypes";
 import { ABILITY_BY_ID } from "../../data/contentIndex";
 import { Hero } from "../../entities/Hero";
 import { selectionTitle } from "../SelectionPanel";
+import { renderOnboardingHelpSurface } from "../OnboardingHelp";
 import { renderStatusLine, renderHintLine } from "./AlertPanel";
 import { renderCommandActions } from "./CommandPanel";
 import { renderHeroHudPanel, renderAbilities } from "./HeroHudPanel";
@@ -27,6 +28,12 @@ export function renderHud(snapshot: HUDSnapshot): string {
   return `
     <div class="top-bar" data-testid="battle-hud">
       <div class="resource-row" data-testid="battle-resources">${renderResources(snapshot.resources)}</div>
+      ${renderOnboardingHelpSurface({
+        testId: "battle-help-surface",
+        className: "battle-help-surface",
+        summary: "Help",
+        includeLume: Boolean(snapshot.lumeNetwork)
+      })}
       <button class="hud-button compact" data-testid="battle-menu" data-action="menu">Menu</button>
     </div>
     ${renderHeroHudPanel(snapshot.hero)}

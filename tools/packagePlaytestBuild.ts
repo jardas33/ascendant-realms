@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.95 procedural battlefield readability and placeholder-world rescue";
+const CHECKPOINT = "v0.96 first-time player onboarding and Tutorial UX rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -359,6 +359,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V095_IMPLEMENTATION_REPORT.md", join(packageDir, "V095_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V095_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V095_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V095_DEFERRED_FINAL_ART_REQUIREMENTS.md", join(packageDir, "V095_DEFERRED_FINAL_ART_REQUIREMENTS.md"));
+  await copyMarkdown("docs/V096_FIRST_SESSION_AUDIT.md", join(packageDir, "V096_FIRST_SESSION_AUDIT.md"));
+  await copyMarkdown("docs/V096_CONTEXTUAL_ONBOARDING_SPEC.md", join(packageDir, "V096_CONTEXTUAL_ONBOARDING_SPEC.md"));
+  await copyMarkdown("docs/V096_TUTORIAL_UX_RESCUE_REPORT.md", join(packageDir, "V096_TUTORIAL_UX_RESCUE_REPORT.md"));
+  await copyMarkdown("docs/V096_HELP_SURFACE_SPEC.md", join(packageDir, "V096_HELP_SURFACE_SPEC.md"));
+  await copyMarkdown("docs/V096_VISUAL_QA_REPORT.md", join(packageDir, "V096_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V096_IMPLEMENTATION_REPORT.md", join(packageDir, "V096_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V096_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V096_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -458,7 +465,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.95, start with V095_EMMANUEL_RETEST_CHECKLIST.md, V095_PROCEDURAL_BATTLEFIELD_READABILITY_SPEC.md, V095_ENTITY_SILHOUETTE_PLACEHOLDER_SPEC.md, V095_CAPTURE_SITE_AND_LABEL_DENSITY_REPORT.md, and V095_VISUAL_QA_REPORT.md. This package polishes battlefield placeholder readability, fog/terrain presentation, entity silhouettes, capture-site labels, HUD notification density, and minimap readability only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.96, start with V096_EMMANUEL_RETEST_CHECKLIST.md, V096_FIRST_SESSION_AUDIT.md, V096_CONTEXTUAL_ONBOARDING_SPEC.md, V096_TUTORIAL_UX_RESCUE_REPORT.md, V096_HELP_SURFACE_SPEC.md, and V096_VISUAL_QA_REPORT.md. This package rescues first-session onboarding, Tutorial step order, contextual help, and first-campaign guidance only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
 
 ## Known Warning
 

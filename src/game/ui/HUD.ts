@@ -136,6 +136,18 @@ export class HUD {
         callbacks.onTutorialNext();
         handled = true;
       }
+      if (action === "tutorial-dismiss") {
+        callbacks.onTutorialDismiss();
+        handled = true;
+      }
+      if (action === "tutorial-reopen") {
+        callbacks.onTutorialReopen();
+        handled = true;
+      }
+      if (action === "tutorial-focus") {
+        callbacks.onTutorialFocus();
+        handled = true;
+      }
       if (action === "tutorial-minimize") {
         this.tutorialPanelMinimized = !this.tutorialPanelMinimized;
         this.applyTutorialPanelState();
@@ -405,7 +417,7 @@ export class HUD {
 
 const STABLE_INTERACTION_SELECTOR = ".top-bar, .side-panel, .objectives-panel, .tutorial-panel, .minimap-shell, .pause-menu-panel";
 const SCROLLABLE_HUD_SELECTORS = [".side-panel", ".objectives-panel", ".tutorial-panel"] as const;
-const TUTORIAL_PANEL_NON_DRAG_SELECTOR = "button, a, input, select, textarea, [role='button'], [data-action]";
+const TUTORIAL_PANEL_NON_DRAG_SELECTOR = "button, a, input, select, textarea, summary, details, [role='button'], [data-action]";
 
 function isStableInteractionTarget(target: EventTarget | null): boolean {
   return target instanceof Element && Boolean(target.closest(STABLE_INTERACTION_SELECTOR));

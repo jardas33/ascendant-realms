@@ -128,7 +128,7 @@ import {
   type TutorialCompletionSignals,
   type TutorialStepViewModel
 } from "../tutorial/TutorialStepModel";
-import type { TutorialDefinition } from "../core/GameTypes";
+import type { TutorialDefinition, TutorialFocusTargetDefinition } from "../core/GameTypes";
 import { AudioManager } from "../systems/AudioManager";
 import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
@@ -292,6 +292,7 @@ export class BattleScene extends Phaser.Scene {
   private tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
   private tutorialStepId?: string;
   private tutorialDefeatedUnitIds = new Set<string>();
+  private tutorialGuidanceDismissed = false;
   private commandHallWarningCooldown = 0;
   private minimapPings: MinimapPing[] = [];
   private nextMinimapPingId = 1;
@@ -452,6 +453,7 @@ export class BattleScene extends Phaser.Scene {
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
     this.tutorialDefeatedUnitIds = new Set<string>();
+    this.tutorialGuidanceDismissed = false;
     this.commandHallWarningCooldown = 0;
     this.minimapPings = [];
     this.nextMinimapPingId = 1;
@@ -530,6 +532,9 @@ export class BattleScene extends Phaser.Scene {
       castAbilitySlot: (slot) => this.castAbilitySlot(slot),
       refreshHud: () => this.refreshBattleHud(0),
       advanceTutorialStep: () => this.advanceTutorialStep(),
+      dismissTutorialGuidance: () => this.dismissTutorialGuidance(),
+      reopenTutorialGuidance: () => this.reopenTutorialGuidance(),
+      focusTutorialObjective: () => this.focusTutorialObjective(),
       toggleFogDebug: () => this.toggleFogDebug(),
       getTechState: (team) => this.getTechState(team),
       isUpgradeResearched: (team, upgradeId) => this.isUpgradeResearched(team, upgradeId),
@@ -1157,6 +1162,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private initialPlayerSelection(): Unit[] {
+    if (this.launch.request.mode === "tutorial") {
+      return [];
+    }
     const playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
     return playerUnits.length > 0 ? playerUnits : [this.hero];
   }
@@ -1368,7 +1376,8 @@ export class BattleScene extends Phaser.Scene {
         ? {
             visible: true,
             title: "Paused",
-            description: "Battle simulation is paused. Resume when ready, or exit to the main menu after confirming this is what you want."
+            description: "Battle simulation is paused. Resume when ready, or exit to the main menu after confirming this is what you want.",
+            includeLumeHelp: Boolean(this.lumeNetworkDirector)
           }
         : undefined
     });
@@ -2028,7 +2037,10 @@ export class BattleScene extends Phaser.Scene {
     if (!stepId) {
       return undefined;
     }
-    return createTutorialStepViewModel(tutorial, stepId, this.createTutorialCompletionSignals(tutorial, stepId));
+    return {
+      ...createTutorialStepViewModel(tutorial, stepId, this.createTutorialCompletionSignals(tutorial, stepId)),
+      dismissed: this.tutorialGuidanceDismissed
+    };
   }
 
   private activeTutorial(): TutorialDefinition {
@@ -2038,6 +2050,10 @@ export class BattleScene extends Phaser.Scene {
   private createTutorialCompletionSignals(tutorial: TutorialDefinition, stepId?: string): TutorialCompletionSignals {
     const step = tutorial.steps.find((entry) => entry.id === stepId);
     const selected = this.selectionSystem?.getSelected() ?? [];
+    const selectedTroops = selected.filter(
+      (entity): entity is Unit =>
+        entity instanceof Unit && !(entity instanceof Hero) && entity.team === "player" && entity.alive && entity.definition.id !== "worker"
+    );
     const movedDistance = this.hero
       ? Phaser.Math.Distance.Between(
           this.hero.position.x,
@@ -2050,6 +2066,7 @@ export class BattleScene extends Phaser.Scene {
     return {
       acknowledged: step?.requiredAction === "readInstructions",
       heroSelected: selected.some((entity) => entity === this.hero || entity instanceof Hero),
+      troopsSelected: selectedTroops.length > 0,
       heroMoved: movedDistance >= 48,
       capturedSiteIds: this.captureSites
         .filter((site) => site.owner === "player")
@@ -2066,6 +2083,9 @@ export class BattleScene extends Phaser.Scene {
       completedBuildingIds: this.buildings
         .filter((building) => building.alive && building.team === "player" && building.isCompleted())
         .map((building) => building.definition.id),
+      assignedWorkerSiteIds: this.captureSites
+        .filter((site) => site.owner === "player" && site.workerAssignments.length > 0)
+        .map((site) => site.definition.id),
       trainedUnitIds: [...this.runtime.stats.trainedUnitIds],
       rallyBuildingIds: this.buildings
         .filter((building) => building.alive && building.team === "player" && Boolean(building.rallyPoint))
@@ -2098,8 +2118,68 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     this.tutorialStepId = advanceTutorialStep(tutorial, stepId);
+    this.tutorialGuidanceDismissed = false;
     this.showMessage("Tutorial objective updated");
     this.refreshBattleHud(0);
+  }
+
+  private dismissTutorialGuidance(): void {
+    if (this.launch.request.mode !== "tutorial") {
+      return;
+    }
+    this.tutorialGuidanceDismissed = true;
+    this.showMessage("Tutorial guidance hidden. Use Show Tutorial Help to reopen.", undefined, undefined, "#d9eee8", {
+      priority: "command"
+    });
+    this.refreshBattleHud(0);
+  }
+
+  private reopenTutorialGuidance(): void {
+    if (this.launch.request.mode !== "tutorial") {
+      return;
+    }
+    this.tutorialGuidanceDismissed = false;
+    this.refreshBattleHud(0);
+  }
+
+  private focusTutorialObjective(): void {
+    if (this.launch.request.mode !== "tutorial") {
+      return;
+    }
+    const tutorial = this.activeTutorial();
+    const stepId = this.tutorialStepId ?? firstTutorialStepId(tutorial);
+    const target = tutorial.steps.find((entry) => entry.id === stepId)?.focusTarget;
+    const point = target ? this.resolveTutorialFocusPoint(target) : undefined;
+    if (!target || !point) {
+      this.showMessage("Tutorial focus target unavailable.", undefined, undefined, "#ffd27a", { priority: "command" });
+      return;
+    }
+    this.cameraSystem.centerOn(point);
+    this.addMinimapPing(point.x, point.y, "#f6e27d", target.label);
+    this.showMessage(target.label, point.x, point.y - 72, "#f6e27d", { priority: "command" });
+    this.refreshBattleHud(0);
+  }
+
+  private resolveTutorialFocusPoint(target: TutorialFocusTargetDefinition): Position | undefined {
+    if (target.type === "hero") {
+      return this.hero?.position;
+    }
+    if (target.type === "friendlyTroops") {
+      return this.units.find((unit) => unit.alive && unit.team === "player" && unit.definition.id !== "worker")?.position;
+    }
+    if (target.type === "worker") {
+      return this.units.find((unit) => unit.alive && unit.team === "player" && unit.definition.id === (target.id ?? "worker"))?.position;
+    }
+    if (target.type === "captureSite") {
+      return this.captureSites.find((site) => site.definition.id === target.id || site.id === target.id)?.position;
+    }
+    if (target.type === "building") {
+      return this.buildings.find((building) => building.alive && building.team === "player" && building.definition.id === target.id)?.position;
+    }
+    if (target.type === "enemy") {
+      return this.units.find((unit) => unit.alive && unit.team === "enemy" && unit.definition.id === target.id)?.position;
+    }
+    return undefined;
   }
 
   private warnIfCommandHallUnderAttack(target: BaseEntity): void {

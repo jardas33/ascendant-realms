@@ -442,9 +442,6 @@ async function launchTutorialOverlay(page: Page, label: string): Promise<void> {
   await page.getByTestId("menu-tutorial").evaluate((element) => (element as HTMLElement).click());
   await expectBattleLoaded(page, `${label} tutorial battle`);
   await expect(page.getByTestId("tutorial-overlay")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId("tutorial-next")).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByTestId("tutorial-next")).toBeEnabled({ timeout: 15_000 });
-  await expectReachableButton(page, page.getByTestId("tutorial-next"), `${label} tutorial next after launch`);
 }
 
 async function expectBattleCommandButtonsReachable(page: Page, actions: string[], label: string): Promise<void> {
@@ -1107,6 +1104,10 @@ test.describe("Ascendant Realms responsive layout", () => {
     await clickReady(page.getByTestId("hero-start"), "v0.94 Begin Campaign", UI_TRANSITION_CLICK_OPTIONS);
     await expect(page.getByTestId("campaign-map")).toBeVisible();
     await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.getByTestId("campaign-onboarding-card")).toContainText("Start With Salto");
+    await expect(page.getByTestId("campaign-onboarding-card")).toContainText("Start Battle");
+    await expect(page.getByTestId("campaign-onboarding-card").locator(".campaign-card-details")).not.toHaveAttribute("open", "");
+    await expect(page.getByTestId("campaign-help-surface")).toContainText("Quick Help");
     await expect(page.locator(".campaign-selected-summary")).toContainText("Primary objective");
     await expect(page.locator(".campaign-selected-summary")).toContainText("Reward");
     await expect(page.locator(".campaign-selected-summary")).not.toContainText("Pre-battle intelligence");
@@ -1322,9 +1323,12 @@ test.describe("Ascendant Realms responsive layout", () => {
       test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await launchTutorialOverlay(page, viewport.label);
-      await expect(page.getByTestId("tutorial-objective")).toContainText("Find Your Army");
-      await expect(page.getByTestId("tutorial-instruction")).toContainText("Pan with WASD or arrow keys");
-      await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12: complete");
+      await expect(page.getByTestId("tutorial-objective")).toContainText("Select Aster");
+      await expect(page.getByTestId("tutorial-instruction")).toContainText("Click Aster or press H.");
+      await expect(page.getByTestId("tutorial-reason")).toContainText("hero anchors");
+      await expect(page.getByTestId("tutorial-progress")).toContainText("Step 1 of 12");
+      await expect(page.getByTestId("tutorial-next")).toHaveCount(0);
+      await expect(page.getByTestId("tutorial-more-help")).not.toHaveAttribute("open", "");
       await expectNoHorizontalOverflow(page, `${viewport.label} tutorial overlay`);
       await expectInViewport(page, page.getByTestId("tutorial-overlay"), `${viewport.label} tutorial overlay`);
       await expectTutorialOverlayHasFeedbackPriority(page, `${viewport.label} tutorial overlay`);
@@ -1335,7 +1339,8 @@ test.describe("Ascendant Realms responsive layout", () => {
           Math.min(320, viewport.width - 24) - 2
         );
       }
-      await expectReachableButton(page, page.getByTestId("tutorial-next"), `${viewport.label} tutorial next`);
+      await expectReachableButton(page, page.getByTestId("tutorial-focus"), `${viewport.label} tutorial focus`);
+      await expectReachableButton(page, page.getByTestId("tutorial-dismiss"), `${viewport.label} tutorial dismiss`);
       await expectReachableButton(page, page.getByTestId("tutorial-exit"), `${viewport.label} tutorial exit`);
       await expectWithinViewportWidth(page, page.locator(".side-panel"), `${viewport.label} battle command panel`);
     });

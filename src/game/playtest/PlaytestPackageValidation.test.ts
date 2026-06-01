@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.95 procedural battlefield readability and placeholder-world rescue",
+          checkpoint: "v0.96 first-time player onboarding and Tutorial UX rescue",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -378,6 +378,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V095_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.95 implementation report" },
       { path: "V095_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.95 Emmanuel retest" },
       { path: "V095_DEFERRED_FINAL_ART_REQUIREMENTS.md", sizeBytes: 20, textContent: "v0.95 deferred final art" },
+      { path: "V096_FIRST_SESSION_AUDIT.md", sizeBytes: 20, textContent: "v0.96 first session audit" },
+      { path: "V096_CONTEXTUAL_ONBOARDING_SPEC.md", sizeBytes: 20, textContent: "v0.96 onboarding spec" },
+      { path: "V096_TUTORIAL_UX_RESCUE_REPORT.md", sizeBytes: 20, textContent: "v0.96 tutorial report" },
+      { path: "V096_HELP_SURFACE_SPEC.md", sizeBytes: 20, textContent: "v0.96 help surface spec" },
+      { path: "V096_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.96 visual QA report" },
+      { path: "V096_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.96 implementation report" },
+      { path: "V096_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.96 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

@@ -3,11 +3,13 @@ export type TutorialStatus = "planned" | "scaffolded" | "playable";
 export type TutorialStepType =
   | "info"
   | "selectHero"
+  | "selectTroops"
   | "moveHero"
   | "captureSite"
   | "gatherResources"
   | "selectBuilding"
   | "buildStructure"
+  | "assignWorker"
   | "trainUnit"
   | "setRally"
   | "useHeroAbility"
@@ -19,11 +21,13 @@ export type TutorialLaunchMode = "battle";
 export type TutorialObjectiveType =
   | "acknowledge"
   | "selectHero"
+  | "selectTroops"
   | "moveHero"
   | "captureSite"
   | "resourceThreshold"
   | "selectBuilding"
   | "buildStructure"
+  | "assignWorker"
   | "trainUnit"
   | "setRally"
   | "useHeroAbility"
@@ -33,16 +37,32 @@ export type TutorialObjectiveType =
 export type TutorialRequiredAction =
   | "readInstructions"
   | "selectHero"
+  | "selectTroops"
   | "moveHero"
   | "captureSite"
   | "waitForIncome"
   | "selectBuilding"
   | "buildStructure"
+  | "assignWorker"
   | "trainUnit"
   | "setRally"
   | "useHeroAbility"
   | "defeatEnemy"
   | "finish";
+
+export type TutorialFocusTargetType =
+  | "hero"
+  | "friendlyTroops"
+  | "captureSite"
+  | "building"
+  | "worker"
+  | "enemy";
+
+export interface TutorialFocusTargetDefinition {
+  type: TutorialFocusTargetType;
+  id?: string;
+  label: string;
+}
 
 export interface TutorialStepReferences {
   mapIds?: string[];
@@ -59,6 +79,9 @@ export interface TutorialStepDefinition {
   title: string;
   description: string;
   instruction: string;
+  reason?: string;
+  moreHelp?: string;
+  focusTarget?: TutorialFocusTargetDefinition;
   objectiveType: TutorialObjectiveType;
   requiredAction: TutorialRequiredAction;
   hint?: string;

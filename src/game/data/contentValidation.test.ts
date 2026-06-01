@@ -299,13 +299,13 @@ describe("content validation", () => {
       noReward: true
     });
     expect(TUTORIALS[0].steps.map((step) => step.id)).toEqual([
-      "camera_controls",
       "select_hero",
+      "select_starting_troops",
       "move_hero",
       "capture_crown_shrine",
-      "gather_crowns",
       "select_command_hall",
       "build_barracks",
+      "assign_worker_to_shrine",
       "train_militia",
       "set_barracks_rally",
       "use_rally_banner",
@@ -360,17 +360,17 @@ describe("content validation", () => {
           "Tutorial proving_grounds_basics has invalid status missing_status.",
           "Tutorial proving_grounds_basics references missing map missing_map.",
           "Tutorial proving_grounds_basics must keep noReward true.",
-          "Duplicate Tutorial proving_grounds_basics step id: camera_controls",
-          "Tutorial proving_grounds_basics step camera_controls needs title, description, and instruction.",
-          "Tutorial proving_grounds_basics step camera_controls has invalid type bad_step.",
-          "Tutorial proving_grounds_basics step camera_controls has invalid objective type bad_objective.",
-          "Tutorial proving_grounds_basics step camera_controls has invalid required action bad_action.",
-          "Tutorial proving_grounds_basics step camera_controls references missing map missing_step_map.",
-          "Tutorial proving_grounds_basics step camera_controls references missing unit missing_unit.",
-          "Tutorial proving_grounds_basics step camera_controls references missing building missing_building.",
-          "Tutorial proving_grounds_basics step camera_controls references missing ability missing_ability.",
-          "Tutorial proving_grounds_basics step camera_controls references missing resource missing_resource.",
-          "Tutorial proving_grounds_basics step camera_controls references missing capture site missing_site."
+          "Duplicate Tutorial proving_grounds_basics step id: select_hero",
+          "Tutorial proving_grounds_basics step select_hero needs title, description, and instruction.",
+          "Tutorial proving_grounds_basics step select_hero has invalid type bad_step.",
+          "Tutorial proving_grounds_basics step select_hero has invalid objective type bad_objective.",
+          "Tutorial proving_grounds_basics step select_hero has invalid required action bad_action.",
+          "Tutorial proving_grounds_basics step select_hero references missing map missing_step_map.",
+          "Tutorial proving_grounds_basics step select_hero references missing unit missing_unit.",
+          "Tutorial proving_grounds_basics step select_hero references missing building missing_building.",
+          "Tutorial proving_grounds_basics step select_hero references missing ability missing_ability.",
+          "Tutorial proving_grounds_basics step select_hero references missing resource missing_resource.",
+          "Tutorial proving_grounds_basics step select_hero references missing capture site missing_site."
         ])
       );
     } finally {
