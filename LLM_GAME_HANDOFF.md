@@ -1,12 +1,64 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-05-31 v0.93 runtime UI foundation tokens and mission-panel state reset
+Last updated: 2026-05-31 v0.94 main menu ascendant creation and campaign-shell density rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, and v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, and v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art. No runtime rebrand is approved.
+
+## Current v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
+
+Status: v0.94 is a presentation-only usability checkpoint. It improves the first desktop menu impression, reorganizes existing hero creation into three staged panels, compacts the selected mission panel, strengthens campaign map readability, improves campaign-tab card hierarchy, and groups ordinary Results expanded details. It does not add gameplay, change hero rules, alter rewards, change saves, rename stable IDs, add races/maps/factions/art, rebrand the runtime title, or start desktop work.
+
+Baseline:
+
+- Starting commit: `a5606fb`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-a5606fb`.
+- Baseline remote status: GitHub Actions run `26726003025` on `a5606fb` completed successfully.
+
+Included work:
+
+- Updated `MainMenuScene` and main-menu CSS with a wider desktop composition and grouped Play, Practice, and Manage actions.
+- Updated `HeroCreationScene` and form CSS with Step 1 Choose Class, Step 2 Choose Origin, and Step 3 Review Hero while preserving class/origin ids and hero rules.
+- Updated `CampaignMapScene` and campaign CSS with compact selected mission facts, reward chips, clearer selected routes, dimmer future routes, larger labels, and card-based campaign tabs.
+- Updated ordinary Results expanded details with accordion groups while preserving compact Results and the private-demo Results path.
+- Added focused v0.94 layout coverage and expanded visual-QA coverage from 65 to 84 screenshots.
+- Added all required v0.94 specs, reports, and Emmanuel retest checklist.
+
+Runtime/save/art boundary:
+
+- Presentation markup, CSS, and tests changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, hero rules, rewards, XP, campaign progression, replay rules, Tutorial rules, gameplay values, maps, factions, races, units, buildings, art assets, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+```text
+npm test - PASS, 93 files / 683 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests after fixing mobile-short menu overflow.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 10 tests / 84 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 84 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence resolved during v0.94: an initial fast-smoke run exposed campaign node overlap after larger node labels; node size/positions were tightened and fast smoke passed. An initial full-smoke run timed out before the Results objectives accordion default was opened; the exact failing path and full smoke then passed. Hosted layout-core later caught mobile-short main-menu overflow; responsive columns were collapsed and layout-core passed. Visual QA then caught the locked-mission primary action slightly below the 1366x768 fold; the mission panel pacing chip/spacing was compacted and final visual QA passed with the full 84-screenshot set.
+
+Closeout note: commit as `Checkpoint v0.94 main menu ascendant creation and campaign-shell density rescue`, package cleanly on the final commit, verify, push safely, and stop. Do not start v0.95 automatically.
 
 ## Current v0.93 Runtime UI Foundation Tokens And Mission-Panel State Reset - 2026-05-31
 

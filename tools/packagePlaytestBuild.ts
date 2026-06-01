@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.93 runtime UI foundation tokens and mission-panel state reset";
+const CHECKPOINT = "v0.94 main menu ascendant creation and campaign-shell density rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -344,6 +344,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V093_VISUAL_QA_REPORT.md", join(packageDir, "V093_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V093_IMPLEMENTATION_REPORT.md", join(packageDir, "V093_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V093_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V093_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V094_MAIN_MENU_RESCUE_SPEC.md", join(packageDir, "V094_MAIN_MENU_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V094_ASCENDANT_CREATION_UX_SPEC.md", join(packageDir, "V094_ASCENDANT_CREATION_UX_SPEC.md"));
+  await copyMarkdown("docs/V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md", join(packageDir, "V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md"));
+  await copyMarkdown("docs/V094_RESULTS_DETAILS_COMPACTION_REPORT.md", join(packageDir, "V094_RESULTS_DETAILS_COMPACTION_REPORT.md"));
+  await copyMarkdown("docs/V094_VISUAL_QA_REPORT.md", join(packageDir, "V094_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V094_IMPLEMENTATION_REPORT.md", join(packageDir, "V094_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V094_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V094_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -443,7 +450,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.93, start with V093_EMMANUEL_RETEST_CHECKLIST.md, V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md, V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md, and V093_VISUAL_QA_REPORT.md. This package adds runtime UI foundation tokens and a selected-mission panel reset fix only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
+For v0.94, start with V094_EMMANUEL_RETEST_CHECKLIST.md, V094_MAIN_MENU_RESCUE_SPEC.md, V094_ASCENDANT_CREATION_UX_SPEC.md, V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md, and V094_VISUAL_QA_REPORT.md. This package polishes out-of-battle presentation for the main menu, Ascendant creation, campaign shell, campaign tabs, mission panel, and expanded Results details only. It changes no saves, rewards, campaign progression logic, gameplay values, stable IDs, maps, factions, art assets, or runtime/internal title.
 
 ## Known Warning
 

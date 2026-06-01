@@ -1680,7 +1680,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("60");
     await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 20 Stone, 20 Iron, 12 Aether");
     await expect(page.locator(".campaign-reward-block")).toContainText("Scout's Bow");
-    await page.getByTestId("results-full-details").locator("summary").click();
+    await page.getByText("Show Full Battle Details", { exact: true }).click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Claim the Cinder Shrine");
     await expect(objectiveSummary).toContainText("Clear Cinder Guardians");
@@ -1835,7 +1835,7 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     await expect(page.locator(".campaign-reward-block")).toContainText("Node XP");
     await expect(page.locator(".campaign-reward-block")).toContainText("62");
     await expect(page.locator(".campaign-reward-block")).toContainText("40 Crowns, 22 Stone, 18 Iron, 10 Aether");
-    await page.getByTestId("results-full-details").locator("summary").click();
+    await page.getByText("Show Full Battle Details", { exact: true }).click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Watch Road");
     await expect(objectiveSummary).toContainText("Clear the Marsh Raider Camp");

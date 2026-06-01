@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.93 runtime UI foundation tokens and mission-panel state reset",
+          checkpoint: "v0.94 main menu ascendant creation and campaign-shell density rescue",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -363,6 +363,13 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V093_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.93 visual QA report" },
       { path: "V093_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.93 implementation report" },
       { path: "V093_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.93 Emmanuel retest" },
+      { path: "V094_MAIN_MENU_RESCUE_SPEC.md", sizeBytes: 20, textContent: "v0.94 main menu rescue spec" },
+      { path: "V094_ASCENDANT_CREATION_UX_SPEC.md", sizeBytes: 20, textContent: "v0.94 creation UX spec" },
+      { path: "V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md", sizeBytes: 20, textContent: "v0.94 campaign density spec" },
+      { path: "V094_RESULTS_DETAILS_COMPACTION_REPORT.md", sizeBytes: 20, textContent: "v0.94 Results details report" },
+      { path: "V094_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.94 visual QA report" },
+      { path: "V094_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.94 implementation report" },
+      { path: "V094_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.94 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

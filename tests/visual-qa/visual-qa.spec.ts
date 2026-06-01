@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 65;
+const EXPECTED_SCREENSHOT_COUNT = 84;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -695,7 +695,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
   test.afterAll(async () => {
     await writeIndex(visualQaRecords, visualQaConsoleErrors);
-    expect(visualQaRecords, "visual QA should preserve the full 65-screenshot review set").toHaveLength(
+    expect(visualQaRecords, "visual QA should preserve the full 84-screenshot review set").toHaveLength(
       EXPECTED_SCREENSHOT_COUNT
     );
     expect(visualQaConsoleErrors, "visual QA should not record browser console errors").toEqual([]);
@@ -910,6 +910,207 @@ test.describe("Ascendant Realms visual QA capture", () => {
         `${tab} campaign tab at 1600x900 with card hierarchy and no horizontal overflow.`
       );
     }
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.94 menu, creation, campaign density, and Results compaction views", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v094-presentation-rescue";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu-panel")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.94 main menu rescue 1920",
+      "v094-main-menu-1920.png",
+      FULL_HD,
+      "Wider desktop main menu panel with grouped Play, Practice, and Manage actions."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu-panel")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.94 main menu rescue 1600",
+      "v094-main-menu-1600.png",
+      WIDE_DESKTOP,
+      "Intermediate desktop main menu keeps the primary campaign action prominent."
+    );
+
+    await useViewport(page, LAPTOP);
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu-panel")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} main menu 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 main menu rescue 1366",
+      "v094-main-menu-1366.png",
+      LAPTOP,
+      "Laptop main menu avoids a narrow floating stack while retaining all actions."
+    );
+
+    await page.getByTestId("menu-new-campaign").click();
+    await expect(page.getByTestId("hero-creation-step-class")).toBeVisible();
+    await expect(page.getByTestId("hero-creation-step-origin")).toBeVisible();
+    await expect(page.getByTestId("hero-creation-step-review")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} creation class 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Ascendant creation class step",
+      "v094-creation-class-step-1366.png",
+      LAPTOP,
+      "Step 1/2/3 hero creation layout with class choices, origin choices, and review visible without prose walls."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("hero-class-arcanist").click();
+    await expect(page.getByTestId("hero-class-arcanist")).toHaveAttribute("aria-pressed", "true");
+    await expectNoVisibleHorizontalOverflow(page, `${group} creation selected class 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Ascendant creation selected class",
+      "v094-creation-selected-class-1600.png",
+      WIDE_DESKTOP,
+      "Selected class state is obvious and class traits remain compact."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("hero-origin-wildland_raider").click();
+    await expect(page.getByTestId("hero-origin-wildland_raider")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".creation-selected-strip")).toContainText("Wildland Raider");
+    await expectNoVisibleHorizontalOverflow(page, `${group} creation selected origin 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Ascendant creation selected origin",
+      "v094-creation-selected-origin-1366.png",
+      LAPTOP,
+      "Selected origin state and review strip are readable on laptop."
+    );
+
+    await useViewport(page, FULL_HD);
+    await expect(page.getByTestId("hero-creation-step-review")).toBeVisible();
+    await captureView(
+      page,
+      group,
+      "v0.94 Ascendant creation review step",
+      "v094-creation-review-1920.png",
+      FULL_HD,
+      "Review step keeps Begin Campaign visible while preserving unchanged hero rules."
+    );
+
+    await page.getByTestId("hero-name-input").fill("Visual v094");
+    await page.getByTestId("hero-start").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expectCampaignPrimaryActionAboveFold(page, `${group} fresh campaign 1920`);
+    await expectNoCampaignNodeOverlap(page, `${group} fresh campaign 1920`);
+    await expectNoVisibleHorizontalOverflow(page, `${group} fresh campaign 1920`);
+    await captureView(
+      page,
+      group,
+      "v0.94 fresh campaign density 1920",
+      "v094-fresh-campaign-1920.png",
+      FULL_HD,
+      "Fresh campaign opens map-first with Salto Outskirts selected and compact mission facts."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("campaign-node-border_village").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await captureView(
+      page,
+      group,
+      "v0.94 Salto selected 1600",
+      "v094-salto-selected-1600.png",
+      WIDE_DESKTOP,
+      "Salto Outskirts compact panel shows status, objective, rewards, and action without long prose."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByTestId("campaign-node-aether_well_ruins").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Aether Well Ruins");
+    await page.locator(".campaign-node-more summary").click();
+    await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+    await expectNoVisibleHorizontalOverflow(page, `${group} expanded mission details 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 expanded mission details 1366",
+      "v094-expanded-mission-details-1366.png",
+      LAPTOP,
+      "Secondary doctrine, modifier, and briefing prose lives behind More Details."
+    );
+    await page.getByTestId("campaign-node-border_village").click();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+    await expectCampaignPrimaryActionAboveFold(page, `${group} Salto reset 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Salto after another mission 1366",
+      "v094-salto-after-another-mission-1366.png",
+      LAPTOP,
+      "Returning to Salto after a locked preview preserves the v0.93 panel reset and compact default state."
+    );
+
+    await useViewport(page, WIDE_DESKTOP);
+    for (const [tab, title, fileName, expectedTestId] of [
+      ["map", "v0.94 campaign tab Map", "v094-campaign-tab-map-1600.png", "campaign-tab-panel-map"],
+      ["stronghold", "v0.94 campaign tab Stronghold", "v094-campaign-tab-stronghold-1600.png", "campaign-tab-panel-stronghold"],
+      ["hero", "v0.94 campaign tab Hero", "v094-campaign-tab-hero-1600.png", "campaign-tab-panel-hero"],
+      ["inventory", "v0.94 campaign tab Inventory", "v094-campaign-tab-inventory-1600.png", "campaign-tab-panel-inventory"],
+      ["intel", "v0.94 campaign tab Intel", "v094-campaign-tab-intel-1600.png", "campaign-tab-panel-intel"],
+      ["reputation", "v0.94 campaign tab Reputation", "v094-campaign-tab-reputation-1600.png", "campaign-tab-panel-reputation"]
+    ] as const) {
+      await page.getByTestId(`campaign-tab-${tab}`).click();
+      await expect(page.getByTestId(expectedTestId)).toBeVisible();
+      await expectNoVisibleHorizontalOverflow(page, `${group} ${tab} tab 1600`);
+      await captureView(
+        page,
+        group,
+        title,
+        fileName,
+        WIDE_DESKTOP,
+        `${tab} tab uses card hierarchy with primary summary first and optional details collapsed where possible.`
+      );
+    }
+
+    await openFreshMainMenu(page);
+    await showVisualQaResults(page, "victory");
+    await expectResultsPrimaryActionsAboveFold(page, `${group} compact Results 1600`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Results compact",
+      "v094-results-compact-1600.png",
+      WIDE_DESKTOP,
+      "Ordinary Results compact state preserves outcome, reward, XP, veteran, and action priority above full details."
+    );
+
+    await useViewport(page, LAPTOP);
+    await page.getByText("Show Full Battle Details", { exact: true }).click();
+    await expect(page.getByTestId("results-detail-accordion")).toBeVisible();
+    await expectNoVisibleHorizontalOverflow(page, `${group} expanded Results 1366`);
+    await captureView(
+      page,
+      group,
+      "v0.94 Results expanded details",
+      "v094-results-expanded-1366.png",
+      LAPTOP,
+      "Expanded ordinary Results use accordion groups and compact metrics without changing reward data."
+    );
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

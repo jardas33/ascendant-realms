@@ -6752,7 +6752,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
         "ashen_outpost:defeat_outpost_captain"
       ])
     );
-    await page.getByTestId("results-full-details").locator("summary").click();
+    await page.getByText("Show Full Battle Details", { exact: true }).click();
     const objectiveSummary = page.locator(".special-objectives");
     await expect(objectiveSummary).toContainText("Capture the Burned Shrine");
     await expect(objectiveSummary).toContainText("Destroy Enemy Barracks");

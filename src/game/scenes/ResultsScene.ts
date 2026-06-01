@@ -225,8 +225,13 @@ export class ResultsScene extends Phaser.Scene {
           <details class="results-full-details" data-testid="results-full-details">
             <summary>Show Full Battle Details</summary>
             <div class="results-full-details-body">
-              ${renderBattleSummary(data, viewModel, { omitRelicReward: true })}
-              ${renderHeroStats(displayedData)}
+              ${renderBattleSummary(data, viewModel, { omitRelicReward: true, compactDetails: true })}
+              <details class="results-detail-group">
+                <summary>Hero Stat Sheet</summary>
+                <div class="results-detail-group-body">
+                  ${renderHeroStats(displayedData)}
+                </div>
+              </details>
             </div>
           </details>
         </section>

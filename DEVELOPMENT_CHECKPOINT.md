@@ -1,6 +1,56 @@
 # Development Checkpoint
 
-Updated: 2026-05-31 v0.93 runtime UI foundation tokens and mission-panel state reset
+Updated: 2026-05-31 v0.94 main menu ascendant creation and campaign-shell density rescue
+
+## v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
+
+Scope: presentation-only usability pass. This checkpoint rescues the main menu composition, reorganizes existing Ascendant creation into staged comparison panels, compacts the campaign mission panel, improves campaign tab hierarchy, and groups ordinary Results expanded details. It does not add gameplay, alter hero rules, rewards, saves, stable IDs, campaign progression, maps, factions, races, art/assets, runtime title, or desktop work.
+
+Baseline:
+
+- Starting commit: `a5606fb`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-a5606fb`.
+- Baseline remote status: GitHub Actions run `26726003025` on `a5606fb` completed successfully.
+
+Included work:
+
+- Main menu uses a wider title/action composition with grouped primary and secondary actions.
+- Ascendant creation now presents Step 1 Choose Class, Step 2 Choose Origin, and Step 3 Review Hero.
+- Campaign map node/route presentation is clearer while preserving map-first visibility and progression rules.
+- Selected mission panel default content is reduced to status, one-line description, objective, reward chips, difficulty, primary action, and More Details.
+- Campaign tabs prioritize primary summary cards and collapse optional detail prose.
+- Ordinary Results expanded data is grouped into accordion sections; private-demo Results remain preserved.
+- Added v0.94 layout assertions, visual-QA screenshots, package validation metadata, specs, implementation report, visual QA report, and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, hero rules, campaign progression, rewards, XP, or persistent settings changed.
+
+Verification:
+
+```text
+npm test - PASS, 93 files / 683 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 9 tests.
+npm run test:e2e:smoke - PASS, 16 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-battle - PASS, 29 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 16 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests after fixing mobile-short menu overflow.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 10 tests / 84 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 84 screenshots / 7 contact sheets.
+```
+
+Non-pass evidence resolved during v0.94: initial fast smoke caught campaign node overlap, full smoke exposed a hidden optional-objective detail assertion after the Results accordion change, hosted layout-core caught mobile-short menu overflow, and visual QA caught the locked-mission primary action below the 1366x768 fold. All four issues were fixed and rerun successfully before closeout.
 
 ## v0.93 Runtime UI Foundation Tokens And Mission-Panel State Reset - 2026-05-31
 

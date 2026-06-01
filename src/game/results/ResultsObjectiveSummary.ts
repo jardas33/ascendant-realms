@@ -21,39 +21,85 @@ import type { ResultsViewModel } from "./ResultsViewModel";
 
 interface BattleSummaryRenderOptions {
   omitRelicReward?: boolean;
+  compactDetails?: boolean;
 }
 
 export function renderBattleSummary(data: ResultsData, viewModel: ResultsViewModel, options: BattleSummaryRenderOptions = {}): string {
   const { stats } = data;
+  const battleMetrics = `
+    <section class="result-block">
+      <h2>Battle</h2>
+      <div class="results-grid compact">
+        <span>Map</span><strong>${escapeHtml(viewModel.map?.name ?? "Unknown")}</strong>
+        <span>Difficulty</span><strong>${escapeHtml(viewModel.difficulty?.name ?? "Unknown")}</strong>
+        <span>Battle time</span><strong>${formatTime(stats.timeSeconds)}</strong>
+        <span>First site captured</span><strong>${stats.firstSiteCaptured ? titleCase(stats.firstSiteCaptured) : "None"}</strong>
+        <span>Buildings built</span><strong>${stats.buildingsBuilt}</strong>
+        <span>Units trained</span><strong>${stats.unitsTrained}</strong>
+        <span>Enemy waves survived</span><strong>${stats.enemyWavesSurvived}</strong>
+        <span>Units killed</span><strong>${stats.unitsKilled}</strong>
+        <span>Buildings destroyed</span><strong>${stats.buildingsDestroyed}</strong>
+        <span>Sites captured</span><strong>${stats.resourcesCaptured}</strong>
+        <span>Enemy commander</span><strong>${escapeHtml(stats.enemyHeroName ?? "None")}</strong>
+        <span>Commander defeated</span><strong>${stats.enemyHeroId ? (stats.enemyHeroDefeated ? `Yes (${formatTime(stats.enemyHeroDefeatedAtSeconds ?? stats.timeSeconds)})` : "No") : "None"}</strong>
+        <span>Enemy doctrine</span><strong>${escapeHtml(formatEnemyDoctrineResult(data))}</strong>
+        <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
+        <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
+        <span>Battlefield events</span><strong>${escapeHtml(formatBattlefieldEventResult(data))}</strong>
+        <span>Lume Network</span><strong>${escapeHtml(formatLumeNetworkResult(data))}</strong>
+        ${renderAct1FinaleBattleRows(data)}
+      </div>
+    </section>
+  `;
+  const heroXp = `
+    <section class="result-block">
+      <h2>Hero XP</h2>
+      ${renderXpProgress(data, viewModel)}
+    </section>
+  `;
+  if (options.compactDetails) {
+    return `
+      <div class="results-detail-accordion" data-testid="results-detail-accordion">
+        <details class="results-detail-group" open>
+          <summary>Battle Metrics And Hero XP</summary>
+          <div class="results-sections results-detail-metrics">
+            ${battleMetrics}
+            ${heroXp}
+          </div>
+        </details>
+        <details class="results-detail-group">
+          <summary>Veterans And Retinue</summary>
+          <div class="results-detail-group-body">
+            ${renderVeteranSummary(data)}
+            ${renderRetinueBattleSummary(data)}
+            ${options.omitRelicReward ? "" : renderRelicReward(data)}
+          </div>
+        </details>
+        <details class="results-detail-group">
+          <summary>Tactical Context</summary>
+          <div class="results-detail-group-body">
+            ${renderTacticalPlanSummary(data)}
+            ${renderBattlefieldEventSummary(data)}
+            ${renderLumeNetworkSummary(data)}
+            ${renderEnemyDoctrineSummary(data)}
+            ${renderPrivatePlaytestDemoSummary(data)}
+            ${renderAct1FinaleSummary(data)}
+          </div>
+        </details>
+        <details class="results-detail-group" open>
+          <summary>Objectives And Rivals</summary>
+          <div class="results-detail-group-body">
+            ${renderRivalOutcome(data)}
+            ${renderSpecialObjectives(data, viewModel.map)}
+          </div>
+        </details>
+      </div>
+    `;
+  }
   return `
     <div class="results-sections">
-      <section class="result-block">
-        <h2>Battle</h2>
-        <div class="results-grid compact">
-          <span>Map</span><strong>${escapeHtml(viewModel.map?.name ?? "Unknown")}</strong>
-          <span>Difficulty</span><strong>${escapeHtml(viewModel.difficulty?.name ?? "Unknown")}</strong>
-          <span>Battle time</span><strong>${formatTime(stats.timeSeconds)}</strong>
-          <span>First site captured</span><strong>${stats.firstSiteCaptured ? titleCase(stats.firstSiteCaptured) : "None"}</strong>
-          <span>Buildings built</span><strong>${stats.buildingsBuilt}</strong>
-          <span>Units trained</span><strong>${stats.unitsTrained}</strong>
-          <span>Enemy waves survived</span><strong>${stats.enemyWavesSurvived}</strong>
-          <span>Units killed</span><strong>${stats.unitsKilled}</strong>
-          <span>Buildings destroyed</span><strong>${stats.buildingsDestroyed}</strong>
-          <span>Sites captured</span><strong>${stats.resourcesCaptured}</strong>
-          <span>Enemy commander</span><strong>${escapeHtml(stats.enemyHeroName ?? "None")}</strong>
-          <span>Commander defeated</span><strong>${stats.enemyHeroId ? (stats.enemyHeroDefeated ? `Yes (${formatTime(stats.enemyHeroDefeatedAtSeconds ?? stats.timeSeconds)})` : "No") : "None"}</strong>
-          <span>Enemy doctrine</span><strong>${escapeHtml(formatEnemyDoctrineResult(data))}</strong>
-          <span>Elite squads</span><strong>${escapeHtml(formatEliteSquadResult(data))}</strong>
-          <span>Tactical plan</span><strong>${escapeHtml(formatTacticalPlanResult(data))}</strong>
-          <span>Battlefield events</span><strong>${escapeHtml(formatBattlefieldEventResult(data))}</strong>
-          <span>Lume Network</span><strong>${escapeHtml(formatLumeNetworkResult(data))}</strong>
-          ${renderAct1FinaleBattleRows(data)}
-        </div>
-      </section>
-      <section class="result-block">
-        <h2>Hero XP</h2>
-        ${renderXpProgress(data, viewModel)}
-      </section>
+      ${battleMetrics}
+      ${heroXp}
     </div>
     ${renderVeteranSummary(data)}
     ${renderRetinueBattleSummary(data)}

@@ -1,5 +1,38 @@
 # Changelog
 
+# v0.94 Main Menu Ascendant Creation And Campaign-Shell Density Rescue - 2026-05-31
+
+This checkpoint improves out-of-battle presentation only. It rescues the main menu composition, makes Ascendant creation scannable, compacts campaign mission information, improves campaign tab hierarchy, and groups ordinary Results expanded details. It does not add gameplay, alter hero rules, change rewards, change saves, rename stable IDs, add maps/factions/races/art, rebrand the runtime title, or start desktop work.
+
+Added:
+
+- `docs/V094_MAIN_MENU_RESCUE_SPEC.md`.
+- `docs/V094_ASCENDANT_CREATION_UX_SPEC.md`.
+- `docs/V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md`.
+- `docs/V094_RESULTS_DETAILS_COMPACTION_REPORT.md`.
+- `docs/V094_VISUAL_QA_REPORT.md`.
+- `docs/V094_IMPLEMENTATION_REPORT.md`.
+- `docs/V094_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Main menu now uses a wider desktop title/action layout with grouped Play, Practice, and Manage actions.
+- Hero creation now renders Step 1 Choose Class, Step 2 Choose Origin, and Step 3 Review Hero using existing hero class/origin data.
+- Campaign map presentation has larger node labels, clearer selected route styling, dimmer future locked nodes/routes, and a compact mission panel.
+- Stronghold, Hero, Inventory, Intel, and Reputation tabs now use primary-summary and action/detail card hierarchy.
+- Ordinary Results full details now use grouped accordions and compact metrics; private-demo Results remain on the existing private-demo path.
+- Visual QA now includes 84 screenshots after adding the v0.94 presentation rescue states.
+- Package generation and validation now require/copy the v0.94 docs and report the v0.94 checkpoint in playtest build info.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, stable IDs, serialized IDs, hero rules, rewards, XP, campaign progression, replay rules, Tutorial safety, gameplay values, maps, factions, races, units, buildings, art assets, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 93 files / 683 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 9 tests, `npm run test:e2e:smoke` with 16 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-battle with 29 tests, hosted smoke with 16 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 10 tests / 84 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 84 screenshots / 7 contact sheets.
+- Non-pass evidence resolved before closeout: initial fast smoke caught node overlap, initial full smoke exposed a Results detail assertion after compaction, hosted layout-core caught mobile-short menu overflow, and visual QA caught the locked-mission primary action below the 1366x768 fold. Each was fixed and rerun successfully.
+
 # v0.93 Runtime UI Foundation Tokens And Mission-Panel State Reset - 2026-05-31
 
 This checkpoint promotes the approved visual-token direction into a runtime CSS-token layer and fixes selected-mission panel reset/readability issues. It does not add gameplay, alter rewards, change saves, rename stable IDs, add art/assets, change campaign progression logic, rebrand the runtime, or start desktop work.

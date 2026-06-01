@@ -1069,6 +1069,88 @@ test.describe("Ascendant Realms responsive layout", () => {
     expect(saveAfter?.campaign?.nodeRewardsClaimedIds ?? []).toEqual(saveBefore?.campaign?.nodeRewardsClaimedIds ?? []);
   });
 
+  test("v0.94 menu, Ascendant creation, campaign density, and Results details stay readable @hosted-layout-core", async ({ page }) => {
+    test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await openFreshMainMenu(page);
+    await expect(page.getByTestId("main-menu-panel")).toBeVisible();
+    await expect(page.locator(".menu-action-group.primary")).toContainText("Play");
+    await expectActionAboveFold(page, page.getByTestId("menu-new-campaign"), "v0.94 main menu primary action");
+    await expectNoHorizontalOverflow(page, "v0.94 main menu");
+    await expectNoTextOverflowForSelectors(
+      page,
+      [".menu-home-panel", ".menu-action-board", ".menu-action-group"],
+      "v0.94 main menu"
+    );
+
+    await clickReady(page.getByTestId("menu-new-campaign"), "v0.94 New Campaign", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("hero-creation-step-class")).toContainText("Step 1");
+    await expect(page.getByTestId("hero-creation-step-origin")).toContainText("Step 2");
+    await expect(page.getByTestId("hero-creation-step-review")).toContainText("Step 3");
+    await expect(page.getByTestId("hero-class-warlord")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("hero-origin-exiled_noble")).toHaveAttribute("aria-pressed", "true");
+    await clickReady(page.getByTestId("hero-class-arcanist"), "v0.94 select Arcanist", UI_TRANSITION_CLICK_OPTIONS);
+    await clickReady(page.getByTestId("hero-origin-wildland_raider"), "v0.94 select Wildland Raider", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("hero-class-arcanist")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.getByTestId("hero-origin-wildland_raider")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".creation-selected-strip")).toContainText("Arcanist");
+    await expect(page.locator(".creation-selected-strip")).toContainText("Wildland Raider");
+    await expectActionAboveFold(page, page.getByTestId("hero-start"), "v0.94 hero creation Begin Campaign");
+    await expectNoHorizontalOverflow(page, "v0.94 hero creation");
+    await expectNoTextOverflowForSelectors(
+      page,
+      [".creation-option-card", ".creation-review-card", ".creation-selected-strip"],
+      "v0.94 hero creation"
+    );
+
+    await page.getByTestId("hero-name-input").fill("Layout v094");
+    await clickReady(page.getByTestId("hero-start"), "v0.94 Begin Campaign", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await expect(page.locator(".campaign-selected-panel")).toContainText("Salto Outskirts");
+    await expect(page.locator(".campaign-selected-summary")).toContainText("Primary objective");
+    await expect(page.locator(".campaign-selected-summary")).toContainText("Reward");
+    await expect(page.locator(".campaign-selected-summary")).not.toContainText("Pre-battle intelligence");
+    await expectActionAboveFold(page, page.getByTestId("campaign-start-node"), "v0.94 Salto primary action");
+    await expectNoCampaignNodeOverlap(page, "v0.94 fresh campaign map");
+    await expectNoHorizontalOverflow(page, "v0.94 fresh campaign map");
+    await expectNoTextOverflowForSelectors(
+      page,
+      [".campaign-node", ".campaign-selected-summary", ".campaign-reward-chips"],
+      "v0.94 campaign compact panel"
+    );
+
+    await clickReady(page.getByTestId("campaign-node-aether_well_ruins"), "v0.94 locked Aether Well", UI_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+    await expect(page.locator(".campaign-node-more")).not.toHaveAttribute("open", "");
+    await page.locator(".campaign-node-more summary").click();
+    await expect(page.locator(".campaign-node-more")).toHaveAttribute("open", "");
+    await expect(page.locator(".campaign-node-more")).toContainText("Pre-battle intelligence");
+    await expectNoHorizontalOverflow(page, "v0.94 expanded mission details");
+
+    for (const [tab, expectedTestId] of [
+      ["stronghold", "campaign-tab-panel-stronghold"],
+      ["hero", "campaign-tab-panel-hero"],
+      ["inventory", "campaign-tab-panel-inventory"],
+      ["intel", "campaign-tab-panel-intel"],
+      ["reputation", "campaign-tab-panel-reputation"]
+    ] as const) {
+      await clickReady(page.getByTestId(`campaign-tab-${tab}`), `v0.94 ${tab} tab`, UI_TRANSITION_CLICK_OPTIONS);
+      await expect(page.getByTestId(expectedTestId), `v0.94 ${tab} tab`).toBeVisible();
+      await expect(page.getByTestId(expectedTestId).locator(".campaign-summary-card").first()).toBeVisible();
+      await expectNoHorizontalOverflow(page, `v0.94 ${tab} tab`);
+    }
+
+    await openFreshMainMenu(page);
+    await showLayoutResults(page, "victory");
+    await expect(page.getByTestId("results-full-details")).not.toHaveAttribute("open", "");
+    await expectActionAboveFold(page, page.locator(".results-primary-actions"), "v0.94 compact Results actions");
+    await page.getByText("Show Full Battle Details", { exact: true }).click();
+    await expect(page.getByTestId("results-full-details")).toHaveAttribute("open", "");
+    await expect(page.getByTestId("results-detail-accordion")).toBeVisible();
+    await expect(page.locator(".results-detail-group summary")).toContainText(["Battle Metrics And Hero XP", "Veterans And Retinue"]);
+    await expectNoHorizontalOverflow(page, "v0.94 expanded Results details");
+  });
+
   test("v0.90 Results primary actions and disclosure remain above the fold @hosted-layout-core", async ({ page }) => {
     test.setTimeout(HOSTED_LAYOUT_CORE_TIMEOUT_MS);
     for (const [viewport, outcome, wasReplay, expectedText] of [
@@ -1424,7 +1506,7 @@ test.describe("Ascendant Realms responsive layout", () => {
         await expect(resultsPanel).toContainText("Cinderfen Watch");
         await expect(resultsPanel).toContainText("Reward XP");
         await expect(page.locator(".campaign-reward-block")).toContainText("Cinderfen Aftermath");
-        await page.getByTestId("results-full-details").locator("summary").click();
+        await page.getByText("Show Full Battle Details", { exact: true }).click();
         await expect(page.locator(".special-objectives")).toContainText("Capture the Watch Road");
         await expect(page.locator(".special-objectives")).toContainText("Destroy the Watchpost Tower");
         await expectNoHorizontalOverflow(page, "mobile portrait Cinderfen Watch results");

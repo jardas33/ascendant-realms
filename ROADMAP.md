@@ -11,11 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.93 Runtime UI Foundation Tokens and Mission-Panel State Reset** on 2026-05-31. It is a presentation-foundation and bugfix milestone: runtime UI tokens now exist, existing UI surfaces use the first token pass, and returning to Salto Outskirts after a scrolled locked-mission preview resets the selected-mission panel cleanly.
+The current checkpoint is **v0.94 Main Menu, Ascendant Creation, and Campaign-Shell Density Rescue** on 2026-05-31. It is a presentation-only usability milestone: the main menu, Ascendant creation, campaign shell, campaign tabs, compact mission panel, and ordinary Results expanded details are clearer without changing gameplay, hero rules, saves, rewards, progression, stable IDs, maps, factions, art, runtime title, or desktop direction.
 
-The next recommended step is manual review of the v0.93 package and visual review pack. Do not start v0.94, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, or rebrand the runtime until a future explicit goal approves a narrow next step.
+The next recommended step is manual review of the v0.94 package and visual review pack. Do not start v0.95, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, start a desktop port, or rebrand the runtime until a future explicit goal approves a narrow next step.
 
-New v0.93 docs:
+New v0.94 docs:
+
+- `docs/V094_MAIN_MENU_RESCUE_SPEC.md`
+- `docs/V094_ASCENDANT_CREATION_UX_SPEC.md`
+- `docs/V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md`
+- `docs/V094_RESULTS_DETAILS_COMPACTION_REPORT.md`
+- `docs/V094_VISUAL_QA_REPORT.md`
+- `docs/V094_IMPLEMENTATION_REPORT.md`
+- `docs/V094_EMMANUEL_RETEST_CHECKLIST.md`
+
+Recent v0.93 docs:
 
 - `docs/V093_RUNTIME_UI_TOKEN_IMPLEMENTATION_SPEC.md`
 - `docs/V093_SALTO_MISSION_PANEL_STATE_RESET_REPORT.md`

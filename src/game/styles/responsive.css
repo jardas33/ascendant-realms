@@ -2,6 +2,7 @@
 
 @media (max-width: 980px) {
   .choice-columns,
+  .creation-flow,
   .setup-grid,
   .campaign-layout,
   .progression-grid,
@@ -15,8 +16,33 @@
   }
 
   .progression-header,
-  .results-title-row {
+  .results-title-row,
+  .creation-header,
+  .menu-home-layout {
     display: grid;
+  }
+
+  .menu-home-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .menu-identity h1 {
+    max-width: none;
+  }
+
+  .creation-review-stage {
+    position: static;
+  }
+
+  .creation-selected-strip {
+    justify-content: flex-start;
+  }
+
+  .menu-action-board {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
   }
 
   .side-panel .action-group {
@@ -126,7 +152,13 @@
   .difficulty-grid,
   .map-grid,
   .menu-actions.row,
-  .reward-card-main {
+  .reward-card-main,
+  .creation-trait-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .menu-actions-secondary,
+  .menu-actions-secondary.compact {
     grid-template-columns: 1fr;
   }
 

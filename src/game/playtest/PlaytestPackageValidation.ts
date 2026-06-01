@@ -314,6 +314,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V093_VISUAL_QA_REPORT.md",
   "V093_IMPLEMENTATION_REPORT.md",
   "V093_EMMANUEL_RETEST_CHECKLIST.md",
+  "V094_MAIN_MENU_RESCUE_SPEC.md",
+  "V094_ASCENDANT_CREATION_UX_SPEC.md",
+  "V094_CAMPAIGN_DENSITY_RESCUE_SPEC.md",
+  "V094_RESULTS_DETAILS_COMPACTION_REPORT.md",
+  "V094_VISUAL_QA_REPORT.md",
+  "V094_IMPLEMENTATION_REPORT.md",
+  "V094_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -424,7 +431,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.93 runtime UI foundation tokens and mission-panel state reset",
+      "v0.94 main menu ascendant creation and campaign-shell density rescue",
       "build info checkpoint",
       checks,
       errors

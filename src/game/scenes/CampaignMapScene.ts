@@ -486,16 +486,19 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "stronghold") {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-stronghold">
-          <section class="campaign-support-grid">
-            <div class="campaign-support-card">
-              <h2>Campaign Bank</h2>
+          <section class="campaign-tab-stack campaign-tab-stronghold">
+            <div class="campaign-support-card campaign-summary-card">
+              <div>
+                <p class="eyebrow">Primary Summary</p>
+                <h2>Stronghold Readiness</h2>
+              </div>
               ${renderCampaignResourceBank(this.campaignSave)}
               <details class="campaign-card-details">
-                <summary>Active Modifiers</summary>
+                <summary>Optional Campaign Modifiers</summary>
                 ${renderActiveModifiers(this.campaignSave)}
               </details>
             </div>
-            <div class="campaign-support-card">${renderStrongholdPanel(this.campaignSave, this.heroSave)}</div>
+            <div class="campaign-support-card campaign-action-card">${renderStrongholdPanel(this.campaignSave, this.heroSave)}</div>
           </section>
         </div>
       `;
@@ -503,16 +506,19 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "hero") {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-hero">
-          <section class="campaign-support-grid">
-            <div class="campaign-support-card">
-              <h2>Hero</h2>
+          <section class="campaign-tab-stack campaign-tab-hero-layout">
+            <div class="campaign-support-card campaign-summary-card">
+              <div>
+                <p class="eyebrow">Primary Summary</p>
+                <h2>Hero</h2>
+              </div>
               ${this.renderHeroSummary()}
-              <details class="campaign-card-details" open>
+              <details class="campaign-card-details">
                 <summary>Next Step</summary>
                 ${this.renderNextActionPanel()}
               </details>
             </div>
-            <div class="campaign-support-card">${renderRetinuePanel(this.campaignSave)}</div>
+            <div class="campaign-support-card campaign-action-card">${renderRetinuePanel(this.campaignSave)}</div>
           </section>
         </div>
       `;
@@ -520,15 +526,23 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "inventory") {
       return `
         <div class="campaign-tab-panel compact" data-testid="campaign-tab-panel-inventory">
-          <section class="campaign-support-card">
-          <h2>Inventory And Progression</h2>
-          ${this.renderHeroSummary()}
-          <p class="quiet">Open Hero Inventory to equip rewards, inspect relic synergy, and spend skill points before launching the next battle.</p>
-          <button data-testid="campaign-inventory-inline" data-campaign-action="inventory">Open Hero Inventory</button>
-          <details class="campaign-card-details">
-            <summary>Why Visit Inventory?</summary>
-            <p class="quiet">Use this before harder missions to equip relics, spend skill points, and compare hero build support without changing campaign state.</p>
-          </details>
+          <section class="campaign-tab-stack">
+            <div class="campaign-support-card campaign-summary-card">
+              <div>
+                <p class="eyebrow">Primary Summary</p>
+                <h2>Inventory And Progression</h2>
+              </div>
+              ${this.renderHeroSummary()}
+            </div>
+            <div class="campaign-support-card campaign-action-card">
+              <h2>Key Action</h2>
+              <p class="quiet">Equip rewards, inspect relic synergy, and spend skill points before launching the next battle.</p>
+              <button data-testid="campaign-inventory-inline" data-campaign-action="inventory">Open Hero Inventory</button>
+              <details class="campaign-card-details">
+                <summary>Why Visit Inventory?</summary>
+                <p class="quiet">Use this before harder missions to equip relics, spend skill points, and compare hero build support without changing campaign state.</p>
+              </details>
+            </div>
           </section>
         </div>
       `;
@@ -536,14 +550,14 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "intel") {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-intel">
-          <section class="campaign-support-grid">
-            <div class="campaign-support-card">
+          <section class="campaign-tab-stack campaign-tab-intel-layout">
+            <div class="campaign-support-card campaign-summary-card">
               ${renderRivalIntelPanel(this.campaignSave)}
+            </div>
+            <div class="campaign-support-card campaign-action-card">
               <h2>Campaign Chapters</h2>
               ${renderCampaignChapterPanel(viewModel.chapters)}
-            </div>
-            <div class="campaign-support-card">
-              <details class="campaign-card-details" open>
+              <details class="campaign-card-details">
                 <summary>Active Modifiers</summary>
                 ${renderActiveModifiers(this.campaignSave)}
               </details>
@@ -555,9 +569,14 @@ export class CampaignMapScene extends Phaser.Scene {
     if (this.activeTab === "reputation") {
       return `
         <div class="campaign-tab-panel" data-testid="campaign-tab-panel-reputation">
-          <section class="campaign-support-card">
-          <h2>Reputation</h2>
-          ${renderReputation(viewModel.reputation)}
+          <section class="campaign-tab-stack">
+            <div class="campaign-support-card campaign-summary-card">
+              <div>
+                <p class="eyebrow">Primary Summary</p>
+                <h2>Reputation</h2>
+              </div>
+              ${renderReputation(viewModel.reputation)}
+            </div>
           </section>
         </div>
       `;
@@ -588,24 +607,32 @@ export class CampaignMapScene extends Phaser.Scene {
     const description = shortDescription(node.description);
     const stateLabel = node.isPlaceholder ? "upcoming" : status === "completed" && node.nodeType === "battle" ? "completed / replayable" : status;
     const lockReason = status === "locked" || node.isPlaceholder ? getCampaignNodeLockedReason(node, this.campaignSave) : "";
-    const pacingLabel = actStep ? `${actStep.pacingTier} - ${actStep.mechanicFocus}` : node.difficulty;
+    const pacingLabel = actStep ? titleCase(actStep.pacingTier) : titleCase(node.difficulty);
     const hasChoices = Boolean(node.choices?.length);
     const detailOpen = hasChoices ? " open" : "";
     return `
       <div class="campaign-selected-summary">
-        <p class="eyebrow">${escapeHtml(node.nodeType)} - ${escapeHtml(stateLabel)}</p>
+        <div class="campaign-selected-state-row">
+          <span class="campaign-state-chip">${escapeHtml(stateLabel)}</span>
+          <span class="campaign-difficulty-chip">${escapeHtml(pacingLabel)}</span>
+        </div>
         <h2>${escapeHtml(node.name)}</h2>
         <p>${escapeHtml(description)}</p>
+        <div class="campaign-selected-facts">
+          <div class="campaign-objective-line">
+            <span>Primary objective</span>
+            <strong>${escapeHtml(briefing?.primaryObjective ?? "Complete the mission.")}</strong>
+          </div>
+          <div class="campaign-reward-chips" aria-label="Reward preview">
+            <span class="campaign-fact-label">Reward</span>
+            ${formatRewardChipLabels(node, missionReward.rewardLabel)
+              .map((label) => `<span class="tag reward-chip">${escapeHtml(label)}</span>`)
+              .join("")}
+          </div>
+          ${lockReason ? `<div class="campaign-lock-line"><span>Lock reason</span><strong>${escapeHtml(lockReason)}</strong></div>` : ""}
+        </div>
         <div class="campaign-selected-actions">
           ${this.renderSelectedPrimaryAction()}
-        </div>
-        <div class="results-grid compact campaign-selected-facts">
-          <span>Mission type</span><strong>${escapeHtml(briefing?.missionType?.name ?? "Campaign node")}</strong>
-          <span>Status</span><strong>${escapeHtml(missionReward.statusLabel)}</strong>
-          <span>Primary objective</span><strong>${escapeHtml(briefing?.primaryObjective ?? "Complete the mission.")}</strong>
-          <span>Reward</span><strong>${escapeHtml(briefing?.rewardPreview ?? missionReward.rewardLabel)}</strong>
-          <span>Difficulty / pacing</span><strong>${escapeHtml(pacingLabel)}</strong>
-          ${lockReason ? `<span>Lock reason</span><strong>${escapeHtml(lockReason)}</strong>` : ""}
         </div>
       </div>
       <details class="campaign-node-more" data-testid="campaign-node-more" data-has-choices="${hasChoices ? "true" : "false"}"${detailOpen}>
@@ -648,8 +675,9 @@ export class CampaignMapScene extends Phaser.Scene {
         routeKeys.add(`${source.node.id}->${target.node.id}`);
         const complete = source.status === "completed";
         const available = source.status === "completed" || target.status === "available" || target.status === "completed";
+        const selectedRoute = source.selected || target.selected;
         lines.push(
-          `<line class="campaign-route ${complete ? "completed" : available ? "available" : "locked"}" x1="${source.mapX}%" y1="${source.mapY}%" x2="${target.mapX}%" y2="${target.mapY}%" />`
+          `<line class="campaign-route ${complete ? "completed" : available ? "available" : "locked"}${selectedRoute ? " selected-route" : ""}" x1="${source.mapX}%" y1="${source.mapY}%" x2="${target.mapX}%" y2="${target.mapY}%" />`
         );
       }
     }
@@ -726,4 +754,23 @@ function shortDescription(value: string): string {
     return trimmed.slice(0, sentenceEnd + 1);
   }
   return `${trimmed.slice(0, 115).trimEnd()}...`;
+}
+
+function titleCase(value: string): string {
+  return value
+    .split(/[\s_-]+/u)
+    .filter(Boolean)
+    .map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+    .join(" ");
+}
+
+function formatRewardChipLabels(node: CampaignNodeDefinition, fallbackLabel: string): string[] {
+  const summary = formatNodeRewardSummary(node);
+  const source = summary === "No listed reward" ? fallbackLabel : summary;
+  const labels = source
+    .split(/[,;]/u)
+    .map((label) => label.trim())
+    .filter(Boolean)
+    .slice(0, 4);
+  return labels.length > 0 ? labels : ["No listed reward"];
 }

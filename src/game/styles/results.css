@@ -245,6 +245,45 @@
   padding: 0 13px 13px;
 }
 
+.results-detail-accordion {
+  display: grid;
+  gap: 10px;
+}
+
+.results-detail-group {
+  min-width: 0;
+  border: 1px solid rgba(246, 237, 180, 0.12);
+  border-radius: 6px;
+  background: rgba(8, 12, 12, 0.24);
+}
+
+.results-detail-group summary {
+  cursor: pointer;
+  padding: 10px 12px;
+  color: #f0d978;
+  font-size: var(--ui-type-body-compact-size);
+  line-height: var(--ui-type-body-compact-line-height);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.results-detail-group-body {
+  display: grid;
+  gap: 12px;
+  padding: 0 12px 12px;
+}
+
+.results-detail-group-body:empty::before {
+  content: "No additional data for this battle.";
+  color: #c8d0bd;
+  font-size: var(--ui-type-body-compact-size);
+}
+
+.results-detail-metrics {
+  margin-top: 0;
+  padding: 0 12px 12px;
+}
+
 .xp-compare-bars {
   display: grid;
   gap: 8px;

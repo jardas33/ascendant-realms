@@ -111,22 +111,46 @@ export class MainMenuScene extends Phaser.Scene {
     this.root.className = "ui-root menu-ui";
     this.root.innerHTML = `
       <main class="menu-shell asset-screen-bg" data-testid="main-menu" ${AssetLoader.screenStyle({ backgroundAssetId: ASSET_IDS.ui.mainMenuBackground })}>
-        <section class="menu-panel">
-          ${emblem}
-          <p class="eyebrow">Prototype v0.3</p>
-          <h1>Ascendant Realms</h1>
-          <p class="menu-copy">Cinderfen Route Baseline</p>
-          <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
-          <div class="menu-actions">
-            <button data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
-            <button data-testid="menu-continue-campaign" data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
-            <button data-testid="menu-tutorial" data-menu-action="tutorial" aria-label="Start Tutorial / Proving Grounds">Tutorial</button>
-            <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
-            <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
-            <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
-            <button data-testid="menu-settings" data-menu-action="settings">Settings</button>
-            <button data-testid="menu-reset-save" data-menu-action="reset" ${hasAnySave ? "" : "disabled"}>Reset Save</button>
-            <button data-menu-action="credits">Credits / Info</button>
+        <section class="menu-panel menu-home-panel" data-testid="main-menu-panel">
+          <div class="menu-home-layout">
+            <div class="menu-identity">
+              ${emblem}
+              <p class="eyebrow">Prototype v0.3</p>
+              <h1>Ascendant Realms</h1>
+              <p class="menu-copy menu-route-label">Cinderfen Route Baseline</p>
+              <p class="menu-copy">Create a persistent fantasy hero, capture resource sites, raise a small army, and break the enemy stronghold.</p>
+              <div class="menu-feature-row" aria-label="Current playable focus">
+                <span>Campaign shell</span>
+                <span>RTS battles</span>
+                <span>Hero progression</span>
+              </div>
+            </div>
+            <div class="menu-action-board">
+              <div class="menu-action-group primary">
+                <p class="eyebrow">Play</p>
+                <div class="menu-actions menu-actions-primary">
+                  <button class="menu-primary-button" data-testid="menu-new-campaign" data-menu-action="campaign-new">${hasSave ? "New Campaign" : "New Campaign"}</button>
+                  <button class="menu-primary-button secondary" data-testid="menu-continue-campaign" data-menu-action="campaign-continue" ${hasCampaign ? "" : "disabled"}>Continue Campaign</button>
+                </div>
+              </div>
+              <div class="menu-action-group">
+                <p class="eyebrow">Practice</p>
+                <div class="menu-actions menu-actions-secondary">
+                  <button data-testid="menu-tutorial" data-menu-action="tutorial" aria-label="Start Tutorial / Proving Grounds">Tutorial</button>
+                  <button data-testid="menu-skirmish" data-menu-action="skirmish">Skirmish</button>
+                </div>
+              </div>
+              <div class="menu-action-group">
+                <p class="eyebrow">Manage</p>
+                <div class="menu-actions menu-actions-secondary compact">
+                  <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
+                  <button data-testid="menu-settings" data-menu-action="settings">Settings</button>
+                  <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
+                  <button data-menu-action="credits">Credits / Info</button>
+                  <button data-testid="menu-reset-save" data-menu-action="reset" ${hasAnySave ? "" : "disabled"}>Reset Save</button>
+                </div>
+              </div>
+            </div>
           </div>
           ${
             showInfo
