@@ -1477,6 +1477,117 @@ test.describe("Ascendant Realms browser smoke flows", () => {
     expect(afterSave.hero.completedBattles).toBe(beforeSave.hero.completedBattles);
   });
 
+  test("private playtest hub launches representative gallery scenarios without mutating saves @ci-fast", async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+    await seedCampaignSave(page, { hero: { heroName: "E2E Hub" } });
+    const beforeRawSave = await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY);
+
+    await expect(page.getByTestId("menu-playtest-hub")).toBeVisible();
+    await clickReady(page.getByTestId("menu-playtest-hub"), "smoke private hub open", SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+    await expect(page.getByTestId("playtest-hub")).toContainText("Private Testing Only");
+    await expect(page.getByTestId("playtest-hub")).toContainText("rewards, XP, campaign progress, Retinue state, and reputation are not saved");
+
+    for (const groupId of ["campaign_shell", "first_session", "battle_shell", "lume", "meta"]) {
+      await expect(page.getByTestId(`playtest-group-${groupId}`), `hub group ${groupId}`).toBeVisible();
+    }
+
+    await clickReady(page.getByTestId("playtest-tour-start"), "smoke private hub tour start");
+    await expect(page.getByTestId("playtest-tour-panel")).toContainText("Step 1 of 10");
+    await clickReady(page.getByTestId("playtest-tour-next"), "smoke private hub tour next");
+    await expect(page.getByTestId("playtest-tour-panel")).toContainText("Ascendant creation");
+    await clickReady(page.getByTestId("playtest-tour-back"), "smoke private hub tour back");
+    await clickReady(page.getByTestId("playtest-tour-exit"), "smoke private hub tour exit");
+    await expect(page.getByTestId("playtest-tour-panel")).toHaveCount(0);
+
+    const scenarios: Array<{
+      id: string;
+      visibleTestId: string;
+      returnTestId: string;
+      assert?: () => Promise<void>;
+    }> = [
+      {
+        id: "main_menu",
+        visibleTestId: "main-menu",
+        returnTestId: "main-menu-return-hub"
+      },
+      {
+        id: "ascendant_creation",
+        visibleTestId: "hero-creation",
+        returnTestId: "hero-back",
+        assert: async () => {
+          await expect(page.getByTestId("hero-creation-private-note")).toContainText("not saved");
+        }
+      },
+      {
+        id: "campaign_locked_mission",
+        visibleTestId: "campaign-map",
+        returnTestId: "campaign-playtest-hub-return",
+        assert: async () => {
+          await expect(page.getByTestId("campaign-selected-panel")).toContainText("Aether Well Ruins");
+          await expect(page.getByTestId("campaign-start-node")).toBeDisabled();
+        }
+      },
+      {
+        id: "battle_selected_worker",
+        visibleTestId: "battle-hud",
+        returnTestId: "private-hub-exit",
+        assert: async () => {
+          await expectBattleLoaded(page);
+          await expect(page.getByTestId("private-playtest-demo-warning")).toContainText("PLAYTEST HUB");
+          await expect(page.getByTestId("selection-side-panel")).toContainText("Worker");
+        }
+      },
+      {
+        id: "lume_first_link",
+        visibleTestId: "lume-network-status",
+        returnTestId: "private-hub-exit",
+        assert: async () => {
+          await expectBattleLoaded(page);
+          await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
+          await expect(page.getByTestId("private-demo-finish")).toBeVisible();
+        }
+      },
+      {
+        id: "meta_retinue_ready",
+        visibleTestId: "campaign-tab-panel-hero",
+        returnTestId: "campaign-playtest-hub-return",
+        assert: async () => {
+          await expect(page.getByTestId("retinue-panel")).toContainText("Retinue");
+        }
+      },
+      {
+        id: "ordinary_results",
+        visibleTestId: "results-overview",
+        returnTestId: "results-playtest-hub",
+        assert: async () => {
+          await expect(page.locator(".results-panel")).toContainText("Private testing only");
+        }
+      }
+    ];
+
+    for (const scenario of scenarios) {
+      await clickReady(
+        page.getByTestId(`playtest-scenario-${scenario.id}`),
+        `smoke private hub open ${scenario.id}`,
+        SCENE_TRANSITION_CLICK_OPTIONS
+      );
+      await expect(page.getByTestId(scenario.visibleTestId), `scenario ${scenario.id} visible`).toBeVisible({ timeout: 30_000 });
+      await scenario.assert?.();
+      await clickReady(page.getByTestId(scenario.returnTestId), `smoke private hub return ${scenario.id}`, SCENE_TRANSITION_CLICK_OPTIONS);
+      await expect(page.getByTestId("playtest-hub"), `scenario ${scenario.id} returned to hub`).toBeVisible({ timeout: 20_000 });
+      const afterRawSave = await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY);
+      expect(afterRawSave, `${scenario.id} should not mutate save`).toBe(beforeRawSave);
+    }
+
+    await clickReady(page.getByTestId("playtest-reset"), "smoke private hub reset");
+    await expect(page.getByTestId("playtest-hub-status")).toContainText("Private preview reset");
+    expect(await page.evaluate((key) => localStorage.getItem(key), SAVE_KEY)).toBe(beforeRawSave);
+  });
+
   test("campaign Salto Outskirts launches a battle scene @extended-smoke", async ({ page }) => {
     test.setTimeout(60_000);
     await startNewCampaign(page, "E2E Campaign");

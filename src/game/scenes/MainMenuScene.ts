@@ -7,17 +7,24 @@ import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { DEFAULT_SETTINGS, applySettingsToDocument, normalizeSettingsData } from "../core/Settings";
 import { createNewHeroSave } from "../data/heroes";
+import {
+  isPrivatePlaytestToolsEnabled,
+  PRIVATE_PLAYTEST_HUB_NOTICE,
+  restorePrivatePlaytestHubSave
+} from "../playtest/PrivatePlaytestTools";
 import { TUTORIALS } from "../data/tutorials";
 import { AudioManager } from "../systems/AudioManager";
 
 interface MainMenuSceneData {
   tutorialCompleted?: boolean;
+  privatePlaytestHub?: boolean;
 }
 
 export class MainMenuScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
   private tutorialCompletionNotice = false;
+  private privatePlaytestHub = false;
 
   constructor() {
     super(SCENE_KEYS.mainMenu);
@@ -25,6 +32,7 @@ export class MainMenuScene extends Phaser.Scene {
 
   init(data?: MainMenuSceneData): void {
     this.tutorialCompletionNotice = Boolean(data?.tutorialCompleted);
+    this.privatePlaytestHub = Boolean(data?.privatePlaytestHub);
   }
 
   create(): void {
@@ -90,6 +98,10 @@ export class MainMenuScene extends Phaser.Scene {
       if (action === "settings") {
         this.scene.start(SCENE_KEYS.settings);
       }
+      if (action === "playtest-hub" && isPrivatePlaytestToolsEnabled()) {
+        restorePrivatePlaytestHubSave();
+        this.scene.start(SCENE_KEYS.playtestHub);
+      }
       if (action === "credits") {
         this.render(true);
       }
@@ -143,6 +155,7 @@ export class MainMenuScene extends Phaser.Scene {
               <div class="menu-action-group">
                 <p class="eyebrow">Manage</p>
                 <div class="menu-actions menu-actions-secondary compact">
+                  ${isPrivatePlaytestToolsEnabled() ? `<button data-testid="menu-playtest-hub" data-menu-action="playtest-hub">Playtest Hub</button>` : ""}
                   <button data-testid="menu-inventory" data-menu-action="inventory" ${hasSave ? "" : "disabled"}>Hero Inventory</button>
                   <button data-testid="menu-settings" data-menu-action="settings">Settings</button>
                   <button data-testid="menu-asset-gallery" data-menu-action="assets">Asset Gallery</button>
@@ -152,6 +165,15 @@ export class MainMenuScene extends Phaser.Scene {
               </div>
             </div>
           </div>
+          ${
+            this.privatePlaytestHub
+              ? `<div class="info-box tutorial-complete" data-testid="main-menu-private-hub-preview">
+                  <strong>Playtest Hub Preview</strong>
+                  <p>${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>
+                  <button data-testid="main-menu-return-hub" data-menu-action="playtest-hub">Return to Playtest Hub</button>
+                </div>`
+              : ""
+          }
           ${
             showInfo
               ? `<div class="info-box">Original prototype inspired by classic RTS/RPG hybrids. Normal units gain ranks during battle; selected surviving Seasoned or better veterans can be saved to the Retinue Camp after campaign victories, then persist into future campaign battles. Retinue death is permanent in V1. Uses local manual art when files exist, then falls back to placeholders. No copyrighted assets, names, factions, maps, music, or API image calls are included.</div>`
@@ -199,4 +221,13 @@ export class MainMenuScene extends Phaser.Scene {
       this.root.removeEventListener("click", this.handler);
     }
   }
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }

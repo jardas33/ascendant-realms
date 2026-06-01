@@ -8,10 +8,13 @@ import { createNewHeroSave } from "../data/heroes";
 import { HERO_CLASSES } from "../data/heroClasses";
 import { ORIGINS } from "../data/origins";
 import { ABILITY_BY_ID } from "../data/contentIndex";
+import { PRIVATE_PLAYTEST_HUB_NOTICE, restorePrivatePlaytestHubSave } from "../playtest/PrivatePlaytestTools";
 import { stopKeyboardEventForEditableTarget } from "../systems/KeyboardFocusGuard";
 
 interface HeroCreationData {
   nextMode?: "campaign" | "skirmish";
+  privatePlaytestHub?: boolean;
+  privatePlaytestScenarioId?: string;
 }
 
 export class HeroCreationScene extends Phaser.Scene {
@@ -22,6 +25,7 @@ export class HeroCreationScene extends Phaser.Scene {
   private selectedOriginId = ORIGINS[0].id;
   private heroName = "Aster";
   private nextMode: "campaign" | "skirmish" = "skirmish";
+  private privatePlaytestHub = false;
 
   constructor() {
     super(SCENE_KEYS.heroCreation);
@@ -29,6 +33,7 @@ export class HeroCreationScene extends Phaser.Scene {
 
   init(data: HeroCreationData): void {
     this.nextMode = data.nextMode ?? "skirmish";
+    this.privatePlaytestHub = Boolean(data.privatePlaytestHub);
   }
 
   create(): void {
@@ -54,6 +59,11 @@ export class HeroCreationScene extends Phaser.Scene {
 
       const action = target.closest<HTMLButtonElement>("button[data-hero-action]")?.dataset.heroAction;
       if (action === "back") {
+        if (this.privatePlaytestHub) {
+          restorePrivatePlaytestHubSave();
+          this.scene.start(SCENE_KEYS.playtestHub);
+          return;
+        }
         this.scene.start(SCENE_KEYS.mainMenu);
       }
       if (action === "start") {
@@ -62,11 +72,20 @@ export class HeroCreationScene extends Phaser.Scene {
         const save = createNewHeroSave(this.heroName, this.selectedClassId, this.selectedOriginId);
         if (this.nextMode === "campaign") {
           const campaign = createStartedCampaignSave();
-          SaveSystem.saveGame(save, campaign);
-          this.scene.start(SCENE_KEYS.campaignMap, { heroSave: save, campaignSave: campaign });
+          if (!this.privatePlaytestHub) {
+            SaveSystem.saveGame(save, campaign);
+          }
+          this.scene.start(SCENE_KEYS.campaignMap, {
+            heroSave: save,
+            campaignSave: campaign,
+            privatePlaytestHub: this.privatePlaytestHub,
+            message: this.privatePlaytestHub ? PRIVATE_PLAYTEST_HUB_NOTICE : undefined
+          });
           return;
         }
-        SaveSystem.saveHero(save);
+        if (!this.privatePlaytestHub) {
+          SaveSystem.saveHero(save);
+        }
         this.scene.start(SCENE_KEYS.skirmishSetup, { heroSave: save });
       }
     };
@@ -93,6 +112,7 @@ export class HeroCreationScene extends Phaser.Scene {
             <div>
               <p class="eyebrow">${this.nextMode === "campaign" ? "New Campaign" : "Hero Creation"}</p>
               <h1>Choose Your Ascendant</h1>
+              ${this.privatePlaytestHub ? `<p class="menu-copy" data-testid="hero-creation-private-note">${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>` : ""}
             </div>
             <div class="creation-selected-strip" aria-label="Selected hero build">
               <span>${escapeHtml(selectedClass.name)}</span>
@@ -142,9 +162,9 @@ export class HeroCreationScene extends Phaser.Scene {
               </div>
               <div class="menu-actions row creation-actions">
                 <button class="menu-primary-button" data-testid="hero-start" data-hero-action="start">${
-                  this.nextMode === "campaign" ? "Begin Campaign" : "Continue To Setup"
+                  this.privatePlaytestHub ? "Preview Campaign" : this.nextMode === "campaign" ? "Begin Campaign" : "Continue To Setup"
                 }</button>
-                <button data-testid="hero-back" data-hero-action="back">Back</button>
+                <button data-testid="hero-back" data-hero-action="back">${this.privatePlaytestHub ? "Playtest Hub" : "Back"}</button>
               </div>
             </section>
           </div>

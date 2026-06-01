@@ -58,6 +58,7 @@ export interface BattleLaunchRequest {
   rewardsDisabled?: boolean;
   privatePlaytestDemoId?: string;
   privatePlaytestNotice?: string;
+  privatePlaytestHubScenarioId?: string;
 }
 
 export interface ResolvedBattleLaunch {
@@ -96,6 +97,7 @@ export interface CreateBattleLaunchRequestOptions {
   rewardsDisabled?: boolean;
   privatePlaytestDemoId?: string;
   privatePlaytestNotice?: string;
+  privatePlaytestHubScenarioId?: string;
 }
 
 const defaultIndexes: BattleLaunchIndexes = {
@@ -185,7 +187,8 @@ export function createBattleLaunchRequest(
     tacticalPlanId,
     rewardsDisabled,
     privatePlaytestDemoId: options.privatePlaytestDemoId,
-    privatePlaytestNotice: options.privatePlaytestNotice
+    privatePlaytestNotice: options.privatePlaytestNotice,
+    privatePlaytestHubScenarioId: options.privatePlaytestHubScenarioId
   };
 }
 
@@ -203,7 +206,8 @@ export function cloneBattleLaunchRequestWithHero(
     retinueReserveUnits: sanitizeLaunchRetinueUnits(request.retinueReserveUnits),
     tacticalPlanId: request.tacticalPlanId,
     privatePlaytestDemoId: request.privatePlaytestDemoId,
-    privatePlaytestNotice: request.privatePlaytestNotice
+    privatePlaytestNotice: request.privatePlaytestNotice,
+    privatePlaytestHubScenarioId: request.privatePlaytestHubScenarioId
   };
 }
 
@@ -290,7 +294,8 @@ export function resolveBattleLaunchRequest(
         tacticalPlanId: resolvedTacticalPlanId,
         rewardsDisabled: request.rewardsDisabled,
         privatePlaytestDemoId: request.privatePlaytestDemoId,
-        privatePlaytestNotice: request.privatePlaytestNotice
+        privatePlaytestNotice: request.privatePlaytestNotice,
+        privatePlaytestHubScenarioId: request.privatePlaytestHubScenarioId
       },
       map,
       rewardTable,

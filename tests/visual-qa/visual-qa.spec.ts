@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 136;
+const EXPECTED_SCREENSHOT_COUNT = 145;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
@@ -1638,6 +1638,64 @@ test.describe("Ascendant Realms visual QA capture", () => {
       WIDE_DESKTOP,
       "Ordinary Results overview names the mission objective and recommended next action above the fold."
     );
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.100 private playtest hub and scenario gallery families", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0100-private-playtest-hub";
+    const consoleErrors = attachConsoleCollector(page, group);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await page.getByTestId("menu-playtest-hub").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+    await captureView(page, group, "v0.100 Playtest Hub 1920", "v0100-playtest-hub-1920.png", FULL_HD, "Private scenario gallery at 1920x1080.");
+
+    await useViewport(page, WIDE_DESKTOP);
+    await captureView(page, group, "v0.100 Playtest Hub 1600", "v0100-playtest-hub-1600.png", WIDE_DESKTOP, "Private scenario gallery at 1600x900.");
+
+    await useViewport(page, LAPTOP);
+    await captureView(page, group, "v0.100 Playtest Hub 1366", "v0100-playtest-hub-1366.png", LAPTOP, "Private scenario gallery at 1366x768.");
+
+    await page.getByTestId("playtest-scenario-campaign_salto_selected").click();
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await captureView(page, group, "v0.100 Campaign Shell entry", "v0100-hub-campaign-shell.png", LAPTOP, "Campaign Shell gallery entry with Salto selected.");
+    await page.getByTestId("campaign-playtest-hub-return").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await page.getByTestId("playtest-scenario-ascendant_creation").click();
+    await expect(page.getByTestId("hero-creation")).toBeVisible();
+    await captureView(page, group, "v0.100 First Session entry", "v0100-hub-first-session.png", LAPTOP, "First Session gallery entry for Ascendant creation.");
+    await page.getByTestId("hero-back").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await page.getByTestId("playtest-scenario-battle_selected_hero").click();
+    await expectBattleLoaded(page);
+    await captureView(page, group, "v0.100 Battle Shell entry", "v0100-hub-battle-shell.png", LAPTOP, "Battle Shell gallery entry with selected hero.");
+    await page.getByTestId("private-hub-exit").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await page.getByTestId("playtest-scenario-lume_first_link").click();
+    await expectBattleLoaded(page);
+    await expect(page.getByTestId("lume-links-progress")).toContainText("LUME LINKS 1/2");
+    await captureView(page, group, "v0.100 Lume entry", "v0100-hub-lume-flow.png", LAPTOP, "Lume gallery entry with first link active.");
+    await page.getByTestId("private-hub-exit").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await page.getByTestId("playtest-scenario-meta_retinue_ready").click();
+    await expect(page.getByTestId("campaign-tab-panel-hero")).toBeVisible();
+    await captureView(page, group, "v0.100 Meta entry", "v0100-hub-meta-flow.png", LAPTOP, "Meta gallery entry with Retinue ready preview.");
+    await page.getByTestId("campaign-playtest-hub-return").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await page.getByTestId("playtest-scenario-ordinary_results").click();
+    await expect(page.getByTestId("results-overview")).toBeVisible();
+    await captureView(page, group, "v0.100 Results entry", "v0100-hub-results-flow.png", LAPTOP, "Meta gallery entry with ordinary Results fixture.");
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

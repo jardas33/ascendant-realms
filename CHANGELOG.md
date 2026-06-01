@@ -1,5 +1,43 @@
 # Changelog
 
+# v0.100 Private Playtest Hub And Scenario Gallery - 2026-06-01
+
+This checkpoint adds a private-package-only Playtest Hub and Scenario Gallery for faster manual QA. It exposes representative campaign, first-session, battle, Lume, meta-progression, and Results previews only in private/dev posture. It does not expose shortcuts in production posture, alter normal progression, saves, persistent rewards, gameplay rules, balance, stable IDs, maps, factions, art/assets, imported assets, desktop work, or start v0.101.
+
+Added:
+
+- `src/game/scenes/PlaytestHubScene.ts`.
+- `src/game/playtest/PlaytestScenarioGallery.ts`.
+- `src/game/playtest/PlaytestHubFixtures.ts`.
+- `src/game/styles/playtest-hub.css`.
+- Private hub entry, return, reset, and 8-minute visual-tour UI.
+- Private no-save scenario fixtures for campaign shell, first session, battle shell, Lume flow, meta screens, ordinary Results, defeat Results, and private-demo Results.
+- `docs/V0100_PRIVATE_PLAYTEST_HUB_SPEC.md`.
+- `docs/V0100_SCENARIO_GALLERY_MANIFEST.json`.
+- `docs/V0100_SAVE_ISOLATION_REPORT.md`.
+- `docs/V0100_EMMANUEL_FAST_REVIEW_GUIDE.md`.
+- `docs/V0100_VISUAL_QA_REPORT.md`.
+- `docs/V0100_IMPLEMENTATION_REPORT.md`.
+
+Changed:
+
+- Main Menu can show `PLAYTEST HUB` only when private playtest tools are enabled.
+- Campaign Map, Hero Creation, Hero Progression, Battle HUD, and Results preview flows can return to the hub without mutating the prior save.
+- Private Lume demo and private-demo Results remain intact and can now be reached from the gallery.
+- Visual QA now includes 145 screenshots after adding nine v0.100 hub/gallery captures.
+- Visual review pack generation records 145 screenshots and 7 contact sheets from the full matrix.
+- Package generation and validation now require/copy the v0.100 docs and report the v0.100 checkpoint in playtest build info.
+- Hosted deep-battle coverage now splits one oversized behaviour/marquee gauntlet into two assertion-preserving tests so the full hosted shard completes within its test budgets.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, unlock rules, rewards, replay rules, Retinue rules, reputation rules, Tutorial safety, difficulty, AI, balance values, maps, factions, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+- Passed: `npm test` with 100 files / 711 tests, `npm run build` with the known Vite Phaser vendor chunk-size warning, `npm run validate:content`, `npm run validate:art-intake`, `npm run test:e2e:smoke:fast` with 10 tests, `npm run test:e2e:smoke` with 17 tests, controls normal/extended/verify with 18 scenarios, 90 extended pass rows, and 1658 checks, `npm run playtest:act1` with 180 Act 1 runs from 255 deterministic simulator runs, hosted deep-meta with 12 tests, hosted deep-battle with 31 tests, hosted smoke with 17 tests, hosted deep-campaign-pressure with 8 tests, hosted layout-core with 27 tests, hosted layout-cinderfen with 12 tests, `npm run visual:qa` with 16 tests / 145 screenshots / 0 console errors / 0 retries, and `npm run visual:review-pack` with 145 screenshots / 7 contact sheets.
+- Non-pass evidence resolved before closeout: an initial filtered v0.100 visual-QA run failed only the global expected screenshot count because it intentionally captured 9 of 145 screenshots; the final full visual-QA run passed. Hosted deep-battle initially timed out in one oversized behaviour/marquee gauntlet; the same assertion coverage was split into two tests and the full hosted shard reran green.
+
 # v0.99 Act 1 Mission Presentation Objective Clarity And Narrative Polish - 2026-06-01
 
 This checkpoint improves campaign presentation and copy only. It makes Act 1 read as a coherent route beginning near Salto, clarifies mission-card objectives and next steps, improves Captain Malrec framing, and tightens ordinary Results guidance. It does not add nodes, change unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art/assets, imported assets, desktop work, or start v0.100.

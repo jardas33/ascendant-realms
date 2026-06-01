@@ -1,0 +1,710 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.100",
+  "title": "Private Playtest Hub and Scenario Gallery",
+  "privateOnly": true,
+  "noSavePosture": "Rewards, XP, campaign progress, Retinue state, relic state, and reputation are not saved from hub previews.",
+  "groups": [
+    {
+      "id": "campaign_shell",
+      "title": "Campaign Shell"
+    },
+    {
+      "id": "first_session",
+      "title": "First Session"
+    },
+    {
+      "id": "battle_shell",
+      "title": "Battle Shell"
+    },
+    {
+      "id": "lume",
+      "title": "Lume"
+    },
+    {
+      "id": "meta",
+      "title": "Meta"
+    }
+  ],
+  "fastTourScenarioIds": [
+    "main_menu",
+    "ascendant_creation",
+    "campaign_fresh",
+    "campaign_salto_selected",
+    "battle_selected_hero",
+    "battle_selected_worker",
+    "lume_first_link",
+    "private_demo_results",
+    "meta_retinue_ready",
+    "campaign_fresh"
+  ],
+  "scenarios": [
+    {
+      "id": "main_menu",
+      "groupId": "first_session",
+      "title": "Main menu sample",
+      "launchKind": "main_menu",
+      "purpose": "Review the current private-package main menu without starting progression.",
+      "expectedVisibleUi": [
+        "main-menu",
+        "menu-new-campaign",
+        "menu-playtest-hub"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-actions"
+      ],
+      "manualReviewQuestion": "Does the first screen make the play path obvious?",
+      "screenshotId": "v0100-hub-main-menu",
+      "automatedCoverage": "smoke private hub visibility",
+      "launchContext": "private main-menu preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_fresh",
+      "groupId": "campaign_shell",
+      "title": "Fresh campaign map",
+      "launchKind": "campaign",
+      "purpose": "Open a fresh safe campaign preview with the first node selected.",
+      "expectedVisibleUi": [
+        "campaign-map",
+        "campaign-node-border_village",
+        "campaign-selected-panel"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is the map readable at a glance?",
+      "screenshotId": "v0100-hub-campaign-fresh",
+      "automatedCoverage": "visual QA campaign shell gallery",
+      "launchContext": "campaign map preview with Salto selected",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_salto_selected",
+      "groupId": "campaign_shell",
+      "title": "Salto selected",
+      "launchKind": "campaign",
+      "purpose": "Show Salto Outskirts selected with the primary action visible.",
+      "expectedVisibleUi": [
+        "campaign-selected-panel",
+        "campaign-start-node"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-actions"
+      ],
+      "manualReviewQuestion": "Is Salto's first action obvious?",
+      "screenshotId": "v0100-hub-salto-selected",
+      "automatedCoverage": "smoke private hub launcher",
+      "launchContext": "campaign map preview selecting border_village",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_locked_mission",
+      "groupId": "campaign_shell",
+      "title": "Locked mission selected",
+      "launchKind": "campaign",
+      "purpose": "Preview a locked Aether Well mission without weakening prerequisites.",
+      "expectedVisibleUi": [
+        "campaign-node-aether_well_ruins",
+        "campaign-selected-panel"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-actions"
+      ],
+      "manualReviewQuestion": "Is the lock reason readable without feeling broken?",
+      "screenshotId": "v0100-hub-locked-mission",
+      "automatedCoverage": "smoke private hub lock guard",
+      "launchContext": "campaign map preview selecting aether_well_ruins",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_stronghold_tab",
+      "groupId": "campaign_shell",
+      "title": "Stronghold tab",
+      "launchKind": "campaign",
+      "purpose": "Open the campaign Stronghold tab for hierarchy review.",
+      "expectedVisibleUi": [
+        "campaign-tab-panel-stronghold",
+        "stronghold-overview"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Can the stronghold state be scanned quickly?",
+      "screenshotId": "v0100-hub-stronghold-tab",
+      "automatedCoverage": "visual QA campaign tab gallery",
+      "launchContext": "campaign map preview on stronghold tab",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_hero_tab",
+      "groupId": "campaign_shell",
+      "title": "Hero tab",
+      "launchKind": "campaign",
+      "purpose": "Open the campaign Hero and Retinue summary tab.",
+      "expectedVisibleUi": [
+        "campaign-tab-panel-hero",
+        "retinue-panel"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Are hero and Retinue next steps clear?",
+      "screenshotId": "v0100-hub-hero-tab",
+      "automatedCoverage": "visual QA campaign tab gallery",
+      "launchContext": "campaign map preview on hero tab",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_inventory_tab",
+      "groupId": "campaign_shell",
+      "title": "Inventory tab",
+      "launchKind": "campaign",
+      "purpose": "Open the campaign Inventory action tab.",
+      "expectedVisibleUi": [
+        "campaign-tab-panel-inventory",
+        "campaign-inventory-inline"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is the inventory call-to-action clear?",
+      "screenshotId": "v0100-hub-inventory-tab",
+      "automatedCoverage": "visual QA campaign tab gallery",
+      "launchContext": "campaign map preview on inventory tab",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_intel_tab",
+      "groupId": "campaign_shell",
+      "title": "Intel tab",
+      "launchKind": "campaign",
+      "purpose": "Open the campaign Intel tab with route and rival context.",
+      "expectedVisibleUi": [
+        "campaign-tab-panel-intel",
+        "campaign-chapter-border_marches"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Does Intel feel useful rather than verbose?",
+      "screenshotId": "v0100-hub-intel-tab",
+      "automatedCoverage": "visual QA campaign tab gallery",
+      "launchContext": "campaign map preview on intel tab",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "campaign_reputation_tab",
+      "groupId": "campaign_shell",
+      "title": "Reputation tab",
+      "launchKind": "campaign",
+      "purpose": "Open reputation standings in the campaign shell.",
+      "expectedVisibleUi": [
+        "campaign-tab-panel-reputation"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Are reputation standings understandable?",
+      "screenshotId": "v0100-hub-reputation-tab",
+      "automatedCoverage": "visual QA campaign tab gallery",
+      "launchContext": "campaign map preview on reputation tab",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "ascendant_creation",
+      "groupId": "first_session",
+      "title": "Ascendant creation",
+      "launchKind": "hero_creation",
+      "purpose": "Review class, origin, and hero review choices.",
+      "expectedVisibleUi": [
+        "hero-creation",
+        "hero-creation-step-class",
+        "hero-creation-step-origin"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Can a class and origin be compared within seconds?",
+      "screenshotId": "v0100-hub-ascendant-creation",
+      "automatedCoverage": "visual QA first-session gallery",
+      "launchContext": "hero creation preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "tutorial_proving_grounds",
+      "groupId": "first_session",
+      "title": "Tutorial / Proving Grounds",
+      "launchKind": "battle",
+      "purpose": "Launch the protected Tutorial route with no rewards.",
+      "expectedVisibleUi": [
+        "battle-hud",
+        "tutorial-panel"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Is the tutorial guidance readable enough?",
+      "screenshotId": "v0100-hub-tutorial",
+      "automatedCoverage": "smoke tutorial no-save guard",
+      "launchContext": "tutorial battle preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "salto_outskirts_start",
+      "groupId": "first_session",
+      "title": "Salto Outskirts start",
+      "launchKind": "battle",
+      "purpose": "Launch the first real battle as a no-save private preview.",
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-objectives"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Does the first battle start state explain what to do?",
+      "screenshotId": "v0100-hub-salto-battle",
+      "automatedCoverage": "hosted smoke private hub battle",
+      "launchContext": "Salto Outskirts battle preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_ordinary_start",
+      "groupId": "battle_shell",
+      "title": "Ordinary battle start",
+      "launchKind": "battle",
+      "purpose": "Open an ordinary battle start state for HUD and minimap review.",
+      "expectedVisibleUi": [
+        "battle-hud",
+        "battle-minimap"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Is the HUD readable before any action?",
+      "screenshotId": "v0100-hub-battle-start",
+      "automatedCoverage": "visual QA battle shell gallery",
+      "launchContext": "ordinary private battle preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_selected_hero",
+      "groupId": "battle_shell",
+      "title": "Selected hero",
+      "launchKind": "battle",
+      "purpose": "Select the hero and show command/identity panels.",
+      "expectedVisibleUi": [
+        "battle-hero-panel",
+        "unit-order-summary"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Is the selected hero obvious?",
+      "screenshotId": "v0100-hub-selected-hero",
+      "automatedCoverage": "visual QA selected units",
+      "launchContext": "battle preview with hero selected",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_selected_worker",
+      "groupId": "battle_shell",
+      "title": "Selected Worker",
+      "launchKind": "battle",
+      "purpose": "Select a Worker and show utility command posture.",
+      "expectedVisibleUi": [
+        "battle-selection-card",
+        "command-panel"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Are Worker commands understandable?",
+      "screenshotId": "v0100-hub-selected-worker",
+      "automatedCoverage": "visual QA selected units",
+      "launchContext": "battle preview with Worker selected",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_selected_squad",
+      "groupId": "battle_shell",
+      "title": "Selected squad",
+      "launchKind": "battle",
+      "purpose": "Select a small player squad and show group command posture.",
+      "expectedVisibleUi": [
+        "battle-selection-card",
+        "unit-order-summary"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Does multi-select communicate count and intent?",
+      "screenshotId": "v0100-hub-selected-squad",
+      "automatedCoverage": "visual QA selected units",
+      "launchContext": "battle preview with squad selected",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_selected_building",
+      "groupId": "battle_shell",
+      "title": "Selected building",
+      "launchKind": "battle",
+      "purpose": "Select Command Hall and show production/rally posture.",
+      "expectedVisibleUi": [
+        "battle-selection-card",
+        "command-panel"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Are building actions legible?",
+      "screenshotId": "v0100-hub-selected-building",
+      "automatedCoverage": "visual QA selected buildings",
+      "launchContext": "battle preview with building selected",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_contested_site",
+      "groupId": "battle_shell",
+      "title": "Contested site",
+      "launchKind": "battle",
+      "purpose": "Show a capture site in a contested or emphasized state.",
+      "expectedVisibleUi": [
+        "battle-resource-sites",
+        "battle-minimap"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Is site ownership pressure readable?",
+      "screenshotId": "v0100-hub-contested-site",
+      "automatedCoverage": "visual QA capture sites",
+      "launchContext": "battle preview focused on resource site",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_fog_minimap",
+      "groupId": "battle_shell",
+      "title": "Fog/minimap sample",
+      "launchKind": "battle",
+      "purpose": "Center the camera for fog and minimap readability review.",
+      "expectedVisibleUi": [
+        "battle-minimap",
+        "battle-objectives"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Is the minimap and fog posture readable enough?",
+      "screenshotId": "v0100-hub-fog-minimap",
+      "automatedCoverage": "visual QA fog and minimap",
+      "launchContext": "battle preview with camera focus marker",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "battle_notification_priority",
+      "groupId": "battle_shell",
+      "title": "Notification-priority sample",
+      "launchKind": "battle",
+      "purpose": "Show a concise high-priority command/status line.",
+      "expectedVisibleUi": [
+        "battle-status",
+        "battle-hud"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-finish"
+      ],
+      "manualReviewQuestion": "Are urgent and routine messages distinct?",
+      "screenshotId": "v0100-hub-notification-priority",
+      "automatedCoverage": "visual QA battle feedback",
+      "launchContext": "battle preview with priority notification",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "lume_launch_demo",
+      "groupId": "lume",
+      "title": "Launch Aether Well Lume Demo",
+      "launchKind": "lume_battle",
+      "purpose": "Open the existing private Aether Well Lume demo.",
+      "expectedVisibleUi": [
+        "private-playtest-demo-warning",
+        "lume-network-status"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Can the Lume task be understood quickly?",
+      "screenshotId": "v0100-hub-lume-demo",
+      "automatedCoverage": "smoke private Lume demo",
+      "launchContext": "Aether Well Lume private demo",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "lume_first_link",
+      "groupId": "lume",
+      "title": "First-link activation sample",
+      "launchKind": "lume_battle",
+      "purpose": "Open the Lume demo with the first link already awakened for visual review.",
+      "expectedVisibleUi": [
+        "lume-links-progress",
+        "private-demo-finish"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is the awakened link state clear?",
+      "screenshotId": "v0100-hub-lume-first-link",
+      "automatedCoverage": "visual QA Lume flow",
+      "launchContext": "Aether Well Lume active-link sample",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "lume_overlay_hidden",
+      "groupId": "lume",
+      "title": "Hidden overlay sample",
+      "launchKind": "lume_battle",
+      "purpose": "Open the Lume demo with link rendering hidden.",
+      "expectedVisibleUi": [
+        "lume-visibility-controls",
+        "private-demo-actions"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is Hidden mode clearly quieter?",
+      "screenshotId": "v0100-hub-lume-hidden",
+      "automatedCoverage": "visual QA Lume flow",
+      "launchContext": "Lume overlay hidden sample",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "lume_overlay_auto",
+      "groupId": "lume",
+      "title": "Auto overlay sample",
+      "launchKind": "lume_battle",
+      "purpose": "Open the Lume demo in default Auto overlay mode.",
+      "expectedVisibleUi": [
+        "lume-visibility-controls",
+        "private-demo-actions"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Does Auto help without clutter?",
+      "screenshotId": "v0100-hub-lume-auto",
+      "automatedCoverage": "visual QA Lume flow",
+      "launchContext": "Lume overlay auto sample",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "lume_overlay_always",
+      "groupId": "lume",
+      "title": "Always overlay sample",
+      "launchKind": "lume_battle",
+      "purpose": "Open the Lume demo with all eligible links visible.",
+      "expectedVisibleUi": [
+        "lume-visibility-controls",
+        "private-demo-actions"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is Always mode useful for inspection?",
+      "screenshotId": "v0100-hub-lume-always",
+      "automatedCoverage": "visual QA Lume flow",
+      "launchContext": "Lume overlay always sample",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "private_demo_results",
+      "groupId": "lume",
+      "title": "Private-demo Results",
+      "launchKind": "results",
+      "purpose": "Open the compact private-demo Results summary.",
+      "expectedVisibleUi": [
+        "private-demo-lume-summary",
+        "private-demo-primary-actions"
+      ],
+      "expectedAbsentUi": [
+        "results-primary-actions"
+      ],
+      "manualReviewQuestion": "Does private-demo Results make no-save status obvious?",
+      "screenshotId": "v0100-hub-private-results",
+      "automatedCoverage": "visual QA private results",
+      "launchContext": "private demo Results fixture",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_hero_overview",
+      "groupId": "meta",
+      "title": "Hero overview",
+      "launchKind": "hero_progression",
+      "purpose": "Open the Hero overview with seeded private progression data.",
+      "expectedVisibleUi": [
+        "hero-overview",
+        "skills-panel"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is the hero overview a useful first card?",
+      "screenshotId": "v0100-hub-hero-overview",
+      "automatedCoverage": "visual QA meta gallery",
+      "launchContext": "hero progression preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_skills",
+      "groupId": "meta",
+      "title": "Skills",
+      "launchKind": "hero_progression",
+      "purpose": "Open the skills section with points and purchased nodes.",
+      "expectedVisibleUi": [
+        "skills-panel",
+        "skill-tree-grid"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Are available and locked skill states clear?",
+      "screenshotId": "v0100-hub-skills",
+      "automatedCoverage": "visual QA meta gallery",
+      "launchContext": "hero skills preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_equipment",
+      "groupId": "meta",
+      "title": "Equipment",
+      "launchKind": "hero_progression",
+      "purpose": "Open the equipped loadout and comparison posture.",
+      "expectedVisibleUi": [
+        "equipment-panel",
+        "inventory-list"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is equipped versus stored gear clear?",
+      "screenshotId": "v0100-hub-equipment",
+      "automatedCoverage": "visual QA meta gallery",
+      "launchContext": "equipment preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_relics",
+      "groupId": "meta",
+      "title": "Relics",
+      "launchKind": "hero_progression",
+      "purpose": "Open relic-equipped hero progression for build identity review.",
+      "expectedVisibleUi": [
+        "equipment-panel",
+        "build-identity-panel"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Do relic effects and synergy read clearly?",
+      "screenshotId": "v0100-hub-relics",
+      "automatedCoverage": "visual QA meta gallery",
+      "launchContext": "relic preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_retinue_ready",
+      "groupId": "meta",
+      "title": "Retinue Ready",
+      "launchKind": "campaign",
+      "purpose": "Open a ready Retinue preview on the Campaign Hero tab.",
+      "expectedVisibleUi": [
+        "retinue-panel",
+        "campaign-tab-panel-hero"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Can ready reserves be understood quickly?",
+      "screenshotId": "v0100-hub-retinue-ready",
+      "automatedCoverage": "visual QA retinue gallery",
+      "launchContext": "Retinue ready preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_retinue_recovering",
+      "groupId": "meta",
+      "title": "Retinue Recovering",
+      "launchKind": "campaign",
+      "purpose": "Open a recovering Retinue preview with deployment blocked.",
+      "expectedVisibleUi": [
+        "retinue-panel",
+        "campaign-tab-panel-hero"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Is recovering status readable and non-actionable?",
+      "screenshotId": "v0100-hub-retinue-recovering",
+      "automatedCoverage": "visual QA retinue gallery",
+      "launchContext": "Retinue recovery preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "meta_stronghold_preview",
+      "groupId": "meta",
+      "title": "Stronghold preview",
+      "launchKind": "campaign",
+      "purpose": "Open the Stronghold tab with available and locked upgrades.",
+      "expectedVisibleUi": [
+        "stronghold-overview",
+        "campaign-tab-panel-stronghold"
+      ],
+      "expectedAbsentUi": [
+        "results-panel"
+      ],
+      "manualReviewQuestion": "Are upgrade costs and locks clear?",
+      "screenshotId": "v0100-hub-stronghold-preview",
+      "automatedCoverage": "visual QA stronghold gallery",
+      "launchContext": "Stronghold preview",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "ordinary_results",
+      "groupId": "meta",
+      "title": "Ordinary Results",
+      "launchKind": "results",
+      "purpose": "Open a normal victory Results fixture.",
+      "expectedVisibleUi": [
+        "results-overview",
+        "results-primary-actions"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-primary-actions"
+      ],
+      "manualReviewQuestion": "Is the ordinary Results summary concise enough?",
+      "screenshotId": "v0100-hub-ordinary-results",
+      "automatedCoverage": "visual QA normal results",
+      "launchContext": "ordinary victory Results fixture",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    },
+    {
+      "id": "defeat_results",
+      "groupId": "meta",
+      "title": "Defeat Results",
+      "launchKind": "results",
+      "purpose": "Open a normal defeat Results fixture.",
+      "expectedVisibleUi": [
+        "results-overview",
+        "results-primary-actions"
+      ],
+      "expectedAbsentUi": [
+        "private-demo-primary-actions"
+      ],
+      "manualReviewQuestion": "Does defeat explain next action without noise?",
+      "screenshotId": "v0100-hub-defeat-results",
+      "automatedCoverage": "visual QA normal results",
+      "launchContext": "ordinary defeat Results fixture",
+      "saveIsolationRule": "Private hub preview only. Restore the pre-hub local save before returning; no rewards, XP, progress, Retinue, relic, or reputation mutation is kept."
+    }
+  ]
+}

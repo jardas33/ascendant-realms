@@ -28,6 +28,7 @@ import { createHeroProgressionViewModel, resolveHeroClass, resolveOrigin } from 
 import { createInventoryViewModel, renderInventoryPanel, type InventoryPanelViewModel } from "../progression/InventoryPanel";
 import { escapeHtml, formatResourceRewards, renderItemName, titleCase, toCssColor } from "../progression/ItemComparison";
 import { createSkillTreeViewModel, renderSkillTreesPanel, type SkillTreesPanelViewModel } from "../progression/SkillTreePanel";
+import { PRIVATE_PLAYTEST_HUB_NOTICE, restorePrivatePlaytestHubSave } from "../playtest/PrivatePlaytestTools";
 import type { CampaignSaveData, HeroSaveData } from "../save/SaveTypes";
 
 interface HeroProgressionData {
@@ -38,6 +39,8 @@ interface HeroProgressionData {
   rewardLevelUp?: RewardLevelUpSummary;
   launchRequest?: BattleLaunchRequest;
   returnMode?: "campaign" | "skirmish";
+  privatePlaytestHub?: boolean;
+  privatePlaytestScenarioId?: string;
 }
 
 const PROGRESSION_CATALOGS = {
@@ -57,6 +60,7 @@ export class HeroProgressionScene extends Phaser.Scene {
   private rewardLevelUp?: RewardLevelUpSummary;
   private launchRequest?: BattleLaunchRequest;
   private returnMode: "campaign" | "skirmish" = "skirmish";
+  private privatePlaytestHub = false;
   private status = "Spend skill points, equip rewards, or continue into another skirmish.";
 
   constructor() {
@@ -71,6 +75,7 @@ export class HeroProgressionScene extends Phaser.Scene {
     this.rewardLevelUp = data.rewardLevelUp;
     this.launchRequest = data.launchRequest;
     this.returnMode = data.returnMode ?? (data.launchRequest?.mode === "campaign_node" ? "campaign" : "skirmish");
+    this.privatePlaytestHub = Boolean(data.privatePlaytestHub);
     this.heroSave = this.finalizeHeroSave(this.heroSave);
     this.status = this.initialStatus();
   }
@@ -111,6 +116,11 @@ export class HeroProgressionScene extends Phaser.Scene {
         });
       }
       if (action === "campaign") {
+        if (this.privatePlaytestHub) {
+          restorePrivatePlaytestHubSave();
+          this.scene.start(SCENE_KEYS.playtestHub);
+          return;
+        }
         const save = SaveSystem.load();
         if (save) {
           this.scene.start(SCENE_KEYS.campaignMap, {
@@ -121,6 +131,11 @@ export class HeroProgressionScene extends Phaser.Scene {
         }
       }
       if (action === "menu") {
+        if (this.privatePlaytestHub) {
+          restorePrivatePlaytestHubSave();
+          this.scene.start(SCENE_KEYS.playtestHub);
+          return;
+        }
         this.scene.start(SCENE_KEYS.mainMenu);
       }
     };
@@ -134,7 +149,11 @@ export class HeroProgressionScene extends Phaser.Scene {
     this.heroSave = this.finalizeHeroSave(hero);
     this.status = message;
     if (changed) {
-      SaveSystem.saveHero(this.heroSave);
+      if (this.privatePlaytestHub) {
+        this.status = `${message} Private preview only; nothing was saved.`;
+      } else {
+        SaveSystem.saveHero(this.heroSave);
+      }
     }
     this.render();
   }
@@ -178,6 +197,7 @@ export class HeroProgressionScene extends Phaser.Scene {
               <p class="eyebrow">${this.stats?.outcome === "victory" ? "Victory Progression" : "Hero Inventory"}</p>
               <h1>${escapeHtml(viewModel.heroName)}</h1>
               <p class="menu-copy">${escapeHtml(viewModel.heroClass.name)} - ${escapeHtml(viewModel.origin.name)} - Level ${viewModel.level}</p>
+              ${this.privatePlaytestHub ? `<p class="menu-copy" data-testid="hero-inventory-private-note">${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>` : ""}
               </div>
             </div>
             <div class="skill-points">
@@ -240,7 +260,7 @@ export class HeroProgressionScene extends Phaser.Scene {
           </details>
           <div class="menu-actions row">
             <button data-progression-action="${this.returnMode === "campaign" ? "campaign" : "skirmish"}">
-              ${this.returnMode === "campaign" ? "Campaign Map" : "Continue Skirmish"}
+              ${this.privatePlaytestHub ? "Playtest Hub" : this.returnMode === "campaign" ? "Campaign Map" : "Continue Skirmish"}
             </button>
             <button data-progression-action="menu">Main Menu</button>
           </div>

@@ -358,6 +358,12 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V099_VISUAL_QA_REPORT.md",
   "V099_IMPLEMENTATION_REPORT.md",
   "V099_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0100_PRIVATE_PLAYTEST_HUB_SPEC.md",
+  "V0100_SCENARIO_GALLERY_MANIFEST.json",
+  "V0100_SAVE_ISOLATION_REPORT.md",
+  "V0100_EMMANUEL_FAST_REVIEW_GUIDE.md",
+  "V0100_VISUAL_QA_REPORT.md",
+  "V0100_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -468,7 +474,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.99 Act 1 mission presentation objective clarity and narrative polish",
+      "v0.100 Private Playtest Hub and Scenario Gallery",
       "build info checkpoint",
       checks,
       errors

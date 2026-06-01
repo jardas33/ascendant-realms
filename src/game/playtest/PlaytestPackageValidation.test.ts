@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.99 Act 1 mission presentation objective clarity and narrative polish",
+          checkpoint: "v0.100 Private Playtest Hub and Scenario Gallery",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -407,6 +407,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V099_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.99 visual QA report" },
       { path: "V099_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.99 implementation report" },
       { path: "V099_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.99 Emmanuel retest" },
+      { path: "V0100_PRIVATE_PLAYTEST_HUB_SPEC.md", sizeBytes: 20, textContent: "v0.100 private hub spec" },
+      { path: "V0100_SCENARIO_GALLERY_MANIFEST.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
+      { path: "V0100_SAVE_ISOLATION_REPORT.md", sizeBytes: 20, textContent: "v0.100 save isolation report" },
+      { path: "V0100_EMMANUEL_FAST_REVIEW_GUIDE.md", sizeBytes: 20, textContent: "v0.100 fast review guide" },
+      { path: "V0100_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.100 visual QA report" },
+      { path: "V0100_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.100 implementation report" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

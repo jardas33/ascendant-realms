@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.99 Act 1 mission presentation objective clarity and narrative polish";
+const CHECKPOINT = "v0.100 Private Playtest Hub and Scenario Gallery";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -388,6 +388,12 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V099_VISUAL_QA_REPORT.md", join(packageDir, "V099_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V099_IMPLEMENTATION_REPORT.md", join(packageDir, "V099_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V099_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V099_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0100_PRIVATE_PLAYTEST_HUB_SPEC.md", join(packageDir, "V0100_PRIVATE_PLAYTEST_HUB_SPEC.md"));
+  await copyMarkdown("docs/V0100_SCENARIO_GALLERY_MANIFEST.json", join(packageDir, "V0100_SCENARIO_GALLERY_MANIFEST.json"));
+  await copyMarkdown("docs/V0100_SAVE_ISOLATION_REPORT.md", join(packageDir, "V0100_SAVE_ISOLATION_REPORT.md"));
+  await copyMarkdown("docs/V0100_EMMANUEL_FAST_REVIEW_GUIDE.md", join(packageDir, "V0100_EMMANUEL_FAST_REVIEW_GUIDE.md"));
+  await copyMarkdown("docs/V0100_VISUAL_QA_REPORT.md", join(packageDir, "V0100_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0100_IMPLEMENTATION_REPORT.md", join(packageDir, "V0100_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -487,7 +493,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.99, start with V099_EMMANUEL_RETEST_CHECKLIST.md, V099_ACT1_PRESENTATION_AUDIT.md, V099_MISSION_CARD_AND_OBJECTIVE_SPEC.md, V099_ACT1_RESULTS_AND_NEXT_STEP_REPORT.md, and V099_VISUAL_QA_REPORT.md. This package polishes Act 1 mission presentation, objective clarity, Results next-step copy, and Captain Malrec framing only. It changes no saves, rewards, campaign progression logic, gameplay values, unlock rules, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.100, start with V0100_EMMANUEL_FAST_REVIEW_GUIDE.md, V0100_PRIVATE_PLAYTEST_HUB_SPEC.md, V0100_SCENARIO_GALLERY_MANIFEST.json, and V0100_SAVE_ISOLATION_REPORT.md. This package adds a private-package-only Playtest Hub and Scenario Gallery for faster manual QA. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
 
 ## Known Warning
 

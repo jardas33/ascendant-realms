@@ -4476,7 +4476,7 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(siteVisibility.renderedSiteMarkers).toBeGreaterThan(0);
   });
 
-  test("behaviour mode control gauntlet preserves attack, retreat, marquee, and minimap intent @hosted-deep-battle", async ({ page }) => {
+  test("behaviour mode control gauntlet preserves attack and retreat intent @hosted-deep-battle", async ({ page }) => {
     test.setTimeout(120_000);
     await startFirstClaimSkirmish(page, "Control Gauntlet", "normal");
     await page.keyboard.press("H");
@@ -4716,6 +4716,13 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     expect(retreatState.attackTargetId).toBe("");
     expect(retreatState.hasMoveTarget).toBe(true);
     expect(retreatState.moveTarget).toBeDefined();
+  });
+
+  test("marquee and minimap intent stay stable after behaviour controls @hosted-deep-battle", async ({ page }) => {
+    test.setTimeout(90_000);
+    await startFirstClaimSkirmish(page, "Control Gauntlet Marquee", "normal");
+    await page.keyboard.press("H");
+    await expect(page.locator(".side-panel")).toContainText("Control Gauntlet");
 
     const dragTargets = await page.evaluate(() => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");

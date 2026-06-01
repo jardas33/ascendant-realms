@@ -63,6 +63,7 @@ export interface HUDSnapshot {
   lumeNetwork?: LumeNetworkHudSummary;
   lumeSiteSummaries?: Record<string, LumeNetworkSiteSummary>;
   privatePlaytestNotice?: string;
+  privatePlaytestHub?: boolean;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
 }

@@ -53,7 +53,13 @@ import { renderRetinuePanel } from "../campaign/RetinuePanel";
 import { renderRivalIntelPanel } from "../campaign/RivalIntelPanel";
 import { renderStrongholdPanel } from "../campaign/StrongholdPanel";
 import { dismissRetinueUnit, retinueDeploymentUnits, retinueReserveUnits, toggleRetinueDeployment } from "../core/RetinueRules";
-import { isPrivatePlaytestToolsEnabled, PRIVATE_LUME_DEMO_ID, PRIVATE_LUME_DEMO_NOTICE } from "../playtest/PrivatePlaytestTools";
+import {
+  isPrivatePlaytestToolsEnabled,
+  PRIVATE_LUME_DEMO_ID,
+  PRIVATE_LUME_DEMO_NOTICE,
+  PRIVATE_PLAYTEST_HUB_NOTICE,
+  restorePrivatePlaytestHubSave
+} from "../playtest/PrivatePlaytestTools";
 import { renderOnboardingHelpSurface } from "../ui/OnboardingHelp";
 
 type CampaignTabId = "map" | "stronghold" | "hero" | "inventory" | "intel" | "reputation";
@@ -74,6 +80,9 @@ interface CampaignMapData {
   wasReplay?: boolean;
   stats?: BattleStats;
   message?: string;
+  privatePlaytestHub?: boolean;
+  privatePlaytestScenarioId?: string;
+  privatePlaytestActiveTab?: CampaignTabId;
 }
 
 interface CampaignRenderOptions {
@@ -95,6 +104,7 @@ export class CampaignMapScene extends Phaser.Scene {
   private selectedTacticalPlanId: TacticalPlanId = DEFAULT_TACTICAL_PLAN_ID;
   private activeTab: CampaignTabId = "map";
   private message = "Choose an available campaign node.";
+  private privatePlaytestHub = false;
 
   constructor() {
     super(SCENE_KEYS.campaignMap);
@@ -108,8 +118,10 @@ export class CampaignMapScene extends Phaser.Scene {
       this.campaignSave = createStartedCampaignSave(this.campaignSave);
     }
     this.selectedNodeId = data.completedNodeId ?? this.campaignSave.selectedNodeId ?? firstAvailableNodeId(this.campaignSave);
+    this.activeTab = data.privatePlaytestActiveTab ?? "map";
+    this.privatePlaytestHub = Boolean(data.privatePlaytestHub);
     this.message = data.message ?? messageForCampaignMapData(data);
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
   }
 
   create(): void {
@@ -131,7 +143,7 @@ export class CampaignMapScene extends Phaser.Scene {
           selectedNodeId: this.selectedNodeId,
           selectedChapterId: selectedNode?.chapterId ?? this.campaignSave.selectedChapterId
         };
-        SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
+        this.saveCampaignIfAllowed();
         this.render({
           preserveSelectedPanelState: !nodeChanged,
           resetSelectedPanelState: nodeChanged
@@ -182,13 +194,18 @@ export class CampaignMapScene extends Phaser.Scene {
       if (action === "private-lume-demo") {
         this.startPrivateLumeDemo();
       }
+      if (action === "playtest-hub") {
+        restorePrivatePlaytestHubSave();
+        this.scene.start(SCENE_KEYS.playtestHub);
+      }
       if (action === "menu") {
         this.scene.start(SCENE_KEYS.mainMenu);
       }
       if (action === "inventory") {
         this.scene.start(SCENE_KEYS.heroProgression, {
           heroSave: this.heroSave,
-          returnMode: "campaign"
+          returnMode: "campaign",
+          privatePlaytestHub: this.privatePlaytestHub
         });
       }
     };
@@ -222,9 +239,12 @@ export class CampaignMapScene extends Phaser.Scene {
         node
       });
       this.campaignSave = modifierResult.campaign;
-      SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
+      this.saveCampaignIfAllowed();
       this.scene.start(SCENE_KEYS.battle, {
         launchRequest: createCampaignBattleLaunchRequest(this.heroSave, node, {
+          rewardsDisabled: this.privatePlaytestHub ? true : undefined,
+          privatePlaytestHubScenarioId: this.privatePlaytestHub ? `campaign_preview_${node.id}` : undefined,
+          privatePlaytestNotice: this.privatePlaytestHub ? PRIVATE_PLAYTEST_HUB_NOTICE : undefined,
           modifiers: [
             ...getCampaignScenarioLaunchModifiers(node),
             ...modifierResult.launchModifiers,
@@ -254,7 +274,7 @@ export class CampaignMapScene extends Phaser.Scene {
     this.heroSave = completed.hero;
     this.campaignSave = completed.campaign;
     this.message = `${node.name} completed. ${formatNodeRewardSummary(node)}`;
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
     this.render();
   }
 
@@ -291,7 +311,7 @@ export class CampaignMapScene extends Phaser.Scene {
     }
     this.campaignSave = dismissRetinueUnit(this.campaignSave, retinueUnitId);
     this.message = "Retinue unit dismissed.";
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
     this.render();
   }
 
@@ -321,7 +341,7 @@ export class CampaignMapScene extends Phaser.Scene {
         ? "Retinue unit selected for deployment."
         : "Retinue unit moved to reserve."
       : result.reason ?? "Retinue deployment could not change.";
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
     this.render();
   }
 
@@ -335,7 +355,7 @@ export class CampaignMapScene extends Phaser.Scene {
 
     this.campaignSave = result.campaign;
     this.message = `${result.upgrade?.name ?? "Stronghold upgrade"} upgraded. Effects apply to future battles.`;
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
     this.render();
   }
 
@@ -361,7 +381,7 @@ export class CampaignMapScene extends Phaser.Scene {
     this.heroSave = result.hero;
     this.campaignSave = result.campaign;
     this.message = formatCampaignChoiceResultMessage({ node, choice, heroSave: this.heroSave, result });
-    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+    this.saveGameIfAllowed();
     this.render();
   }
 
@@ -392,6 +412,7 @@ export class CampaignMapScene extends Phaser.Scene {
             </div>
           </div>
           <div class="status-box" data-testid="campaign-status">${escapeHtml(this.message)}</div>
+          ${this.renderPrivateHubReturn()}
           ${this.renderPrivatePlaytestTools()}
           ${this.renderCampaignTabs()}
           ${this.renderActiveTab(viewModel)}
@@ -456,6 +477,7 @@ export class CampaignMapScene extends Phaser.Scene {
   private renderCampaignActions(): string {
     return `
       <div class="menu-actions row campaign-secondary-actions">
+        ${this.privatePlaytestHub ? `<button data-testid="campaign-playtest-hub-exit" data-campaign-action="playtest-hub">Playtest Hub</button>` : ""}
         <button data-testid="campaign-inventory" data-campaign-action="inventory">Hero Inventory</button>
         <button data-testid="campaign-main-menu" data-campaign-action="menu">Main Menu</button>
         ${renderOnboardingHelpSurface({
@@ -731,6 +753,21 @@ export class CampaignMapScene extends Phaser.Scene {
     `;
   }
 
+  private renderPrivateHubReturn(): string {
+    if (!this.privatePlaytestHub) {
+      return "";
+    }
+    return `
+      <section class="campaign-private-tools playtest-hub-return" data-testid="campaign-private-hub-return">
+        <div>
+          <strong>Playtest Hub Preview</strong>
+          <p>${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>
+        </div>
+        <button data-testid="campaign-playtest-hub-return" data-campaign-action="playtest-hub">Return to Playtest Hub</button>
+      </section>
+    `;
+  }
+
   private renderPrivatePlaytestTools(): string {
     if (!isPrivatePlaytestToolsEnabled()) {
       return "";
@@ -774,6 +811,20 @@ export class CampaignMapScene extends Phaser.Scene {
 
   private canStartSelectedNode(): boolean {
     return canStartCampaignNode(this.selectedNode(), this.campaignSave);
+  }
+
+  private saveGameIfAllowed(): void {
+    if (this.privatePlaytestHub) {
+      return;
+    }
+    SaveSystem.saveGame(this.heroSave, this.campaignSave);
+  }
+
+  private saveCampaignIfAllowed(): void {
+    if (this.privatePlaytestHub) {
+      return;
+    }
+    SaveSystem.saveCampaign(this.campaignSave, this.heroSave);
   }
 
   private cleanup(): void {

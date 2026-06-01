@@ -27,19 +27,27 @@ import type { ResultsData } from "../results/ResultsTypes";
 import { createResultsViewModel, initialResultsStatus, type ResultsGuidanceViewModel } from "../results/ResultsViewModel";
 import { AudioManager } from "../systems/AudioManager";
 import { addVeteranToRetinue } from "../core/RetinueRules";
+import { PRIVATE_PLAYTEST_HUB_NOTICE, restorePrivatePlaytestHubSave } from "../playtest/PrivatePlaytestTools";
+
+interface ResultsSceneData extends ResultsData {
+  privatePlaytestHub?: boolean;
+  privatePlaytestScenarioId?: string;
+}
 
 export class ResultsScene extends Phaser.Scene {
   private root?: HTMLElement;
   private handler?: (event: MouseEvent) => void;
   private dataSnapshot?: ResultsData;
   private status = "";
+  private privatePlaytestHub = false;
 
   constructor() {
     super(SCENE_KEYS.results);
   }
 
-  init(data: ResultsData): void {
+  init(data: ResultsSceneData): void {
     this.dataSnapshot = data;
+    this.privatePlaytestHub = Boolean(data.privatePlaytestHub);
     this.status = initialResultsStatus(data);
   }
 
@@ -84,6 +92,11 @@ export class ResultsScene extends Phaser.Scene {
       this.retryBattle();
     }
     if (action === "campaign") {
+      if (this.privatePlaytestHub) {
+        restorePrivatePlaytestHubSave();
+        this.scene.start(SCENE_KEYS.playtestHub);
+        return;
+      }
       this.returnToCampaign();
     }
     if (action === "skirmish") {
@@ -93,10 +106,22 @@ export class ResultsScene extends Phaser.Scene {
       });
     }
     if (action === "inventory" && this.dataSnapshot) {
-      this.scene.start(SCENE_KEYS.heroProgression, createInventorySceneData(this.dataSnapshot));
+      this.scene.start(SCENE_KEYS.heroProgression, {
+        ...createInventorySceneData(this.dataSnapshot),
+        privatePlaytestHub: this.privatePlaytestHub
+      });
     }
     if (action === "menu") {
+      if (this.privatePlaytestHub) {
+        restorePrivatePlaytestHubSave();
+        this.scene.start(SCENE_KEYS.playtestHub);
+        return;
+      }
       this.scene.start(SCENE_KEYS.mainMenu);
+    }
+    if (action === "playtest_hub") {
+      restorePrivatePlaytestHubSave();
+      this.scene.start(SCENE_KEYS.playtestHub);
     }
   }
 
@@ -128,7 +153,7 @@ export class ResultsScene extends Phaser.Scene {
     this.status = result.message;
     if (result.ok) {
       this.dataSnapshot = result.data;
-      SaveSystem.saveHero(result.data.heroSave);
+      this.saveHeroIfAllowed(result.data.heroSave);
     }
     this.render();
   }
@@ -150,7 +175,7 @@ export class ResultsScene extends Phaser.Scene {
     this.status = result.message;
     if (result.ok) {
       this.dataSnapshot = result.data;
-      SaveSystem.saveHero(result.data.heroSave);
+      this.saveHeroIfAllowed(result.data.heroSave);
     }
     this.render();
   }
@@ -173,7 +198,7 @@ export class ResultsScene extends Phaser.Scene {
       ? `${result.retinueUnit?.name ?? entry.unitName} joined the retinue. Deployment can be changed on the Campaign Map.`
       : result.reason ?? "That veteran could not join the retinue.";
     if (result.ok) {
-      SaveSystem.saveGame(this.dataSnapshot.heroSave, result.campaign);
+      this.saveGameIfAllowed(this.dataSnapshot.heroSave, result.campaign);
     }
     this.render();
   }
@@ -206,8 +231,10 @@ export class ResultsScene extends Phaser.Scene {
             </div>
           </div>
           <div class="menu-actions row results-primary-actions">
+            ${this.renderPrivateHubAction()}
             ${renderPrimaryActions(data)}
           </div>
+          ${this.renderPrivateHubNotice()}
           ${renderResultsOverview(data, viewModel)}
           ${renderResultsMetaProgressionSummary(data, viewModel)}
           <div class="status-box">${escapeHtml(this.status)}</div>
@@ -262,8 +289,9 @@ export class ResultsScene extends Phaser.Scene {
             </div>
           </div>
           ${renderPrivateDemoLumeSummary(data)}
+          ${this.renderPrivateHubNotice()}
           <div class="status-box private-demo-status">${escapeHtml(this.status)}</div>
-          ${renderPrivateDemoPrimaryActions()}
+          ${this.privatePlaytestHub ? `<div class="menu-actions row private-demo-primary-actions" data-testid="private-demo-primary-actions">${this.renderPrivateHubAction()}</div>` : renderPrivateDemoPrimaryActions()}
           <details class="private-demo-full-details" data-testid="private-demo-full-details">
             <summary>Show Full Battle Details</summary>
             <div class="private-demo-details-body">
@@ -296,6 +324,40 @@ export class ResultsScene extends Phaser.Scene {
         </div>
       </section>
     `;
+  }
+
+  private renderPrivateHubNotice(): string {
+    if (!this.privatePlaytestHub) {
+      return "";
+    }
+    return `
+      <section class="guidance-card compact" data-testid="results-private-hub-note">
+        <strong>Playtest Hub Preview</strong>
+        <p>${escapeHtml(PRIVATE_PLAYTEST_HUB_NOTICE)}</p>
+      </section>
+    `;
+  }
+
+  private renderPrivateHubAction(): string {
+    return this.privatePlaytestHub
+      ? `<button class="menu-primary-button" data-testid="results-playtest-hub" data-results-action="playtest_hub">Playtest Hub</button>`
+      : "";
+  }
+
+  private saveHeroIfAllowed(heroSave: ResultsData["heroSave"]): void {
+    if (this.privatePlaytestHub) {
+      this.status = "Private preview only; hero changes were not saved.";
+      return;
+    }
+    SaveSystem.saveHero(heroSave);
+  }
+
+  private saveGameIfAllowed(heroSave: ResultsData["heroSave"], campaign: NonNullable<ReturnType<typeof SaveSystem.load>>["campaign"]): void {
+    if (this.privatePlaytestHub) {
+      this.status = "Private preview only; campaign and Retinue changes were not saved.";
+      return;
+    }
+    SaveSystem.saveGame(heroSave, campaign);
   }
 
   private cleanup(): void {

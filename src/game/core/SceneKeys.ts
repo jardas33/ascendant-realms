@@ -1,6 +1,7 @@
 export const SCENE_KEYS = {
   boot: "BootScene",
   mainMenu: "MainMenuScene",
+  playtestHub: "PlaytestHubScene",
   assetGallery: "AssetGalleryScene",
   heroCreation: "HeroCreationScene",
   campaignMap: "CampaignMapScene",

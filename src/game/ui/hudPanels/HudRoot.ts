@@ -61,7 +61,8 @@ export function renderHud(snapshot: HUDSnapshot): string {
       snapshot.enemyDoctrine,
       snapshot.battlefieldEvent,
       snapshot.lumeNetwork,
-      snapshot.privatePlaytestNotice
+      snapshot.privatePlaytestNotice,
+      snapshot.privatePlaytestHub
     )}
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}

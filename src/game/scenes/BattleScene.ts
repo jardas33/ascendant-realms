@@ -143,7 +143,12 @@ import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { findWalkableTrainedUnitSpawnPoint } from "../systems/TrainingSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
 import type { TechState } from "../systems/PrerequisiteSystem";
-import { isPrivateLumeDemoLaunch } from "../playtest/PrivatePlaytestTools";
+import {
+  isPrivateLumeDemoLaunch,
+  isPrivatePlaytestHubLaunch,
+  PRIVATE_PLAYTEST_HUB_NOTICE,
+  restorePrivatePlaytestHubSave
+} from "../playtest/PrivatePlaytestTools";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -351,6 +356,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateFogOfWar(0, true);
     this.cameraSystem.centerOn(this.hero.position);
     this.selectionSystem.setSelection(this.initialPlayerSelection());
+    this.applyPrivatePlaytestHubScenarioSetup();
     this.updateAct1Finale();
     this.installTestHooks();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
@@ -1037,6 +1043,10 @@ export class BattleScene extends Phaser.Scene {
     return isPrivateLumeDemoLaunch(this.launch.request) && Boolean(this.lumeNetworkDirector);
   }
 
+  private isPrivatePlaytestHubPreview(): boolean {
+    return isPrivatePlaytestHubLaunch(this.launch.request);
+  }
+
   private focusLumeSite(siteId: string): boolean {
     if (!this.isPrivateLumeDemo()) {
       return false;
@@ -1069,6 +1079,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private exitPrivateDemo(): boolean {
+    if (this.isPrivatePlaytestHubPreview()) {
+      return this.exitPrivatePlaytestHubPreview();
+    }
     if (!this.isPrivateLumeDemo()) {
       return false;
     }
@@ -1079,6 +1092,16 @@ export class BattleScene extends Phaser.Scene {
       campaignSave: saved?.campaign,
       message: "Private Lume demo exited. No rewards or campaign progress were saved."
     });
+    return true;
+  }
+
+  private exitPrivatePlaytestHubPreview(): boolean {
+    if (!this.isPrivatePlaytestHubPreview()) {
+      return false;
+    }
+    this.menuPaused = false;
+    restorePrivatePlaytestHubSave();
+    this.scene.start(SCENE_KEYS.playtestHub);
     return true;
   }
 
@@ -1321,6 +1344,116 @@ export class BattleScene extends Phaser.Scene {
     return playerUnits.length > 0 ? playerUnits : [this.hero];
   }
 
+  private applyPrivatePlaytestHubScenarioSetup(): void {
+    const scenarioId = this.launch.request.privatePlaytestHubScenarioId;
+    if (!scenarioId) {
+      return;
+    }
+
+    this.showMessage(PRIVATE_PLAYTEST_HUB_NOTICE, undefined, undefined, "#74d3f2", {
+      priority: "important",
+      durationSeconds: 5
+    });
+
+    const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    let playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
+    let worker = playerUnits.find((unit) => unit.definition.id === "worker");
+    if (scenarioId === "battle_selected_worker" && !worker) {
+      const anchor = commandHall?.position ?? this.hero.position;
+      worker = new Unit(this, requireUnit("worker"), "player", anchor.x + 72, anchor.y + 42, { id: "private-hub-worker" });
+      this.addUnit(worker);
+      playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
+    }
+    const focusSite =
+      this.captureSites.find((site) => site.definition.id === "west_stone_cut") ??
+      this.captureSites.find((site) => site.definition.id === "crown_shrine") ??
+      this.captureSites[0];
+
+    if (scenarioId === "battle_selected_hero" || scenarioId === "salto_outskirts_start") {
+      this.selectAndFocusPrivatePreview([this.hero], "Hero selected for private review.");
+    } else if (scenarioId === "battle_selected_worker" && worker) {
+      this.selectAndFocusPrivatePreview([worker], "Worker selected for private review.");
+    } else if (scenarioId === "battle_selected_squad") {
+      const squad = playerUnits.filter((unit) => unit !== this.hero && unit.definition.id !== "worker").slice(0, 4);
+      this.selectAndFocusPrivatePreview(squad.length > 0 ? squad : playerUnits.slice(0, 4), "Squad selected for private review.");
+    } else if (scenarioId === "battle_selected_building" && commandHall) {
+      this.selectAndFocusPrivatePreview([commandHall], "Command Hall selected for private review.");
+    } else if (scenarioId === "battle_contested_site" && focusSite) {
+      focusSite.capturingTeam = "enemy";
+      focusSite.captureProgress = 0.58;
+      focusSite.setObjectiveRelevant(true);
+      focusSite.updateVisuals();
+      this.selectAndFocusPrivatePreview([focusSite], "Resource site pressure preview.");
+    } else if (scenarioId === "battle_fog_minimap") {
+      const point = { x: this.activeMap.width * 0.5, y: this.activeMap.height * 0.48 };
+      this.cameraSystem.centerOn(point);
+      this.addMinimapPing(point.x, point.y, "#74d3f2", "Fog/minimap sample");
+      this.showCommandFeedbackMarker({ kind: "focus", point, label: "Minimap" });
+      this.showMessage("Fog and minimap sample centered.", point.x, point.y - 42, "#74d3f2", { priority: "command" });
+    } else if (scenarioId === "battle_notification_priority") {
+      this.showMessage("Critical: protect Workers and resource sites.", this.hero.position.x, this.hero.position.y - 96, "#ffd27a", {
+        priority: "critical",
+        durationSeconds: 5
+      });
+    }
+
+    if (scenarioId.startsWith("lume")) {
+      this.applyPrivateLumeScenarioSetup(scenarioId);
+    }
+
+    this.refreshBattleHud(0);
+  }
+
+  private applyPrivateLumeScenarioSetup(scenarioId: string): void {
+    const westStoneCut = this.captureSites.find((site) => site.definition.id === "west_stone_cut");
+    const fordToll = this.captureSites.find((site) => site.definition.id === "ford_toll");
+
+    if (scenarioId === "lume_first_link" && westStoneCut && fordToll) {
+      westStoneCut.setOwner("player");
+      fordToll.setOwner("player");
+      westStoneCut.setObjectiveRelevant(true);
+      fordToll.setObjectiveRelevant(true);
+      this.lumeNetworkDirector?.update();
+      this.renderLumeNetworkLinks();
+      const point = {
+        x: (westStoneCut.position.x + fordToll.position.x) / 2,
+        y: (westStoneCut.position.y + fordToll.position.y) / 2
+      };
+      this.cameraSystem.centerOn(point);
+      this.addMinimapPing(point.x, point.y, "#74d3f2", "First Lume link");
+      this.showCommandFeedbackMarker({ kind: "focus", point, label: "Lume Link" });
+      return;
+    }
+
+    if (scenarioId === "lume_overlay_hidden") {
+      this.lumeVisibilityMode = "hidden";
+    }
+    if (scenarioId === "lume_overlay_always") {
+      this.lumeVisibilityMode = "always";
+    }
+
+    const focusSite = westStoneCut ?? fordToll ?? this.captureSites[0];
+    if (focusSite) {
+      this.cameraSystem.centerOn(focusSite.position);
+      this.addMinimapPing(focusSite.position.x, focusSite.position.y, "#74d3f2", "Lume preview");
+    }
+    this.lumeNetworkDirector?.update();
+    this.renderLumeNetworkLinks();
+  }
+
+  private selectAndFocusPrivatePreview(entities: Array<Unit | Building | CaptureSite>, message: string): void {
+    const aliveEntities = entities.filter((entity) => entity.alive);
+    if (aliveEntities.length === 0) {
+      return;
+    }
+    this.selectionSystem.setSelection(aliveEntities);
+    const focus = aliveEntities[0];
+    this.cameraSystem.centerOn(focus.position);
+    this.addMinimapPing(focus.position.x, focus.position.y, "#74d3f2", "Playtest focus");
+    this.showCommandFeedbackMarker({ kind: "focus", point: focus.position, label: "Review" });
+    this.showMessage(message, focus.position.x, focus.position.y - 78, "#74d3f2", { priority: "command" });
+  }
+
   private playSelectionAudio(selected: Array<Unit | Building | CaptureSite>): void {
     const key = selected
       .map((entity) => entity.id)
@@ -1521,6 +1654,7 @@ export class BattleScene extends Phaser.Scene {
       }),
       lumeSiteSummaries: this.createLumeSiteSummaries(),
       privatePlaytestNotice: this.launch.request.privatePlaytestNotice,
+      privatePlaytestHub: this.isPrivatePlaytestHubPreview(),
       controlGroups: this.controlGroupSystem.summaries(this.units),
       enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),

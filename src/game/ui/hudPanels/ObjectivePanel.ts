@@ -7,7 +7,8 @@ export function renderObjectives(
   enemyDoctrine?: HUDEnemyDoctrineSnapshot,
   battlefieldEvent?: HUDBattlefieldEventSnapshot,
   lumeNetwork?: LumeNetworkHudSummary,
-  privatePlaytestNotice?: string
+  privatePlaytestNotice?: string,
+  privatePlaytestHub = false
 ): string {
   if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork && !privatePlaytestNotice) {
     return "";
@@ -19,7 +20,7 @@ export function renderObjectives(
   const showMissionSummary = missionObjectives.length > 0;
   return `
     <div class="objectives-panel" data-testid="battle-objectives">
-      ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice) : ""}
+      ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice, privatePlaytestHub) : ""}
       ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
       ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
       ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
@@ -52,16 +53,21 @@ export function renderObjectives(
   `;
 }
 
-function renderPrivatePlaytestNotice(notice: string): string {
+function renderPrivatePlaytestNotice(notice: string, privatePlaytestHub: boolean): string {
   return `
     <div class="private-playtest-row" data-testid="private-playtest-demo-warning">
       <span>Private</span>
       <div>
-        <b>PRIVATE DEMO - rewards and campaign progress disabled</b>
+        <b>${privatePlaytestHub ? "PLAYTEST HUB - no save changes" : "PRIVATE DEMO - rewards and campaign progress disabled"}</b>
         <details class="objective-details">
           <summary>Details</summary>
           <small>${escapeHtml(notice)}</small>
         </details>
+        ${
+          privatePlaytestHub
+            ? `<button class="hud-button compact mini" type="button" data-testid="private-hub-exit" data-action="private-demo-exit">Return to Hub</button>`
+            : ""
+        }
       </div>
     </div>
   `;

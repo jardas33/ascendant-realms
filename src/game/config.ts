@@ -6,6 +6,7 @@ import { CampaignMapScene } from "./scenes/CampaignMapScene";
 import { HeroCreationScene } from "./scenes/HeroCreationScene";
 import { HeroProgressionScene } from "./scenes/HeroProgressionScene";
 import { MainMenuScene } from "./scenes/MainMenuScene";
+import { PlaytestHubScene } from "./scenes/PlaytestHubScene";
 import { ResultsScene } from "./scenes/ResultsScene";
 import { SettingsScene } from "./scenes/SettingsScene";
 import { SkirmishSetupScene } from "./scenes/SkirmishSetupScene";
@@ -27,6 +28,7 @@ export const gameConfig: Phaser.Types.Core.GameConfig = {
   scene: [
     BootScene,
     MainMenuScene,
+    PlaytestHubScene,
     AssetGalleryScene,
     HeroCreationScene,
     CampaignMapScene,

@@ -1,6 +1,61 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.99 Act 1 mission presentation objective clarity and narrative polish
+Updated: 2026-06-01 v0.100 Private Playtest Hub and Scenario Gallery
+
+## v0.100 Private Playtest Hub And Scenario Gallery - 2026-06-01
+
+Scope: private-package QA convenience pass. This checkpoint adds a gated Playtest Hub, grouped Scenario Gallery, fixture previews, an 8-minute visual tour, save-isolation wrappers, visual QA captures, docs, and package validation metadata. It does not expose shortcuts in production posture, alter normal progression, saves, persistent rewards, gameplay rules, balance, stable IDs, maps, factions, art, imported assets, desktop work, or start v0.101.
+
+Baseline:
+
+- Starting commit: `79fc948`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-79fc948`.
+- Baseline package verification: `npm run verify:playtest-package` passed 357 checks before v0.100 edits.
+- Baseline remote status: GitHub Actions run `26776037930` on `79fc948` completed successfully.
+
+Included work:
+
+- Added private-only `PlaytestHubScene` behind the existing private playtest tooling gate.
+- Added Scenario Gallery groups for Campaign Shell, First Session, Battle Shell, Lume, and Meta.
+- Added deterministic no-save fixture helpers for campaign, battle, Lume, hero/meta, ordinary Results, defeat Results, and private-demo Results previews.
+- Added an 8-minute visual tour with Next, Back, and Exit controls.
+- Added in-memory raw save snapshot/restore helpers and hub return controls across Main Menu, Campaign Map, Hero Creation, Hero Progression, Battle HUD, and Results preview flows.
+- Added `docs/V0100_SCENARIO_GALLERY_MANIFEST.json` with purpose, expected visible/absent UI, manual question, screenshot ID, automated coverage, launch context, and save-isolation rule for each scenario.
+- Added unit, smoke, visual QA, package validation, and hosted test coverage for private-only visibility, no-save fixtures, gallery routing, tour navigation, and scenario isolation.
+- Visual QA now includes 145 screenshots after adding nine v0.100 hub/gallery captures.
+- Visual review pack now generates from the full visual QA set with 145 screenshots and 7 contact sheets.
+- Package generation and validation now require/copy the v0.100 docs and report the v0.100 checkpoint in playtest build info.
+
+Save format:
+
+- No save-version bump.
+- No save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, unlock rules, rewards, replay rules, Retinue rules, reputation rules, Tutorial safety, difficulty, AI, or balance values changed.
+- Hub previews restore the existing raw save key from memory and launch battle previews with rewards disabled.
+
+Verification:
+
+```text
+npm test - PASS, 100 files / 711 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-meta - PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 31 tests after splitting the oversized behaviour/marquee gauntlet into two assertion-preserving tests.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 16 tests / 145 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 145 screenshots / 7 contact sheets.
+git diff --check - PASS after final doc/package closeout.
+```
 
 ## v0.99 Act 1 Mission Presentation Objective Clarity And Narrative Polish - 2026-06-01
 

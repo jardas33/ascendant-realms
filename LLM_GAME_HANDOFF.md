@@ -1,12 +1,69 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-01 v0.99 Act 1 mission presentation objective clarity and narrative polish
+Last updated: 2026-06-01 v0.100 Private Playtest Hub and Scenario Gallery
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance, v0.96 rescues first-session Tutorial/onboarding presentation with one-action steps, More Help, Focus Objective, Dismiss/Reopen, compact help surfaces, and Salto next-action guidance without changing gameplay, saves, rewards, progression, stable IDs, Lume rules, maps, factions, art assets, or balance, v0.97 polishes selection focus, command destination markers, camera focus feedback, enemy inspection, and compact command-panel follow-up without changing gameplay systems, saves, pathing rules, stable IDs, art, rewards, or balance, v0.98 rescues Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation without changing progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold rules, saves, IDs, rewards, campaign progression, art, or desktop work, and v0.99 polishes Act 1 mission presentation, objective clarity, Captain Malrec framing, compact next-step copy, and Results guidance without changing nodes, unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art, or desktop work. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance, v0.96 rescues first-session Tutorial/onboarding presentation with one-action steps, More Help, Focus Objective, Dismiss/Reopen, compact help surfaces, and Salto next-action guidance without changing gameplay, saves, rewards, progression, stable IDs, Lume rules, maps, factions, art assets, or balance, v0.97 polishes selection focus, command destination markers, camera focus feedback, enemy inspection, and compact command-panel follow-up without changing gameplay systems, saves, pathing rules, stable IDs, art, rewards, or balance, v0.98 rescues Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation without changing progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold rules, saves, IDs, rewards, campaign progression, art, or desktop work, v0.99 polishes Act 1 mission presentation, objective clarity, Captain Malrec framing, compact next-step copy, and Results guidance without changing nodes, unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art, or desktop work, and v0.100 adds a private-package-only Playtest Hub, Scenario Gallery, and 8-minute visual tour using isolated no-save fixtures without exposing shortcuts in production posture or changing normal progression, saves, rewards, gameplay rules, balance, IDs, art, assets, or desktop work. No runtime rebrand is approved.
+
+## Current v0.100 Private Playtest Hub And Scenario Gallery - 2026-06-01
+
+Status: v0.100 is a private-package QA convenience checkpoint. It adds a gated Playtest Hub, grouped Scenario Gallery, 8-minute visual tour, fixture launchers, save isolation, visual QA captures, and package validation docs. It does not expose shortcuts in production posture, alter normal progression, saves, persistent rewards, gameplay rules, balance, stable IDs, maps, factions, art, imported assets, desktop work, or start v0.101.
+
+Baseline:
+
+- Starting commit: `79fc948`.
+- Starting branch state: clean `main`, synced with `origin/main`.
+- Baseline package: `ascendant-realms-private-playtest-79fc948`.
+- Baseline package verification: `npm run verify:playtest-package` passed 357 checks before v0.100 edits.
+- Baseline remote status: GitHub Actions run `26776037930` on `79fc948` completed successfully.
+
+Included work:
+
+- Added a private-only `PlaytestHubScene` behind the existing private playtest tooling gate.
+- Added grouped one-click scenarios for Campaign Shell, First Session, Battle Shell, Lume, and Meta review families.
+- Added an 8-minute visual tour with Next / Back / Exit controls.
+- Added deterministic no-save fixture helpers for campaign, battle, hero progression, Lume, ordinary Results, defeat Results, and private-demo Results previews.
+- Added in-memory raw-save snapshot/restore helpers so hub previews return the existing save key to its prior value.
+- Added hub return controls to Main Menu, Campaign Map, Hero Creation, Hero Progression, Battle HUD, and Results preview flows.
+- Added `docs/V0100_SCENARIO_GALLERY_MANIFEST.json` with purpose, expected UI, absent UI, manual review question, screenshot ID, automated coverage, launch context, and save-isolation rule per scenario.
+- Expanded visual QA from 136 to 145 screenshots with nine v0.100 hub/gallery captures.
+- Generated the visual review pack from the full visual QA set: 145 screenshots and 7 contact sheets.
+- Package generation and validation now require/copy the v0.100 docs and report the v0.100 checkpoint in playtest build info.
+
+Runtime/save/art boundary:
+
+- Runtime presentation, private-tool launch routing, tests, visual QA, docs, and package metadata changed.
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, mission IDs, map IDs, node IDs, site IDs, Lume IDs, unit IDs, building IDs, reward IDs, hero rules, campaign progression, unlock rules, rewards, replay rules, Retinue rules, reputation rules, Tutorial safety, difficulty, AI, balance values, maps, factions, generated images, imported assets, desktop port, engine choice, runtime title, or public title changed.
+
+Verification:
+
+```text
+npm test - PASS, 100 files / 711 tests.
+npm run build - PASS with the known Vite Phaser vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18 scenarios / 18 pass rows.
+npm run playtest:controls:extended - PASS, 90 pass rows.
+npm run playtest:controls:verify - PASS, 1658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:deep-meta - PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 31 tests after splitting the oversized behaviour/marquee gauntlet into two assertion-preserving tests.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 16 tests / 145 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 145 screenshots / 7 contact sheets.
+git diff --check - PASS after final doc/package closeout.
+```
+
+Closeout note: commit as `Checkpoint v0.100 private playtest hub and scenario gallery`, package cleanly on the final commit, verify, push safely, and stop. Do not start v0.101 automatically.
 
 ## Current v0.99 Act 1 Mission Presentation Objective Clarity And Narrative Polish - 2026-06-01
 
