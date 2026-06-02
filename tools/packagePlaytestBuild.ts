@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode";
+const CHECKPOINT = "v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -411,6 +411,18 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0104_VISUAL_QA_REPORT.md", join(packageDir, "V0104_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V0104_IMPLEMENTATION_REPORT.md", join(packageDir, "V0104_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0104_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0104_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0105_VISUAL_ASSET_REGISTRY_SPEC.md", join(packageDir, "V0105_VISUAL_ASSET_REGISTRY_SPEC.md"));
+  await copyMarkdown("docs/V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md", join(packageDir, "V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md"));
+  await copyMarkdown("docs/V0105_ART_REVIEW_STATE_MACHINE.md", join(packageDir, "V0105_ART_REVIEW_STATE_MACHINE.md"));
+  await copyMarkdown("docs/V0105_FIRST_ART_GENERATION_PACKET.md", join(packageDir, "V0105_FIRST_ART_GENERATION_PACKET.md"));
+  await copyMarkdown("docs/V0105_IMPLEMENTATION_REPORT.md", join(packageDir, "V0105_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0105_EMMANUEL_ART_REVIEW_GUIDE.md", join(packageDir, "V0105_EMMANUEL_ART_REVIEW_GUIDE.md"));
+  await copyMarkdown("docs/V0106_RUNTIME_ART_SLOT_CONTRACT.md", join(packageDir, "V0106_RUNTIME_ART_SLOT_CONTRACT.md"));
+  await copyMarkdown("docs/V0106_PLACEHOLDER_FALLBACK_MATRIX.md", join(packageDir, "V0106_PLACEHOLDER_FALLBACK_MATRIX.md"));
+  await copyMarkdown("docs/V0106_ART_SLOT_VALIDATION_REPORT.md", join(packageDir, "V0106_ART_SLOT_VALIDATION_REPORT.md"));
+  await copyMarkdown("docs/V0106_VISUAL_QA_REPORT.md", join(packageDir, "V0106_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0106_IMPLEMENTATION_REPORT.md", join(packageDir, "V0106_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md", join(packageDir, "V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -438,7 +450,10 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     startCommand: "node start-playtest-server.mjs",
     requiresLocalServer: true,
     feedbackFile: "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md",
-    knownWarnings: ["Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype."],
+    knownWarnings: [
+      "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
+      "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review."
+    ],
     notForJudging: [
       "final art quality",
       "placeholder unit scale",
@@ -510,7 +525,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.104, start with V0104_EMMANUEL_RETEST_CHECKLIST.md, V0104_PERFORMANCE_DELTA_REPORT.md, V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md, and V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md. The package includes the v0.103 baseline reports for comparison and adds profiler-guided rendering skips plus a public Minimal battle HUD with private Standard/Debug review density. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume damage multiplier, pathing, or runtime/internal title.
+For v0.106, start with V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md, V0106_RUNTIME_ART_SLOT_CONTRACT.md, V0106_PLACEHOLDER_FALLBACK_MATRIX.md, and V0106_ART_SLOT_VALIDATION_REPORT.md. The package includes the v0.105 art registry/review docs for context and adds a typed runtime art slot adapter, placeholder fallback harness, private-only diagnostics, and private mock routing mode. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, or runtime/internal title.
 
 ## Known Warning
 

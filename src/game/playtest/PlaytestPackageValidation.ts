@@ -381,6 +381,18 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0104_VISUAL_QA_REPORT.md",
   "V0104_IMPLEMENTATION_REPORT.md",
   "V0104_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0105_VISUAL_ASSET_REGISTRY_SPEC.md",
+  "V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md",
+  "V0105_ART_REVIEW_STATE_MACHINE.md",
+  "V0105_FIRST_ART_GENERATION_PACKET.md",
+  "V0105_IMPLEMENTATION_REPORT.md",
+  "V0105_EMMANUEL_ART_REVIEW_GUIDE.md",
+  "V0106_RUNTIME_ART_SLOT_CONTRACT.md",
+  "V0106_PLACEHOLDER_FALLBACK_MATRIX.md",
+  "V0106_ART_SLOT_VALIDATION_REPORT.md",
+  "V0106_VISUAL_QA_REPORT.md",
+  "V0106_IMPLEMENTATION_REPORT.md",
+  "V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -491,7 +503,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode",
+      "v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness",
       "build info checkpoint",
       checks,
       errors

@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 189;
+const EXPECTED_SCREENSHOT_COUNT = 203;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
 const VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS = 90_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
@@ -247,6 +247,33 @@ async function setPrivateHudDensity(page: Page, mode: "minimal" | "standard" | "
 async function returnToPrivateHub(page: Page): Promise<void> {
   await clickReady(page.getByTestId("private-hub-exit"), "visual QA return to private playtest hub");
   await expect(page.getByTestId("playtest-hub")).toBeVisible();
+}
+
+async function showArtSlotDiagnostics(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const api = (window as any).__ASCENDANT_RUNTIME_ART_SLOTS__;
+    if (!api?.showDiagnostics()) {
+      throw new Error("Runtime art slot diagnostics API was not enabled.");
+    }
+  });
+  await expect(page.getByTestId("art-slot-diagnostics-panel")).toBeVisible();
+}
+
+async function hideArtSlotDiagnostics(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    (window as any).__ASCENDANT_RUNTIME_ART_SLOTS__?.hideDiagnostics();
+  });
+  await expect(page.getByTestId("art-slot-diagnostics-panel")).toBeHidden();
+}
+
+async function enableArtSlotMockMode(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    const api = (window as any).__ASCENDANT_RUNTIME_ART_SLOTS__;
+    if (!api?.enableMockMode()) {
+      throw new Error("Runtime art slot mock mode was not enabled.");
+    }
+  });
+  await expect(page.locator("html")).toHaveAttribute("data-runtime-art-mock", "true");
 }
 
 async function centerCaptureSite(page: Page, siteId: string, capture: boolean): Promise<void> {
@@ -2399,6 +2426,93 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, group, "v0.104 Tutorial Minimal", "v0104-tutorial-guidance-minimal-1366.png", LAPTOP, "Tutorial guidance remains visible while the public battle HUD uses Minimal density.");
     await returnToPrivateHub(page);
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.106 runtime art slot fallback harness states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0106-runtime-art-slot-fallbacks";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, LAPTOP);
+    await launchPublicSkirmishBattle(page, "Visual v0106 Public");
+    await expect(page.getByTestId("art-slot-diagnostics-toggle")).toHaveCount(0);
+    await captureView(page, group, "v0.106 public diagnostics hidden", "v0106-art-slot-public-hidden-1366.png", LAPTOP, "Public battle has no runtime art slot diagnostics API or overlay.");
+
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+    await useViewport(page, LAPTOP);
+    await openPrivatePlaytestHub(page);
+    await page.getByTestId("playtest-group-art_slot_fallbacks").scrollIntoViewIfNeeded();
+    await expect(page.getByTestId("art-slot-diagnostics-toggle")).toBeVisible();
+    await expect(page.getByTestId("art-slot-diagnostics-panel")).toBeHidden();
+    await captureView(page, group, "v0.106 diagnostics off", "v0106-art-slot-diagnostics-off-1366.png", LAPTOP, "Private Playtest Hub shows Art Slot Fallbacks and diagnostics toggle without opening the panel.");
+
+    await showArtSlotDiagnostics(page);
+    await expect(page.getByTestId("art-slot-diagnostics-fallback-count")).toContainText("52");
+    await captureView(page, group, "v0.106 diagnostics on", "v0106-art-slot-diagnostics-on-1366.png", LAPTOP, "Diagnostics panel lists all runtime art slots as placeholder fallbacks.");
+
+    await useViewport(page, FULL_HD);
+    await page.getByTestId("playtest-group-art_slot_fallbacks").scrollIntoViewIfNeeded();
+    await captureView(page, group, "v0.106 diagnostics 1920", "v0106-art-slot-diagnostics-on-1920.png", FULL_HD, "Diagnostics panel remains readable at 1920x1080.");
+
+    await useViewport(page, WIDE_DESKTOP);
+    await page.getByTestId("playtest-group-art_slot_fallbacks").scrollIntoViewIfNeeded();
+    await captureView(page, group, "v0.106 diagnostics 1600", "v0106-art-slot-diagnostics-on-1600.png", WIDE_DESKTOP, "Diagnostics panel remains readable at 1600x900.");
+    await hideArtSlotDiagnostics(page);
+
+    await useViewport(page, FULL_HD);
+    await clickReady(page.getByTestId("playtest-scenario-art_slot_menu_fallback"), `${group} menu fallback`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("main-menu")).toBeVisible();
+    await captureView(page, group, "v0.106 menu fallback", "v0106-art-slot-menu-fallback-1920.png", FULL_HD, "Main menu background, logo, and button-frame slots use CSS/DOM fallbacks.");
+    await clickReady(page.getByTestId("main-menu-return-hub"), `${group} return from menu`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await useViewport(page, WIDE_DESKTOP);
+    await clickReady(page.getByTestId("playtest-scenario-art_slot_campaign_fallback"), `${group} campaign fallback`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("campaign-map")).toBeVisible();
+    await captureView(page, group, "v0.106 campaign fallback", "v0106-art-slot-campaign-fallback-1600.png", WIDE_DESKTOP, "Campaign background, route, chapter, and node frame slots use CSS/DOM fallbacks.");
+    await clickReady(page.getByTestId("campaign-playtest-hub-return"), `${group} return from campaign`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await useViewport(page, LAPTOP);
+    await launchPrivateHudScenario(page, "art_slot_battlefield_terrain_fallback");
+    await captureView(page, group, "v0.106 battlefield terrain fallback", "v0106-art-slot-battlefield-terrain-fallback-1366.png", LAPTOP, "Battlefield terrain, fog, minimap, capture, and objective slots use procedural fallbacks.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "art_slot_unit_fallback");
+    await expect(page.getByTestId("unit-order-summary")).toBeVisible();
+    await captureView(page, group, "v0.106 unit fallback", "v0106-art-slot-unit-fallback-1366.png", LAPTOP, "Unit slots use placeholder silhouettes with selection and command panel fallbacks.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "art_slot_building_fallback");
+    await expect(page.getByTestId("battle-hud")).toBeVisible();
+    await captureView(page, group, "v0.106 building fallback", "v0106-art-slot-building-fallback-1366.png", LAPTOP, "Building and construction-state slots use placeholder building shapes and CSS command frames.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "art_slot_lume_fallback");
+    await expect(page.getByTestId("lume-network-status")).toBeVisible();
+    await captureView(page, group, "v0.106 Lume fallback", "v0106-art-slot-lume-fallback-1366.png", LAPTOP, "Lume endpoint, link, and transition slots use existing vector fallbacks.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "art_slot_hud_fallback");
+    await expect(page.getByTestId("battle-minimap")).toBeVisible();
+    await captureView(page, group, "v0.106 HUD fallback", "v0106-art-slot-hud-fallback-1366.png", LAPTOP, "HUD and command-panel frame slots use CSS fallbacks with diagnostics still private.");
+    await returnToPrivateHub(page);
+
+    await clickReady(page.getByTestId("playtest-scenario-art_slot_results_fallback"), `${group} results fallback`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("results-overview")).toBeVisible();
+    await captureView(page, group, "v0.106 Results fallback", "v0106-art-slot-results-fallback-1366.png", LAPTOP, "Results, hero, relic, stronghold, intel, and reputation frame slots remain CSS/DOM fallbacks.");
+    await clickReady(page.getByTestId("results-playtest-hub"), `${group} return from results`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+
+    await enableArtSlotMockMode(page);
+    await showArtSlotDiagnostics(page);
+    await launchPrivateHudScenario(page, "art_slot_mock_routing");
+    await expect(page.getByTestId("art-slot-diagnostics-mock-count")).toContainText("52");
+    await captureView(page, group, "v0.106 private mock routing", "v0106-art-slot-mock-routing-1366.png", LAPTOP, "Private mock routing mode uses diagnostic styling without loading or approving runtime art.");
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

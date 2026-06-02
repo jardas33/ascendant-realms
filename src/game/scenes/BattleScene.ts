@@ -1462,12 +1462,12 @@ export class BattleScene extends Phaser.Scene {
     });
 
     const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
-    const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero", "perf_hud_minimal", "perf_hud_standard", "perf_hud_debug"]);
+    const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero", "perf_hud_minimal", "perf_hud_standard", "perf_hud_debug", "art_slot_unit_fallback", "art_slot_hud_fallback", "art_slot_mock_routing"]);
     const selectedWorkerScenarios = new Set(["battle_selected_worker", "perf_selected_worker", "perf_hud_minimal_worker"]);
     const selectedSquadScenarios = new Set(["battle_selected_squad", "perf_selected_squad", "perf_large_unit_cluster"]);
-    const selectedBuildingScenarios = new Set(["battle_selected_building", "perf_selected_command_hall"]);
+    const selectedBuildingScenarios = new Set(["battle_selected_building", "perf_selected_command_hall", "art_slot_building_fallback"]);
     const sitePressureScenarios = new Set(["battle_contested_site", "perf_label_heavy_site_cluster"]);
-    const fogScenarios = new Set(["battle_fog_minimap", "perf_fog_heavy_camera", "perf_minimap_interaction"]);
+    const fogScenarios = new Set(["battle_fog_minimap", "perf_fog_heavy_camera", "perf_minimap_interaction", "art_slot_battlefield_terrain_fallback"]);
     const notificationScenarios = new Set(["battle_notification_priority", "perf_notification_heavy"]);
     let playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
     let worker = playerUnits.find((unit) => unit.definition.id === "worker");
@@ -1510,7 +1510,7 @@ export class BattleScene extends Phaser.Scene {
       });
     }
 
-    if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume")) {
+    if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume") || scenarioId.startsWith("art_slot_lume")) {
       this.applyPrivateLumeScenarioSetup(scenarioId);
     }
 

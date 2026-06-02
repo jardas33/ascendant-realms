@@ -6,6 +6,7 @@ export type PlaytestScenarioGroupId =
   | "battle_shell"
   | "lume"
   | "meta"
+  | "art_slot_fallbacks"
   | "performance_lab";
 
 export type PlaytestScenarioLaunchKind =
@@ -43,6 +44,7 @@ export const PLAYTEST_SCENARIO_GROUPS: PlaytestScenarioGroupDefinition[] = [
   { id: "battle_shell", title: "Battle Shell" },
   { id: "lume", title: "Lume" },
   { id: "meta", title: "Meta" },
+  { id: "art_slot_fallbacks", title: "Art Slot Fallbacks" },
   { id: "performance_lab", title: "Performance Lab" }
 ];
 
@@ -85,6 +87,15 @@ export const PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = [
   scenario("meta_stronghold_preview", "meta", "Stronghold preview", "campaign", "Open the Stronghold tab with available and locked upgrades.", ["stronghold-overview", "campaign-tab-panel-stronghold"], ["results-panel"], "Are upgrade costs and locks clear?", "v0100-hub-stronghold-preview", "visual QA stronghold gallery", "Stronghold preview", NO_SAVE_RULE),
   scenario("ordinary_results", "meta", "Ordinary Results", "results", "Open a normal victory Results fixture.", ["results-overview", "results-primary-actions"], ["private-demo-primary-actions"], "Is the ordinary Results summary concise enough?", "v0100-hub-ordinary-results", "visual QA normal results", "ordinary victory Results fixture", NO_SAVE_RULE),
   scenario("defeat_results", "meta", "Defeat Results", "results", "Open a normal defeat Results fixture.", ["results-overview", "results-primary-actions"], ["private-demo-primary-actions"], "Does defeat explain next action without noise?", "v0100-hub-defeat-results", "visual QA normal results", "ordinary defeat Results fixture", NO_SAVE_RULE),
+  scenario("art_slot_menu_fallback", "art_slot_fallbacks", "Menu fallback", "main_menu", "Inspect main-menu slot fallbacks with diagnostics available and no runtime art assigned.", ["main-menu", "art-slot-diagnostics-toggle"], ["results-panel"], "Do the menu fallbacks stay readable without final art?", "v0106-art-slot-menu-fallback", "visual QA art slot fallback harness", "runtime art slot menu fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_campaign_fallback", "art_slot_fallbacks", "Campaign fallback", "campaign", "Inspect campaign map, route, node, and panel slot fallbacks without loading image assets.", ["campaign-map", "campaign-selected-panel", "art-slot-diagnostics-toggle"], ["results-panel"], "Do campaign fallbacks preserve route and node clarity?", "v0106-art-slot-campaign-fallback", "visual QA art slot fallback harness", "runtime art slot campaign fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_battlefield_terrain_fallback", "art_slot_fallbacks", "Battlefield terrain fallback", "battle", "Inspect terrain, fog, minimap, capture, and objective slot fallbacks in a normal battle shell.", ["battle-hud", "battle-minimap", "art-slot-diagnostics-toggle"], ["results-panel"], "Do battlefield fallbacks keep terrain and objectives legible?", "v0106-art-slot-battlefield-terrain-fallback", "visual QA art slot fallback harness", "runtime art slot battlefield fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_unit_fallback", "art_slot_fallbacks", "Unit fallback", "battle", "Inspect unit placeholder silhouettes and selection fallback slots without runtime art.", ["battle-hero-panel", "unit-order-summary", "art-slot-diagnostics-toggle"], ["results-panel"], "Do unit fallbacks communicate role and selection clearly?", "v0106-art-slot-unit-fallback", "visual QA art slot fallback harness", "runtime art slot unit fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_building_fallback", "art_slot_fallbacks", "Building fallback", "battle", "Inspect building placeholder silhouettes, command panel frame, and construction-state fallback posture.", ["battle-hud", "art-slot-diagnostics-toggle"], ["results-panel"], "Do building fallbacks keep production state clear?", "v0106-art-slot-building-fallback", "visual QA art slot fallback harness", "runtime art slot building fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_lume_fallback", "art_slot_fallbacks", "Lume fallback", "lume_battle", "Inspect Lume endpoint, link, and transition fallback slots with private Lume controls active.", ["lume-network-status", "lume-links-progress", "art-slot-diagnostics-toggle"], ["results-panel"], "Do Lume fallbacks read as link states rather than noise?", "v0106-art-slot-lume-fallback", "visual QA art slot fallback harness", "runtime art slot Lume fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_hud_fallback", "art_slot_fallbacks", "HUD fallback", "battle", "Inspect HUD, command panel, objective, minimap, and diagnostics fallbacks in one private battle shell.", ["battle-hud", "battle-minimap", "art-slot-diagnostics-toggle"], ["results-panel"], "Do HUD fallbacks stay compact while diagnostics are present?", "v0106-art-slot-hud-fallback", "visual QA art slot fallback harness", "runtime art slot HUD fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_results_fallback", "art_slot_fallbacks", "Results fallback", "results", "Inspect Results, hero, relic, and frame fallbacks from the no-save scenario gallery.", ["results-overview", "results-primary-actions", "art-slot-diagnostics-toggle"], ["private-demo-primary-actions"], "Do Results fallbacks preserve the next-action hierarchy?", "v0106-art-slot-results-fallback", "visual QA art slot fallback harness", "runtime art slot Results fallback preview", NO_SAVE_RULE),
+  scenario("art_slot_mock_routing", "art_slot_fallbacks", "Mock routing mode", "battle", "Inspect the private mock routing mode that replaces future asset loads with diagnostic styling only.", ["battle-hud", "art-slot-diagnostics-toggle"], ["results-panel"], "Does mock routing make slot status obvious without implying final art?", "v0106-art-slot-mock-routing", "visual QA art slot fallback harness", "runtime art slot private mock routing preview", NO_SAVE_RULE),
   ...V0104_PERFORMANCE_SCENARIOS.map((entry) =>
     scenario(
       entry.launchScenarioId,

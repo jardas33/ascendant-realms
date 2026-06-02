@@ -10,6 +10,7 @@ describe("PlaytestScenarioGallery", () => {
       "battle_shell",
       "lume",
       "meta",
+      "art_slot_fallbacks",
       "performance_lab"
     ]);
 
@@ -23,7 +24,7 @@ describe("PlaytestScenarioGallery", () => {
       expect(scenario.expectedVisibleUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.expectedAbsentUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.manualReviewQuestion).toContain("?");
-      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104)-[a-z0-9-]+$/u);
+      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104|106)-[a-z0-9-]+$/u);
       expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated/u);
     }
   });
@@ -64,6 +65,15 @@ describe("PlaytestScenarioGallery", () => {
       "meta_stronghold_preview",
       "ordinary_results",
       "defeat_results",
+      "art_slot_menu_fallback",
+      "art_slot_campaign_fallback",
+      "art_slot_battlefield_terrain_fallback",
+      "art_slot_unit_fallback",
+      "art_slot_building_fallback",
+      "art_slot_lume_fallback",
+      "art_slot_hud_fallback",
+      "art_slot_results_fallback",
+      "art_slot_mock_routing",
       "perf_battle_baseline",
       "perf_campaign_map_interaction",
       "perf_hud_debug",
@@ -72,6 +82,20 @@ describe("PlaytestScenarioGallery", () => {
       "perf_lume_auto",
       "perf_results_disclosure"
     ].forEach((id) => expect(scenarioById(id), `missing ${id}`).toBeDefined());
+  });
+
+  it("keeps Art Slot Fallback scenarios private, no-save, and diagnostics-focused", () => {
+    const artSlotScenarios = PLAYTEST_SCENARIOS.filter((scenario) => scenario.groupId === "art_slot_fallbacks");
+    expect(artSlotScenarios).toHaveLength(9);
+    expect(artSlotScenarios.map((scenario) => scenario.launchKind)).toEqual(
+      expect.arrayContaining(["main_menu", "campaign", "battle", "lume_battle", "results"])
+    );
+    artSlotScenarios.forEach((scenario) => {
+      expect(scenario.expectedVisibleUi).toContain("art-slot-diagnostics-toggle");
+      expect(scenario.automatedCoverage).toBe("visual QA art slot fallback harness");
+      expect(scenario.saveIsolationRule).toContain("no rewards");
+      expect(scenario.screenshotId).toMatch(/^v0106-art-slot-/u);
+    });
   });
 
   it("keeps Performance Lab scenarios private, isolated, and deterministic", () => {

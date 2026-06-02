@@ -1,6 +1,47 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.105 Visual Asset Registry, Candidate Review Workspace, and Art-Intake Tooling
+Updated: 2026-06-02 v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness
+
+## v0.106 Runtime Art Slot Adapter And Placeholder Fallback Harness - 2026-06-02
+
+Scope: runtime art slot contract and fallback-review harness only. This checkpoint defines 52 stable runtime art slots, validates their fallback owners and v0.105 registry references, rejects unapproved/candidate/final-art paths, exposes private-only diagnostics/mock routing, adds private Art Slot Fallbacks scenarios, updates visual QA/review-pack coverage, and updates package metadata/docs. It does not generate/import art, load unapproved runtime art, alter gameplay, change saves, rename stable IDs, change maps/factions/balance/rewards, choose an engine, start desktop work, or change the runtime title.
+
+Included work:
+
+- Added `src/game/art/RuntimeArtSlotTypes.ts`, `src/game/art/RuntimeArtSlots.ts`, and `src/game/art/RuntimeArtSlotAdapter.ts`.
+- Added `src/game/art/RuntimeArtSlotAdapter.test.ts`.
+- Added `tools/runtime-art-slots/validateRuntimeArtSlots.ts` and `npm run validate:runtime-art-slots`.
+- Added private-only runtime art slot diagnostics and mock routing.
+- Added `src/game/styles/runtime-art-slots.css`.
+- Added the private `art_slot_fallbacks` Playtest Hub scenario family.
+- Added 14 v0.106 visual QA screenshots, bringing the target matrix to 203 screenshots.
+- Added `Art Slot Fallbacks` to the visual review pack, bringing focused contact sheets to 8.
+- Updated package generation and validation to v0.106 with v0.105/v0.106 art docs.
+- Added v0.106 contract, fallback matrix, validation, visual QA, implementation, and Emmanuel guide docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, generated/imported art, unapproved runtime image loading, desktop path, or engine choice changed.
+
+Verification:
+
+```text
+npm run validate:runtime-art-slots - PASS, 52 runtime art slots.
+npm test -- RuntimeArtSlotAdapter PlaytestScenarioGallery VisualReviewPack PlaytestPackageValidation - PASS, 4 files / 20 tests.
+npm test - PASS, 108 files / 759 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run art:review:validate - PASS.
+npm run visual:qa - PASS, 203 screenshots, 0 console errors, 0 retries.
+npm run visual:review-pack - PASS, 203 screenshots and 8 contact sheets.
+npm run package:playtest - PASS for the pre-commit package.
+npm run verify:playtest-package - PASS, 392 checks on the pre-commit package.
+git diff --check - PASS.
+```
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package does not carry a dirty suffix.
 
 ## v0.105 Visual Asset Registry, Candidate Review Workspace, And Art-Intake Tooling - 2026-06-02
 

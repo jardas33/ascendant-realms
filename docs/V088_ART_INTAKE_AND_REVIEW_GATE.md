@@ -103,6 +103,16 @@ For v0.105 registry/workspace tooling:
 - `npm run art:review:validate` validates registry shape, candidate metadata, prompt references, source/tool/model, license terms, protected-IP assessment, human-review posture, runtime-slot posture, and integration readiness.
 - `npm run art:review:contact-sheet -- --asset <assetId>` and `npm run art:review:report -- --asset <assetId>` summarize manually placed candidates without network calls, image generation, runtime imports, or automatic approval.
 
+For v0.106 runtime art slot tooling:
+
+- `src/game/art/RuntimeArtSlots.ts` defines stable runtime-facing slots and maps them to current fallback owners.
+- `npm run validate:runtime-art-slots` validates the slot contract, fallback coverage, v0.105 registry references, review-state loading gates, and allowed runtime paths.
+- Missing art remains safe and expected.
+- `runtime-candidate-approved` remains non-loadable.
+- Only a future `runtime-integrated` asset under `public/assets/runtime-art/` can load.
+- Candidate-review workspace paths and direct `public/assets/final` bypasses are blocked.
+- Diagnostics and mock routing remain private/dev only.
+
 For future art-intake milestones:
 
 - Candidate metadata must be validated before runtime discussion.

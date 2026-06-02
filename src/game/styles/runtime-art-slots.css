@@ -1,0 +1,133 @@
+.runtime-art-slot-diagnostics {
+  position: fixed;
+  right: 14px;
+  top: 14px;
+  z-index: 2200;
+  max-width: min(420px, calc(100vw - 28px));
+  font-family: var(--ui-font, system-ui, sans-serif);
+  color: #f3efe4;
+  pointer-events: none;
+}
+
+.runtime-art-slot-diagnostics button,
+.runtime-art-slot-diagnostics section {
+  pointer-events: auto;
+}
+
+.runtime-art-slot-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(116, 211, 242, 0.55);
+  border-radius: 6px;
+  background: rgba(18, 30, 36, 0.92);
+  color: #f3efe4;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.32);
+}
+
+.runtime-art-slot-panel {
+  width: min(420px, calc(100vw - 28px));
+  max-height: min(680px, calc(100vh - 68px));
+  margin-top: 8px;
+  overflow: auto;
+  border: 1px solid rgba(116, 211, 242, 0.45);
+  border-radius: 8px;
+  background: rgba(13, 22, 27, 0.96);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.42);
+}
+
+.runtime-art-slot-panel header,
+.runtime-art-slot-summary,
+.runtime-art-slot-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(243, 239, 228, 0.12);
+}
+
+.runtime-art-slot-summary {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.runtime-art-slot-summary span {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(243, 239, 228, 0.1);
+  font-size: 12px;
+}
+
+.runtime-art-slot-actions button {
+  border: 1px solid rgba(241, 186, 88, 0.55);
+  border-radius: 6px;
+  background: rgba(71, 55, 28, 0.94);
+  color: #f8dfab;
+  font-weight: 700;
+}
+
+.runtime-art-slot-groups {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px 12px;
+}
+
+.runtime-art-slot-group h3 {
+  margin: 0 0 5px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  color: #9ee4f6;
+}
+
+.runtime-art-slot-group ol {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.runtime-art-slot-group li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.055);
+  font-size: 12px;
+}
+
+.runtime-art-slot-group code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:root[data-runtime-art-mock="true"] body::after {
+  content: "ART SLOT MOCK";
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 2199;
+  padding: 5px 9px;
+  border: 1px solid rgba(241, 186, 88, 0.72);
+  border-radius: 6px;
+  background: rgba(31, 25, 17, 0.9);
+  color: #f8dfab;
+  font: 700 12px var(--ui-font, system-ui, sans-serif);
+  pointer-events: none;
+}
+
+:root[data-runtime-art-mock="true"] [data-testid="battle-hud"],
+:root[data-runtime-art-mock="true"] [data-testid="campaign-map"],
+:root[data-runtime-art-mock="true"] [data-testid="playtest-hub"],
+:root[data-runtime-art-mock="true"] .main-menu,
+:root[data-runtime-art-mock="true"] .results-panel {
+  outline: 2px dashed rgba(241, 186, 88, 0.75);
+  outline-offset: -4px;
+}

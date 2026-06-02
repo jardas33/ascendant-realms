@@ -8,6 +8,8 @@ Update note, 2026-06-01: v0.96 completed a first-session Tutorial/onboarding UX 
 
 Update note, 2026-06-02: v0.105 added reference-only visual asset registry and candidate review workspace tooling. This advances the asset pipeline hardening item without generating art, importing runtime assets, changing package metadata, or approving final/runtime art. Future art work should begin with the four-ID v0.105 packet and Emmanuel review before any broader roster, UI kit, or runtime integration milestone.
 
+Update note, 2026-06-02: v0.106 added the runtime art slot adapter and placeholder fallback harness. This advances the asset pipeline hardening item by making future runtime slots explicit and fallback-safe while still blocking unapproved/candidate/final-art loading. Future art integration must use a separate `runtime-integrated` checkpoint under `public/assets/runtime-art/`; this roadmap still treats generated images, broad UI kits, desktop porting, and engine choice as future gated work.
+
 ## Product Guardrails
 
 Ascendant Realms should grow through original lore, original faction identities, original UI language, original map names, original unit names, and original mechanical expression. It can share broad genre DNA with fantasy RTS/RPG hybrids, but it must not copy protected names, faction concepts, campaign structures, maps, art direction, sound, music, UI, or story expression from any existing game.

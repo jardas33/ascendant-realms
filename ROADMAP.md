@@ -11,11 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.105 Visual Asset Registry, Candidate Review Workspace, and Art-Intake Tooling** on 2026-06-02. It is a tooling/schema/docs milestone: the v0.88 vertical-slice asset plan now has a deterministic reference-only registry, ignored candidate review workspaces, strict art-review validation, SVG contact sheets, deterministic reports, and Emmanuel's first controlled art generation packet without generating/importing art or touching runtime assets.
+The current checkpoint is **v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness** on 2026-06-02. It is a runtime-art contract and QA-harness milestone: the game now has 52 stable runtime art slots, fallback-first resolution, private-only Art Slots diagnostics, private mock routing, Art Slot Fallbacks Playtest Hub scenarios, and a validator that rejects unapproved/candidate/final-art runtime paths without generating/importing art or changing gameplay/saves.
 
-The next recommended step is to have Emmanuel approve the first four prompt/reference packets, then run the v0.105 art-review tooling on manually placed candidates only. Do not start v0.106, generate a whole roster, import art into runtime, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is to have Emmanuel review the fallback harness and the first four v0.105 prompt/reference packets from the clean v0.106 private package. Do not generate a whole roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
 
-New v0.105 docs:
+New v0.106 docs:
+
+- `docs/V0106_RUNTIME_ART_SLOT_CONTRACT.md`
+- `docs/V0106_PLACEHOLDER_FALLBACK_MATRIX.md`
+- `docs/V0106_ART_SLOT_VALIDATION_REPORT.md`
+- `docs/V0106_VISUAL_QA_REPORT.md`
+- `docs/V0106_IMPLEMENTATION_REPORT.md`
+- `docs/V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md`
+
+Recent v0.105 docs:
 
 - `docs/V0105_VISUAL_ASSET_REGISTRY_SPEC.md`
 - `docs/V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md`

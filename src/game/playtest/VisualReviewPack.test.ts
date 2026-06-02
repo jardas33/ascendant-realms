@@ -32,8 +32,8 @@ describe("Visual review pack generator", () => {
     const secondIndex = await readFile(second.indexPath, "utf8");
     expect(firstManifest).toBe(secondManifest);
     expect(firstIndex).toBe(secondIndex);
-    expect(first.screenshotCount).toBe(12);
-    expect(first.contactSheetCount).toBe(7);
+    expect(first.screenshotCount).toBe(13);
+    expect(first.contactSheetCount).toBe(8);
   });
 
   it("maps manifest entries to screenshot files and keeps source screenshots unchanged", async () => {
@@ -94,6 +94,7 @@ describe("Visual review pack generator", () => {
       "contact-sheets/campaign-shell.html",
       "contact-sheets/battle-shell.html",
       "contact-sheets/lume-flow.html",
+      "contact-sheets/art-slot-fallbacks.html",
       "contact-sheets/results-flow.html"
     ].forEach((file) => expect(existsSync(path.join(result.outputDirectory, file))).toBe(true));
   });
@@ -120,7 +121,8 @@ async function createFixture(
     ["v090-lume-inactive-1920.png", "Lume inactive", "1920x1080 full-hd", "Lume controls."],
     ["v090-private-results-compact-1366.png", "Private-demo Results compact", "1366x768 laptop", "Private Results."],
     ["v090-normal-victory-results-1600.png", "Normal Victory Results", "1600x900 wide-desktop", "Normal Results."],
-    ["v090-tutorial-1600.png", "Tutorial", "1600x900 wide-desktop", "Tutorial overlay."]
+    ["v090-tutorial-1600.png", "Tutorial", "1600x900 wide-desktop", "Tutorial overlay."],
+    ["v0106-art-slot-menu-fallback.png", "v0.106 Art Slot menu fallback", "1366x768 laptop", "Runtime art slot fallback diagnostics."]
   ];
   if (options.duplicateFirstCapture) {
     captures.push(captures[0]);

@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.82: Aether Well Ruins now has the first mission-local Lume Network prototype on Broken Ford. Capturing West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, activates Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-Current v0.105 work adds a deterministic reference-only visual asset registry, ignored candidate-review workspaces, strict art-review validation, SVG contact sheets, deterministic review reports, and Emmanuel's first controlled art generation packet. It does not generate images, import art, change runtime asset paths, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, or co-op.
+Current v0.106 work adds a typed runtime art slot adapter, placeholder fallback harness, private-only Art Slots diagnostics, private mock routing mode, Art Slot Fallbacks private Playtest Hub scenarios, and runtime-art slot validation. It does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, or co-op.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.105 does not change package metadata or private package contents; use the verified v0.104 package until a future package-specific checkpoint changes that surface.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.106 updates package metadata and required package docs to include the v0.105 art registry context plus the v0.106 runtime art slot contract/fallback harness.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -118,12 +118,15 @@ Latest v0.10 tutorial onboarding checkpoint status, 2026-05-11: build passes. Ap
 ```bash
 npm run validate:content
 npm run validate:art-intake
+npm run validate:runtime-art-slots
 npm run test
 ```
 
 Run `npm run validate:content` after changing data files or adding future campaign content. It runs the data validator without opening the game UI and fails with a plain list of broken references or duplicate IDs. Then run `npm run test` for the broader pure-rule suite. Together they check the level curve, hero progression rules, building placement rules, save migration fixtures, and whether units, buildings, abilities, skill trees, reward tables, maps, objectives, resources, capture sites, terrain zones, campaign graphs, AI plans, rivals, Stronghold upgrades, and Cinderfen-specific modifiers reference valid IDs.
 
 Run `npm run validate:art-intake` after adding or editing non-runtime Cinderfen style-frame metadata under `art-review/cinderfen-style-frames/metadata/`. It validates source/license and review-gate fields without requiring candidate image files unless a metadata record says the candidate file has been submitted. This is separate from the runtime visual asset manifest and does not approve or wire any art into the game.
+
+Run `npm run validate:runtime-art-slots` after changing runtime art slot definitions, slot fallback owners, private diagnostics/mock routing, or future runtime asset assignments. It verifies the v0.106 slot contract, blocks unapproved/candidate/final-art runtime paths, and keeps all missing art fallback-safe.
 
 For v0.105 visual-candidate review work, use:
 

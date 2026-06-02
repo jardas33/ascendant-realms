@@ -17,6 +17,7 @@
     "test": "vitest run",
     "validate:content": "tsx tools/validateContent.ts",
     "validate:art-intake": "tsx tools/art-intake/validateArtIntake.ts",
+    "validate:runtime-art-slots": "tsx tools/runtime-art-slots/validateRuntimeArtSlots.ts",
     "art:review:init": "tsx tools/art-review/initArtReviewWorkspace.ts",
     "art:review:validate": "tsx tools/art-review/validateArtReview.ts",
     "art:review:contact-sheet": "tsx tools/art-review/generateArtReviewContactSheet.ts",

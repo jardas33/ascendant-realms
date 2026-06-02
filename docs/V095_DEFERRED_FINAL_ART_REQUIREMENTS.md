@@ -24,5 +24,6 @@ v0.95 deliberately improves placeholder readability without final art.
 
 ## Review Gate
 
-Future art must pass the v0.88 intake and review gate before runtime integration. This checkpoint does not approve, generate, import, or integrate art.
+Future art must pass the v0.88 intake and review gate before runtime integration. As of v0.106, future runtime art must also pass `npm run validate:runtime-art-slots` with a `runtime-integrated` slot assignment under `public/assets/runtime-art/`. `runtime-candidate-approved` is still not enough to load.
 
+This checkpoint does not approve, generate, import, or integrate art.
