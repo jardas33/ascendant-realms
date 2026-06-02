@@ -50,7 +50,7 @@ describe("LumeNetworkRendering", () => {
     expect(optional.visible).toBe(false);
   });
 
-  it("keeps active links subtle in Auto and more readable in Always", () => {
+  it("hides stable active links in Auto after transition pulses and keeps Always readable", () => {
     const activeLink = { ...link, state: "active" as const };
     const auto = resolveLumeLinkPresentation(activeLink, baseContext);
     const always = resolveLumeLinkPresentation(activeLink, {
@@ -58,9 +58,19 @@ describe("LumeNetworkRendering", () => {
       visibilityMode: "always"
     });
 
-    expect(auto).toMatchObject({ visible: true, style: "active", emphasis: "stable" });
-    expect(auto.alpha).toBeLessThan(0.35);
+    expect(auto.visible).toBe(false);
     expect(always.alpha).toBeGreaterThan(auto.alpha);
+  });
+
+  it("reveals active links in Auto when a relevant endpoint is selected", () => {
+    const activeLink = { ...link, state: "active" as const };
+    const visual = resolveLumeLinkPresentation(activeLink, {
+      ...baseContext,
+      selectedSiteIds: ["west_stone_cut"]
+    });
+
+    expect(visual).toMatchObject({ visible: true, style: "highlight", emphasis: "selected" });
+    expect(visual.alpha).toBeGreaterThan(0.4);
   });
 
   it("lets Hidden suppress stable links while preserving transition pulses", () => {

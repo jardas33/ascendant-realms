@@ -9,7 +9,8 @@ describe("PlaytestScenarioGallery", () => {
       "first_session",
       "battle_shell",
       "lume",
-      "meta"
+      "meta",
+      "performance_lab"
     ]);
 
     const ids = PLAYTEST_SCENARIOS.map((scenario) => scenario.id);
@@ -22,8 +23,8 @@ describe("PlaytestScenarioGallery", () => {
       expect(scenario.expectedVisibleUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.expectedAbsentUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.manualReviewQuestion).toContain("?");
-      expect(scenario.screenshotId).toMatch(/^v0100-hub-[a-z0-9-]+$/u);
-      expect(scenario.saveIsolationRule).toContain("no rewards, XP, progress, Retinue, relic, or reputation mutation is kept");
+      expect(scenario.screenshotId).toMatch(/^v0(100-hub|103)-[a-z0-9-]+$/u);
+      expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated/u);
     }
   });
 
@@ -62,8 +63,27 @@ describe("PlaytestScenarioGallery", () => {
       "meta_retinue_recovering",
       "meta_stronghold_preview",
       "ordinary_results",
-      "defeat_results"
+      "defeat_results",
+      "perf_battle_baseline",
+      "perf_campaign_map_interaction",
+      "perf_lume_auto",
+      "perf_results_disclosure"
     ].forEach((id) => expect(scenarioById(id), `missing ${id}`).toBeDefined());
+  });
+
+  it("keeps Performance Lab scenarios private, isolated, and deterministic", () => {
+    const performanceScenarios = PLAYTEST_SCENARIOS.filter((scenario) => scenario.groupId === "performance_lab");
+    expect(performanceScenarios).toHaveLength(17);
+    expect(performanceScenarios.map((scenario) => scenario.id)).toEqual(
+      [...performanceScenarios.map((scenario) => scenario.id)].sort()
+    );
+    expect(performanceScenarios.map((scenario) => scenario.launchKind)).toEqual(
+      expect.arrayContaining(["battle", "campaign", "lume_battle", "results"])
+    );
+    performanceScenarios.forEach((scenario) => {
+      expect(scenario.saveIsolationRule).toContain("not mutated");
+      expect(scenario.automatedCoverage).toBe("v0.103 private performance lab");
+    });
   });
 
   it("keeps the eight-minute visual tour deterministic and private", () => {

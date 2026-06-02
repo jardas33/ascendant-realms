@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.100 Private Playtest Hub and Scenario Gallery";
+const CHECKPOINT = "v0.103 Battlefield Clutter Reduction and Private Performance Profiler";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -394,6 +394,15 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0100_EMMANUEL_FAST_REVIEW_GUIDE.md", join(packageDir, "V0100_EMMANUEL_FAST_REVIEW_GUIDE.md"));
   await copyMarkdown("docs/V0100_VISUAL_QA_REPORT.md", join(packageDir, "V0100_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V0100_IMPLEMENTATION_REPORT.md", join(packageDir, "V0100_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0103_BATTLEFIELD_CLUTTER_REDUCTION_SPEC.md", join(packageDir, "V0103_BATTLEFIELD_CLUTTER_REDUCTION_SPEC.md"));
+  await copyMarkdown("docs/V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md", join(packageDir, "V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md"));
+  await copyMarkdown("docs/V0103_PERFORMANCE_LAB_SCENARIO_MANIFEST.json", join(packageDir, "V0103_PERFORMANCE_LAB_SCENARIO_MANIFEST.json"));
+  await copyMarkdown("docs/V0103_PERFORMANCE_BASELINE_REPORT.md", join(packageDir, "V0103_PERFORMANCE_BASELINE_REPORT.md"));
+  await copyMarkdown("docs/V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md", join(packageDir, "V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md"));
+  await copyMarkdown("docs/V0103_VISUAL_QA_REPORT.md", join(packageDir, "V0103_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0103_IMPLEMENTATION_REPORT.md", join(packageDir, "V0103_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0103_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0103_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md", join(packageDir, "V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -493,7 +502,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.100, start with V0100_EMMANUEL_FAST_REVIEW_GUIDE.md, V0100_PRIVATE_PLAYTEST_HUB_SPEC.md, V0100_SCENARIO_GALLERY_MANIFEST.json, and V0100_SAVE_ISOLATION_REPORT.md. This package adds a private-package-only Playtest Hub and Scenario Gallery for faster manual QA. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume mechanics, pathing, or runtime/internal title.
+For v0.103, start with V0103_EMMANUEL_RETEST_CHECKLIST.md, V0103_PERFORMANCE_BASELINE_REPORT.md, V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, and V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md. This package adds a private-package-only performance lab and modest battlefield clutter reduction. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume damage multiplier, pathing, or runtime/internal title.
 
 ## Known Warning
 

@@ -146,9 +146,14 @@ import type { TechState } from "../systems/PrerequisiteSystem";
 import {
   isPrivateLumeDemoLaunch,
   isPrivatePlaytestHubLaunch,
+  isPrivatePlaytestToolsEnabled,
   PRIVATE_PLAYTEST_HUB_NOTICE,
   restorePrivatePlaytestHubSave
 } from "../playtest/PrivatePlaytestTools";
+import {
+  registerPrivatePerformanceCounterProvider,
+  type PrivatePerformanceCounters
+} from "../playtest/PrivatePerformanceProfiler";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -326,6 +331,7 @@ export class BattleScene extends Phaser.Scene {
   private retinueReinforcementUsed = false;
   private scoutedEnemyHeroIds = new Set<string>();
   private menuPaused = false;
+  private performanceCounters = this.createEmptyPerformanceCounters();
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
     enemy: new Set<string>()
@@ -359,6 +365,9 @@ export class BattleScene extends Phaser.Scene {
     this.applyPrivatePlaytestHubScenarioSetup();
     this.updateAct1Finale();
     this.installTestHooks();
+    if (isPrivatePlaytestToolsEnabled()) {
+      registerPrivatePerformanceCounterProvider(() => this.createPrivatePerformanceCounters());
+    }
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
   }
 
@@ -465,6 +474,7 @@ export class BattleScene extends Phaser.Scene {
     this.statusTimer = 4;
     this.statusPriority = "normal";
     this.recentStatusMessages.clear();
+    this.performanceCounters = this.createEmptyPerformanceCounters();
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
     this.tutorialDefeatedUnitIds = new Set<string>();
@@ -730,6 +740,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    this.performanceCounters.fogRedraws += 1;
     this.fogOverlay.clear().setVisible(true);
     this.fogOfWar.cells().forEach((cell) => {
       if (cell.state === "visible") {
@@ -1120,6 +1131,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createMinimapSnapshot(): MinimapSnapshot {
+    this.performanceCounters.minimapRefreshes += 1;
     return createBattleMinimapSnapshot({
       activeMap: this.activeMap,
       camera: this.cameras.main,
@@ -1330,6 +1342,39 @@ export class BattleScene extends Phaser.Scene {
     this.previousLumeRenderStates = currentStates;
   }
 
+  private createEmptyPerformanceCounters() {
+    return {
+      fogRedraws: 0,
+      minimapRefreshes: 0,
+      hudUpdates: 0,
+      notificationsEmitted: 0
+    };
+  }
+
+  private createPrivatePerformanceCounters(): Partial<PrivatePerformanceCounters> {
+    const lume = this.lumeNetworkDirector ? this.createLumeRenderSnapshot() : { links: [], siteMarkers: [] };
+    const fogVisibleCells = this.fogOfWar
+      ? Array.from(this.fogOfWar.states).filter((value) => value === 2).length
+      : 0;
+    return {
+      displayObjects: this.children.list.length,
+      graphicsObjects: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Graphics).length,
+      units: this.units.filter((unit) => unit.alive).length,
+      buildings: this.buildings.filter((building) => building.alive).length,
+      captureSites: this.captureSites.length,
+      labels: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text && entry.visible).length,
+      captureRings: this.captureSites.length,
+      lumeLinks: lume.links.length,
+      lumeEndpoints: lume.siteMarkers.length,
+      fogRedraws: this.performanceCounters.fogRedraws,
+      fogVisibleCells,
+      minimapRefreshes: this.performanceCounters.minimapRefreshes,
+      hudUpdates: this.performanceCounters.hudUpdates,
+      notificationsEmitted: this.performanceCounters.notificationsEmitted,
+      notificationsVisible: this.statusTimer > 0 ? 1 : 0
+    };
+  }
+
   private selectedEntities(): Array<Unit | Building | CaptureSite> {
     return this.selectionSystem
       .getSelected()
@@ -1356,9 +1401,16 @@ export class BattleScene extends Phaser.Scene {
     });
 
     const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero"]);
+    const selectedWorkerScenarios = new Set(["battle_selected_worker", "perf_selected_worker"]);
+    const selectedSquadScenarios = new Set(["battle_selected_squad", "perf_selected_squad", "perf_large_unit_cluster"]);
+    const selectedBuildingScenarios = new Set(["battle_selected_building", "perf_selected_command_hall"]);
+    const sitePressureScenarios = new Set(["battle_contested_site", "perf_label_heavy_site_cluster"]);
+    const fogScenarios = new Set(["battle_fog_minimap", "perf_fog_heavy_camera", "perf_minimap_interaction"]);
+    const notificationScenarios = new Set(["battle_notification_priority", "perf_notification_heavy"]);
     let playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
     let worker = playerUnits.find((unit) => unit.definition.id === "worker");
-    if (scenarioId === "battle_selected_worker" && !worker) {
+    if (selectedWorkerScenarios.has(scenarioId) && !worker) {
       const anchor = commandHall?.position ?? this.hero.position;
       worker = new Unit(this, requireUnit("worker"), "player", anchor.x + 72, anchor.y + 42, { id: "private-hub-worker" });
       this.addUnit(worker);
@@ -1369,46 +1421,66 @@ export class BattleScene extends Phaser.Scene {
       this.captureSites.find((site) => site.definition.id === "crown_shrine") ??
       this.captureSites[0];
 
-    if (scenarioId === "battle_selected_hero" || scenarioId === "salto_outskirts_start") {
+    if (selectedHeroScenarios.has(scenarioId)) {
       this.selectAndFocusPrivatePreview([this.hero], "Hero selected for private review.");
-    } else if (scenarioId === "battle_selected_worker" && worker) {
+    } else if (selectedWorkerScenarios.has(scenarioId) && worker) {
       this.selectAndFocusPrivatePreview([worker], "Worker selected for private review.");
-    } else if (scenarioId === "battle_selected_squad") {
-      const squad = playerUnits.filter((unit) => unit !== this.hero && unit.definition.id !== "worker").slice(0, 4);
+    } else if (selectedSquadScenarios.has(scenarioId)) {
+      const squad = this.ensurePrivatePerformanceSquad(playerUnits, commandHall).filter((unit) => unit.definition.id !== "worker").slice(0, 8);
       this.selectAndFocusPrivatePreview(squad.length > 0 ? squad : playerUnits.slice(0, 4), "Squad selected for private review.");
-    } else if (scenarioId === "battle_selected_building" && commandHall) {
+    } else if (selectedBuildingScenarios.has(scenarioId) && commandHall) {
       this.selectAndFocusPrivatePreview([commandHall], "Command Hall selected for private review.");
-    } else if (scenarioId === "battle_contested_site" && focusSite) {
+    } else if (sitePressureScenarios.has(scenarioId) && focusSite) {
       focusSite.capturingTeam = "enemy";
       focusSite.captureProgress = 0.58;
       focusSite.setObjectiveRelevant(true);
       focusSite.updateVisuals();
       this.selectAndFocusPrivatePreview([focusSite], "Resource site pressure preview.");
-    } else if (scenarioId === "battle_fog_minimap") {
+    } else if (fogScenarios.has(scenarioId)) {
       const point = { x: this.activeMap.width * 0.5, y: this.activeMap.height * 0.48 };
       this.cameraSystem.centerOn(point);
       this.addMinimapPing(point.x, point.y, "#74d3f2", "Fog/minimap sample");
       this.showCommandFeedbackMarker({ kind: "focus", point, label: "Minimap" });
       this.showMessage("Fog and minimap sample centered.", point.x, point.y - 42, "#74d3f2", { priority: "command" });
-    } else if (scenarioId === "battle_notification_priority") {
+    } else if (notificationScenarios.has(scenarioId)) {
       this.showMessage("Critical: protect Workers and resource sites.", this.hero.position.x, this.hero.position.y - 96, "#ffd27a", {
         priority: "critical",
         durationSeconds: 5
       });
     }
 
-    if (scenarioId.startsWith("lume")) {
+    if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume")) {
       this.applyPrivateLumeScenarioSetup(scenarioId);
     }
 
     this.refreshBattleHud(0);
   }
 
+  private ensurePrivatePerformanceSquad(playerUnits: Unit[], commandHall?: Building): Unit[] {
+    const combatUnits = playerUnits.filter((unit) => unit !== this.hero && unit.definition.id !== "worker");
+    if (combatUnits.length >= 6) {
+      return playerUnits;
+    }
+    const anchor = commandHall?.position ?? this.hero.position;
+    const unitTypeIds = ["militia", "ranger", "acolyte", "militia", "ranger", "acolyte"] as const;
+    const needed = 6 - combatUnits.length;
+    for (let index = 0; index < needed; index += 1) {
+      const angle = (index / Math.max(1, needed)) * Math.PI * 2;
+      const radius = 72 + index * 8;
+      const unit = new Unit(this, requireUnit(unitTypeIds[index % unitTypeIds.length]), "player", anchor.x + Math.cos(angle) * radius, anchor.y + Math.sin(angle) * radius, {
+        id: `private-perf-squad-${index + 1}`
+      });
+      this.addUnit(unit);
+    }
+    return this.units.filter((unit) => unit.alive && unit.team === "player");
+  }
+
   private applyPrivateLumeScenarioSetup(scenarioId: string): void {
     const westStoneCut = this.captureSites.find((site) => site.definition.id === "west_stone_cut");
     const fordToll = this.captureSites.find((site) => site.definition.id === "ford_toll");
+    const firstLinkScenario = scenarioId === "lume_first_link" || scenarioId === "perf_lume_activation_pulse";
 
-    if (scenarioId === "lume_first_link" && westStoneCut && fordToll) {
+    if (firstLinkScenario && westStoneCut && fordToll) {
       westStoneCut.setOwner("player");
       fordToll.setOwner("player");
       westStoneCut.setObjectiveRelevant(true);
@@ -1425,11 +1497,36 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    if (scenarioId === "lume_overlay_hidden") {
+    if (scenarioId === "perf_lume_contested_severed" && westStoneCut && fordToll) {
+      westStoneCut.setOwner("player");
+      fordToll.setOwner("player");
+      westStoneCut.setObjectiveRelevant(true);
+      fordToll.setObjectiveRelevant(true);
+      this.lumeNetworkDirector?.update();
+      fordToll.setOwner("enemy");
+      fordToll.capturingTeam = "enemy";
+      fordToll.captureProgress = 0;
+      fordToll.updateVisuals();
+      this.lumeNetworkDirector?.update();
+      const point = {
+        x: (westStoneCut.position.x + fordToll.position.x) / 2,
+        y: (westStoneCut.position.y + fordToll.position.y) / 2
+      };
+      this.cameraSystem.centerOn(point);
+      this.addMinimapPing(point.x, point.y, "#e6635a", "Lume severed");
+      this.showCommandFeedbackMarker({ kind: "attack", point, label: "Severed" });
+      this.renderLumeNetworkLinks();
+      return;
+    }
+
+    if (scenarioId === "lume_overlay_hidden" || scenarioId === "perf_lume_hidden") {
       this.lumeVisibilityMode = "hidden";
     }
-    if (scenarioId === "lume_overlay_always") {
+    if (scenarioId === "lume_overlay_always" || scenarioId === "perf_lume_always") {
       this.lumeVisibilityMode = "always";
+    }
+    if (scenarioId === "lume_overlay_auto" || scenarioId === "perf_lume_auto") {
+      this.lumeVisibilityMode = "auto";
     }
 
     const focusSite = westStoneCut ?? fordToll ?? this.captureSites[0];
@@ -1627,6 +1724,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private refreshBattleHud(deltaSeconds: number): void {
+    this.performanceCounters.hudUpdates += 1;
     const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
     const isPlacing = Boolean(this.buildingSystem.pendingBuildingId);
@@ -2501,6 +2599,7 @@ export class BattleScene extends Phaser.Scene {
     if (this.shouldSuppressRecentStatus(displayMessage, priority)) {
       return;
     }
+    this.performanceCounters.notificationsEmitted += 1;
     const replaceStatus = shouldReplaceBattleStatus({
       currentPriority: this.statusPriority,
       currentTimerSeconds: this.statusTimer,
@@ -2762,6 +2861,7 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private cleanup(): void {
+    registerPrivatePerformanceCounterProvider(undefined);
     this.removeTestHooks();
     this.inputSystem?.destroy();
     this.uiSystem?.destroy();

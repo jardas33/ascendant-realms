@@ -24,14 +24,16 @@ describe("resolveCaptureSitePresentation", () => {
   });
 
   it("distinguishes friendly, enemy, neutral, and objective labels", () => {
-    expect(
-      resolveCaptureSitePresentation({
-        owner: "player",
-        capturingTeam: "neutral",
-        captureProgress: 0,
-        resourceColor: 0xf0d978
-      }).labelPrefix
-    ).toBe("HELD");
+    const friendly = resolveCaptureSitePresentation({
+      owner: "player",
+      capturingTeam: "neutral",
+      captureProgress: 0,
+      resourceColor: 0xf0d978
+    });
+    expect(friendly.labelPrefix).toBe("HELD");
+    expect(friendly.ringAlpha).toBeLessThan(0.5);
+    expect(friendly.ringWidth).toBe(2);
+
     expect(
       resolveCaptureSitePresentation({
         owner: "enemy",

@@ -35,10 +35,29 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 145;
-const VISUAL_QA_GROUP_TIMEOUT_MS = 360_000;
+const EXPECTED_SCREENSHOT_COUNT = 172;
+const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
+
+const V0103_PERFORMANCE_VISUAL_SCENARIOS = [
+  ["perf_battle_baseline", "battle", "v0103-perf-battle-baseline.png", "Ordinary private battle baseline with profiler-compatible counters."],
+  ["perf_campaign_map_interaction", "campaign", "v0103-perf-campaign-map-interaction.png", "Campaign map interaction sample from the Performance Lab."],
+  ["perf_fog_heavy_camera", "battle", "v0103-perf-fog-heavy-camera.png", "Fog-heavy camera posture with minimap visible."],
+  ["perf_label_heavy_site_cluster", "battle", "v0103-perf-label-heavy-site-cluster.png", "Capture-site label and ring density sample."],
+  ["perf_large_unit_cluster", "battle", "v0103-perf-large-unit-cluster.png", "Dense local unit cluster using existing unit types only."],
+  ["perf_lume_activation_pulse", "battle", "v0103-perf-lume-activation-pulse.png", "Lume activation pulse and tracker posture."],
+  ["perf_lume_always", "battle", "v0103-perf-lume-always.png", "Explicit Always-visible Lume inspection posture."],
+  ["perf_lume_auto", "battle", "v0103-perf-lume-auto.png", "Default Auto Lume overlay with stable links quieter."],
+  ["perf_lume_contested_severed", "battle", "v0103-perf-lume-contested-severed.png", "Lume severed transition sample with hostile marker."],
+  ["perf_lume_hidden", "battle", "v0103-perf-lume-hidden.png", "Hidden Lume overlay posture."],
+  ["perf_minimap_interaction", "battle", "v0103-perf-minimap-interaction.png", "Minimap interaction and camera-focus sample."],
+  ["perf_notification_heavy", "battle", "v0103-perf-notification-heavy.png", "Notification-priority sample with deduped status row."],
+  ["perf_selected_command_hall", "battle", "v0103-perf-selected-command-hall.png", "Selected Command Hall command panel sample."],
+  ["perf_selected_hero", "battle", "v0103-perf-selected-hero.png", "Selected hero HUD and command posture."],
+  ["perf_selected_squad", "battle", "v0103-perf-selected-squad.png", "Selected squad summary and command posture."],
+  ["perf_selected_worker", "battle", "v0103-perf-selected-worker.png", "Selected Worker command posture."]
+] as const;
 
 const visualQaRecords: CaptureRecord[] = [];
 const visualQaConsoleErrors: string[] = [];
@@ -1696,6 +1715,97 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await page.getByTestId("playtest-scenario-ordinary_results").click();
     await expect(page.getByTestId("results-overview")).toBeVisible();
     await captureView(page, group, "v0.100 Results entry", "v0100-hub-results-flow.png", LAPTOP, "Meta gallery entry with ordinary Results fixture.");
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.103 battlefield clutter and private performance lab states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0103-clutter-performance";
+    const consoleErrors = attachConsoleCollector(page, group);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+
+    await useViewport(page, FULL_HD);
+    await openFreshMainMenu(page);
+    await page.getByTestId("menu-playtest-hub").click();
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
+    await captureView(page, group, "v0.103 Performance Hub 1920", "v0103-performance-hub-1920.png", FULL_HD, "Private hub includes Performance Lab without exposing production shortcuts.");
+
+    await useViewport(page, WIDE_DESKTOP);
+    await captureView(page, group, "v0.103 Performance Hub 1600", "v0103-performance-hub-1600.png", WIDE_DESKTOP, "Performance Lab remains readable at 1600x900.");
+
+    await useViewport(page, LAPTOP);
+    await captureView(page, group, "v0.103 Performance Hub 1366", "v0103-performance-hub-1366.png", LAPTOP, "Performance Lab remains usable at 1366x768.");
+
+    await page.getByTestId("playtest-group-performance_lab").scrollIntoViewIfNeeded();
+    await captureView(page, group, "v0.103 Performance Lab group", "v0103-performance-lab-group-1366.png", LAPTOP, "Performance Lab group shows deterministic private QA entries.");
+
+    await expect(page.getByTestId("private-performance-toggle")).toBeVisible();
+    await captureView(page, group, "v0.103 Profiler off", "v0103-profiler-off-1366.png", LAPTOP, "Profiler toggle is present but off by default.");
+    await page.getByTestId("private-performance-toggle").click();
+    await expect(page.getByTestId("private-performance-panel")).toBeVisible();
+    await page.waitForTimeout(650);
+    await captureView(page, group, "v0.103 Profiler active", "v0103-profiler-active-1366.png", LAPTOP, "Profiler panel records only after explicit private toggle.");
+    await page.getByTestId("private-performance-toggle").click();
+    await captureView(page, group, "v0.103 Profiler summary", "v0103-profiler-summary-1366.png", LAPTOP, "Profiler summary remains local/private after stopping.");
+
+    for (const [scenarioId, kind, fileName, note] of V0103_PERFORMANCE_VISUAL_SCENARIOS) {
+      await page.getByTestId(`playtest-scenario-${scenarioId}`).scrollIntoViewIfNeeded();
+      await page.getByTestId(`playtest-scenario-${scenarioId}`).click();
+      if (kind === "campaign") {
+        await expect(page.getByTestId("campaign-map")).toBeVisible();
+        await captureView(page, group, `v0.103 ${scenarioId}`, fileName, LAPTOP, note);
+        await page.getByTestId("campaign-playtest-hub-return").click();
+        await expect(page.getByTestId("playtest-hub")).toBeVisible();
+        continue;
+      }
+
+      await expectBattleLoaded(page);
+      if (scenarioId.startsWith("perf_lume")) {
+        await expect(page.getByTestId("lume-network-status")).toBeVisible();
+      }
+      await captureView(page, group, `v0.103 ${scenarioId}`, fileName, LAPTOP, note);
+
+      if (scenarioId === "perf_lume_auto") {
+        await page.getByTestId("lume-network-details").locator("summary").click();
+        await expect(page.getByTestId("lume-network-details")).toHaveAttribute("open", "");
+        await captureView(
+          page,
+          group,
+          "v0.103 Lume Auto details",
+          "v0103-perf-lume-auto-details.png",
+          LAPTOP,
+          "Lume Auto keeps benefit/counterplay behind deliberate details disclosure."
+        );
+      }
+
+      if (scenarioId === "perf_label_heavy_site_cluster") {
+        await expect(page.getByTestId("selected-resource-site-stats")).toBeVisible();
+        await useViewport(page, WIDE_DESKTOP);
+        await captureView(
+          page,
+          group,
+          "v0.103 capture-site label density 1600",
+          "v0103-perf-label-heavy-site-cluster-1600.png",
+          WIDE_DESKTOP,
+          "Capture-site labels and rings stay readable after v0.103 default-label reduction."
+        );
+        await useViewport(page, LAPTOP);
+      }
+
+      await page.getByTestId("private-hub-exit").click();
+      await expect(page.getByTestId("playtest-hub")).toBeVisible();
+    }
+
+    await page.getByTestId("playtest-scenario-perf_results_disclosure").scrollIntoViewIfNeeded();
+    await page.getByTestId("playtest-scenario-perf_results_disclosure").click();
+    await expect(page.getByTestId("results-overview")).toBeVisible();
+    await captureView(page, group, "v0.103 Results compact", "v0103-perf-results-compact.png", LAPTOP, "Compact Results remain above the fold for performance-lab review.");
+    await page.getByTestId("results-full-details").getByText("Show Full Battle Details", { exact: true }).click();
+    await expect(page.getByTestId("results-full-details")).toHaveAttribute("open", "");
+    await captureView(page, group, "v0.103 Results expanded", "v0103-perf-results-expanded.png", LAPTOP, "Expanded Results details remain deliberate disclosure for review.");
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

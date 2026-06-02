@@ -69,10 +69,10 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
       state: "friendly",
       labelPrefix: "HELD",
       labelColor: "#c9ffd2",
-      labelBackground: "rgba(9, 43, 21, 0.86)",
+      labelBackground: "rgba(9, 43, 21, 0.76)",
       ringColor: 0x7de087,
-      ringAlpha: 0.68,
-      ringWidth: 3,
+      ringAlpha: 0.44,
+      ringWidth: 2,
       progressColor: 0xaef7b7
     };
   }
@@ -81,10 +81,10 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
       state: "enemy",
       labelPrefix: "ENEMY",
       labelColor: "#ffc0ba",
-      labelBackground: "rgba(55, 13, 13, 0.88)",
+      labelBackground: "rgba(55, 13, 13, 0.76)",
       ringColor: 0xe15e55,
-      ringAlpha: 0.74,
-      ringWidth: 3,
+      ringAlpha: 0.5,
+      ringWidth: 2,
       progressColor: 0xff9a64
     };
   }
@@ -92,10 +92,10 @@ export function resolveCaptureSitePresentation(options: CaptureSitePresentationO
     state: "neutral",
     labelPrefix: "NEUTRAL",
     labelColor: "#fff1bc",
-    labelBackground: "rgba(40, 34, 20, 0.82)",
+    labelBackground: "rgba(40, 34, 20, 0.68)",
     ringColor: options.resourceColor,
-    ringAlpha: 0.58,
-    ringWidth: 3,
+    ringAlpha: 0.36,
+    ringWidth: 2,
     progressColor: 0xf3e7a3
   };
 }

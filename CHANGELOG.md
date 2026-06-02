@@ -1,5 +1,65 @@
 # Changelog
 
+# v0.103 Battlefield Clutter Reduction And Private Performance Profiler - 2026-06-01
+
+This checkpoint reduces battlefield visual clutter and adds private/dev-only performance profiling evidence. It does not alter gameplay systems, balance, rewards, saves, stable IDs, campaign progression, Lume mechanics, maps, factions, art/assets, desktop implementation, or production posture.
+
+Added:
+
+- `src/game/playtest/PrivatePerformanceProfiler.ts`.
+- `src/game/playtest/PrivatePerformanceProfiler.test.ts`.
+- `tools/profilePrivatePerformance.ts`.
+- `tools/reportPrivatePerformance.ts`.
+- `npm run perf:profile:private`.
+- `npm run perf:report:private`.
+- Private Playtest Hub `Performance Lab` entries.
+- 27 v0.103 visual QA screenshots, bringing the visual QA matrix to 172 screenshots.
+- `docs/V0103_BATTLEFIELD_CLUTTER_REDUCTION_SPEC.md`.
+- `docs/V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md`.
+- `docs/V0103_PERFORMANCE_LAB_SCENARIO_MANIFEST.json`.
+- `docs/V0103_PERFORMANCE_BASELINE_REPORT.md`.
+- `docs/V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`.
+- `docs/V0103_VISUAL_QA_REPORT.md`.
+- `docs/V0103_IMPLEMENTATION_REPORT.md`.
+- `docs/V0103_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md`.
+
+Changed:
+
+- Capture-site labels now default to important states: selected, contested, objective-relevant, or hostile.
+- Capture-site steady rings are slightly quieter.
+- Lume Auto hides stable active links after transition pulses unless linked endpoints are selected.
+- Lume optional-link copy moved behind Details.
+- Private demo Lume buttons use shorter preview copy.
+- Private package generation and package validation now expect the v0.103 checkpoint and v0.103 docs.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage writes, stable IDs, serialized IDs, rewards, XP, Retinue, relics, reputation, campaign progression, combat balance, AI/pathing, maps, factions, generated/imported art, desktop work, runtime title, or `linked_ward` 0.92 damage multiplier changed.
+
+Verification:
+
+- `npm test` PASS, 103 files / 730 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS.
+- `npm run export:portable-content` PASS, 229 stable-ID manifest entries.
+- `npm run validate:portable-content` PASS, deterministic two-pass export.
+- `npm run test:save-translation-contract` PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+- `npm run perf:profile:private` PASS, 17 private scenarios.
+- `npm run perf:report:private` PASS.
+- `npm run test:e2e:smoke:fast` PASS, 10 tests.
+- `npm run test:e2e:smoke` PASS, 17 tests.
+- `npm run playtest:controls` PASS, 18 rows.
+- `npm run playtest:controls:extended` PASS, 90 rows.
+- `npm run playtest:controls:verify` PASS, 1,658 checks.
+- `npm run playtest:act1` PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+- Hosted release lanes PASS: smoke 17 tests, deep-battle 31 tests on rerun, deep-campaign-pressure 8 tests on rerun, layout-core 27 tests, layout-cinderfen 12 tests.
+- `npm run visual:qa` PASS, 172 screenshots, 0 console errors, 0 retries.
+- `npm run visual:review-pack` PASS, 172 screenshots and 7 contact sheets.
+- `git diff --check` PASS with only the existing `.gitignore` Windows line-ending notice.
+- Final clean package generation and package verification are run after the checkpoint commit so the package does not carry a `-dirty` suffix.
+
 # v0.102 Browser Save Fixture Library And Desktop Translation Contract Proof - 2026-06-01
 
 This checkpoint adds deterministic fictional browser save fixtures and a pure translation-contract proof for future desktop experiments. It does not alter runtime save behavior, gameplay, balance, rewards, stable IDs, `CURRENT_SAVE_VERSION`, localStorage behavior, package posture, engine posture, art/assets, desktop implementation, or start v0.103.

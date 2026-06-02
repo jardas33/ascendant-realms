@@ -40,6 +40,8 @@
     "test:e2e:headed": "playwright test --headed",
     "visual:qa": "playwright test --config=playwright.visual-qa.config.ts --reporter=line",
     "visual:review-pack": "tsx tools/generateVisualReviewPack.ts",
+    "perf:profile:private": "tsx tools/profilePrivatePerformance.ts",
+    "perf:report:private": "tsx tools/reportPrivatePerformance.ts",
     "playtest:act1": "tsx tools/runAct1PlayabilityTelemetry.ts",
     "playtest:sim": "tsx tools/runPlaytestSim.ts",
     "playtest:lab": "tsx tools/runPlaytestLab.ts",

@@ -151,6 +151,12 @@ export class CaptureSite extends BaseEntity {
       ?.setText(`${presentation.labelPrefix} - ${this.definition.name}`)
       .setColor(presentation.labelColor)
       .setBackgroundColor(presentation.labelBackground);
+    this.setLabelVisibleByDefault(
+      presentation.state === "selected" ||
+        presentation.state === "contested" ||
+        presentation.state === "objective" ||
+        presentation.state === "enemy"
+    );
     if (this.progressRing) {
       this.progressRing.setVisible(this.captureProgress > 0 && this.captureProgress < 1);
       this.progressRing.setScale(0.35 + this.captureProgress * 0.65);

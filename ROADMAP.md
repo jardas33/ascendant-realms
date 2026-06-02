@@ -11,11 +11,23 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.102 Browser Save Fixture Library and Desktop Translation Contract Proof** on 2026-06-01. It is a save testing, schema-contract, tooling, and documentation milestone: deterministic fictional browser save fixtures now cover representative V1/V2 states, unknown IDs, corrupt data, and future-version rejection, and `npm run test:save-translation-contract` proves a proposed desktop envelope without changing runtime save behavior.
+The current checkpoint is **v0.103 Battlefield Clutter Reduction and Private Performance Profiler** on 2026-06-01. It is a presentation and private QA-tooling milestone: stable battlefield visual noise is reduced, Lume Auto is quieter, capture-site labels are more contextual, and a private/dev-only Performance Lab plus profiler creates local evidence for future optimization decisions without changing gameplay, saves, rewards, stable IDs, Lume mechanics, art, maps, factions, or desktop posture.
 
-The next recommended step is to review the v0.102 fixture/proof reports and keep future desktop experiments behind explicit gates. Do not start v0.103, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is to review the v0.103 profiler evidence and Emmanuel retest notes before choosing any future visual or rendering follow-up. Do not start v0.104, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
 
-New v0.102 docs:
+New v0.103 docs:
+
+- `docs/V0103_BATTLEFIELD_CLUTTER_REDUCTION_SPEC.md`
+- `docs/V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md`
+- `docs/V0103_PERFORMANCE_LAB_SCENARIO_MANIFEST.json`
+- `docs/V0103_PERFORMANCE_BASELINE_REPORT.md`
+- `docs/V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`
+- `docs/V0103_VISUAL_QA_REPORT.md`
+- `docs/V0103_IMPLEMENTATION_REPORT.md`
+- `docs/V0103_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md`
+
+Recent v0.102 docs:
 
 - `docs/V0102_SAVE_FIXTURE_LIBRARY_SPEC.md`
 - `docs/V0102_DESKTOP_SAVE_ENVELOPE_CONTRACT.md`

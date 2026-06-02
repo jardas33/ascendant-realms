@@ -2198,18 +2198,28 @@ test.describe("Ascendant Realms deep end-to-end QA", () => {
     });
     const activeRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
     expect(activeRender.hud.visibilityMode).toBe("auto");
-    expect(activeRender.render.links).toEqual(
+    expect(activeRender.render.links).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "west_stone_cut_to_ford_toll"
+        })
+      ])
+    );
+    await page.getByTestId("lume-visibility-always").click({ timeout: 10_000 });
+    await expect(page.getByTestId("lume-visibility-controls")).toContainText("Links: Always");
+    const alwaysActiveRender = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.getLumeNetworkSnapshot?.());
+    expect(alwaysActiveRender.render.links).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           id: "west_stone_cut_to_ford_toll",
           style: "active",
-          emphasis: "stable",
+          emphasis: "overlay",
           visible: true
         })
       ])
     );
-    const activeLink = activeRender.render.links.find((entry: any) => entry.id === "west_stone_cut_to_ford_toll");
-    expect(activeLink.alpha).toBeLessThanOrEqual(0.35);
+    const activeLink = alwaysActiveRender.render.links.find((entry: any) => entry.id === "west_stone_cut_to_ford_toll");
+    expect(activeLink.alpha).toBeLessThanOrEqual(0.45);
     expect(activeLink.layerDepth).toBe(1.2);
 
     const severed = await page.evaluate(() => {

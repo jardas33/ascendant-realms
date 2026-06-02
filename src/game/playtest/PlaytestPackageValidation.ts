@@ -364,6 +364,15 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0100_EMMANUEL_FAST_REVIEW_GUIDE.md",
   "V0100_VISUAL_QA_REPORT.md",
   "V0100_IMPLEMENTATION_REPORT.md",
+  "V0103_BATTLEFIELD_CLUTTER_REDUCTION_SPEC.md",
+  "V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md",
+  "V0103_PERFORMANCE_LAB_SCENARIO_MANIFEST.json",
+  "V0103_PERFORMANCE_BASELINE_REPORT.md",
+  "V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+  "V0103_VISUAL_QA_REPORT.md",
+  "V0103_IMPLEMENTATION_REPORT.md",
+  "V0103_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -474,7 +483,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.100 Private Playtest Hub and Scenario Gallery",
+      "v0.103 Battlefield Clutter Reduction and Private Performance Profiler",
       "build info checkpoint",
       checks,
       errors

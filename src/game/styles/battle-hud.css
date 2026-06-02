@@ -309,6 +309,14 @@
   border-color: rgba(116, 211, 242, 0.4);
 }
 
+.private-demo-actions > span {
+  align-self: center;
+  color: rgba(217, 251, 243, 0.76);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .objective-row.completed {
   border-left-color: rgba(156, 247, 177, 0.76);
 }

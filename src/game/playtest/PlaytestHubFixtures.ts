@@ -136,7 +136,8 @@ export function createPlaytestHubBattleLaunchRequest(scenarioId: string, heroSav
     });
   }
 
-  const nodeId = scenarioId.startsWith("lume") ? "aether_well_ruins" : "border_village";
+  const isLumeScenario = scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume");
+  const nodeId = isLumeScenario ? "aether_well_ruins" : "border_village";
   const node = selectedCampaignNode(nodeId);
   if (!node || node.nodeType !== "battle") {
     throw new Error(`Missing playtest hub battle node ${nodeId}.`);
@@ -145,8 +146,8 @@ export function createPlaytestHubBattleLaunchRequest(scenarioId: string, heroSav
     requestId: `private-playtest-hub:${scenarioId}:${node.mapId}`,
     sourceId: `private_playtest_hub_${scenarioId}`,
     rewardsDisabled: true,
-    privatePlaytestDemoId: scenarioId.startsWith("lume") ? PRIVATE_LUME_DEMO_ID : undefined,
-    privatePlaytestNotice: scenarioId.startsWith("lume") ? PRIVATE_LUME_DEMO_NOTICE : PRIVATE_PLAYTEST_HUB_NOTICE,
+    privatePlaytestDemoId: isLumeScenario ? PRIVATE_LUME_DEMO_ID : undefined,
+    privatePlaytestNotice: isLumeScenario ? PRIVATE_LUME_DEMO_NOTICE : PRIVATE_PLAYTEST_HUB_NOTICE,
     privatePlaytestHubScenarioId: scenarioId,
     modifiers: getCampaignScenarioLaunchModifiers(node),
     retinueUnits: [],

@@ -1,9 +1,12 @@
+import { V0103_PERFORMANCE_SCENARIOS, type PrivatePerformanceScenarioManifestEntry } from "./PrivatePerformanceProfiler";
+
 export type PlaytestScenarioGroupId =
   | "campaign_shell"
   | "first_session"
   | "battle_shell"
   | "lume"
-  | "meta";
+  | "meta"
+  | "performance_lab";
 
 export type PlaytestScenarioLaunchKind =
   | "campaign"
@@ -39,7 +42,8 @@ export const PLAYTEST_SCENARIO_GROUPS: PlaytestScenarioGroupDefinition[] = [
   { id: "first_session", title: "First Session" },
   { id: "battle_shell", title: "Battle Shell" },
   { id: "lume", title: "Lume" },
-  { id: "meta", title: "Meta" }
+  { id: "meta", title: "Meta" },
+  { id: "performance_lab", title: "Performance Lab" }
 ];
 
 const NO_SAVE_RULE =
@@ -80,7 +84,23 @@ export const PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = [
   scenario("meta_retinue_recovering", "meta", "Retinue Recovering", "campaign", "Open a recovering Retinue preview with deployment blocked.", ["retinue-panel", "campaign-tab-panel-hero"], ["results-panel"], "Is recovering status readable and non-actionable?", "v0100-hub-retinue-recovering", "visual QA retinue gallery", "Retinue recovery preview", NO_SAVE_RULE),
   scenario("meta_stronghold_preview", "meta", "Stronghold preview", "campaign", "Open the Stronghold tab with available and locked upgrades.", ["stronghold-overview", "campaign-tab-panel-stronghold"], ["results-panel"], "Are upgrade costs and locks clear?", "v0100-hub-stronghold-preview", "visual QA stronghold gallery", "Stronghold preview", NO_SAVE_RULE),
   scenario("ordinary_results", "meta", "Ordinary Results", "results", "Open a normal victory Results fixture.", ["results-overview", "results-primary-actions"], ["private-demo-primary-actions"], "Is the ordinary Results summary concise enough?", "v0100-hub-ordinary-results", "visual QA normal results", "ordinary victory Results fixture", NO_SAVE_RULE),
-  scenario("defeat_results", "meta", "Defeat Results", "results", "Open a normal defeat Results fixture.", ["results-overview", "results-primary-actions"], ["private-demo-primary-actions"], "Does defeat explain next action without noise?", "v0100-hub-defeat-results", "visual QA normal results", "ordinary defeat Results fixture", NO_SAVE_RULE)
+  scenario("defeat_results", "meta", "Defeat Results", "results", "Open a normal defeat Results fixture.", ["results-overview", "results-primary-actions"], ["private-demo-primary-actions"], "Does defeat explain next action without noise?", "v0100-hub-defeat-results", "visual QA normal results", "ordinary defeat Results fixture", NO_SAVE_RULE),
+  ...V0103_PERFORMANCE_SCENARIOS.map((entry) =>
+    scenario(
+      entry.launchScenarioId,
+      "performance_lab",
+      entry.title,
+      performanceLaunchKind(entry),
+      entry.purpose,
+      entry.expectedVisibleUi,
+      ["results-primary-actions"],
+      "Which visible cost feels most likely to create clutter or sluggishness?",
+      `v0103-${entry.id.replaceAll("_", "-")}`,
+      "v0.103 private performance lab",
+      `private performance lab: ${entry.title}`,
+      entry.saveIsolationRule
+    )
+  )
 ];
 
 export const PLAYTEST_FAST_TOUR_SCENARIO_IDS = [
@@ -128,4 +148,17 @@ function scenario(
     launchContext,
     saveIsolationRule
   };
+}
+
+function performanceLaunchKind(entry: PrivatePerformanceScenarioManifestEntry): PlaytestScenarioLaunchKind {
+  if (entry.group === "campaign") {
+    return "campaign";
+  }
+  if (entry.group === "results") {
+    return "results";
+  }
+  if (entry.group === "lume") {
+    return "lume_battle";
+  }
+  return "battle";
 }

@@ -7,6 +7,7 @@ blob-report/
 tmp-test-logs/
 bundle-analysis/
 /artifacts/playtest/
+/artifacts/performance/
 /artifacts/portable-content/
 /artifacts/save-translation-contract/
 /artifacts/visual-review/

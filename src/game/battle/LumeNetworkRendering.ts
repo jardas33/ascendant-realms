@@ -67,26 +67,14 @@ export function resolveLumeLinkPresentation(
       style: "highlight",
       emphasis: "selected",
       color: 0x8ff6e5,
-      alpha: 0.58,
-      width: 4,
-      markerAlpha: 0.54
+      alpha: 0.5,
+      width: 3.5,
+      markerAlpha: 0.42
     };
   }
 
   if (context.visibilityMode === "always") {
     return alwaysPresentation(link.state);
-  }
-
-  if (link.state === "active") {
-    return {
-      visible: true,
-      style: "active",
-      emphasis: "stable",
-      color: 0x74d3f2,
-      alpha: 0.28,
-      width: 2.5,
-      markerAlpha: 0.22
-    };
   }
 
   if (context.privateDemo && isTeachingGuide(link, context)) {
@@ -95,9 +83,9 @@ export function resolveLumeLinkPresentation(
       style: "guide",
       emphasis: "teaching",
       color: 0x74d3f2,
-      alpha: 0.16,
+      alpha: 0.13,
       width: 2,
-      markerAlpha: 0.14
+      markerAlpha: 0.1
     };
   }
 

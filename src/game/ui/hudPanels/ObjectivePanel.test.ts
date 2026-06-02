@@ -131,6 +131,7 @@ describe("ObjectivePanel", () => {
     expect(html).toContain('data-testid="lume-focus-north_aether_spring"');
     expect(html).toContain('data-testid="private-demo-exit"');
     expect(html).toContain('data-testid="private-demo-finish"');
-    expect(html).toContain("OPTIONAL LINK");
+    expect(html).toContain("Optional link:");
+    expect(html).toContain("Preview Tools");
   });
 });

@@ -132,6 +132,75 @@
   width: fit-content;
 }
 
+.private-performance-toggle {
+  position: fixed;
+  top: 58px;
+  right: 14px;
+  z-index: 80;
+  min-height: 30px;
+  padding: 6px 10px;
+  border: 1px solid rgba(116, 211, 242, 0.44);
+  border-radius: 6px;
+  background: rgba(13, 28, 34, 0.88);
+  color: #d9f4ff;
+  font: 700 11px/1 Verdana, Arial, sans-serif;
+  letter-spacing: 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+}
+
+.private-performance-panel {
+  position: fixed;
+  top: 96px;
+  right: 14px;
+  z-index: 80;
+  width: min(300px, calc(100vw - 28px));
+  padding: 12px;
+  border: 1px solid rgba(116, 211, 242, 0.4);
+  border-radius: 8px;
+  background: rgba(9, 18, 24, 0.92);
+  color: #d9eee8;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.36);
+  font-family: Verdana, Arial, sans-serif;
+  pointer-events: none;
+}
+
+.private-performance-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: #74d3f2;
+  font-size: 12px;
+}
+
+.private-performance-header span {
+  color: #f5efc2;
+  text-align: right;
+}
+
+.private-performance-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
+}
+
+.private-performance-grid span {
+  color: rgba(217, 238, 232, 0.76);
+}
+
+.private-performance-grid b {
+  color: #f5efc2;
+}
+
+.private-performance-panel small {
+  display: block;
+  color: rgba(217, 238, 232, 0.68);
+  font-size: 10px;
+  line-height: 1.35;
+}
+
 @media (max-width: 1180px) {
   .playtest-gallery,
   .playtest-hub-header,

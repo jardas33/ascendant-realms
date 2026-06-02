@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.103",
+  "purpose": "Private Performance Lab scenarios for battlefield clutter and UI cost review. Private/dev only; no save, reward, XP, Retinue, relic, reputation, or campaign progress mutation.",
+  "scenarios": [
+    {
+      "id": "perf_battle_baseline",
+      "title": "Ordinary battle baseline",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-hud", "battle-minimap"],
+      "evidenceFocus": ["frame timing", "HUD count", "minimap count"]
+    },
+    {
+      "id": "perf_campaign_map_interaction",
+      "title": "Campaign-map interaction",
+      "group": "campaign",
+      "expectedVisibleUi": ["campaign-map", "campaign-selected-panel"],
+      "evidenceFocus": ["DOM nodes"]
+    },
+    {
+      "id": "perf_fog_heavy_camera",
+      "title": "Fog-heavy camera",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-minimap", "battle-objectives"],
+      "evidenceFocus": ["fog visible cells", "fog redraws"]
+    },
+    {
+      "id": "perf_label_heavy_site_cluster",
+      "title": "Label-heavy site cluster",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-resource-sites", "battle-minimap"],
+      "evidenceFocus": ["capture rings", "labels"]
+    },
+    {
+      "id": "perf_large_unit_cluster",
+      "title": "Large existing unit cluster",
+      "group": "battle",
+      "expectedVisibleUi": ["selection-side-panel"],
+      "evidenceFocus": ["units", "display objects"]
+    },
+    {
+      "id": "perf_lume_activation_pulse",
+      "title": "Lume first activation pulse",
+      "group": "lume",
+      "expectedVisibleUi": ["lume-links-progress"],
+      "evidenceFocus": ["lume links", "graphics objects"]
+    },
+    {
+      "id": "perf_lume_always",
+      "title": "Lume Always",
+      "group": "lume",
+      "expectedVisibleUi": ["lume-visibility-controls"],
+      "evidenceFocus": ["lume links", "lume endpoints"]
+    },
+    {
+      "id": "perf_lume_auto",
+      "title": "Lume Auto",
+      "group": "lume",
+      "expectedVisibleUi": ["lume-network-status"],
+      "evidenceFocus": ["lume links", "lume endpoints"]
+    },
+    {
+      "id": "perf_lume_contested_severed",
+      "title": "Lume contested/severed transition",
+      "group": "lume",
+      "expectedVisibleUi": ["lume-network-status"],
+      "evidenceFocus": ["lume links", "notifications"]
+    },
+    {
+      "id": "perf_lume_hidden",
+      "title": "Lume Hidden",
+      "group": "lume",
+      "expectedVisibleUi": ["lume-visibility-controls"],
+      "evidenceFocus": ["lume links", "lume endpoints"]
+    },
+    {
+      "id": "perf_minimap_interaction",
+      "title": "Minimap interaction sample",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-minimap"],
+      "evidenceFocus": ["minimap refreshes", "DOM nodes"]
+    },
+    {
+      "id": "perf_notification_heavy",
+      "title": "Notification-heavy sample",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-status"],
+      "evidenceFocus": ["notifications emitted", "notifications visible"]
+    },
+    {
+      "id": "perf_results_disclosure",
+      "title": "Results disclosure sample",
+      "group": "results",
+      "expectedVisibleUi": ["results-overview", "results-full-details"],
+      "evidenceFocus": ["DOM nodes"]
+    },
+    {
+      "id": "perf_selected_command_hall",
+      "title": "Selected Command Hall",
+      "group": "battle",
+      "expectedVisibleUi": ["selection-side-panel", "command-panel"],
+      "evidenceFocus": ["HUD updates", "DOM nodes"]
+    },
+    {
+      "id": "perf_selected_hero",
+      "title": "Selected hero",
+      "group": "battle",
+      "expectedVisibleUi": ["battle-hero-panel", "selection-side-panel"],
+      "evidenceFocus": ["HUD updates", "labels"]
+    },
+    {
+      "id": "perf_selected_squad",
+      "title": "Selected squad",
+      "group": "battle",
+      "expectedVisibleUi": ["selection-side-panel", "unit-order-summary"],
+      "evidenceFocus": ["display objects", "labels"]
+    },
+    {
+      "id": "perf_selected_worker",
+      "title": "Selected Worker",
+      "group": "battle",
+      "expectedVisibleUi": ["selection-side-panel", "command-panel"],
+      "evidenceFocus": ["HUD updates", "command panel"]
+    }
+  ]
+}

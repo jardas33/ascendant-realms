@@ -81,15 +81,15 @@ function renderLumeNetwork(network: LumeNetworkHudSummary): string {
         <b>${escapeHtml(network.title)}</b>
         <small class="lume-objective-line">${escapeHtml(network.objective)}</small>
         <small>${escapeHtml(network.status)}</small>
-        ${
-          network.optionalSiteName
-            ? `<small class="lume-optional-line"><strong>OPTIONAL LINK</strong> Capture ${escapeHtml(network.optionalSiteName)}</small>`
-            : ""
-        }
         <details class="objective-details" data-testid="lume-network-details">
           <summary>Details</summary>
           <small>${escapeHtml(network.benefit)}</small>
           <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
+          ${
+            network.optionalSiteName
+              ? `<small class="lume-optional-line"><strong>Optional link:</strong> Capture ${escapeHtml(network.optionalSiteName)}</small>`
+              : ""
+          }
           ${network.detailsLabel ? `<small>${escapeHtml(network.detailsLabel)}</small>` : ""}
         </details>
         ${renderLumeVisibilityControls(network)}
@@ -151,10 +151,11 @@ function renderPrivateDemoActions(network: LumeNetworkHudSummary): string {
   }
   return `
     <div class="lume-control-row private-demo-actions" data-testid="private-demo-actions">
-      <button class="hud-button compact mini" type="button" data-testid="private-demo-exit" data-action="private-demo-exit">Exit Demo</button>
+      <span>Preview Tools</span>
+      <button class="hud-button compact mini" type="button" data-testid="private-demo-exit" data-action="private-demo-exit">Exit Preview</button>
       ${
         network.finishDemoAvailable
-          ? `<button class="hud-button compact mini" type="button" data-testid="private-demo-finish" data-action="private-demo-finish">Finish Demo &amp; View Results</button>`
+          ? `<button class="hud-button compact mini" type="button" data-testid="private-demo-finish" data-action="private-demo-finish">Finish Demo</button>`
           : ""
       }
     </div>

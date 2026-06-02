@@ -1,6 +1,57 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.102 Browser Save Fixture Library and Desktop Translation Contract Proof
+Updated: 2026-06-01 v0.103 Battlefield Clutter Reduction and Private Performance Profiler
+
+## v0.103 Battlefield Clutter Reduction And Private Performance Profiler - 2026-06-01
+
+Scope: presentation and private QA-tooling pass. This checkpoint reduces stable battlefield visual clutter, adds a private/dev-only performance profiler and Performance Lab, expands visual QA to 172 screenshots, and updates private package metadata. It does not alter gameplay, balance, rewards, saves, stable IDs, campaign progression, Lume rules, art, maps, factions, desktop work, or production posture.
+
+Included work:
+
+- Added `src/game/playtest/PrivatePerformanceProfiler.ts`.
+- Added `src/game/playtest/PrivatePerformanceProfiler.test.ts`.
+- Added `tools/profilePrivatePerformance.ts`.
+- Added `tools/reportPrivatePerformance.ts`.
+- Added `npm run perf:profile:private`.
+- Added `npm run perf:report:private`.
+- Added `/artifacts/performance/` to ignored generated artifacts.
+- Added private Performance Lab entries to the Playtest Hub.
+- Added 27 v0.103 visual QA screenshots.
+- Added v0.103 specs, profiler manifest, baseline/optimization/visual QA reports, implementation report, deferred art/rendering findings, and Emmanuel retest checklist.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, campaign progression, Retinue rules, Lume rules, combat balance, maps, factions, art assets, desktop path, or engine choice changed.
+
+Verification:
+
+```text
+npm test - PASS, 103 files / 730 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run perf:profile:private - PASS, 17 private scenarios.
+npm run perf:report:private - PASS.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18 rows.
+npm run playtest:controls:extended - PASS, 90 rows.
+npm run playtest:controls:verify - PASS, 1,658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS on longer rerun, 31 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS on rerun, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 172 screenshots, 0 console errors, 0 retries.
+npm run visual:review-pack - PASS, 172 screenshots and 7 contact sheets.
+git diff --check - PASS with only the existing .gitignore Windows line-ending notice.
+Final clean package generation and package verification are run after the checkpoint commit so the package does not carry a dirty suffix.
+```
 
 ## v0.102 Browser Save Fixture Library And Desktop Translation Contract Proof - 2026-06-01
 

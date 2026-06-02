@@ -22,6 +22,12 @@ describe("PlaytestHubFixtures", () => {
     expect(ordinary.privatePlaytestNotice).toContain("not saved");
     expect(ordinary.mode).toBe("campaign_node");
 
+    const performanceLume = createPlaytestHubBattleLaunchRequest("perf_lume_auto");
+    expect(performanceLume.rewardsDisabled).toBe(true);
+    expect(performanceLume.privatePlaytestHubScenarioId).toBe("perf_lume_auto");
+    expect(performanceLume.privatePlaytestDemoId).toBe("aether_well_lume_private_demo");
+    expect(performanceLume.campaignNodeId).toBe("aether_well_ruins");
+
     const tutorial = createPlaytestHubBattleLaunchRequest("tutorial_proving_grounds");
     expect(tutorial.mode).toBe("tutorial");
     expect(tutorial.privatePlaytestHubScenarioId).toBe("tutorial_proving_grounds");
