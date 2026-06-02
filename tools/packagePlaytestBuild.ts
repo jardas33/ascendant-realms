@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.103 Battlefield Clutter Reduction and Private Performance Profiler";
+const CHECKPOINT = "v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -403,6 +403,14 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0103_IMPLEMENTATION_REPORT.md", join(packageDir, "V0103_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0103_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0103_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md", join(packageDir, "V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md"));
+  await copyMarkdown("docs/V0104_PROFILER_TRIAGE_REPORT.md", join(packageDir, "V0104_PROFILER_TRIAGE_REPORT.md"));
+  await copyMarkdown("docs/V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md", join(packageDir, "V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md"));
+  await copyMarkdown("docs/V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md", join(packageDir, "V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md"));
+  await copyMarkdown("docs/V0104_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md", join(packageDir, "V0104_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md"));
+  await copyMarkdown("docs/V0104_PERFORMANCE_DELTA_REPORT.md", join(packageDir, "V0104_PERFORMANCE_DELTA_REPORT.md"));
+  await copyMarkdown("docs/V0104_VISUAL_QA_REPORT.md", join(packageDir, "V0104_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0104_IMPLEMENTATION_REPORT.md", join(packageDir, "V0104_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0104_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0104_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -502,7 +510,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.103, start with V0103_EMMANUEL_RETEST_CHECKLIST.md, V0103_PERFORMANCE_BASELINE_REPORT.md, V0103_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, and V0103_PRIVATE_PERFORMANCE_PROFILER_SPEC.md. This package adds a private-package-only performance lab and modest battlefield clutter reduction. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume damage multiplier, pathing, or runtime/internal title.
+For v0.104, start with V0104_EMMANUEL_RETEST_CHECKLIST.md, V0104_PERFORMANCE_DELTA_REPORT.md, V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md, and V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md. The package includes the v0.103 baseline reports for comparison and adds profiler-guided rendering skips plus a public Minimal battle HUD with private Standard/Debug review density. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, art assets, Lume damage multiplier, pathing, or runtime/internal title.
 
 ## Known Warning
 

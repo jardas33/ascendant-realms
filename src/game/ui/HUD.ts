@@ -1,5 +1,6 @@
 import { renderHud } from "./hudPanels/HudRoot";
 import { clamp } from "./hudPanels/HudFormatting";
+import { isHudDensityMode } from "./hudPanels/HudDensity";
 import { isBehaviourMode } from "../systems/BehaviourModeSystem";
 import type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot } from "./hudPanels/HudTypes";
 
@@ -17,6 +18,8 @@ interface TutorialPanelDragState {
   startOffset: TutorialPanelOffset;
 }
 
+const STABLE_PANEL_DEFER_LIMIT_MS = 350;
+
 export class HUD {
   private readonly root: HTMLElement;
   private readonly clickHandler: (event: MouseEvent) => void;
@@ -26,7 +29,9 @@ export class HUD {
   private readonly pointerOverHandler: (event: PointerEvent) => void;
   private readonly pointerOutHandler: (event: PointerEvent) => void;
   private lastMarkup = "";
+  private lastStableMarkup = "";
   private deferredMarkup = "";
+  private deferredMarkupAtMs = 0;
   private pointerInsideStablePanel = false;
   private forceNextUpdate = false;
   private tutorialPanelOffset: TutorialPanelOffset = { x: 0, y: 0 };
@@ -122,6 +127,10 @@ export class HUD {
       }
       if (action === "lume-visibility" && (id === "auto" || id === "always" || id === "hidden")) {
         callbacks.onLumeVisibilityMode(id);
+        handled = true;
+      }
+      if (action === "hud-density" && isHudDensityMode(id)) {
+        callbacks.onHudDensityMode(id);
         handled = true;
       }
       if (action === "private-demo-exit") {
@@ -262,9 +271,18 @@ export class HUD {
 
     if (markup !== this.lastMarkup) {
       const force = Boolean(options.force || this.forceNextUpdate);
-      if (!force && this.shouldDeferUpdate()) {
-        this.deferMarkup(markup);
+      const stableMarkup = createStableMarkupSignature(markup);
+      if (!force && stableMarkup === this.lastStableMarkup && this.patchVolatileRegions(markup, stableMarkup)) {
         return;
+      }
+      if (!force && this.shouldDeferUpdate()) {
+        if (this.shouldFlushDeferredMarkupNow()) {
+          this.deferredMarkup = "";
+          this.deferredMarkupAtMs = 0;
+        } else {
+          this.deferMarkup(markup);
+          return;
+        }
       }
       this.forceNextUpdate = false;
       this.applyMarkup(markup);
@@ -284,7 +302,9 @@ export class HUD {
     this.root.className = "ui-root";
     this.root.innerHTML = "";
     this.lastMarkup = "";
+    this.lastStableMarkup = "";
     this.deferredMarkup = "";
+    this.deferredMarkupAtMs = 0;
     this.pointerInsideStablePanel = false;
     this.forceNextUpdate = false;
     this.tutorialPanelDrag = undefined;
@@ -313,11 +333,19 @@ export class HUD {
 
     const markup = this.deferredMarkup;
     this.deferredMarkup = "";
+    this.deferredMarkupAtMs = 0;
     this.applyMarkup(markup);
   }
 
   private deferMarkup(markup: string): void {
+    if (!this.deferredMarkup) {
+      this.deferredMarkupAtMs = performance.now();
+    }
     this.deferredMarkup = markup;
+  }
+
+  private shouldFlushDeferredMarkupNow(): boolean {
+    return Boolean(this.deferredMarkup && performance.now() - this.deferredMarkupAtMs >= STABLE_PANEL_DEFER_LIMIT_MS);
   }
 
   private applyMarkup(markup: string): void {
@@ -325,13 +353,55 @@ export class HUD {
     this.root.className = "ui-root battle-ui";
     this.root.innerHTML = markup;
     this.lastMarkup = markup;
+    this.lastStableMarkup = createStableMarkupSignature(markup);
     restoreScrollState(this.root, scrollState);
     this.applyTutorialPanelState();
     this.applySidePanelState();
   }
 
+  private patchVolatileRegions(markup: string, stableMarkup: string): boolean {
+    const template = document.createElement("template");
+    template.innerHTML = markup;
+    const nextRegions = [...template.content.querySelectorAll<HTMLElement>("[data-hud-volatile]")];
+    if (nextRegions.length === 0) {
+      return false;
+    }
+    const nextRegionIds = new Set(nextRegions.map((region) => region.dataset.hudVolatile).filter((regionId): regionId is string => Boolean(regionId)));
+
+    this.root.querySelectorAll<HTMLElement>("[data-hud-volatile]").forEach((currentRegion) => {
+      const regionId = currentRegion.dataset.hudVolatile;
+      if (regionId && !nextRegionIds.has(regionId)) {
+        currentRegion.remove();
+      }
+    });
+
+    for (const nextRegion of nextRegions) {
+      const regionId = nextRegion.dataset.hudVolatile;
+      if (!regionId) {
+        return false;
+      }
+      const currentRegion = this.root.querySelector<HTMLElement>(`[data-hud-volatile="${regionId}"]`);
+      if (!currentRegion && !insertVolatileRegion(this.root, nextRegion)) {
+        return false;
+      }
+      const patchedRegion = this.root.querySelector<HTMLElement>(`[data-hud-volatile="${regionId}"]`);
+      if (!patchedRegion || patchedRegion.tagName !== nextRegion.tagName) {
+        return false;
+      }
+      replaceElementAttributes(patchedRegion, nextRegion);
+      patchedRegion.innerHTML = nextRegion.innerHTML;
+    }
+
+    this.lastMarkup = markup;
+    this.lastStableMarkup = stableMarkup;
+    this.applyTutorialPanelState();
+    this.applySidePanelState();
+    return true;
+  }
+
   private markInteractionHandled(): void {
     this.deferredMarkup = "";
+    this.deferredMarkupAtMs = 0;
     this.pointerInsideStablePanel = false;
     this.forceNextUpdate = true;
   }
@@ -426,6 +496,38 @@ function isStableInteractionTarget(target: EventTarget | null): boolean {
 function clearInteractionFocus(target: Element | null): void {
   const focusTarget = target?.closest<HTMLElement>("button, [role='button']");
   focusTarget?.blur();
+}
+
+function createStableMarkupSignature(markup: string): string {
+  const template = document.createElement("template");
+  template.innerHTML = markup;
+  template.content.querySelectorAll<HTMLElement>("[data-hud-volatile]").forEach((element) => {
+    element.remove();
+  });
+  return template.innerHTML;
+}
+
+function insertVolatileRegion(root: HTMLElement, source: HTMLElement): boolean {
+  if (source.dataset.hudVolatile === "hint") {
+    const status = root.querySelector<HTMLElement>('[data-hud-volatile="status"]');
+    if (!status) {
+      return false;
+    }
+    status.insertAdjacentHTML("afterend", source.outerHTML);
+    return true;
+  }
+  return false;
+}
+
+function replaceElementAttributes(target: HTMLElement, source: HTMLElement): void {
+  [...target.attributes].forEach((attribute) => {
+    if (!source.hasAttribute(attribute.name)) {
+      target.removeAttribute(attribute.name);
+    }
+  });
+  [...source.attributes].forEach((attribute) => {
+    target.setAttribute(attribute.name, attribute.value);
+  });
 }
 
 function captureScrollState(root: HTMLElement): Map<string, number> {

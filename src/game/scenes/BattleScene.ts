@@ -122,6 +122,12 @@ import { showDamageFeedback } from "../ui/DamageFeedback";
 import { resolveFogCellPresentation } from "../ui/FogPresentation";
 import type { MinimapPing, MinimapSnapshot } from "../ui/MinimapView";
 import {
+  createHudDensityControls,
+  normalizeHudDensityMode,
+  shouldRenderHudDebugCounters
+} from "../ui/hudPanels/HudDensity";
+import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
+import {
   commandFeedbackMarkerPresentation,
   type CommandFeedbackMarkerEvent,
   type CommandFeedbackMarkerPresentation
@@ -159,6 +165,7 @@ const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
 const WORLD_ENTITY_UNIT_TOP_HIT_PADDING = 8;
 const WORLD_ENTITY_BUILDING_TOP_HIT_PADDING = 8;
+const BATTLE_HUD_REFRESH_INTERVAL_SECONDS = 0.1;
 
 interface BattleSceneData {
   launchRequest?: BattleLaunchRequest;
@@ -298,6 +305,7 @@ export class BattleScene extends Phaser.Scene {
   private lumeVisibilityMode: LumeNetworkVisibilityMode = "auto";
   private lumeRenderPulses = new Map<string, LumeRenderPulse>();
   private previousLumeRenderStates?: Map<string, LumeNetworkCurrentLinkState>;
+  private lastLumeRenderSignature = "";
   private enemyPressureRuntime?: EnemyPressureRuntime;
   private enemyDoctrine?: EnemyDoctrineDefinition;
   private battlefieldEventDirector?: BattlefieldEventDirector;
@@ -320,6 +328,7 @@ export class BattleScene extends Phaser.Scene {
   private fogOverlay?: Phaser.GameObjects.Graphics;
   private neutralCampLabels: NeutralCampLabel[] = [];
   private fogUpdateTimer = 0;
+  private lastFogRenderSignature = "";
   private fogDebugDisabled = false;
   private settings: SaveSettingsData = DEFAULT_SETTINGS;
   private lastSelectionAudioKey = "";
@@ -332,6 +341,8 @@ export class BattleScene extends Phaser.Scene {
   private scoutedEnemyHeroIds = new Set<string>();
   private menuPaused = false;
   private performanceCounters = this.createEmptyPerformanceCounters();
+  private hudDensityMode: HudDensityMode = "minimal";
+  private hudRefreshAccumulatorSeconds = 0;
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
     enemy: new Set<string>()
@@ -434,6 +445,7 @@ export class BattleScene extends Phaser.Scene {
     this.fogOverlay = undefined;
     this.fogOfWar = createBattleFogOfWar(this.activeMap);
     this.fogUpdateTimer = 0;
+    this.lastFogRenderSignature = "";
     this.fogDebugDisabled = false;
     this.lastSelectionAudioKey = "";
     this.runtime = createBattleRuntime({ launch: this.launch });
@@ -445,6 +457,7 @@ export class BattleScene extends Phaser.Scene {
     this.lumeVisibilityMode = "auto";
     this.lumeRenderPulses.clear();
     this.previousLumeRenderStates = undefined;
+    this.lastLumeRenderSignature = "";
     this.act1FinaleDirector = isAct1FinaleBattle({
       mode: this.launch.request.mode,
       campaignNodeId: this.launch.request.campaignNodeId,
@@ -475,6 +488,8 @@ export class BattleScene extends Phaser.Scene {
     this.statusPriority = "normal";
     this.recentStatusMessages.clear();
     this.performanceCounters = this.createEmptyPerformanceCounters();
+    this.hudDensityMode = defaultHudDensityModeForLaunch(this.launch.request, isPrivatePlaytestToolsEnabled());
+    this.hudRefreshAccumulatorSeconds = 0;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
     this.tutorialDefeatedUnitIds = new Set<string>();
@@ -580,6 +595,7 @@ export class BattleScene extends Phaser.Scene {
       callRetinueReinforcement: () => this.callRetinueReinforcement(),
       focusLumeSite: (siteId) => this.focusLumeSite(siteId),
       setLumeVisibilityMode: (mode) => this.setLumeVisibilityMode(mode),
+      setHudDensityMode: (mode) => this.setHudDensityMode(mode),
       exitPrivateDemo: () => this.exitPrivateDemo(),
       finishPrivateDemo: () => this.finishPrivateDemo(),
       canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit)
@@ -692,6 +708,7 @@ export class BattleScene extends Phaser.Scene {
 
     if (!this.isFogActive()) {
       this.fogOverlay?.clear().setVisible(false);
+      this.lastFogRenderSignature = "";
       this.applyFogEntityVisibility(false);
       return;
     }
@@ -740,6 +757,11 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
+    const signature = this.createFogRenderSignature();
+    if (signature === this.lastFogRenderSignature && this.fogOverlay.visible) {
+      return;
+    }
+    this.lastFogRenderSignature = signature;
     this.performanceCounters.fogRedraws += 1;
     this.fogOverlay.clear().setVisible(true);
     this.fogOfWar.cells().forEach((cell) => {
@@ -754,6 +776,17 @@ export class BattleScene extends Phaser.Scene {
         this.fogOverlay?.strokeRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
       }
     });
+  }
+
+  private createFogRenderSignature(): string {
+    if (!this.fogOfWar) {
+      return "none";
+    }
+    return this.fogOfWar
+      .cells()
+      .filter((cell) => cell.state !== "visible")
+      .map((cell) => `${Math.round(cell.x)}:${Math.round(cell.y)}:${cell.state}`)
+      .join("|");
   }
 
   private applyFogEntityVisibility(fogEnabled: boolean): void {
@@ -1082,11 +1115,32 @@ export class BattleScene extends Phaser.Scene {
       return false;
     }
     this.lumeVisibilityMode = mode;
+    this.lastLumeRenderSignature = "";
     const label = mode === "always" ? "Always" : mode === "hidden" ? "Hidden" : "Auto";
     this.showMessage(`Lume links: ${label}`, undefined, undefined, "#74d3f2", { priority: "command" });
     this.renderLumeNetworkLinks();
     this.refreshBattleHud(0);
     return true;
+  }
+
+  private setHudDensityMode(mode: HudDensityMode): boolean {
+    if (!this.canUsePrivateHudDensityControls()) {
+      return false;
+    }
+    const nextMode = normalizeHudDensityMode(mode, true);
+    if (nextMode === this.hudDensityMode) {
+      return true;
+    }
+    this.hudDensityMode = nextMode;
+    this.showMessage(`HUD density: ${hudDensityLabel(nextMode)}`, undefined, undefined, "#74d3f2", {
+      priority: "command"
+    });
+    this.refreshBattleHud(0);
+    return true;
+  }
+
+  private canUsePrivateHudDensityControls(): boolean {
+    return isPrivatePlaytestToolsEnabled() && (this.isPrivatePlaytestHubPreview() || this.isPrivateLumeDemo());
   }
 
   private exitPrivateDemo(): boolean {
@@ -1206,6 +1260,7 @@ export class BattleScene extends Phaser.Scene {
       this.lumeLinkGraphics?.clear();
       this.previousLumeRenderStates = undefined;
       this.lumeRenderPulses.clear();
+      this.lastLumeRenderSignature = "";
       return;
     }
     const state = this.lumeNetworkDirector.currentState();
@@ -1213,6 +1268,11 @@ export class BattleScene extends Phaser.Scene {
     const snapshot = this.createLumeRenderSnapshot(state);
     const graphics = this.lumeLinkGraphics ?? this.add.graphics().setDepth(1.2);
     this.lumeLinkGraphics = graphics;
+    const signature = createLumeRenderSnapshotSignature(snapshot);
+    if (signature === this.lastLumeRenderSignature) {
+      return;
+    }
+    this.lastLumeRenderSignature = signature;
     graphics.clear();
     snapshot.links.forEach((link) => {
       graphics.lineStyle(link.width, link.color, link.alpha);
@@ -1394,6 +1454,7 @@ export class BattleScene extends Phaser.Scene {
     if (!scenarioId) {
       return;
     }
+    this.hudDensityMode = normalizeHudDensityMode(hudDensityModeForPrivateScenario(scenarioId), isPrivatePlaytestToolsEnabled());
 
     this.showMessage(PRIVATE_PLAYTEST_HUB_NOTICE, undefined, undefined, "#74d3f2", {
       priority: "important",
@@ -1401,8 +1462,8 @@ export class BattleScene extends Phaser.Scene {
     });
 
     const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
-    const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero"]);
-    const selectedWorkerScenarios = new Set(["battle_selected_worker", "perf_selected_worker"]);
+    const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero", "perf_hud_minimal", "perf_hud_standard", "perf_hud_debug"]);
+    const selectedWorkerScenarios = new Set(["battle_selected_worker", "perf_selected_worker", "perf_hud_minimal_worker"]);
     const selectedSquadScenarios = new Set(["battle_selected_squad", "perf_selected_squad", "perf_large_unit_cluster"]);
     const selectedBuildingScenarios = new Set(["battle_selected_building", "perf_selected_command_hall"]);
     const sitePressureScenarios = new Set(["battle_contested_site", "perf_label_heavy_site_cluster"]);
@@ -1724,6 +1785,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private refreshBattleHud(deltaSeconds: number): void {
+    if (!this.shouldRefreshBattleHud(deltaSeconds)) {
+      return;
+    }
     this.performanceCounters.hudUpdates += 1;
     const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
@@ -1738,7 +1802,7 @@ export class BattleScene extends Phaser.Scene {
       isPlacing,
       status: isPlacing ? placementStatus : this.statusMessage,
       statusCategory: isPlacing ? "routine" : battleStatusCategory(this.statusPriority),
-      hint: this.tutorialHint,
+      hint: isPlacing ? "" : this.tutorialHint,
       tutorial: this.createTutorialStepSnapshot(),
       techState: this.getTechState("player"),
       repairTargets: this.repairSystem.repairTargetSummaries(),
@@ -1756,6 +1820,11 @@ export class BattleScene extends Phaser.Scene {
       controlGroups: this.controlGroupSystem.summaries(this.units),
       enemyDoctrine: this.createEnemyDoctrineSnapshot(),
       retinueReinforcement: this.createRetinueReinforcementSnapshot(),
+      hudDensity: this.hudDensityMode,
+      hudDensityControls: createHudDensityControls(this.hudDensityMode, this.canUsePrivateHudDensityControls()),
+      hudDebugCounters: shouldRenderHudDebugCounters(this.hudDensityMode, this.canUsePrivateHudDensityControls())
+        ? this.createPrivatePerformanceCounters()
+        : undefined,
       pauseMenu: this.menuPaused
         ? {
             visible: true,
@@ -1765,6 +1834,19 @@ export class BattleScene extends Phaser.Scene {
           }
         : undefined
     });
+  }
+
+  private shouldRefreshBattleHud(deltaSeconds: number): boolean {
+    if (deltaSeconds <= 0) {
+      this.hudRefreshAccumulatorSeconds = 0;
+      return true;
+    }
+    this.hudRefreshAccumulatorSeconds += deltaSeconds;
+    if (this.hudRefreshAccumulatorSeconds < BATTLE_HUD_REFRESH_INTERVAL_SECONDS) {
+      return false;
+    }
+    this.hudRefreshAccumulatorSeconds = 0;
+    return true;
   }
 
   private openBattleMenu(): void {
@@ -2875,8 +2957,10 @@ export class BattleScene extends Phaser.Scene {
     this.lumeLinkGraphics = undefined;
     this.lumeRenderPulses.clear();
     this.previousLumeRenderStates = undefined;
+    this.lastLumeRenderSignature = "";
     this.fogOverlay?.destroy();
     this.fogOverlay = undefined;
+    this.lastFogRenderSignature = "";
   }
 
   private resolveLaunchOrFallback(): ResolvedBattleLaunch {
@@ -2897,6 +2981,65 @@ export class BattleScene extends Phaser.Scene {
     }
     return fallback.launch;
   }
+}
+
+function defaultHudDensityModeForLaunch(request: BattleLaunchRequest, privateToolsEnabled: boolean): HudDensityMode {
+  const privateReviewLaunch = isPrivatePlaytestHubLaunch(request) || isPrivateLumeDemoLaunch(request);
+  return normalizeHudDensityMode(undefined, privateToolsEnabled && privateReviewLaunch);
+}
+
+function hudDensityModeForPrivateScenario(scenarioId: string | undefined): string | undefined {
+  if (!scenarioId) {
+    return undefined;
+  }
+  if (scenarioId.includes("hud_debug")) {
+    return "debug";
+  }
+  if (scenarioId.includes("hud_minimal")) {
+    return "minimal";
+  }
+  if (scenarioId.includes("hud_standard")) {
+    return "standard";
+  }
+  return undefined;
+}
+
+function hudDensityLabel(mode: HudDensityMode): string {
+  if (mode === "debug") {
+    return "Debug";
+  }
+  if (mode === "standard") {
+    return "Standard";
+  }
+  return "Minimal";
+}
+
+function createLumeRenderSnapshotSignature(snapshot: LumeRenderSnapshot): string {
+  const links = snapshot.links
+    .map(
+      (link) =>
+        `${link.id}:${link.state}:${link.style}:${link.emphasis}:${pointSignature(link.from)}:${pointSignature(link.to)}:${link.color}:${roundRenderMetric(
+          link.alpha
+        )}:${roundRenderMetric(link.width)}:${link.pulseKind ?? ""}`
+    )
+    .join("|");
+  const markers = snapshot.siteMarkers
+    .map(
+      (marker) =>
+        `${marker.siteId}:${marker.state}:${marker.emphasis}:${pointSignature(marker.position)}:${roundRenderMetric(marker.radius)}:${marker.color}:${roundRenderMetric(
+          marker.alpha
+        )}`
+    )
+    .join("|");
+  return `${links}::${markers}`;
+}
+
+function pointSignature(point: Position): string {
+  return `${roundRenderMetric(point.x)},${roundRenderMetric(point.y)}`;
+}
+
+function roundRenderMetric(value: number): string {
+  return Number(value.toFixed(2)).toString();
 }
 
 function distanceBetween(left: Position, right: Position): number {

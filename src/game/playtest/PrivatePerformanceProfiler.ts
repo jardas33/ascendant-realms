@@ -98,6 +98,37 @@ export const V0103_PERFORMANCE_SCENARIOS: PrivatePerformanceScenarioManifestEntr
   performanceScenario("perf_selected_worker", "Selected Worker", "battle", "perf_selected_worker", "Measures Worker command and utility panel posture.", ["selection-side-panel", "command-panel"], ["HUD updates", "command panel"])
 ];
 
+export const V0104_PERFORMANCE_SCENARIOS: PrivatePerformanceScenarioManifestEntry[] = sortPerformanceScenarios([
+  ...V0103_PERFORMANCE_SCENARIOS,
+  performanceScenario(
+    "perf_hud_debug",
+    "HUD Debug density",
+    "battle",
+    "perf_hud_debug",
+    "Measures the private debug density with rendering counters visible.",
+    ["battle-hud-density-debug", "battle-hud-debug-counters"],
+    ["HUD updates", "DOM nodes", "debug counters"]
+  ),
+  performanceScenario(
+    "perf_hud_minimal",
+    "HUD Minimal density",
+    "battle",
+    "perf_hud_minimal",
+    "Measures the public minimal battle HUD posture with optional detail copy hidden.",
+    ["battle-hud-density-minimal", "battle-hud", "battle-minimap"],
+    ["HUD updates", "DOM nodes", "command panel"]
+  ),
+  performanceScenario(
+    "perf_hud_standard",
+    "HUD Standard density",
+    "battle",
+    "perf_hud_standard",
+    "Measures the private standard density used for full detail review.",
+    ["battle-hud-density-standard", "hud-density-controls", "selection-side-panel"],
+    ["HUD updates", "DOM nodes", "detail surfaces"]
+  )
+]);
+
 type CounterProvider = () => Partial<PrivatePerformanceCounters>;
 
 const DEFAULT_COUNTERS: PrivatePerformanceCounters = {
@@ -202,11 +233,15 @@ export function summarizePerformanceSamples(options: {
   };
 }
 
-export function renderPerformanceSummaryMarkdown(summaries: PrivatePerformanceSummary[]): string {
+export function renderPerformanceSummaryMarkdown(
+  summaries: PrivatePerformanceSummary[],
+  options: { checkpoint?: string; title?: string } = {}
+): string {
+  const checkpoint = options.checkpoint ?? "v0.104";
   const sorted = [...summaries].sort((left, right) => left.scenarioId.localeCompare(right.scenarioId));
   const slowest = [...sorted].sort((left, right) => right.frameTimeMs.p95 - left.frameTimeMs.p95).slice(0, 3);
   const lines = [
-    "# v0.103 Private Performance Summary",
+    `# ${options.title ?? `${checkpoint} Private Performance Summary`}`,
     "",
     "This report is deterministic private-QA evidence. It is not cross-machine benchmark proof and does not claim human fun data.",
     "",
@@ -225,6 +260,50 @@ export function renderPerformanceSummaryMarkdown(summaries: PrivatePerformanceSu
       (summary) =>
         `| ${summary.scenarioId} | ${summary.sampleCount} | ${summary.fpsAverage} | ${summary.fpsOnePercentLow} | ${summary.frameTimeMs.p95} | ${summary.frameTimeMs.over33_3} | ${summary.longTasks.count} | ${summary.ratesPerSecond.hudUpdates} | ${summary.ratesPerSecond.minimapRefreshes} | ${summary.latestCounters.lumeLinks} | ${summary.latestCounters.domNodes} |`
     ),
+    ""
+  ];
+  return `${lines.join("\n")}\n`;
+}
+
+export function renderPerformanceDeltaMarkdown(
+  currentSummaries: PrivatePerformanceSummary[],
+  baselineSummaries: PrivatePerformanceSummary[],
+  options: { checkpoint?: string; baselineCheckpoint?: string } = {}
+): string {
+  const checkpoint = options.checkpoint ?? "v0.104";
+  const baselineCheckpoint = options.baselineCheckpoint ?? "v0.103";
+  const baselineById = new Map(baselineSummaries.map((summary) => [summary.scenarioId, summary]));
+  const sorted = [...currentSummaries].sort((left, right) => left.scenarioId.localeCompare(right.scenarioId));
+  const matched = sorted.filter((summary) => baselineById.has(summary.scenarioId));
+  const newOnly = sorted.filter((summary) => !baselineById.has(summary.scenarioId));
+  const lines = [
+    `# ${checkpoint} Private Performance Delta`,
+    "",
+    `Compares ${checkpoint} private profiler output against the committed ${baselineCheckpoint} artifacts when scenario IDs match. This is local deterministic QA evidence, not cross-machine benchmark proof.`,
+    "",
+    "## Matching Scenarios",
+    "",
+    "| Scenario | v0.103 p95 ms | v0.104 p95 ms | Delta ms | v0.103 DOM | v0.104 DOM | HUD/s delta | Minimap/s delta |",
+    "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ...matched.map((current) => {
+      const baseline = baselineById.get(current.scenarioId)!;
+      return `| ${current.scenarioId} | ${baseline.frameTimeMs.p95} | ${current.frameTimeMs.p95} | ${roundMetric(
+        current.frameTimeMs.p95 - baseline.frameTimeMs.p95
+      )} | ${baseline.latestCounters.domNodes} | ${current.latestCounters.domNodes} | ${roundMetric(
+        current.ratesPerSecond.hudUpdates - baseline.ratesPerSecond.hudUpdates
+      )} | ${roundMetric(current.ratesPerSecond.minimapRefreshes - baseline.ratesPerSecond.minimapRefreshes)} |`;
+    }),
+    "",
+    "## v0.104-Only Scenarios",
+    "",
+    newOnly.length > 0
+      ? newOnly
+          .map(
+            (summary) =>
+              `- ${summary.scenarioId}: p95 ${summary.frameTimeMs.p95} ms, HUD ${summary.ratesPerSecond.hudUpdates}/s, minimap ${summary.ratesPerSecond.minimapRefreshes}/s, DOM ${summary.latestCounters.domNodes}.`
+          )
+          .join("\n")
+      : "- None.",
     ""
   ];
   return `${lines.join("\n")}\n`;
@@ -437,6 +516,12 @@ function performanceScenario(
     saveIsolationRule:
       "Private Performance Lab only. Rewards, XP, campaign progress, Retinue, relics, reputation, saves, and localStorage are not mutated by the scenario launcher."
   };
+}
+
+function sortPerformanceScenarios(
+  scenarios: PrivatePerformanceScenarioManifestEntry[]
+): PrivatePerformanceScenarioManifestEntry[] {
+  return [...scenarios].sort((left, right) => left.id.localeCompare(right.id));
 }
 
 function averageFps(frameTimes: number[]): number {

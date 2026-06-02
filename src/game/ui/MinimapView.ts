@@ -79,9 +79,16 @@ const COLORBLIND_TEAM_STROKES: Record<Team, string> = {
   neutral: "#5c4f00"
 };
 
+let lastRenderSignature = "";
+let lastRenderMarkup = "";
+
 export function renderMinimap(snapshot: MinimapSnapshot): string {
+  const signature = createMinimapRenderSignature(snapshot);
+  if (signature === lastRenderSignature) {
+    return lastRenderMarkup;
+  }
   const markers = [...snapshot.markers].sort((left, right) => markerSortOrder(left) - markerSortOrder(right));
-  return `
+  const markup = `
     <div class="mini-map" data-testid="minimap" data-minimap="true" role="button" aria-label="Minimap">
       <svg class="minimap-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
         <rect class="minimap-terrain" x="0" y="0" width="100" height="100"></rect>
@@ -93,6 +100,41 @@ export function renderMinimap(snapshot: MinimapSnapshot): string {
       </svg>
     </div>
   `;
+  lastRenderSignature = signature;
+  lastRenderMarkup = markup;
+  return markup;
+}
+
+export function createMinimapRenderSignature(snapshot: MinimapSnapshot): string {
+  const markerSignature = [...snapshot.markers]
+    .sort((left, right) => `${left.id}:${left.kind}`.localeCompare(`${right.id}:${right.kind}`))
+    .map(
+      (marker) =>
+        `${marker.id}:${marker.kind}:${marker.team}:${formatNumber(marker.x)}:${formatNumber(marker.y)}:${marker.size ?? ""}:${marker.resource ?? ""}:${
+          marker.resourceColor ?? ""
+        }:${marker.isObjective ? "1" : "0"}`
+    )
+    .join("|");
+  const pingSignature = snapshot.pings
+    .map(
+      (ping) =>
+        `${ping.id}:${formatNumber(ping.x)}:${formatNumber(ping.y)}:${formatNumber(ping.ageSeconds)}:${formatNumber(ping.durationSeconds)}:${ping.color}:${ping.label}`
+    )
+    .join("|");
+  const fogSignature = snapshot.fog.enabled
+    ? (snapshot.fog.cells ?? [])
+        .map((cell) => `${formatNumber(cell.x)}:${formatNumber(cell.y)}:${formatNumber(cell.width)}:${formatNumber(cell.height)}:${cell.state}`)
+        .join("|")
+    : "off";
+  return [
+    snapshot.mapWidth,
+    snapshot.mapHeight,
+    snapshot.colorblindPalette ? "colorblind" : "standard",
+    `${formatNumber(snapshot.camera.x)}:${formatNumber(snapshot.camera.y)}:${formatNumber(snapshot.camera.width)}:${formatNumber(snapshot.camera.height)}`,
+    markerSignature,
+    pingSignature,
+    fogSignature
+  ].join(";");
 }
 
 function renderFog(snapshot: MinimapSnapshot): string {

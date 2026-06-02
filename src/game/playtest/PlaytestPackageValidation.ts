@@ -373,6 +373,14 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0103_IMPLEMENTATION_REPORT.md",
   "V0103_EMMANUEL_RETEST_CHECKLIST.md",
   "V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md",
+  "V0104_PROFILER_TRIAGE_REPORT.md",
+  "V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md",
+  "V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md",
+  "V0104_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+  "V0104_PERFORMANCE_DELTA_REPORT.md",
+  "V0104_VISUAL_QA_REPORT.md",
+  "V0104_IMPLEMENTATION_REPORT.md",
+  "V0104_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -483,7 +491,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.103 Battlefield Clutter Reduction and Private Performance Profiler",
+      "v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode",
       "build info checkpoint",
       checks,
       errors

@@ -1120,7 +1120,8 @@ async function setBattlePlayerResources(page: Page, resources: CampaignResources
     if (!scene?.scene.isActive()) {
       throw new Error("BattleScene is not active.");
     }
-    scene.resources.player = { ...scene.resources.player, ...nextResources };
+    Object.assign(scene.resources.player, nextResources);
+    scene.refreshBattleHud?.(0);
   }, resources);
 }
 

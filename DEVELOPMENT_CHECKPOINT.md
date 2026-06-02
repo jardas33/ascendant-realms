@@ -1,6 +1,60 @@
 # Development Checkpoint
 
-Updated: 2026-06-01 v0.103 Battlefield Clutter Reduction and Private Performance Profiler
+Updated: 2026-06-02 v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode
+
+## v0.104 Profiler-Guided Rendering Optimization And Public Battle HUD Minimal Mode - 2026-06-02
+
+Scope: evidence-led rendering and battle-HUD presentation pass. This checkpoint uses the committed v0.103 profiler artifacts to reduce redundant HUD/minimap/fog/Lume rendering work, adds public Minimal battle HUD density, keeps private Standard/Debug density review controls isolated to private playtest tools, expands the private profiler to 20 scenarios, and updates visual QA to 189 screenshots. It does not alter gameplay, balance, rewards, saves, stable IDs, campaign progression, Lume rules, art, maps, factions, desktop work, runtime title, or production private controls.
+
+Included work:
+
+- Added `src/game/ui/hudPanels/HudDensity.ts`.
+- Added `src/game/ui/hudPanels/HudDensity.test.ts`.
+- Added `src/game/ui/hudPanels/HudVolatileRegions.test.ts`.
+- Added public Minimal battle HUD density and private-only Standard/Debug density controls.
+- Added private Debug HUD counters for HUD/minimap/fog/Lume/display-object review.
+- Moved the battle HUD refresh cadence ahead of ordinary snapshot construction, while forced refreshes remain immediate.
+- Added volatile HUD-region patching for status/minimap/hint updates.
+- Cached minimap SVG markup by deterministic render signature.
+- Skipped redundant fog and Lume graphics redraws when rendered signatures are unchanged.
+- Expanded private Performance Lab/profiler coverage to 20 scenarios with `perf_hud_minimal`, `perf_hud_standard`, and `perf_hud_debug`.
+- Added 17 v0.104 visual QA screenshots, bringing the visual QA matrix to 189 screenshots.
+- Added v0.104 specs, profiler triage, optimization, performance delta, visual QA, implementation, and Emmanuel retest docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, art assets, desktop path, or engine choice changed.
+
+Verification:
+
+```text
+npm test - PASS, 105 files / 736 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run perf:profile:private - PASS, 20 private scenarios.
+npm run perf:report:private - PASS.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-meta - PASS, 12 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 31 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - PASS, 189 screenshots, 0 console errors, 0 retries.
+npm run visual:review-pack - PASS, 189 screenshots and 7 contact sheets.
+npm run playtest:controls - PASS, 18 rows.
+npm run playtest:controls:extended - PASS, 90 rows.
+npm run playtest:controls:verify - PASS, 1,658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+```
+
+Final clean package generation and package verification are run after the checkpoint commit so the package does not carry a dirty suffix.
 
 ## v0.103 Battlefield Clutter Reduction And Private Performance Profiler - 2026-06-01
 

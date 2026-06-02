@@ -49,6 +49,7 @@ import { FloatingText } from "../ui/FloatingText";
 import { showDamageFeedback } from "../ui/DamageFeedback";
 import { HUD } from "../ui/HUD";
 import type { CommandFeedbackMarkerEvent } from "../ui/CommandFeedbackMarker";
+import type { HudDensityMode } from "../ui/hudPanels/HudTypes";
 import type { ResolvedBattleLaunch } from "./BattleLaunchRequest";
 import type { BattleRuntime } from "./BattleRuntime";
 import type { BattleStatusOptions } from "./BattleStatusPriority";
@@ -126,6 +127,7 @@ interface CreateBattleSceneSystemsOptions {
   callRetinueReinforcement?: () => boolean;
   focusLumeSite?: (siteId: string) => void;
   setLumeVisibilityMode?: (mode: LumeNetworkVisibilityMode) => void;
+  setHudDensityMode?: (mode: HudDensityMode) => void;
   exitPrivateDemo?: () => void;
   finishPrivateDemo?: () => void;
   canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
@@ -184,6 +186,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     callRetinueReinforcement,
     focusLumeSite,
     setLumeVisibilityMode,
+    setHudDensityMode,
     exitPrivateDemo,
     finishPrivateDemo,
     canEnemyHeroJoinAttack
@@ -529,6 +532,10 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       },
       onLumeVisibilityMode: (mode) => {
         setLumeVisibilityMode?.(mode);
+        AudioManager.play("ui_click");
+      },
+      onHudDensityMode: (mode) => {
+        setHudDensityMode?.(mode);
         AudioManager.play("ui_click");
       },
       onPrivateDemoExit: () => {

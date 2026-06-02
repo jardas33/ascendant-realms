@@ -23,7 +23,7 @@ describe("PlaytestScenarioGallery", () => {
       expect(scenario.expectedVisibleUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.expectedAbsentUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.manualReviewQuestion).toContain("?");
-      expect(scenario.screenshotId).toMatch(/^v0(100-hub|103)-[a-z0-9-]+$/u);
+      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104)-[a-z0-9-]+$/u);
       expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated/u);
     }
   });
@@ -66,6 +66,9 @@ describe("PlaytestScenarioGallery", () => {
       "defeat_results",
       "perf_battle_baseline",
       "perf_campaign_map_interaction",
+      "perf_hud_debug",
+      "perf_hud_minimal",
+      "perf_hud_standard",
       "perf_lume_auto",
       "perf_results_disclosure"
     ].forEach((id) => expect(scenarioById(id), `missing ${id}`).toBeDefined());
@@ -73,7 +76,7 @@ describe("PlaytestScenarioGallery", () => {
 
   it("keeps Performance Lab scenarios private, isolated, and deterministic", () => {
     const performanceScenarios = PLAYTEST_SCENARIOS.filter((scenario) => scenario.groupId === "performance_lab");
-    expect(performanceScenarios).toHaveLength(17);
+    expect(performanceScenarios).toHaveLength(20);
     expect(performanceScenarios.map((scenario) => scenario.id)).toEqual(
       [...performanceScenarios.map((scenario) => scenario.id)].sort()
     );
@@ -82,7 +85,7 @@ describe("PlaytestScenarioGallery", () => {
     );
     performanceScenarios.forEach((scenario) => {
       expect(scenario.saveIsolationRule).toContain("not mutated");
-      expect(scenario.automatedCoverage).toBe("v0.103 private performance lab");
+      expect(scenario.automatedCoverage).toBe("v0.104 private performance lab");
     });
   });
 

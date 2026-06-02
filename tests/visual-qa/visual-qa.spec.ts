@@ -10,7 +10,7 @@ import {
   seedPostAshenCampaign,
   seedPostCinderfenCrossingCampaign
 } from "../e2e/chapter2-helpers";
-import { continueSavedCampaign, createHero, openFreshMainMenu, seedCampaignSave, startNewCampaign } from "../e2e/shared-helpers";
+import { clickReady, continueSavedCampaign, createHero, openFreshMainMenu, seedCampaignSave, startNewCampaign } from "../e2e/shared-helpers";
 
 type VisualViewport = {
   label: string;
@@ -35,10 +35,17 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 172;
+const EXPECTED_SCREENSHOT_COUNT = 189;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
+const VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS = 90_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
 const SCREENSHOT_ATTEMPTS = 1;
+const VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS = {
+  allowTargetGoneAfterClick: true,
+  attempts: 1,
+  domFallbackTimeoutMs: 2_000,
+  normalClickTimeoutMs: 1_500
+} as const;
 
 const V0103_PERFORMANCE_VISUAL_SCENARIOS = [
   ["perf_battle_baseline", "battle", "v0103-perf-battle-baseline.png", "Ordinary private battle baseline with profiler-compatible counters."],
@@ -179,12 +186,67 @@ async function captureView(
   });
 }
 
-async function expectBattleLoaded(page: Page): Promise<void> {
-  await expect(page.getByTestId("battle-hud")).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId("battle-resources")).toContainText("Crowns");
-  await expect(page.getByTestId("battle-hero-panel")).toBeVisible();
-  await expect(page.getByTestId("battle-minimap")).toBeVisible();
-  await expect(page.getByTestId("minimap")).toBeVisible();
+async function expectBattleLoaded(page: Page, context = "visual QA battle loaded"): Promise<void> {
+  await expect(page.getByTestId("battle-hud"), `${context}: battle HUD`).toBeVisible({
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await expect(page.getByTestId("battle-resources"), `${context}: resources`).toContainText("Crowns", {
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await expect(page.getByTestId("battle-hero-panel"), `${context}: hero panel`).toBeVisible({
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await expect(page.getByTestId("battle-minimap"), `${context}: minimap shell`).toBeVisible({
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await expect(page.getByTestId("minimap"), `${context}: minimap`).toBeVisible({
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await expect(page.locator("canvas"), `${context}: Phaser canvas`).toBeVisible({
+    timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS
+  });
+  await page.waitForFunction(
+    () => {
+      const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
+      return Boolean(scene?.scene.isActive() && scene.hero && scene.activeMap && scene.runtime && scene.game?.canvas);
+    },
+    undefined,
+    { timeout: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS }
+  );
+}
+
+async function launchPublicSkirmishBattle(page: Page, heroName: string): Promise<void> {
+  await seedCampaignSave(page, { hero: { heroName } });
+  await clickReady(page.getByTestId("menu-skirmish"), `${heroName} skirmish menu`);
+  await expect(page.getByTestId("skirmish-setup")).toBeVisible();
+  await clickReady(page.getByTestId("setup-start-battle"), `${heroName} skirmish start battle`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+  await expectBattleLoaded(page, `${heroName} skirmish battle`);
+}
+
+async function openPrivatePlaytestHub(page: Page): Promise<void> {
+  await openFreshMainMenu(page);
+  await clickReady(page.getByTestId("menu-playtest-hub"), "visual QA open private playtest hub");
+  await expect(page.getByTestId("playtest-hub")).toBeVisible();
+}
+
+async function launchPrivateHudScenario(page: Page, scenarioId: string): Promise<void> {
+  await page.getByTestId(`playtest-scenario-${scenarioId}`).scrollIntoViewIfNeeded();
+  await clickReady(
+    page.getByTestId(`playtest-scenario-${scenarioId}`),
+    `visual QA launch private HUD scenario ${scenarioId}`,
+    VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS
+  );
+  await expectBattleLoaded(page, `visual QA private HUD scenario ${scenarioId}`);
+}
+
+async function setPrivateHudDensity(page: Page, mode: "minimal" | "standard" | "debug"): Promise<void> {
+  await page.getByTestId(`hud-density-${mode}`).click();
+  await expect(page.getByTestId(`battle-hud-density-${mode}`)).toBeVisible();
+}
+
+async function returnToPrivateHub(page: Page): Promise<void> {
+  await clickReady(page.getByTestId("private-hub-exit"), "visual QA return to private playtest hub");
+  await expect(page.getByTestId("playtest-hub")).toBeVisible();
 }
 
 async function centerCaptureSite(page: Page, siteId: string, capture: boolean): Promise<void> {
@@ -1050,15 +1112,15 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, DESKTOP);
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-tutorial").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("menu-tutorial"), `${group} desktop tutorial launch`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} desktop tutorial`);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, group, "Tutorial launch", "tutorial-desktop.png", DESKTOP, "Proving Grounds tutorial overlay and battle HUD.");
 
     await useViewport(page, MOBILE);
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-tutorial").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("menu-tutorial"), `${group} mobile tutorial launch`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} mobile tutorial`);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, group, "Tutorial launch mobile", "tutorial-mobile.png", MOBILE, "Mobile Proving Grounds overlay and battle HUD density.");
 
@@ -1072,8 +1134,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, FULL_HD);
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-tutorial").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("menu-tutorial"), `${group} first objective tutorial launch`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} first objective tutorial`);
     await expect(page.getByTestId("tutorial-objective")).toContainText("Select Aster");
     await expect(page.getByTestId("tutorial-next")).toHaveCount(0);
     await captureView(
@@ -1817,8 +1879,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, FULL_HD);
     await startNewCampaign(page, "Visual v090 Battle");
-    await page.getByTestId("campaign-start-node").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("campaign-start-node"), `${group} start ordinary battle`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} ordinary battle start`);
     await expectBattleHudAcceptance(page, `${group} ordinary battle start 1920`);
     await expectPrivateDemoControlsPosture(page, false, `${group} ordinary battle`);
     await expectLumeControlsAbsent(page, `${group} ordinary battle`);
@@ -1870,8 +1932,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await useViewport(page, FULL_HD);
     await startNewCampaign(page, "Visual v090 Lume");
     await page.getByTestId("campaign-node-aether_well_ruins").click();
-    await page.getByTestId("campaign-private-lume-demo").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("campaign-private-lume-demo"), `${group} start private Lume demo`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} Lume demo start`);
     await expectPrivateDemoControlsPosture(page, true, `${group} Lume inactive`);
     await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD");
     await captureView(
@@ -1963,7 +2025,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, FULL_HD);
     await startNewCampaign(page, "Visual v095 Battle");
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(page.getByTestId("campaign-start-node"), `${group} start ordinary battle`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleHudAcceptance(page, `${group} ordinary battle start 1920`);
     await captureView(
       page,
@@ -2098,8 +2160,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await useViewport(page, FULL_HD);
     await startNewCampaign(page, "Visual v095 Lume");
     await page.getByTestId("campaign-node-aether_well_ruins").click();
-    await page.getByTestId("campaign-private-lume-demo").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("campaign-private-lume-demo"), `${group} start private Lume demo`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} Lume demo start`);
     await centerCaptureSite(page, "west_stone_cut", true);
     await centerCaptureSite(page, "ford_toll", true);
     await expect(page.getByTestId("lume-network-status")).toContainText("LUME WARD ACTIVE");
@@ -2144,7 +2206,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, FULL_HD);
     await startNewCampaign(page, "Visual v097 Battle");
-    await page.getByTestId("campaign-start-node").click();
+    await clickReady(page.getByTestId("campaign-start-node"), `${group} start ordinary battle`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
     await expectBattleHudAcceptance(page, `${group} battle start`);
 
     await selectHeroForVisualQa(page);
@@ -2249,6 +2311,98 @@ test.describe("Ascendant Realms visual QA capture", () => {
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
 
+  test("captures v0.104 HUD density and profiler-guided rendering states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0104-hud-density-performance";
+    const consoleErrors = attachConsoleCollector(page, group);
+
+    await useViewport(page, LAPTOP);
+    await launchPublicSkirmishBattle(page, "Visual v0104 Public");
+    await expect(page.getByTestId("battle-hud-density-minimal")).toBeVisible();
+    await expect(page.getByTestId("hud-density-controls")).toHaveCount(0);
+    await captureView(page, group, "v0.104 public Minimal 1366", "v0104-public-battle-minimal-1366.png", LAPTOP, "Public battle launches with Minimal HUD density and no private density controls.");
+
+    await useViewport(page, WIDE_DESKTOP);
+    await captureView(page, group, "v0.104 public Minimal 1600", "v0104-public-battle-minimal-1600.png", WIDE_DESKTOP, "Public Minimal HUD remains compact at 1600x900.");
+
+    await useViewport(page, FULL_HD);
+    await captureView(page, group, "v0.104 public Minimal 1920", "v0104-public-battle-minimal-1920.png", FULL_HD, "Public Minimal HUD remains readable at 1920x1080.");
+
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+    await useViewport(page, LAPTOP);
+    await openPrivatePlaytestHub(page);
+    await page.getByTestId("playtest-group-performance_lab").scrollIntoViewIfNeeded();
+    await captureView(page, group, "v0.104 profiler disabled", "v0104-profiler-disabled-1366.png", LAPTOP, "Profiler remains disabled until explicitly toggled.");
+    await page.getByTestId("private-performance-toggle").click();
+    await expect(page.getByTestId("private-performance-panel")).toBeVisible();
+    await page.waitForTimeout(650);
+    await captureView(page, group, "v0.104 profiler enabled", "v0104-profiler-enabled-1366.png", LAPTOP, "Profiler panel records only after private toggle.");
+    await page.getByTestId("private-performance-toggle").click();
+    await openPrivatePlaytestHub(page);
+
+    await launchPrivateHudScenario(page, "perf_hud_minimal");
+    await expect(page.getByTestId("battle-hud-density-minimal")).toBeVisible();
+    await captureView(page, group, "v0.104 private Minimal selected hero", "v0104-private-hud-minimal-selected-hero-1366.png", LAPTOP, "Private lab can inspect the public Minimal density with selected hero essentials.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_selected_worker");
+    await setPrivateHudDensity(page, "minimal");
+    await captureView(page, group, "v0.104 Worker Minimal", "v0104-worker-minimal-1366.png", LAPTOP, "Selected Worker keeps utility commands usable in Minimal density.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_selected_command_hall");
+    await setPrivateHudDensity(page, "minimal");
+    await captureView(page, group, "v0.104 building Minimal", "v0104-building-minimal-1366.png", LAPTOP, "Selected Command Hall keeps production controls usable in Minimal density.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_hud_standard");
+    await expect(page.getByTestId("battle-hud-density-standard")).toBeVisible();
+    await captureView(page, group, "v0.104 private Standard", "v0104-private-hud-standard-1366.png", LAPTOP, "Private Standard density preserves full detail-review surfaces.");
+    await useViewport(page, WIDE_DESKTOP);
+    await captureView(page, group, "v0.104 private Standard 1600", "v0104-private-hud-standard-1600.png", WIDE_DESKTOP, "Private Standard density remains readable at 1600x900.");
+    await useViewport(page, LAPTOP);
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_hud_debug");
+    await expect(page.getByTestId("battle-hud-density-debug")).toBeVisible();
+    await expect(page.getByTestId("battle-hud-debug-counters")).toBeVisible();
+    await captureView(page, group, "v0.104 private Debug", "v0104-private-hud-debug-1366.png", LAPTOP, "Private Debug density exposes rendering counters without saving state.");
+    await useViewport(page, FULL_HD);
+    await captureView(page, group, "v0.104 private Debug 1920", "v0104-private-hud-debug-1920.png", FULL_HD, "Private Debug density remains readable at 1920x1080.");
+    await useViewport(page, LAPTOP);
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_notification_heavy");
+    await setPrivateHudDensity(page, "minimal");
+    await captureView(page, group, "v0.104 urgent alert Minimal", "v0104-urgent-alert-minimal-1366.png", LAPTOP, "Minimal density preserves urgent battle status and critical alert posture.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_lume_auto");
+    await setPrivateHudDensity(page, "minimal");
+    await captureView(page, group, "v0.104 Lume Auto Minimal", "v0104-lume-auto-minimal-1366.png", LAPTOP, "Lume Auto remains readable with optional detail copy hidden.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_lume_hidden");
+    await setPrivateHudDensity(page, "minimal");
+    await captureView(page, group, "v0.104 Lume Hidden Minimal", "v0104-lume-hidden-minimal-1366.png", LAPTOP, "Hidden Lume overlay stays visually quiet in Minimal density.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "perf_lume_always");
+    await expect(page.getByTestId("battle-hud-density-standard")).toBeVisible();
+    await captureView(page, group, "v0.104 Lume Always Standard", "v0104-lume-always-standard-1366.png", LAPTOP, "Always-visible Lume inspection remains a private Standard-density review state.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "tutorial_proving_grounds");
+    await setPrivateHudDensity(page, "minimal");
+    await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
+    await captureView(page, group, "v0.104 Tutorial Minimal", "v0104-tutorial-guidance-minimal-1366.png", LAPTOP, "Tutorial guidance remains visible while the public battle HUD uses Minimal density.");
+    await returnToPrivateHub(page);
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
   test("captures v0.90 ordinary Results and Tutorial acceptance matrix", async ({ page }) => {
     test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
     const group = "v090-results-tutorial-acceptance";
@@ -2295,8 +2449,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await useViewport(page, WIDE_DESKTOP);
     await openFreshMainMenu(page);
-    await page.getByTestId("menu-tutorial").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("menu-tutorial"), `${group} tutorial launch`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} tutorial launch`);
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await expectBattleHudAcceptance(page, `${group} tutorial 1600`);
     await captureView(
@@ -2398,8 +2552,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
       "Package/dev private demo action is visible above the map and clearly marked no-save."
     );
 
-    await page.getByTestId("campaign-private-lume-demo").click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByTestId("campaign-private-lume-demo"), `${group} start private Lume demo`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} private Lume demo start`);
     await expect(page.getByTestId("private-playtest-demo-warning")).toBeVisible();
     await captureView(
       page,
@@ -2482,7 +2636,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await page.getByTestId("campaign-node-cinderfen_overlook").click();
     await completeCinderfenOverlookChoice(page, "aid_marsh_refugees", "Aid the Marsh Refugees chosen");
     await useViewport(page, FULL_HD);
-    await launchCinderfenCrossing(page);
+    await launchCinderfenCrossing(page, { battleLoadTimeoutMs: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS });
     await stageV086BattlefieldShell(page);
     await captureView(
       page,
@@ -2513,8 +2667,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await captureView(page, group, "Cinderfen Crossing pressure warning", "cinderfen-crossing-pressure-desktop.png", DESKTOP, "Causeway pressure status warning after Cinder Shrine capture.");
     await completeCinderfenVictory(page);
     await captureView(page, group, "Results victory", "results-victory-desktop.png", DESKTOP, "Cinderfen Crossing victory rewards and objective summary.");
-    await page.getByRole("button", { name: "Replay Battle" }).click();
-    await expectBattleLoaded(page);
+    await clickReady(page.getByRole("button", { name: "Replay Battle" }), `${group} replay battle`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expectBattleLoaded(page, `${group} replay battle`);
     await completeCinderfenVictory(page);
     await captureView(
       page,
@@ -2535,7 +2689,7 @@ test.describe("Ascendant Realms visual QA capture", () => {
 
     await seedPostCinderfenCrossingCampaign(page);
     await continueSavedCampaign(page);
-    await launchCinderfenWatch(page);
+    await launchCinderfenWatch(page, { battleLoadTimeoutMs: VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS });
     await captureView(page, group, "Cinderfen Watch launch", "cinderfen-watch-desktop.png", DESKTOP, "Cinderfen Watch initial battle view.");
     await triggerWatchPressureWarning(page);
     await captureView(page, group, "Cinderfen Watch pressure warning", "cinderfen-watch-pressure-desktop.png", DESKTOP, "Watch Road pressure status warning visible.");

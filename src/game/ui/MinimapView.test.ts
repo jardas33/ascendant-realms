@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderMinimap, type MinimapSnapshot } from "./MinimapView";
+import { createMinimapRenderSignature, renderMinimap, type MinimapSnapshot } from "./MinimapView";
 
 describe("renderMinimap", () => {
   const snapshot: MinimapSnapshot = {
@@ -40,5 +40,23 @@ describe("renderMinimap", () => {
     expect(markup).toContain("x=\"25\"");
     expect(markup).toContain("width=\"50\"");
     expect(markup).toContain("Enemy wave incoming");
+  });
+
+  it("reuses stable minimap markup and invalidates when camera or ping state changes", () => {
+    const first = renderMinimap(snapshot);
+    const second = renderMinimap({ ...snapshot, markers: [...snapshot.markers] });
+    const movedCamera = {
+      ...snapshot,
+      camera: { ...snapshot.camera, x: snapshot.camera.x + 100 }
+    };
+    const agedPing = {
+      ...snapshot,
+      pings: snapshot.pings.map((ping) => ({ ...ping, ageSeconds: ping.ageSeconds + 0.5 }))
+    };
+
+    expect(second).toBe(first);
+    expect(createMinimapRenderSignature(movedCamera)).not.toBe(createMinimapRenderSignature(snapshot));
+    expect(renderMinimap(movedCamera)).not.toBe(first);
+    expect(createMinimapRenderSignature(agedPing)).not.toBe(createMinimapRenderSignature(snapshot));
   });
 });

@@ -7,8 +7,9 @@ import type { Hero } from "../../entities/Hero";
 import { abilityLabel, abilityResourceState } from "../AbilityBar";
 import { healthPercent } from "../HealthBar";
 import { escapeHtml, heroXpPercent, toCssColor } from "./HudFormatting";
+import type { HudDensityMode } from "./HudTypes";
 
-export function renderHeroHudPanel(hero: Hero): string {
+export function renderHeroHudPanel(hero: Hero, density: HudDensityMode = "standard"): string {
   const portraitId = heroPortraitAssetId(hero.classId);
   const hasPortrait = AssetLoader.hasAsset(portraitId);
   const classAbilityCount = HERO_CLASS_BY_ID[hero.classId]?.abilityIds.length ?? hero.unlockedAbilities.length;
@@ -18,17 +19,17 @@ export function renderHeroHudPanel(hero: Hero): string {
   const relicItem = relicInstance ? ITEM_BY_ID[relicInstance.itemId] : undefined;
   const synergy = getActiveHeroBuildSynergy(hero, SKILL_NODE_BY_ID, ITEM_BY_ID);
   return `
-    <div class="hero-panel" data-testid="battle-hero-panel">
+    <div class="hero-panel" data-testid="battle-hero-panel" data-hud-density="${density}">
       <div class="portrait ${hasPortrait ? "has-asset" : ""}" ${AssetLoader.portraitStyle(portraitId, toCssColor(hero.definition.color))}></div>
       <div class="hero-lines">
         <strong>${escapeHtml(hero.heroName)} L${hero.level}</strong>
         <span>HP ${Math.ceil(hero.hp)}/${hero.maxHp} - Mana ${Math.floor(hero.mana)}/${hero.maxMana}</span>
         <div class="meter"><span style="width:${healthPercent({ current: hero.hp, max: hero.maxHp })}%"></span></div>
-        <div class="xp-meter"><span style="width:${heroXpPercent(hero)}%"></span></div>
-        <small>XP ${hero.xp} - Skill ${hero.skillPoints} - DMG ${Math.round(hero.damage)} - ARM ${Math.round(hero.armor)}</small>
-        <small>Abilities ${hero.unlockedAbilities.length}/${classAbilityCount} unlocked</small>
-        <small>Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active - ${escapeHtml(relicBuildLabel(relicItem.tags))}` : "Empty"}</small>
-        ${synergy ? `<small>${escapeHtml(synergy.summary)} ${escapeHtml(synergy.abilitySummary)}</small>` : ""}
+        <div class="xp-meter density-optional"><span style="width:${heroXpPercent(hero)}%"></span></div>
+        <small class="density-optional">XP ${hero.xp} - Skill ${hero.skillPoints} - DMG ${Math.round(hero.damage)} - ARM ${Math.round(hero.armor)}</small>
+        <small class="density-optional">Abilities ${hero.unlockedAbilities.length}/${classAbilityCount} unlocked</small>
+        <small class="density-optional">Relic: ${relicItem ? `${escapeHtml(relicItem.name)} active - ${escapeHtml(relicBuildLabel(relicItem.tags))}` : "Empty"}</small>
+        ${synergy ? `<small class="density-optional">${escapeHtml(synergy.summary)} ${escapeHtml(synergy.abilitySummary)}</small>` : ""}
       </div>
     </div>
   `;
@@ -47,12 +48,12 @@ function relicBuildLabel(tags: string[]): string {
   return "Build relic";
 }
 
-export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): string {
+export function renderAbilities(abilities: AbilityDefinition[], hero: Hero, density: HudDensityMode = "standard"): string {
   if (abilities.length === 0) {
     return "";
   }
   return `
-    <div class="action-group ability-group">
+    <div class="action-group ability-group" data-hud-density="${density}">
       <strong>Hero</strong>
       ${abilities
         .map((ability) => {
@@ -70,7 +71,7 @@ export function renderAbilities(abilities: AbilityDefinition[], hero: Hero): str
                 ${AssetLoader.imageHtml(abilityIconAssetId(ability.id), `${ability.name} icon`, "ability-icon")}
                 <span>${escapeHtml(label)}</span>
               </span>
-              <small>${escapeHtml(resourceState.label)} - ${escapeHtml(description)}</small>
+              <small class="density-optional">${escapeHtml(resourceState.label)} - ${escapeHtml(description)}</small>
             </button>
           `;
         })

@@ -1,15 +1,17 @@
 import { chromium, type Page } from "@playwright/test";
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import process from "node:process";
 import {
+  renderPerformanceDeltaMarkdown,
   renderPerformanceSummaryMarkdown,
-  V0103_PERFORMANCE_SCENARIOS,
+  V0104_PERFORMANCE_SCENARIOS,
   type PrivatePerformanceSummary
 } from "../src/game/playtest/PrivatePerformanceProfiler";
 
-const OUTPUT_DIR = resolve("artifacts", "performance", "v0103");
+const OUTPUT_DIR = resolve("artifacts", "performance", "v0104");
+const BASELINE_DIR = resolve("artifacts", "performance", "v0103");
 const PORT = Number(process.env.ASCENDANT_PERF_PORT ?? "5193");
 const BASE_URL = `http://127.0.0.1:${PORT}`;
 const SAMPLE_MS = Number(process.env.ASCENDANT_PERF_SAMPLE_MS ?? "1200");
@@ -35,7 +37,7 @@ async function main(): Promise<void> {
       page.setDefaultTimeout(60_000);
       page.setDefaultNavigationTimeout(120_000);
       const scenarioResults: ScenarioResult[] = [];
-      for (const scenario of V0103_PERFORMANCE_SCENARIOS) {
+      for (const scenario of V0104_PERFORMANCE_SCENARIOS) {
         const summary = await profileScenario(page, scenario.id, scenario.launchScenarioId);
         scenarioResults.push({
           scenarioId: scenario.id,
@@ -86,16 +88,29 @@ async function writeArtifacts(
 ): Promise<void> {
   const summary = {
     schemaVersion: 1,
-    checkpoint: "v0.103",
-    generatedAtUtc: "deterministic-v0103",
+    checkpoint: "v0.104",
+    generatedAtUtc: "deterministic-v0104",
     note: "Private browser profiler evidence from local Playwright sampling. FPS varies by machine; compare scenario shape, not absolute numbers.",
     scenarioCount: summaries.length,
     summaries: summaries.sort((left, right) => left.scenarioId.localeCompare(right.scenarioId))
   };
+  const baseline = await readBaselineSummaries();
   await writeFile(resolve(OUTPUT_DIR, "scenario-results.json"), `${JSON.stringify(scenarioResults, null, 2)}\n`, "utf8");
   await writeFile(resolve(OUTPUT_DIR, "performance-summary.json"), `${JSON.stringify(summary, null, 2)}\n`, "utf8");
-  await writeFile(resolve(OUTPUT_DIR, "profiler-capability-report.json"), `${JSON.stringify({ schemaVersion: 1, checkpoint: "v0.103", ...capability }, null, 2)}\n`, "utf8");
-  await writeFile(resolve(OUTPUT_DIR, "performance-summary.md"), renderPerformanceSummaryMarkdown(summaries), "utf8");
+  await writeFile(resolve(OUTPUT_DIR, "profiler-capability-report.json"), `${JSON.stringify({ schemaVersion: 1, checkpoint: "v0.104", baselineCheckpoint: "v0.103", ...capability }, null, 2)}\n`, "utf8");
+  await writeFile(resolve(OUTPUT_DIR, "performance-summary.md"), renderPerformanceSummaryMarkdown(summaries, { checkpoint: "v0.104" }), "utf8");
+  await writeFile(resolve(OUTPUT_DIR, "performance-delta.md"), renderPerformanceDeltaMarkdown(summaries, baseline, { checkpoint: "v0.104", baselineCheckpoint: "v0.103" }), "utf8");
+}
+
+async function readBaselineSummaries(): Promise<PrivatePerformanceSummary[]> {
+  try {
+    const parsed = JSON.parse(await readFile(resolve(BASELINE_DIR, "performance-summary.json"), "utf8")) as {
+      summaries?: PrivatePerformanceSummary[];
+    };
+    return parsed.summaries ?? [];
+  } catch {
+    return [];
+  }
 }
 
 async function startServer(): Promise<ChildProcessWithoutNullStreams> {

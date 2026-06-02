@@ -374,21 +374,21 @@ export async function buyCinderfenWaystationService(
 }
 
 // UI-path helper: launches Crossing via campaign node/start test IDs, then waits for the battle shell.
-export async function launchCinderfenCrossing(page: Page): Promise<void> {
+export async function launchCinderfenCrossing(page: Page, options: { battleLoadTimeoutMs?: number } = {}): Promise<void> {
   await clickReady(page.getByTestId("campaign-node-cinderfen_crossing"), "launch Cinderfen Crossing node");
   await expect(page.getByTestId("campaign-node-cinderfen_crossing")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
   await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Crossing start", SCENE_TRANSITION_CLICK_OPTIONS);
-  await expectBattleLoaded(page, "launch Cinderfen Crossing battle");
+  await expectBattleLoaded(page, "launch Cinderfen Crossing battle", { timeoutMs: options.battleLoadTimeoutMs });
 }
 
 // UI-path helper: launches Watch via campaign node/start test IDs, then waits for the battle shell.
-export async function launchCinderfenWatch(page: Page): Promise<void> {
+export async function launchCinderfenWatch(page: Page, options: { battleLoadTimeoutMs?: number } = {}): Promise<void> {
   await clickReady(page.getByTestId("campaign-node-cinderfen_watch"), "launch Cinderfen Watch node");
   await expect(page.getByTestId("campaign-node-cinderfen_watch")).toContainText(/Available/i);
   await expect(page.getByTestId("campaign-start-node")).toBeEnabled();
   await clickReady(page.getByTestId("campaign-start-node"), "launch Cinderfen Watch start", SCENE_TRANSITION_CLICK_OPTIONS);
-  await expectBattleLoaded(page, "launch Cinderfen Watch battle");
+  await expectBattleLoaded(page, "launch Cinderfen Watch battle", { timeoutMs: options.battleLoadTimeoutMs });
 }
 
 // Safe hook helper: calls the Playwright-only captureSite hook exposed by the game test harness.

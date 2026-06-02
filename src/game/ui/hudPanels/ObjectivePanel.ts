@@ -1,5 +1,11 @@
 import type { LumeNetworkHudSummary } from "../../core/GameTypes";
-import type { HUDBattlefieldEventSnapshot, HUDEnemyDoctrineSnapshot, HUDObjectiveSnapshot } from "./HudTypes";
+import type {
+  HUDBattlefieldEventSnapshot,
+  HUDDebugCounterSnapshot,
+  HUDEnemyDoctrineSnapshot,
+  HUDObjectiveSnapshot,
+  HudDensityMode
+} from "./HudTypes";
 import { escapeHtml } from "./HudFormatting";
 
 export function renderObjectives(
@@ -8,9 +14,11 @@ export function renderObjectives(
   battlefieldEvent?: HUDBattlefieldEventSnapshot,
   lumeNetwork?: LumeNetworkHudSummary,
   privatePlaytestNotice?: string,
-  privatePlaytestHub = false
+  privatePlaytestHub = false,
+  density: HudDensityMode = "standard",
+  debugCounters?: HUDDebugCounterSnapshot
 ): string {
-  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork && !privatePlaytestNotice) {
+  if ((!objectives || objectives.length === 0) && !enemyDoctrine && !battlefieldEvent && !lumeNetwork && !privatePlaytestNotice && !debugCounters) {
     return "";
   }
   const missionObjectives = objectives ?? [];
@@ -19,11 +27,12 @@ export function renderObjectives(
   const showLumeProgressOnly = Boolean(lumeNetwork && missionObjectives.length === 0);
   const showMissionSummary = missionObjectives.length > 0;
   return `
-    <div class="objectives-panel" data-testid="battle-objectives">
-      ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice, privatePlaytestHub) : ""}
-      ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent) : ""}
-      ${lumeNetwork ? renderLumeNetwork(lumeNetwork) : ""}
-      ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine) : ""}
+    <div class="objectives-panel objectives-panel-${density}" data-testid="battle-objectives" data-hud-density="${density}">
+      ${privatePlaytestNotice ? renderPrivatePlaytestNotice(privatePlaytestNotice, privatePlaytestHub, density) : ""}
+      ${battlefieldEvent ? renderBattlefieldEvent(battlefieldEvent, density) : ""}
+      ${lumeNetwork ? renderLumeNetwork(lumeNetwork, density) : ""}
+      ${enemyDoctrine ? renderEnemyDoctrine(enemyDoctrine, density) : ""}
+      ${renderHudDebugCounters(debugCounters, density)}
       ${
         showMissionSummary
           ? `<strong>Objectives ${completedCount}/${missionObjectives.length}</strong>`
@@ -43,7 +52,7 @@ export function renderObjectives(
               <span>${state}</span>
               <div>
                 <b>${escapeHtml(objective.name)}</b>
-                <small>${escapeHtml(objective.description)}</small>
+                <small class="density-optional">${escapeHtml(objective.description)}</small>
               </div>
             </div>
           `;
@@ -53,13 +62,13 @@ export function renderObjectives(
   `;
 }
 
-function renderPrivatePlaytestNotice(notice: string, privatePlaytestHub: boolean): string {
+function renderPrivatePlaytestNotice(notice: string, privatePlaytestHub: boolean, density: HudDensityMode): string {
   return `
     <div class="private-playtest-row" data-testid="private-playtest-demo-warning">
       <span>Private</span>
       <div>
         <b>${privatePlaytestHub ? "PLAYTEST HUB - no save changes" : "PRIVATE DEMO - rewards and campaign progress disabled"}</b>
-        <details class="objective-details">
+        <details class="objective-details ${density === "minimal" ? "density-optional" : ""}">
           <summary>Details</summary>
           <small>${escapeHtml(notice)}</small>
         </details>
@@ -73,15 +82,15 @@ function renderPrivatePlaytestNotice(notice: string, privatePlaytestHub: boolean
   `;
 }
 
-function renderLumeNetwork(network: LumeNetworkHudSummary): string {
+function renderLumeNetwork(network: LumeNetworkHudSummary, density: HudDensityMode): string {
   return `
     <div class="lume-network-row" data-testid="lume-network-status">
       <span>Lume</span>
       <div>
         <b>${escapeHtml(network.title)}</b>
         <small class="lume-objective-line">${escapeHtml(network.objective)}</small>
-        <small>${escapeHtml(network.status)}</small>
-        <details class="objective-details" data-testid="lume-network-details">
+        <small class="density-optional">${escapeHtml(network.status)}</small>
+        <details class="objective-details ${density === "minimal" ? "density-optional" : ""}" data-testid="lume-network-details">
           <summary>Details</summary>
           <small>${escapeHtml(network.benefit)}</small>
           <small>Counterplay: ${escapeHtml(network.counterplay)}</small>
@@ -162,15 +171,15 @@ function renderPrivateDemoActions(network: LumeNetworkHudSummary): string {
   `;
 }
 
-function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot): string {
+function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot, density: HudDensityMode): string {
   return `
     <div class="battlefield-event-row compact-tracker-row" data-testid="battlefield-event-status">
       <span>Event</span>
       <div>
         <b>${escapeHtml(event.title)}</b>
         <small>${escapeHtml(event.objective)}</small>
-        <small>${escapeHtml(event.progress)}</small>
-        <details class="objective-details">
+        <small class="density-optional">${escapeHtml(event.progress)}</small>
+        <details class="objective-details ${density === "minimal" ? "density-optional" : ""}">
           <summary>Details</summary>
           <small>Counterplay: ${escapeHtml(event.counterplay)}</small>
           ${event.planMatched ? `<small>Plan support: active</small>` : ""}
@@ -180,19 +189,45 @@ function renderBattlefieldEvent(event: HUDBattlefieldEventSnapshot): string {
   `;
 }
 
-function renderEnemyDoctrine(doctrine: HUDEnemyDoctrineSnapshot): string {
+function renderEnemyDoctrine(doctrine: HUDEnemyDoctrineSnapshot, density: HudDensityMode): string {
   return `
     <div class="enemy-doctrine-row compact-tracker-row" data-testid="enemy-doctrine-status">
       <span>Doctrine</span>
       <div>
         <b>${escapeHtml(doctrine.name)}</b>
         <small>${escapeHtml(doctrine.status)}</small>
-        <small>${escapeHtml(doctrine.warning)}</small>
-        <details class="objective-details">
+        <small class="density-optional">${escapeHtml(doctrine.warning)}</small>
+        <details class="objective-details ${density === "minimal" ? "density-optional" : ""}">
           <summary>Counterplay</summary>
           <small>${escapeHtml(doctrine.counterplay)}</small>
           ${doctrine.elite ? `<small>Elite: ${escapeHtml(doctrine.elite)}</small>` : ""}
         </details>
+      </div>
+    </div>
+  `;
+}
+
+function renderHudDebugCounters(counters: HUDDebugCounterSnapshot | undefined, density: HudDensityMode): string {
+  if (density !== "debug" || !counters) {
+    return "";
+  }
+  const rows = [
+    ["HUD", counters.hudUpdates],
+    ["Minimap", counters.minimapRefreshes],
+    ["Fog", counters.fogRedraws],
+    ["Lume", `${counters.lumeLinks ?? 0}/${counters.lumeEndpoints ?? 0}`],
+    ["DOM", counters.domNodes],
+    ["Graphics", counters.graphicsObjects],
+    ["Labels", counters.labels],
+    ["Objects", counters.displayObjects]
+  ];
+  return `
+    <div class="hud-debug-counters" data-testid="battle-hud-debug-counters">
+      <strong>Debug Counters</strong>
+      <div>
+        ${rows
+          .map(([label, value]) => `<span><b>${escapeHtml(String(label))}</b>${escapeHtml(String(value ?? 0))}</span>`)
+          .join("")}
       </div>
     </div>
   `;

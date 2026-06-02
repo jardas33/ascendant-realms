@@ -64,7 +64,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.103 Battlefield Clutter Reduction and Private Performance Profiler",
+          checkpoint: "v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode",
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -422,6 +422,14 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0103_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.103 implementation report" },
       { path: "V0103_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.103 Emmanuel retest" },
       { path: "V0103_DEFERRED_ART_AND_RENDERING_FINDINGS.md", sizeBytes: 20, textContent: "v0.103 deferred art" },
+      { path: "V0104_PROFILER_TRIAGE_REPORT.md", sizeBytes: 20, textContent: "v0.104 triage report" },
+      { path: "V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md", sizeBytes: 20, textContent: "v0.104 public minimal HUD spec" },
+      { path: "V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md", sizeBytes: 20, textContent: "v0.104 private density toggle spec" },
+      { path: "V0104_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md", sizeBytes: 20, textContent: "v0.104 optimization report" },
+      { path: "V0104_PERFORMANCE_DELTA_REPORT.md", sizeBytes: 20, textContent: "v0.104 performance delta report" },
+      { path: "V0104_VISUAL_QA_REPORT.md", sizeBytes: 20, textContent: "v0.104 visual QA report" },
+      { path: "V0104_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.104 implementation report" },
+      { path: "V0104_EMMANUEL_RETEST_CHECKLIST.md", sizeBytes: 20, textContent: "v0.104 Emmanuel retest" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

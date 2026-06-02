@@ -7,7 +7,7 @@ import { renderStatusLine, renderHintLine } from "./AlertPanel";
 import { renderCommandActions } from "./CommandPanel";
 import { renderHeroHudPanel, renderAbilities } from "./HeroHudPanel";
 import { escapeHtml } from "./HudFormatting";
-import type { HUDSnapshot } from "./HudTypes";
+import type { HUDDensityControl, HUDSnapshot } from "./HudTypes";
 import { renderMinimapPanel } from "./MinimapPanel";
 import { renderObjectives } from "./ObjectivePanel";
 import { renderPauseMenu } from "./PauseMenuPanel";
@@ -17,6 +17,7 @@ import { renderSelectionSummary } from "./SelectedEntityPanel";
 import { renderTutorialPanel } from "./TutorialPanel";
 
 export function renderHud(snapshot: HUDSnapshot): string {
+  const density = snapshot.hudDensity ?? "minimal";
   const selected = snapshot.selected.filter((entity) => entity.alive);
   const selectedOne = selected.length === 1 ? selected[0] : undefined;
   const abilities = snapshot.hero.unlockedAbilities
@@ -26,6 +27,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
   const sidePanelClass = selectedOne instanceof Hero ? "side-panel hero-selected" : "side-panel";
 
   return `
+    <div class="hud-density-root hud-density-${density}" data-testid="battle-hud-density-${density}" data-hud-density="${density}">
     <div class="top-bar" data-testid="battle-hud">
       <div class="resource-row" data-testid="battle-resources">${renderResources(snapshot.resources)}</div>
       ${renderOnboardingHelpSurface({
@@ -34,9 +36,10 @@ export function renderHud(snapshot: HUDSnapshot): string {
         summary: "Help",
         includeLume: Boolean(snapshot.lumeNetwork)
       })}
+      ${renderHudDensityControls(snapshot.hudDensityControls ?? [])}
       <button class="hud-button compact" data-testid="battle-menu" data-action="menu">Menu</button>
     </div>
-    ${renderHeroHudPanel(snapshot.hero)}
+    ${renderHeroHudPanel(snapshot.hero, density)}
     <div class="${sidePanelClass}" data-testid="selection-side-panel" data-side-panel-minimized="false">
       <div class="panel-title side-panel-title">
         <span class="side-panel-title-text">${escapeHtml(selectionTitle(selected))}</span>
@@ -46,7 +49,7 @@ export function renderHud(snapshot: HUDSnapshot): string {
         </button>
       </div>
       <div class="side-panel-body" data-testid="side-panel-body">
-        <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero)}</div>
+        <div class="command-tray">${renderCommandActions(selectedOne, snapshot)}${renderAbilities(abilities, snapshot.hero, density)}</div>
         <div class="selection-summary">${renderSelectionSummary(
           selectedOne,
           selected,
@@ -62,12 +65,36 @@ export function renderHud(snapshot: HUDSnapshot): string {
       snapshot.battlefieldEvent,
       snapshot.lumeNetwork,
       snapshot.privatePlaytestNotice,
-      snapshot.privatePlaytestHub
+      snapshot.privatePlaytestHub,
+      density,
+      snapshot.hudDebugCounters
     )}
     ${renderTutorialPanel(snapshot.tutorial)}
     ${renderPauseMenu(snapshot.pauseMenu)}
     ${renderPlacementBanner(snapshot.isPlacing)}
     ${renderStatusLine(snapshot.status, snapshot.isPlacing, snapshot.statusCategory)}
     ${renderHintLine(snapshot.hint)}
+    </div>
+  `;
+}
+
+function renderHudDensityControls(controls: HUDDensityControl[]): string {
+  if (controls.length === 0) {
+    return "";
+  }
+  return `
+    <div class="hud-density-controls" data-testid="hud-density-controls" aria-label="HUD density">
+      ${controls
+        .map(
+          (control) => `
+            <button class="hud-button compact mini${control.active ? " active" : ""}" type="button" data-testid="hud-density-${
+              control.mode
+            }" data-action="hud-density" data-id="${control.mode}" aria-pressed="${control.active ? "true" : "false"}" title="${escapeHtml(
+              control.description
+            )}">${escapeHtml(control.label)}</button>
+          `
+        )
+        .join("")}
+    </div>
   `;
 }

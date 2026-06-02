@@ -1525,6 +1525,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   }
 
   test("Ashen Outpost objectives do not cover the fortress focus area on desktop @hosted-layout-cinderfen", async ({ page }) => {
+    test.setTimeout(HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS);
     await page.setViewportSize({ width: 1366, height: 768 });
     await startAshenOutpostSkirmish(page, "Layout Ashen");
     await expect(page.getByTestId("battle-objectives")).toBeVisible();
@@ -1569,6 +1570,7 @@ test.describe("Ascendant Realms responsive layout", () => {
   });
 
   test("Ashen Outpost landmarks are scoutable under fog without HUD overlap @hosted-layout-cinderfen", async ({ page }) => {
+    test.setTimeout(HOSTED_CINDERFEN_BATTLE_TIMEOUT_MS);
     await page.setViewportSize({ width: 1366, height: 768 });
     await startAshenOutpostSkirmish(page, "Scout Ashen");
     await expect(page.getByTestId("battle-objectives")).toContainText("Capture the Burned Shrine");

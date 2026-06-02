@@ -1,5 +1,65 @@
 # Changelog
 
+# v0.104 Profiler-Guided Rendering Optimization And Public Battle HUD Minimal Mode - 2026-06-02
+
+This checkpoint uses the committed v0.103 profiler evidence to reduce redundant rendering work and add public Minimal battle HUD density. It does not alter gameplay systems, balance, rewards, saves, stable IDs, campaign progression, Lume mechanics, maps, factions, art/assets, desktop implementation, runtime title, or production private-control posture.
+
+Added:
+
+- `src/game/ui/hudPanels/HudDensity.ts`.
+- `src/game/ui/hudPanels/HudDensity.test.ts`.
+- `src/game/ui/hudPanels/HudVolatileRegions.test.ts`.
+- Public Minimal battle HUD density for normal public battles.
+- Private-only Standard and Debug HUD density controls for private playtest review.
+- Private Debug density counters for HUD/minimap/fog/Lume/display-object review.
+- Private profiler scenarios `perf_hud_minimal`, `perf_hud_standard`, and `perf_hud_debug`.
+- 17 v0.104 visual QA screenshots, bringing the visual QA matrix to 189 screenshots.
+- `docs/V0104_PROFILER_TRIAGE_REPORT.md`.
+- `docs/V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md`.
+- `docs/V0104_PRIVATE_HUD_DENSITY_TOGGLE_SPEC.md`.
+- `docs/V0104_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`.
+- `docs/V0104_PERFORMANCE_DELTA_REPORT.md`.
+- `docs/V0104_VISUAL_QA_REPORT.md`.
+- `docs/V0104_IMPLEMENTATION_REPORT.md`.
+- `docs/V0104_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Changed:
+
+- Ordinary battle HUD snapshot construction now waits for the existing 0.1s cadence unless a forced refresh is requested.
+- Volatile HUD regions patch status, minimap, and hint updates without replacing stable panel markup.
+- Minimap SVG markup is cached by deterministic render signature.
+- Fog and Lume graphics skip redundant redraws when rendered signatures are unchanged.
+- Private Performance Lab and profiler outputs now target v0.104 and compare against v0.103 artifacts.
+- Visual QA launch waits were hardened for long visual capture groups without reducing visual assertions.
+- Private package generation and package validation now expect the v0.104 checkpoint and v0.104 docs.
+
+Not changed:
+
+- No save-version bump, save fields, localStorage writes, stable IDs, serialized IDs, rewards, XP, Retinue, relics, reputation, campaign progression, combat balance, AI/pathing, maps, factions, generated/imported art, desktop work, runtime title, or Lume mechanics changed.
+- No public Debug/Standard density controls are exposed.
+
+Verification:
+
+- `npm test` PASS, 105 files / 736 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS.
+- `npm run export:portable-content` PASS, 229 stable-ID manifest entries.
+- `npm run validate:portable-content` PASS, deterministic two-pass export.
+- `npm run test:save-translation-contract` PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+- `npm run perf:profile:private` PASS, 20 private scenarios.
+- `npm run perf:report:private` PASS.
+- `npm run test:e2e:smoke:fast` PASS, 10 tests.
+- `npm run test:e2e:smoke` PASS, 17 tests.
+- Hosted release lanes PASS: smoke 17 tests, deep-meta 12 tests, deep-battle 31 tests, deep-campaign-pressure 8 tests, layout-core 27 tests, layout-cinderfen 12 tests.
+- `npm run visual:qa` PASS, 189 screenshots, 0 console errors, 0 retries.
+- `npm run visual:review-pack` PASS, 189 screenshots and 7 contact sheets.
+- `npm run playtest:controls` PASS, 18 rows.
+- `npm run playtest:controls:extended` PASS, 90 rows.
+- `npm run playtest:controls:verify` PASS, 1,658 checks.
+- `npm run playtest:act1` PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+- Final clean package generation and package verification are run after the checkpoint commit so the package does not carry a `-dirty` suffix.
+
 # v0.103 Battlefield Clutter Reduction And Private Performance Profiler - 2026-06-01
 
 This checkpoint reduces battlefield visual clutter and adds private/dev-only performance profiling evidence. It does not alter gameplay systems, balance, rewards, saves, stable IDs, campaign progression, Lume mechanics, maps, factions, art/assets, desktop implementation, or production posture.

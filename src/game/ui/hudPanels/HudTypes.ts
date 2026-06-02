@@ -30,6 +30,7 @@ export interface HUDCallbacks {
   onRetinueReinforcement: () => void;
   onLumeFocus: (siteId: string) => void;
   onLumeVisibilityMode: (mode: LumeNetworkVisibilityMode) => void;
+  onHudDensityMode: (mode: HudDensityMode) => void;
   onPrivateDemoExit: () => void;
   onPrivateDemoFinish: () => void;
   onTutorialNext: () => void;
@@ -66,6 +67,36 @@ export interface HUDSnapshot {
   privatePlaytestHub?: boolean;
   retinueReinforcement?: HUDRetinueReinforcementSnapshot;
   pauseMenu?: HUDPauseMenuSnapshot;
+  hudDensity?: HudDensityMode;
+  hudDensityControls?: HUDDensityControl[];
+  hudDebugCounters?: HUDDebugCounterSnapshot;
+}
+
+export type HudDensityMode = "minimal" | "standard" | "debug";
+
+export interface HUDDensityControl {
+  mode: HudDensityMode;
+  label: string;
+  description: string;
+  active: boolean;
+}
+
+export interface HUDDebugCounterSnapshot {
+  displayObjects?: number;
+  graphicsObjects?: number;
+  units?: number;
+  buildings?: number;
+  captureSites?: number;
+  labels?: number;
+  lumeLinks?: number;
+  lumeEndpoints?: number;
+  fogRedraws?: number;
+  fogVisibleCells?: number;
+  minimapRefreshes?: number;
+  hudUpdates?: number;
+  notificationsEmitted?: number;
+  notificationsVisible?: number;
+  domNodes?: number;
 }
 
 export interface HUDEnemyDoctrineSnapshot {

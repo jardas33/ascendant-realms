@@ -434,8 +434,8 @@ export async function clickReady(locator: Locator, context: string, options: Cli
       await expect(locator, `${context}: expected target to be enabled`).toBeEnabled({
         timeout: timeoutMs
       });
-      await locator.scrollIntoViewIfNeeded({ timeout: 5_000 }).catch(() => undefined);
       if (waitForLayoutBox) {
+        await locator.scrollIntoViewIfNeeded({ timeout: 5_000 }).catch(() => undefined);
         await waitForLocatorLayoutBox(locator, context, timeoutMs);
       }
       attemptedNormalClick = true;
