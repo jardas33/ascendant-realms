@@ -13,6 +13,7 @@ bundle-analysis/
 /artifacts/art-review/candidates/
 /artifacts/art-review/contact-sheets/
 /artifacts/art-review/reports/
+/artifacts/art-review/salto-slice-packet/
 /artifacts/visual-review/
 /visual-qa/
 *.log

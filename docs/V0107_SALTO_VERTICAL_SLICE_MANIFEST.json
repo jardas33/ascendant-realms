@@ -1,0 +1,1248 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.107 Salto Vertical Slice Composition Plan and Asset-Dimension Contracts",
+  "createdAt": "2026-06-02",
+  "status": "planning-only",
+  "generatedAssetsIncluded": false,
+  "runtimeIntegrationApproved": false,
+  "generatedImagePaths": [],
+  "packetOutput": "artifacts/art-review/salto-slice-packet/",
+  "composition": {
+    "region": "Salto-inspired highland foothold",
+    "playerFaction": "barrosan_freeholds",
+    "enemyContrast": "ashen_covenant",
+    "representativeBattleSlice": "First Claim-style readable battle slice using existing map/content posture only",
+    "appearsOnScreen": [
+      "one Barrosan hero",
+      "one Worker",
+      "Militia",
+      "Ranger",
+      "Command Hall",
+      "Barracks",
+      "mine",
+      "shrine",
+      "road",
+      "ford or readable water crossing treatment",
+      "quarry",
+      "ruin",
+      "one Lume link",
+      "HUD frame",
+      "Results frame",
+      "campaign-map frame"
+    ],
+    "remainsPlaceholder": [
+      "current procedural terrain, road, water, ruin, quarry, shrine, fog, minimap, and Lume primitives",
+      "current placeholder unit and building silhouettes",
+      "current CSS and DOM HUD, Results, and campaign frames",
+      "current source/license-unreviewed manual/final asset posture"
+    ],
+    "referenceOnly": [
+      "all v0.107 planned assets",
+      "all v0.88/v0.105 source registry mappings",
+      "all generated packet files"
+    ],
+    "canEventuallyBecomeRuntimeCandidate": [
+      "only after Emmanuel human style approval, source/license review, protected-IP review, and a future explicit runtime integration milestone"
+    ],
+    "mustNotBeGeneratedYet": [
+      "full roster",
+      "complete UI kit",
+      "final terrain set",
+      "runtime sprites",
+      "runtime buildings",
+      "icons",
+      "new maps",
+      "new factions",
+      "desktop port assets"
+    ]
+  },
+  "runtimePosture": {
+    "status": "reference-only:not-runtime",
+    "candidateApprovalIsLoadable": false,
+    "requiresFutureRuntimeIntegratedState": true,
+    "requiresRuntimeArtSlotValidation": true,
+    "separateIntegrationMilestoneRequired": true,
+    "notes": "This manifest plans future art one asset at a time. It does not approve runtime loading, import paths, image generation, save changes, gameplay changes, or package metadata changes."
+  },
+  "privateMockComposition": {
+    "implemented": false,
+    "visibility": "not-implemented",
+    "deferredReason": "A private wireframe preview would add a new UI surface and visual QA burden. v0.107 keeps composition review in deterministic docs and packet metadata only."
+  },
+  "qaScenarios": [
+    {
+      "scenarioId": "qa_salto_reference_composition",
+      "surface": "battlefield",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "terrain-quarry",
+        "terrain-shrine",
+        "terrain-ruin"
+      ],
+      "reviewTarget": "Salto highland mood, wet roads, granite, readable lanes, ruin/quarry/shrine identity, and open UI-safe negative space."
+    },
+    {
+      "scenarioId": "qa_battlefield_terrain_readability",
+      "surface": "battlefield",
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "fog-treatment",
+        "objective-marker"
+      ],
+      "reviewTarget": "Walkable, blocked, resource, capture, and water/ford surfaces stay readable at 1366x768 and 1920x1080."
+    },
+    {
+      "scenarioId": "qa_hud_and_results_frame",
+      "surface": "ui",
+      "runtimeSlotIds": [
+        "hud-frame",
+        "command-panel-frame",
+        "minimap-frame",
+        "results-frame"
+      ],
+      "reviewTarget": "Compact desktop RTS UI, readable resource/command/minimap hierarchy, and Results debrief framing without mobile-card drift."
+    },
+    {
+      "scenarioId": "qa_lume_link_readability",
+      "surface": "battlefield",
+      "runtimeSlotIds": [
+        "lume-endpoint",
+        "lume-link",
+        "lume-transition"
+      ],
+      "reviewTarget": "One restrained teal Lume link reads as land-power, not generic magic-blue clutter."
+    },
+    {
+      "scenarioId": "qa_campaign_map_frame",
+      "surface": "campaign",
+      "runtimeSlotIds": [
+        "campaign-background",
+        "route-frame",
+        "chapter-banner",
+        "mission-node-frame",
+        "selected-node-frame",
+        "locked-node-frame"
+      ],
+      "reviewTarget": "Campaign map frame supports Salto-region launch, selected mission focus, locked-state clarity, and return-from-Results posture."
+    },
+    {
+      "scenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "surface": "units",
+      "runtimeSlotIds": [
+        "barrosan-hero",
+        "barrosan-worker",
+        "barrosan-militia",
+        "barrosan-ranger"
+      ],
+      "reviewTarget": "Hero, Worker, Militia, and Ranger have distinct RTS-scale silhouettes at 64x64 and 96x96 review thumbnails."
+    },
+    {
+      "scenarioId": "qa_barrosan_building_footprint_readability",
+      "surface": "buildings",
+      "runtimeSlotIds": [
+        "barrosan-command-hall",
+        "barrosan-barracks",
+        "barrosan-mine",
+        "barrosan-shrine"
+      ],
+      "reviewTarget": "Command Hall, Barracks, mine, and shrine are distinct by footprint, roofline, material, and entry/readability cues."
+    },
+    {
+      "scenarioId": "qa_ashen_contrast_readability",
+      "surface": "units",
+      "runtimeSlotIds": [
+        "ashen-raider",
+        "ashen-brute",
+        "ashen-hexer",
+        "ashen-commander"
+      ],
+      "reviewTarget": "Ashen contrast stays disciplined and readable without demon/orc/undead drift or overdark silhouette collapse."
+    }
+  ],
+  "assets": [
+    {
+      "assetId": "v0107_salto_environment_style_frame",
+      "registryAssetIds": [
+        "v088_salto_environment_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "terrain-quarry",
+        "terrain-shrine",
+        "terrain-ruin"
+      ],
+      "category": "environment-style-frame",
+      "sourceConceptFormat": "16:9 reference style frame, review candidate only",
+      "runtimeCandidateFormat": "not applicable until future runtime integration gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "high three-quarter RTS camera with readable lanes, buildable space, water/ford edge, quarry, shrine, and ruin silhouettes",
+      "transparencyRequirement": "opaque reference frame",
+      "pivot": "screen center; no runtime pivot",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 80,
+        "bottom": 96,
+        "rule": "leave negative space for HUD and objective overlays"
+      },
+      "silhouetteRule": "terrain landmarks must read before atmospheric detail",
+      "rtsScaleThumbnailSize": {
+        "width": 320,
+        "height": 180,
+        "rule": "road, ford/water, quarry, shrine, and ruin are still identifiable"
+      },
+      "maximumVisualNoise": "medium-low; avoid foliage speckle, fog soup, and noisy ground tiling",
+      "animationPosture": "static reference only",
+      "mipDownscalePosture": "future crops must be checked at 50%, 25%, and 64px landmark thumbnails",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "BattleSceneMapRenderer and CaptureSite",
+        "behavior": "current procedural terrain, roads, water, resource rings, and ruin blockers remain authoritative"
+      },
+      "visualQaScenarioId": "qa_salto_reference_composition",
+      "humanApprovalQuestions": [
+        "Does the frame feel like Salto wet highland terrain rather than generic fantasy grassland?",
+        "Are playable lanes and blocked landmark areas readable?",
+        "Does the image leave enough UI-safe space?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "Emmanuel reference approval only"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [],
+      "notes": "First reference frame; it anchors all later Salto slice art."
+    },
+    {
+      "assetId": "v0107_battlefield_style_frame",
+      "registryAssetIds": [
+        "v088_battlefield_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "terrain-ground",
+        "terrain-road",
+        "terrain-water",
+        "terrain-ford",
+        "fog-treatment",
+        "selection-ring",
+        "capture-ring-neutral",
+        "capture-ring-friendly",
+        "capture-ring-hostile",
+        "objective-marker",
+        "minimap-marker-family"
+      ],
+      "category": "battlefield-style-frame",
+      "sourceConceptFormat": "16:9 battlefield review frame, no fake UI screenshot",
+      "runtimeCandidateFormat": "not applicable until future runtime integration gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "high three-quarter RTS battlefield camera with visible resource and objective surfaces",
+      "transparencyRequirement": "opaque reference frame",
+      "pivot": "screen center; no runtime pivot",
+      "safeCrop": {
+        "left": 128,
+        "right": 128,
+        "top": 88,
+        "bottom": 120,
+        "rule": "do not crop capture rings, ford edges, or command-area landmarks"
+      },
+      "silhouetteRule": "walkable, blocked, capturable, and hostile-owned zones must separate at a glance",
+      "rtsScaleThumbnailSize": {
+        "width": 320,
+        "height": 180,
+        "rule": "capture site, road, ford, and ruin remain legible in contact sheets"
+      },
+      "maximumVisualNoise": "low around units and capture sites; medium only in non-playable edge dressing",
+      "animationPosture": "static reference only; future runtime candidates need separate animation/VFX review",
+      "mipDownscalePosture": "terrain colors must retain contrast after 25% downscale",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "BattleSceneMapRenderer, FogPresentation, SelectionPresentation, CaptureSitePresentation, MinimapView",
+        "behavior": "existing procedural terrain, fog, capture rings, objective markers, and minimap markers stay in place"
+      },
+      "visualQaScenarioId": "qa_battlefield_terrain_readability",
+      "humanApprovalQuestions": [
+        "Can a player distinguish road, ford/water, quarry, shrine, and blocked ruin immediately?",
+        "Does the battlefield remain readable with current HUD density?",
+        "Does terrain mood support Barrosan highland identity without visual clutter?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "thumbnail readability pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_salto_environment_style_frame"
+      ],
+      "notes": "Gameplay map rules remain unchanged; this is only a battlefield material/composition reference."
+    },
+    {
+      "assetId": "v0107_hud_frame",
+      "registryAssetIds": [
+        "v088_hud_frame_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "hud-frame",
+        "command-panel-frame",
+        "minimap-frame"
+      ],
+      "category": "hud-style-frame",
+      "sourceConceptFormat": "16:9 flat UI board reference",
+      "runtimeCandidateFormat": "future sliced UI candidates only after separate gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "flat orthographic UI board, not a fake gameplay screenshot",
+      "transparencyRequirement": "opaque board with clear component boundaries",
+      "pivot": "component-local pivots deferred",
+      "safeCrop": {
+        "left": 96,
+        "right": 96,
+        "top": 72,
+        "bottom": 72,
+        "rule": "all frame examples remain fully visible without edge clipping"
+      },
+      "silhouetteRule": "resource, command, minimap, selected-unit, and tooltip frames must be distinguishable by shape and state",
+      "rtsScaleThumbnailSize": {
+        "width": 320,
+        "height": 180,
+        "rule": "frame hierarchy reads without relying on small decorative detail"
+      },
+      "maximumVisualNoise": "low; texture supports contrast rather than competing with text",
+      "animationPosture": "static reference only; hover/press animation deferred",
+      "mipDownscalePosture": "future slices must keep 1x and 0.5x text contrast margins",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "HUD, battle-hud.css, MinimapPanel, CommandPanel",
+        "behavior": "current CSS/DOM HUD and minimap frames remain authoritative"
+      },
+      "visualQaScenarioId": "qa_hud_and_results_frame",
+      "humanApprovalQuestions": [
+        "Does the HUD feel Barrosan without becoming parchment-heavy or mobile-like?",
+        "Do locked, selected, available, hostile, friendly, and neutral states remain clear?",
+        "Can the frame style support Minimal public HUD density?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "desktop readability pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_salto_environment_style_frame"
+      ],
+      "notes": "HUD frame is a reference for future UI kit work, not a CSS implementation request."
+    },
+    {
+      "assetId": "v0107_results_frame",
+      "registryAssetIds": [
+        "v088_hud_frame_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "results-frame"
+      ],
+      "category": "results-frame-style-reference",
+      "sourceConceptFormat": "16:9 flat debrief frame reference paired with the HUD frame",
+      "runtimeCandidateFormat": "future UI slice candidates only after separate gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "flat orthographic debrief board with no fake reward values or unapproved UI text",
+      "transparencyRequirement": "opaque board with component boundaries",
+      "pivot": "component-local pivots deferred",
+      "safeCrop": {
+        "left": 96,
+        "right": 96,
+        "top": 72,
+        "bottom": 72,
+        "rule": "primary outcome, objective summary, reward frame, and return actions remain inside safe margins"
+      },
+      "silhouetteRule": "victory/defeat framing, reward panel, and action area must separate without heavy ornament",
+      "rtsScaleThumbnailSize": {
+        "width": 320,
+        "height": 180,
+        "rule": "outcome header and reward frame hierarchy read as a debrief screen"
+      },
+      "maximumVisualNoise": "low behind text and reward rows",
+      "animationPosture": "static reference only",
+      "mipDownscalePosture": "future slices must preserve button and reward-row legibility",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "ResultsScene, ResultsViewModel, results.css",
+        "behavior": "current CSS/DOM Results layout remains authoritative"
+      },
+      "visualQaScenarioId": "qa_hud_and_results_frame",
+      "humanApprovalQuestions": [
+        "Does the debrief feel connected to the HUD without becoming a separate visual language?",
+        "Are victory, defeat, rewards, progression, and return actions easy to scan?",
+        "Is the frame quiet enough for dense results copy?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "Results readability pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_hud_frame"
+      ],
+      "notes": "Documented as a HUD companion because v0.88 has one shared UI registry entry."
+    },
+    {
+      "assetId": "v0107_lume_style_frame",
+      "registryAssetIds": [
+        "v088_lume_link_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "lume-endpoint",
+        "lume-link",
+        "lume-transition"
+      ],
+      "category": "lume-link-style-frame",
+      "sourceConceptFormat": "16:9 or focused 4:3 Lume link reference; review candidate only",
+      "runtimeCandidateFormat": "future VFX or vector-treatment candidate only after separate gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "high three-quarter RTS camera showing one endpoint pair and link-state readability",
+      "transparencyRequirement": "opaque reference frame; future VFX transparency deferred",
+      "pivot": "link midpoint for review only",
+      "safeCrop": {
+        "left": 140,
+        "right": 140,
+        "top": 96,
+        "bottom": 120,
+        "rule": "both endpoints and the link body remain visible"
+      },
+      "silhouetteRule": "active, guide, contested, and severed postures must differ by more than glow intensity",
+      "rtsScaleThumbnailSize": {
+        "width": 192,
+        "height": 108,
+        "rule": "endpoint and link state remain visible in thumbnail"
+      },
+      "maximumVisualNoise": "very low; no particle soup or generic neon magic",
+      "animationPosture": "static reference plus notes for future pulse cadence",
+      "mipDownscalePosture": "future link treatment must survive 0.5x viewport scale",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "LumeNetworkRendering",
+        "behavior": "current vector endpoints, links, pulses, and visibility modes remain authoritative"
+      },
+      "visualQaScenarioId": "qa_lume_link_readability",
+      "humanApprovalQuestions": [
+        "Does the Lume read as restrained land-power rather than generic spell VFX?",
+        "Are active, guide, contested, and severed states visually separable?",
+        "Does the link avoid cluttering units and capture rings?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "Lume readability pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_battlefield_style_frame"
+      ],
+      "notes": "One Lume link only; not a full Lume-network visual overhaul."
+    },
+    {
+      "assetId": "v0107_campaign_map_style_frame",
+      "registryAssetIds": [
+        "v088_salto_environment_style_frame",
+        "v088_hud_frame_style_frame"
+      ],
+      "runtimeSlotIds": [
+        "campaign-background",
+        "route-frame",
+        "chapter-banner",
+        "mission-node-frame",
+        "selected-node-frame",
+        "locked-node-frame"
+      ],
+      "category": "campaign-map-style-frame",
+      "sourceConceptFormat": "16:9 campaign-map frame reference; not a new map",
+      "runtimeCandidateFormat": "future UI/background candidate only after separate gate",
+      "canvasSize": {
+        "width": 1920,
+        "height": 1080,
+        "aspectRatio": "16:9"
+      },
+      "cameraRule": "flat campaign-shell composition with route, selected mission, locked state, and return-from-Results posture",
+      "transparencyRequirement": "opaque reference frame",
+      "pivot": "screen center; no runtime pivot",
+      "safeCrop": {
+        "left": 112,
+        "right": 112,
+        "top": 88,
+        "bottom": 96,
+        "rule": "selected-node panel and route cards stay fully visible"
+      },
+      "silhouetteRule": "mission nodes, route strokes, selected state, locked state, and chapter banner must read independently",
+      "rtsScaleThumbnailSize": {
+        "width": 320,
+        "height": 180,
+        "rule": "selected Salto mission and route structure remain visible"
+      },
+      "maximumVisualNoise": "low behind node text and route labels",
+      "animationPosture": "static reference only",
+      "mipDownscalePosture": "future campaign elements must remain readable at 1366x768",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "CampaignMapScene, CampaignMapViewModel, campaign.css",
+        "behavior": "current campaign shell CSS/DOM route and node frames remain authoritative"
+      },
+      "visualQaScenarioId": "qa_campaign_map_frame",
+      "humanApprovalQuestions": [
+        "Does this support a Salto mission launch without implying a new campaign map?",
+        "Are selected and locked states clear?",
+        "Does the campaign frame style align with HUD and Results?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "campaign shell readability pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_salto_environment_style_frame",
+        "v0107_hud_frame"
+      ],
+      "notes": "Frame only; no new nodes, unlock rules, rewards, or campaign progression."
+    },
+    {
+      "assetId": "v0107_barrosan_worker_concept",
+      "registryAssetIds": [
+        "v088_barrosan_worker_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-worker"
+      ],
+      "category": "unit-concept-sheet",
+      "sourceConceptFormat": "4:3 concept sheet with front three-quarter pose, side silhouette, thumbnail, and material callouts",
+      "runtimeCandidateFormat": "future transparent unit candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "orthographic-feeling front three-quarter and side silhouette, no dramatic perspective",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at feet center; concept sheet pivot not runtime",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 96,
+        "bottom": 128,
+        "rule": "tools, lantern, cloak, and boots remain inside crop"
+      },
+      "silhouetteRule": "Worker must read through tool bundle, utility posture, and warm lantern/hearth accent",
+      "rtsScaleThumbnailSize": {
+        "width": 64,
+        "height": 64,
+        "rule": "worker differs from Militia and Ranger without label support"
+      },
+      "maximumVisualNoise": "low on hands/tools; medium on cloth only if silhouette stays clean",
+      "animationPosture": "static concept only; build/repair animation deferred",
+      "mipDownscalePosture": "tool angle and lantern accent must survive 64px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "behavior": "current Worker vector silhouette remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "humanApprovalQuestions": [
+        "Does the Worker read as utility/build/repair without modern-construction drift?",
+        "Are hands, tools, and pack anatomy coherent?",
+        "Is the silhouette distinct from Militia and Ranger?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "64px thumbnail pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_salto_environment_style_frame",
+        "v0107_battlefield_style_frame"
+      ],
+      "notes": "Worker is first Barrosan readability proof after reference frames."
+    },
+    {
+      "assetId": "v0107_barrosan_militia_concept",
+      "registryAssetIds": [
+        "v088_barrosan_militia_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-militia"
+      ],
+      "category": "unit-concept-sheet",
+      "sourceConceptFormat": "4:3 concept sheet with front three-quarter pose, side silhouette, thumbnail, and material callouts",
+      "runtimeCandidateFormat": "future transparent unit candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "orthographic-feeling front three-quarter and side silhouette",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at feet center; concept sheet pivot not runtime",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 96,
+        "bottom": 128,
+        "rule": "shield/spear or axe profile remains inside crop"
+      },
+      "silhouetteRule": "frontline hold-the-line profile must read before armor detail",
+      "rtsScaleThumbnailSize": {
+        "width": 64,
+        "height": 64,
+        "rule": "Militia reads as frontline defender and not Worker or hero"
+      },
+      "maximumVisualNoise": "low around weapon and shield edges",
+      "animationPosture": "static concept only; attack animation deferred",
+      "mipDownscalePosture": "shield or weapon silhouette must survive 64px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "behavior": "current Militia vector silhouette remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "humanApprovalQuestions": [
+        "Does the Militia read as a village defender instead of a royal knight?",
+        "Is the weapon/shield silhouette readable at RTS scale?",
+        "Does it remain distinct from Worker and Ranger?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "64px thumbnail pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_worker_concept"
+      ],
+      "notes": "Second Barrosan unit proof; no stat, role, or balance change."
+    },
+    {
+      "assetId": "v0107_barrosan_ranger_concept",
+      "registryAssetIds": [
+        "v088_barrosan_ranger_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-ranger"
+      ],
+      "category": "unit-concept-sheet",
+      "sourceConceptFormat": "4:3 concept sheet with front three-quarter pose, side silhouette, thumbnail, and material callouts",
+      "runtimeCandidateFormat": "future transparent unit candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "orthographic-feeling front three-quarter and side silhouette",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at feet center; concept sheet pivot not runtime",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 96,
+        "bottom": 128,
+        "rule": "bow/crossbow, cloak, and lean posture remain inside crop"
+      },
+      "silhouetteRule": "lean ranged profile must read through bow/crossbow line and ridge-cloak posture",
+      "rtsScaleThumbnailSize": {
+        "width": 64,
+        "height": 64,
+        "rule": "Ranger reads as ranged and fragile without labels"
+      },
+      "maximumVisualNoise": "low around bow/crossbow and cloak edge",
+      "animationPosture": "static concept only; firing animation deferred",
+      "mipDownscalePosture": "ranged weapon line must survive 64px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "behavior": "current Ranger vector silhouette remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "humanApprovalQuestions": [
+        "Does the Ranger read as ranged and mobile without becoming generic hooded fantasy?",
+        "Is the weapon line readable at small scale?",
+        "Does it contrast clearly with Militia?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "64px thumbnail pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_worker_concept"
+      ],
+      "notes": "Ranged readability proof only; no unit rules change."
+    },
+    {
+      "assetId": "v0107_barrosan_hero_concept",
+      "registryAssetIds": [
+        "v088_barrosan_hero_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-hero",
+        "hero-frame"
+      ],
+      "category": "hero-concept-sheet",
+      "sourceConceptFormat": "4:3 hero concept sheet with front three-quarter pose, side silhouette, thumbnail, and material callouts",
+      "runtimeCandidateFormat": "future transparent hero candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "orthographic-feeling commander pose; no splash-art lens or action blur",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at feet center; concept sheet pivot not runtime",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 96,
+        "bottom": 128,
+        "rule": "cloak, oath token, weapon, and map/standard motif remain inside crop"
+      },
+      "silhouetteRule": "grounded commander-champion must read as hero without royal paladin drift",
+      "rtsScaleThumbnailSize": {
+        "width": 96,
+        "height": 96,
+        "rule": "hero reads above units but within grounded Barrosan scale"
+      },
+      "maximumVisualNoise": "medium-low; avoid overdesigned armor and huge glow",
+      "animationPosture": "static concept only; ability and portrait passes deferred",
+      "mipDownscalePosture": "cloak/oath-token hierarchy must survive 96px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation, Unit, HeroHudPanel, HeroProgressionScene",
+        "behavior": "current hero placeholder/runtime presentation remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_unit_thumbnail_readability",
+      "humanApprovalQuestions": [
+        "Does the hero support Warrior, Seer, and Commander identities without locking one class?",
+        "Is the hero distinct from Militia at RTS scale?",
+        "Does it avoid royal knight or paladin shorthand?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "96px thumbnail pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_worker_concept",
+        "v0107_barrosan_militia_concept",
+        "v0107_barrosan_ranger_concept"
+      ],
+      "notes": "Hero concept follows the basic-unit readability pass so it can contrast without overinflating scale."
+    },
+    {
+      "assetId": "v0107_barrosan_command_hall",
+      "registryAssetIds": [
+        "v088_barrosan_command_hall_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-command-hall",
+        "stronghold-frame"
+      ],
+      "category": "building-concept-sheet",
+      "sourceConceptFormat": "4:3 building concept sheet with front three-quarter, footprint thumbnail, RTS silhouette, and material callouts",
+      "runtimeCandidateFormat": "future transparent building candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "isometric-friendly three-quarter with clear entrance and broad base",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at footprint center-bottom",
+      "safeCrop": {
+        "left": 128,
+        "right": 128,
+        "top": 96,
+        "bottom": 128,
+        "rule": "roofline, hearth/chimney, entrance, and footprint remain fully visible"
+      },
+      "silhouetteRule": "broad granite hall must read wider and more stable than tall",
+      "rtsScaleThumbnailSize": {
+        "width": 96,
+        "height": 96,
+        "rule": "Command Hall reads larger and more central than Barracks"
+      },
+      "maximumVisualNoise": "medium-low; hearth windows can glow but wall texture must not blur footprint",
+      "animationPosture": "static concept only; construction/damage states deferred",
+      "mipDownscalePosture": "entrance and roofline must survive 96px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Building",
+        "behavior": "current Command Hall placeholder building remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability",
+      "humanApprovalQuestions": [
+        "Does the building read as a practical Barrosan command hall instead of a castle?",
+        "Are entrance, footprint, roofline, and team ownership clear?",
+        "Does the scale leave room for Barracks, mine, and shrine?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "building footprint pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_salto_environment_style_frame",
+        "v0107_battlefield_style_frame"
+      ],
+      "notes": "Building concept only; no construction rules, stronghold rules, or save fields change."
+    },
+    {
+      "assetId": "v0107_barrosan_barracks",
+      "registryAssetIds": [
+        "v088_barrosan_barracks_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-barracks"
+      ],
+      "category": "building-concept-sheet",
+      "sourceConceptFormat": "4:3 building concept sheet with front three-quarter, footprint thumbnail, RTS silhouette, and material callouts",
+      "runtimeCandidateFormat": "future transparent building candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "isometric-friendly three-quarter with training-yard/mustering cues",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at footprint center-bottom",
+      "safeCrop": {
+        "left": 128,
+        "right": 128,
+        "top": 96,
+        "bottom": 128,
+        "rule": "training entrance, roofline, timber/stone supports, and footprint remain visible"
+      },
+      "silhouetteRule": "Barracks must read as militia mustering space and not a palace armory",
+      "rtsScaleThumbnailSize": {
+        "width": 96,
+        "height": 96,
+        "rule": "Barracks reads smaller and more utilitarian than Command Hall"
+      },
+      "maximumVisualNoise": "medium-low; weapons/tools may decorate but not obscure footprint",
+      "animationPosture": "static concept only; train/queue states deferred",
+      "mipDownscalePosture": "entrance and mustering shape must survive 96px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Building",
+        "behavior": "current Barracks placeholder building remains authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability",
+      "humanApprovalQuestions": [
+        "Does the Barracks clearly differ from Command Hall?",
+        "Does it look practical and local rather than royal?",
+        "Is the training role readable without text?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "building footprint pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_command_hall"
+      ],
+      "notes": "No training rules or build costs change."
+    },
+    {
+      "assetId": "v0107_barrosan_mine",
+      "registryAssetIds": [
+        "v088_barrosan_mine_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-mine",
+        "terrain-quarry"
+      ],
+      "category": "building-resource-concept-sheet",
+      "sourceConceptFormat": "4:3 building/resource concept sheet with footprint, resource identity, and material callouts",
+      "runtimeCandidateFormat": "future transparent building/resource candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "isometric-friendly three-quarter with carts/supports and readable resource-mouth silhouette",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at footprint center-bottom",
+      "safeCrop": {
+        "left": 128,
+        "right": 128,
+        "top": 96,
+        "bottom": 128,
+        "rule": "mine mouth, supports, carts, and quarry stones remain visible"
+      },
+      "silhouetteRule": "mine/quarry must read as resource infrastructure without becoming a generic cave",
+      "rtsScaleThumbnailSize": {
+        "width": 96,
+        "height": 96,
+        "rule": "resource identity reads at small scale"
+      },
+      "maximumVisualNoise": "medium-low; stone texture must not erase silhouette",
+      "animationPosture": "static concept only; worker assignment animation deferred",
+      "mipDownscalePosture": "mine mouth and supports must survive 96px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation, Building, CaptureSite",
+        "behavior": "current mine placeholder and quarry capture-site markers remain authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability",
+      "humanApprovalQuestions": [
+        "Does this read as Barrosan mine/quarry infrastructure?",
+        "Is the resource identity clear without labels?",
+        "Does it fit the wet highland material language?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "resource landmark pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_command_hall"
+      ],
+      "notes": "Concept covers mine and quarry language; no resource rules change."
+    },
+    {
+      "assetId": "v0107_barrosan_shrine",
+      "registryAssetIds": [
+        "v088_barrosan_shrine_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "barrosan-shrine",
+        "terrain-shrine"
+      ],
+      "category": "building-shrine-concept-sheet",
+      "sourceConceptFormat": "4:3 building concept sheet with footprint, shrine landmark, and restrained Lume/hearth material callouts",
+      "runtimeCandidateFormat": "future transparent building/resource candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "isometric-friendly three-quarter with local ancient shrine silhouette",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivot at footprint center-bottom",
+      "safeCrop": {
+        "left": 128,
+        "right": 128,
+        "top": 96,
+        "bottom": 128,
+        "rule": "shrine stones, hearth/Lume accent, and footprint remain visible"
+      },
+      "silhouetteRule": "Shrine must feel ancient/local, not generic temple fantasy",
+      "rtsScaleThumbnailSize": {
+        "width": 96,
+        "height": 96,
+        "rule": "shrine reads separately from mine and Command Hall"
+      },
+      "maximumVisualNoise": "low; restrained glow only",
+      "animationPosture": "static concept only; aura/pulse VFX deferred",
+      "mipDownscalePosture": "shrine stones and restrained accent must survive 96px thumbnail",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation, Building, CaptureSite",
+        "behavior": "current shrine placeholder and capture-site markers remain authoritative"
+      },
+      "visualQaScenarioId": "qa_barrosan_building_footprint_readability",
+      "humanApprovalQuestions": [
+        "Does the shrine feel local to the Barrosan highlands?",
+        "Is the Lume/hearth accent restrained?",
+        "Is it distinct from mine and Command Hall at RTS scale?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "resource landmark pass"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_lume_style_frame",
+        "v0107_barrosan_command_hall"
+      ],
+      "notes": "No Lume or capture-site rules change."
+    },
+    {
+      "assetId": "v0107_ashen_enemy_contrast_sheet",
+      "registryAssetIds": [
+        "v088_ashen_enemy_concept_sheet"
+      ],
+      "runtimeSlotIds": [
+        "ashen-raider",
+        "ashen-brute",
+        "ashen-hexer",
+        "ashen-commander"
+      ],
+      "category": "enemy-contrast-sheet",
+      "sourceConceptFormat": "4:3 contrast sheet with 3-4 Ashen silhouettes, one commander/elite cue, and material callouts",
+      "runtimeCandidateFormat": "future transparent unit candidate sheet only after separate gate",
+      "canvasSize": {
+        "width": 1600,
+        "height": 1200,
+        "aspectRatio": "4:3"
+      },
+      "cameraRule": "orthographic-feeling lineup; no splash-art composition or action blur",
+      "transparencyRequirement": "neutral sheet allowed; future runtime crop requires transparent background",
+      "pivot": "future runtime crop pivots at feet center per silhouette",
+      "safeCrop": {
+        "left": 120,
+        "right": 120,
+        "top": 96,
+        "bottom": 128,
+        "rule": "all silhouettes and material callouts remain visible"
+      },
+      "silhouetteRule": "Ashen must contrast Barrosan through disciplined flame and blackened iron, not demon/orc/undead shorthand",
+      "rtsScaleThumbnailSize": {
+        "width": 64,
+        "height": 64,
+        "rule": "raider, brute, hexer, and commander contrast against Barrosan units"
+      },
+      "maximumVisualNoise": "medium-low; flame accents must not erase body shape",
+      "animationPosture": "static contrast only; combat/VFX animation deferred",
+      "mipDownscalePosture": "blackened-iron shapes must not collapse into pure black at 64px",
+      "fallbackBehavior": {
+        "required": true,
+        "owner": "PlaceholderBattlefieldPresentation and Unit",
+        "behavior": "current Ashen placeholder silhouettes remain authoritative"
+      },
+      "visualQaScenarioId": "qa_ashen_contrast_readability",
+      "humanApprovalQuestions": [
+        "Does the sheet contrast Barrosan without protected or generic monster drift?",
+        "Are Raider, Brute, Hexer, and Commander silhouettes separable?",
+        "Does fire/iron detail remain readable at small scale?"
+      ],
+      "reviewGates": [
+        "source/license recorded",
+        "protected-IP risk low or medium",
+        "64px thumbnail pass",
+        "contrast against Barrosan unit set"
+      ],
+      "runtimePosture": "reference-only:not-runtime",
+      "status": "not-created",
+      "assetDependencyIds": [
+        "v0107_barrosan_worker_concept",
+        "v0107_barrosan_militia_concept",
+        "v0107_barrosan_ranger_concept",
+        "v0107_barrosan_hero_concept"
+      ],
+      "notes": "One enemy contrast sheet only; not a new faction, roster, or balance pass."
+    }
+  ],
+  "dependencyOrder": [
+    {
+      "orderLabel": "1",
+      "phase": "reference-frames-first",
+      "assetId": "v0107_salto_environment_style_frame",
+      "dependsOn": []
+    },
+    {
+      "orderLabel": "2",
+      "phase": "reference-frames-first",
+      "assetId": "v0107_battlefield_style_frame",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame"
+      ]
+    },
+    {
+      "orderLabel": "3",
+      "phase": "reference-frames-first",
+      "assetId": "v0107_hud_frame",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame"
+      ]
+    },
+    {
+      "orderLabel": "3b",
+      "phase": "reference-frames-first-ui-companion",
+      "assetId": "v0107_results_frame",
+      "dependsOn": [
+        "v0107_hud_frame"
+      ],
+      "notes": "Results frame is a required v0.107 coverage item and a companion to the HUD frame; it does not approve a separate UI kit."
+    },
+    {
+      "orderLabel": "4",
+      "phase": "reference-frames-first",
+      "assetId": "v0107_lume_style_frame",
+      "dependsOn": [
+        "v0107_battlefield_style_frame"
+      ]
+    },
+    {
+      "orderLabel": "5",
+      "phase": "reference-frames-first",
+      "assetId": "v0107_campaign_map_style_frame",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame",
+        "v0107_hud_frame"
+      ]
+    },
+    {
+      "orderLabel": "6",
+      "phase": "barrosan-readability-second",
+      "assetId": "v0107_barrosan_worker_concept",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame",
+        "v0107_battlefield_style_frame"
+      ]
+    },
+    {
+      "orderLabel": "7",
+      "phase": "barrosan-readability-second",
+      "assetId": "v0107_barrosan_militia_concept",
+      "dependsOn": [
+        "v0107_barrosan_worker_concept"
+      ]
+    },
+    {
+      "orderLabel": "8",
+      "phase": "barrosan-readability-second",
+      "assetId": "v0107_barrosan_ranger_concept",
+      "dependsOn": [
+        "v0107_barrosan_worker_concept"
+      ]
+    },
+    {
+      "orderLabel": "9",
+      "phase": "barrosan-readability-second",
+      "assetId": "v0107_barrosan_hero_concept",
+      "dependsOn": [
+        "v0107_barrosan_worker_concept",
+        "v0107_barrosan_militia_concept",
+        "v0107_barrosan_ranger_concept"
+      ]
+    },
+    {
+      "orderLabel": "10",
+      "phase": "buildings-third",
+      "assetId": "v0107_barrosan_command_hall",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame",
+        "v0107_battlefield_style_frame"
+      ]
+    },
+    {
+      "orderLabel": "11",
+      "phase": "buildings-third",
+      "assetId": "v0107_barrosan_barracks",
+      "dependsOn": [
+        "v0107_barrosan_command_hall"
+      ]
+    },
+    {
+      "orderLabel": "12",
+      "phase": "buildings-third",
+      "assetId": "v0107_barrosan_mine",
+      "dependsOn": [
+        "v0107_barrosan_command_hall"
+      ]
+    },
+    {
+      "orderLabel": "13",
+      "phase": "buildings-third",
+      "assetId": "v0107_barrosan_shrine",
+      "dependsOn": [
+        "v0107_lume_style_frame",
+        "v0107_barrosan_command_hall"
+      ]
+    },
+    {
+      "orderLabel": "14",
+      "phase": "contrast-fourth",
+      "assetId": "v0107_ashen_enemy_contrast_sheet",
+      "dependsOn": [
+        "v0107_barrosan_worker_concept",
+        "v0107_barrosan_militia_concept",
+        "v0107_barrosan_ranger_concept",
+        "v0107_barrosan_hero_concept"
+      ]
+    },
+    {
+      "orderLabel": "15",
+      "phase": "integration-only-after-review",
+      "milestoneId": "runtime-candidates-chosen",
+      "dependsOn": [
+        "v0107_salto_environment_style_frame",
+        "v0107_battlefield_style_frame",
+        "v0107_hud_frame",
+        "v0107_results_frame",
+        "v0107_lume_style_frame",
+        "v0107_campaign_map_style_frame",
+        "v0107_barrosan_worker_concept",
+        "v0107_barrosan_militia_concept",
+        "v0107_barrosan_ranger_concept",
+        "v0107_barrosan_hero_concept",
+        "v0107_barrosan_command_hall",
+        "v0107_barrosan_barracks",
+        "v0107_barrosan_mine",
+        "v0107_barrosan_shrine",
+        "v0107_ashen_enemy_contrast_sheet"
+      ],
+      "notes": "Human review may choose runtime candidates, but v0.107 does not approve loading them."
+    },
+    {
+      "orderLabel": "16",
+      "phase": "integration-only-after-review",
+      "milestoneId": "separate-runtime-integration-milestone",
+      "dependsOn": [
+        "runtime-candidates-chosen"
+      ],
+      "notes": "A future explicit milestone must process, crop, validate, and integrate runtime art."
+    }
+  ],
+  "notes": [
+    "All asset IDs are v0.107 planning IDs and map to one or more v0.105/v0.88 registry IDs through registryAssetIds.",
+    "All runtimeSlotIds are known v0.106 slots and remain fallback-owned.",
+    "No image generation, image import, runtime path assignment, gameplay change, balance change, save change, ID rename, new map, new faction, desktop port, or engine decision is approved."
+  ]
+}

@@ -11,11 +11,21 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness** on 2026-06-02. It is a runtime-art contract and QA-harness milestone: the game now has 52 stable runtime art slots, fallback-first resolution, private-only Art Slots diagnostics, private mock routing, Art Slot Fallbacks Playtest Hub scenarios, and a validator that rejects unapproved/candidate/final-art runtime paths without generating/importing art or changing gameplay/saves.
+The current checkpoint is **v0.107 Salto Vertical Slice Composition Plan and Asset-Dimension Contracts** on 2026-06-02. It is a docs/tooling/validation milestone: the project now has a deterministic first Salto visual-slice composition plan, 15 planned asset contracts plus a Results-frame companion, known v0.106 runtime slot mappings, fallback owners, QA scenarios, dependency order, and a metadata-only packet generator under ignored `artifacts/art-review/salto-slice-packet/`. It generates no images, imports no art, approves no runtime loading, and changes no gameplay/saves/package metadata.
 
-The next recommended step is to have Emmanuel review the fallback harness and the first four v0.105 prompt/reference packets from the clean v0.106 private package. Do not generate a whole roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is to have Emmanuel review the v0.107 packet and choose exactly the next single asset in dependency order before any candidate is generated. Do not generate a whole roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start a desktop port, or start v0.108 until a future explicit goal approves a narrow next step.
 
-New v0.106 docs:
+New v0.107 docs:
+
+- `docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md`
+- `docs/V0107_ASSET_DIMENSION_CONTRACTS.md`
+- `docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json`
+- `docs/V0107_GENERATION_DEPENDENCY_ORDER.md`
+- `docs/V0107_FIRST_SLICE_REVIEW_GATE.md`
+- `docs/V0107_IMPLEMENTATION_REPORT.md`
+- `docs/V0107_EMMANUEL_ART_GENERATION_CHECKLIST.md`
+
+Recent v0.106 docs:
 
 - `docs/V0106_RUNTIME_ART_SLOT_CONTRACT.md`
 - `docs/V0106_PLACEHOLDER_FALLBACK_MATRIX.md`

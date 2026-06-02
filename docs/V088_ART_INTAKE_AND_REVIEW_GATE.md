@@ -113,6 +113,14 @@ For v0.106 runtime art slot tooling:
 - Candidate-review workspace paths and direct `public/assets/final` bypasses are blocked.
 - Diagnostics and mock routing remain private/dev only.
 
+For v0.107 Salto slice planning:
+
+- `docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json` defines first-slice asset contracts, known v0.106 runtime slots, dimensions, fallback owners, QA scenarios, dependency order, and no generated image paths.
+- `npm run art:packet:salto-slice` generates markdown/json packet metadata under ignored `artifacts/art-review/salto-slice-packet/`.
+- The packet is not an image-generation command and does not approve runtime integration.
+- The Results frame is a required UI companion to the HUD frame and remains reference-only.
+- The optional private mock composition preview is deferred until a future explicit UI/visual-QA scope.
+
 For future art-intake milestones:
 
 - Candidate metadata must be validated before runtime discussion.
@@ -123,9 +131,9 @@ For future art-intake milestones:
 
 Generate the minimum set needed for review:
 
-1. One Salto battlefield/environment frame.
-2. One Barrosan Worker concept sheet.
-3. One Barrosan unit or hero sheet.
-4. One HUD frame.
+1. Follow `docs/V0107_GENERATION_DEPENDENCY_ORDER.md`.
+2. Generate only the next single planned asset or tightly grouped sheet.
+3. Keep every candidate in ignored review workspaces until human review.
+4. Do not skip to runtime candidates before the reference frames and Barrosan readability proofs pass.
 
 Do not generate entire rosters, complete UI kits, or replacement battle sprites until those first candidates pass human review.

@@ -1,5 +1,47 @@
 # Changelog
 
+# v0.107 Salto Vertical Slice Composition Plan And Asset-Dimension Contracts - 2026-06-02
+
+This checkpoint defines the first polished Salto visual slice as docs, manifest validation, and metadata-only packet tooling. It does not generate images, import candidate art, load unapproved art, alter gameplay, change saves, rename stable IDs, change maps/factions/balance/rewards, choose an engine, start desktop work, change package metadata, or change the runtime title.
+
+Added:
+
+- `docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md`.
+- `docs/V0107_ASSET_DIMENSION_CONTRACTS.md`.
+- `docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json`.
+- `docs/V0107_GENERATION_DEPENDENCY_ORDER.md`.
+- `docs/V0107_FIRST_SLICE_REVIEW_GATE.md`.
+- `docs/V0107_IMPLEMENTATION_REPORT.md`.
+- `docs/V0107_EMMANUEL_ART_GENERATION_CHECKLIST.md`.
+- `tools/salto-slice/saltoSliceManifest.ts`.
+- `tools/salto-slice/generateSaltoSlicePacket.ts`.
+- `tools/salto-slice/saltoSlicePacket.test.ts`.
+- `npm run art:packet:salto-slice`.
+- Ignored `artifacts/art-review/salto-slice-packet/` metadata output.
+
+Changed:
+
+- The visual-intake gate now references the v0.107 Salto slice packet before any future first-slice candidate generation.
+- The v0.105 first-generation packet now points to the v0.107 dependency order for the broader first Salto slice.
+- Roadmap, handoff, checkpoint, and release docs now identify v0.107 as the current art-planning checkpoint.
+
+Not changed:
+
+- No save-version bump, save field, localStorage key, stable ID, serialized ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, generated image, imported image, unapproved runtime image, runtime asset path, package metadata, desktop path, engine choice, public diagnostic control, or runtime title changed.
+- `runtime-candidate-approved` remains non-loadable. Runtime image loading still requires a future `runtime-integrated` asset under a separate runtime integration milestone.
+
+Verification:
+
+- `npx vitest run tools/salto-slice/saltoSlicePacket.test.ts --reporter=dot` PASS, 1 file / 9 tests.
+- `npm run art:packet:salto-slice` PASS, metadata packet generated under ignored artifacts.
+- `npm test` PASS, 109 files / 768 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+- `npm run art:review:validate` PASS, committed registry/schema checked and 0 candidate metadata files.
+- `npm run validate:runtime-art-slots` PASS, 52 runtime art slots.
+- `git diff --check` PASS with the existing `.gitignore` LF-to-CRLF warning.
+
 # v0.106 Runtime Art Slot Adapter And Placeholder Fallback Harness - 2026-06-02
 
 This checkpoint adds a typed runtime art slot contract and placeholder fallback harness for future approved runtime assets. It does not generate images, import candidate art, load unapproved art, alter gameplay, change saves, rename stable IDs, change maps/factions/balance/rewards, choose an engine, start desktop work, or change the runtime title.

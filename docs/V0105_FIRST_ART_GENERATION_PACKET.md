@@ -2,6 +2,8 @@
 
 Status: first controlled review packet only. These candidates are reference-only and not runtime art.
 
+v0.107 update: before generating any first Salto slice candidate, also run `npm run art:packet:salto-slice` and follow `docs/V0107_GENERATION_DEPENDENCY_ORDER.md`. The four v0.105 starter IDs remain useful first examples, but v0.107 is now the source of truth for the broader one-slice order, dimensions, fallback owners, QA scenarios, and Results/campaign/Lume coverage.
+
 ## Summary
 
 Use this packet for the first tiny candidate batch after Emmanuel approves the prompt text. Do not generate a whole roster, full UI kit, final terrain set, runtime sprites, runtime buildings, icons, factions, maps, or replacement battle assets.

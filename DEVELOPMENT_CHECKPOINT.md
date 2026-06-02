@@ -1,6 +1,37 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness
+Updated: 2026-06-02 v0.107 Salto Vertical Slice Composition Plan and Asset-Dimension Contracts
+
+## v0.107 Salto Vertical Slice Composition Plan And Asset-Dimension Contracts - 2026-06-02
+
+Scope: docs/tooling/validation only. This checkpoint defines the first Salto visual-slice composition, asset-dimension contracts, deterministic machine-readable manifest, dependency order, first-slice review gate, Emmanuel checklist, and metadata-only packet generator. It does not generate/import art, load unapproved runtime art, alter gameplay, change saves, rename stable IDs, change maps/factions/balance/rewards, choose an engine, start desktop work, change package metadata, or change the runtime title.
+
+Included work:
+
+- Added v0.107 composition, dimension, manifest, dependency-order, review-gate, implementation, and Emmanuel checklist docs.
+- Added `tools/salto-slice/saltoSliceManifest.ts`, `generateSaltoSlicePacket.ts`, and focused tests.
+- Added `npm run art:packet:salto-slice`.
+- Added ignored `artifacts/art-review/salto-slice-packet/` output for metadata-only packet files.
+- Deferred optional private mock composition preview to avoid adding a new UI/visual-QA surface.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, generated/imported art, runtime asset path, package metadata, desktop path, or engine choice changed.
+
+Verification:
+
+```text
+npx vitest run tools/salto-slice/saltoSlicePacket.test.ts --reporter=dot - PASS, 1 file / 9 tests.
+npm run art:packet:salto-slice - PASS, metadata packet generated under ignored artifacts.
+npm test - PASS, 109 files / 768 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run art:review:validate - PASS, committed registry/schema checked and 0 candidate metadata files.
+npm run validate:runtime-art-slots - PASS, 52 runtime art slots.
+git diff --check - PASS with the existing .gitignore LF-to-CRLF warning.
+```
 
 ## v0.106 Runtime Art Slot Adapter And Placeholder Fallback Harness - 2026-06-02
 
