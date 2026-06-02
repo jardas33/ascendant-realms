@@ -1,6 +1,39 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode
+Updated: 2026-06-02 v0.105 Visual Asset Registry, Candidate Review Workspace, and Art-Intake Tooling
+
+## v0.105 Visual Asset Registry, Candidate Review Workspace, And Art-Intake Tooling - 2026-06-02
+
+Scope: tooling/schema/docs pass for future art review. This checkpoint turns the v0.88 vertical-slice asset plan into a deterministic reference-only registry, adds ignored candidate review workspace tooling, validates art-review state progression, generates SVG contact sheets and deterministic reports, and prepares Emmanuel's first controlled art generation packet. It does not generate/import art, wire runtime assets, alter gameplay, change saves, rename stable IDs, change package metadata, choose an engine, start desktop work, or start v0.106.
+
+Included work:
+
+- Added `src/game/art/visual-asset-registry.schema.json`.
+- Added `src/game/art/visual-asset-registry.json`.
+- Added `src/game/art/VisualAssetReviewRegistry.ts` and focused tests.
+- Added `tools/art-review/` init, validate, contact-sheet, report, and test coverage.
+- Added `npm run art:review:init`, `npm run art:review:validate`, `npm run art:review:contact-sheet`, and `npm run art:review:report`.
+- Added ignored `artifacts/art-review/candidates/`, `artifacts/art-review/contact-sheets/`, and `artifacts/art-review/reports/` roots.
+- Added v0.105 registry/workspace/state-machine/first-packet/implementation/Emmanuel review docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, runtime art assets, desktop path, package metadata, or engine choice changed.
+
+Verification:
+
+```text
+npm test -- VisualAssetReviewRegistry artReviewTools - PASS, 2 files / 16 tests.
+npm run art:review:validate - PASS, committed registry and schema checked.
+npm test - PASS, 107 files / 752 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+git diff --check - PASS.
+```
+
+Package generation and package verification are not required for v0.105 because package metadata and private package contents are unchanged.
 
 ## v0.104 Profiler-Guided Rendering Optimization And Public Battle HUD Minimal Mode - 2026-06-02
 

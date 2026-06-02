@@ -74,3 +74,13 @@ Later source/license work could add:
 - A separate asset-review report generated from the manifest.
 
 Those are deliberately deferred until the current metadata remains useful through screenshot QA expansion.
+
+## v0.105 Follow-Up
+
+v0.105 keeps the runtime visual asset manifest validation unchanged and adds a separate reference-only review registry:
+
+- runtime visual asset metadata remains validated by `npm run validate:content`;
+- future v0.88-style candidate review is validated by `npm run art:review:validate`;
+- `style-approved` remains non-runtime;
+- `runtime-integrated` requires separate future integration proof;
+- candidate workspaces stay under ignored `artifacts/art-review/` folders and must not touch `public/assets/` or `src/game/assets/`.

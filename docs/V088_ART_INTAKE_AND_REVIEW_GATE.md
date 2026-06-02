@@ -96,6 +96,13 @@ For v0.88:
 - `docs/V088_VERTICAL_SLICE_ASSET_MANIFEST.json` must parse as valid JSON.
 - `npm run validate:art-intake` must pass with no generated candidates.
 
+For v0.105 registry/workspace tooling:
+
+- `src/game/art/visual-asset-registry.json` preserves every v0.88 asset ID and keeps them `not-created`, `not-approved`, and `not-runtime`.
+- `npm run art:review:init -- --asset <assetId>` creates ignored candidate-review templates only under `artifacts/art-review/`.
+- `npm run art:review:validate` validates registry shape, candidate metadata, prompt references, source/tool/model, license terms, protected-IP assessment, human-review posture, runtime-slot posture, and integration readiness.
+- `npm run art:review:contact-sheet -- --asset <assetId>` and `npm run art:review:report -- --asset <assetId>` summarize manually placed candidates without network calls, image generation, runtime imports, or automatic approval.
+
 For future art-intake milestones:
 
 - Candidate metadata must be validated before runtime discussion.

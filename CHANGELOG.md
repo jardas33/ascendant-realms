@@ -1,5 +1,53 @@
 # Changelog
 
+# v0.105 Visual Asset Registry, Candidate Review Workspace, And Art-Intake Tooling - 2026-06-02
+
+This checkpoint adds reference-only tooling for future art review. It does not generate images, import art, alter runtime asset paths, change gameplay, change saves, rename IDs, change package metadata, choose an engine, start desktop work, or start v0.106.
+
+Added:
+
+- `src/game/art/visual-asset-registry.schema.json`.
+- `src/game/art/visual-asset-registry.json`.
+- `src/game/art/VisualAssetReviewRegistry.ts`.
+- `src/game/art/VisualAssetReviewRegistry.test.ts`.
+- `tools/art-review/shared.ts`.
+- `tools/art-review/initArtReviewWorkspace.ts`.
+- `tools/art-review/validateArtReview.ts`.
+- `tools/art-review/generateArtReviewContactSheet.ts`.
+- `tools/art-review/generateArtReviewReport.ts`.
+- `tools/art-review/artReviewTools.test.ts`.
+- `npm run art:review:init`.
+- `npm run art:review:validate`.
+- `npm run art:review:contact-sheet`.
+- `npm run art:review:report`.
+- Ignored `artifacts/art-review/candidates/`, `artifacts/art-review/contact-sheets/`, and `artifacts/art-review/reports/` roots.
+- `docs/V0105_VISUAL_ASSET_REGISTRY_SPEC.md`.
+- `docs/V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md`.
+- `docs/V0105_ART_REVIEW_STATE_MACHINE.md`.
+- `docs/V0105_FIRST_ART_GENERATION_PACKET.md`.
+- `docs/V0105_IMPLEMENTATION_REPORT.md`.
+- `docs/V0105_EMMANUEL_ART_REVIEW_GUIDE.md`.
+
+Changed:
+
+- README, roadmap, release checklist, checkpoint, handoff, v0.88 art-intake gate, and validation docs now describe v0.105's reference-only art-review tooling.
+- The v0.88 vertical-slice asset plan is now mirrored into a deterministic registry sorted by stable `assetId`.
+
+Not changed:
+
+- No generated/imported art, runtime asset path, save-version bump, save field, localStorage key, stable ID, serialized ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, desktop implementation, engine choice, runtime title, or package metadata changed.
+- Package generation and package verification are not required for v0.105 because package metadata and private package contents are unchanged.
+
+Verification:
+
+- `npm test -- VisualAssetReviewRegistry artReviewTools` PASS, 2 files / 16 tests.
+- `npm run art:review:validate` PASS, committed registry and schema checked.
+- `npm test` PASS, 107 files / 752 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+- `git diff --check` PASS.
+
 # v0.104 Profiler-Guided Rendering Optimization And Public Battle HUD Minimal Mode - 2026-06-02
 
 This checkpoint uses the committed v0.103 profiler evidence to reduce redundant rendering work and add public Minimal battle HUD density. It does not alter gameplay systems, balance, rewards, saves, stable IDs, campaign progression, Lume mechanics, maps, factions, art/assets, desktop implementation, runtime title, or production private-control posture.

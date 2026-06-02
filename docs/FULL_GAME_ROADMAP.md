@@ -6,6 +6,8 @@ Scope: planning only. This roadmap prepares Ascendant Realms for long-term growt
 
 Update note, 2026-06-01: v0.96 completed a first-session Tutorial/onboarding UX rescue within the browser prototype. It improved presentation, help, and Salto first-step guidance only; the longer-term roadmap below still treats broader tutorial/onboarding expansion as future gated work, especially any persistent preferences, new tutorial maps, analytics, or new gameplay teaching systems.
 
+Update note, 2026-06-02: v0.105 added reference-only visual asset registry and candidate review workspace tooling. This advances the asset pipeline hardening item without generating art, importing runtime assets, changing package metadata, or approving final/runtime art. Future art work should begin with the four-ID v0.105 packet and Emmanuel review before any broader roster, UI kit, or runtime integration milestone.
+
 ## Product Guardrails
 
 Ascendant Realms should grow through original lore, original faction identities, original UI language, original map names, original unit names, and original mechanical expression. It can share broad genre DNA with fantasy RTS/RPG hybrids, but it must not copy protected names, faction concepts, campaign structures, maps, art direction, sound, music, UI, or story expression from any existing game.

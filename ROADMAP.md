@@ -11,11 +11,20 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.104 Profiler-Guided Rendering Optimization and Public Battle HUD Minimal Mode** on 2026-06-02. It is an evidence-led rendering and HUD presentation milestone: ordinary HUD snapshot work is cadence-gated, minimap/fog/Lume rendering skips unchanged signatures, public battles default to Minimal HUD density, and private Standard/Debug HUD density review remains isolated to private playtest tools without changing gameplay, saves, rewards, stable IDs, Lume mechanics, art, maps, factions, runtime title, or desktop posture.
+The current checkpoint is **v0.105 Visual Asset Registry, Candidate Review Workspace, and Art-Intake Tooling** on 2026-06-02. It is a tooling/schema/docs milestone: the v0.88 vertical-slice asset plan now has a deterministic reference-only registry, ignored candidate review workspaces, strict art-review validation, SVG contact sheets, deterministic reports, and Emmanuel's first controlled art generation packet without generating/importing art or touching runtime assets.
 
-The next recommended step is to review the v0.104 profiler deltas, visual QA review pack, and Emmanuel retest notes before choosing any future rendering, visual, or gameplay follow-up. Do not start v0.105, add gameplay systems, change rewards, change saves, rename IDs, generate/import art, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is to have Emmanuel approve the first four prompt/reference packets, then run the v0.105 art-review tooling on manually placed candidates only. Do not start v0.106, generate a whole roster, import art into runtime, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
 
-New v0.104 docs:
+New v0.105 docs:
+
+- `docs/V0105_VISUAL_ASSET_REGISTRY_SPEC.md`
+- `docs/V0105_CANDIDATE_REVIEW_WORKSPACE_SPEC.md`
+- `docs/V0105_ART_REVIEW_STATE_MACHINE.md`
+- `docs/V0105_FIRST_ART_GENERATION_PACKET.md`
+- `docs/V0105_IMPLEMENTATION_REPORT.md`
+- `docs/V0105_EMMANUEL_ART_REVIEW_GUIDE.md`
+
+Recent v0.104 docs:
 
 - `docs/V0104_PROFILER_TRIAGE_REPORT.md`
 - `docs/V0104_PUBLIC_BATTLE_HUD_MINIMAL_MODE_SPEC.md`
