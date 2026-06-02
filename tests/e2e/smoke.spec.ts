@@ -1362,7 +1362,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("private playtest Aether Well Lume demo launches from a locked campaign without saving rewards @ci-fast", async ({ page }) => {
-    test.setTimeout(110_000);
+    // Hosted Ubuntu can exceed 110s here while launching the private Lume battle and returning through Results.
+    test.setTimeout(180_000);
     await page.addInitScript(() => {
       Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
     });
