@@ -392,14 +392,6 @@ export async function expectBattleLoaded(
   options: { timeoutMs?: number } = {}
 ): Promise<void> {
   const timeoutMs = options.timeoutMs ?? 30_000;
-  await expect(page.getByTestId("battle-hud"), `${context}: battle HUD`).toBeVisible({ timeout: timeoutMs });
-  await expect(page.getByTestId("battle-resources"), `${context}: resources`).toContainText("Crowns", {
-    timeout: timeoutMs
-  });
-  await expect(page.getByTestId("battle-hero-panel"), `${context}: hero panel`).toBeVisible({ timeout: timeoutMs });
-  await expect(page.getByTestId("battle-minimap"), `${context}: minimap shell`).toBeVisible({ timeout: timeoutMs });
-  await expect(page.getByTestId("minimap"), `${context}: minimap`).toBeVisible({ timeout: timeoutMs });
-  await expect(page.locator("canvas"), `${context}: Phaser canvas`).toBeVisible({ timeout: timeoutMs });
   await page.waitForFunction(
     () => {
       const scene: any = window.ascendantRealmsGame?.scene.getScene("BattleScene");
@@ -408,6 +400,17 @@ export async function expectBattleLoaded(
     undefined,
     { timeout: timeoutMs }
   );
+  await expect(
+    page.locator("[data-testid='battle-hud'], [data-testid^='battle-hud-density-']").first(),
+    `${context}: battle HUD`
+  ).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("battle-resources"), `${context}: resources`).toContainText("Crowns", {
+    timeout: timeoutMs
+  });
+  await expect(page.getByTestId("battle-hero-panel"), `${context}: hero panel`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("battle-minimap"), `${context}: minimap shell`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.getByTestId("minimap"), `${context}: minimap`).toBeVisible({ timeout: timeoutMs });
+  await expect(page.locator("canvas"), `${context}: Phaser canvas`).toBeVisible({ timeout: timeoutMs });
 }
 
 export async function clickReady(locator: Locator, context: string, options: ClickReadyOptions = {}): Promise<void> {

@@ -1478,7 +1478,8 @@ test.describe("Ascendant Realms browser smoke flows", () => {
   });
 
   test("private playtest hub launches representative gallery scenarios without mutating saves @ci-fast", async ({ page }) => {
-    test.setTimeout(120_000);
+    // Hosted Ubuntu runs can exceed 120s here after the expanded private hub gallery renders multiple battle previews.
+    test.setTimeout(180_000);
     await page.addInitScript(() => {
       Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
     });
