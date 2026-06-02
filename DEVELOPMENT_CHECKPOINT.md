@@ -1,6 +1,48 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.107 Salto Vertical Slice Composition Plan and Asset-Dimension Contracts
+Updated: 2026-06-02 v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile
+
+## v0.108 Representative Battle Benchmark Harness And Desktop Acceptance Profile - 2026-06-02
+
+Scope: private benchmark harness, provisional desktop acceptance profile, visual QA/review-pack coverage, package metadata/docs, and benchmark reporting only. This checkpoint adds deterministic no-save representative battle scenarios to the private Playtest Hub and local browser benchmark scripts. It does not alter gameplay, saves, rewards, stable IDs, maps, factions, art, public runtime posture, engine choice, desktop implementation, or desktop saves.
+
+Included work:
+
+- Added `src/game/playtest/RepresentativeBattleBenchmark.ts` and focused benchmark manifest tests.
+- Added ten private Playtest Hub entries under `REPRESENTATIVE BATTLE BENCHMARK`.
+- Added benchmark-only private battle staging for Tier S/M/L, Lume Hidden/Auto/Always, fog-heavy, notification-heavy, minimap interaction, and Results transition.
+- Added `benchmark:battle:smoke`, `benchmark:battle:representative`, `benchmark:battle:stress`, and `benchmark:battle:report`.
+- Added ignored `artifacts/benchmarks/v0108/` output and generated a 10-scenario report.
+- Updated visual QA to 213 screenshots and the visual review pack to 9 contact sheets.
+- Updated package metadata and package validation to include v0.107/v0.108 docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, XP, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, generated/imported art, runtime asset path, public benchmark controls, desktop path, desktop save path, or engine choice changed.
+- Mine/shrine coverage uses the existing capture sites `west_stone_cut` and `ford_toll`; no mine or shrine building IDs were added.
+
+Verification:
+
+```text
+npm test - PASS, 111 files / 777 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run benchmark:battle:smoke - PASS, 1 scenario.
+npm run benchmark:battle:representative - PASS, 8 scenarios.
+npm run benchmark:battle:stress - PASS, 1 local-only stress scenario.
+npm run benchmark:battle:report - PASS, refreshed 10-scenario report.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run visual:qa - PASS, 213 screenshots, 0 console errors, 0 screenshot retries.
+npm run visual:review-pack - PASS, 213 screenshots and 9 contact sheets.
+Browser plugin check - PASS, in-app Browser verified the Representative Battle Benchmark group plus smoke, representative, and Results-transition entries.
+```
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package does not carry a dirty suffix.
 
 ## v0.107 Salto Vertical Slice Composition Plan And Asset-Dimension Contracts - 2026-06-02
 

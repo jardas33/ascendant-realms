@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.108",
+  "title": "Representative Battle Benchmark Harness and Desktop Acceptance Profile",
+  "purpose": "Private representative battle benchmark scenarios for desktop acceptance discussion. They are deterministic private QA fixtures, not public gameplay content and not final hardware certification.",
+  "privateBoundary": {
+    "playtestHubGroup": "REPRESENTATIVE BATTLE BENCHMARK",
+    "saveIsolationRule": "No save, reward, XP, campaign progress, Retinue, relic, reputation, stable-ID, or localStorage mutation is allowed.",
+    "publicPostureRule": "Hidden from public posture because the Playtest Hub itself is gated to dev/private package mode.",
+    "stressRule": "Tier L stress is private/local only and excluded from bounded CI smoke."
+  },
+  "contentProfile": {
+    "mapId": "broken_ford",
+    "campaignNodeId": "aether_well_ruins",
+    "hero": "Aster",
+    "workerUnitId": "worker",
+    "playerMilitaryUnitIds": ["militia", "ranger"],
+    "enemyFactionId": "ashen_covenant",
+    "enemyUnitIds": ["raider", "hexer", "brute", "enemy_commander"],
+    "buildingIds": ["command_hall", "barracks", "enemy_stronghold", "enemy_barracks"],
+    "mineEquivalentSiteId": "west_stone_cut",
+    "shrineEquivalentSiteId": "ford_toll",
+    "resourceSiteFocusId": "west_stone_cut",
+    "lumeNetworkId": "aether_well_ruins_lume_ward",
+    "lumeLinkId": "west_stone_cut_to_ford_toll",
+    "currentContentBoundary": "Mine and shrine coverage uses existing capture-site infrastructure. No mine or shrine building IDs are added by v0.108."
+  },
+  "tiers": [
+    {
+      "tier": "S",
+      "label": "Tier S smoke",
+      "player": { "hero": 1, "workers": 1, "militia": 2, "rangers": 2 },
+      "enemy": { "raiders": 2, "hexers": 1, "brutes": 1, "commanders": 1 },
+      "structures": { "playerCommandHalls": 1, "playerBarracks": 1, "enemyStrongholds": 1, "enemyBarracks": 1 },
+      "siteInfrastructure": { "mineEquivalentSiteId": "west_stone_cut", "shrineEquivalentSiteId": "ford_toll", "resourceSiteFocusCount": 1 },
+      "lume": { "networkId": "aether_well_ruins_lume_ward", "linkId": "west_stone_cut_to_ford_toll", "requiredVisibleLinks": 1 },
+      "pressure": { "beatLabel": "single readable Ashen pressure beat", "nearbyEnemyCount": 4 }
+    },
+    {
+      "tier": "M",
+      "label": "Tier M representative",
+      "player": { "hero": 1, "workers": 1, "militia": 8, "rangers": 6 },
+      "enemy": { "raiders": 7, "hexers": 4, "brutes": 3, "commanders": 1 },
+      "structures": { "playerCommandHalls": 1, "playerBarracks": 1, "enemyStrongholds": 1, "enemyBarracks": 1 },
+      "siteInfrastructure": { "mineEquivalentSiteId": "west_stone_cut", "shrineEquivalentSiteId": "ford_toll", "resourceSiteFocusCount": 1 },
+      "lume": { "networkId": "aether_well_ruins_lume_ward", "linkId": "west_stone_cut_to_ford_toll", "requiredVisibleLinks": 1 },
+      "pressure": { "beatLabel": "representative Ashen approach warning", "nearbyEnemyCount": 8 }
+    },
+    {
+      "tier": "L",
+      "label": "Tier L stress",
+      "player": { "hero": 1, "workers": 1, "militia": 14, "rangers": 12 },
+      "enemy": { "raiders": 12, "hexers": 7, "brutes": 5, "commanders": 1 },
+      "structures": { "playerCommandHalls": 1, "playerBarracks": 1, "enemyStrongholds": 1, "enemyBarracks": 1 },
+      "siteInfrastructure": { "mineEquivalentSiteId": "west_stone_cut", "shrineEquivalentSiteId": "ford_toll", "resourceSiteFocusCount": 1 },
+      "lume": { "networkId": "aether_well_ruins_lume_ward", "linkId": "west_stone_cut_to_ford_toll", "requiredVisibleLinks": 1 },
+      "pressure": { "beatLabel": "dense but bounded private Ashen pressure beat", "nearbyEnemyCount": 12 }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "benchmark_battle_tier_s_smoke",
+      "title": "Tier S smoke",
+      "profile": "smoke",
+      "tier": "S",
+      "variant": "tier",
+      "viewport": "1366x768",
+      "includeInCiSmoke": true,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-network-status"],
+      "evidenceFocus": ["battle launch latency", "representative action latency", "small active-unit count"]
+    },
+    {
+      "id": "benchmark_battle_tier_m_representative",
+      "title": "Tier M representative",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "tier",
+      "viewport": "1600x900",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-network-status", "unit-order-summary"],
+      "evidenceFocus": ["FPS posture", "frame-time p95/p99", "HUD/minimap/fog counters", "representative action latency"]
+    },
+    {
+      "id": "benchmark_battle_tier_l_stress",
+      "title": "Tier L stress",
+      "profile": "stress",
+      "tier": "L",
+      "variant": "tier",
+      "viewport": "1920x1080",
+      "includeInCiSmoke": false,
+      "localOnly": true,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-network-status", "unit-order-summary"],
+      "evidenceFocus": ["stress density", "display objects", "units", "long tasks"]
+    },
+    {
+      "id": "benchmark_battle_lume_hidden",
+      "title": "Tier M with Lume Hidden",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "lume-hidden",
+      "viewport": "1366x768",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-visibility-controls"],
+      "evidenceFocus": ["Lume links hidden", "DOM nodes", "HUD/minimap rates"]
+    },
+    {
+      "id": "benchmark_battle_lume_auto",
+      "title": "Tier M with Lume Auto",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "lume-auto",
+      "viewport": "1600x900",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-network-status"],
+      "evidenceFocus": ["Lume links", "Lume endpoints", "frame-time p95"]
+    },
+    {
+      "id": "benchmark_battle_lume_always",
+      "title": "Tier M with Lume Always",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "lume-always",
+      "viewport": "1920x1080",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "lume-visibility-controls"],
+      "evidenceFocus": ["Lume link count", "display objects", "graphics objects"]
+    },
+    {
+      "id": "benchmark_battle_fog_heavy",
+      "title": "Tier M fog-heavy",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "fog-heavy",
+      "viewport": "1366x768",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap", "battle-objectives"],
+      "evidenceFocus": ["fog visible cells", "fog redraws", "minimap refreshes"]
+    },
+    {
+      "id": "benchmark_battle_notification_heavy",
+      "title": "Tier M notification-heavy",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "notification-heavy",
+      "viewport": "1600x900",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-status", "battle-minimap"],
+      "evidenceFocus": ["notifications emitted", "notifications visible", "status readability"]
+    },
+    {
+      "id": "benchmark_battle_minimap_interaction",
+      "title": "Tier M minimap interaction",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "minimap-interaction",
+      "viewport": "1366x768",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "battle-minimap"],
+      "evidenceFocus": ["minimap refreshes", "representative action latency", "command feedback marker"]
+    },
+    {
+      "id": "benchmark_battle_results_transition",
+      "title": "Tier M Results transition",
+      "profile": "representative",
+      "tier": "M",
+      "variant": "results-transition",
+      "viewport": "1366x768",
+      "includeInCiSmoke": false,
+      "localOnly": false,
+      "expectedVisibleUi": ["battle-hud", "private-demo-lume-summary"],
+      "evidenceFocus": ["Results transition latency", "DOM nodes", "long tasks"]
+    }
+  ],
+  "artifactOutputs": [
+    "artifacts/benchmarks/v0108/battle-benchmark-summary.json",
+    "artifacts/benchmarks/v0108/battle-benchmark-summary.md",
+    "artifacts/benchmarks/v0108/scenario-results.json",
+    "artifacts/benchmarks/v0108/acceptance-profile.json",
+    "artifacts/benchmarks/v0108/capability-report.json"
+  ]
+}

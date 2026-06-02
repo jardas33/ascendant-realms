@@ -11,7 +11,8 @@ describe("PlaytestScenarioGallery", () => {
       "lume",
       "meta",
       "art_slot_fallbacks",
-      "performance_lab"
+      "performance_lab",
+      "representative_battle_benchmark"
     ]);
 
     const ids = PLAYTEST_SCENARIOS.map((scenario) => scenario.id);
@@ -24,7 +25,7 @@ describe("PlaytestScenarioGallery", () => {
       expect(scenario.expectedVisibleUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.expectedAbsentUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.manualReviewQuestion).toContain("?");
-      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104|106)-[a-z0-9-]+$/u);
+      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104|106|108)-[a-z0-9-]+$/u);
       expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated/u);
     }
   });
@@ -80,7 +81,17 @@ describe("PlaytestScenarioGallery", () => {
       "perf_hud_minimal",
       "perf_hud_standard",
       "perf_lume_auto",
-      "perf_results_disclosure"
+      "perf_results_disclosure",
+      "benchmark_battle_tier_s_smoke",
+      "benchmark_battle_tier_m_representative",
+      "benchmark_battle_tier_l_stress",
+      "benchmark_battle_lume_hidden",
+      "benchmark_battle_lume_auto",
+      "benchmark_battle_lume_always",
+      "benchmark_battle_fog_heavy",
+      "benchmark_battle_notification_heavy",
+      "benchmark_battle_minimap_interaction",
+      "benchmark_battle_results_transition"
     ].forEach((id) => expect(scenarioById(id), `missing ${id}`).toBeDefined());
   });
 
@@ -110,6 +121,21 @@ describe("PlaytestScenarioGallery", () => {
     performanceScenarios.forEach((scenario) => {
       expect(scenario.saveIsolationRule).toContain("not mutated");
       expect(scenario.automatedCoverage).toBe("v0.104 private performance lab");
+    });
+  });
+
+  it("keeps Representative Battle Benchmark scenarios private, isolated, and deterministic", () => {
+    const benchmarkScenarios = PLAYTEST_SCENARIOS.filter((scenario) => scenario.groupId === "representative_battle_benchmark");
+    expect(benchmarkScenarios).toHaveLength(10);
+    expect(PLAYTEST_SCENARIO_GROUPS.find((group) => group.id === "representative_battle_benchmark")?.title).toBe(
+      "REPRESENTATIVE BATTLE BENCHMARK"
+    );
+    benchmarkScenarios.forEach((scenario) => {
+      expect(scenario.launchKind).toBe("lume_battle");
+      expect(scenario.saveIsolationRule).toContain("No save");
+      expect(scenario.saveIsolationRule).toContain("localStorage mutation");
+      expect(scenario.automatedCoverage).toMatch(/^v0\.108 representative benchmark/u);
+      expect(scenario.screenshotId).toMatch(/^v0108-benchmark-battle-/u);
     });
   });
 

@@ -32,8 +32,8 @@ describe("Visual review pack generator", () => {
     const secondIndex = await readFile(second.indexPath, "utf8");
     expect(firstManifest).toBe(secondManifest);
     expect(firstIndex).toBe(secondIndex);
-    expect(first.screenshotCount).toBe(13);
-    expect(first.contactSheetCount).toBe(8);
+    expect(first.screenshotCount).toBe(14);
+    expect(first.contactSheetCount).toBe(9);
   });
 
   it("maps manifest entries to screenshot files and keeps source screenshots unchanged", async () => {
@@ -94,6 +94,7 @@ describe("Visual review pack generator", () => {
       "contact-sheets/campaign-shell.html",
       "contact-sheets/battle-shell.html",
       "contact-sheets/lume-flow.html",
+      "contact-sheets/representative-benchmark.html",
       "contact-sheets/art-slot-fallbacks.html",
       "contact-sheets/results-flow.html"
     ].forEach((file) => expect(existsSync(path.join(result.outputDirectory, file))).toBe(true));
@@ -119,6 +120,7 @@ async function createFixture(
     ["v090-contested-capture-site-1600.png", "Contested capture site", "1600x900 wide-desktop", "Resource-site selection."],
     ["v086-battlefield-shell-1366.png", "Battlefield shell", "1366x768 laptop", "Fog softness and minimap markers."],
     ["v090-lume-inactive-1920.png", "Lume inactive", "1920x1080 full-hd", "Lume controls."],
+    ["v0108-benchmark-tier-m-representative-1600.png", "v0.108 Tier M representative", "1600x900 wide-desktop", "Representative benchmark."],
     ["v090-private-results-compact-1366.png", "Private-demo Results compact", "1366x768 laptop", "Private Results."],
     ["v090-normal-victory-results-1600.png", "Normal Victory Results", "1600x900 wide-desktop", "Normal Results."],
     ["v090-tutorial-1600.png", "Tutorial", "1600x900 wide-desktop", "Tutorial overlay."],

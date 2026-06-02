@@ -9,6 +9,7 @@ import { SaveSystem } from "../core/SaveSystem";
 import { SCENE_KEYS } from "../core/SceneKeys";
 import { requireCampaignNode } from "../data/contentIndex";
 import { Hero } from "../entities/Hero";
+import { isPrivatePlaytestHubLaunch } from "../playtest/PrivatePlaytestTools";
 import type { BattleStats } from "../core/GameTypes";
 import type { BattleRuntime } from "./BattleRuntime";
 import { cloneBattleLaunchRequestWithHero, type ResolvedBattleLaunch } from "./BattleLaunchRequest";
@@ -126,7 +127,8 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
       },
       rivalResult,
       relicReward: rivalResult?.relicReward,
-      relicRewardChoice: rivalResult?.relicRewardChoice
+      relicRewardChoice: rivalResult?.relicRewardChoice,
+      privatePlaytestHub: isPrivatePlaytestHubLaunch(launch.request)
     });
     return;
   }
@@ -141,7 +143,8 @@ export function endBattleAndOpenResults(options: BattleSceneResultsOptions): voi
     launchRequest: cloneBattleLaunchRequestWithHero(launch.request, resultsHeroSave),
     rivalResult,
     relicReward: rivalResult?.relicReward,
-    relicRewardChoice: rivalResult?.relicRewardChoice
+    relicRewardChoice: rivalResult?.relicRewardChoice,
+    privatePlaytestHub: isPrivatePlaytestHubLaunch(launch.request)
   });
 }
 

@@ -136,7 +136,11 @@ export function createPlaytestHubBattleLaunchRequest(scenarioId: string, heroSav
     });
   }
 
-  const isLumeScenario = scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume") || scenarioId.startsWith("art_slot_lume");
+  const isLumeScenario =
+    scenarioId.startsWith("lume") ||
+    scenarioId.startsWith("perf_lume") ||
+    scenarioId.startsWith("art_slot_lume") ||
+    scenarioId.startsWith("benchmark_battle");
   const nodeId = isLumeScenario ? "aether_well_ruins" : "border_village";
   const node = selectedCampaignNode(nodeId);
   if (!node || node.nodeType !== "battle") {

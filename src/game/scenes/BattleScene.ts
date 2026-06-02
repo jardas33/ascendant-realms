@@ -24,6 +24,7 @@ import {
   CAMPAIGN_NODE_BY_ID,
   CAMPAIGN_MODIFIER_BY_ID,
   FACTION_BY_ID,
+  requireBuilding,
   requireUnit,
   UPGRADE_BY_ID
 } from "../data/contentIndex";
@@ -160,6 +161,7 @@ import {
   registerPrivatePerformanceCounterProvider,
   type PrivatePerformanceCounters
 } from "../playtest/PrivatePerformanceProfiler";
+import { representativeBattleTierForScenario } from "../playtest/RepresentativeBattleBenchmark";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -1462,6 +1464,11 @@ export class BattleScene extends Phaser.Scene {
     });
 
     const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    let representativeBenchmarkHandled = false;
+    if (scenarioId.startsWith("benchmark_battle")) {
+      representativeBenchmarkHandled = this.applyRepresentativeBattleBenchmarkSetup(scenarioId, commandHall);
+    }
+
     const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero", "perf_hud_minimal", "perf_hud_standard", "perf_hud_debug", "art_slot_unit_fallback", "art_slot_hud_fallback", "art_slot_mock_routing"]);
     const selectedWorkerScenarios = new Set(["battle_selected_worker", "perf_selected_worker", "perf_hud_minimal_worker"]);
     const selectedSquadScenarios = new Set(["battle_selected_squad", "perf_selected_squad", "perf_large_unit_cluster"]);
@@ -1482,7 +1489,9 @@ export class BattleScene extends Phaser.Scene {
       this.captureSites.find((site) => site.definition.id === "crown_shrine") ??
       this.captureSites[0];
 
-    if (selectedHeroScenarios.has(scenarioId)) {
+    if (representativeBenchmarkHandled) {
+      playerUnits = this.units.filter((unit) => unit.alive && unit.team === "player");
+    } else if (selectedHeroScenarios.has(scenarioId)) {
       this.selectAndFocusPrivatePreview([this.hero], "Hero selected for private review.");
     } else if (selectedWorkerScenarios.has(scenarioId) && worker) {
       this.selectAndFocusPrivatePreview([worker], "Worker selected for private review.");
@@ -1510,7 +1519,7 @@ export class BattleScene extends Phaser.Scene {
       });
     }
 
-    if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume") || scenarioId.startsWith("art_slot_lume")) {
+    if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume") || scenarioId.startsWith("art_slot_lume") || scenarioId.startsWith("benchmark_battle")) {
       this.applyPrivateLumeScenarioSetup(scenarioId);
     }
 
@@ -1534,6 +1543,147 @@ export class BattleScene extends Phaser.Scene {
       this.addUnit(unit);
     }
     return this.units.filter((unit) => unit.alive && unit.team === "player");
+  }
+
+  private applyRepresentativeBattleBenchmarkSetup(scenarioId: string, commandHall?: Building): boolean {
+    const profile = representativeBattleTierForScenario(scenarioId);
+    const playerAnchor = commandHall?.position ?? this.hero.position;
+    const playerBarracks = this.ensurePrivateBenchmarkBarracks(playerAnchor);
+    const worker = this.ensurePrivateBenchmarkUnits("worker", "player", profile.player.workers, playerAnchor, "worker", 58)[0];
+    const militia = this.ensurePrivateBenchmarkUnits("militia", "player", profile.player.militia, playerAnchor, "militia", 96);
+    const rangers = this.ensurePrivateBenchmarkUnits("ranger", "player", profile.player.rangers, playerAnchor, "ranger", 132);
+    const enemyAnchor = this.findBuilding(this.activeMap.scenario.objectives.enemyBaseBuildingId, "enemy")?.position ?? {
+      x: this.activeMap.enemyStart.x,
+      y: this.activeMap.enemyStart.y
+    };
+    this.ensurePrivateBenchmarkUnits("raider", "enemy", profile.enemy.raiders, enemyAnchor, "raider", 108);
+    this.ensurePrivateBenchmarkUnits("hexer", "enemy", profile.enemy.hexers, enemyAnchor, "hexer", 148);
+    this.ensurePrivateBenchmarkUnits("brute", "enemy", profile.enemy.brutes, enemyAnchor, "brute", 188);
+    this.ensurePrivateBenchmarkUnits("enemy_commander", "enemy", profile.enemy.commanders, enemyAnchor, "commander", 220);
+
+    const mineSite = this.captureSites.find((site) => site.definition.id === profile.siteInfrastructure.mineEquivalentSiteId);
+    const shrineSite = this.captureSites.find((site) => site.definition.id === profile.siteInfrastructure.shrineEquivalentSiteId);
+    if (mineSite) {
+      mineSite.setOwner("player");
+      mineSite.setObjectiveRelevant(true);
+      mineSite.updateVisuals();
+    }
+    if (shrineSite) {
+      shrineSite.setOwner("player");
+      shrineSite.setObjectiveRelevant(true);
+      shrineSite.updateVisuals();
+    }
+    this.lumeNetworkDirector?.update();
+    this.renderLumeNetworkLinks();
+
+    this.stageRepresentativeBenchmarkPressure(profile.pressure.nearbyEnemyCount, shrineSite ?? mineSite);
+    const playerSelection = [this.hero, worker, ...militia.slice(0, 5), ...rangers.slice(0, 4)].filter(
+      (entity): entity is Unit | Hero => Boolean(entity)
+    );
+
+    if (scenarioId === "benchmark_battle_lume_hidden") {
+      this.lumeVisibilityMode = "hidden";
+    } else if (scenarioId === "benchmark_battle_lume_always") {
+      this.lumeVisibilityMode = "always";
+    } else {
+      this.lumeVisibilityMode = "auto";
+    }
+
+    if (scenarioId === "benchmark_battle_fog_heavy") {
+      const point = { x: this.activeMap.width * 0.48, y: this.activeMap.height * 0.48 };
+      this.cameraSystem.centerOn(point);
+      this.addMinimapPing(point.x, point.y, "#74d3f2", "Benchmark fog");
+      this.showCommandFeedbackMarker({ kind: "focus", point, label: "Fog" });
+      this.showMessage("Representative benchmark: fog-heavy posture.", point.x, point.y - 42, "#74d3f2", {
+        priority: "command"
+      });
+      return true;
+    }
+
+    if (scenarioId === "benchmark_battle_notification_heavy") {
+      this.showMessage("Critical: Ashen pressure approaching the Lume link.", this.hero.position.x, this.hero.position.y - 96, "#ffd27a", {
+        priority: "critical",
+        durationSeconds: 5
+      });
+      this.showMessage("Routine: hold Worker, Barracks, mine, and shrine posture.", this.hero.position.x + 40, this.hero.position.y - 56, "#74d3f2", {
+        priority: "routine",
+        durationSeconds: 5
+      });
+    }
+
+    if (scenarioId === "benchmark_battle_minimap_interaction") {
+      const focus = shrineSite?.position ?? mineSite?.position ?? playerAnchor;
+      this.cameraSystem.centerOn(focus);
+      this.addMinimapPing(focus.x, focus.y, "#74d3f2", "Benchmark minimap");
+      this.showCommandFeedbackMarker({ kind: "focus", point: focus, label: "Minimap" });
+      this.selectAndFocusPrivatePreview([playerBarracks], "Representative benchmark minimap and Barracks focus.");
+      return true;
+    }
+
+    if (scenarioId === "benchmark_battle_results_transition") {
+      this.selectAndFocusPrivatePreview(playerSelection, "Representative benchmark Results transition setup.");
+      return true;
+    }
+
+    this.selectAndFocusPrivatePreview(playerSelection, `Representative benchmark ${profile.label}.`);
+    return true;
+  }
+
+  private ensurePrivateBenchmarkBarracks(anchor: Position): Building {
+    const existing = this.findBuilding("barracks", "player");
+    if (existing) {
+      return existing;
+    }
+    const barracks = new Building(this, requireBuilding("barracks"), "player", anchor.x + 150, anchor.y - 88, {
+      constructionState: "completed",
+      constructionProgress: 1
+    });
+    this.addBuilding(barracks);
+    return barracks;
+  }
+
+  private ensurePrivateBenchmarkUnits(
+    unitId: string,
+    team: Team,
+    desiredCount: number,
+    anchor: Position,
+    idPrefix: string,
+    radius: number
+  ): Unit[] {
+    const existing = this.units.filter((unit) => unit.alive && unit.team === team && unit.definition.id === unitId);
+    const missing = Math.max(0, desiredCount - existing.length);
+    for (let index = 0; index < missing; index += 1) {
+      const sequence = existing.length + index + 1;
+      const angle = (sequence / Math.max(1, desiredCount)) * Math.PI * 2;
+      const unit = new Unit(
+        this,
+        requireUnit(unitId),
+        team,
+        anchor.x + Math.cos(angle) * radius,
+        anchor.y + Math.sin(angle) * radius,
+        { id: `private-benchmark-${idPrefix}-${sequence}` }
+      );
+      this.addUnit(unit);
+    }
+    return this.units.filter((unit) => unit.alive && unit.team === team && unit.definition.id === unitId);
+  }
+
+  private stageRepresentativeBenchmarkPressure(nearbyEnemyCount: number, focusSite?: CaptureSite): void {
+    const focus = focusSite?.position ?? { x: this.hero.position.x + 520, y: this.hero.position.y - 220 };
+    const enemies = this.units.filter((unit) => unit.alive && unit.team === "enemy").slice(0, nearbyEnemyCount);
+    enemies.forEach((unit, index) => {
+      const angle = (index / Math.max(1, enemies.length)) * Math.PI * 2;
+      const radius = 110 + (index % 3) * 34;
+      unit.setPosition(focus.x + Math.cos(angle) * radius, focus.y + Math.sin(angle) * radius);
+      unit.moveTarget = undefined;
+      unit.attackTargetId = undefined;
+      unit.attackMove = false;
+    });
+    if (focusSite) {
+      focusSite.capturingTeam = "enemy";
+      focusSite.captureProgress = Math.max(focusSite.captureProgress, 0.35);
+      focusSite.updateVisuals();
+    }
   }
 
   private applyPrivateLumeScenarioSetup(scenarioId: string): void {
@@ -1580,13 +1730,13 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
 
-    if (scenarioId === "lume_overlay_hidden" || scenarioId === "perf_lume_hidden") {
+    if (scenarioId === "lume_overlay_hidden" || scenarioId === "perf_lume_hidden" || scenarioId === "benchmark_battle_lume_hidden") {
       this.lumeVisibilityMode = "hidden";
     }
-    if (scenarioId === "lume_overlay_always" || scenarioId === "perf_lume_always") {
+    if (scenarioId === "lume_overlay_always" || scenarioId === "perf_lume_always" || scenarioId === "benchmark_battle_lume_always") {
       this.lumeVisibilityMode = "always";
     }
-    if (scenarioId === "lume_overlay_auto" || scenarioId === "perf_lume_auto") {
+    if (scenarioId === "lume_overlay_auto" || scenarioId === "perf_lume_auto" || scenarioId === "benchmark_battle_lume_auto") {
       this.lumeVisibilityMode = "auto";
     }
 

@@ -1,5 +1,62 @@
 # Changelog
 
+# v0.108 Representative Battle Benchmark Harness And Desktop Acceptance Profile - 2026-06-02
+
+This checkpoint adds a private no-save representative battle benchmark harness, local browser benchmark scripts, provisional desktop acceptance profile, visual QA coverage, and package metadata/docs. It does not change gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, or desktop saves.
+
+Added:
+
+- `src/game/playtest/RepresentativeBattleBenchmark.ts`.
+- `src/game/playtest/RepresentativeBattleBenchmark.test.ts`.
+- `tools/runRepresentativeBattleBenchmark.ts`.
+- `tools/reportRepresentativeBattleBenchmark.ts`.
+- `src/game/battle/BattleSceneResults.test.ts`.
+- Private Playtest Hub group `REPRESENTATIVE BATTLE BENCHMARK` with ten benchmark entries.
+- `npm run benchmark:battle:smoke`, `npm run benchmark:battle:representative`, `npm run benchmark:battle:stress`, and `npm run benchmark:battle:report`.
+- Ignored benchmark artifact root `artifacts/benchmarks/v0108/`.
+- `docs/V0108_REPRESENTATIVE_BATTLE_PROFILE.md`.
+- `docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json`.
+- `docs/V0108_BROWSER_BATTLE_BENCHMARK_REPORT.md`.
+- `docs/V0108_DESKTOP_ACCEPTANCE_PROFILE.md`.
+- `docs/V0108_PERFORMANCE_DELTA_REPORT.md`.
+- `docs/V0108_VISUAL_QA_REPORT.md`.
+- `docs/V0108_IMPLEMENTATION_REPORT.md`.
+- `docs/V0108_EMMANUEL_BENCHMARK_GUIDE.md`.
+
+Changed:
+
+- Private benchmark battle staging now creates representative Tier S/M/L no-save scenarios using existing runtime content only.
+- Private Results handoff preserves Playtest Hub context for forced-victory benchmark transitions.
+- Private package generation and validation now expect `v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile` and include v0.107/v0.108 docs.
+- Visual QA now targets 213 screenshots, and the visual review pack emits 9 contact sheets including Representative Benchmark.
+- Private performance counter rates clamp scene-transition counter resets to zero instead of reporting negative rates.
+
+Not changed:
+
+- No save-version bump, save field, localStorage key, stable ID, serialized ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, generated/imported art, unapproved runtime image, runtime asset path, public benchmark control, desktop path, engine choice, multiplayer, PvP, co-op, or runtime title changed.
+- Mine/shrine benchmark coverage uses existing capture-site infrastructure (`west_stone_cut` and `ford_toll`) and adds no mine or shrine building IDs.
+- Tier L stress remains private/local-only evidence and is not a CI acceptance lane.
+
+Verification:
+
+- `npm test` PASS, 111 files / 777 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- `npm run validate:content` PASS.
+- `npm run validate:art-intake` PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+- `npm run export:portable-content` PASS, 229 stable-ID manifest entries.
+- `npm run validate:portable-content` PASS, deterministic two-pass export.
+- `npm run test:save-translation-contract` PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+- `npm run benchmark:battle:smoke` PASS, 1 scenario.
+- `npm run benchmark:battle:representative` PASS, 8 scenarios.
+- `npm run benchmark:battle:stress` PASS, 1 local-only stress scenario.
+- `npm run benchmark:battle:report` PASS, refreshed 10-scenario report.
+- `npm run test:e2e:smoke:fast` PASS, 10 tests.
+- `npm run visual:qa` PASS, 213 screenshots, 0 console errors, 0 retries.
+- `npm run visual:review-pack` PASS, 213 screenshots and 9 contact sheets.
+- Browser plugin check PASS, in-app Browser verified the new group and key benchmark entries.
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package does not carry a dirty suffix.
+
 # v0.107 Salto Vertical Slice Composition Plan And Asset-Dimension Contracts - 2026-06-02
 
 This checkpoint defines the first polished Salto visual slice as docs, manifest validation, and metadata-only packet tooling. It does not generate images, import candidate art, load unapproved art, alter gameplay, change saves, rename stable IDs, change maps/factions/balance/rewards, choose an engine, start desktop work, change package metadata, or change the runtime title.

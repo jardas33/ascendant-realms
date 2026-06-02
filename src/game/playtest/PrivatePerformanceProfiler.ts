@@ -225,10 +225,10 @@ export function summarizePerformanceSamples(options: {
     },
     latestCounters,
     ratesPerSecond: {
-      fogRedraws: roundMetric((latestCounters.fogRedraws - firstCounters.fogRedraws) / durationSeconds),
-      minimapRefreshes: roundMetric((latestCounters.minimapRefreshes - firstCounters.minimapRefreshes) / durationSeconds),
-      hudUpdates: roundMetric((latestCounters.hudUpdates - firstCounters.hudUpdates) / durationSeconds),
-      notificationsEmitted: roundMetric((latestCounters.notificationsEmitted - firstCounters.notificationsEmitted) / durationSeconds)
+      fogRedraws: counterRate(latestCounters.fogRedraws, firstCounters.fogRedraws, durationSeconds),
+      minimapRefreshes: counterRate(latestCounters.minimapRefreshes, firstCounters.minimapRefreshes, durationSeconds),
+      hudUpdates: counterRate(latestCounters.hudUpdates, firstCounters.hudUpdates, durationSeconds),
+      notificationsEmitted: counterRate(latestCounters.notificationsEmitted, firstCounters.notificationsEmitted, durationSeconds)
     }
   };
 }
@@ -552,6 +552,10 @@ function percentile(sortedValues: number[], percentileValue: number): number {
 
 function roundMetric(value: number): number {
   return Number((Number.isFinite(value) ? value : 0).toFixed(2));
+}
+
+function counterRate(latest: number, first: number, durationSeconds: number): number {
+  return roundMetric(Math.max(0, latest - first) / durationSeconds);
 }
 
 function escapeHtml(value: string): string {

@@ -1,4 +1,8 @@
 import { V0104_PERFORMANCE_SCENARIOS, type PrivatePerformanceScenarioManifestEntry } from "./PrivatePerformanceProfiler";
+import {
+  REPRESENTATIVE_BATTLE_BENCHMARK_GROUP_TITLE,
+  REPRESENTATIVE_BATTLE_BENCHMARK_SCENARIOS
+} from "./RepresentativeBattleBenchmark";
 
 export type PlaytestScenarioGroupId =
   | "campaign_shell"
@@ -7,7 +11,8 @@ export type PlaytestScenarioGroupId =
   | "lume"
   | "meta"
   | "art_slot_fallbacks"
-  | "performance_lab";
+  | "performance_lab"
+  | "representative_battle_benchmark";
 
 export type PlaytestScenarioLaunchKind =
   | "campaign"
@@ -45,7 +50,8 @@ export const PLAYTEST_SCENARIO_GROUPS: PlaytestScenarioGroupDefinition[] = [
   { id: "lume", title: "Lume" },
   { id: "meta", title: "Meta" },
   { id: "art_slot_fallbacks", title: "Art Slot Fallbacks" },
-  { id: "performance_lab", title: "Performance Lab" }
+  { id: "performance_lab", title: "Performance Lab" },
+  { id: "representative_battle_benchmark", title: REPRESENTATIVE_BATTLE_BENCHMARK_GROUP_TITLE }
 ];
 
 const NO_SAVE_RULE =
@@ -109,6 +115,22 @@ export const PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = [
       `v0104-${entry.id.replaceAll("_", "-")}`,
       "v0.104 private performance lab",
       `private performance lab: ${entry.title}`,
+      entry.saveIsolationRule
+    )
+  ),
+  ...REPRESENTATIVE_BATTLE_BENCHMARK_SCENARIOS.map((entry) =>
+    scenario(
+      entry.launchScenarioId,
+      "representative_battle_benchmark",
+      entry.title,
+      "lume_battle",
+      entry.purpose,
+      entry.expectedVisibleUi,
+      ["results-primary-actions"],
+      "Does this representative benchmark state stay readable and responsive?",
+      `v0108-${entry.id.replaceAll("_", "-")}`,
+      entry.includeInCiSmoke ? "v0.108 representative benchmark smoke" : "v0.108 representative benchmark private local evidence",
+      `private representative battle benchmark: ${entry.title}`,
       entry.saveIsolationRule
     )
   )

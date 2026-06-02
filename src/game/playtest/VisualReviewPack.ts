@@ -12,6 +12,7 @@ export const REQUIRED_REVIEW_SCREEN_GROUPS = [
   "Capture Sites",
   "Fog And Minimap",
   "Lume States",
+  "Representative Benchmark",
   "Art Slot Fallbacks",
   "Private Demo Results",
   "Normal Results",
@@ -30,6 +31,7 @@ const FOCUSED_CONTACT_SHEETS: readonly { id: string; title: string; groups: read
     groups: ["Battle HUD", "Selected Units", "Selected Buildings", "Capture Sites", "Fog And Minimap"]
   },
   { id: "lume-flow", title: "Lume flow", groups: ["Lume States", "Private Demo Results"] },
+  { id: "representative-benchmark", title: "Representative benchmark", groups: ["Representative Benchmark"] },
   { id: "art-slot-fallbacks", title: "Art slot fallbacks", groups: ["Art Slot Fallbacks"] },
   { id: "results-flow", title: "Results flow", groups: ["Private Demo Results", "Normal Results"] }
 ] as const;
@@ -551,6 +553,9 @@ function screenFamilyForCapture(
   matrixEntry?: VisualRegressionEntry
 ): (typeof REQUIRED_REVIEW_SCREEN_GROUPS)[number] {
   const haystack = `${capture.title} ${capture.fileName} ${capture.note} ${matrixEntry?.route ?? ""} ${matrixEntry?.state ?? ""}`.toLowerCase();
+  if (haystack.includes("v0108-benchmark") || haystack.includes("representative benchmark")) {
+    return "Representative Benchmark";
+  }
   if (haystack.includes("art slot") || haystack.includes("runtime art slot") || haystack.includes("v0106-art-slot")) {
     return "Art Slot Fallbacks";
   }

@@ -40,6 +40,23 @@ describe("PrivatePerformanceProfiler", () => {
     expect(summary.ratesPerSecond.minimapRefreshes).toBe(3);
   });
 
+  it("clamps derived counter rates when a scene transition resets counters", () => {
+    const summary = summarizePerformanceSamples({
+      scenarioId: "perf_results_disclosure",
+      samples: [
+        sample(0, 16, { hudUpdates: 12, minimapRefreshes: 8, fogRedraws: 4, notificationsEmitted: 3 }),
+        sample(1000, 20, { hudUpdates: 0, minimapRefreshes: 0, fogRedraws: 0, notificationsEmitted: 0 })
+      ]
+    });
+
+    expect(summary.ratesPerSecond).toEqual({
+      fogRedraws: 0,
+      minimapRefreshes: 0,
+      hudUpdates: 0,
+      notificationsEmitted: 0
+    });
+  });
+
   it("keeps the private Performance Lab scenario manifest deterministic and isolated", () => {
     expect(V0103_PERFORMANCE_SCENARIOS).toHaveLength(17);
     const ids = V0103_PERFORMANCE_SCENARIOS.map((entry) => entry.id);

@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 203;
+const EXPECTED_SCREENSHOT_COUNT = 213;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
 const VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS = 90_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
@@ -2426,6 +2426,73 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await expect(page.getByTestId("tutorial-overlay")).toBeVisible();
     await captureView(page, group, "v0.104 Tutorial Minimal", "v0104-tutorial-guidance-minimal-1366.png", LAPTOP, "Tutorial guidance remains visible while the public battle HUD uses Minimal density.");
     await returnToPrivateHub(page);
+
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.108 representative battle benchmark states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0108-representative-battle-benchmark";
+    const consoleErrors = attachConsoleCollector(page, group);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+
+    await useViewport(page, LAPTOP);
+    await openPrivatePlaytestHub(page);
+    await page.getByTestId("playtest-group-representative_battle_benchmark").scrollIntoViewIfNeeded();
+
+    await launchPrivateHudScenario(page, "benchmark_battle_tier_s_smoke");
+    await captureView(page, group, "v0.108 Tier S smoke", "v0108-benchmark-tier-s-smoke-1366.png", LAPTOP, "Tier S representative smoke with hero, Worker, two player military types, Ashen pressure, one Lume link, minimap, and no-save posture.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, WIDE_DESKTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_tier_m_representative");
+    await captureView(page, group, "v0.108 Tier M representative", "v0108-benchmark-tier-m-representative-1600.png", WIDE_DESKTOP, "Tier M representative battle posture for desktop acceptance discussion.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, FULL_HD);
+    await launchPrivateHudScenario(page, "benchmark_battle_tier_l_stress");
+    await captureView(page, group, "v0.108 Tier L stress", "v0108-benchmark-tier-l-stress-1920.png", FULL_HD, "Tier L stress remains private/local-only density evidence.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, LAPTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_lume_hidden");
+    await captureView(page, group, "v0.108 Lume Hidden", "v0108-benchmark-lume-hidden-1366.png", LAPTOP, "Representative Tier M with Lume Hidden mode for quieter overlay comparison.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, WIDE_DESKTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_lume_auto");
+    await captureView(page, group, "v0.108 Lume Auto", "v0108-benchmark-lume-auto-1600.png", WIDE_DESKTOP, "Representative Tier M with default Lume Auto mode.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, FULL_HD);
+    await launchPrivateHudScenario(page, "benchmark_battle_lume_always");
+    await captureView(page, group, "v0.108 Lume Always", "v0108-benchmark-lume-always-1920.png", FULL_HD, "Representative Tier M with Always-visible Lume inspection mode.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, LAPTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_fog_heavy");
+    await captureView(page, group, "v0.108 fog-heavy", "v0108-benchmark-fog-heavy-1366.png", LAPTOP, "Representative Tier M fog-heavy posture with minimap and objective surfaces visible.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, WIDE_DESKTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_notification_heavy");
+    await captureView(page, group, "v0.108 notification-heavy", "v0108-benchmark-notification-heavy-1600.png", WIDE_DESKTOP, "Representative Tier M notification-heavy posture with bounded Ashen pressure copy.");
+    await returnToPrivateHub(page);
+
+    await useViewport(page, LAPTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_minimap_interaction");
+    await captureView(page, group, "v0.108 minimap interaction", "v0108-benchmark-minimap-interaction-1366.png", LAPTOP, "Representative Tier M minimap interaction posture with focus marker evidence.");
+    await returnToPrivateHub(page);
+
+    await launchPrivateHudScenario(page, "benchmark_battle_results_transition");
+    const transitioned = await page.evaluate(() => (window as any).__ASCENDANT_TEST_HOOKS__?.forceBattleVictory?.() ?? false);
+    expect(transitioned).toBe(true);
+    await expect(page.getByTestId("private-demo-lume-summary")).toBeVisible();
+    await captureView(page, group, "v0.108 Results transition", "v0108-benchmark-results-transition-1366.png", LAPTOP, "Representative Tier M no-save battle-to-private-Results transition.");
+    await clickReady(page.getByTestId("results-playtest-hub"), `${group} return from results`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
+    await expect(page.getByTestId("playtest-hub")).toBeVisible();
 
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });

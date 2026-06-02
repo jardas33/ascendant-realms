@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.106 Runtime Art Slot Adapter and Placeholder Fallback Harness";
+const CHECKPOINT = "v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -423,6 +423,21 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0106_VISUAL_QA_REPORT.md", join(packageDir, "V0106_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V0106_IMPLEMENTATION_REPORT.md", join(packageDir, "V0106_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md", join(packageDir, "V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md"));
+  await copyMarkdown("docs/V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md", join(packageDir, "V0107_SALTO_VERTICAL_SLICE_COMPOSITION_SPEC.md"));
+  await copyMarkdown("docs/V0107_ASSET_DIMENSION_CONTRACTS.md", join(packageDir, "V0107_ASSET_DIMENSION_CONTRACTS.md"));
+  await copyMarkdown("docs/V0107_SALTO_VERTICAL_SLICE_MANIFEST.json", join(packageDir, "V0107_SALTO_VERTICAL_SLICE_MANIFEST.json"));
+  await copyMarkdown("docs/V0107_GENERATION_DEPENDENCY_ORDER.md", join(packageDir, "V0107_GENERATION_DEPENDENCY_ORDER.md"));
+  await copyMarkdown("docs/V0107_FIRST_SLICE_REVIEW_GATE.md", join(packageDir, "V0107_FIRST_SLICE_REVIEW_GATE.md"));
+  await copyMarkdown("docs/V0107_IMPLEMENTATION_REPORT.md", join(packageDir, "V0107_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0107_EMMANUEL_ART_GENERATION_CHECKLIST.md", join(packageDir, "V0107_EMMANUEL_ART_GENERATION_CHECKLIST.md"));
+  await copyMarkdown("docs/V0108_REPRESENTATIVE_BATTLE_PROFILE.md", join(packageDir, "V0108_REPRESENTATIVE_BATTLE_PROFILE.md"));
+  await copyMarkdown("docs/V0108_BENCHMARK_SCENARIO_MANIFEST.json", join(packageDir, "V0108_BENCHMARK_SCENARIO_MANIFEST.json"));
+  await copyMarkdown("docs/V0108_BROWSER_BATTLE_BENCHMARK_REPORT.md", join(packageDir, "V0108_BROWSER_BATTLE_BENCHMARK_REPORT.md"));
+  await copyMarkdown("docs/V0108_DESKTOP_ACCEPTANCE_PROFILE.md", join(packageDir, "V0108_DESKTOP_ACCEPTANCE_PROFILE.md"));
+  await copyMarkdown("docs/V0108_PERFORMANCE_DELTA_REPORT.md", join(packageDir, "V0108_PERFORMANCE_DELTA_REPORT.md"));
+  await copyMarkdown("docs/V0108_VISUAL_QA_REPORT.md", join(packageDir, "V0108_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0108_IMPLEMENTATION_REPORT.md", join(packageDir, "V0108_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0108_EMMANUEL_BENCHMARK_GUIDE.md", join(packageDir, "V0108_EMMANUEL_BENCHMARK_GUIDE.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -452,7 +467,8 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     feedbackFile: "CONTROL_FEEDBACK_INTAKE_TEMPLATE.md",
     knownWarnings: [
       "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
-      "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review."
+      "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review.",
+      "v0.108 benchmark numbers are local browser QA evidence, not final desktop hardware certification."
     ],
     notForJudging: [
       "final art quality",
@@ -525,7 +541,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.106, start with V0106_EMMANUEL_RUNTIME_ART_SLOT_GUIDE.md, V0106_RUNTIME_ART_SLOT_CONTRACT.md, V0106_PLACEHOLDER_FALLBACK_MATRIX.md, and V0106_ART_SLOT_VALIDATION_REPORT.md. The package includes the v0.105 art registry/review docs for context and adds a typed runtime art slot adapter, placeholder fallback harness, private-only diagnostics, and private mock routing mode. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, or runtime/internal title.
+For v0.108, start with V0108_EMMANUEL_BENCHMARK_GUIDE.md, V0108_REPRESENTATIVE_BATTLE_PROFILE.md, V0108_DESKTOP_ACCEPTANCE_PROFILE.md, and V0108_BROWSER_BATTLE_BENCHMARK_REPORT.md. The package includes the v0.107 Salto composition context plus the v0.108 private representative benchmark harness. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, or runtime/internal title.
 
 ## Known Warning
 
