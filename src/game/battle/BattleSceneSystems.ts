@@ -40,6 +40,7 @@ import { isPatrolEligibleUnit, patrolEligibilityMessage } from "../systems/Patro
 import type { TechState } from "../systems/PrerequisiteSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { RepairSystem } from "../systems/RepairSystem";
+import type { RenderLifecycleMetricsRecorder } from "../systems/RenderLifecycleMetrics";
 import { SelectionSystem } from "../systems/SelectionSystem";
 import type { SpatialQueryMetricsRecorder } from "../systems/SpatialQueryMetrics";
 import { findWalkableTrainedUnitSpawnPoint, TrainingSystem } from "../systems/TrainingSystem";
@@ -133,6 +134,7 @@ interface CreateBattleSceneSystemsOptions {
   finishPrivateDemo?: () => void;
   canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
   recordSpatialQueryMetrics?: SpatialQueryMetricsRecorder;
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder;
 }
 
 // BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
@@ -192,7 +194,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     exitPrivateDemo,
     finishPrivateDemo,
     canEnemyHeroJoinAttack,
-    recordSpatialQueryMetrics
+    recordSpatialQueryMetrics,
+    recordRenderLifecycleMetrics
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
@@ -559,7 +562,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
       onMenu: openMainMenu,
       onResume: resumeBattle,
       onExitToMainMenu: exitToMainMenu
-    })
+    },
+    { recordRenderLifecycleMetrics })
   );
 
   inputSystem = new InputSystem({

@@ -153,6 +153,14 @@ import {
   type SpatialQueryCounterDelta,
   type SpatialQueryCounters
 } from "../systems/SpatialQueryMetrics";
+import {
+  addRenderLifecycleCounters,
+  cloneRenderLifecycleCounters,
+  createEmptyRenderLifecycleCounters,
+  setActiveRenderLifecycleMetricsRecorder,
+  type RenderLifecycleCounterDelta,
+  type RenderLifecycleCounters
+} from "../systems/RenderLifecycleMetrics";
 import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { findWalkableTrainedUnitSpawnPoint } from "../systems/TrainingSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
@@ -271,6 +279,8 @@ interface AscendantBattleTestHooks {
   resetBattleLoopPhaseProfiler?: () => BattleLoopPhaseSummary;
   getSpatialQueryMetrics?: () => SpatialQueryCounters;
   resetSpatialQueryMetrics?: () => SpatialQueryCounters;
+  getRenderLifecycleMetrics?: () => RenderLifecycleCounters;
+  resetRenderLifecycleMetrics?: () => RenderLifecycleCounters;
 }
 
 interface LumeRenderLinkSnapshot {
@@ -360,6 +370,8 @@ export class BattleScene extends Phaser.Scene {
   private nextMinimapPingId = 1;
   private rallyMarkers = new Map<string, Phaser.GameObjects.Container>();
   private commandFeedbackMarkers = new Set<Phaser.GameObjects.Container>();
+  private commandFeedbackMarkerPool: Phaser.GameObjects.Container[] = [];
+  private nextCommandFeedbackMarkerToken = 1;
   private fogOfWar?: FogOfWarSystem;
   private fogOverlay?: Phaser.GameObjects.Graphics;
   private neutralCampLabels: NeutralCampLabel[] = [];
@@ -384,11 +396,14 @@ export class BattleScene extends Phaser.Scene {
   private battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
   private battleLoopPhaseProfiler = new BattleLoopPhaseProfiler();
   private spatialQueryCounters = createEmptySpatialQueryCounters();
+  private renderLifecycleCounters = createEmptyRenderLifecycleCounters();
   private trustedDiagnosticsPanel?: HTMLElement;
   private trustedDiagnosticsPanelExpanded = false;
   private trustedDiagnosticsHandler?: (event: MouseEvent) => void;
   private cachedMinimapSnapshot?: MinimapSnapshot;
   private cachedMinimapSnapshotAtSeconds = 0;
+  private cachedMinimapCameraSignature = "";
+  private minimapDirty = true;
   private lastFogDiagnosticRedrawAtSeconds = 0;
   private lastAppliedTrustedDiagnosticsSignature = "";
   private lastAppliedBattleLoopDiagnosticsSignature = "";
@@ -542,6 +557,10 @@ export class BattleScene extends Phaser.Scene {
 
   private resetRuntimeState(): void {
     document.getElementById("ui-root")?.replaceChildren();
+    this.renderLifecycleCounters = createEmptyRenderLifecycleCounters();
+    setActiveRenderLifecycleMetricsRecorder(
+      isPrivatePlaytestToolsEnabled() ? (delta) => this.recordRenderLifecycleMetrics(delta) : undefined
+    );
     this.settings = normalizeSettingsData(SaveSystem.load()?.settings ?? DEFAULT_SETTINGS);
     applySettingsToDocument(this.settings);
     AudioManager.configure(this.settings);
@@ -603,9 +622,12 @@ export class BattleScene extends Phaser.Scene {
     this.battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
     this.battleLoopPhaseProfiler.reset();
     this.spatialQueryCounters = createEmptySpatialQueryCounters();
+    this.renderLifecycleCounters = createEmptyRenderLifecycleCounters();
     this.trustedDiagnosticsPanelExpanded = false;
     this.cachedMinimapSnapshot = undefined;
     this.cachedMinimapSnapshotAtSeconds = 0;
+    this.cachedMinimapCameraSignature = "";
+    this.minimapDirty = true;
     this.lastFogDiagnosticRedrawAtSeconds = 0;
     this.lastAppliedTrustedDiagnosticsSignature = "";
     this.lastAppliedBattleLoopDiagnosticsSignature = "";
@@ -635,7 +657,11 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private drawMap(): void {
-    drawBattleMap(this, this.activeMap);
+    drawBattleMap(
+      this,
+      this.activeMap,
+      isPrivatePlaytestToolsEnabled() ? (delta) => this.recordRenderLifecycleMetrics(delta) : undefined
+    );
   }
 
   private spawnScenario(): void {
@@ -721,6 +747,9 @@ export class BattleScene extends Phaser.Scene {
       canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit),
       recordSpatialQueryMetrics: isPrivatePlaytestToolsEnabled()
         ? (delta) => this.recordSpatialQueryMetrics(delta)
+        : undefined,
+      recordRenderLifecycleMetrics: isPrivatePlaytestToolsEnabled()
+        ? (delta) => this.recordRenderLifecycleMetrics(delta)
         : undefined
     });
 
@@ -819,8 +848,12 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createFogOverlay(): void {
-    this.fogOverlay?.destroy();
+    if (this.fogOverlay) {
+      this.fogOverlay.destroy();
+      this.recordRenderLifecycleMetrics({ graphicsDestroyed: 1 });
+    }
     this.fogOverlay = this.add.graphics().setDepth(21);
+    this.recordRenderLifecycleMetrics({ graphicsCreated: 1 });
   }
 
   private updateFogOfWar(deltaSeconds: number, force = false): void {
@@ -832,6 +865,7 @@ export class BattleScene extends Phaser.Scene {
     if (!this.isFogActive()) {
       this.fogOverlay?.clear().setVisible(false);
       this.lastFogRenderSignature = "";
+      this.minimapDirty = true;
       this.applyFogEntityVisibility(false);
       return;
     }
@@ -914,6 +948,8 @@ export class BattleScene extends Phaser.Scene {
     this.lastFogRenderSignature = signature;
     this.lastFogDiagnosticRedrawAtSeconds = this.runtime.elapsedSeconds;
     this.performanceCounters.fogRedraws += 1;
+    this.minimapDirty = true;
+    this.recordRenderLifecycleMetrics({ fogRedraws: 1 });
     this.fogOverlay.clear().setVisible(true);
     this.fogOfWar.forEachCell((x, y, width, height, state) => {
       if (state === "visible") {
@@ -1065,47 +1101,30 @@ export class BattleScene extends Phaser.Scene {
   private showCommandFeedbackMarker(event: CommandFeedbackMarkerEvent): void {
     if (this.commandFeedbackMarkers.size >= 18) {
       const [oldest] = this.commandFeedbackMarkers;
-      oldest?.destroy(true);
       if (oldest) {
-        this.commandFeedbackMarkers.delete(oldest);
+        this.releaseCommandFeedbackMarker(oldest);
       }
     }
 
     const presentation = commandFeedbackMarkerPresentation(event, {
       reducedMotion: this.settings.reducedMotionEnabled
     });
-    const marker = this.add.container(event.point.x, event.point.y).setDepth(88).setAlpha(0.96).setName(`command-feedback-${event.kind}`);
-    const graphics = this.add.graphics();
-    this.drawCommandFeedbackMarker(graphics, presentation, event);
-    marker.add(graphics);
-
-    const label = this.add
-      .text(0, -presentation.radius - 20, presentation.label, {
-        fontFamily: "Verdana, Arial, sans-serif",
-        fontSize: "10px",
-        color: presentation.textColor,
-        backgroundColor: "#08100c",
-        stroke: "#101511",
-        strokeThickness: 3
-      })
-      .setOrigin(0.5)
-      .setPadding(5, 2, 5, 2);
-    marker.add(label);
+    const marker = this.acquireCommandFeedbackMarker(event, presentation);
+    const token = this.nextCommandFeedbackMarkerToken;
+    this.nextCommandFeedbackMarkerToken += 1;
+    marker.setData("commandFeedbackToken", token);
     this.commandFeedbackMarkers.add(marker);
 
-    let destroyed = false;
-    const destroyMarker = () => {
-      if (destroyed) {
+    const releaseMarker = () => {
+      if (marker.getData("commandFeedbackToken") !== token) {
         return;
       }
-      destroyed = true;
-      this.commandFeedbackMarkers.delete(marker);
-      marker.destroy(true);
+      this.releaseCommandFeedbackMarker(marker);
     };
 
     if (this.settings.reducedMotionEnabled) {
-      this.time.delayedCall(presentation.durationMs, destroyMarker);
-      globalThis.setTimeout(destroyMarker, presentation.durationMs + 100);
+      this.time.delayedCall(presentation.durationMs, releaseMarker);
+      globalThis.setTimeout(releaseMarker, presentation.durationMs + 100);
       return;
     }
 
@@ -1115,9 +1134,80 @@ export class BattleScene extends Phaser.Scene {
       scale: 1.14,
       duration: presentation.durationMs,
       ease: "Sine.easeOut",
-      onComplete: destroyMarker
+      onComplete: releaseMarker
     });
-    globalThis.setTimeout(destroyMarker, presentation.durationMs + 350);
+    globalThis.setTimeout(releaseMarker, presentation.durationMs + 350);
+  }
+
+  private acquireCommandFeedbackMarker(
+    event: CommandFeedbackMarkerEvent,
+    presentation: CommandFeedbackMarkerPresentation
+  ): Phaser.GameObjects.Container {
+    const marker = this.commandFeedbackMarkerPool.pop() ?? this.createCommandFeedbackMarkerContainer();
+    const graphics = marker.getData("commandGraphics") as Phaser.GameObjects.Graphics;
+    const label = marker.getData("commandLabel") as Phaser.GameObjects.Text;
+    marker
+      .setPosition(event.point.x, event.point.y)
+      .setDepth(88)
+      .setAlpha(0.96)
+      .setScale(1)
+      .setVisible(true)
+      .setName(`command-feedback-${event.kind}`);
+    graphics.clear().setVisible(true);
+    this.drawCommandFeedbackMarker(graphics, presentation, event);
+    this.recordRenderLifecycleMetrics({ commandMarkerRedraws: 1 });
+    label
+      .setText(presentation.label)
+      .setColor(presentation.textColor)
+      .setPosition(0, -presentation.radius - 20)
+      .setVisible(true);
+    return marker;
+  }
+
+  private createCommandFeedbackMarkerContainer(): Phaser.GameObjects.Container {
+    const marker = this.add.container(0, 0);
+    const graphics = this.add.graphics();
+    const label = this.add
+      .text(0, 0, "", {
+        fontFamily: "Verdana, Arial, sans-serif",
+        fontSize: "10px",
+        color: "#f5efc2",
+        backgroundColor: "#08100c",
+        stroke: "#101511",
+        strokeThickness: 3
+      })
+      .setOrigin(0.5)
+      .setPadding(5, 2, 5, 2);
+    marker.add([graphics, label]);
+    marker.setData("commandGraphics", graphics);
+    marker.setData("commandLabel", label);
+    this.recordRenderLifecycleMetrics({ graphicsCreated: 1, textObjectsCreated: 1 });
+    return marker;
+  }
+
+  private releaseCommandFeedbackMarker(marker: Phaser.GameObjects.Container): void {
+    if (!this.commandFeedbackMarkers.has(marker)) {
+      return;
+    }
+    this.commandFeedbackMarkers.delete(marker);
+    this.tweens.killTweensOf(marker);
+    marker.setData("commandFeedbackToken", undefined);
+    const graphics = marker.getData("commandGraphics") as Phaser.GameObjects.Graphics | undefined;
+    const label = marker.getData("commandLabel") as Phaser.GameObjects.Text | undefined;
+    graphics?.clear().setVisible(false);
+    label?.setText("").setVisible(false);
+    marker.setVisible(false).setAlpha(0).setScale(1);
+    if (this.commandFeedbackMarkerPool.length < 24) {
+      this.commandFeedbackMarkerPool.push(marker);
+      return;
+    }
+    this.destroyCommandFeedbackMarker(marker);
+  }
+
+  private destroyCommandFeedbackMarker(marker: Phaser.GameObjects.Container): void {
+    this.tweens.killTweensOf(marker);
+    marker.destroy(true);
+    this.recordRenderLifecycleMetrics({ graphicsDestroyed: 1, textObjectsDestroyed: 1 });
   }
 
   private drawCommandFeedbackMarker(
@@ -1193,8 +1283,10 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private clearCommandFeedbackMarkers(): void {
-    this.commandFeedbackMarkers.forEach((marker) => marker.destroy(true));
+    this.commandFeedbackMarkers.forEach((marker) => this.destroyCommandFeedbackMarker(marker));
     this.commandFeedbackMarkers.clear();
+    this.commandFeedbackMarkerPool.forEach((marker) => this.destroyCommandFeedbackMarker(marker));
+    this.commandFeedbackMarkerPool = [];
   }
 
   private findWorldEntityAt(point: Position): BaseEntity | undefined {
@@ -1332,6 +1424,7 @@ export class BattleScene extends Phaser.Scene {
       profilerOverlay: this.trustedBenchmarkDiagnostics.profilerOverlay
     });
     this.cachedMinimapSnapshot = undefined;
+    this.minimapDirty = true;
     if (diagnostics.lume) {
       this.setLumeVisibilityMode(this.trustedBenchmarkDiagnostics.lume);
     }
@@ -1366,6 +1459,7 @@ export class BattleScene extends Phaser.Scene {
     });
     this.battleLoopPhaseProfiler.setEnabled(this.battleLoopDiagnostics.phaseProfiler === "on");
     this.cachedMinimapSnapshot = undefined;
+    this.minimapDirty = true;
     this.setLumeVisibilityMode(this.battleLoopDiagnostics.lume);
     this.applyTrustedBenchmarkDiagnosticVisuals();
     this.applyBattleLoopDiagnosticVisuals();
@@ -1388,6 +1482,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     this.recordSpatialQueryMetrics({ frames: 1 });
+    this.recordRenderLifecycleMetrics({ frames: 1 });
     this.battleLoopPhaseProfiler.beginFrame(this.createBattleLoopCountSnapshot());
   }
 
@@ -1405,6 +1500,41 @@ export class BattleScene extends Phaser.Scene {
   private resetSpatialQueryMetrics(): SpatialQueryCounters {
     this.spatialQueryCounters = createEmptySpatialQueryCounters();
     return cloneSpatialQueryCounters(this.spatialQueryCounters);
+  }
+
+  private recordRenderLifecycleMetrics(delta: RenderLifecycleCounterDelta): void {
+    if (!isPrivatePlaytestToolsEnabled()) {
+      return;
+    }
+    addRenderLifecycleCounters(this.renderLifecycleCounters, delta);
+  }
+
+  private createRenderLifecycleMetricsSnapshot(): RenderLifecycleCounters {
+    const counters = cloneRenderLifecycleCounters(this.renderLifecycleCounters);
+    counters.retainedObjectCount = this.children.list.length + this.currentDomNodeCount();
+    counters.detachedDomNodes = this.countDetachedHudNodes();
+    const memory = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory?.usedJSHeapSize;
+    if (memory !== undefined) {
+      counters.memoryUsedMb = Number((memory / 1024 / 1024).toFixed(2));
+    }
+    return counters;
+  }
+
+  private resetRenderLifecycleMetrics(): RenderLifecycleCounters {
+    this.renderLifecycleCounters = createEmptyRenderLifecycleCounters();
+    return this.createRenderLifecycleMetricsSnapshot();
+  }
+
+  private currentDomNodeCount(): number {
+    return typeof document === "undefined" ? 0 : document.querySelectorAll("*").length;
+  }
+
+  private countDetachedHudNodes(): number {
+    if (typeof document === "undefined") {
+      return 0;
+    }
+    const root = document.getElementById("ui-root");
+    return root && !root.isConnected ? root.querySelectorAll("*").length + 1 : 0;
   }
 
   private isBattleLoopDiagnosticPaused(key: keyof BattleLoopDiagnostics): boolean {
@@ -1651,6 +1781,8 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createMinimapSnapshot(): MinimapSnapshot {
+    const cameraSignature = this.createMinimapCameraSignature();
+    const due = this.runtime.elapsedSeconds - this.cachedMinimapSnapshotAtSeconds >= 0.2;
     if (
       this.canUseTrustedBenchmarkDiagnostics() &&
       this.trustedBenchmarkDiagnostics.minimapRefresh === "paused" &&
@@ -1662,11 +1794,17 @@ export class BattleScene extends Phaser.Scene {
       this.canUseTrustedBenchmarkDiagnostics() &&
       this.trustedBenchmarkDiagnostics.minimapRefresh === "reduced" &&
       this.cachedMinimapSnapshot &&
+      !this.minimapDirty &&
+      cameraSignature === this.cachedMinimapCameraSignature &&
       this.runtime.elapsedSeconds - this.cachedMinimapSnapshotAtSeconds < 0.75
     ) {
       return this.cachedMinimapSnapshot;
     }
+    if (this.cachedMinimapSnapshot && !this.minimapDirty && cameraSignature === this.cachedMinimapCameraSignature && !due) {
+      return this.cachedMinimapSnapshot;
+    }
     this.performanceCounters.minimapRefreshes += 1;
+    this.recordRenderLifecycleMetrics({ minimapSnapshots: 1 });
     const snapshot = createBattleMinimapSnapshot({
       activeMap: this.activeMap,
       camera: this.cameras.main,
@@ -1684,7 +1822,14 @@ export class BattleScene extends Phaser.Scene {
     });
     this.cachedMinimapSnapshot = snapshot;
     this.cachedMinimapSnapshotAtSeconds = this.runtime.elapsedSeconds;
+    this.cachedMinimapCameraSignature = cameraSignature;
+    this.minimapDirty = false;
     return snapshot;
+  }
+
+  private createMinimapCameraSignature(): string {
+    const camera = this.cameras.main;
+    return `${Math.round(camera.scrollX)}:${Math.round(camera.scrollY)}:${Number(camera.zoom.toFixed(3))}`;
   }
 
   private createObjectiveSnapshot() {
@@ -1754,12 +1899,16 @@ export class BattleScene extends Phaser.Scene {
     this.updateLumeRenderPulses(state);
     const snapshot = this.createLumeRenderSnapshot(state);
     const graphics = this.lumeLinkGraphics ?? this.add.graphics().setDepth(1.2);
+    if (!this.lumeLinkGraphics) {
+      this.recordRenderLifecycleMetrics({ graphicsCreated: 1 });
+    }
     this.lumeLinkGraphics = graphics;
     const signature = createLumeRenderSnapshotSignature(snapshot);
     if (signature === this.lastLumeRenderSignature) {
       return;
     }
     this.lastLumeRenderSignature = signature;
+    this.recordRenderLifecycleMetrics({ lumeRedraws: 1 });
     graphics.clear();
     snapshot.links.forEach((link) => {
       graphics.lineStyle(link.width, link.color, link.alpha);
@@ -2547,6 +2696,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     this.performanceCounters.hudUpdates += 1;
+    this.recordRenderLifecycleMetrics({ hudViewModels: 1 });
     const selected = this.selectedEntities();
     this.playSelectionAudio(selected);
     const isPlacing = Boolean(this.buildingSystem.pendingBuildingId);
@@ -2917,13 +3067,18 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateMinimapPings(deltaSeconds: number): void {
+    const previousCount = this.minimapPings.length;
     this.minimapPings = updateMinimapPings(this.minimapPings, deltaSeconds);
+    if (this.minimapPings.length !== previousCount) {
+      this.minimapDirty = true;
+    }
   }
 
   private addMinimapPing(x: number, y: number, color: string, label: string): void {
     const result = appendMinimapPing(this.minimapPings, this.nextMinimapPingId, x, y, color, label);
     this.minimapPings = result.pings;
     this.nextMinimapPingId = result.nextId;
+    this.minimapDirty = true;
   }
 
   private updateResourceSiteWarnings(deltaSeconds: number): void {
@@ -3452,6 +3607,7 @@ export class BattleScene extends Phaser.Scene {
       this.statusMessage = displayMessage;
       this.statusTimer = options.durationSeconds ?? battleStatusDurationSeconds(priority);
       this.statusPriority = priority;
+      this.recordRenderLifecycleMetrics({ notificationPatches: 1 });
     }
     if (x !== undefined && y !== undefined) {
       FloatingText.show(this, displayMessage, x, y, color);
@@ -3688,7 +3844,9 @@ export class BattleScene extends Phaser.Scene {
       getBattleLoopPhaseSummary: () => this.battleLoopPhaseProfiler.summary(),
       resetBattleLoopPhaseProfiler: () => this.resetBattleLoopPhaseProfiler(),
       getSpatialQueryMetrics: () => cloneSpatialQueryCounters(this.spatialQueryCounters),
-      resetSpatialQueryMetrics: () => this.resetSpatialQueryMetrics()
+      resetSpatialQueryMetrics: () => this.resetSpatialQueryMetrics(),
+      getRenderLifecycleMetrics: () => this.createRenderLifecycleMetricsSnapshot(),
+      resetRenderLifecycleMetrics: () => this.resetRenderLifecycleMetrics()
     };
   }
 
@@ -3723,10 +3881,13 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.resetBattleLoopPhaseProfiler;
     delete target.__ASCENDANT_TEST_HOOKS__.getSpatialQueryMetrics;
     delete target.__ASCENDANT_TEST_HOOKS__.resetSpatialQueryMetrics;
+    delete target.__ASCENDANT_TEST_HOOKS__.getRenderLifecycleMetrics;
+    delete target.__ASCENDANT_TEST_HOOKS__.resetRenderLifecycleMetrics;
   }
 
   private cleanup(): void {
     registerPrivatePerformanceCounterProvider(undefined);
+    setActiveRenderLifecycleMetricsRecorder(undefined);
     this.removeTrustedBenchmarkDiagnosticsPanel();
     this.removeTestHooks();
     this.inputSystem?.destroy();

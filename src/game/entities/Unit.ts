@@ -15,6 +15,7 @@ import {
   getUnitVeterancyRank
 } from "../data/unitVeterancy";
 import { DEFAULT_BEHAVIOUR_MODE, type BehaviourMode } from "../systems/BehaviourModeSystem";
+import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveUnitPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
 import { BaseEntity } from "./BaseEntity";
 
@@ -413,6 +414,7 @@ export class Unit extends BaseEntity {
       const spriteY = this.radius * 0.1;
       const originY = 0.8;
       this.sprite = scene.add.image(0, spriteY, assetId).setOrigin(0.5, originY);
+      recordRenderLifecycleMetrics({ spritesCreated: 1 });
       const targetHeight = kind === "hero" ? this.radius * 4.35 : this.radius * 3.65;
       const sourceHeight = Math.max(1, this.sprite.height);
       this.sprite.setScale(targetHeight / sourceHeight);

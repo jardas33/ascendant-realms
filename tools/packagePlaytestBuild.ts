@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization";
+const CHECKPOINT = "v0.114 Renderer Lifecycle, Procedural Batching, and Canvas-DOM Boundary Rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -484,6 +484,13 @@ async function main(): Promise<void> {
   );
   await copyMarkdown("docs/V0113_IMPLEMENTATION_REPORT.md", join(packageDir, "V0113_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0113_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0113_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0114_RENDER_LIFECYCLE_AUDIT.md", join(packageDir, "V0114_RENDER_LIFECYCLE_AUDIT.md"));
+  await copyMarkdown("docs/V0114_PROCEDURAL_BATCHING_SPEC.md", join(packageDir, "V0114_PROCEDURAL_BATCHING_SPEC.md"));
+  await copyMarkdown("docs/V0114_CANVAS_DOM_BOUNDARY_REPORT.md", join(packageDir, "V0114_CANVAS_DOM_BOUNDARY_REPORT.md"));
+  await copyMarkdown("docs/V0114_VISUAL_PARITY_REPORT.md", join(packageDir, "V0114_VISUAL_PARITY_REPORT.md"));
+  await copyMarkdown("docs/V0114_PERFORMANCE_DELTA_REPORT.md", join(packageDir, "V0114_PERFORMANCE_DELTA_REPORT.md"));
+  await copyMarkdown("docs/V0114_IMPLEMENTATION_REPORT.md", join(packageDir, "V0114_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0114_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0114_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -514,7 +521,7 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     knownWarnings: [
       "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
       "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review.",
-      "v0.112 battle-loop and idle-cost measurements are local browser evidence, not final desktop hardware certification."
+      "v0.114 render-lifecycle measurements are local browser evidence, not final desktop hardware certification."
     ],
     notForJudging: [
       "final art quality",
@@ -587,7 +594,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.113, start with V0113_EMMANUEL_RETEST_CHECKLIST.md, V0113_SPATIAL_QUERY_PROFILE.md, V0113_PATH_REQUEST_DEDUP_SPEC.md, V0113_TARGET_ACQUISITION_PARITY_REPORT.md, V0113_SPATIAL_INDEX_DECISION_REPORT.md, V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, and V0113_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, v0.111 private host-environment calibration, v0.112 scheduler/allocation/idle-work evidence, and v0.113 spatial-query/path-request evidence. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, target priority, path results, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
+For v0.114, start with V0114_EMMANUEL_RETEST_CHECKLIST.md, V0114_RENDER_LIFECYCLE_AUDIT.md, V0114_PROCEDURAL_BATCHING_SPEC.md, V0114_CANVAS_DOM_BOUNDARY_REPORT.md, V0114_VISUAL_PARITY_REPORT.md, V0114_PERFORMANCE_DELTA_REPORT.md, and V0114_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, v0.111 private host-environment calibration, v0.112 scheduler/allocation/idle-work evidence, v0.113 spatial-query/path-request evidence, and v0.114 renderer lifecycle/canvas-DOM evidence. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, target priority, path results, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
 
 ## Known Warning
 

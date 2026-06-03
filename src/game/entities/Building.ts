@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { buildingBattleAssetIds } from "../assets/AssetKeys";
 import { clamp } from "../core/MathUtils";
 import type { BuildingConstructionState, BuildingDefinition, Cost, Position, Team } from "../core/GameTypes";
+import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveBuildingPlaceholderPresentation } from "../ui/PlaceholderBattlefieldPresentation";
 import { BaseEntity } from "./BaseEntity";
 
@@ -172,6 +173,7 @@ export class Building extends BaseEntity {
     if (assetId) {
       const originY = 0.66;
       const sprite = scene.add.image(0, 0, assetId).setOrigin(0.5, originY);
+      recordRenderLifecycleMetrics({ spritesCreated: 1 });
       const maxWidth = definition.size.width * 1.24;
       const maxHeight = definition.size.height * 1.42;
       const scale = Math.min(maxWidth / Math.max(1, sprite.width), maxHeight / Math.max(1, sprite.height));

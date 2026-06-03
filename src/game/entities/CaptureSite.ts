@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { resourceIconAssetId } from "../assets/AssetKeys";
 import type { CaptureSiteDefinition, Team } from "../core/GameTypes";
 import { RESOURCE_DEFINITIONS } from "../data/resources";
+import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveCaptureSitePresentation } from "../ui/CaptureSitePresentation";
 import { BaseEntity } from "./BaseEntity";
 
@@ -33,6 +34,7 @@ export class CaptureSite extends BaseEntity {
   private ring?: Phaser.GameObjects.Arc;
   private progressRing?: Phaser.GameObjects.Arc;
   private diagnosticRingMode: CaptureSiteDiagnosticRingMode = "normal";
+  private lastVisualSignature = "";
 
   constructor(scene: Phaser.Scene, definition: CaptureSiteDefinition) {
     super({
@@ -143,6 +145,24 @@ export class CaptureSite extends BaseEntity {
       objectiveRelevant: this.objectiveRelevant,
       resourceColor: this.siteColor()
     });
+    const progressVisible = this.captureProgress > 0 && this.captureProgress < 1;
+    const signature = [
+      presentation.state,
+      presentation.labelPrefix,
+      presentation.labelColor,
+      presentation.labelBackground,
+      presentation.ringColor,
+      presentation.ringAlpha,
+      presentation.ringWidth,
+      presentation.progressColor,
+      Number(this.captureProgress.toFixed(3)),
+      progressVisible ? "progress" : "no-progress",
+      this.diagnosticRingMode
+    ].join("|");
+    if (signature === this.lastVisualSignature) {
+      return;
+    }
+    this.lastVisualSignature = signature;
     this.ring
       ?.setFillStyle(
         presentation.ringColor,
@@ -165,6 +185,7 @@ export class CaptureSite extends BaseEntity {
       this.progressRing.setStrokeStyle(3, presentation.progressColor, 0.9);
     }
     this.applyDiagnosticRingStyle();
+    recordRenderLifecycleMetrics({ ringRedraws: 1, labelLayouts: 1 });
   }
 
   setDiagnosticRingMode(mode: CaptureSiteDiagnosticRingMode): void {
@@ -176,10 +197,12 @@ export class CaptureSite extends BaseEntity {
     }
     this.diagnosticRingMode = mode;
     if (mode === "normal") {
+      this.lastVisualSignature = "";
       this.updateVisuals();
       return;
     }
     this.applyDiagnosticRingStyle();
+    recordRenderLifecycleMetrics({ ringRedraws: 1 });
   }
 
   private applyDiagnosticRingStyle(): void {
@@ -202,6 +225,7 @@ export class CaptureSite extends BaseEntity {
     const assetId = resourceIconAssetId(definition.resource);
     if (assetId && scene.textures.exists(assetId)) {
       const image = scene.add.image(0, 0, assetId);
+      recordRenderLifecycleMetrics({ spritesCreated: 1 });
       image.setDisplaySize(42, 42);
       return image;
     }

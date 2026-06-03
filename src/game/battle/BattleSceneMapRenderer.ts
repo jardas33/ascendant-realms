@@ -1,10 +1,44 @@
 import Phaser from "phaser";
 import type { BattleMapDefinition, Position } from "../core/GameTypes";
+import type { RenderLifecycleMetricsRecorder } from "../systems/RenderLifecycleMetrics";
 
-export function drawBattleMap(scene: Phaser.Scene, activeMap: BattleMapDefinition): void {
+interface TerrainEllipseCommand {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: number;
+  alpha: number;
+}
+
+interface TerrainGrassCommand {
+  points: [Position, Position][];
+}
+
+interface TerrainPebbleCommand {
+  x: number;
+  y: number;
+  radius: number;
+}
+
+interface StaticTerrainGeometryCache {
+  baseFlecks: TerrainEllipseCommand[];
+  shadowPatches: TerrainEllipseCommand[];
+  grassBlades: TerrainGrassCommand[];
+  pebbles: TerrainPebbleCommand[];
+}
+
+const staticTerrainGeometryCache = new Map<string, StaticTerrainGeometryCache>();
+
+export function drawBattleMap(
+  scene: Phaser.Scene,
+  activeMap: BattleMapDefinition,
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
+): void {
   scene.cameras.main.setBounds(0, 0, activeMap.width, activeMap.height);
   const graphics = scene.add.graphics().setDepth(-20);
-  drawBaseTerrain(graphics, activeMap);
+  recordRenderLifecycleMetrics?.({ graphicsCreated: 1, terrainRedraws: 1 });
+  drawBaseTerrain(graphics, activeMap, recordRenderLifecycleMetrics);
   drawBattleRoads(graphics, activeMap);
 
   activeMap.terrainZones.forEach((zone) => {
@@ -20,11 +54,16 @@ export function drawBattleMap(scene: Phaser.Scene, activeMap: BattleMapDefinitio
   });
 
   drawCaptureSiteGrounds(graphics, activeMap);
-  drawTerrainDetails(graphics, activeMap);
+  drawTerrainDetails(graphics, activeMap, recordRenderLifecycleMetrics);
   drawMapBorder(graphics, activeMap);
 }
 
-function drawBaseTerrain(graphics: Phaser.GameObjects.Graphics, activeMap: BattleMapDefinition): void {
+function drawBaseTerrain(
+  graphics: Phaser.GameObjects.Graphics,
+  activeMap: BattleMapDefinition,
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
+): void {
+  const cached = cachedStaticTerrainGeometry(activeMap, recordRenderLifecycleMetrics);
   graphics.fillStyle(0x17261b, 1);
   graphics.fillRect(0, 0, activeMap.width, activeMap.height);
 
@@ -39,24 +78,15 @@ function drawBaseTerrain(graphics: Phaser.GameObjects.Graphics, activeMap: Battl
   graphics.fillStyle(0x263827, 0.42);
   graphics.fillEllipse(1250, 1370, 840, 280);
 
-  for (let index = 0; index < 260; index += 1) {
-    const x = noise01(index + 11) * activeMap.width;
-    const y = noise01(index + 97) * activeMap.height;
-    const width = 10 + noise01(index + 211) * 34;
-    const height = 4 + noise01(index + 307) * 13;
-    const colorRoll = noise01(index + 409);
-    const color = colorRoll > 0.72 ? 0x385036 : colorRoll > 0.38 ? 0x203922 : 0x293f2c;
-    graphics.fillStyle(color, 0.13 + noise01(index + 503) * 0.17);
-    graphics.fillEllipse(x, y, width, height);
-  }
+  cached.baseFlecks.forEach((fleck) => {
+    graphics.fillStyle(fleck.color, fleck.alpha);
+    graphics.fillEllipse(fleck.x, fleck.y, fleck.width, fleck.height);
+  });
 
-  for (let index = 0; index < 46; index += 1) {
-    const x = noise01(index + 1447) * activeMap.width;
-    const y = noise01(index + 1531) * activeMap.height;
-    const radius = 44 + noise01(index + 1613) * 98;
-    graphics.fillStyle(index % 2 === 0 ? 0x101b15 : 0x31422d, 0.1 + noise01(index + 1709) * 0.08);
-    graphics.fillEllipse(x, y, radius * 1.7, radius * 0.62);
-  }
+  cached.shadowPatches.forEach((patch) => {
+    graphics.fillStyle(patch.color, patch.alpha);
+    graphics.fillEllipse(patch.x, patch.y, patch.width, patch.height);
+  });
 }
 
 function drawBattleRoads(graphics: Phaser.GameObjects.Graphics, activeMap: BattleMapDefinition): void {
@@ -157,28 +187,20 @@ function drawCaptureSiteGrounds(graphics: Phaser.GameObjects.Graphics, activeMap
   });
 }
 
-function drawTerrainDetails(graphics: Phaser.GameObjects.Graphics, activeMap: BattleMapDefinition): void {
-  for (let index = 0; index < 110; index += 1) {
-    const x = noise01(index + 701) * activeMap.width;
-    const y = noise01(index + 809) * activeMap.height;
-    const height = 12 + noise01(index + 877) * 18;
+function drawTerrainDetails(
+  graphics: Phaser.GameObjects.Graphics,
+  activeMap: BattleMapDefinition,
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
+): void {
+  const cached = cachedStaticTerrainGeometry(activeMap, recordRenderLifecycleMetrics);
+  for (const blade of cached.grassBlades) {
     graphics.lineStyle(2, 0x54724a, 0.25);
-    strokePolyline(graphics, [
-      { x, y },
-      { x: x + 4, y: y - height }
-    ]);
-    strokePolyline(graphics, [
-      { x: x + 5, y: y + 1 },
-      { x: x + 11, y: y - height * 0.72 }
-    ]);
+    blade.points.forEach((points) => strokePolyline(graphics, points));
   }
 
-  for (let index = 0; index < 72; index += 1) {
-    const x = noise01(index + 1013) * activeMap.width;
-    const y = noise01(index + 1117) * activeMap.height;
-    const radius = 2 + noise01(index + 1223) * 5;
+  for (const pebble of cached.pebbles) {
     graphics.fillStyle(0x8b8265, 0.24);
-    graphics.fillCircle(x, y, radius);
+    graphics.fillCircle(pebble.x, pebble.y, pebble.radius);
   }
 }
 
@@ -210,8 +232,89 @@ function strokePolyline(graphics: Phaser.GameObjects.Graphics, points: Position[
   }
   graphics.beginPath();
   graphics.moveTo(points[0].x, points[0].y);
-  points.slice(1).forEach((point) => graphics.lineTo(point.x, point.y));
+  for (let index = 1; index < points.length; index += 1) {
+    graphics.lineTo(points[index].x, points[index].y);
+  }
   graphics.strokePath();
+}
+
+function cachedStaticTerrainGeometry(
+  activeMap: BattleMapDefinition,
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder
+): StaticTerrainGeometryCache {
+  const signature = createStaticTerrainGeometrySignature(activeMap);
+  const cached = staticTerrainGeometryCache.get(signature);
+  if (cached) {
+    return cached;
+  }
+
+  const next: StaticTerrainGeometryCache = {
+    baseFlecks: [],
+    shadowPatches: [],
+    grassBlades: [],
+    pebbles: []
+  };
+  for (let index = 0; index < 260; index += 1) {
+    const colorRoll = noise01(index + 409);
+    next.baseFlecks.push({
+      x: noise01(index + 11) * activeMap.width,
+      y: noise01(index + 97) * activeMap.height,
+      width: 10 + noise01(index + 211) * 34,
+      height: 4 + noise01(index + 307) * 13,
+      color: colorRoll > 0.72 ? 0x385036 : colorRoll > 0.38 ? 0x203922 : 0x293f2c,
+      alpha: 0.13 + noise01(index + 503) * 0.17
+    });
+  }
+  for (let index = 0; index < 46; index += 1) {
+    const radius = 44 + noise01(index + 1613) * 98;
+    next.shadowPatches.push({
+      x: noise01(index + 1447) * activeMap.width,
+      y: noise01(index + 1531) * activeMap.height,
+      width: radius * 1.7,
+      height: radius * 0.62,
+      color: index % 2 === 0 ? 0x101b15 : 0x31422d,
+      alpha: 0.1 + noise01(index + 1709) * 0.08
+    });
+  }
+  for (let index = 0; index < 110; index += 1) {
+    const x = noise01(index + 701) * activeMap.width;
+    const y = noise01(index + 809) * activeMap.height;
+    const height = 12 + noise01(index + 877) * 18;
+    next.grassBlades.push({
+      points: [
+        [
+          { x, y },
+          { x: x + 4, y: y - height }
+        ],
+        [
+          { x: x + 5, y: y + 1 },
+          { x: x + 11, y: y - height * 0.72 }
+        ]
+      ]
+    });
+  }
+  for (let index = 0; index < 72; index += 1) {
+    next.pebbles.push({
+      x: noise01(index + 1013) * activeMap.width,
+      y: noise01(index + 1117) * activeMap.height,
+      radius: 2 + noise01(index + 1223) * 5
+    });
+  }
+
+  staticTerrainGeometryCache.set(signature, next);
+  recordRenderLifecycleMetrics?.({ geometryRebuilds: 1 });
+  return next;
+}
+
+function createStaticTerrainGeometrySignature(activeMap: BattleMapDefinition): string {
+  return [
+    activeMap.id,
+    activeMap.width,
+    activeMap.height,
+    activeMap.terrainZones.length,
+    activeMap.visualPaths.length,
+    activeMap.captureSites.length
+  ].join(":");
 }
 
 function noise01(seed: number): number {

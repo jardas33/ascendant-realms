@@ -16,7 +16,7 @@ export interface PlaytestPackageValidationResult {
 }
 
 export const EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT =
-  "v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization";
+  "v0.114 Renderer Lifecycle, Procedural Batching, and Canvas-DOM Boundary Rescue";
 
 export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "game/index.html",
@@ -451,6 +451,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
   "V0113_IMPLEMENTATION_REPORT.md",
   "V0113_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0114_RENDER_LIFECYCLE_AUDIT.md",
+  "V0114_PROCEDURAL_BATCHING_SPEC.md",
+  "V0114_CANVAS_DOM_BOUNDARY_REPORT.md",
+  "V0114_VISUAL_PARITY_REPORT.md",
+  "V0114_PERFORMANCE_DELTA_REPORT.md",
+  "V0114_IMPLEMENTATION_REPORT.md",
+  "V0114_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",

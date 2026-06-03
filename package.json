@@ -66,6 +66,7 @@
     "perf:allocation-audit": "tsx tools/runBattleLoopSchedulerRescue.ts --allocation-audit",
     "perf:idle-cost-matrix": "tsx tools/runBattleLoopSchedulerRescue.ts --idle-cost-matrix --mode=preview",
     "perf:spatial-query-profile": "tsx tools/runSpatialQueryProfile.ts --mode=preview",
+    "perf:render-lifecycle-audit": "tsx tools/runRenderLifecycleAudit.ts --mode=preview",
     "perf:host-snapshot": "tsx tools/runHostEnvironmentCalibration.ts --host-snapshot",
     "perf:controls:preview": "tsx tools/runHostEnvironmentCalibration.ts --mode=preview",
     "perf:controls:headed": "tsx tools/runHostEnvironmentCalibration.ts --mode=preview --headed",

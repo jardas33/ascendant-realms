@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import type { ActiveStatusEffect, EntityKind, Position, Team } from "../core/GameTypes";
 import { clamp } from "../core/MathUtils";
+import { recordRenderLifecycleMetrics } from "../systems/RenderLifecycleMetrics";
 import { resolveSelectionRingPresentation } from "../ui/SelectionPresentation";
 
 let nextEntityNumber = 1;
@@ -43,6 +44,7 @@ export abstract class BaseEntity {
   private statusBadgeLabel?: Phaser.GameObjects.Text;
   private healthBarWidth = 0;
   private healthBarHeight = 0;
+  private lastHealthBarDisplayWidth = -1;
   private labelVisibleByDefault = true;
   private diagnosticLabelHidden = false;
 
@@ -102,6 +104,7 @@ export abstract class BaseEntity {
       })
       .setOrigin(0, 0.5)
       .setVisible(false);
+    recordRenderLifecycleMetrics({ textObjectsCreated: 1 });
     this.updateStatusBadgePosition();
     this.view.add([this.statusBadge, this.statusBadgeLabel]);
 
@@ -114,6 +117,7 @@ export abstract class BaseEntity {
         strokeThickness: 3
       })
       .setOrigin(0.5, 0);
+    recordRenderLifecycleMetrics({ textObjectsCreated: 1 });
     this.view.add(this.label);
     this.view.setDepth(this.kind === "building" ? 5 : 10);
     this.updateHealthBar();
@@ -251,7 +255,13 @@ export abstract class BaseEntity {
       return;
     }
     const ratio = clamp(this.hp / this.maxHp, 0, 1);
-    this.healthFill.displayWidth = this.healthBarWidth * ratio;
+    const nextDisplayWidth = Number((this.healthBarWidth * ratio).toFixed(3));
+    if (Math.abs(this.lastHealthBarDisplayWidth - nextDisplayWidth) < 0.001) {
+      return;
+    }
+    this.lastHealthBarDisplayWidth = nextDisplayWidth;
+    this.healthFill.displayWidth = nextDisplayWidth;
+    recordRenderLifecycleMetrics({ healthBarUpdates: 1 });
   }
 
   protected setLabelVisibleByDefault(visible: boolean): void {
@@ -261,11 +271,11 @@ export abstract class BaseEntity {
 
   protected updateLabelVisibility(): void {
     if (this.diagnosticLabelHidden) {
-      this.label?.setVisible(false);
+      this.setLabelVisibility(false);
       return;
     }
     const hasPriorityStatus = this.statusEffects.some((effect) => effect.remainingSeconds > 0);
-    this.label?.setVisible(this.labelVisibleByDefault || this.selected || hasPriorityStatus);
+    this.setLabelVisibility(this.labelVisibleByDefault || this.selected || hasPriorityStatus);
   }
 
   private updateStatusBadgePosition(): void {
@@ -286,7 +296,19 @@ export abstract class BaseEntity {
   }
 
   destroyView(): void {
+    const textObjectsDestroyed = (this.label ? 1 : 0) + (this.statusBadgeLabel ? 1 : 0);
     this.view?.destroy(true);
     this.view = undefined;
+    if (textObjectsDestroyed > 0) {
+      recordRenderLifecycleMetrics({ textObjectsDestroyed });
+    }
+  }
+
+  private setLabelVisibility(visible: boolean): void {
+    if (!this.label || this.label.visible === visible) {
+      return;
+    }
+    this.label.setVisible(visible);
+    recordRenderLifecycleMetrics({ labelLayouts: 1 });
   }
 }

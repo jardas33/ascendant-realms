@@ -1,12 +1,44 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-03 v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization
+Last updated: 2026-06-03 v0.114 Renderer Lifecycle, Procedural Batching, and Canvas-DOM Boundary Rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.114 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.115 work is approved.
+
+## Current v0.114 Renderer Lifecycle, Procedural Batching, And Canvas-DOM Boundary Rescue - 2026-06-03
+
+Status: v0.114 adds private render lifecycle counters and bounded renderer/HUD presentation optimizations. It remains private diagnostics and presentation-only optimization; no art, gameplay, save, AI, pathing, fog simulation, balance, engine, desktop, multiplayer, content, public benchmark posture, or v0.115 work changed.
+
+Included work:
+
+- Added `src/game/systems/RenderLifecycleMetrics.ts`, private BattleScene hook wiring, focused tests, `src/game/playtest/RenderLifecycleAuditProfile.ts`, `tools/runRenderLifecycleAudit.ts`, and `npm run perf:render-lifecycle-audit`.
+- Cached deterministic static terrain geometry inputs for the existing map renderer and removed transient polyline slicing while preserving draw order/colors.
+- Added safe no-op guards for capture site visuals, label visibility, health-bar width updates, HUD volatile region patches, and local HUD panel state.
+- Added command feedback marker Graphics/Text pooling with clear-on-release and pool reset on scene cleanup.
+- Added minimap due-or-dirty snapshot reuse using camera/ping/fog invalidation, without changing minimap contents or visibility rules.
+- Added docs `V0114_RENDER_LIFECYCLE_AUDIT.md`, `V0114_PROCEDURAL_BATCHING_SPEC.md`, `V0114_CANVAS_DOM_BOUNDARY_REPORT.md`, `V0114_VISUAL_PARITY_REPORT.md`, `V0114_PERFORMANCE_DELTA_REPORT.md`, `V0114_IMPLEMENTATION_REPORT.md`, and `V0114_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, gameplay rules, combat balance, AI/pathing rules, fog simulation rules, maps, factions, generated/imported art, runtime asset paths, public benchmark controls, engine choice, desktop port, multiplayer, PvP, co-op, runtime title, or v0.115 work changed.
+- Results and campaign-map rows are DOM/screenshot lifecycle samples because they intentionally leave BattleScene and do not expose BattleScene private counters.
+
+Current evidence:
+
+```text
+v0.114 render-lifecycle audit - PASS, 15 requested rows.
+Matrix rows - Phaser empty/static, Tier S, Tier M idle/moving/combat, Tier L stress, fog-heavy, Lume Auto, Lume Always, label-heavy, notification-heavy, HUD Minimal, HUD Standard, Results transition, campaign map.
+Command marker pool evidence - label-heavy row records commandMarkerRedraws and Graphics/Text creation inside the measured window.
+Notification boundary evidence - notification-heavy row records notificationPatches and HUD DOM patches inside the measured window.
+Visual parity evidence - screenshots written under artifacts/performance/v0114/screenshots for terrain/fog/sites/labels/Lume/HUD/Results/campaign surfaces.
+No-save evidence - render-lifecycle runner compares localStorage save snapshots before/after every row.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.114 renderer lifecycle procedural batching and canvas-DOM boundary rescue`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, dirty status says `no`, and remote CI passes. Do not start v0.115 without a new explicit goal.
 
 ## Current v0.113 Spatial Query, Target Acquisition, And Path-Request Optimization - 2026-06-03
 

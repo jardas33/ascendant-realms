@@ -3,6 +3,7 @@ import { clamp } from "./hudPanels/HudFormatting";
 import { isHudDensityMode } from "./hudPanels/HudDensity";
 import { isBehaviourMode } from "../systems/BehaviourModeSystem";
 import type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot } from "./hudPanels/HudTypes";
+import type { RenderLifecycleMetricsRecorder } from "../systems/RenderLifecycleMetrics";
 
 export type { HUDCallbacks, HUDObjectiveSnapshot, HUDSnapshot };
 
@@ -20,8 +21,13 @@ interface TutorialPanelDragState {
 
 const STABLE_PANEL_DEFER_LIMIT_MS = 350;
 
+interface HUDOptions {
+  recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder;
+}
+
 export class HUD {
   private readonly root: HTMLElement;
+  private readonly recordRenderLifecycleMetrics?: RenderLifecycleMetricsRecorder;
   private readonly clickHandler: (event: MouseEvent) => void;
   private readonly pointerDownHandler: (event: PointerEvent) => void;
   private readonly pointerMoveHandler: (event: PointerEvent) => void;
@@ -39,12 +45,13 @@ export class HUD {
   private sidePanelMinimized = false;
   private tutorialPanelDrag?: TutorialPanelDragState;
 
-  constructor(callbacks: HUDCallbacks) {
+  constructor(callbacks: HUDCallbacks, options: HUDOptions = {}) {
     const root = document.getElementById("ui-root");
     if (!root) {
       throw new Error("Missing #ui-root element");
     }
     this.root = root;
+    this.recordRenderLifecycleMetrics = options.recordRenderLifecycleMetrics;
     this.clickHandler = (event) => {
       const target = event.target as Element | null;
       const minimap = target?.closest<HTMLElement>("[data-minimap]");
@@ -292,6 +299,7 @@ export class HUD {
   }
 
   destroy(): void {
+    const destroyedNodes = countElementTreeNodes(this.root);
     this.root.removeEventListener("click", this.clickHandler);
     this.root.removeEventListener("pointerdown", this.pointerDownHandler);
     window.removeEventListener("pointermove", this.pointerMoveHandler);
@@ -301,6 +309,9 @@ export class HUD {
     this.root.removeEventListener("pointerout", this.pointerOutHandler);
     this.root.className = "ui-root";
     this.root.innerHTML = "";
+    if (destroyedNodes > 1) {
+      this.recordRenderLifecycleMetrics?.({ domNodesDestroyed: destroyedNodes - 1, domPatches: 1 });
+    }
     this.lastMarkup = "";
     this.lastStableMarkup = "";
     this.deferredMarkup = "";
@@ -350,8 +361,16 @@ export class HUD {
 
   private applyMarkup(markup: string): void {
     const scrollState = captureScrollState(this.root);
+    const previousNodeCount = countElementTreeNodes(this.root);
     this.root.className = "ui-root battle-ui";
     this.root.innerHTML = markup;
+    const nextNodeCount = countElementTreeNodes(this.root);
+    this.recordRenderLifecycleMetrics?.({
+      domPatches: 1,
+      domNodesCreated: Math.max(0, nextNodeCount - 1),
+      domNodesDestroyed: Math.max(0, previousNodeCount - 1),
+      detachedDomNodes: this.root.isConnected ? 0 : 1
+    });
     this.lastMarkup = markup;
     this.lastStableMarkup = createStableMarkupSignature(markup);
     restoreScrollState(this.root, scrollState);
@@ -367,11 +386,16 @@ export class HUD {
       return false;
     }
     const nextRegionIds = new Set(nextRegions.map((region) => region.dataset.hudVolatile).filter((regionId): regionId is string => Boolean(regionId)));
+    let patchedRegionCount = 0;
+    let domNodesCreated = 0;
+    let domNodesDestroyed = 0;
 
     this.root.querySelectorAll<HTMLElement>("[data-hud-volatile]").forEach((currentRegion) => {
       const regionId = currentRegion.dataset.hudVolatile;
       if (regionId && !nextRegionIds.has(regionId)) {
+        domNodesDestroyed += countElementTreeNodes(currentRegion);
         currentRegion.remove();
+        patchedRegionCount += 1;
       }
     });
 
@@ -388,12 +412,30 @@ export class HUD {
       if (!patchedRegion || patchedRegion.tagName !== nextRegion.tagName) {
         return false;
       }
+      if (elementAttributesEqual(patchedRegion, nextRegion) && patchedRegion.innerHTML === nextRegion.innerHTML) {
+        continue;
+      }
+      if (patchedRegion === currentRegion) {
+        domNodesDestroyed += countElementTreeNodes(patchedRegion);
+        domNodesCreated += countElementTreeNodes(nextRegion);
+      } else {
+        domNodesCreated += countElementTreeNodes(nextRegion);
+      }
       replaceElementAttributes(patchedRegion, nextRegion);
       patchedRegion.innerHTML = nextRegion.innerHTML;
+      patchedRegionCount += 1;
     }
 
     this.lastMarkup = markup;
     this.lastStableMarkup = stableMarkup;
+    if (patchedRegionCount > 0) {
+      this.recordRenderLifecycleMetrics?.({
+        domPatches: patchedRegionCount,
+        domNodesCreated,
+        domNodesDestroyed,
+        detachedDomNodes: this.root.isConnected ? 0 : 1
+      });
+    }
     this.applyTutorialPanelState();
     this.applySidePanelState();
     return true;
@@ -419,17 +461,17 @@ export class HUD {
     }
     const x = Math.round(this.tutorialPanelOffset.x);
     const y = Math.round(this.tutorialPanelOffset.y);
-    panel.style.setProperty("--tutorial-panel-offset-x", `${x}px`);
-    panel.style.setProperty("--tutorial-panel-offset-y", `${y}px`);
-    panel.dataset.tutorialMoved = x !== 0 || y !== 0 ? "true" : "false";
-    panel.dataset.tutorialMinimized = this.tutorialPanelMinimized ? "true" : "false";
-    panel.classList.toggle("minimized", this.tutorialPanelMinimized);
+    setStylePropertyIfChanged(panel, "--tutorial-panel-offset-x", `${x}px`);
+    setStylePropertyIfChanged(panel, "--tutorial-panel-offset-y", `${y}px`);
+    setDatasetValueIfChanged(panel, "tutorialMoved", x !== 0 || y !== 0 ? "true" : "false");
+    setDatasetValueIfChanged(panel, "tutorialMinimized", this.tutorialPanelMinimized ? "true" : "false");
+    toggleClassIfChanged(panel, "minimized", this.tutorialPanelMinimized);
 
     const body = panel.querySelector<HTMLElement>("[data-testid='tutorial-panel-body']");
-    body?.setAttribute("aria-hidden", this.tutorialPanelMinimized ? "true" : "false");
+    setAttributeIfChanged(body, "aria-hidden", this.tutorialPanelMinimized ? "true" : "false");
 
     const minimizeButton = panel.querySelector<HTMLButtonElement>("[data-testid='tutorial-minimize']");
-    minimizeButton?.setAttribute("aria-expanded", this.tutorialPanelMinimized ? "false" : "true");
+    setAttributeIfChanged(minimizeButton, "aria-expanded", this.tutorialPanelMinimized ? "false" : "true");
   }
 
   private applySidePanelState(): void {
@@ -437,14 +479,14 @@ export class HUD {
     if (!panel) {
       return;
     }
-    panel.dataset.sidePanelMinimized = this.sidePanelMinimized ? "true" : "false";
-    panel.classList.toggle("minimized", this.sidePanelMinimized);
+    setDatasetValueIfChanged(panel, "sidePanelMinimized", this.sidePanelMinimized ? "true" : "false");
+    toggleClassIfChanged(panel, "minimized", this.sidePanelMinimized);
 
     const body = panel.querySelector<HTMLElement>("[data-testid='side-panel-body']");
-    body?.setAttribute("aria-hidden", this.sidePanelMinimized ? "true" : "false");
+    setAttributeIfChanged(body, "aria-hidden", this.sidePanelMinimized ? "true" : "false");
 
     const minimizeButton = panel.querySelector<HTMLButtonElement>("[data-testid='side-panel-minimize']");
-    minimizeButton?.setAttribute("aria-expanded", this.sidePanelMinimized ? "false" : "true");
+    setAttributeIfChanged(minimizeButton, "aria-expanded", this.sidePanelMinimized ? "false" : "true");
   }
 
   private clampTutorialPanelOffset(offset: TutorialPanelOffset): TutorialPanelOffset {
@@ -528,6 +570,41 @@ function replaceElementAttributes(target: HTMLElement, source: HTMLElement): voi
   [...source.attributes].forEach((attribute) => {
     target.setAttribute(attribute.name, attribute.value);
   });
+}
+
+function elementAttributesEqual(target: HTMLElement, source: HTMLElement): boolean {
+  if (target.attributes.length !== source.attributes.length) {
+    return false;
+  }
+  return [...source.attributes].every((attribute) => target.getAttribute(attribute.name) === attribute.value);
+}
+
+function countElementTreeNodes(element: HTMLElement): number {
+  return element.querySelectorAll("*").length + 1;
+}
+
+function setStylePropertyIfChanged(element: HTMLElement, property: string, value: string): void {
+  if (element.style.getPropertyValue(property) !== value) {
+    element.style.setProperty(property, value);
+  }
+}
+
+function setDatasetValueIfChanged(element: HTMLElement, key: string, value: string): void {
+  if (element.dataset[key] !== value) {
+    element.dataset[key] = value;
+  }
+}
+
+function setAttributeIfChanged(element: HTMLElement | undefined | null, name: string, value: string): void {
+  if (element && element.getAttribute(name) !== value) {
+    element.setAttribute(name, value);
+  }
+}
+
+function toggleClassIfChanged(element: HTMLElement, className: string, force: boolean): void {
+  if (element.classList.contains(className) !== force) {
+    element.classList.toggle(className, force);
+  }
 }
 
 function captureScrollState(root: HTMLElement): Map<string, number> {
