@@ -408,6 +408,16 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0108_VISUAL_QA_REPORT.md",
   "V0108_IMPLEMENTATION_REPORT.md",
   "V0108_EMMANUEL_BENCHMARK_GUIDE.md",
+  "V0109_PROFILER_METHOD_AUDIT.md",
+  "V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md",
+  "V0109_EXECUTION_MODE_COMPARISON.md",
+  "V0109_ROOT_CAUSE_MATRIX_REPORT.md",
+  "V0109_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+  "V0109_MANUAL_BENCHMARK_GUIDE.md",
+  "V0109_VISUAL_QA_REPORT.md",
+  "V0109_IMPLEMENTATION_REPORT.md",
+  "V0109_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -518,7 +528,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile",
+      "v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation",
       "build info checkpoint",
       checks,
       errors

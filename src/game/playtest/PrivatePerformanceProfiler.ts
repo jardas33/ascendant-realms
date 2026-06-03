@@ -5,6 +5,7 @@ export interface PrivatePerformanceCounters {
   buildings: number;
   captureSites: number;
   labels: number;
+  totalLabels?: number;
   captureRings: number;
   lumeLinks: number;
   lumeEndpoints: number;
@@ -43,6 +44,9 @@ export interface PrivatePerformanceSummary {
     over16_7: number;
     over33_3: number;
     over50: number;
+    over100: number;
+    over250: number;
+    over500: number;
   };
   longTasks: {
     supported: boolean;
@@ -215,7 +219,10 @@ export function summarizePerformanceSamples(options: {
       max: roundMetric(sortedFrameTimes.at(-1) ?? 0),
       over16_7: frameTimes.filter((value) => value > 16.7).length,
       over33_3: frameTimes.filter((value) => value > 33.3).length,
-      over50: frameTimes.filter((value) => value > 50).length
+      over50: frameTimes.filter((value) => value > 50).length,
+      over100: frameTimes.filter((value) => value > 100).length,
+      over250: frameTimes.filter((value) => value > 250).length,
+      over500: frameTimes.filter((value) => value > 500).length
     },
     longTasks: {
       supported: Boolean(options.longTaskSupported),

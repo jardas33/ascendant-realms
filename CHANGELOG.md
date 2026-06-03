@@ -1,5 +1,55 @@
 # Changelog
 
+# v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
+
+This checkpoint audits the suspicious v0.108 browser benchmark methodology, adds a trusted production-preview-first benchmark protocol, adds private manual benchmark flow and diagnostic toggles, generates a root-cause matrix, and updates visual QA/review-pack/package coverage. The trusted evidence still shows serious browser lag in the Tier M baseline, so the earlier 2-3 FPS evidence is mixed: old methodology was weak, but runtime cost remains real. It does not change gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, or desktop saves.
+
+Added:
+
+- `src/game/playtest/TrustedBrowserBenchmark.ts`.
+- `src/game/playtest/TrustedBrowserBenchmark.test.ts`.
+- `tools/runTrustedBrowserBenchmark.ts`.
+- `npm run perf:trusted:preview`, `npm run perf:trusted:dev`, `npm run perf:trusted:manual-template`, `npm run perf:root-cause-matrix`, and `npm run perf:trusted:report`.
+- Private Playtest Hub `RUN TRUSTED MANUAL BENCHMARK` flow.
+- Private battle-session diagnostic toggles for labels, rings, Lume, minimap refresh, fog visual redraw, HUD density, notifications, and profiler overlay.
+- Ignored artifact root `artifacts/performance/v0109/`.
+- `docs/V0109_PROFILER_METHOD_AUDIT.md`.
+- `docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md`.
+- `docs/V0109_EXECUTION_MODE_COMPARISON.md`.
+- `docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md`.
+- `docs/V0109_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`.
+- `docs/V0109_MANUAL_BENCHMARK_GUIDE.md`.
+- `docs/V0109_VISUAL_QA_REPORT.md`.
+- `docs/V0109_IMPLEMENTATION_REPORT.md`.
+- `docs/V0109_EMMANUEL_RETEST_CHECKLIST.md`.
+- `docs/V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md`.
+
+Changed:
+
+- Trusted benchmark reports separate launch, warm-up, steady-state, interaction, reset, return-to-hub, and Results transition timing.
+- Private performance counters now include total labels, DOM nodes, memory trend when available, and additional frame-threshold counts above 100/250/500 ms.
+- Visual QA now targets 240 screenshots, and the visual review pack emits a Trusted Benchmark contact sheet.
+- Private package generation and validation now expect `v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation` and include v0.109 docs.
+
+Not changed:
+
+- No save-version bump, save field, localStorage key, stable ID, serialized ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, generated/imported art, unapproved runtime image, runtime asset path, public benchmark control, desktop path, engine choice, multiplayer, PvP, co-op, or runtime title changed.
+- `linked_ward` remains exactly `0.92`.
+- v0.110, engine-spike preparation, and desktop port work were not started.
+
+Verification:
+
+- `npm test` PASS, 112 files / 783 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- Content, art-intake, portable-content export/validation, and save-translation contract gates PASS.
+- Representative battle benchmarks PASS: smoke 1 scenario, representative 8 scenarios, stress 1 local-only scenario, report refreshed for 10 scenarios.
+- Trusted benchmark commands PASS: manual template, preview 2 rows, dev 1 row, root-cause matrix 19 cases, report refreshed for 21 result rows.
+- Browser smoke/playtest lanes PASS: fast smoke 10 tests, full smoke 17 tests, controls 18/18 rows, extended controls 90/90 rows, controls verifier 1,658 checks, Act 1 telemetry 180 summarized runs from 255 deterministic simulator runs.
+- Hosted release lanes PASS: smoke 17 tests, deep-battle 31 tests, deep-campaign-pressure 8 tests, layout-core 27 tests, layout-cinderfen 12 tests.
+- `npm run visual:qa` PASS after resolving the v0.109 visual-harness cleanup failure, 21 tests / 240 screenshots / 0 console errors / 0 screenshot retries.
+- `npm run visual:review-pack` PASS, 240 screenshots and 10 contact sheets. Browser plugin manual review PASS for the Trusted Benchmark contact sheet, 27/27 images loaded.
+- Pre-commit `npm run package:playtest`, `npm run verify:playtest-package`, and `git diff --check` are run before commit; final clean package generation and package verification are repeated after the checkpoint commit so the package does not carry a dirty suffix.
+
 # v0.108 Representative Battle Benchmark Harness And Desktop Acceptance Profile - 2026-06-02
 
 This checkpoint adds a private no-save representative battle benchmark harness, local browser benchmark scripts, provisional desktop acceptance profile, visual QA coverage, and package metadata/docs. It does not change gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, or desktop saves.

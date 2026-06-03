@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 213;
+const EXPECTED_SCREENSHOT_COUNT = 240;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
 const VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS = 90_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
@@ -247,6 +247,15 @@ async function setPrivateHudDensity(page: Page, mode: "minimal" | "standard" | "
 async function returnToPrivateHub(page: Page): Promise<void> {
   await clickReady(page.getByTestId("private-hub-exit"), "visual QA return to private playtest hub");
   await expect(page.getByTestId("playtest-hub")).toBeVisible();
+}
+
+async function setTrustedBenchmarkDiagnostics(page: Page, diagnostics: Record<string, string>): Promise<void> {
+  const applied = await page.evaluate((nextDiagnostics) => {
+    const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+    return hooks?.setTrustedBenchmarkDiagnostics?.(nextDiagnostics) ?? null;
+  }, diagnostics);
+  expect(applied, `trusted benchmark diagnostics ${JSON.stringify(diagnostics)} should apply`).toBeTruthy();
+  await page.waitForTimeout(120);
 }
 
 async function showArtSlotDiagnostics(page: Page): Promise<void> {
@@ -2494,6 +2503,125 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await clickReady(page.getByTestId("results-playtest-hub"), `${group} return from results`, VISUAL_QA_SCENE_TRANSITION_CLICK_OPTIONS);
     await expect(page.getByTestId("playtest-hub")).toBeVisible();
 
+    expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
+  });
+
+  test("captures v0.109 trusted benchmark and diagnostic states", async ({ page }) => {
+    test.setTimeout(VISUAL_QA_GROUP_TIMEOUT_MS);
+    const group = "v0109-trusted-browser-benchmark";
+    const consoleErrors = attachConsoleCollector(page, group);
+    await page.addInitScript(() => {
+      Reflect.set(window, "__ASCENDANT_PRIVATE_PLAYTEST_TOOLS__", true);
+    });
+
+    await useViewport(page, LAPTOP);
+    await openPrivatePlaytestHub(page);
+    await expect(page.getByTestId("trusted-manual-benchmark-panel")).toBeVisible();
+    await captureView(page, group, "v0.109 manual benchmark ready", "v0109-trusted-manual-ready-1366.png", LAPTOP, "Private manual benchmark panel is visible in the Playtest Hub with no public controls.");
+
+    await page.getByTestId("trusted-manual-benchmark-start").click();
+    await expect(page.getByTestId("trusted-manual-phase-intro")).toHaveClass(/active/u);
+    await captureView(page, group, "v0.109 manual intro", "v0109-trusted-manual-intro-1366.png", LAPTOP, "Manual benchmark integrity intro names execution mode, visibility, warm-up, sample, and no-save posture.");
+
+    await page.getByTestId("trusted-manual-benchmark-next").click();
+    await expect(page.getByTestId("trusted-manual-phase-warmup")).toHaveClass(/active/u);
+    await captureView(page, group, "v0.109 manual warm-up", "v0109-trusted-manual-warmup-1366.png", LAPTOP, "Warm-up phase separates launch and settle work from scored frame timing.");
+
+    await page.getByTestId("trusted-manual-benchmark-next").click();
+    await expect(page.getByTestId("trusted-manual-phase-steady")).toHaveClass(/active/u);
+    await captureView(page, group, "v0.109 manual steady-state", "v0109-trusted-manual-steady-1366.png", LAPTOP, "Steady-state phase names the ten-second rAF sample and no screenshots during sample.");
+
+    await page.getByTestId("trusted-manual-benchmark-next").click();
+    await expect(page.getByTestId("trusted-manual-phase-interaction")).toHaveClass(/active/u);
+    await captureView(page, group, "v0.109 manual interactions", "v0109-trusted-manual-interactions-1366.png", LAPTOP, "Interaction phase keeps hero, Worker, building, minimap, Lume, Results, reset, and return timing separate.");
+
+    await page.getByTestId("trusted-manual-benchmark-export").click();
+    await expect(page.getByTestId("trusted-manual-phase-export")).toHaveClass(/active/u);
+    await captureView(page, group, "v0.109 manual export summary", "v0109-trusted-manual-export-1366.png", LAPTOP, "Export summary is copyable without console usage.");
+
+    await useViewport(page, LAPTOP);
+    await launchPrivateHudScenario(page, "benchmark_battle_tier_m_representative");
+    await expect(page.getByTestId("trusted-diagnostic-toggles")).toBeVisible();
+    await captureView(page, group, "v0.109 diagnostics collapsed", "v0109-trusted-diagnostics-collapsed-1366.png", LAPTOP, "Trusted diagnostics panel starts compact in a private Tier M battle.");
+
+    await page.getByTestId("trusted-diagnostic-toggle").click();
+    await expect(page.getByTestId("trusted-diag-row-labels")).toBeVisible();
+    await captureView(page, group, "v0.109 diagnostics expanded", "v0109-trusted-diagnostics-expanded-1366.png", LAPTOP, "Expanded diagnostics expose session-only root-cause toggles.");
+
+    await setTrustedBenchmarkDiagnostics(page, { labels: "hidden" });
+    await captureView(page, group, "v0.109 labels hidden", "v0109-trusted-labels-hidden-1366.png", LAPTOP, "Labels hidden isolates text-object visual cost without changing capture or combat rules.");
+
+    await setTrustedBenchmarkDiagnostics(page, { captureRings: "minimal" });
+    await captureView(page, group, "v0.109 rings minimal", "v0109-trusted-rings-minimal-1366.png", LAPTOP, "Capture rings minimal isolates ring graphics cost while ownership logic remains unchanged.");
+
+    await setTrustedBenchmarkDiagnostics(page, { lume: "hidden" });
+    await captureView(page, group, "v0.109 Lume hidden", "v0109-trusted-lume-hidden-1366.png", LAPTOP, "Lume Hidden isolates overlay cost while Linked Ward rules remain unchanged.");
+
+    await setTrustedBenchmarkDiagnostics(page, { lume: "auto" });
+    await captureView(page, group, "v0.109 Lume auto", "v0109-trusted-lume-auto-1366.png", LAPTOP, "Lume Auto returns to the default private benchmark posture.");
+
+    await setTrustedBenchmarkDiagnostics(page, { lume: "always" });
+    await captureView(page, group, "v0.109 Lume always", "v0109-trusted-lume-always-1366.png", LAPTOP, "Lume Always shows maximum review overlay cost.");
+
+    await setTrustedBenchmarkDiagnostics(page, { minimapRefresh: "reduced" });
+    await captureView(page, group, "v0.109 minimap reduced", "v0109-trusted-minimap-reduced-1366.png", LAPTOP, "Reduced minimap refresh isolates HUD/minimap redraw pressure.");
+
+    await setTrustedBenchmarkDiagnostics(page, { minimapRefresh: "paused" });
+    await captureView(page, group, "v0.109 minimap paused", "v0109-trusted-minimap-paused-1366.png", LAPTOP, "Paused minimap snapshot isolates minimap redraw cost ceiling.");
+
+    await setTrustedBenchmarkDiagnostics(page, { fogRedraw: "reduced" });
+    await captureView(page, group, "v0.109 fog reduced", "v0109-trusted-fog-reduced-1366.png", LAPTOP, "Reduced fog redraw affects visual refresh only, not fog simulation.");
+
+    await setTrustedBenchmarkDiagnostics(page, { hudDensity: "minimal" });
+    await captureView(page, group, "v0.109 HUD minimal", "v0109-trusted-hud-minimal-1366.png", LAPTOP, "HUD Minimal is the default public-compatible display density.");
+
+    await setTrustedBenchmarkDiagnostics(page, { hudDensity: "standard" });
+    await captureView(page, group, "v0.109 HUD standard", "v0109-trusted-hud-standard-1366.png", LAPTOP, "HUD Standard keeps richer private review surfaces separate from default samples.");
+
+    await setTrustedBenchmarkDiagnostics(page, { hudDensity: "debug" });
+    await captureView(page, group, "v0.109 HUD debug", "v0109-trusted-hud-debug-1366.png", LAPTOP, "HUD Debug exposes private counters as a measured diagnostic case.");
+
+    await setTrustedBenchmarkDiagnostics(page, { notifications: "suppressed" });
+    await captureView(page, group, "v0.109 notifications suppressed", "v0109-trusted-notifications-suppressed-1366.png", LAPTOP, "Notifications suppressed isolates status/floating-text cost.");
+
+    await setTrustedBenchmarkDiagnostics(page, { profilerOverlay: "off" });
+    await captureView(page, group, "v0.109 profiler overlay off", "v0109-trusted-profiler-off-1366.png", LAPTOP, "Old profiler overlay off is the trusted sample default.");
+
+    await setTrustedBenchmarkDiagnostics(page, { profilerOverlay: "on" });
+    await captureView(page, group, "v0.109 profiler overlay on", "v0109-trusted-profiler-on-1366.png", LAPTOP, "Old profiler overlay on is measured as a distortion/root-cause case.");
+
+    await setTrustedBenchmarkDiagnostics(page, {
+      labels: "hidden",
+      captureRings: "minimal",
+      lume: "hidden",
+      minimapRefresh: "reduced",
+      fogRedraw: "reduced",
+      hudDensity: "minimal",
+      notifications: "suppressed",
+      profilerOverlay: "off"
+    });
+    await captureView(page, group, "v0.109 overlays minimized", "v0109-trusted-overlays-minimized-1366.png", LAPTOP, "All non-essential private overlays minimized for root-cause comparison.");
+
+    await setTrustedBenchmarkDiagnostics(page, {
+      labels: "normal",
+      captureRings: "normal",
+      lume: "always",
+      minimapRefresh: "normal",
+      fogRedraw: "normal",
+      hudDensity: "debug",
+      notifications: "normal",
+      profilerOverlay: "on"
+    });
+    await captureView(page, group, "v0.109 overlays enabled", "v0109-trusted-overlays-enabled-1366.png", LAPTOP, "All private review overlays enabled for maximum-cost comparison.");
+
+    await useViewport(page, FULL_HD);
+    await captureView(page, group, "v0.109 diagnostics 1920", "v0109-trusted-diagnostics-1920.png", FULL_HD, "Trusted diagnostics remain readable at 1920x1080.");
+    await useViewport(page, WIDE_DESKTOP);
+    await captureView(page, group, "v0.109 diagnostics 1600", "v0109-trusted-diagnostics-1600.png", WIDE_DESKTOP, "Trusted diagnostics remain readable at 1600x900.");
+    await useViewport(page, LAPTOP);
+    await captureView(page, group, "v0.109 diagnostics 1366", "v0109-trusted-diagnostics-1366.png", LAPTOP, "Trusted diagnostics remain readable at 1366x768.");
+
+    await setTrustedBenchmarkDiagnostics(page, { profilerOverlay: "off" });
     expect(consoleErrors, `${group}: visual QA should not record browser console errors`).toEqual([]);
   });
 

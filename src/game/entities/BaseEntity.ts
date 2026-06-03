@@ -44,6 +44,7 @@ export abstract class BaseEntity {
   private healthBarWidth = 0;
   private healthBarHeight = 0;
   private labelVisibleByDefault = true;
+  private diagnosticLabelHidden = false;
 
   protected constructor(options: {
     id?: string;
@@ -237,6 +238,14 @@ export abstract class BaseEntity {
       .setFillStyle(presentation.fillColor, presentation.fillAlpha);
   }
 
+  setDiagnosticLabelHidden(hidden: boolean): void {
+    if (this.diagnosticLabelHidden === hidden) {
+      return;
+    }
+    this.diagnosticLabelHidden = hidden;
+    this.updateLabelVisibility();
+  }
+
   updateHealthBar(): void {
     if (!this.healthFill || !this.healthBack) {
       return;
@@ -251,6 +260,10 @@ export abstract class BaseEntity {
   }
 
   protected updateLabelVisibility(): void {
+    if (this.diagnosticLabelHidden) {
+      this.label?.setVisible(false);
+      return;
+    }
     const hasPriorityStatus = this.statusEffects.some((effect) => effect.remainingSeconds > 0);
     this.label?.setVisible(this.labelVisibleByDefault || this.selected || hasPriorityStatus);
   }

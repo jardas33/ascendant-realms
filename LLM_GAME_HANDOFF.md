@@ -1,12 +1,72 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-02 v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile
+Last updated: 2026-06-02 v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 inventories current runtime-facing strings and plans future display-copy migration. v0.81 specified the Lume Site Network smallest fun slice, v0.82 implemented the first mission-local runtime prototype on Aether Well Ruins only, v0.83 rescues the campaign map presentation plus adds a private package quick-launch for that Lume slice, v0.84 polishes that guided private demo for clearer Lume retesting, v0.85 rescues contextual Lume overlay readability plus the private-demo Results screen, v0.86 rescues the general battlefield shell presentation, v0.87 polishes the campaign shell plus ordinary Results information architecture without changing gameplay, v0.88 prepares a docs-only visual foundation, style-frame brief set, prompt templates, vertical-slice asset manifest, and AI-art intake gate without generating or importing art, v0.89 applies the first controlled display-copy migration batch without changing saves, IDs, rewards, balance, or the runtime title, v0.90 hardens deterministic visual QA, desktop viewport layout assertions, screenshot manifest review rules, and lightweight performance baselines without changing gameplay, v0.91 audits the browser prototype for future desktop-transition reuse, engine-decision criteria, staged experiments, and vertical-slice scope without porting, choosing an engine, adding dependencies, changing saves, or changing runtime behavior, v0.92 adds a local static visual review-pack generator plus a unified Emmanuel retest packet without changing runtime behavior, v0.93 promotes the visual token proposal into runtime CSS tokens while fixing selected-mission panel reset/readability without changing gameplay, saves, rewards, IDs, or art, v0.94 rescues the main menu, Ascendant creation flow, campaign-shell density, campaign tab hierarchy, compact mission panel, and ordinary Results expanded details without changing gameplay, saves, rewards, progression, stable IDs, runtime title, or art, v0.95 rescues procedural battlefield readability, fog/terrain placeholder presentation, entity silhouettes, capture-site label density, and minimap clarity without changing gameplay, fog logic, Lume mechanics, saves, IDs, art assets, or balance, v0.96 rescues first-session Tutorial/onboarding presentation with one-action steps, More Help, Focus Objective, Dismiss/Reopen, compact help surfaces, and Salto next-action guidance without changing gameplay, saves, rewards, progression, stable IDs, Lume rules, maps, factions, art assets, or balance, v0.97 polishes selection focus, command destination markers, camera focus feedback, enemy inspection, and compact command-panel follow-up without changing gameplay systems, saves, pathing rules, stable IDs, art, rewards, or balance, v0.98 rescues Hero, Skills, Equipment, Inventory, Relic, Retinue, Stronghold, and Results-to-meta presentation without changing progression rules, XP, relic stats, equipment rules, Retinue rules, Stronghold rules, saves, IDs, rewards, campaign progression, art, or desktop work, v0.99 polishes Act 1 mission presentation, objective clarity, Captain Malrec framing, compact next-step copy, and Results guidance without changing nodes, unlock rules, rewards, difficulty, AI, saves, stable IDs, broad branding, art, or desktop work, v0.100 adds a private-package-only Playtest Hub, Scenario Gallery, and 8-minute visual tour using isolated no-save fixtures without exposing shortcuts in production posture or changing normal progression, saves, rewards, gameplay rules, balance, IDs, art, assets, or desktop work, v0.101 adds deterministic downstream-only portable content export tooling plus a stable-ID snapshot guard without changing runtime behavior, saves, gameplay, IDs, art, package posture, engine posture, or desktop implementation, v0.102 adds a browser save fixture library plus a pure desktop translation-contract proof without changing `CURRENT_SAVE_VERSION`, runtime save behavior, localStorage, stable IDs, gameplay, rewards, content, package posture, engine choice, or desktop persistence, v0.103 adds private/dev performance profiling plus evidence-led battlefield clutter reduction without changing saves, IDs, gameplay, rewards, balance, maps, factions, art, package isolation, or Lume mechanics, v0.104 adds profiler-guided rendering skips plus public Minimal battle HUD density and private-only Standard/Debug HUD review controls without changing saves, IDs, gameplay, rewards, balance, maps, factions, art, desktop posture, package isolation, or Lume mechanics, v0.105 adds a deterministic visual asset registry plus ignored candidate-review workspace tooling without generating/importing art, changing runtime asset paths, changing gameplay, changing saves, renaming IDs, or changing package metadata, v0.106 adds a typed runtime art slot adapter, placeholder fallback harness, private-only diagnostics/mock routing, package metadata, and visual QA coverage without generated/imported art, unapproved runtime asset loading, gameplay/save/stable-ID changes, desktop work, engine choice, or runtime rebrand, v0.107 defines the first Salto vertical-slice composition plan, asset-dimension contracts, deterministic manifest validation, and metadata-only packet generator without generated/imported art, runtime integration approval, gameplay/save/stable-ID changes, package metadata changes, desktop work, engine choice, or new maps/factions/units/buildings, and v0.108 adds a private representative battle benchmark harness plus provisional desktop acceptance profile without changing gameplay, saves, stable IDs, rewards, art, engine choice, or starting a desktop port. No runtime rebrand is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers, adds trusted production-preview-first sampling, private manual benchmark flow, and root-cause diagnostic toggles, and concludes the earlier 2-3 FPS evidence is mixed with real browser runtime cost rather than purely harness artifact. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.110 work is approved.
+
+## Current v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
+
+Status: v0.109 adds a private trusted browser benchmark protocol, production-preview and dev-server evidence lanes, manual in-app benchmark template, private battle-session diagnostic toggles, root-cause matrix reports, visual QA coverage, review-pack grouping, and package metadata/docs. The trusted production-preview Tier M baseline still shows serious browser lag; treat v0.108's 2-3 FPS evidence as mixed and methodologically weak, not dismissed.
+
+Included work:
+
+- Added `src/game/playtest/TrustedBrowserBenchmark.ts`, focused tests, and `tools/runTrustedBrowserBenchmark.ts`.
+- Added `npm run perf:trusted:preview`, `npm run perf:trusted:dev`, `npm run perf:trusted:manual-template`, `npm run perf:root-cause-matrix`, and `npm run perf:trusted:report`.
+- Added private Playtest Hub manual benchmark flow and private battle diagnostic toggles.
+- Added ignored `artifacts/performance/v0109/` output with raw frame intervals and interaction-latency artifacts.
+- Updated visual QA to 240 screenshots and visual review pack to 10 contact sheets.
+- Updated package metadata/docs to v0.109.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, gameplay rules, combat balance, AI/pathing rules, maps, factions, generated/imported art, runtime asset paths, public benchmark controls, engine choice, desktop port, desktop save path, multiplayer, PvP, co-op, runtime title, or v0.110 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Verification:
+
+```text
+Focused implementation tests - PASS, 5 files / 28 tests.
+npm test - PASS, 112 files / 783 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run benchmark:battle:smoke - PASS, 1 scenario.
+npm run benchmark:battle:representative - PASS, 8 scenarios.
+npm run benchmark:battle:stress - PASS, 1 local-only stress scenario.
+npm run benchmark:battle:report - PASS, refreshed 10-scenario report.
+npm run perf:trusted:manual-template - PASS.
+npm run perf:trusted:preview - PASS, 2 trusted preview rows.
+npm run perf:trusted:dev - PASS, 1 trusted dev row.
+npm run perf:root-cause-matrix - PASS, 19 production-preview root-cause cases.
+npm run perf:trusted:report - PASS, refreshed 21 trusted result rows.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18/18 rows.
+npm run playtest:controls:extended - PASS, 90/90 rows.
+npm run playtest:controls:verify - PASS, 1,658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 31 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - first attempt timed out at the outer command timeout; exact rerun exposed a v0.109 final cleanup click failure; narrow harness cleanup patch applied; final exact rerun PASS, 21 tests / 240 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 240 screenshots and 10 contact sheets.
+Browser plugin manual review - PASS, local review-pack Trusted Benchmark contact sheet loaded 27/27 images.
+npm run package:playtest - PASS for the pre-commit dirty package.
+npm run verify:playtest-package - PASS for the pre-commit dirty package.
+git diff --check - PASS.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.109 browser benchmark integrity audit and performance root-cause isolation`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, and dirty status says `no`. Do not start v0.110, engine spike, desktop port, or art work without a new explicit goal.
 
 ## Current v0.108 Representative Battle Benchmark Harness And Desktop Acceptance Profile - 2026-06-02
 

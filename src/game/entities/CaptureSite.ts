@@ -6,6 +6,7 @@ import { resolveCaptureSitePresentation } from "../ui/CaptureSitePresentation";
 import { BaseEntity } from "./BaseEntity";
 
 export type ResourceSiteLevel = 1 | 2;
+export type CaptureSiteDiagnosticRingMode = "normal" | "minimal";
 
 export interface CaptureSiteWorkerAssignment {
   workerId: string;
@@ -31,6 +32,7 @@ export class CaptureSite extends BaseEntity {
 
   private ring?: Phaser.GameObjects.Arc;
   private progressRing?: Phaser.GameObjects.Arc;
+  private diagnosticRingMode: CaptureSiteDiagnosticRingMode = "normal";
 
   constructor(scene: Phaser.Scene, definition: CaptureSiteDefinition) {
     super({
@@ -162,6 +164,34 @@ export class CaptureSite extends BaseEntity {
       this.progressRing.setScale(0.35 + this.captureProgress * 0.65);
       this.progressRing.setStrokeStyle(3, presentation.progressColor, 0.9);
     }
+    this.applyDiagnosticRingStyle();
+  }
+
+  setDiagnosticRingMode(mode: CaptureSiteDiagnosticRingMode): void {
+    if (!this.ring) {
+      return;
+    }
+    if (this.diagnosticRingMode === mode) {
+      return;
+    }
+    this.diagnosticRingMode = mode;
+    if (mode === "normal") {
+      this.updateVisuals();
+      return;
+    }
+    this.applyDiagnosticRingStyle();
+  }
+
+  private applyDiagnosticRingStyle(): void {
+    if (!this.ring) {
+      return;
+    }
+    if (this.diagnosticRingMode === "minimal") {
+      this.ring.setFillStyle(this.siteColor(), 0.02).setStrokeStyle(1, this.siteColor(), 0.35);
+      this.progressRing?.setAlpha(0.45);
+      return;
+    }
+    this.progressRing?.setAlpha(1);
   }
 
   private siteColor(): number {

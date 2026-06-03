@@ -11,9 +11,22 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile** on 2026-06-02. It is a private QA and benchmark milestone: the project now has a deterministic no-save representative battle benchmark group in the private Playtest Hub, local browser benchmark scripts, a merged 10-scenario report, provisional desktop acceptance profile, 213-screenshot visual QA coverage, and a 9-contact-sheet visual review pack. It uses existing runtime content only and does not start a desktop port, choose an engine, add desktop saves, generate/import art, change gameplay, change rewards, change stable IDs, or add mine/shrine building IDs.
+The current checkpoint is **v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation** on 2026-06-02. It is a private benchmark methodology and diagnosis milestone: the project now has a trusted production-preview-first browser benchmark protocol, dev-server comparison, private manual benchmark flow, root-cause diagnostic toggles, 240-screenshot visual QA target, and a Trusted Benchmark review-pack family. The trusted matrix still shows serious browser lag in the Tier M baseline, so earlier 2-3 FPS evidence is mixed rather than dismissed as purely harness artifact. It uses existing runtime content only and does not start a desktop port, choose an engine, add desktop saves, generate/import art, change gameplay, change rewards, change stable IDs, or add mine/shrine building IDs.
 
-The next recommended step is to use the v0.108 benchmark evidence to decide whether Tier M is the right future desktop acceptance posture, while separately keeping the v0.107 Salto art packet ready for Emmanuel's next single-asset review. Do not convert the browser benchmark numbers into final hardware targets, promote Tier L stress into CI, generate a whole art roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel review of the v0.109 evidence and retest checklist. Do not convert the browser benchmark numbers into final hardware targets, promote Tier L stress into CI, generate a whole art roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, or start a desktop port until a future explicit goal approves a narrow next step.
+
+New v0.109 docs:
+
+- `docs/V0109_PROFILER_METHOD_AUDIT.md`
+- `docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md`
+- `docs/V0109_EXECUTION_MODE_COMPARISON.md`
+- `docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md`
+- `docs/V0109_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`
+- `docs/V0109_MANUAL_BENCHMARK_GUIDE.md`
+- `docs/V0109_VISUAL_QA_REPORT.md`
+- `docs/V0109_IMPLEMENTATION_REPORT.md`
+- `docs/V0109_EMMANUEL_RETEST_CHECKLIST.md`
+- `docs/V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md`
 
 New v0.108 docs:
 

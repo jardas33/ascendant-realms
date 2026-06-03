@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.82: Aether Well Ruins now has the first mission-local Lume Network prototype on Broken Ford. Capturing West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, activates Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-Current v0.108 work adds a private no-save representative battle benchmark harness, local browser benchmark scripts, provisional desktop acceptance profile, visual QA/review-pack coverage, and package metadata/docs. It uses existing runtime content only, including capture-site infrastructure as mine/shrine equivalents. It does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, or co-op.
+Current v0.109 work adds a trusted browser benchmark integrity protocol, production-preview-first benchmark lanes, dev-server comparison, private manual benchmark flow, and session-only diagnostic toggles for root-cause isolation. The latest trusted matrix still shows serious browser lag in the Tier M baseline, so the old 2-3 FPS evidence is mixed: the old 1200 ms dev/headless/profiler-overlay methodology was weak, but the runtime still has real browser cost. It uses existing runtime content only and does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, or co-op.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.108 updates package metadata and required package docs to include the v0.107 Salto slice planning packet plus the v0.108 representative benchmark profile, benchmark report, desktop acceptance profile, visual QA report, and Emmanuel benchmark guide.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.109 updates package metadata and required package docs to include the trusted benchmark method audit, protocol, execution-mode comparison, root-cause matrix, evidence-backed optimization report, manual benchmark guide, visual QA report, implementation report, Emmanuel retest checklist, and deferred engine-spike note.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -37,6 +37,9 @@ v0.82 Linked Ward balance/readability report: `docs/V082_LINKED_WARD_BALANCE_AND
 v0.82 Lume test and safety report: `docs/V082_LUME_NETWORK_TEST_AND_SAFETY_REPORT.md`.
 v0.82 Emmanuel retest checklist: `docs/V082_EMMANUEL_RETEST_CHECKLIST.md`.
 v0.82 implementation report: `docs/V082_IMPLEMENTATION_REPORT.md`.
+v0.109 trusted browser benchmark protocol: `docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md`.
+v0.109 root-cause matrix: `docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md`.
+v0.109 Emmanuel retest checklist: `docs/V0109_EMMANUEL_RETEST_CHECKLIST.md`.
 
 Current v0.3 feature snapshot:
 

@@ -18,16 +18,16 @@ The harness uses the existing private browser profiler through Playwright. Resul
 
 ## Latest Summary
 
-- benchmark_battle_tier_s_smoke: FPS avg 2.5, 1% low 2.22, p95 450 ms, units 21, DOM 641, launch 7451 ms, action 436.1 ms.
-- benchmark_battle_tier_m_representative: FPS avg 2.12, 1% low 1.43, p95 700 ms, units 41, DOM 656, launch 8692 ms, action 409.9 ms.
-- benchmark_battle_tier_l_stress: FPS avg 1.79, 1% low 1.71, p95 583.3 ms, units 63, DOM 675, launch 10158 ms, action 542.5 ms.
-- benchmark_battle_lume_hidden: FPS avg 2.75, 1% low 2.31, p95 433.4 ms, units 41, DOM 656, launch 7223 ms, action 317.5 ms.
-- benchmark_battle_lume_auto: FPS avg 2.47, 1% low 2.14, p95 466.7 ms, units 41, DOM 656, launch 7294 ms, action 347.5 ms.
-- benchmark_battle_lume_always: FPS avg 1.82, 1% low 1.43, p95 700 ms, units 41, DOM 656, launch 9388 ms, action 586.2 ms.
-- benchmark_battle_fog_heavy: FPS avg 2.89, 1% low 2, p95 499.9 ms, units 41, DOM 649, launch 5888 ms, action 365 ms.
-- benchmark_battle_notification_heavy: FPS avg 2.24, 1% low 2.07, p95 483.3 ms, units 41, DOM 656, launch 7360 ms, action 472.7 ms.
-- benchmark_battle_minimap_interaction: FPS avg 2.61, 1% low 2, p95 499.9 ms, units 41, DOM 673, launch 5762 ms, action 281.8 ms.
-- benchmark_battle_results_transition: FPS avg 9.31, 1% low 2.61, p95 383.4 ms, units 0, DOM 227, launch 6043 ms, action 380 ms, Results 323 ms.
+- benchmark_battle_tier_s_smoke: FPS avg 2.8, 1% low 2.14, p95 466.7 ms, units 21, DOM 647, launch 6547 ms, action 368.3 ms.
+- benchmark_battle_tier_m_representative: FPS avg 2.35, 1% low 1.88, p95 533.2 ms, units 41, DOM 662, launch 8452 ms, action 367.3 ms.
+- benchmark_battle_tier_l_stress: FPS avg 1.82, 1% low 1.67, p95 599.9 ms, units 63, DOM 681, launch 8677 ms, action 470.5 ms.
+- benchmark_battle_lume_hidden: FPS avg 2.94, 1% low 2.5, p95 400 ms, units 41, DOM 662, launch 6276 ms, action 309.8 ms.
+- benchmark_battle_lume_auto: FPS avg 2.47, 1% low 2.07, p95 483.3 ms, units 41, DOM 662, launch 6419 ms, action 420.9 ms.
+- benchmark_battle_lume_always: FPS avg 1.89, 1% low 1.33, p95 749.9 ms, units 41, DOM 662, launch 6480 ms, action 606.4 ms.
+- benchmark_battle_fog_heavy: FPS avg 2.86, 1% low 2.5, p95 400 ms, units 41, DOM 655, launch 5613 ms, action 333.8 ms.
+- benchmark_battle_notification_heavy: FPS avg 2.29, 1% low 1.71, p95 583.3 ms, units 41, DOM 662, launch 6830 ms, action 362.9 ms.
+- benchmark_battle_minimap_interaction: FPS avg 2.91, 1% low 2.61, p95 383.3 ms, units 41, DOM 679, launch 5541 ms, action 366.7 ms.
+- benchmark_battle_results_transition: FPS avg 6.55, 1% low 2, p95 499.9 ms, units 0, DOM 227, launch 5547 ms, action 257.8 ms, Results 363 ms.
 
 ## Stress Lane
 

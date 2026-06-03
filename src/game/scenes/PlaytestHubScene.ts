@@ -22,6 +22,60 @@ import {
   resetPrivatePlaytestHubSession,
   restorePrivatePlaytestHubSave
 } from "../playtest/PrivatePlaytestTools";
+import {
+  TRUSTED_DEFAULT_SAMPLE_MS,
+  TRUSTED_DEFAULT_WARMUP_MS,
+  V0109_ARTIFACT_DIR,
+  createManualBenchmarkTemplate
+} from "../playtest/TrustedBrowserBenchmark";
+
+type TrustedManualBenchmarkPhaseId = "intro" | "warmup" | "steady" | "interaction" | "export";
+
+interface TrustedManualBenchmarkPhase {
+  id: TrustedManualBenchmarkPhaseId;
+  title: string;
+  body: string;
+}
+
+interface TrustedManualBenchmarkSession {
+  active: boolean;
+  phaseIndex: number;
+  startedAtUtc?: string;
+  exportedAtUtc?: string;
+}
+
+const TRUSTED_MANUAL_BENCHMARK_PHASES: TrustedManualBenchmarkPhase[] = [
+  {
+    id: "intro",
+    title: "Integrity Check",
+    body: "Private-only benchmark integrity lane. It records execution mode, visibility, viewport, overlay state, warm-up, sample duration, and save-isolation posture."
+  },
+  {
+    id: "warmup",
+    title: "Warm-Up",
+    body: `Launch Tier M representative battle, then wait ${TRUSTED_DEFAULT_WARMUP_MS / 1000} seconds before scoring any frame data.`
+  },
+  {
+    id: "steady",
+    title: "Steady-State Sample",
+    body: `Sample requestAnimationFrame intervals for ${TRUSTED_DEFAULT_SAMPLE_MS / 1000} seconds with screenshots and the old profiler overlay outside the timing window.`
+  },
+  {
+    id: "interaction",
+    title: "Interaction Samples",
+    body: "Measure hero, Worker, building, minimap, Lume Hidden/Auto/Always, Results transition, reset, and return-to-hub separately from steady-state frame timing."
+  },
+  {
+    id: "export",
+    title: "Export Summary",
+    body: "Copy the generated summary into the local v0.109 artifact folder. The template names every required field and avoids console-only instructions."
+  }
+];
+
+let trustedManualBenchmarkSession: TrustedManualBenchmarkSession = {
+  active: false,
+  phaseIndex: 0
+};
 
 export class PlaytestHubScene extends Phaser.Scene {
   private root?: HTMLElement;
@@ -87,6 +141,62 @@ export class PlaytestHubScene extends Phaser.Scene {
       if (action === "tour-open" && this.tourStepIndex !== undefined) {
         const scenario = scenarioById(PLAYTEST_FAST_TOUR_SCENARIO_IDS[this.tourStepIndex]);
         if (scenario) {
+          this.launchScenario(scenario);
+        }
+      }
+      if (action === "trusted-benchmark-start") {
+        trustedManualBenchmarkSession = {
+          active: true,
+          phaseIndex: 0,
+          startedAtUtc: new Date().toISOString()
+        };
+        this.status = "Trusted manual benchmark flow started. Use the phase controls and existing private scenarios only.";
+        this.render();
+      }
+      if (action === "trusted-benchmark-next" && trustedManualBenchmarkSession.active) {
+        trustedManualBenchmarkSession.phaseIndex = Math.min(
+          trustedManualBenchmarkSession.phaseIndex + 1,
+          TRUSTED_MANUAL_BENCHMARK_PHASES.length - 1
+        );
+        this.render();
+      }
+      if (action === "trusted-benchmark-back" && trustedManualBenchmarkSession.active) {
+        trustedManualBenchmarkSession.phaseIndex = Math.max(trustedManualBenchmarkSession.phaseIndex - 1, 0);
+        this.render();
+      }
+      if (action === "trusted-benchmark-clear") {
+        trustedManualBenchmarkSession = { active: false, phaseIndex: 0 };
+        this.status = "Trusted manual benchmark flow cleared. Private scenario gallery remains unchanged.";
+        this.render();
+      }
+      if (action === "trusted-benchmark-export" && trustedManualBenchmarkSession.active) {
+        trustedManualBenchmarkSession = {
+          ...trustedManualBenchmarkSession,
+          phaseIndex: TRUSTED_MANUAL_BENCHMARK_PHASES.length - 1,
+          exportedAtUtc: new Date().toISOString()
+        };
+        this.status = `Manual benchmark template ready for ${V0109_ARTIFACT_DIR}/manual-benchmark-template.json.`;
+        this.render();
+      }
+      if (action === "trusted-benchmark-tier-m") {
+        const scenario = scenarioById("benchmark_battle_tier_m_representative");
+        if (scenario) {
+          trustedManualBenchmarkSession = {
+            active: true,
+            phaseIndex: 1,
+            startedAtUtc: trustedManualBenchmarkSession.startedAtUtc ?? new Date().toISOString()
+          };
+          this.launchScenario(scenario);
+        }
+      }
+      if (action === "trusted-benchmark-results") {
+        const scenario = scenarioById("benchmark_battle_results_transition");
+        if (scenario) {
+          trustedManualBenchmarkSession = {
+            active: true,
+            phaseIndex: 3,
+            startedAtUtc: trustedManualBenchmarkSession.startedAtUtc ?? new Date().toISOString()
+          };
           this.launchScenario(scenario);
         }
       }
@@ -206,6 +316,7 @@ export class PlaytestHubScene extends Phaser.Scene {
           </div>
           <div class="status-box" data-testid="playtest-hub-status">${escapeHtml(this.status)}</div>
           ${this.renderTourPanel()}
+          ${this.renderTrustedManualBenchmarkPanel()}
           <div class="playtest-gallery" data-testid="playtest-gallery">
             ${PLAYTEST_SCENARIO_GROUPS.map((group) => this.renderGroup(group.id, group.title)).join("")}
           </div>
@@ -264,6 +375,61 @@ export class PlaytestHubScene extends Phaser.Scene {
           <button data-testid="playtest-tour-next" data-playtest-action="tour-next" ${this.tourStepIndex >= PLAYTEST_FAST_TOUR_SCENARIO_IDS.length - 1 ? "disabled" : ""}>Next</button>
           <button data-testid="playtest-tour-exit" data-playtest-action="tour-exit">Exit Tour</button>
         </div>
+      </section>
+    `;
+  }
+
+  private renderTrustedManualBenchmarkPanel(): string {
+    const session = trustedManualBenchmarkSession;
+    const phase = TRUSTED_MANUAL_BENCHMARK_PHASES[session.phaseIndex] ?? TRUSTED_MANUAL_BENCHMARK_PHASES[0];
+    const template = createManualBenchmarkTemplate();
+    const summary = JSON.stringify(
+      {
+        ...template,
+        manualSession: {
+          active: session.active,
+          phase: phase.id,
+          startedAtUtc: session.startedAtUtc ?? "not-started",
+          exportedAtUtc: session.exportedAtUtc ?? "not-exported",
+          executionMode: "manual-in-app",
+          warmupMs: TRUSTED_DEFAULT_WARMUP_MS,
+          sampleMs: TRUSTED_DEFAULT_SAMPLE_MS,
+          screenshotsDuringSample: false,
+          profilerOverlayDefault: "off"
+        }
+      },
+      null,
+      2
+    );
+    return `
+      <section class="trusted-manual-benchmark-panel" data-testid="trusted-manual-benchmark-panel">
+        <div class="trusted-manual-benchmark-heading">
+          <div>
+            <p class="eyebrow">v0.109 Private Benchmark</p>
+            <h2>Trusted Manual Benchmark</h2>
+            <p>Session-only flow for integrity review, root-cause isolation, and Emmanuel retest. No save, reward, XP, progression, Retinue, relic, reputation, stable-ID, art, engine, or desktop-port change.</p>
+          </div>
+          <button class="menu-primary-button" data-testid="trusted-manual-benchmark-start" data-playtest-action="trusted-benchmark-start">RUN TRUSTED MANUAL BENCHMARK</button>
+        </div>
+        <div class="trusted-manual-benchmark-steps" data-testid="trusted-manual-benchmark-steps">
+          ${TRUSTED_MANUAL_BENCHMARK_PHASES.map(
+            (entry, index) =>
+              `<span class="${index === session.phaseIndex ? "active" : ""}" data-testid="trusted-manual-phase-${entry.id}">${index + 1}. ${escapeHtml(entry.title)}</span>`
+          ).join("")}
+        </div>
+        <div class="trusted-manual-benchmark-current" data-testid="trusted-manual-benchmark-current">
+          <strong>${escapeHtml(phase.title)}</strong>
+          <p>${escapeHtml(phase.body)}</p>
+        </div>
+        <div class="menu-actions row trusted-manual-benchmark-actions">
+          <button data-testid="trusted-manual-benchmark-back" data-playtest-action="trusted-benchmark-back" ${!session.active || session.phaseIndex === 0 ? "disabled" : ""}>Back</button>
+          <button data-testid="trusted-manual-benchmark-next" data-playtest-action="trusted-benchmark-next" ${!session.active || session.phaseIndex >= TRUSTED_MANUAL_BENCHMARK_PHASES.length - 1 ? "disabled" : ""}>Next Phase</button>
+          <button data-testid="trusted-manual-benchmark-tier-m" data-playtest-action="trusted-benchmark-tier-m">Launch Tier M</button>
+          <button data-testid="trusted-manual-benchmark-results" data-playtest-action="trusted-benchmark-results">Results Transition</button>
+          <button data-testid="trusted-manual-benchmark-export" data-playtest-action="trusted-benchmark-export" ${!session.active ? "disabled" : ""}>Export Summary</button>
+          <button data-testid="trusted-manual-benchmark-clear" data-playtest-action="trusted-benchmark-clear">Clear</button>
+        </div>
+        <textarea data-testid="trusted-manual-benchmark-template" readonly>${escapeHtml(summary)}</textarea>
       </section>
     `;
   }

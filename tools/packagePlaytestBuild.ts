@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile";
+const CHECKPOINT = "v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -438,6 +438,16 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0108_VISUAL_QA_REPORT.md", join(packageDir, "V0108_VISUAL_QA_REPORT.md"));
   await copyMarkdown("docs/V0108_IMPLEMENTATION_REPORT.md", join(packageDir, "V0108_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0108_EMMANUEL_BENCHMARK_GUIDE.md", join(packageDir, "V0108_EMMANUEL_BENCHMARK_GUIDE.md"));
+  await copyMarkdown("docs/V0109_PROFILER_METHOD_AUDIT.md", join(packageDir, "V0109_PROFILER_METHOD_AUDIT.md"));
+  await copyMarkdown("docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md", join(packageDir, "V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md"));
+  await copyMarkdown("docs/V0109_EXECUTION_MODE_COMPARISON.md", join(packageDir, "V0109_EXECUTION_MODE_COMPARISON.md"));
+  await copyMarkdown("docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md", join(packageDir, "V0109_ROOT_CAUSE_MATRIX_REPORT.md"));
+  await copyMarkdown("docs/V0109_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md", join(packageDir, "V0109_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md"));
+  await copyMarkdown("docs/V0109_MANUAL_BENCHMARK_GUIDE.md", join(packageDir, "V0109_MANUAL_BENCHMARK_GUIDE.md"));
+  await copyMarkdown("docs/V0109_VISUAL_QA_REPORT.md", join(packageDir, "V0109_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0109_IMPLEMENTATION_REPORT.md", join(packageDir, "V0109_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0109_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0109_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md", join(packageDir, "V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -468,7 +478,7 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     knownWarnings: [
       "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
       "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review.",
-      "v0.108 benchmark numbers are local browser QA evidence, not final desktop hardware certification."
+      "v0.109 trusted benchmark numbers are local browser QA evidence, not final desktop hardware certification."
     ],
     notForJudging: [
       "final art quality",
@@ -541,7 +551,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.108, start with V0108_EMMANUEL_BENCHMARK_GUIDE.md, V0108_REPRESENTATIVE_BATTLE_PROFILE.md, V0108_DESKTOP_ACCEPTANCE_PROFILE.md, and V0108_BROWSER_BATTLE_BENCHMARK_REPORT.md. The package includes the v0.107 Salto composition context plus the v0.108 private representative benchmark harness. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, or runtime/internal title.
+For v0.109, start with V0109_EMMANUEL_RETEST_CHECKLIST.md, V0109_MANUAL_BENCHMARK_GUIDE.md, V0109_PROFILER_METHOD_AUDIT.md, V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md, V0109_EXECUTION_MODE_COMPARISON.md, and V0109_ROOT_CAUSE_MATRIX_REPORT.md. The package includes the v0.108 representative benchmark context plus the v0.109 trusted benchmark-integrity and root-cause isolation flow. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, or runtime/internal title.
 
 ## Known Warning
 

@@ -162,6 +162,11 @@ import {
   type PrivatePerformanceCounters
 } from "../playtest/PrivatePerformanceProfiler";
 import { representativeBattleTierForScenario } from "../playtest/RepresentativeBattleBenchmark";
+import {
+  createDefaultTrustedDiagnostics,
+  normalizeTrustedDiagnostics,
+  type TrustedBenchmarkDiagnostics
+} from "../playtest/TrustedBrowserBenchmark";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -237,6 +242,11 @@ interface AscendantBattleTestHooks {
   showCommandFeedbackMarker?: (kind: CommandFeedbackMarkerEvent["kind"], x?: number, y?: number) => number;
   getCommandFeedbackMarkerCount?: () => number;
   focusSelectedOrHero?: () => { x: number; y: number; label: string } | null;
+  getPrivatePerformanceCounters?: () => Partial<PrivatePerformanceCounters>;
+  getTrustedBenchmarkDiagnostics?: () => TrustedBenchmarkDiagnostics;
+  setTrustedBenchmarkDiagnostics?: (diagnostics: Partial<TrustedBenchmarkDiagnostics>) => TrustedBenchmarkDiagnostics | null;
+  selectTrustedBenchmarkTarget?: (target: "hero" | "worker" | "building") => { x: number; y: number; label: string } | null;
+  resetTrustedBenchmarkDiagnostics?: () => TrustedBenchmarkDiagnostics | null;
 }
 
 interface LumeRenderLinkSnapshot {
@@ -344,6 +354,14 @@ export class BattleScene extends Phaser.Scene {
   private menuPaused = false;
   private performanceCounters = this.createEmptyPerformanceCounters();
   private hudDensityMode: HudDensityMode = "minimal";
+  private trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
+  private trustedDiagnosticsPanel?: HTMLElement;
+  private trustedDiagnosticsPanelExpanded = false;
+  private trustedDiagnosticsHandler?: (event: MouseEvent) => void;
+  private cachedMinimapSnapshot?: MinimapSnapshot;
+  private cachedMinimapSnapshotAtSeconds = 0;
+  private lastFogDiagnosticRedrawAtSeconds = 0;
+  private lastAppliedTrustedDiagnosticsSignature = "";
   private hudRefreshAccumulatorSeconds = 0;
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
@@ -381,6 +399,7 @@ export class BattleScene extends Phaser.Scene {
     if (isPrivatePlaytestToolsEnabled()) {
       registerPrivatePerformanceCounterProvider(() => this.createPrivatePerformanceCounters());
     }
+    this.installTrustedBenchmarkDiagnosticsPanel();
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, this.cleanup, this);
   }
 
@@ -428,6 +447,7 @@ export class BattleScene extends Phaser.Scene {
     this.updateTrackedEnemyWaves();
     this.updateTutorialHint();
     this.updateFogOfWar(deltaSeconds);
+    this.applyTrustedBenchmarkDiagnosticVisuals();
     this.refreshBattleHud(deltaSeconds);
     this.checkEndConditions();
   }
@@ -491,6 +511,12 @@ export class BattleScene extends Phaser.Scene {
     this.recentStatusMessages.clear();
     this.performanceCounters = this.createEmptyPerformanceCounters();
     this.hudDensityMode = defaultHudDensityModeForLaunch(this.launch.request, isPrivatePlaytestToolsEnabled());
+    this.trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
+    this.trustedDiagnosticsPanelExpanded = false;
+    this.cachedMinimapSnapshot = undefined;
+    this.cachedMinimapSnapshotAtSeconds = 0;
+    this.lastFogDiagnosticRedrawAtSeconds = 0;
+    this.lastAppliedTrustedDiagnosticsSignature = "";
     this.hudRefreshAccumulatorSeconds = 0;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
@@ -763,7 +789,16 @@ export class BattleScene extends Phaser.Scene {
     if (signature === this.lastFogRenderSignature && this.fogOverlay.visible) {
       return;
     }
+    if (
+      this.canUseTrustedBenchmarkDiagnostics() &&
+      this.trustedBenchmarkDiagnostics.fogRedraw === "reduced" &&
+      this.fogOverlay.visible &&
+      this.runtime.elapsedSeconds - this.lastFogDiagnosticRedrawAtSeconds < 0.5
+    ) {
+      return;
+    }
     this.lastFogRenderSignature = signature;
+    this.lastFogDiagnosticRedrawAtSeconds = this.runtime.elapsedSeconds;
     this.performanceCounters.fogRedraws += 1;
     this.fogOverlay.clear().setVisible(true);
     this.fogOfWar.cells().forEach((cell) => {
@@ -1145,6 +1180,165 @@ export class BattleScene extends Phaser.Scene {
     return isPrivatePlaytestToolsEnabled() && (this.isPrivatePlaytestHubPreview() || this.isPrivateLumeDemo());
   }
 
+  private canUseTrustedBenchmarkDiagnostics(): boolean {
+    return isPrivatePlaytestToolsEnabled() && this.isPrivatePlaytestHubPreview();
+  }
+
+  private setTrustedBenchmarkDiagnostics(
+    diagnostics: Partial<TrustedBenchmarkDiagnostics>
+  ): TrustedBenchmarkDiagnostics | null {
+    if (!this.canUseTrustedBenchmarkDiagnostics()) {
+      return null;
+    }
+    this.trustedBenchmarkDiagnostics = normalizeTrustedDiagnostics({
+      ...this.trustedBenchmarkDiagnostics,
+      ...diagnostics
+    });
+    this.cachedMinimapSnapshot = undefined;
+    if (diagnostics.lume) {
+      this.setLumeVisibilityMode(this.trustedBenchmarkDiagnostics.lume);
+    }
+    this.setHudDensityMode(this.trustedBenchmarkDiagnostics.hudDensity);
+    this.applyTrustedBenchmarkDiagnosticVisuals();
+    this.applyTrustedProfilerOverlayDiagnostic();
+    this.renderTrustedBenchmarkDiagnosticsPanel();
+    this.refreshBattleHud(0);
+    return { ...this.trustedBenchmarkDiagnostics };
+  }
+
+  private resetTrustedBenchmarkDiagnostics(): TrustedBenchmarkDiagnostics | null {
+    return this.setTrustedBenchmarkDiagnostics(createDefaultTrustedDiagnostics());
+  }
+
+  private applyTrustedBenchmarkDiagnosticVisuals(): void {
+    if (!this.canUseTrustedBenchmarkDiagnostics()) {
+      return;
+    }
+    const signature = JSON.stringify({
+      labels: this.trustedBenchmarkDiagnostics.labels,
+      captureRings: this.trustedBenchmarkDiagnostics.captureRings
+    });
+    if (signature === this.lastAppliedTrustedDiagnosticsSignature) {
+      return;
+    }
+    this.lastAppliedTrustedDiagnosticsSignature = signature;
+    const hideLabels = this.trustedBenchmarkDiagnostics.labels === "hidden";
+    [...this.units, ...this.buildings, ...this.captureSites].forEach((entity) => entity.setDiagnosticLabelHidden(hideLabels));
+    this.neutralCampLabels.forEach((entry) => entry.label.setVisible(!hideLabels));
+    this.captureSites.forEach((site) => site.setDiagnosticRingMode(this.trustedBenchmarkDiagnostics.captureRings));
+  }
+
+  private applyTrustedProfilerOverlayDiagnostic(): void {
+    const profiler = typeof window === "undefined" ? undefined : window.__ASCENDANT_PERFORMANCE_PROFILER__;
+    if (!profiler) {
+      return;
+    }
+    if (this.trustedBenchmarkDiagnostics.profilerOverlay === "on" && !profiler.isActive()) {
+      profiler.start("v0109_trusted_diagnostic_overlay");
+      return;
+    }
+    if (this.trustedBenchmarkDiagnostics.profilerOverlay === "off" && profiler.isActive()) {
+      profiler.stop();
+    }
+  }
+
+  private installTrustedBenchmarkDiagnosticsPanel(): void {
+    if (!this.canUseTrustedBenchmarkDiagnostics()) {
+      this.removeTrustedBenchmarkDiagnosticsPanel();
+      return;
+    }
+    if (!this.trustedDiagnosticsPanel) {
+      this.trustedDiagnosticsPanel = document.createElement("aside");
+      this.trustedDiagnosticsPanel.className = "trusted-benchmark-diagnostics";
+      this.trustedDiagnosticsPanel.dataset.testid = "trusted-diagnostic-toggles";
+      this.trustedDiagnosticsHandler = (event) => this.handleTrustedBenchmarkDiagnosticsClick(event);
+      this.trustedDiagnosticsPanel.addEventListener("click", this.trustedDiagnosticsHandler);
+      document.body.append(this.trustedDiagnosticsPanel);
+    }
+    this.renderTrustedBenchmarkDiagnosticsPanel();
+  }
+
+  private removeTrustedBenchmarkDiagnosticsPanel(): void {
+    if (this.trustedDiagnosticsPanel && this.trustedDiagnosticsHandler) {
+      this.trustedDiagnosticsPanel.removeEventListener("click", this.trustedDiagnosticsHandler);
+    }
+    this.trustedDiagnosticsPanel?.remove();
+    this.trustedDiagnosticsPanel = undefined;
+    this.trustedDiagnosticsHandler = undefined;
+  }
+
+  private handleTrustedBenchmarkDiagnosticsClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement | null;
+    const toggle = target?.closest<HTMLButtonElement>("button[data-trusted-panel]");
+    if (toggle) {
+      this.trustedDiagnosticsPanelExpanded = !this.trustedDiagnosticsPanelExpanded;
+      this.renderTrustedBenchmarkDiagnosticsPanel();
+      return;
+    }
+    const button = target?.closest<HTMLButtonElement>("button[data-trusted-diagnostic]");
+    if (!button) {
+      return;
+    }
+    const key = button.dataset.trustedDiagnostic as keyof TrustedBenchmarkDiagnostics | undefined;
+    const value = button.dataset.trustedValue;
+    if (!key || !value) {
+      return;
+    }
+    this.setTrustedBenchmarkDiagnostics({ [key]: value } as Partial<TrustedBenchmarkDiagnostics>);
+  }
+
+  private renderTrustedBenchmarkDiagnosticsPanel(): void {
+    if (!this.trustedDiagnosticsPanel) {
+      return;
+    }
+    const diagnostics = this.trustedBenchmarkDiagnostics;
+    this.trustedDiagnosticsPanel.innerHTML = `
+      <div class="trusted-diagnostics-header">
+        <strong>Trusted Diagnostics</strong>
+        <button type="button" data-testid="trusted-diagnostic-toggle" data-trusted-panel="toggle" aria-expanded="${
+          this.trustedDiagnosticsPanelExpanded ? "true" : "false"
+        }">${this.trustedDiagnosticsPanelExpanded ? "Collapse" : "Expand"}</button>
+      </div>
+      <p>Private, session-only, non-production visual isolation. No save, reward, progression, balance, fog simulation, or capture-rule changes.</p>
+      <div class="trusted-diagnostics-summary" data-testid="trusted-diagnostic-summary">
+        Labels ${diagnostics.labels}; rings ${diagnostics.captureRings}; Lume ${diagnostics.lume}; minimap ${diagnostics.minimapRefresh}; fog ${diagnostics.fogRedraw}; HUD ${diagnostics.hudDensity}; notifications ${diagnostics.notifications}; overlay ${diagnostics.profilerOverlay}.
+      </div>
+      ${
+        this.trustedDiagnosticsPanelExpanded
+          ? `
+            ${this.renderTrustedDiagnosticButtons("labels", ["normal", "hidden"], diagnostics.labels)}
+            ${this.renderTrustedDiagnosticButtons("captureRings", ["normal", "minimal"], diagnostics.captureRings)}
+            ${this.renderTrustedDiagnosticButtons("lume", ["hidden", "auto", "always"], diagnostics.lume)}
+            ${this.renderTrustedDiagnosticButtons("minimapRefresh", ["normal", "reduced", "paused"], diagnostics.minimapRefresh)}
+            ${this.renderTrustedDiagnosticButtons("fogRedraw", ["normal", "reduced"], diagnostics.fogRedraw)}
+            ${this.renderTrustedDiagnosticButtons("hudDensity", ["minimal", "standard", "debug"], diagnostics.hudDensity)}
+            ${this.renderTrustedDiagnosticButtons("notifications", ["normal", "suppressed"], diagnostics.notifications)}
+            ${this.renderTrustedDiagnosticButtons("profilerOverlay", ["off", "on"], diagnostics.profilerOverlay)}
+          `
+          : ""
+      }
+    `;
+  }
+
+  private renderTrustedDiagnosticButtons(key: keyof TrustedBenchmarkDiagnostics, values: string[], active: string): string {
+    return `
+      <div class="trusted-diagnostic-row" data-testid="trusted-diag-row-${key}">
+        <span>${trustedDiagnosticLabel(key)}</span>
+        <div>
+          ${values
+            .map(
+              (value) => `
+                <button type="button" data-testid="trusted-diag-${kebabCase(key)}-${kebabCase(value)}" data-trusted-diagnostic="${key}" data-trusted-value="${value}" aria-pressed="${
+                value === active ? "true" : "false"
+              }" class="${value === active ? "active" : ""}">${trustedDiagnosticValueLabel(value)}</button>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+    `;
+  }
+
   private exitPrivateDemo(): boolean {
     if (this.isPrivatePlaytestHubPreview()) {
       return this.exitPrivatePlaytestHubPreview();
@@ -1187,8 +1381,23 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createMinimapSnapshot(): MinimapSnapshot {
+    if (
+      this.canUseTrustedBenchmarkDiagnostics() &&
+      this.trustedBenchmarkDiagnostics.minimapRefresh === "paused" &&
+      this.cachedMinimapSnapshot
+    ) {
+      return this.cachedMinimapSnapshot;
+    }
+    if (
+      this.canUseTrustedBenchmarkDiagnostics() &&
+      this.trustedBenchmarkDiagnostics.minimapRefresh === "reduced" &&
+      this.cachedMinimapSnapshot &&
+      this.runtime.elapsedSeconds - this.cachedMinimapSnapshotAtSeconds < 0.75
+    ) {
+      return this.cachedMinimapSnapshot;
+    }
     this.performanceCounters.minimapRefreshes += 1;
-    return createBattleMinimapSnapshot({
+    const snapshot = createBattleMinimapSnapshot({
       activeMap: this.activeMap,
       camera: this.cameras.main,
       captureSites: this.captureSites,
@@ -1203,6 +1412,9 @@ export class BattleScene extends Phaser.Scene {
       isPointExploredByPlayer: (point) => this.isPointExploredByPlayer(point),
       resourceColor: (resource) => this.resourceColor(resource)
     });
+    this.cachedMinimapSnapshot = snapshot;
+    this.cachedMinimapSnapshotAtSeconds = this.runtime.elapsedSeconds;
+    return snapshot;
   }
 
   private createObjectiveSnapshot() {
@@ -1418,13 +1630,17 @@ export class BattleScene extends Phaser.Scene {
     const fogVisibleCells = this.fogOfWar
       ? Array.from(this.fogOfWar.states).filter((value) => value === 2).length
       : 0;
+    const textObjects = this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text);
+    const domNodes = typeof document === "undefined" ? 0 : document.querySelectorAll("*").length;
+    const memory = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory?.usedJSHeapSize;
     return {
       displayObjects: this.children.list.length,
       graphicsObjects: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Graphics).length,
       units: this.units.filter((unit) => unit.alive).length,
       buildings: this.buildings.filter((building) => building.alive).length,
       captureSites: this.captureSites.length,
-      labels: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text && entry.visible).length,
+      labels: textObjects.filter((entry) => entry.visible).length,
+      totalLabels: textObjects.length,
       captureRings: this.captureSites.length,
       lumeLinks: lume.links.length,
       lumeEndpoints: lume.siteMarkers.length,
@@ -1433,7 +1649,33 @@ export class BattleScene extends Phaser.Scene {
       minimapRefreshes: this.performanceCounters.minimapRefreshes,
       hudUpdates: this.performanceCounters.hudUpdates,
       notificationsEmitted: this.performanceCounters.notificationsEmitted,
-      notificationsVisible: this.statusTimer > 0 ? 1 : 0
+      notificationsVisible: this.statusTimer > 0 ? 1 : 0,
+      domNodes,
+      ...(memory === undefined ? {} : { memoryUsedMb: Number((memory / 1024 / 1024).toFixed(2)) })
+    };
+  }
+
+  private selectTrustedBenchmarkTarget(target: "hero" | "worker" | "building"): { x: number; y: number; label: string } | null {
+    if (!this.canUseTrustedBenchmarkDiagnostics()) {
+      return null;
+    }
+    const entity =
+      target === "hero"
+        ? this.hero
+        : target === "worker"
+          ? this.units.find((unit) => unit.alive && unit.team === "player" && unit.definition.id === "worker")
+          : this.findBuilding("barracks", "player") ?? this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    if (!entity) {
+      return null;
+    }
+    this.selectionSystem.setSelection([entity]);
+    this.cameraSystem.centerOn(entity.position);
+    this.showCommandFeedbackMarker({ kind: "focus", point: entity.position, label: trustedDiagnosticValueLabel(target) });
+    this.refreshBattleHud(0);
+    return {
+      x: entity.position.x,
+      y: entity.position.y,
+      label: target === "hero" ? "Aster" : entity.definition.name
     };
   }
 
@@ -2832,6 +3074,9 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     this.performanceCounters.notificationsEmitted += 1;
+    if (this.canUseTrustedBenchmarkDiagnostics() && this.trustedBenchmarkDiagnostics.notifications === "suppressed") {
+      return;
+    }
     const replaceStatus = shouldReplaceBattleStatus({
       currentPriority: this.statusPriority,
       currentTimerSeconds: this.statusTimer,
@@ -3066,7 +3311,12 @@ export class BattleScene extends Phaser.Scene {
           y: focus.position.y,
           label: focus instanceof Unit || focus instanceof Building || focus instanceof CaptureSite ? focus.definition.name : "selection"
         };
-      }
+      },
+      getPrivatePerformanceCounters: () => this.createPrivatePerformanceCounters(),
+      getTrustedBenchmarkDiagnostics: () => ({ ...this.trustedBenchmarkDiagnostics }),
+      setTrustedBenchmarkDiagnostics: (diagnostics) => this.setTrustedBenchmarkDiagnostics(diagnostics),
+      resetTrustedBenchmarkDiagnostics: () => this.resetTrustedBenchmarkDiagnostics(),
+      selectTrustedBenchmarkTarget: (target) => this.selectTrustedBenchmarkTarget(target)
     };
   }
 
@@ -3090,10 +3340,16 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.showCommandFeedbackMarker;
     delete target.__ASCENDANT_TEST_HOOKS__.getCommandFeedbackMarkerCount;
     delete target.__ASCENDANT_TEST_HOOKS__.focusSelectedOrHero;
+    delete target.__ASCENDANT_TEST_HOOKS__.getPrivatePerformanceCounters;
+    delete target.__ASCENDANT_TEST_HOOKS__.getTrustedBenchmarkDiagnostics;
+    delete target.__ASCENDANT_TEST_HOOKS__.setTrustedBenchmarkDiagnostics;
+    delete target.__ASCENDANT_TEST_HOOKS__.selectTrustedBenchmarkTarget;
+    delete target.__ASCENDANT_TEST_HOOKS__.resetTrustedBenchmarkDiagnostics;
   }
 
   private cleanup(): void {
     registerPrivatePerformanceCounterProvider(undefined);
+    this.removeTrustedBenchmarkDiagnosticsPanel();
     this.removeTestHooks();
     this.inputSystem?.destroy();
     this.uiSystem?.destroy();
@@ -3162,6 +3418,31 @@ function hudDensityLabel(mode: HudDensityMode): string {
     return "Standard";
   }
   return "Minimal";
+}
+
+function trustedDiagnosticLabel(key: keyof TrustedBenchmarkDiagnostics): string {
+  const labels: Record<keyof TrustedBenchmarkDiagnostics, string> = {
+    labels: "Labels",
+    captureRings: "Capture Rings",
+    lume: "Lume",
+    minimapRefresh: "Minimap Refresh",
+    fogRedraw: "Fog Visual Redraw",
+    hudDensity: "HUD Density",
+    notifications: "Notifications",
+    profilerOverlay: "Profiler Overlay"
+  };
+  return labels[key];
+}
+
+function trustedDiagnosticValueLabel(value: string): string {
+  return value
+    .split(/[-_]/u)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function kebabCase(value: string): string {
+  return value.replace(/[A-Z]/gu, (letter) => `-${letter.toLowerCase()}`).replace(/_/gu, "-");
 }
 
 function createLumeRenderSnapshotSignature(snapshot: LumeRenderSnapshot): string {

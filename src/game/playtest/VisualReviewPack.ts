@@ -13,6 +13,7 @@ export const REQUIRED_REVIEW_SCREEN_GROUPS = [
   "Fog And Minimap",
   "Lume States",
   "Representative Benchmark",
+  "Trusted Benchmark",
   "Art Slot Fallbacks",
   "Private Demo Results",
   "Normal Results",
@@ -32,6 +33,7 @@ const FOCUSED_CONTACT_SHEETS: readonly { id: string; title: string; groups: read
   },
   { id: "lume-flow", title: "Lume flow", groups: ["Lume States", "Private Demo Results"] },
   { id: "representative-benchmark", title: "Representative benchmark", groups: ["Representative Benchmark"] },
+  { id: "trusted-benchmark", title: "Trusted benchmark", groups: ["Trusted Benchmark"] },
   { id: "art-slot-fallbacks", title: "Art slot fallbacks", groups: ["Art Slot Fallbacks"] },
   { id: "results-flow", title: "Results flow", groups: ["Private Demo Results", "Normal Results"] }
 ] as const;
@@ -553,6 +555,9 @@ function screenFamilyForCapture(
   matrixEntry?: VisualRegressionEntry
 ): (typeof REQUIRED_REVIEW_SCREEN_GROUPS)[number] {
   const haystack = `${capture.title} ${capture.fileName} ${capture.note} ${matrixEntry?.route ?? ""} ${matrixEntry?.state ?? ""}`.toLowerCase();
+  if (haystack.includes("v0109-trusted") || haystack.includes("trusted benchmark")) {
+    return "Trusted Benchmark";
+  }
   if (haystack.includes("v0108-benchmark") || haystack.includes("representative benchmark")) {
     return "Representative Benchmark";
   }

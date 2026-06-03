@@ -1,6 +1,73 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.108 Representative Battle Benchmark Harness and Desktop Acceptance Profile
+Updated: 2026-06-02 v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation
+
+## v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
+
+Scope: benchmark methodology, private manual benchmark flow, private diagnostic toggles, root-cause matrix, visual QA/review-pack coverage, package metadata/docs, and benchmark reporting only. This checkpoint audits the v0.108 suspicious 2-3 FPS evidence and replaces the trusted protocol with production-preview-first warm-up plus steady-state sampling. It does not alter gameplay, saves, rewards, stable IDs, maps, factions, art, public runtime posture, engine choice, desktop implementation, desktop saves, or v0.110 scope.
+
+Included work:
+
+- Added `src/game/playtest/TrustedBrowserBenchmark.ts`, focused tests, and `tools/runTrustedBrowserBenchmark.ts`.
+- Added trusted benchmark scripts for production preview, dev comparison, manual template, root-cause matrix, and report refresh.
+- Added private Playtest Hub manual benchmark flow with copyable summary and no console requirement.
+- Added private battle-session diagnostic toggles for labels, rings, Lume, minimap refresh, fog visual redraw, HUD density, notifications, and profiler overlay.
+- Added ignored `artifacts/performance/v0109/` outputs with raw frame intervals and interaction-latency artifacts.
+- Updated visual QA to 240 screenshots and the visual review pack to include a Trusted Benchmark family/contact sheet.
+- Updated package metadata and package validation to include v0.109 docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, XP, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, generated/imported art, runtime asset path, public benchmark controls, desktop path, desktop save path, engine choice, or v0.110 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Benchmark interpretation:
+
+- The old v0.108 1200 ms dev-server/headless/profiler-overlay evidence was methodologically weak.
+- The trusted production-preview baseline still reports serious browser lag, so the earlier 2-3 FPS evidence is mixed with real runtime cost, not purely harness artifact.
+- Top measured cost signals in the refreshed evidence are Tier L stress, dev-server headless comparison, and the minimap-paused diagnostic row. The minimap signal remains uncertain because pausing it did not improve p95, so no broad runtime optimization was applied.
+
+Verification:
+
+```text
+Focused implementation tests - PASS, 5 files / 28 tests.
+npm test - PASS, 112 files / 783 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run benchmark:battle:smoke - PASS, 1 scenario.
+npm run benchmark:battle:representative - PASS, 8 scenarios.
+npm run benchmark:battle:stress - PASS, 1 local-only stress scenario.
+npm run benchmark:battle:report - PASS, refreshed 10-scenario report.
+npm run perf:trusted:manual-template - PASS.
+npm run perf:trusted:preview - PASS, 2 trusted preview rows.
+npm run perf:trusted:dev - PASS, 1 trusted dev row.
+npm run perf:root-cause-matrix - PASS, 19 production-preview root-cause cases.
+npm run perf:trusted:report - PASS, refreshed 21 trusted result rows.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18/18 rows.
+npm run playtest:controls:extended - PASS, 90/90 rows.
+npm run playtest:controls:verify - PASS, 1,658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-battle - PASS, 31 tests.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - first attempt timed out at the outer command timeout; exact rerun exposed a v0.109 final cleanup click failure; narrow harness cleanup patch applied; final exact rerun PASS, 21 tests / 240 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 240 screenshots and 10 contact sheets.
+Browser plugin manual review - PASS, local review-pack Trusted Benchmark contact sheet loaded 27/27 images.
+npm run package:playtest - PASS for the pre-commit dirty package.
+npm run verify:playtest-package - PASS for the pre-commit dirty package.
+git diff --check - PASS.
+```
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package commit matches the final checkpoint commit and the dirty status says `no`.
 
 ## v0.108 Representative Battle Benchmark Harness And Desktop Acceptance Profile - 2026-06-02
 
