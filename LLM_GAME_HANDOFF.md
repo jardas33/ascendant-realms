@@ -1,12 +1,40 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-03 v0.114 Renderer Lifecycle, Procedural Batching, and Canvas-DOM Boundary Rescue
+Last updated: 2026-06-03 v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.115 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. v0.114 adds private renderer lifecycle instrumentation, deterministic procedural geometry caching, safe presentation no-op guards, command-marker pooling, minimap due/dirty refresh, HUD DOM diff accounting, and the v0.114 audit/docs/artifact set. v0.115 consolidates the trusted performance evidence, produces Emmanuel's clean-restart retest packet, and sets the browser performance gate to RED. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.116 work is approved.
+
+## Current v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
+
+Status: v0.115 is a consolidation and gate checkpoint only. It creates the v0.115 RED browser gate, consolidated performance report, Emmanuel clean-restart retest packet, Emmanuel decision packet, validation tests, and package metadata/docs. It does not add runtime optimizations.
+
+Included work:
+
+- Added `docs/V0115_BROWSER_PERFORMANCE_GATE.md`, `docs/V0115_CONSOLIDATED_PERFORMANCE_REPORT.md`, `docs/V0115_EMMANUEL_CLEAN_RESTART_RETEST.md`, `docs/V0115_EMMANUEL_PERFORMANCE_DECISION_PACKET.md`, and `docs/V0115_IMPLEMENTATION_REPORT.md`.
+- Added `src/game/playtest/TrustedPerformanceConsolidationGate.ts` and focused tests for gate rules, artifact references, doc links, package docs, and required verification commands.
+- Updated package generation and validation to name `v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate` and include v0.115 docs.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No runtime gameplay, combat, balance, AI, pathing, saves, save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, campaign progression, maps, factions, generated/imported art, runtime asset paths, public benchmark controls, engine posture, desktop work, multiplayer, PvP, co-op, content, runtime title, or v0.116 work changed.
+
+Current evidence:
+
+```text
+Gate result - RED.
+Host pressure - unlikely based on v0.111 controls and clean profile evidence.
+Browser controls - blank page/simple DOM/simple canvas/true Phaser empty remain about 60 FPS with 16.7 ms p95.
+Battle cost - Tier M rows remain about 2.4-2.5 FPS with about 533.3-633.3 ms p95 after v0.112-v0.114 bounded rescue work.
+Decision - stop browser visual expansion and do not integrate runtime art; move reviewed architecture or earlier engine-spike discussion forward before broad visual runtime work.
+Verification - full v0.115 pre-commit command matrix PASS, Browser plugin smoke PASS at http://127.0.0.1:5260/, and pre-commit package verification PASS with 459 checks.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.115 trusted performance consolidation clean-restart retest packet and browser gate`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, dirty status says `no`, and remote CI passes. Do not start v0.116 without a new explicit goal.
 
 ## Current v0.114 Renderer Lifecycle, Procedural Batching, And Canvas-DOM Boundary Rescue - 2026-06-03
 

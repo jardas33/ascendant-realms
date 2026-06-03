@@ -1,6 +1,51 @@
 # Development Checkpoint
 
-Updated: 2026-06-03 v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate
+Updated: 2026-06-03 v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate
+
+## v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
+
+Scope: trusted performance consolidation, Emmanuel clean-restart retest packet, Emmanuel performance decision packet, package metadata/docs, and verification tests only. This checkpoint compares v0.109 trusted baseline, v0.110 phase/density/gate evidence, v0.111 host controls and clean profile, v0.112 scheduler/allocation/idle evidence, v0.113 spatial/pathing evidence, and v0.114 renderer lifecycle evidence. It does not alter gameplay, saves, rewards, stable IDs, maps, factions, AI, pathing rules, combat balance, art, runtime asset paths, public benchmark controls, engine posture, desktop work, multiplayer, PvP, co-op, content, or v0.116 scope.
+
+Included work:
+
+- Added v0.115 gate, consolidated report, clean-restart retest, decision packet, and implementation report docs.
+- Added `TrustedPerformanceConsolidationGate` validation coverage for gate schema, artifact references, doc links, package docs, RED result, no-runtime scope guard, and required verification commands.
+- Updated private package generation and validation to include v0.115 docs and checkpoint metadata.
+
+Current interpretation:
+
+- Gate result: `RED`.
+- Host/browser pressure is unlikely to be the dominant automated cause because v0.111 blank page, simple DOM, simple canvas, and true Phaser-empty controls hold about 60 FPS with 16.7 ms p95.
+- Battle code and app-specific shell cost remain dominant: representative Tier M rows still sit around 2.4-2.5 FPS with about 533.3-633.3 ms p95 after v0.112-v0.114 bounded rescue work.
+- Runtime art integration and broad browser visual expansion remain blocked. Move reviewed architecture or earlier engine-spike discussion forward before approving more visual runtime work.
+
+Verification:
+
+```text
+npm test - PASS, 119 files / 820 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run perf:host-snapshot - PASS.
+npm run perf:controls:preview - PASS, 6 rows.
+npm run perf:trusted:clean-profile - PASS, 4 rows.
+npm run perf:trusted:preview - PASS, 2 rows.
+npm run perf:phase-profile - PASS, 3 rows.
+npm run perf:allocation-audit - PASS, 8 rows.
+npm run perf:spatial-query-profile - PASS, 14 rows.
+npm run perf:render-lifecycle-audit - PASS, 15 rows.
+npm run perf:trusted:report - PASS, 21 rows.
+npm run benchmark:battle:smoke - PASS, 1 scenario.
+npm run benchmark:battle:representative - PASS, 8 scenarios.
+npm run benchmark:battle:stress - PASS, 1 scenario.
+npm run benchmark:battle:report - PASS, 10 scenarios.
+npm run package:playtest - PASS, pre-commit dirty package.
+npm run verify:playtest-package - PASS, 459 checks on the pre-commit dirty package.
+Browser plugin smoke - PASS at http://127.0.0.1:5260/ with a visible 1085x912 canvas and only the Phaser banner in dev logs.
+git diff --check - PASS before final verification-document update.
+```
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package commit matches the final checkpoint commit and the dirty status says `no`.
 
 ## v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
 

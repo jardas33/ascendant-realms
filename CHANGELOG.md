@@ -1,5 +1,39 @@
 # Changelog
 
+# v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, And Browser Gate - 2026-06-03
+
+This checkpoint consolidates v0.109-v0.114 trusted browser performance evidence, creates Emmanuel's clean-restart retest packet and performance decision packet, and sets the browser performance gate to RED. It changes docs, package metadata/docs, and validation tests only: no runtime gameplay, saves, stable IDs, rewards, balance, AI, pathing, maps, factions, art, runtime asset paths, public benchmark controls, engine posture, desktop implementation, multiplayer, PvP, co-op, content, or v0.116 work changed.
+
+Added:
+
+- `docs/V0115_BROWSER_PERFORMANCE_GATE.md`.
+- `docs/V0115_CONSOLIDATED_PERFORMANCE_REPORT.md`.
+- `docs/V0115_EMMANUEL_CLEAN_RESTART_RETEST.md`.
+- `docs/V0115_EMMANUEL_PERFORMANCE_DECISION_PACKET.md`.
+- `docs/V0115_IMPLEMENTATION_REPORT.md`.
+- `src/game/playtest/TrustedPerformanceConsolidationGate.ts`.
+- `src/game/playtest/TrustedPerformanceConsolidationGate.test.ts`.
+
+Changed:
+
+- Private package generation and validation now expect `v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate` and include v0.115 docs.
+- Handoff, roadmap, development checkpoint, release checklist, and package build notes now frame the browser gate as RED.
+
+Current evidence:
+
+- v0.111 blank/simple DOM/simple canvas/true Phaser-empty controls remain about 60 FPS with 16.7 ms p95.
+- v0.114 Tier M combat remains 2.4 FPS / 566.6 ms p95; Tier M moving remains 2.4 FPS / 633.3 ms p95 after the v0.115 verification refresh.
+- v0.115 gate result is RED. Runtime art integration and broad browser visual expansion remain blocked.
+
+Verification:
+
+- `npm test` PASS, 119 files / 820 tests.
+- `npm run build`, `npm run validate:content`, and `npm run validate:art-intake` PASS.
+- Required trusted performance commands PASS: host snapshot, preview controls, clean profile, trusted preview, phase profile, allocation audit, spatial-query profile, render-lifecycle audit, and trusted report.
+- Required benchmark commands PASS: smoke, representative, stress, and report.
+- `npm run package:playtest` and `npm run verify:playtest-package` PASS pre-commit, 459 package checks.
+- Browser plugin smoke PASS at `http://127.0.0.1:5260/` with a visible canvas and only the Phaser banner in dev logs.
+
 # v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
 
 This checkpoint adds private host-environment calibration, browser control baselines, temporary clean-profile reproducibility, machine-pressure classification, private Performance Lab instruction buttons, and post-restart retest guidance. It extends v0.109/v0.110 benchmark evidence without changing gameplay, saves, stable IDs, rewards, balance, maps, factions, art, user browser profiles, OS settings, public runtime posture, engine choice, desktop implementation, desktop saves, multiplayer, PvP, co-op, or v0.112 scope.

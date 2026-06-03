@@ -16,7 +16,7 @@ export interface PlaytestPackageValidationResult {
 }
 
 export const EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT =
-  "v0.114 Renderer Lifecycle, Procedural Batching, and Canvas-DOM Boundary Rescue";
+  "v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate";
 
 export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "game/index.html",
@@ -458,6 +458,11 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0114_PERFORMANCE_DELTA_REPORT.md",
   "V0114_IMPLEMENTATION_REPORT.md",
   "V0114_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0115_BROWSER_PERFORMANCE_GATE.md",
+  "V0115_CONSOLIDATED_PERFORMANCE_REPORT.md",
+  "V0115_EMMANUEL_CLEAN_RESTART_RETEST.md",
+  "V0115_EMMANUEL_PERFORMANCE_DECISION_PACKET.md",
+  "V0115_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",

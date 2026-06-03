@@ -11,11 +11,19 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate** on 2026-06-03. It is a private reproducibility and classification milestone layered on top of v0.109/v0.110 trusted browser evidence. It adds safe host snapshots, browser control baselines, temporary clean-profile comparison, private Performance Lab instruction buttons, machine-pressure classification, and a post-restart retest guide. Current local evidence classifies host pressure as `HOST_PRESSURE_UNLIKELY` and game cost as `BATTLE_CODE_DOMINANT`: outside-game controls and Phaser-empty are healthy, while campaign-map and Tier M battle remain slow in both normal preview and temporary clean-profile runs.
+The current checkpoint is **v0.115 Trusted Performance Consolidation, Clean-Restart Retest Packet, and Browser Gate** on 2026-06-03. It consolidates v0.109 through v0.114 trusted performance evidence and sets the browser performance gate to `RED`. Host/browser controls and the true Phaser empty scene remain healthy, but actual battle rows remain around 2-3 FPS with hundreds-of-ms p95 frame time after the bounded scheduler, spatial/pathing, and renderer rescue slices.
 
-The next recommended step is Emmanuel review of the v0.111 environment evidence and post-restart retest. Do not blame only the machine or only the game without the post-restart evidence, convert browser numbers into final hardware targets, generate art, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.112 until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel's clean-restart retest plus a reviewed architecture or earlier engine-spike discussion. Do not generate art for runtime integration, import art into runtime, mark `runtime-candidate-approved` assets as loadable, resume broad browser visual expansion, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.116 until a future explicit goal approves a narrow next step.
 
-New v0.111 docs:
+New v0.115 docs:
+
+- `docs/V0115_BROWSER_PERFORMANCE_GATE.md`
+- `docs/V0115_CONSOLIDATED_PERFORMANCE_REPORT.md`
+- `docs/V0115_EMMANUEL_CLEAN_RESTART_RETEST.md`
+- `docs/V0115_EMMANUEL_PERFORMANCE_DECISION_PACKET.md`
+- `docs/V0115_IMPLEMENTATION_REPORT.md`
+
+Recent v0.111 docs:
 
 - `docs/V0111_HOST_SNAPSHOT_SPEC.md`
 - `docs/V0111_BROWSER_CONTROL_BASELINES.md`
