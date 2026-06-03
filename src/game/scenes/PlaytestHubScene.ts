@@ -28,6 +28,12 @@ import {
   V0109_ARTIFACT_DIR,
   createManualBenchmarkTemplate
 } from "../playtest/TrustedBrowserBenchmark";
+import {
+  V0111_PRIVATE_HUB_ACTIONS,
+  createEnvironmentComparisonTemplate,
+  renderPostRestartRetestMarkdown,
+  type V0111PrivateHubAction
+} from "../playtest/HostEnvironmentCalibration";
 
 type TrustedManualBenchmarkPhaseId = "intro" | "warmup" | "steady" | "interaction" | "export";
 
@@ -41,6 +47,11 @@ interface TrustedManualBenchmarkSession {
   active: boolean;
   phaseIndex: number;
   startedAtUtc?: string;
+  exportedAtUtc?: string;
+}
+
+interface HostCalibrationSession {
+  activeAction?: V0111PrivateHubAction["id"];
   exportedAtUtc?: string;
 }
 
@@ -76,6 +87,8 @@ let trustedManualBenchmarkSession: TrustedManualBenchmarkSession = {
   active: false,
   phaseIndex: 0
 };
+
+let hostCalibrationSession: HostCalibrationSession = {};
 
 export class PlaytestHubScene extends Phaser.Scene {
   private root?: HTMLElement;
@@ -200,6 +213,21 @@ export class PlaytestHubScene extends Phaser.Scene {
           this.launchScenario(scenario);
         }
       }
+      if (action?.startsWith("host-calibration-")) {
+        const actionId = action.replace("host-calibration-", "") as V0111PrivateHubAction["id"];
+        const actionDefinition = V0111_PRIVATE_HUB_ACTIONS.find((entry) => entry.id === actionId);
+        if (actionDefinition) {
+          hostCalibrationSession = {
+            activeAction: actionDefinition.id,
+            exportedAtUtc: actionDefinition.id === "export-comparison" ? new Date().toISOString() : hostCalibrationSession.exportedAtUtc
+          };
+          this.status =
+            actionDefinition.command === undefined
+              ? `${actionDefinition.label} opened. Follow the private instructions; no save or profile mutation is performed.`
+              : `${actionDefinition.label} selected. Run ${actionDefinition.command} from the repo to create ignored artifacts.`;
+          this.render();
+        }
+      }
       return;
     }
 
@@ -317,6 +345,7 @@ export class PlaytestHubScene extends Phaser.Scene {
           <div class="status-box" data-testid="playtest-hub-status">${escapeHtml(this.status)}</div>
           ${this.renderTourPanel()}
           ${this.renderTrustedManualBenchmarkPanel()}
+          ${this.renderHostCalibrationPanel()}
           <div class="playtest-gallery" data-testid="playtest-gallery">
             ${PLAYTEST_SCENARIO_GROUPS.map((group) => this.renderGroup(group.id, group.title)).join("")}
           </div>
@@ -430,6 +459,42 @@ export class PlaytestHubScene extends Phaser.Scene {
           <button data-testid="trusted-manual-benchmark-clear" data-playtest-action="trusted-benchmark-clear">Clear</button>
         </div>
         <textarea data-testid="trusted-manual-benchmark-template" readonly>${escapeHtml(summary)}</textarea>
+      </section>
+    `;
+  }
+
+  private renderHostCalibrationPanel(): string {
+    const activeAction = V0111_PRIVATE_HUB_ACTIONS.find((entry) => entry.id === hostCalibrationSession.activeAction);
+    const summary = createEnvironmentComparisonTemplate({
+      activeAction: activeAction?.id,
+      exportedAtUtc: hostCalibrationSession.exportedAtUtc
+    });
+    const postRestartInstructions =
+      activeAction?.id === "post-restart"
+        ? `<pre data-testid="v0111-post-restart-instructions">${escapeHtml(renderPostRestartRetestMarkdown())}</pre>`
+        : "";
+    return `
+      <section class="host-calibration-panel" data-testid="v0111-host-calibration-panel">
+        <div class="trusted-manual-benchmark-heading">
+          <div>
+            <p class="eyebrow">v0.111 Private Calibration</p>
+            <h2>Host Environment Calibration</h2>
+            <p>Session-only instructions for host snapshots, browser controls, clean-profile reproducibility, and post-restart retest. No save, profile, OS, process, gameplay, art, desktop, or v0.112 change.</p>
+          </div>
+        </div>
+        <div class="menu-actions row trusted-manual-benchmark-actions">
+          ${V0111_PRIVATE_HUB_ACTIONS.map(
+            (entry) =>
+              `<button data-testid="${entry.testId}" data-playtest-action="host-calibration-${entry.id}" class="${entry.id === "control-baselines" ? "menu-primary-button" : ""}">${escapeHtml(entry.label)}</button>`
+          ).join("")}
+        </div>
+        <div class="trusted-manual-benchmark-current" data-testid="v0111-host-calibration-current">
+          <strong>${escapeHtml(activeAction?.label ?? "No calibration action selected")}</strong>
+          <p>${escapeHtml(activeAction?.description ?? "Choose a private v0.111 calibration action. Shell commands are listed in the export template and must be run from the repo.")}</p>
+          ${activeAction?.command ? `<code>${escapeHtml(activeAction.command)}</code>` : ""}
+        </div>
+        ${postRestartInstructions}
+        <textarea data-testid="v0111-environment-comparison-template" readonly>${escapeHtml(summary)}</textarea>
       </section>
     `;
   }

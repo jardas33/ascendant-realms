@@ -1,12 +1,50 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-03 v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue
+Last updated: 2026-06-03 v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.111 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.112 work is approved.
+
+## Current v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
+
+Status: v0.111 adds safe host snapshots, browser control baselines, a temporary clean Chromium profile comparison, machine-pressure classification, private Performance Lab instruction controls, package metadata/docs, and post-restart retest guidance. It is private diagnostics/tooling only.
+
+Included work:
+
+- Added `src/game/playtest/HostEnvironmentCalibration.ts`, focused tests, and `tools/runHostEnvironmentCalibration.ts`.
+- Added `npm run perf:host-snapshot`, `npm run perf:controls:preview`, `npm run perf:controls:headed`, `npm run perf:trusted:clean-profile`, and `npm run perf:controls:report`.
+- Added private Playtest Hub controls for host snapshot, browser controls, clean profile, environment export, and post-restart instructions.
+- Added ignored host snapshot and v0.111 browser-control artifacts.
+- Updated package metadata/docs to v0.111.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, gameplay rules, combat balance, AI/pathing rules, maps, factions, races, units, buildings, Living Mines, generated/imported art, runtime asset paths, public benchmark controls, engine choice, desktop port, desktop save path, multiplayer, PvP, co-op, runtime title, or v0.112 work changed.
+- No reboot, OS setting change, user browser profile mutation, browser history collection, open-tab collection, private process command-line collection, or personal filename collection.
+- `linked_ward` remains exactly `0.92`.
+
+Current evidence:
+
+```text
+Host classification - HOST_PRESSURE_UNLIKELY.
+Game-cost classification - BATTLE_CODE_DOMINANT.
+Preview blank rAF - 60.1 FPS average / 16.7 ms p95.
+Preview simple DOM - 60.1 FPS average / 16.7 ms p95.
+Preview simple canvas - 60.1 FPS average / 16.8 ms p95.
+Preview Phaser empty scene - 60 FPS average / 16.7 ms p95.
+Preview campaign map - 9.9 FPS average / 183.4 ms p95.
+Preview Tier M battle - 2.5 FPS average / 516.6 ms p95.
+Clean-profile campaign map - 9.8 FPS average / 300 ms p95.
+Clean-profile Tier M battle - 2.5 FPS average / 483.3 ms p95.
+Browser plugin private hub check - PASS at http://127.0.0.1:5230/.
+Pre-commit package verification - PASS, 433 checks, after fixing the stale v0.110 package-validator checkpoint expectation.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.111 host environment calibration clean-browser reproducibility and machine-pressure gate`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, dirty status says `no`, and remote CI passes. Do not start v0.112, engine spike, desktop port, or art work without a new explicit goal.
 
 ## Current v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
 

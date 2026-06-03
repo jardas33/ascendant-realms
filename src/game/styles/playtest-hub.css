@@ -127,7 +127,8 @@
   justify-content: end;
 }
 
-.trusted-manual-benchmark-panel {
+.trusted-manual-benchmark-panel,
+.host-calibration-panel {
   display: grid;
   gap: 12px;
   margin-top: 12px;
@@ -193,7 +194,8 @@
   justify-content: start;
 }
 
-.trusted-manual-benchmark-panel textarea {
+.trusted-manual-benchmark-panel textarea,
+.host-calibration-panel textarea {
   width: 100%;
   min-height: 138px;
   resize: vertical;
@@ -202,6 +204,18 @@
   background: rgba(3, 7, 8, 0.72);
   color: #d9eee8;
   padding: 10px;
+  font: 12px/1.45 "Courier New", monospace;
+}
+
+.host-calibration-panel pre {
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid rgba(116, 211, 242, 0.18);
+  border-radius: 6px;
+  background: rgba(3, 7, 8, 0.72);
+  color: #d9eee8;
+  padding: 10px;
+  white-space: pre-wrap;
   font: 12px/1.45 "Courier New", monospace;
 }
 

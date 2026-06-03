@@ -1,6 +1,54 @@
 # Development Checkpoint
 
-Updated: 2026-06-03 v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue
+Updated: 2026-06-03 v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate
+
+## v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
+
+Scope: private host snapshot tooling, browser control baselines, temporary clean Chromium profile comparison, machine-pressure classification, private Playtest Hub instruction controls, package metadata/docs, and benchmark reporting only. This checkpoint separates host/browser pressure from Phaser-empty, campaign-map, and Tier M battle costs. It does not alter gameplay, saves, rewards, stable IDs, maps, factions, races, units, buildings, Living Mines, art, public runtime posture, engine choice, desktop implementation, desktop saves, user browser profiles, OS settings, multiplayer, PvP, co-op, runtime title, or v0.112 scope.
+
+Included work:
+
+- Added `src/game/playtest/HostEnvironmentCalibration.ts`, focused tests, and `tools/runHostEnvironmentCalibration.ts`.
+- Added `perf:host-snapshot`, `perf:controls:preview`, `perf:controls:headed`, `perf:trusted:clean-profile`, and `perf:controls:report`.
+- Added safe ignored host snapshots under `artifacts/performance/host-snapshots/<timestamp>/`.
+- Added ignored v0.111 browser-control, clean-profile, environment-comparison, and raw-frame artifacts under `artifacts/performance/v0111/`.
+- Added private Performance Lab instruction buttons for host snapshot, browser controls, clean-profile benchmark, environment comparison export, and post-restart instructions.
+- Updated package metadata and package validation to include v0.111 docs.
+
+Save/profile/system safety:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, XP, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, races, units, buildings, Living Mines, generated/imported art, runtime asset path, public benchmark controls, desktop path, desktop save path, engine choice, runtime title, multiplayer, PvP, co-op, or v0.112 work changed.
+- No reboot, OS setting change, user browser profile mutation, browser history collection, open-tab collection, private process command-line collection, or personal filename collection.
+- `linked_ward` remains exactly `0.92`.
+
+Current interpretation:
+
+- Host classification: `HOST_PRESSURE_UNLIKELY`.
+- Game-cost classification: `BATTLE_CODE_DOMINANT`.
+- Blank rAF, simple DOM, simple canvas, and Phaser-empty controls are healthy at about 60 FPS with p95 around 16.7 ms.
+- Campaign map remains materially slower at 9.9 FPS / p95 183.4 ms in normal preview and 9.8 FPS / p95 300 ms in clean-profile headless.
+- Tier M battle remains severe at 2.5 FPS / p95 516.6 ms in normal preview and 483.3 ms in clean-profile headless.
+- Clean-profile evidence closely matches normal preview evidence, so current automated evidence does not point to extension/profile overhead as the dominant cause.
+
+Verification:
+
+```text
+npm test - PASS, 114 files / 795 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS.
+npm run perf:host-snapshot - PASS.
+npm run perf:controls:preview - PASS, 6 rows.
+npm run perf:trusted:clean-profile - PASS, 4 clean-profile rows.
+npm run perf:controls:report - PASS, refreshed 10 v0.111 result rows.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+Browser plugin private hub check - PASS at http://127.0.0.1:5230/ with all five v0.111 controls visible once, export safety fields present, and post-restart instructions visible.
+npm run package:playtest - PASS before commit, producing the expected dirty package for pre-commit validation.
+npm run verify:playtest-package - PASS, 433 checks, after fixing the package validator's stale v0.110 checkpoint expectation.
+```
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package commit matches the final checkpoint commit and the dirty status says `no`.
 
 ## v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
 

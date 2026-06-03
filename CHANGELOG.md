@@ -1,5 +1,42 @@
 # Changelog
 
+# v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
+
+This checkpoint adds private host-environment calibration, browser control baselines, temporary clean-profile reproducibility, machine-pressure classification, private Performance Lab instruction buttons, and post-restart retest guidance. It extends v0.109/v0.110 benchmark evidence without changing gameplay, saves, stable IDs, rewards, balance, maps, factions, art, user browser profiles, OS settings, public runtime posture, engine choice, desktop implementation, desktop saves, multiplayer, PvP, co-op, or v0.112 scope.
+
+Added:
+
+- `src/game/playtest/HostEnvironmentCalibration.ts`.
+- `src/game/playtest/HostEnvironmentCalibration.test.ts`.
+- `tools/runHostEnvironmentCalibration.ts`.
+- `npm run perf:host-snapshot`, `npm run perf:controls:preview`, `npm run perf:controls:headed`, `npm run perf:trusted:clean-profile`, and `npm run perf:controls:report`.
+- Private Playtest Hub controls for host snapshot, browser control baselines, clean-profile benchmark, environment comparison export, and post-restart instructions.
+- Ignored artifact roots `artifacts/performance/host-snapshots/` and `artifacts/performance/v0111/`.
+- v0.111 docs: host snapshot spec, browser control baselines, clean-profile benchmark spec, machine-pressure classification, Emmanuel post-restart retest, and implementation report.
+
+Changed:
+
+- Private package generation and validation now expect `v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate` and include v0.111 docs.
+
+Not changed:
+
+- No unrelated process killing, reboot, OS setting change, user browser profile mutation, browser history collection, open-tab collection, private process command-line collection, save-version bump, save field, localStorage key, stable ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, race, unit, building, generated/imported art, runtime asset path, desktop path, engine choice, multiplayer, PvP, co-op, runtime title, or v0.112 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Current evidence:
+
+- `npm run perf:host-snapshot` PASS.
+- `npm run perf:controls:preview` PASS, 6 rows.
+- `npm run perf:trusted:clean-profile` PASS.
+- `npm run perf:controls:report` PASS, 10 rows.
+- Classification: `HOST_PRESSURE_UNLIKELY` and `BATTLE_CODE_DOMINANT`.
+- Preview controls: blank rAF 60.1 FPS / p95 16.7 ms; simple DOM 60.1 FPS / p95 16.7 ms; simple canvas 60.1 FPS / p95 16.7 ms; Phaser empty scene 60 FPS / p95 16.7 ms; campaign map 9.9 FPS / p95 183.4 ms; Tier M battle 2.5 FPS / p95 516.6 ms.
+- Clean-profile controls: blank rAF 60.1 FPS / p95 16.7 ms; Phaser empty scene 60 FPS / p95 16.7 ms; campaign map 9.8 FPS / p95 300 ms; Tier M battle 2.5 FPS / p95 483.3 ms.
+- Browser plugin private hub check PASS at `http://127.0.0.1:5230/`: five v0.111 private controls visible, environment export template included commands and safety fields, and post-restart instructions opened.
+- `npm run test:e2e:smoke:fast` PASS, 10 tests.
+- `npm run package:playtest` PASS before commit, producing the expected dirty package for pre-commit validation.
+- `npm run verify:playtest-package` PASS, 433 checks, after fixing the package validator's stale v0.110 checkpoint expectation.
+
 # v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
 
 This checkpoint adds a private BattleScene phase profiler, a 22-row Performance Lab ladder, subsystem isolation toggles, density-scaling reports, and a trusted browser gate. It extends v0.109 benchmark integrity without changing gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, desktop saves, multiplayer, PvP, co-op, or v0.111 scope.

@@ -11,9 +11,18 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue** on 2026-06-03. It is a private benchmark diagnosis and controlled rescue milestone: the project now has BattleScene update phase timing, a 22-row private Performance Lab ladder, subsystem isolation reports, density scaling reports, and a trusted browser performance gate layered on top of the v0.109 production-preview benchmark protocol. It uses existing runtime content only and does not start v0.111, a desktop port, engine choice, desktop saves, art generation/import, gameplay changes, reward changes, stable-ID changes, or mine/shrine building IDs.
+The current checkpoint is **v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate** on 2026-06-03. It is a private reproducibility and classification milestone layered on top of v0.109/v0.110 trusted browser evidence. It adds safe host snapshots, browser control baselines, temporary clean-profile comparison, private Performance Lab instruction buttons, machine-pressure classification, and a post-restart retest guide. Current local evidence classifies host pressure as `HOST_PRESSURE_UNLIKELY` and game cost as `BATTLE_CODE_DOMINANT`: outside-game controls and Phaser-empty are healthy, while campaign-map and Tier M battle remain slow in both normal preview and temporary clean-profile runs.
 
-The next recommended step is Emmanuel review of the v0.110 phase-profile evidence, browser gate, and retest checklist. Do not convert the browser benchmark numbers into final hardware targets, promote Tier L stress into CI, generate a whole art roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.111 until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel review of the v0.111 environment evidence and post-restart retest. Do not blame only the machine or only the game without the post-restart evidence, convert browser numbers into final hardware targets, generate art, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.112 until a future explicit goal approves a narrow next step.
+
+New v0.111 docs:
+
+- `docs/V0111_HOST_SNAPSHOT_SPEC.md`
+- `docs/V0111_BROWSER_CONTROL_BASELINES.md`
+- `docs/V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md`
+- `docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md`
+- `docs/V0111_EMMANUEL_POST_RESTART_RETEST.md`
+- `docs/V0111_IMPLEMENTATION_REPORT.md`
 
 New v0.110 docs:
 

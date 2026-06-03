@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { validatePlaytestPackageSnapshot, type PlaytestPackageSnapshot } from "./PlaytestPackageValidation";
+import {
+  EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT,
+  validatePlaytestPackageSnapshot,
+  type PlaytestPackageSnapshot
+} from "./PlaytestPackageValidation";
 
 describe("PlaytestPackageValidation", () => {
   it("accepts a complete private playtest package snapshot", () => {
@@ -64,7 +68,7 @@ function completeSnapshot(): PlaytestPackageSnapshot {
           commit: "afbb37f000000000000000000000000000000000",
           shortCommit: "afbb37f",
           generatedAtUtc: "2026-05-18T13:00:00.000Z",
-          checkpoint: "v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue",
+          checkpoint: EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT,
           packagePurpose: "private human playtest distribution",
           requiresLocalServer: true
         })
@@ -477,6 +481,12 @@ function completeSnapshot(): PlaytestPackageSnapshot {
       { path: "V0110_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.110 implementation report" },
       { path: "V0110_EMMANUEL_PHASE_PROFILE_RETEST.md", sizeBytes: 20, textContent: "v0.110 Emmanuel phase retest" },
       { path: "V0110_DEFERRED_ARCHITECTURE_FINDINGS.md", sizeBytes: 20, textContent: "v0.110 deferred architecture findings" },
+      { path: "V0111_HOST_SNAPSHOT_SPEC.md", sizeBytes: 20, textContent: "v0.111 host snapshot spec" },
+      { path: "V0111_BROWSER_CONTROL_BASELINES.md", sizeBytes: 20, textContent: "v0.111 browser control baselines" },
+      { path: "V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md", sizeBytes: 20, textContent: "v0.111 clean profile benchmark spec" },
+      { path: "V0111_MACHINE_PRESSURE_CLASSIFICATION.md", sizeBytes: 20, textContent: "v0.111 machine pressure classification" },
+      { path: "V0111_EMMANUEL_POST_RESTART_RETEST.md", sizeBytes: 20, textContent: "v0.111 Emmanuel post restart retest" },
+      { path: "V0111_IMPLEMENTATION_REPORT.md", sizeBytes: 20, textContent: "v0.111 implementation report" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.md", sizeBytes: 20, textContent: "Act 1 telemetry markdown" },
       { path: "ACT1_PLAYABILITY_TELEMETRY.json", sizeBytes: 20, textContent: "{\"schemaVersion\":1}" },
       { path: "start-playtest-server.mjs", sizeBytes: 20, textContent: "server" },

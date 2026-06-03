@@ -15,6 +15,9 @@ export interface PlaytestPackageValidationResult {
   errors: string[];
 }
 
+export const EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT =
+  "v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate";
+
 export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "game/index.html",
   "README_FOR_TESTERS.md",
@@ -428,6 +431,12 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0110_IMPLEMENTATION_REPORT.md",
   "V0110_EMMANUEL_PHASE_PROFILE_RETEST.md",
   "V0110_DEFERRED_ARCHITECTURE_FINDINGS.md",
+  "V0111_HOST_SNAPSHOT_SPEC.md",
+  "V0111_BROWSER_CONTROL_BASELINES.md",
+  "V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md",
+  "V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
+  "V0111_EMMANUEL_POST_RESTART_RETEST.md",
+  "V0111_IMPLEMENTATION_REPORT.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -538,7 +547,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue",
+      EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT,
       "build info checkpoint",
       checks,
       errors

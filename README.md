@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.82: Aether Well Ruins now has the first mission-local Lume Network prototype on Broken Ford. Capturing West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, activates Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-Current v0.110 work adds a private battle-loop phase profiler, 22-row Performance Lab ladder, subsystem isolation matrix, density-scaling reports, and a trusted browser performance gate. It extends the v0.109 benchmark-integrity work with BattleScene update phase timing and private/session-only binary switches for simulation, AI, path, movement, combat, projectiles, fog, entity graphics, labels, capture rings, Lume, minimap, HUD DOM patches, notifications, camera, and profiler overlay. It uses existing runtime content only and does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, co-op, or v0.111 scope.
+Current v0.111 work adds private host-environment calibration, clean-browser reproducibility, browser control baselines, machine-pressure classification, and post-restart retest instructions. It separates blank rAF, simple DOM, simple canvas, Phaser empty-scene, campaign-map, and Tier M representative battle costs, and it shows the current local evidence as `HOST_PRESSURE_UNLIKELY` plus `BATTLE_CODE_DOMINANT`: blank/DOM/canvas/Phaser-empty are near 60 FPS with p95 around 16.7 ms, campaign-map is materially slower at 9.9 FPS / 183.4 ms p95 in preview, and Tier M remains severe at 2.5 FPS / 516.6 ms p95 in preview and 483.3 ms p95 in clean-profile headless. It uses a temporary clean Chromium profile without touching the user browser profile. It does not kill unrelated processes, reboot, change OS settings, collect browser history/open tabs/profile contents/private process command lines, generate or import art, change save format, rename internal IDs, alter gameplay/balance/AI/pathing, change desktop posture, choose an engine, or start v0.112.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.110 updates package metadata and required package docs to include the phase-profiler spec, subsystem isolation matrix spec, density-scaling report, root-cause classification, controlled optimization report, browser performance gate, visual QA report, implementation report, Emmanuel retest checklist, and deferred architecture findings.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.111 updates package metadata and required package docs to include the host snapshot spec, browser control baselines, clean-profile benchmark spec, machine-pressure classification, Emmanuel post-restart retest, and implementation report.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -44,6 +44,11 @@ v0.110 battle-loop phase profiler spec: `docs/V0110_BATTLE_LOOP_PHASE_PROFILER_S
 v0.110 subsystem isolation matrix: `docs/V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md`.
 v0.110 browser performance gate: `docs/V0110_BROWSER_PERFORMANCE_GATE.md`.
 v0.110 Emmanuel phase-profile retest: `docs/V0110_EMMANUEL_PHASE_PROFILE_RETEST.md`.
+v0.111 host snapshot spec: `docs/V0111_HOST_SNAPSHOT_SPEC.md`.
+v0.111 browser control baselines: `docs/V0111_BROWSER_CONTROL_BASELINES.md`.
+v0.111 clean-profile benchmark spec: `docs/V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md`.
+v0.111 machine-pressure classification: `docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md`.
+v0.111 Emmanuel post-restart retest: `docs/V0111_EMMANUEL_POST_RESTART_RETEST.md`.
 
 Current v0.3 feature snapshot:
 
