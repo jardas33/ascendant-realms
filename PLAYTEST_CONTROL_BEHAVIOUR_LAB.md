@@ -1,7 +1,7 @@
 # Playtest Control Behaviour Lab
 
-Generated: 2026-06-03T01:43:47.997Z
-Build commit: ecb4b98
+Generated: 2026-06-03T11:43:01.434Z
+Build commit: bce6065
 Run mode: normal
 Iterations: 1
 Scenarios: 18

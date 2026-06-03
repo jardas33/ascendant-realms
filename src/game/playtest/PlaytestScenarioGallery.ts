@@ -3,6 +3,7 @@ import {
   REPRESENTATIVE_BATTLE_BENCHMARK_GROUP_TITLE,
   REPRESENTATIVE_BATTLE_BENCHMARK_SCENARIOS
 } from "./RepresentativeBattleBenchmark";
+import { V0110_BATTLE_LOOP_SCENARIOS } from "./BattleLoopPhaseProfiler";
 
 export type PlaytestScenarioGroupId =
   | "campaign_shell"
@@ -131,6 +132,22 @@ export const PLAYTEST_SCENARIOS: PlaytestScenarioDefinition[] = [
       `v0108-${entry.id.replaceAll("_", "-")}`,
       entry.includeInCiSmoke ? "v0.108 representative benchmark smoke" : "v0.108 representative benchmark private local evidence",
       `private representative battle benchmark: ${entry.title}`,
+      entry.saveIsolationRule
+    )
+  ),
+  ...V0110_BATTLE_LOOP_SCENARIOS.map((entry) =>
+    scenario(
+      entry.id,
+      "performance_lab",
+      `v0.110 ${entry.title}`,
+      entry.launchKind,
+      entry.purpose,
+      entry.expectedVisibleUi,
+      ["results-primary-actions"],
+      "Which phase or isolated subsystem creates the clearest runtime cost signal?",
+      `v0110-${entry.id.replace(/^v0110_/u, "").replaceAll("_", "-")}`,
+      entry.localOnly ? "v0.110 private local-only phase profile" : "v0.110 private phase profiler",
+      `v0.110 battle-loop phase profile: ${entry.title}`,
       entry.saveIsolationRule
     )
   )

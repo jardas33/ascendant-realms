@@ -1,12 +1,52 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-02 v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation
+Last updated: 2026-06-03 v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers, adds trusted production-preview-first sampling, private manual benchmark flow, and root-cause diagnostic toggles, and concludes the earlier 2-3 FPS evidence is mixed with real browser runtime cost rather than purely harness artifact. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.110 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.111 work is approved.
+
+## Current v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
+
+Status: v0.110 adds a private battle-loop phase profiler, 22-row Performance Lab ladder, subsystem isolation switches, density-scaling reports, trusted browser gate artifacts, visual QA coverage, review-pack grouping, and package metadata/docs. Phase profiling is off by default and all isolation switches are private/session-only.
+
+Included work:
+
+- Added `src/game/playtest/BattleLoopPhaseProfiler.ts`, focused tests, and `tools/runBattleLoopPhaseProfile.ts`.
+- Added `npm run perf:phase-profile:preview`, `npm run perf:subsystem-matrix`, `npm run perf:density-ladder`, `npm run perf:browser-gate`, and `npm run perf:v0110:report`.
+- Added private BattleScene phase timing and private diagnostic switches for simulation, AI, path, movement, combat, projectiles, fog simulation/presentation, entity graphics, labels, capture rings, Lume, minimap, HUD DOM patches, notifications, camera, and profiler overlay.
+- Added ignored `artifacts/performance/v0110/` output with raw frame intervals, raw phase samples, and retained phase summaries.
+- Updated visual QA to 244 screenshots and routed v0.110 captures into the Trusted Benchmark review-pack family.
+- Updated package metadata/docs to v0.110.
+
+Runtime/save/art boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, gameplay rules, combat balance, AI tuning, pathing rules, maps, factions, races, units, buildings, Living Mines, generated/imported art, runtime asset paths, public benchmark controls, engine choice, desktop port, desktop save path, multiplayer, PvP, co-op, runtime title, or v0.111 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Verification:
+
+```text
+Focused implementation tests - PASS, BattleLoopPhaseProfiler / TrustedBrowserBenchmark / PrivatePerformanceProfiler.
+npx tsc -p tsconfig.json --noEmit - PASS.
+npm test - PASS, 113 files / 788 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+Content, art-intake, runtime art slots, save translation, portable-content export, and portable-content validation gates PASS.
+Representative battle benchmarks PASS: smoke 1 scenario, representative 8 scenarios, stress 1 local-only scenario, report refreshed for 10 scenarios.
+Trusted v0.109 performance lanes PASS: preview, dev, root-cause matrix 19 cases, report refreshed for 21 rows.
+v0.110 performance lanes PASS as commands: phase profile 3 rows, subsystem matrix 17 rows, density ladder 5 rows, browser gate, and report refresh for 22 rows.
+v0.110 gate status is RED for v0110_tier_m_density: 2.5 FPS average, 516.6 ms p95, 533.3 ms max frame, and 52 long tasks.
+Browser smoke/playtest lanes PASS: fast smoke 10, full smoke 17, controls 18/18, extended controls 90/90, verifier 1,658 checks, Act 1 180 summarized runs from 255 deterministic simulator runs.
+Hosted release lanes PASS: smoke 17, deep-battle exact rerun 31 after the first 20-minute outer timeout, deep-campaign-pressure 8, layout-core 27, layout-cinderfen 12.
+visual:qa exact rerun PASS after the first one-hour outer timeout: 21 tests / 244 screenshots / 0 console errors / 0 screenshot retries.
+visual:review-pack PASS, 244 screenshots and 10 contact sheets.
+Browser plugin local review PASS, localhost review pack loaded 244 screenshots and 4 v0.110 screenshot entries.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.110 battle-loop phase profiler runtime bottleneck isolation and controlled performance rescue`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, and dirty status says `no`. Do not start v0.111, engine spike, desktop port, or art work without a new explicit goal. v0.111 and art-ready follow-up remain blocked by the RED gate until a separately approved architecture/performance rescue goal clears it.
 
 ## Current v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
 

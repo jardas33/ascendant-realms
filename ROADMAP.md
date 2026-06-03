@@ -11,11 +11,24 @@ Every phase should protect these long-term pillars:
 
 ## Current Recommended Next Phase
 
-The current checkpoint is **v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation** on 2026-06-02. It is a private benchmark methodology and diagnosis milestone: the project now has a trusted production-preview-first browser benchmark protocol, dev-server comparison, private manual benchmark flow, root-cause diagnostic toggles, 240-screenshot visual QA target, and a Trusted Benchmark review-pack family. The trusted matrix still shows serious browser lag in the Tier M baseline, so earlier 2-3 FPS evidence is mixed rather than dismissed as purely harness artifact. It uses existing runtime content only and does not start a desktop port, choose an engine, add desktop saves, generate/import art, change gameplay, change rewards, change stable IDs, or add mine/shrine building IDs.
+The current checkpoint is **v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue** on 2026-06-03. It is a private benchmark diagnosis and controlled rescue milestone: the project now has BattleScene update phase timing, a 22-row private Performance Lab ladder, subsystem isolation reports, density scaling reports, and a trusted browser performance gate layered on top of the v0.109 production-preview benchmark protocol. It uses existing runtime content only and does not start v0.111, a desktop port, engine choice, desktop saves, art generation/import, gameplay changes, reward changes, stable-ID changes, or mine/shrine building IDs.
 
-The next recommended step is Emmanuel review of the v0.109 evidence and retest checklist. Do not convert the browser benchmark numbers into final hardware targets, promote Tier L stress into CI, generate a whole art roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, or start a desktop port until a future explicit goal approves a narrow next step.
+The next recommended step is Emmanuel review of the v0.110 phase-profile evidence, browser gate, and retest checklist. Do not convert the browser benchmark numbers into final hardware targets, promote Tier L stress into CI, generate a whole art roster, import art into runtime, mark `runtime-candidate-approved` assets as loadable, add gameplay systems, change rewards, change saves, rename IDs, create a desktop save path, choose an engine, start an engine spike, start a desktop port, or start v0.111 until a future explicit goal approves a narrow next step.
 
-New v0.109 docs:
+New v0.110 docs:
+
+- `docs/V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md`
+- `docs/V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md`
+- `docs/V0110_DENSITY_SCALING_REPORT.md`
+- `docs/V0110_ROOT_CAUSE_CLASSIFICATION.md`
+- `docs/V0110_CONTROLLED_OPTIMIZATION_REPORT.md`
+- `docs/V0110_BROWSER_PERFORMANCE_GATE.md`
+- `docs/V0110_VISUAL_QA_REPORT.md`
+- `docs/V0110_IMPLEMENTATION_REPORT.md`
+- `docs/V0110_EMMANUEL_PHASE_PROFILE_RETEST.md`
+- `docs/V0110_DEFERRED_ARCHITECTURE_FINDINGS.md`
+
+Recent v0.109 docs:
 
 - `docs/V0109_PROFILER_METHOD_AUDIT.md`
 - `docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md`

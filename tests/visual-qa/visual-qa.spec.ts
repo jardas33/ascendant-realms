@@ -35,7 +35,7 @@ const LAPTOP: VisualViewport = { label: "laptop", width: 1366, height: 768 };
 const DESKTOP: VisualViewport = { label: "desktop", width: 1440, height: 900 };
 const TABLET: VisualViewport = { label: "tablet", width: 1024, height: 768 };
 const MOBILE: VisualViewport = { label: "mobile", width: 390, height: 844 };
-const EXPECTED_SCREENSHOT_COUNT = 240;
+const EXPECTED_SCREENSHOT_COUNT = 244;
 const VISUAL_QA_GROUP_TIMEOUT_MS = 900_000;
 const VISUAL_QA_BATTLE_LOAD_TIMEOUT_MS = 90_000;
 const SCREENSHOT_TIMEOUT_MS = 45_000;
@@ -255,6 +255,15 @@ async function setTrustedBenchmarkDiagnostics(page: Page, diagnostics: Record<st
     return hooks?.setTrustedBenchmarkDiagnostics?.(nextDiagnostics) ?? null;
   }, diagnostics);
   expect(applied, `trusted benchmark diagnostics ${JSON.stringify(diagnostics)} should apply`).toBeTruthy();
+  await page.waitForTimeout(120);
+}
+
+async function setBattleLoopDiagnostics(page: Page, diagnostics: Record<string, string>): Promise<void> {
+  const applied = await page.evaluate((nextDiagnostics) => {
+    const hooks = (window as any).__ASCENDANT_TEST_HOOKS__;
+    return hooks?.setBattleLoopDiagnostics?.(nextDiagnostics) ?? null;
+  }, diagnostics);
+  expect(applied, `battle-loop diagnostics ${JSON.stringify(diagnostics)} should apply`).toBeTruthy();
   await page.waitForTimeout(120);
 }
 
@@ -2518,6 +2527,8 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await openPrivatePlaytestHub(page);
     await expect(page.getByTestId("trusted-manual-benchmark-panel")).toBeVisible();
     await captureView(page, group, "v0.109 manual benchmark ready", "v0109-trusted-manual-ready-1366.png", LAPTOP, "Private manual benchmark panel is visible in the Playtest Hub with no public controls.");
+    await page.getByTestId("playtest-group-performance_lab").scrollIntoViewIfNeeded();
+    await captureView(page, group, "v0.110 phase profiler ladder", "v0110-phase-profiler-ladder-1366.png", LAPTOP, "Performance Lab includes the v0.110 phase-profiler and subsystem-isolation ladder.");
 
     await page.getByTestId("trusted-manual-benchmark-start").click();
     await expect(page.getByTestId("trusted-manual-phase-intro")).toHaveClass(/active/u);
@@ -2547,6 +2558,15 @@ test.describe("Ascendant Realms visual QA capture", () => {
     await page.getByTestId("trusted-diagnostic-toggle").click();
     await expect(page.getByTestId("trusted-diag-row-labels")).toBeVisible();
     await captureView(page, group, "v0.109 diagnostics expanded", "v0109-trusted-diagnostics-expanded-1366.png", LAPTOP, "Expanded diagnostics expose session-only root-cause toggles.");
+    await expect(page.getByTestId("battle-loop-diag-section")).toBeVisible();
+    await captureView(page, group, "v0.110 battle-loop diagnostics expanded", "v0110-battle-loop-diagnostics-expanded-1366.png", LAPTOP, "Expanded diagnostics expose private v0.110 battle-loop phase and subsystem switches.");
+
+    await setBattleLoopDiagnostics(page, { phaseProfiler: "on" });
+    await captureView(page, group, "v0.110 phase profiler on", "v0110-phase-profiler-on-1366.png", LAPTOP, "Phase profiler on records private BattleScene update phase timing without changing saves or public play.");
+
+    await setBattleLoopDiagnostics(page, { hudDomPatches: "paused" });
+    await captureView(page, group, "v0.110 HUD DOM paused", "v0110-hud-dom-paused-1366.png", LAPTOP, "HUD DOM paused isolates UI patch cost as a private diagnostic state.");
+    await setBattleLoopDiagnostics(page, { hudDomPatches: "normal" });
 
     await setTrustedBenchmarkDiagnostics(page, { labels: "hidden" });
     await captureView(page, group, "v0.109 labels hidden", "v0109-trusted-labels-hidden-1366.png", LAPTOP, "Labels hidden isolates text-object visual cost without changing capture or combat rules.");

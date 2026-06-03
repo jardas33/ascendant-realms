@@ -272,6 +272,16 @@
   color: #f5efc2;
 }
 
+.trusted-diagnostic-separator {
+  margin: 8px 0 2px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(116, 211, 242, 0.22);
+  color: #74d3f2;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .private-performance-panel small {
   display: block;
   color: rgba(217, 238, 232, 0.68);

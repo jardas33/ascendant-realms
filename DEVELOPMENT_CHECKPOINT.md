@@ -1,6 +1,79 @@
 # Development Checkpoint
 
-Updated: 2026-06-02 v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation
+Updated: 2026-06-03 v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue
+
+## v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
+
+Scope: private battle-loop phase profiling, subsystem isolation, density-scaling evidence, trusted browser gate, visual QA/review-pack coverage, package metadata/docs, and benchmark reporting only. This checkpoint extends v0.109 trusted browser methodology with BattleScene update phase timing and private binary diagnostic switches. It does not alter gameplay, saves, rewards, stable IDs, maps, factions, races, units, buildings, Living Mines, art, public runtime posture, engine choice, desktop implementation, desktop saves, multiplayer, PvP, co-op, runtime title, or v0.111 scope.
+
+Included work:
+
+- Added `src/game/playtest/BattleLoopPhaseProfiler.ts`, focused tests, and `tools/runBattleLoopPhaseProfile.ts`.
+- Added `perf:phase-profile:preview`, `perf:subsystem-matrix`, `perf:density-ladder`, `perf:browser-gate`, and `perf:v0110:report`.
+- Added private BattleScene phase timing around scene/update, simulation, camera, abilities, movement/pathing, combat/projectiles, status effects, economy/production, Lume, AI, cleanup, fog, HUD DOM, and end-condition work.
+- Added session-only subsystem switches for simulation, AI, path, movement, combat, projectiles, fog simulation, fog presentation, entity graphics, labels, capture rings, Lume, minimap, HUD DOM patches, notifications, camera, and profiler overlay.
+- Added a 22-row v0.110 Performance Lab ladder that reuses existing private fixtures and benchmark staging.
+- Added ignored `artifacts/performance/v0110/` outputs with raw frame intervals, raw phase samples, and retained phase-summary artifacts.
+- Updated visual QA to 244 screenshots and routed v0.110 phase-profiler captures into the Trusted Benchmark review-pack family.
+- Updated package metadata and package validation to include v0.110 docs.
+
+Save format:
+
+- No save-version bump.
+- No runtime save fields, localStorage keys, persistent settings, stable IDs, serialized IDs, content IDs, gameplay rules, rewards, XP, campaign progression, Retinue rules, relic rules, reputation, Lume rules, combat balance, maps, factions, races, units, buildings, Living Mines, generated/imported art, runtime asset path, public benchmark controls, desktop path, desktop save path, engine choice, runtime title, multiplayer, PvP, co-op, or v0.111 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Benchmark interpretation:
+
+- The v0.110 gate reports GREEN/AMBER/RED/PENDING from trusted browser phase-profile evidence. It is local browser QA evidence, not final desktop hardware certification.
+- Phase profiling is off by default and does no per-phase timing work unless private diagnostics explicitly enable it.
+- Broader renderer, architecture, engine, desktop, or art rescue remains deferred until a separately approved goal.
+
+Verification:
+
+```text
+Focused implementation tests - PASS, BattleLoopPhaseProfiler / TrustedBrowserBenchmark / PrivatePerformanceProfiler.
+npx tsc -p tsconfig.json --noEmit - PASS.
+npm test - PASS, 113 files / 788 tests.
+npm run build - PASS with the known Phaser/vendor chunk-size warning.
+npm run validate:content - PASS.
+npm run validate:art-intake - PASS, 1 candidate metadata JSON file checked and 0 review manifests.
+npm run validate:runtime-art-slots - PASS, 52 runtime art slots.
+npm run test:save-translation-contract - PASS, 16 fixtures / 11 translated / 2 quarantined / 3 rejected.
+npm run export:portable-content - PASS, 229 stable-ID manifest entries.
+npm run validate:portable-content - PASS, deterministic two-pass export.
+npm run benchmark:battle:smoke - PASS, 1 scenario.
+npm run benchmark:battle:representative - PASS, 8 scenarios.
+npm run benchmark:battle:stress - PASS, 1 local-only stress scenario.
+npm run benchmark:battle:report - PASS, refreshed 10-scenario report.
+npm run perf:trusted:preview - PASS, production-preview baseline evidence.
+npm run perf:trusted:dev - PASS, dev-server comparison evidence.
+npm run perf:root-cause-matrix - PASS, 19 production-preview root-cause cases.
+npm run perf:trusted:report - PASS, refreshed 21 trusted v0.109 result rows.
+npm run perf:phase-profile:preview - PASS, 3 v0.110 phase-profile rows.
+npm run perf:subsystem-matrix - PASS, 17 v0.110 subsystem rows.
+npm run perf:density-ladder - PASS, 5 v0.110 density rows.
+npm run perf:browser-gate - PASS command; gate status RED for v0110_tier_m_density at 2.5 FPS average, 516.6 ms p95, 533.3 ms max frame, and 52 long tasks.
+npm run perf:v0110:report - PASS, refreshed 22 v0.110 result rows and 22 raw phase-sample artifacts.
+npm run test:e2e:smoke:fast - PASS, 10 tests.
+npm run test:e2e:smoke - PASS, 17 tests.
+npm run playtest:controls - PASS, 18/18 rows.
+npm run playtest:controls:extended - PASS, 90/90 rows.
+npm run playtest:controls:verify - PASS, 1,658 checks.
+npm run playtest:act1 - PASS, 180 Act 1 runs summarized from 255 deterministic simulator runs.
+npm run test:e2e:release:hosted:smoke - PASS, 17 tests.
+npm run test:e2e:release:hosted:deep-battle - first command timed out at the 20-minute outer timeout; exact rerun PASS, 31 tests in 25.3 minutes.
+npm run test:e2e:release:hosted:deep-campaign-pressure - PASS, 8 tests.
+npm run test:e2e:release:hosted:layout-core - PASS, 27 tests.
+npm run test:e2e:release:hosted:layout-cinderfen - PASS, 12 tests.
+npm run visual:qa - first command timed out at the one-hour outer timeout; exact rerun PASS, 21 tests / 244 screenshots / 0 console errors / 0 screenshot retries.
+npm run visual:review-pack - PASS, 244 screenshots and 10 contact sheets.
+Browser plugin local review - PASS, localhost review pack loaded 244 screenshots and 4 v0.110 screenshot entries.
+```
+
+v0.111 and art-ready follow-up are blocked by the RED browser performance gate until a separately approved architecture/performance rescue goal clears it.
+
+Final clean package generation and package verification are repeated after the checkpoint commit so the package commit matches the final checkpoint commit and the dirty status says `no`.
 
 ## v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
 

@@ -13,6 +13,7 @@ import {
   PRIVATE_LUME_DEMO_NOTICE,
   PRIVATE_PLAYTEST_HUB_NOTICE
 } from "./PrivatePlaytestTools";
+import { V0110_BATTLE_LOOP_SCENARIOS } from "./BattleLoopPhaseProfiler";
 
 export function createPlaytestHubHeroSave(): HeroSaveData {
   const hero = createNewHeroSave("Aster", "warlord", "exiled_noble");
@@ -140,7 +141,10 @@ export function createPlaytestHubBattleLaunchRequest(scenarioId: string, heroSav
     scenarioId.startsWith("lume") ||
     scenarioId.startsWith("perf_lume") ||
     scenarioId.startsWith("art_slot_lume") ||
-    scenarioId.startsWith("benchmark_battle");
+    scenarioId.startsWith("benchmark_battle") ||
+    V0110_BATTLE_LOOP_SCENARIOS.some(
+      (entry) => entry.id === scenarioId && (entry.launchKind === "lume_battle" || entry.launchScenarioId.startsWith("benchmark_battle"))
+    );
   const nodeId = isLumeScenario ? "aether_well_ruins" : "border_village";
   const node = selectedCampaignNode(nodeId);
   if (!node || node.nodeType !== "battle") {

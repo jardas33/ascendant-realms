@@ -167,6 +167,17 @@ import {
   normalizeTrustedDiagnostics,
   type TrustedBenchmarkDiagnostics
 } from "../playtest/TrustedBrowserBenchmark";
+import {
+  BattleLoopPhaseProfiler,
+  V0110_BATTLE_LOOP_SCENARIOS,
+  battleLoopDiagnosticsForScenario,
+  createDefaultBattleLoopDiagnostics,
+  normalizeBattleLoopDiagnostics,
+  type BattleLoopCountSnapshot,
+  type BattleLoopDiagnostics,
+  type BattleLoopPhaseId,
+  type BattleLoopPhaseSummary
+} from "../playtest/BattleLoopPhaseProfiler";
 
 const WORLD_ENTITY_INTERACTION_MIN_RADIUS = 26;
 const WORLD_ENTITY_UNIT_HIT_PADDING = 6;
@@ -247,6 +258,10 @@ interface AscendantBattleTestHooks {
   setTrustedBenchmarkDiagnostics?: (diagnostics: Partial<TrustedBenchmarkDiagnostics>) => TrustedBenchmarkDiagnostics | null;
   selectTrustedBenchmarkTarget?: (target: "hero" | "worker" | "building") => { x: number; y: number; label: string } | null;
   resetTrustedBenchmarkDiagnostics?: () => TrustedBenchmarkDiagnostics | null;
+  getBattleLoopDiagnostics?: () => BattleLoopDiagnostics;
+  setBattleLoopDiagnostics?: (diagnostics: Partial<BattleLoopDiagnostics>) => BattleLoopDiagnostics | null;
+  getBattleLoopPhaseSummary?: () => BattleLoopPhaseSummary;
+  resetBattleLoopPhaseProfiler?: () => BattleLoopPhaseSummary;
 }
 
 interface LumeRenderLinkSnapshot {
@@ -355,6 +370,8 @@ export class BattleScene extends Phaser.Scene {
   private performanceCounters = this.createEmptyPerformanceCounters();
   private hudDensityMode: HudDensityMode = "minimal";
   private trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
+  private battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
+  private battleLoopPhaseProfiler = new BattleLoopPhaseProfiler();
   private trustedDiagnosticsPanel?: HTMLElement;
   private trustedDiagnosticsPanelExpanded = false;
   private trustedDiagnosticsHandler?: (event: MouseEvent) => void;
@@ -362,6 +379,7 @@ export class BattleScene extends Phaser.Scene {
   private cachedMinimapSnapshotAtSeconds = 0;
   private lastFogDiagnosticRedrawAtSeconds = 0;
   private lastAppliedTrustedDiagnosticsSignature = "";
+  private lastAppliedBattleLoopDiagnosticsSignature = "";
   private hudRefreshAccumulatorSeconds = 0;
   private researchedUpgradeIds: Record<"player" | "enemy", Set<string>> = {
     player: new Set<string>(),
@@ -409,47 +427,105 @@ export class BattleScene extends Phaser.Scene {
     }
 
     const deltaSeconds = deltaMs / 1000;
-    if (this.menuPaused) {
-      this.refreshBattleHud(deltaSeconds);
-      return;
-    }
+    this.prepareBattleLoopPhaseFrame();
+    try {
+      if (this.menuPaused) {
+        this.measureBattleLoopPhase("hudDom", () => this.refreshBattleHud(deltaSeconds));
+        return;
+      }
 
-    this.runtime.tick(deltaSeconds);
-    this.statusTimer = Math.max(0, this.statusTimer - deltaSeconds);
-    this.commandHallWarningCooldown = Math.max(0, this.commandHallWarningCooldown - deltaSeconds);
-    this.updateMinimapPings(deltaSeconds);
-    if (this.statusTimer === 0) {
-      this.statusMessage = this.buildingSystem.pendingBuildingId
-        ? this.buildingSystem.placementMessage || "Click valid ground near your base to place the building."
-        : `AI: ${this.aiSystem.state} - Time ${formatTime(this.runtime.elapsedSeconds)}`;
-      this.statusPriority = "normal";
-    }
+      const simulationPaused = this.isBattleLoopDiagnosticPaused("simulation");
+      this.measureBattleLoopPhase("simulationClock", () => {
+        if (simulationPaused) {
+          return;
+        }
+        this.runtime.tick(deltaSeconds);
+        this.statusTimer = Math.max(0, this.statusTimer - deltaSeconds);
+        this.commandHallWarningCooldown = Math.max(0, this.commandHallWarningCooldown - deltaSeconds);
+        this.updateMinimapPings(deltaSeconds);
+        if (this.statusTimer === 0) {
+          this.statusMessage = this.buildingSystem.pendingBuildingId
+            ? this.buildingSystem.placementMessage || "Click valid ground near your base to place the building."
+            : `AI: ${this.aiSystem.state} - Time ${formatTime(this.runtime.elapsedSeconds)}`;
+          this.statusPriority = "normal";
+        }
+      });
 
-    this.cameraSystem.update(deltaSeconds);
-    this.abilitySystem.update(deltaSeconds, this.hero);
-    this.movementSystem.update(deltaSeconds, this.units, this.activeMap, this.buildings);
-    this.combatSystem.update(deltaSeconds);
-    this.updateStatusEffects(deltaSeconds);
-    this.enemyHeroAbilitySystem.update(deltaSeconds);
-    this.buildingSystem.update(deltaSeconds);
-    this.repairSystem.update(deltaSeconds);
-    this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
-    this.lumeNetworkDirector?.update();
-    this.renderLumeNetworkLinks();
-    this.updateResourceSiteWarnings(deltaSeconds);
-    this.trainingSystem.update(deltaSeconds, this.buildings);
-    this.upgradeSystem.update(deltaSeconds, this.buildings);
-    this.enemyPressureRuntime?.update();
-    this.updateAct1Finale();
-    this.aiSystem.update(deltaSeconds);
-    this.updateBattlefieldEvents(deltaSeconds);
-    this.cleanupDeadEntities();
-    this.updateTrackedEnemyWaves();
-    this.updateTutorialHint();
-    this.updateFogOfWar(deltaSeconds);
-    this.applyTrustedBenchmarkDiagnosticVisuals();
-    this.refreshBattleHud(deltaSeconds);
-    this.checkEndConditions();
+      this.measureBattleLoopPhase("camera", () => {
+        if (!simulationPaused && !this.isBattleLoopDiagnosticPaused("camera")) {
+          this.cameraSystem.update(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("abilities", () => {
+        if (!simulationPaused) {
+          this.abilitySystem.update(deltaSeconds, this.hero);
+          this.enemyHeroAbilitySystem.update(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("movementPathing", () => {
+        if (!simulationPaused && !this.isBattleLoopDiagnosticPaused("movement") && !this.isBattleLoopDiagnosticPaused("path")) {
+          this.movementSystem.update(deltaSeconds, this.units, this.activeMap, this.buildings);
+        }
+      });
+      this.measureBattleLoopPhase("combatProjectiles", () => {
+        if (!simulationPaused && !this.isBattleLoopDiagnosticPaused("combat") && !this.isBattleLoopDiagnosticPaused("projectiles")) {
+          this.combatSystem.update(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("statusEffects", () => {
+        if (!simulationPaused) {
+          this.updateStatusEffects(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("economyProduction", () => {
+        if (!simulationPaused) {
+          this.buildingSystem.update(deltaSeconds);
+          this.repairSystem.update(deltaSeconds);
+          this.resourceSystem.update(deltaSeconds, this.captureSites, this.units);
+          this.updateResourceSiteWarnings(deltaSeconds);
+          this.trainingSystem.update(deltaSeconds, this.buildings);
+          this.upgradeSystem.update(deltaSeconds, this.buildings);
+        }
+      });
+      this.measureBattleLoopPhase("lumeSimulation", () => {
+        if (!simulationPaused) {
+          this.lumeNetworkDirector?.update();
+        }
+      });
+      this.measureBattleLoopPhase("lumePresentation", () => this.renderLumeNetworkLinks());
+      this.measureBattleLoopPhase("aiStrategy", () => {
+        if (!simulationPaused && !this.isBattleLoopDiagnosticPaused("ai")) {
+          this.enemyPressureRuntime?.update();
+          this.updateAct1Finale();
+          this.aiSystem.update(deltaSeconds);
+          this.updateBattlefieldEvents(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("eventsCleanup", () => {
+        if (!simulationPaused) {
+          this.cleanupDeadEntities();
+          this.updateTrackedEnemyWaves();
+          this.updateTutorialHint();
+        }
+      });
+      this.updateFogOfWar(deltaSeconds);
+      this.measureBattleLoopPhase("lumePresentation", () => {
+        this.applyTrustedBenchmarkDiagnosticVisuals();
+        this.applyBattleLoopDiagnosticVisuals();
+      });
+      this.measureBattleLoopPhase("hudDom", () => {
+        if (!this.isBattleLoopDiagnosticPaused("hudDomPatches")) {
+          this.refreshBattleHud(deltaSeconds);
+        }
+      });
+      this.measureBattleLoopPhase("endConditions", () => {
+        if (!simulationPaused) {
+          this.checkEndConditions();
+        }
+      });
+    } finally {
+      this.battleLoopPhaseProfiler.endFrame();
+    }
   }
 
   private resetRuntimeState(): void {
@@ -512,11 +588,14 @@ export class BattleScene extends Phaser.Scene {
     this.performanceCounters = this.createEmptyPerformanceCounters();
     this.hudDensityMode = defaultHudDensityModeForLaunch(this.launch.request, isPrivatePlaytestToolsEnabled());
     this.trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
+    this.battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
+    this.battleLoopPhaseProfiler.reset();
     this.trustedDiagnosticsPanelExpanded = false;
     this.cachedMinimapSnapshot = undefined;
     this.cachedMinimapSnapshotAtSeconds = 0;
     this.lastFogDiagnosticRedrawAtSeconds = 0;
     this.lastAppliedTrustedDiagnosticsSignature = "";
+    this.lastAppliedBattleLoopDiagnosticsSignature = "";
     this.hudRefreshAccumulatorSeconds = 0;
     this.tutorialHint = "Select your hero, then right-click the Crown Shrine to begin.";
     this.tutorialStepId = undefined;
@@ -747,9 +826,18 @@ export class BattleScene extends Phaser.Scene {
     }
 
     this.fogUpdateTimer = 0.12;
-    fog.update(this.createVisionSources());
-    this.renderFogOverlay();
-    this.applyFogEntityVisibility(true);
+    this.measureBattleLoopPhase("fogSimulation", () => {
+      if (!this.isBattleLoopDiagnosticPaused("fogSimulation")) {
+        fog.update(this.createVisionSources());
+      }
+    });
+    this.measureBattleLoopPhase("fogPresentation", () => {
+      if (this.isBattleLoopDiagnosticPaused("fogPresentation")) {
+        return;
+      }
+      this.renderFogOverlay();
+      this.applyFogEntityVisibility(true);
+    });
   }
 
   private createVisionSources(): VisionSource[] {
@@ -1184,6 +1272,10 @@ export class BattleScene extends Phaser.Scene {
     return isPrivatePlaytestToolsEnabled() && this.isPrivatePlaytestHubPreview();
   }
 
+  private canUseBattleLoopDiagnostics(): boolean {
+    return isPrivatePlaytestToolsEnabled() && this.isPrivatePlaytestHubPreview();
+  }
+
   private setTrustedBenchmarkDiagnostics(
     diagnostics: Partial<TrustedBenchmarkDiagnostics>
   ): TrustedBenchmarkDiagnostics | null {
@@ -1193,6 +1285,15 @@ export class BattleScene extends Phaser.Scene {
     this.trustedBenchmarkDiagnostics = normalizeTrustedDiagnostics({
       ...this.trustedBenchmarkDiagnostics,
       ...diagnostics
+    });
+    this.battleLoopDiagnostics = normalizeBattleLoopDiagnostics({
+      ...this.battleLoopDiagnostics,
+      labels: this.trustedBenchmarkDiagnostics.labels,
+      captureRings: this.trustedBenchmarkDiagnostics.captureRings,
+      lume: this.trustedBenchmarkDiagnostics.lume,
+      minimap: this.trustedBenchmarkDiagnostics.minimapRefresh === "paused" ? "paused" : "normal",
+      notifications: this.trustedBenchmarkDiagnostics.notifications,
+      profilerOverlay: this.trustedBenchmarkDiagnostics.profilerOverlay
     });
     this.cachedMinimapSnapshot = undefined;
     if (diagnostics.lume) {
@@ -1208,6 +1309,54 @@ export class BattleScene extends Phaser.Scene {
 
   private resetTrustedBenchmarkDiagnostics(): TrustedBenchmarkDiagnostics | null {
     return this.setTrustedBenchmarkDiagnostics(createDefaultTrustedDiagnostics());
+  }
+
+  private setBattleLoopDiagnostics(diagnostics: Partial<BattleLoopDiagnostics>): BattleLoopDiagnostics | null {
+    if (!this.canUseBattleLoopDiagnostics()) {
+      return null;
+    }
+    this.battleLoopDiagnostics = normalizeBattleLoopDiagnostics({
+      ...this.battleLoopDiagnostics,
+      ...diagnostics
+    });
+    this.trustedBenchmarkDiagnostics = normalizeTrustedDiagnostics({
+      ...this.trustedBenchmarkDiagnostics,
+      labels: this.battleLoopDiagnostics.labels,
+      captureRings: this.battleLoopDiagnostics.captureRings,
+      lume: this.battleLoopDiagnostics.lume,
+      minimapRefresh: this.battleLoopDiagnostics.minimap === "paused" ? "paused" : this.trustedBenchmarkDiagnostics.minimapRefresh,
+      notifications: this.battleLoopDiagnostics.notifications,
+      profilerOverlay: this.battleLoopDiagnostics.profilerOverlay
+    });
+    this.battleLoopPhaseProfiler.setEnabled(this.battleLoopDiagnostics.phaseProfiler === "on");
+    this.cachedMinimapSnapshot = undefined;
+    this.setLumeVisibilityMode(this.battleLoopDiagnostics.lume);
+    this.applyTrustedBenchmarkDiagnosticVisuals();
+    this.applyBattleLoopDiagnosticVisuals();
+    this.applyTrustedProfilerOverlayDiagnostic();
+    this.renderTrustedBenchmarkDiagnosticsPanel();
+    if (this.battleLoopDiagnostics.hudDomPatches === "normal") {
+      this.refreshBattleHud(0);
+    }
+    return { ...this.battleLoopDiagnostics };
+  }
+
+  private resetBattleLoopPhaseProfiler(): BattleLoopPhaseSummary {
+    return this.battleLoopPhaseProfiler.reset();
+  }
+
+  private prepareBattleLoopPhaseFrame(): void {
+    const enabled = this.canUseBattleLoopDiagnostics() && this.battleLoopDiagnostics.phaseProfiler === "on";
+    this.battleLoopPhaseProfiler.setEnabled(enabled);
+    this.battleLoopPhaseProfiler.beginFrame(this.createBattleLoopCountSnapshot());
+  }
+
+  private measureBattleLoopPhase<T>(phaseId: BattleLoopPhaseId, work: () => T): T {
+    return this.battleLoopPhaseProfiler.measure(phaseId, work);
+  }
+
+  private isBattleLoopDiagnosticPaused(key: keyof BattleLoopDiagnostics): boolean {
+    return this.canUseBattleLoopDiagnostics() && this.battleLoopDiagnostics[key] === "paused";
   }
 
   private applyTrustedBenchmarkDiagnosticVisuals(): void {
@@ -1226,6 +1375,32 @@ export class BattleScene extends Phaser.Scene {
     [...this.units, ...this.buildings, ...this.captureSites].forEach((entity) => entity.setDiagnosticLabelHidden(hideLabels));
     this.neutralCampLabels.forEach((entry) => entry.label.setVisible(!hideLabels));
     this.captureSites.forEach((site) => site.setDiagnosticRingMode(this.trustedBenchmarkDiagnostics.captureRings));
+  }
+
+  private applyBattleLoopDiagnosticVisuals(): void {
+    if (!this.canUseBattleLoopDiagnostics()) {
+      return;
+    }
+    const signature = JSON.stringify({
+      entityGraphics: this.battleLoopDiagnostics.entityGraphics,
+      labels: this.battleLoopDiagnostics.labels,
+      captureRings: this.battleLoopDiagnostics.captureRings
+    });
+    if (signature === this.lastAppliedBattleLoopDiagnosticsSignature) {
+      return;
+    }
+    this.lastAppliedBattleLoopDiagnosticsSignature = signature;
+    const hideLabels = this.battleLoopDiagnostics.labels === "hidden";
+    const hideEntityGraphics = this.battleLoopDiagnostics.entityGraphics === "hidden";
+    [...this.units, ...this.buildings, ...this.captureSites, ...this.projectiles].forEach((entity) => {
+      entity.view?.setVisible(!hideEntityGraphics);
+      entity.setDiagnosticLabelHidden(hideLabels);
+    });
+    this.neutralCampLabels.forEach((entry) => entry.label.setVisible(!hideLabels && !hideEntityGraphics));
+    this.captureSites.forEach((site) => site.setDiagnosticRingMode(this.battleLoopDiagnostics.captureRings));
+    if (!hideEntityGraphics) {
+      this.applyFogEntityVisibility(this.isFogActive());
+    }
   }
 
   private applyTrustedProfilerOverlayDiagnostic(): void {
@@ -1277,6 +1452,16 @@ export class BattleScene extends Phaser.Scene {
     }
     const button = target?.closest<HTMLButtonElement>("button[data-trusted-diagnostic]");
     if (!button) {
+      const battleLoopButton = target?.closest<HTMLButtonElement>("button[data-battle-loop-diagnostic]");
+      if (!battleLoopButton) {
+        return;
+      }
+      const key = battleLoopButton.dataset.battleLoopDiagnostic as keyof BattleLoopDiagnostics | undefined;
+      const value = battleLoopButton.dataset.battleLoopValue;
+      if (!key || !value) {
+        return;
+      }
+      this.setBattleLoopDiagnostics({ [key]: value } as Partial<BattleLoopDiagnostics>);
       return;
     }
     const key = button.dataset.trustedDiagnostic as keyof TrustedBenchmarkDiagnostics | undefined;
@@ -1292,6 +1477,7 @@ export class BattleScene extends Phaser.Scene {
       return;
     }
     const diagnostics = this.trustedBenchmarkDiagnostics;
+    const battleLoop = this.battleLoopDiagnostics;
     this.trustedDiagnosticsPanel.innerHTML = `
       <div class="trusted-diagnostics-header">
         <strong>Trusted Diagnostics</strong>
@@ -1301,7 +1487,7 @@ export class BattleScene extends Phaser.Scene {
       </div>
       <p>Private, session-only, non-production visual isolation. No save, reward, progression, balance, fog simulation, or capture-rule changes.</p>
       <div class="trusted-diagnostics-summary" data-testid="trusted-diagnostic-summary">
-        Labels ${diagnostics.labels}; rings ${diagnostics.captureRings}; Lume ${diagnostics.lume}; minimap ${diagnostics.minimapRefresh}; fog ${diagnostics.fogRedraw}; HUD ${diagnostics.hudDensity}; notifications ${diagnostics.notifications}; overlay ${diagnostics.profilerOverlay}.
+        Labels ${diagnostics.labels}; rings ${diagnostics.captureRings}; Lume ${diagnostics.lume}; minimap ${diagnostics.minimapRefresh}; fog ${diagnostics.fogRedraw}; HUD ${diagnostics.hudDensity}; notifications ${diagnostics.notifications}; overlay ${diagnostics.profilerOverlay}; phase profiler ${battleLoop.phaseProfiler}.
       </div>
       ${
         this.trustedDiagnosticsPanelExpanded
@@ -1314,6 +1500,19 @@ export class BattleScene extends Phaser.Scene {
             ${this.renderTrustedDiagnosticButtons("hudDensity", ["minimal", "standard", "debug"], diagnostics.hudDensity)}
             ${this.renderTrustedDiagnosticButtons("notifications", ["normal", "suppressed"], diagnostics.notifications)}
             ${this.renderTrustedDiagnosticButtons("profilerOverlay", ["off", "on"], diagnostics.profilerOverlay)}
+            <div class="trusted-diagnostic-separator" data-testid="battle-loop-diag-section">v0.110 battle-loop isolation</div>
+            ${this.renderBattleLoopDiagnosticButtons("phaseProfiler", ["off", "on"], battleLoop.phaseProfiler)}
+            ${this.renderBattleLoopDiagnosticButtons("simulation", ["normal", "paused"], battleLoop.simulation)}
+            ${this.renderBattleLoopDiagnosticButtons("ai", ["normal", "paused"], battleLoop.ai)}
+            ${this.renderBattleLoopDiagnosticButtons("path", ["normal", "paused"], battleLoop.path)}
+            ${this.renderBattleLoopDiagnosticButtons("movement", ["normal", "paused"], battleLoop.movement)}
+            ${this.renderBattleLoopDiagnosticButtons("combat", ["normal", "paused"], battleLoop.combat)}
+            ${this.renderBattleLoopDiagnosticButtons("projectiles", ["normal", "paused"], battleLoop.projectiles)}
+            ${this.renderBattleLoopDiagnosticButtons("fogSimulation", ["normal", "paused"], battleLoop.fogSimulation)}
+            ${this.renderBattleLoopDiagnosticButtons("fogPresentation", ["normal", "paused"], battleLoop.fogPresentation)}
+            ${this.renderBattleLoopDiagnosticButtons("entityGraphics", ["normal", "hidden"], battleLoop.entityGraphics)}
+            ${this.renderBattleLoopDiagnosticButtons("hudDomPatches", ["normal", "paused"], battleLoop.hudDomPatches)}
+            ${this.renderBattleLoopDiagnosticButtons("camera", ["normal", "paused"], battleLoop.camera)}
           `
           : ""
       }
@@ -1329,6 +1528,25 @@ export class BattleScene extends Phaser.Scene {
             .map(
               (value) => `
                 <button type="button" data-testid="trusted-diag-${kebabCase(key)}-${kebabCase(value)}" data-trusted-diagnostic="${key}" data-trusted-value="${value}" aria-pressed="${
+                value === active ? "true" : "false"
+              }" class="${value === active ? "active" : ""}">${trustedDiagnosticValueLabel(value)}</button>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  private renderBattleLoopDiagnosticButtons(key: keyof BattleLoopDiagnostics, values: string[], active: string): string {
+    return `
+      <div class="trusted-diagnostic-row" data-testid="battle-loop-diag-row-${key}">
+        <span>${battleLoopDiagnosticLabel(key)}</span>
+        <div>
+          ${values
+            .map(
+              (value) => `
+                <button type="button" data-testid="battle-loop-diag-${kebabCase(key)}-${kebabCase(value)}" data-battle-loop-diagnostic="${key}" data-battle-loop-value="${value}" aria-pressed="${
                 value === active ? "true" : "false"
               }" class="${value === active ? "active" : ""}">${trustedDiagnosticValueLabel(value)}</button>
               `
@@ -1655,6 +1873,20 @@ export class BattleScene extends Phaser.Scene {
     };
   }
 
+  private createBattleLoopCountSnapshot(): BattleLoopCountSnapshot {
+    const textObjects = this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text);
+    return {
+      displayObjects: this.children.list.length,
+      graphicsObjects: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Graphics).length,
+      units: this.units.filter((unit) => unit.alive).length,
+      buildings: this.buildings.filter((building) => building.alive).length,
+      captureSites: this.captureSites.length,
+      projectiles: this.projectiles.filter((projectile) => projectile.alive).length,
+      labels: textObjects.filter((entry) => entry.visible).length,
+      domNodes: typeof document === "undefined" ? 0 : document.querySelectorAll("*").length
+    };
+  }
+
   private selectTrustedBenchmarkTarget(target: "hero" | "worker" | "building"): { x: number; y: number; label: string } | null {
     if (!this.canUseTrustedBenchmarkDiagnostics()) {
       return null;
@@ -1706,9 +1938,12 @@ export class BattleScene extends Phaser.Scene {
     });
 
     const commandHall = this.findBuilding(this.activeMap.scenario.objectives.playerBaseBuildingId, "player");
+    const battleLoopScenario = V0110_BATTLE_LOOP_SCENARIOS.find((entry) => entry.id === scenarioId);
     let representativeBenchmarkHandled = false;
     if (scenarioId.startsWith("benchmark_battle")) {
       representativeBenchmarkHandled = this.applyRepresentativeBattleBenchmarkSetup(scenarioId, commandHall);
+    } else if (battleLoopScenario?.launchScenarioId.startsWith("benchmark_battle")) {
+      representativeBenchmarkHandled = this.applyRepresentativeBattleBenchmarkSetup(battleLoopScenario.launchScenarioId, commandHall);
     }
 
     const selectedHeroScenarios = new Set(["battle_selected_hero", "salto_outskirts_start", "perf_selected_hero", "perf_hud_minimal", "perf_hud_standard", "perf_hud_debug", "art_slot_unit_fallback", "art_slot_hud_fallback", "art_slot_mock_routing"]);
@@ -1763,6 +1998,17 @@ export class BattleScene extends Phaser.Scene {
 
     if (scenarioId.startsWith("lume") || scenarioId.startsWith("perf_lume") || scenarioId.startsWith("art_slot_lume") || scenarioId.startsWith("benchmark_battle")) {
       this.applyPrivateLumeScenarioSetup(scenarioId);
+    }
+    if (battleLoopScenario?.launchScenarioId.startsWith("benchmark_battle")) {
+      this.applyPrivateLumeScenarioSetup(battleLoopScenario.launchScenarioId);
+    }
+    const battleLoopDiagnostics = battleLoopDiagnosticsForScenario(scenarioId);
+    if (battleLoopDiagnostics) {
+      this.setBattleLoopDiagnostics(battleLoopDiagnostics);
+      this.showMessage(`v0.110 phase profile: ${battleLoopScenario?.title ?? scenarioId}`, undefined, undefined, "#74d3f2", {
+        priority: "command",
+        durationSeconds: 5
+      });
     }
 
     this.refreshBattleHud(0);
@@ -3316,7 +3562,11 @@ export class BattleScene extends Phaser.Scene {
       getTrustedBenchmarkDiagnostics: () => ({ ...this.trustedBenchmarkDiagnostics }),
       setTrustedBenchmarkDiagnostics: (diagnostics) => this.setTrustedBenchmarkDiagnostics(diagnostics),
       resetTrustedBenchmarkDiagnostics: () => this.resetTrustedBenchmarkDiagnostics(),
-      selectTrustedBenchmarkTarget: (target) => this.selectTrustedBenchmarkTarget(target)
+      selectTrustedBenchmarkTarget: (target) => this.selectTrustedBenchmarkTarget(target),
+      getBattleLoopDiagnostics: () => ({ ...this.battleLoopDiagnostics }),
+      setBattleLoopDiagnostics: (diagnostics) => this.setBattleLoopDiagnostics(diagnostics),
+      getBattleLoopPhaseSummary: () => this.battleLoopPhaseProfiler.summary(),
+      resetBattleLoopPhaseProfiler: () => this.resetBattleLoopPhaseProfiler()
     };
   }
 
@@ -3345,6 +3595,10 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.setTrustedBenchmarkDiagnostics;
     delete target.__ASCENDANT_TEST_HOOKS__.selectTrustedBenchmarkTarget;
     delete target.__ASCENDANT_TEST_HOOKS__.resetTrustedBenchmarkDiagnostics;
+    delete target.__ASCENDANT_TEST_HOOKS__.getBattleLoopDiagnostics;
+    delete target.__ASCENDANT_TEST_HOOKS__.setBattleLoopDiagnostics;
+    delete target.__ASCENDANT_TEST_HOOKS__.getBattleLoopPhaseSummary;
+    delete target.__ASCENDANT_TEST_HOOKS__.resetBattleLoopPhaseProfiler;
   }
 
   private cleanup(): void {
@@ -3429,6 +3683,30 @@ function trustedDiagnosticLabel(key: keyof TrustedBenchmarkDiagnostics): string 
     fogRedraw: "Fog Visual Redraw",
     hudDensity: "HUD Density",
     notifications: "Notifications",
+    profilerOverlay: "Profiler Overlay"
+  };
+  return labels[key];
+}
+
+function battleLoopDiagnosticLabel(key: keyof BattleLoopDiagnostics): string {
+  const labels: Record<keyof BattleLoopDiagnostics, string> = {
+    phaseProfiler: "Phase Profiler",
+    simulation: "Simulation",
+    ai: "AI",
+    path: "Path",
+    movement: "Movement",
+    combat: "Combat",
+    projectiles: "Projectiles",
+    fogSimulation: "Fog Simulation",
+    fogPresentation: "Fog Presentation",
+    entityGraphics: "Entity Graphics",
+    labels: "Labels",
+    captureRings: "Capture Rings",
+    lume: "Lume",
+    minimap: "Minimap",
+    hudDomPatches: "HUD DOM Patches",
+    notifications: "Notifications",
+    camera: "Camera",
     profilerOverlay: "Profiler Overlay"
   };
   return labels[key];

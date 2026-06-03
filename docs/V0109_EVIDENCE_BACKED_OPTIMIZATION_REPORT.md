@@ -2,9 +2,9 @@
 
 ## Top Genuine Cost Signals
 
-1. tier-l: p95 616.6 ms, FPS avg 2, DOM 839, HUD 0.4/s, minimap 0.4/s.
-2. mode-dev-headless: p95 533.3 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
-3. minimap-paused: p95 533.3 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0/s.
+1. tier-l: p95 716.5 ms, FPS avg 2, DOM 839, HUD 0.3/s, minimap 0.3/s.
+2. labels-hidden: p95 550 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
+3. baseline: p95 516.7 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
 
 ## Probable Harness Artifacts
 

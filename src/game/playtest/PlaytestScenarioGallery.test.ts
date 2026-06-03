@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PLAYTEST_FAST_TOUR_SCENARIO_IDS, PLAYTEST_SCENARIO_GROUPS, PLAYTEST_SCENARIOS, scenarioById } from "./PlaytestScenarioGallery";
 import { isPrivatePlaytestToolsEnabledForPosture } from "./PrivatePlaytestTools";
+import { V0110_BATTLE_LOOP_SCENARIOS } from "./BattleLoopPhaseProfiler";
 
 describe("PlaytestScenarioGallery", () => {
   it("defines the required private hub groups and unique scenario entries", () => {
@@ -25,8 +26,8 @@ describe("PlaytestScenarioGallery", () => {
       expect(scenario.expectedVisibleUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.expectedAbsentUi.length, scenario.id).toBeGreaterThan(0);
       expect(scenario.manualReviewQuestion).toContain("?");
-      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104|106|108)-[a-z0-9-]+$/u);
-      expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated/u);
+      expect(scenario.screenshotId).toMatch(/^v0(100-hub|104|106|108|110)-[a-z0-9-]+$/u);
+      expect(scenario.saveIsolationRule).toMatch(/no rewards|not mutated|No save/u);
     }
   });
 
@@ -111,16 +112,24 @@ describe("PlaytestScenarioGallery", () => {
 
   it("keeps Performance Lab scenarios private, isolated, and deterministic", () => {
     const performanceScenarios = PLAYTEST_SCENARIOS.filter((scenario) => scenario.groupId === "performance_lab");
-    expect(performanceScenarios).toHaveLength(20);
-    expect(performanceScenarios.map((scenario) => scenario.id)).toEqual(
-      [...performanceScenarios.map((scenario) => scenario.id)].sort()
-    );
+    expect(performanceScenarios).toHaveLength(20 + V0110_BATTLE_LOOP_SCENARIOS.length);
     expect(performanceScenarios.map((scenario) => scenario.launchKind)).toEqual(
       expect.arrayContaining(["battle", "campaign", "lume_battle", "results"])
     );
-    performanceScenarios.forEach((scenario) => {
+    const v0104Scenarios = performanceScenarios.filter((scenario) => !scenario.id.startsWith("v0110_"));
+    expect(v0104Scenarios.map((scenario) => scenario.id)).toEqual([...v0104Scenarios.map((scenario) => scenario.id)].sort());
+    v0104Scenarios.forEach((scenario) => {
       expect(scenario.saveIsolationRule).toContain("not mutated");
       expect(scenario.automatedCoverage).toBe("v0.104 private performance lab");
+    });
+    const battleLoopScenarios = performanceScenarios.filter((scenario) => scenario.id.startsWith("v0110_"));
+    expect(battleLoopScenarios).toHaveLength(V0110_BATTLE_LOOP_SCENARIOS.length);
+    expect(battleLoopScenarios.map((scenario) => scenario.id)).toEqual(V0110_BATTLE_LOOP_SCENARIOS.map((scenario) => scenario.id));
+    battleLoopScenarios.forEach((scenario) => {
+      expect(scenario.saveIsolationRule).toContain("No save");
+      expect(scenario.saveIsolationRule).toContain("localStorage");
+      expect(scenario.automatedCoverage).toMatch(/^v0\.110 private/u);
+      expect(scenario.launchContext).toContain("v0.110 battle-loop phase profile");
     });
   });
 

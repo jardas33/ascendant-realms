@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation";
+const CHECKPOINT = "v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -448,6 +448,16 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0109_IMPLEMENTATION_REPORT.md", join(packageDir, "V0109_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0109_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0109_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("docs/V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md", join(packageDir, "V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md"));
+  await copyMarkdown("docs/V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md", join(packageDir, "V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md"));
+  await copyMarkdown("docs/V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md", join(packageDir, "V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md"));
+  await copyMarkdown("docs/V0110_DENSITY_SCALING_REPORT.md", join(packageDir, "V0110_DENSITY_SCALING_REPORT.md"));
+  await copyMarkdown("docs/V0110_ROOT_CAUSE_CLASSIFICATION.md", join(packageDir, "V0110_ROOT_CAUSE_CLASSIFICATION.md"));
+  await copyMarkdown("docs/V0110_CONTROLLED_OPTIMIZATION_REPORT.md", join(packageDir, "V0110_CONTROLLED_OPTIMIZATION_REPORT.md"));
+  await copyMarkdown("docs/V0110_BROWSER_PERFORMANCE_GATE.md", join(packageDir, "V0110_BROWSER_PERFORMANCE_GATE.md"));
+  await copyMarkdown("docs/V0110_VISUAL_QA_REPORT.md", join(packageDir, "V0110_VISUAL_QA_REPORT.md"));
+  await copyMarkdown("docs/V0110_IMPLEMENTATION_REPORT.md", join(packageDir, "V0110_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0110_EMMANUEL_PHASE_PROFILE_RETEST.md", join(packageDir, "V0110_EMMANUEL_PHASE_PROFILE_RETEST.md"));
+  await copyMarkdown("docs/V0110_DEFERRED_ARCHITECTURE_FINDINGS.md", join(packageDir, "V0110_DEFERRED_ARCHITECTURE_FINDINGS.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -478,7 +488,7 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     knownWarnings: [
       "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
       "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review.",
-      "v0.109 trusted benchmark numbers are local browser QA evidence, not final desktop hardware certification."
+      "v0.110 trusted phase-profile numbers are local browser QA evidence, not final desktop hardware certification."
     ],
     notForJudging: [
       "final art quality",
@@ -551,7 +561,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.109, start with V0109_EMMANUEL_RETEST_CHECKLIST.md, V0109_MANUAL_BENCHMARK_GUIDE.md, V0109_PROFILER_METHOD_AUDIT.md, V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md, V0109_EXECUTION_MODE_COMPARISON.md, and V0109_ROOT_CAUSE_MATRIX_REPORT.md. The package includes the v0.108 representative benchmark context plus the v0.109 trusted benchmark-integrity and root-cause isolation flow. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, or runtime/internal title.
+For v0.110, start with V0110_EMMANUEL_PHASE_PROFILE_RETEST.md, V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md, V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md, V0110_BROWSER_PERFORMANCE_GATE.md, and V0110_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, and v0.110 private battle-loop phase profiler. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, or runtime/internal title.
 
 ## Known Warning
 

@@ -418,6 +418,16 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0109_IMPLEMENTATION_REPORT.md",
   "V0109_EMMANUEL_RETEST_CHECKLIST.md",
   "V0109_DEFERRED_ENGINE_SPIKE_PREPARATION.md",
+  "V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md",
+  "V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md",
+  "V0110_DENSITY_SCALING_REPORT.md",
+  "V0110_ROOT_CAUSE_CLASSIFICATION.md",
+  "V0110_CONTROLLED_OPTIMIZATION_REPORT.md",
+  "V0110_BROWSER_PERFORMANCE_GATE.md",
+  "V0110_VISUAL_QA_REPORT.md",
+  "V0110_IMPLEMENTATION_REPORT.md",
+  "V0110_EMMANUEL_PHASE_PROFILE_RETEST.md",
+  "V0110_DEFERRED_ARCHITECTURE_FINDINGS.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",
@@ -528,7 +538,7 @@ function validateBuildInfo(buildInfoText: string, checks: string[], errors: stri
     expectString(parsed.generatedAtUtc, "build info generatedAtUtc", checks, errors);
     expectEqual(
       parsed.checkpoint,
-      "v0.109 Browser Benchmark Integrity Audit and Performance Root-Cause Isolation",
+      "v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue",
       "build info checkpoint",
       checks,
       errors

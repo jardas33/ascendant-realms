@@ -555,7 +555,7 @@ function screenFamilyForCapture(
   matrixEntry?: VisualRegressionEntry
 ): (typeof REQUIRED_REVIEW_SCREEN_GROUPS)[number] {
   const haystack = `${capture.title} ${capture.fileName} ${capture.note} ${matrixEntry?.route ?? ""} ${matrixEntry?.state ?? ""}`.toLowerCase();
-  if (haystack.includes("v0109-trusted") || haystack.includes("trusted benchmark")) {
+  if (haystack.includes("v0110") || haystack.includes("phase profiler") || haystack.includes("battle-loop") || haystack.includes("v0109-trusted") || haystack.includes("trusted benchmark")) {
     return "Trusted Benchmark";
   }
   if (haystack.includes("v0108-benchmark") || haystack.includes("representative benchmark")) {

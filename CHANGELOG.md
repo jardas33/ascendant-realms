@@ -1,5 +1,47 @@
 # Changelog
 
+# v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, And Controlled Performance Rescue - 2026-06-03
+
+This checkpoint adds a private BattleScene phase profiler, a 22-row Performance Lab ladder, subsystem isolation toggles, density-scaling reports, and a trusted browser gate. It extends v0.109 benchmark integrity without changing gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, desktop saves, multiplayer, PvP, co-op, or v0.111 scope.
+
+Added:
+
+- `src/game/playtest/BattleLoopPhaseProfiler.ts`.
+- `src/game/playtest/BattleLoopPhaseProfiler.test.ts`.
+- `tools/runBattleLoopPhaseProfile.ts`.
+- `npm run perf:phase-profile:preview`, `npm run perf:subsystem-matrix`, `npm run perf:density-ladder`, `npm run perf:browser-gate`, and `npm run perf:v0110:report`.
+- Private battle-session phase timing for scene/update, input-facing state, simulation clock, camera, abilities, movement/pathing, combat/projectiles, status effects, economy/production, Lume simulation/presentation, AI/strategy, cleanup, fog simulation/presentation, HUD DOM, and end-condition phases.
+- Private/session-only subsystem switches for simulation, AI, path, movement, combat, projectiles, fog simulation, fog presentation, entity graphics, labels, capture rings, Lume, minimap, HUD DOM patches, notifications, camera, and profiler overlay.
+- Ignored artifact root `artifacts/performance/v0110/`.
+- v0.110 docs: phase profiler spec, subsystem isolation spec, density report, root-cause classification, controlled optimization report, browser performance gate, visual QA report, implementation report, Emmanuel retest, and deferred architecture findings.
+
+Changed:
+
+- Performance Lab now includes v0.110 phase-profiler and subsystem-isolation scenarios using existing private launch fixtures.
+- Private package generation and validation now expect `v0.110 Battle-Loop Phase Profiler, Runtime Bottleneck Isolation, and Controlled Performance Rescue` and include v0.110 docs.
+- Visual QA adds four private v0.110 phase-profiler/trusted-diagnostic captures and the review pack classifies them under Trusted Benchmark.
+
+Not changed:
+
+- No save-version bump, save field, localStorage key, stable ID, serialized ID, gameplay rule, reward, XP, balance value, campaign progression, map, faction, race, unit, building, Living Mine, generated/imported art, unapproved runtime image, runtime asset path, public benchmark control, desktop path, engine choice, multiplayer, PvP, co-op, runtime title, or v0.111 work changed.
+- `linked_ward` remains exactly `0.92`.
+
+Verification:
+
+- Focused implementation tests PASS: BattleLoopPhaseProfiler, TrustedBrowserBenchmark, and PrivatePerformanceProfiler.
+- `npx tsc -p tsconfig.json --noEmit` PASS.
+- `npm test` PASS, 113 files / 788 tests.
+- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
+- Content, art-intake, runtime art slots, save translation, portable-content export, and portable-content validation gates PASS.
+- Representative battle benchmarks PASS: smoke 1 scenario, representative 8 scenarios, stress 1 local-only scenario, report refreshed for 10 scenarios.
+- Trusted v0.109 performance lanes PASS: preview, dev, root-cause matrix 19 cases, report refreshed for 21 rows.
+- v0.110 performance lanes PASS as commands: phase profile 3 rows, subsystem matrix 17 rows, density ladder 5 rows, browser gate, and report refresh for 22 rows.
+- v0.110 gate status is RED for v0110_tier_m_density: 2.5 FPS average, 516.6 ms p95, 533.3 ms max frame, and 52 long tasks. v0.111 and art-ready follow-up remain blocked until a separately approved architecture/performance rescue goal clears it.
+- Browser smoke/playtest lanes PASS: fast smoke 10, full smoke 17, controls 18/18, extended controls 90/90, verifier 1,658 checks, Act 1 180 summarized runs from 255 deterministic simulator runs.
+- Hosted release lanes PASS: smoke 17, deep-battle exact rerun 31 after the first 20-minute outer timeout, deep-campaign-pressure 8, layout-core 27, layout-cinderfen 12.
+- `npm run visual:qa` exact rerun PASS after the first one-hour outer timeout, 21 tests / 244 screenshots / 0 console errors / 0 screenshot retries.
+- `npm run visual:review-pack` PASS, 244 screenshots and 10 contact sheets. Browser plugin local review PASS for the localhost review pack with 244 screenshots and 4 v0.110 screenshot entries.
+
 # v0.109 Browser Benchmark Integrity Audit And Performance Root-Cause Isolation - 2026-06-02
 
 This checkpoint audits the suspicious v0.108 browser benchmark methodology, adds a trusted production-preview-first benchmark protocol, adds private manual benchmark flow and diagnostic toggles, generates a root-cause matrix, and updates visual QA/review-pack/package coverage. The trusted evidence still shows serious browser lag in the Tier M baseline, so the earlier 2-3 FPS evidence is mixed: old methodology was weak, but runtime cost remains real. It does not change gameplay, saves, stable IDs, rewards, balance, maps, factions, art, public runtime posture, engine choice, desktop implementation, or desktop saves.

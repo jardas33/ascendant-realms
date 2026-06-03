@@ -4,9 +4,9 @@ Ascendant Realms is a frozen v0.3 Cinderfen route baseline for a long-term fanta
 
 The latest runtime checkpoint is v0.82: Aether Well Ruins now has the first mission-local Lume Network prototype on Broken Ford. Capturing West Stone Cut plus Ford Toll, or Ford Toll plus North Aether Spring, activates Linked Ward, a battle-local non-stacking 8% incoming-damage reduction near active linked sites.
 
-Current v0.109 work adds a trusted browser benchmark integrity protocol, production-preview-first benchmark lanes, dev-server comparison, private manual benchmark flow, and session-only diagnostic toggles for root-cause isolation. The latest trusted matrix still shows serious browser lag in the Tier M baseline, so the old 2-3 FPS evidence is mixed: the old 1200 ms dev/headless/profiler-overlay methodology was weak, but the runtime still has real browser cost. It uses existing runtime content only and does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, or co-op.
+Current v0.110 work adds a private battle-loop phase profiler, 22-row Performance Lab ladder, subsystem isolation matrix, density-scaling reports, and a trusted browser performance gate. It extends the v0.109 benchmark-integrity work with BattleScene update phase timing and private/session-only binary switches for simulation, AI, path, movement, combat, projectiles, fog, entity graphics, labels, capture rings, Lume, minimap, HUD DOM patches, notifications, camera, and profiler overlay. It uses existing runtime content only and does not generate images, import candidate art, load unapproved art, change save format, rename internal IDs, change maps, factions, races, units, buildings, classes, runtime title, desktop packaging, engine choice, Jardas binding, Worker binding, hero binding, global resource production, enemy AI tuning, multiplayer, PvP, co-op, or v0.111 scope.
 
-The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.109 updates package metadata and required package docs to include the trusted benchmark method audit, protocol, execution-mode comparison, root-cause matrix, evidence-backed optimization report, manual benchmark guide, visual QA report, implementation report, Emmanuel retest checklist, and deferred engine-spike note.
+The package flow still packages the browser prototype for private human playtesting: playtest-safe production build output, ignored package folders under `artifacts/playtest/`, tester-facing README and feedback files, current retest materials, build metadata, local server launchers, and package verification. v0.110 updates package metadata and required package docs to include the phase-profiler spec, subsystem isolation matrix spec, density-scaling report, root-cause classification, controlled optimization report, browser performance gate, visual QA report, implementation report, Emmanuel retest checklist, and deferred architecture findings.
 
 This is the engine-first foundation, not the full game. Everything is intentionally simple and expandable.
 
@@ -40,6 +40,10 @@ v0.82 implementation report: `docs/V082_IMPLEMENTATION_REPORT.md`.
 v0.109 trusted browser benchmark protocol: `docs/V0109_TRUSTED_BROWSER_BENCHMARK_PROTOCOL.md`.
 v0.109 root-cause matrix: `docs/V0109_ROOT_CAUSE_MATRIX_REPORT.md`.
 v0.109 Emmanuel retest checklist: `docs/V0109_EMMANUEL_RETEST_CHECKLIST.md`.
+v0.110 battle-loop phase profiler spec: `docs/V0110_BATTLE_LOOP_PHASE_PROFILER_SPEC.md`.
+v0.110 subsystem isolation matrix: `docs/V0110_SUBSYSTEM_ISOLATION_MATRIX_SPEC.md`.
+v0.110 browser performance gate: `docs/V0110_BROWSER_PERFORMANCE_GATE.md`.
+v0.110 Emmanuel phase-profile retest: `docs/V0110_EMMANUEL_PHASE_PROFILE_RETEST.md`.
 
 Current v0.3 feature snapshot:
 
