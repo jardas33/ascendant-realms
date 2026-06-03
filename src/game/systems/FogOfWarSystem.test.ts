@@ -42,6 +42,23 @@ describe("FogOfWarSystem", () => {
     expect(fog.stateAt({ x: 500, y: 300 })).toBe("visible");
   });
 
+  it("visits cells without changing cell snapshots and keeps source copies detached", () => {
+    const fog = new FogOfWarSystem(300, 200, 100);
+    const source = { x: 50, y: 50, radius: 90 };
+    fog.update([source]);
+    source.x = 290;
+    source.y = 190;
+    source.radius = 500;
+
+    const visited: string[] = [];
+    fog.forEachCell((x, y, width, height, state) => {
+      visited.push(`${x}:${y}:${width}:${height}:${state}`);
+    });
+
+    expect(visited).toEqual(fog.cells().map((cell) => `${cell.x}:${cell.y}:${cell.width}:${cell.height}:${cell.state}`));
+    expect(fog.isVisible({ x: 290, y: 190 })).toBe(false);
+  });
+
   it("hides non-player entities outside current vision", () => {
     const fog = new FogOfWarSystem(800, 600, 100);
     fog.update([{ x: 100, y: 100, radius: 120 }]);

@@ -35,6 +35,24 @@ export class MovementSystem {
   constructor(private readonly options: MovementSystemOptions = {}) {}
 
   update(deltaSeconds: number, units: Unit[], map: BattleMapDefinition, buildings: Building[] = []): void {
+    let hasMoveTarget = false;
+    for (const unit of units) {
+      if (!unit.alive) {
+        continue;
+      }
+      unit.updateBuffs(deltaSeconds);
+      if (!unit.moveTarget) {
+        this.unitPathStates.delete(unit.id);
+        continue;
+      }
+      hasMoveTarget = true;
+    }
+
+    if (!hasMoveTarget && !this.hasSameTeamOverlap(units)) {
+      this.unitPathStates.clear();
+      return;
+    }
+
     const grid = PathfindingGrid.fromMap(map, {
       cellSize: MOVEMENT_PATHFINDING_CELL_SIZE,
       staticObstacles: this.staticObstaclesForBuildings(buildings)
@@ -42,12 +60,7 @@ export class MovementSystem {
     this.pruneUnitStates(units);
 
     units.forEach((unit) => {
-      if (!unit.alive) {
-        return;
-      }
-      unit.updateBuffs(deltaSeconds);
-      if (!unit.moveTarget) {
-        this.unitPathStates.delete(unit.id);
+      if (!unit.alive || !unit.moveTarget) {
         return;
       }
 
@@ -202,25 +215,57 @@ export class MovementSystem {
   }
 
   private pruneUnitStates(units: Unit[]): void {
-    const aliveIds = new Set(units.filter((unit) => unit.alive).map((unit) => unit.id));
     this.unitPathStates.forEach((_, unitId) => {
-      if (!aliveIds.has(unitId)) {
+      if (!this.hasAliveUnit(unitId, units)) {
         this.unitPathStates.delete(unitId);
       }
     });
   }
 
+  private hasAliveUnit(unitId: string, units: Unit[]): boolean {
+    for (const unit of units) {
+      if (unit.id === unitId && unit.alive) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private hasSameTeamOverlap(units: Unit[]): boolean {
+    for (let i = 0; i < units.length; i += 1) {
+      const a = units[i];
+      if (!a.alive) {
+        continue;
+      }
+      for (let j = i + 1; j < units.length; j += 1) {
+        const b = units[j];
+        if (!b.alive || a.team !== b.team) {
+          continue;
+        }
+        if (distance(a.position, b.position) < a.radius + b.radius + 5) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   private staticObstaclesForBuildings(buildings: Building[]): PathfindingStaticObstacle[] {
-    return buildings
-      .filter((building) => building.alive)
-      .map((building) => ({
+    const obstacles: PathfindingStaticObstacle[] = [];
+    for (const building of buildings) {
+      if (!building.alive) {
+        continue;
+      }
+      obstacles.push({
         id: building.id,
         x: building.position.x,
         y: building.position.y,
         width: building.definition.size.width,
         height: building.definition.size.height,
         padding: 16
-      }));
+      });
+    }
+    return obstacles;
   }
 
   private applySeparation(units: Unit[], map: BattleMapDefinition, grid: PathfindingGrid): void {

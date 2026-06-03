@@ -1,0 +1,140 @@
+{
+  "caseId": "v0112_static_entities_hud",
+  "intervals": [
+    {
+      "index": 0,
+      "atMs": 513.1,
+      "frameMs": 516.8
+    },
+    {
+      "index": 1,
+      "atMs": 896.4,
+      "frameMs": 383.3
+    },
+    {
+      "index": 2,
+      "atMs": 1129.6,
+      "frameMs": 233.2
+    },
+    {
+      "index": 3,
+      "atMs": 1563,
+      "frameMs": 433.4
+    },
+    {
+      "index": 4,
+      "atMs": 1946.3,
+      "frameMs": 383.3
+    },
+    {
+      "index": 5,
+      "atMs": 2246.3,
+      "frameMs": 300
+    },
+    {
+      "index": 6,
+      "atMs": 2679.6,
+      "frameMs": 433.3
+    },
+    {
+      "index": 7,
+      "atMs": 3012.9,
+      "frameMs": 333.3
+    },
+    {
+      "index": 8,
+      "atMs": 3346.2,
+      "frameMs": 333.3
+    },
+    {
+      "index": 9,
+      "atMs": 3846.2,
+      "frameMs": 500
+    },
+    {
+      "index": 10,
+      "atMs": 4229.5,
+      "frameMs": 383.3
+    },
+    {
+      "index": 11,
+      "atMs": 4512.9,
+      "frameMs": 283.4
+    },
+    {
+      "index": 12,
+      "atMs": 4996.2,
+      "frameMs": 483.3
+    },
+    {
+      "index": 13,
+      "atMs": 5346.2,
+      "frameMs": 350
+    },
+    {
+      "index": 14,
+      "atMs": 5579.5,
+      "frameMs": 233.3
+    },
+    {
+      "index": 15,
+      "atMs": 6046.2,
+      "frameMs": 466.7
+    },
+    {
+      "index": 16,
+      "atMs": 6446.1,
+      "frameMs": 399.9
+    },
+    {
+      "index": 17,
+      "atMs": 6729.5,
+      "frameMs": 283.4
+    },
+    {
+      "index": 18,
+      "atMs": 7212.7,
+      "frameMs": 483.2
+    },
+    {
+      "index": 19,
+      "atMs": 7529.4,
+      "frameMs": 316.7
+    },
+    {
+      "index": 20,
+      "atMs": 7829.4,
+      "frameMs": 300
+    },
+    {
+      "index": 21,
+      "atMs": 8346.1,
+      "frameMs": 516.7
+    },
+    {
+      "index": 22,
+      "atMs": 8712.7,
+      "frameMs": 366.6
+    },
+    {
+      "index": 23,
+      "atMs": 9029.4,
+      "frameMs": 316.7
+    },
+    {
+      "index": 24,
+      "atMs": 9479.3,
+      "frameMs": 449.9
+    },
+    {
+      "index": 25,
+      "atMs": 9846,
+      "frameMs": 366.7
+    },
+    {
+      "index": 26,
+      "atMs": 10146,
+      "frameMs": 300
+    }
+  ]
+}

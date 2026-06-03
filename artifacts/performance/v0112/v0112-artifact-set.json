@@ -1,0 +1,3052 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.112",
+  "title": "Battle-Loop Scheduler, Allocation, and Idle-Work Rescue",
+  "generatedAtUtc": "2026-06-03T16:54:31.043Z",
+  "schedulerMap": [
+    {
+      "subsystem": "Runtime clock/status",
+      "phaseId": "simulationClock",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every active frame",
+      "costKind": "fixed",
+      "allocationPosture": "No gameplay allocation added; v0.112 leaves timer semantics intact.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "none",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Keep existing timer tick; avoid extra diagnostic work when paused."
+      ],
+      "unsafeOptimizations": [
+        "Skipping runtime.tick or status timers."
+      ],
+      "profilerEvidence": "v0.110 phase rows include simulationClock as a measured phase."
+    },
+    {
+      "subsystem": "Camera",
+      "phaseId": "camera",
+      "ownerFile": "src/game/systems/CameraSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "Camera work depends on commands and follow state.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "viewport",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Private diagnostics can pause for measurement only."
+      ],
+      "unsafeOptimizations": [
+        "Reducing camera tick cadence."
+      ],
+      "profilerEvidence": "v0.110 camera isolation row."
+    },
+    {
+      "subsystem": "Abilities",
+      "phaseId": "abilities",
+      "ownerFile": "src/game/systems/AbilitySystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "Cooldown and cast state remain gameplay-critical.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "selected hero/enemy heroes",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "No v0.112 runtime rewrite."
+      ],
+      "unsafeOptimizations": [
+        "Skipping cooldown updates."
+      ],
+      "profilerEvidence": "Phase profiler separates abilities."
+    },
+    {
+      "subsystem": "Movement/pathing",
+      "phaseId": "movementPathing",
+      "ownerFile": "src/game/systems/MovementSystem.ts",
+      "cadence": "every active frame when movement or separation can matter",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 removes idle grid construction when no units move and no same-team overlap exists.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "unit move targets and collision",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Skip grid creation on idle non-overlap frames; keep buff updates."
+      ],
+      "unsafeOptimizations": [
+        "Changing path outputs, repath cooldowns, or separation results."
+      ],
+      "profilerEvidence": "v0.110 Tier M showed movement/pathing as non-trivial incremental work."
+    },
+    {
+      "subsystem": "Combat/projectiles",
+      "phaseId": "combatProjectiles",
+      "ownerFile": "src/game/systems/CombatSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "v0.112 removes attacker spread/filter allocations only.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "hostile range/projectiles",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Build attacker list with loops preserving order."
+      ],
+      "unsafeOptimizations": [
+        "Changing target priority, cooldowns, projectile timing, or damage."
+      ],
+      "profilerEvidence": "v0.110 phase rows separate combat/projectiles."
+    },
+    {
+      "subsystem": "Status effects",
+      "phaseId": "statusEffects",
+      "ownerFile": "src/game/systems/StatusEffectSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 skips empty carriers and avoids expiry filter unless needed.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "active statuses",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Return a shared empty tick result for no-op carriers."
+      ],
+      "unsafeOptimizations": [
+        "Changing tick interval, duration, or damage."
+      ],
+      "profilerEvidence": "v0.110 Tier M top phase frequently reported status effects."
+    },
+    {
+      "subsystem": "Economy/production",
+      "phaseId": "economyProduction",
+      "ownerFile": "src/game/systems/BuildingSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "mixed",
+      "allocationPosture": "No v0.112 gameplay scheduler change.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "buildings/sites/resources",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Audit-only for v0.112."
+      ],
+      "unsafeOptimizations": [
+        "Changing income, training, upgrades, or repairs."
+      ],
+      "profilerEvidence": "v0.110 density rows report economy/production cost."
+    },
+    {
+      "subsystem": "Lume simulation",
+      "phaseId": "lumeSimulation",
+      "ownerFile": "src/game/battle/LumeNetworkDirector.ts",
+      "cadence": "every active frame when a Lume network exists",
+      "costKind": "variable",
+      "allocationPosture": "No balance or state rule change; linked_ward remains 0.92.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "Lume eligible battle",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Keep render cache separate from state."
+      ],
+      "unsafeOptimizations": [
+        "Changing benefit value, activation, rewards-disabled, or tutorial exclusion."
+      ],
+      "profilerEvidence": "v0.110 Lume rows isolate simulation/presentation."
+    },
+    {
+      "subsystem": "Lume presentation",
+      "phaseId": "lumePresentation",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every frame but signature-gated",
+      "costKind": "variable",
+      "allocationPosture": "Existing signature gate retained.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "visibility mode and link state",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Keep existing graphics cache/signature."
+      ],
+      "unsafeOptimizations": [
+        "Removing selected/activated/severed visual states."
+      ],
+      "profilerEvidence": "v0.110 Lume hidden/auto/always rows."
+    },
+    {
+      "subsystem": "Fog simulation",
+      "phaseId": "fogSimulation",
+      "ownerFile": "src/game/systems/FogOfWarSystem.ts",
+      "cadence": "0.12 second cadence",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 reuses vision-source slots and current-source copies.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog enabled",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Loop source construction; keep source snapshot copy inside FogOfWarSystem."
+      ],
+      "unsafeOptimizations": [
+        "Changing reveal radius, cell state, or cadence."
+      ],
+      "profilerEvidence": "v0.110 fog rows and v0.111 clean-profile comparison."
+    },
+    {
+      "subsystem": "Fog presentation",
+      "phaseId": "fogPresentation",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "after fog simulation or force",
+      "costKind": "variable",
+      "allocationPosture": "v0.112 uses a cell visitor for overlay/signature work.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog enabled and render signature",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Skip redraw when signature unchanged."
+      ],
+      "unsafeOptimizations": [
+        "Skipping entity visibility when cells or entity visibility can change."
+      ],
+      "profilerEvidence": "v0.110 fog presentation isolation row."
+    },
+    {
+      "subsystem": "HUD DOM",
+      "phaseId": "hudDom",
+      "ownerFile": "src/game/ui/HUD.ts",
+      "cadence": "0.1 second cadence or forced interaction",
+      "costKind": "mixed",
+      "allocationPosture": "Existing stable-region patching retained; v0.112 reports hidden-panel gate as tested helper.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "HUD visibility/state",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Avoid unchanged DOM patches; keep local-panel wakeups."
+      ],
+      "unsafeOptimizations": [
+        "Suppressing command availability or status changes."
+      ],
+      "profilerEvidence": "v0.110 HUD DOM top signal in static rows."
+    },
+    {
+      "subsystem": "Minimap snapshot",
+      "phaseId": "hudDom",
+      "ownerFile": "src/game/battle/BattleSceneSnapshots.ts",
+      "cadence": "HUD refresh cadence",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 replaces snapshot filter/map/spread chains with ordered loops.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog/camera/pings/entities",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Loop marker construction; retain marker order and visibility rules."
+      ],
+      "unsafeOptimizations": [
+        "Changing fog visibility, marker order, or camera math."
+      ],
+      "profilerEvidence": "v0.110 minimap paused/reduced rows."
+    },
+    {
+      "subsystem": "Notifications",
+      "phaseId": "eventsCleanup",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "event driven plus status timer",
+      "costKind": "variable",
+      "allocationPosture": "No v0.112 notification semantic change.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "status priority/timers",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Keep existing suppression diagnostics private-only."
+      ],
+      "unsafeOptimizations": [
+        "Changing dedupe priority or gameplay warnings."
+      ],
+      "profilerEvidence": "v0.109/v0.110 notification isolation."
+    },
+    {
+      "subsystem": "Profiler counters",
+      "phaseId": "sceneUpdate",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "only when private phase profiler is on",
+      "costKind": "fixed",
+      "allocationPosture": "v0.112 stops count-snapshot construction while profiler is disabled.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "private diagnostics",
+      "gameplayPosture": "private-diagnostic",
+      "safeOptimizations": [
+        "Check enabled before creating count snapshot."
+      ],
+      "unsafeOptimizations": [
+        "Collecting profiler counters in public/default runtime."
+      ],
+      "profilerEvidence": "v0.110 profiler capability report."
+    },
+    {
+      "subsystem": "End conditions",
+      "phaseId": "endConditions",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every active simulation frame",
+      "costKind": "fixed",
+      "allocationPosture": "No v0.112 semantic change.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "runtime battle outcome",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Audit-only for v0.112."
+      ],
+      "unsafeOptimizations": [
+        "Changing victory/defeat conditions."
+      ],
+      "profilerEvidence": "Phase profiler separates end conditions."
+    }
+  ],
+  "allocationAudit": [
+    {
+      "id": "fog-vision-sources",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Vision sources",
+      "evidence": "Before used three filter/map arrays plus a spread return every fog tick.",
+      "beforePerActivation": {
+        "arrays": 4,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 3,
+        "mapsCalls": 3,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Reusable source slots filled by ordered loops.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "fog-current-sources",
+      "ownerFile": "src/game/systems/FogOfWarSystem.ts",
+      "surface": "Fog current source copy",
+      "evidence": "Before cloned source objects with sources.map each update.",
+      "beforePerActivation": {
+        "arrays": 1,
+        "objects": 1,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Copy source fields into reusable current-source slots.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "fog-overlay-cells",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Fog overlay/signature",
+      "evidence": "Before cells().filter().map().join() and cells().forEach allocated cell snapshots.",
+      "beforePerActivation": {
+        "arrays": 3,
+        "objects": 1,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Use FogOfWarSystem.forEachCell for overlay and signature traversal.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "status-empty-carriers",
+      "ownerFile": "src/game/systems/StatusEffectSystem.ts",
+      "surface": "Status effect tick",
+      "evidence": "Before every empty carrier still allocated a filtered statusEffects array.",
+      "beforePerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Skip empty carriers and filter only when an effect expires.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "movement-idle-grid",
+      "ownerFile": "src/game/systems/MovementSystem.ts",
+      "surface": "Idle movement/pathing",
+      "evidence": "Before grid/static obstacle arrays were built before checking for movement.",
+      "beforePerActivation": {
+        "arrays": 2,
+        "objects": 1,
+        "maps": 1,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 2,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Tick buffs, then skip grid when no move target and no same-team overlap exists.",
+      "semanticRisk": "medium"
+    },
+    {
+      "id": "combat-attackers",
+      "ownerFile": "src/game/systems/CombatSystem.ts",
+      "surface": "Attacker list",
+      "evidence": "Before spread + filter rebuilt attacker candidates.",
+      "beforePerActivation": {
+        "arrays": 2,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Build the single attacker list with loops preserving unit then building order.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "minimap-snapshot",
+      "ownerFile": "src/game/battle/BattleSceneSnapshots.ts",
+      "surface": "Minimap snapshot markers",
+      "evidence": "Before each marker group used filter/map and spread composition.",
+      "beforePerActivation": {
+        "arrays": 7,
+        "objects": 1,
+        "maps": 0,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 5,
+        "mapsCalls": 5,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Build markers with ordered loops and retain objective-site Set.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "private-profiler-counts",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Private counter snapshots",
+      "evidence": "Before count snapshots were constructed even when phase profiling was disabled.",
+      "beforePerActivation": {
+        "arrays": 4,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 4,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Check profiler enabled before building count snapshots; loop private counters.",
+      "semanticRisk": "low"
+    }
+  ],
+  "idleCostMatrix": [
+    {
+      "caseId": "v0112_empty_battle_shell",
+      "title": "Empty battle shell",
+      "launchScenarioId": "v0110_empty_static",
+      "posture": "fixed-idle",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "paused",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "paused",
+        "combat": "paused",
+        "projectiles": "normal",
+        "fogSimulation": "paused",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "paused",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:42:03.818Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 27,
+        "fpsAverage": 2.7,
+        "fpsOnePercentLow": 1.94,
+        "frameTimeMs": {
+          "p50": 366.7,
+          "p95": 500.1,
+          "p99": 516.6,
+          "max": 516.6,
+          "over16_7": 27,
+          "over33_3": 27,
+          "over50": 27,
+          "over100": 27,
+          "over250": 24,
+          "over500": 2
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 58,
+          "totalDurationMs": 26035,
+          "maxDurationMs": 3769
+        },
+        "counters": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "labels": 1,
+          "captureRings": 4,
+          "lumeLinks": 0,
+          "lumeEndpoints": 0,
+          "fogRedraws": 1,
+          "fogVisibleCells": 110,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 3,
+          "notificationsVisible": 1,
+          "domNodes": 678,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 30,
+        "totalMeasuredMs": 4.6,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 4.6,
+            "averageMs": 0.15,
+            "maxMs": 0.7,
+            "count": 30,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 0.1,
+            "p95Ms": 0.5
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 2.17,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.2,
+            "count": 30,
+            "percentOfMeasuredFrame": 4.35,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 0.7,
+            "averageMs": 0.01,
+            "maxMs": 0.2,
+            "count": 60,
+            "percentOfMeasuredFrame": 15.22,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.1,
+            "averageMs": 0.03,
+            "maxMs": 0.1,
+            "count": 3,
+            "percentOfMeasuredFrame": 2.17,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.5,
+            "averageMs": 0.17,
+            "maxMs": 0.2,
+            "count": 3,
+            "percentOfMeasuredFrame": 10.87,
+            "p50Ms": 0.2,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 0.5,
+            "averageMs": 0.02,
+            "maxMs": 0.5,
+            "count": 30,
+            "percentOfMeasuredFrame": 10.87,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 2.17,
+            "p50Ms": 0,
+            "p95Ms": 0
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 1,
+          "domNodes": 678
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_empty_battle_shell.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_empty_battle_shell.json"
+    },
+    {
+      "caseId": "v0112_static_entities",
+      "title": "Static entities",
+      "launchScenarioId": "v0110_static_hud_minimal",
+      "posture": "fixed-idle",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "paused",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "paused",
+        "combat": "paused",
+        "projectiles": "normal",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "paused",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:42:32.117Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 27,
+        "fpsAverage": 2.7,
+        "fpsOnePercentLow": 1.82,
+        "frameTimeMs": {
+          "p50": 366.6,
+          "p95": 516.7,
+          "p99": 550,
+          "max": 550,
+          "over16_7": 27,
+          "over33_3": 27,
+          "over50": 27,
+          "over100": 27,
+          "over250": 25,
+          "over500": 2
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 55,
+          "totalDurationMs": 24715,
+          "maxDurationMs": 4400
+        },
+        "counters": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "labels": 1,
+          "captureRings": 4,
+          "lumeLinks": 0,
+          "lumeEndpoints": 0,
+          "fogRedraws": 1,
+          "fogVisibleCells": 110,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 3,
+          "notificationsVisible": 1,
+          "domNodes": 678,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 30,
+        "totalMeasuredMs": 6.9,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 6.9,
+            "averageMs": 0.23,
+            "maxMs": 3.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 0.1,
+            "p95Ms": 0.8
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 3.8,
+            "averageMs": 0.06,
+            "maxMs": 2.7,
+            "count": 60,
+            "percentOfMeasuredFrame": 55.07,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 2.9,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.3,
+            "averageMs": 0.1,
+            "maxMs": 0.1,
+            "count": 3,
+            "percentOfMeasuredFrame": 4.35,
+            "p50Ms": 0.1,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.6,
+            "averageMs": 0.2,
+            "maxMs": 0.4,
+            "count": 3,
+            "percentOfMeasuredFrame": 8.7,
+            "p50Ms": 0.1,
+            "p95Ms": 0.4
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 1,
+          "domNodes": 678
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_static_entities.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_static_entities.json"
+    },
+    {
+      "caseId": "v0112_static_entities_hud",
+      "title": "Static entities plus HUD",
+      "launchScenarioId": "v0110_static_hud_minimal",
+      "posture": "incremental-ui",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "paused",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "paused",
+        "combat": "paused",
+        "projectiles": "normal",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "normal",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:42:59.563Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 27,
+        "fpsAverage": 2.7,
+        "fpsOnePercentLow": 1.93,
+        "frameTimeMs": {
+          "p50": 366.7,
+          "p95": 516.7,
+          "p99": 516.8,
+          "max": 516.8,
+          "over16_7": 27,
+          "over33_3": 27,
+          "over50": 27,
+          "over100": 27,
+          "over250": 25,
+          "over500": 2
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 55,
+          "totalDurationMs": 24106,
+          "maxDurationMs": 3987
+        },
+        "counters": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "labels": 1,
+          "captureRings": 4,
+          "lumeLinks": 0,
+          "lumeEndpoints": 0,
+          "fogRedraws": 1,
+          "fogVisibleCells": 110,
+          "minimapRefreshes": 11,
+          "hudUpdates": 11,
+          "notificationsEmitted": 3,
+          "notificationsVisible": 1,
+          "domNodes": 678,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0.4,
+          "hudUpdates": 0.4,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 30,
+        "totalMeasuredMs": 8.7,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 8.7,
+            "averageMs": 0.29,
+            "maxMs": 1.5,
+            "count": 30,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 0.1,
+            "p95Ms": 1.1
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 1.15,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 1.15,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 0.5,
+            "averageMs": 0.01,
+            "maxMs": 0.2,
+            "count": 60,
+            "percentOfMeasuredFrame": 5.75,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.3,
+            "averageMs": 0.1,
+            "maxMs": 0.1,
+            "count": 3,
+            "percentOfMeasuredFrame": 3.45,
+            "p50Ms": 0.1,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.6,
+            "averageMs": 0.2,
+            "maxMs": 0.3,
+            "count": 3,
+            "percentOfMeasuredFrame": 6.9,
+            "p50Ms": 0.2,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 2.9,
+            "averageMs": 0.1,
+            "maxMs": 1.4,
+            "count": 30,
+            "percentOfMeasuredFrame": 33.33,
+            "p50Ms": 0,
+            "p95Ms": 0.4
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 1,
+          "domNodes": 678
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_static_entities_hud.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_static_entities_hud.json"
+    },
+    {
+      "caseId": "v0112_one_hero_idle",
+      "title": "One hero idle",
+      "launchScenarioId": "perf_selected_hero",
+      "posture": "fixed-idle",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "normal",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "paused",
+        "combat": "paused",
+        "projectiles": "normal",
+        "fogSimulation": "paused",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "normal",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:43:27.625Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 27,
+        "fpsAverage": 2.7,
+        "fpsOnePercentLow": 1.62,
+        "frameTimeMs": {
+          "p50": 350,
+          "p95": 583.4,
+          "p99": 616.6,
+          "max": 616.6,
+          "over16_7": 27,
+          "over33_3": 27,
+          "over50": 27,
+          "over100": 27,
+          "over250": 21,
+          "over500": 5
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 55,
+          "totalDurationMs": 24102,
+          "maxDurationMs": 4155
+        },
+        "counters": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "labels": 1,
+          "captureRings": 4,
+          "lumeLinks": 0,
+          "lumeEndpoints": 0,
+          "fogRedraws": 1,
+          "fogVisibleCells": 110,
+          "minimapRefreshes": 10,
+          "hudUpdates": 10,
+          "notificationsEmitted": 3,
+          "notificationsVisible": 1,
+          "domNodes": 679,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0.4,
+          "hudUpdates": 0.4,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 30,
+        "totalMeasuredMs": 61.2,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 61.2,
+            "averageMs": 2.04,
+            "maxMs": 7.5,
+            "count": 30,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 1.5,
+            "p95Ms": 5.9
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.2,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.65,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.65,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0.8,
+            "averageMs": 0.03,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 1.31,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.16,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.16,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 52.2,
+            "averageMs": 1.74,
+            "maxMs": 7.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 85.29,
+            "p50Ms": 1.2,
+            "p95Ms": 5.8
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 0.2,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 60,
+            "percentOfMeasuredFrame": 0.33,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 30,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0.6,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.98,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 3,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.4,
+            "averageMs": 0.13,
+            "maxMs": 0.2,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.65,
+            "p50Ms": 0.1,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 1,
+            "averageMs": 0.03,
+            "maxMs": 0.5,
+            "count": 30,
+            "percentOfMeasuredFrame": 1.63,
+            "p50Ms": 0,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 30,
+            "percentOfMeasuredFrame": 0.33,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 27,
+          "graphicsObjects": 3,
+          "units": 14,
+          "buildings": 3,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 1,
+          "domNodes": 679
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_one_hero_idle.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_one_hero_idle.json"
+    },
+    {
+      "caseId": "v0112_tier_m_idle",
+      "title": "Tier M idle",
+      "launchScenarioId": "benchmark_battle_tier_m_representative",
+      "posture": "fixed-idle",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "normal",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "paused",
+        "combat": "paused",
+        "projectiles": "paused",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "normal",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:43:57.087Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 25,
+        "fpsAverage": 2.5,
+        "fpsOnePercentLow": 2,
+        "frameTimeMs": {
+          "p50": 416.6,
+          "p95": 483.4,
+          "p99": 500,
+          "max": 500,
+          "over16_7": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "over100": 25,
+          "over250": 25,
+          "over500": 0
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 54,
+          "totalDurationMs": 25605,
+          "maxDurationMs": 2298
+        },
+        "counters": {
+          "displayObjects": 57,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "labels": 2,
+          "captureRings": 4,
+          "lumeLinks": 2,
+          "lumeEndpoints": 3,
+          "fogRedraws": 2,
+          "fogVisibleCells": 116,
+          "minimapRefreshes": 12,
+          "hudUpdates": 12,
+          "notificationsEmitted": 6,
+          "notificationsVisible": 1,
+          "domNodes": 829,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0.4,
+          "hudUpdates": 0.4,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 28,
+        "totalMeasuredMs": 58,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 58,
+            "averageMs": 2.07,
+            "maxMs": 4.9,
+            "count": 28,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 1.6,
+            "p95Ms": 4
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.69,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 5.6,
+            "averageMs": 0.2,
+            "maxMs": 2.8,
+            "count": 28,
+            "percentOfMeasuredFrame": 9.66,
+            "p50Ms": 0,
+            "p95Ms": 2.1
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0.9,
+            "averageMs": 0.03,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 1.55,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.34,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0.1,
+            "averageMs": 0,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.17,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.5,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.86,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 39.4,
+            "averageMs": 1.41,
+            "maxMs": 3.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 67.93,
+            "p50Ms": 1.1,
+            "p95Ms": 2.9
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.69,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 4.2,
+            "averageMs": 0.08,
+            "maxMs": 0.8,
+            "count": 56,
+            "percentOfMeasuredFrame": 7.24,
+            "p50Ms": 0,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.34,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0.5,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.86,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.6,
+            "averageMs": 0.2,
+            "maxMs": 0.3,
+            "count": 3,
+            "percentOfMeasuredFrame": 1.03,
+            "p50Ms": 0.2,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 1,
+            "averageMs": 0.33,
+            "maxMs": 0.5,
+            "count": 3,
+            "percentOfMeasuredFrame": 1.72,
+            "p50Ms": 0.3,
+            "p95Ms": 0.5
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 2,
+            "averageMs": 0.07,
+            "maxMs": 0.5,
+            "count": 28,
+            "percentOfMeasuredFrame": 3.45,
+            "p50Ms": 0,
+            "p95Ms": 0.5
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 28,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 57,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "projectiles": 1,
+          "labels": 2,
+          "domNodes": 829
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_tier_m_idle.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_tier_m_idle.json"
+    },
+    {
+      "caseId": "v0112_tier_m_moving",
+      "title": "Tier M moving",
+      "launchScenarioId": "benchmark_battle_minimap_interaction",
+      "posture": "incremental-movement",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "normal",
+        "ai": "paused",
+        "path": "normal",
+        "movement": "normal",
+        "combat": "paused",
+        "projectiles": "paused",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "normal",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:44:28.278Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 25,
+        "fpsAverage": 2.5,
+        "fpsOnePercentLow": 1.71,
+        "frameTimeMs": {
+          "p50": 399.9,
+          "p95": 566.7,
+          "p99": 583.3,
+          "max": 583.3,
+          "over16_7": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "over100": 25,
+          "over250": 25,
+          "over500": 2
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 56,
+          "totalDurationMs": 27056,
+          "maxDurationMs": 2609
+        },
+        "counters": {
+          "displayObjects": 57,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "labels": 2,
+          "captureRings": 4,
+          "lumeLinks": 2,
+          "lumeEndpoints": 3,
+          "fogRedraws": 4,
+          "fogVisibleCells": 118,
+          "minimapRefreshes": 12,
+          "hudUpdates": 12,
+          "notificationsEmitted": 6,
+          "notificationsVisible": 1,
+          "domNodes": 844,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 1,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0.1,
+          "minimapRefreshes": 0.4,
+          "hudUpdates": 0.4,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 28,
+        "totalMeasuredMs": 136.7,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 136.7,
+            "averageMs": 4.88,
+            "maxMs": 19.8,
+            "count": 28,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 3.7,
+            "p95Ms": 11.2
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0.7,
+            "averageMs": 0.02,
+            "maxMs": 0.3,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.51,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 1.2,
+            "averageMs": 0.04,
+            "maxMs": 0.4,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.88,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 1.2,
+            "averageMs": 0.04,
+            "maxMs": 0.6,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.88,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 59.2,
+            "averageMs": 2.11,
+            "maxMs": 8.4,
+            "count": 28,
+            "percentOfMeasuredFrame": 43.31,
+            "p50Ms": 1.4,
+            "p95Ms": 6.3
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.15,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.5,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.37,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 56.3,
+            "averageMs": 2.01,
+            "maxMs": 12.6,
+            "count": 28,
+            "percentOfMeasuredFrame": 41.19,
+            "p50Ms": 1.3,
+            "p95Ms": 6.1
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 1.1,
+            "averageMs": 0.04,
+            "maxMs": 0.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.8,
+            "p50Ms": 0,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 3.6,
+            "averageMs": 0.06,
+            "maxMs": 0.5,
+            "count": 56,
+            "percentOfMeasuredFrame": 2.63,
+            "p50Ms": 0,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.15,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 1.5,
+            "averageMs": 0.05,
+            "maxMs": 0.4,
+            "count": 28,
+            "percentOfMeasuredFrame": 1.1,
+            "p50Ms": 0,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.4,
+            "averageMs": 0.13,
+            "maxMs": 0.2,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.29,
+            "p50Ms": 0.1,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 3.4,
+            "averageMs": 1.13,
+            "maxMs": 2.5,
+            "count": 3,
+            "percentOfMeasuredFrame": 2.49,
+            "p50Ms": 0.7,
+            "p95Ms": 2.5
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 3.5,
+            "averageMs": 0.13,
+            "maxMs": 2.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 2.56,
+            "p50Ms": 0,
+            "p95Ms": 0.5
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.15,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 57,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "projectiles": 1,
+          "labels": 2,
+          "domNodes": 844
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_tier_m_moving.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_tier_m_moving.json"
+    },
+    {
+      "caseId": "v0112_tier_m_combat",
+      "title": "Tier M combat",
+      "launchScenarioId": "benchmark_battle_tier_m_representative",
+      "posture": "incremental-combat",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "normal",
+        "ai": "normal",
+        "path": "normal",
+        "movement": "normal",
+        "combat": "normal",
+        "projectiles": "normal",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "normal",
+        "captureRings": "normal",
+        "lume": "auto",
+        "minimap": "normal",
+        "hudDomPatches": "normal",
+        "notifications": "normal",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:44:57.068Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 25,
+        "fpsAverage": 2.5,
+        "fpsOnePercentLow": 1.94,
+        "frameTimeMs": {
+          "p50": 433.3,
+          "p95": 500,
+          "p99": 516.6,
+          "max": 516.6,
+          "over16_7": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "over100": 25,
+          "over250": 25,
+          "over500": 1
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 52,
+          "totalDurationMs": 25034,
+          "maxDurationMs": 2186
+        },
+        "counters": {
+          "displayObjects": 56,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "labels": 2,
+          "captureRings": 4,
+          "lumeLinks": 2,
+          "lumeEndpoints": 3,
+          "fogRedraws": 2,
+          "fogVisibleCells": 116,
+          "minimapRefreshes": 12,
+          "hudUpdates": 12,
+          "notificationsEmitted": 6,
+          "notificationsVisible": 1,
+          "domNodes": 829,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 4,
+          "hudUpdates": 4,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0.4,
+          "hudUpdates": 0.4,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 28,
+        "totalMeasuredMs": 234.9,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 234.9,
+            "averageMs": 8.39,
+            "maxMs": 29.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 4.9,
+            "p95Ms": 26.5
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0.3,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.13,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 1.2,
+            "averageMs": 0.04,
+            "maxMs": 0.4,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.51,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 0.7,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.3,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 90.6,
+            "averageMs": 3.24,
+            "maxMs": 25.7,
+            "count": 28,
+            "percentOfMeasuredFrame": 38.57,
+            "p50Ms": 1.4,
+            "p95Ms": 9.4
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 51.2,
+            "averageMs": 1.83,
+            "maxMs": 7,
+            "count": 28,
+            "percentOfMeasuredFrame": 21.8,
+            "p50Ms": 1,
+            "p95Ms": 6.7
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.17,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 59.2,
+            "averageMs": 2.11,
+            "maxMs": 10,
+            "count": 28,
+            "percentOfMeasuredFrame": 25.2,
+            "p50Ms": 1.2,
+            "p95Ms": 8.1
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 0.9,
+            "averageMs": 0.03,
+            "maxMs": 0.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.38,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 12.8,
+            "averageMs": 0.23,
+            "maxMs": 8.1,
+            "count": 56,
+            "percentOfMeasuredFrame": 5.45,
+            "p50Ms": 0,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 6.9,
+            "averageMs": 0.25,
+            "maxMs": 1,
+            "count": 28,
+            "percentOfMeasuredFrame": 2.94,
+            "p50Ms": 0.2,
+            "p95Ms": 0.5
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0.7,
+            "averageMs": 0.03,
+            "maxMs": 0.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.3,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.4,
+            "averageMs": 0.13,
+            "maxMs": 0.2,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.17,
+            "p50Ms": 0.1,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.8,
+            "averageMs": 0.27,
+            "maxMs": 0.3,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.34,
+            "p50Ms": 0.3,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 3.8,
+            "averageMs": 0.14,
+            "maxMs": 2.7,
+            "count": 28,
+            "percentOfMeasuredFrame": 1.62,
+            "p50Ms": 0,
+            "p95Ms": 0.4
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.09,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 56,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 2,
+          "domNodes": 829
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_tier_m_combat.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_tier_m_combat.json"
+    },
+    {
+      "caseId": "v0112_tier_m_ui_hidden",
+      "title": "Tier M UI hidden diagnostic",
+      "launchScenarioId": "benchmark_battle_tier_m_representative",
+      "posture": "incremental-ui",
+      "diagnostics": {
+        "phaseProfiler": "on",
+        "simulation": "normal",
+        "ai": "normal",
+        "path": "normal",
+        "movement": "normal",
+        "combat": "normal",
+        "projectiles": "normal",
+        "fogSimulation": "normal",
+        "fogPresentation": "normal",
+        "entityGraphics": "normal",
+        "labels": "hidden",
+        "captureRings": "minimal",
+        "lume": "hidden",
+        "minimap": "paused",
+        "hudDomPatches": "paused",
+        "notifications": "suppressed",
+        "camera": "normal",
+        "profilerOverlay": "off"
+      },
+      "warmupMs": 5000,
+      "sampleMs": 10000,
+      "generatedAtUtc": "2026-06-03T16:45:27.876Z",
+      "steadyState": {
+        "sampleDurationMs": 10000,
+        "sampleCount": 25,
+        "fpsAverage": 2.5,
+        "fpsOnePercentLow": 1.94,
+        "frameTimeMs": {
+          "p50": 416.6,
+          "p95": 500,
+          "p99": 516.7,
+          "max": 516.7,
+          "over16_7": 25,
+          "over33_3": 25,
+          "over50": 25,
+          "over100": 25,
+          "over250": 24,
+          "over500": 1
+        },
+        "longTasks": {
+          "supported": true,
+          "count": 54,
+          "totalDurationMs": 27305,
+          "maxDurationMs": 3739
+        },
+        "counters": {
+          "displayObjects": 56,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "labels": 2,
+          "captureRings": 4,
+          "lumeLinks": 2,
+          "lumeEndpoints": 3,
+          "fogRedraws": 2,
+          "fogVisibleCells": 116,
+          "minimapRefreshes": 5,
+          "hudUpdates": 5,
+          "notificationsEmitted": 6,
+          "notificationsVisible": 1,
+          "domNodes": 829,
+          "totalLabels": 3,
+          "memoryUsedMb": 19.55
+        },
+        "counterDeltas": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        },
+        "ratesPerSecond": {
+          "fogRedraws": 0,
+          "minimapRefreshes": 0,
+          "hudUpdates": 0,
+          "notificationsEmitted": 0
+        }
+      },
+      "phaseSummary": {
+        "checkpoint": "v0.110",
+        "sampleCount": 28,
+        "totalMeasuredMs": 209.8,
+        "phases": [
+          {
+            "phaseId": "sceneUpdate",
+            "label": "Scene/update total",
+            "description": "Whole BattleScene.update frame envelope while private phase profiling is on.",
+            "totalMs": 209.8,
+            "averageMs": 7.49,
+            "maxMs": 41.8,
+            "count": 28,
+            "percentOfMeasuredFrame": 100,
+            "p50Ms": 4.8,
+            "p95Ms": 14.3
+          },
+          {
+            "phaseId": "input",
+            "label": "Input",
+            "description": "Input-facing state changes and minimap/status timers that precede simulation work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 0,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "simulationClock",
+            "label": "Simulation clock",
+            "description": "Runtime clock, status timers, and battle-time counters.",
+            "totalMs": 0.9,
+            "averageMs": 0.03,
+            "maxMs": 0.7,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.43,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "camera",
+            "label": "Camera",
+            "description": "Camera tracking and camera command processing.",
+            "totalMs": 4.4,
+            "averageMs": 0.16,
+            "maxMs": 1.9,
+            "count": 28,
+            "percentOfMeasuredFrame": 2.1,
+            "p50Ms": 0,
+            "p95Ms": 1.8
+          },
+          {
+            "phaseId": "abilities",
+            "label": "Abilities",
+            "description": "Player and enemy ability update surfaces.",
+            "totalMs": 2.2,
+            "averageMs": 0.08,
+            "maxMs": 1.3,
+            "count": 28,
+            "percentOfMeasuredFrame": 1.05,
+            "p50Ms": 0,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "movementPathing",
+            "label": "Movement/pathing",
+            "description": "MovementSystem path and unit-position update work.",
+            "totalMs": 51.4,
+            "averageMs": 1.84,
+            "maxMs": 11.3,
+            "count": 28,
+            "percentOfMeasuredFrame": 24.5,
+            "p50Ms": 1.3,
+            "p95Ms": 2.6
+          },
+          {
+            "phaseId": "combatProjectiles",
+            "label": "Combat/projectiles",
+            "description": "CombatSystem, targeting, hit resolution, and projectile-facing work.",
+            "totalMs": 48.3,
+            "averageMs": 1.73,
+            "maxMs": 7,
+            "count": 28,
+            "percentOfMeasuredFrame": 23.02,
+            "p50Ms": 1,
+            "p95Ms": 5.6
+          },
+          {
+            "phaseId": "statusEffects",
+            "label": "Status effects",
+            "description": "Timed buffs, debuffs, and veteran/status upkeep.",
+            "totalMs": 0.5,
+            "averageMs": 0.02,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.24,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "economyProduction",
+            "label": "Economy/production",
+            "description": "Building, repair, resource, training, and upgrade updates.",
+            "totalMs": 54.3,
+            "averageMs": 1.94,
+            "maxMs": 7.8,
+            "count": 28,
+            "percentOfMeasuredFrame": 25.88,
+            "p50Ms": 1.1,
+            "p95Ms": 7.6
+          },
+          {
+            "phaseId": "lumeSimulation",
+            "label": "Lume simulation",
+            "description": "Lume network state update using existing Linked Ward rules.",
+            "totalMs": 1,
+            "averageMs": 0.04,
+            "maxMs": 0.2,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.48,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "lumePresentation",
+            "label": "Lume presentation",
+            "description": "Private Lume link and endpoint graphics rendering.",
+            "totalMs": 3.2,
+            "averageMs": 0.06,
+            "maxMs": 0.3,
+            "count": 56,
+            "percentOfMeasuredFrame": 1.53,
+            "p50Ms": 0,
+            "p95Ms": 0.2
+          },
+          {
+            "phaseId": "aiStrategy",
+            "label": "AI/strategy",
+            "description": "Enemy pressure, Act 1 finale, battle event, and AI controller work.",
+            "totalMs": 38.1,
+            "averageMs": 1.36,
+            "maxMs": 28.4,
+            "count": 28,
+            "percentOfMeasuredFrame": 18.16,
+            "p50Ms": 0.2,
+            "p95Ms": 3.7
+          },
+          {
+            "phaseId": "eventsCleanup",
+            "label": "Events/cleanup",
+            "description": "Dead entity cleanup, wave tracking, tutorial hint, and status bookkeeping.",
+            "totalMs": 0.4,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.19,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          },
+          {
+            "phaseId": "fogSimulation",
+            "label": "Fog simulation",
+            "description": "Fog-of-war visibility source evaluation and cell-state update.",
+            "totalMs": 0.5,
+            "averageMs": 0.17,
+            "maxMs": 0.3,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.24,
+            "p50Ms": 0.1,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "fogPresentation",
+            "label": "Fog presentation",
+            "description": "Fog overlay redraw and entity visibility application.",
+            "totalMs": 0.8,
+            "averageMs": 0.27,
+            "maxMs": 0.3,
+            "count": 3,
+            "percentOfMeasuredFrame": 0.38,
+            "p50Ms": 0.3,
+            "p95Ms": 0.3
+          },
+          {
+            "phaseId": "hudDom",
+            "label": "HUD DOM",
+            "description": "Battle HUD, minimap snapshot, objective, and debug counter DOM patch work.",
+            "totalMs": 0,
+            "averageMs": 0,
+            "maxMs": 0,
+            "count": 28,
+            "percentOfMeasuredFrame": 0,
+            "p50Ms": 0,
+            "p95Ms": 0
+          },
+          {
+            "phaseId": "endConditions",
+            "label": "End conditions",
+            "description": "Victory/defeat condition checks.",
+            "totalMs": 0.2,
+            "averageMs": 0.01,
+            "maxMs": 0.1,
+            "count": 28,
+            "percentOfMeasuredFrame": 0.1,
+            "p50Ms": 0,
+            "p95Ms": 0.1
+          }
+        ],
+        "latestCounts": {
+          "displayObjects": 56,
+          "graphicsObjects": 4,
+          "units": 41,
+          "buildings": 4,
+          "captureSites": 4,
+          "projectiles": 0,
+          "labels": 2,
+          "domNodes": 829
+        }
+      },
+      "rawFrameIntervalArtifact": "artifacts/performance/v0112/raw-frame-intervals/v0112_tier_m_ui_hidden.json",
+      "rawPhaseSummaryArtifact": "artifacts/performance/v0112/raw-phase-summaries/v0112_tier_m_ui_hidden.json"
+    }
+  ],
+  "paritySummary": {
+    "schemaVersion": 1,
+    "checkpoint": "v0.112",
+    "gameplaySemanticsChanged": false,
+    "savesChanged": false,
+    "stableIdsChanged": false,
+    "pathingOutputsChanged": false,
+    "aiDecisionRulesChanged": false,
+    "linkedWardDamageTakenMultiplier": 0.92,
+    "parityChecks": [
+      {
+        "id": "positions-health-deaths-captures-resources-results",
+        "status": "pass",
+        "evidence": "Browser idle matrix keeps save snapshots unchanged before and after each private scenario."
+      },
+      {
+        "id": "ai-pathing-replay-posture",
+        "status": "pass",
+        "evidence": "v0.112 does not change AI decisions, path search outputs, replay state, or launch fixtures."
+      },
+      {
+        "id": "lume-linked-ward",
+        "status": "pass",
+        "evidence": "Unit test asserts linked_ward damageTakenMultiplier remains exactly 0.92."
+      },
+      {
+        "id": "saves-stable-ids",
+        "status": "pass",
+        "evidence": "No save schema, stable ID, content, art, or package metadata field is changed by runtime code."
+      }
+    ]
+  }
+}

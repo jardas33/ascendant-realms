@@ -1,0 +1,130 @@
+{
+  "caseId": "v0112_tier_m_combat",
+  "intervals": [
+    {
+      "index": 0,
+      "atMs": 374.4,
+      "frameMs": 383.3
+    },
+    {
+      "index": 1,
+      "atMs": 841.1,
+      "frameMs": 466.7
+    },
+    {
+      "index": 2,
+      "atMs": 1207.7,
+      "frameMs": 366.6
+    },
+    {
+      "index": 3,
+      "atMs": 1707.7,
+      "frameMs": 500
+    },
+    {
+      "index": 4,
+      "atMs": 2024.3,
+      "frameMs": 316.6
+    },
+    {
+      "index": 5,
+      "atMs": 2474.4,
+      "frameMs": 450.1
+    },
+    {
+      "index": 6,
+      "atMs": 2907.7,
+      "frameMs": 433.3
+    },
+    {
+      "index": 7,
+      "atMs": 3291,
+      "frameMs": 383.3
+    },
+    {
+      "index": 8,
+      "atMs": 3740.9,
+      "frameMs": 449.9
+    },
+    {
+      "index": 9,
+      "atMs": 4174.3,
+      "frameMs": 433.4
+    },
+    {
+      "index": 10,
+      "atMs": 4507.6,
+      "frameMs": 333.3
+    },
+    {
+      "index": 11,
+      "atMs": 4957.6,
+      "frameMs": 450
+    },
+    {
+      "index": 12,
+      "atMs": 5357.5,
+      "frameMs": 399.9
+    },
+    {
+      "index": 13,
+      "atMs": 5790.9,
+      "frameMs": 433.4
+    },
+    {
+      "index": 14,
+      "atMs": 6124.2,
+      "frameMs": 333.3
+    },
+    {
+      "index": 15,
+      "atMs": 6640.8,
+      "frameMs": 516.6
+    },
+    {
+      "index": 16,
+      "atMs": 6957.5,
+      "frameMs": 316.7
+    },
+    {
+      "index": 17,
+      "atMs": 7390.8,
+      "frameMs": 433.3
+    },
+    {
+      "index": 18,
+      "atMs": 7840.8,
+      "frameMs": 450
+    },
+    {
+      "index": 19,
+      "atMs": 8174.1,
+      "frameMs": 333.3
+    },
+    {
+      "index": 20,
+      "atMs": 8607.4,
+      "frameMs": 433.3
+    },
+    {
+      "index": 21,
+      "atMs": 9007.4,
+      "frameMs": 400
+    },
+    {
+      "index": 22,
+      "atMs": 9407.3,
+      "frameMs": 399.9
+    },
+    {
+      "index": 23,
+      "atMs": 9874.1,
+      "frameMs": 466.8
+    },
+    {
+      "index": 24,
+      "atMs": 10207.3,
+      "frameMs": 333.2
+    }
+  ]
+}

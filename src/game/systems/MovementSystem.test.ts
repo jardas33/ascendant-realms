@@ -40,6 +40,21 @@ describe("MovementSystem", () => {
     expect(unit.moveOrderCombatSuppressionSeconds).toBe(0.75);
   });
 
+  it("keeps idle non-overlapping units stationary while still ticking buffs", () => {
+    const system = new MovementSystem();
+    const units = [
+      fakeUnit({ id: "player-1", team: "player", x: 40, y: 40 }),
+      fakeUnit({ id: "player-2", team: "player", x: 120, y: 120 })
+    ];
+
+    system.update(0.1, units, testMap());
+
+    expect(units[0].position).toEqual({ x: 40, y: 40 });
+    expect(units[1].position).toEqual({ x: 120, y: 120 });
+    expect(units[0].updateBuffs).toHaveBeenCalledWith(0.1);
+    expect(units[1].updateBuffs).toHaveBeenCalledWith(0.1);
+  });
+
   it("recovers a move-ordered unit that starts inside a blocked building cell", () => {
     const system = new MovementSystem();
     const unit = fakeUnit({ id: "player-1", team: "player", x: 120, y: 120, moveTarget: { x: 220, y: 120 } });

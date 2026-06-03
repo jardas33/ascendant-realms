@@ -39,9 +39,17 @@ export class CombatSystem {
 
   update(deltaSeconds: number): void {
     this.updateProjectiles(deltaSeconds);
-    const attackers: Combatant[] = [...this.options.getUnits(), ...this.options.getBuildings()].filter(
-      (entity) => entity.alive && (!(entity instanceof Building) || entity.isCompleted())
-    );
+    const attackers: Combatant[] = [];
+    this.options.getUnits().forEach((unit) => {
+      if (unit.alive) {
+        attackers.push(unit);
+      }
+    });
+    this.options.getBuildings().forEach((building) => {
+      if (building.alive && building.isCompleted()) {
+        attackers.push(building);
+      }
+    });
 
     attackers.forEach((attacker) => {
       attacker.attackCooldownRemaining = Math.max(0, attacker.attackCooldownRemaining - deltaSeconds);

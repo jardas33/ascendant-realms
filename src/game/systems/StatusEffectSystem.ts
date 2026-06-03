@@ -14,6 +14,8 @@ export interface StatusDamageTick {
   sourceTeam?: Team;
 }
 
+const EMPTY_STATUS_DAMAGE_TICKS: StatusDamageTick[] = [];
+
 export function createBurnStatus(options: {
   id?: string;
   name?: string;
@@ -54,13 +56,21 @@ export function applyStatusEffect(target: StatusEffectCarrier, effect: ActiveSta
 }
 
 export function tickStatusEffects(target: StatusEffectCarrier, deltaSeconds: number): StatusDamageTick[] {
+  if (target.statusEffects.length === 0) {
+    return EMPTY_STATUS_DAMAGE_TICKS;
+  }
   const ticks: StatusDamageTick[] = [];
+  let hasExpiredEffect = false;
   target.statusEffects.forEach((effect) => {
     if (effect.remainingSeconds <= 0) {
+      hasExpiredEffect = true;
       return;
     }
     const elapsed = Math.min(Math.max(0, deltaSeconds), effect.remainingSeconds);
     effect.remainingSeconds = Math.max(0, effect.remainingSeconds - elapsed);
+    if (effect.remainingSeconds <= 0) {
+      hasExpiredEffect = true;
+    }
     effect.tickTimer += elapsed;
     const tickCount = Math.floor(effect.tickTimer / effect.tickInterval);
     effect.tickTimer -= tickCount * effect.tickInterval;
@@ -77,7 +87,9 @@ export function tickStatusEffects(target: StatusEffectCarrier, deltaSeconds: num
       }
     }
   });
-  target.statusEffects = target.statusEffects.filter((effect) => effect.remainingSeconds > 0);
+  if (hasExpiredEffect) {
+    target.statusEffects = target.statusEffects.filter((effect) => effect.remainingSeconds > 0);
+  }
   target.updateStatusVisual?.();
-  return ticks;
+  return ticks.length > 0 ? ticks : EMPTY_STATUS_DAMAGE_TICKS;
 }

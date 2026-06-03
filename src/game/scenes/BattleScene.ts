@@ -354,6 +354,8 @@ export class BattleScene extends Phaser.Scene {
   private fogOfWar?: FogOfWarSystem;
   private fogOverlay?: Phaser.GameObjects.Graphics;
   private neutralCampLabels: NeutralCampLabel[] = [];
+  private fogVisionSourcesScratch: VisionSource[] = [];
+  private fogVisionSourcePool: VisionSource[] = [];
   private fogUpdateTimer = 0;
   private lastFogRenderSignature = "";
   private fogDebugDisabled = false;
@@ -842,30 +844,40 @@ export class BattleScene extends Phaser.Scene {
 
   private createVisionSources(): VisionSource[] {
     const buildingVisionBonus = getStrongholdBattleEffects(this.launch.request.modifiers).buildingVisionBonus;
-    const unitSources = this.units
-      .filter((unit) => unit.alive && unit.team === "player")
-      .map((unit) => ({
-        x: unit.position.x,
-        y: unit.position.y,
-        radius: unit.definition.visionRadius
-      }));
-    const buildingSources = this.buildings
-      .filter((building) => building.alive && building.team === "player")
-      .map((building) => ({
-        x: building.position.x,
-        y: building.position.y,
-        radius:
-          (building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65) +
-          buildingVisionBonus
-      }));
-    const capturedSiteSources = this.captureSites
-      .filter((site) => site.owner === "player")
-      .map((site) => ({
-        x: site.position.x,
-        y: site.position.y,
-        radius: Math.max(160, site.definition.radius + 84)
-      }));
-    return [...unitSources, ...buildingSources, ...capturedSiteSources];
+    this.fogVisionSourcesScratch.length = 0;
+    for (const unit of this.units) {
+      if (!unit.alive || unit.team !== "player") {
+        continue;
+      }
+      this.pushFogVisionSource(unit.position.x, unit.position.y, unit.definition.visionRadius);
+    }
+    for (const building of this.buildings) {
+      if (!building.alive || building.team !== "player") {
+        continue;
+      }
+      this.pushFogVisionSource(
+        building.position.x,
+        building.position.y,
+        (building.isCompleted() ? building.definition.visionRadius : building.definition.visionRadius * 0.65) + buildingVisionBonus
+      );
+    }
+    for (const site of this.captureSites) {
+      if (site.owner !== "player") {
+        continue;
+      }
+      this.pushFogVisionSource(site.position.x, site.position.y, Math.max(160, site.definition.radius + 84));
+    }
+    return this.fogVisionSourcesScratch;
+  }
+
+  private pushFogVisionSource(x: number, y: number, radius: number): void {
+    const index = this.fogVisionSourcesScratch.length;
+    const source = this.fogVisionSourcePool[index] ?? { x: 0, y: 0, radius: 0 };
+    source.x = x;
+    source.y = y;
+    source.radius = radius;
+    this.fogVisionSourcePool[index] = source;
+    this.fogVisionSourcesScratch.push(source);
   }
 
   private renderFogOverlay(): void {
@@ -889,16 +901,16 @@ export class BattleScene extends Phaser.Scene {
     this.lastFogDiagnosticRedrawAtSeconds = this.runtime.elapsedSeconds;
     this.performanceCounters.fogRedraws += 1;
     this.fogOverlay.clear().setVisible(true);
-    this.fogOfWar.cells().forEach((cell) => {
-      if (cell.state === "visible") {
+    this.fogOfWar.forEachCell((x, y, width, height, state) => {
+      if (state === "visible") {
         return;
       }
-      const presentation = resolveFogCellPresentation(cell.state);
+      const presentation = resolveFogCellPresentation(state);
       this.fogOverlay?.fillStyle(presentation.fillColor, presentation.fillAlpha);
-      this.fogOverlay?.fillRoundedRect(cell.x - 1, cell.y - 1, cell.width + 2, cell.height + 2, presentation.cornerRadius);
+      this.fogOverlay?.fillRoundedRect(x - 1, y - 1, width + 2, height + 2, presentation.cornerRadius);
       if (presentation.strokeAlpha > 0) {
         this.fogOverlay?.lineStyle(1, presentation.strokeColor, presentation.strokeAlpha);
-        this.fogOverlay?.strokeRoundedRect(cell.x + 1, cell.y + 1, cell.width - 2, cell.height - 2, presentation.cornerRadius);
+        this.fogOverlay?.strokeRoundedRect(x + 1, y + 1, width - 2, height - 2, presentation.cornerRadius);
       }
     });
   }
@@ -907,19 +919,29 @@ export class BattleScene extends Phaser.Scene {
     if (!this.fogOfWar) {
       return "none";
     }
-    return this.fogOfWar
-      .cells()
-      .filter((cell) => cell.state !== "visible")
-      .map((cell) => `${Math.round(cell.x)}:${Math.round(cell.y)}:${cell.state}`)
-      .join("|");
+    let signature = "";
+    this.fogOfWar.forEachCell((x, y, _width, _height, state) => {
+      if (state === "visible") {
+        return;
+      }
+      signature += `${signature ? "|" : ""}${Math.round(x)}:${Math.round(y)}:${state}`;
+    });
+    return signature;
   }
 
   private applyFogEntityVisibility(fogEnabled: boolean): void {
     const fog = this.fogOfWar;
     if (!fog || !fogEnabled) {
-      [...this.units, ...this.buildings, ...this.captureSites, ...this.projectiles].forEach((entity) => entity.view?.setVisible(true));
+      this.units.forEach((entity) => entity.view?.setVisible(true));
+      this.buildings.forEach((entity) => entity.view?.setVisible(true));
+      this.captureSites.forEach((entity) => entity.view?.setVisible(true));
+      this.projectiles.forEach((entity) => entity.view?.setVisible(true));
       this.neutralCampLabels.forEach((entry) => entry.label.setVisible(true));
-      this.enemyHeroUnits().forEach((unit) => this.handleEnemyHeroVisible(unit));
+      this.units.forEach((unit) => {
+        if (unit.alive && unit.enemyHeroId) {
+          this.handleEnemyHeroVisible(unit);
+        }
+      });
       return;
     }
 
@@ -1348,6 +1370,9 @@ export class BattleScene extends Phaser.Scene {
   private prepareBattleLoopPhaseFrame(): void {
     const enabled = this.canUseBattleLoopDiagnostics() && this.battleLoopDiagnostics.phaseProfiler === "on";
     this.battleLoopPhaseProfiler.setEnabled(enabled);
+    if (!enabled) {
+      return;
+    }
     this.battleLoopPhaseProfiler.beginFrame(this.createBattleLoopCountSnapshot());
   }
 
@@ -1680,11 +1705,14 @@ export class BattleScene extends Phaser.Scene {
     if (!this.lumeNetworkDirector) {
       return undefined;
     }
-    const entries = this.captureSites.flatMap((site) => {
-      const summary = this.lumeNetworkDirector?.siteSummary(site);
-      return summary ? [[site.definition.id, summary] as const] : [];
-    });
-    return Object.fromEntries(entries);
+    const summaries: Record<string, NonNullable<ReturnType<NonNullable<BattleSceneSystems["lumeNetworkDirector"]>["siteSummary"]>>> = {};
+    for (const site of this.captureSites) {
+      const summary = this.lumeNetworkDirector.siteSummary(site);
+      if (summary) {
+        summaries[site.definition.id] = summary;
+      }
+    }
+    return summaries;
   }
 
   private renderLumeNetworkLinks(): void {
@@ -1845,20 +1873,38 @@ export class BattleScene extends Phaser.Scene {
 
   private createPrivatePerformanceCounters(): Partial<PrivatePerformanceCounters> {
     const lume = this.lumeNetworkDirector ? this.createLumeRenderSnapshot() : { links: [], siteMarkers: [] };
-    const fogVisibleCells = this.fogOfWar
-      ? Array.from(this.fogOfWar.states).filter((value) => value === 2).length
-      : 0;
-    const textObjects = this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text);
+    let fogVisibleCells = 0;
+    if (this.fogOfWar) {
+      for (const value of this.fogOfWar.states) {
+        if (value === 2) {
+          fogVisibleCells += 1;
+        }
+      }
+    }
+    let graphicsObjects = 0;
+    let labels = 0;
+    let totalLabels = 0;
+    for (const entry of this.children.list) {
+      if (entry instanceof Phaser.GameObjects.Graphics) {
+        graphicsObjects += 1;
+      }
+      if (entry instanceof Phaser.GameObjects.Text) {
+        totalLabels += 1;
+        if (entry.visible) {
+          labels += 1;
+        }
+      }
+    }
     const domNodes = typeof document === "undefined" ? 0 : document.querySelectorAll("*").length;
     const memory = (performance as Performance & { memory?: { usedJSHeapSize?: number } }).memory?.usedJSHeapSize;
     return {
       displayObjects: this.children.list.length,
-      graphicsObjects: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Graphics).length,
-      units: this.units.filter((unit) => unit.alive).length,
-      buildings: this.buildings.filter((building) => building.alive).length,
+      graphicsObjects,
+      units: this.countAliveUnits(),
+      buildings: this.countAliveBuildings(),
       captureSites: this.captureSites.length,
-      labels: textObjects.filter((entry) => entry.visible).length,
-      totalLabels: textObjects.length,
+      labels,
+      totalLabels,
       captureRings: this.captureSites.length,
       lumeLinks: lume.links.length,
       lumeEndpoints: lume.siteMarkers.length,
@@ -1874,17 +1920,56 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private createBattleLoopCountSnapshot(): BattleLoopCountSnapshot {
-    const textObjects = this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Text);
+    let graphicsObjects = 0;
+    let labels = 0;
+    for (const entry of this.children.list) {
+      if (entry instanceof Phaser.GameObjects.Graphics) {
+        graphicsObjects += 1;
+      }
+      if (entry instanceof Phaser.GameObjects.Text && entry.visible) {
+        labels += 1;
+      }
+    }
     return {
       displayObjects: this.children.list.length,
-      graphicsObjects: this.children.list.filter((entry) => entry instanceof Phaser.GameObjects.Graphics).length,
-      units: this.units.filter((unit) => unit.alive).length,
-      buildings: this.buildings.filter((building) => building.alive).length,
+      graphicsObjects,
+      units: this.countAliveUnits(),
+      buildings: this.countAliveBuildings(),
       captureSites: this.captureSites.length,
-      projectiles: this.projectiles.filter((projectile) => projectile.alive).length,
-      labels: textObjects.filter((entry) => entry.visible).length,
+      projectiles: this.countAliveProjectiles(),
+      labels,
       domNodes: typeof document === "undefined" ? 0 : document.querySelectorAll("*").length
     };
+  }
+
+  private countAliveUnits(): number {
+    let count = 0;
+    for (const unit of this.units) {
+      if (unit.alive) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  private countAliveBuildings(): number {
+    let count = 0;
+    for (const building of this.buildings) {
+      if (building.alive) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  private countAliveProjectiles(): number {
+    let count = 0;
+    for (const projectile of this.projectiles) {
+      if (projectile.alive) {
+        count += 1;
+      }
+    }
+    return count;
   }
 
   private selectTrustedBenchmarkTarget(target: "hero" | "worker" | "building"): { x: number; y: number; label: string } | null {
@@ -2262,8 +2347,16 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private updateStatusEffects(deltaSeconds: number): void {
-    [...this.units, ...this.buildings].forEach((entity) => {
+    this.updateStatusEffectsForEntities(this.units, deltaSeconds);
+    this.updateStatusEffectsForEntities(this.buildings, deltaSeconds);
+  }
+
+  private updateStatusEffectsForEntities(entities: Array<Unit | Building>, deltaSeconds: number): void {
+    entities.forEach((entity) => {
       if (!entity.alive) {
+        return;
+      }
+      if (entity.statusEffects.length === 0) {
         return;
       }
       const ticks = tickStatusEffects(entity, deltaSeconds);

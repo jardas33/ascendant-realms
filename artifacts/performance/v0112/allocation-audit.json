@@ -1,0 +1,260 @@
+{
+  "rows": [
+    {
+      "id": "fog-vision-sources",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Vision sources",
+      "evidence": "Before used three filter/map arrays plus a spread return every fog tick.",
+      "beforePerActivation": {
+        "arrays": 4,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 3,
+        "mapsCalls": 3,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Reusable source slots filled by ordered loops.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "fog-current-sources",
+      "ownerFile": "src/game/systems/FogOfWarSystem.ts",
+      "surface": "Fog current source copy",
+      "evidence": "Before cloned source objects with sources.map each update.",
+      "beforePerActivation": {
+        "arrays": 1,
+        "objects": 1,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Copy source fields into reusable current-source slots.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "fog-overlay-cells",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Fog overlay/signature",
+      "evidence": "Before cells().filter().map().join() and cells().forEach allocated cell snapshots.",
+      "beforePerActivation": {
+        "arrays": 3,
+        "objects": 1,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Use FogOfWarSystem.forEachCell for overlay and signature traversal.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "status-empty-carriers",
+      "ownerFile": "src/game/systems/StatusEffectSystem.ts",
+      "surface": "Status effect tick",
+      "evidence": "Before every empty carrier still allocated a filtered statusEffects array.",
+      "beforePerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Skip empty carriers and filter only when an effect expires.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "movement-idle-grid",
+      "ownerFile": "src/game/systems/MovementSystem.ts",
+      "surface": "Idle movement/pathing",
+      "evidence": "Before grid/static obstacle arrays were built before checking for movement.",
+      "beforePerActivation": {
+        "arrays": 2,
+        "objects": 1,
+        "maps": 1,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 2,
+        "mapsCalls": 1,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Tick buffs, then skip grid when no move target and no same-team overlap exists.",
+      "semanticRisk": "medium"
+    },
+    {
+      "id": "combat-attackers",
+      "ownerFile": "src/game/systems/CombatSystem.ts",
+      "surface": "Attacker list",
+      "evidence": "Before spread + filter rebuilt attacker candidates.",
+      "beforePerActivation": {
+        "arrays": 2,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 1,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Build the single attacker list with loops preserving unit then building order.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "minimap-snapshot",
+      "ownerFile": "src/game/battle/BattleSceneSnapshots.ts",
+      "surface": "Minimap snapshot markers",
+      "evidence": "Before each marker group used filter/map and spread composition.",
+      "beforePerActivation": {
+        "arrays": 7,
+        "objects": 1,
+        "maps": 0,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 5,
+        "mapsCalls": 5,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 1,
+        "objects": 0,
+        "maps": 0,
+        "sets": 1,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Build markers with ordered loops and retain objective-site Set.",
+      "semanticRisk": "low"
+    },
+    {
+      "id": "private-profiler-counts",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "surface": "Private counter snapshots",
+      "evidence": "Before count snapshots were constructed even when phase profiling was disabled.",
+      "beforePerActivation": {
+        "arrays": 4,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 4,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "afterPerActivation": {
+        "arrays": 0,
+        "objects": 0,
+        "maps": 0,
+        "sets": 0,
+        "sorts": 0,
+        "filters": 0,
+        "mapsCalls": 0,
+        "domPatches": 0,
+        "graphicsCreateDestroy": 0,
+        "labelLayouts": 0
+      },
+      "optimization": "Check profiler enabled before building count snapshots; loop private counters.",
+      "semanticRisk": "low"
+    }
+  ]
+}

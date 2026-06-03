@@ -20,6 +20,14 @@ export interface VisibilityCellSnapshot {
   state: VisibilityState;
 }
 
+export type VisibilityCellVisitor = (
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  state: VisibilityState
+) => void;
+
 export interface VisibilityEntity {
   team: Team;
   position: Position;
@@ -43,7 +51,7 @@ export class FogOfWarSystem {
   }
 
   update(sources: VisionSource[]): void {
-    this.currentSources = sources.map((source) => ({ ...source }));
+    this.copyCurrentSources(sources);
     for (let index = 0; index < this.states.length; index += 1) {
       if (this.states[index] === STATE_VALUE.visible) {
         this.states[index] = STATE_VALUE.explored;
@@ -77,20 +85,38 @@ export class FogOfWarSystem {
 
   cells(): VisibilityCellSnapshot[] {
     const cells: VisibilityCellSnapshot[] = [];
+    this.forEachCell((x, y, width, height, state) => {
+      cells.push({ x, y, width, height, state });
+    });
+    return cells;
+  }
+
+  forEachCell(visitor: VisibilityCellVisitor): void {
     for (let row = 0; row < this.rows; row += 1) {
       for (let column = 0; column < this.columns; column += 1) {
         const x = column * this.cellSize;
         const y = row * this.cellSize;
-        cells.push({
+        visitor(
           x,
           y,
-          width: Math.min(this.cellSize, this.mapWidth - x),
-          height: Math.min(this.cellSize, this.mapHeight - y),
-          state: VALUE_STATE[this.states[this.index(column, row)] ?? 0] ?? "unseen"
-        });
+          Math.min(this.cellSize, this.mapWidth - x),
+          Math.min(this.cellSize, this.mapHeight - y),
+          VALUE_STATE[this.states[this.index(column, row)] ?? 0] ?? "unseen"
+        );
       }
     }
-    return cells;
+  }
+
+  private copyCurrentSources(sources: VisionSource[]): void {
+    for (let index = 0; index < sources.length; index += 1) {
+      const source = sources[index];
+      const current = this.currentSources[index] ?? { x: 0, y: 0, radius: 0 };
+      current.x = source.x;
+      current.y = source.y;
+      current.radius = source.radius;
+      this.currentSources[index] = current;
+    }
+    this.currentSources.length = sources.length;
   }
 
   private reveal(source: VisionSource): void {

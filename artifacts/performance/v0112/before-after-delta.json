@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.112",
+  "title": "Battle-Loop Scheduler, Allocation, and Idle-Work Rescue",
+  "beforeEvidence": [
+    "docs/V0110_DENSITY_SCALING_REPORT.md",
+    "docs/V0110_ROOT_CAUSE_CLASSIFICATION.md",
+    "docs/V0111_CLEAN_PROFILE_BENCHMARK.md"
+  ],
+  "runtimeOptimizationIds": [
+    "fog-vision-sources",
+    "fog-current-sources",
+    "fog-overlay-cells",
+    "status-empty-carriers",
+    "movement-idle-grid",
+    "combat-attackers",
+    "minimap-snapshot",
+    "private-profiler-counts"
+  ],
+  "idleCaseCount": 8,
+  "scopeGuard": "No gameplay, balance, save, stable-ID, art, engine, desktop, AI-decision, or path-output changes are authorized by v0.112."
+}

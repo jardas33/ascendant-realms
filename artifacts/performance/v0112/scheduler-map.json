@@ -1,0 +1,292 @@
+{
+  "rows": [
+    {
+      "subsystem": "Runtime clock/status",
+      "phaseId": "simulationClock",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every active frame",
+      "costKind": "fixed",
+      "allocationPosture": "No gameplay allocation added; v0.112 leaves timer semantics intact.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "none",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Keep existing timer tick; avoid extra diagnostic work when paused."
+      ],
+      "unsafeOptimizations": [
+        "Skipping runtime.tick or status timers."
+      ],
+      "profilerEvidence": "v0.110 phase rows include simulationClock as a measured phase."
+    },
+    {
+      "subsystem": "Camera",
+      "phaseId": "camera",
+      "ownerFile": "src/game/systems/CameraSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "Camera work depends on commands and follow state.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "viewport",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Private diagnostics can pause for measurement only."
+      ],
+      "unsafeOptimizations": [
+        "Reducing camera tick cadence."
+      ],
+      "profilerEvidence": "v0.110 camera isolation row."
+    },
+    {
+      "subsystem": "Abilities",
+      "phaseId": "abilities",
+      "ownerFile": "src/game/systems/AbilitySystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "Cooldown and cast state remain gameplay-critical.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "selected hero/enemy heroes",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "No v0.112 runtime rewrite."
+      ],
+      "unsafeOptimizations": [
+        "Skipping cooldown updates."
+      ],
+      "profilerEvidence": "Phase profiler separates abilities."
+    },
+    {
+      "subsystem": "Movement/pathing",
+      "phaseId": "movementPathing",
+      "ownerFile": "src/game/systems/MovementSystem.ts",
+      "cadence": "every active frame when movement or separation can matter",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 removes idle grid construction when no units move and no same-team overlap exists.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "unit move targets and collision",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Skip grid creation on idle non-overlap frames; keep buff updates."
+      ],
+      "unsafeOptimizations": [
+        "Changing path outputs, repath cooldowns, or separation results."
+      ],
+      "profilerEvidence": "v0.110 Tier M showed movement/pathing as non-trivial incremental work."
+    },
+    {
+      "subsystem": "Combat/projectiles",
+      "phaseId": "combatProjectiles",
+      "ownerFile": "src/game/systems/CombatSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "variable",
+      "allocationPosture": "v0.112 removes attacker spread/filter allocations only.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "hostile range/projectiles",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Build attacker list with loops preserving order."
+      ],
+      "unsafeOptimizations": [
+        "Changing target priority, cooldowns, projectile timing, or damage."
+      ],
+      "profilerEvidence": "v0.110 phase rows separate combat/projectiles."
+    },
+    {
+      "subsystem": "Status effects",
+      "phaseId": "statusEffects",
+      "ownerFile": "src/game/systems/StatusEffectSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 skips empty carriers and avoids expiry filter unless needed.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "active statuses",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Return a shared empty tick result for no-op carriers."
+      ],
+      "unsafeOptimizations": [
+        "Changing tick interval, duration, or damage."
+      ],
+      "profilerEvidence": "v0.110 Tier M top phase frequently reported status effects."
+    },
+    {
+      "subsystem": "Economy/production",
+      "phaseId": "economyProduction",
+      "ownerFile": "src/game/systems/BuildingSystem.ts",
+      "cadence": "every active frame",
+      "costKind": "mixed",
+      "allocationPosture": "No v0.112 gameplay scheduler change.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "buildings/sites/resources",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Audit-only for v0.112."
+      ],
+      "unsafeOptimizations": [
+        "Changing income, training, upgrades, or repairs."
+      ],
+      "profilerEvidence": "v0.110 density rows report economy/production cost."
+    },
+    {
+      "subsystem": "Lume simulation",
+      "phaseId": "lumeSimulation",
+      "ownerFile": "src/game/battle/LumeNetworkDirector.ts",
+      "cadence": "every active frame when a Lume network exists",
+      "costKind": "variable",
+      "allocationPosture": "No balance or state rule change; linked_ward remains 0.92.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "Lume eligible battle",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Keep render cache separate from state."
+      ],
+      "unsafeOptimizations": [
+        "Changing benefit value, activation, rewards-disabled, or tutorial exclusion."
+      ],
+      "profilerEvidence": "v0.110 Lume rows isolate simulation/presentation."
+    },
+    {
+      "subsystem": "Lume presentation",
+      "phaseId": "lumePresentation",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every frame but signature-gated",
+      "costKind": "variable",
+      "allocationPosture": "Existing signature gate retained.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "visibility mode and link state",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Keep existing graphics cache/signature."
+      ],
+      "unsafeOptimizations": [
+        "Removing selected/activated/severed visual states."
+      ],
+      "profilerEvidence": "v0.110 Lume hidden/auto/always rows."
+    },
+    {
+      "subsystem": "Fog simulation",
+      "phaseId": "fogSimulation",
+      "ownerFile": "src/game/systems/FogOfWarSystem.ts",
+      "cadence": "0.12 second cadence",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 reuses vision-source slots and current-source copies.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog enabled",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Loop source construction; keep source snapshot copy inside FogOfWarSystem."
+      ],
+      "unsafeOptimizations": [
+        "Changing reveal radius, cell state, or cadence."
+      ],
+      "profilerEvidence": "v0.110 fog rows and v0.111 clean-profile comparison."
+    },
+    {
+      "subsystem": "Fog presentation",
+      "phaseId": "fogPresentation",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "after fog simulation or force",
+      "costKind": "variable",
+      "allocationPosture": "v0.112 uses a cell visitor for overlay/signature work.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog enabled and render signature",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Skip redraw when signature unchanged."
+      ],
+      "unsafeOptimizations": [
+        "Skipping entity visibility when cells or entity visibility can change."
+      ],
+      "profilerEvidence": "v0.110 fog presentation isolation row."
+    },
+    {
+      "subsystem": "HUD DOM",
+      "phaseId": "hudDom",
+      "ownerFile": "src/game/ui/HUD.ts",
+      "cadence": "0.1 second cadence or forced interaction",
+      "costKind": "mixed",
+      "allocationPosture": "Existing stable-region patching retained; v0.112 reports hidden-panel gate as tested helper.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "HUD visibility/state",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Avoid unchanged DOM patches; keep local-panel wakeups."
+      ],
+      "unsafeOptimizations": [
+        "Suppressing command availability or status changes."
+      ],
+      "profilerEvidence": "v0.110 HUD DOM top signal in static rows."
+    },
+    {
+      "subsystem": "Minimap snapshot",
+      "phaseId": "hudDom",
+      "ownerFile": "src/game/battle/BattleSceneSnapshots.ts",
+      "cadence": "HUD refresh cadence",
+      "costKind": "mixed",
+      "allocationPosture": "v0.112 replaces snapshot filter/map/spread chains with ordered loops.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "fog/camera/pings/entities",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Loop marker construction; retain marker order and visibility rules."
+      ],
+      "unsafeOptimizations": [
+        "Changing fog visibility, marker order, or camera math."
+      ],
+      "profilerEvidence": "v0.110 minimap paused/reduced rows."
+    },
+    {
+      "subsystem": "Notifications",
+      "phaseId": "eventsCleanup",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "event driven plus status timer",
+      "costKind": "variable",
+      "allocationPosture": "No v0.112 notification semantic change.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "status priority/timers",
+      "gameplayPosture": "presentation-only",
+      "safeOptimizations": [
+        "Keep existing suppression diagnostics private-only."
+      ],
+      "unsafeOptimizations": [
+        "Changing dedupe priority or gameplay warnings."
+      ],
+      "profilerEvidence": "v0.109/v0.110 notification isolation."
+    },
+    {
+      "subsystem": "Profiler counters",
+      "phaseId": "sceneUpdate",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "only when private phase profiler is on",
+      "costKind": "fixed",
+      "allocationPosture": "v0.112 stops count-snapshot construction while profiler is disabled.",
+      "dirtyStateAvailable": true,
+      "visibilityDependency": "private diagnostics",
+      "gameplayPosture": "private-diagnostic",
+      "safeOptimizations": [
+        "Check enabled before creating count snapshot."
+      ],
+      "unsafeOptimizations": [
+        "Collecting profiler counters in public/default runtime."
+      ],
+      "profilerEvidence": "v0.110 profiler capability report."
+    },
+    {
+      "subsystem": "End conditions",
+      "phaseId": "endConditions",
+      "ownerFile": "src/game/scenes/BattleScene.ts",
+      "cadence": "every active simulation frame",
+      "costKind": "fixed",
+      "allocationPosture": "No v0.112 semantic change.",
+      "dirtyStateAvailable": false,
+      "visibilityDependency": "runtime battle outcome",
+      "gameplayPosture": "gameplay-critical",
+      "safeOptimizations": [
+        "Audit-only for v0.112."
+      ],
+      "unsafeOptimizations": [
+        "Changing victory/defeat conditions."
+      ],
+      "profilerEvidence": "Phase profiler separates end conditions."
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate";
+const CHECKPOINT = "v0.112 Battle-Loop Scheduler, Allocation, and Idle-Work Rescue";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -464,6 +464,13 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0111_MACHINE_PRESSURE_CLASSIFICATION.md", join(packageDir, "V0111_MACHINE_PRESSURE_CLASSIFICATION.md"));
   await copyMarkdown("docs/V0111_EMMANUEL_POST_RESTART_RETEST.md", join(packageDir, "V0111_EMMANUEL_POST_RESTART_RETEST.md"));
   await copyMarkdown("docs/V0111_IMPLEMENTATION_REPORT.md", join(packageDir, "V0111_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0112_BATTLE_LOOP_SCHEDULER_MAP.md", join(packageDir, "V0112_BATTLE_LOOP_SCHEDULER_MAP.md"));
+  await copyMarkdown("docs/V0112_HOT_PATH_ALLOCATION_AUDIT.md", join(packageDir, "V0112_HOT_PATH_ALLOCATION_AUDIT.md"));
+  await copyMarkdown("docs/V0112_IDLE_COST_MATRIX.md", join(packageDir, "V0112_IDLE_COST_MATRIX.md"));
+  await copyMarkdown("docs/V0112_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md", join(packageDir, "V0112_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md"));
+  await copyMarkdown("docs/V0112_PARITY_REPORT.md", join(packageDir, "V0112_PARITY_REPORT.md"));
+  await copyMarkdown("docs/V0112_IMPLEMENTATION_REPORT.md", join(packageDir, "V0112_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0112_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0112_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -494,7 +501,7 @@ function createBuildInfo(packageName: string, commit: string, shortCommit: strin
     knownWarnings: [
       "Vite may warn that the Phaser vendor chunk is larger than 500 kB; this is expected for the current prototype.",
       "Runtime art slots intentionally use placeholder fallbacks until a future runtime-integrated asset passes review.",
-      "v0.111 host and browser calibration numbers are local reproducibility evidence, not final desktop hardware certification."
+      "v0.112 battle-loop and idle-cost measurements are local browser evidence, not final desktop hardware certification."
     ],
     notForJudging: [
       "final art quality",
@@ -567,7 +574,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.111, start with V0111_EMMANUEL_POST_RESTART_RETEST.md, V0111_HOST_SNAPSHOT_SPEC.md, V0111_BROWSER_CONTROL_BASELINES.md, V0111_CLEAN_PROFILE_BENCHMARK_SPEC.md, V0111_MACHINE_PRESSURE_CLASSIFICATION.md, and V0111_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, and v0.111 private host-environment calibration. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
+For v0.112, start with V0112_EMMANUEL_RETEST_CHECKLIST.md, V0112_BATTLE_LOOP_SCHEDULER_MAP.md, V0112_HOT_PATH_ALLOCATION_AUDIT.md, V0112_IDLE_COST_MATRIX.md, V0112_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, V0112_PARITY_REPORT.md, and V0112_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, v0.111 private host-environment calibration, and v0.112 scheduler/allocation/idle-work evidence. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
 
 ## Known Warning
 

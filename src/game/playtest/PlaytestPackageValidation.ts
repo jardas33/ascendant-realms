@@ -16,7 +16,7 @@ export interface PlaytestPackageValidationResult {
 }
 
 export const EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT =
-  "v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate";
+  "v0.112 Battle-Loop Scheduler, Allocation, and Idle-Work Rescue";
 
 export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "game/index.html",
@@ -437,6 +437,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0111_MACHINE_PRESSURE_CLASSIFICATION.md",
   "V0111_EMMANUEL_POST_RESTART_RETEST.md",
   "V0111_IMPLEMENTATION_REPORT.md",
+  "V0112_BATTLE_LOOP_SCHEDULER_MAP.md",
+  "V0112_HOT_PATH_ALLOCATION_AUDIT.md",
+  "V0112_IDLE_COST_MATRIX.md",
+  "V0112_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+  "V0112_PARITY_REPORT.md",
+  "V0112_IMPLEMENTATION_REPORT.md",
+  "V0112_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",

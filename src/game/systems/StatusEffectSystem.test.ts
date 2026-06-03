@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ActiveStatusEffect } from "../core/GameTypes";
 import { applyStatusEffect, createBurnStatus, tickStatusEffects } from "./StatusEffectSystem";
 
@@ -48,5 +48,21 @@ describe("StatusEffectSystem", () => {
     expect(target.statusEffects).toHaveLength(1);
     expect(target.statusEffects[0].remainingSeconds).toBe(4);
     expect(target.statusEffects[0].damagePerSecond).toBe(4);
+  });
+
+  it("keeps empty and non-expiring status arrays stable", () => {
+    const emptyEffects: ActiveStatusEffect[] = [];
+    const emptyTarget = { statusEffects: emptyEffects, updateStatusVisual: vi.fn() };
+
+    expect(tickStatusEffects(emptyTarget, 0.25)).toEqual([]);
+    expect(emptyTarget.statusEffects).toBe(emptyEffects);
+    expect(emptyTarget.updateStatusVisual).not.toHaveBeenCalled();
+
+    const activeEffects = [createBurnStatus({ damagePerSecond: 0, durationSeconds: 5, tickInterval: 1 })];
+    const activeTarget = { statusEffects: activeEffects, updateStatusVisual: vi.fn() };
+
+    expect(tickStatusEffects(activeTarget, 0.25)).toEqual([]);
+    expect(activeTarget.statusEffects).toBe(activeEffects);
+    expect(activeTarget.updateStatusVisual).toHaveBeenCalledTimes(1);
   });
 });

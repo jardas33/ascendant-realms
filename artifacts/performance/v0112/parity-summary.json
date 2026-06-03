@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "checkpoint": "v0.112",
+  "gameplaySemanticsChanged": false,
+  "savesChanged": false,
+  "stableIdsChanged": false,
+  "pathingOutputsChanged": false,
+  "aiDecisionRulesChanged": false,
+  "linkedWardDamageTakenMultiplier": 0.92,
+  "parityChecks": [
+    {
+      "id": "positions-health-deaths-captures-resources-results",
+      "status": "pass",
+      "evidence": "Browser idle matrix keeps save snapshots unchanged before and after each private scenario."
+    },
+    {
+      "id": "ai-pathing-replay-posture",
+      "status": "pass",
+      "evidence": "v0.112 does not change AI decisions, path search outputs, replay state, or launch fixtures."
+    },
+    {
+      "id": "lume-linked-ward",
+      "status": "pass",
+      "evidence": "Unit test asserts linked_ward damageTakenMultiplier remains exactly 0.92."
+    },
+    {
+      "id": "saves-stable-ids",
+      "status": "pass",
+      "evidence": "No save schema, stable ID, content, art, or package metadata field is changed by runtime code."
+    }
+  ]
+}
