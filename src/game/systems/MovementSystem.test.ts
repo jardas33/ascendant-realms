@@ -3,6 +3,7 @@ import type { BattleMapDefinition, Position, Team } from "../core/GameTypes";
 import type { Building } from "../entities/Building";
 import type { Unit } from "../entities/Unit";
 import { MovementSystem } from "./MovementSystem";
+import { addSpatialQueryCounters, createEmptySpatialQueryCounters } from "./SpatialQueryMetrics";
 
 describe("MovementSystem", () => {
   it("does not snap a crowded unit to a distant grid center when separation is blocked", () => {
@@ -125,6 +126,43 @@ describe("MovementSystem", () => {
 
     expect(unit.position.x).toBeLessThan(760);
     expect(unit.moveTarget).toEqual({ x: 700, y: 130 });
+  });
+
+  it("reuses identical same-frame path requests without changing movement output", () => {
+    const counters = createEmptySpatialQueryCounters();
+    const system = new MovementSystem({
+      spatialMetrics: (delta) => addSpatialQueryCounters(counters, delta)
+    });
+    const units = [
+      fakeUnit({ id: "player-1", team: "player", x: 40, y: 40, moveTarget: { x: 220, y: 40 } }),
+      fakeUnit({ id: "player-2", team: "player", x: 40, y: 40, moveTarget: { x: 220, y: 40 } })
+    ];
+
+    system.update(0.1, units, testMap({ width: 260, height: 260 }));
+
+    expect(counters.pathRequests).toBe(1);
+    expect(counters.pathCacheMisses).toBe(1);
+    expect(counters.duplicatePathRequests).toBe(1);
+    expect(counters.pathCacheHits).toBe(1);
+    expect(units[0].position.x).toBeGreaterThan(40);
+    expect(units[1].position.x).toBeGreaterThan(40);
+    expect(units[0].moveTarget).toEqual({ x: 220, y: 40 });
+    expect(units[1].moveTarget).toEqual({ x: 220, y: 40 });
+  });
+
+  it("records unchanged-destination path reuse across ticks", () => {
+    const counters = createEmptySpatialQueryCounters();
+    const system = new MovementSystem({
+      spatialMetrics: (delta) => addSpatialQueryCounters(counters, delta)
+    });
+    const unit = fakeUnit({ id: "player-1", team: "player", x: 40, y: 40, moveTarget: { x: 220, y: 40 } });
+
+    system.update(0.1, [unit], testMap({ width: 260, height: 260 }));
+    system.update(0.1, [unit], testMap({ width: 260, height: 260 }));
+
+    expect(counters.pathRequests).toBe(1);
+    expect(counters.unchangedDestinationReuses).toBeGreaterThan(0);
+    expect(unit.position.x).toBeGreaterThan(40);
   });
 });
 

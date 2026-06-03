@@ -17,9 +17,3 @@ No save-version bump, save fields, localStorage keys, stable IDs, gameplay rules
 ## Current Result Count
 
 Trusted result rows available: 21.
-
-## Verification Notes
-
-- Full required verification passed before commit, including trusted preview/dev/root-cause/report scripts, smoke/playtest/hosted lanes, visual QA, visual review pack, package verification, and `git diff --check`.
-- The trusted evidence remains mixed with real runtime cost: the old v0.108 protocol was too short and overlay/dev-server biased, but the refreshed production-preview baseline still shows serious frame-time stalls.
-- No v0.110, desktop engine spike, art generation/import, save migration, gameplay rewrite, AI/pathing rewrite, balance change, or public diagnostic control was started.

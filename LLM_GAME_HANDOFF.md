@@ -1,12 +1,43 @@
 # Ascendant Realms LLM Handoff
 
-Last updated: 2026-06-03 v0.111 Host Environment Calibration, Clean-Browser Reproducibility, and Machine-Pressure Gate
+Last updated: 2026-06-03 v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization
 
 This file is the main continuation note for future LLMs working on Ascendant Realms. It supersedes older scattered status notes when they disagree.
 
 ## Project Identity
 
-Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. No gameplay, save, stable-ID, art, engine-choice, desktop-port, or v0.112 work is approved.
+Ascendant Realms is the internal repository codename for a Phaser 3, TypeScript, and Vite browser-game prototype for a fantasy RTS/RPG hybrid. v0.79 records Emmanuel's approval of `JARDAS: Oath of the Barrosan Marches` as the leading public title direction, with `JARDAS` as the dominant logo word. v0.80 through v0.108 build the current Lume, visual QA, private Playtest Hub, portable content, art-slot, Salto-planning, and representative benchmark foundation without approving a runtime rebrand. v0.109 audits the v0.108 suspicious browser benchmark numbers and adds trusted production-preview-first sampling. v0.110 adds private BattleScene phase profiling, subsystem isolation, density reports, and a browser performance gate. v0.111 adds private host-environment calibration, clean-profile reproducibility, browser control baselines, and machine-pressure classification. v0.112 adds scheduler/allocation/idle-work rescue. v0.113 adds exact-semantics spatial-query, target acquisition, and path-request optimization. No gameplay, save, stable-ID, art, engine-choice, desktop-port, multiplayer, content, or v0.114 work is approved.
+
+## Current v0.113 Spatial Query, Target Acquisition, And Path-Request Optimization - 2026-06-03
+
+Status: v0.113 adds private spatial-query counters, exact same-frame path-request reuse, combat frame entity caching, and the requested v0.113 profile/docs/artifact set. It remains private diagnostics and exact-semantics optimization only.
+
+Included work:
+
+- Added `src/game/systems/SpatialQueryMetrics.ts`, private BattleScene hook wiring, and focused MovementSystem/CombatSystem parity tests.
+- MovementSystem now reuses only identical same-frame path requests and clones result waypoints per unit.
+- CombatSystem now reuses a unit-then-building frame entity list and first-ID lookup map for target acquisition/projectile lookup while preserving old scan order.
+- Added `src/game/playtest/SpatialQueryPathingProfile.ts`, `tools/runSpatialQueryProfile.ts`, and `npm run perf:spatial-query-profile`.
+- Added docs `V0113_SPATIAL_QUERY_PROFILE.md`, `V0113_PATH_REQUEST_DEDUP_SPEC.md`, `V0113_TARGET_ACQUISITION_PARITY_REPORT.md`, `V0113_SPATIAL_INDEX_DECISION_REPORT.md`, `V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md`, `V0113_IMPLEMENTATION_REPORT.md`, and `V0113_EMMANUEL_RETEST_CHECKLIST.md`.
+
+Runtime/save/profile boundary:
+
+- No save-version bump.
+- No save fields, localStorage keys, stable IDs, serialized IDs, rewards, XP, Retinue state, relics, reputation, campaign progression, AI strategy, target priority, path results, movement outcomes, collision/capture/combat balance, maps, factions, generated/imported art, runtime asset paths, public benchmark controls, engine choice, desktop port, multiplayer, PvP, co-op, runtime title, or v0.114 work changed.
+
+Current evidence:
+
+```text
+v0.113 spatial-query profile - PASS, 14 requested rows.
+Hero-only / Hero+Worker / five-troop rows - live unit counts 1 / 2 / 5.
+Tier M combat - 1,118 target scans, 89,460 entities visited, 979 distance calculations.
+Tier L combat - 1,680 target scans, 193,228 entities visited, 1,400 distance calculations.
+Path-request cache parity - focused MovementSystem tests pass; production profile showed no representative duplicate hits.
+Target acquisition parity - focused CombatSystem tests pass; nearest target order preserved.
+Spatial index decision - do not add quadtree/grid index in v0.113 because tie-order/invalidation semantics exceed scope.
+```
+
+Closeout rule: commit exactly `Checkpoint v0.113 spatial query target acquisition and path-request optimization`, regenerate and verify the clean package from the final commit, then push only when the worktree is clean, the package build info commit matches the final commit, dirty status says `no`, and remote CI passes. Do not start v0.114 without a new explicit goal.
 
 ## Current v0.111 Host Environment Calibration, Clean-Browser Reproducibility, And Machine-Pressure Gate - 2026-06-03
 

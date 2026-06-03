@@ -5,7 +5,7 @@ import process from "node:process";
 
 const PACKAGE_ROOT = resolve("artifacts", "playtest");
 const DIST_DIR = resolve("dist");
-const CHECKPOINT = "v0.112 Battle-Loop Scheduler, Allocation, and Idle-Work Rescue";
+const CHECKPOINT = "v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization";
 const PACKAGE_PURPOSE = "private human playtest distribution";
 
 interface PlaytestBuildInfo {
@@ -471,6 +471,19 @@ async function main(): Promise<void> {
   await copyMarkdown("docs/V0112_PARITY_REPORT.md", join(packageDir, "V0112_PARITY_REPORT.md"));
   await copyMarkdown("docs/V0112_IMPLEMENTATION_REPORT.md", join(packageDir, "V0112_IMPLEMENTATION_REPORT.md"));
   await copyMarkdown("docs/V0112_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0112_EMMANUEL_RETEST_CHECKLIST.md"));
+  await copyMarkdown("docs/V0113_SPATIAL_QUERY_PROFILE.md", join(packageDir, "V0113_SPATIAL_QUERY_PROFILE.md"));
+  await copyMarkdown("docs/V0113_PATH_REQUEST_DEDUP_SPEC.md", join(packageDir, "V0113_PATH_REQUEST_DEDUP_SPEC.md"));
+  await copyMarkdown(
+    "docs/V0113_TARGET_ACQUISITION_PARITY_REPORT.md",
+    join(packageDir, "V0113_TARGET_ACQUISITION_PARITY_REPORT.md")
+  );
+  await copyMarkdown("docs/V0113_SPATIAL_INDEX_DECISION_REPORT.md", join(packageDir, "V0113_SPATIAL_INDEX_DECISION_REPORT.md"));
+  await copyMarkdown(
+    "docs/V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+    join(packageDir, "V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md")
+  );
+  await copyMarkdown("docs/V0113_IMPLEMENTATION_REPORT.md", join(packageDir, "V0113_IMPLEMENTATION_REPORT.md"));
+  await copyMarkdown("docs/V0113_EMMANUEL_RETEST_CHECKLIST.md", join(packageDir, "V0113_EMMANUEL_RETEST_CHECKLIST.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.md", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.md"));
   await copyMarkdown("ACT1_PLAYABILITY_TELEMETRY.json", join(packageDir, "ACT1_PLAYABILITY_TELEMETRY.json"));
 
@@ -574,7 +587,7 @@ Use ${info.startCommand}, or double-click START_GAME_WINDOWS.bat on Windows.
 
 This build should be served from the included local server helper. Do not judge problems caused by opening game/index.html directly from the file system.
 
-For v0.112, start with V0112_EMMANUEL_RETEST_CHECKLIST.md, V0112_BATTLE_LOOP_SCHEDULER_MAP.md, V0112_HOT_PATH_ALLOCATION_AUDIT.md, V0112_IDLE_COST_MATRIX.md, V0112_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, V0112_PARITY_REPORT.md, and V0112_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, v0.111 private host-environment calibration, and v0.112 scheduler/allocation/idle-work evidence. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
+For v0.113, start with V0113_EMMANUEL_RETEST_CHECKLIST.md, V0113_SPATIAL_QUERY_PROFILE.md, V0113_PATH_REQUEST_DEDUP_SPEC.md, V0113_TARGET_ACQUISITION_PARITY_REPORT.md, V0113_SPATIAL_INDEX_DECISION_REPORT.md, V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md, and V0113_IMPLEMENTATION_REPORT.md. The package includes the v0.108 representative benchmark context, v0.109 trusted benchmark-integrity flow, v0.110 private battle-loop phase profiler, v0.111 private host-environment calibration, v0.112 scheduler/allocation/idle-work evidence, and v0.113 spatial-query/path-request evidence. It changes no normal progression, persistent rewards, saves, gameplay values, stable IDs, target priority, path results, maps, factions, generated/imported images, desktop posture, engine choice, user browser profile, OS setting, or runtime/internal title.
 
 ## Known Warning
 

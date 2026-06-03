@@ -41,6 +41,7 @@ import type { TechState } from "../systems/PrerequisiteSystem";
 import { ResourceSystem } from "../systems/ResourceSystem";
 import { RepairSystem } from "../systems/RepairSystem";
 import { SelectionSystem } from "../systems/SelectionSystem";
+import type { SpatialQueryMetricsRecorder } from "../systems/SpatialQueryMetrics";
 import { findWalkableTrainedUnitSpawnPoint, TrainingSystem } from "../systems/TrainingSystem";
 import { UISystem } from "../systems/UISystem";
 import { UpgradeSystem } from "../systems/UpgradeSystem";
@@ -131,6 +132,7 @@ interface CreateBattleSceneSystemsOptions {
   exitPrivateDemo?: () => void;
   finishPrivateDemo?: () => void;
   canEnemyHeroJoinAttack?: (unit: Unit) => boolean;
+  recordSpatialQueryMetrics?: SpatialQueryMetricsRecorder;
 }
 
 // BattleScene owns Phaser lifecycle, runtime state, and live entity arrays.
@@ -189,7 +191,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
     setHudDensityMode,
     exitPrivateDemo,
     finishPrivateDemo,
-    canEnemyHeroJoinAttack
+    canEnemyHeroJoinAttack,
+    recordSpatialQueryMetrics
   } = options;
   const strongholdEffects = getStrongholdBattleEffects(launch.request.modifiers);
 
@@ -201,6 +204,7 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
   const controlGroupSystem = new ControlGroupSystem();
 
   const movementSystem = new MovementSystem({
+    spatialMetrics: recordSpatialQueryMetrics,
     onPathFailed: (unit, target) => {
       if (unit.team !== "player" || unit.attackTargetId) {
         return;
@@ -318,7 +322,8 @@ export function createBattleSceneSystems(options: CreateBattleSceneSystemsOption
         return amount;
       }
       return lumeNetworkDirector?.adjustIncomingDamage(amount, target) ?? amount;
-    }
+    },
+    spatialMetrics: recordSpatialQueryMetrics
   });
 
   const resourceSystem = new ResourceSystem({

@@ -146,6 +146,13 @@ import { CollisionSystem } from "../systems/CollisionSystem";
 import { isEntityVisibleToPlayer, type FogOfWarSystem, type VisionSource } from "../systems/FogOfWarSystem";
 import { canUseRallyPoint, setRallyPointForBuildings } from "../systems/RallyPointSystem";
 import { evaluateRetinueReinforcement, selectRetinueReinforcementUnit } from "../systems/RetinueReinforcementRules";
+import {
+  addSpatialQueryCounters,
+  cloneSpatialQueryCounters,
+  createEmptySpatialQueryCounters,
+  type SpatialQueryCounterDelta,
+  type SpatialQueryCounters
+} from "../systems/SpatialQueryMetrics";
 import { tickStatusEffects } from "../systems/StatusEffectSystem";
 import { findWalkableTrainedUnitSpawnPoint } from "../systems/TrainingSystem";
 import { applyUpgradeToBuilding, applyUpgradeToUnit } from "../systems/UpgradeEffects";
@@ -262,6 +269,8 @@ interface AscendantBattleTestHooks {
   setBattleLoopDiagnostics?: (diagnostics: Partial<BattleLoopDiagnostics>) => BattleLoopDiagnostics | null;
   getBattleLoopPhaseSummary?: () => BattleLoopPhaseSummary;
   resetBattleLoopPhaseProfiler?: () => BattleLoopPhaseSummary;
+  getSpatialQueryMetrics?: () => SpatialQueryCounters;
+  resetSpatialQueryMetrics?: () => SpatialQueryCounters;
 }
 
 interface LumeRenderLinkSnapshot {
@@ -374,6 +383,7 @@ export class BattleScene extends Phaser.Scene {
   private trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
   private battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
   private battleLoopPhaseProfiler = new BattleLoopPhaseProfiler();
+  private spatialQueryCounters = createEmptySpatialQueryCounters();
   private trustedDiagnosticsPanel?: HTMLElement;
   private trustedDiagnosticsPanelExpanded = false;
   private trustedDiagnosticsHandler?: (event: MouseEvent) => void;
@@ -592,6 +602,7 @@ export class BattleScene extends Phaser.Scene {
     this.trustedBenchmarkDiagnostics = createDefaultTrustedDiagnostics();
     this.battleLoopDiagnostics = createDefaultBattleLoopDiagnostics();
     this.battleLoopPhaseProfiler.reset();
+    this.spatialQueryCounters = createEmptySpatialQueryCounters();
     this.trustedDiagnosticsPanelExpanded = false;
     this.cachedMinimapSnapshot = undefined;
     this.cachedMinimapSnapshotAtSeconds = 0;
@@ -707,7 +718,10 @@ export class BattleScene extends Phaser.Scene {
       setHudDensityMode: (mode) => this.setHudDensityMode(mode),
       exitPrivateDemo: () => this.exitPrivateDemo(),
       finishPrivateDemo: () => this.finishPrivateDemo(),
-      canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit)
+      canEnemyHeroJoinAttack: (unit) => this.canEnemyHeroJoinAttack(unit),
+      recordSpatialQueryMetrics: isPrivatePlaytestToolsEnabled()
+        ? (delta) => this.recordSpatialQueryMetrics(delta)
+        : undefined
     });
 
     this.movementSystem = systems.movementSystem;
@@ -1373,11 +1387,24 @@ export class BattleScene extends Phaser.Scene {
     if (!enabled) {
       return;
     }
+    this.recordSpatialQueryMetrics({ frames: 1 });
     this.battleLoopPhaseProfiler.beginFrame(this.createBattleLoopCountSnapshot());
   }
 
   private measureBattleLoopPhase<T>(phaseId: BattleLoopPhaseId, work: () => T): T {
     return this.battleLoopPhaseProfiler.measure(phaseId, work);
+  }
+
+  private recordSpatialQueryMetrics(delta: SpatialQueryCounterDelta): void {
+    if (!this.canUseBattleLoopDiagnostics() || this.battleLoopDiagnostics.phaseProfiler !== "on") {
+      return;
+    }
+    addSpatialQueryCounters(this.spatialQueryCounters, delta);
+  }
+
+  private resetSpatialQueryMetrics(): SpatialQueryCounters {
+    this.spatialQueryCounters = createEmptySpatialQueryCounters();
+    return cloneSpatialQueryCounters(this.spatialQueryCounters);
   }
 
   private isBattleLoopDiagnosticPaused(key: keyof BattleLoopDiagnostics): boolean {
@@ -3659,7 +3686,9 @@ export class BattleScene extends Phaser.Scene {
       getBattleLoopDiagnostics: () => ({ ...this.battleLoopDiagnostics }),
       setBattleLoopDiagnostics: (diagnostics) => this.setBattleLoopDiagnostics(diagnostics),
       getBattleLoopPhaseSummary: () => this.battleLoopPhaseProfiler.summary(),
-      resetBattleLoopPhaseProfiler: () => this.resetBattleLoopPhaseProfiler()
+      resetBattleLoopPhaseProfiler: () => this.resetBattleLoopPhaseProfiler(),
+      getSpatialQueryMetrics: () => cloneSpatialQueryCounters(this.spatialQueryCounters),
+      resetSpatialQueryMetrics: () => this.resetSpatialQueryMetrics()
     };
   }
 
@@ -3692,6 +3721,8 @@ export class BattleScene extends Phaser.Scene {
     delete target.__ASCENDANT_TEST_HOOKS__.setBattleLoopDiagnostics;
     delete target.__ASCENDANT_TEST_HOOKS__.getBattleLoopPhaseSummary;
     delete target.__ASCENDANT_TEST_HOOKS__.resetBattleLoopPhaseProfiler;
+    delete target.__ASCENDANT_TEST_HOOKS__.getSpatialQueryMetrics;
+    delete target.__ASCENDANT_TEST_HOOKS__.resetSpatialQueryMetrics;
   }
 
   private cleanup(): void {

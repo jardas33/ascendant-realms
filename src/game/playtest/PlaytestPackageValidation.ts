@@ -16,7 +16,7 @@ export interface PlaytestPackageValidationResult {
 }
 
 export const EXPECTED_PLAYTEST_PACKAGE_CHECKPOINT =
-  "v0.112 Battle-Loop Scheduler, Allocation, and Idle-Work Rescue";
+  "v0.113 Spatial Query, Target Acquisition, and Path-Request Optimization";
 
 export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "game/index.html",
@@ -444,6 +444,13 @@ export const REQUIRED_PLAYTEST_PACKAGE_FILES = [
   "V0112_PARITY_REPORT.md",
   "V0112_IMPLEMENTATION_REPORT.md",
   "V0112_EMMANUEL_RETEST_CHECKLIST.md",
+  "V0113_SPATIAL_QUERY_PROFILE.md",
+  "V0113_PATH_REQUEST_DEDUP_SPEC.md",
+  "V0113_TARGET_ACQUISITION_PARITY_REPORT.md",
+  "V0113_SPATIAL_INDEX_DECISION_REPORT.md",
+  "V0113_EVIDENCE_BACKED_OPTIMIZATION_REPORT.md",
+  "V0113_IMPLEMENTATION_REPORT.md",
+  "V0113_EMMANUEL_RETEST_CHECKLIST.md",
   "ACT1_PLAYABILITY_TELEMETRY.md",
   "ACT1_PLAYABILITY_TELEMETRY.json",
   "start-playtest-server.mjs",

@@ -5,6 +5,7 @@ import { Building } from "../entities/Building";
 import type { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import { CombatSystem } from "./CombatSystem";
+import { addSpatialQueryCounters, createEmptySpatialQueryCounters, type SpatialQueryMetricsRecorder } from "./SpatialQueryMetrics";
 
 describe("CombatSystem", () => {
   it("lets player units obey a normal move order away from enemies in weapon range", () => {
@@ -801,6 +802,25 @@ describe("CombatSystem", () => {
 
     expect(player.attackTargetLabel).toBe("Raider");
   });
+
+  it("preserves nearest target order while using a cached frame entity list", () => {
+    const counters = createEmptySpatialQueryCounters();
+    const player = fakeUnit({ id: "player-militia", team: "player", x: 100, y: 100, radius: 13, range: 40, damage: 10 });
+    const firstEnemy = fakeUnit({ id: "enemy-raider-1", team: "enemy", x: 130, y: 100, radius: 13 });
+    const secondEnemy = fakeUnit({ id: "enemy-raider-2", team: "enemy", x: 130, y: 100, radius: 13 });
+    const combat = createCombat([player, firstEnemy, secondEnemy], [], {
+      spatialMetrics: (delta) => addSpatialQueryCounters(counters, delta)
+    });
+
+    combat.update(0.1);
+
+    expect(firstEnemy.hp).toBe(firstEnemy.maxHp - 10);
+    expect(secondEnemy.hp).toBe(secondEnemy.maxHp);
+    expect(counters.entityListRebuilds).toBeGreaterThan(0);
+    expect(counters.targetAcquisitionScans + counters.immediateMeleeScans).toBeGreaterThan(0);
+    expect(counters.entitiesVisited).toBeGreaterThan(0);
+    expect(counters.distanceCalculations).toBeGreaterThan(0);
+  });
 });
 
 function createCombat(
@@ -809,6 +829,7 @@ function createCombat(
   hooks: {
     onDamage?: (target: BaseEntity, amount: number, source: Unit | Building | Projectile) => void;
     adjustIncomingDamage?: (amount: number, target: BaseEntity, source: Unit | Building | Projectile) => number;
+    spatialMetrics?: SpatialQueryMetricsRecorder;
   } = {}
 ): CombatSystem {
   return new CombatSystem({
@@ -819,7 +840,8 @@ function createCombat(
     addProjectile: vi.fn(),
     onDamage: hooks.onDamage ?? vi.fn(),
     onKill: vi.fn(),
-    adjustIncomingDamage: hooks.adjustIncomingDamage
+    adjustIncomingDamage: hooks.adjustIncomingDamage,
+    spatialMetrics: hooks.spatialMetrics
   });
 }
 

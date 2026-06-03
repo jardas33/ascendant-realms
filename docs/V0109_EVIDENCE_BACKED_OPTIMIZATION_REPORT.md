@@ -4,7 +4,7 @@
 
 1. tier-l: p95 716.5 ms, FPS avg 2, DOM 839, HUD 0.3/s, minimap 0.3/s.
 2. labels-hidden: p95 550 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
-3. baseline: p95 516.7 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
+3. mode-preview-headless: p95 533.2 ms, FPS avg 2.6, DOM 821, HUD 0.4/s, minimap 0.4/s.
 
 ## Probable Harness Artifacts
 

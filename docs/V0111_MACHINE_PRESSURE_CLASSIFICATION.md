@@ -9,15 +9,15 @@ Confidence: high
 | Control | Mode | FPS avg | p95 | max | long tasks |
 | --- | --- | ---: | ---: | ---: | ---: |
 | blank-page-raf | clean-profile-headless | 60.1 | 16.7 | 16.8 | 0 |
-| phaser-empty-scene | clean-profile-headless | 60 | 16.7 | 16.8 | 3 |
-| campaign-map | clean-profile-headless | 9.8 | 300 | 416.7 | 4 |
-| tier-m-representative-battle | clean-profile-headless | 2.5 | 483.3 | 483.3 | 51 |
+| phaser-empty-scene | clean-profile-headless | 60 | 16.8 | 16.8 | 2 |
+| campaign-map | clean-profile-headless | 9.4 | 216.7 | 433.4 | 3 |
+| tier-m-representative-battle | clean-profile-headless | 2.5 | 516.7 | 533.3 | 50 |
 | blank-page-raf | preview-headless | 60.1 | 16.7 | 16.8 | 0 |
 | simple-dom | preview-headless | 60.1 | 16.7 | 16.8 | 0 |
 | simple-canvas | preview-headless | 60.1 | 16.7 | 16.8 | 0 |
 | phaser-empty-scene | preview-headless | 60 | 16.7 | 16.8 | 4 |
-| campaign-map | preview-headless | 9.9 | 183.4 | 500 | 8 |
-| tier-m-representative-battle | preview-headless | 2.5 | 516.6 | 533.3 | 50 |
+| campaign-map | preview-headless | 9.9 | 200 | 300 | 5 |
+| tier-m-representative-battle | preview-headless | 2.4 | 566.6 | 650 | 47 |
 
 ## Notes
 

@@ -1,6 +1,7 @@
 import type { Position, Team } from "../core/GameTypes";
 import { distance } from "../core/MathUtils";
 import type { BaseEntity } from "../entities/BaseEntity";
+import type { SpatialNearestMetrics } from "./SpatialQueryMetrics";
 
 interface EntityHitTestOptions<T extends BaseEntity> {
   minimumRadius?: number;
@@ -45,19 +46,30 @@ export class CollisionSystem {
       .sort((a, b) => b.radius - a.radius)[0];
   }
 
-  static nearest<T extends BaseEntity>(from: Position, entities: T[], predicate: (entity: T) => boolean): T | undefined {
+  static nearest<T extends BaseEntity>(
+    from: Position,
+    entities: T[],
+    predicate: (entity: T) => boolean,
+    metrics?: SpatialNearestMetrics
+  ): T | undefined {
     let best: T | undefined;
     let bestDistance = Number.POSITIVE_INFINITY;
-    entities.forEach((entity) => {
+    for (const entity of entities) {
+      if (metrics) {
+        metrics.entitiesVisited += 1;
+      }
       if (!entity.alive || !predicate(entity)) {
-        return;
+        continue;
+      }
+      if (metrics) {
+        metrics.distanceCalculations += 1;
       }
       const current = distance(from, entity.position);
       if (current < bestDistance) {
         best = entity;
         bestDistance = current;
       }
-    });
+    }
     return best;
   }
 }

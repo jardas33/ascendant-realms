@@ -3,10 +3,14 @@ import { clamp, distance, normalizeVector } from "../core/MathUtils";
 import type { Building } from "../entities/Building";
 import type { Unit } from "../entities/Unit";
 import { DEFAULT_PATHFINDING_CELL_SIZE, PathfindingGrid, type PathfindingStaticObstacle } from "./PathfindingGrid";
+import type { SpatialQueryMetricsRecorder } from "./SpatialQueryMetrics";
 
 interface MovementSystemOptions {
   onPathFailed?: (unit: Unit, target: Position) => void;
+  spatialMetrics?: SpatialQueryMetricsRecorder;
 }
+
+type CachedPathResult = ReturnType<PathfindingGrid["findPath"]>;
 
 interface UnitPathState {
   destination?: Position;
@@ -57,6 +61,7 @@ export class MovementSystem {
       cellSize: MOVEMENT_PATHFINDING_CELL_SIZE,
       staticObstacles: this.staticObstaclesForBuildings(buildings)
     });
+    const framePathCache = new Map<string, CachedPathResult>();
     this.pruneUnitStates(units);
 
     units.forEach((unit) => {
@@ -79,14 +84,19 @@ export class MovementSystem {
       const state = this.pathStateFor(unit);
       state.repathCooldown = Math.max(0, state.repathCooldown - deltaSeconds);
       this.updateStuckState(unit, state, deltaSeconds);
-      this.ensurePath(unit, state, grid);
+      this.ensurePath(unit, state, grid, framePathCache);
       this.followPath(unit, state, deltaSeconds, map, grid);
     });
 
     this.applySeparation(units, map, grid);
   }
 
-  private ensurePath(unit: Unit, state: UnitPathState, grid: PathfindingGrid): void {
+  private ensurePath(
+    unit: Unit,
+    state: UnitPathState,
+    grid: PathfindingGrid,
+    framePathCache: Map<string, CachedPathResult>
+  ): void {
     if (!unit.moveTarget) {
       return;
     }
@@ -94,10 +104,20 @@ export class MovementSystem {
     const needsInitialPath = state.waypoints.length === 0 && state.repathCooldown === 0;
     const needsStuckRepath = state.stuckSeconds >= STUCK_SECONDS_BEFORE_REPATH && state.repathCooldown === 0;
     if (!targetChanged && !needsInitialPath && !needsStuckRepath) {
+      this.recordSpatialMetrics({ unchangedDestinationReuses: 1 });
       return;
     }
 
-    const result = grid.findPath(unit.position, unit.moveTarget, { allowPartial: true });
+    const requestKey = pathRequestKey(unit.position, unit.moveTarget);
+    const duplicateRequest = framePathCache.has(requestKey);
+    let result = framePathCache.get(requestKey);
+    if (duplicateRequest) {
+      this.recordSpatialMetrics({ duplicatePathRequests: 1, pathCacheHits: 1 });
+    } else {
+      result = grid.findPath(unit.position, unit.moveTarget, { allowPartial: true });
+      framePathCache.set(requestKey, clonePathResult(result));
+      this.recordSpatialMetrics({ pathRequests: 1, pathCacheMisses: 1 });
+    }
     state.destination = { ...unit.moveTarget };
     state.repathCooldown = REPATH_COOLDOWN_SECONDS;
     state.stuckSeconds = 0;
@@ -107,7 +127,7 @@ export class MovementSystem {
       this.reportPathFailure(unit, state, unit.moveTarget);
       return;
     }
-    state.waypoints = result.waypoints;
+    state.waypoints = result.waypoints.map((waypoint) => ({ ...waypoint }));
     state.waypointIndex = 0;
     if (!result.complete) {
       this.reportPathFailure(unit, state, unit.moveTarget);
@@ -316,4 +336,24 @@ export class MovementSystem {
       unit.setPosition(nearest.x, nearest.y);
     }
   }
+
+  private recordSpatialMetrics(delta: Parameters<SpatialQueryMetricsRecorder>[0]): void {
+    this.options.spatialMetrics?.(delta);
+  }
+}
+
+function pathRequestKey(start: Position, target: Position): string {
+  return `${start.x},${start.y}->${target.x},${target.y}:partial`;
+}
+
+function clonePathResult(result: CachedPathResult): CachedPathResult {
+  if (!result) {
+    return undefined;
+  }
+  return {
+    complete: result.complete,
+    waypoints: result.waypoints.map((waypoint) => ({ ...waypoint })),
+    startCell: { ...result.startCell },
+    endCell: { ...result.endCell }
+  };
 }

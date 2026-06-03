@@ -4,9 +4,9 @@ Status: RED.
 
 Baseline case: v0110_tier_m_density.
 FPS average: 2.5.
-p95 frame: 516.6 ms.
-Max frame: 533.3 ms.
-Long tasks: 52.
+p95 frame: 550 ms.
+Max frame: 550 ms.
+Long tasks: 55.
 
 ## Gate Rule
 

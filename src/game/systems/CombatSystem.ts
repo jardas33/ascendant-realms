@@ -9,6 +9,7 @@ import { Projectile } from "../entities/Projectile";
 import { Unit } from "../entities/Unit";
 import { DEFAULT_BEHAVIOUR_MODE, normalizeBehaviourMode } from "./BehaviourModeSystem";
 import { CollisionSystem } from "./CollisionSystem";
+import type { SpatialNearestMetrics, SpatialQueryMetricsRecorder } from "./SpatialQueryMetrics";
 import { applyStatusEffect, createBurnStatus } from "./StatusEffectSystem";
 
 type Combatant = Unit | Building;
@@ -32,14 +33,22 @@ interface CombatSystemOptions {
   onKill: (killer: Combatant | Projectile, target: BaseEntity) => void;
   onStatusApplied?: (target: BaseEntity, statusName: string) => void;
   adjustIncomingDamage?: (amount: number, target: BaseEntity, source: Combatant | Projectile) => number;
+  spatialMetrics?: SpatialQueryMetricsRecorder;
 }
 
 export class CombatSystem {
+  private readonly attackersScratch: Combatant[] = [];
+  private readonly frameEntities: BaseEntity[] = [];
+  private readonly frameEntityById = new Map<string, BaseEntity>();
+
   constructor(private readonly options: CombatSystemOptions) {}
 
   update(deltaSeconds: number): void {
+    this.rebuildEntityCache();
     this.updateProjectiles(deltaSeconds);
-    const attackers: Combatant[] = [];
+    this.rebuildEntityCache();
+    const attackers = this.attackersScratch;
+    attackers.length = 0;
     this.options.getUnits().forEach((unit) => {
       if (unit.alive) {
         attackers.push(unit);
@@ -181,9 +190,11 @@ export class CombatSystem {
       return explicitTarget;
     }
 
-    return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
-      return this.canAcquireTarget(attacker, entity);
-    });
+    return this.nearestFrameEntity(
+      attacker.position,
+      (entity) => this.canAcquireTarget(attacker, entity),
+      "targetAcquisitionScans"
+    );
   }
 
   private clearExplicitAttackTarget(attacker: Unit): void {
@@ -196,13 +207,14 @@ export class CombatSystem {
     if (this.getRange(attacker) > 45) {
       return undefined;
     }
-    return CollisionSystem.nearest(attacker.position, [...this.options.getUnits(), ...this.options.getBuildings()], (entity) => {
-      return (
+    return this.nearestFrameEntity(
+      attacker.position,
+      (entity) =>
         CollisionSystem.isHostile(attacker.team, entity.team) &&
         this.canWorkerEngageBuilding(attacker, entity) &&
-        this.isWithinEffectiveRange(attacker, entity)
-      );
-    });
+        this.isWithinEffectiveRange(attacker, entity),
+      "immediateMeleeScans"
+    );
   }
 
   private shouldImmediateContactOverrideExplicitTarget(
@@ -405,7 +417,53 @@ export class CombatSystem {
   }
 
   private findEntityById(id: string): BaseEntity | undefined {
-    return [...this.options.getUnits(), ...this.options.getBuildings()].find((entity) => entity.id === id);
+    const found = this.frameEntityById.get(id);
+    this.recordSpatialMetrics({
+      entityIdLookups: 1,
+      entityIdLookupHits: found ? 1 : 0,
+      entityIdLookupMisses: found ? 0 : 1
+    });
+    return found;
+  }
+
+  private rebuildEntityCache(): void {
+    this.frameEntities.length = 0;
+    this.frameEntityById.clear();
+    for (const unit of this.options.getUnits()) {
+      this.cacheFrameEntity(unit);
+    }
+    for (const building of this.options.getBuildings()) {
+      this.cacheFrameEntity(building);
+    }
+    this.recordSpatialMetrics({ entityListRebuilds: 1, entityListEntries: this.frameEntities.length });
+  }
+
+  private cacheFrameEntity(entity: BaseEntity): void {
+    this.frameEntities.push(entity);
+    if (!this.frameEntityById.has(entity.id)) {
+      this.frameEntityById.set(entity.id, entity);
+    }
+  }
+
+  private nearestFrameEntity(
+    from: Position,
+    predicate: (entity: BaseEntity) => boolean,
+    scanKey: "targetAcquisitionScans" | "immediateMeleeScans"
+  ): BaseEntity | undefined {
+    const metrics: SpatialNearestMetrics | undefined = this.options.spatialMetrics
+      ? { entitiesVisited: 0, distanceCalculations: 0 }
+      : undefined;
+    const found = CollisionSystem.nearest(from, this.frameEntities, predicate, metrics);
+    this.recordSpatialMetrics({
+      [scanKey]: 1,
+      entitiesVisited: metrics?.entitiesVisited ?? 0,
+      distanceCalculations: metrics?.distanceCalculations ?? 0
+    });
+    return found;
+  }
+
+  private recordSpatialMetrics(delta: Parameters<SpatialQueryMetricsRecorder>[0]): void {
+    this.options.spatialMetrics?.(delta);
   }
 
   private entityLabel(entity: BaseEntity): string {

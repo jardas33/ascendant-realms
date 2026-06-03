@@ -17,18 +17,3 @@ No process killing beyond stopping this tool's own spawned preview server, reboo
 ## Current Result Count
 
 10 v0.111 control row(s) are available.
-
-## Closeout Evidence
-
-- `npm test` PASS, 114 files / 795 tests.
-- `npm run build` PASS with the known Phaser/vendor chunk-size warning.
-- `npm run validate:content` PASS.
-- `npm run validate:art-intake` PASS.
-- `npm run perf:host-snapshot` PASS.
-- `npm run perf:controls:preview` PASS, 6 rows.
-- `npm run perf:trusted:clean-profile` PASS, 4 rows.
-- `npm run perf:controls:report` PASS, 10 rows.
-- `npm run test:e2e:smoke:fast` PASS, 10 tests.
-- Browser plugin private hub check PASS at `http://127.0.0.1:5230/`.
-- `npm run package:playtest` PASS before commit, producing the expected dirty package.
-- `npm run verify:playtest-package` PASS, 433 checks, after fixing the package validator's stale v0.110 checkpoint expectation.
